@@ -15,7 +15,7 @@ requires = [
     'waitress',
     ]
 
-setup(name='MyPrototype',
+setup(name='DBAS',
       version='0.0',
       description='Novel prototype',
       long_description=README + '\n\n' + CHANGES,
@@ -34,9 +34,9 @@ setup(name='MyPrototype',
       zip_safe=False,
       install_requires=requires,
       tests_require=requires,
-      test_suite="myprototype",
+      test_suite="dbas",
       entry_points="""\
       [paste.app_factory]
-      main = myprototype:main
+      main = dbas:main
       """,
       )
