@@ -1,0 +1,173 @@
+@import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
+body {
+	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 300;
+	color: #ffffff;
+	background: #006ab3;
+	<!--#bc2131-->
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 300;
+}
+
+h2 {
+	font-size: 22px;
+}
+
+p {
+	font-weight: 300;
+}
+
+.font-normal {
+	font-weight: 400;
+}
+
+.font-semi-bold {
+	font-weight: 600;
+}
+
+.font-bold {
+	font-weight: 700;
+}
+
+#popup_background {
+	display: none;
+	z-index: 1;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	background: #000000;
+}
+
+#popup {
+	display: none;
+	z-index: 2;
+	position: fixed;
+	top: 20%;
+	left: 50%;
+	margin-left: -250px;
+	background: none repeat scroll 0 0 #FFFFFF;
+	border: 8px solid #ccc;
+	border-radius: 5px 5px 5px 5px;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 14px;
+	color: #000;
+}
+
+.popup_title {
+	padding-left: 5px;
+}
+
+.popup_author {
+	width: 500px;
+}
+
+.popup_licence {
+	width: 550px;
+}
+
+.popup_privacy {
+	width: 550px;
+}
+
+.popup_close {
+	position: relative;
+	height: 30px;
+	width: 30px;
+	left: 27px;
+	bottom: 24px;
+	background: url("../images/close.png") no-repeat scroll 0 0 transparent;
+	float: right;
+	cursor: pointer;
+}
+
+.popup_author_content p {
+	margin: 8px 14px;
+}
+
+.popup_privacy_content p {
+	margin: 8px 14px;
+}
+
+.popup_author_img {
+	height: 120px;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	border: 1px solid #021a40;
+}
+
+.popup_licence_content p {
+	margin: 8px 14px;
+}
+
+.popup_author_table tr td {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.popup_author_table_row {
+	padding-bottom: 5em;
+	padding: 80px;
+}
+
+
+@media (max-width: 767px) {
+	#popup {
+		display: none;
+		z-index: 2;
+		top: 20%;
+		left: 50%;
+		margin-left: -250px;
+		background: none repeat scroll 0 0 #FFFFFF;
+		border: 8px solid #ccc;
+		border-radius: 5px 5px 5px 5px;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		color: #000;
+	}
+	.popup_author {
+		width: 400px;
+	}
+	.popup_licence {
+		width: 450px;
+	}
+	.popup_privacy {
+		width: 450px;
+	}
+}
+
+
+@media(max-width:480px) {
+	#popup {
+		display: none;
+		z-index: 2;
+		top: 20%;
+		left: 50%;
+		margin-left: -250px;
+		background: none repeat scroll 0 0 #FFFFFF;
+		border: 8px solid #ccc;
+		border-radius: 5px 5px 5px 5px;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		color: #000;
+	}
+	.popup_author {
+		width: 350px;
+	}
+	.popup_licence {
+		width: 400px;
+	}
+	.popup_privacy {
+		width: 400px;
+	}
+}

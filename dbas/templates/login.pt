@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="${request.locale_name}">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="pyramid web application">
+	<meta name="author" content="Pylons Project">
+	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
+	<title>${project} - ${title}</title>
+	<!-- Bootstrap core CSS -->
+	<link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom styles for this scaffold -->
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_login.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/popups.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/login.css')}" rel="stylesheet">
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+  <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="//oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->
+
+</head>
+
+<body>
+
+	<!-- NAVIGATION BAR -->
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">D-BAS</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li><a href="/">Home</a>
+					</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#more">More
+              <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="#" class="popup_author_open">
+									<i class="glyphicon glyphicon-user"></i> Author</a>
+							</li>
+							<li>
+								<a href="#" class="popup_licence_open">
+									<i class="glyphicon glyphicon-floppy-disk"></i> Licence</a>
+							</li>
+							<li>
+								<a href="#" class="popup_privacy_open">
+									<i class="glyphicon glyphicon-sunglasses"></i> Privacy Policy</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="${request.application_url}/contact"><span class="glyphicon glyphicon-comment glyphicon-icon"></span> Contact</a>
+						<li class="active"><a href="${request.application_url}/login"><span class="glyphicon glyphicon-log-in glyphicon-icon"></span> Login </a>
+							<li class="dropdown">
+								<a class="dropdown-toggle" data-toggle="dropdown" href="#">Language
+                      <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="#"><img class="language_selector_img_ge" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag">Deutsch</a>
+									</li>
+									<li class="active">
+										<a href="#"><img class="language_selector_img_en" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag">English</a>
+									</li>
+								</ul>
+							</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- CONTACT POPUP IN dropdown-menu -->
+	<div class="popup_author" id="popup">
+		<div class="popup_close"></div>
+		<div class="popup_author_content">
+			<h2 class="popup_title">About me</h2>
+			<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author">
+			<p style="text-align:justify;">
+				<br>
+				<span>
+						<table class="popup_author_table" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+							<tr>
+								<td><spand class="font-semi-bold">Name</spand></td>
+								<td>Tobias Krauthoff, M.Sc.</td>
+							</tr>
+							<tr>
+								<td><spand class="font-semi-bold">Role</spand></td>
+								<td>Doctoral Student
+									<br><a href="http://www.tsn.hhu.de/en.html">Lab for Technology of Social Networks</a>
+								  <br>Member of the graduation school <a href="http://www.fortschrittskolleg.de/">Online Participation</a>
+							  </td>
+							</tr>
+							<tr>
+								<td><spand class="font-semi-bold">E-Mail</spand></td>
+								<td><a href="mailto:krauthoff@cs.uni-duesseldorf.de">krauthoff@cs.uni-duesseldorf.de</a></td>
+							</tr>
+							<tr>
+								<td><spand class="font-semi-bold">Office</spand></td>
+								<td>Heinrich-Heine University Duesseldorf
+									<br>Universitätsstraße 1
+									<br>40225 Duesseldorf
+									<br>Department of Computer Science
+									<br>Building 25.12, Room 02.45
+								</td>
+							</tr>
+							<tr>
+								<td><spand class="font-semi-bold">Telephone</spand></td>
+								<td>+49 211 81-13461</td>
+							</tr>
+							<tr>
+								<td><spand class="font-semi-bold">Fax</spand></td>
+								<td>+49 211 81-11638</td>
+							</tr>
+						</table>
+					</span>
+			</p>
+		</div>
+	</div>
+
+	<!-- COPYRIGHT POPUP IN dropdown-menu -->
+	<div class="popup_licence" id="popup">
+		<div class="popup_close"></div>
+		<div class="popup_licence_content">
+			<h2 class="popup_title">The MIT License (MIT)</h2>
+			<p style="text-align:justify;">
+				<br>
+				<span>Copyright &copy; 2015 <a href="mailto:krauthoff@cs.uni-duesseldorf.de">Tobias Krauthoff</a><br><br>
+
+						Permission is hereby granted, free of charge, to any person obtaining a copy
+						of this software and associated documentation files (the "Software"), to deal
+						in the Software without restriction, including without limitation the rights
+						to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+						copies of the Software, and to permit persons to whom the Software is
+						furnished to do so, subject to the following conditions:<br><br>
+
+						The above copyright notice and this permission notice shall be included in
+						all copies or substantial portions of the Software.<br><br>
+
+						THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+						IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+						FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+						AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+						LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+						OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+						THE SOFTWARE.</span>
+			</p>
+		</div>
+	</div>
+	<div class="popup_privacy" id="popup">
+		<div class="popup_close"></div>
+		<div class="popup_privacy_content">
+			<h2 class="popup_title">Privacy Policy</h2>
+			<p style="text-align:justify;">
+				<br> Text
+			</p>
+		</div>
+	</div>
+
+	<div id="popup_background"></div>
+
+		<div class="login form">
+			<ul class="tab-group">
+				<li class="tab active"><a href="#signup">Sign Up</a>
+				</li>
+				<li class="tab"><a href="#login">Log In</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div id="signup">
+					<h2>Sign Up for Free</h2>
+					<form action="/login" method="post">
+
+						<div class="top-row">
+							<div class="field-wrap">
+								<h3>Your First Name<span class="req">*</span></h3>
+								<input type="text" class="userfirstname active" required autocomplete="off" value="example : Tobias" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : Tobias';}">
+							</div>
+
+							<div class="field-wrap">
+								<h3>Your Last Name<span class="req">*</span></h3>
+								<input type="text" class="userlastname" required autocomplete="off" value="example : Krauthoff" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : Krauthoff';}">
+							</div>
+						</div>
+
+						<div class="field-wrap">
+							<h3>Your Email Address<span class="req">*</span></h3>
+							<input type="text" class="email" required autocomplete="off" value="example : krauthoff@cs.uni-duesseldorf.de" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : krauthoff@cs.uni-duesseldorf.de';}">
+						</div>
+
+						<div class="field-wrap">
+							<h3>Your Password<span class="req">*</span></h3>
+							<input type="text" class="password" required autocomplete="off" value="example : ******" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : ******';}">
+						</div>
+
+						<div class="field-wrap">
+							<h3>Your Password (Confirm)<span class="req">*</span></h3>
+							<input type="text" class="passwordconfirm" required autocomplete="off" value="example : ******" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : ******';}">
+						</div>
+						<p class="required">* required field</p>
+
+						<button type="submit" class="button button-block">Get Started</button>
+
+					</form>
+				</div>
+
+				<div id="login">
+					<h2>Welcome Back!</h2>
+					<form action="/login" method="post">
+						<div class="field-wrap">
+							<h3>Your Email Address</h3>
+							<input type="text" class="email" required autocomplete="off" value="example : krauthoff@cs.uni-duesseldorf.de" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : krauthoff@cs.uni-duesseldorf.de';}">
+						</div>
+
+						<div class="field-wrap">
+							<h3>Your Password</h3>
+							<input type="text" class="password" required autocomplete="off" value="example : ******" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : ******';}">
+						</div>
+
+						<p class="forgot"><a href="#">Forgot Password?</a>
+						</p>
+						<button class="button button-block">Log In</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+	<!-- Bootstrap core, JavaScript, jquery
+                <!-- Placed at the end of the document so the pages load faster -->
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-1.11.2.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.4.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/login.js')}"></script>
+
+</body>
+<html>
