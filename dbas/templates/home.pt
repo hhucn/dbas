@@ -8,38 +8,42 @@
 <body>
 
 	<div class="container" id="home-template">
-		<div class="row col-md-12 content">
-			<h2><span class="font-semi-bold">Welcome</span> <span class="smaller">to the <span class="font-normal">D</span>ialogue-<span class="font-normal">B</span>ased <span class="font-normal">A</span>rgumentation <span class="font-normal">S</span>oftware, or short <span class="font-semi-bold">D-BAS</span></span></h2>
-			<p class="lead">Hier könnte Ihr Text stehen</p>
-			<ul class="lead list">
-				<li>eins</li>
-				<li>zwei</li>
-				<li>drei</li>
-				<li>vier</li>
-			</ul>
-			<br>
-			<p class="lead">This project is based on ...</p>
-			<table class="logo_table" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
-				<tr>
-					<td rowspan="21">
-						<a href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
-							<img class="logo_hhu img-responsive" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo">
-						</a>
-					</td>
-					<td>
-						<a href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
-							<img class="logo_kolleg img-responsive" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo">
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<a href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
-							<img class="logo_fhoev img-responsive" src="${request.static_url('dbas:static/images/logo_fhoev.jpg')}" alt="fhoev logo">
-						</a>
-					</td>
-				</tr>
-			</table>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="content">
+					<h2><span class="font-semi-bold">Welcome</span> <span class="smaller">to the <span class="font-normal">D</span>ialogue-<span class="font-normal">B</span>ased <span class="font-normal">A</span>rgumentation <span class="font-normal">S</span>oftware, or short <span class="font-semi-bold">D-BAS</span></span></h2>
+					<p class="lead">Hier könnte Ihr Text stehen</p>
+					<ul class="lead list">
+						<li>eins</li>
+						<li>zwei</li>
+						<li>drei</li>
+						<li>vier</li>
+					</ul>
+					<br>
+					<p class="lead">This project is based on ...</p>
+					<table class="logo_table" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<tr>
+							<td rowspan="21">
+								<a href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
+									<img class="logo_hhu img-responsive" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo">
+								</a>
+							</td>
+							<td>
+								<a href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
+									<img class="logo_kolleg img-responsive" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo">
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
+									<img class="logo_fhoev img-responsive" src="${request.static_url('dbas:static/images/logo_fhoev.jpg')}" alt="fhoev logo">
+								</a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -48,11 +52,13 @@
 			<div class="col-md-2">
 				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
 			</div>
-			<div class="col-md-10 content">
-				<h2><span class="font-semi-bold">Description</span> <span class="smaller">of D-BAS</span></h2>
-				<p class="lead">This is about
-					<span class="font-normal">... description ...</span>
-				</p>
+			<div class="col-md-10">
+				<div class="content">
+					<h2><span class="font-semi-bold">Description</span> <span class="smaller">of D-BAS</span></h2>
+					<p class="lead">This is about
+						<span class="font-normal">... description ...</span>
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -62,25 +68,27 @@
 			<div class="col-md-2">
 				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
 			</div>
-			<div class="col-md-10 content">
-				<h2><span class="font-semi-bold">Features</span> <span class="smaller">of D-BAS</span></h2>
-				<p class="lead">This is about
-					<span class="font-normal">... features ...</span>
-				</p>
-				<ul class="lead list">
-					<li>
-						<span class="font-normal">Guided View:</span>
-						<br> Explanation about the view.
-					</li>
-					<li>
-						<span class="font-normal">Island View:</span>
-						<br> Explanation about the view.
-					</li>
-					<li>
-						<span class="font-normal">Expert View:</span>
-						<br> Explanation about the view.
-					</li>
-				</ul>
+			<div class="col-md-10">
+				<div class="content">
+					<h2><span class="font-semi-bold">Features</span> <span class="smaller">of D-BAS</span></h2>
+					<p class="lead">This is about
+						<span class="font-normal">... features ...</span>
+					</p>
+					<ul class="lead list">
+						<li>
+							<span class="font-normal">Guided View:</span>
+							<br> Explanation about the view.
+						</li>
+						<li>
+							<span class="font-normal">Island View:</span>
+							<br> Explanation about the view.
+						</li>
+						<li>
+							<span class="font-normal">Expert View:</span>
+							<br> Explanation about the view.
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -90,11 +98,13 @@
 			<div class="col-md-2">
 				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
 			</div>
-			<div class="col-md-10 content">
-				<h2><span class="font-semi-bold">About</span> <span class="smaller">of D-BAS</span></h2>
-				<p class="lead">This is about
-					<span class="font-normal">... about ...</span>
-				</p>
+			<div class="col-md-10">
+				<div class="content">
+					<h2><span class="font-semi-bold">About</span> <span class="smaller">of D-BAS</span></h2>
+					<p class="lead">This is about
+						<span class="font-normal">... about ...</span>
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -104,13 +114,15 @@
 			<div class="col-md-2">
 				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
 			</div>
-			<div class="col-md-10 content">
-				<h2><span class="font-semi-bold">Research</span> <span class="smaller">of D-BAS</span></h2>
-				<p class="lead">This is about <span class="font-normal">... research ...</span>.</p>
+			<div class="col-md-10">
+				<div class="content">
+					<h2><span class="font-semi-bold">Research</span> <span class="smaller">of D-BAS</span></h2>
+					<p class="lead">This is about <span class="font-normal">... research ...</span>.</p>
+				</div>
 			</div>
 		</div>
 	</div>
-
+	
 	<div>
 		<div class="col-md-2"></div>
 		<div class="col-md-8">
