@@ -1,5 +1,4 @@
 @import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
-
 a {
 	text-decoration: none;
 	color: #006ab3;
@@ -140,10 +139,6 @@ textarea {
 	background: url(../images/email.png)no-repeat 8px 8px;
 }
 
-.field-wrap input.email {
-	background: url(../images/email.png)no-repeat 8px 8px;
-}
-
 .field-wrap input.password {
 	background: url(../images/lock.png)no-repeat 8px 8px;
 }
@@ -204,6 +199,11 @@ textarea {
 	text-align: right;
 }
 
+.required {
+	text-align: right;
+	color: #000;
+}
+
 @media(max-width:1440px) {
 	.login {
 		width: 40%;
@@ -219,6 +219,12 @@ textarea {
 @media(max-width:1280px) {
 	.login {
 		width: 45%;
+	}
+}
+
+@media (max-width: 1199px) {
+	#login-template {
+		margin-top: 100px;
 	}
 }
 

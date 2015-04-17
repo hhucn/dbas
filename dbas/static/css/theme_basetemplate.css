@@ -1,0 +1,68 @@
+@import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
+body {
+	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 300;
+	color: #000;
+	background: #ddd;
+	<!--#006ab3-->
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 300;
+}
+
+p {
+	font-weight: 300;
+}
+
+#home-hook,
+#description-hook,	
+#features-hook,	
+#about-hook,	
+#research-hook {
+	visibility: hidden;
+}
+
+.font-normal {
+	font-weight: 400;
+}
+
+.font-semi-bold {
+	font-weight: 600;
+}
+
+.font-bold {
+	font-weight: 700;
+}
+
+.back-to-top {
+	position: fixed;
+	bottom: 1em;
+	right: 1em;
+	padding: 2em;
+	display: none;
+	background: url('../images/gototop.png') no-repeat 0px 0px;
+	opacity: 0.75;
+	filter: alpha(opacity=70);
+}
+
+.back-to-top:hover {
+	opacity: 0.4;
+	filter: alpha(opacity=40);
+}
+
+.list {
+	text-align: left;
+}
+
+#jsdiabled {
+	text-align: center;
+	background-color: #a00;
+	padding-bottom: 10px;
+}
