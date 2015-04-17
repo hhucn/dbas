@@ -63,6 +63,7 @@ jQuery(function ($) {
 		}
 	});
 
+	// going back to top
 	jQuery('.back-to-top').click(function (event) {
 		event.preventDefault();
 		jQuery('html, body').animate({

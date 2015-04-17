@@ -25,9 +25,6 @@
 
 <body>
 
-
-
-
 	<div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
 			<div class="navbar-header"><a class="navbar-brand" href="/">D-BAS</a>
@@ -86,69 +83,6 @@
 			</div>
 		</div>
 	</div>
-
-
-
-
-	<!-- NAVIGATION BAR
-	<nav class="navbar navbar-default navbar-fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="/">D-BAS</a>
-			</div>
-			<div class="collapse navbar-collapse" id="myNavbar">
-				<ul class="nav navbar-nav">
-					<li id="home-hook"><a href="#home-template">Home</a></li>
-					<li id="description-hook"><a href="#description-template">Description</a></li>
-					<li id="features-hook"><a href="#features-template">Features</a></li>
-					<li id="about-hook"><a href="#about-template">About</a></li>
-					<li id="research-hook"><a href="#research-template">Research</a></li>
-
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="${request.application_url}/contact"><span class="glyphicon glyphicon-comment glyphicon-icon"></span> Contact</a>
-					</li>
-					<li><a href="${request.application_url}/login"><span class="glyphicon glyphicon-log-in glyphicon-icon"></span> Login </a>
-					</li>
-					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#more">More
-								<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li>
-								<a href="#" class="popup_author_open">
-									<i class="glyphicon glyphicon-user"></i> Author</a>
-							</li>
-							<li>
-								<a href="#" class="popup_licence_open">
-									<i class="glyphicon glyphicon-floppy-disk"></i> Licence</a>
-							</li>
-							<li>
-								<a href="#" class="popup_privacy_open">
-									<i class="glyphicon glyphicon-sunglasses"></i> Privacy Policy</a>
-							</li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Language
-								<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li>
-								<a href="#"><img class="language_selector_img_ge" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag">Deutsch</a>
-							</li>
-							<li class="active">
-								<a href="#"><img class="language_selector_img_en" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag">English</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</nav> -->
 
 	<!-- CONTACT POPUP IN dropdown-menu -->
 	<div class="popup_author" id="popup">

@@ -3,7 +3,7 @@ body {
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: 300;
 	color: #000;
-	background: #ddd;
+	background: #eee;
 	<!--#006ab3-->
 }
 
@@ -22,9 +22,9 @@ p {
 }
 
 #home-hook,
-#description-hook,	
-#features-hook,	
-#about-hook,	
+#description-hook,
+#features-hook,
+#about-hook,
 #research-hook {
 	visibility: hidden;
 }
@@ -61,8 +61,26 @@ p {
 	text-align: left;
 }
 
+.container {
+	margin-top: 75px;
+	padding-left: 50px;
+	background: #fff;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-bottom: 10px;
+	border-radius: 4px;
+	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+}
+
 #jsdiabled {
 	text-align: center;
 	background-color: #a00;
 	padding-bottom: 10px;
+}
+
+@media (max-width: 767px) {
+	.container {
+		margin-left: 10px;
+		margin-right: 10px;
+	}
 }
