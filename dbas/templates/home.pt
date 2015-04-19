@@ -47,6 +47,7 @@
 		</div>
 	</div>
 
+
 	<div class="container" id="description-template">
 		<div class="row">
 			<div class="col-md-2">
@@ -55,9 +56,40 @@
 			<div class="col-md-10">
 				<div class="content">
 					<h2><span class="font-semi-bold">Description</span> <span class="smaller">of D-BAS</span></h2>
-					<p class="lead">This is about
-						<span class="font-normal">... description ...</span>
-					</p>
+
+					<p class="lead">This part containts the description of
+						<span class="font-normal">novel prototype</span>
+						<ul class="lead list">
+							<li> Benutzer können Positionen und Argumente zur Diskussion leisten.
+								<li> Beiträge werden zueinander in Beziehung gesetzt (Angriffs- und Verteidigungsrelationen).</li>
+								<li> Niedrige Einstiegshürde: Einfache Bedienung für ''alle'' Beteiligten.</li>
+								<li> Zeitversetzte Diskussion anhand drei verschiedener Modi (beliebiger Wechsel möglich):</li>
+								<ul class="lead list">
+									<li> Guided Discussion: Der Benutzer wird mit ausgewählten Beiträgen der anderen Teilnehmer konfrontiert. Die Wahl des nächsten Beitrags ist Teil der Dissertation.</li>
+									<li> Island View: Es werden sogenannte Inseln präsentiert, die aus einer Position und allen Argumenten geordnet als Pro/Kontra-Liste bestehen.</li>
+									<li> Expert View: Der Benutzer erhält Einblick auf die gesamte Argumentation Map und kann sich frei bewegen. Darstellungsvariante ist noch offen (Liste, Baum, Graph, Container und/oder Matrix (siehe [SLPM10], S.12)).</li>
+								</ul>
+								<li> Beiträge können durch die Benutzer gewichtet werden (Wertungsfunktion ist eine offene Frage in Abschnitt [[Intern:Software_Prototype#Wertungsfunktion|Wertungsfunktion]]).</li>
+								<li> Feedback und Evaluierung der Argumentation Map (bzw. der Beiträge in der Diskussion) erfolgt durch die Benutzer (Stichwort: Wisdom of the Crowd, siehe [KK08]).</li>
+						</ul>
+
+						<p class="lead">This part containts the description of the
+							<span class="font-normal">first milesstone</span>.
+							<ul class="lead list">
+								<li> System basiert auf einer vorhandenen Argumentation Map (Erste vollständige</li> Argumentation Maps kamen vom Karlsruhe Institut für Technologie, [http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php Jun.-Prof. Dr. habil. Betz]).
+								<li> Der Prototyp bietet eine Grundform der Guided View an:</li>
+								<ul class="lead list">
+									<li> Benutzer wird mit einem Argument der Gegenseite konfrontiert und soll Stellung beziehen. Eventuell anhand von vorhanden Argumenten oder er kann ein neues hinzufügen.
+										<li> Keine KI, Recommender Systems oder Vorhersage des nächsten Beitrags.
+								</ul>
+								<li> Der Weg des Benutzers soll aufgezeichnet werden.</li>
+								<li> Allgemeine Idee gleicht einem "geführten Wahl-O-Maten".</li>
+								<li> Entwicklung unter der Beachtung von Unit Tests.</li>
+								<li> Prototyp als Web-App.</li>
+								<li> Grundform einer Benutzerverwaltung.</li>
+								<li> Argumente und Positionen können gewichtet werden.</li>
+							</ul>
+						</p>
 				</div>
 			</div>
 		</div>
@@ -77,15 +109,15 @@
 					<ul class="lead list">
 						<li>
 							<span class="font-normal">Guided View:</span>
-							<br> Explanation about the view.
+							<br> Explanation about the view. Der Benutzer wird mit ausgewählten Beiträgen der anderen Teilnehmer konfrontiert. Die Wahl des nächsten Beitrags ist Teil der Dissertation.
 						</li>
 						<li>
 							<span class="font-normal">Island View:</span>
-							<br> Explanation about the view.
+							<br> Explanation about the view. Es werden sogenannte Inseln präsentiert, die aus einer Position und allen Argumenten geordnet als Pro/Kontra-Liste bestehen.
 						</li>
 						<li>
 							<span class="font-normal">Expert View:</span>
-							<br> Explanation about the view.
+							<br> Explanation about the view. Der Benutzer erhält Einblick auf die gesamte Argumentation Map und kann sich frei bewegen. Darstellungsvariante ist noch offen (Liste, Baum, Graph, Container und/oder Matrix (siehe [SLPM10], S.12)).
 						</li>
 					</ul>
 				</div>
