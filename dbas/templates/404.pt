@@ -7,20 +7,16 @@
 
 <body>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-md-3"></div>
-			<div class="col-md-6">
-				<div class="content">
-					<h1><span class="font-semi-bold">404 Error</span></h1>
-				<p class="lead font-normal">The page you are looking for could not be found.</p>
-				<br>
-				<input class="button" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
-				</div>
-			<div class="col-md-3"></div>
-			</div>
+
+	<div class="center">
+		<div class="error">
+			<h1><span class="font-semi-bold">404 Error</span></h1>
+			<p class="lead font-normal">The page you are looking for could not be found.</p>
+			<br>
+			<input class="button" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
 		</div>
+
 	</div>
-	
+
 </body>
 <html>

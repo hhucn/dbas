@@ -1,65 +1,47 @@
-.content {
-	margin-top: 100px;
-	text-align: center;
-	background: #fff;
-	border-radius: 6px;
-	padding-top: 15px;
-	padding-bottom: 15px;
-	border-bottom: 3px solid #aaa;
-	border-right: 3px solid #aaa;
-}
-
 .button {
-	background: #006ab3;
-	color: #FFF;
-	font-size: 17px;
-	font-weight: 400;
-	padding: 15px 7px;
-	width: 25%;
-	border-radius: 6px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 6px;
-	-o-border-radius: 6px;
-	margin: 10px 0px 0px 0px;
-	border-bottom: 3px solid #0E5099;
-	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
-	display: inline-block;
-	cursor: pointer;
-	outline: none;
-	border-right: none;
-	border-left: none;
-	border-top: none;
+	width: 40%;
 }
 
-.button:hover {
-	background: #1A7CEA;
-	color: #fff;
-	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
+.error {
+	margin-top: 75px;
+	background: #eee;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-bottom: 10px;
+	border-radius: 4px;
+	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+}
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	width: 40%;
 }
 
 @media (max-width: 1199px) {
 	.button {
 		width: 30%;
 	}
+	.center {
+		width: 55%;
+	}
 }
 
 @media (max-width: 991px) {
-	.content {
-		margin-top: 150px;
-	}
 	.button {
-		width: 30%;
+		width: 45%;
+	}
+	.center {
+		width: 70%;
 	}
 }
 
 @media (max-width: 767px) {
 	.button {
-		width: 30%;
+		width: 50%;
+	}
+	.center {
+		width: 80%;
 	}
 }

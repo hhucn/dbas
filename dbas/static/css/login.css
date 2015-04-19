@@ -159,33 +159,7 @@ textarea {
 }
 
 .button {
-	background: #006ab3;
-	color: #FFF;
-	font-size: 17px;
-	font-weight: 400;
-	padding: 15px 7px;
 	width: 66%;
-	border-radius: 6px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 6px;
-	-o-border-radius: 6px;
-	margin: 10px 0px 0px 0px;
-	border-bottom: 3px solid #0E5099;
-	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
-	display: inline-block;
-	cursor: pointer;
-	outline: none;
-	border-right: none;
-	border-left: none;
-	border-top: none;
-}
-
-.button:hover,
-.button:focus {
-	background: #1A7CEA;
 }
 
 .button-block {
