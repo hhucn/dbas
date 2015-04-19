@@ -27,7 +27,7 @@
 
 	<div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
-			<div class="navbar-header"><a class="navbar-brand" href="/">D-BAS</a>
+			<div class="navbar-header"><a class="navbar-brand" href="/" id="loginLink">D-BAS</a>
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
@@ -37,45 +37,63 @@
 			</div>
 			<div class="collapse navbar-collapse navbar-menubuilder">
 				<ul class="nav navbar-nav navbar-left">
-					<li id="home-hook"><a href="#home-template">Home</a></li>
-					<li id="description-hook"><a href="#description-template">Description</a></li>
-					<li id="features-hook"><a href="#features-template">Features</a></li>
-					<li id="about-hook"><a href="#about-template">About</a></li>
-					<li id="research-hook"><a href="#research-template">Research</a></li>
+					<li id="home-hook"><a href="#home-template">Home</a>
+					</li>
+					<li id="description-hook"><a href="#description-template">Description</a>
+					</li>
+					<li id="features-hook"><a href="#features-template">Features</a>
+					</li>
+					<li id="about-hook"><a href="#about-template">About</a>
+					</li>
+					<li id="research-hook"><a href="#research-template">Research</a>
+					</li>
 				</ul>
-				
+
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="${request.application_url}/contact"><span class="glyphicon glyphicon-comment glyphicon-icon"></span> Contact</a>
+					<li id="contactLinkLi">
+						<a href="${request.application_url}/contact" id="contactLink">
+							<span class="glyphicon glyphicon-comment glyphicon-icon" /> Contact
+						</a>
 					</li>
-					<li><a href="${request.application_url}/login"><span class="glyphicon glyphicon-log-in glyphicon-icon"></span> Login </a>
+					<li id="loginLinkLi">
+						<a href="${request.application_url}/login" id="loginLink">
+							<span class="glyphicon glyphicon-log-in glyphicon-icon" /> Login </a>
 					</li>
+
 					<li class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#more">More
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="#" class="popup_author_open">
+								<a class="popup_author_open">
 									<i class="glyphicon glyphicon-user"></i> Author</a>
 							</li>
 							<li>
-								<a href="#" class="popup_licence_open">
+								<a class="popup_licence_open">
 									<i class="glyphicon glyphicon-floppy-disk"></i> Licence</a>
 							</li>
 							<li>
-								<a href="#" class="popup_privacy_open">
+								<a class="popup_privacy_open">
 									<i class="glyphicon glyphicon-sunglasses"></i> Privacy Policy</a>
 							</li>
 						</ul>
 					</li>
+
 					<li class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Language
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="#"><img class="language_selector_img_ge" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag">Deutsch</a>
+								<a href="#"><img class="language_selector_img" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag_ge">Deutsch</a>
 							</li>
 							<li class="active">
-								<a href="#"><img class="language_selector_img_en" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag">English</a>
+								<a href="#"><img class="language_selector_img" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag_en">English</a>
+							</li>
+							<li>
+								<a href="#"><img class="language_selector_img" src="${request.static_url('dbas:static/images/spain-flag-16.png')}" alt="flag_es">Espa&ntilde;ol</a>
+							</li>
+							<li>
+								<a href="#"><img class="language_selector_img" src="${request.static_url('dbas:static/images/sweden-flag-16.png')}" alt="flag_sw">Svensk</a>
 							</li>
 						</ul>
 					</li>
@@ -139,28 +157,34 @@
 			<h2 class="popup_title">The MIT License (MIT)</h2>
 			<p style="text-align:justify;">
 				<br>
-				<span>Copyright &copy; 2015 <a href="mailto:krauthoff@cs.uni-duesseldorf.de">Tobias Krauthoff</a><br><br>
+				<span>
+					Copyright &copy; 2015 
+					<a href="mailto:krauthoff@cs.uni-duesseldorf.de">
+						Tobias Krauthoff
+					</a><br><br>
 
-						Permission is hereby granted, free of charge, to any person obtaining a copy
-						of this software and associated documentation files (the "Software"), to deal
-						in the Software without restriction, including without limitation the rights
-						to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-						copies of the Software, and to permit persons to whom the Software is
-						furnished to do so, subject to the following conditions:<br><br>
+				Permission is hereby granted, free of charge, to any person obtaining a copy
+				of this software and associated documentation files (the "Software"), to deal
+				in the Software without restriction, including without limitation the rights
+				to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+				copies of the Software, and to permit persons to whom the Software is
+				furnished to do so, subject to the following conditions:<br><br>
 
-						The above copyright notice and this permission notice shall be included in
-						all copies or substantial portions of the Software.<br><br>
+				The above copyright notice and this permission notice shall be included in
+				all copies or substantial portions of the Software.<br><br>
 
-						THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-						IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-						FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-						AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-						LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-						OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-						THE SOFTWARE.</span>
+				THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+				IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+				FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+				AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+				LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+				OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+				THE SOFTWARE.</span>
 			</p>
 		</div>
 	</div>
+
+
 	<div class="popup_privacy" id="popup">
 		<div class="popup_close"></div>
 		<div class="popup_privacy_content">
@@ -171,20 +195,28 @@
 		</div>
 	</div>
 
+	<div class="popup_password" id="popup">
+		<div class="popup_close"></div>
+		<div class="popup_password_content">
+			<h2 class="popup_title">Password-Request</h2>
+			<p style="text-align:justify;">
+				<span>Please fill in your e-mail below. A new password will be send this address.</span>
+				<br>
+				<input type="email" class="email" placeholder="example : krauthoff@cs.uni-duesseldorf.de" tabindex="3" required autocomplete="on">
+
+				<button name="submit" id="password-request-submit" type="submit">Request Password</button>
+			</p>
+		</div>
+	</div>
+
 	<div id="popup_background"></div>
 
 
 	<noscript>
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12" id="jsdiabled">
-					<div class="content">
-						<h2><span class="font-semi-bold">JavaScript is not enabled!</span></h2>
-						<br>
-						<h2><span class="font-semi-bold">Please enable JavaScript!</span></h2>
-					</div>
-				</div>
-			</div>
+		<div class="jsdiabled">
+			<span class="font-semi-bold">JavaScript is not enabled:</span>
+			<br>
+			<span class="font-normal">Please enable JavaScript!</span>
 		</div>
 	</noscript>
 

@@ -3,8 +3,13 @@ body {
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: 300;
 	color: #000;
-	background: #eee;
-	<!--#006ab3-->
+	background: url('../images/bg4.png') repeat fixed center;
+	<!--background: #b3b3b3;-->
+}
+
+@media screen and (min-width: 2560px) , screen and (min-height: 1600px) {
+<!-- new scale for bg for retina displays -->
+	background: url('../images/bg5.png') repeat fixed center;
 }
 
 h1,
@@ -13,8 +18,19 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-weight: 300;
+	font-weight: 400;
+}
+
+h1 {
+	font-size: 40px;
+}
+
+h2 {
+	font-size: 30px;
+}
+
+h3 {
+	font-size: 16px;
 }
 
 p {
@@ -64,7 +80,7 @@ p {
 .container {
 	margin-top: 75px;
 	padding-left: 50px;
-	background: #fff;
+	background: #eee;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	margin-bottom: 10px;
@@ -72,10 +88,17 @@ p {
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
 
-#jsdiabled {
+.jsdiabled {
+	position: fixed;
 	text-align: center;
-	background-color: #a00;
-	padding-bottom: 10px;
+	color: #fff;
+	background: url('../images/bg_diagonals1.png') repeat fixed center;
+	left: auto;
+	right: auto;
+	padding: 5px;
+	margin-left: 25px;
+	border-radius: 4px;
+	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
 
 @media (max-width: 767px) {

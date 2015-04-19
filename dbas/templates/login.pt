@@ -4,75 +4,78 @@
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_login.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/login.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/popups.css')}" rel="stylesheet">
 </head>
 
 <body>
 
 	<div class="login form">
 		<ul class="tab-group">
-			<li class="tab active"><a href="#signup">Sign Up</a>
+			<li class="tab active"><a href="#login">Log In</a>
 			</li>
-			<li class="tab"><a href="#login">Log In</a>
+			<li class="tab"><a href="#signup">Sign Up</a>
 			</li>
 		</ul>
 		<div class="tab-content">
-			<div id="signup">
-				<h2>Sign Up for Free</h2>
-				<form action="/login" method="post">
-
-					<div class="top-row">
-						<div class="field-wrap">
-							<h3>Your First Name<span class="req">*</span></h3>
-							<input type="text" class="userfirstname active" required autocomplete="off" value="example : Tobias" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : Tobias';}">
-						</div>
-
-						<div class="field-wrap">
-							<h3>Your Last Name<span class="req">*</span></h3>
-							<input type="text" class="userlastname" required autocomplete="off" value="example : Krauthoff" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : Krauthoff';}">
-						</div>
-					</div>
-
-					<div class="field-wrap">
-						<h3>Your Email Address<span class="req">*</span></h3>
-						<input type="text" class="email" required autocomplete="off" value="example : krauthoff@cs.uni-duesseldorf.de" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : krauthoff@cs.uni-duesseldorf.de';}">
-					</div>
-
-					<div class="field-wrap">
-						<h3>Your Password<span class="req">*</span></h3>
-						<input type="text" class="password" required autocomplete="off" value="example : ******" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : ******';}">
-					</div>
-
-					<div class="field-wrap">
-						<h3>Your Password (Confirm)<span class="req">*</span></h3>
-						<input type="text" class="passwordconfirm" required autocomplete="off" value="example : ******" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : ******';}">
-					</div>
-					<p class="required">* required field</p>
-
-					<button type="submit" class="button button-block">Get Started</button>
-
-				</form>
-			</div>
 
 			<div id="login">
 				<h2>Welcome Back!</h2>
 				<form action="/login" method="post">
 					<div class="field-wrap">
 						<h3>Your Email Address</h3>
-						<input type="text" class="email" required autocomplete="off" value="example : krauthoff@cs.uni-duesseldorf.de" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : krauthoff@cs.uni-duesseldorf.de';}">
+						<input type="email" class="email" required autocomplete="off" placeholder="example : krauthoff@cs.uni-duesseldorf.de">
 					</div>
 
 					<div class="field-wrap">
 						<h3>Your Password</h3>
-						<input type="text" class="password" required autocomplete="off" value="example : ******" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : ******';}">
+						<input type="password" class="password" required autocomplete="off" placeholder="example : ******">
 					</div>
 
-					<p class="forgot"><a href="#">Forgot Password?</a>
+					<p class="popup_password_open"><a>Forgot Password?</a>
 					</p>
-					<button class="button button-block">Log In</button>
+					<button id="submit-login" type="submit" class="button button-block">Log In</button>
+				</form>
+			</div>
+			
+			
+			<div id="signup">
+				<h2>Sign Up for Free</h2>
+				<form action="/login" method="post">
+					<div class="top-row">
+						<div class="field-wrap">
+							<h3>Your First Name (required)</h3>
+							<input type="text" class="userfirstname active" required autocomplete="on" placeholder="example : Tobias">
+						</div>
+
+						<div class="field-wrap">
+							<h3>Your Last Name (required)</h3>
+							<input type="text" class="userlastname" required autocomplete="on" placeholder="example : Krauthoff">
+						</div>
+					</div>
+
+					<div class="field-wrap">
+						<h3>Your Email Address (required)</h3>
+						<input type="email" class="email" required autocomplete="on" placeholder="example : krauthoff@cs.uni-duesseldorf.de">
+					</div>
+
+					<div class="field-wrap">
+						<h3>Your Password (required)</h3>
+						<input type="password" class="password" required autocomplete="off" placeholder="example : ******">
+					</div>
+
+					<div class="field-wrap">
+						<h3>Your Password (confirm, required)</h3>
+						<input type="password" class="passwordconfirm" required autocomplete="off" placeholder="example : ******">
+					</div>
+
+					<button id="submit-register" type="submit" class="button button-block">Get Started</button>
+
 				</form>
 			</div>
 		</div>
 	</div>
+
+	<div id="popup_background"></div>
 
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/login.js')}"></script>
 

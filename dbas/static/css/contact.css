@@ -5,138 +5,13 @@ Author URL: http://w3layouts.com
 License: Creative Commons Attribution 3.0 Unported
 License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
-/* start editing from here */
-
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-dl,
-dt,
-dd,
-ol,
-nav ul,
-nav li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	display: block;
-}
-
-ol,
-ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
-blockquote,
-q {
-	quotes: none;
-}
-
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
-	content: '';
-	content: none;
-}
-
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-/* start editing from here */
-
+body {
+	margin-top: 100px;
+}
 a {
 	text-decoration: none;
 }
@@ -144,43 +19,33 @@ a {
 .txt-rt {
 	text-align: right;
 }
-
 .txt-lt {
 	text-align: left;
 }
-
 .txt-center {
 	text-align: center;
 }
-
 .float-rt {
 	float: right;
 }
-
 .float-lt {
 	float: left;
 }
-
 .clear {
 	clear: both;
 }
-
 .pos-relative {
 	position: relative;
 }
-
 .pos-absolute {
 	position: absolute;
 }
-
 .vertical-base {
 	vertical-align: baseline;
 }
-
 .vertical-top {
 	vertical-align: top;
 }
-
 .underline {
 	padding-bottom: 5px;
 	border-bottom: 1px solid #eee;
@@ -212,38 +77,32 @@ img {
 }
 
 h1 {
-	font-size: 40PX;
-	font-weight: 400;
-	color: #fff;
 	text-align: center;
 	margin: 0px 0px 30px 0px;
 }
 
 .contact h2 {
-	font-size: 30px;
 	color: #000;
 	margin: 0px 0px 8px 0px;
 }
-
 .contact p {
 	font-size: 12px;
 	color: #909090;
 	padding: 0px 0px 15px 0px;
 	border-bottom: 1px solid #E9E9E9;
 }
-
 .contact form {
 	padding: 20px 0px 0px 0px;
 }
-
 .contact h3 {
-	font-size: 16px;
-	font-weight: 400;
 	color: #818181;
 	margin: 5px 0px 10px 0px;
 }
 
-.contact input[type="text"] {
+.contact input.user,
+.contact input.tel,
+.contact input.email,
+.contact textarea.info {
 	outline: none;
 	font-size: 15px;
 	font-weight: 400;
@@ -259,7 +118,15 @@ h1 {
 	border: 1px solid;
 }
 
-.contact input[type="text"]:hover,
+.contact textarea.info {
+	resize: vertical;
+	height: 6em;
+}
+
+.contact input.user:hover,
+.contact input.tel:hover,
+.contact input.email:hover,
+.contact textarea.info:hover,
 .contact input.active {
 	box-shadow: 0px 0px 4px 0px #3386E1;
 	transition: 0.5s all;
@@ -271,46 +138,17 @@ h1 {
 .contact input.user {
 	background: url(../images/user.png)no-repeat 10px 8px;
 }
-
-input.tel {
+.contact input.tel {
 	background: url(../images/tel.png)no-repeat 8px 8px;
 }
-
-input.email {
+.contact input.email {
 	background: url(../images/email.png)no-repeat 8px 8px;
 }
-
-.contact textarea {
-	outline: none;
-	font-size: 15px;
-	font-weight: 400;
-	color: #bcbcbc;
-	padding: 12px 10px 12px 50px;
-	border-radius: 5px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 5px;
-	-o-border-radius: 5px;
-	margin: 0px 0px 10px 0px;
-	width: 90%;
-	-webkit-appearance: none;
-	border: 1px solid;
-	resize: none;
-	height: 6em;
-}
-
-.contact textarea.i {
+.contact textarea.info {
 	background: url(../images/i.png)no-repeat 16px 8px;
 }
 
-.contact textarea.i:hover {
-	box-shadow: 0px 0px 4px 0px #3386E1;
-	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
-}
-
-.contact input[type="submit"] {
+.contact button[type="submit"] {
 	background: #006ab3;
 	color: #FFF;
 	font-size: 17px;
@@ -335,7 +173,7 @@ input.email {
 	border-top: none;
 }
 
-.contact input[type="submit"]:hover {
+.contact button[type="submit"]:hover {
 	background: #1A7CEA;
 	transition: 0.5s all;
 	-webkit-transition: 0.5s all;
@@ -368,28 +206,21 @@ input.email {
 	-o-transition: 0.5s all;
 }
 
-body {
-	margin-top: 100px;
-}
-
 @media(max-width:1440px) {
 	.contact {
 		width: 40%;
 	}
 }
-
 @media(max-width:1366px) {
 	.contact {
 		width: 43%;
 	}
 }
-
 @media(max-width:1280px) {
 	.contact {
 		width: 45%;
 	}
 }
-
 @media(max-width:1024px) {
 	.contact {
 		width: 56%;
@@ -398,7 +229,6 @@ body {
 		padding: 100px 0px 0px 0px;
 	}
 }
-
 @media(max-width:768px) {
 	.contact {
 		width: 73%;
@@ -422,7 +252,6 @@ body {
 		padding: 50px 0px 80px 0px;
 	}
 }
-
 @media(max-width:640px) {
 	.contact h2 {
 		font-size: 24px;
@@ -444,7 +273,6 @@ body {
 		font-size: 35PX;
 	}
 }
-
 @media(max-width:480px) {
 	.contact h2 {
 		font-size: 22px;
@@ -472,7 +300,6 @@ body {
 		margin: 0px 0px 20px 0px;
 	}
 }
-
 @media(max-width:320px) {
 	.contact h2 {
 		font-size: 20px;

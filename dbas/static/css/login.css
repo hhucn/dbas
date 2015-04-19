@@ -1,4 +1,5 @@
 @import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
+
 a {
 	text-decoration: none;
 	color: #006ab3;
@@ -62,15 +63,11 @@ a:hover {
 
 h2 {
 	text-align: center;
-	font-size: 30px;
 	color: #000;
-	font-weight: 400;
 	margin: 0 0 40px;
 }
 
 .field-wrap h3 {
-	font-size: 16px;
-	font-weight: 400;
 	color: #818181;
 	margin: 5px 0px 10px 0px;
 	text-align: center;
@@ -93,17 +90,19 @@ h2 {
 
 input,
 textarea {
-	font-size: 22px;
-	display: block;
+	outline: none;
+	font-size: 15px;
+	font-weight: 400;
+	color: #bcbcbc;
+	padding: 12px 10px 12px 50px;
+	border-radius: 5px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	margin: 0px 0px 10px 0px;
 	width: 100%;
-	height: 100%;
-	padding: 5px 10px;
-	background: none;
-	background-image: none;
-	border: 1px solid #a0b3b0;
-	color: #000;
-	border-radius: 0;
-	transition: border-color .25s ease, box-shadow .25s ease;
+	-webkit-appearance: none;
+	border: 1px solid;
 }
 
 .field-wrap {
@@ -126,23 +125,18 @@ textarea {
 .field-wrap input.userfirstname {
 	background: url(../images/user.png)no-repeat 10px 8px;
 }
-
 .field-wrap input.userlastname {
 	background: url(../images/user.png)no-repeat 10px 8px;
 }
-
 .field-wrap input.tel {
 	background: url(../images/tel.png)no-repeat 8px 8px;
 }
-
 .field-wrap input.email {
 	background: url(../images/email.png)no-repeat 8px 8px;
 }
-
 .field-wrap input.password {
 	background: url(../images/lock.png)no-repeat 8px 8px;
 }
-
 .field-wrap input.passwordconfirm {
 	background: url(../images/lock.png)no-repeat 8px 8px;
 }
@@ -151,7 +145,12 @@ textarea {
 	margin: 0;
 }
 
-.field-wrap input[type="text"]:hover {
+.field-wrap input.userfirstname:hover,
+.field-wrap input.userlastname:hover,
+.field-wrap input.email:hover,
+.field-wrap input.password:hover,
+.field-wrap input.passwordconfirm:hover
+.field-wrap input.active {
 	box-shadow: 0px 0px 4px 0px #3386E1;
 	transition: 0.5s all;
 	-webkit-transition: 0.5s all;
@@ -199,11 +198,6 @@ textarea {
 	text-align: right;
 }
 
-.required {
-	text-align: right;
-	color: #000;
-}
-
 @media(max-width:1440px) {
 	.login {
 		width: 40%;
@@ -242,7 +236,11 @@ textarea {
 		.tab-content h3 {
 			font-size: 15px;
 		}
-		.field-wrap input[type="text"] {
+		.field-wrap input.userfirstname,
+		.field-wrap input.userlastname,
+		.field-wrap input.email,
+		.field-wrap input.password,
+		.field-wrap input.passwordconfirm,{
 			font-size: 13px;
 		}
 		.field-wrap input[type="submit"] {
@@ -259,7 +257,11 @@ textarea {
 		.tab-content h2 {
 			font-size: 24px;
 		}
-		.field-wrap input[type="text"] {
+		.field-wrap input.userfirstname,
+		.field-wrap input.userlastname,
+		.field-wrap input.email,
+		.field-wrap input.password,
+		.field-wrap input.passwordconfirm,{
 			font-size: 12px;
 		}
 		.field-wrap input[type="submit"] {
@@ -280,7 +282,11 @@ textarea {
 		.tab-content h3 {
 			font-size: 13px;
 		}
-		.field-wrap input[type="text"] {
+		.field-wrap input.userfirstname,
+		.field-wrap input.userlastname,
+		.field-wrap input.email,
+		.field-wrap input.password,
+		.field-wrap input.passwordconfirm,{
 			width: 61%;
 		}
 		.field-wrap input[type="submit"] {
@@ -302,7 +308,11 @@ textarea {
 			padding: 20px 15px 30px 15px;
 			width: 85%;
 		}
-		.field-wrap input[type="text"] {
+		.field-wrap input.userfirstname,
+		.field-wrap input.userlastname,
+		.field-wrap input.email,
+		.field-wrap input.password,
+		.field-wrap input.passwordconfirm,{
 			width: 75%;
 			padding: 10px 10px 10px 45px;
 		}

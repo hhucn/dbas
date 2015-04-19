@@ -21,22 +21,22 @@
 					</ul>
 					<br>
 					<p class="lead">This project is based on ...</p>
-					<table class="logo_table" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+					<table class="table_logo" border="0">
 						<tr>
-							<td rowspan="21">
-								<a href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
+							<td rowspan="2">
+								<a id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
 									<img class="logo_hhu img-responsive" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo">
 								</a>
 							</td>
 							<td>
-								<a href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
+								<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
 									<img class="logo_kolleg img-responsive" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo">
 								</a>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<a href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
+								<a id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
 									<img class="logo_fhoev img-responsive" src="${request.static_url('dbas:static/images/logo_fhoev.jpg')}" alt="fhoev logo">
 								</a>
 							</td>
@@ -122,7 +122,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div>
 		<div class="col-md-2"></div>
 		<div class="col-md-8">
