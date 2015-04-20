@@ -6,6 +6,10 @@
 	visibility: visible
 }
 
+#home-template {
+	margin-top: 100px;
+}
+
 .content {
 	margin-left: 10px;
 }
@@ -148,5 +152,3 @@
 		display: none;
 	}
 }
-
-@media (max-width: 550px) {

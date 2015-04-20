@@ -47,7 +47,6 @@
 		</div>
 	</div>
 
-
 	<div class="container" id="description-template">
 		<div class="row">
 			<div class="col-md-2">
@@ -72,7 +71,7 @@
 								<li> Beiträge können durch die Benutzer gewichtet werden (Wertungsfunktion ist eine offene Frage in Abschnitt [[Intern:Software_Prototype#Wertungsfunktion|Wertungsfunktion]]).</li>
 								<li> Feedback und Evaluierung der Argumentation Map (bzw. der Beiträge in der Diskussion) erfolgt durch die Benutzer (Stichwort: Wisdom of the Crowd, siehe [KK08]).</li>
 						</ul>
-
+						<br>
 						<p class="lead">This part containts the description of the
 							<span class="font-normal">first milesstone</span>.
 							<ul class="lead list">
@@ -108,6 +107,18 @@
 					</p>
 					<ul class="lead list">
 						<li>
+							<span class="font-normal">Dialogue-based:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+						<li>
+							<span class="font-normal">Based on Argumentation Maps:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+						<li>
+							<span class="font-normal">Dialogue-based:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+						<li>
 							<span class="font-normal">Guided View:</span>
 							<br> Explanation about the view. Der Benutzer wird mit ausgewählten Beiträgen der anderen Teilnehmer konfrontiert. Die Wahl des nächsten Beitrags ist Teil der Dissertation.
 						</li>
@@ -132,10 +143,33 @@
 			</div>
 			<div class="col-md-10">
 				<div class="content">
-					<h2><span class="font-semi-bold">About</span> <span class="smaller">of D-BAS</span></h2>
+					<h2><span class="font-semi-bold">About</span> <span class="smaller"> D-BAS</span></h2>
 					<p class="lead">This is about
 						<span class="font-normal">... about ...</span>
+						<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
 					</p>
+					<ul class="lead list">
+						<li>
+							<span class="font-normal">Our Argumentation-Map:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+						<li>
+							<span class="font-normal">Cooperation with <a href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a>:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+						<li>
+							<span class="font-normal">Cooperation with the <a href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" title="KIT/JProf. Betz">Karlruhe Institut of Technology</a>:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+						<li>
+							<span class="font-normal">Graduation School Online-Participation:</span>
+							<ul>
+							<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
+							<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
+							<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
+							</ul>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -150,6 +184,24 @@
 				<div class="content">
 					<h2><span class="font-semi-bold">Research</span> <span class="smaller">of D-BAS</span></h2>
 					<p class="lead">This is about <span class="font-normal">... research ...</span>.</p>
+					<ul class="lead list">
+						<li>
+							<span class="font-normal">Forum:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+						<li>
+							<span class="font-normal">Pro-Contra Lists:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+						<li>
+							<span class="font-normal">Argumentation-based Approaches:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+						<li>
+							<span class="font-normal">Discussions-Metrics:</span>
+							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -159,7 +211,7 @@
 		<div class="col-md-2"></div>
 		<div class="col-md-8">
 			<div class="row links">
-				<p class="current-version project font-semi-bold">${project}</p> was generated with Pyramid Web Framework 1.5.4
+				<p class="current-version project font-semi-bold">${project}</p> is generated with Pyramid Web Framework 1.5.4
 				<ul>
 					<li>
 						<i class="glyphicon glyphicon-bookmark icon-muted"></i>

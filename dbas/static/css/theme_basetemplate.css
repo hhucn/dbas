@@ -78,9 +78,9 @@ p {
 }
 
 .container {
-	margin-top: 75px;
+	margin-top: 50px;
 	padding-left: 50px;
-	background: #eee;
+	background: #f4f4f4;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	margin-bottom: 10px;
@@ -89,49 +89,24 @@ p {
 }
 
 .jsdiabled {
+	z-index: 2;
 	position: fixed;
+	margin-top: 5px;
+	width: 98%;
 	text-align: center;
 	color: #fff;
 	background: url('../images/bg_diagonals1.png') repeat fixed center;
 	left: auto;
 	right: auto;
 	padding: 5px;
-	margin-left: 25px;
+	margin-left: 1%;
+	margin-right: 1%;
 	border-radius: 4px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
 
-.button {
-	background: #006ab3;
-	color: #FFF;
-	font-size: 17px;
-	font-weight: 400;
-	padding: 15px 7px;
-	border-radius: 6px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 6px;
-	-o-border-radius: 6px;
-	margin: 10px 0px 0px 0px;
-	border-bottom: 3px solid #0E5099;
-	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
-	display: inline-block;
-	cursor: pointer;
-	outline: none;
-	border-right: none;
-	border-left: none;
-	border-top: none;
-}
-
 .button:hover {
-	background: #1A7CEA;
-	color: #fff;
 	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
 }
 
 @media (max-width: 767px) {

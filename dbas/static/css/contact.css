@@ -5,13 +5,16 @@ Author URL: http://w3layouts.com
 License: Creative Commons Attribution 3.0 Unported
 License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
+
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
 body {
 	margin-top: 100px;
 }
+
 a {
 	text-decoration: none;
 }
@@ -19,33 +22,43 @@ a {
 .txt-rt {
 	text-align: right;
 }
+
 .txt-lt {
 	text-align: left;
 }
+
 .txt-center {
 	text-align: center;
 }
+
 .float-rt {
 	float: right;
 }
+
 .float-lt {
 	float: left;
 }
+
 .clear {
 	clear: both;
 }
+
 .pos-relative {
 	position: relative;
 }
+
 .pos-absolute {
 	position: absolute;
 }
+
 .vertical-base {
 	vertical-align: baseline;
 }
+
 .vertical-top {
 	vertical-align: top;
 }
+
 .underline {
 	padding-bottom: 5px;
 	border-bottom: 1px solid #eee;
@@ -85,15 +98,18 @@ h1 {
 	color: #000;
 	margin: 0px 0px 8px 0px;
 }
+
 .contact p {
 	font-size: 12px;
 	color: #909090;
 	padding: 0px 0px 15px 0px;
 	border-bottom: 1px solid #E9E9E9;
 }
+
 .contact form {
 	padding: 20px 0px 0px 0px;
 }
+
 .contact h3 {
 	color: #818181;
 	margin: 5px 0px 10px 0px;
@@ -138,58 +154,32 @@ h1 {
 .contact input.user {
 	background: url(../images/user.png)no-repeat 10px 8px;
 }
+
 .contact input.tel {
 	background: url(../images/tel.png)no-repeat 8px 8px;
 }
+
 .contact input.email {
 	background: url(../images/email.png)no-repeat 8px 8px;
 }
+
 .contact textarea.info {
 	background: url(../images/i.png)no-repeat 16px 8px;
 }
 
-.contact button[type="submit"] {
-	background: #006ab3;
-	color: #FFF;
-	font-size: 17px;
-	font-weight: 400;
-	padding: 15px 7px;
+.button {
 	width: 90%;
-	border-radius: 6px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 6px;
-	-o-border-radius: 6px;
-	margin: 10px 0px 0px 0px;
-	border-bottom: 3px solid #0E5099;
-	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
-	display: inline-block;
-	cursor: pointer;
-	outline: none;
-	border-right: none;
-	border-left: none;
-	border-top: none;
-}
-
-.contact button[type="submit"]:hover {
-	background: #1A7CEA;
-	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
 }
 
 .copyright {
 	padding: 150px 0px 0px 0px;
 	text-align: center;
+	color: #000;
 }
 
 .copyright p {
 	font-size: 15px;
 	font-weight: 400;
-	color: #fff;
 }
 
 .copyright p a {
@@ -198,29 +188,24 @@ h1 {
 	color: #8AC4EB;
 }
 
-.copyright p a:hover {
-	color: #fff;
-	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
-}
-
 @media(max-width:1440px) {
 	.contact {
 		width: 40%;
 	}
 }
+
 @media(max-width:1366px) {
 	.contact {
 		width: 43%;
 	}
 }
+
 @media(max-width:1280px) {
 	.contact {
 		width: 45%;
 	}
 }
+
 @media(max-width:1024px) {
 	.contact {
 		width: 56%;
@@ -229,6 +214,7 @@ h1 {
 		padding: 100px 0px 0px 0px;
 	}
 }
+
 @media(max-width:768px) {
 	.contact {
 		width: 73%;
@@ -252,6 +238,7 @@ h1 {
 		padding: 50px 0px 80px 0px;
 	}
 }
+
 @media(max-width:640px) {
 	.contact h2 {
 		font-size: 24px;
@@ -273,6 +260,7 @@ h1 {
 		font-size: 35PX;
 	}
 }
+
 @media(max-width:480px) {
 	.contact h2 {
 		font-size: 22px;
@@ -300,6 +288,7 @@ h1 {
 		margin: 0px 0px 20px 0px;
 	}
 }
+
 @media(max-width:320px) {
 	.contact h2 {
 		font-size: 20px;

@@ -2,20 +2,18 @@
 <html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt">
 
 <head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_404.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_center.css')}" rel="stylesheet">
 </head>
 
 <body>
-
 
 	<div class="center">
 		<div class="error">
 			<h1><span class="font-semi-bold">404 Error</span></h1>
 			<p class="lead font-normal">The page you are looking for could not be found.</p>
 			<br>
-			<input class="button" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
+			<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
 		</div>
-
 	</div>
 
 </body>

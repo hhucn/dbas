@@ -14,7 +14,6 @@
 	<!-- Custom styles for this scaffold -->
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.css')}" rel="stylesheet">
-	<link type="text/css" href="${request.static_url('dbas:static/css/popups.css')}" rel="stylesheet">
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
 	<script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -27,7 +26,8 @@
 
 	<div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
-			<div class="navbar-header"><a class="navbar-brand" href="/" id="loginLink">D-BAS</a>
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/" title="Home"></a>
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
@@ -37,50 +37,60 @@
 			</div>
 			<div class="collapse navbar-collapse navbar-menubuilder">
 				<ul class="nav navbar-nav navbar-left">
-					<li id="home-hook"><a href="#home-template">Home</a>
+					<li id="home-hook"><a href="#home-template" title="Go to the top">Home</a>
 					</li>
-					<li id="description-hook"><a href="#description-template">Description</a>
+					<li id="description-hook"><a href="#description-template" title="Got to Description">Description</a>
 					</li>
-					<li id="features-hook"><a href="#features-template">Features</a>
+					<li id="features-hook"><a href="#features-template" title="Got to Features">Features</a>
 					</li>
-					<li id="about-hook"><a href="#about-template">About</a>
+					<li id="about-hook"><a href="#about-template" title="Got to About">About</a>
 					</li>
-					<li id="research-hook"><a href="#research-template">Research</a>
+					<li id="research-hook"><a href="#research-template" title="Got to Research">Research</a>
 					</li>
 				</ul>
-
+				
 				<ul class="nav navbar-nav navbar-right">
-					<li id="contactLinkLi">
-						<a href="${request.application_url}/contact" id="contactLink">
+					<li>
+						<a href="" id="partyLink" title="Get the party started">
+							<span class="glyphicon glyphicon-erase glyphicon-icon" /> Let's go
+						</a>
+					</li>
+					<li>
+						<a href="${request.application_url}/contact" title="Get in touch with us">
 							<span class="glyphicon glyphicon-comment glyphicon-icon" /> Contact
 						</a>
 					</li>
 					<li id="loginLinkLi">
-						<a href="${request.application_url}/login" id="loginLink">
-							<span class="glyphicon glyphicon-log-in glyphicon-icon" /> Login </a>
+						<a href="${request.application_url}/login" title="Login">
+							<span class="glyphicon glyphicon-log-in glyphicon-icon"> Login </span> </a>
+					</li>
+
+					<li>
+						<a href="${request.application_url}/logout" title="Logout">
+							<span class="glyphicon glyphicon-log-out glyphicon-icon"> Logout </span> </a>
 					</li>
 
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#more">More
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#more" title="Show more">More
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>
-								<a class="popup_author_open">
+								<a data-toggle="modal" data-target="#popup_author" title="Show Author">
 									<i class="glyphicon glyphicon-user"></i> Author</a>
 							</li>
 							<li>
-								<a class="popup_licence_open">
+								<a data-toggle="modal" data-target="#popup_licence" title="Show Licence">
 									<i class="glyphicon glyphicon-floppy-disk"></i> Licence</a>
 							</li>
 							<li>
-								<a class="popup_privacy_open">
+								<a data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
 									<i class="glyphicon glyphicon-sunglasses"></i> Privacy Policy</a>
 							</li>
 						</ul>
 					</li>
 
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Language
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" title="Switch language">Language
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>
@@ -102,62 +112,92 @@
 		</div>
 	</div>
 
-	<!-- CONTACT POPUP IN dropdown-menu -->
-	<div class="popup_author" id="popup">
-		<div class="popup_close"></div>
-		<div class="popup_author_content">
-			<h2 class="popup_title">About me</h2>
-			<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author">
-			<p style="text-align:justify;">
-				<br>
-				<span>
-						<table class="popup_author_table" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
-							<tr>
-								<td><spand class="font-semi-bold">Name</spand></td>
-								<td>Tobias Krauthoff, M.Sc.</td>
-							</tr>
-							<tr>
-								<td><spand class="font-semi-bold">Role</spand></td>
-								<td>Doctoral Student
-									<br><a href="http://www.tsn.hhu.de/en.html">Lab for Technology of Social Networks</a>
-								  <br>Member of the graduation school <a href="http://www.fortschrittskolleg.de/" target="_blank">Online Participation</a>
-							  </td>
-							</tr>
-							<tr>
-								<td><spand class="font-semi-bold">E-Mail</spand></td>
-								<td><a href="mailto:krauthoff@cs.uni-duesseldorf.de">krauthoff@cs.uni-duesseldorf.de</a></td>
-							</tr>
-							<tr>
-								<td><spand class="font-semi-bold">Office</spand></td>
-								<td>Heinrich-Heine University Duesseldorf
-									<br>Universitätsstraße 1
-									<br>40225 Duesseldorf
-									<br>Department of Computer Science
-									<br>Building 25.12, Room 02.45
-								</td>
-							</tr>
-							<tr>
-								<td><spand class="font-semi-bold">Telephone</spand></td>
-								<td>+49 211 81-13461</td>
-							</tr>
-							<tr>
-								<td><spand class="font-semi-bold">Fax</spand></td>
-								<td>+49 211 81-11638</td>
-							</tr>
-						</table>
-					</span>
-			</p>
+	<!-- ABOUT POPUP IN dropdown-menu -->
+	<div class="modal fade" id="popup_author" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">About me</h4>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-8">
+								<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+									<tr>
+										<td>
+											<spand class="font-semi-bold">Name</spand>
+										</td>
+										<td>Tobias Krauthoff, M.Sc.</td>
+									</tr>
+									<tr>
+										<td>
+											<spand class="font-semi-bold">Role</spand>
+										</td>
+										<td>Doctoral Student
+											<br><a href="http://www.tsn.hhu.de/en.html">Lab for Technology of Social Networks</a>
+											<br>Member of the graduation school <a href="http://www.fortschrittskolleg.de/" target="_blank">Online Participation</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<spand class="font-semi-bold">E-Mail</spand>
+										</td>
+										<td><a href="mailto:krauthoff@cs.uni-duesseldorf.de">krauthoff@cs.uni-duesseldorf.de</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<spand class="font-semi-bold">Office</spand>
+										</td>
+										<td>Heinrich-Heine University Duesseldorf
+											<br>Universitätsstraße 1
+											<br>40225 Duesseldorf
+											<br>Department of Computer Science
+											<br>Building 25.12, Room 02.45
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<spand class="font-semi-bold">Telephone</spand>
+										</td>
+										<td>+49 211 81-13461</td>
+									</tr>
+									<tr>
+										<td>
+											<spand class="font-semi-bold">Fax</spand>
+										</td>
+										<td>+49 211 81-11638</td>
+									</tr>
+								</table>
+							</div>
+
+							<div class="col-md-3 col-md-offset-1">
+								<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
 		</div>
 	</div>
 
 	<!-- COPYRIGHT POPUP IN dropdown-menu -->
-	<div class="popup_licence" id="popup">
-		<div class="popup_close"></div>
-		<div class="popup_licence_content">
-			<h2 class="popup_title">The MIT License (MIT)</h2>
-			<p style="text-align:justify;">
-				<br>
-				<span>
+	<div class="modal fade" id="popup_licence" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">The MIT License (MIT)</h4>
+				</div>
+				<div class="modal-body">
+					<span>
 					Copyright &copy; 2015 
 					<a href="mailto:krauthoff@cs.uni-duesseldorf.de">
 						Tobias Krauthoff
@@ -180,42 +220,61 @@
 				LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 				OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 				THE SOFTWARE.</span>
-			</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
 		</div>
 	</div>
 
-
-	<div class="popup_privacy" id="popup">
-		<div class="popup_close"></div>
-		<div class="popup_privacy_content">
-			<h2 class="popup_title">Privacy Policy</h2>
-			<p style="text-align:justify;">
-				<br> Text
-			</p>
+	<!-- PRIVACY POPUP IN dropdown-menu -->
+	<div class="modal fade" id="popup_privacy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Privacy Policy</h4>
+				</div>
+				<div class="modal-body">
+					Text
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
 		</div>
 	</div>
 
-	<div class="popup_password" id="popup">
-		<div class="popup_close"></div>
-		<div class="popup_password_content">
-			<h2 class="popup_title">Password-Request</h2>
-			<p style="text-align:justify;">
-				<span>Please fill in your e-mail below. A new password will be send this address.</span>
-				<br>
-				<input type="email" class="email" placeholder="example : krauthoff@cs.uni-duesseldorf.de" tabindex="3" required autocomplete="on">
-
-				<button name="submit" id="password-request-submit" type="submit">Request Password</button>
-			</p>
+	<!-- PASSWORD REQUEST -->
+	<div class="modal fade" id="popup_password" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="exampleModalLabel">Password-Request</h4>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="mail-address" class="control-label">Please fill in your e-mail below. A new password will be send this address:</label>
+							<input type="mail" class="form-control" id="mail-address" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Request Password</button>
+				</div>
+			</div>
 		</div>
 	</div>
-
-	<div id="popup_background"></div>
-
 
 	<noscript>
 		<div class="jsdiabled">
 			<span class="font-semi-bold">JavaScript is not enabled:</span>
-			<br>
 			<span class="font-normal">Please enable JavaScript!</span>
 		</div>
 	</noscript>
@@ -223,7 +282,7 @@
 	<!-- CONTENT -->
 
 	<!-- scroll to top -->
-	<a href="#" class="back-to-top"></a>
+	<a href="#" class="back-to-top" title="Go to the top"></a>
 
 	<!-- Bootstrap core, JavaScript, jquery
 		<!-- Placed at the end of the document so the pages load faster -->

@@ -14,22 +14,20 @@
 		<form action="/contact" method="post">
 			
 			<h3>Your Name (required)</h3>
-			<input type="text" class="user active" placeholder="example : Tobias Krauthoff" tabindex="1" required autofocus autocomplete="on" >
+			<input type="text" class="user active" placeholder="example: Tobias Krauthoff" tabindex="1" required autofocus autocomplete="on" >
 			
 			<h3>Your Phone Number</h3>
-			<input type="tel" class="tel" placeholder="example : +49 (0)211 81-13461" tabindex="2" autocomplete="on" >
+			<input type="tel" class="tel" placeholder="example: +49 (0)211 81-13461" tabindex="2" autocomplete="on" >
 			
 			<h3>Your Email Address (required)</h3>
 			<input type="email" class="email" placeholder="example : krauthoff@cs.uni-duesseldorf.de" tabindex="3" required autocomplete="on" >
 			
 			<h3>Your Message (required)</h3>
-			<textarea type="text" class="info" placeholder="example : I’d like to say “good job!”" tabindex="4" ></textarea>
-			<button name="submit" id="contact-submit" type="submit">Submit Your message</button>		</form>
-	</div>
-
-	<div class="copyright">
-		<p>Template by <a href="http://w3layouts.com/"> W3layouts </a>
-		</p>
+			<textarea type="text" class="info" placeholder="example: I’d like to say “good job!”" tabindex="4" ></textarea>
+			
+					
+					<button type="button" class="button button-block btn-lg btn btn-primary" data-dismiss="modal">Submit Your message</button>
+					</form>
 	</div>
 
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/contact.js')}"></script>
