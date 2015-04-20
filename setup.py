@@ -10,13 +10,18 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 
 requires = [
     'pyramid',
+    'pyramid_tm',
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'waitress',
+    'SQLAlchemy',
+    'transaction',
+    'zope.sqlalchemy',
+    'docutils',
     ]
 
 setup(name='DBAS',
-      version='0.0',
+      version='0.1',
       description='Novel prototype',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

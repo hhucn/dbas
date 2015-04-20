@@ -1,65 +1,37 @@
+// just a countdowntimer by http://stackoverflow.com/a/1192001/2648872
+function Countdown(options) {
+	var timer,
+		instance = this,
+		seconds = options.seconds || 10,
+		updateStatus = options.onUpdateStatus || function () {},
+		counterEnd = options.onCounterEnd || function () {};
+
+	function decrementCounter() {
+		updateStatus(seconds);
+		if (seconds === 0) {
+			counterEnd();
+			instance.stop();
+		}
+		seconds--;
+	}
+
+	this.start = function () {
+		clearInterval(timer);
+		timer = 0;
+		seconds = options.seconds;
+		timer = setInterval(decrementCounter, 1000);
+	};
+
+	this.stop = function () {
+		clearInterval(timer);
+	};
+}
+
+
 /*global $, jQuery, alert, addActiveLinksInNavBar, removeActiveLinksInNavBar*/
 //jQuery(function ($) {
 $(document).ready(function () {
 	'use strict';
-
-	// open contact popup
-	$('.popup_author_open').click(function () {
-		$('.popup_author').fadeIn('normal');
-		$('.popup_licence').fadeOut('normal');
-		$('.popup_privacy').fadeOut('normal');
-		$('.popup_password').fadeOut('normal');
-		$('#popup_background').css('opacity', '0.7');
-		$('#popup_background').fadeIn('normal');
-	});
-
-	// open licence popup
-	$('.popup_licence_open').click(function () {
-		$('.popup_licence').fadeIn('normal');
-		$('.popup_author').fadeOut('normal');
-		$('.popup_privacy').fadeOut('normal');
-		$('.popup_password').fadeOut('normal');
-		$('#popup_background').css('opacity', '0.7');
-		$('#popup_background').fadeIn('normal');
-	});
-
-	// open privacy popup
-	$('.popup_privacy_open').click(function () {
-		$('.popup_privacy').fadeIn('normal');
-		$('.popup_licence').fadeOut('normal');
-		$('.popup_author').fadeOut('normal');
-		$('.popup_password').fadeOut('normal');
-		$('#popup_background').css('opacity', '0.7');
-		$('#popup_background').fadeIn('normal');
-	});
-
-	// open contact popup
-	$('.popup_password_open').click(function () {
-		$('.popup_password').fadeIn('normal');
-		$('.popup_author').fadeOut('normal');
-		$('.popup_licence').fadeOut('normal');
-		$('.popup_privacy').fadeOut('normal');
-		$('#popup_background').css('opacity', '0.7');
-		$('#popup_background').fadeIn('normal');
-	});
-
-	// close all popups with image close
-	$('.popup_close').click(function () {
-		$('.popup_author').fadeOut('normal');
-		$('.popup_licence').fadeOut('normal');
-		$('.popup_privacy').fadeOut('normal');
-		$('.popup_password').fadeOut('normal');
-		$('#popup_background').fadeOut('normal');
-	});
-
-	// close all popups with clicking on the background
-	$('#popup_background').click(function () {
-		$('.popup_author').fadeOut('normal');
-		$('.popup_licence').fadeOut('normal');
-		$('.popup_privacy').fadeOut('normal');
-		$('.popup_password').fadeOut('normal');
-		$('#popup_background').fadeOut('normal');
-	});
 
 	// jump to chapter-function
 	$('a[href^=#]').on('click', function (e) {
@@ -99,7 +71,27 @@ $(document).ready(function () {
 	} else {
 		$('.navbar-right li a').removeClass('active');
 	}
-	
-	// contact form
-	
+
+	// Your application has indicated you are logged out
+	if (path == "logout") {
+		var myCounter = new Countdown({
+			seconds: 4, // seconds to count down
+			onUpdateStatus: function (sec) {
+				$('.timer').text(sec + " s");
+			},
+			onCounterEnd: function () {
+					//this gets the full url and an index
+					var url = document.location.href;
+					var index = url.indexOf("/logout");
+					//this removes the logout at the end, if there is one
+					url = url.substring(0, (index == -1) ? url.length : index);
+					// new text to the button
+					$('#homebutton').text("Redirecting to " + url);
+					// Move to a new location or you can do something else
+					window.location.href = url;
+				} // final action
+		});
+		myCounter.start();
+	}
+
 });

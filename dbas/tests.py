@@ -2,7 +2,7 @@ import unittest
 
 from pyramid import testing
 
-
+#testing main page
 class ViewMainTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
@@ -22,8 +22,28 @@ class ViewMainTests(unittest.TestCase):
         response = inst.main_page()
         self.assertEqual('Main', response['title'])
 
-
+# testing login page
 class ViewLoginTests(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def _callFUT(self, request):
+        from dbas.views import main_login
+        return view_page(request)
+
+    def test_contact(self):
+        from .views import Prototype
+
+        request = testing.DummyRequest()
+        inst = Prototype(request)
+        response = inst.main_login()
+        self.assertEqual('Login', response['title'])
+
+# testing contact page
+class ViewContactTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
@@ -34,7 +54,7 @@ class ViewLoginTests(unittest.TestCase):
         from dbas.views import main_contact
         return view_page(request)
 
-    def test_contact(self):
+    def test_main(self):
         from .views import Prototype
 
         request = testing.DummyRequest()
@@ -42,8 +62,8 @@ class ViewLoginTests(unittest.TestCase):
         response = inst.main_contact()
         self.assertEqual('Contact', response['title'])
 
-
-class ViewContactTests(unittest.TestCase):
+# testing content page
+class ViewContentTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
@@ -51,7 +71,7 @@ class ViewContactTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from dbas.views import main_page
+        from dbas.views import main_content
         return view_page(request)
 
     def test_main(self):
@@ -59,10 +79,10 @@ class ViewContactTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         inst = Prototype(request)
-        response = inst.main_page()
-        self.assertEqual('Main', response['title'])
+        response = inst.main_content()
+        self.assertEqual('Content', response['title'])
 
-
+# testing a unexisting page
 class ViewNotFoundTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
@@ -82,7 +102,7 @@ class ViewNotFoundTests(unittest.TestCase):
         response = inst.notfound()
         self.assertEqual('Error', response['title'])
 
-
+# check, if every site responds with 200 except the error page
 class FunctionalTests(unittest.TestCase):
     def setUp(self):
         from dbas import main
@@ -91,19 +111,28 @@ class FunctionalTests(unittest.TestCase):
 
         self.testapp = TestApp(app)
 
+    # testing main page
     def test_home(self):
         res = self.testapp.get('/', status=200)
         self.assertIn(b'<h2><span class="font-semi-bold">Welcome', res.body)
 
+    # testing contact page
     def test_contact(self):
         res = self.testapp.get('/contact', status=200)
         self.assertIn(b'<div class="contact">', res.body)
 
+    # testing login page
     def test_login(self):
         res = self.testapp.get('/login', status=200)
         self.assertIn(b'<a href="#signup">Sign Up', res.body)
         self.assertIn(b'<h2>Welcome Back', res.body)
 
+    # testing content page
+    def test_content(self):
+        res = self.testapp.get('/content', status=200)
+        self.assertIn(b'theme_content', res.body)
+
+    # testing a unexisting page
     def test_unexisting_page(self):
         res = self.testapp.get('/SomePage', status=404)
         self.assertIn(b'The page you are looking for could not be found.', res.body)
