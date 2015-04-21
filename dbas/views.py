@@ -1,23 +1,8 @@
-import re
-from pyramid.response import Response
-from pyramid.httpexceptions import (
-    HTTPFound,
-    HTTPNotFound
-    )
+from pyramid.httpexceptions import HTTPFound
+from pyramid.view import view_config, notfound_view_config, forbidden_view_config
+from pyramid.security import remember, forget
 
-from pyramid.renderers import get_renderer
-
-from pyramid.view import (
-    view_config,
-    notfound_view_config,
-    forbidden_view_config
-    )
-
-from pyramid.security import (
-    remember,
-    forget,
-    )
-
+from .models import DBSession, User
 from .security import USERS
 
 
@@ -35,9 +20,6 @@ class Prototype(object):
         )
 
     # login page
-    #@view_config(route_name='main_login', renderer='templates/login.pt')
-    #def main_login(self):
-    #    return dict(title='Login',project='DBAS')
     @view_config(route_name='main_login', renderer='templates/login.pt', permission='view')
     @forbidden_view_config(renderer='templates/login.pt')
     def main_login(self):
@@ -56,6 +38,7 @@ class Prototype(object):
         if 'form.login.submitted' in self.request.params:
             login = self.request.params['login']
             password = self.request.params['password']
+            # user = DBSesseion.query(User)
             if USERS.get(login) == password:
                 headers = remember(self.request, login)
                 return HTTPFound(
@@ -67,6 +50,11 @@ class Prototype(object):
 
         if 'form.registration.submitted' in self.request.params:
             message = 'Registration login'
+            #firstname = self.request.params['firstname']
+            #surename = self.request.params['surename']
+            #email = self.request.params['email']
+            #password = self.request.params['password']
+            #DBSession.add(User(firstname, surename, email, password))
 
         return dict(
             title='Login',
@@ -81,40 +69,22 @@ class Prototype(object):
         )
 
     # logout page
-    @view_config(route_name='main_logout', renderer='templates/logout.pt', permission='view')
+    @view_config(route_name='main_logout', renderer='templates/logout.pt', permission='use')
     def main_logout(self):
-        # rediret to the logout page, when we are logged in
-        # otherwise redirect to the main page
-        if (self.request.authenticated_userid):
-            headers = forget(self.request)
-            return HTTPFound(
-                location = self.request.route_url('main_logout_redirect'),
-                headers = headers
-            )
-        else:
-            return HTTPFound(
-                location = self.request.route_url('main_page')
-            )
+        return dict(
+            title='Logout',
+            project='DBAS',
+            logged_in = self.request.authenticated_userid
+        )
 
     # logout redirect page
-    @view_config(route_name='main_logout_redirect', renderer='templates/logout.pt', permission='view')
+    @view_config(route_name='main_logout_redirect', permission='use')
     def main_logout_redirect(self):
-        logout_url = self.request.route_url('main_logout')
-        referrer = self.request.url
-
-        # return the regulary logout page, when we came fron /logout
-        # otherwise redirect to the main page
-        if referrer == logout_url:
-            return dict(
-                title='Logout',
-                project='DBAS',
-                logged_in = self.request.authenticated_userid
-            )
-        else:
-            return HTTPFound(
-                location = self.request.route_url('main_page')
-
-            )
+        headers = forget(self.request)
+        return HTTPFound(
+            location = self.request.route_url('main_page'),
+            headers = headers
+        )
 
     # contact page
     @view_config(route_name='main_contact', renderer='templates/contact.pt', permission='view')
@@ -152,3 +122,12 @@ class Prototype(object):
             page_notfound_viewname=self.request.view_name,
             logged_in = self.request.authenticated_userid
         )
+
+
+# notices
+
+# salt.update(os.urandom(60))
+# salt = sha1()
+# hash = sha1()
+# hash.update(password_8bit + salt.hexdigest())
+# hashed_password = salt.hexdigest() + hash.hexdigest()

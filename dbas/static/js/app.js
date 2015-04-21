@@ -74,7 +74,7 @@ $(document).ready(function () {
 	}
 
 	// Your application has indicated you are logged out
-	if (path === "logout_redirect") {
+	if (path === "logout") {
 		var myCounter = new Countdown({
 			seconds: 4, // seconds to count down
 			onUpdateStatus: function (sec) {

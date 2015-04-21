@@ -43,5 +43,7 @@ setup(name='DBAS',
       entry_points="""\
       [paste.app_factory]
       main = dbas:main
+      [console_scripts]
+      initialize_user_db = dbas.scripts.initializedb:main
       """,
       )

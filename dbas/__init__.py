@@ -1,7 +1,12 @@
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from dbas.security import groupfinder
 from pyramid.config import Configurator
+
+from dbas.security import groupfinder
+
+from sqlalchemy import engine_from_config
+from .models import DBSession, Base
+
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -10,6 +15,11 @@ def main(global_config, **settings):
     authn_policy = AuthTktAuthenticationPolicy(
         'sosecret', callback=groupfinder, hashalg='sha512')
     authz_policy = ACLAuthorizationPolicy()
+
+    # load database
+    engine = engine_from_config(settings, 'sqlalchemy.')
+    DBSession.configure(bind=engine)
+    Base.metadata.bind = engine
 
     # creating the configurator
     config = Configurator(settings={'pyramid.default_locale_name':'en'},root_factory='dbas.models.RootFactory')
