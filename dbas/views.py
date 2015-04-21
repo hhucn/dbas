@@ -1,5 +1,5 @@
 import re
-
+from pyramid.response import Response
 from pyramid.httpexceptions import (
     HTTPFound,
     HTTPNotFound
@@ -43,7 +43,7 @@ class Prototype(object):
     def main_login(self):
         login_url = self.request.route_url('main_login')
         referrer = self.request.url
-        
+
         if referrer == login_url:
             referrer = '/' # never use the login form itself as came_from
         came_from = self.request.params.get('came_from', referrer)
@@ -81,22 +81,40 @@ class Prototype(object):
         )
 
     # logout page
-    @view_config(route_name='main_logout', permission='view')
+    @view_config(route_name='main_logout', renderer='templates/logout.pt', permission='view')
     def main_logout(self):
-        headers = forget(self.request)
-        return HTTPFound(
-            location = self.request.route_url('main_logout_redirect'),
-            headers = headers
+        # rediret to the logout page, when we are logged in
+        # otherwise redirect to the main page
+        if (self.request.authenticated_userid):
+            headers = forget(self.request)
+            return HTTPFound(
+                location = self.request.route_url('main_logout_redirect'),
+                headers = headers
+            )
+        else:
+            return HTTPFound(
+                location = self.request.route_url('main_page')
             )
 
     # logout redirect page
     @view_config(route_name='main_logout_redirect', renderer='templates/logout.pt', permission='view')
     def main_logout_redirect(self):
-        return dict(
-            title='Logout',
-            project='DBAS',
-            logged_in = self.request.authenticated_userid
-        )
+        logout_url = self.request.route_url('main_logout')
+        referrer = self.request.url
+
+        # return the regulary logout page, when we came fron /logout
+        # otherwise redirect to the main page
+        if referrer == logout_url:
+            return dict(
+                title='Logout',
+                project='DBAS',
+                logged_in = self.request.authenticated_userid
+            )
+        else:
+            return HTTPFound(
+                location = self.request.route_url('main_page')
+
+            )
 
     # contact page
     @view_config(route_name='main_contact', renderer='templates/contact.pt', permission='view')
