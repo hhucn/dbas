@@ -25,10 +25,10 @@
 
 .links {
 	float: none;
-	text-align: center;
-	margin-top: 50px;
+	text-align: right;
 	margin-bottom: 15px;
 	margin-right: 15px;
+	color: #fff;
 }
 
 .links ul {
@@ -44,27 +44,21 @@
 	text-align: center;
 }
 
-.links ul li.current-version {
-	color: #101000;
-	font-weight: bold;
-	text-align: center;
-}
-
 .links ul li a {
-	color: #000;
+	color: #ddd;
 }
 
 .links ul li a:hover {
 	text-decoration: underline;
+	color: #fff;
 }
 
 .links ul li .icon-muted {
-	color: #333333;
-	margin-right: 5px;
+	color: #ddd;
 }
 
 .links ul li:hover .icon-muted {
-	color: #000;
+	color: #fff;
 }
 
 .list {

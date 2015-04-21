@@ -1,30 +1,3 @@
-$('.form').find('input, textarea').on('keyup blur focus', function (e) {
-
-	var $this = $(this),
-		label = $this.prev('label');
-
-	if (e.type === 'keyup') {
-		if ($this.val() === '') {
-			label.removeClass('active highlight');
-		} else {
-			label.addClass('active highlight');
-		}
-	} else if (e.type === 'blur') {
-		if ($this.val() === '') {
-			label.removeClass('active highlight');
-		} else {
-			label.removeClass('highlight');
-		}
-	} else if (e.type === 'focus') {
-
-		if ($this.val() === '') {
-			label.removeClass('highlight');
-		} else if ($this.val() !== '') {
-			label.addClass('highlight');
-		}
-	}
-});
-
 $('.tab a').on('click', function (e) {
 
 	e.preventDefault();
@@ -43,38 +16,47 @@ $('.tab a').on('click', function (e) {
 $(document).ready(function () {
 	'use strict';
 
-	// Create input element for testing
-	var inputs = document.createElement('input');
+	$('#warning-message').hide();
+	var send = document.getElementById('login-register-submit');
+	if (send) {
+		send.onclick = function () {
+			var userfirstname = $('#userfirstname-input').val(),
+				userlastname = $('#userlastname-input').val(),
+				email = $('#email-input').val(),
+				password = $('#password-input').val(),
+				passwordconfirm = $('#passwordconfirm-input').val();
 
-	// Create the supports object
-	var supports = {};
+			if (!userfirstname || /^\s*$/.test(userfirstname) || 0 === userfirstname.length) {
+				$('#warning-message').show();
+				$('#warning-message-text').text('Better check your first name, because the input is empty!');
 
-	supports.autofocus = 'autofocus' in inputs;
-	supports.required = 'required' in inputs;
-	supports.placeholder = 'placeholder' in inputs;
+			} else if (!userlastname || /^\s*$/.test(userlastname) || 0 === userlastname.length) {
+				$('#warning-message').show();
+				$('#warning-message-text').text('Better check your last name, because the input is empty!');
 
-	// Fallback for autofocus attribute
-	if (!supports.autofocus) {
+			} else if (!email || /^\s*$/.test(email) || 0 === email.length) {
+				$('#warning-message').show();
+				$('#warning-message-text').text('Better check email, because the input is empty!');
 
-	}
+			} else if (!password || /^\s*$/.test(password) || 0 === password.length) {
+				$('#warning-message').show();
+				$('#warning-message-text').text('Better check password, because the input is empty!');
 
-	// Fallback for required attribute
-	if (!supports.required) {
+			} else if (!passwordconfirm || /^\s*$/.test(passwordconfirm) || 0 === passwordconfirm.length) {
+				$('#warning-message').show();
+				$('#warning-message-text').text('Better check the confirmation of your password, because the input is empty!');
+			} else if (password !== passwordconfirm) {
+				$('#warning-message').show();
+				$('#warning-message-text').text('Better check your passwords, because they are not equal!');
 
-	}
-
-	// Fallback for placeholder attribute
-	if (!supports.placeholder) {
-
+			} else {
+				$('#warning-message').hide();
+				this.innerHTML = '...Sending Registration';
+			}
+		}
 	}
 
 	// Change text inside send button on submit
-	var send = document.getElementById('submit-register');
-	if (send) {
-		send.onclick = function () {
-			this.innerHTML = '...Sending Registration';
-		}
-	}
 	var send = document.getElementById('submit-login');
 	if (send) {
 		send.onclick = function () {

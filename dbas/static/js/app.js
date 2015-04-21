@@ -1,5 +1,6 @@
 // just a countdowntimer by http://stackoverflow.com/a/1192001/2648872
 function Countdown(options) {
+	'use strict';
 	var timer,
 		instance = this,
 		seconds = options.seconds || 10,
@@ -12,7 +13,7 @@ function Countdown(options) {
 			counterEnd();
 			instance.stop();
 		}
-		seconds--;
+		seconds = seconds - 1;
 	}
 
 	this.start = function () {
@@ -73,7 +74,7 @@ $(document).ready(function () {
 	}
 
 	// Your application has indicated you are logged out
-	if (path == "logout") {
+	if (path === "logout_redirect") {
 		var myCounter = new Countdown({
 			seconds: 4, // seconds to count down
 			onUpdateStatus: function (sec) {

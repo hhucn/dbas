@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt">
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
 
 <head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_home.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
 </head>
 
 <body>
-
+	
+	
+	
 	<div class="container" id="home-template">
 		<div class="row">
 			<div class="col-md-12">
@@ -105,32 +107,20 @@
 					<p class="lead">This is about
 						<span class="font-normal">... features ...</span>
 					</p>
-					<ul class="lead list">
-						<li>
-							<span class="font-normal">Dialogue-based:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
-						</li>
-						<li>
-							<span class="font-normal">Based on Argumentation Maps:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
-						</li>
-						<li>
-							<span class="font-normal">Dialogue-based:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
-						</li>
-						<li>
-							<span class="font-normal">Guided View:</span>
-							<br> Explanation about the view. Der Benutzer wird mit ausgewählten Beiträgen der anderen Teilnehmer konfrontiert. Die Wahl des nächsten Beitrags ist Teil der Dissertation.
-						</li>
-						<li>
-							<span class="font-normal">Island View:</span>
-							<br> Explanation about the view. Es werden sogenannte Inseln präsentiert, die aus einer Position und allen Argumenten geordnet als Pro/Kontra-Liste bestehen.
-						</li>
-						<li>
-							<span class="font-normal">Expert View:</span>
-							<br> Explanation about the view. Der Benutzer erhält Einblick auf die gesamte Argumentation Map und kann sich frei bewegen. Darstellungsvariante ist noch offen (Liste, Baum, Graph, Container und/oder Matrix (siehe [SLPM10], S.12)).
-						</li>
-					</ul>
+					<dl class="dl-horizontal lead list">
+						<dt>Dialogue-based:</dt>
+						<dd>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</dd>
+						<dt>ArguMaps:</dt>
+						<dd>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</dd>
+						<dt>Dialogue-based:<dt>
+						<dd>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</dd>
+						<dt>Guided View:</dt>
+						<dd> Explanation about the view. Der Benutzer wird mit ausgewählten Beiträgen der anderen Teilnehmer konfrontiert. Die Wahl des nächsten Beitrags ist Teil der Dissertation.</dd>
+						<dt>Island View:</dt>
+						<dd> Explanation about the view. Es werden sogenannte Inseln präsentiert, die aus einer Position und allen Argumenten geordnet als Pro/Kontra-Liste bestehen.</dd>
+						<dt>Expert View:</dt>
+						<dd> Explanation about the view. Der Benutzer erhält Einblick auf die gesamte Argumentation Map und kann sich frei bewegen. Darstellungsvariante ist noch offen (Liste, Baum, Graph, Container und/oder Matrix (siehe [SLPM10], S.12)).</dd>
+					</dl>
 				</div>
 			</div>
 		</div>
@@ -164,9 +154,9 @@
 						<li>
 							<span class="font-normal">Graduation School Online-Participation:</span>
 							<ul>
-							<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
-							<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
-							<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
+								<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
+								<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
+								<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
 							</ul>
 						</li>
 					</ul>
@@ -207,33 +197,48 @@
 		</div>
 	</div>
 
-	<div>
-		<div class="col-md-2"></div>
-		<div class="col-md-8">
+
+
+	<div id="footer">
+		<div class="col-md-2">
 			<div class="row links">
-				<p class="current-version project font-semi-bold">${project}</p> is generated with Pyramid Web Framework 1.5.4
 				<ul>
 					<li>
-						<i class="glyphicon glyphicon-bookmark icon-muted"></i>
-						<a href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">Docs</a>
+						<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>
 					</li>
+				</ul>
+				<ul>
 					<li>
-						<i class="glyphicon glyphicon-cog icon-muted"></i>
-						<a href="https://github.com/Pylons/pyramid">Github Project</a>
-					</li>
-					<li>
-						<i class="glyphicon glyphicon-globe icon-muted"></i>
-						<a href="irc://irc.freenode.net#pyramid">IRC Channel</a>
-					</li>
-					<li>
-						<i class="glyphicon glyphicon-home icon-muted"></i>
-						<a href="http://pylonsproject.org">Pylons Project</a>
+						<a href="${request.application_url}/impressum">
+							<i class="glyphicon glyphicon-th-list icon-muted">&#160;</i>Impressum</a>
 					</li>
 				</ul>
 			</div>
 		</div>
-		<div class="col-md-2"></div>
+		<div class="col-md-5"></div>
+		<div class="col-md-5">
+			<div class="row links">
+				<p class="current-version project font-semi-bold">${project}</p> is generated with Pyramid Web Framework 1.5.4
+				<ul>
+					<li>
+						<a href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
+							<i class="glyphicon glyphicon-bookmark icon-muted">&#160;</i>Docs</a>
+					</li>
+					<li>
+						<a href="https://github.com/Pylons/pyramid">
+							<i class="glyphicon glyphicon-cog icon-muted">&#160;</i>Github Project</a>
+					</li>
+					<li>
+						<a href="irc://irc.freenode.net#pyramid">
+							<i class="glyphicon glyphicon-globe icon-muted">&#160;</i>IRC Channel</a>
+					</li>
+					<li>
+						<a href="http://pylonsproject.org">
+							<i class="glyphicon glyphicon-home icon-muted">&#160;</i>Pylons Project</a>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
-
 </body>
 <html>

@@ -66,14 +66,21 @@ h2 {
 	color: #000;
 	margin: 0 0 40px;
 }
+}
 
-.field-wrap h3 {
+h3 {
+	text-align: center;
+	color: #000;
+	margin: 0 0 30px;
+}
+
+h3 {
 	color: #818181;
 	margin: 5px 0px 10px 0px;
 	text-align: center;
 }
 
-.field-wrap input[type="text"] {
+input[type="text"] {
 	outline: none;
 	font-size: 15px;
 	font-weight: 400;
@@ -105,11 +112,6 @@ textarea {
 	border: 1px solid;
 }
 
-.field-wrap {
-	position: relative;
-	margin-bottom: 20px;
-}
-
 .top-row:after {
 	content: "";
 	display: table;
@@ -122,22 +124,22 @@ textarea {
 	margin-right: 4%;
 }
 
-.field-wrap input.userfirstname {
+input.userfirstname {
 	background: url(../images/user.png)no-repeat 10px 8px;
 }
-.field-wrap input.userlastname {
+input.userlastname {
 	background: url(../images/user.png)no-repeat 10px 8px;
 }
-.field-wrap input.tel {
+input.tel {
 	background: url(../images/tel.png)no-repeat 8px 8px;
 }
-.field-wrap input.email {
+input.email {
 	background: url(../images/email.png)no-repeat 8px 8px;
 }
-.field-wrap input.password {
+input.password {
 	background: url(../images/lock.png)no-repeat 8px 8px;
 }
-.field-wrap input.passwordconfirm {
+input.passwordconfirm {
 	background: url(../images/lock.png)no-repeat 8px 8px;
 }
 
@@ -145,12 +147,12 @@ textarea {
 	margin: 0;
 }
 
-.field-wrap input.userfirstname:hover,
-.field-wrap input.userlastname:hover,
-.field-wrap input.email:hover,
-.field-wrap input.password:hover,
-.field-wrap input.passwordconfirm:hover
-.field-wrap input.active {
+input.userfirstname:hover,
+input.userlastname:hover,
+input.email:hover,
+input.password:hover,
+input.passwordconfirm:hover
+input.active {
 	box-shadow: 0px 0px 4px 0px #3386E1;
 	transition: 0.5s all;
 	-webkit-transition: 0.5s all;
@@ -210,14 +212,14 @@ textarea {
 		.tab-content h3 {
 			font-size: 15px;
 		}
-		.field-wrap input.userfirstname,
-		.field-wrap input.userlastname,
-		.field-wrap input.email,
-		.field-wrap input.password,
-		.field-wrap input.passwordconfirm,{
+		input.userfirstname,
+		input.userlastname,
+		input.email,
+		input.password,
+		input.passwordconfirm,{
 			font-size: 13px;
 		}
-		.field-wrap input[type="submit"] {
+		input[type="submit"] {
 			font-size: 15px;
 		}
 		.contact textarea {
@@ -231,14 +233,14 @@ textarea {
 		.tab-content h2 {
 			font-size: 24px;
 		}
-		.field-wrap input.userfirstname,
-		.field-wrap input.userlastname,
-		.field-wrap input.email,
-		.field-wrap input.password,
-		.field-wrap input.passwordconfirm,{
+		input.userfirstname,
+		input.userlastname,
+		input.email,
+		input.password,
+		input.passwordconfirm,{
 			font-size: 12px;
 		}
-		.field-wrap input[type="submit"] {
+		input[type="submit"] {
 			width: 69%;
 			font-size: 14px;
 		}
@@ -256,14 +258,14 @@ textarea {
 		.tab-content h3 {
 			font-size: 13px;
 		}
-		.field-wrap input.userfirstname,
-		.field-wrap input.userlastname,
-		.field-wrap input.email,
-		.field-wrap input.password,
-		.field-wrap input.passwordconfirm,{
+		input.userfirstname,
+		input.userlastname,
+		input.email,
+		input.password,
+		input.passwordconfirm,{
 			width: 61%;
 		}
-		.field-wrap input[type="submit"] {
+		input[type="submit"] {
 			width: 80%;
 		}
 		h1 {
@@ -282,27 +284,27 @@ textarea {
 			padding: 20px 15px 30px 15px;
 			width: 85%;
 		}
-		.field-wrap input.userfirstname,
-		.field-wrap input.userlastname,
-		.field-wrap input.email,
-		.field-wrap input.password,
-		.field-wrap input.passwordconfirm,{
+		input.userfirstname,
+		input.userlastname,
+		input.email,
+		input.password,
+		input.passwordconfirm,{
 			width: 75%;
 			padding: 10px 10px 10px 45px;
 		}
-		.field-wrap input.user {
+		input.user {
 			background: url(../images/user.png)no-repeat 8px 6px;
 		}
-		.field-wrap input.tel {
+		input.tel {
 			background: url(../images/tel.png)no-repeat 6px 5px;
 		}
-		.field-wrap input.email {
+		input.email {
 			background: url(../images/email.png)no-repeat 5px 6px;
 		}
-		.field-wrap textarea.i {
+		textarea.i {
 			background: url(../images/i.png)no-repeat 10px 9px;
 		}
-		.field-wrap input[type="submit"] {
+		input[type="submit"] {
 			width: 90%;
 			font-size: 12px;
 			padding: 10px 7px;

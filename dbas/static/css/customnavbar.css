@@ -3,26 +3,32 @@
 	font-size: 20px;
 	font-weight: bold;
 }
+
 #custom-bootstrap-menu.navbar-default .navbar-brand {
 	width: 85px;
 	background: transparent url('../images/brand_white_small.png') center no-repeat;
 }
+
 #custom-bootstrap-menu.navbar-default .navbar-brand:hover {
 	transition: 0.5s all;
 	background-color: #fff;
 	background-image: url('../images/brand_white_small_black.png');
 	border-radius: 10px;
 }
+
 #custom-bootstrap-menu.navbar-default {
 	font-size: 16px;
 	background-color: rgba(0, 106, 179, 1);
-	<!--border-width: 1px;-->
-	<!--border-radius: 10px;-->
+	<!--border-width: 1px;
+	--> <!--border-radius: 10px;
+	-->
 }
+
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
 	color: rgba(255, 255, 255, 1);
 	background-color: rgba(0, 106, 179, 1);
 }
+
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
 	color: rgba(51, 51, 51, 1);
@@ -30,6 +36,7 @@
 	border-radius: 10px;
 	transition: 0.5s all;
 }
+
 #custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
 #custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
 #custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
@@ -37,37 +44,46 @@
 	background-color: rgba(255, 255, 255, 1);
 	transition: 0.5s all;
 }
+
 #custom-bootstrap-menu.navbar-default .navbar-toggle {
-	border-color: rgb(221, 221, 221,1);
+	border-color: rgb(221, 221, 221, 1);
 }
+
 #custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
 #custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
 	background-color: rgba(255, 255, 255, 1);
 	transition: 0.5s all;
 }
+
 #custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
 	background-color: rgba(255, 255, 255, 1);
 }
+
 #custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
 #custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
 	background-color: rgba(0, 106, 179, 1);
 	transition: 0.5s all;
 }
+
 .nav li a:hover,
 .dropdown-menu li a:hover {
 	color: #fff;
 	background-color: rgba(0, 106, 179, 1);
 }
-.dropdown-menu li.active{
+
+.dropdown-menu li.active {
 	font-weight: bold;
 }
-.nav{
-	font-weight: normal;	
+
+.nav {
+	font-weight: normal;
 	font-size: 16px;
 }
+
 .navbar-nav.navbar-right:last-child {
 	margin-right: 20px;
 }
+
 .language_selector_img {
 	padding-right: 10px;
 }

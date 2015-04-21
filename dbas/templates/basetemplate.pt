@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}">
+<html lang="${request.locale_name}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
 
 <head>
 	<meta charset="utf-8">
@@ -48,26 +48,28 @@
 					<li id="research-hook"><a href="#research-template" title="Got to Research">Research</a>
 					</li>
 				</ul>
-				
+
 				<ul class="nav navbar-nav navbar-right">
-					<li>
-						<a href="" id="partyLink" title="Get the party started">
+					<li tal:condition="logged_in">
+						<a href="${request.application_url}/content" id="partyLink" title="Get the party started">
 							<span class="glyphicon glyphicon-erase glyphicon-icon" /> Let's go
 						</a>
 					</li>
+
 					<li>
 						<a href="${request.application_url}/contact" title="Get in touch with us">
 							<span class="glyphicon glyphicon-comment glyphicon-icon" /> Contact
 						</a>
 					</li>
-					<li id="loginLinkLi">
+
+					<li id="loginLinkLi" tal:condition="not:logged_in" >
 						<a href="${request.application_url}/login" title="Login">
 							<span class="glyphicon glyphicon-log-in glyphicon-icon"> Login </span> </a>
 					</li>
 
-					<li>
+					<li tal:condition="logged_in">
 						<a href="${request.application_url}/logout" title="Logout">
-							<span class="glyphicon glyphicon-log-out glyphicon-icon"> Logout </span> </a>
+							<span class="glyphicon glyphicon-log-out glyphicon-icon"> Logout &quot;<span tal:replace="logged_in"/>&quot;</span> </a>
 					</li>
 
 					<li class="dropdown">
@@ -75,15 +77,15 @@
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>
-								<a data-toggle="modal" data-target="#popup_author" title="Show Author">
+								<a href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
 									<i class="glyphicon glyphicon-user"></i> Author</a>
 							</li>
 							<li>
-								<a data-toggle="modal" data-target="#popup_licence" title="Show Licence">
+								<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
 									<i class="glyphicon glyphicon-floppy-disk"></i> Licence</a>
 							</li>
 							<li>
-								<a data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
+								<a href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
 									<i class="glyphicon glyphicon-sunglasses"></i> Privacy Policy</a>
 							</li>
 						</ul>
@@ -264,7 +266,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="modal-footer">
+				<div class="modal-password">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary">Request Password</button>
 				</div>
@@ -278,8 +280,6 @@
 			<span class="font-normal">Please enable JavaScript!</span>
 		</div>
 	</noscript>
-
-	<!-- CONTENT -->
 
 	<!-- scroll to top -->
 	<a href="#" class="back-to-top" title="Go to the top"></a>
