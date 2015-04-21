@@ -10,11 +10,12 @@
 	<div class="center">
 		<div class="logout">
 			<h1><span class="font-semi-bold">Logout</span></h1>
+			<!--
 			<p class="lead font-normal" tal:condition="logged_in">
 				You will be logged out and redirected automatically in <span class='timer'>5 s</span>.
-			</p>
-			<p class="lead font-normal" tal:condition="not:logged_in">
-				You are not logged in. Redirection in <span class='timer'>5 s</span>.
+			</p>-->
+			<p class="lead font-normal"> <!--tal:condition="not:logged_in">-->
+				You are logged out and redirected automatically in <span class='timer'>5 s</span>.
 			</p>
 			<br>
 			<input class="button button-block btn-lg btn btn-primary" id="homebutton" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
