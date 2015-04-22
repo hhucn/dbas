@@ -1,0 +1,198 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Concept: Simulating Patches with The Supergraph &mdash; D-BAS 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="D-BAS 0.0.1 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../home.html" class="fa fa-home"> D-BAS</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="simple">
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../home.html">D-BAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../home.html">Docs</a> &raquo;</li>
+      
+    <li>Concept: Simulating Patches with The Supergraph</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../_sources/attic/no_patches.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="concept-simulating-patches-with-the-supergraph">
+<h1>Concept: Simulating Patches with The Supergraph<a class="headerlink" href="#concept-simulating-patches-with-the-supergraph" title="Permalink to this headline">¶</a></h1>
+<p>I think, we can simulate the patch ideas and interface while
+sticking to model everything <strong>not</strong> as patches but as
+document versions in the supergraph. We need:</p>
+<ul class="simple">
+<li>to divide data into smaller structured parts (but we
+wanted to do that anyway),</li>
+<li>intelligently consider <code class="docutils literal"><span class="pre">follows</span></code>-edges.</li>
+</ul>
+<p>Imagine, you have a Document with two paragraphs:</p>
+<p>If someone creates a new version of <code class="docutils literal"><span class="pre">P1</span></code> we get a new
+version of D (by essence propagation):</p>
+<p>(<code class="docutils literal"><span class="pre">follows</span></code>-edges are blue.)</p>
+<p>Now while looking at <code class="docutils literal"><span class="pre">D'</span></code> someone modifies <code class="docutils literal"><span class="pre">P2</span></code>. Once
+again we get a new version <code class="docutils literal"><span class="pre">D''</span></code>:</p>
+<p>If you now look at <code class="docutils literal"><span class="pre">D</span></code> and its essence you have three
+<code class="docutils literal"><span class="pre">follows</span></code>-edges to consider, labelled <code class="docutils literal"><span class="pre">p</span></code>, <code class="docutils literal"><span class="pre">q</span></code> and
+<code class="docutils literal"><span class="pre">r</span></code>. <code class="docutils literal"><span class="pre">r</span></code> is the interesting one here. It should be no
+problem to build an interface that allows you to pull in
+<code class="docutils literal"><span class="pre">P2'</span></code> into <code class="docutils literal"><span class="pre">D</span></code> and thereby creating a new version of
+<code class="docutils literal"><span class="pre">D</span></code> (called <code class="docutils literal"><span class="pre">E</span></code>) that didn&#8217;t exist before:</p>
+<p>This version <code class="docutils literal"><span class="pre">E</span></code> implicitly existed as a possibility once
+<code class="docutils literal"><span class="pre">P2'</span></code> was created. It can be created ephemerally to be
+looked at in an interface and it can be brought into
+existence (in the supergraph) if someone considers <code class="docutils literal"><span class="pre">E</span></code>
+relevant.</p>
+<p>Isn&#8217;t that great?</p>
+<p>Now here is something even darcs cannot do (in one text
+file):</p>
+<p>Imagine someone changes the order of the paragraphs
+in <code class="docutils literal"><span class="pre">D''</span></code>, (<code class="docutils literal"><span class="pre">E</span></code> is removed for clarity):</p>
+<p>We look at <code class="docutils literal"><span class="pre">D'''</span></code>, its essence and all the
+<code class="docutils literal"><span class="pre">follows</span></code>-edges, again labelled <code class="docutils literal"><span class="pre">p</span></code>, <code class="docutils literal"><span class="pre">q</span></code> and <code class="docutils literal"><span class="pre">r</span></code>.
+Reverting <code class="docutils literal"><span class="pre">r</span></code> is trivial and would just revert the change
+and lead to <code class="docutils literal"><span class="pre">D''</span></code> which already exists. But an interface
+could allow you to try out a version where the paragraphs&#8217;
+order is changed, but <code class="docutils literal"><span class="pre">P2'</span></code> (for example) is reverted to
+<code class="docutils literal"><span class="pre">P2</span></code> (via <code class="docutils literal"><span class="pre">q</span></code>, creating <code class="docutils literal"><span class="pre">F</span></code>):</p>
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Tobias Krauthoff.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

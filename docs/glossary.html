@@ -1,0 +1,230 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Glossary &mdash; D-BAS 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="D-BAS 0.0.1 documentation" href="index.html"/>
+        <link rel="prev" title="Backend Structure" href="architecture/backend_structure.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="home.html" class="fa fa-home"> D-BAS</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-with-vagrant-virtual-machine">Installation with Vagrant virtual machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-backend">Installation (backend)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-the-application">Run the application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-test-suites">Run test suites</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="development.html#general-remarks">General Remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#running-the-testsuite">Running the Testsuite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#generate-html-documentation">Generate html documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#create-scaffold-for-extension-packages">Create scaffold for extension packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#update-packages">Update packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#adhocracy-releases">Adhocracy Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture/index.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture/frontend_structure.html">Frontend Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/backend_structure.html">Backend Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Glossary</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="home.html">D-BAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="home.html">Docs</a> &raquo;</li>
+      
+    <li>Glossary</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/glossary.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="glossary">
+<span id="id1"></span><h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
+<dl class="glossary docutils">
+<dt id="term-group">group</dt>
+<dd>A set of users. Can be mapped to permission :term:<a href="#id2"><span class="problematic" id="id3">`</span></a>role`s.</dd>
+<dt id="term-groupid">groupid</dt>
+<dd>Unique id of one <a class="reference internal" href="#term-group"><span class="xref std std-term">group</span></a>: &#8220;group:&lt;name&gt;&#8221;.</dd>
+<dt id="term-local-role">local role</dt>
+<dd>A <a class="reference internal" href="#term-role"><span class="xref std std-term">role</span></a> mapped to a <a class="reference internal" href="#term-principal"><span class="xref std std-term">principal</span></a> within a local
+context and all his children.</dd>
+<dt id="term-post-pool">post_pool</dt>
+<dd>A normal or <a class="reference internal" href="#term-service"><span class="xref std std-term">service</span></a> <code class="xref py py-class docutils literal"><span class="pre">adhocracy_core.interfaces.IPool</span></code> that
+serves as the common place to post resources of a special type for a
+given context.
+If <cite>resource sheet</cite> field with backreferences sets a
+<code class="xref py py-class docutils literal"><span class="pre">adhocracy_core.schema.PostPool</span></code> field, the
+referencing resources can only be postet at the <a class="reference internal" href="#term-post-pool"><span class="xref std std-term">post_pool</span></a>.
+This assumes that a post_pool exists in the lineage of the referenced
+resources.
+If a <cite>resource sheet</cite> field with references sets this, the
+referenced resource type can only be posted to <a class="reference internal" href="#term-post-pool"><span class="xref std std-term">post_pool</span></a>.</dd>
+<dt id="term-principal">principal</dt>
+<dd>A principal is a string representing a <a class="reference internal" href="#term-userid"><span class="xref std std-term">userid</span></a>, <a class="reference internal" href="#term-groupid"><span class="xref std std-term">groupid</span></a>,
+or <a class="reference internal" href="#term-roleid"><span class="xref std std-term">roleid</span></a>. It is provided by an <span class="xref std std-term">authentication policy</span>.
+For more information about the permission system read
+<code class="xref doc docutils literal"><span class="pre">api/authentication_api</span></code>.</dd>
+<dt id="term-role">role</dt>
+<dd>A set of permissions that can be mapped to :term:<a href="#id4"><span class="problematic" id="id5">`</span></a>principals`s</dd>
+<dt id="term-roleid">roleid</dt>
+<dd>Unique id of one permission <a class="reference internal" href="#term-role"><span class="xref std std-term">role</span></a>: &#8220;role:&lt;name&gt;&#8221;.</dd>
+<dt id="term-service">service</dt>
+<dd>A resource marked as <cite>service</cite>. Services
+may provide special rest api end points
+and helper methods. You can find them by their name with
+<code class="xref py py-func docutils literal"><span class="pre">adhocracy_core.interfaces.IPool.find_service()</span></code>.
+The <cite>service</cite> has to be in <span class="xref std std-term">lineage</span> or a child of a
+<span class="xref std std-term">lineage</span> pool for a given <cite>context</cite>.</dd>
+<dt id="term-userid">userid</dt>
+<dd>The unique id for one userique id of one <a class="reference internal" href="#term-group"><span class="xref std std-term">group</span></a>: &#8220;group:&lt;name&gt;&#8221;.</dd>
+</dl>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="architecture/backend_structure.html" class="btn btn-neutral" title="Backend Structure"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Tobias Krauthoff.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
