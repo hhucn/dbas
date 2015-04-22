@@ -16,6 +16,8 @@ Contents:
    installation
    development
    architecture/index
+   views/index
+   datastructure/index
    glossary
 
 Indices and tables
