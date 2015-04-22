@@ -4,7 +4,7 @@ import transaction
 
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from ..models import DBSession, User, Base
+from ..models import DBSession, User, Argument, Position, RelationArgArg, RelationPosArg, Base
 
 
 def usage(argv):
@@ -24,6 +24,44 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model = User(firstname='Tobias', surename='Krauthoff', email='krauthoff@cs.uni-duesseldorf', password='tesst123', group='editors')
-        DBSession.add(model)
+	    # adding some dummy users
+        model1 = User(firstname='admin', surename='admin', email='dbas@cs.uni-duesseldorf', password='admin', group='editors')
+        model2 = User(firstname='Tobias', surename='Krauthoff', email='krauthoff@cs.uni-duesseldorf', password='test123', group='editors')
+        model3 = User(firstname='Martin', surename='Mauve', email='mauve@cs.uni-duesseldorf', password='test123', group='editors')
+        DBSession.add(model1)
+        DBSession.add(model2)
+        DBSession.add(model3)
 
+		# adding some dummy positions
+        position1 = Position(text='I like cats.', weight='100', author_id='1')
+        position2 = Position(text='I like dogs.', weight='20', author_id='2')
+        DBSession.add(position1)
+        DBSession.add(position2)
+
+		# adding some dummy arguments
+        argument1 = Argument(text='They are fluffy.', weight='100', author_id='1')
+        argument2 = Argument(text='They are indepently.', weight='50', author_id='2')
+        argument3 = Argument(text='They are hating all humans!', weight='70', author_id='3')
+        argument4 = Argument(text='They are very devoted.', weight='80', author_id='1')
+        argument5 = Argument(text='They can protect you', weight='63', author_id='2')
+        DBSession.add(argument1)
+        DBSession.add(argument2)
+        DBSession.add(argument3)
+        DBSession.add(argument4)
+        DBSession.add(argument5)
+
+		# adding some dummy relations
+        relation1 = RelationPosArg(weight='134', pos_uid='1', arg_uid='1', author_id='1', is_supportive='1')
+        relation2 = RelationPosArg(weight='134', pos_uid='2', arg_uid='1', author_id='1', is_supportive='0')
+        relation3 = RelationPosArg(weight='134', pos_uid='3', arg_uid='1', author_id='2', is_supportive='0')
+        relation4 = RelationPosArg(weight='134', pos_uid='4', arg_uid='2', author_id='3', is_supportive='1')
+        relation5 = RelationPosArg(weight='134', pos_uid='5', arg_uid='2', author_id='3', is_supportive='1')
+        relation6 = RelationArgArg(weight='134', arg_uid1='5', arg_uid2='3', author_id='3', is_supportive='0')
+        relation7 = RelationArgArg(weight='134', arg_uid1='1', arg_uid2='2', author_id='2', is_supportive='1')
+        DBSession.add(relation1)
+        DBSession.add(relation2)
+        DBSession.add(relation3)
+        DBSession.add(relation4)
+        DBSession.add(relation5)
+        DBSession.add(relation6)
+        DBSession.add(relation7)
