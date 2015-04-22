@@ -9,7 +9,6 @@ lib64/
 sdist/
 *.egg
 *.egg-info/
-source/
 
 # Installer logs
 pip-log.txt
@@ -29,7 +28,7 @@ coverage.xml
 *.sqlite
 
 # Sphinx documentation
-docs/_build/
+# docs/
 
 # Misc
 .python-version

@@ -6,5 +6,11 @@ GROUPS = {'editor':['group:editors'],
           'user':['group:users']}
 
 def groupfinder(userid, request):
-    if userid in USERS:
-        return GROUPS.get(userid, [])
+	'''
+	Will find group for the user id in given request
+	:param userid: current user id
+	:param request: request
+	:return: given group or none
+	'''
+	if userid in USERS:
+		return GROUPS.get(userid, [])

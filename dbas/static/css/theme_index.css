@@ -1,9 +1,5 @@
-#home-hook,
-#description-hook,
-#features-hook,
-#about-hook,
-#research-hook {
-	visibility: visible
+.navbar-left {
+	display: inline;
 }
 
 #home-template {
@@ -19,16 +15,13 @@
 	color: #101000;
 }
 
-.content .lead .font-normal {
-	color: #000;
-}
 
 .links {
 	float: none;
 	text-align: right;
 	margin-bottom: 15px;
 	margin-right: 15px;
-	color: #fff;
+	color: #000;
 }
 
 .links ul {
@@ -44,21 +37,19 @@
 	text-align: center;
 }
 
-.links ul li a {
-	color: #ddd;
-}
-
 .links ul li a:hover {
 	text-decoration: underline;
-	color: #fff;
+	color: #006ab3;
 }
 
+.content .lead .font-normal,
+.links ul li a,
 .links ul li .icon-muted {
-	color: #ddd;
+	color: #000;
 }
 
 .links ul li:hover .icon-muted {
-	color: #fff;
+	color: #006ab3;
 }
 
 .list {
@@ -70,7 +61,7 @@
 .logo_fhoev {
 	padding: 5px;
 	background: #fff;
-	border: 1px solid #021a40;
+	border: 1px solid #006ab3;
 }
 
 .table_logo{

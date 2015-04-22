@@ -1,92 +1,99 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
 
 <head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_login.css')}" rel="stylesheet">
+    <link type="text/css" href="${request.static_url('dbas:static/css/theme_login.css')}" rel="stylesheet">
 </head>
 
 <body>
 
-	<div class="login form">
-		<ul class="tab-group">
-			<li class="tab active"><a href="#login">Log In</a>
-			</li>
-			<li class="tab"><a href="#signup">Sign Up</a>
-			</li>
-		</ul>
-		<div class="tab-content">
+<div class="login form">
+    <ul class="tab-group">
+        <li class="tab active"><a href="#login">Log In</a>
+        </li>
+        <li class="tab"><a href="#signup">Sign Up</a>
+        </li>
+    </ul>
+    <div class="tab-content">
 
-			<div id="login">
-				<h2>Welcome Back!</h2>
-				<div tal:condition="registration_failed" class="alert alert-danger" role="alert">
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-					<span class="sr-only">Error:</span> <span tal:replace="message" />
-				</div>
+        <div id="login">
+            <h2>Welcome Back!</h2>
 
-				<form action="${url}" method="post">
-					<input type="hidden" name="came_from" value="${came_from}" />
-					<div class="field-wrap">
-						<h3>Your Name</h3>
-						<input type="text" class="email" name="login" autocomplete="off" placeholder="example: viewer, user or editor (PW is the same)" value="${login}">
-					</div>
+            <div tal:condition="registration_failed" class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span> <span tal:replace="message" />
+            </div>
 
-					<div class="field-wrap">
-						<h3>Your Password</h3>
-						<input type="password" class="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}">
-					</div>
+            <form action="${url}" method="post">
+                <input type="hidden" name="came_from" value="${came_from}"/>
 
-					<p data-toggle="modal" data-target="#popup_password"><a>Forgot Password?</a>
-					</p>
-
-					<input type="submit" name="form.login.submitted" value="Log In" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
-
-				</form>
-			</div>
+                <h3>Your Name</h3>
+                <input type="text" class="email" name="login" autocomplete="off"
+                       placeholder="example: viewer, user or editor (PW is the same)" value="${login}">
 
 
-			<div id="signup">
-				<h2>Sign Up for Free</h2>
-				<form action="/login" method="post">
-					<div class="top-row">
-
-						<h3>Your First Name (required)</h3>
-						<input id="userfirstname-input" type="text" class="userfirstname active" autocomplete="on" placeholder="example: Tobias">
+                <h3>Your Password</h3>
+                <input type="password" class="password" name="password" autocomplete="off"
+                       placeholder="example: ******" value="${password}"/>
 
 
+                <p data-toggle="modal" data-target="#popup_password"><a>Forgot Password?</a>
+                </p>
 
-						<h3>Your Last Name (required)</h3>
-						<input id="userlastname-input" type="text" class="userlastname" autocomplete="on" placeholder="example: Krauthoff">
+                <input type="submit" name="form.login.submitted" value="Log In"
+                       class="button button-block btn-lg btn btn-primary" data-dismiss="modal"/>
 
-					</div>
+            </form>
+        </div>
 
-					<h3>Your Email Address (required)</h3>
-					<input id="email-input" type="email" class="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
 
-					<div class="field-wrap">
-						<h3>Your Password (required)</h3>
-						<input id="password-input" type="password" class="password" autocomplete="off" placeholder="example: ******">
-					</div>
+        <div id="signup">
+            <h2>Sign Up for Free</h2>
 
-					<h3>Your Password (confirm, required)</h3>
-					<input id="passwordconfirm-input" type="password" class="passwordconfirm" autocomplete="off" placeholder="example: ******">
+            <form action="/login" method="post">
 
-					<div id="warning-message" class="alert alert-warning alert-dismissible" role="alert">
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-						</button>
-						<strong>Warning!</strong>
-						<div id="warning-message-text">Better check yourself, you're not looking too good.</div>
-					</div>
+                <h3>Your First Name (required)</h3>
+                <input id="userfirstname-input" type="text" name="firstname" class="userfirstname active"
+                       autocomplete="on"
+                       placeholder="example: Tobias" value="${firstname}">
 
-					<input id="login-register-submit" type="" name="form.register.submitted" value="Register" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
-					<!--<input id="login-register-submit" type="submit" name="form.register.submitted" value="Register" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+                <h3>Your Last Name (required)</h3>
+                <input id="userlastname-input" type="text" name="surename" class="userlastname"
+                       autocomplete="on" placeholder="example: Krauthoff" value="${surename}">
+
+                <h3>Your Email Address (required)</h3>
+                <input id="email-input" type="email" class="email" name="email" autocomplete="on"
+                       placeholder="example: krauthoff@cs.uni-duesseldorf.de" value="${email}">
+
+                <h3>Your Password (required)</h3>
+                <input id="password-input" type="password" name="password" class="password" autocomplete="off"
+                       placeholder="example: ******" value="${password}">
+
+                <h3>Your Password (confirm, required)</h3>
+                <input id="passwordconfirm-input" type="password" class="passwordconfirm" autocomplete="off"
+                       placeholder="example: ******">
+
+                <div id="warning-message" class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>Warning!</strong>
+
+                    <div id="warning-message-text"><span tal:replace="message" /></div>
+                </div>
+
+                <input id="login-register-submit" type="" name="form.register.submitted" value="Register"
+                       class="button button-block btn-lg btn btn-primary" data-dismiss="modal"/>
+                <!--<input id="login-register-submit" type="submit" name="form.register.submitted" value="Register" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
 -->
 
-				</form>
-			</div>
-		</div>
-	</div>
+            </form>
+        </div>
+    </div>
+</div>
 
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/login.js')}"></script>
+<script type="text/javascript" src="${request.static_url('dbas:static/js/login.js')}"></script>
 
 </body>
 <html>

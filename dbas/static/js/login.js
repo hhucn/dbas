@@ -15,7 +15,7 @@ $('.tab a').on('click', function (e) {
 
 $(document).ready(function () {
 	'use strict';
-
+	
 	$('#warning-message').hide();
 	var send = document.getElementById('login-register-submit');
 	if (send) {

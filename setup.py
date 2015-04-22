@@ -18,6 +18,7 @@ requires = [
     'transaction',
     'zope.sqlalchemy',
     'docutils',
+    'WebTest',
     ]
 
 setup(name='DBAS',
