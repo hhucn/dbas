@@ -5,7 +5,7 @@ from pyramid.config import Configurator
 from dbas.security import groupfinder
 
 from sqlalchemy import engine_from_config
-from .models import DBSession, Base
+from .models import *
 
 
 def main(global_config, **settings):

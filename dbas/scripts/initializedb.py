@@ -4,7 +4,7 @@ import transaction
 
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from ..models import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, Group, Issue, Base
+from ..models import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, RelationPosPos, Group, Issue, Base
 
 
 def usage(argv):
@@ -31,23 +31,24 @@ def main(argv=sys.argv):
 		# addng groups
 		group1 = Group(name='editor')
 		group2 = Group(name='user')
-		DBSession.add(group1)
-		DBSession.add(group2)
+		DBSession.add(group1, group2)
 
 		# adding some dummy users
 		user1 = User(firstname='admin', surename='admin', email='dbas@cs.uni-duesseldorf', password='admin')
 		user2 = User(firstname='Tobias', surename='Krauthoff', email='krauthoff@cs.uni-duesseldorf', password='test123')
 		user3 = User(firstname='Martin', surename='Mauve', email='mauve@cs.uni-duesseldorf', password='test123')
-		user1.group.append(group1)
-		user2.group.append(group1)
-		user3.group.append(group1)
-		DBSession.add(user1, user2, user3)
+		user1.group = group1.uid
+		user2.group = group1.uid
+		user3.group = group1.uid
+		DBSession.add(user1)
+		DBSession.add(user2)
+		DBSession.add(user3)
 
 		# adding some dummy positions
 		position1 = Position(text='I like cats.', weight='100')
 		position2 = Position(text='I like dogs.', weight='20')
-		position1.author.append(user1)
-		position2.author.append(user2)
+		position1.author = user1.uid
+		position2.author = user2.uid
 		DBSession.add(position1)
 		DBSession.add(position2)
 
@@ -58,13 +59,18 @@ def main(argv=sys.argv):
 		argument4 = Argument(text='They are very devoted.', weight='80')
 		argument5 = Argument(text='They can protect you', weight='63')
 		argument6 = Argument(text='They smell when it\'s raining', weight='110')
-		argument1.author.append(user1)
-		argument2.author.append(user1)
-		argument3.author.append(user2)
-		argument4.author.append(user3)
-		argument5.author.append(user3)
-		argument6.author.append(user1)
-		DBSession.add(argument1, argument2, argument3, argument4, argument5, argument6)
+		argument1.author = user1.uid
+		argument2.author = user1.uid
+		argument3.author = user2.uid
+		argument4.author = user3.uid
+		argument5.author = user3.uid
+		argument6.author = user1.uid
+		DBSession.add(argument1)
+		DBSession.add(argument2)
+		DBSession.add(argument3)
+		DBSession.add(argument4)
+		DBSession.add(argument5)
+		DBSession.add(argument6)
 
 		# adding some dummy relations
 		relation1 = RelationArgPos(weight='134', is_supportive='1')
@@ -75,28 +81,42 @@ def main(argv=sys.argv):
 		relation6 = RelationArgPos(weight='81', is_supportive='0')
 		relation7 = RelationArgArg(weight='132', is_supportive='0')
 		relation8 = RelationArgArg(weight='46', is_supportive='1')
-		relation1.author.append(user1)
-		relation2.author.append(user2)
-		relation3.author.append(user3)
-		relation4.author.append(user2)
-		relation5.author.append(user2)
-		relation6.author.append(user3)
-		relation7.author.append(user3)
-		relation8.author.append(user1)
-		relation1.arg_uid.append(argument1)
-		relation2.arg_uid.append(argument2)
-		relation3.arg_uid.append(argument3)
-		relation4.arg_uid.append(argument4)
-		relation5.arg_uid.append(argument5)
-		relation6.arg_uid.append(argument6)
-		relation7.arg_uid1.append(argument6)
-		relation8.arg_uid1.append(argument5)
-		relation1.pos_uid.append(position1)
-		relation2.pos_uid.append(position1)
-		relation3.pos_uid.append(position1)
-		relation4.pos_uid.append(position2)
-		relation5.pos_uid.append(position2)
-		relation6.pos_uid.append(position2)
-		relation7.arg_uid2.append(argument1)
-		relation8.arg_uid2.append(argument4)
-		DBSession.add(relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8)
+		relation9 = RelationPosPos(weight='132', is_supportive='0')
+		relation1.author = user1.uid
+		relation2.author = user2.uid
+		relation3.author = user3.uid
+		relation4.author = user2.uid
+		relation5.author = user2.uid
+		relation6.author = user3.uid
+		relation7.author = user3.uid
+		relation8.author = user1.uid
+		relation9.author = user3.uid
+		relation1.arg_uid = argument1.uid
+		relation2.arg_uid = argument2.uid
+		relation3.arg_uid = argument3.uid
+		relation4.arg_uid = argument4.uid
+		relation5.arg_uid = argument5.uid
+		relation6.arg_uid = argument6.uid
+		relation7.arg_uid1 = argument6.uid
+		relation8.arg_uid1 = argument5.uid
+		relation9.pos_uid1 = argument1.uid
+		relation1.pos_uid = position1.uid
+		relation2.pos_uid = position1.uid
+		relation3.pos_uid = position1.uid
+		relation4.pos_uid = position2.uid
+		relation5.pos_uid = position2.uid
+		relation6.pos_uid = position2.uid
+		relation7.arg_uid2 = argument1.uid
+		relation8.arg_uid2 = argument4.uid
+		relation9.pos_uid2 = argument6.uid
+		DBSession.add(relation1)
+		DBSession.add(relation2)
+		DBSession.add(relation3)
+		DBSession.add(relation4)
+		DBSession.add(relation5)
+		DBSession.add(relation6)
+		DBSession.add(relation7)
+		DBSession.add(relation8)
+		DBSession.add(relation9)
+
+		transaction.commit()

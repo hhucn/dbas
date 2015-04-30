@@ -20,19 +20,36 @@ def _registerRoutes(config):
 
 def _initTestingDB():
 	from sqlalchemy import create_engine
-	from .models import DBSession, User, Position, Argument, RelationArgPos, RelationArgArg, Base
+	from .models import DBSession, Group, User, Argument, RelationArgPos, RelationArgArg, Position, Base
 	engine = create_engine('sqlite://')
 	Base.metadata.create_all(engine)
 	DBSession.configure(bind=engine)
 	with transaction.manager:
-		user = User(firstname='Tobias', surename='Krauthoff', password='test123', email='krauthoff@cs.uni-duesseldorf.de', group='editors')
-		position1 = Position(text='I like cats.', weight='100', author_id='1')
-		position2 = Position(text='I like dogs.', weight='20', author_id='2')
-		argument1 = Argument(text='They are hating all humans!', weight='70', author_id='1')
-		argument2 = Argument(text='They are very devoted.', weight='80', author_id='1')
-		relation1 = RelationArgPos(weight='134', pos_uid='1', arg_uid='1', author_id='1', is_supportive='1')
-		relation2 = RelationArgPos(weight='34', pos_uid='2', arg_uid='2jb', author_id='1', is_supportive='1')
-		relation3 = RelationArgArg(weight='14', arg_uid1='1', arg_uid2='2', author_id='1', is_supportive='0')
+		group = Group('editors')
+		user = User(firstname='Tobias', surename='Krauthoff', password='test123', email='krauthoff@cs.uni-duesseldorf.de')
+		user.group = group.uid
+		position1 = Position(text='I like cats.', weight='100')
+		position2 = Position(text='I like dogs.', weight='20')
+		position1.author = user.uid
+		position2.author = user.uid
+		argument1 = Argument(text='They are hating all humans!', weight='70')
+		argument2 = Argument(text='They are very devoted.', weight='80')
+		argument1.author = user.uid
+		argument2.author = user.uid
+		relation1 = RelationArgPos(weight='134', is_supportive='1')
+		relation2 = RelationArgPos(weight='34', is_supportive='1')
+		relation3 = RelationArgArg(weight='14', is_supportive='0')
+		relation1.author = user.uid
+		relation2.author = user.uid
+		relation3.author = user.uid
+		relation1.pos_uid = argument1.uid
+		relation2.pos_uid = argument2.uid
+		relation3.arg_uid1 = argument1.uid
+		relation1.arg_uid = argument1.uid
+		relation2.arg_uid = argument2.uid
+		relation3.arg_uid2 = argument2.uid
+
+		DBSession.add(group)
 		DBSession.add(user)
 		DBSession.add(position1)
 		DBSession.add(position2)
@@ -228,7 +245,7 @@ class FunctionalTests(unittest.TestCase):
 	def setUp(self):
 		print("FunctionalTests: setUp")
 		from dbas import main
-		settings = { 'sqlalchemy.url': 'sqlite://', 'pyramid.includes' : 'pyramid_mailer.testing'}
+		settings = {'sqlalchemy.url': 'sqlite://', 'pyramid.includes' : 'pyramid_mailer.testing'}
 		#settings = { 'sqlalchemy.url': 'sqlite://'}
 		app = main({}, **settings)
 		from webtest import TestApp
@@ -331,11 +348,11 @@ class FunctionalTests(unittest.TestCase):
 		print("FunctionalTests: test_email")
 		self.res = self.testapp.get('/contact', status=200)
 		self.registry = self.testapp.app.registry
-		#self.mailer = get_mailer(self.registry)
-		#self.assertEqual(len(self.mailer.outbox), 1)
-		#self.assertEqual(self.mailer.outbox[0].subject, "hello world")
-		#self.assertEqual(len(self.mailer.queue), 1)
-		#self.assertEqual(self.mailer.queue[0].subject, "hello world")
+#		self.mailer = get_mailer(self.registry)
+#		self.assertEqual(len(self.mailer.outbox), 1)
+#		self.assertEqual(self.mailer.outbox[0].subject, "hello world")
+#		self.assertEqual(len(self.mailer.queue), 1)
+#		self.assertEqual(self.mailer.queue[0].subject, "hello world")
 
 #	def test_anonymous_user_cannot_edit(self):
 #		res = self.testapp.get('/FrontPage/edit_page', status=200)
