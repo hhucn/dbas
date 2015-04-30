@@ -77,16 +77,17 @@ $(document).ready(function () {
 				$('.timer').text(sec + " s");
 			},
 			onCounterEnd: function () {
-					//this gets the full url and an index
-					var url = document.location.href,
-							index = url.indexOf("/logout");
-					//this removes the logout at the end, if there is one
-					url = url.substring(0, (index === -1) ? url.length : index);
-					// new text to the button
-					$('#homebutton').text("Redirecting to " + url);
-					// Move to a new location or you can do something else
-					window.location.href = url;
-				} // final action
+				//this gets the full url and an index
+				var url = document.location.href,
+						index = url.indexOf("/logout");
+				//this removes the logout at the end, if there is one
+				url = url.substring(0, (index === -1) ? url.length : index);
+				url = url + "/logout_redirect";
+				// new text to the button
+				$('#homebutton').text("Redirecting to " + url);
+				// Move to a new location or you can do something else
+				window.location.href = url;
+			} // final action
 		});
 		myCounter.start();
 	}

@@ -6,8 +6,8 @@ Installation everything for developing
 
 Requirements:
 
-1. python python-setuptools
-2. easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy
+1. python python-setuptools easy_install
+2. easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy pyramid_mailer
 
 Installation with Vagrant virtual machine
 -----------------------------------------

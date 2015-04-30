@@ -45,5 +45,3 @@ Client (frontend):
 - `Splinter <http://splinter.cobrateam.info/>`_ (acceptance and frontend tests)
 
 - `Jasmine <https://jasmine.github.io/>`_ (unit tests)
-
-- `Grunt <http://gruntjs.com/>`_ (build system)

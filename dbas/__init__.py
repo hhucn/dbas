@@ -22,13 +22,21 @@ def main(global_config, **settings):
     Base.metadata.bind = engine
 
     # creating the configurator
-    config = Configurator(settings={'pyramid.default_locale_name':'en'},root_factory='dbas.models.RootFactory')
+    settings={'pyramid.default_locale_name':'en',
+              'mail.host':'rohrpostix@cs.uni-duesseldorf.de',
+              'mail.port':'993',
+              'mail.username':'krauthoff',
+              'mail.password':'cs_kraut#1989',
+              'mail.ssl':'True'
+              }
+    config = Configurator(settings=settings,root_factory='dbas.models.RootFactory')
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
 
     # includings for the config
     config.include('pyramid_chameleon')
     config.include('pyramid_debugtoolbar')
+    config.include('pyramid_mailer')
 
     # adding all routes
     config.add_static_view('static', 'static', cache_max_age=3600)

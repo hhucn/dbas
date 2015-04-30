@@ -8,20 +8,34 @@ $(document).ready(function () {
 	var send = document.getElementById('contact-submit');
 	if (send) {
 		send.onclick = function () {
+			// getting input
 			var name = $('#name-input').val(),
 					phone = $('#phone-input').val(),
+					email = $('#email-input').val(),
 					message = $('#message-input').val(),
 					spam = $('#spam-input').val();
+			
+			var mail_regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i,
+					valid_mail = mail_regex.test(email);
 
+			// check name
 			if (!name || /^\s*$/.test(name) || 0 === name.length) {
 				$('#alert-message').hide();
 				$('#warning-message').show();
 				$('#warning-message-text').text('Better check your name, because the input is empty!');
 				
-			} else if (!message || /^\s*$/.test(message) || 0 === message.length) {
+			// check mail mail
+			} else if (!valid_mail) {
 				$('#alert-message').hide();
 				$('#warning-message').show();
-				$('#warning-message-text').text('Better check your message, because the input is empty!');
+				
+				$('#warning-message-text').text('Better check your e-mail!');
+				
+			// check message
+			} else if (!message || /^\s*$/.test(message) || message.length < 50) {
+				$('#alert-message').hide();
+				$('#warning-message').show();
+				$('#warning-message-text').text('Better check your message, because the input is too short!');
 				
 			} else {
 				$('#warning-message').hide();

@@ -15,6 +15,9 @@
 			<h3>Your Name (required)</h3>
 			<input type="text" id="name-input" class="user active" placeholder="example: Tobias Krauthoff" tabindex="1" autofocus autocomplete="on">
 
+			<h3>Your E-Mail (required)</h3>
+			<input type="email" id="email-input" class="email" placeholder="example: krauthoff@cs.uni-duesseldorf.de" tabindex="2" autocomplete="on">
+
 			<h3>Your Phone Number</h3>
 			<input type="tel" id="phone-input" class="tel" placeholder="example: +49 (0)211 81-13461" tabindex="2" autocomplete="on">
 

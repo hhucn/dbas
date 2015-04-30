@@ -42,6 +42,22 @@ class User(Base):
 		q = q.order_by(User.surename)
 		return q
 
+class Issue(Base):
+	'''
+	issue-table with one column.
+	Each issue has text and a creation date
+	'''
+	__tablename__ = 'issue'
+	uid = Column(Integer, primary_key=True)
+	text = Column(Text, nullable=False)
+	date = Column(DateTime, default=func.now())
+
+	def __init__(self, text):
+		"""
+		Initializes a row in current position-table
+		"""
+		self.text = text
+
 
 class Position(Base):
 	'''
@@ -171,8 +187,8 @@ class RootFactory(object):
 	'''
 	Defines the ACL
 	'''
-	__acl__ = [ (Allow, Everyone, 'view'),
-	            (Allow, 'group:editors', 'edit'),
+	#(Allow, Everyone, 'use'),
+	__acl__ = [ (Allow, 'group:editors', 'edit'),
                 (Allow, 'group:editors', 'use'),
                 (Allow, 'group:users', 'use') ]
 	def __init__(self, request):

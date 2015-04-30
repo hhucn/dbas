@@ -20,17 +20,12 @@
         <div id="login">
             <h2>Welcome Back!</h2>
 
-            <div tal:condition="registration_failed" class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span> <span tal:replace="message" />
-            </div>
-
-            <form action="${url}" method="post">
+            <form action="/login" method="post">
                 <input type="hidden" name="came_from" value="${came_from}"/>
 
-                <h3>Your Name</h3>
-                <input type="text" class="email" name="login" autocomplete="off"
-                       placeholder="example: viewer, user or editor (PW is the same)" value="${login}">
+                <h3>Your E-Mail</h3>
+                <input type="text" class="email" name="email" autocomplete="off"
+                       placeholder="example: viewer, user or editor (PW is the same)" value="${email}">
 
 
                 <h3>Your Password</h3>
@@ -40,6 +35,11 @@
 
                 <p data-toggle="modal" data-target="#popup_password"><a>Forgot Password?</a>
                 </p>
+
+                <div tal:condition="login_failed" class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span> <span tal:replace="message" />
+                </div>
 
                 <input type="submit" name="form.login.submitted" value="Log In"
                        class="button button-block btn-lg btn btn-primary" data-dismiss="modal"/>
@@ -83,10 +83,13 @@
                     <div id="warning-message-text"><span tal:replace="message" /></div>
                 </div>
 
-                <input id="login-register-submit" type="" name="form.register.submitted" value="Register"
+                <div tal:condition="registration_failed" class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span> <span tal:replace="message" />
+                </div>
+
+                <input id="login-register-submit" type="submit" name="form.register.submitted" value="Register"
                        class="button button-block btn-lg btn btn-primary" data-dismiss="modal"/>
-                <!--<input id="login-register-submit" type="submit" name="form.register.submitted" value="Register" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
--->
 
             </form>
         </div>

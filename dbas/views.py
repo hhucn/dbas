@@ -4,6 +4,29 @@ from pyramid.security import remember, forget
 
 from .models import DBSession, User
 from .security import USERS
+from .helper import PasswordGenerator
+
+# name = self.request.params['name']
+# mail = self.request.params['mail']
+# phone = self.request.params['phone']
+# content = self.request.params['message']
+# subject = 'Contact D-BAS'
+# systemmail = 'dbas@cs.uni-duesseldorf.de'
+# body = 'Name: ' + name + '\n' + 'Mail: ' + mail + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
+# message = Message()
+# if (not mail == ''):
+# 	message = Message(subject=subject,
+# 	                  sender=systemmail,
+# 	                  recipients =["krauthoff@cs.uni-duesseldorf.de",mail],
+# 	                  body=body
+# 	                )
+# else:
+# 	message = Message(subject=subject,
+# 	                  sender=systemmail,
+# 	                  recipients =["krauthoff@cs.uni-duesseldorf.de"],
+# 	                  body=body
+# 	                )
+# mailer.send(message)
 
 class Dbas(object):
 	def __init__(self, request):
@@ -15,7 +38,7 @@ class Dbas(object):
 		self.request = request
 
 	# main page
-	@view_config(route_name='main_page', renderer='templates/index.pt', permission='view')
+	@view_config(route_name='main_page', renderer='templates/index.pt')
 	def main_page(self):
 		"""
 		View configuration for the main page
@@ -28,50 +51,64 @@ class Dbas(object):
 		)
 
 	# login page
-	@view_config(route_name='main_login', renderer='templates/login.pt', permission='view')
+	@view_config(route_name='main_login', renderer='templates/login.pt')
 	@forbidden_view_config(renderer='templates/login.pt')
 	def main_login(self):
 		"""
 		View-configuration for the login template
 		:return:
 		"""
+		# check for already logged in users
+		if (self.request.authenticated_userid):
+			return HTTPFound(
+				location = self.request.route_url('main_content'),
+			)
+
 		login_url = self.request.route_url('main_login')
 		referrer = self.request.url
 
 		if referrer == login_url:
-			referrer = '/' # never use the login form itself as came_from
+			referrer = self.request.route_url('main_page') # never use the login form itself as came_from
 		came_from = self.request.params.get('came_from', referrer)
 		message = ''
-		login = ''
 		password = ''
 		firstname = ''
 		surename = ''
 		email = ''
 		reg_failed = False
+		log_failed = False
 		goto_url = self.request.route_url('main_content')
 
+		# case: user login
 		if 'form.login.submitted' in self.request.params:
-			login = self.request.params['login']
+			email = self.request.params['email']
 			password = self.request.params['password']
-			# user = DBSesseion.query(User)
-			if USERS.get(login) == password:
-				headers = remember(self.request, login)
+			# user = DBSession.query(User).filter_by(email=email)
+			#if (email in user.email):
+			#	password = users.passwords
+
+			if USERS.get(email) == password:
+				headers = remember(self.request, email)
 				return HTTPFound(
 					location = goto_url,
 					headers = headers
 				)
-			message = 'Failed login'
+			message = 'Failed login, please check your username and password'
+			log_failed = True
 
+		# case: user registration
 		if 'form.registration.submitted' in self.request.params:
 			firstname = self.request.params['firstname']
 			surename = self.request.params['surename']
 			email = self.request.params['email']
 			password = self.request.params['password']
-			reg_failed = True
+			users = DBSession.query(User)
+			reg_failed = email in users
 			if (not reg_failed):
-				DBSession.add(User(firstname, surename, email, password, 'users'))
+				print("Register " + firstname + " " + surename + " " + email)
+				# DBSession.add(User(firstname, surename, email, password, 'users'))
 			else:
-				message = 'Registration failed'
+				message = 'E-Mail is already taken'
 
 
 		return dict(
@@ -80,11 +117,11 @@ class Dbas(object):
 			message = message,
 			url = self.request.application_url + '/login',
 			came_from = came_from,
-			login = login,
 			password = password,
             firstname = firstname,
             surename = surename,
             email = email,
+			login_failed = log_failed,
 			registration_failed = reg_failed,
 			logged_in = self.request.authenticated_userid
 		)
@@ -116,7 +153,7 @@ class Dbas(object):
 		)
 
 	# contact page
-	@view_config(route_name='main_contact', renderer='templates/contact.pt', permission='view')
+	@view_config(route_name='main_contact', renderer='templates/contact.pt')
 	def main_contact(self):
 		'''
 		View configuration for the contact view.
@@ -142,7 +179,7 @@ class Dbas(object):
 		)
 
 	# impressum
-	@view_config(route_name='main_impressum', renderer='templates/impressum.pt', permission='view')
+	@view_config(route_name='main_impressum', renderer='templates/impressum.pt')
 	def main_impressum(self):
 		'''
 		View configuration for the impressum.
