@@ -20,7 +20,7 @@ def _registerRoutes(config):
 
 def _initTestingDB():
 	from sqlalchemy import create_engine
-	from .models import DBSession, User, Position, Argument, RelationPosArg, RelationArgArg, Base
+	from .models import DBSession, User, Position, Argument, RelationArgPos, RelationArgArg, Base
 	engine = create_engine('sqlite://')
 	Base.metadata.create_all(engine)
 	DBSession.configure(bind=engine)
@@ -30,8 +30,8 @@ def _initTestingDB():
 		position2 = Position(text='I like dogs.', weight='20', author_id='2')
 		argument1 = Argument(text='They are hating all humans!', weight='70', author_id='1')
 		argument2 = Argument(text='They are very devoted.', weight='80', author_id='1')
-		relation1 = RelationPosArg(weight='134', pos_uid='1', arg_uid='1', author_id='1', is_supportive='1')
-		relation2 = RelationPosArg(weight='34', pos_uid='2', arg_uid='2jb', author_id='1', is_supportive='1')
+		relation1 = RelationArgPos(weight='134', pos_uid='1', arg_uid='1', author_id='1', is_supportive='1')
+		relation2 = RelationArgPos(weight='34', pos_uid='2', arg_uid='2jb', author_id='1', is_supportive='1')
 		relation3 = RelationArgArg(weight='14', arg_uid1='1', arg_uid2='2', author_id='1', is_supportive='0')
 		DBSession.add(user)
 		DBSession.add(position1)
@@ -326,16 +326,16 @@ class FunctionalTests(unittest.TestCase):
 		res = self.testapp.get('/logout_redirect', status=302)
 		self.assertTrue(b'Logout' not in res.body)
 
-#	# testing the email
-#	def test_email(self):
-#		print("FunctionalTests: test_email")
-#		self.res = self.testapp.get('/contact', status=200)
-#		self.registry = self.testapp.app.registry
-#		self.mailer = get_mailer(self.registry)
-#		self.assertEqual(len(self.mailer.outbox), 1)
-#		self.assertEqual(self.mailer.outbox[0].subject, "hello world")
-#		self.assertEqual(len(self.mailer.queue), 1)
-#		self.assertEqual(self.mailer.queue[0].subject, "hello world")
+	# testing the email
+	def test_email(self):
+		print("FunctionalTests: test_email")
+		self.res = self.testapp.get('/contact', status=200)
+		self.registry = self.testapp.app.registry
+		#self.mailer = get_mailer(self.registry)
+		#self.assertEqual(len(self.mailer.outbox), 1)
+		#self.assertEqual(self.mailer.outbox[0].subject, "hello world")
+		#self.assertEqual(len(self.mailer.queue), 1)
+		#self.assertEqual(self.mailer.queue[0].subject, "hello world")
 
 #	def test_anonymous_user_cannot_edit(self):
 #		res = self.testapp.get('/FrontPage/edit_page', status=200)

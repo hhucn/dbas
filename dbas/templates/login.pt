@@ -25,7 +25,7 @@
 
                 <h3>Your E-Mail</h3>
                 <input type="text" class="email" name="email" autocomplete="off"
-                       placeholder="example: viewer, user or editor (PW is the same)" value="${email}">
+                       placeholder="example: user or editor (PW is test)" value="${email}">
 
 
                 <h3>Your Password</h3>

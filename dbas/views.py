@@ -4,29 +4,10 @@ from pyramid.security import remember, forget
 
 from .models import DBSession, User
 from .security import USERS
-from .helper import PasswordGenerator
+from .helper import PasswordHandler
 
-# name = self.request.params['name']
-# mail = self.request.params['mail']
-# phone = self.request.params['phone']
-# content = self.request.params['message']
-# subject = 'Contact D-BAS'
-# systemmail = 'dbas@cs.uni-duesseldorf.de'
-# body = 'Name: ' + name + '\n' + 'Mail: ' + mail + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
-# message = Message()
-# if (not mail == ''):
-# 	message = Message(subject=subject,
-# 	                  sender=systemmail,
-# 	                  recipients =["krauthoff@cs.uni-duesseldorf.de",mail],
-# 	                  body=body
-# 	                )
-# else:
-# 	message = Message(subject=subject,
-# 	                  sender=systemmail,
-# 	                  recipients =["krauthoff@cs.uni-duesseldorf.de"],
-# 	                  body=body
-# 	                )
-# mailer.send(message)
+# from validate_email import validate_email
+# is_valid = validate_email(email,check_mx=True)
 
 class Dbas(object):
 	def __init__(self, request):
@@ -38,12 +19,13 @@ class Dbas(object):
 		self.request = request
 
 	# main page
-	@view_config(route_name='main_page', renderer='templates/index.pt')
+	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 	def main_page(self):
 		"""
 		View configuration for the main page
 		:return:
 		"""
+		#ret_message = PasswordHandler.send_password_to_email(self.request)
 		return dict(
 			title='Main',
 			project='DBAS',
@@ -51,7 +33,7 @@ class Dbas(object):
 		)
 
 	# login page
-	@view_config(route_name='main_login', renderer='templates/login.pt')
+	@view_config(route_name='main_login', renderer='templates/login.pt', permission='everybody')
 	@forbidden_view_config(renderer='templates/login.pt')
 	def main_login(self):
 		"""
@@ -153,16 +135,41 @@ class Dbas(object):
 		)
 
 	# contact page
-	@view_config(route_name='main_contact', renderer='templates/contact.pt')
+	@view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody')
 	def main_contact(self):
 		'''
 		View configuration for the contact view.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		'''
+		sendMessage = False
+		if 'form.contact.submitted' in self.request.params:
+			name = self.request.params['name']
+			mail = self.request.params['mail']
+			phone = self.request.params['phone']
+			content = self.request.params['message']
+			subject = 'Contact D-BAS'
+			systemmail = 'dbas@cs.uni-duesseldorf.de'
+			body = 'Name: ' + name + '\n' + 'Mail: ' + mail + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
+#           message = Message()
+#           if (not mail == ''):
+#           	message = Message(subject=subject,
+#           	                  sender=systemmail,
+#           	                  recipients =["krauthoff@cs.uni-duesseldorf.de",mail],
+#           	                  body=body
+#           	                )
+#           else:
+#           	message = Message(subject=subject,
+#           	                  sender=systemmail,
+#           	                  recipients =["krauthoff@cs.uni-duesseldorf.de"],
+#           	                  body=body
+#           	                )
+#           mailer.send(message)
+			sendMessage = True
 		return dict(
 			title='Contact',
 			project='DBAS',
-			logged_in = self.request.authenticated_userid
+			logged_in = self.request.authenticated_userid,
+			contact_msg_send = sendMessage
 		)
 
 	# content page, after login
@@ -179,7 +186,7 @@ class Dbas(object):
 		)
 
 	# impressum
-	@view_config(route_name='main_impressum', renderer='templates/impressum.pt')
+	@view_config(route_name='main_impressum', renderer='templates/impressum.pt', permission='everybody')
 	def main_impressum(self):
 		'''
 		View configuration for the impressum.

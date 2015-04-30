@@ -19,7 +19,7 @@ requires = [
     'zope.sqlalchemy',
     'docutils',
     'WebTest',
-    'pyramid_mailer',
+    'pyramid_mailer'
     ]
 
 setup(name='DBAS',
