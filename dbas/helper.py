@@ -1,4 +1,4 @@
-from .models import DBSession, User
+from .database import DBSession, User
 import random
 
 systemmail = 'dbas@cs.uni-duesseldorf.de'

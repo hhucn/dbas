@@ -1,102 +1,124 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml"
-      xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
 
 <head>
-    <link type="text/css" href="${request.static_url('dbas:static/css/theme_login.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_login.css')}" rel="stylesheet">
 </head>
 
 <body>
 
-<div class="login form">
-    <ul class="tab-group">
-        <li class="tab active"><a href="#login">Log In</a>
-        </li>
-        <li class="tab"><a href="#signup">Sign Up</a>
-        </li>
-    </ul>
-    <div class="tab-content">
+	<div class="login form">
+		<ul class="tab-group">
+			<li class="tab active"><a href="#login">Log In</a>
+			</li>
+			<li class="tab"><a href="#signup">Sign Up</a>
+			</li>
+		</ul>
+		<div class="tab-content">
 
-        <div id="login">
-            <h2>Welcome Back!</h2>
+			<div id="login">
+				<h2>Welcome Back!</h2>
 
-            <form action="/login" method="post">
-                <input type="hidden" name="came_from" value="${came_from}"/>
+				<form action="/login" method="post">
+					<input type="hidden" name="came_from" value="${came_from}" />
 
-                <h3>Your E-Mail</h3>
-                <input type="text" class="email" name="email" autocomplete="off"
-                       placeholder="example: user or editor (PW is test)" value="${email}">
-
-
-                <h3>Your Password</h3>
-                <input type="password" class="password" name="password" autocomplete="off"
-                       placeholder="example: ******" value="${password}"/>
+					<h3>Your E-Mail</h3>
+					<input type="text" class="email" name="email" autocomplete="off" placeholder="example: user or editor (PW is test)" value="${email}">
 
 
-                <p data-toggle="modal" data-target="#popup_password"><a>Forgot Password?</a>
-                </p>
-
-                <div tal:condition="login_failed" class="alert alert-danger" role="alert">
-                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                    <span class="sr-only">Error:</span> <span tal:replace="message" />
-                </div>
-
-                <input type="submit" name="form.login.submitted" value="Log In"
-                       class="button button-block btn-lg btn btn-primary" data-dismiss="modal"/>
-
-            </form>
-        </div>
+					<h3>Your Password</h3>
+					<input type="password" class="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}" />
 
 
-        <div id="signup">
-            <h2>Sign Up for Free</h2>
+					<p data-toggle="modal" data-target="#popup_password"><a>Forgot Password?</a>
+					</p>
 
-            <form action="/login" method="post">
+					<div tal:condition="login_failed" class="alert alert-danger" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span class="sr-only">Error:</span> <span tal:replace="message" />
+					</div>
 
-                <h3>Your First Name (required)</h3>
-                <input id="userfirstname-input" type="text" name="firstname" class="userfirstname active"
-                       autocomplete="on"
-                       placeholder="example: Tobias" value="${firstname}">
+					<input type="submit" name="form.login.submitted" value="Log In" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
 
-                <h3>Your Last Name (required)</h3>
-                <input id="userlastname-input" type="text" name="surename" class="userlastname"
-                       autocomplete="on" placeholder="example: Krauthoff" value="${surename}">
+				</form>
+			</div>
 
-                <h3>Your Email Address (required)</h3>
-                <input id="email-input" type="email" class="email" name="email" autocomplete="on"
-                       placeholder="example: krauthoff@cs.uni-duesseldorf.de" value="${email}">
 
-                <h3>Your Password (required)</h3>
-                <input id="password-input" type="password" name="password" class="password" autocomplete="off"
-                       placeholder="example: ******" value="${password}">
+			<div id="signup">
+				<h2>Sign Up for Free</h2>
 
-                <h3>Your Password (confirm, required)</h3>
-                <input id="passwordconfirm-input" type="password" class="passwordconfirm" autocomplete="off"
-                       placeholder="example: ******">
+				<form action="/login" method="post">
 
-                <div id="warning-message" class="alert alert-warning alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>Warning!</strong>
+					<h3>Your First Name (required)</h3>
+					<input id="userfirstname-input" type="text" name="firstname" class="userfirstname active" autocomplete="on" placeholder="example: Tobias" value="${firstname}">
 
-                    <div id="warning-message-text"><span tal:replace="message" /></div>
-                </div>
+					<h3>Your Last Name (required)</h3>
+					<input id="userlastname-input" type="text" name="surename" class="userlastname" autocomplete="on" placeholder="example: Krauthoff" value="${surename}">
 
-                <div tal:condition="registration_failed" class="alert alert-danger" role="alert">
-                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                    <span class="sr-only">Error:</span> <span tal:replace="message" />
-                </div>
+					<h3>Your Email Address (required)</h3>
+					<input id="email-input" type="email" class="email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de" value="${email}">
 
-                <input id="login-register-submit" type="submit" name="form.register.submitted" value="Register"
-                       class="button button-block btn-lg btn btn-primary" data-dismiss="modal"/>
+					<h3>Your Password (required)</h3>
 
-            </form>
-        </div>
-    </div>
-</div>
+					<input id="password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
+					<div id="password-extras">
+						<div id="password-meter" class="veryweak"></div>
+						<h4 id="password-strength">Strength</h4>
+						
+						<a id="password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
+							<i id="password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i></a>
+					</div>
 
-<script type="text/javascript" src="${request.static_url('dbas:static/js/login.js')}"></script>
+					<h3>Your Password (confirm, required)</h3>
+					<input id="passwordconfirm-input" type="password" class="passwordconfirm" autocomplete="off" placeholder="example: ******">
+
+					<div id="warning-message" class="alert alert-warning alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+						</button>
+						<strong>Warning!</strong>
+
+						<div id="warning-message-text"><span tal:replace="message" />
+						</div>
+					</div>
+
+					<div tal:condition="registration_failed" class="alert alert-danger" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span class="sr-only">Error:</span> <span tal:replace="message" />
+					</div>
+
+					<input id="login-register-submit" type="submit" name="form.register.submitted" value="Register" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="popup_password_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Info's about a password</h4>
+				</div>
+				<div class="modal-body">
+					A Password is strong, when it contains at least :
+					<ul>
+						<li>eight characters</li>
+						<li>one uppercase letter</li>
+						<li>one lowercase letter</li>
+						<li>one special sign</li>
+					</ul>
+					For example 'M2015_fiO' is a strong password.
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/login.js')}"></script>
 
 </body>
 <html>

@@ -5,7 +5,7 @@ from pyramid.config import Configurator
 from dbas.security import groupfinder
 
 from sqlalchemy import engine_from_config
-from .models import *
+from .database import *
 
 
 def main(global_config, **settings):
@@ -29,7 +29,7 @@ def main(global_config, **settings):
 			  'mail.password':'cs_kraut#1989',
 			  'mail.ssl':'True'
 			  }
-	config = Configurator(settings=settings,root_factory='dbas.models.RootFactory')
+	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory')
 	config.set_authentication_policy(authn_policy)
 	config.set_authorization_policy(authz_policy)
 

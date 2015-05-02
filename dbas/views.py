@@ -2,7 +2,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 
-from .models import DBSession, User
+from .database import DBSession, User
 from .security import USERS
 from .helper import PasswordHandler
 

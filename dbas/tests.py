@@ -20,7 +20,7 @@ def _registerRoutes(config):
 
 def _initTestingDB():
 	from sqlalchemy import create_engine
-	from .models import DBSession, Group, User, Argument, RelationArgPos, RelationArgArg, Position, Base
+	from .database import DBSession, Group, User, Argument, RelationArgPos, RelationArgArg, Position, Base
 	engine = create_engine('sqlite://')
 	Base.metadata.create_all(engine)
 	DBSession.configure(bind=engine)
@@ -254,7 +254,7 @@ class FunctionalTests(unittest.TestCase):
 
 	def tearDown(self):
 		print("FunctionalTests: tearDown")
-		from dbas.models import DBSession
+		from dbas.database import DBSession
 		DBSession.remove()
 		testing.tearDown()
 

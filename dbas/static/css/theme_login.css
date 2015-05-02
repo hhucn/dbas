@@ -35,7 +35,7 @@ a:hover {
 	display: block;
 	text-decoration: none;
 	padding: 15px;
-	background: rgba(0,106,179,0.3);
+	background: rgba(0, 106, 179, 0.3);
 	color: #000;
 	font-size: 20px;
 	float: left;
@@ -64,15 +64,9 @@ h2 {
 	color: #000;
 	margin: 0 0 40px;
 }
-}
 
-h3 {
-	text-align: center;
-	color: #000;
-	margin: 0 0 30px;
-}
-
-h3 {
+h3,
+h4 {
 	color: #818181;
 	margin: 5px 0px 10px 0px;
 	text-align: center;
@@ -125,18 +119,23 @@ textarea {
 input.userfirstname {
 	background: url(../images/user.png)no-repeat 10px 8px;
 }
+
 input.userlastname {
 	background: url(../images/user.png)no-repeat 10px 8px;
 }
+
 input.tel {
 	background: url(../images/tel.png)no-repeat 8px 8px;
 }
+
 input.email {
 	background: url(../images/email.png)no-repeat 8px 8px;
 }
+
 input.password {
 	background: url(../images/lock.png)no-repeat 8px 8px;
 }
+
 input.passwordconfirm {
 	background: url(../images/lock.png)no-repeat 8px 8px;
 }
@@ -149,8 +148,7 @@ input.userfirstname:hover,
 input.userlastname:hover,
 input.email:hover,
 input.password:hover,
-input.passwordconfirm:hover
-input.active {
+input.passwordconfirm:hover input.active {
 	box-shadow: 0px 0px 4px 0px #3386E1;
 	transition: 0.5s all;
 	-webkit-transition: 0.5s all;
@@ -172,26 +170,76 @@ input.active {
 	text-align: right;
 }
 
+#password-strength,
+#password-info-link{
+	float: right;
+}
+#password-info-icon{
+	color: #bcbcbc;
+}
+#password-info-icon:hover{
+	color: #006ab3;
+}
+#password-extras {
+	margin-bottom: 35px;
+	transition: .5s ease;
+}
+#password-meter {
+	height: 5px;
+	border-radius: 5px;
+	transition: .5s ease-in-out;
+}
+
+
+.veryweak {
+	background-color: #FFA0A0;
+	border-color: #F04040!important;
+	width: 25%!important;
+}
+
+.weak {
+	background-color: #FFB78C;
+	border-color: #FF853C!important;
+	width: 50%!important;
+}
+
+.medium {
+	background-color: #FFEC8B;
+	border-color: #FC0!important;
+	width: 75%!important;
+}
+
+.strong {
+	background-color: #C3FF88;
+	border-color: #8DFF1C!important;
+	width: 100%!important;
+}
+
+
 @media(max-width:1440px) {
 	.login {
 		width: 40%;
 	}
 }
+
 @media(max-width:1366px) {
 	.login {
 		width: 43%;
 	}
 }
+
 @media(max-width:1280px) {
 	.login {
 		width: 45%;
 	}
 }
+
 @media (max-width: 1199px) {
 	#login-template {
 		margin-top: 100px;
 	}
 }
+
 @media(max-width:1024px) {
 	.login {
 		width: 56%;
@@ -210,7 +258,8 @@ input.active {
 		input.userlastname,
 		input.email,
 		input.password,
-		input.passwordconfirm,{
+		input.passwordconfirm,
+		{
 			font-size: 13px;
 		}
 		input[type="submit"] {
@@ -231,7 +280,8 @@ input.active {
 		input.userlastname,
 		input.email,
 		input.password,
-		input.passwordconfirm,{
+		input.passwordconfirm,
+		{
 			font-size: 12px;
 		}
 		input[type="submit"] {
@@ -256,7 +306,8 @@ input.active {
 		input.userlastname,
 		input.email,
 		input.password,
-		input.passwordconfirm,{
+		input.passwordconfirm,
+		{
 			width: 61%;
 		}
 		input[type="submit"] {
@@ -282,7 +333,8 @@ input.active {
 		input.userlastname,
 		input.email,
 		input.password,
-		input.passwordconfirm,{
+		input.passwordconfirm,
+		{
 			width: 75%;
 			padding: 10px 10px 10px 45px;
 		}

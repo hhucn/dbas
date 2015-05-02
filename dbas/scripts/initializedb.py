@@ -4,7 +4,7 @@ import transaction
 
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from ..models import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, RelationPosPos, Group, Issue, Base
+from ..database import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, RelationPosPos, Group, Issue, Base
 
 
 def usage(argv):

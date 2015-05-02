@@ -35,6 +35,10 @@ h3 {
 	font-size: 16px;
 }
 
+h4 {
+	font-size: 14px;
+}
+
 p {
 	font-weight: 300;
 }
@@ -97,7 +101,7 @@ a:hover {
 .jsdiabled {
 	z-index: 2;
 	position: fixed;
-	margin-top: 5px;
+	margin-top: -40px;
 	width: 98%;
 	text-align: center;
 	color: #fff;
