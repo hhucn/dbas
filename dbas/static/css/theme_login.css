@@ -192,26 +192,22 @@ input.passwordconfirm:hover input.active {
 
 
 .veryweak {
-	background-color: #FFA0A0;
-	border-color: #F04040!important;
+	background-color: #ff7070;
 	width: 25%!important;
 }
 
 .weak {
-	background-color: #FFB78C;
-	border-color: #FF853C!important;
+	background-color: #ffa070;
 	width: 50%!important;
 }
 
 .medium {
-	background-color: #FFEC8B;
-	border-color: #FC0!important;
+	background-color: #ffcf70;
 	width: 75%!important;
 }
 
 .strong {
-	background-color: #C3FF88;
-	border-color: #8DFF1C!important;
+	background-color: #a0ff70;
 	width: 100%!important;
 }
 

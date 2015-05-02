@@ -83,6 +83,30 @@
 			<div class="col-md-3"></div>
 		</div>
 	</div>
+	
+	
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4"></div>
+			<div class="col-md-4">
+				<h1><span class="font-semi-bold">Editor</span></h1>
+				<h2><p>Hello <span tal:replace="logged_in"/>, you are in the group ???, so please have a look at this link ????</p></h2>
+			</div>
+			<div class="col-md-4"></div>
+		</div>
+	</div>
+	
+	
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4"></div>
+			<div class="col-md-4">
+				<h1><span class="font-semi-bold">User</span></h1>
+				<h2><p>Hello <span tal:replace="logged_in"/>, you are in the group ???, so please have a look at this link ????</p></h2>
+			</div>
+			<div class="col-md-4"></div>
+		</div>
+	</div>
 
-</body>
+	</body>
 <html>
