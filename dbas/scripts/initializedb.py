@@ -4,7 +4,7 @@ import transaction
 
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from ..database import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, RelationPosPos, Group, Issue, Base
+from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, RelationPosPos, Group, Issue, Base
 
 
 def usage(argv):
@@ -23,6 +23,7 @@ def main(argv=sys.argv):
 	engine = engine_from_config(settings, 'sqlalchemy.')
 	DBSession.configure(bind=engine)
 	Base.metadata.create_all(engine)
+
 	with transaction.manager:
 		# adding our main issue
 		issue = Issue(text="Are you cat- or dog-person?");
@@ -31,18 +32,28 @@ def main(argv=sys.argv):
 		# addng groups
 		group1 = Group(name='editor')
 		group2 = Group(name='user')
-		DBSession.add(group1, group2)
+		DBSession.add(group1)
+		DBSession.add(group2)
+		DBSession.flush()
 
 		# adding some dummy users
+		print(group1.uid)
 		user1 = User(firstname='admin', surename='admin', email='dbas@cs.uni-duesseldorf', password='admin')
 		user2 = User(firstname='Tobias', surename='Krauthoff', email='krauthoff@cs.uni-duesseldorf', password='test123')
 		user3 = User(firstname='Martin', surename='Mauve', email='mauve@cs.uni-duesseldorf', password='test123')
+		user4 = User(firstname='editor', surename='editor', email='nope1@nopeville.com', password='test')
+		user5 = User(firstname='user', surename='user', email='nope2@nopeville.com', password='test')
 		user1.group = group1.uid
 		user2.group = group1.uid
 		user3.group = group1.uid
+		user4.group = group1.uid
+		user5.group = group2.uid
 		DBSession.add(user1)
 		DBSession.add(user2)
 		DBSession.add(user3)
+		DBSession.add(user4)
+		DBSession.add(user5)
+		DBSession.flush()
 
 		# adding some dummy positions
 		position1 = Position(text='I like cats.', weight='100')
@@ -51,6 +62,7 @@ def main(argv=sys.argv):
 		position2.author = user2.uid
 		DBSession.add(position1)
 		DBSession.add(position2)
+		#transaction.commit()
 
 		# adding some dummy arguments
 		argument1 = Argument(text='They are fluffy.', weight='100')
@@ -71,6 +83,7 @@ def main(argv=sys.argv):
 		DBSession.add(argument4)
 		DBSession.add(argument5)
 		DBSession.add(argument6)
+		DBSession.flush()
 
 		# adding some dummy relations
 		relation1 = RelationArgPos(weight='134', is_supportive='1')
@@ -118,5 +131,6 @@ def main(argv=sys.argv):
 		DBSession.add(relation7)
 		DBSession.add(relation8)
 		DBSession.add(relation9)
+		DBSession.flush()
 
 		transaction.commit()

@@ -18,8 +18,7 @@ def main(global_config, **settings):
 
 	# load database
 	engine = engine_from_config(settings, 'sqlalchemy.')
-	DBSession.configure(bind=engine)
-	Base.metadata.bind = engine
+	load_database(engine)
 
 	# creating the configurator
 	settings={'pyramid.default_locale_name':'en',

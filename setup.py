@@ -46,6 +46,6 @@ setup(name='DBAS',
       [paste.app_factory]
       main = dbas:main
       [console_scripts]
-      initialize_dbas_db = dbas.scripts.initializedb:main
+      initialize_sql = dbas.scripts.initializedb:main
       """,
       )
