@@ -126,25 +126,32 @@ class Dbas(object):
 				message = 'E-Mail is not valid'
 				email = ''
 				reg_failed = True
-
 			else:
-				logger('main_login','form.registration.submitted','Adding user')
 				group = DBSession.query(Group).filter_by(name='editor').first()
-				newuser = User(firstname=firstname, surename=surename, email=email,nickname=nickname,password=password)
-				#newuser._set_password(password)
-				newuser.group = group.uid
-				DBSession.add(newuser)
-				DBSession.flush()
-
-				checknewuser = DBSession.query(User).filter_by(nickname=nickname).first()
-				if (checknewuser):
-					logger('main_login','form.registration.submitted','New data was added')
-					message = 'Your account was added and you are able to login now'
-					reg_success = True
-				else:
-					logger('main_login','form.registration.submitted','New data was not added')
-					message = 'Your account could not be added. Please try again or contact the author'
+				if (not group):
+					logger('main_login','form.registration.submitted','An error occured, please try again later')
 					reg_failed = True
+					logger('main_login','form.registration.submitted','Error occured')
+					print ('g empty')
+				else:
+					print ('g not empty ' + str(group.uid))
+					logger('main_login','form.registration.submitted','Adding user')
+
+					newuser = User(firstname=firstname, surename=surename, email=email,nickname=nickname,password=password)
+					#newuser._set_password(password)
+					newuser.group = group.uid
+					DBSession.add(newuser)
+					DBSession.flush()
+
+					checknewuser = DBSession.query(User).filter_by(nickname=nickname).first()
+					if (checknewuser):
+						logger('main_login','form.registration.submitted','New data was added with uid ' + str(checknewuser.uid))
+						message = 'Your account was added and you are able to login now'
+						reg_success = True
+					else:
+						logger('main_login','form.registration.submitted','New data was not added')
+						message = 'Your account with the nick could not be added. Please try again or contact the author'
+						reg_failed = True
 
 
 		# case: user registration
@@ -284,12 +291,3 @@ class Dbas(object):
 			page_notfound_viewname=self.request.view_name,
 			logged_in = self.request.authenticated_userid
 		)
-
-
-# notices
-# USE cryptacular
-# salt.update(os.urandom(60))
-# salt = sha1()
-# hash = sha1()
-# hash.update(password_8bit + salt.hexdigest())
-# hashed_password = salt.hexdigest() + hash.hexdigest()

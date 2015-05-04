@@ -1,15 +1,7 @@
 import sqlalchemy.orm as orm
-from dbas.database.model import User, Group
-
+from dbas.database.model import User, Group, DBSession, Base
 from pyramid.security import Allow, Everyone
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import sessionmaker
-from zope.sqlalchemy import ZopeTransactionExtension as Zte
-
-# init thread safe handler
-DBSession = orm.scoped_session(sessionmaker(extension=Zte()))
-Base = declarative_base()
 
 
 class RootFactory(object):
