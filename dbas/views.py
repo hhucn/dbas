@@ -126,6 +126,7 @@ class Dbas(object):
 				message = 'E-Mail is not valid'
 				email = ''
 				reg_failed = True
+
 			else:
 				logger('main_login','form.registration.submitted','Adding user')
 				group = DBSession.query(Group).filter_by(name='editor').first()
