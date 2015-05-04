@@ -128,7 +128,6 @@ class Dbas(object):
 				reg_failed = True
 			else:
 				logger('main_login','form.registration.submitted','Adding user')
-
 				group = DBSession.query(Group).filter_by(name='editor').first()
 				newuser = User(firstname=firstname, surename=surename, email=email,nickname=nickname,password=password)
 				#newuser._set_password(password)
