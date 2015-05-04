@@ -18,11 +18,12 @@ $(document).ready(function () {
 	'use strict';
 
 	$('#warning-message').fadeOut('slow');
-	var login = document.getElementById('login-register-submit');
-	if (login) {
+	var register = document.getElementById('login-register-submit');
+	if (register) {
 		login.onclick = function () {
 			var userfirstname = $('#userfirstname-input').val(),
 				userlastname = $('#userlastname-input').val(),
+				nick = $('#nick-input').val(),
 				email = $('#email-input').val(),
 				password = $('#password-input').val(),
 				passwordconfirm = $('#passwordconfirm-input').val();
@@ -34,6 +35,10 @@ $(document).ready(function () {
 			} else if (!userlastname || /^\s*$/.test(userlastname) || 0 === userlastname.length) {
 				$('#warning-message').fadeIn("slow")
 				$('#warning-message-text').text('Better check your last name, because the input is empty!');
+
+			} else if (!nick || /^\s*$/.test(nick) || 0 === nick.length) {
+				$('#warning-message').fadeIn("slow")
+				$('#warning-message-text').text('Better check your nickname, because the input is empty!');
 
 			} else if (!email || /^\s*$/.test(email) || 0 === email.length) {
 				$('#warning-message').fadeIn("slow")
@@ -52,16 +57,8 @@ $(document).ready(function () {
 
 			} else {
 				$('#warning-message').hide();
-				this.innerHTML = '...Sending Registration';
+				this.val = '...Sending Registration';
 			}
-		};
-	}
-
-	// Change text inside send button on submit
-	var send = document.getElementById('submit-login');
-	if (send) {
-		send.onclick = function () {
-			this.innerHTML = '...Sending Login';
 		};
 	}
 

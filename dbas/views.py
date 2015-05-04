@@ -2,12 +2,15 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 
-from .database import DBSession, User
-from .security import USERS
-from .helper import PasswordHandler
+from .database import DBSession, User, Group
+from .helper import PasswordHandler, PasswordGenerator
+from validate_email import validate_email
+import time
 
-# from validate_email import validate_email
-# is_valid = validate_email(email,check_mx=True)
+
+def logger(who, when, what):
+	print(time.strftime("%H:%M:%S") + ' ' + who.upper() + '| ' + when + ': ' + what);
+
 
 class Dbas(object):
 	def __init__(self, request):
@@ -54,43 +57,110 @@ class Dbas(object):
 		came_from = self.request.params.get('came_from', referrer)
 		message = ''
 		password = ''
+		passwordconfirm = ''
 		firstname = ''
 		surename = ''
+		nickname = ''
 		email = ''
 		reg_failed = False
 		log_failed = False
+		reg_success = False
 		goto_url = self.request.route_url('main_content')
 
 		# case: user login
 		if 'form.login.submitted' in self.request.params:
-			email = self.request.params['email']
+			logger('main_login','form.login.submitted','requesting params')
+			nickname = self.request.params['nickname']
 			password = self.request.params['password']
-			# user = DBSession.query(User).filter_by(email=email)
-			#if (email in user.email):
-			#	password = users.passwords
+			DBUser = DBSession.query(User).filter_by(nickname=nickname).first()
 
-			if USERS.get(email) == password:
-				headers = remember(self.request, email)
+			if (not DBUser):
+				logger('main_login','form.login.submitted','user does not exists')
+				message = 'User does not exists'
+			elif (not DBUser.password == password): # DBUser.validate_password(password)
+				logger('main_login','form.login.submitted','wrong password')
+				message = 'Wrong password'
+
+			if (DBUser and DBUser.password == password):
+				logger('main_login','form.login.submitted','login successful')
+				headers = remember(self.request, nickname)
 				return HTTPFound(
 					location = goto_url,
 					headers = headers
 				)
-			message = 'Failed login, please check your username and password'
 			log_failed = True
 
 		# case: user registration
 		if 'form.registration.submitted' in self.request.params:
+			logger('main_login','form.registration.submitted','Requesting params')
 			firstname = self.request.params['firstname']
 			surename = self.request.params['surename']
+			nickname = self.request.params['nickname']
 			email = self.request.params['email']
 			password = self.request.params['password']
-			users = DBSession.query(User)
-			reg_failed = email in users
-			if (not reg_failed):
-				print("Register " + firstname + " " + surename + " " + email)
-				# DBSession.add(User(firstname, surename, email, password, 'users'))
+			passwordconfirm = self.request.params['passwordconfirm']
+
+			DBNick = DBSession.query(User).filter_by(nickname=nickname).first()
+			DBMail = DBSession.query(User).filter_by(email=email).first()
+			logger('main_login','form.registration.submitted','Validating email')
+			is_mail_valid = validate_email(email,check_mx=True)
+
+			if (not password == passwordconfirm):
+				logger('main_login','form.registration.submitted','Passwords are not equal')
+				message = 'Passwords are not equal'
+				password = ''
+				passwordconfirm = ''
+				reg_failed = True
+			elif (DBNick):
+				logger('main_login','form.registration.submitted','Nickname is taken')
+				message = 'Nickname is taken'
+				nickname = ''
+				reg_failed = True
+			elif (DBMail):
+				logger('main_login','form.registration.submitted','E-Mail is taken')
+				message = 'E-Mail is taken'
+				email = ''
+				reg_failed = True
+			elif (not is_mail_valid):
+				logger('main_login','form.registration.submitted','E-Mail is not valid')
+				message = 'E-Mail is not valid'
+				email = ''
+				reg_failed = True
 			else:
-				message = 'E-Mail is already taken'
+				logger('main_login','form.registration.submitted','Adding user')
+
+				group = DBSession.query(Group).filter_by(name='editor').first()
+				newuser = User(firstname=firstname, surename=surename, email=email,nickname=nickname,password=password)
+				#newuser._set_password(password)
+				newuser.group = group.uid
+				DBSession.add(newuser)
+				DBSession.flush()
+
+				checknewuser = DBSession.query(User).filter_by(nickname=nickname).first()
+				if (checknewuser):
+					logger('main_login','form.registration.submitted','New data was added')
+					message = 'Your account was added and you are able to login now'
+					reg_success = True
+				else:
+					logger('main_login','form.registration.submitted','New data was not added')
+					message = 'Your account could not be added. Please try again or contact the author'
+					reg_failed = True
+
+
+		# case: user registration
+		if 'form.passwordrequest.submitted' in self.request.params:
+			logger('main_login','form.passwordrequest.submitted','requesting params')
+			email = self.request.params['email']
+			DBMail = DBSession.query(User).filter_by(email=email).first()
+			if (DBMail):
+				logger('main_login','form.passwordrequest.submitted','New password was sent')
+				message = 'A new password was sent to your email-address'
+				pwd = PasswordGenerator.get_rnd_passwd()
+				hashedpwd = PasswordHandler.get_hashed_password(pwd)
+				DBSession.update(User).where(email=email).values(password=hashedpwd)
+			else:
+				logger('main_login','form.passwordrequest.submitted','Mail unknown')
+				mesasge = 'The given e-mail address is unkown'
 
 
 		return dict(
@@ -100,11 +170,14 @@ class Dbas(object):
 			url = self.request.application_url + '/login',
 			came_from = came_from,
 			password = password,
+			passwordconfirm = passwordconfirm,
             firstname = firstname,
             surename = surename,
+			nickname=nickname,
             email = email,
 			login_failed = log_failed,
 			registration_failed = reg_failed,
+			registration_success = reg_success,
 			logged_in = self.request.authenticated_userid
 		)
 

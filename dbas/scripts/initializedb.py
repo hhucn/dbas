@@ -37,12 +37,11 @@ def main(argv=sys.argv):
 		DBSession.flush()
 
 		# adding some dummy users
-		print(group1.uid)
-		user1 = User(firstname='admin', surename='admin', email='dbas@cs.uni-duesseldorf', password='admin')
-		user2 = User(firstname='Tobias', surename='Krauthoff', email='krauthoff@cs.uni-duesseldorf', password='test123')
-		user3 = User(firstname='Martin', surename='Mauve', email='mauve@cs.uni-duesseldorf', password='test123')
-		user4 = User(firstname='editor', surename='editor', email='nope1@nopeville.com', password='test')
-		user5 = User(firstname='user', surename='user', email='nope2@nopeville.com', password='test')
+		user1 = User(firstname='admin', surename='admin', nickname='admin', email='dbas@cs.uni-duesseldorf', password='admin')
+		user2 = User(firstname='Tobias', surename='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf', password='test123')
+		user3 = User(firstname='Martin', surename='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf', password='test123')
+		user4 = User(firstname='editor', surename='editor', nickname='editor', email='nope1@nopeville.com', password='test')
+		user5 = User(firstname='user', surename='user', nickname='user', email='nope2@nopeville.com', password='test')
 		user1.group = group1.uid
 		user2.group = group1.uid
 		user3.group = group1.uid

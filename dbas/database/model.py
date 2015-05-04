@@ -1,15 +1,15 @@
 import os
 import sqlalchemy as sa
-import sqlalchemy.orm as orm
 
 from hashlib import sha1
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.sql import func
 from zope.sqlalchemy import ZopeTransactionExtension as Zte
 
 # init thread safe handler
-DBSession = orm.scoped_session(sessionmaker(extension=Zte()))
+#DBSession = orm.scoped_session(sessionmaker(extension=Zte()))
+DBSession = scoped_session(sessionmaker(extension=Zte()))
 Base = declarative_base()
 
 class Issue(Base):
@@ -69,6 +69,7 @@ class User(Base):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	firstname = sa.Column(sa.Text, nullable=False)
 	surename = sa.Column(sa.Text, nullable=False)
+	nickname = sa.Column(sa.Text, nullable=False)
 	email = sa.Column(sa.Text, nullable=False, unique=True)
 	password = sa.Column(sa.Text, nullable=False)
 	group = sa.Column(sa.Integer, sa.ForeignKey(Group.uid)) # many-to-one
@@ -80,12 +81,13 @@ class User(Base):
 	#relationArgArg = orm.relationship("RelationArgArg", backref=__tablename__) # one-to-many
 	#relationPosPos = orm.relationship("RelationPosPos", backref=__tablename__) # one-to-many
 
-	def __init__(self, firstname, surename, email, password):
+	def __init__(self, firstname, surename, nickname, email, password):
 		"""
 		Initializes a row in current user-table
 		"""
 		self.firstname = firstname
 		self.surename = surename
+		self.nickname = nickname
 		self.email = email
 		self.password = password
 		self.last_logged = func.now()

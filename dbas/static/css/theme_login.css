@@ -72,11 +72,29 @@ h4 {
 	text-align: center;
 }
 
+/* do not group these rules */
+*::-webkit-input-placeholder {
+    color: #cecece;
+}
+*:-moz-placeholder {
+    /* FF 4-18 */
+    color: #cecece;
+}
+*::-moz-placeholder {
+    /* FF 19+ */
+    color: #cecece;
+}
+*:-ms-input-placeholder {
+    /* IE 10+ */
+    color: #cecece;
+}
+
 input[type="text"] {
 	outline: none;
 	font-size: 15px;
 	font-weight: 400;
 	color: #bcbcbc;
+	border-color: #f00;
 	padding: 12px 10px 12px 50px;
 	border-radius: 5px;
 	-webkit-border-radius: 3px;
@@ -116,11 +134,9 @@ textarea {
 	margin-right: 4%;
 }
 
-input.userfirstname {
-	background: url(../images/user.png)no-repeat 10px 8px;
-}
-
-input.userlastname {
+input.userfirstname,
+input.userlastname,
+input.nickname {
 	background: url(../images/user.png)no-repeat 10px 8px;
 }
 
@@ -146,6 +162,7 @@ input.passwordconfirm {
 
 input.userfirstname:hover,
 input.userlastname:hover,
+input.nickname:hover,
 input.email:hover,
 input.password:hover,
 input.passwordconfirm:hover input.active {
@@ -211,6 +228,10 @@ input.passwordconfirm:hover input.active {
 	width: 100%!important;
 }
 
+#login-register-submit{
+	margin-top: 25px;
+}
+
 
 @media(max-width:1440px) {
 	.login {
@@ -252,10 +273,10 @@ input.passwordconfirm:hover input.active {
 		}
 		input.userfirstname,
 		input.userlastname,
+		input.nickname,
 		input.email,
 		input.password,
-		input.passwordconfirm,
-		{
+		input.passwordconfirm{
 			font-size: 13px;
 		}
 		input[type="submit"] {
@@ -275,9 +296,9 @@ input.passwordconfirm:hover input.active {
 		input.userfirstname,
 		input.userlastname,
 		input.email,
+		input.nickname
 		input.password,
-		input.passwordconfirm,
-		{
+		input.passwordconfirm{
 			font-size: 12px;
 		}
 		input[type="submit"] {
@@ -301,9 +322,9 @@ input.passwordconfirm:hover input.active {
 		input.userfirstname,
 		input.userlastname,
 		input.email,
+		input.nickname,
 		input.password,
-		input.passwordconfirm,
-		{
+		input.passwordconfirm {
 			width: 61%;
 		}
 		input[type="submit"] {
@@ -328,13 +349,15 @@ input.passwordconfirm:hover input.active {
 		input.userfirstname,
 		input.userlastname,
 		input.email,
+		input.nickname,
 		input.password,
-		input.passwordconfirm,
-		{
+		input.passwordconfirm{
 			width: 75%;
 			padding: 10px 10px 10px 45px;
 		}
-		input.user {
+		input.userfirstname,
+		input.userlastname,
+		input.nickname {
 			background: url(../images/user.png)no-repeat 8px 6px;
 		}
 		input.tel {
