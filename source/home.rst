@@ -19,6 +19,7 @@ Contents:
    views/index
    datastructure/index
    glossary
+   notices
 
 Indices and tables
 ==================

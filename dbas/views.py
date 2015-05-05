@@ -64,6 +64,8 @@ class Dbas(object):
 		if referrer == login_url:
 			referrer = self.request.route_url('main_page') # never use the login form itself as came_from
 		came_from = self.request.params.get('came_from', referrer)
+
+		# some variables
 		message = ''
 		password = ''
 		passwordconfirm = ''
@@ -79,10 +81,13 @@ class Dbas(object):
 		# case: user login
 		if 'form.login.submitted' in self.request.params:
 			logger('main_login','form.login.submitted','requesting params')
+
+			#requesting parameters
 			nickname = self.request.params['nickname']
 			password = self.request.params['password']
 			DBUser = DBSession.query(User).filter_by(nickname=nickname).first()
 
+			# check for user and password validations
 			if (not DBUser):
 				logger('main_login','form.login.submitted','user \'' + nickname + '\' does not exists')
 				message = 'User does not exists'
@@ -101,6 +106,8 @@ class Dbas(object):
 		# case: user registration
 		if 'form.registration.submitted' in self.request.params:
 			logger('main_login','form.registration.submitted','Requesting params')
+
+			# getting parameter
 			firstname = self.request.params['firstname']
 			surename = self.request.params['surename']
 			nickname = self.request.params['nickname']
@@ -108,40 +115,48 @@ class Dbas(object):
 			password = self.request.params['password']
 			passwordconfirm = self.request.params['passwordconfirm']
 
+			#database queries mail verification
 			DBNick = DBSession.query(User).filter_by(nickname=nickname).first()
 			DBMail = DBSession.query(User).filter_by(email=email).first()
 			logger('main_login','form.registration.submitted','Validating email')
 			is_mail_valid = validate_email(email,check_mx=True)
 
-			# sanity check, if everything is fine
+			# are the password equal?
 			if (not password == passwordconfirm):
 				logger('main_login','form.registration.submitted','Passwords are not equal')
 				message = 'Passwords are not equal'
 				password = ''
 				passwordconfirm = ''
 				reg_failed = True
+			# is the nick already taken?
 			elif (DBNick):
 				logger('main_login','form.registration.submitted','Nickname \'' + nickname + '\' is taken')
 				message = 'Nickname is taken'
 				nickname = ''
 				reg_failed = True
+			# is the email already taken?
 			elif (DBMail):
 				logger('main_login','form.registration.submitted','E-Mail \'' + email + '\' is taken')
 				message = 'E-Mail is taken'
 				email = ''
 				reg_failed = True
+			# is the email valid?
 			elif (not is_mail_valid):
 				logger('main_login','form.registration.submitted','E-Mail \'' + email + '\' is not valid')
 				message = 'E-Mail is not valid'
 				email = ''
 				reg_failed = True
 			else:
+				# getting the editors group
 				group = DBSession.query(Group).filter_by(name='editors').first()
+
+				# does the group exists?
 				if (not group):
 					message = 'An error occured, please try again later or contact the author'
 					reg_failed = True
 					logger('main_login','form.registration.submitted','Error occured')
 				else:
+					# creating a new user with hased password
 					logger('main_login','form.registration.submitted','Adding user')
 					hashedPassword = PasswordHandler.get_hashed_password(self, password)
 					newuser = User(firstname=firstname, surename=surename, email=email,nickname=nickname,password=hashedPassword)
@@ -149,6 +164,7 @@ class Dbas(object):
 					DBSession.add(newuser)
 					transaction.commit()
 
+					# sanity check, whether the user exists
 					checknewuser = DBSession.query(User).filter_by(nickname=nickname).first()
 					if (checknewuser):
 						logger('main_login','form.registration.submitted','New data was added with uid ' + str(checknewuser.uid))
@@ -167,18 +183,21 @@ class Dbas(object):
 			logger('main_login','form.passwordrequest.submitted','email is ' + email)
 			DBUser = DBSession.query(User).filter_by(email=email).first()
 
+			# does the user exists?
 			if (DBUser):
+				# get password and hashed password
 				pwd = PasswordGenerator.get_rnd_passwd(self)
 				logger('main_login','form.passwordrequest.submitted','New password is ' + pwd)
 				hashedpwd = PasswordHandler.get_hashed_password(self, pwd)
 				logger('main_login','form.passwordrequest.submitted','New hashed password is ' + hashedpwd)
 
-				#DBSession.update(User).where(email=email).values(password=hashedpwd)
+				# set the hased one
 				DBUser.password = hashedpwd
 				DBSession.add(DBUser)
 				transaction.commit()
 				message, reg_success, reg_failed = PasswordHandler.send_password_to_email(self.request, pwd)
 
+				# logger
 				if (reg_success):
 					logger('main_login','form.passwordrequest.submitted','New password was sent')
 				elif (reg_failed):

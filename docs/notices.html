@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; D-BAS 0.0.1 documentation</title>
+  <title>Notices &mdash; D-BAS 0.0.1 documentation</title>
   
 
   
@@ -31,8 +31,7 @@
 
   
     <link rel="top" title="D-BAS 0.0.1 documentation" href="index.html"/>
-        <link rel="next" title="Development" href="development.html"/>
-        <link rel="prev" title="D-BAS" href="home.html"/> 
+        <link rel="prev" title="Glossary" href="glossary.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -64,13 +63,13 @@
           
           
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation-everything-for-developing">Installation everything for developing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-with-vagrant-virtual-machine">Installation with Vagrant virtual machine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-the-application">Run the application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-test-suites">Run test suites</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-everything-for-developing">Installation everything for developing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-with-vagrant-virtual-machine">Installation with Vagrant virtual machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-the-application">Run the application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-test-suites">Run test suites</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a><ul>
@@ -100,7 +99,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notices.html">Notices</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Notices</a></li>
 </ul>
 
           
@@ -125,10 +124,10 @@
   <ul class="wy-breadcrumbs">
     <li><a href="home.html">Docs</a> &raquo;</li>
       
-    <li>Installation</li>
+    <li>Notices</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/installation.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/notices.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -136,64 +135,12 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="installation-everything-for-developing">
-<h2>Installation everything for developing<a class="headerlink" href="#installation-everything-for-developing" title="Permalink to this headline">¶</a></h2>
-<p>Requirements:</p>
-<ol class="arabic simple">
-<li>python python-setuptools easy_install</li>
-<li>easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy pyramid_mailer</li>
-<li>pip3 install validate_email cryptacular</li>
-</ol>
-</div>
-<div class="section" id="installation-with-vagrant-virtual-machine">
-<h2>Installation with Vagrant virtual machine<a class="headerlink" href="#installation-with-vagrant-virtual-machine" title="Permalink to this headline">¶</a></h2>
-<p>Requirements:</p>
-<ol class="arabic simple">
-<li>virtualbox: <a class="reference external" href="https://virtualbox.org/wiki/Downloads">https://virtualbox.org/wiki/Downloads</a></li>
-<li>vagrant: <a class="reference external" href="http://docs.vagrantup.com/v2/installation/index.html">http://docs.vagrantup.com/v2/installation/index.html</a></li>
-</ol>
-<p>create virtual machine and login:</p>
+  <div class="section" id="notices">
+<h1>Notices<a class="headerlink" href="#notices" title="Permalink to this headline">¶</a></h1>
 <blockquote>
-<div>(LINUX:)    wget <a class="reference external" href="https://raw.githubusercontent.com/liqd/adhocracy3/master/Vagrantfile">https://raw.githubusercontent.com/liqd/adhocracy3/master/Vagrantfile</a>
-(OSX:)      curl <a class="reference external" href="https://raw.githubusercontent.com/liqd/adhocracy3/master/Vagrantfile">https://raw.githubusercontent.com/liqd/adhocracy3/master/Vagrantfile</a>
-vagrant up
-vagrant ssh</div></blockquote>
-</div>
-<div class="section" id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>Requirements (Tested on DebianUbuntu,  64-Bit is mandatory):</p>
-<ol class="arabic simple">
-<li>...</li>
-</ol>
-</div>
-<div class="section" id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<p>build sphinx documentation</p>
-<div class="highlight-python"><div class="highlight"><pre>sphinx-build -b html source docs
-</pre></div>
-</div>
-</div>
-<div class="section" id="run-the-application">
-<h2>Run the application<a class="headerlink" href="#run-the-application" title="Permalink to this headline">¶</a></h2>
-<p>Start ... (which manages the ZODB database, the Pyramid application
-and the ... websocket server):</p>
-<div class="highlight-python"><div class="highlight"><pre>... ?
-</pre></div>
-</div>
-<p>Shutdown everything nicely:</p>
-<div class="highlight-python"><div class="highlight"><pre>./bin/supervisorctl shutdown
-</pre></div>
-</div>
-</div>
-<div class="section" id="run-test-suites">
-<h2>Run test suites<a class="headerlink" href="#run-test-suites" title="Permalink to this headline">¶</a></h2>
-<p>Run pytest suite:</p>
-<div class="highlight-python"><div class="highlight"><pre>nosetest dbas
-</pre></div>
-</div>
-</div>
+<div><p>Hashed passwords with cryptacular <a class="reference external" href="https://pypi.python.org/pypi/cryptacular/">https://pypi.python.org/pypi/cryptacular/</a></p>
+<p>E-Mail validations</p>
+</div></blockquote>
 </div>
 
 
@@ -202,10 +149,8 @@ and the ... websocket server):</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="development.html" class="btn btn-neutral float-right" title="Development">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="home.html" class="btn btn-neutral" title="D-BAS"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="glossary.html" class="btn btn-neutral" title="Glossary"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
