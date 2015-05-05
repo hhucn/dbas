@@ -8,7 +8,7 @@ Requirements:
 
 1. python python-setuptools easy_install
 2. easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy pyramid_mailer
-3. pip3 install validate_email
+3. pip3 install validate_email cryptacular
 
 Installation with Vagrant virtual machine
 -----------------------------------------

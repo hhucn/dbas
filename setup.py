@@ -19,7 +19,8 @@ requires = [
     'transaction',
     'zope.sqlalchemy',
     'docutils',
-    'WebTest'
+    'WebTest',
+    'cryptacular'
     ]
 
 setup(name='DBAS',

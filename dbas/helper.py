@@ -1,14 +1,14 @@
-import time
 import os
+import time
 import random
-import sqlalchemy as sa
-
 import smtplib
-from socket import error as socket_error
 
+
+from socket import error as socket_error
 from hashlib import sha1
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
+from cryptacular.bcrypt import BCRYPTPasswordManager
 
 systemmail = 'dbas@cs.uni-duesseldorf.de'
 
@@ -49,21 +49,8 @@ class PasswordGenerator(object):
 class PasswordHandler(object):
 
 	def get_hashed_password(self, password):
-		if isinstance(password, sa.Unicode):
-			password_8bit = password.encode('UTF-8')
-		else:
-			password_8bit = password
-
-		salt = sha1()
-		salt.update(os.urandom(60))
-		hash = sha1()
-		hash.update(password_8bit + salt.hexdigest())
-		hashed_password = salt.hexdigest() + hash.hexdigest()
-
-		if not isinstance(hashed_password, sa.Unicode):
-			hashed_password = hashed_password.decode('UTF-8')
-
-		return hashed_password
+		manager = BCRYPTPasswordManager()
+		return manager.encode(password)
 
 
 	def send_password_to_email(request, password):

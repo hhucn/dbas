@@ -86,11 +86,10 @@ class Dbas(object):
 			if (not DBUser):
 				logger('main_login','form.login.submitted','user \'' + nickname + '\' does not exists')
 				message = 'User does not exists'
-			elif (not DBUser.password == password): # DBUser.validate_password(password)
+			elif (not DBUser.validate_password(password)): # DBUser.validate_password(password)
 				logger('main_login','form.login.submitted','wrong password')
 				message = 'Wrong password'
-
-			if (DBUser and DBUser.password == password):
+			else:
 				logger('main_login','form.login.submitted','login successful')
 				headers = remember(self.request, nickname)
 				return HTTPFound(
@@ -144,9 +143,8 @@ class Dbas(object):
 					logger('main_login','form.registration.submitted','Error occured')
 				else:
 					logger('main_login','form.registration.submitted','Adding user')
-
-					newuser = User(firstname=firstname, surename=surename, email=email,nickname=nickname,password=password)
-					#newuser._set_password(password)
+					hashedPassword = PasswordHandler.get_hashed_password(self, password)
+					newuser = User(firstname=firstname, surename=surename, email=email,nickname=nickname,password=hashedPassword)
 					newuser.group = group.uid
 					DBSession.add(newuser)
 					transaction.commit()
@@ -167,15 +165,17 @@ class Dbas(object):
 			logger('main_login','form.passwordrequest.submitted','requesting params')
 			email = self.request.params['email']
 			logger('main_login','form.passwordrequest.submitted','email is ' + email)
-			DBMail = DBSession.query(User).filter_by(email=email).first()
+			DBUser = DBSession.query(User).filter_by(email=email).first()
 
-			if (DBMail):
+			if (DBUser):
 				pwd = PasswordGenerator.get_rnd_passwd(self)
 				logger('main_login','form.passwordrequest.submitted','New password is ' + pwd)
 				hashedpwd = PasswordHandler.get_hashed_password(self, pwd)
-				DBSession.update(User).where(email=email).values(password=hashedpwd)
-
 				logger('main_login','form.passwordrequest.submitted','New hashed password is ' + hashedpwd)
+
+				#DBSession.update(User).where(email=email).values(password=hashedpwd)
+				DBUser.password = hashedpwd
+				DBSession.add(DBUser)
 				transaction.commit()
 				message, reg_success, reg_failed = PasswordHandler.send_password_to_email(self.request, pwd)
 

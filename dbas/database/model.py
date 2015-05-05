@@ -1,7 +1,7 @@
 import os
 import sqlalchemy as sa
 
-from hashlib import sha1
+from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.sql import func
 from dbas.database import DBSession, Base
 
@@ -91,27 +91,9 @@ class User(Base):
 		"""Return a query of users sorted by surename."""
 		return DBSession.query(User).order_by(User.surename)
 
-	def _set_password(self, password):
-		if isinstance(password, sa.Unicode):
-			password_8bit = password.encode('UTF-8')
-		else:
-			password_8bit = password
-
-		salt = sha1()
-		salt.update(os.urandom(60))
-		hash = sha1()
-		hash.update(password_8bit + salt.hexdigest())
-		hashed_password = salt.hexdigest() + hash.hexdigest()
-
-		if not isinstance(hashed_password, sa.Unicode):
-			hashed_password = hashed_password.decode('UTF-8')
-
-		self.password = hashed_password
-
 	def validate_password(self, password):
-		hashed_pass = sha1()
-		hashed_pass.update(password + self.password[:40])
-		return self.password[40:] == hashed_pass.hexdigest()
+		manager = BCRYPTPasswordManager()
+		return manager.check(self.password, password)
 
 
 class Position(Base):
