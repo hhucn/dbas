@@ -1,9 +1,10 @@
 import os
 import random
 import sqlalchemy as sa
+import transaction
 
 from hashlib import sha1
-from pyramid_mailer import mailer
+from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 
 systemmail = 'dbas@cs.uni-duesseldorf.de'
@@ -66,6 +67,7 @@ class PasswordHandler(object):
 		:params password: the new password
 		:return: message
 		'''
+		mailer = get_mailer(request)
 		email = request.params['email']
 		message = Message(subject='D-BAS Password Request',
 		                  sender=systemmail,
@@ -73,4 +75,5 @@ class PasswordHandler(object):
 		                  body='Your new password is: ' + password
 		                  )
 		mailer.send(message)
+		transaction.commit()
 		return 'A new password was send to ' + email

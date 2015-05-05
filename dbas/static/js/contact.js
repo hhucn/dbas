@@ -29,10 +29,10 @@ $(document).ready(function () {
 				$('#alert-message').hide();
 				$('#warning-message').show();
 				
-				$('#warning-message-text').text('Better check your e-mail!');
+				$('#warning-message-text').text('Better check your e-mail, because it is not valid!');
 				
 			// check message
-			} else if (!message || /^\s*$/.test(message) || message.length < 50) {
+			} else if (!message || /^\s*$/.test(message) || message.length < 5) {
 				$('#alert-message').hide();
 				$('#warning-message').show();
 				$('#warning-message-text').text('Better check your message, because the input is too short!');
@@ -43,8 +43,6 @@ $(document).ready(function () {
 					$('#alert-message').show();
 				} else {
 					$('#alert-message').hide();
-					this.innerHTML = '...opening mail client...';
-					window.location.href = "mailto:krauthoff@cs.uni-duesseldorf.de?subject=Contact%20D-BAS&body=Name:%20" + name + "&#13;&#10;Phone:%20" + phone + "&#13;&#10;Message:&#13;&#10;&#13;&#10;" + message;
 				}
 			}
 		};

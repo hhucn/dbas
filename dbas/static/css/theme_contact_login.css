@@ -71,35 +71,12 @@ h4 {
 	margin: 5px 0px 10px 0px;
 	text-align: center;
 }
-/* do not group these rules */
-
-*::-webkit-input-placeholder {
-	color: #cecece;
-}
-
-*:-moz-placeholder {
-	/* FF 4-18 */
-	
-	color: #cecece;
-}
-
-*::-moz-placeholder {
-	/* FF 19+ */
-	
-	color: #cecece;
-}
-
-*:-ms-input-placeholder {
-	/* IE 10+ */
-	
-	color: #cecece;
-}
 
 input[type="text"] {
 	outline: none;
-	font-size: 15px;
+	font-size: 18px;
 	font-weight: 400;
-	color: #777;
+	color: #bcbcbc;
 	border-color: #f00;
 	padding: 12px 10px 12px 50px;
 	border-radius: 5px;
@@ -114,9 +91,9 @@ input[type="text"] {
 input,
 textarea {
 	outline: none;
-	font-size: 15px;
+	font-size: 18px;
 	font-weight: 400;
-	color: #777;
+	color: #bcbcbc;
 	padding: 12px 10px 12px 50px;
 	border-radius: 5px;
 	-webkit-border-radius: 3px;
@@ -140,6 +117,7 @@ textarea {
 	margin-right: 4%;
 }
 
+input.name,
 input.userfirstname,
 input.userlastname,
 input.nickname {
@@ -161,16 +139,21 @@ input.password {
 input.passwordconfirm {
 	background: url(../images/lock.png)no-repeat 8px 8px;
 }
+textarea.content{
+		background: url(../images/i.png)no-repeat 10px 9px;
+}
 
 .top-row > div:last-child {
 	margin: 0;
 }
 
+input.name:hover,
 input.userfirstname:hover,
 input.userlastname:hover,
 input.nickname:hover,
 input.email:hover,
 input.password:hover,
+textarea.content:hover,
 .passwordconfirm:hover input.active {
 	box-shadow: 0px 0px 7px 0px #3386E1;
 	transition: 0.5s all;
@@ -264,6 +247,11 @@ input.password:hover,
 	margin-right: 0.5em;
 }
 
+#contact-submit{
+	margin-top: 25px;
+}
+		
+
 @media(max-width:1440px) {
 	.login {
 		width: 40%;
@@ -302,12 +290,14 @@ input.password:hover,
 		.tab-content h3 {
 			font-size: 15px;
 		}
+		input.name,
 		input.userfirstname,
 		input.userlastname,
 		input.nickname,
 		input.email,
 		input.password,
-		input.passwordconfirm {
+		input.passwordconfirm,
+		textarea.content{
 			font-size: 13px;
 		}
 		input[type="submit"] {
@@ -324,11 +314,14 @@ input.password:hover,
 		.tab-content h2 {
 			font-size: 24px;
 		}
+		input.name,
 		input.userfirstname,
 		input.userlastname,
 		input.email,
-		input.nickname input.password,
-		input.passwordconfirm {
+		input.nickname,
+		input.password,
+		input.passwordconfirm,
+		textarea.content{
 			font-size: 12px;
 		}
 		input[type="submit"] {
@@ -349,12 +342,14 @@ input.password:hover,
 		.tab-content h3 {
 			font-size: 13px;
 		}
+		input.name,
 		input.userfirstname,
 		input.userlastname,
 		input.email,
 		input.nickname,
 		input.password,
-		input.passwordconfirm {
+		input.passwordconfirm,
+		textarea.content{
 			width: 61%;
 		}
 		input[type="submit"] {
@@ -376,15 +371,18 @@ input.password:hover,
 			padding: 20px 15px 30px 15px;
 			width: 85%;
 		}
+		input.name,
 		input.userfirstname,
 		input.userlastname,
 		input.email,
 		input.nickname,
 		input.password,
-		input.passwordconfirm {
+		input.passwordconfirm,
+		textarea.content{
 			width: 75%;
 			padding: 10px 10px 10px 45px;
 		}
+		input.name,
 		input.userfirstname,
 		input.userlastname,
 		input.nickname {
@@ -396,7 +394,7 @@ input.password:hover,
 		input.email {
 			background: url(../images/email.png)no-repeat 5px 6px;
 		}
-		textarea.i {
+		textarea.content {
 			background: url(../images/i.png)no-repeat 10px 9px;
 		}
 		input[type="submit"] {

@@ -22,11 +22,13 @@ def main(global_config, **settings):
 
 	# creating the configurator
 	settings={'pyramid.default_locale_name':'en',
-			  'mail.host':'rohrpostix@cs.uni-duesseldorf.de',
-			  'mail.port':'993',
+			  'mail.host':'rohrpostix.cs.uni-duesseldorf.de',
+			  'mail.port':'465',
 			  'mail.username':'krauthoff',
 			  'mail.password':'cs_kraut#1989',
-			  'mail.ssl':'True'
+			  'mail.ssl':'True',
+	          'mail.tls':'False',
+	          'mail.default_sender':'krauthoff@cs.uni-duesseldorf'
 			  }
 	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory')
 	config.set_authentication_policy(authn_policy)

@@ -2,7 +2,7 @@
 <html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
 
 <head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_login.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_contact_login.css')}" rel="stylesheet">
 </head>
 
 <body>
@@ -59,6 +59,7 @@
 
 					<h3>Your Last Name</h3>
 					<input id="userlastname-input" type="text" name="surename" class="userlastname" autocomplete="on" placeholder="example: Krauthoff" value="${surename}">
+					
 					<h3>Your Nickname</h3>
 					<input id="nick-input" type="text" class="nickname" name="nickname" autocomplete="on" placeholder="example: Democrator" value="${nickname}">
 

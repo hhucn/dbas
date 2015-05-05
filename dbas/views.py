@@ -1,10 +1,16 @@
 import time
 import transaction
 
+import smtplib
+import errno
+from socket import error as socket_error
+
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
+from pyramid_mailer import get_mailer
+from pyramid_mailer.message import Message
 
 from .database import DBSession
 from .database.model import User, Group
@@ -228,35 +234,88 @@ class Dbas(object):
 		View configuration for the contact view.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		'''
+		logger('main_contact','def','contact page')
+		contact_error = False
 		sendMessage = False
+		message=''
+		name=''
+		email=''
+		phone=''
+		content=''
+		spam=''
 		if 'form.contact.submitted' in self.request.params:
+			logger('main_contact','form.contact.submitted','requesting params')
 			name = self.request.params['name']
-			mail = self.request.params['mail']
+			email = self.request.params['mail']
 			phone = self.request.params['phone']
-			content = self.request.params['message']
-			subject = 'Contact D-BAS'
-			systemmail = 'dbas@cs.uni-duesseldorf.de'
-			body = 'Name: ' + name + '\n' + 'Mail: ' + mail + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
-#           message = Message()
-#           if (not mail == ''):
-#           	message = Message(subject=subject,
-#           	                  sender=systemmail,
-#           	                  recipients =["krauthoff@cs.uni-duesseldorf.de",mail],
-#           	                  body=body
-#           	                )
-#           else:
-#           	message = Message(subject=subject,
-#           	                  sender=systemmail,
-#           	                  recipients =["krauthoff@cs.uni-duesseldorf.de"],
-#           	                  body=body
-#           	                )
-#           mailer.send(message)
-			sendMessage = True
+			content = self.request.params['content']
+			spam = self.request.params['spam']
+
+			logger('main_contact','form.contact.submitted','validating email')
+			is_mail_valid = validate_email(email,check_mx=True)
+
+			# sanity checks
+			if (not name):
+				logger('main_contact','form.contact.submitted','name empty')
+				contact_error = True
+				message = "Your name is empty!"
+			elif (not is_mail_valid):
+				logger('main_contact','form.contact.submitted','mail is not valid')
+				contact_error = True
+				message = "Your e-mail is empty!"
+			elif (not content):
+				logger('main_contact','form.contact.submitted','content is empty')
+				contact_error = True
+				message = "Your content is empty!"
+			elif (not spam):
+				logger('main_contact','form.contact.submitted','anti-spam is empty')
+				contact_error = True
+				message = "Your anti-spam message is empty!"
+			elif (not int(spam) == 4):
+				logger('main_contact','form.contact.submitted','wrong anti spam answer')
+				contact_error = True
+				mesage = "Your anti-spam answer is wrong!"
+			else:
+				subject = 'Contact D-BAS'
+				systemmail = 'krauthoff@cs.uni-duesseldorf.de'
+				body = 'Name: ' + name + '\n' + 'Mail: ' + email + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
+				logger('main_contact','form.contact.submitted','sending mail')
+				mailer = get_mailer(self.request)
+				message = Message(subject=subject,
+               	                  sender=systemmail,
+               	                  recipients =["krauthoff@cs.uni-duesseldorf.de",email],
+               	                  body=body
+               	                )
+				try:
+					#mailer.send(message)
+					#transaction.commit()
+					mailer.send_immediately(message, fail_silently=False)
+					sendMessage = True
+				except smtplib.SMTPConnectError as exception:
+					logger('main_contact','form.contact.submitted','error while sending')
+					logger('main_contact','exception smtplib.SMTPConnectError smtp_code', str(exception.smtp_code))
+					logger('main_contact','exception smtplib.SMTPConnectError smtp_error', str(exception.smtp_error))
+					contact_error = True
+					message = 'Your message could not be send due to a system error! (' + 'smtp_code ' + str(exception.smtp_code) + ' || smtp_error ' + str(exception.smtp_error) + ')'
+				except socket_error as serr:
+					logger('main_contact','form.contact.submitted','error while sending')
+					logger('main_contact','form.contact.submitted','socket_error ' + str(serr))
+					contact_error = True
+					message = 'Your message could not be send due to a system error! (' + 'socket_error ' + str(serr) + ')'
+
+
 		return dict(
 			title='Contact',
 			project='DBAS',
-			logged_in = self.request.authenticated_userid,
-			contact_msg_send = sendMessage
+			logged_in=self.request.authenticated_userid,
+			was_message_send=sendMessage,
+			contact_error=contact_error,
+			message=message,
+			name=name,
+			mail=email,
+			phone=phone,
+			content=content,
+			spam=spam
 		)
 
 	# content page, after login
