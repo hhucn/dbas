@@ -460,36 +460,9 @@
 						<br>Last Edited on 2015-04-27</div>
 				</div>
 
-
-
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-
-	<!-- PASSWORD REQUEST -->
-	<div class="modal fade" id="popup_password" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-					</button>
-					<h4 class="modal-title" id="exampleModalLabel">Password-Request</h4>
-				</div>
-				<div class="modal-body">
-					<form>
-						<div class="form-group">
-							<label for="mail-address" class="control-label">Please fill in your e-mail below. A new password will be send this address:</label>
-							<input type="mail" class="form-control" id="mail-address" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
-						</div>
-					</form>
-				</div>
-				<div class="modal-password">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Request Password</button>
-				</div>
 			</div>
 		</div>
 	</div>

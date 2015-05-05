@@ -2,7 +2,6 @@ import time
 import transaction
 
 import smtplib
-import errno
 from socket import error as socket_error
 
 from validate_email import validate_email
@@ -38,7 +37,6 @@ class Dbas(object):
 		View configuration for the main page
 		:return:
 		"""
-		#ret_message = PasswordHandler.send_password_to_email(self.request)
 		return dict(
 			title='Main',
 			project='DBAS',
@@ -164,20 +162,31 @@ class Dbas(object):
 						reg_failed = True
 
 
-		# case: user registration
+		# case: user password request
 		if 'form.passwordrequest.submitted' in self.request.params:
 			logger('main_login','form.passwordrequest.submitted','requesting params')
 			email = self.request.params['email']
+			logger('main_login','form.passwordrequest.submitted','email is ' + email)
 			DBMail = DBSession.query(User).filter_by(email=email).first()
+
 			if (DBMail):
-				logger('main_login','form.passwordrequest.submitted','New password was sent')
-				pwd = PasswordGenerator.get_rnd_passwd()
-				hashedpwd = PasswordHandler.get_hashed_password(pwd)
+				pwd = PasswordGenerator.get_rnd_passwd(self)
+				logger('main_login','form.passwordrequest.submitted','New password is ' + pwd)
+				hashedpwd = PasswordHandler.get_hashed_password(self, pwd)
 				DBSession.update(User).where(email=email).values(password=hashedpwd)
-				message = PasswordHandler.send_password_to_email(self.request, pwd)
+
+				logger('main_login','form.passwordrequest.submitted','New hashed password is ' + hashedpwd)
+				transaction.commit()
+				message, reg_success, reg_failed = PasswordHandler.send_password_to_email(self.request, pwd)
+
+				if (reg_success):
+					logger('main_login','form.passwordrequest.submitted','New password was sent')
+				elif (reg_failed):
+					logger('main_login','form.passwordrequest.submitted','Error occured')
 			else:
 				logger('main_login','form.passwordrequest.submitted','Mail unknown')
-				mesasge = 'The given e-mail address is unkown'
+				message = 'The given e-mail address is unkown'
+				reg_failed = True
 
 
 		return dict(
@@ -259,22 +268,27 @@ class Dbas(object):
 				logger('main_contact','form.contact.submitted','name empty')
 				contact_error = True
 				message = "Your name is empty!"
+
 			elif (not is_mail_valid):
 				logger('main_contact','form.contact.submitted','mail is not valid')
 				contact_error = True
 				message = "Your e-mail is empty!"
+
 			elif (not content):
 				logger('main_contact','form.contact.submitted','content is empty')
 				contact_error = True
 				message = "Your content is empty!"
+
 			elif (not spam):
 				logger('main_contact','form.contact.submitted','anti-spam is empty')
 				contact_error = True
 				message = "Your anti-spam message is empty!"
+
 			elif (not int(spam) == 4):
 				logger('main_contact','form.contact.submitted','wrong anti spam answer')
 				contact_error = True
 				mesage = "Your anti-spam answer is wrong!"
+
 			else:
 				subject = 'Contact D-BAS'
 				systemmail = 'krauthoff@cs.uni-duesseldorf.de'
@@ -286,11 +300,14 @@ class Dbas(object):
                	                  recipients =["krauthoff@cs.uni-duesseldorf.de",email],
                	                  body=body
                	                )
+				# try sending an catching errors
 				try:
-					#mailer.send(message)
-					#transaction.commit()
 					mailer.send_immediately(message, fail_silently=False)
 					sendMessage = True
+					name=''
+					email=''
+					phone=''
+					content=''
 				except smtplib.SMTPConnectError as exception:
 					logger('main_contact','form.contact.submitted','error while sending')
 					logger('main_contact','exception smtplib.SMTPConnectError smtp_code', str(exception.smtp_code))

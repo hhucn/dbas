@@ -1,7 +1,10 @@
+import time
 import os
 import random
 import sqlalchemy as sa
-import transaction
+
+import smtplib
+from socket import error as socket_error
 
 from hashlib import sha1
 from pyramid_mailer import get_mailer
@@ -9,6 +12,9 @@ from pyramid_mailer.message import Message
 
 systemmail = 'dbas@cs.uni-duesseldorf.de'
 
+
+def logger(who, when, what):
+	print(time.strftime("%H:%M:%S") + ' ' + who.upper() + '| ' + when + ': ' + what);
 
 class PasswordGenerator(object):
 
@@ -67,13 +73,35 @@ class PasswordHandler(object):
 		:params password: the new password
 		:return: message
 		'''
-		mailer = get_mailer(request)
 		email = request.params['email']
-		message = Message(subject='D-BAS Password Request',
+
+		subject = 'D-BAS Password Request'
+		systemmail = 'krauthoff@cs.uni-duesseldorf.de'
+		body = 'Your new password is: ' + password
+		logger('main_contact','form.contact.submitted','sending mail')
+		mailer = get_mailer(request)
+		message = Message(subject=subject,
 		                  sender=systemmail,
 		                  recipients =[email],
-		                  body='Your new password is: ' + password
+		                  body=body
 		                  )
-		mailer.send(message)
-		transaction.commit()
-		return 'A new password was send to ' + email
+		sendError = False
+		sendMessage = False
+		# try sending an catching errors
+		try:
+			mailer.send_immediately(message, fail_silently=False)
+			sendMessage = True
+			message = 'A new password was send to ' + email
+		except smtplib.SMTPConnectError as exception:
+			logger('helper','send_password_to_email','error while sending')
+			logger('helper','send_password_to_email', str(exception.smtp_code))
+			logger('helper','send_password_to_email', str(exception.smtp_error))
+			sendError = True
+			message = 'A message could not be send due to a system error! (' + 'smtp_code ' + str(exception.smtp_code) + ' || smtp_error ' + str(exception.smtp_error) + ')'
+		except socket_error as serr:
+			logger('helper','send_password_to_email','error while sending')
+			logger('helper','send_password_to_email','socket_error ' + str(serr))
+			sendError = True
+			message = 'A message could not be send due to a system error! (' + 'socket_error ' + str(serr) + ')'
+
+		return message, sendMessage, sendError
