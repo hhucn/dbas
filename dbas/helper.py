@@ -1,10 +1,10 @@
-from .database import DBSession, User
-from hashlib import sha1
-
 import os
 import random
 import sqlalchemy as sa
 
+from hashlib import sha1
+from pyramid_mailer import mailer
+from pyramid_mailer.message import Message
 
 systemmail = 'dbas@cs.uni-duesseldorf.de'
 
@@ -59,26 +59,18 @@ class PasswordHandler(object):
 		return hashed_password
 
 
-	def send_password_to_email(request):
+	def send_password_to_email(request, password):
 		'''
 		Checks, for a valid email in the request, generats, sends and updates a new password
 		:param request: current request
+		:params password: the new password
 		:return: message
 		'''
 		email = request.params['email']
-		user_query = DBSession.query(User).filter_by(email)
-
-		if  (user_query == ''):
-			return 'There is no user with this address.'
-
-		new_passwd = PasswordGenerator.get_rnd_passwd()
-		user_query.password = new_passwd
-		DBSession.commit()
-
-		#message = Message(subject='Password Request',
-		#                  sender=systemmail,
-		#                  recipients =[email],
-		#                  body='Your new password is: ' + new_passwd
-		#                  )
-		#mailer.send(message)
+		message = Message(subject='D-BAS Password Request',
+		                  sender=systemmail,
+		                  recipients =[email],
+		                  body='Your new password is: ' + password
+		                  )
+		mailer.send(message)
 		return 'A new password was send to ' + email

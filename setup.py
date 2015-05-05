@@ -13,13 +13,13 @@ requires = [
     'pyramid_tm',
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
+    'pyramid_mailer',
     'waitress',
     'SQLAlchemy',
     'transaction',
     'zope.sqlalchemy',
     'docutils',
-    'WebTest',
-    'pyramid_mailer'
+    'WebTest'
     ]
 
 setup(name='DBAS',

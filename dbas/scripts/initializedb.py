@@ -47,11 +47,7 @@ def main(argv=sys.argv):
 		user3.group = group1.uid
 		user4.group = group1.uid
 		user5.group = group2.uid
-		DBSession.add(user1)
-		DBSession.add(user2)
-		DBSession.add(user3)
-		DBSession.add(user4)
-		DBSession.add(user5)
+		DBSession.add_all([user1, user2, user3, user4, user5])
 		DBSession.flush()
 
 		# adding some dummy positions
@@ -59,8 +55,7 @@ def main(argv=sys.argv):
 		position2 = Position(text='I like dogs.', weight='20')
 		position1.author = user1.uid
 		position2.author = user2.uid
-		DBSession.add(position1)
-		DBSession.add(position2)
+		DBSession.add_all([position1, position2])
 		#transaction.commit()
 
 		# adding some dummy arguments
@@ -76,12 +71,7 @@ def main(argv=sys.argv):
 		argument4.author = user3.uid
 		argument5.author = user3.uid
 		argument6.author = user1.uid
-		DBSession.add(argument1)
-		DBSession.add(argument2)
-		DBSession.add(argument3)
-		DBSession.add(argument4)
-		DBSession.add(argument5)
-		DBSession.add(argument6)
+		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6])
 		DBSession.flush()
 
 		# adding some dummy relations
@@ -121,15 +111,7 @@ def main(argv=sys.argv):
 		relation7.arg_uid2 = argument1.uid
 		relation8.arg_uid2 = argument4.uid
 		relation9.pos_uid2 = argument6.uid
-		DBSession.add(relation1)
-		DBSession.add(relation2)
-		DBSession.add(relation3)
-		DBSession.add(relation4)
-		DBSession.add(relation5)
-		DBSession.add(relation6)
-		DBSession.add(relation7)
-		DBSession.add(relation8)
-		DBSession.add(relation9)
+		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8, relation9])
 		DBSession.flush()
 
 		transaction.commit()

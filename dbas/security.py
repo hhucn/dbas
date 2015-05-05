@@ -1,5 +1,6 @@
 from dbas.views import logger
-from dbas.database import DBSession, User, Group
+from .database import DBSession
+from .database.model import User, Group
 
 def groupfinder(nick, request):
 	'''

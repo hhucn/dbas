@@ -1,11 +1,14 @@
+import time
+import transaction
+
+from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 
-from .database import DBSession, User, Group
+from .database import DBSession
+from .database.model import User, Group
 from .helper import PasswordHandler, PasswordGenerator
-from validate_email import validate_email
-import time
 
 
 def logger(who, when, what):
@@ -24,6 +27,7 @@ class Dbas(object):
 	# main page
 	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 	def main_page(self):
+		logger('main_page','def','main page')
 		"""
 		View configuration for the main page
 		:return:
@@ -44,6 +48,7 @@ class Dbas(object):
 		:return:
 		"""
 		# check for already logged in users
+		logger('main_login','def','login page')
 		if (self.request.authenticated_userid):
 			return HTTPFound(
 				location = self.request.route_url('main_content'),
@@ -75,7 +80,7 @@ class Dbas(object):
 			DBUser = DBSession.query(User).filter_by(nickname=nickname).first()
 
 			if (not DBUser):
-				logger('main_login','form.login.submitted','user does not exists')
+				logger('main_login','form.login.submitted','user \'' + nickname + '\' does not exists')
 				message = 'User does not exists'
 			elif (not DBUser.password == password): # DBUser.validate_password(password)
 				logger('main_login','form.login.submitted','wrong password')
@@ -105,6 +110,7 @@ class Dbas(object):
 			logger('main_login','form.registration.submitted','Validating email')
 			is_mail_valid = validate_email(email,check_mx=True)
 
+			# sanity check, if everything is fine
 			if (not password == passwordconfirm):
 				logger('main_login','form.registration.submitted','Passwords are not equal')
 				message = 'Passwords are not equal'
@@ -112,36 +118,34 @@ class Dbas(object):
 				passwordconfirm = ''
 				reg_failed = True
 			elif (DBNick):
-				logger('main_login','form.registration.submitted','Nickname is taken')
+				logger('main_login','form.registration.submitted','Nickname \'' + nickname + '\' is taken')
 				message = 'Nickname is taken'
 				nickname = ''
 				reg_failed = True
 			elif (DBMail):
-				logger('main_login','form.registration.submitted','E-Mail is taken')
+				logger('main_login','form.registration.submitted','E-Mail \'' + email + '\' is taken')
 				message = 'E-Mail is taken'
 				email = ''
 				reg_failed = True
 			elif (not is_mail_valid):
-				logger('main_login','form.registration.submitted','E-Mail is not valid')
+				logger('main_login','form.registration.submitted','E-Mail \'' + email + '\' is not valid')
 				message = 'E-Mail is not valid'
 				email = ''
 				reg_failed = True
 			else:
-				group = DBSession.query(Group).filter_by(name='editor').first()
+				group = DBSession.query(Group).filter_by(name='editors').first()
 				if (not group):
-					logger('main_login','form.registration.submitted','An error occured, please try again later')
+					message = 'An error occured, please try again later or contact the author'
 					reg_failed = True
 					logger('main_login','form.registration.submitted','Error occured')
-					print ('g empty')
 				else:
-					print ('g not empty ' + str(group.uid))
 					logger('main_login','form.registration.submitted','Adding user')
 
 					newuser = User(firstname=firstname, surename=surename, email=email,nickname=nickname,password=password)
 					#newuser._set_password(password)
 					newuser.group = group.uid
 					DBSession.add(newuser)
-					DBSession.flush()
+					transaction.commit()
 
 					checknewuser = DBSession.query(User).filter_by(nickname=nickname).first()
 					if (checknewuser):
@@ -161,10 +165,10 @@ class Dbas(object):
 			DBMail = DBSession.query(User).filter_by(email=email).first()
 			if (DBMail):
 				logger('main_login','form.passwordrequest.submitted','New password was sent')
-				message = 'A new password was sent to your email-address'
 				pwd = PasswordGenerator.get_rnd_passwd()
 				hashedpwd = PasswordHandler.get_hashed_password(pwd)
 				DBSession.update(User).where(email=email).values(password=hashedpwd)
+				message = PasswordHandler.send_password_to_email(self.request, pwd)
 			else:
 				logger('main_login','form.passwordrequest.submitted','Mail unknown')
 				mesasge = 'The given e-mail address is unkown'

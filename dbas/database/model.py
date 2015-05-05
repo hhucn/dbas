@@ -2,15 +2,9 @@ import os
 import sqlalchemy as sa
 
 from hashlib import sha1
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.sql import func
-from zope.sqlalchemy import ZopeTransactionExtension as Zte
+from dbas.database import DBSession, Base
 
-# init thread safe handler
-#DBSession = orm.scoped_session(sessionmaker(extension=Zte()))
-DBSession = scoped_session(sessionmaker(extension=Zte()))
-Base = declarative_base()
 
 class Issue(Base):
 	"""

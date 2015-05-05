@@ -71,22 +71,28 @@ h4 {
 	margin: 5px 0px 10px 0px;
 	text-align: center;
 }
-
 /* do not group these rules */
+
 *::-webkit-input-placeholder {
-    color: #cecece;
+	color: #cecece;
 }
+
 *:-moz-placeholder {
-    /* FF 4-18 */
-    color: #cecece;
+	/* FF 4-18 */
+	
+	color: #cecece;
 }
+
 *::-moz-placeholder {
-    /* FF 19+ */
-    color: #cecece;
+	/* FF 19+ */
+	
+	color: #cecece;
 }
+
 *:-ms-input-placeholder {
-    /* IE 10+ */
-    color: #cecece;
+	/* IE 10+ */
+	
+	color: #cecece;
 }
 
 input[type="text"] {
@@ -165,7 +171,7 @@ input.userlastname:hover,
 input.nickname:hover,
 input.email:hover,
 input.password:hover,
-input.passwordconfirm:hover input.active {
+.passwordconfirm:hover input.active {
 	box-shadow: 0px 0px 7px 0px #3386E1;
 	transition: 0.5s all;
 	-webkit-transition: 0.5s all;
@@ -188,25 +194,28 @@ input.passwordconfirm:hover input.active {
 }
 
 #password-strength,
-#password-info-link{
+#password-info-link {
 	float: right;
 }
-#password-info-icon{
+
+#password-info-icon {
 	color: #bcbcbc;
 }
-#password-info-icon:hover{
+
+#password-info-icon:hover {
 	color: #006ab3;
 }
+
 #password-extras {
 	margin-bottom: 35px;
 	transition: .5s ease;
 }
+
 #password-meter {
 	height: 5px;
 	border-radius: 5px;
 	transition: .5s ease-in-out;
 }
-
 
 .veryweak {
 	background-color: #ff7070;
@@ -228,10 +237,32 @@ input.passwordconfirm:hover input.active {
 	width: 100%!important;
 }
 
-#login-register-submit{
+#login-register-submit {
 	margin-top: 25px;
 }
 
+#password-generator-output,
+#password-generator-button {
+	padding: 5px;
+	margin: 0px;
+	width: 45%;
+	border-radius: 0px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+}
+
+#password-generator-output {
+	float: left;
+	margin-left: 0.5em;
+	text-align: center;
+}
+
+#password-generator-button {
+	float: right;
+	margin-right: 0.5em;
+}
 
 @media(max-width:1440px) {
 	.login {
@@ -276,7 +307,7 @@ input.passwordconfirm:hover input.active {
 		input.nickname,
 		input.email,
 		input.password,
-		input.passwordconfirm{
+		input.passwordconfirm {
 			font-size: 13px;
 		}
 		input[type="submit"] {
@@ -296,9 +327,8 @@ input.passwordconfirm:hover input.active {
 		input.userfirstname,
 		input.userlastname,
 		input.email,
-		input.nickname
-		input.password,
-		input.passwordconfirm{
+		input.nickname input.password,
+		input.passwordconfirm {
 			font-size: 12px;
 		}
 		input[type="submit"] {
@@ -351,7 +381,7 @@ input.passwordconfirm:hover input.active {
 		input.email,
 		input.nickname,
 		input.password,
-		input.passwordconfirm{
+		input.passwordconfirm {
 			width: 75%;
 			padding: 10px 10px 10px 45px;
 		}

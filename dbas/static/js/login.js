@@ -20,7 +20,7 @@ $(document).ready(function () {
 	$('#warning-message').fadeOut('slow');
 	var register = document.getElementById('login-register-submit');
 	if (register) {
-		login.onclick = function () {
+		register.onclick = function () {
 			var userfirstname = $('#userfirstname-input').val(),
 				userlastname = $('#userlastname-input').val(),
 				nick = $('#nick-input').val(),
@@ -115,9 +115,34 @@ $(document).ready(function () {
 	var pwinput = $('#password-input');
 	var pwstrength = $('#password-strength');
 	var pwmeter = $('#password-meter');
-	
+
 	pwextras.fadeOut('slow');
-	pwinput.bind("change paste keyup", function() {
+	pwinput.bind("change paste keyup", function () {
 		check_strength(pwextras, pwinput, pwstrength, pwmeter)
 	});
+	
+	
+	// password generator
+	function generate_password() {
+		var keylist = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%&@#$^*?_~';
+		var password = '';
+		while (!(upperCase.test(password) && lowerCase.test(password) && numbers.test(password) && specialchars.test(password))) {
+			var i = 0;
+			password = '';
+			for (i; i < 8; i = i + 1) {
+				password += keylist.charAt(Math.floor(Math.random() * keylist.length));
+			}
+		}
+		var output = document.getElementById('password-generator-output');
+		output.value = password;
+	}
+
+	var pwd_gen = $('#password-generator-button');
+	if (pwd_gen) {
+		pwd_gen.click(function () {
+			generate_password();
+		});
+	}
+
+
 })();
