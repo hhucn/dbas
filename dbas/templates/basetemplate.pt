@@ -38,10 +38,10 @@
 			<div class="collapse navbar-collapse navbar-menubuilder">
 				<ul class="nav navbar-nav navbar-left">
 					<li id="home-hook"><a href="#home-template" title="Go to the top">Home</a></li>
-					<li id="description-hook"><a href="#description-template" title="Got to Description">Description</a></li>
-					<li id="features-hook"><a href="#features-template" title="Got to Features">Features</a></li>
-					<li id="about-hook"><a href="#about-template" title="Got to About">About</a></li>
-					<li id="research-hook"><a href="#research-template" title="Got to Research">Research</a></li>
+					<li id="description-hook"><a href="#description-template" title="Go to Description">Description</a></li>
+					<li id="features-hook"><a href="#features-template" title="Go to Features">Features</a></li>
+					<li id="about-hook"><a href="#about-template" title="Go to About">About</a></li>
+					<li id="research-hook"><a href="#research-template" title="Go to Research">Research</a></li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">

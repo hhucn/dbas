@@ -4,6 +4,7 @@ import transaction
 from .views import Dbas
 from pyramid import testing
 #from pyramid_mailer import get_mailer
+from dbas.database.model import DBSession, Group, User, Argument, RelationArgPos, RelationArgArg, Position, Base
 
 def _registerRoutes(config):
 	'''
@@ -20,44 +21,55 @@ def _registerRoutes(config):
 
 def _initTestingDB():
 	from sqlalchemy import create_engine
-	from .database import DBSession, Group, User, Argument, RelationArgPos, RelationArgArg, Position, Base
-	engine = create_engine('sqlite://')
-	Base.metadata.create_all(engine)
-	DBSession.configure(bind=engine)
+	#engine = create_engine('sqlite://')
+	#Base.metadata.create_all(engine)
+	#DBSession.configure(bind=engine)
 	with transaction.manager:
-		group = Group('editors')
-		user = User(firstname='Tobias', surename='Krauthoff', password='test123', email='krauthoff@cs.uni-duesseldorf.de')
-		user.group = group.uid
+		group1 = Group(name='editor')
+		group2 = Group(name='user')
+		DBSession.add(group1)
+		DBSession.add(group2)
+		DBSession.flush()
+
+		user1 = User(firstname='editor', surename='editor', nickname='editor', email='nope1@nopeville.com', password='test')
+		user2 = User(firstname='user', surename='user', nickname='user', email='nope2@nopeville.com', password='test')
+		user1.group = group1.uid
+		user2.group = group2.uid
+		DBSession.add(user1)
+
 		position1 = Position(text='I like cats.', weight='100')
 		position2 = Position(text='I like dogs.', weight='20')
-		position1.author = user.uid
-		position2.author = user.uid
+		position1.author = user1.uid
+		position2.author = user1.uid
+		DBSession.add(position1)
+		DBSession.add(position2)
+		DBSession.flush()
+
 		argument1 = Argument(text='They are hating all humans!', weight='70')
 		argument2 = Argument(text='They are very devoted.', weight='80')
-		argument1.author = user.uid
-		argument2.author = user.uid
+		argument1.author = user1.uid
+		argument2.author = user2.uid
+		DBSession.add(argument2)
+		DBSession.flush()
+
 		relation1 = RelationArgPos(weight='134', is_supportive='1')
 		relation2 = RelationArgPos(weight='34', is_supportive='1')
 		relation3 = RelationArgArg(weight='14', is_supportive='0')
-		relation1.author = user.uid
-		relation2.author = user.uid
-		relation3.author = user.uid
+		relation1.author = user1.uid
+		relation2.author = user1.uid
+		relation3.author = user2.uid
 		relation1.pos_uid = argument1.uid
 		relation2.pos_uid = argument2.uid
 		relation3.arg_uid1 = argument1.uid
 		relation1.arg_uid = argument1.uid
 		relation2.arg_uid = argument2.uid
 		relation3.arg_uid2 = argument2.uid
-
-		DBSession.add(group)
-		DBSession.add(user)
-		DBSession.add(position1)
-		DBSession.add(position2)
 		DBSession.add(argument1)
-		DBSession.add(argument2)
 		DBSession.add(relation1)
 		DBSession.add(relation2)
 		DBSession.add(relation3)
+		DBSession.flush()
+		transaction.commit
 	return DBSession
 
 #testing main page
@@ -238,15 +250,14 @@ class ViewNotFoundTests(unittest.TestCase):
 # check, if every site responds with 200 except the error page
 class FunctionalTests(unittest.TestCase):
 
-	editor_login	   = '/login?email=editor&password=test&came_from=main_page&form.login.submitted=Login'
-	user_login		   = '/login?email=user&password=test&came_from=main_page&form.login.submitted=Login'
-	viewer_wrong_login = '/login?email=viewer&password=incorrect&came_from=main_page&form.login.submitted=Login'
+	editor_login	   = '/login?nickname=editor&password=test&came_from=main_page&form.login.submitted=Login'
+	user_login		   = '/login?nickname=user&password=test&came_from=main_page&form.login.submitted=Login'
+	viewer_wrong_login = '/login?nickname=viewer&password=incorrect&came_from=main_page&form.login.submitted=Login'
 
 	def setUp(self):
 		print("FunctionalTests: setUp")
 		from dbas import main
 		settings = {'sqlalchemy.url': 'sqlite://', 'pyramid.includes' : 'pyramid_mailer.testing'}
-		#settings = { 'sqlalchemy.url': 'sqlite://'}
 		app = main({}, **settings)
 		from webtest import TestApp
 		self.testapp = TestApp(app)
@@ -319,7 +330,7 @@ class FunctionalTests(unittest.TestCase):
 	def test_failed_log_in(self):
 		print("FunctionalTests: test_failed_log_in")
 		res = self.testapp.get(self.viewer_wrong_login, status=200)
-		self.assertTrue(b'Failed login' in res.body)
+		self.assertTrue(b'User does not exists' in res.body)
 
 	# testing successful log in
 	def test_redirection_when_logged_in(self):
@@ -353,6 +364,33 @@ class FunctionalTests(unittest.TestCase):
 #		self.assertEqual(self.mailer.outbox[0].subject, "hello world")
 #		self.assertEqual(len(self.mailer.queue), 1)
 #		self.assertEqual(self.mailer.queue[0].subject, "hello world")
+
+
+class DatabaseTests(unittest.TestCase):
+
+	def setUp(self):
+		print("DatabaseTests: setUp")
+		from dbas import main
+		settings = {'sqlalchemy.url': 'sqlite://', 'pyramid.includes' : 'pyramid_mailer.testing'}
+		app = main({}, **settings)
+		from webtest import TestApp
+		self.testapp = TestApp(app)
+		_initTestingDB()
+
+	def tearDown(self):
+		print("DatabaseTests: tearDown")
+		from dbas.database import DBSession
+		DBSession.remove()
+		testing.tearDown()
+
+	def test_database_content(self):
+		print("DatabaseTests: test_database_content")
+		#group1 = DBSession.query(Group).filter_by(uid=1)
+		#group2 = DBSession.query(Group).filter_by(uid=2)
+		#self.assertTrue(b'editor' in group1.name)
+		#self.assertTrue(b'user' in group2.name)
+
+
 
 #	def test_anonymous_user_cannot_edit(self):
 #		res = self.testapp.get('/FrontPage/edit_page', status=200)

@@ -195,6 +195,7 @@ class Dbas(object):
 		View configuration for the logout view. This will will automatically redirect to main_logout_redirect via JS
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		'''
+		logger('main_logout','def','user will be logged out')
 		return dict(
 			title='Logout',
 			project='DBAS',
@@ -208,6 +209,8 @@ class Dbas(object):
 		View configuration for the redirect logout view. This method will forget the headers of self.request
 		:return: HTTPFound with location for the main page
 		'''
+		logger('main_logout_redirect','def','headers are now forgotten')
+		logger('main_logout_redirect','def','redirecting to the main_page')
 		headers = forget(self.request)
 		return HTTPFound(
 			location = self.request.route_url('main_page'),
@@ -259,6 +262,7 @@ class Dbas(object):
 		View configuration for the content view. Only logged in user can reach this page.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		'''
+		logger('main_content','def','main')
 		return dict(
 			title='Content',
 			project='DBAS',
@@ -272,6 +276,7 @@ class Dbas(object):
 		View configuration for the impressum.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		'''
+		logger('main_impressum','def','main')
 		return dict(
 			title='Impressum',
 			project='DBAS',
@@ -285,6 +290,7 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		'''
 		self.request.response.status = 404
+		logger('main_content','def','view \'' + self.request.view_name + '\' not found')
 		return dict(
 			title='Error',
 			project='DBAS',

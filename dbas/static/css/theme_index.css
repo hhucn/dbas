@@ -61,7 +61,13 @@
 .logo_fhoev {
 	padding: 5px;
 	background: #fff;
+	border: 1px solid #d9dadb;
+}
+.logo_hhu:hover,
+.logo_kolleg:hover,
+.logo_fhoev:hover {
 	border: 1px solid #006ab3;
+	transition: .5s ease;
 }
 
 .table_logo{

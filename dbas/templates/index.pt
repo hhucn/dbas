@@ -13,16 +13,16 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="content">
-					<h2><span class="font-semi-bold">Welcome</span> <span class="smaller">to the <span class="font-normal">D</span>ialogue-<span class="font-normal">B</span>ased <span class="font-normal">A</span>rgumentation <span class="font-normal">S</span>oftware, or short <span class="font-semi-bold">D-BAS</span></span></h2>
-					<p class="lead">Hier könnte Ihr Text stehen</p>
+					<h2><span class="font-semi-bold">Welcome</span> <span class="smaller">to the <span class="font-semi-bold">D</span>ialogue-<span class="font-semi-bold">B</span>ased <span class="font-semi-bold">A</span>rgumentation <span class="font-semi-bold">S</span>oftware, or short <span class="font-semi-bold">D-BAS</span></span></h2>
+					<p class="lead">This novel discussions software will help you to discuss a problem or statement in a structured manner.<br><br>D-Bas offers a lot of advantages, here are a few of them:</p>
 					<ul class="lead list">
-						<li>eins</li>
-						<li>zwei</li>
-						<li>drei</li>
-						<li>vier</li>
+						<li>Use the wisdom of the crowd</li>
+						<li>Easy to use and very powerful</li>
+						<li>Avoid redundancy created as known in normal forums</li>
+						<li>Every argument and position will be connected logically to each other</li>
 					</ul>
 					<br>
-					<p class="lead">This project is based on ...</p>
+					<p class="lead">This project is based on research of the graduation school Online-Participation, governmentally subsidised by the <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" alt="Ministry of Innovation, Science and Research in North Rhine-Westphalia">Ministry of Innovation, Science and Research in North Rhine-Westphalia</a>.</p>
 					<table class="table_logo" border="0">
 						<tr>
 							<td rowspan="2">
@@ -58,37 +58,32 @@
 				<div class="content">
 					<h2><span class="font-semi-bold">Description</span> <span class="smaller">of D-BAS</span></h2>
 
-					<p class="lead">This part containts the description of
-						<span class="font-normal">novel prototype</span>
+					<p class="lead">In the following a <span class="font-normal">short description</span> of D-BAS will be given with the help of bulletpoints:
 						<ul class="lead list">
-							<li> Benutzer können Positionen und Argumente zur Diskussion leisten.
-								<li> Beiträge werden zueinander in Beziehung gesetzt (Angriffs- und Verteidigungsrelationen).</li>
-								<li> Niedrige Einstiegshürde: Einfache Bedienung für ''alle'' Beteiligten.</li>
-								<li> Zeitversetzte Diskussion anhand drei verschiedener Modi (beliebiger Wechsel möglich):</li>
+							<li> Participants are able to add and modify positions and arguments in every discussion.
+								<li> Positions and arguments are connected logically by participants</li>
+								<li> The system is very easy to use.</li>
+								<li> It offers a time-shifted discussion in three modes:</li>
 								<ul class="lead list">
-									<li> Guided Discussion: Der Benutzer wird mit ausgewählten Beiträgen der anderen Teilnehmer konfrontiert. Die Wahl des nächsten Beitrags ist Teil der Dissertation.</li>
-									<li> Island View: Es werden sogenannte Inseln präsentiert, die aus einer Position und allen Argumenten geordnet als Pro/Kontra-Liste bestehen.</li>
-									<li> Expert View: Der Benutzer erhält Einblick auf die gesamte Argumentation Map und kann sich frei bewegen. Darstellungsvariante ist noch offen (Liste, Baum, Graph, Container und/oder Matrix (siehe [SLPM10], S.12)).</li>
+									<li> Guided Discussion: The participants will be lead through the discussion .</li>
+									<li> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
+									<li> Expert View: Participants are able to see and do everything.</li>
 								</ul>
-								<li> Beiträge können durch die Benutzer gewichtet werden (Wertungsfunktion ist eine offene Frage in Abschnitt [[Intern:Software_Prototype#Wertungsfunktion|Wertungsfunktion]]).</li>
-								<li> Feedback und Evaluierung der Argumentation Map (bzw. der Beiträge in der Diskussion) erfolgt durch die Benutzer (Stichwort: Wisdom of the Crowd, siehe [KK08]).</li>
+								<li> Contributions can be rated by the participants.</li>
+								<li> You have the huge power of the crowd!.</li>
 						</ul>
 						<br>
-						<p class="lead">This part containts the description of the
-							<span class="font-normal">first milesstone</span>.
+						<p class="lead">This sounds amazing, but every egg-laying, milk-bearing woolly sow has its beginning. Due to this the <span class="font-normal">first milesstone</span> contains:
 							<ul class="lead list">
-								<li> System basiert auf einer vorhandenen Argumentation Map (Erste vollständige</li> Argumentation Maps kamen vom Karlsruhe Institut für Technologie, [http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php Jun.-Prof. Dr. habil. Betz]).
-								<li> Der Prototyp bietet eine Grundform der Guided View an:</li>
+								<li> System is based on a finished argumentation map.</li>
+								<li> A base form of the guided view will be avbailable:</li>
 								<ul class="lead list">
-									<li> Benutzer wird mit einem Argument der Gegenseite konfrontiert und soll Stellung beziehen. Eventuell anhand von vorhanden Argumenten oder er kann ein neues hinzufügen.
-										<li> Keine KI, Recommender Systems oder Vorhersage des nächsten Beitrags.
+									<li> The participant will be confronted with an argument out of the finished argumentation map.
+									<li> He has several options to choose, so this will be a kind of led <a href="http://www.bpb.de/politik/wahlen/wahl-o-mat/" alt="Wahl-O-Mat">Wahl-O-Mat</a>.</li>
+									<li> We will have no KI, recommender systems or predictions of the next post. Everything will be statically.
 								</ul>
-								<li> Der Weg des Benutzers soll aufgezeichnet werden.</li>
-								<li> Allgemeine Idee gleicht einem "geführten Wahl-O-Maten".</li>
-								<li> Entwicklung unter der Beachtung von Unit Tests.</li>
-								<li> Prototyp als Web-App.</li>
-								<li> Grundform einer Benutzerverwaltung.</li>
-								<li> Argumente und Positionen können gewichtet werden.</li>
+								<li> Participants will be tracked, but every data is accessible.</li>
+								<li> Everything will be done with unit and integration tests.</li>
 							</ul>
 						</p>
 				</div>

@@ -93,7 +93,7 @@ input[type="text"] {
 	outline: none;
 	font-size: 15px;
 	font-weight: 400;
-	color: #bcbcbc;
+	color: #777;
 	border-color: #f00;
 	padding: 12px 10px 12px 50px;
 	border-radius: 5px;
@@ -110,7 +110,7 @@ textarea {
 	outline: none;
 	font-size: 15px;
 	font-weight: 400;
-	color: #bcbcbc;
+	color: #777;
 	padding: 12px 10px 12px 50px;
 	border-radius: 5px;
 	-webkit-border-radius: 3px;
@@ -166,7 +166,7 @@ input.nickname:hover,
 input.email:hover,
 input.password:hover,
 input.passwordconfirm:hover input.active {
-	box-shadow: 0px 0px 4px 0px #3386E1;
+	box-shadow: 0px 0px 7px 0px #3386E1;
 	transition: 0.5s all;
 	-webkit-transition: 0.5s all;
 	-moz-transition: 0.5s all;

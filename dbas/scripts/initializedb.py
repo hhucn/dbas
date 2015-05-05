@@ -29,9 +29,9 @@ def main(argv=sys.argv):
 		issue = Issue(text="Are you cat- or dog-person?");
 		DBSession.add(issue)
 
-		# addng groups
-		group1 = Group(name='editor')
-		group2 = Group(name='user')
+		# adding groups
+		group1 = Group(name='editors')
+		group2 = Group(name='users')
 		DBSession.add(group1)
 		DBSession.add(group2)
 		DBSession.flush()
