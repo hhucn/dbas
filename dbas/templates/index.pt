@@ -211,14 +211,14 @@
 			<div class="row links">
 				<ul>
 					<li>
-						<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>
-					</li>
-				</ul>
-				<ul>
-					<li>
+						<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;
 						<a href="${request.application_url}/impressum">
 							<i class="glyphicon glyphicon-th-list icon-muted">&#160;</i>Impressum</a>
 					</li>
+				</ul>
+				<ul>
+				<li>Icons by&#160;&#160;
+					<a href="http://glyphicons.com/" alt="glyphicons"><i class="glyphicon glyphicon-link icon-muted">&#160;</i>glyphicons</a></li>
 				</ul>
 			</div>
 		</div>
