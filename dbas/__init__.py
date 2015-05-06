@@ -47,6 +47,7 @@ def main(global_config, **settings):
 	config.add_route('main_logout_redirect', '/logout_redirect')
 	config.add_route('main_contact', '/contact')
 	config.add_route('main_content', '/content')
+	config.add_route('main_news', '/news')
 	config.add_route('main_impressum', '/impressum')
 	config.add_route('404', '/404')
 

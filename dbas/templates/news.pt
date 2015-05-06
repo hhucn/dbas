@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
+
+<head>
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.css')}" rel="stylesheet">
+</head>
+
+<body>
+
+
+	<div class="container">
+		<h1><span class="font-semi-bold">News</span></h1>
+		<p class="lead">This will be the news page and currently I think...this will be some kind of blog</p>
+	</div>
+	
+	<div class="newscontainer span_1_of_4">
+		<h1><span class="font-semi-bold">07.05.2015 - <br>08.05.2015</span></h1>
+		<h2><p>Workshop in Karlsruhe</p></h2>
+		<h4>Author: Tobias Krauthoff</h4>
+		<br> Überall dieselbe alte Leier. Das Layout ist fertig, der Text lässt auf sich warten. Damit das Layout nun nicht nackt im Raume steht und sich klein und leer vorkommt, springe ich ein: der Blindtext. Genau zu diesem Zwecke erschaffen, immer im Schatten meines großen Bruders »Lorem Ipsum«, freue ich mich jedes Mal, wenn Sie ein paar Zeilen lesen. Denn esse est percipi - Sein ist wahrgenommen werden. Und weil Sie nun schon die Güte haben, mich ein paar weitere Sätze lang zu begleiten, möchte ich diese Gelegenheit nutzen, Ihnen nicht nur als Lückenfüller zu dienen, sondern auf etwas hinzuweisen, das es ebenso verdient wahrgenommen zu werden:
+	</div>
+
+	<div class="newscontainer span_1_of_4">
+		<h1><span class="font-semi-bold">01.05.2015</span></h1>
+		<h2><p>System will be build up</p></h2>
+		<h4>Author: Tobias Krauthoff</h4>
+		<br> Currently I am working a lot at the system. This work includes:
+		<ul>
+			<li>frontend-design with CSS and jQuery</li>
+			<li>backend-development with pything</li>
+			<li>development of unit- and integration tests</li>
+			<li>a database scheme</li>
+			<li>validating and deserializing data with <a href="http://docs.pylonsproject.org/projects/colander/en/latest/">Colander</a>
+			</li>
+			<li>translating string with <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/i18n.html#localization-deployment-settings">internationalization</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="newscontainer span_1_of_4">
+		<h1><span class="font-semi-bold">01.12.2014</span></h1>
+		<h2><p>First steps</p></h2>
+		<h4>Author: Tobias Krauthoff</h4>
+		<br> I've started with with my PhD.
+	</div>
+
+
+</body>
+<html>

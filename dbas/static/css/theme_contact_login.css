@@ -139,8 +139,9 @@ input.password {
 input.passwordconfirm {
 	background: url(../images/lock.png)no-repeat 8px 8px;
 }
-textarea.content{
-		background: url(../images/i.png)no-repeat 10px 9px;
+
+textarea.content {
+	background: url(../images/i.png)no-repeat 10px 9px;
 }
 
 .top-row > div:last-child {
@@ -247,7 +248,7 @@ textarea.content:hover,
 	margin-right: 0.5em;
 }
 
-#contact-submit{
+#contact-submit {
 	margin-top: 25px;
 }
 
@@ -279,136 +280,141 @@ textarea.content:hover,
 	.login {
 		width: 56%;
 	}
-	@media(max-width:768px) {
-		.login {
-			width: 73%;
-		}
-		.tab-content h2 {
-			font-size: 26px;
-		}
-		.tab-content h3 {
-			font-size: 15px;
-		}
-		input.name,
-		input.userfirstname,
-		input.userlastname,
-		input.nickname,
-		input.email,
-		input.password,
-		input.passwordconfirm,
-		textarea.content{
-			font-size: 13px;
-		}
-		input[type="submit"] {
-			font-size: 15px;
-		}
-		.contact textarea {
-			font-size: 13px;
-		}
-		body {
-			padding: 50px 0px 80px 0px;
-		}
+}
+
+@media(max-width:768px) {
+	.login {
+		width: 73%;
 	}
-	@media(max-width:640px) {
-		.tab-content h2 {
-			font-size: 24px;
-		}
-		input.name,
-		input.userfirstname,
-		input.userlastname,
-		input.email,
-		input.nickname,
-		input.password,
-		input.passwordconfirm,
-		textarea.content{
-			font-size: 12px;
-		}
-		input[type="submit"] {
-			width: 69%;
-			font-size: 14px;
-		}
-		body {
-			padding: 50px 0px 30px 0px;
-		}
-		h1 {
-			font-size: 35PX;
-		}
+	.tab-content h2 {
+		font-size: 26px;
 	}
-	@media(max-width:480px) {
-		.tab-content h2 {
-			font-size: 22px;
-		}
-		.tab-content h3 {
-			font-size: 13px;
-		}
-		input.name,
-		input.userfirstname,
-		input.userlastname,
-		input.email,
-		input.nickname,
-		input.password,
-		input.passwordconfirm,
-		textarea.content{
-			width: 61%;
-		}
-		input[type="submit"] {
-			width: 80%;
-		}
-		h1 {
-			font-size: 30PX;
-			margin: 0px 0px 20px 0px;
-		}
+	.tab-content h3 {
+		font-size: 15px;
 	}
-	@media(max-width:320px) {
-		.tab-content h2 {
-			font-size: 20px;
-		}
-		body {
-			padding: 30px 0px 30px 0px;
-		}
-		.login {
-			padding: 20px 15px 30px 15px;
-			width: 85%;
-		}
-		input.name,
-		input.userfirstname,
-		input.userlastname,
-		input.email,
-		input.nickname,
-		input.password,
-		input.passwordconfirm,
-		textarea.content{
-			width: 75%;
-			padding: 10px 10px 10px 45px;
-		}
-		input.name,
-		input.userfirstname,
-		input.userlastname,
-		input.nickname {
-			background: url(../images/user.png)no-repeat 8px 6px;
-		}
-		input.tel {
-			background: url(../images/tel.png)no-repeat 6px 5px;
-		}
-		input.email {
-			background: url(../images/email.png)no-repeat 5px 6px;
-		}
-		textarea.content {
-			background: url(../images/i.png)no-repeat 10px 9px;
-		}
-		input[type="submit"] {
-			width: 90%;
-			font-size: 12px;
-			padding: 10px 7px;
-			margin: 0px 0px 0px 0px;
-		}
-		h1 {
-			font-size: 25PX;
-			margin: 0px 0px 13px 0px;
-		}
-		.tab-content h3 {
-			font-size: 11px;
-			margin: 1px 0px 6px 0px;
-		}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.nickname,
+	input.email,
+	input.password,
+	input.passwordconfirm,
+	textarea.content {
+		font-size: 13px;
 	}
+	input[type="submit"] {
+		font-size: 15px;
+	}
+	.contact textarea {
+		font-size: 13px;
+	}
+	body {
+		padding: 50px 0px 80px 0px;
+	}
+}
+
+@media(max-width:640px) {
+	.tab-content h2 {
+		font-size: 24px;
+	}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.email,
+	input.nickname,
+	input.password,
+	input.passwordconfirm,
+	textarea.content {
+		font-size: 12px;
+	}
+	input[type="submit"] {
+		width: 69%;
+		font-size: 14px;
+	}
+	body {
+		padding: 50px 0px 30px 0px;
+	}
+	h1 {
+		font-size: 35PX;
+	}
+}
+
+@media(max-width:480px) {
+	.tab-content h2 {
+		font-size: 22px;
+	}
+	.tab-content h3 {
+		font-size: 13px;
+	}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.email,
+	input.nickname,
+	input.password,
+	input.passwordconfirm,
+	textarea.content {
+		width: 61%;
+	}
+	input[type="submit"] {
+		width: 80%;
+	}
+	h1 {
+		font-size: 30PX;
+		margin: 0px 0px 20px 0px;
+	}
+}
+
+@media(max-width:320px) {
+	.tab-content h2 {
+		font-size: 20px;
+	}
+	body {
+		padding: 30px 0px 30px 0px;
+	}
+	.login {
+		padding: 20px 15px 30px 15px;
+		width: 85%;
+	}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.email,
+	input.nickname,
+	input.password,
+	input.passwordconfirm,
+	textarea.content {
+		width: 75%;
+		padding: 10px 10px 10px 45px;
+	}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.nickname {
+		background: url(../images/user.png)no-repeat 8px 6px;
+	}
+	input.tel {
+		background: url(../images/tel.png)no-repeat 6px 5px;
+	}
+	input.email {
+		background: url(../images/email.png)no-repeat 5px 6px;
+	}
+	textarea.content {
+		background: url(../images/i.png)no-repeat 10px 9px;
+	}
+	input[type="submit"] {
+		width: 90%;
+		font-size: 12px;
+		padding: 10px 7px;
+		margin: 0px 0px 0px 0px;
+	}
+	h1 {
+		font-size: 25PX;
+		margin: 0px 0px 13px 0px;
+	}
+	.tab-content h3 {
+		font-size: 11px;
+		margin: 1px 0px 6px 0px;
+	}
+}
 }

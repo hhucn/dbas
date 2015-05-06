@@ -65,6 +65,7 @@ $(document).ready(function () {
 	var path = document.location.pathname.match(/[^\/]+$/)[0];
 	if (path === "contact") {					$('.navbar-right li').removeClass('active'); $('#contactLink').addClass('active');
 	} else if (path === "login") {		$('.navbar-right li').removeClass('active'); $('#loginLink').addClass('active');
+	} else if (path === "news") {			$('.navbar-right li').removeClass('active'); $('#newsLink').addClass('active');
 	} else if (path === "content") {	$('.navbar-right li').removeClass('active'); $('#contentLink').addClass('active');
 	} else { $('.navbar-right li a').removeClass('active');
 	}

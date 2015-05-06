@@ -51,6 +51,12 @@
 						</a>
 					</li>
 
+					<li id="newsLink" >
+						<a href="${request.application_url}/news" title="News about D-BAS">
+							<span class="glyphicon glyphicon-file glyphicon-icon" >&thinsp;News</span>
+						</a>
+					</li>
+
 					<li id="contactLink" >
 						<a href="${request.application_url}/contact" title="Get in touch with us">
 							<span class="glyphicon glyphicon-comment glyphicon-icon" >&thinsp;Contact</span>

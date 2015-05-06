@@ -24,18 +24,14 @@ settings = appconfig('config:' + os.path.join(here, '../', 'development.ini'))
 def _addTestingDB(session):
 	group1 = session.query(Group).filter_by(name='editors').first()
 	group2 = session.query(Group).filter_by(name='users').first()
-	#group1 = Group(name='editors')
-	#group2 = Group(name='users')
-	#session.add_all([group1, group2])
-	#session.flush()
 
 	pw1 = PasswordHandler.get_hashed_password(None, 'test')
 	pw2 = PasswordHandler.get_hashed_password(None, 'test')
-	user1 = User(firstname='editor', surename='editor', nickname='test_editor', email='nope1@nopeville.com', password=pw1)
-	user2 = User(firstname='user', surename='user', nickname='test_user', email='nope2@nopeville.com', password=pw2)
+	user1 = User(firstname='editor', surename='editor', nickname='test_editor', email='dbas1@cs.uni-duesseldorf.de', password=pw1)
+	user2 = User(firstname='user', surename='user', nickname='test_user', email='dbas2@cs.uni-duesseldorf.de', password=pw2)
 	user1.group = group1.uid
 	user2.group = group2.uid
-	session.add([user1, user2])
+	session.add_all([user1, user2])
 	session.flush()
 	position1 = Position(text='I like cats.', weight='100')
 	position2 = Position(text='I like dogs.', weight='20')
@@ -77,6 +73,7 @@ def _addRoutes(config):
 	config.add_route('main_logout_redirect', '/logout_redirect')
 	config.add_route('main_contact', '/contact')
 	config.add_route('main_content', '/content')
+	config.add_route('main_news', '/news')
 	config.add_route('main_impressum', '/impressum')
 	config.add_route('404', '/404')
 	return config
@@ -96,6 +93,14 @@ class BaseTestCase(unittest.TestCase):
 		#Session.configure(bind=connection)
 		self.session = self.Session(bind=connection)
 		Entity.session = self.session
+
+	def tearDown(self):
+		# rollback - everything that happened with the
+		#  Session above (including calls to commit())
+		#  is rolled back.
+		testing.tearDown()
+		self.trans.rollback()
+		self.session.close()
 
 # skip the routes, templates, etc. So let’s setup our Unit Test Base class
 class UnitTestBase(BaseTestCase):
@@ -123,7 +128,8 @@ class UnitTestBase(BaseTestCase):
 		request.session.get_csrf_token = csrf_token
 		return request
 
-# integrate with the whole web framework and actually hit the define routes, render the templates, and actually test the full stack of your application
+# integrate with the whole web framework and actually hit the define routes, render the templates,
+# and actually test the full stack of your application
 class IntegrationTestBase(BaseTestCase):
 	@classmethod
 	def setUpClass(cls):
@@ -134,8 +140,8 @@ class IntegrationTestBase(BaseTestCase):
 		self.testapp = TestApp(self.app)
 		self.config = testing.setUp()
 		super(IntegrationTestBase, self).setUp()
-		#self.session = _addTestingDB(self.session)
 		self.config = _addRoutes(self.config)
+
 
 ##########################################################################################################
 ##########################################################################################################
@@ -198,7 +204,7 @@ class ViewContactTests(UnitTestBase):
 		return Dbas.main_contact(request)
 
 	def test_contact(self):
-		print("ViewContactTests: test_logout")
+		print("ViewContactTests: test_contact")
 		request = testing.DummyRequest()
 		response = Dbas(request).main_contact()
 		self.assertEqual('Contact', response['title'])
@@ -214,6 +220,18 @@ class ViewContentTests(UnitTestBase):
 		request = testing.DummyRequest()
 		response = Dbas(request).main_content()
 		self.assertEqual('Content', response['title'])
+
+# testing content page
+class ViewNewsTests(UnitTestBase):
+	def _callFUT(self, request):
+		print("ViewNewsTests: _callFUT")
+		return Dbas.main_content(request)
+
+	def test_news(self):
+		print("ViewNewsTests: test_news")
+		request = testing.DummyRequest()
+		response = Dbas(request).main_news()
+		self.assertEqual('News', response['title'])
 
 # testing impressum page
 class ViewImpressumTests(UnitTestBase):
@@ -246,7 +264,6 @@ class ViewNotFoundTests(UnitTestBase):
 # check, if every site responds with 200 except the error page
 class FunctionalViewTests(IntegrationTestBase):
 	editor_login	 = '/login?nickname=editor&password=test&came_from=main_page&form.login.submitted=Login'
-	user_login		 = '/login?nickname=user&password=test&came_from=main_page&form.login.submitted=Login'
 	viewer_wrong_login = '/login?nickname=randomguest&password=incorrect&came_from=main_page&form.login.submitted=Login'
 
 	# testing main page
@@ -407,6 +424,10 @@ class FunctionalEMailTests(IntegrationTestBase):
 # checks for the database
 class FunctionalDatabaseTests(IntegrationTestBase):
 
+	def setUp(self):
+		super(FunctionalDatabaseTests, self).setUp()
+		self.session = _addTestingDB(self.session)
+
 	# testing group content
 	def test_database_group_content(self):
 		print("DatabaseTests: test_database_group_content")
@@ -419,15 +440,26 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		self.assertTrue(groupByName1.uid, groupByUid1.uid)
 		self.assertTrue(groupByName2.uid, groupByUid2.uid)
 
+
+	def test_database_content(self):
+		user1 = self.session.query(User).filter_by(nickname='test_user').first()
+		user2 = self.session.query(User).filter_by(nickname='test_editor').first()
+		position1 = self.session.query(Position).filter_by(text='I like cats.').first()#, weight='100')
+		position2 = self.session.query(Position).filter_by(text='I like dogs.').first()#, weight='20')
+		self.assertTrue(user1.firstname,'user')
+		self.assertTrue(user2.firstname,'editor')
+		self.assertTrue(position1.weight, 100)
+		self.assertTrue(position2.weight, 20)
+
 	# testing group content
 	def test_database_user_content(self):
 		print("DatabaseTests: test_database_user_content")
-		user = self.session.query(User).filter_by(nickname='admin').first()
-		self.assertTrue(user.firstname, 'admin')
-		self.assertTrue(user.surename, 'admin')
-		self.assertTrue(user.nickname, 'admin')
-		self.assertTrue(user.email, 'dbas@cs.uni-duesseldorf.de')
-		self.assertTrue(user.password, PasswordHandler.get_hashed_password(None,'admin'))
+		user = self.session.query(User).filter_by(nickname='test_user').first()
+		self.assertTrue(user.firstname, 'user')
+		self.assertTrue(user.surename, 'user')
+		self.assertTrue(user.nickname, 'user')
+		self.assertTrue(user.email, 'dbas1@cs.uni-duesseldorf.de')
+		self.assertTrue(user.password, PasswordHandler.get_hashed_password(None,'test'))
 
 	# testing position content
 	def test_database_position_content(self):
@@ -441,8 +473,8 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	def test_database_argument_content(self):
 		print("DatabaseTests: test_database_argument_content")
 		argument = self.session.query(Argument).filter_by(uid=1).first()
-		self.assertTrue(argument.text, 'They are fluffy.')
-		self.assertTrue(argument.weight, '100')
+		self.assertTrue(argument.text, 'They are hating all humans!')
+		self.assertTrue(argument.weight, '70')
 		self.assertTrue(argument.author, self.session.query(User).filter_by(uid=1).first().uid)
 
 	# testing relation arg pos content
@@ -450,28 +482,28 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		print("DatabaseTests: test_database_RelationArgPos")
 		relationAP = self.session.query(RelationArgPos).filter_by(uid=1).first()
 		self.assertTrue(relationAP.weight, 134)
-		self.assertTrue(relationAP.is_supportive, False)
+		self.assertTrue(relationAP.is_supportive, True)
+		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=1).first().uid)
 		self.assertTrue(relationAP.pos_uid, self.session.query(Position).filter_by(uid=1).first().uid)
 		self.assertTrue(relationAP.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
-		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=1).first().uid)
 
 	# testing relation arg arg content
 	def test_database_RelationArgArg(self):
 		print("DatabaseTests: test_database_RelationArgArg")
 		relationAA = self.session.query(RelationArgArg).filter_by(uid=1).first()
-		self.assertTrue(relationAA.weight, 132)
+		self.assertTrue(relationAA.weight, 14)
 		self.assertFalse(relationAA.is_supportive, True)
-		self.assertTrue(relationAA.author, self.session.query(User).filter_by(uid=3).first().uid)
-		self.assertTrue(relationAA.arg_uid1, self.session.query(Argument).filter_by(uid=6).first().uid)
-		self.assertTrue(relationAA.arg_uid2, self.session.query(Argument).filter_by(uid=1).first().uid)
+		self.assertTrue(relationAA.author, self.session.query(User).filter_by(uid=2).first().uid)
+		self.assertTrue(relationAA.arg_uid1, self.session.query(Argument).filter_by(uid=1).first().uid)
+		self.assertTrue(relationAA.arg_uid2, self.session.query(Argument).filter_by(uid=2).first().uid)
 
 	# testing relation pos pos content
 	def test_database_RelationPosPos(self):
 		print("DatabaseTests: test_database_RelationPosPos")
 		relationPP = self.session.query(RelationPosPos).filter_by(uid=1).first()
-		self.assertTrue(relationPP.weight, 132)
+		self.assertTrue(relationPP.weight, 98)
 		self.assertFalse(relationPP.is_supportive, True)
-		self.assertTrue(relationPP.author, self.session.query(User).filter_by(uid=3).first().uid)
+		self.assertTrue(relationPP.author, self.session.query(User).filter_by(uid=2).first().uid)
 		self.assertTrue(relationPP.pos_uid1, self.session.query(Position).filter_by(uid=1).first().uid)
 		self.assertTrue(relationPP.pos_uid2, self.session.query(Position).filter_by(uid=2).first().uid)
 

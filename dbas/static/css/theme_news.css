@@ -1,0 +1,104 @@
+.box {
+	display: inline-block;
+	margin: 50px;
+}
+
+.container {
+	margin-top: 100px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.newscontainer {
+	display: inline-block;
+	margin: 15px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	background: #f4f4f4;
+	border-radius: 4px;
+	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+}
+/*  GRID OF FOUR  */
+
+.span_4_of_4 {
+	width: 100%;
+}
+
+.span_3_of_4 {
+	width: 70%;
+}
+
+.span_2_of_4 {
+	width: 45%;
+}
+
+.span_1_of_4 {
+	width: 23%;
+}
+
+@media(max-width:1280px) {
+	.newscontainer {
+		margin: 14px;
+	}
+	.span_4_of_4 {
+		width: 100%;
+	}
+	.span_3_of_4 {
+		width: 70%;
+	}
+	.span_2_of_4 {
+		width: 45%;
+	}
+	.span_1_of_4 {
+		width: 23%;
+	}
+}
+
+@media(max-width:1024px) {
+	.container{
+		width: 75%;
+	}
+	.newscontainer {
+		margin: 12px;
+	}
+	.span_4_of_4 {
+		width: 100%;
+	}
+	.span_3_of_4 {
+		width: 80%;
+	}
+	.span_2_of_4 {
+		width: 60%;
+	}
+	.span_1_of_4 {
+		width: 43%;
+	}
+}
+
+@media(max-width:640px) {
+	.newscontainer {
+		display: block;
+		margin: 12px;
+	}
+	.span_4_of_4 ,
+	.span_3_of_4 ,
+	.span_2_of_4 ,
+	.span_1_of_4 {
+		width: 95%;
+	}
+}
+
+@media(max-width:320px) {
+	.newscontainer {
+		display: block;
+		margin: 10px;
+	}
+	.span_4_of_4 ,
+	.span_3_of_4 ,
+	.span_2_of_4 ,
+	.span_1_of_4 {
+		width: 95%;
+	}
+}

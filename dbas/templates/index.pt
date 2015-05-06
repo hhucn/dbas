@@ -103,12 +103,10 @@
 						<span class="font-normal">... features ...</span>
 					</p>
 					<dl class="dl-horizontal lead list">
-						<dt>Dialogue-based:</dt>
-						<dd>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</dd>
 						<dt>ArguMaps:</dt>
-						<dd>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</dd>
-						<dt>Dialogue-based:<dt>
-						<dd>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</dd>
+						<dd>The datastructure is equivalent to a kind of argumentation map. It is like a mind map, but the relations between the nodes are highly important and can have several meanings.</dd>
+						<dt>Dialogue-based:</dt>
+						<dd>Even if the system uses an argumentation map</dd>
 						<dt>Guided View:</dt>
 						<dd> Explanation about the view. Der Benutzer wird mit ausgewählten Beiträgen der anderen Teilnehmer konfrontiert. Die Wahl des nächsten Beitrags ist Teil der Dissertation.</dd>
 						<dt>Island View:</dt>
@@ -129,8 +127,7 @@
 			<div class="col-md-10">
 				<div class="content">
 					<h2><span class="font-semi-bold">About</span> <span class="smaller"> D-BAS</span></h2>
-					<p class="lead">This is about
-						<span class="font-normal">... about ...</span>
+					<p class="lead">D-BAS is a <span class="font-normal">novel approach</span>span> of discussions in the field of online participation
 						<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
 					</p>
 					<ul class="lead list">
@@ -143,7 +140,7 @@
 							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
 						</li>
 						<li>
-							<span class="font-normal">Cooperation with the <a href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" title="KIT/JProf. Betz">Karlruhe Institut of Technology</a>:</span>
+							<span class="font-normal">Cooperation with the <a href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" title="KIT/JProf. Betz">Karlsruhe Institut of Technology</a>:</span>
 							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
 						</li>
 						<li>
@@ -168,25 +165,40 @@
 			<div class="col-md-10">
 				<div class="content">
 					<h2><span class="font-semi-bold">Research</span> <span class="smaller">of D-BAS</span></h2>
-					<p class="lead">This is about <span class="font-normal">... research ...</span>.</p>
+					<ul class="lead list">
+						<li>
+							<span class="font-normal">Our data structure:</span>
+							<br>We are using a argumentation map as data structure, whereby our map is a four-tuple &lt;P,A,R,v&gt; with:
+							<ul class="lead list">
+								<li>P is the set of positions</li>
+								<li>A is the set of arguments</li>
+								<li>R is the set of relations:</li>
+									<ul>
+										<li>attacking/supporting in A</li>
+										<li>attacking/supporting in P</li>
+										<li>attacking/supporting in A united P</li>
+									</ul>
+								<li>v is the function for evaluating A and P</li>
+							</ul>
+							We are also supposing that attack- and support-relations must have different elements out of A and R. 
+						</li>
+					</ul>
+					<p class="lead">In addition, we have studied several tools:</p>
 					<ul class="lead list">
 						<li>
 							<span class="font-normal">Forum:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+							<br>Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.
 						</li>
 						<li>
 							<span class="font-normal">Pro-Contra Lists:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+							<br>These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.
 						</li>
 						<li>
 							<span class="font-normal">Argumentation-based Approaches:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
-						</li>
-						<li>
-							<span class="font-normal">Discussions-Metrics:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+							<br>This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.
 						</li>
 					</ul>
+					<span class="font-normal">For these reason the novel approach of a dialogue-based argumendation system was developed.</span>
 				</div>
 			</div>
 		</div>

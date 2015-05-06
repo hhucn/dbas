@@ -368,6 +368,20 @@ class Dbas(object):
 			logged_in = self.request.authenticated_userid
 		)
 
+	# news page for everybody
+	@view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
+	def main_news(self):
+		'''
+		View configuration for the news.
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		'''
+		logger('main_news','def','main')
+		return dict(
+			title='News',
+			project='DBAS',
+			logged_in = self.request.authenticated_userid
+		)
+
 	# impressum
 	@view_config(route_name='main_impressum', renderer='templates/impressum.pt', permission='everybody')
 	def main_impressum(self):
