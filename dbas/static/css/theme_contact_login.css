@@ -250,9 +250,6 @@ textarea.content:hover,
 #contact-submit{
 	margin-top: 25px;
 }
-#password-request-button{
-	width: 30%;
-}
 
 @media(max-width:1440px) {
 	.login {

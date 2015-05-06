@@ -1,136 +1,175 @@
+import os
 import unittest
-import transaction
 
-from .views import Dbas
+# done with the help of: https://gist.github.com/sontek/1420255
+
+from webtest import TestApp
+from dbas.views import Dbas
+from dbas import main
+from dbas.helper import PasswordHandler
+from dbas.database import DBSession as Session, Base as Entity
+from dbas.database.model import Group, User, Argument, RelationArgPos, RelationArgArg, RelationPosPos, Position
+from mock import Mock
+from paste.deploy.loadwsgi import appconfig
 from pyramid import testing
-#from pyramid_mailer import get_mailer
-from dbas.database.model import DBSession, Group, User, Argument, RelationArgPos, RelationArgArg, Position, Base
+from pyramid_mailer.mailer import DummyMailer
+from pyramid_mailer.message import Message
+from sqlalchemy import engine_from_config
+from sqlalchemy.orm import sessionmaker
 
-def _registerRoutes(config):
-	'''
-	Registers all views, which are in __init__
-	:param config:
-	:return:
-	'''
+here = os.path.dirname(__file__)
+settings = appconfig('config:' + os.path.join(here, '../', 'development.ini'))
+
+
+def _addTestingDB(session):
+	group1 = session.query(Group).filter_by(name='editors').first()
+	group2 = session.query(Group).filter_by(name='users').first()
+	#group1 = Group(name='editors')
+	#group2 = Group(name='users')
+	#session.add_all([group1, group2])
+	#session.flush()
+
+	pw1 = PasswordHandler.get_hashed_password(None, 'test')
+	pw2 = PasswordHandler.get_hashed_password(None, 'test')
+	user1 = User(firstname='editor', surename='editor', nickname='test_editor', email='nope1@nopeville.com', password=pw1)
+	user2 = User(firstname='user', surename='user', nickname='test_user', email='nope2@nopeville.com', password=pw2)
+	user1.group = group1.uid
+	user2.group = group2.uid
+	session.add([user1, user2])
+	session.flush()
+	position1 = Position(text='I like cats.', weight='100')
+	position2 = Position(text='I like dogs.', weight='20')
+	position1.author = user2.uid
+	position2.author = user1.uid
+	session.add_all([position1, position2])
+	session.flush()
+	argument1 = Argument(text='They are hating all humans!', weight='70')
+	argument2 = Argument(text='They are very devoted.', weight='80')
+	argument1.author = user1.uid
+	argument2.author = user2.uid
+	session.add_all([argument1, argument2])
+	session.flush()
+	relation1 = RelationArgPos(weight='134', is_supportive='1')
+	relation2 = RelationArgPos(weight='34', is_supportive='1')
+	relation3 = RelationArgArg(weight='14', is_supportive='0')
+	relation4 = RelationPosPos(weight='98', is_supportive='0')
+	relation1.author = user1.uid
+	relation2.author = user1.uid
+	relation3.author = user2.uid
+	relation4.author = user2.uid
+	relation1.pos_uid = position1.uid
+	relation1.arg_uid = argument1.uid
+	relation2.pos_uid = position2.uid
+	relation2.arg_uid = argument2.uid
+	relation3.arg_uid1 = argument1.uid
+	relation3.arg_uid2 = argument2.uid
+	relation4.pos_uid1 = position1.uid
+	relation4.pos_uid2 = position2.uid
+	session.add_all([relation1, relation2, relation3, relation4])
+	session.flush()
+
+	return session
+
+def _addRoutes(config):
 	config.add_route('main_page', '/')
 	config.add_route('main_login', '/login')
 	config.add_route('main_logout', '/logout')
+	config.add_route('main_logout_redirect', '/logout_redirect')
 	config.add_route('main_contact', '/contact')
 	config.add_route('main_content', '/content')
 	config.add_route('main_impressum', '/impressum')
+	config.add_route('404', '/404')
+	return config
 
-def _initTestingDB():
-	from sqlalchemy import create_engine
-	#engine = create_engine('sqlite://')
-	#Base.metadata.create_all(engine)
-	#DBSession.configure(bind=engine)
-	with transaction.manager:
-		group1 = Group(name='editor')
-		group2 = Group(name='user')
-		DBSession.add(group1)
-		DBSession.add(group2)
-		DBSession.flush()
+# setup the Base testing class what will manage our transactions
+class BaseTestCase(unittest.TestCase):
+	@classmethod
+	def setUpClass(cls):
+		cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
+		cls.Session =  sessionmaker()
 
-		user1 = User(firstname='editor', surename='editor', nickname='editor', email='nope1@nopeville.com', password='test')
-		user2 = User(firstname='user', surename='user', nickname='user', email='nope2@nopeville.com', password='test')
-		user1.group = group1.uid
-		user2.group = group2.uid
-		DBSession.add(user1)
-
-		position1 = Position(text='I like cats.', weight='100')
-		position2 = Position(text='I like dogs.', weight='20')
-		position1.author = user1.uid
-		position2.author = user1.uid
-		DBSession.add(position1)
-		DBSession.add(position2)
-		DBSession.flush()
-
-		argument1 = Argument(text='They are hating all humans!', weight='70')
-		argument2 = Argument(text='They are very devoted.', weight='80')
-		argument1.author = user1.uid
-		argument2.author = user2.uid
-		DBSession.add(argument2)
-		DBSession.flush()
-
-		relation1 = RelationArgPos(weight='134', is_supportive='1')
-		relation2 = RelationArgPos(weight='34', is_supportive='1')
-		relation3 = RelationArgArg(weight='14', is_supportive='0')
-		relation1.author = user1.uid
-		relation2.author = user1.uid
-		relation3.author = user2.uid
-		relation1.pos_uid = argument1.uid
-		relation2.pos_uid = argument2.uid
-		relation3.arg_uid1 = argument1.uid
-		relation1.arg_uid = argument1.uid
-		relation2.arg_uid = argument2.uid
-		relation3.arg_uid2 = argument2.uid
-		DBSession.add(argument1)
-		DBSession.add(relation1)
-		DBSession.add(relation2)
-		DBSession.add(relation3)
-		DBSession.flush()
-		transaction.commit
-	return DBSession
-
-#testing main page
-class ViewMainTests(unittest.TestCase):
 	def setUp(self):
-		print("ViewMainTests: test_logout")
-		self.config = testing.setUp()
+		connection = self.engine.connect()
+		# begin a non-ORM transaction
+		self.trans = connection.begin()
+		# bind an individual Session to the connection
+		#Session.configure(bind=connection)
+		self.session = self.Session(bind=connection)
+		Entity.session = self.session
+
+# skip the routes, templates, etc. So let’s setup our Unit Test Base class
+class UnitTestBase(BaseTestCase):
+	def setUp(self):
+		print("UnitTestBase: setUp")
+		self.config = testing.setUp(request=testing.DummyRequest())
+		super(UnitTestBase, self).setUp()
+		self.config = _addRoutes(self.config)
 
 	def tearDown(self):
-		print("ViewLoginTests: _callFUT")
+		print("UnitTestBase: tearDown")
 		testing.tearDown()
 
+	def get_csrf_request(self, post=None):
+		print("UnitTestBase: get_csrf_request")
+		csrf = 'abc'
+		if not u'csrf_token' in post.keys():
+			post.update({
+				'csrf_token': csrf
+			})
+		request = testing.DummyRequest(post)
+		request.session = Mock()
+		csrf_token = Mock()
+		csrf_token.return_value = csrf
+		request.session.get_csrf_token = csrf_token
+		return request
+
+# integrate with the whole web framework and actually hit the define routes, render the templates, and actually test the full stack of your application
+class IntegrationTestBase(BaseTestCase):
+	@classmethod
+	def setUpClass(cls):
+		cls.app = main({}, **settings)
+		super(IntegrationTestBase, cls).setUpClass()
+
+	def setUp(self):
+		self.testapp = TestApp(self.app)
+		self.config = testing.setUp()
+		super(IntegrationTestBase, self).setUp()
+		#self.session = _addTestingDB(self.session)
+		self.config = _addRoutes(self.config)
+
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+
+#testing main page
+class ViewMainTests(UnitTestBase):
 	def _callFUT(self, request):
-		print("ViewLoginTests: tearDown")
-		from dbas.views import main_page
-		return main_page(request)
+		print("ViewLoginTests: _callFUT")
+		return Dbas.main_page(request)
 
 	def test_main(self):
-		print("ViewLoginTests: setUp")
+		print("ViewLoginTests: test_main")
 		request = testing.DummyRequest()
 		response = Dbas(request).main_page()
 		self.assertEqual('Main', response['title'])
 
 # testing login page
-class ViewLoginTests(unittest.TestCase):
-	def setUp(self):
-		print("ViewLoginTests: test_logout")
-		self.config = testing.setUp()
-		_registerRoutes(self.config)
-
-	def tearDown(self):
-		print("ViewMainTests: _callFUT")
-		testing.tearDown()
-
+class ViewLoginTests(UnitTestBase):
 	def _callFUT(self, request):
-		print("ViewMainTests: tearDown")
-		from dbas.views import main_login
-		return main_login(request)
+		print("ViewMainTests: _callFUT")
+		return Dbas.main_login(request)
 
 	def test_login(self):
-		print("ViewMainTests: setUp")
+		print("ViewLoginTests: test_login")
 		request = testing.DummyRequest()
-		inst = Dbas(request)
 		response = Dbas(request).main_login()
 		self.assertEqual('Login', response['title'])
 
 # testing logout page
-class ViewLogoutTests(unittest.TestCase):
-	def setUp(self):
-		print("ViewLogoutTests: setUp")
-		self.config = testing.setUp()
-		_registerRoutes(self.config)
-
-	def tearDown(self):
-		print("ViewLogoutTests: tearDown")
-		testing.tearDown()
-
+class ViewLogoutTests(UnitTestBase):
 	def _callFUT(self, request):
 		print("ViewLogoutTests: _callFUT")
-		from dbas.views import main_logout
-		return main_logout(request)
+		return Dbas.main_logout(request)
 
 	def test_logout(self):
 		print("ViewLogoutTests: test_logout")
@@ -139,44 +178,24 @@ class ViewLogoutTests(unittest.TestCase):
 		self.assertEqual('Logout', response['title'])
 
 # testing logout redirection page
-class ViewLogoutRedirectTests(unittest.TestCase):
-	def setUp(self):
-		print("ViewLogoutRedirectTests: test_logout")
-		self.config = testing.setUp()
-		_registerRoutes(self.config)
-
-	def tearDown(self):
-		print("ViewLogoutRedirectTests: _callFUT")
-		testing.tearDown()
-
+class ViewLogoutRedirectTests(UnitTestBase):
 	def _callFUT(self, request):
 		print("ViewLogoutRedirectTests: tearDown")
-		from dbas.views import main_logout_redirect
-		return main_logout_redirect(request)
+		return Dbas.main_logout_redirect(request)
 
 	def test_logout_redirect(self):
 		print("ViewLogoutRedirectTests: setUp")
 		request = testing.DummyRequest()
-		inst = Dbas(request)
 		response = Dbas(request).main_logout_redirect()
 		# do NOT follow HTTPFound with webtest
 		# therefore we have function testings
 		self.assertEqual(response.status, '302 Found')
 
 # testing contact page
-class ViewContactTests(unittest.TestCase):
-	def setUp(self):
-		print("ViewContactTests: setUp")
-		self.config = testing.setUp()
-
-	def tearDown(self):
-		print("ViewContactTests: tearDown")
-		testing.tearDown()
-
+class ViewContactTests(UnitTestBase):
 	def _callFUT(self, request):
 		print("ViewContactTests: _callFUT")
-		from dbas.views import main_contact
-		return main_contact(request)
+		return Dbas.main_contact(request)
 
 	def test_contact(self):
 		print("ViewContactTests: test_logout")
@@ -185,19 +204,10 @@ class ViewContactTests(unittest.TestCase):
 		self.assertEqual('Contact', response['title'])
 
 # testing content page
-class ViewContentTests(unittest.TestCase):
-	def setUp(self):
-		print("ViewContentTests: setUp")
-		self.config = testing.setUp()
-
-	def tearDown(self):
-		print("ViewContentTests: tearDown")
-		testing.tearDown()
-
+class ViewContentTests(UnitTestBase):
 	def _callFUT(self, request):
 		print("ViewContentTests: _callFUT")
-		from dbas.views import main_content
-		return main_content(request)
+		return Dbas.main_content(request)
 
 	def test_content(self):
 		print("ViewContentTests: test_logout")
@@ -206,19 +216,10 @@ class ViewContentTests(unittest.TestCase):
 		self.assertEqual('Content', response['title'])
 
 # testing impressum page
-class ViewImpressumTests(unittest.TestCase):
-	def setUp(self):
-		print("ViewImpressumTests: test_logout")
-		self.config = testing.setUp()
-
-	def tearDown(self):
-		print("ViewImpressumTests: _callFUT")
-		testing.tearDown()
-
+class ViewImpressumTests(UnitTestBase):
 	def _callFUT(self, request):
 		print("ViewImpressumTests: tearDown")
-		from dbas.views import main_impressum
-		return main_impressum(request)
+		return Dbas.main_impressum(request)
 
 	def test_impressum(self):
 		print("ViewImpressumTests: setUp")
@@ -227,19 +228,10 @@ class ViewImpressumTests(unittest.TestCase):
 		self.assertEqual('Impressum', response['title'])
 
 # testing a unexisting page
-class ViewNotFoundTests(unittest.TestCase):
-	def setUp(self):
-		print("ViewNotFoundTests: test_logout")
-		self.config = testing.setUp()
-
-	def tearDown(self):
-		print("ViewNotFoundTests: _callFUT")
-		testing.tearDown()
-
+class ViewNotFoundTests(UnitTestBase):
 	def _callFUT(self, request):
 		print("ViewNotFoundTests: tearDown")
-		from dbas.views import notfound
-		return notfound(request)
+		return Dbas.notfound(request)
 
 	def test_main(self):
 		print("ViewNotFoundTests: setUp")
@@ -247,27 +239,15 @@ class ViewNotFoundTests(unittest.TestCase):
 		response = Dbas(request).notfound()
 		self.assertEqual('Error', response['title'])
 
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+
 # check, if every site responds with 200 except the error page
-class FunctionalTests(unittest.TestCase):
-
-	editor_login	   = '/login?nickname=editor&password=test&came_from=main_page&form.login.submitted=Login'
-	user_login		   = '/login?nickname=user&password=test&came_from=main_page&form.login.submitted=Login'
-	viewer_wrong_login = '/login?nickname=viewer&password=incorrect&came_from=main_page&form.login.submitted=Login'
-
-	def setUp(self):
-		print("FunctionalTests: setUp")
-		from dbas import main
-		settings = {'sqlalchemy.url': 'sqlite://', 'pyramid.includes' : 'pyramid_mailer.testing'}
-		app = main({}, **settings)
-		from webtest import TestApp
-		self.testapp = TestApp(app)
-		_initTestingDB()
-
-	def tearDown(self):
-		print("FunctionalTests: tearDown")
-		from dbas.database import DBSession
-		DBSession.remove()
-		testing.tearDown()
+class FunctionalViewTests(IntegrationTestBase):
+	editor_login	 = '/login?nickname=editor&password=test&came_from=main_page&form.login.submitted=Login'
+	user_login		 = '/login?nickname=user&password=test&came_from=main_page&form.login.submitted=Login'
+	viewer_wrong_login = '/login?nickname=randomguest&password=incorrect&came_from=main_page&form.login.submitted=Login'
 
 	# testing main page
 	def test_home(self):
@@ -279,7 +259,7 @@ class FunctionalTests(unittest.TestCase):
 	def test_contact(self):
 		print("FunctionalTests: test_contact")
 		res = self.testapp.get('/contact', status=200)
-		self.assertIn(b'<div class="contact">', res.body)
+		self.assertIn(b'<div class="contact', res.body)
 
 	# testing login page
 	def test_login_when_logged_out(self):
@@ -354,44 +334,6 @@ class FunctionalTests(unittest.TestCase):
 		res = self.testapp.get('/logout_redirect', status=302)
 		self.assertTrue(b'Logout' not in res.body)
 
-	# testing the email
-	def test_email(self):
-		print("FunctionalTests: test_email")
-		self.res = self.testapp.get('/contact', status=200)
-		self.registry = self.testapp.app.registry
-#		self.mailer = get_mailer(self.registry)
-#		self.assertEqual(len(self.mailer.outbox), 1)
-#		self.assertEqual(self.mailer.outbox[0].subject, "hello world")
-#		self.assertEqual(len(self.mailer.queue), 1)
-#		self.assertEqual(self.mailer.queue[0].subject, "hello world")
-
-
-class DatabaseTests(unittest.TestCase):
-
-	def setUp(self):
-		print("DatabaseTests: setUp")
-		from dbas import main
-		settings = {'sqlalchemy.url': 'sqlite://', 'pyramid.includes' : 'pyramid_mailer.testing'}
-		app = main({}, **settings)
-		from webtest import TestApp
-		self.testapp = TestApp(app)
-		_initTestingDB()
-
-	def tearDown(self):
-		print("DatabaseTests: tearDown")
-		from dbas.database import DBSession
-		DBSession.remove()
-		testing.tearDown()
-
-	def test_database_content(self):
-		print("DatabaseTests: test_database_content")
-		#group1 = DBSession.query(Group).filter_by(uid=1)
-		#group2 = DBSession.query(Group).filter_by(uid=2)
-		#self.assertTrue(b'editor' in group1.name)
-		#self.assertTrue(b'user' in group2.name)
-
-
-
 #	def test_anonymous_user_cannot_edit(self):
 #		res = self.testapp.get('/FrontPage/edit_page', status=200)
 #		self.assertTrue(b'Login' in res.body)
@@ -424,3 +366,115 @@ class DatabaseTests(unittest.TestCase):
 #		self.testapp.get(self.editor_login, status=302)
 #		res = self.testapp.get('/FrontPage', status=200)
 #		self.assertTrue(b'FrontPage' in res.body)
+
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+
+# checks for the email-connection
+class FunctionalEMailTests(IntegrationTestBase):
+	# testing the email - send
+	def test_email_send(self):
+		print("FunctionalTests: test_email_send")
+		self.testapp.get('/contact', status=200)
+		mailer = DummyMailer()
+		mailer.send(Message(subject='hello world', sender='krauthoff@cs.uni-duesseldorf.de', recipients =['krauthoff@cs.uni-duesseldorf.de'], body='dummybody'))
+		self.assertEqual(len(mailer.outbox), 1)
+		self.assertEqual(mailer.outbox[0].subject, 'hello world')
+
+	# testing the email - send_immediately
+	def test_email_send_immediately(self):
+		print("FunctionalTests: test_email_send_immediately")
+		self.testapp.get('/contact', status=200)
+		mailer = DummyMailer()
+		mailer.send_immediately(Message(subject='hello world', sender='krauthoff@cs.uni-duesseldorf.de', recipients =['krauthoff@cs.uni-duesseldorf.de'], body='dummybody'))
+		self.assertEqual(len(mailer.outbox), 1)
+		self.assertEqual(mailer.outbox[0].subject, 'hello world')
+
+	# testing the email - send_immediately_sendmail
+	def test_email_send_immediately_sendmail(self):
+		print("FunctionalTests: test_email_send_immediately_sendmail")
+		self.testapp.get('/contact', status=200)
+		mailer = DummyMailer()
+		mailer.send_immediately_sendmail(Message(subject='hello world', sender='krauthoff@cs.uni-duesseldorf.de', recipients =['krauthoff@cs.uni-duesseldorf.de'], body='dummybody'))
+		self.assertEqual(len(mailer.outbox), 1)
+		self.assertEqual(mailer.outbox[0].subject, 'hello world')
+
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+
+# checks for the database
+class FunctionalDatabaseTests(IntegrationTestBase):
+
+	# testing group content
+	def test_database_group_content(self):
+		print("DatabaseTests: test_database_group_content")
+		groupByName1 = self.session.query(Group).filter_by(name='editors').first()
+		groupByName2 = self.session.query(Group).filter_by(name='users').first()
+		groupByUid1 = self.session.query(Group).filter_by(uid=1).first()
+		groupByUid2 = self.session.query(Group).filter_by(uid=2).first()
+		self.assertTrue(groupByName1.name, groupByUid1.name)
+		self.assertTrue(groupByName2.name, groupByUid2.name)
+		self.assertTrue(groupByName1.uid, groupByUid1.uid)
+		self.assertTrue(groupByName2.uid, groupByUid2.uid)
+
+	# testing group content
+	def test_database_user_content(self):
+		print("DatabaseTests: test_database_user_content")
+		user = self.session.query(User).filter_by(nickname='admin').first()
+		self.assertTrue(user.firstname, 'admin')
+		self.assertTrue(user.surename, 'admin')
+		self.assertTrue(user.nickname, 'admin')
+		self.assertTrue(user.email, 'dbas@cs.uni-duesseldorf.de')
+		self.assertTrue(user.password, PasswordHandler.get_hashed_password(None,'admin'))
+
+	# testing position content
+	def test_database_position_content(self):
+		print("DatabaseTests: test_database_position_content")
+		position = self.session.query(Position).filter_by(uid=1).first()
+		self.assertTrue(position.text, 'I like cats.')
+		self.assertTrue(position.weight, '100')
+		self.assertTrue(position.author, self.session.query(User).filter_by(uid=1).first().uid)
+
+	# testing argument content
+	def test_database_argument_content(self):
+		print("DatabaseTests: test_database_argument_content")
+		argument = self.session.query(Argument).filter_by(uid=1).first()
+		self.assertTrue(argument.text, 'They are fluffy.')
+		self.assertTrue(argument.weight, '100')
+		self.assertTrue(argument.author, self.session.query(User).filter_by(uid=1).first().uid)
+
+	# testing relation arg pos content
+	def test_database_RelationArgPos(self):
+		print("DatabaseTests: test_database_RelationArgPos")
+		relationAP = self.session.query(RelationArgPos).filter_by(uid=1).first()
+		self.assertTrue(relationAP.weight, 134)
+		self.assertTrue(relationAP.is_supportive, False)
+		self.assertTrue(relationAP.pos_uid, self.session.query(Position).filter_by(uid=1).first().uid)
+		self.assertTrue(relationAP.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
+		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=1).first().uid)
+
+	# testing relation arg arg content
+	def test_database_RelationArgArg(self):
+		print("DatabaseTests: test_database_RelationArgArg")
+		relationAA = self.session.query(RelationArgArg).filter_by(uid=1).first()
+		self.assertTrue(relationAA.weight, 132)
+		self.assertFalse(relationAA.is_supportive, True)
+		self.assertTrue(relationAA.author, self.session.query(User).filter_by(uid=3).first().uid)
+		self.assertTrue(relationAA.arg_uid1, self.session.query(Argument).filter_by(uid=6).first().uid)
+		self.assertTrue(relationAA.arg_uid2, self.session.query(Argument).filter_by(uid=1).first().uid)
+
+	# testing relation pos pos content
+	def test_database_RelationPosPos(self):
+		print("DatabaseTests: test_database_RelationPosPos")
+		relationPP = self.session.query(RelationPosPos).filter_by(uid=1).first()
+		self.assertTrue(relationPP.weight, 132)
+		self.assertFalse(relationPP.is_supportive, True)
+		self.assertTrue(relationPP.author, self.session.query(User).filter_by(uid=3).first().uid)
+		self.assertTrue(relationPP.pos_uid1, self.session.query(Position).filter_by(uid=1).first().uid)
+		self.assertTrue(relationPP.pos_uid2, self.session.query(Position).filter_by(uid=2).first().uid)
+
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
