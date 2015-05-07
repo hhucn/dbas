@@ -20,8 +20,12 @@
 	border-radius: 4px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
-/*  GRID OF FOUR  */
+.newscontainer:hover{
+	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
+	transition: .5s ease;
+}
 
+/*  GRID OF FOUR  */
 .span_4_of_4 {
 	width: 100%;
 }
@@ -52,7 +56,7 @@
 		width: 45%;
 	}
 	.span_1_of_4 {
-		width: 23%;
+		width: 30%;
 	}
 }
 
@@ -66,14 +70,10 @@
 	.span_4_of_4 {
 		width: 100%;
 	}
-	.span_3_of_4 {
-		width: 80%;
-	}
-	.span_2_of_4 {
-		width: 60%;
-	}
+	.span_3_of_4 ,
+	.span_2_of_4 ,
 	.span_1_of_4 {
-		width: 43%;
+		width: 47%;
 	}
 }
 

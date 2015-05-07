@@ -100,6 +100,11 @@ a:hover {
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
 
+.container:hover{
+	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
+	transition: .5s ease;
+}
+
 .jsdiabled {
 	z-index: 2;
 	position: fixed;

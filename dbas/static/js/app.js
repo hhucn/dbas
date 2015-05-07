@@ -63,11 +63,31 @@ $(document).ready(function () {
 
 	// set current file to active
 	var path = document.location.pathname.match(/[^\/]+$/)[0];
-	if (path === "contact") {					$('.navbar-right li').removeClass('active'); $('#contactLink').addClass('active');
-	} else if (path === "login") {		$('.navbar-right li').removeClass('active'); $('#loginLink').addClass('active');
-	} else if (path === "news") {			$('.navbar-right li').removeClass('active'); $('#newsLink').addClass('active');
-	} else if (path === "content") {	$('.navbar-right li').removeClass('active'); $('#contentLink').addClass('active');
-	} else { $('.navbar-right li a').removeClass('active');
+	if (path === "contact") {
+		$('#contactLink').addClass('active');
+		$('#loginLink').removeClass('active');
+		$('#newsLink').removeClass('active');
+		$('#contentLink').removeClass('active');
+	} else if (path === "login") {
+		$('#loginLink').addClass('active');
+		$('#contactLink').removeClass('active');
+		$('#newsLink').removeClass('active');
+		$('#contentLink').removeClass('active');
+	} else if (path === "news") {
+		$('#newsLink').addClass('active');
+		$('#contactLink').removeClass('active');
+		$('#loginLink').removeClass('active');
+		$('#contentLink').removeClass('active');
+	} else if (path === "content") {
+		$('#contentLink').addClass('active');
+		$('#contactLink').removeClass('active');
+		$('#loginLink').removeClass('active');
+		$('#newsLink').removeClass('active');
+	} else {
+		$('#contactLink').removeClass('active');
+		$('#loginLink').removeClass('active');
+		$('#newsLink').removeClass('active');
+		$('#contentLink').removeClass('active');
 	}
 
 	// Your application has indicated you are logged out
@@ -78,17 +98,17 @@ $(document).ready(function () {
 				$('.timer').text(sec + " s");
 			},
 			onCounterEnd: function () {
-				//this gets the full url and an index
-				var url = document.location.href,
+					//this gets the full url and an index
+					var url = document.location.href,
 						index = url.indexOf("/logout");
-				//this removes the logout at the end, if there is one
-				url = url.substring(0, (index === -1) ? url.length : index);
-				url = url + "/logout_redirect";
-				// new text to the button
-				$('#homebutton').text("Redirecting to " + url);
-				// Move to a new location or you can do something else
-				window.location.href = url;
-			} // final action
+					//this removes the logout at the end, if there is one
+					url = url.substring(0, (index === -1) ? url.length : index);
+					url = url + "/logout_redirect";
+					// new text to the button
+					$('#homebutton').text("Redirecting to " + url);
+					// Move to a new location or you can do something else
+					window.location.href = url;
+				} // final action
 		});
 		myCounter.start();
 	}
