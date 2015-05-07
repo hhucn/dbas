@@ -15,10 +15,24 @@
 	</div>
 
 	<div class="newscontainer span_1_of_4">
-		<h2><span class="font-semi-bold">10.05.2015</span></h2>
-		<h3><p>Translation (I18N)</p></h3>
+		<h2><span class="font-semi-bold">12.05.2015</span></h2>
+		<h3><p>I18N + L10N</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
-		<br> If everyhting works well, this weekend the translations settings will be completed.
+		<br> D-BAS, now with internationalization and translation.
+	</div>
+
+	<div class="newscontainer span_1_of_4">
+		<h2><span class="font-semi-bold">10.05.2015</span></h2>
+		<h3><p>Settings</p></h3>
+		<h4>Author: Tobias Krauthoff</h4>
+		<br> New part of the website is finished: a settings page for every user.
+	</div>
+	
+	<div class="newscontainer span_2_of_4">
+		<h2><span class="font-semi-bold">09.05.2015</span></h2>
+		<h3><p>About the Workshop in Karlsruhe</p></h3>
+		<h4>Author: Tobias Krauthoff</h4>
+		<br> The workshop was very interesting. We have had very interesting talks and got much great feedback vom Jun.-Prof. Dr. Betz and Mr. Voigt. A repetition will be planed for the middle of july.  
 	</div>
 	
 	<div class="newscontainer span_2_of_4">
@@ -28,7 +42,7 @@
 		<br> The working group 'functionality' will drive to Karlsruhe for a workshop with Jun.-Prof. Dr. Betz as well as with C. Voigt. Our main topics will be the measurement of quality of discussions and the design of online-participation. I think, this will be very interesting!
 	</div>
 
-	<div class="newscontainer span_1_of_4">
+	<div class="newscontainer span_2_of_4">
 		<h2><span class="font-semi-bold">01.05.2015</span></h2>
 		<h3><p>System will be build up</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>

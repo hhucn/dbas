@@ -20,7 +20,9 @@ requires = [
     'zope.sqlalchemy',
     'docutils',
     'WebTest',
-    'cryptacular'
+    'cryptacular',
+    'Babel',
+    'lingua',
     ]
 
 setup(name='DBAS',
@@ -49,4 +51,9 @@ setup(name='DBAS',
       [console_scripts]
       initialize_sql = dbas.database.initializedb:main
       """,
+      message_extractors = { '.': [
+	      ('dbas/**.py', 'chameleon_python', None ),
+	      ('dbas/templates/**.pt', 'chameleon_xml', None ),
+	      ('static/**', 'ignore', None)
+	      ]},
       )

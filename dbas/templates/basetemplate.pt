@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
+<html lang="${request.locale_name}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="chameleoni18n">
 
 <head>
 	<meta charset="utf-8">
@@ -37,40 +39,64 @@
 			</div>
 			<div class="collapse navbar-collapse navbar-menubuilder">
 				<ul class="nav navbar-nav navbar-left">
-					<li id="home-hook"><a href="#home-template" title="Go to the top">Home</a></li>
-					<li id="description-hook"><a href="#description-template" title="Go to Description">Description</a></li>
-					<li id="features-hook"><a href="#features-template" title="Go to Features">Features</a></li>
-					<li id="about-hook"><a href="#about-template" title="Go to About">About</a></li>
-					<li id="research-hook"><a href="#research-template" title="Go to Research">Research</a></li>
+					<li id="home-hook"><a href="#home-template" title="Go to the top">Home</a>
+					</li>
+					<li id="description-hook">
+						<a href="#description-template" title="Go to Description" i18n:translate="description">Description</a>
+					</li>
+					<li id="features-hook">
+						<a href="#features-template" title="Go to Features" i18n:translate="features">Features</a>
+					</li>
+					<li id="about-hook"><a href="#about-template" title="Go to About">About</a>
+					</li>
+					<li id="research-hook">
+						<a href="#research-template" title="Go to Research" i18n:translate="research">Research</a>
+					</li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
-					<li id="contentLink"  tal:condition="logged_in">
+					<li id="contentLink" tal:condition="logged_in">
 						<a href="${request.application_url}/content" id="partyLink" title="Get the party started">
 							<span class="glyphicon glyphicon-erase glyphicon-icon">&thinsp;Let's&thinsp;&thinsp;go</span>
 						</a>
 					</li>
 
-					<li id="newsLink" >
+					<li id="newsLink">
 						<a href="${request.application_url}/news" title="News about D-BAS">
-							<span class="glyphicon glyphicon-file glyphicon-icon" >&thinsp;News</span>
+							<span class="glyphicon glyphicon-file glyphicon-icon">&thinsp;News</span>
 						</a>
 					</li>
 
-					<li id="contactLink" >
+					<li id="contactLink">
 						<a href="${request.application_url}/contact" title="Get in touch with us">
-							<span class="glyphicon glyphicon-comment glyphicon-icon" >&thinsp;Contact</span>
+							<span class="glyphicon glyphicon-comment glyphicon-icon">&thinsp;Contact</span>
 						</a>
 					</li>
 
 					<li id="loginLink" tal:condition="not:logged_in">
 						<a href="${request.application_url}/login" title="Login">
-							<span class="glyphicon glyphicon-log-in glyphicon-icon">&thinsp;Login</span></a>
+							<span class="glyphicon glyphicon-log-in glyphicon-icon">&thinsp;Login</span>
+						</a>
 					</li>
 
 					<li tal:condition="logged_in">
-						<a href="${request.application_url}/logout" title="Logout">
-							<span class="glyphicon glyphicon-log-out glyphicon-icon">&thinsp;Logout&thinsp;&thinsp;&quot;<span tal:replace="logged_in"/>&quot;</span></a>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#user"
+                               title="User options"><span tal:replace="logged_in"/>
+                                    <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="${request.application_url}/settings" title="Settings">
+							            <span class="glyphicon glyphicon-cog glyphicon-icon">&thinsp;Settings</span>
+						            </a>
+                                </li>
+                                <li>
+                                    <a href="${request.application_url}/logout" title="Logout">
+							            <span class="glyphicon glyphicon-log-out glyphicon-icon">&thinsp;Logout</span>
+						            </a>
+                                </li>
+                            </ul>
+					    </li>
 					</li>
 
 					<li class="dropdown">
@@ -93,20 +119,29 @@
 					</li>
 
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#" title="Switch language">Language
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#language" title="Switch
+						language">Language
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag_ge">Deutsch</a>
+								<a href=""><img class="language_selector_img"
+								                src="${request.static_url('dbas:static/images/germany-flag-16.png')}"
+								                alt="flag_ge">Deutsch</a>
 							</li>
 							<li class="active">
-								<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag_en">English</a>
+								<a href=""><img class="language_selector_img"
+								                src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}"
+								                alt="flag_en">English</a>
 							</li>
 							<li>
-								<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/spain-flag-16.png')}" alt="flag_es">Espa&ntilde;ol</a>
+								<a href=""><img class="language_selector_img"
+								                src="${request.static_url('dbas:static/images/spain-flag-16.png')}"
+								                alt="flag_es">Espa&ntilde;ol</a>
 							</li>
 							<li>
-								<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/sweden-flag-16.png')}" alt="flag_sw">Svensk</a>
+								<a href=""><img class="language_selector_img"
+								                src="${request.static_url('dbas:static/images/sweden-flag-16.png')}"
+								                alt="flag_sw">Svensk</a>
 							</li>
 						</ul>
 					</li>
@@ -116,11 +151,13 @@
 	</div>
 
 	<!-- ABOUT POPUP IN dropdown-menu -->
-	<div class="modal fade" id="popup_author" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade" id="popup_author" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+	     aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+							aria-hidden="true">&times;</span>
 					</button>
 					<h4 class="modal-title" id="myModalLabel">About me</h4>
 				</div>
@@ -128,7 +165,8 @@
 					<div class="container-fluid">
 						<div class="row">
 							<div class="col-md-8">
-								<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+								<table class="table table-condensed" border="0"
+								       style="border-collapse: separate; border-spacing: 5px 5px;">
 									<tr>
 										<td>
 											<spand class="font-semi-bold">Name</spand>
@@ -141,7 +179,8 @@
 										</td>
 										<td>Doctoral Student
 											<br><a href="http://www.tsn.hhu.de/en.html">Lab for Technology of Social Networks</a>
-											<br>Member of the graduation school <a href="http://www.fortschrittskolleg.de/" target="_blank">Online Participation</a>
+											<br>Member of the graduation school <a
+													href="http://www.fortschrittskolleg.de/" target="_blank">Online Participation</a>
 										</td>
 									</tr>
 									<tr>
@@ -178,7 +217,9 @@
 							</div>
 
 							<div class="col-md-3 col-md-offset-1">
-								<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author">
+								<img class="popup_author_img"
+								     src="${request.static_url('dbas:static/images/author.jpg')}"
+								     alt="image of the author">
 							</div>
 						</div>
 					</div>
@@ -191,11 +232,13 @@
 	</div>
 
 	<!-- COPYRIGHT POPUP IN dropdown-menu -->
-	<div class="modal fade" id="popup_licence" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade" id="popup_licence" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+	     aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+							aria-hidden="true">&times;</span>
 					</button>
 					<h4 class="modal-title" id="myModalLabel">The MIT License (MIT)</h4>
 				</div>
@@ -232,11 +275,13 @@
 	</div>
 
 	<!-- PRIVACY POPUP IN dropdown-menu -->
-	<div class="modal fade" id="popup_privacy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade" id="popup_privacy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+	     aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+							aria-hidden="true">&times;</span>
 					</button>
 					<h4 class="modal-title" id="myModalLabel">Privacy Policy</h4>
 				</div>
@@ -286,7 +331,8 @@
 							<div class='col-2'>
 								<div class="col-12 quick-links2 gen-text-center">
 									Fair Information Practices
-									<div class="col-8 gen-text-left gen-xs-text-center" style="font-size:12px;position:relative;left:20px;">Fair information
+									<div class="col-8 gen-text-left gen-xs-text-center"
+									     style="font-size:12px;position:relative;left:20px;">Fair information
 										<br> Practices</div>
 								</div>
 							</div>
@@ -331,7 +377,8 @@
 							<br>
 							<br>
 						</div>
-						<div class='innerText'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>&bull;</strong> To personalize user's experience and to allow us to deliver the type of content and product offerings in which you are most interested.</div><span id='infoPro'></span>
+						<div class='innerText'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>&bull;</strong> To personalize user's experience and to allow us to deliver the type of content and product offerings in which you are most interested.</div><span
+							id='infoPro'></span>
 						<br>
 						<div class='grayText'><strong>How do we protect visitor information?</strong>
 						</div>
@@ -348,7 +395,8 @@
 						<br>
 						<div class='innerText'>We implement a variety of security measures when a user enters, submits, or accesses their information to maintain the safety of your personal information.</div>
 						<br>
-						<div class='innerText'>All transactions are processed through a gateway provider and are not stored or processed on our servers.</div><span id='coUs'></span>
+						<div class='innerText'>All transactions are processed through a gateway provider and are not stored or processed on our servers.</div><span
+							id='coUs'></span>
 						<br>
 						<div class='grayText'><strong>Do we use 'cookies'?</strong>
 						</div>
@@ -375,12 +423,14 @@
 						<div class='grayText'><strong>Third Party Disclosure</strong>
 						</div>
 						<br />
-						<div class='innerText'>We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information.</div><span id='trLi'></span>
+						<div class='innerText'>We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information.</div><span
+							id='trLi'></span>
 						<br>
 						<div class='grayText'><strong>Third party links</strong>
 						</div>
 						<br />
-						<div class='innerText'>Occasionally, at our discretion, we may include or offer third party products or services on our website. These third party sites have separate and independent privacy policies. We therefore have no responsibility or liability for the content and activities of these linked sites. Nonetheless, we seek to protect the integrity of our site and welcome any feedback about these sites.</div><span id='gooAd'></span>
+						<div class='innerText'>Occasionally, at our discretion, we may include or offer third party products or services on our website. These third party sites have separate and independent privacy policies. We therefore have no responsibility or liability for the content and activities of these linked sites. Nonetheless, we seek to protect the integrity of our site and welcome any feedback about these sites.</div><span
+							id='gooAd'></span>
 						<br>
 						<div class='blueText'><strong>Google</strong>
 						</div>
@@ -389,7 +439,8 @@
 							<br>
 							<br>
 						</div>
-						<div class='innerText'>We have not enabled Google AdSense on our site but we may do so in the future.</div><span id='calOppa'></span>
+						<div class='innerText'>We have not enabled Google AdSense on our site but we may do so in the future.</div><span
+							id='calOppa'></span>
 						<br>
 						<div class='blueText'><strong>California Online Privacy Protection Act</strong>
 						</div>
@@ -418,7 +469,8 @@
 						<div class='innerText'>
 							<br><strong>Does our site allow third party behavioral tracking?</strong>
 						</div>
-						<div class='innerText'>It's also important to note that we do not allow third party behavioral tracking</div><span id='coppAct'></span>
+						<div class='innerText'>It's also important to note that we do not allow third party behavioral tracking</div><span
+							id='coppAct'></span>
 						<br>
 						<div class='blueText'><strong>COPPA (Children Online Privacy Protection Act)</strong>
 						</div>
@@ -427,7 +479,8 @@
 							<br>
 							<br>
 						</div>
-						<div class='innerText'>We do not specifically market to children under 13.</div><span id='ftcFip'></span>
+						<div class='innerText'>We do not specifically market to children under 13.</div><span
+							id='ftcFip'></span>
 						<br>
 						<div class='blueText'><strong>Fair Information Practices</strong>
 						</div>
@@ -441,7 +494,8 @@
 						<div class='innerText'>We will notify the users via email</div>
 						<div class='innerText'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>&bull;</strong> Within 7 business days</div>
 						<div class='innerText'>
-							<br>We also agree to the individual redress principle, which requires that individuals have a right to pursue legally enforceable rights against data collectors and processors who fail to adhere to the law. This principle requires not only that individuals have enforceable rights against data users, but also that individuals have recourse to courts or a government agency to investigate and/or prosecute non-compliance by data processors.</div><span id='canSpam'></span>
+							<br>We also agree to the individual redress principle, which requires that individuals have a right to pursue legally enforceable rights against data collectors and processors who fail to adhere to the law. This principle requires not only that individuals have enforceable rights against data users, but also that individuals have recourse to courts or a government agency to investigate and/or prosecute non-compliance by data processors.</div><span
+							id='canSpam'></span>
 						<br>
 						<div class='blueText'><strong>CAN SPAM Act</strong>
 						</div>

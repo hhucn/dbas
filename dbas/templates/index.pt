@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
@@ -44,6 +44,8 @@
 							</td>
 						</tr>
 					</table>
+					<br>
+					<p class="lead">And don't forget to check the <a href="${request.application_url}/news" title="news">news-page</a> reguarly.</p>
 				</div>
 			</div>
 		</div>
@@ -127,29 +129,19 @@
 			<div class="col-md-10">
 				<div class="content">
 					<h2><span class="font-semi-bold">About</span> <span class="smaller"> D-BAS</span></h2>
-					<p class="lead">D-BAS is a <span class="font-normal">novel approach</span>span> of discussions in the field of online participation
+					<p class="lead">D-BAS is a <span class="font-normal">novel approach</span> of discussions in the field of online participation
 						<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
 					</p>
 					<ul class="lead list">
 						<li>
-							<span class="font-normal">Our Argumentation-Map:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
-						</li>
-						<li>
 							<span class="font-normal">Cooperation with <a href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a>:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
 						</li>
 						<li>
 							<span class="font-normal">Cooperation with the <a href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" title="KIT/JProf. Betz">Karlsruhe Institut of Technology</a>:</span>
-							<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
 						</li>
 						<li>
 							<span class="font-normal">Graduation School Online-Participation:</span>
-							<ul>
-								<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
-								<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
-								<li>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!</li>
-							</ul>
+							<br>Das NRW Fortschrittskolleg Online-Partizipation ist ein vom Land Nordrhein-Westfalen gefördertes Graduiertenkolleg, in dem Wissenschaftlerinnen und Wissenschaftler aus der Betriebswirtschaft, Informatik, Kommunikationswissenschaft, Politikwissenschaft, Rechtswissenschaft und Soziologie gemeinsam mit Partnern aus der Praxis zusammenarbeiten. Ziel des Fortschrittskollegs ist es, die Möglichkeiten des Internets zur Beteiligung von Betroffenen an für sie relevanten Entscheidungen zu untersuchen.
 						</li>
 					</ul>
 				</div>
@@ -213,12 +205,13 @@
 					<li>
 						<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;
 						<a href="${request.application_url}/impressum">
-							<i class="glyphicon glyphicon-th-list icon-muted">&#160;</i>Impressum</a>
+							<i class="glyphicon glyphicon-th-list icon-muted">&thinsp;</i>Impressum</a>
 					</li>
 				</ul>
 				<ul>
-				<li>Icons by&#160;&#160;
-					<a href="http://glyphicons.com/" alt="glyphicons"><i class="glyphicon glyphicon-link icon-muted">&#160;</i>glyphicons</a></li>
+					<li>
+						Icons by&#160;&#160;<a href="http://glyphicons.com/"><i class="glyphicon glyphicon-asterisk icon-muted">&thinsp;</i>glyphicons</a>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -229,19 +222,19 @@
 				<ul>
 					<li>
 						<a href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
-							<i class="glyphicon glyphicon-bookmark icon-muted">&#160;</i>Docs</a>
+							<i class="glyphicon glyphicon-bookmark icon-muted">&thinsp;</i>Docs</a>
 					</li>
 					<li>
 						<a href="https://github.com/Pylons/pyramid">
-							<i class="glyphicon glyphicon-cog icon-muted">&#160;</i>Github Project</a>
+							<i class="glyphicon glyphicon-cog icon-muted">&thinsp;</i>Github Project</a>
 					</li>
 					<li>
 						<a href="irc://irc.freenode.net#pyramid">
-							<i class="glyphicon glyphicon-globe icon-muted">&#160;</i>IRC Channel</a>
+							<i class="glyphicon glyphicon-globe icon-muted">&thinsp;</i>IRC Channel</a>
 					</li>
 					<li>
 						<a href="http://pylonsproject.org">
-							<i class="glyphicon glyphicon-home icon-muted">&#160;</i>Pylons Project</a>
+							<i class="glyphicon glyphicon-home icon-muted">&thinsp;</i>Pylons Project</a>
 					</li>
 				</ul>
 			</div>

@@ -13,12 +13,7 @@ from pyramid_mailer.message import Message
 
 from .database import DBSession
 from .database.model import User, Group
-from .helper import PasswordHandler, PasswordGenerator
-
-
-def logger(who, when, what):
-	print(time.strftime("%H:%M:%S") + ' ' + who.upper() + '| ' + when + ': ' + what);
-
+from .helper import PasswordHandler, PasswordGenerator, logger
 
 class Dbas(object):
 	def __init__(self, request):
@@ -368,6 +363,86 @@ class Dbas(object):
 			logged_in = self.request.authenticated_userid
 		)
 
+	# settings page, when logged in
+	@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
+	def main_settings(self):
+		'''
+		View configuration for the content view. Only logged in user can reach this page.
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		'''
+		logger('main_settings','def','main')
+		oldpw = ''
+		newpw = ''
+		confirmpw = ''
+		message = ''
+		error = False
+		success = False
+
+		if 'form.passwordchange.submitted' in self.request.params:
+			logger('main_settings','form.changepassword.submitted','requesting params')
+			oldpw = self.request.params['passwordold']
+			newpw = self.request.params['password']
+			confirmpw = self.request.params['passwordconfirm']
+
+			# is the old password given?
+			if (not oldpw):
+				logger('main_settings','form.changepassword.submitted','old pwd is empty')
+				message = 'The old password field is empty.'
+				error = True
+			# is the new password given?
+			elif (not newpw):
+				logger('main_settings','form.changepassword.submitted','new pwd is empty')
+				message = 'The new password field is empty.'
+				error = True
+			# is the cofnrimation password given?
+			elif (not confirmpw):
+				logger('main_settings','form.changepassword.submitted','confirm pwd is empty')
+				message = 'The password confirmation field is empty.'
+				error = True
+			# is new password equals the confirmation?
+			elif (not newpw == confirmpw):
+				logger('main_settings','form.changepassword.submitted','new pwds not equal')
+				message = 'The new passwords are not equal'
+				error = True
+			# is new old password equals the new one?
+			elif (oldpw == newpw):
+				logger('main_settings','form.changepassword.submitted','pwds are the same')
+				message = 'The new and old password are the same'
+				error = True
+			else:
+				DBUser = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
+
+				# is the old password valid?
+				if (not DBUser.validate_password(oldpw)):
+					logger('main_settings','form.changepassword.submitted','old password is wrong')
+					message = 'Your old password is wrong.'
+					error = True
+				else:
+					logger('main_login','form.passwordrequest.submitted','new password is ' + newpw)
+					hashedpwd = PasswordHandler.get_hashed_password(self, newpw)
+					logger('main_login','form.passwordrequest.submitted','New hashed password is ' + hashedpwd)
+
+					# set the hased one
+					DBUser.password = hashedpwd
+					DBSession.add(DBUser)
+					transaction.commit()
+
+					logger('main_settings','form.changepassword.submitted','password was changed')
+					message = 'Your password was changed'
+					success = True
+
+		return dict(
+			title='Settings',
+			project='DBAS',
+			logged_in = self.request.authenticated_userid,
+			passwordold = oldpw ,
+			password = newpw ,
+			passwordconfirm = confirmpw,
+			change_error = error,
+			change_success = success,
+			message = message
+		)
+
 	# news page for everybody
 	@view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
 	def main_news(self):
@@ -403,7 +478,7 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		'''
 		self.request.response.status = 404
-		logger('main_content','def','view \'' + self.request.view_name + '\' not found')
+		logger('notfound','def','view \'' + self.request.view_name + '\' not found')
 		return dict(
 			title='Error',
 			project='DBAS',

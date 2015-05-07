@@ -13,5 +13,7 @@ Notices
     Unit-tests and integration tests
     Both are created with the help of  http://www.sontek.net/blog/2011/12/01/writing_tests_for_pyramid_and_sqlalchemy.html
 
-    Internationalization
-        Translation with Chamelon and I18N https://chameleon.readthedocs.org/en/latest/reference.html
+    Internationalization / Localization
+        Internationalization (i18n)
+        Localization (l10n)
+        Translation via Chameleon and https://chameleon.readthedocs.org/en/latest/reference.html

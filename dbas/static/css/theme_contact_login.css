@@ -274,19 +274,22 @@ textarea.content:hover,
 }
 
 @media(max-width:1440px) {
-	.login {
+	.login,
+	.contact{
 		width: 40%;
 	}
 }
 
 @media(max-width:1366px) {
-	.login {
+	.login,
+	.contact{
 		width: 43%;
 	}
 }
 
 @media(max-width:1280px) {
-	.login {
+	.login,
+	.contact{
 		width: 45%;
 	}
 }
@@ -298,13 +301,15 @@ textarea.content:hover,
 }
 
 @media(max-width:1024px) {
-	.login {
+	.login,
+	.contact{
 		width: 56%;
 	}
 }
 
 @media(max-width:768px) {
-	.login {
+	.login,
+	.contact{
 		width: 73%;
 	}
 	.tab-content h2 {
@@ -393,7 +398,8 @@ textarea.content:hover,
 	body {
 		padding: 30px 0px 30px 0px;
 	}
-	.login {
+	.login,
+	.contact {
 		padding: 20px 15px 30px 15px;
 		width: 85%;
 	}
@@ -458,5 +464,4 @@ textarea.content:hover,
 		font-size: 11px;
 		margin: 1px 0px 6px 0px;
 	}
-}
 }
