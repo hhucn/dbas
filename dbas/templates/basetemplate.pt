@@ -19,8 +19,8 @@
 
 <body>
 
-	<div metal:use-macro="load: header.pt" />
-	<div metal:use-macro="load: popups.pt" />
+	<div metal:use-macro="load: snippet-header.pt" />
+	<div metal:use-macro="load: snippet-popups.pt" />
 
 	<!-- scroll to top -->
 	<a href="#" class="back-to-top" title="Go to the top"></a>
