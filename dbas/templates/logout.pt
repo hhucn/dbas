@@ -7,14 +7,16 @@
 
 <body>
 
-	<div class="center">
-		<div class="logout">
-			<h1><span class="font-semi-bold">Logout</span></h1>
-			<p class="lead font-normal">
-				You will be logged out and redirected automatically in <span class='timer'>5 s</span>.
-			</p>
-			<br>
-			<input class="button button-block btn-lg btn btn-primary" id="homebutton" type="submit" onClick="self.location.href='/logout_redirect'" value="Logout directly!" />
+	<div class="wrapper-fill-page">
+		<div class="center">
+			<div class="logout">
+				<h1><span class="font-semi-bold">Logout</span></h1>
+				<p class="lead font-normal">
+					You will be logged out and redirected automatically in <span class='timer'>5 s</span>.
+				</p>
+				<br>
+				<input class="button button-block btn-lg btn btn-primary" id="homebutton" type="submit" onClick="self.location.href='/logout_redirect'" value="Logout directly!" />
+			</div>
 		</div>
 	</div>
 

@@ -64,5 +64,8 @@
 		<br>
 	</div>
 
+	
+	<div metal:use-macro="load: footer.pt" />
+
 </body>
 <html>

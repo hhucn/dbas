@@ -6,15 +6,16 @@
 </head>
 
 <body>
-	
-	
-	
+
 	<div class="container" id="home-template">
 		<div class="row">
 			<div class="col-md-12">
 				<div class="content">
+					<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
 					<h2><span class="font-semi-bold">Welcome</span> <span class="smaller">to the <span class="font-semi-bold">D</span>ialogue-<span class="font-semi-bold">B</span>ased <span class="font-semi-bold">A</span>rgumentation <span class="font-semi-bold">S</span>oftware, or short <span class="font-semi-bold">D-BAS</span></span></h2>
-					<p class="lead">This novel discussions software will help you to discuss a problem or statement in a structured manner.<br><br>D-Bas offers a lot of advantages, here are a few of them:</p>
+					<p class="lead">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
+					<br>
+					<p class="lead">D-Bas offers a lot of advantages, here are a few of them:</p>
 					<ul class="lead list">
 						<li>Use the wisdom of the crowd</li>
 						<li>Easy to use and very powerful</li>
@@ -22,23 +23,23 @@
 						<li>Every argument and position will be connected logically to each other</li>
 					</ul>
 					<br>
-					<p class="lead">This project is based on research of the graduation school Online-Participation, governmentally subsidised by the <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" alt="Ministry of Innovation, Science and Research in North Rhine-Westphalia">Ministry of Innovation, Science and Research in North Rhine-Westphalia</a>.</p>
+					<p class="lead">This project is based on research of the graduation school Online-Participation, governmentally subsidised by the <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank" alt="Ministry of Innovation, Science and Research in North Rhine-Westphalia">Ministry of Innovation, Science and Research in North Rhine-Westphalia</a>.</p>
 					<table class="table_logo" border="0">
 						<tr>
 							<td rowspan="2">
-								<a id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
+								<a target="_blank" id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
 									<img class="logo_hhu img-responsive" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo">
 								</a>
 							</td>
 							<td>
-								<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
+								<a target="_blank" id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
 									<img class="logo_kolleg img-responsive" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo">
 								</a>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<a id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
+								<a target="_blank" id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
 									<img class="logo_fhoev img-responsive" src="${request.static_url('dbas:static/images/logo_fhoev.jpg')}" alt="fhoev logo">
 								</a>
 							</td>
@@ -54,7 +55,7 @@
 	<div class="container" id="description-template">
 		<div class="row">
 			<div class="col-md-2">
-				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
+				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/icon.png')}" alt="dbas logo">
 			</div>
 			<div class="col-md-10">
 				<div class="content">
@@ -81,8 +82,8 @@
 								<li> A base form of the guided view will be avbailable:</li>
 								<ul class="lead list">
 									<li> The participant will be confronted with an argument out of the finished argumentation map.
-									<li> He has several options to choose, so this will be a kind of led <a href="http://www.bpb.de/politik/wahlen/wahl-o-mat/" alt="Wahl-O-Mat">Wahl-O-Mat</a>.</li>
-									<li> We will have no KI, recommender systems or predictions of the next post. Everything will be statically.
+										<li> He has several options to choose, so this will be a kind of led <a href="http://www.bpb.de/politik/wahlen/wahl-o-mat/" target="_blank" alt="Wahl-O-Mat">Wahl-O-Mat</a>.</li>
+										<li> We will have no KI, recommender systems or predictions of the next post. Everything will be statically.
 								</ul>
 								<li> Participants will be tracked, but every data is accessible.</li>
 								<li> Everything will be done with unit and integration tests.</li>
@@ -96,7 +97,7 @@
 	<div class="container" id="features-template">
 		<div class="row">
 			<div class="col-md-2">
-				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
+				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/icon.png')}" alt="dbas logo">
 			</div>
 			<div class="col-md-10">
 				<div class="content">
@@ -106,15 +107,15 @@
 					</p>
 					<dl class="dl-horizontal lead list">
 						<dt>ArguMaps:</dt>
-						<dd>The datastructure is equivalent to a kind of argumentation map. It is like a mind map, but the relations between the nodes are highly important and can have several meanings.</dd>
+						<dd>A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense. </dd>
 						<dt>Dialogue-based:</dt>
-						<dd>Even if the system uses an argumentation map</dd>
+						<dd> Yeah, this is a novel and it will work with a kind of dialogue-based approach. This means that the system will represnt the panelist and the claims will be given through the other participants.</dd>
 						<dt>Guided View:</dt>
-						<dd> Explanation about the view. Der Benutzer wird mit ausgewählten Beiträgen der anderen Teilnehmer konfrontiert. Die Wahl des nächsten Beitrags ist Teil der Dissertation.</dd>
+						<dd> You will never see something like an argumentation map, because the systems seems to be like dynamic and generic <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> for you.</dd>
 						<dt>Island View:</dt>
-						<dd> Explanation about the view. Es werden sogenannte Inseln präsentiert, die aus einer Position und allen Argumenten geordnet als Pro/Kontra-Liste bestehen.</dd>
+						<dd> Okay, you want to see more as with the guided view, but not everything. Therefore the island view will present you a list of every argument for an specific position.</dd>
 						<dt>Expert View:</dt>
-						<dd> Explanation about the view. Der Benutzer erhält Einblick auf die gesamte Argumentation Map und kann sich frei bewegen. Darstellungsvariante ist noch offen (Liste, Baum, Graph, Container und/oder Matrix (siehe [SLPM10], S.12)).</dd>
+						<dd> So, you think you are an expert? Okay, you will have a view of the complet argumentation map.</dd>
 					</dl>
 				</div>
 			</div>
@@ -124,7 +125,7 @@
 	<div class="container" id="about-template">
 		<div class="row">
 			<div class="col-md-2">
-				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
+				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/icon.png')}" alt="dbas logo">
 			</div>
 			<div class="col-md-10">
 				<div class="content">
@@ -134,13 +135,13 @@
 					</p>
 					<ul class="lead list">
 						<li>
-							<span class="font-normal">Cooperation with <a href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a>:</span>
+							<span class="font-normal">Cooperation with <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a>:</span>
 						</li>
 						<li>
-							<span class="font-normal">Cooperation with the <a href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" title="KIT/JProf. Betz">Karlsruhe Institut of Technology</a>:</span>
+							<span class="font-normal">Cooperation with the <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php">Karlsruhe Institut of Technology</a>:</span>
 						</li>
 						<li>
-							<span class="font-normal">Graduation School Online-Participation:</span>
+							<span class="font-normal">Graduation School <a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" target="_blank" title="Graduation School Online Participation" target="_blank">Online-Participation:</a></span>
 							<br>Das NRW Fortschrittskolleg Online-Partizipation ist ein vom Land Nordrhein-Westfalen gefördertes Graduiertenkolleg, in dem Wissenschaftlerinnen und Wissenschaftler aus der Betriebswirtschaft, Informatik, Kommunikationswissenschaft, Politikwissenschaft, Rechtswissenschaft und Soziologie gemeinsam mit Partnern aus der Praxis zusammenarbeiten. Ziel des Fortschrittskollegs ist es, die Möglichkeiten des Internets zur Beteiligung von Betroffenen an für sie relevanten Entscheidungen zu untersuchen.
 						</li>
 					</ul>
@@ -152,7 +153,7 @@
 	<div class="container" id="research-template">
 		<div class="row">
 			<div class="col-md-2">
-				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
+				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/icon.png')}" alt="dbas logo">
 			</div>
 			<div class="col-md-10">
 				<div class="content">
@@ -160,19 +161,7 @@
 					<ul class="lead list">
 						<li>
 							<span class="font-normal">Our data structure:</span>
-							<br>We are using a argumentation map as data structure, whereby our map is a four-tuple &lt;P,A,R,v&gt; with:
-							<ul class="lead list">
-								<li>P is the set of positions</li>
-								<li>A is the set of arguments</li>
-								<li>R is the set of relations:</li>
-									<ul>
-										<li>attacking/supporting in A</li>
-										<li>attacking/supporting in P</li>
-										<li>attacking/supporting in A united P</li>
-									</ul>
-								<li>v is the function for evaluating A and P</li>
-							</ul>
-							We are also supposing that attack- and support-relations must have different elements out of A and R. 
+							<br>We are using a modified argumentation map as data structure. More information can be afforded via the <a href="${request.application_url}/contact" title="Contact">contact</a>-formular.
 						</li>
 					</ul>
 					<p class="lead">In addition, we have studied several tools:</p>
@@ -190,55 +179,16 @@
 							<br>This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.
 						</li>
 					</ul>
-					<span class="font-normal">For these reason the novel approach of a dialogue-based argumendation system was developed.</span>
+					<span class="lead">For these reason the novel approach of a dialogue-based argumendation system was developed. Additionally have a look at our publications:</span>
+					<ul class="lead list">
+						<li>Yeah, I know. This is empty now, but the first one will be here...soon.</li>
+					</ul>
 				</div>
 			</div>
 		</div>
 	</div>
 
-
-
-	<div id="footer">
-		<div class="col-md-2">
-			<div class="row links">
-				<ul>
-					<li>
-						<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;
-						<a href="${request.application_url}/impressum">
-							<i class="glyphicon glyphicon-th-list icon-muted">&thinsp;</i>Impressum</a>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						Icons by&#160;&#160;<a href="http://glyphicons.com/"><i class="glyphicon glyphicon-asterisk icon-muted">&thinsp;</i>glyphicons</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div class="col-md-5"></div>
-		<div class="col-md-5">
-			<div class="row links">
-				<p class="current-version project font-semi-bold">${project}</p> is generated with Pyramid Web Framework 1.5.4
-				<ul>
-					<li>
-						<a href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
-							<i class="glyphicon glyphicon-bookmark icon-muted">&thinsp;</i>Docs</a>
-					</li>
-					<li>
-						<a href="https://github.com/Pylons/pyramid">
-							<i class="glyphicon glyphicon-cog icon-muted">&thinsp;</i>Github Project</a>
-					</li>
-					<li>
-						<a href="irc://irc.freenode.net#pyramid">
-							<i class="glyphicon glyphicon-globe icon-muted">&thinsp;</i>IRC Channel</a>
-					</li>
-					<li>
-						<a href="http://pylonsproject.org">
-							<i class="glyphicon glyphicon-home icon-muted">&thinsp;</i>Pylons Project</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
+	<div metal:use-macro="load: footer.pt" />
+	
 </body>
 <html>

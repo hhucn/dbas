@@ -96,47 +96,6 @@
 		</div>
 	</div>
 
-	<!-- PASSWORD INFORMATION -->
-	<div class="modal fade" id="popup_password_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-					</button>
-					<h4 class="modal-title" id="myModalLabel">How to select a strong password</h4>
-				</div>
-				<div class="modal-body">
-					A Password is strong, when it contains at least :
-					<ul>
-						<li>eight characters</li>
-						<li>one uppercase letter</li>
-						<li>one lowercase letter</li>
-						<li>one special sign</li>
-					</ul>
-					For example 'M2015_fiO' is a strong password. And it would take 275 days to crack this password with a desktop pc in 2015. Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 yearsIt should be noted:
-					<ul>
-						<li>Avoid using a password on several pages</li>
-						<li>Avoid using patterns, which can be found in a dictionary</li>
-						<li>Avoid using information that is or might become publicly associated with the user or the account</li>
-						<li>Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user</li>
-					</ul>
-					<br> If you need some help with our password, you can get one here:
-					<br>
-					<br>
-					<input type="text" id="password-generator-output">
-					<input type="button" id="password-generator-button" value="Generate Password" class="button button-block btn btn-primary">
-					<br>
-					<br>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-
 	<!-- PASSWORD REQUEST -->
 	<div class="modal fade" id="popup_password" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -160,8 +119,12 @@
 		</div>
 	</div>
 
+	
+	<div metal:use-macro="load: footer.pt" />
+
 
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/login.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/password-handler.js')}"></script>
 
 </body>
 <html>

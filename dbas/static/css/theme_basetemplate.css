@@ -140,6 +140,55 @@ a:hover {
 	border-top: thin solid #006ab3;
 }
 
+.links {
+	float: none;
+	text-align: right;
+	margin-bottom: 15px;
+	margin-right: 15px;
+	color: #000;
+}
+
+.links ul {
+	display: block;
+	padding: 0px;
+	margin: 0px;
+}
+
+.links ul li {
+	list-style: none;
+	display: inline;
+	margin: 0 10px;
+	text-align: center;
+}
+
+.links ul li a:hover {
+	text-decoration: underline;
+	color: #006ab3;
+}
+
+.content,
+.lead,
+.font-normal,
+.links ul li a,
+.links ul li .icon-muted {
+	color: #000;
+}
+
+.list {
+	text-align: left;
+}
+
+.links ul li:hover .icon-muted {
+	color: #006ab3;
+}
+
+.project {
+	text-transform: uppercase;
+	display: inline;
+}
+
+
+
 @media (max-width: 767px) {
 	.container {
 		margin-left: 10px;

@@ -62,7 +62,7 @@ class User(Base):
 	__tablename__ = 'users'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	firstname = sa.Column(sa.Text, nullable=False)
-	surename = sa.Column(sa.Text, nullable=False)
+	surname = sa.Column(sa.Text, nullable=False)
 	nickname = sa.Column(sa.Text, nullable=False)
 	email = sa.Column(sa.Text, nullable=False, unique=True)
 	password = sa.Column(sa.Text, nullable=False)
@@ -75,12 +75,12 @@ class User(Base):
 	#relationArgArg = orm.relationship("RelationArgArg", backref=__tablename__) # one-to-many
 	#relationPosPos = orm.relationship("RelationPosPos", backref=__tablename__) # one-to-many
 
-	def __init__(self, firstname, surename, nickname, email, password):
+	def __init__(self, firstname, surname, nickname, email, password):
 		"""
 		Initializes a row in current user-table
 		"""
 		self.firstname = firstname
-		self.surename = surename
+		self.surname = surname
 		self.nickname = nickname
 		self.email = email
 		self.password = password
@@ -89,7 +89,7 @@ class User(Base):
 	@classmethod
 	def by_surename(cls):
 		"""Return a query of users sorted by surename."""
-		return DBSession.query(User).order_by(User.surename)
+		return DBSession.query(User).order_by(User.surname)
 
 	def validate_password(self, password):
 		manager = BCRYPTPasswordManager()

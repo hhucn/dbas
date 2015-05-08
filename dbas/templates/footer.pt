@@ -1,0 +1,42 @@
+<div id="footer">
+	<div class="col-md-2">
+		<div class="row links">
+			<ul>
+				<li>
+					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;
+					<a href="${request.application_url}/impressum">
+						<i class="glyphicon glyphicon-th-list icon-muted">&thinsp;</i>Impressum</a>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					Icons by&#160;&#160;<a href="http://glyphicons.com/"><i class="glyphicon glyphicon-asterisk icon-muted">&thinsp;</i>glyphicons</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="col-md-5"></div>
+	<div class="col-md-5">
+		<div class="row links">
+			<p class="current-version project font-semi-bold">${project}</p> is generated with Pyramid Web Framework 1.5.4
+			<ul>
+				<li>
+					<a href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
+						<i class="glyphicon glyphicon-bookmark icon-muted">&thinsp;</i>Docs</a>
+				</li>
+				<li>
+					<a href="https://github.com/Pylons/pyramid">
+						<i class="glyphicon glyphicon-cog icon-muted">&thinsp;</i>Github Project</a>
+				</li>
+				<li>
+					<a href="irc://irc.freenode.net#pyramid">
+						<i class="glyphicon glyphicon-globe icon-muted">&thinsp;</i>IRC Channel</a>
+				</li>
+				<li>
+					<a href="http://pylonsproject.org">
+						<i class="glyphicon glyphicon-home icon-muted">&thinsp;</i>Pylons Project</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

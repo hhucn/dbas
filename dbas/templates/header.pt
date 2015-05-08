@@ -1,0 +1,115 @@
+<div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/" title="Home"></a>
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+		</div>
+		<div class="collapse navbar-collapse navbar-menubuilder">
+			<ul class="nav navbar-nav navbar-left">
+				<li id="home-hook"><a href="#home-template" title="Go to the top">Home</a>
+				</li>
+				<li id="description-hook">
+					<a href="#description-template" title="Go to Description" i18n:translate="description">Description</a>
+				</li>
+				<li id="features-hook">
+					<a href="#features-template" title="Go to Features" i18n:translate="features">Features</a>
+				</li>
+				<li id="about-hook"><a href="#about-template" title="Go to About">About</a>
+				</li>
+				<li id="research-hook">
+					<a href="#research-template" title="Go to Research" i18n:translate="research">Research</a>
+				</li>
+			</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li id="contentLink" tal:condition="logged_in">
+					<a href="${request.application_url}/content" id="partyLink" title="Get the party started">
+						<span class="glyphicon glyphicon-erase glyphicon-icon">&thinsp;Let's&thinsp;&thinsp;go</span>
+					</a>
+				</li>
+
+				<li id="newsLink">
+					<a href="${request.application_url}/news" title="News about D-BAS">
+						<span class="glyphicon glyphicon-file glyphicon-icon">&thinsp;News</span>
+					</a>
+				</li>
+
+				<li id="contactLink">
+					<a href="${request.application_url}/contact" title="Get in touch with us">
+						<span class="glyphicon glyphicon-comment glyphicon-icon">&thinsp;Contact</span>
+					</a>
+				</li>
+
+				<li id="loginLink" tal:condition="not:logged_in">
+					<a href="${request.application_url}/login" title="Login">
+						<span class="glyphicon glyphicon-log-in glyphicon-icon">&thinsp;Login</span>
+					</a>
+				</li>
+
+				<li tal:condition="logged_in">
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#user" title="User options"><span tal:replace="logged_in" />
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="${request.application_url}/settings" title="Settings">
+									<span class="glyphicon glyphicon-cog glyphicon-icon">&thinsp;Settings</span>
+								</a>
+							</li>
+							<li>
+								<a href="${request.application_url}/logout" title="Logout">
+									<span class="glyphicon glyphicon-log-out glyphicon-icon">&thinsp;Logout</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+				</li>
+
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#more" title="Show more">More
+								<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
+								<i class="glyphicon glyphicon-user"></i>&thinsp;Author</a>
+						</li>
+						<li>
+							<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
+								<i class="glyphicon glyphicon-floppy-disk"></i>&thinsp;Licence</a>
+						</li>
+						<li>
+							<a href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
+								<i class="glyphicon glyphicon-sunglasses"></i>&thinsp;Privacy Policy</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#language" title="Switch
+						language">Language
+								<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag_ge">Deutsch</a>
+						</li>
+						<li class="active">
+							<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag_en">English</a>
+						</li>
+						<li>
+							<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/spain-flag-16.png')}" alt="flag_es">Espa&ntilde;ol</a>
+						</li>
+						<li>
+							<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/sweden-flag-16.png')}" alt="flag_sw">Svensk</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

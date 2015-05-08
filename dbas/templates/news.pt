@@ -87,6 +87,9 @@
 		<br> I've started with with my PhD.
 	</div>
 
+	
+	<div metal:use-macro="load: footer.pt" />
+
 
 </body>
 <html>

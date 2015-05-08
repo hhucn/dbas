@@ -378,6 +378,22 @@ class Dbas(object):
 		error = False
 		success = False
 
+		db_firstname = 'unknown'
+		db_surname = 'unknown'
+		db_nickname = 'unknown'
+		db_mail = 'unknown'
+		db_group = 'unknown'
+
+		DBUser = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
+		if (DBUser):
+			db_firstname = DBUser.firstname
+			db_surname = DBUser.surname
+			db_nickname = DBUser.nickname
+			db_mail = DBUser.email
+			DBGroup = DBSession.query(Group).filter_by(uid=DBUser.group).first()
+			if (DBGroup):
+				db_group = DBGroup.name
+
 		if 'form.passwordchange.submitted' in self.request.params:
 			logger('main_settings','form.changepassword.submitted','requesting params')
 			oldpw = self.request.params['passwordold']
@@ -410,8 +426,6 @@ class Dbas(object):
 				message = 'The new and old password are the same'
 				error = True
 			else:
-				DBUser = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
-
 				# is the old password valid?
 				if (not DBUser.validate_password(oldpw)):
 					logger('main_settings','form.changepassword.submitted','old password is wrong')
@@ -440,7 +454,12 @@ class Dbas(object):
 			passwordconfirm = confirmpw,
 			change_error = error,
 			change_success = success,
-			message = message
+			message = message,
+			db_firstname = db_firstname,
+			db_surname = db_surname,
+			db_nickname = db_nickname,
+			db_mail = db_mail,
+			db_group = db_group
 		)
 
 	# news page for everybody

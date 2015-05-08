@@ -15,46 +15,6 @@
 	color: #101000;
 }
 
-.links {
-	float: none;
-	text-align: right;
-	margin-bottom: 15px;
-	margin-right: 15px;
-	color: #000;
-}
-
-.links ul {
-	display: block;
-	padding: 0px;
-	margin: 0px;
-}
-
-.links ul li {
-	list-style: none;
-	display: inline;
-	margin: 0 10px;
-	text-align: center;
-}
-
-.links ul li a:hover {
-	text-decoration: underline;
-	color: #006ab3;
-}
-
-.content .lead .font-normal,
-.links ul li a,
-.links ul li .icon-muted {
-	color: #000;
-}
-
-.links ul li:hover .icon-muted {
-	color: #006ab3;
-}
-
-.list {
-	text-align: left;
-}
-
 .logo_hhu,
 .logo_kolleg,
 .logo_fhoev {
@@ -68,15 +28,13 @@
 	border: 1px solid #006ab3;
 	transition: .5s ease;
 }
+.logo {
+	margin-top: 20px;
+}
 
 .table_logo{
 	border-collapse: separate;
 	border-spacing: 5px 5px;
-}
-
-.project {
-	text-transform: uppercase;
-	display: inline;
 }
 
 @media (max-width: 1199px) {

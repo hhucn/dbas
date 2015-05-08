@@ -43,11 +43,11 @@ def main(argv=sys.argv):
 		pw3 = PasswordHandler.get_hashed_password(None,'test123')
 		pw4 = PasswordHandler.get_hashed_password(None,'test')
 		pw5 = PasswordHandler.get_hashed_password(None,'test')
-		user1 = User(firstname='admin', surename='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1)
-		user2 = User(firstname='Tobias', surename='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2)
-		user3 = User(firstname='Martin', surename='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf', password=pw3)
-		user4 = User(firstname='editor', surename='editor', nickname='editor', email='nope1@nopeville.com', password=pw4)
-		user5 = User(firstname='user', surename='user', nickname='user', email='nope2@nopeville.com', password=pw5)
+		user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1)
+		user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2)
+		user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf', password=pw3)
+		user4 = User(firstname='editor', surname='editor', nickname='editor', email='nope1@nopeville.com', password=pw4)
+		user5 = User(firstname='user', surname='user', nickname='user', email='nope2@nopeville.com', password=pw5)
 		user1.group = group1.uid
 		user2.group = group1.uid
 		user3.group = group1.uid
