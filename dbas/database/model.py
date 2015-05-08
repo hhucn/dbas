@@ -189,6 +189,33 @@ class RelationArgPos(Base):
 		return DBSession.query(RelationArgPos).order_by(RelationArgPos.date)
 
 
+class RelationPosArg(Base):
+	"""
+	Relation-table between arguments and position with several columns.
+	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
+	"""
+	__tablename__ = 'relation_posarg'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
+	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
+	date = sa.Column(sa.DateTime, default=func.now())
+	weight = sa.Column(sa.Integer, nullable=False)
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid)) # many-to-one
+	is_supportive = sa.Column(sa.Boolean, nullable=False)
+
+	def __init__(self, weight, is_supportive):
+		"""
+		Initializes a row in current relation-table
+		"""
+		self.weight = weight
+		self.is_supportive = is_supportive
+
+	@classmethod
+	def by_date(cls):
+		"""Return a query of positions sorted by date."""
+		return DBSession.query(RelationArgPos).order_by(RelationArgPos.date)
+
+
 class RelationArgArg(Base):
 	"""
 	Relation-table between argument with several columns.

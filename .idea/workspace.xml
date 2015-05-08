@@ -2,19 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cf5f37dd-4367-4d3b-ab23-54da973b1060" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dbas/static/js/settings.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/images/logo.png" afterPath="$PROJECT_DIR$/dbas/static/images/logo.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/templates/basetemplate.pt" afterPath="$PROJECT_DIR$/dbas/templates/basetemplate.pt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/templates/content.pt" afterPath="$PROJECT_DIR$/dbas/templates/content.pt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/templates/index.pt" afterPath="$PROJECT_DIR$/dbas/templates/index.pt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dbas/locale/mydbas.pot" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/setup.cfg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/__init__.py" afterPath="$PROJECT_DIR$/dbas/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/development.ini" afterPath="$PROJECT_DIR$/development.ini" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/helper.py" afterPath="$PROJECT_DIR$/dbas/helper.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/database/initializedb.py" afterPath="$PROJECT_DIR$/dbas/database/initializedb.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/js/login.js" afterPath="$PROJECT_DIR$/dbas/static/js/login.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/templates/login.pt" afterPath="$PROJECT_DIR$/dbas/templates/login.pt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/database/model.py" afterPath="$PROJECT_DIR$/dbas/database/model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/templates/settings.pt" afterPath="$PROJECT_DIR$/dbas/templates/settings.pt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/css/theme_basetemplate.css" afterPath="$PROJECT_DIR$/dbas/static/css/theme_basetemplate.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/css/theme_index.css" afterPath="$PROJECT_DIR$/dbas/static/css/theme_index.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/css/theme_settings.css" afterPath="$PROJECT_DIR$/dbas/static/css/theme_settings.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/notices.rst" afterPath="$PROJECT_DIR$/source/notices.rst" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/tests.py" afterPath="$PROJECT_DIR$/dbas/tests.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/views.py" afterPath="$PROJECT_DIR$/dbas/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -47,42 +44,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/dbas/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.47958115" vertical-offset="3826" max-vertical-offset="5763">
-              <caret line="394" column="39" selection-start-line="394" selection-start-column="39" selection-end-line="394" selection-end-column="39" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-                <element signature="e#574#679#0" expanded="false" />
-                <element signature="e#811#1014#0" expanded="false" />
-                <element signature="e#7851#8233#0" expanded="false" />
-                <element signature="e#8361#8792#0" expanded="false" />
-                <element signature="e#8935#12405#0" expanded="false" />
-                <element signature="e#12555#12893#0" expanded="false" />
-                <element signature="e#16507#16790#0" expanded="false" />
-                <element signature="e#16936#17231#0" expanded="false" />
-                <element signature="e#17320#17740#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="initializedb.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dbas/database/initializedb.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="2125">
-              <caret line="49" column="42" selection-start-line="49" selection-start-column="42" selection-end-line="49" selection-end-column="42" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dbas/database/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="804" max-vertical-offset="4811">
-              <caret line="82" column="16" selection-start-line="82" selection-start-column="16" selection-end-line="82" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2682" max-vertical-offset="5270">
+              <caret line="196" column="36" selection-start-line="196" selection-start-column="36" selection-end-line="196" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -91,20 +57,21 @@
       <file leaf-file-name="helper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dbas/helper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="867">
-              <caret line="93" column="46" selection-start-line="93" selection-start-column="46" selection-end-line="93" selection-end-column="46" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1037">
+              <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
               <folding>
-                <element signature="e#1484#3094#0" expanded="false" />
+                <element signature="e#0#14#0" expanded="true" />
+                <element signature="e#1554#3164#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dbas/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="43" max-vertical-offset="1122">
-              <caret line="47" column="45" selection-start-line="47" selection-start-column="45" selection-end-line="47" selection-end-column="45" />
+            <state vertical-scroll-proportion="0.8697674" vertical-offset="0" max-vertical-offset="1122">
+              <caret line="55" column="4" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="46" />
               <folding>
                 <element signature="e#0#62#0" expanded="true" />
               </folding>
@@ -115,56 +82,51 @@
       <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="93" max-vertical-offset="1071">
-              <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="contact.pt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dbas/templates/contact.pt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1088">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="login.pt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dbas/templates/login.pt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="544" max-vertical-offset="2244">
-              <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tests.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dbas/tests.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1924" max-vertical-offset="7412">
-              <caret line="219" column="46" selection-start-line="219" selection-start-column="46" selection-end-line="219" selection-end-column="46" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1139">
+              <caret line="22" column="18" selection-start-line="0" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-                <element signature="e#5440#5719#0" expanded="false" />
-                <element signature="e#5777#6060#0" expanded="false" />
-                <element signature="e#6120#6411#0" expanded="false" />
-                <element signature="e#6491#6901#0" expanded="false" />
-                <element signature="e#8391#8694#0" expanded="false" />
-                <element signature="e#8762#9042#0" expanded="false" />
-                <element signature="e#9742#9890#0" expanded="false" />
-                <element signature="e#9943#10080#0" expanded="false" />
-                <element signature="e#10685#10867#0" expanded="false" />
-                <element signature="e#10922#11053#0" expanded="false" />
-                <element signature="e#11119#11316#0" expanded="false" />
-                <element signature="e#11384#11585#0" expanded="false" />
-                <element signature="e#11645#11806#0" expanded="false" />
-                <element signature="e#11883#12104#0" expanded="false" />
-                <element signature="e#15354#16763#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="setup.cfg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/setup.cfg">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425">
+              <caret line="14" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="19" selection-end-column="15" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="installation.rst" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/installation.rst">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="98" max-vertical-offset="1173">
+              <caret line="9" column="97" selection-start-line="9" selection-start-column="92" selection-end-line="9" selection-end-column="97" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="notices.rst" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/notices.rst">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
+              <caret line="18" column="96" selection-start-line="18" selection-start-column="96" selection-end-line="19" selection-end-column="37" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="development.ini" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/development.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1343">
+              <caret line="33" column="11" selection-start-line="33" selection-start-column="11" selection-end-line="33" selection-end-column="11" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -185,19 +147,20 @@
         <option value="$PROJECT_DIR$/source/home.rst" />
         <option value="$PROJECT_DIR$/dbas/scripts/initializedb.py" />
         <option value="$PROJECT_DIR$/nosetest.tmp" />
-        <option value="$PROJECT_DIR$/development.ini" />
-        <option value="$PROJECT_DIR$/source/notices.rst" />
-        <option value="$PROJECT_DIR$/source/installation.rst" />
         <option value="$PROJECT_DIR$/dbas/templates/index.pt" />
-        <option value="$PROJECT_DIR$/setup.py" />
-        <option value="$PROJECT_DIR$/dbas/__init__.py" />
-        <option value="$PROJECT_DIR$/dbas/tests.py" />
         <option value="$PROJECT_DIR$/dbas/templates/basetemplate.pt" />
         <option value="$PROJECT_DIR$/dbas/templates/settings.pt" />
-        <option value="$PROJECT_DIR$/dbas/helper.py" />
-        <option value="$PROJECT_DIR$/dbas/database/initializedb.py" />
-        <option value="$PROJECT_DIR$/dbas/database/model.py" />
+        <option value="$PROJECT_DIR$/dbas/__init__.py" />
         <option value="$PROJECT_DIR$/dbas/views.py" />
+        <option value="$PROJECT_DIR$/dbas/helper.py" />
+        <option value="$PROJECT_DIR$/development.ini" />
+        <option value="$PROJECT_DIR$/setup.cfg" />
+        <option value="$PROJECT_DIR$/dbas/database/model.py" />
+        <option value="$PROJECT_DIR$/dbas/database/initializedb.py" />
+        <option value="$PROJECT_DIR$/dbas/tests.py" />
+        <option value="$PROJECT_DIR$/source/installation.rst" />
+        <option value="$PROJECT_DIR$/source/notices.rst" />
+        <option value="$PROJECT_DIR$/setup.py" />
       </list>
     </option>
   </component>
@@ -207,8 +170,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="49" />
     <option name="y" value="24" />
-    <option name="width" value="2511" />
-    <option name="height" value="1056" />
+    <option name="width" value="1871" />
+    <option name="height" value="1176" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -261,6 +224,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dbas" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dbas" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="dbas" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -279,7 +256,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
+              <option name="myItemId" value="locale" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -547,29 +524,29 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="49" y="24" width="2511" height="1056" extended-state="6" />
+    <frame x="49" y="24" width="1871" height="1176" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14807302" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21212122" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1819178" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.11845842" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1819178" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -617,53 +594,12 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/dbas/database/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="238" max-vertical-offset="697">
-          <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3859">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <element signature="e#574#679#0" expanded="false" />
-            <element signature="e#811#1014#0" expanded="false" />
-            <element signature="e#7851#8233#0" expanded="false" />
-            <element signature="e#8361#8792#0" expanded="false" />
-            <element signature="e#8935#12405#0" expanded="false" />
-            <element signature="e#12555#12893#0" expanded="false" />
-            <element signature="e#16507#16790#0" expanded="false" />
-            <element signature="e#16936#17231#0" expanded="false" />
-            <element signature="e#17320#17740#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dbas/tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6698">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
-            <element signature="e#5440#5719#0" expanded="false" />
-            <element signature="e#5777#6060#0" expanded="false" />
-            <element signature="e#6120#6411#0" expanded="false" />
-            <element signature="e#6491#6901#0" expanded="false" />
-            <element signature="e#8391#8694#0" expanded="false" />
-            <element signature="e#8762#9042#0" expanded="false" />
-            <element signature="e#9742#9890#0" expanded="false" />
-            <element signature="e#9943#10080#0" expanded="false" />
-            <element signature="e#10685#10867#0" expanded="false" />
-            <element signature="e#10922#11053#0" expanded="false" />
-            <element signature="e#11119#11316#0" expanded="false" />
-            <element signature="e#11384#11585#0" expanded="false" />
-            <element signature="e#11645#11806#0" expanded="false" />
-            <element signature="e#11883#12104#0" expanded="false" />
-            <element signature="e#15354#16763#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -683,7 +619,8 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1122">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1484#3094#0" expanded="false" />
+            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#1554#3164#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -724,7 +661,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5831">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#44#0" expanded="true" />
+            <element signature="e#0#44#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -734,16 +671,15 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3859">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <element signature="e#574#679#0" expanded="false" />
-            <element signature="e#811#1014#0" expanded="false" />
-            <element signature="e#7851#8233#0" expanded="false" />
-            <element signature="e#8361#8792#0" expanded="false" />
-            <element signature="e#8935#12405#0" expanded="false" />
-            <element signature="e#12555#12893#0" expanded="false" />
-            <element signature="e#16507#16790#0" expanded="false" />
-            <element signature="e#16936#17231#0" expanded="false" />
-            <element signature="e#17320#17740#0" expanded="false" />
+            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#800#1003#0" expanded="false" />
+            <element signature="e#7840#8222#0" expanded="false" />
+            <element signature="e#8350#8781#0" expanded="false" />
+            <element signature="e#8924#12394#0" expanded="false" />
+            <element signature="e#12544#12882#0" expanded="false" />
+            <element signature="e#16496#16779#0" expanded="false" />
+            <element signature="e#16925#17220#0" expanded="false" />
+            <element signature="e#17309#17729#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -754,21 +690,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
-            <element signature="e#5440#5719#0" expanded="false" />
-            <element signature="e#5777#6060#0" expanded="false" />
-            <element signature="e#6120#6411#0" expanded="false" />
-            <element signature="e#6491#6901#0" expanded="false" />
-            <element signature="e#8391#8694#0" expanded="false" />
-            <element signature="e#8762#9042#0" expanded="false" />
-            <element signature="e#9742#9890#0" expanded="false" />
-            <element signature="e#9943#10080#0" expanded="false" />
-            <element signature="e#10685#10867#0" expanded="false" />
-            <element signature="e#10922#11053#0" expanded="false" />
-            <element signature="e#11119#11316#0" expanded="false" />
-            <element signature="e#11384#11585#0" expanded="false" />
-            <element signature="e#11645#11806#0" expanded="false" />
-            <element signature="e#11883#12104#0" expanded="false" />
-            <element signature="e#15354#16763#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -788,7 +709,8 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1122">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1484#3094#0" expanded="false" />
+            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#1554#3164#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -829,7 +751,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5831">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#44#0" expanded="true" />
+            <element signature="e#0#44#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -846,13 +768,6 @@
         <state vertical-scroll-proportion="0.33302325" vertical-offset="45712" max-vertical-offset="96781">
           <caret line="2710" column="8" selection-start-line="2710" selection-start-column="8" selection-end-line="2710" selection-end-column="8" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/production.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.22139534" vertical-offset="0" max-vertical-offset="1122">
-          <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
         </state>
       </provider>
     </entry>
@@ -898,13 +813,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/development.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7162304" vertical-offset="132" max-vertical-offset="1224">
-          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python3.4/dist-packages/zope/interface/registry.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3329843" vertical-offset="2232" max-vertical-offset="8993">
@@ -916,6 +824,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6052356" vertical-offset="0" max-vertical-offset="955">
           <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -923,6 +832,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.012565445" vertical-offset="770" max-vertical-offset="5321">
           <caret line="60" column="6" selection-start-line="60" selection-start-column="6" selection-end-line="60" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -940,26 +850,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/notices.rst">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="408">
-          <caret line="15" column="24" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/installation.rst">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1173">
-          <caret line="9" column="104" selection-start-line="9" selection-start-column="104" selection-end-line="9" selection-end-column="104" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dbas/database/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.07906977" vertical-offset="0" max-vertical-offset="1075">
           <caret line="5" column="57" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="57" />
           <folding>
-            <element signature="e#0#44#0" expanded="true" />
+            <element signature="e#0#44#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1000,57 +896,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/templates/login.pt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="544" max-vertical-offset="2244">
-          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="43" max-vertical-offset="1122">
-          <caret line="47" column="45" selection-start-line="47" selection-start-column="45" selection-end-line="47" selection-end-column="45" />
-          <folding>
-            <element signature="e#0#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="93" max-vertical-offset="1071">
-          <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1924" max-vertical-offset="7412">
-          <caret line="219" column="46" selection-start-line="219" selection-start-column="46" selection-end-line="219" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-            <element signature="e#5440#5719#0" expanded="false" />
-            <element signature="e#5777#6060#0" expanded="false" />
-            <element signature="e#6120#6411#0" expanded="false" />
-            <element signature="e#6491#6901#0" expanded="false" />
-            <element signature="e#8391#8694#0" expanded="false" />
-            <element signature="e#8762#9042#0" expanded="false" />
-            <element signature="e#9742#9890#0" expanded="false" />
-            <element signature="e#9943#10080#0" expanded="false" />
-            <element signature="e#10685#10867#0" expanded="false" />
-            <element signature="e#10922#11053#0" expanded="false" />
-            <element signature="e#11119#11316#0" expanded="false" />
-            <element signature="e#11384#11585#0" expanded="false" />
-            <element signature="e#11645#11806#0" expanded="false" />
-            <element signature="e#11883#12104#0" expanded="false" />
-            <element signature="e#15354#16763#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dbas/security.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2670157" vertical-offset="0" max-vertical-offset="955">
@@ -1061,47 +906,136 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/helper.py">
+    <entry file="file://$PROJECT_DIR$/production.ini">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="867">
-          <caret line="93" column="46" selection-start-line="93" selection-start-column="46" selection-end-line="93" selection-end-column="46" />
-          <folding>
-            <element signature="e#1484#3094#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/database/initializedb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="2125">
-          <caret line="49" column="42" selection-start-line="49" selection-start-column="42" selection-end-line="49" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/database/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="804" max-vertical-offset="4811">
-          <caret line="82" column="16" selection-start-line="82" selection-start-column="16" selection-end-line="82" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.07434555" vertical-offset="167" max-vertical-offset="1122">
+          <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dbas/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47958115" vertical-offset="3826" max-vertical-offset="5763">
-          <caret line="394" column="39" selection-start-line="394" selection-start-column="39" selection-end-line="394" selection-end-column="39" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5865">
+          <caret line="18" column="32" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <element signature="e#574#679#0" expanded="false" />
-            <element signature="e#811#1014#0" expanded="false" />
-            <element signature="e#7851#8233#0" expanded="false" />
-            <element signature="e#8361#8792#0" expanded="false" />
-            <element signature="e#8935#12405#0" expanded="false" />
-            <element signature="e#12555#12893#0" expanded="false" />
-            <element signature="e#16507#16790#0" expanded="false" />
-            <element signature="e#16936#17231#0" expanded="false" />
-            <element signature="e#17320#17740#0" expanded="false" />
+            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#800#1003#0" expanded="false" />
+            <element signature="e#7840#8222#0" expanded="false" />
+            <element signature="e#8350#8781#0" expanded="false" />
+            <element signature="e#8924#12394#0" expanded="false" />
+            <element signature="e#12544#12882#0" expanded="false" />
+            <element signature="e#16496#16779#0" expanded="false" />
+            <element signature="e#16925#17220#0" expanded="false" />
+            <element signature="e#17309#17729#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/templates/login.pt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.29278794" vertical-offset="595" max-vertical-offset="2295">
+          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/locale/mydbas.pot">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1075">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/database/initializedb.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1216" max-vertical-offset="2278">
+          <caret line="108" column="36" selection-start-line="108" selection-start-column="36" selection-end-line="108" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.51224107" vertical-offset="8092" max-vertical-offset="9163">
+          <caret line="529" column="88" selection-start-line="529" selection-start-column="88" selection-end-line="529" selection-end-column="88" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#3364#3995#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/installation.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="98" max-vertical-offset="1173">
+          <caret line="9" column="97" selection-start-line="9" selection-start-column="92" selection-end-line="9" selection-end-column="97" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/notices.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
+          <caret line="18" column="96" selection-start-line="18" selection-start-column="96" selection-end-line="19" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/database/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2682" max-vertical-offset="5270">
+          <caret line="196" column="36" selection-start-line="196" selection-start-column="36" selection-end-line="196" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1037">
+          <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#1554#3164#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1139">
+          <caret line="22" column="18" selection-start-line="0" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.cfg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425">
+          <caret line="14" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="19" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/development.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1343">
+          <caret line="33" column="11" selection-start-line="33" selection-start-column="11" selection-end-line="33" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8697674" vertical-offset="0" max-vertical-offset="1122">
+          <caret line="55" column="4" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#62#0" expanded="true" />
           </folding>
         </state>
       </provider>

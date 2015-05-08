@@ -1,4 +1,3 @@
-import time
 import transaction
 
 import smtplib
@@ -14,6 +13,7 @@ from pyramid_mailer.message import Message
 from .database import DBSession
 from .database.model import User, Group
 from .helper import PasswordHandler, PasswordGenerator, logger
+
 
 class Dbas(object):
 	def __init__(self, request):

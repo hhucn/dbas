@@ -5,7 +5,9 @@ import transaction
 from dbas.helper import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, RelationPosPos, Group, Issue, Base
+from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, RelationPosArg, \
+	RelationPosPos,\
+	Group, Issue, Base
 
 
 def usage(argv):
@@ -69,7 +71,7 @@ def main(argv=sys.argv):
 		argument2 = Argument(text='They are indepently.', weight=50)
 		argument3 = Argument(text='They are hating all humans!', weight=70)
 		argument4 = Argument(text='They are very devoted.', weight=80)
-		argument5 = Argument(text='They can protect you', weight=63)
+		argument5 = Argument(text='They cannot protect you', weight=63)
 		argument6 = Argument(text='They smell when it\'s raining', weight=110)
 		argument1.author = user1.uid
 		argument2.author = user1.uid
@@ -85,7 +87,7 @@ def main(argv=sys.argv):
 		relation2 = RelationArgPos(weight=45, is_supportive=True)
 		relation3 = RelationArgPos(weight=46, is_supportive=False)
 		relation4 = RelationArgPos(weight=24, is_supportive=True)
-		relation5 = RelationArgPos(weight=18, is_supportive=True)
+		relation5 = RelationPosArg(weight=18, is_supportive=True)
 		relation6 = RelationArgPos(weight=81, is_supportive=False)
 		relation7 = RelationArgArg(weight=132, is_supportive=False)
 		relation8 = RelationArgArg(weight=46, is_supportive=True)

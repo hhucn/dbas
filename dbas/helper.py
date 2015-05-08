@@ -1,20 +1,20 @@
-import os
+import logging
 import time
 import random
 import smtplib
 
 
 from socket import error as socket_error
-from hashlib import sha1
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from cryptacular.bcrypt import BCRYPTPasswordManager
 
 systemmail = 'dbas@cs.uni-duesseldorf.de'
-
+log = logging.getLogger(__name__)
 
 def logger(who, when, what):
-	print(time.strftime("%H:%M:%S") + ' ' + who.upper() + '| ' + when + ': ' + what);
+	#print(time.strftime("%H:%M:%S") + ' ' + who.upper() + '| ' + when + ': ' + what)
+	log.debug(who.upper() + ' ' + when + ' <' + what + '>')
 
 class PasswordGenerator(object):
 

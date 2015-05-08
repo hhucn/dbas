@@ -53,7 +53,7 @@ def main(global_config, **settings):
 	config.add_route('404', '/404')
 
 	# translation
-#	config.add_translation_dirs('chameleoni18n:locale')
+	config.add_translation_dirs('dbas:locale')
 
 	# read the input and start
 	config.scan()

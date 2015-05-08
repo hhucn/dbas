@@ -9,51 +9,53 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
-    'pyramid',
-    'pyramid_tm',
-    'pyramid_chameleon',
-    'pyramid_debugtoolbar',
-    'pyramid_mailer',
-    'waitress',
-    'SQLAlchemy',
-    'transaction',
-    'zope.sqlalchemy',
-    'docutils',
-    'WebTest',
-    'cryptacular',
+	'pyramid',
+	'pyramid_tm',
+	'pyramid_chameleon',
+	'pyramid_debugtoolbar',
+	'pyramid_mailer',
+	'waitress',
+	'SQLAlchemy',
+	'transaction',
+	'zope.sqlalchemy',
+	'docutils',
+	'WebTest',
+	'cryptacular',
     'Babel',
-    'lingua',
-    ]
+	'lingua',
+	]
+
+extractors = { 'dbas': [
+	('**.py', 'python', None ),
+	('**.pt', 'chameleon', None ),
+	('static/**', 'ignore', None),
+	]}
 
 setup(name='DBAS',
-      version='0.1',
-      description='Novel prototype',
-      long_description=README + '\n\n' + CHANGES,
-      classifiers=[
-        "Programming Language :: Python",
-        "Framework :: Pyramid",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-        ],
-      author='Tobias Krauthoff',
-      author_email='krauthoff@cs.uni-duesseldorf.de',
-      url='',
-      keywords='web pyramid pylons',
-      packages=find_packages(),
-      include_package_data=True,
-      zip_safe=False,
-      install_requires=requires,
-      tests_require=requires,
-      test_suite="dbas",
-      entry_points="""\
-      [paste.app_factory]
-      main = dbas:main
-      [console_scripts]
-      initialize_sql = dbas.database.initializedb:main
-      """,
-      message_extractors = { '.': [
-	      ('dbas/**.py', 'chameleon_python', None ),
-	      ('dbas/templates/**.pt', 'chameleon_xml', None ),
-	      ('static/**', 'ignore', None)
-	      ]},
-      )
+	version='0.1',
+	description='Novel prototype',
+	long_description=README + '\n\n' + CHANGES,
+	classifiers=[
+		"Programming Language :: Python",
+		"Framework :: Pyramid",
+		"Topic :: Internet :: WWW/HTTP",
+		"Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+		],
+	author='Tobias Krauthoff',
+	author_email='krauthoff@cs.uni-duesseldorf.de',
+	url='',
+	keywords='web pyramid pylons dialoge-based argumentation software',
+	packages=find_packages(),
+	include_package_data=True,
+	zip_safe=False,
+	install_requires=requires,
+	tests_require=requires,
+	test_suite="dbas",
+    message_extractors=extractors,
+	entry_points="""\
+	[paste.app_factory]
+	main = dbas:main
+	[console_scripts]
+	initialize_sql = dbas.database.initializedb:main
+	""",
+	)

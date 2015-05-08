@@ -7,8 +7,9 @@ from webtest import TestApp
 from dbas.views import Dbas
 from dbas import main
 from dbas.helper import PasswordHandler
-from dbas.database import DBSession as Session, Base as Entity
-from dbas.database.model import Group, User, Argument, RelationArgPos, RelationArgArg, RelationPosPos, Position
+from dbas.database import Base as Entity
+from dbas.database.model import Group, User, Argument, RelationArgPos, RelationArgArg, RelationPosPos, \
+	RelationPosArg, Position
 from mock import Mock
 from paste.deploy.loadwsgi import appconfig
 from pyramid import testing
@@ -27,8 +28,8 @@ def _addTestingDB(session):
 
 	pw1 = PasswordHandler.get_hashed_password(None, 'test')
 	pw2 = PasswordHandler.get_hashed_password(None, 'test')
-	user1 = User(firstname='editor', surename='editor', nickname='test_editor', email='dbas1@cs.uni-duesseldorf.de', password=pw1)
-	user2 = User(firstname='user', surename='user', nickname='test_user', email='dbas2@cs.uni-duesseldorf.de', password=pw2)
+	user1 = User(firstname='editor', surname='editor', nickname='test_editor', email='dbas1@cs.uni-duesseldorf.de', password=pw1)
+	user2 = User(firstname='user', surname='user', nickname='test_user', email='dbas2@cs.uni-duesseldorf.de', password=pw2)
 	user1.group = group1.uid
 	user2.group = group2.uid
 	session.add_all([user1, user2])
@@ -49,10 +50,12 @@ def _addTestingDB(session):
 	relation2 = RelationArgPos(weight='34', is_supportive='1')
 	relation3 = RelationArgArg(weight='14', is_supportive='0')
 	relation4 = RelationPosPos(weight='98', is_supportive='0')
+	relation5 = RelationArgArg(weight='28', is_supportive='0')
 	relation1.author = user1.uid
 	relation2.author = user1.uid
 	relation3.author = user2.uid
 	relation4.author = user2.uid
+	relation5.author = user2.uid
 	relation1.pos_uid = position1.uid
 	relation1.arg_uid = argument1.uid
 	relation2.pos_uid = position2.uid
@@ -61,6 +64,8 @@ def _addTestingDB(session):
 	relation3.arg_uid2 = argument2.uid
 	relation4.pos_uid1 = position1.uid
 	relation4.pos_uid2 = position2.uid
+	relation5.arg_uid = argument1.uid
+	relation5.pos_uid = position2.uid
 	session.add_all([relation1, relation2, relation3, relation4])
 	session.flush()
 
@@ -483,7 +488,7 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		print("DatabaseTests: test_database_user_content")
 		user = self.session.query(User).filter_by(nickname='test_user').first()
 		self.assertTrue(user.firstname, 'user')
-		self.assertTrue(user.surename, 'user')
+		self.assertTrue(user.surname, 'user')
 		self.assertTrue(user.nickname, 'user')
 		self.assertTrue(user.email, 'dbas1@cs.uni-duesseldorf.de')
 		self.assertTrue(user.password, PasswordHandler.get_hashed_password(None,'test'))
@@ -512,6 +517,16 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		self.assertTrue(relationAP.is_supportive, True)
 		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=1).first().uid)
 		self.assertTrue(relationAP.pos_uid, self.session.query(Position).filter_by(uid=1).first().uid)
+		self.assertTrue(relationAP.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
+
+	# testing relation arg pos content
+	def test_database_RelationPosArg(self):
+		print("DatabaseTests: test_database_RelationPosArg")
+		relationAP = self.session.query(RelationPosArg).filter_by(uid=1).first()
+		self.assertTrue(relationAP.weight, 18)
+		self.assertTrue(relationAP.is_supportive, True)
+		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=2).first().uid)
+		self.assertTrue(relationAP.pos_uid, self.session.query(Position).filter_by(uid=2).first().uid)
 		self.assertTrue(relationAP.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
 
 	# testing relation arg arg content
