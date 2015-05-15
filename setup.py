@@ -21,15 +21,7 @@ requires = [
 	'docutils',
 	'WebTest',
 	'cryptacular',
-    'Babel',
-	'lingua',
 	]
-
-extractors = { 'dbas': [
-	('**.py', 'python', None ),
-	('**.pt', 'chameleon', None ),
-	('static/**', 'ignore', None),
-	]}
 
 setup(name='DBAS',
 	version='0.1',
@@ -51,7 +43,6 @@ setup(name='DBAS',
 	install_requires=requires,
 	tests_require=requires,
 	test_suite="dbas",
-    message_extractors=extractors,
 	entry_points="""\
 	[paste.app_factory]
 	main = dbas:main

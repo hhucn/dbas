@@ -356,11 +356,18 @@ class Dbas(object):
 		View configuration for the content view. Only logged in user can reach this page.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		'''
+		DBUser = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
+		msg = 'you are not the admin. Therefore no rainbow-colored ponys!'
+		if (DBUser):
+			if (DBUser.nickname == 'admin'):
+				msg = 'you are the special kind of guy who is called admin :)'
+
 		logger('main_content','def','main')
 		return dict(
 			title='Content',
 			project='DBAS',
-			logged_in = self.request.authenticated_userid
+			logged_in = self.request.authenticated_userid,
+			message=msg
 		)
 
 	# settings page, when logged in

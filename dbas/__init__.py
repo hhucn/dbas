@@ -52,9 +52,6 @@ def main(global_config, **settings):
 	config.add_route('main_impressum', '/impressum')
 	config.add_route('404', '/404')
 
-	# translation
-	config.add_translation_dirs('dbas:locale')
-
 	# read the input and start
 	config.scan()
 	return config.make_wsgi_app()

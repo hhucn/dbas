@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
+<html lang="${request.locale_name}"
+			metal:use-macro="load: basetemplate.pt"
+			xmlns="http://www.w3.org/1999/xhtml"
+			xml:lang="en"
+			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+			i18n:domain="mydbas">
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
@@ -87,27 +92,14 @@
 	
 	<div class="container">
 		<div class="row">
-			<div class="col-md-4"></div>
-			<div class="col-md-4">
-				<h1><span class="font-semi-bold">Editor</span></h1>
-				<h2><p>Hello <span tal:replace="logged_in"/>, you are in the group ???, so please have a look at this link ????</p></h2>
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<h1><span class="font-semi-bold">Special rights</span></h1>
+				<p>Only the administrator has some special rights and therefore special effects on this page ... and I think, <span tal:replace="message"/></p>
 			</div>
-			<div class="col-md-4"></div>
+			<div class="col-md-2"></div>
 		</div>
 	</div>
-	
-	
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4"></div>
-			<div class="col-md-4">
-				<h1><span class="font-semi-bold">User</span></h1>
-				<h2><p>Hello <span tal:replace="logged_in"/>, you are in the group ???, so please have a look at this link ????</p></h2>
-			</div>
-			<div class="col-md-4"></div>
-		</div>
-	</div>
-
 	
 	<div metal:use-macro="load: snippet-footer.pt" />
 	
