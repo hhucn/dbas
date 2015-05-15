@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cf5f37dd-4367-4d3b-ab23-54da973b1060" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dbas/locale/mydbas.pot" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/setup.cfg" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/__init__.py" afterPath="$PROJECT_DIR$/dbas/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/templates/content.pt" afterPath="$PROJECT_DIR$/dbas/templates/content.pt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/helper.py" afterPath="$PROJECT_DIR$/dbas/helper.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/views.py" afterPath="$PROJECT_DIR$/dbas/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="cf5f37dd-4367-4d3b-ab23-54da973b1060" name="Default" comment="" />
     <ignored path="dbas.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -89,8 +80,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dbas/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3990338" vertical-offset="5214" max-vertical-offset="7769">
-              <caret line="362" column="16" selection-start-line="362" selection-start-column="16" selection-end-line="362" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.25120774" vertical-offset="5214" max-vertical-offset="7769">
+              <caret line="353" column="27" selection-start-line="353" selection-start-column="27" selection-end-line="353" selection-end-column="27" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
                 <element signature="e#800#1003#0" expanded="false" />
@@ -982,8 +973,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dbas/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3990338" vertical-offset="5214" max-vertical-offset="7769">
-          <caret line="362" column="16" selection-start-line="362" selection-start-column="16" selection-end-line="362" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.25120774" vertical-offset="5214" max-vertical-offset="7769">
+          <caret line="353" column="27" selection-start-line="353" selection-start-column="27" selection-end-line="353" selection-end-column="27" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
             <element signature="e#800#1003#0" expanded="false" />
