@@ -1,0 +1,455 @@
+.form {
+	background: #fff;
+	opacity: 1.0;
+	padding: 40px;
+	max-width: 600px;
+	margin: 40px auto;
+	border-radius: 4px;
+	margin-top: 100px;
+	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+}
+
+.form:hover{
+	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
+	transition: .5s ease;
+}
+
+.tab-group {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 40px 0;
+}
+
+.tab-group:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.tab-group li a {
+	display: block;
+	text-decoration: none;
+	padding: 15px;
+	background: rgba(0, 106, 179, 0.3);
+	color: #000;
+	font-size: 20px;
+	float: left;
+	width: 50%;
+	text-align: center;
+	cursor: pointer;
+	transition: .5s ease;
+}
+
+.tab-group li a:hover {
+	background: #1A7CEA;
+	color: #fff
+}
+
+.tab-group .active a {
+	background: #006ab3;
+	color: #fff;
+}
+
+.tab-content > div:last-child {
+	display: none;
+}
+
+h2 {
+	text-align: center;
+	color: #000;
+	margin: 0 0 40px;
+}
+
+h3,
+h4 {
+	color: #818181;
+	margin: 5px 0px 10px 0px;
+	text-align: center;
+}
+
+input[type="text"] {
+	outline: none;
+	font-size: 18px;
+	font-weight: 400;
+	color: #bcbcbc;
+	border-color: #f00;
+	padding: 12px 10px 12px 50px;
+	border-radius: 5px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	margin: 0px 0px 10px 0px;
+	-webkit-appearance: none;
+	border: 1px solid;
+}
+
+input,
+textarea {
+	outline: none;
+	font-size: 18px;
+	font-weight: 400;
+	color: #bcbcbc;
+	padding: 12px 10px 12px 50px;
+	border-radius: 5px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	margin: 0px 0px 10px 0px;
+	width: 100%;
+	-webkit-appearance: none;
+	border: 1px solid;
+}
+
+.top-row:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.top-row > div {
+	float: left;
+	width: 48%;
+	margin-right: 4%;
+}
+
+input.name,
+input.userfirstname,
+input.userlastname,
+input.nickname {
+	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-4-user.png) no-repeat 12px 10px;
+	<!-- background: url(../images/user.png)no-repeat 10px 8px;
+	-->
+}
+
+input.tel {
+	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-442-phone-alt.png) no-repeat 12px 10px;
+	<!-- background: url(../images/tel.png)no-repeat 8px 8px;
+	-->
+}
+
+input.email {
+	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-121-message-full.png) no-repeat 12px 10px;
+	<!-- background: url(../images/email.png)no-repeat 8px 8px;
+	-->
+}
+
+input.password {
+	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-204-lock.png) no-repeat 12px 10px;
+	<!-- background: url(../images/lock.png)no-repeat 8px 8px;
+	-->
+}
+
+input.password,
+input.passwordconfirm {
+	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-205-unlock.png) no-repeat 12px 10px;
+	<!-- background: url(../images/lock.png)no-repeat 8px 8px;
+	-->
+}
+
+input.spam {
+	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-505-alert.png) no-repeat 12px 10px;
+}
+
+textarea.content {
+	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-196-circle-info.png) no-repeat 12px 10px;
+	<!-- background: url(../images/i.png)no-repeat 10px 9px;
+	-->
+}
+
+input.name:hover,
+input.userfirstname:hover,
+input.userlastname:hover,
+input.nickname:hover,
+input.email:hover,
+input.password:hover,
+textarea.content:hover,
+.passwordconfirm:hover input.active {
+	box-shadow: 0px 0px 7px 0px #3386E1;
+	transition: 0.5s all;
+	-webkit-transition: 0.5s all;
+	-moz-transition: 0.5s all;
+	-o-transition: 0.5s all;
+}
+
+.button {
+	width: 66%;
+}
+
+.button-block {
+	display: block;
+	width: 100%;
+}
+
+.forgot {
+	margin-top: -20px;
+	text-align: right;
+}
+
+#password-strength,
+#password-info-link {
+	float: right;
+}
+
+#password-info-icon {
+	color: #bcbcbc;
+}
+
+#password-info-icon:hover {
+	color: #006ab3;
+}
+
+#password-extras {
+	margin-bottom: 35px;
+	transition: .5s ease;
+}
+
+#password-meter {
+	height: 5px;
+	border-radius: 5px;
+	transition: .5s ease-in-out;
+}
+
+.veryweak {
+	background-color: #ff7070;
+	width: 25%!important;
+}
+
+.weak {
+	background-color: #ffa070;
+	width: 50%!important;
+}
+
+.medium {
+	background-color: #ffcf70;
+	width: 75%!important;
+}
+
+.strong {
+	background-color: #a0ff70;
+	width: 100%!important;
+}
+
+#login-register-submit {
+	margin-top: 25px;
+}
+
+#password-generator-output,
+#password-generator-button {
+	padding: 5px;
+	margin: 0px;
+	width: 45%;
+	border-radius: 0px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+}
+
+#password-generator-output {
+	float: left;
+	margin-left: 0.5em;
+	text-align: center;
+}
+
+#password-generator-button {
+	float: right;
+	margin-right: 0.5em;
+}
+
+#contact-submit {
+	margin-top: 25px;
+}
+
+@media(max-width:1440px) {
+	.login,
+	.contact{
+		width: 40%;
+	}
+}
+
+@media(max-width:1366px) {
+	.login,
+	.contact{
+		width: 43%;
+	}
+}
+
+@media(max-width:1280px) {
+	.login,
+	.contact{
+		width: 45%;
+	}
+}
+
+@media (max-width: 1199px) {
+	#login-template {
+		margin-top: 100px;
+	}
+}
+
+@media(max-width:1024px) {
+	.login,
+	.contact{
+		width: 56%;
+	}
+}
+
+@media(max-width:768px) {
+	.login,
+	.contact{
+		width: 73%;
+	}
+	.tab-content h2 {
+		font-size: 26px;
+	}
+	.tab-content h3 {
+		font-size: 15px;
+	}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.nickname,
+	input.email,
+	input.password,
+	input.passwordconfirm,
+	textarea.content {
+		font-size: 13px;
+	}
+	input[type="submit"] {
+		font-size: 15px;
+	}
+	.contact textarea {
+		font-size: 13px;
+	}
+	body {
+		padding: 50px 0px 80px 0px;
+	}
+}
+
+@media(max-width:640px) {
+	.tab-content h2 {
+		font-size: 24px;
+	}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.email,
+	input.nickname,
+	input.password,
+	input.passwordconfirm,
+	textarea.content {
+		font-size: 12px;
+	}
+	input[type="submit"] {
+		width: 69%;
+		font-size: 14px;
+	}
+	body {
+		padding: 50px 0px 30px 0px;
+	}
+	h1 {
+		font-size: 35PX;
+	}
+}
+
+@media(max-width:480px) {
+	.tab-content h2 {
+		font-size: 22px;
+	}
+	.tab-content h3 {
+		font-size: 13px;
+	}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.email,
+	input.nickname,
+	input.password,
+	input.passwordconfirm,
+	textarea.content {
+		width: 61%;
+	}
+	input[type="submit"] {
+		width: 80%;
+	}
+	h1 {
+		font-size: 30PX;
+		margin: 0px 0px 20px 0px;
+	}
+}
+
+@media(max-width:320px) {
+	.tab-content h2 {
+		font-size: 20px;
+	}
+	body {
+		padding: 30px 0px 30px 0px;
+	}
+	.login,
+	.contact {
+		padding: 20px 15px 30px 15px;
+		width: 85%;
+	}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.email,
+	input.nickname,
+	input.password,
+	input.passwordconfirm,
+	textarea.content {
+		width: 75%;
+		padding: 10px 10px 10px 45px;
+	}
+	input.name,
+	input.userfirstname,
+	input.userlastname,
+	input.nickname {
+		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-4-user.png) no-repeat 8px 6px;
+		<!-- background: url(../images/user.png)no-repeat 10px 8px;
+		-->
+	}
+	input.tel {
+		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-442-phone-alt.png) no-repeat 8px 6px;
+		<!-- background: url(../images/tel.png)no-repeat 8px 8px;
+		-->
+	}
+	input.email {
+		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-121-message-full.png) no-repeat 8px 6px;
+		<!-- background: url(../images/email.png)no-repeat 8px 8px;
+		-->
+	}
+	input.password {
+		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-204-lock.png) no-repeat 8px 6px;
+		<!-- background: url(../images/lock.png)no-repeat 8px 8px;
+		-->
+	}
+	input.password,
+	input.passwordconfirm {
+		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-205-unlock.png) no-repeat 8px 6px;
+		<!-- background: url(../images/lock.png)no-repeat 8px 8px;
+		-->
+	}
+	textarea.content {
+		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-196-circle-info.png) no-repeat 8px 6px;
+		<!-- background: url(../images/i.png)no-repeat 10px 9px;
+		-->
+	}
+	input.spam {
+		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-505-alert.png) no-repeat 8px 6px;
+	}
+	input[type="submit"] {
+		width: 90%;
+		font-size: 12px;
+		padding: 10px 7px;
+		margin: 0px 0px 0px 0px;
+	}
+	h1 {
+		font-size: 25PX;
+		margin: 0px 0px 13px 0px;
+	}
+	.tab-content h3 {
+		font-size: 11px;
+		margin: 1px 0px 6px 0px;
+	}
+}

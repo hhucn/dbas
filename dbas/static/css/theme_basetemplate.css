@@ -105,6 +105,10 @@ a:hover {
 	transition: .5s ease;
 }
 
+#firstcontainer {
+	margin-top: 100px;
+}
+
 .jsdiabled {
 	z-index: 2;
 	position: fixed;

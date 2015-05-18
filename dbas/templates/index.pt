@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}"
-			metal:use-macro="load: basetemplate.pt"
-			xmlns="http://www.w3.org/1999/xhtml"
-			xml:lang="en"
-			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-			i18n:domain="dbas">
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
 
 <head>
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
 </head>
 
@@ -28,28 +24,24 @@
 						<li>Every argument and position will be connected logically to each other</li>
 					</ul>
 					<br>
-					<p class="lead">This project is based on research of the graduation school Online-Participation, governmentally subsidised by the <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank" alt="Ministry of Innovation, Science and Research in North Rhine-Westphalia">Ministry of Innovation, Science and Research in North Rhine-Westphalia</a>.</p>
-					<table class="table_logo" border="0">
-						<tr>
-							<td rowspan="2">
-								<a target="_blank" id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
-									<img class="logo_hhu img-responsive" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo">
-								</a>
-							</td>
-							<td>
-								<a target="_blank" id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
-									<img class="logo_kolleg img-responsive" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo">
-								</a>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<a target="_blank" id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
-									<img class="logo_fhoev img-responsive" src="${request.static_url('dbas:static/images/logo_fhoev.jpg')}" alt="fhoev logo">
-								</a>
-							</td>
-						</tr>
-					</table>
+					<p class="lead">This project is based on research of the graduation school Online-Participation, subsidised governmentally by <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank" alt="Ministry of Innovation, Science and Research in North Rhine-Westphalia">Ministry of Innovation, Science and Research in North Rhine-Westphalia</a>.</p>
+					<ul class="list-logos">
+						<li>
+							<a target="_blank" id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
+								<img class="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo"/>
+							</a>
+						</li>
+						<li>
+							<a target="_blank" id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
+								<img class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo"/>
+							</a>
+						</li>
+						<li>
+							<a target="_blank" id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
+								<img class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" alt="fhoev logo"/>
+							</a>
+						</li>
+					</ul>
 					<br>
 					<p class="lead">And don't forget to check the <a href="${request.application_url}/news" title="news">news-page</a> reguarly.</p>
 				</div>
@@ -194,6 +186,6 @@
 	</div>
 
 	<div metal:use-macro="load: snippet-footer.pt" />
-	
+
 </body>
 <html>

@@ -21,6 +21,7 @@ requires = [
 	'docutils',
 	'WebTest',
 	'cryptacular',
+    'validate_email',
 	]
 
 setup(name='DBAS',

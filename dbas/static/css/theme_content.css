@@ -1,9 +1,9 @@
-.container{
-	margin-top: 100px;
-}
-
 .pictures {
 	margin-left: auto;
 	margin-right: auto;
+	text-align: center;
+}
+
+.buttonHolder{
 	text-align: center;
 }

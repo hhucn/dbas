@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}"
-			metal:use-macro="load: basetemplate.pt"
-			xmlns="http://www.w3.org/1999/xhtml"
-			xml:lang="en"
-			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-			i18n:domain="mydbas">
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="mydbas">
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
@@ -14,19 +9,29 @@
 <body>
 
 
+	<div class="container" id="firstcontainer">
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<h1><span class="font-semi-bold">Dialogue-Based Argumentation System</span></h1>
+				<p>The current discussion is about '<span class="font-semi-bold"><span tal:replace="issue"/></span>' and was started at <span class="font-semi-bold" tal:replace="date" />.</p>
+				<br>
+				<div class="buttonHolder">
+					<input id="start-discussion" type="submit" name="start.discussion" value="Start Discussion" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+					<p>List of all positions:</p>
+				</div>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+	</div>
+
+
 	<div class="container">
 		<div class="row">
 			<div class="col-md-3"></div>
 
 			<div class="pictures col-md-6">
-				<h1><span class="font-semi-bold">Content</span></h1>
-				<h2><p>Hallo <span tal:replace="logged_in"/></p></h2>
-				<p>Hier wird sich bald...</p>
-				<p>ja..sehr bald..</p>
-				<p>Inhalt finden lassen.</p>
-				<br>
-				<p>Bis dahin, viel Spaß mit ein paar Bildern:</p>
-				<br>
+				<h1><span class="font-semi-bold">Hallo <span tal:replace="logged_in"/></span></h1>
 				<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 					<!-- Indicators -->
 					<ol class="carousel-indicators">
@@ -42,33 +47,23 @@
 					<div class="carousel-inner" role="listbox">
 						<div class="item active">
 							<img src="${request.static_url('dbas:static/images/carousel_1.jpg')}" alt="carousel_1">
-							<div class="carousel-caption">
-								Carousel 1
-							</div>
+							<div class="carousel-caption">Carousel 1</div>
 						</div>
 						<div class="item">
 							<img src="${request.static_url('dbas:static/images/carousel_2.jpg')}" alt="carousel_2">
-							<div class="carousel-caption">
-								Carousel 2
-							</div>
+							<div class="carousel-caption">Carousel 2</div>
 						</div>
 						<div class="item">
 							<img src="${request.static_url('dbas:static/images/carousel_3.jpg')}" alt="carousel_3">
-							<div class="carousel-caption">
-								Carousel 3
-							</div>
+							<div class="carousel-caption">Carousel 3</div>
 						</div>
 						<div class="item">
 							<img src="${request.static_url('dbas:static/images/carousel_4.jpg')}" alt="carousel_4">
-							<div class="carousel-caption">
-								Carousel 4
-							</div>
+							<div class="carousel-caption">Carousel 4</div>
 						</div>
 						<div class="item">
 							<img src="${request.static_url('dbas:static/images/carousel_5.jpg')}" alt="carousel_5">
-							<div class="carousel-caption">
-								Carousel 5
-							</div>
+							<div class="carousel-caption">Carousel 5</div>
 						</div>
 					</div>
 
@@ -88,20 +83,22 @@
 			<div class="col-md-3"></div>
 		</div>
 	</div>
-	
-	
+
+
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
 				<h1><span class="font-semi-bold">Special rights</span></h1>
-				<p>Only the administrator has some special rights and therefore special effects on this page ... and I think, <span tal:replace="message"/></p>
+				<p>Only the administrator has some special rights and therefore special effects on this page ... and I think, <span tal:replace="message" />
+				</p>
 			</div>
 			<div class="col-md-2"></div>
 		</div>
 	</div>
-	
+
 	<div metal:use-macro="load: snippet-footer.pt" />
-	
-	</body>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
+
+</body>
 <html>
