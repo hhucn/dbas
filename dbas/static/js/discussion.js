@@ -1,5 +1,12 @@
 /*global $, jQuery, alert, addListItemsToDiscussionsSpace, getAllPositions, getKeyValAsInputBtnInLiElement, setDiscussionsDescription, addTextareaAsChildIn*/
 
+var addStatementButtonid = 'add-statement';
+
+/**
+ * Appends all items in an ul list and this will be appended in the 'discussionsSpace'
+ * @param items list with al items
+ * @param id for the ul list, where all items are appended
+ */
 function addListItemsToDiscussionsSpace(items, id) {
 	'use strict';
 	var i, size, newList, discussionsSpace, ulElement;
@@ -15,6 +22,13 @@ function addListItemsToDiscussionsSpace(items, id) {
 	discussionsSpace.appendChild(ulElement);
 }
 
+/**
+ * Creates an input element tih key as id and val as value. This is embedded in an li element
+ * @param key
+ * @param val
+ * @param isAddArgumentButton true, if if is the addArgumentButton
+ * @returns {Element|*} an li tag with embedded input element
+ */
 function getKeyValAsInputBtnInLiElement(key, val, isAddArgumentButton) {
 	'use strict';
 	
@@ -29,20 +43,29 @@ function getKeyValAsInputBtnInLiElement(key, val, isAddArgumentButton) {
 	inputElement.setAttribute('class', 'button button-block btn btn-primary btn-default');
 	inputElement.setAttribute('data-dismiss', 'modal');
 	if (isAddArgumentButton) {
-		inputElement.setAttribute('onclick', "$('#add-argument-container').show();");
+		inputElement.setAttribute('onclick', "$('#add-argument-container').show();$('#'+addStatementButtonid).disable = true;");
 	} else {
-		inputElement.setAttribute('onclick', "alert('todo');");
+		inputElement.setAttribute('onclick', "alert(this.value);");
 	}
 	
 	liElement.appendChild(inputElement);
 	return liElement;
 }
 
+/**
+ * Setting a description in some p-tag
+ * @param text to set
+ */
 function setDiscussionsDescription(text) {
 	'use strict';
 	$('#discussions-description').text(text);
 }
 
+/**
+ * Send a json-request to ajax_positions for getting all positions in the database.
+ * The response is given to getKeyValAsInputBtnInLiElement(...) and this list
+ * is given to addListItemsToDiscussionsSpace(...)
+ */
 function getAllPositions() {
 	'use strict';
 	var listitems = [];
@@ -63,12 +86,12 @@ function getAllPositions() {
 				});
 				setDiscussionsDescription('These are the current statements, given by users input. You can choose a position, which is next to your own intention or add a new one.');
 				$('#discussion-container').show();
-				listitems.push(getKeyValAsInputBtnInLiElement('add-position', 'Adding a new statement.', true));
+				listitems.push(getKeyValAsInputBtnInLiElement(addStatementButtonid, 'Adding a new statement.', true));
 			// case 2: we have no positions
 			} else {
 				setDiscussionsDescription('You are the first one. Please add a new statement:');
 				$('#discussion-container').show();
-				listitems.push(getKeyValAsInputBtnInLiElement('add-position', 'Yeah, I will add a statement!', true));
+				listitems.push(getKeyValAsInputBtnInLiElement(addStatementButtonid, 'Yeah, I will add a statement!', true));
 			}
 			// call handle items
 			addListItemsToDiscussionsSpace(listitems, 'position-list');
@@ -76,6 +99,10 @@ function getAllPositions() {
 	});
 }
 
+/**
+ * Adds a textarea with a little close button (both in a div tag) to a parend tag
+ * @param parentid id-tag of the parent element, where a textare should be added
+ */
 function addTextareaAsChildIn(parentid) {
 	'use strict';
 	var area, parent, div, button, span, childCount;
@@ -83,42 +110,49 @@ function addTextareaAsChildIn(parentid) {
 	childCount = parent.childElementCount;
 	
 	div = document.createElement('div');
+	div.setAttribute('id', 'div' + childCount.toString());
 	
 	button = document.createElement('button');
 	button.setAttribute('type', 'button');
 	button.setAttribute('class', 'close');
 	button.setAttribute('data-dismiss', 'modal');
 	button.setAttribute('aria-label', 'Close');
-	button.setAttribute('id', childCount.toString());
+	button.setAttribute('id', 'button' + childCount.toString());
 
 	span = document.createElement('span');
 	span.setAttribute('aria-hidden', 'true');
 	span.innerHTML = '&times;';
-	
-	button.appendChild(span);
-	
+
 	area = document.createElement('textarea');
 	area.setAttribute('type', 'text');
 	area.setAttribute('class', '');
 	area.setAttribute('name', '');
 	area.setAttribute('autocomplete', 'off');
-	area.setAttribute('placeholder', 'I am new.');
+	area.setAttribute('placeholder', 'example: I am the area number ' + (childCount-2).toString() + '.');
 	area.setAttribute('value', '');
-	
+	area.setAttribute('id', 'area' + childCount.toString());
+
+	button.appendChild(span);
 	div.appendChild(area);
 	div.appendChild(button);
 
-	button.setAttribute('onclick', "button.parentNode.removeChild(button);area.parentNode.removeChild(area);alert('todo');");
-	
+	//
+	// remove everything on click
+	button.setAttribute('onclick', "var parentNode = this.parentNode;var grandParentNode = parentNode.parentNode;grandParentNode.removeChild(parentNode);");
+
+	// add everything
 	parent.insertBefore(div, parent.childNodes[childCount + 1]);
 }
 
+/**
+ * main function
+ */
 $(document).ready(function () {
 	'use strict';
 
 	$('#discussion-container').hide(); // hiding discussions container
 	$('#add-argument-container').hide(); // hiding container for adding arguments
-	
+
 	// jump to chapter-function
 	$('#get-positions').on('click', function (e) {
 		getAllPositions();
@@ -139,6 +173,7 @@ $(document).ready(function () {
 	// hiding the argument container, when the X button is clicked
 	$('#closeArgumentContainer').on('click', function (e) {
 		$('#add-argument-container').hide();
+		$('#'+addStatementButtonid).enable = true;
 	});
 	
 });
