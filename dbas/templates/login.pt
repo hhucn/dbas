@@ -59,7 +59,7 @@
 					<input id="userfirstname-input" type="text" name="firstname" class="userfirstname active" autocomplete="on" placeholder="example: Tobias" value="${firstname}">
 
 					<h3>Your Last Name</h3>
-					<input id="userlastname-input" type="text" name="surename" class="userlastname" autocomplete="on" placeholder="example: Krauthoff" value="${surename}">
+					<input id="userlastname-input" type="text" name="surname" class="userlastname" autocomplete="on" placeholder="example: Krauthoff" value="${surname}">
 
 					<h3>Your Nickname</h3>
 					<input id="nick-input" type="text" class="nickname" name="nickname" autocomplete="on" placeholder="example: Democrator" value="${nickname}">

@@ -28,9 +28,9 @@ def load_database(engine):
 	#	session.add(group2)
 	#	session.flush()
 
-	#	user1 = User(firstname='superuser', surename='superuser', nickname='superuser', email='', password='basic123')
-	#	user2 = User(firstname='editor', surename='editor', nickname='editor', email='', password='test')
-	#	user3 = User(firstname='user', surename='user', nickname='user', email='', password='test')
+	#	user1 = User(firstname='superuser', surname='superuser', nickname='superuser', email='', password='basic123')
+	#	user2 = User(firstname='editor', surname='editor', nickname='editor', email='', password='test')
+	#	user3 = User(firstname='user', surname='user', nickname='user', email='', password='test')
 	#	user1.group = group1.uid
 	#	user2.group = group1.uid
 	#	user3.group = group1.uid

@@ -87,8 +87,8 @@ class User(Base):
 		self.last_logged = func.now()
 
 	@classmethod
-	def by_surename(cls):
-		"""Return a query of users sorted by surename."""
+	def by_surname(cls):
+		"""Return a query of users sorted by surname."""
 		return DBSession.query(User).order_by(User.surname)
 
 	def validate_password(self, password):

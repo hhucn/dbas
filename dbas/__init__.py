@@ -51,6 +51,7 @@ def main(global_config, **settings):
 	config.add_route('main_news', '/news')
 	config.add_route('main_impressum', '/impressum')
 	config.add_route('404', '/404')
+	config.add_route('get_ajax_positions','/ajax_positions')
 
 	# read the input and start
 	config.scan()

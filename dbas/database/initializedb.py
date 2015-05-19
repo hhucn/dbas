@@ -40,11 +40,11 @@ def main(argv=sys.argv):
 		DBSession.flush()
 
 		# adding some dummy users
-		pw1 = PasswordHandler.get_hashed_password(None,'admin')
-		pw2 = PasswordHandler.get_hashed_password(None,'test123')
-		pw3 = PasswordHandler.get_hashed_password(None,'test123')
-		pw4 = PasswordHandler.get_hashed_password(None,'test')
-		pw5 = PasswordHandler.get_hashed_password(None,'test')
+		pw1 = PasswordHandler.get_hashed_password('admin')
+		pw2 = PasswordHandler.get_hashed_password('test123')
+		pw3 = PasswordHandler.get_hashed_password('test123')
+		pw4 = PasswordHandler.get_hashed_password('test')
+		pw5 = PasswordHandler.get_hashed_password('test')
 		user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1)
 		user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2)
 		user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf', password=pw3)

@@ -22,7 +22,7 @@ here = os.path.dirname(__file__)
 settings = appconfig('config:' + os.path.join(here, '../', 'development.ini'))
 
 
-def _addTestingDB(session):
+def addTestingDB(session):
 	group1 = session.query(Group).filter_by(name='editors').first()
 	group2 = session.query(Group).filter_by(name='users').first()
 
@@ -71,7 +71,8 @@ def _addTestingDB(session):
 
 	return session
 
-def _addRoutes(config):
+
+def addRoutes(config):
 	config.add_route('main_page', '/')
 	config.add_route('main_login', '/login')
 	config.add_route('main_logout', '/logout')
@@ -83,6 +84,7 @@ def _addRoutes(config):
 	config.add_route('main_impressum', '/impressum')
 	config.add_route('404', '/404')
 	return config
+
 
 # setup the Base testing class what will manage our transactions
 class BaseTestCase(unittest.TestCase):
@@ -96,7 +98,7 @@ class BaseTestCase(unittest.TestCase):
 		# begin a non-ORM transaction
 		self.trans = connection.begin()
 		# bind an individual Session to the connection
-		#Session.configure(bind=connection)
+		# Session.configure(bind=connection)
 		self.session = self.Session(bind=connection)
 		Entity.session = self.session
 
@@ -108,13 +110,14 @@ class BaseTestCase(unittest.TestCase):
 		self.trans.rollback()
 		self.session.close()
 
+
 # skip the routes, templates, etc. So let’s setup our Unit Test Base class
 class UnitTestBase(BaseTestCase):
 	def setUp(self):
 		print("UnitTestBase: setUp")
 		self.config = testing.setUp(request=testing.DummyRequest())
 		super(UnitTestBase, self).setUp()
-		self.config = _addRoutes(self.config)
+		self.config = addRoutes(self.config)
 
 	def tearDown(self):
 		print("UnitTestBase: tearDown")
@@ -146,7 +149,7 @@ class IntegrationTestBase(BaseTestCase):
 		self.testapp = TestApp(self.app)
 		self.config = testing.setUp()
 		super(IntegrationTestBase, self).setUp()
-		self.config = _addRoutes(self.config)
+		self.config = addRoutes(self.config)
 
 
 ##########################################################################################################
@@ -165,6 +168,7 @@ class ViewMainTests(UnitTestBase):
 		response = Dbas(request).main_page()
 		self.assertEqual('Main', response['title'])
 
+
 # testing login page
 class ViewLoginTests(UnitTestBase):
 	def _callFUT(self, request):
@@ -177,6 +181,7 @@ class ViewLoginTests(UnitTestBase):
 		response = Dbas(request).main_login()
 		self.assertEqual('Login', response['title'])
 
+
 # testing logout page
 class ViewLogoutTests(UnitTestBase):
 	def _callFUT(self, request):
@@ -188,6 +193,7 @@ class ViewLogoutTests(UnitTestBase):
 		request = testing.DummyRequest()
 		response = Dbas(request).main_logout()
 		self.assertEqual('Logout', response['title'])
+
 
 # testing logout redirection page
 class ViewLogoutRedirectTests(UnitTestBase):
@@ -203,6 +209,7 @@ class ViewLogoutRedirectTests(UnitTestBase):
 		# therefore we have function testings
 		self.assertEqual(response.status, '302 Found')
 
+
 # testing contact page
 class ViewContactTests(UnitTestBase):
 	def _callFUT(self, request):
@@ -214,6 +221,7 @@ class ViewContactTests(UnitTestBase):
 		request = testing.DummyRequest()
 		response = Dbas(request).main_contact()
 		self.assertEqual('Contact', response['title'])
+
 
 # testing content page
 class ViewContentTests(UnitTestBase):
@@ -227,6 +235,7 @@ class ViewContentTests(UnitTestBase):
 		response = Dbas(request).main_content()
 		self.assertEqual('Content', response['title'])
 
+
 # settings content page
 class ViewSettingsTests(UnitTestBase):
 	def _callFUT(self, request):
@@ -238,6 +247,7 @@ class ViewSettingsTests(UnitTestBase):
 		request = testing.DummyRequest()
 		response = Dbas(request).main_settings()
 		self.assertEqual('Settings', response['title'])
+
 
 # testing content page
 class ViewNewsTests(UnitTestBase):
@@ -251,6 +261,7 @@ class ViewNewsTests(UnitTestBase):
 		response = Dbas(request).main_news()
 		self.assertEqual('News', response['title'])
 
+
 # testing impressum page
 class ViewImpressumTests(UnitTestBase):
 	def _callFUT(self, request):
@@ -262,6 +273,7 @@ class ViewImpressumTests(UnitTestBase):
 		request = testing.DummyRequest()
 		response = Dbas(request).main_impressum()
 		self.assertEqual('Impressum', response['title'])
+
 
 # testing a unexisting page
 class ViewNotFoundTests(UnitTestBase):
@@ -275,9 +287,23 @@ class ViewNotFoundTests(UnitTestBase):
 		response = Dbas(request).notfound()
 		self.assertEqual('Error', response['title'])
 
+
+# testing a unexisting page
+class AjaxViewTest(UnitTestBase):
+	def _callFUT(self, request):
+		print("AjaxViewTest: tearDown")
+		return Dbas.get_ajax_positions(request)
+
+	def test_main(self):
+		print("AjaxViewTest: setUp")
+		request = testing.DummyRequest()
+		response = Dbas(request).get_ajax_positions()
+		self.assertEqual('This is for test.py', response['test'])
+
 ##########################################################################################################
 ##########################################################################################################
 ##########################################################################################################
+
 
 # check, if every site responds with 200 except the error page
 class FunctionalViewTests(IntegrationTestBase):
@@ -367,7 +393,7 @@ class FunctionalViewTests(IntegrationTestBase):
 	def test_content_only_when_logged_in(self):
 		print("FunctionalTests: test_content_only_when_logged_in")
 		res = self.testapp.get('/content', status=200)
-		self.assertNotIn(b'Carousel', res.body) # due to login error
+		self.assertNotIn(b'Carousel', res.body)  # due to login error
 		self.testapp.get(self.editor_login, status=302)
 		res = self.testapp.get('/content', status=200)
 		self.assertIn(b'Carousel', res.body)
@@ -376,11 +402,10 @@ class FunctionalViewTests(IntegrationTestBase):
 	def test_settings_only_when_logged_in(self):
 		print("FunctionalTests: test_settings_only_when_logged_in")
 		res = self.testapp.get('/settings', status=200)
-		self.assertNotIn(b'Settings', res.body) # due to login error
+		self.assertNotIn(b'Settings', res.body)  # due to login error
 		self.testapp.get(self.editor_login, status=302)
 		res = self.testapp.get('/settings', status=200)
 		self.assertIn(b'Settings', res.body)
-
 
 
 #	def test_anonymous_user_cannot_edit(self):
@@ -427,7 +452,10 @@ class FunctionalEMailTests(IntegrationTestBase):
 		print("FunctionalTests: test_email_send")
 		self.testapp.get('/contact', status=200)
 		mailer = DummyMailer()
-		mailer.send(Message(subject='hello world', sender='krauthoff@cs.uni-duesseldorf.de', recipients =['krauthoff@cs.uni-duesseldorf.de'], body='dummybody'))
+		mailer.send(Message(subject='hello world', 
+							sender='krauthoff@cs.uni-duesseldorf.de', 
+							recipients =['krauthoff@cs.uni-duesseldorf.de'], 
+							body='dummybody'))
 		self.assertEqual(len(mailer.outbox), 1)
 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
 
@@ -436,7 +464,10 @@ class FunctionalEMailTests(IntegrationTestBase):
 		print("FunctionalTests: test_email_send_immediately")
 		self.testapp.get('/contact', status=200)
 		mailer = DummyMailer()
-		mailer.send_immediately(Message(subject='hello world', sender='krauthoff@cs.uni-duesseldorf.de', recipients =['krauthoff@cs.uni-duesseldorf.de'], body='dummybody'))
+		mailer.send_immediately(Message(subject='hello world', 
+										sender='krauthoff@cs.uni-duesseldorf.de', 
+										recipients =['krauthoff@cs.uni-duesseldorf.de'], 
+										body='dummybody'))
 		self.assertEqual(len(mailer.outbox), 1)
 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
 
@@ -445,7 +476,10 @@ class FunctionalEMailTests(IntegrationTestBase):
 		print("FunctionalTests: test_email_send_immediately_sendmail")
 		self.testapp.get('/contact', status=200)
 		mailer = DummyMailer()
-		mailer.send_immediately_sendmail(Message(subject='hello world', sender='krauthoff@cs.uni-duesseldorf.de', recipients =['krauthoff@cs.uni-duesseldorf.de'], body='dummybody'))
+		mailer.send_immediately_sendmail(Message(subject='hello world', 
+												 sender='krauthoff@cs.uni-duesseldorf.de', 
+												 recipients =['krauthoff@cs.uni-duesseldorf.de'], 
+												 body='dummybody'))
 		self.assertEqual(len(mailer.outbox), 1)
 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
 
@@ -453,12 +487,13 @@ class FunctionalEMailTests(IntegrationTestBase):
 ##########################################################################################################
 ##########################################################################################################
 
+
 # checks for the database
 class FunctionalDatabaseTests(IntegrationTestBase):
 
 	def setUp(self):
 		super(FunctionalDatabaseTests, self).setUp()
-		self.session = _addTestingDB(self.session)
+		self.session = addTestingDB(self.session)
 
 	# testing group content
 	def test_database_group_content(self):

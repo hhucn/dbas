@@ -1,9 +1,107 @@
+
 .pictures {
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
 }
 
-.buttonHolder{
+#discussions-space,
+.center{
 	text-align: center;
+}
+
+#discussions-space ul {
+	margin: 20px;
+	display: inline-block;
+}
+
+#discussions-space ul li {
+	margin: 20px;
+	display: inline;
+}
+
+#discussions-space ul li input {
+	font-size: 15px;
+}
+
+#insert_argument_form {
+	text-align: center;
+}
+#insert_argument_form  textarea{
+	resize: vertical;
+}
+
+#insert_argument_form input,
+#insert_argument_form textarea {
+	outline: none;
+	font-size: 18px;
+	font-weight: 400;
+	color: #bcbcbc;
+	padding: 12px 10px 12px 10px;
+	border-radius: 5px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	margin: 0px 0px 10px 0px;
+	-webkit-appearance: none;
+	border: 1px solid;
+	width: 100%;
+}
+
+#insert_argument_form div a {
+	text-decoration: none;
+	color: #000;
+}
+#insert_argument_form div a:hover {
+	text-decoration: underline;
+	color: #006ab3;
+}
+
+#add-pro-position,
+#add-con-position,{
+	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-433-plus.png) center no-repeat 12px 10px;
+}
+
+#left-position-column {
+	float: left;
+	width: 50%;
+}
+
+#right-position-column {
+	float: right;
+	width: 50%;
+}
+
+#left-position-column textarea,
+#right-position-column textarea{
+	width: 95%;
+}
+
+#left-position-column button,
+#right-position-column button{
+	float: 5%;
+}
+
+
+#heading-pro-positions{
+	color: rgba(151,191,13,1.0); <!-- official uni red -->
+}
+#heading-contra-positions{
+	color: rgba(190,10,38,1.0); <!-- official uni green -->
+}
+
+
+@media (max-width: 767px) {
+	#discussions-space ul {
+		margin: 10px;
+		display: block;
+	}
+	#discussions-space ul li {
+		margin: 10px;
+		display: block;
+	}
+	#left-position-column. #right-position-column {
+		float: none;
+		width: 95%;
+	}
 }
