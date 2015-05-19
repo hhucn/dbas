@@ -1,6 +1,14 @@
-/*global $, jQuery, alert, addListItemsToDiscussionsSpace, getAllPositions, getKeyValAsInputBtnInLiElement, setDiscussionsDescription, addTextareaAsChildIn*/
+/*global $, jQuery, alert, addListItemsToDiscussionsSpace, getAllPositions, getKeyValAsInputBtnInLiElement,
+ setDiscussionsDescription, addTextareaAsChildIn, argumentButtonWasClicked, positionButtonWasClicked*/
 
 var addStatementButtonid = 'add-statement';
+
+/*
+var Testclass(position, argment){
+   this.position = position;
+   this.argment = argment;
+}
+*/
 
 /**
  * Appends all items in an ul list and this will be appended in the 'discussionsSpace'
@@ -29,7 +37,7 @@ function addListItemsToDiscussionsSpace(items, id) {
  * @param isAddArgumentButton true, if if is the addArgumentButton
  * @returns {Element|*} an li tag with embedded input element
  */
-function getKeyValAsInputBtnInLiElement(key, val, isAddArgumentButton) {
+function getKeyValAsInputBtnInLiElement(key, val, isArgument, isAddArgumentButton) {
 	'use strict';
 	
 	var liElement, inputElement;
@@ -45,11 +53,33 @@ function getKeyValAsInputBtnInLiElement(key, val, isAddArgumentButton) {
 	if (isAddArgumentButton) {
 		inputElement.setAttribute('onclick', "$('#add-argument-container').show();$('#'+addStatementButtonid).disable = true;");
 	} else {
-		inputElement.setAttribute('onclick', "alert(this.value);");
+		if (isArgument) {
+			inputElement.setAttribute('onclick', "argumentButtonWasClicked(this.value);");
+		} else {
+			inputElement.setAttribute('onclick', "positionButtonWasClicked(this.value);");
+		}
 	}
 	
 	liElement.appendChild(inputElement);
 	return liElement;
+}
+
+/**
+ * Handler when an argument button was clicked
+ * @param value of the button
+ */
+function argumentButtonWasClicked(value) {
+	'use strict';
+	setDiscussionsDescription('Okay, you have got the opinion: ' + value + ' Can you choose a position therefore?');
+}
+
+/**
+ * Handler when an position button was clicked
+ * @param value of the button
+ */
+function positionButtonWasClicked(value) {
+	setDiscussionsDescription('So, your position is: ' + value + '. But ...');
+	'use strict';
 }
 
 /**
@@ -81,17 +111,17 @@ function getAllPositions() {
 				$.each(data, function (key, val) {
 					// adding positions only
 					if (key.indexOf('pos') === 0) {
-						listitems.push(getKeyValAsInputBtnInLiElement(key, val, false));
+						listitems.push(getKeyValAsInputBtnInLiElement(key, val, true, false));
 					}
 				});
 				setDiscussionsDescription('These are the current statements, given by users input. You can choose a position, which is next to your own intention or add a new one.');
 				$('#discussion-container').show();
-				listitems.push(getKeyValAsInputBtnInLiElement(addStatementButtonid, 'Adding a new statement.', true));
+				listitems.push(getKeyValAsInputBtnInLiElement(addStatementButtonid, 'Adding a new statement.', true, true));
 			// case 2: we have no positions
 			} else {
 				setDiscussionsDescription('You are the first one. Please add a new statement:');
 				$('#discussion-container').show();
-				listitems.push(getKeyValAsInputBtnInLiElement(addStatementButtonid, 'Yeah, I will add a statement!', true));
+				listitems.push(getKeyValAsInputBtnInLiElement(addStatementButtonid, 'Yeah, I will add a statement!', true, true));
 			}
 			// call handle items
 			addListItemsToDiscussionsSpace(listitems, 'position-list');
@@ -105,6 +135,10 @@ function getAllPositions() {
  */
 function addTextareaAsChildIn(parentid) {
 	'use strict';
+	/**
+	 * The structure is like:
+	 * <div><textarea .../><button...></button></div>
+	 */
 	var area, parent, div, button, span, childCount;
 	parent = document.getElementById(parentid);
 	childCount = parent.childElementCount;
@@ -128,7 +162,7 @@ function addTextareaAsChildIn(parentid) {
 	area.setAttribute('class', '');
 	area.setAttribute('name', '');
 	area.setAttribute('autocomplete', 'off');
-	area.setAttribute('placeholder', 'example: I am the area number ' + (childCount-2).toString() + '.');
+	area.setAttribute('placeholder', 'example: I am the area number ' + (childCount - 2).toString() + '.');
 	area.setAttribute('value', '');
 	area.setAttribute('id', 'area' + childCount.toString());
 
@@ -136,7 +170,6 @@ function addTextareaAsChildIn(parentid) {
 	div.appendChild(area);
 	div.appendChild(button);
 
-	//
 	// remove everything on click
 	button.setAttribute('onclick', "var parentNode = this.parentNode;var grandParentNode = parentNode.parentNode;grandParentNode.removeChild(parentNode);");
 
@@ -173,7 +206,7 @@ $(document).ready(function () {
 	// hiding the argument container, when the X button is clicked
 	$('#closeArgumentContainer').on('click', function (e) {
 		$('#add-argument-container').hide();
-		$('#'+addStatementButtonid).enable = true;
+		$('#' + addStatementButtonid).enable = true;
 	});
 	
 });
