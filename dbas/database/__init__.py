@@ -5,6 +5,7 @@ from zope.sqlalchemy import ZopeTransactionExtension as Zte
 
 DBSession = scoped_session(sessionmaker(extension=Zte()))
 Base = declarative_base()
+DBEngine = None
 
 class RootFactory(object):
 	"""

@@ -2,10 +2,11 @@
  setDiscussionsDescription, addTextareaAsChildIn, argumentButtonWasClicked, positionButtonWasClicked*/
 
 var addStatementButtonId = 'add-statement';
+var addPositionButtonId = 'add-position';
 var discussionSpaceId = 'discussions-space';
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
-	'Interesting, your opinition is: ',
+	'Interesting, your opinion is: ',
 	'So you meant: ',
 	'You have said, that: ',
 	'So your opinion is: '];
@@ -29,6 +30,7 @@ function DiscussionHandler() {
 		}).done(function (data) {
 			guiHandler.setJsonDataToContentAsPositions(data);
 		}).fail(function () {
+			alert('failed request');
 			guiHandler.setOnlyNewArgumentButton();
 		});
 	};
@@ -46,8 +48,11 @@ function DiscussionHandler() {
 			data: { uid : ofPositionWithUid },
 			dataType: "json"
 		}).done(function (data) {
+			guiHandler.setJsonDataToContentAsArguments(data);
 			return data;
 		}).fail(function () {
+			alert('failed request');
+			guiHandler.setOnlyNewArgumentButton();
 			return 0;
 		});
 	};
@@ -87,7 +92,7 @@ function GuiHandler() {
 		listitems.push(this.getKeyValAsInputBtnInLiElement(addStatementButtonId, 'Adding a new statement.', true));
 
 		$('#discussion-container').show();
-		this.addListItemsToDiscussionsSpace(listitems, 'position-list');
+		this.addListItemsToDiscussionsSpace(listitems, '');
 	};
 
 	/**
@@ -95,6 +100,12 @@ function GuiHandler() {
 	 * @param jsonData data with json content
 	 */
 	this.setJsonDataToContentAsArguments = function (jsonData) {
+		var listitems = [], _this = this;
+		$.each(jsonData, function (key, val) {
+			listitems.push(_this.getKeyValAsInputBtnInLiElement(key, val, false));
+		});
+		listitems.push(this.getKeyValAsInputBtnInLiElement(addStatementButtonId, 'Adding a new position.', true));
+		this.addListItemsToDiscussionsSpace(listitems, 'argument-list');
 
 	};
 
@@ -135,9 +146,9 @@ function GuiHandler() {
 			inputElement.setAttribute('onclick', "$('#add-argument-container').show();$('#'+addStatementButtonId).disable = true;");
 		} else {
 			if (isArgument) {
-				inputElement.setAttribute('onclick', "new GuiHandler().argumentButtonWasClicked(this.value);");
+				inputElement.setAttribute('onclick', "new GuiHandler().argumentButtonWasClicked(this.id, this.value);");
 			} else {
-				inputElement.setAttribute('onclick', "new GuiHandler().positionButtonWasClicked(this.value);");
+				inputElement.setAttribute('onclick', "new GuiHandler().positionButtonWasClicked(this.id, this.value);");
 			}
 		}
 
@@ -217,20 +228,36 @@ function GuiHandler() {
 	 * Handler when an argument button was clicked
 	 * @param value of the button
 	 */
-	this.argumentButtonWasClicked = function(value) {
+	this.argumentButtonWasClicked = function(id, value) {
 		'use strict';
-		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-		setDiscussionsDescription(argumentSentencesOpeners[pos] + value + ' Can you choose a position therefore?');
+		var pos, discussionHandler;
+		pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
+		setDiscussionsDescription(argumentSentencesOpeners[pos] + value + ' But why?');
+
+		// clear the discussion space
+		$('#'+discussionSpaceId).empty();
+
+		// add all positions
+		discussionHandler = new DiscussionHandler();
+		discussionHandler.getAllProArguments(id);
+
 	};
 
 	/**
 	 * Handler when an position button was clicked
 	 * @param value of the button
 	 */
-	this.positionButtonWasClicked = function(value) {
+	this.positionButtonWasClicked = function(id, value) {
 		'use strict';
-		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-		setDiscussionsDescription(argumentSentencesOpeners[pos] + value + '. But ...');
+		var pos, discussionHandler;
+		pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
+		setDiscussionsDescription(argumentSentencesOpeners[pos] + value + ' But an argument from the other side is:');
+
+		// clear the discussion space
+		$('#'+discussionSpaceId).empty();
+
+		// add all positions from the other side
+		discussionHandler = new DiscussionHandler();
 	}
 }
 

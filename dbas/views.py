@@ -9,11 +9,11 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyramid.security import remember, forget
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
+from sqlalchemy import and_
 
 from .database import DBSession
-from .database.model import User, Group, Issue, Position
+from .database.model import User, Group, Issue, Position, Argument, RelationArgPos
 from .helper import PasswordHandler, PasswordGenerator, logger
-
 
 class Dbas(object):
 	def __init__(self, request):
@@ -569,6 +569,36 @@ class Dbas(object):
 	def get_ajax_pro_arguments(self):
 		logger('get_ajax_pro_arguments', 'def', 'main')
 		return_dict = {}
+
+		# relation vom arugment zur position mit gesendeter uid
+		uid = self.request.params['uid']
+		logger('get_ajax_pro_arguments', 'send uid', str(uid))
+
+		# select * from arguments where uid in (
+		# 	select arg_uid from relation_argpos where pos_uid=2 and is_supportive = 1
+		# );
+
+		db_arguid = DBSession.query(RelationArgPos).filter(
+			and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
+		list_arg_ids = []
+		i = 0
+		for arg in db_arguid:
+			logger('get_ajax_pro_arguments','all arg_uids', str(arg.uid))
+			if arg.uid not in list_arg_ids:
+				logger('get_ajax_pro_arguments', 'get argument with', str(arg.uid))
+				list_arg_ids.append(arg.uid)
+				db_argument = DBSession.query(Argument).filter_by(uid = arg.uid).first()
+
+				logger('get_ajax_pro_arguments', 'add argument in dict',
+				       'uid:' + str(db_argument.uid) + '   val: ' + db_argument.text)
+				return_dict[str(db_argument.uid)] = db_argument.text
+				i += 1
+
+		# db_arguments = DBSession.query(Argument).filter_by(Argument.uid.in_(
+		# 	DBSession.query(RelationArgPos).options(load_only("arg_uid")).filter(
+		# 	and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
+		# ))
+
 		return return_dict
 
 	# ajax
