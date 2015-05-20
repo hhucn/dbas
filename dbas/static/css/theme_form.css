@@ -67,7 +67,10 @@ h4 {
 	text-align: center;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea[type="text"]  {
 	outline: none;
 	font-size: 18px;
 	font-weight: 400;
@@ -81,23 +84,7 @@ input[type="text"] {
 	margin: 0px 0px 10px 0px;
 	-webkit-appearance: none;
 	border: 1px solid;
-}
-
-input,
-textarea {
-	outline: none;
-	font-size: 18px;
-	font-weight: 400;
-	color: #bcbcbc;
-	padding: 12px 10px 12px 50px;
-	border-radius: 5px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 5px;
-	-o-border-radius: 5px;
-	margin: 0px 0px 10px 0px;
 	width: 100%;
-	-webkit-appearance: none;
-	border: 1px solid;
 }
 
 .top-row:after {
@@ -151,8 +138,11 @@ input.userlastname:hover,
 input.nickname:hover,
 input.email:hover,
 input.password:hover,
+input.tel:hover,
+input.spam:hover,
 textarea.content:hover,
-.passwordconfirm:hover input.active {
+.passwordconfirm:hover,
+input.active {
 	box-shadow: 0px 0px 7px 0px #3386E1;
 	transition: 0.5s all;
 	-webkit-transition: 0.5s all;
@@ -301,6 +291,8 @@ textarea.content:hover,
 	input.email,
 	input.password,
 	input.passwordconfirm,
+	input.spam,
+	input.tel,
 	textarea.content {
 		font-size: 13px;
 	}
@@ -326,6 +318,8 @@ textarea.content:hover,
 	input.nickname,
 	input.password,
 	input.passwordconfirm,
+	input.spam,
+	input.tel,
 	textarea.content {
 		font-size: 12px;
 	}
@@ -355,6 +349,8 @@ textarea.content:hover,
 	input.nickname,
 	input.password,
 	input.passwordconfirm,
+	input.spam,
+	input.tel,
 	textarea.content {
 		width: 61%;
 	}
@@ -386,6 +382,8 @@ textarea.content:hover,
 	input.nickname,
 	input.password,
 	input.passwordconfirm,
+	input.spam,
+	input.tel,
 	textarea.content {
 		width: 75%;
 		padding: 10px 10px 10px 45px;
