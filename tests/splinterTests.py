@@ -29,10 +29,10 @@ class WebTests():
 		:return: true if text is present else false
 		"""
 		if browser.is_text_present(text):
-			print("  SUCCESS: " + message)
+			print("    SUCCESS: " + message)
 			return True
 		else:
-			print("  FAILED: " + message)
+			print("    FAILED: " + message)
 			return False
 
 	def __testIndex(self, browser):
@@ -143,14 +143,6 @@ class WebTests():
 				b.fill(form[3], content[3])
 			b.find_by_name('form.contact.submitted').click()
 			success = success and self.__checkForPresentText(b, txt[i], msg[i])
-			i += 1
-
-
-		# b.fill('name', 'some_name')
-		# b.find_by_name('form.contact.submitted').click()
-		# txt = 'e-mail is empty'
-		# msg = 'testing contact formular for empty e-mail'
-		# success = success and self.__checkForPresentText(b, txt, msg)
 
 		b.quit()
 		print("")
@@ -159,4 +151,7 @@ class WebTests():
 
 browserStyle = 'firefox'
 webtests = WebTests(browserStyle)
-webtests.runAllTests()
+try:
+	webtests.runAllTests()
+except ConnectionResetError as e:
+	print("Server is offline")
