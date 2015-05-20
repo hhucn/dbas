@@ -8,7 +8,6 @@
 
 <body>
 
-
 	<div class="container" id="firstcontainer">
 		<div class="row">
 			<div class="col-md-1"></div>
@@ -42,7 +41,7 @@
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
 
-				<form id="insert_argument_form" action="/insert" method="post">
+				<form id="insert_argument_form" action="/not_implemented" method="post">
 					<h2>Please insert a new Argument</h2>
 					<input type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="">
 
@@ -65,6 +64,13 @@
 								<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add another contra position</div>
 						</a>
 					</div>
+
+			<div tal:condition="was_statement_inserted" class="alert alert-success" role="alert">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<span tal:replace="message" />
+			</div>
+					
+				<input id="send-statement" type="submit" name="insert.statement" value="Send statement" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
 				</form>
 
 				<div id="discussions-space"> </div>
@@ -73,7 +79,7 @@
 		</div>
 	</div>
 
-
+	<!--
 	<div class="container">
 		<div class="row">
 			<div class="col-md-3"></div>
@@ -82,6 +88,7 @@
 				<h1><span class="font-semi-bold">Hallo <span tal:replace="logged_in"/></span></h1>
 				<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 					<!-- Indicators -->
+	<!--
 					<ol class="carousel-indicators">
 						<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
 						<li data-target="#carousel-example-generic" data-slide-to="1"></li>
@@ -92,6 +99,7 @@
 					</ol>
 
 					<!-- Wrapper for slides -->
+	<!--
 					<div class="carousel-inner" role="listbox">
 						<div class="item active">
 							<img src="${request.static_url('dbas:static/images/carousel_1.jpg')}" alt="carousel_1">
@@ -116,6 +124,7 @@
 					</div>
 
 					<!-- Controls -->
+	<!--
 					<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
 						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 						<span class="sr-only">Previous</span>
@@ -131,8 +140,9 @@
 			<div class="col-md-3"></div>
 		</div>
 	</div>
+-->
 
-
+	<!--
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2"></div>
@@ -144,8 +154,8 @@
 			<div class="col-md-2"></div>
 		</div>
 	</div>
+-->
 
-	<div metal:use-macro="load: snippet-footer.pt" />
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
 
 </body>

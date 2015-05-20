@@ -2,7 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cf5f37dd-4367-4d3b-ab23-54da973b1060" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/templates/404.pt" afterPath="$PROJECT_DIR$/dbas/templates/404.pt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/__init__.py" afterPath="$PROJECT_DIR$/dbas/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/js/app.js" afterPath="$PROJECT_DIR$/dbas/static/js/app.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/templates/content.pt" afterPath="$PROJECT_DIR$/dbas/templates/content.pt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/js/discussion.js" afterPath="$PROJECT_DIR$/dbas/static/js/discussion.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/templates/snippet-footer.pt" afterPath="$PROJECT_DIR$/dbas/templates/snippet-footer.pt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/tests.py" afterPath="$PROJECT_DIR$/dbas/tests.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/css/theme_basetemplate.css" afterPath="$PROJECT_DIR$/dbas/static/css/theme_basetemplate.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/css/theme_content.css" afterPath="$PROJECT_DIR$/dbas/static/css/theme_content.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/static/css/theme_form.css" afterPath="$PROJECT_DIR$/dbas/static/css/theme_form.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dbas/views.py" afterPath="$PROJECT_DIR$/dbas/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="dbas.iws" />
@@ -67,7 +77,8 @@
         <entry file="file://$PROJECT_DIR$/dbas/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="53" column="26" selection-start-line="53" selection-start-column="26" selection-end-line="53" selection-end-column="26" />
+              <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="51" />
+              <caret line="55" column="22" selection-start-line="55" selection-start-column="22" selection-end-line="55" selection-end-column="51" />
               <folding>
                 <element signature="e#0#62#0" expanded="true" />
               </folding>
@@ -91,9 +102,13 @@
         <entry file="file://$PROJECT_DIR$/dbas/views.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="548" column="66" selection-start-line="548" selection-start-column="66" selection-end-line="548" selection-end-column="66" />
+              <caret line="580" column="0" selection-start-line="580" selection-start-column="0" selection-end-line="580" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#14147#17588#0" expanded="false" />
+                <element signature="e#17733#18016#0" expanded="false" />
+                <element signature="e#18162#18460#0" expanded="false" />
+                <element signature="e#18549#18969#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -103,8 +118,10 @@
         <entry file="file://$PROJECT_DIR$/dbas/tests.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="294" column="38" selection-start-line="294" selection-start-column="38" selection-end-line="294" selection-end-column="38" />
-              <folding />
+              <caret line="586" column="53" selection-start-line="586" selection-start-column="53" selection-end-line="586" selection-end-column="53" />
+              <folding>
+                <element signature="e#9640#13829#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -122,10 +139,21 @@
       <file leaf-file-name="discussion.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dbas/static/js/discussion.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4838362">
-              <caret line="80" column="75" selection-start-line="80" selection-start-column="75" selection-end-line="80" selection-end-column="75" />
+            <state vertical-scroll-proportion="0.384542">
+              <caret line="137" column="88" selection-start-line="137" selection-start-column="88" selection-end-line="137" selection-end-column="88" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
+                <element signature="e#1923#2157#0" expanded="false" />
+                <element signature="e#2188#2312#0" expanded="false" />
+                <element signature="e#2373#2803#0" expanded="false" />
+                <element signature="e#3215#3286#0" expanded="false" />
+                <element signature="e#3405#3601#0" expanded="false" />
+                <element signature="e#4616#4808#0" expanded="false" />
+                <element signature="e#4868#5218#0" expanded="false" />
+                <element signature="e#5222#5395#0" expanded="false" />
+                <element signature="e#5444#6938#0" expanded="false" />
+                <element signature="e#7603#7627#0" expanded="false" />
+                <element signature="e#7658#8771#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -156,12 +184,12 @@
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/dbas/database/initializedb.py" />
         <option value="$PROJECT_DIR$/dbas/helper.py" />
-        <option value="$PROJECT_DIR$/dbas/__init__.py" />
-        <option value="$PROJECT_DIR$/dbas/views.py" />
         <option value="$PROJECT_DIR$/dbas/database/model.py" />
         <option value="$PROJECT_DIR$/dbas/database/__init__.py" />
-        <option value="$PROJECT_DIR$/dbas/tests.py" />
         <option value="$PROJECT_DIR$/dbas/static/css/theme_content.css" />
+        <option value="$PROJECT_DIR$/dbas/__init__.py" />
+        <option value="$PROJECT_DIR$/dbas/tests.py" />
+        <option value="$PROJECT_DIR$/dbas/views.py" />
         <option value="$PROJECT_DIR$/dbas/static/js/discussion.js" />
       </list>
     </option>
@@ -175,9 +203,9 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="49" />
-    <option name="y" value="24" />
-    <option name="width" value="2511" />
-    <option name="height" value="1056" />
+    <option name="y" value="58" />
+    <option name="width" value="1871" />
+    <option name="height" value="1176" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -592,10 +620,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="49" y="24" width="2511" height="1056" extended-state="6" />
+    <frame x="49" y="58" width="1871" height="1176" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21176471" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19616438" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21212122" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -652,7 +680,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="11" />
+      <option name="time" value="12" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -725,6 +753,10 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#14147#17588#0" expanded="false" />
+            <element signature="e#17733#18016#0" expanded="false" />
+            <element signature="e#18162#18460#0" expanded="false" />
+            <element signature="e#18549#18969#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -981,38 +1013,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="53" column="26" selection-start-line="53" selection-start-column="26" selection-end-line="53" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dbas/database/model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="90" column="53" selection-start-line="90" selection-start-column="53" selection-end-line="90" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="548" column="66" selection-start-line="548" selection-start-column="66" selection-end-line="548" selection-end-column="66" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="294" column="38" selection-start-line="294" selection-start-column="38" selection-end-line="294" selection-end-column="38" />
           <folding />
         </state>
       </provider>
@@ -1025,14 +1029,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dbas/database/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="54" selection-start-line="12" selection-start-column="54" selection-end-line="12" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dbas/database/initializedb.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1041,12 +1037,66 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/database/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="54" selection-start-line="12" selection-start-column="54" selection-end-line="12" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="586" column="53" selection-start-line="586" selection-start-column="53" selection-end-line="586" selection-end-column="53" />
+          <folding>
+            <element signature="e#9640#13829#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="51" />
+          <caret line="55" column="22" selection-start-line="55" selection-start-column="22" selection-end-line="55" selection-end-column="51" />
+          <folding>
+            <element signature="e#0#62#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbas/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="580" column="0" selection-start-line="580" selection-start-column="0" selection-end-line="580" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#14147#17588#0" expanded="false" />
+            <element signature="e#17733#18016#0" expanded="false" />
+            <element signature="e#18162#18460#0" expanded="false" />
+            <element signature="e#18549#18969#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/dbas/static/js/discussion.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4838362">
-          <caret line="80" column="75" selection-start-line="80" selection-start-column="75" selection-end-line="80" selection-end-column="75" />
+        <state vertical-scroll-proportion="0.384542">
+          <caret line="137" column="88" selection-start-line="137" selection-start-column="88" selection-end-line="137" selection-end-column="88" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
+            <element signature="e#1923#2157#0" expanded="false" />
+            <element signature="e#2188#2312#0" expanded="false" />
+            <element signature="e#2373#2803#0" expanded="false" />
+            <element signature="e#3215#3286#0" expanded="false" />
+            <element signature="e#3405#3601#0" expanded="false" />
+            <element signature="e#4616#4808#0" expanded="false" />
+            <element signature="e#4868#5218#0" expanded="false" />
+            <element signature="e#5222#5395#0" expanded="false" />
+            <element signature="e#5444#6938#0" expanded="false" />
+            <element signature="e#7603#7627#0" expanded="false" />
+            <element signature="e#7658#8771#0" expanded="false" />
           </folding>
         </state>
       </provider>

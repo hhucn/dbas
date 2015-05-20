@@ -21,7 +21,6 @@ from sqlalchemy.orm import sessionmaker
 here = os.path.dirname(__file__)
 settings = appconfig('config:' + os.path.join(here, '../', 'development.ini'))
 
-
 def addTestingDB(session):
 	group1 = session.query(Group).filter_by(name='editors').first()
 	group2 = session.query(Group).filter_by(name='users').first()
@@ -287,19 +286,6 @@ class ViewNotFoundTests(UnitTestBase):
 		response = Dbas(request).notfound()
 		self.assertEqual('Error', response['title'])
 
-
-# testing a unexisting page
-class AjaxViewTest(UnitTestBase):
-	def _callFUT(self, request):
-		print("AjaxViewTest: tearDown")
-		return Dbas.get_ajax_positions(request)
-
-	def test_main(self):
-		print("AjaxViewTest: setUp")
-		request = testing.DummyRequest()
-		response = Dbas(request).get_ajax_positions()
-		self.assertEqual('This is for test.py', response['test'])
-
 ##########################################################################################################
 ##########################################################################################################
 ##########################################################################################################
@@ -498,15 +484,14 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	# testing group content
 	def test_database_group_content(self):
 		print("DatabaseTests: test_database_group_content")
-		groupByName1 = self.session.query(Group).filter_by(name='editors').first()
-		groupByName2 = self.session.query(Group).filter_by(name='users').first()
-		groupByUid1 = self.session.query(Group).filter_by(uid=1).first()
-		groupByUid2 = self.session.query(Group).filter_by(uid=2).first()
-		self.assertTrue(groupByName1.name, groupByUid1.name)
-		self.assertTrue(groupByName2.name, groupByUid2.name)
-		self.assertTrue(groupByName1.uid, groupByUid1.uid)
-		self.assertTrue(groupByName2.uid, groupByUid2.uid)
-
+		group_by_name1 = self.session.query(Group).filter_by(name='editors').first()
+		group_by_name2 = self.session.query(Group).filter_by(name='users').first()
+		group_by_uid1 = self.session.query(Group).filter_by(uid=1).first()
+		group_by_uid2 = self.session.query(Group).filter_by(uid=2).first()
+		self.assertTrue(group_by_name1.name, group_by_uid1.name)
+		self.assertTrue(group_by_name2.name, group_by_uid2.name)
+		self.assertTrue(group_by_name1.uid, group_by_uid1.uid)
+		self.assertTrue(group_by_name2.uid, group_by_uid2.uid)
 
 	def test_database_content(self):
 		user1 = self.session.query(User).filter_by(nickname='test_user').first()
@@ -587,3 +572,33 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 ##########################################################################################################
 ##########################################################################################################
 ##########################################################################################################
+
+
+# checks for the ajax features
+class AjaxTests(IntegrationTestBase):
+
+	def setUp(self):
+		super(AjaxTests, self).setUp()
+		self.session = addTestingDB(self.session)
+
+	def test_get_all_positions(self):
+		print("AjaxViewTest: setUp")
+		request = testing.DummyRequest()
+		response = Dbas(request).get_ajax_positions()
+		self.assertEqual('I like cats.', response['1'])
+		self.assertEqual('I like dogs.', response['2'])
+
+	def test_get_all_pro_arguments(self):
+		print("AjaxProArgumentTest: setUp")
+		request = testing.DummyRequest()
+		response = Dbas(request).get_ajax_pro_arguments()
+		# self.assertEqual('This is for test.py', response['test'])
+		# self.assertEqual('They are very devoted.', response['2'])
+
+	def test_get_all_con_arguments(self):
+		print("AjaxConArgumentTest: setUp")
+		request = testing.DummyRequest()
+		response = Dbas(request).get_ajax_con_arguments()
+		# self.assertEqual('This is for test.py', response['test'])
+		# self.assertEqual('They are hating all humans!', response['1'])
+

@@ -359,19 +359,28 @@ class Dbas(object):
 		issue = 'none'
 		date = 'empty'
 		logger('main_content', 'def', 'check for an issue')
+		statement_inserted = False
+		msg = ''
+
 		if db_issue:
 			logger('main_content', 'def', 'issue exists')
 			issue = db_issue.text
 			date = db_issue.date
-		db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
-		msg = 'you are not the admin. Therefore no rainbow-colored ponys!'
-		logger('main_content', 'def', 'check for current user')
-		if db_user:
-			logger('main_content', 'def', 'user exists; check for admin')
-			logger('main_content', 'def', 'main')
-			if db_user.nickname == 'admin':
-				logger('main_content', 'def', 'user is admin')
-				msg = 'you are the special kind of guy who is called admin :)'
+
+
+		if 'form.contact.submitted' in self.request.params:
+			msg = 'Statement could not be added (not implemented yet)!'
+			statement_inserted = False
+
+		# db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
+		# msg = 'you are not the admin. Therefore no rainbow-colored ponys!'
+		# logger('main_content', 'def', 'check for current user')
+		# if db_user:
+		# 	logger('main_content', 'def', 'user exists; check for admin')
+		# 	logger('main_content', 'def', 'main')
+		# 	if db_user.nickname == 'admin':
+		# 		logger('main_content', 'def', 'user is admin')
+		# 		msg = 'you are the special kind of guy who is called admin :)'
 
 		return dict(
 			title='Content',
@@ -380,6 +389,8 @@ class Dbas(object):
 			message=msg,
 			issue=issue,
 			date=date,
+			was_statement_inserted=statement_inserted,
+
 		)
 
 	# settings page, when logged in
@@ -532,22 +543,38 @@ class Dbas(object):
 	def get_ajax_positions(self):
 		"""
 		Ajax rocks :)
+		Returns all positions as dictionary with uid <-> value
 		:return: list of all positions
 		"""
-		logger('ajax_view', 'def', 'main')
+		logger('get_ajax_positions', 'def', 'main')
 		db_positions = DBSession.query(Position).all()
-		logger('ajax_view', 'def', 'get all positions')
+		logger('get_ajax_positions', 'def', 'get all positions')
 
-		return_dict = {'test': 'This is for test.py'}
+		return_dict = {}
 
 		if db_positions:
-			logger('ajax_view', 'def', 'iterate all positions')
+			logger('get_ajax_positions', 'def', 'iterate all positions')
 			i = 0
-			# get every position and append every position with a prefix pos
-			return_dict['countPos'] = str(len(db_positions))
+			# get every position
 			for pos in db_positions:
-				logger('ajax_view', 'position iterator ' + str(i) + ' of ' + str(len(db_positions)-1), pos.text)
-				return_dict['pos' + str(i)] = pos.text
+				logger('get_ajax_positions', 'position iterator ' + str(i) + ' of ' + str(len(db_positions)-1),
+				       "uid: " + str(pos.uid) + "   val: " + pos.text)
+				return_dict[str(pos.uid)] = pos.text
 				i += 1
 
 		return return_dict
+
+	# ajax
+	@view_config(route_name='get_ajax_pro_arguments_by_uid', renderer='json')
+	def get_ajax_pro_arguments(self):
+		logger('get_ajax_pro_arguments', 'def', 'main')
+		return_dict = {}
+		return return_dict
+
+	# ajax
+	@view_config(route_name='get_ajax_con_arguments_by_uid', renderer='json')
+	def get_ajax_con_arguments(self):
+		logger('get_ajax_con_arguments', 'def', 'main')
+		return_dict = {}
+		return return_dict
+

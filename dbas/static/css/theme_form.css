@@ -117,33 +117,24 @@ input.userfirstname,
 input.userlastname,
 input.nickname {
 	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-4-user.png) no-repeat 12px 10px;
-	<!-- background: url(../images/user.png)no-repeat 10px 8px;
-	-->
 }
 
 input.tel {
 	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-442-phone-alt.png) no-repeat 12px 10px;
-	<!-- background: url(../images/tel.png)no-repeat 8px 8px;
-	-->
 }
 
 input.email {
 	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-121-message-full.png) no-repeat 12px 10px;
-	<!-- background: url(../images/email.png)no-repeat 8px 8px;
-	-->
 }
 
-input.password {
+input.password,
+input.passwordold {
 	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-204-lock.png) no-repeat 12px 10px;
-	<!-- background: url(../images/lock.png)no-repeat 8px 8px;
-	-->
 }
 
 input.password,
 input.passwordconfirm {
 	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-205-unlock.png) no-repeat 12px 10px;
-	<!-- background: url(../images/lock.png)no-repeat 8px 8px;
-	-->
 }
 
 input.spam {
@@ -152,8 +143,6 @@ input.spam {
 
 textarea.content {
 	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-196-circle-info.png) no-repeat 12px 10px;
-	<!-- background: url(../images/i.png)no-repeat 10px 9px;
-	-->
 }
 
 input.name:hover,
@@ -406,34 +395,23 @@ textarea.content:hover,
 	input.userlastname,
 	input.nickname {
 		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-4-user.png) no-repeat 8px 6px;
-		<!-- background: url(../images/user.png)no-repeat 10px 8px;
-		-->
 	}
 	input.tel {
 		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-442-phone-alt.png) no-repeat 8px 6px;
-		<!-- background: url(../images/tel.png)no-repeat 8px 8px;
-		-->
 	}
 	input.email {
 		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-121-message-full.png) no-repeat 8px 6px;
-		<!-- background: url(../images/email.png)no-repeat 8px 8px;
-		-->
 	}
-	input.password {
+	input.password,
+	input.passwordold{
 		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-204-lock.png) no-repeat 8px 6px;
-		<!-- background: url(../images/lock.png)no-repeat 8px 8px;
-		-->
 	}
 	input.password,
 	input.passwordconfirm {
 		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-205-unlock.png) no-repeat 8px 6px;
-		<!-- background: url(../images/lock.png)no-repeat 8px 8px;
-		-->
 	}
 	textarea.content {
 		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-196-circle-info.png) no-repeat 8px 6px;
-		<!-- background: url(../images/i.png)no-repeat 10px 9px;
-		-->
 	}
 	input.spam {
 		background: url(../images/glyphicons_free/glyphicons/png/glyphicons-505-alert.png) no-repeat 8px 6px;

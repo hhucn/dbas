@@ -1,5 +1,6 @@
 @import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
 @import url(http://fonts.googleapis.com/css?family=Indie+Flower);
+
 body {
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: 300;
@@ -23,27 +24,21 @@ h5,
 h6 {
 	font-weight: 400;
 }
-
 h1 {
 	font-size: 40px;
 }
-
 h2 {
 	font-size: 30px;
 }
-
 h3 {
 	font-size: 16px;
 }
-
 h4 {
 	font-size: 14px;
 }
-
 p {
 	font-weight: 300;
 }
-
 a {
 	color: #006ab3;
 }
@@ -135,15 +130,6 @@ a:hover {
 	font-size: 30px;
 }
 
-#footer {
-	margin-top: 50px;
-	width: 100%;
-	height: 75px;
-	padding-top: 15px;
-	background: #d9dadb;
-	border-top: thin solid #006ab3;
-}
-
 .links {
 	float: none;
 	text-align: right;
@@ -157,14 +143,12 @@ a:hover {
 	padding: 0px;
 	margin: 0px;
 }
-
 .links ul li {
 	list-style: none;
 	display: inline;
 	margin: 0 10px;
 	text-align: center;
 }
-
 .links ul li a:hover {
 	text-decoration: underline;
 	color: #006ab3;
@@ -191,11 +175,31 @@ a:hover {
 	display: inline;
 }
 
+#footer {
+	position: absolute;
+	width: 100%;
+	margin-top: 50px;
+	height: 75px;
+	padding-top: 15px;
+	background: #d9dadb;
+	border-top: thin solid #006ab3;
+}
 
+@media (max-width: 991px) {
+	#footer{
+		height: 150px;
+	}
+}
 
 @media (max-width: 767px) {
 	.container {
 		margin-left: 10px;
 		margin-right: 10px;
+	}
+	#footer{
+		height: 220px;
+	}
+	.links ul li {
+		display: block;
 	}
 }

@@ -112,5 +112,4 @@ $(document).ready(function () {
 		});
 		myCounter.start();
 	}
-
 });
