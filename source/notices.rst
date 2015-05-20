@@ -16,8 +16,7 @@ Notices
 	Internationalization / Localization
 		Internationalization (i18n)
 		Localization (l10n)
-		Translation via Chameleon and https://chameleon.readthedocs.org/en/latest/reference.html
-		Babel http://babel.pocoo.org/
+		Translation via Chameleon and http://chameleon.readthedocs.org/en/latest/reference.html#translation-i18n
 		Lingua https://pypi.python.org/pypi/lingua and configuration like in https://github.com/wichert/lingua
 		
 	Logging

@@ -275,31 +275,30 @@ class Dbas(object):
 			logger('main_contact', 'form.contact.submitted', 'validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
 
-			# sanity checks
+			## sanity checks
+			# check for empty name
 			if not name:
 				logger('main_contact', 'form.contact.submitted', 'name empty')
 				contact_error = True
 				message = "Your name is empty!"
 
+			# check for non valid mail
 			elif not is_mail_valid:
 				logger('main_contact', 'form.contact.submitted', 'mail is not valid')
 				contact_error = True
 				message = "Your e-mail is empty!"
 
+			# check for empty content
 			elif not content:
 				logger('main_contact', 'form.contact.submitted', 'content is empty')
 				contact_error = True
 				message = "Your content is empty!"
 
-			elif not spam:
-				logger('main_contact', 'form.contact.submitted', 'anti-spam is empty')
+			# check for empty name
+			elif (not spam) or (not spam.isdigit()) or (not int(spam) == 4):
+				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer')
 				contact_error = True
-				message = "Your anti-spam message is empty!"
-
-			elif not int(spam) == 4:
-				logger('main_contact', 'form.contact.submitted', 'wrong anti spam answer')
-				contact_error = True
-				message = "Your anti-spam answer is wrong!"
+				message = "Your anti-spam message is empty or wrong!"
 
 			else:
 				subject = 'Contact D-BAS'
@@ -316,10 +315,6 @@ class Dbas(object):
 				try:
 					mailer.send_immediately(message, fail_silently=False)
 					send_message = True
-					name = ''
-					email = ''
-					phone = ''
-					content = ''
 				except smtplib.SMTPConnectError as exception:
 					logger('main_contact', 'form.contact.submitted', 'error while sending')
 					logger('main_contact', 'exception smtplib.SMTPConnectError smtp_code', str(exception.smtp_code))
@@ -571,28 +566,34 @@ class Dbas(object):
 		return_dict = {}
 
 		# relation vom arugment zur position mit gesendeter uid
-		uid = self.request.params['uid']
+		uid = ''
+		try:
+			uid = self.request.params['uid']
+		except KeyError as e:
+			logger('get_ajax_pro_arguments', 'error', repr(e))
+
 		logger('get_ajax_pro_arguments', 'send uid', str(uid))
 
 		# select * from arguments where uid in (
 		# 	select arg_uid from relation_argpos where pos_uid=2 and is_supportive = 1
 		# );
 
-		db_arguid = DBSession.query(RelationArgPos).filter(
-			and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
-		list_arg_ids = []
-		i = 0
-		for arg in db_arguid:
-			logger('get_ajax_pro_arguments','all arg_uids', str(arg.uid))
-			if arg.uid not in list_arg_ids:
-				logger('get_ajax_pro_arguments', 'get argument with', str(arg.uid))
-				list_arg_ids.append(arg.uid)
-				db_argument = DBSession.query(Argument).filter_by(uid = arg.uid).first()
+		if (uid):
+			db_arguid = DBSession.query(RelationArgPos).filter(
+				and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
+			list_arg_ids = []
+			i = 0
+			for arg in db_arguid:
+				logger('get_ajax_pro_arguments','all arg_uids', str(arg.uid))
+				if arg.uid not in list_arg_ids:
+					logger('get_ajax_pro_arguments', 'get argument with', str(arg.uid))
+					list_arg_ids.append(arg.uid)
+					db_argument = DBSession.query(Argument).filter_by(uid = arg.uid).first()
 
-				logger('get_ajax_pro_arguments', 'add argument in dict',
-				       'uid:' + str(db_argument.uid) + '   val: ' + db_argument.text)
-				return_dict[str(db_argument.uid)] = db_argument.text
-				i += 1
+					logger('get_ajax_pro_arguments', 'add argument in dict',
+					       'uid:' + str(db_argument.uid) + '   val: ' + db_argument.text)
+					return_dict[str(db_argument.uid)] = db_argument.text
+					i += 1
 
 		# db_arguments = DBSession.query(Argument).filter_by(Argument.uid.in_(
 		# 	DBSession.query(RelationArgPos).options(load_only("arg_uid")).filter(
