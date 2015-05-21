@@ -24,6 +24,7 @@
 					<input type="hidden" name="came_from" value="${came_from}" />
 					<h3>Your Nickname</h3>
 					<input type="text" class="nickname" name="nickname" autocomplete="off" placeholder="example: Democrator" value="${nickname}">
+					
 					<h3>Your Password</h3>
 					<input type="password" class="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}" />
 					<p data-toggle="modal" data-target="#popup_password"><a>Forgot Password?</a>

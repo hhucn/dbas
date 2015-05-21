@@ -70,6 +70,7 @@ h4 {
 input[type="text"],
 input[type="email"],
 input[type="tel"],
+input[type="password"],
 textarea[type="text"]  {
 	outline: none;
 	font-size: 18px;
