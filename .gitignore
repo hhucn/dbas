@@ -35,4 +35,4 @@ coverage.xml
 *.sh
 
 # Pycharm
-.idea/*
+.idea/
