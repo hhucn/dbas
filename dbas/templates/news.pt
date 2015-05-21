@@ -14,51 +14,164 @@
 		<p class="lead">This will be the news page and currently I think...this will be some kind of blog</p>
 	</div>
 	
+	<div class="newscontainer span_2_of_4">
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">Tests and JS</span></h2>
+		<h3><p>26.05.2015</p></h3>
+		<h4>Author: Tobias Krauthoff</h4>
+		<br>Front-end tests with Splinter are now finished. They are great and easy to manage. Additionally I'am working on JS, so we can navigate in a static graph. Next to this, the I18N is waiting...
+	</div>
+	
 	<div class="newscontainer span_1_of_4">
-		<h2><span class="font-semi-bold">18.05.2015</span></h2>
-		<h3><p>Fun Part Starts</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">JS Starts</span></h2>
+		<h3><p>18.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>Today started the funny part about the dialogue based part, embedded in the content page.
 	</div>
 	
 	<div class="newscontainer span_1_of_4">
-		<h2><span class="font-semi-bold">18.05.2015</span></h2>
-		<h3><p>No I18N + L10N</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">Fun Part Starts</span></h2>
+		<h3><p>18.05.2015</p></h3>
+		<h4>Author: Tobias Krauthoff</h4>
+		<br>Today started the funny part about the dialogue based part, embedded in the content page.
+	</div>
+	
+	<div class="newscontainer span_1_of_4">
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">No I18N + L10N</span></h2>
+		<h3><p>18.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>Interationalization and localization is much more diffult than described by the pyramid. This has something todo with Chameleon 2, Lingua and Babel, so this feature has to wait.
 	</div>
 
 	<div class="newscontainer span_1_of_4">
-		<h2><span class="font-semi-bold">12.05.2015</span></h2>
-		<h3><p>I18N + L10N</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">I18N + L10N</span></h2>
+		<h3><p>12.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br> D-BAS, now with internationalization and translation.
 	</div>
 
 	<div class="newscontainer span_1_of_4">
-		<h2><span class="font-semi-bold">10.05.2015</span></h2>
-		<h3><p>Settings</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">Settings</span></h2>
+		<h3><p>10.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>New part of the website is finished: a settings page for every user.
 	</div>
 	
 	<div class="newscontainer span_2_of_4">
-		<h2><span class="font-semi-bold">09.05.2015</span></h2>
-		<h3><p>About the Workshop in Karlsruhe</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">About the Workshop in Karlsruhe</span></h2>
+		<h3><p>09.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>The workshop was very interesting. We have had very interesting talks and got much great feedback vom Jun.-Prof. Dr. Betz and Mr. Voigt. A repetition will be planed for the middle of july.  
 	</div>
 	
 	<div class="newscontainer span_2_of_4">
-		<h2><span class="font-semi-bold">07.05.2015 - 08.05.2015</span></h2>
-		<h3><p>Workshop in Karlsruhe</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">Workshop in Karlsruhe</span></h2>
+		<h3><p>07.05.2015 - 08.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>The working group 'functionality' will drive to Karlsruhe for a workshop with Jun.-Prof. Dr. Betz as well as with C. Voigt. Our main topics will be the measurement of quality of discussions and the design of online-participation. I think, this will be very interesting!
 	</div>
 
 	<div class="newscontainer span_2_of_4">
-		<h2><span class="font-semi-bold">01.05.2015</span></h2>
-		<h3><p>System will be build up</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">System will be build up</span></h2>
+		<h3><p>01.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>Currently I am working a lot at the system. This work includes:
 		<ul>
@@ -74,35 +187,81 @@
 	</div>
 
 	<div class="newscontainer span_1_of_4">
-		<h2><span class="font-semi-bold">06.05.2015</span></h2>
-		<h3><p>First set of tests</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">First set of tests</span></h2>
+		<h3><p>06.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>Finished first set of unit- and integration tests for the database and frontend.
 	</div>
 
 	<div class="newscontainer span_1_of_4">
-		<h2><span class="font-semi-bold">05.05.2015</span></h2>
-		<h3><p>Page is growing</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">Page is growing</span></h2>
+		<h3><p>05.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>The contact page is now working as well as the password-request option.
 	</div>
 
 	<div class="newscontainer span_1_of_4">
-		<h2><span class="font-semi-bold">01.05.2015</span></h2>
-		<h3><p>First mockup</p></h3>
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">First mockup</span></h2>
+		<h3><p>01.05.2015</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>The webpage has now a contact, login and register site.
 	</div>
 
 	<div class="newscontainer span_1_of_4">
-		<h2><span class="font-semi-bold">01.12.2014</span></h2>
-		<h3><p>First steps</p></h3>
+		
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">First steps</span></h2>
+		<h3><p>01.12.2014</p></h3>
 		<h4>Author: Tobias Krauthoff</h4>
 		<br>I've started with with my PhD.
 	</div>
 
 	
 	<div metal:use-macro="load: snippet-footer.pt" />
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
 
 
 </body>

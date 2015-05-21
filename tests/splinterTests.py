@@ -9,6 +9,12 @@ class WebTests():
 		"""
 		Just runs every test
 		"""
+
+		# server check
+		if not self.__checkForServer(self.browserStyle):
+			return
+
+
 		testCount = 4
 		success = 0
 
@@ -17,7 +23,7 @@ class WebTests():
 		success += self.__testStartDiscussionButton(self.browserStyle)
 		success += self.__testContactFormular(self.browserStyle)
 
-		print("================================================")
+		print("====================================================")
 		print("Failed " + str(testCount-success) + " out of " + str(testCount))
 
 	def __checkForPresentText(self, browser, text, message):
@@ -34,6 +40,23 @@ class WebTests():
 		else:
 			print("    FAILED: " + message)
 			return False
+
+	def __checkForServer(self, browser):
+		"""
+		Checks whether the server if online
+		:param browser: current browser
+		:return: true when the server is on, false otherwise
+		"""
+		b = Browser(self.browserStyle)
+		try:
+			b.visit('http://localhost:4284/')
+			b.quit
+			return True
+		except ConnectionResetError:
+			print("Server is offline")
+			b.quit()
+			return False
+
 
 	def __testIndex(self, browser):
 		"""
