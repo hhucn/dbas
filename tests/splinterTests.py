@@ -15,13 +15,14 @@ class WebTests():
 			return
 
 
-		testCount = 4
+		testCount = 5
 		success = 0
 
 		success += self.__testIndex(self.browserStyle)
 		success += self.__testLogin(self.browserStyle)
 		success += self.__testStartDiscussionButton(self.browserStyle)
 		success += self.__testContactFormular(self.browserStyle)
+		success += self.__testSharingNews(self.browserStyle)
 
 		print("====================================================")
 		print("Failed " + str(testCount-success) + " out of " + str(testCount))
@@ -35,11 +36,14 @@ class WebTests():
 		:return: true if text is present else false
 		"""
 		if browser.is_text_present(text):
-			print("    SUCCESS: " + message)
+			self.__printSuccess(True, message)
 			return True
 		else:
-			print("    FAILED: " + message)
+			self.__printSuccess(False, message)
 			return False
+
+	def __printSuccess(self, hasSuccess, message):
+		print("    " + ("SUCCESS" if hasSuccess else "FAILED") + ": " + message)
 
 	def __checkForServer(self, browser):
 		"""
@@ -50,13 +54,12 @@ class WebTests():
 		b = Browser(self.browserStyle)
 		try:
 			b.visit('http://localhost:4284/')
-			b.quit
+			b.quit()
 			return True
 		except ConnectionResetError:
 			print("Server is offline")
 			b.quit()
 			return False
-
 
 	def __testIndex(self, browser):
 		"""
@@ -129,7 +132,7 @@ class WebTests():
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Start __testContactFormular:")
+		print("Start testContactFormular:")
 		b = Browser(browser)
 		b.visit('http://localhost:4284/contact')
 
@@ -171,6 +174,36 @@ class WebTests():
 		print("")
 		return 1 if success else 0
 
+	def __testSharingNews(self, browser):
+		"""
+		Checks the sharing buttons on the news page
+		:param browser: current browser
+		:return: 1 if success else 0
+		"""
+		print("Start testSharingNews:")
+		b = Browser(browser)
+		b.visit('http://localhost:4284/news')
+
+		success1 = not b.find_by_css('.share-mail').visible
+		success1 = success1 and (not b.find_by_css('.share-google').visible)
+		success1 = success1 and (not b.find_by_css('.share-facebook').visible)
+		success1 = success1 and (not b.find_by_css('.share-twitter').visible)
+
+		self.__printSuccess(success1, "testing whether news sharing icons are not visible")
+
+		b.find_by_css('.share-icon').mouse_over()
+
+		success2 = b.find_by_css('.share-mail').visible
+		success2 = success2 and b.find_by_css('.share-google').visible
+		success2 = success2 and b.find_by_css('.share-facebook').visible
+		success2 = success2 and b.find_by_css('.share-twitter').visible
+
+		self.__printSuccess(success2, "testing whether news sharing icons are visible on mouseover")
+
+		b.quit()
+		print("")
+		return 1 if (success1 and success2) else 0
+
 
 browserStyle = 'firefox'
 webtests = WebTests(browserStyle)
@@ -178,3 +211,5 @@ try:
 	webtests.runAllTests()
 except ConnectionResetError as e:
 	print("Server is offline")
+except AttributeError as e:
+	print("Some error occured")
