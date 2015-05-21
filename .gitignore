@@ -33,3 +33,6 @@ coverage.xml
 # Misc
 .python-version
 *.sh
+
+# Pycharm
+.idea/*
