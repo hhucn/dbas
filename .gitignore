@@ -25,7 +25,7 @@ coverage.xml
 *.log
 *.pid
 *.db
-*.sqlite
+#*.sqlite
 
 # Sphinx documentation
 # docs/
@@ -33,6 +33,7 @@ coverage.xml
 # Misc
 .python-version
 *.sh
+*.bak
 
 # Pycharm
 .idea/
