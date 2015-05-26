@@ -1,54 +1,109 @@
 /*global $, jQuery, alert*/
 
+function fbShare(url, title, descr, image) {
+	'use strict';
+	var winTop, winLeft, winWidth, winHeight;
+	winWidth = 520;
+	winHeight = 350;
+	winTop = (screen.height / 2) - (winHeight / 2);
+	winLeft = (screen.width / 2) - (winWidth / 2);
+	window.open('http://www.facebook.com/sharer.php?s=100&p[title]=' + title + '&p[summary]=' + descr + '&p[url]='
+		+ url + '&p[images][0]=' + image, 'sharer',
+		',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width='	+ winWidth + ',height=' + winHeight);
+}
+
+function tweetShare(text){
+	'use strict';
+	var winTop, winLeft, winWidth, winHeight;
+	winWidth = 550;
+	winHeight = 420;
+	winTop = (screen.height / 2) - (winHeight / 2);
+	winLeft = (screen.width / 2) - (winWidth / 2);
+	window.open('https://twitter.com/intent/tweet?text=' + text + '&hashtags=DBAS', 'sharer',
+		',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width=' + winWidth + ',height=' + winHeight);
+}
+
+function mailShare(to, subject, body){
+	'use strict';
+	window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
+}
+
+function googleShare(url){
+	'use strict';
+	'use strict';
+	var winTop, winLeft, winWidth, winHeight;
+	winWidth = 600;
+	winHeight = 400;
+	winTop = (screen.height / 2) - (winHeight / 2);
+	winLeft = (screen.width / 2) - (winWidth / 2);
+	window.open('https://plus.google.com/share?url=' + url, 'sharer',
+		',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width=' + winWidth + ',height=' + winHeight);
+}
+
+function getDateFromContainer(container) {
+	'use strict';
+	var textarray = container.html().split('<h3><p>');
+	textarray = textarray[1].split('</p>');
+	return textarray[0];
+}
+
+function getAuthorFromContainer(container) {
+	'use strict';
+	var textarray = container.html().split('Author: ');
+	textarray = textarray[1].split('</h4>');
+	return textarray[0];
+
+}
+
+function getSubjectFromContainer(container) {
+	'use strict';
+	var textarray = container.html().split('<span class="font-semi-bold">');
+	textarray = textarray[1].split('</span>');
+	return textarray[0];
+}
+
 $(document).ready(function () {
 	'use strict';
 
+	// share email button
 	$(".share-mail").click(function (event) {
-		var textarray, container, subject, message, date, author;
+		var container, subject, message, date, body, author, to;
+		to = 'user@example.com';
 		container = $(this).parents(".newscontainer");
+		subject = "DBAS: " + getSubjectFromContainer(container);
+		date = getDateFromContainer();
+		author = getAuthorFromContainer();
+		message = getSubjectFromContainer(container);
 
-		// get the subject
-		textarray = container.html().split('<span class="font-semi-bold">');
-		textarray = textarray[1].split('</span>');
-		subject = "DBAS: " + textarray[0];
+		body = "News from " + date + ", by " + author + ": " + message;
 
-		// get the date
-		textarray = container.html().split('<h3><p>');
-		textarray = textarray[1].split('</p>');
-		date = textarray[0];
+		mailShare(to, subject, body);
 
-		// get the author
-		textarray = container.html().split('Author: ');
-		textarray = textarray[1].split('</h4>');
-		author = textarray[0];
-
-		// get the message
-		textarray = container.html().split('<br>');
-		message="News from " + date + ", by " + author + ": " + textarray[1];
-
-		window.location.href = "mailto:user@example.com?subject=" + subject + "&body=" + message
 	});
-	
+
+	// share twitter button
 	$(".share-twitter").click(function (event) {
-		var textarray, container;
+		var container;
 		container = $(this).parents(".newscontainer");
-		textarray = container.html().split('<br>');
-		alert("Share with twitter:\n" + textarray[1]);
+		tweetShare(getSubjectFromContainer(container));
 	});
-	
+
+	// share google+ button
 	$(".share-google").click(function (event) {
-		var textarray, container;
-		container = $(this).parents(".newscontainer");
-		textarray = container.html().split('<br>');
-		alert("Share with google:\n" + textarray[1]);
+		var url;
+		url = document.location.pathname;
+		url = 'http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html';
+		googleShare(url);
 	});
-	
+
+	// share facebook button
 	$(".share-facebook").click(function (event) {
-		var textarray, container;
-		container = $(this).parents(".newscontainer");
-		textarray = container.html().split('<br>');
-		alert("Share with facebook:\n" + textarray[1]);
+		var url;
+		url = document.location.pathname;
+		url = 'http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html';
+		fbShare(url, "FB Sharing", "Sharing of DBAS", "http://localhost:4284/static/images/logo.png");
 	});
 	
 
 });
+
