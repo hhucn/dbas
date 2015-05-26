@@ -11,12 +11,14 @@ def groupfinder(nick, request):
 	'''
 	logger('security','groupfinder','parameter nick = ' + nick)
 	DBUser = DBSession.query(User).filter_by(nickname=nick).first()
+
 	if (DBUser):
 		logger('security','groupfinder','nick is in group id ' + str(DBUser.group))
 		DBGroup = DBSession.query(Group).filter_by(uid=DBUser.group).first()
 		if (DBGroup):
 			logger('security','groupfinder','return group name = group:' + DBGroup.name + '')
 			return ['group:'+DBGroup.name]
+
 	logger('security','groupfinder','return []')
 	return []
 

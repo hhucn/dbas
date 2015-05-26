@@ -11,7 +11,10 @@ class RootFactory(object):
 	"""
 	Defines the ACL
 	"""
-	__acl__ = [(Allow, Everyone, 'everybody'), (Allow, 'group:editors', ('edit', 'use')), (Allow, 'group:users', 'use')]
+	__acl__ = [(Allow, Everyone, 'everybody'),
+	           (Allow, 'group:admins', ('admin', 'edit', 'use')),
+	           (Allow, 'group:editors', ('edit', 'use')),
+	           (Allow, 'group:users', 'use')]
 
 	def __init__(self, request):
 		pass

@@ -355,27 +355,31 @@ class Dbas(object):
 		date = 'empty'
 		logger('main_content', 'def', 'check for an issue')
 		statement_inserted = False
+		is_admin = False
 		msg = ''
 
+		# get the current issue
 		if db_issue:
 			logger('main_content', 'def', 'issue exists')
 			issue = db_issue.text
 			date = db_issue.date
+		else:
+			logger('main_content', 'def', 'issue does not exists')
 
 
-		if 'form.contact.submitted' in self.request.params:
-			msg = 'Statement could not be added (not implemented yet)!'
-			statement_inserted = False
+		# adding a statement
+		#if 'form.contact.submitted' in self.request.params:
+		#	msg = 'Statement could not be added (not implemented yet)!'
+		#	statement_inserted = False
 
-		# db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
-		# msg = 'you are not the admin. Therefore no rainbow-colored ponys!'
-		# logger('main_content', 'def', 'check for current user')
-		# if db_user:
-		# 	logger('main_content', 'def', 'user exists; check for admin')
-		# 	logger('main_content', 'def', 'main')
-		# 	if db_user.nickname == 'admin':
-		# 		logger('main_content', 'def', 'user is admin')
-		# 		msg = 'you are the special kind of guy who is called admin :)'
+		# checks whether the current user is admin
+		db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
+		logger('main_content', 'def', 'check for current user')
+		if db_user:
+			logger('main_content', 'def', 'user exists; check for admin')
+			if db_user.nickname == 'admin':
+				logger('main_content', 'def', 'user is admin')
+				is_admin = True
 
 		return dict(
 			title='Content',
@@ -384,8 +388,8 @@ class Dbas(object):
 			message=msg,
 			issue=issue,
 			date=date,
+			is_admin = is_admin,
 			was_statement_inserted=statement_inserted,
-
 		)
 
 	# settings page, when logged in

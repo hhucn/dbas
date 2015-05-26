@@ -33,10 +33,10 @@ def main(argv=sys.argv):
 		DBSession.add(issue)
 
 		# adding groups
+		group0 = Group(name='admins')
 		group1 = Group(name='editors')
 		group2 = Group(name='users')
-		DBSession.add(group1)
-		DBSession.add(group2)
+		DBSession.add_all([group0, group1, group2])
 		DBSession.flush()
 
 		# adding some dummy users

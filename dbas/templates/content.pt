@@ -142,19 +142,18 @@
 	</div>
 -->
 
-	<!--
-	<div class="container">
+	
+	<div tal:condition="is_admin" class="container">
 		<div class="row">
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
 				<h1><span class="font-semi-bold">Special rights</span></h1>
-				<p>Only the administrator has some special rights and therefore special effects on this page ... and I think, <span tal:replace="message" />
+				<p>Only the administrator has some special rights and this is the placeholder.
 				</p>
 			</div>
 			<div class="col-md-2"></div>
 		</div>
 	</div>
--->
 
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
 
