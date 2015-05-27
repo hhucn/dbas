@@ -1,5 +1,4 @@
-/*global $, jQuery, alert, addListItemsToDiscussionsSpace, getAllPositions, getKeyValAsInputBtnInLiElement,
- setDiscussionsDescription, addTextareaAsChildIn, argumentButtonWasClicked, positionButtonWasClicked*/
+/*global $, jQuery, alert, AjaxHandler, GuiHandler, InteractionHandler */
 
 var addStatementButtonId = 'add-statement';
 var addPositionButtonId = 'add-position';
@@ -14,15 +13,15 @@ var startDiscussionText = 'These are the current statements, given by users inpu
 		' position, which is next to your own intention or add a new one.';
 var firstOneText = 'You are the first one. Please add a new statement:';
 
-function DiscussionHandler() {
+function AjaxHandler() {
+	'use strict';
 	var guiHandler = new GuiHandler();
-
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
 	 * If done: call setJsonDataToContentAsPositions
 	 * If fail: call setOnlyNewArgumentButton
 	 */
-	this.getAndSetAllPositions = function () {
+	this.getAllPositionsAndSetInGui = function () {
 		$.ajax({
 			url: 'ajax_all_positions',
 			type: 'GET',
@@ -41,19 +40,17 @@ function DiscussionHandler() {
 	 * If fail: call
 	 * @param ofPositionWithUid
 	 */
-	this.getAllProArguments = function (ofPositionWithUid) {
-		var request = $.ajax({
+	this.getAllProArgumentsAndSetInGui = function (ofPositionWithUid) {
+		$.ajax({
 			url: "ajax_all_pro_arguments_by_uid",
 			method: "POST",
 			data: { uid : ofPositionWithUid },
 			dataType: "json"
 		}).done(function (data) {
 			guiHandler.setJsonDataToContentAsArguments(data);
-			return data;
 		}).fail(function () {
 			alert('failed request');
 			guiHandler.setOnlyNewArgumentButton();
-			return 0;
 		});
 	};
 
@@ -63,22 +60,23 @@ function DiscussionHandler() {
 	 * If fail: call
 	 * @param ofPositionWithUid
 	 */
-	this.getAllConArguments = function (ofPositionWithUid) {
-		var request = $.ajax({
+	this.getAllConArgumentsAndSetInGui = function (ofPositionWithUid) {
+		$.ajax({
 			url: "ajax_all_con_arguments_by_uid",
 			method: "POST",
 			data: { uid : ofPositionWithUid },
 			dataType: "json"
 		}).done(function (data) {
-			return data;
+			guiHandler.setJsonDataToContentAsArguments(data);
 		}).fail(function () {
-			return 0;
+			alert('failed request');
+			guiHandler.setOnlyNewArgumentButton();
 		});
 	};
 }
 
 function GuiHandler() {
-
+	'use strict';
 	/**
 	 * Sets given json content as position buttons in the discussions space
 	 * @param jsonData data with json content
@@ -109,9 +107,15 @@ function GuiHandler() {
 
 	};
 
-	this.setOnlyNewArgumentButton = function() {
+	/**
+	 * Sets an "add statement" button as content
+	 */
+	this.setOnlyNewArgumentButton = function () {
+		alert('Todo 2');
 		this.setDiscussionsDescription(firstOneText);
-		listitems.push(this.getKeyValAsInputBtnInLiElement(addStatementButtonId, 'Yeah, I will add a statement!', true));
+		var listitem = [];
+		listitem.push(this.getKeyValAsInputBtnInLiElement(addStatementButtonId, 'Yeah, I will add a statement!', true));
+		this.addListItemsToDiscussionsSpace(listitem, 'statement-list');
 	};
 
 	/**
@@ -119,7 +123,6 @@ function GuiHandler() {
 	 * @param text to set
 	 */
 	this.setDiscussionsDescription = function (text) {
-		'use strict';
 		$('#discussions-description').text(text);
 	};
 
@@ -129,9 +132,7 @@ function GuiHandler() {
 	 * @param val
 	 * @returns {Element|*} an li tag with embedded input element
 	 */
-	this.getKeyValAsInputBtnInLiElement = function(key, val, isArgument) {
-		'use strict';
-
+	this.getKeyValAsInputBtnInLiElement = function (key, val, isArgument) {
 		var liElement, inputElement;
 		liElement = document.createElement('li');
 		liElement.setAttribute('id', 'li_' + key);
@@ -140,15 +141,16 @@ function GuiHandler() {
 		inputElement.setAttribute('id', key);
 		inputElement.setAttribute('type', 'button');
 		inputElement.setAttribute('value', val);
-		inputElement.setAttribute('class', 'button button-block btn btn-primary btn-default');
+		inputElement.setAttribute('class', 'button button-block btn btn-primary btn-default btn-discussion');
 		inputElement.setAttribute('data-dismiss', 'modal');
+
 		if (key === addStatementButtonId) {
 			inputElement.setAttribute('onclick', "$('#add-argument-container').show();$('#'+addStatementButtonId).disable = true;");
 		} else {
 			if (isArgument) {
-				inputElement.setAttribute('onclick', "new GuiHandler().argumentButtonWasClicked(this.id, this.value);");
+				inputElement.setAttribute('onclick', "new InteractionHandler().argumentButtonWasClicked(this.id, this.value);");
 			} else {
-				inputElement.setAttribute('onclick', "new GuiHandler().positionButtonWasClicked(this.id, this.value);");
+				inputElement.setAttribute('onclick', "new InteractionHandler().positionButtonWasClicked(this.id, this.value);");
 			}
 		}
 
@@ -161,8 +163,7 @@ function GuiHandler() {
 	 * @param items list with al items
 	 * @param id for the ul list, where all items are appended
 	 */
-	this.addListItemsToDiscussionsSpace = function(items, id) {
-		'use strict';
+	this.addListItemsToDiscussionsSpace = function (items, id) {
 		var i, size, discussionsSpace, ulElement;
 
 		discussionsSpace = document.getElementById(discussionSpaceId);
@@ -180,8 +181,7 @@ function GuiHandler() {
 	 * Adds a textarea with a little close button (both in a div tag) to a parend tag
 	 * @param parentid id-tag of the parent element, where a textare should be added
 	 */
-	this.addTextareaAsChildIn = function(parentid) {
-		'use strict';
+	this.addTextareaAsChildIn = function (parentid) {
 		/**
 		 * The structure is like:
 		 * <div><textarea .../><button...></button></div>
@@ -224,22 +224,26 @@ function GuiHandler() {
 		parent.insertBefore(div, parent.childNodes[childCount + 1]);
 	};
 
+}
+
+function InteractionHandler() {
+	'use strict';
+	var guiHandler = new GuiHandler();
+	var ajaxHandler = new AjaxHandler();
 	/**
 	 * Handler when an argument button was clicked
 	 * @param value of the button
 	 */
-	this.argumentButtonWasClicked = function(id, value) {
-		'use strict';
-		var pos, discussionHandler;
+	this.argumentButtonWasClicked = function (id, value) {
+		var pos, data;
 		pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-		setDiscussionsDescription(argumentSentencesOpeners[pos] + value + ' But why?');
+		guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + value + ' But why?');
 
 		// clear the discussion space
-		$('#'+discussionSpaceId).empty();
+		$('#' + discussionSpaceId).empty();
 
 		// add all positions
-		discussionHandler = new DiscussionHandler();
-		discussionHandler.getAllProArguments(id);
+		ajaxHandler.getAllProArgumentsAndSetInGui(id);
 
 	};
 
@@ -247,18 +251,17 @@ function GuiHandler() {
 	 * Handler when an position button was clicked
 	 * @param value of the button
 	 */
-	this.positionButtonWasClicked = function(id, value) {
-		'use strict';
-		var pos, discussionHandler;
+	this.positionButtonWasClicked = function (id, value) {
+		var pos, ajaxHandler;
 		pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-		setDiscussionsDescription(argumentSentencesOpeners[pos] + value + ' But an argument from the other side is:');
+		guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + value + ' But an argument from the other side is:');
 
 		// clear the discussion space
-		$('#'+discussionSpaceId).empty();
+		$('#' + discussionSpaceId).empty();
 
 		// add all positions from the other side
-		discussionHandler = new DiscussionHandler();
-	}
+		alert('Todo 1: How to navigate here?');
+	};
 }
 
 
@@ -267,6 +270,8 @@ function GuiHandler() {
  */
 $(document).ready(function () {
 	'use strict';
+	var guiHandler = new GuiHandler();
+	var ajaxHandler = new AjaxHandler();
 
 	$('#discussion-container').hide(); // hiding discussions container
 	$('#add-argument-container').hide(); // hiding container for adding arguments
@@ -276,21 +281,17 @@ $(document).ready(function () {
 		$('#get-positions').hide(); // hides the start button
 		$('#start-description').hide(); // hides the start description
 
-		var discussionHandler;
-		discussionHandler = new DiscussionHandler();
-		discussionHandler.getAndSetAllPositions();
-
+		ajaxHandler.getAllPositionsAndSetInGui();
 	});
 
 	// adding a textarea in the right column
 	$('#add-con-textarea').on('click', function () {
-		var guiHandler = new GuiHandler();
 		guiHandler.addTextareaAsChildIn('right-position-column');
 	});
 
 	// adding a textarea in the left column
 	$('#add-pro-textarea').on('click', function () {
-		var guiHandler = new GuiHandler();
+
 		guiHandler.addTextareaAsChildIn('left-position-column');
 	});
 
@@ -301,32 +302,3 @@ $(document).ready(function () {
 	});
 
 });
-
-/**
- * Appends all items in an ul list and this will be appended in the 'discussionsSpace'
- * @param items list with al items
- * @param id for the ul list, where all items are appended
- */
-function addListItemsToDiscussionsSpace(items, id) {
-	'use strict';
-	var i, size, discussionsSpace, ulElement;
-
-	discussionsSpace = document.getElementById(discussionSpaceId);
-	ulElement = document.createElement('ul');
-	ulElement.setAttribute('id', id);
-
-	for (i = 0, size = items.length; i < size; i += 1) {
-		ulElement.appendChild(items[i]);
-	}
-
-	discussionsSpace.appendChild(ulElement);
-}
-
-/**
- * Setting a description in some p-tag
- * @param text to set
- */
-function setDiscussionsDescription(text) {
-	'use strict';
-	$('#discussions-description').text(text);
-}
