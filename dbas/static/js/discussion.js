@@ -11,8 +11,13 @@ var addConTextareaId = 'add-con-textarea';
 var closeArgumentContainerId = 'closeArgumentContainer';
 var startDescriptionId = 'start-description';
 var discussionsDescriptionId = 'discussions-description';
-
+var sendAnswerButtonId = 'send-answer';
 var discussionSpaceId = 'discussions-space';
+var rightPositionColumnId = 'right-position-column';
+var leftPositionColumnId = 'left-position-column';
+var rightPositionTextareaId = 'right-textareas';
+var leftPositionTextareaId = 'left-textareas';
+
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
 	'Interesting, your opinion is: ',
@@ -174,41 +179,41 @@ function GuiHandler() {
 	 */
 	this.getKeyValAsInputInLiWithType = function (key, val, isArgument, type) {
 		var liElement, inputElement, labelElement;
-		liElement = document.createElement('li');
-		liElement.setAttribute('id', 'li_' + key);
+		liElement = $('<li>');
+		liElement.attr({id: 'li_' + key});
 
-		inputElement = document.createElement('input');
-		inputElement.setAttribute('id', key);
-		inputElement.setAttribute('type', type);
-		inputElement.setAttribute('value', val);
-		inputElement.setAttribute('data-dismiss', 'modal');
+		inputElement = $('<input>');
+		inputElement.attr({id: key, type: type, value: val});
+		//inputElement.attr({data-dismiss: 'modal'});
 
 		// additional attributes for a button
 		if (type === 'button') {
-			inputElement.setAttribute('class', 'button button-block btn btn-primary btn-default btn-discussion');
+			inputElement.attr({class: 'button button-block btn btn-primary btn-default btn-discussion'});
 		}
 
 		// additional attributes for a radio button
 		if (type === 'radio') {
-			inputElement.setAttribute('name', 'radioGroup');
+			inputElement.attr({name: 'radioGroup'});
 			// adding label for the value
-			labelElement = '\<label for="' + key + '"\>&nbsp;&nbsp;' + val + '\</label\>';
+			labelElement = '<label for="' + key + '">&nbsp;&nbsp;' + val + '</label>';
 		}
 
 		if (key === addStatementButtonId) {
-			inputElement.setAttribute('onclick', "new GuiHandler().displayStyleOfAddArgumentConter(true)");
-		} else if (type === 'button') {
+			//inputElement.setAttribute('onclick', "new GuiHandler().displayStyleOfAddArgumentConter(true)");
+		}
+		if (type === 'button') {
 			alert('check code for completion');
 			if (isArgument) {
-				inputElement.setAttribute('onclick', "new InteractionHandler().argumentButtonWasClicked(this.id, this.value);");
+				inputElement.attr({onclick: "new InteractionHandler().argumentButtonWasClicked(this.id, this.value);"});
 			} else {
-				inputElement.setAttribute('onclick', "new InteractionHandler().positionButtonWasClicked(this.id, this.value);");
+				inputElement.attr({onclick: "new InteractionHandler().positionButtonWasClicked(this.id, this.value);"});
 			}
 		} else if (type === 'radio') {
-			inputElement.setAttribute('onchange', "new InteractionHandler().radioButtonChanged(this.id);");
+			inputElement.attr({onclick: "new InteractionHandler().radioButtonChanged(this.id);"});
 		}
 
-		liElement.innerHTML = this.getFullHtmlTextOf(inputElement) + labelElement;
+		liElement.html(this.getFullHtmlTextOf(inputElement) + labelElement);
+
 		return liElement;
 	};
 
@@ -218,17 +223,16 @@ function GuiHandler() {
 	 * @param id for the ul list, where all items are appended
 	 */
 	this.addListItemsToDiscussionsSpace = function (items, id) {
-		var i, size, discussionsSpace, ulElement;
+		var i, size, ulElement;
 
-		discussionsSpace = document.getElementById(discussionSpaceId);
-		ulElement = document.createElement('ul');
-		ulElement.setAttribute('id', id);
+		ulElement = $('<ul>');
+		ulElement.attr({id: id});
 
 		for (i = 0, size = items.length; i < size; i += 1) {
-			ulElement.appendChild(items[i]);
+			ulElement.append(items[i]);
 		}
 
-		discussionsSpace.appendChild(ulElement);
+		$('#' + discussionSpaceId).append(ulElement);
 	};
 
 	/**
@@ -241,50 +245,49 @@ function GuiHandler() {
 		 * <div><textarea .../><button...></button></div>
 		 */
 		var area, parent, div, button, span, childCount;
-		parent = document.getElementById(parentid);
-		childCount = parent.childElementCount;
+		parent = $('#' + parentid);
+		childCount = parent.children().length;
+		//alert('TOD-O');
 
-		div = document.createElement('div');
-		div.setAttribute('id', 'div' + childCount.toString());
+        div = $('<div>');
+        div.attr({id: 'div' + childCount.toString()});
 
-		button = document.createElement('button');
-		button.setAttribute('type', 'button');
-		button.setAttribute('class', 'close');
-		button.setAttribute('data-dismiss', 'modal');
-		button.setAttribute('aria-label', 'Close');
-		button.setAttribute('id', 'button' + childCount.toString());
+        button = $('<button>');
+		button.attr({type: 'button',
+			class: 'close',
+			id: 'button' + childCount.toString()});
 
-		span = document.createElement('span');
-		span.setAttribute('aria-hidden', 'true');
-		span.innerHTML = '&times;';
+        span = $('<span>');
+        //span.setAttribute('aria-hidden', 'true');
+        span.html('&times;');
 
-		area = document.createElement('textarea');
-		area.setAttribute('type', 'text');
-		area.setAttribute('class', '');
-		area.setAttribute('name', '');
-		area.setAttribute('autocomplete', 'off');
-		area.setAttribute('placeholder', 'example: I am the area number ' + (childCount - 2).toString() + '.');
-		area.setAttribute('value', '');
-		area.setAttribute('id', 'area' + childCount.toString());
+        area = $('<textarea>');
+        area.attr({type: 'text',
+			class: '',
+			name: '',
+			autocomplete: 'off',
+			placeholder: 'example: I am the area number ' + (childCount).toString() + '.',
+			value: '',
+			id: 'area' + childCount.toString()});
 
-		button.appendChild(span);
-		div.appendChild(area);
-		div.appendChild(button);
+        button.append(span);
+        div.append(area);
+        div.append(button);
 
-		// remove everything on click
-		button.setAttribute('onclick', "var parentNode = this.parentNode;var grandParentNode = parentNode.parentNode;grandParentNode.removeChild(parentNode);");
+        // remove everything on click
+        button.attr({onclick: "var parentNode = this.parentNode;var grandParentNode = parentNode.parentNode;grandParentNode.removeChild(parentNode);"});
 
 		// add everything
-		parent.insertBefore(div, parent.childNodes[childCount + 1]);
+		parent.append(div);
 	};
 
 	this.displayStyleOfAddArgumentConter = function (isVisible) {
 		if (isVisible) {
-			$('#'+addArgumentContainerId).show();
-			$('#'+addStatementButtonId).disable = true;
+			$('#' + addArgumentContainerId).show();
+			$('#' + addStatementButtonId).disable = true;
 		} else {
-			$('#'+addArgumentContainerId).hide();
-			$('#'+addStatementButtonId).disable = false;
+			$('#' + addArgumentContainerId).hide();
+			$('#' + addStatementButtonId).disable = false;
 		}
 	};
 
@@ -292,7 +295,7 @@ function GuiHandler() {
 	 * Return the full HTML text of an given element
 	 * @param element which should be translated
 	 */
-	this.getFullHtmlTextOf = function(element) {
+	this.getFullHtmlTextOf = function (element) {
 		return $('<div>').append(element).html();
 	};
 }
@@ -333,9 +336,16 @@ function InteractionHandler() {
 		alert('Todo 1: How to navigate here?');
 	};
 
-	this.radioButtonChanged = function() {
-		if (!$('#li_' + addStatementButtonId).is(':checked')) {
+	/**
+	 * Method for some style attributes, when the radio buttons are chaning
+	 */
+	this.radioButtonChanged = function (buttonId) {
+		if ($('#' + addStatementButtonId).is(':checked')) {
+			guiHandler.displayStyleOfAddArgumentConter(true);
+			$('#' + sendAnswerButtonId).hide();
+		} else {
 			guiHandler.displayStyleOfAddArgumentConter(false);
+			$('#' + sendAnswerButtonId).show();
 		}
 	};
 }
@@ -360,6 +370,19 @@ $(document).ready(function () {
 		ajaxHandler.getAllPositionsAndSetInGui();
 	});
 
+	// handler for the send answer button
+	$('#' + sendAnswerButtonId).on('click', function () {
+
+	});
+
+	// hover style element for the list elements
+	$('#' + discussionSpaceId + ' ul li').hover(function(){
+	    $(this).addClass('hover');
+		alert('fufu');
+	}, function(){
+	    $(this).removeClass('hover');
+	});
+
 	// hide the restart button and add click function
 	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
 	$('#' + restartDiscussionButtonId).on('click', function () {
@@ -373,13 +396,13 @@ $(document).ready(function () {
 	
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).on('click', function () {
-		guiHandler.addTextareaAsChildIn('right-position-column');
+		guiHandler.addTextareaAsChildIn(rightPositionTextareaId);
 	});
 
 	// adding a textarea in the left column
 	$('#' + addProTextareaId).on('click', function () {
 
-		guiHandler.addTextareaAsChildIn('left-position-column');
+		guiHandler.addTextareaAsChildIn(leftPositionTextareaId);
 	});
 
 	// hiding the argument container, when the X button is clicked
@@ -387,6 +410,8 @@ $(document).ready(function () {
 		$('#' + addArgumentContainerId).hide();
 		$('#' + addStatementButtonId).enable = true;
 		$('#' + addStatementButtonId).removeAttr('checked');
+		$('#' + sendAnswerButtonId).hide();
+
 	});
 
 });

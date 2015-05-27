@@ -1,15 +1,14 @@
-
-.pictures {
-	margin-left: auto;
-	margin-right: auto;
-	text-align: center;
-}
-
 .btn-discussion {
 	margin: 10px;
 }
 
+.hover {
+    background-color: #d9dadb;
+}
+
 .center{
+	margin-left: auto;
+	margin-right: auto;
 	text-align: center;
 }
 
