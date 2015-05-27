@@ -17,6 +17,8 @@ var rightPositionColumnId = 'right-position-column';
 var leftPositionColumnId = 'left-position-column';
 var rightPositionTextareaId = 'right-textareas';
 var leftPositionTextareaId = 'left-textareas';
+var radioButtonGroup = 'radioButtonGroup';
+var statementList = 'statement-list';
 
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
@@ -108,7 +110,7 @@ function GuiHandler() {
 		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
 
 		$('#' + discussionContainerId).show();
-		this.addListItemsToDiscussionsSpace(listitems, 'position-list');
+		this.addListItemsToDiscussionsSpace(listitems, statementList);
 	};
 
 	/**
@@ -193,13 +195,13 @@ function GuiHandler() {
 
 		// additional attributes for a radio button
 		if (type === 'radio') {
-			inputElement.attr({name: 'radioGroup'});
+			inputElement.attr({name: radioButtonGroup});
 			// adding label for the value
 			labelElement = '<label for="' + key + '">&nbsp;&nbsp;' + val + '</label>';
 		}
 
 		if (key === addStatementButtonId) {
-			//inputElement.setAttribute('onclick', "new GuiHandler().displayStyleOfAddArgumentConter(true)");
+			//inputElement.setAttribute('onclick', "new GuiHandler().displayStyleOfAddArgumentContiner(true)");
 		}
 		if (type === 'button') {
 			alert('check code for completion');
@@ -210,6 +212,7 @@ function GuiHandler() {
 			}
 		} else if (type === 'radio') {
 			inputElement.attr({onclick: "new InteractionHandler().radioButtonChanged(this.id);"});
+			inputElement.addClass((isArgument ? 'argument' : 'position'));
 		}
 
 		liElement.html(this.getFullHtmlTextOf(inputElement) + labelElement);
@@ -285,7 +288,11 @@ function GuiHandler() {
 		parent.append(div);
 	};
 
-	this.displayStyleOfAddArgumentConter = function (isVisible) {
+	/**
+	 * Set some style attributes, 
+	 * @param isVisible
+	 */
+	this.displayStyleOfAddArgumentContiner = function (isVisible) {
 		if (isVisible) {
 			$('#' + addArgumentContainerId).show();
 			$('#' + addStatementButtonId).disable = true;
@@ -345,11 +352,27 @@ function InteractionHandler() {
 	 */
 	this.radioButtonChanged = function (buttonId) {
 		if ($('#' + addStatementButtonId).is(':checked')) {
-			guiHandler.displayStyleOfAddArgumentConter(true);
+			guiHandler.displayStyleOfAddArgumentContiner(true);
 			$('#' + sendAnswerButtonId).hide();
 		} else {
-			guiHandler.displayStyleOfAddArgumentConter(false);
+			guiHandler.displayStyleOfAddArgumentContiner(false);
 			$('#' + sendAnswerButtonId).show();
+		}
+	};
+
+	/**
+	 * Defines the action for the send button
+	 */
+	this.sendAnswerButtonClicked = function (){
+		var radioButton, id, value;
+		radioButton = $('input[name=' + radioButtonGroup + ']:checked');
+		id = radioButton.attr('id');
+		value = radioButton.val();
+
+		if (radioButton.hasClass('argument')){
+			this.argumentButtonWasClicked(id, value);
+		} else {
+			this.positionButtonWasClicked(id, value);
 		}
 	};
 }
@@ -360,7 +383,7 @@ function InteractionHandler() {
  */
 $(document).ready(function () {
 	'use strict';
-	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler();
+	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), interactionHandler = new InteractionHandler();
 
 	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addArgumentContainerId).hide(); // hiding container for adding arguments
@@ -376,7 +399,7 @@ $(document).ready(function () {
 
 	// handler for the send answer button
 	$('#' + sendAnswerButtonId).on('click', function () {
-
+		interactionHandler.sendAnswerButtonClicked();
 	});
 
 	// hide the restart button and add click function
