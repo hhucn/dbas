@@ -5,9 +5,8 @@ import transaction
 from dbas.helper import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, RelationPosArg, \
-	RelationPosPos,\
-	Group, Issue, Base
+from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, \
+    RelationPosArg, RelationPosPos, Group, Issue, Base
 
 
 def usage(argv):
@@ -29,7 +28,7 @@ def main(argv=sys.argv):
 
 	with transaction.manager:
 		# adding our main issue
-		issue = Issue(text="Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!");
+		issue = Issue(text='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!');
 		DBSession.add(issue)
 
 		# adding groups
@@ -57,30 +56,30 @@ def main(argv=sys.argv):
 		user4.group = group1.uid
 		user5.group = group2.uid
 		DBSession.add_all([user1, user2, user3, user4, user5])
+		DBSession.flush()		# adding all positions out of the discussion
+		position1 = Position(text='We should get a cat.', weight=0)
+		position2 = Position(text='We should get a dog.', weight=0)
+		position3 = Position(text='We should neither get a cat nor a dog.', weight=0)
+		position1.author = user1.uid
+		position2.author = user1.uid
+		position3.author = user1.uid
+		DBSession.add_all([position1, position2, position3])
 		DBSession.flush()
 
-		# adding some dummy positions
-		position1 = Position(text='We should get a cat.', weight=100)
-		position2 = Position(text='We should get a dog.', weight=20)
-		position1.author = user1.uid
-		position2.author = user2.uid
-		DBSession.add_all([position1, position2])
-		#transaction.commit()
-
-		# adding some dummy arguments
-		argument1 = Argument(text='Cats are very independent.', weight=10)
-		argument2 = Argument(text='Cats are capricious.', weight=20)
-		argument3 = Argument(text='Dogs can act as watch dog.', weight=30)
-		argument4 = Argument(text='You have to take the dog for a walk every day, which is tedious.', weight=40)
-		argument5 = Argument(text='We have no use for a watch dog.', weight=50)
-		argument6 = Argument(text='Going for a walk with the dog every day is not bad, because it is good for social '
-		                          'interaction and physical exercise.', weight=60)
-		argument7 = Argument(text='It would be no problem to get both a cat and a dog.', weight=70)
-		argument8 = Argument(text='A cat and a dog will generally not get along well.', weight=80)
-		argument9 = Argument(text='We do not have enough money for two pets.', weight=90)
-		argument10 = Argument(text='A dog costs taxes and will be more expensive than a cat.', weight=100)
-		argument11 = Argument(text='A cat will break our interior and will be more expensive than a dog.', weight=110)
-
+		# adding all arguments out of the discussion
+		argument1 = Argument(text='Cats are very independent.', weight=0)
+		argument2 = Argument(text='Cats are capricious.', weight=0)
+		argument3 = Argument(text='Dogs can act as watch dog.', weight=0)
+		argument4 = Argument(text='You have to take the dog for a walk every day, which is tedious.', weight=0)
+		argument5 = Argument(text='We have no use for a watch dog.', weight=0)
+		argument6 = Argument(text='Going for a walk with the dog every day is not bad, because it is good for social interaction and physical exercise.', weight=0)
+		argument7 = Argument(text='It would be no problem to get both a cat and a dog.', weight=0)
+		argument8 = Argument(text='A cat and a dog will generally not get along well.', weight=0)
+		argument9 = Argument(text='We do not have enough money for two pets.', weight=0)
+		argument10 = Argument(text='A dog costs taxes and will be more expensive than a cat.', weight=0)
+		argument11 = Argument(text='A cat will break our interior and will be more expensive than a dog.', weight=0)
+		argument12 = Argument(text='I am allergic to animal hair.', weight=0)
+		argument13 = Argument(text='Cats and dogs are loosing many hairs and this will cause more dirt in our flat.', weight=0)
 		argument1.author = user1.uid
 		argument2.author = user1.uid
 		argument3.author = user1.uid
@@ -92,42 +91,36 @@ def main(argv=sys.argv):
 		argument9.author = user1.uid
 		argument10.author = user1.uid
 		argument11.author = user1.uid
-		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10,
-		                   argument11])
+		argument12.author = user1.uid
+		argument13.author = user1.uid
+		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13])
 		DBSession.flush()
 
-		# adding some dummy relations
-		relation1 = RelationArgPos(weight=134, is_supportive=True)
-		relation2 = RelationArgPos(weight=45, is_supportive=False)
-		relation3 = RelationArgPos(weight=46, is_supportive=False)
-		relation4 = RelationArgPos(weight=24, is_supportive=False)
-		relation5 = RelationArgArg(weight=18, is_supportive=False)
-		relation6 = RelationArgArg(weight=81, is_supportive=False)
-		relation7 = RelationArgPos(weight=132, is_supportive=True)
-		relation8 = RelationArgPos(weight=46, is_supportive=True)
-		relation9 = RelationArgArg(weight=132, is_supportive=False)
-		relation10 = RelationArgArg(weight=81, is_supportive=False)
-		relation11 = RelationArgPos(weight=132, is_supportive=False)
-		relation12 = RelationArgPos(weight=46, is_supportive=False)
-		relation13 = RelationArgArg(weight=132, is_supportive=False)
-		relation14 = RelationArgArg(weight=46, is_supportive=False)
-		relation15 = RelationArgPos(weight=132, is_supportive=False)
-		relation1.author = user1.uid
-		relation2.author = user1.uid
-		relation3.author = user1.uid
-		relation4.author = user1.uid
-		relation5.author = user1.uid
-		relation6.author = user1.uid
-		relation7.author = user1.uid
-		relation8.author = user1.uid
-		relation9.author = user1.uid
-		relation10.author = user1.uid
-		relation11.author = user1.uid
-		relation12.author = user1.uid
-		relation13.author = user1.uid
-		relation14.author = user1.uid
-		relation15.author = user1.uid
+		# adding all relations out of the discussion
+		relation1 = RelationArgPos(weight=0, is_supportive=True)
+		relation2 = RelationArgPos(weight=0, is_supportive=False)
+		relation3 = RelationArgPos(weight=0, is_supportive=True)
+		relation4 = RelationArgPos(weight=0, is_supportive=False)
+		relation5 = RelationArgArg(weight=0, is_supportive=False)
+		relation6 = RelationArgArg(weight=0, is_supportive=False)
+		relation7 = RelationArgPos(weight=0, is_supportive=True)
+		relation8 = RelationArgPos(weight=0, is_supportive=True)
+		relation9 = RelationArgArg(weight=0, is_supportive=False)
+		relation10 = RelationArgArg(weight=0, is_supportive=False)
+		relation11 = RelationArgPos(weight=0, is_supportive=False)
+		relation12 = RelationArgPos(weight=0, is_supportive=False)
+		relation13 = RelationArgArg(weight=0, is_supportive=False)
+		relation14 = RelationArgArg(weight=0, is_supportive=False)
+		relation15 = RelationArgPos(weight=0, is_supportive=True)
+		relation16 = RelationArgPos(weight=0, is_supportive=True)
+		relation17 = RelationArgPos(weight=0, is_supportive=False)
+		relation18 = RelationArgPos(weight=0, is_supportive=False)
+		relation19 = RelationArgPos(weight=0, is_supportive=False)
+		relation20 = RelationArgPos(weight=0, is_supportive=False)
+		relation21 = RelationArgPos(weight=0, is_supportive=True)
+		relation22 = RelationArgArg(weight=0, is_supportive=True)
 
+		# adding the startpoints of the relations
 		relation1.arg_uid = argument1.uid
 		relation2.arg_uid = argument2.uid
 		relation3.arg_uid = argument3.uid
@@ -143,7 +136,16 @@ def main(argv=sys.argv):
 		relation13.arg_uid = argument11.uid
 		relation14.arg_uid = argument10.uid
 		relation15.arg_uid = argument11.uid
+		relation16.arg_uid = argument12.uid
+		relation17.arg_uid = argument12.uid
+		relation18.arg_uid = argument12.uid
+		relation19.arg_uid = argument13.uid
+		relation20.arg_uid = argument13.uid
+		relation21.arg_uid = argument13.uid
+		relation22.arg_uid = argument13.uid
 
+
+		# adding the endpoints of the relations
 		relation1.pos_uid = position1.uid
 		relation2.pos_uid = position1.uid
 		relation3.pos_uid = position2.uid
@@ -159,10 +161,40 @@ def main(argv=sys.argv):
 		relation13.arg_uid = argument10.uid
 		relation14.arg_uid = argument11.uid
 		relation15.pos_uid = position2.uid
+		relation16.pos_uid = position3.uid
+		relation17.pos_uid = position1.uid
+		relation18.pos_uid = position2.uid
+		relation19.pos_uid = position1.uid
+		relation20.pos_uid = position2.uid
+		relation21.pos_uid = position3.uid
+		relation22.arg_uid = argument12.uid
 
 
-		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8,
-		                   relation9, relation10, relation11, relation12, relation13, relation14, relation15])
+		# adding the authors
+		relation1.author = user1.uid
+		relation2.author = user1.uid
+		relation3.author = user1.uid
+		relation4.author = user1.uid
+		relation5.author = user1.uid
+		relation6.author = user1.uid
+		relation7.author = user1.uid
+		relation8.author = user1.uid
+		relation9.author = user1.uid
+		relation10.author = user1.uid
+		relation11.author = user1.uid
+		relation12.author = user1.uid
+		relation13.author = user1.uid
+		relation14.author = user1.uid
+		relation15.author = user1.uid
+		relation16.author = user1.uid
+		relation17.author = user1.uid
+		relation18.author = user1.uid
+		relation19.author = user1.uid
+		relation20.author = user1.uid
+		relation21.author = user1.uid
+		relation22.author = user1.uid
+
+		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8, relation9, relation10, relation11, relation12, relation13, relation14, relation15, relation16, relation17, relation18, relation19, relation20, relation21, relation22])
 		DBSession.flush()
 
 		transaction.commit()
