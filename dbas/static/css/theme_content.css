@@ -5,6 +5,10 @@
 	text-align: center;
 }
 
+.btn-discussion {
+	margin: 10px;
+}
+
 #discussions-space,
 .center{
 	text-align: center;
