@@ -19,6 +19,7 @@ var rightPositionTextareaId = 'right-textareas';
 var leftPositionTextareaId = 'left-textareas';
 var radioButtonGroup = 'radioButtonGroup';
 var statementList = 'statement-list';
+var errorDescriptionId = 'error-description'
 
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
@@ -147,6 +148,14 @@ function GuiHandler() {
 	 */
 	this.setDiscussionsDescription = function (text) {
 		$('#' + discussionsDescriptionId).text(text);
+	};
+
+	/**
+	 * Setting an error description in some p-tag
+	 * @param text to set
+	 */
+	this.setErrorDescription = function (text) {
+		$('#' + errorDescriptionId).text(text);
 	};
 
 	/**
@@ -358,6 +367,9 @@ function InteractionHandler() {
 			guiHandler.displayStyleOfAddArgumentContiner(false);
 			$('#' + sendAnswerButtonId).show();
 		}
+
+		// enable or disable the send button
+		$('#' + sendAnswerButtonId).prop('disabled', ($('input[name=' + radioButtonGroup + ']:checked') == 'undefined' ? true : false));
 	};
 
 	/**
@@ -369,10 +381,15 @@ function InteractionHandler() {
 		id = radioButton.attr('id');
 		value = radioButton.val();
 
-		if (radioButton.hasClass('argument')){
-			this.argumentButtonWasClicked(id, value);
+		if (typeof id === 'undefined' || typeof value === 'undefined'){
+			guiHandler.setErrorDescription('Please select a statement!');
 		} else {
-			this.positionButtonWasClicked(id, value);
+			guiHandler.setErrorDescription('');
+			if (radioButton.hasClass('argument')) {
+				this.argumentButtonWasClicked(id, value);
+			} else {
+				this.positionButtonWasClicked(id, value);
+			}
 		}
 	};
 }

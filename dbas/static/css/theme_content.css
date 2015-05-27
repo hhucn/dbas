@@ -25,6 +25,12 @@
 	-->
 }
 
+#error-description {
+	color: #be0a26;
+	font-size: 15;
+	font-weight: 600;
+}
+
 #discussions-space ul li input {
 	font-size: 15px;
 }
