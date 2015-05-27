@@ -13,7 +13,9 @@
 			<div class="col-md-1"></div>
 			<div class="col-md-10 center">
 				<h1><span class="font-semi-bold">Dialogue-Based Argumentation System</span></h1>
-				<p>The current discussion is about '<span class="font-semi-bold"><span tal:replace="issue"/></span>' and was started at <span class="font-semi-bold" tal:replace="date" />.</p>
+				<p>The current discussion is about <br>
+					<span class="font-semi-bold">'<span tal:replace="issue"/>'</span><br>
+					and was started at <span class="font-semi-bold" tal:replace="date" />.</p>
 				<p id='start-description'>You're free to join the discussion. When you want to join, just press the button:</p>
 				<input id="get-positions" type="button" value="Start Discussion" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
 			</div>
@@ -149,6 +151,10 @@
 			<div class="col-md-8">
 				<h1><span class="font-semi-bold">Special rights</span></h1>
 				<p>Only the administrator has some special rights and this is the placeholder.
+					<br>
+					<input id="" type="button" name="" value="Get a database dump" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
+					<input id="" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
+					<input id="" type="button" name="" value="List all positions" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
 				</p>
 			</div>
 			<div class="col-md-2"></div>
