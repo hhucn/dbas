@@ -2,6 +2,16 @@
 
 var addStatementButtonId = 'add-statement';
 var addPositionButtonId = 'add-position';
+var startDiscussionButtonId = 'start-discussion';
+var restartDiscussionButtonId = 'restart-discussion';
+var discussionContainerId = 'discussion-container';
+var addArgumentContainerId = 'add-argument-container';
+var addProTextareaId = 'add-pro-textarea';
+var addConTextareaId = 'add-con-textarea';
+var closeArgumentContainerId = 'closeArgumentContainer';
+var startDescriptionId = 'start-description';
+var discussionsDescriptionId = 'discussions-description';
+
 var discussionSpaceId = 'discussions-space';
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
@@ -12,6 +22,7 @@ var argumentSentencesOpeners = [
 var startDiscussionText = 'These are the current statements, given by users input. You can choose a' +
 		' position, which is next to your own intention or add a new one.';
 var firstOneText = 'You are the first one. Please add a new statement:';
+
 
 function AjaxHandler() {
 	'use strict';
@@ -85,12 +96,14 @@ function GuiHandler() {
 		var listitems = [], _this = this;
 		this.setDiscussionsDescription(startDiscussionText);
 		$.each(jsonData, function (key, val) {
-			listitems.push(_this.getKeyValAsInputBtnInLiElement(key, val, true));
+			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, true));
+			listitems.push(_this.getKeyValAsInputRadioInLiWithType(key, val, true));
 		});
-		listitems.push(this.getKeyValAsInputBtnInLiElement(addStatementButtonId, 'Adding a new statement.', true));
+		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
+		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
 
-		$('#discussion-container').show();
-		this.addListItemsToDiscussionsSpace(listitems, '');
+		$('#' + discussionContainerId).show();
+		this.addListItemsToDiscussionsSpace(listitems, 'position-list');
 	};
 
 	/**
@@ -100,9 +113,11 @@ function GuiHandler() {
 	this.setJsonDataToContentAsArguments = function (jsonData) {
 		var listitems = [], _this = this;
 		$.each(jsonData, function (key, val) {
-			listitems.push(_this.getKeyValAsInputBtnInLiElement(key, val, false));
+			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, false));
+			listitems.push(_this.getKeyValAsInputRadioInLiWithType(key, val, false));
 		});
-		listitems.push(this.getKeyValAsInputBtnInLiElement(addStatementButtonId, 'Adding a new position.', true));
+		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new position.', true));
+		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new position.', true));
 		this.addListItemsToDiscussionsSpace(listitems, 'argument-list');
 
 	};
@@ -114,7 +129,8 @@ function GuiHandler() {
 		alert('Todo 2');
 		this.setDiscussionsDescription(firstOneText);
 		var listitem = [];
-		listitem.push(this.getKeyValAsInputBtnInLiElement(addStatementButtonId, 'Yeah, I will add a statement!', true));
+		//listitem.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true));
+		listitem.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true, true));
 		this.addListItemsToDiscussionsSpace(listitem, 'statement-list');
 	};
 
@@ -123,38 +139,76 @@ function GuiHandler() {
 	 * @param text to set
 	 */
 	this.setDiscussionsDescription = function (text) {
-		$('#discussions-description').text(text);
+		$('#' + discussionsDescriptionId).text(text);
+	};
+
+	/**
+	 * Wrapper for getKeyValAsInputInLiWithType
+	 * @param key will be used as id
+	 * @param val will be used as value
+	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
+	 * @returns {*} a button in li element
+	 */
+	this.getKeyValAsInputButtonInLiWithType = function (key, val, isArgument) {
+		return this.getKeyValAsInputInLiWithType(key, val, isArgument, 'button');
+	};
+
+	/**
+	 * Wrapper for getKeyValAsInputInLiWithType
+	 * @param key will be used as id
+	 * @param val will be used as value
+	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
+	 * @returns {*} a radio button in li element
+	 */
+	this.getKeyValAsInputRadioInLiWithType = function (key, val, isArgument) {
+		return this.getKeyValAsInputInLiWithType(key, val, isArgument, 'radio');
 	};
 
 	/**
 	 * Creates an input element tih key as id and val as value. This is embedded in an li element
-	 * @param key
-	 * @param val
-	 * @returns {Element|*} an li tag with embedded input element
+	 * @param key will be used as id
+	 * @param val will be used as value
+	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
+	 * @param type for the input element
+	 * @returns {Element|*} a type-input element in a li tag
 	 */
-	this.getKeyValAsInputBtnInLiElement = function (key, val, isArgument) {
-		var liElement, inputElement;
+	this.getKeyValAsInputInLiWithType = function (key, val, isArgument, type) {
+		var liElement, inputElement, labelElement;
 		liElement = document.createElement('li');
 		liElement.setAttribute('id', 'li_' + key);
 
 		inputElement = document.createElement('input');
 		inputElement.setAttribute('id', key);
-		inputElement.setAttribute('type', 'button');
+		inputElement.setAttribute('type', type);
 		inputElement.setAttribute('value', val);
-		inputElement.setAttribute('class', 'button button-block btn btn-primary btn-default btn-discussion');
 		inputElement.setAttribute('data-dismiss', 'modal');
 
+		// additional attributes for a button
+		if (type === 'button') {
+			inputElement.setAttribute('class', 'button button-block btn btn-primary btn-default btn-discussion');
+		}
+
+		// additional attributes for a radio button
+		if (type === 'radio') {
+			inputElement.setAttribute('name', 'radioGroup');
+			// adding label for the value
+			labelElement = '\<label for="' + key + '"\>&nbsp;&nbsp;' + val + '\</label\>';
+		}
+
 		if (key === addStatementButtonId) {
-			inputElement.setAttribute('onclick', "$('#add-argument-container').show();$('#'+addStatementButtonId).disable = true;");
-		} else {
+			inputElement.setAttribute('onclick', "new GuiHandler().displayStyleOfAddArgumentConter(true)");
+		} else if (type === 'button') {
+			alert('check code for completion');
 			if (isArgument) {
 				inputElement.setAttribute('onclick', "new InteractionHandler().argumentButtonWasClicked(this.id, this.value);");
 			} else {
 				inputElement.setAttribute('onclick', "new InteractionHandler().positionButtonWasClicked(this.id, this.value);");
 			}
+		} else if (type === 'radio') {
+			inputElement.setAttribute('onchange', "new InteractionHandler().radioButtonChanged(this.id);");
 		}
 
-		liElement.appendChild(inputElement);
+		liElement.innerHTML = this.getFullHtmlTextOf(inputElement) + labelElement;
 		return liElement;
 	};
 
@@ -224,12 +278,28 @@ function GuiHandler() {
 		parent.insertBefore(div, parent.childNodes[childCount + 1]);
 	};
 
+	this.displayStyleOfAddArgumentConter = function (isVisible) {
+		if (isVisible) {
+			$('#'+addArgumentContainerId).show();
+			$('#'+addStatementButtonId).disable = true;
+		} else {
+			$('#'+addArgumentContainerId).hide();
+			$('#'+addStatementButtonId).disable = false;
+		}
+	};
+
+	/**
+	 * Return the full HTML text of an given element
+	 * @param element which should be translated
+	 */
+	this.getFullHtmlTextOf = function(element) {
+		return $('<div>').append(element).html();
+	};
 }
 
 function InteractionHandler() {
 	'use strict';
-	var guiHandler = new GuiHandler();
-	var ajaxHandler = new AjaxHandler();
+	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler();
 	/**
 	 * Handler when an argument button was clicked
 	 * @param value of the button
@@ -262,6 +332,12 @@ function InteractionHandler() {
 		// add all positions from the other side
 		alert('Todo 1: How to navigate here?');
 	};
+
+	this.radioButtonChanged = function() {
+		if (!$('#li_' + addStatementButtonId).is(':checked')) {
+			guiHandler.displayStyleOfAddArgumentConter(false);
+		}
+	};
 }
 
 
@@ -270,47 +346,47 @@ function InteractionHandler() {
  */
 $(document).ready(function () {
 	'use strict';
-	var guiHandler = new GuiHandler();
-	var ajaxHandler = new AjaxHandler();
+	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler();
 
-	$('#discussion-container').hide(); // hiding discussions container
-	$('#add-argument-container').hide(); // hiding container for adding arguments
+	$('#' + discussionContainerId).hide(); // hiding discussions container
+	$('#' + addArgumentContainerId).hide(); // hiding container for adding arguments
 
 	// starts the discussion with getting all positions
-	$('#start-discussion').on('click', function () {
-		$('#start-discussion').hide(); // hides the start button
-		$('#start-description').hide(); // hides the start description
-		$('#restart-discussion').show(); // show the restart button
+	$('#' + startDiscussionButtonId).on('click', function () {
+		$('#' + startDiscussionButtonId).hide(); // hides the start button
+		$('#' + startDescriptionId).hide(); // hides the start description
+		$('#' + restartDiscussionButtonId).show(); // show the restart button
 
 		ajaxHandler.getAllPositionsAndSetInGui();
 	});
 
 	// hide the restart button and add click function
-	$('#restart-discussion').hide(); // hides the restart button
-	$('#restart-discussion').on('click', function () {
-		$('#start-discussion').show(); // show the start description
-		$('#restart-discussion').hide(); // hide the restart button
+	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
+	$('#' + restartDiscussionButtonId).on('click', function () {
+		$('#' + startDiscussionButtonId).show(); // show the start description
+		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
 
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		$('#discussion-container').hide();
+		$('#' + discussionContainerId).hide();
 	});
 	
 	// adding a textarea in the right column
-	$('#add-con-textarea').on('click', function () {
+	$('#' + addConTextareaId).on('click', function () {
 		guiHandler.addTextareaAsChildIn('right-position-column');
 	});
 
 	// adding a textarea in the left column
-	$('#add-pro-textarea').on('click', function () {
+	$('#' + addProTextareaId).on('click', function () {
 
 		guiHandler.addTextareaAsChildIn('left-position-column');
 	});
 
 	// hiding the argument container, when the X button is clicked
-	$('#closeArgumentContainer').on('click', function () {
-		$('#add-argument-container').hide();
+	$('#' + closeArgumentContainerId).on('click', function () {
+		$('#' + addArgumentContainerId).hide();
 		$('#' + addStatementButtonId).enable = true;
+		$('#' + addStatementButtonId).removeAttr('checked');
 	});
 
 });

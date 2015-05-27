@@ -9,7 +9,6 @@
 	margin: 10px;
 }
 
-#discussions-space,
 .center{
 	text-align: center;
 }
@@ -21,7 +20,10 @@
 
 #discussions-space ul li {
 	margin: 20px;
+	list-style: none;
+	<!--
 	display: inline;
+	-->
 }
 
 #discussions-space ul li input {
