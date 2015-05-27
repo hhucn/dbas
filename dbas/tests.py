@@ -33,39 +33,43 @@ def addTestingDB(session):
 	user2.group = group2.uid
 	session.add_all([user1, user2])
 	session.flush()
-	position1 = Position(text='I like cats.', weight='100')
-	position2 = Position(text='I like dogs.', weight='20')
+	position1 = Position(text='I like cats.', weight='1')
+	position2 = Position(text='I like dogs.', weight='1')
 	position1.author = user2.uid
 	position2.author = user1.uid
 	session.add_all([position1, position2])
 	session.flush()
-	argument1 = Argument(text='They are hating all humans!', weight='70')
-	argument2 = Argument(text='They are very devoted.', weight='80')
+	argument1 = Argument(text='They are hating all humans!', weight='1')
+	argument2 = Argument(text='They are very devoted.', weight='1')
 	argument1.author = user1.uid
 	argument2.author = user2.uid
 	session.add_all([argument1, argument2])
 	session.flush()
-	relation1 = RelationArgPos(weight='134', is_supportive='1')
-	relation2 = RelationArgPos(weight='34', is_supportive='1')
-	relation3 = RelationArgArg(weight='14', is_supportive='0')
-	relation4 = RelationPosPos(weight='98', is_supportive='0')
-	relation5 = RelationArgArg(weight='28', is_supportive='0')
+	relation1 = RelationArgPos(weight='1', is_supportive='1')
+	relation2 = RelationArgPos(weight='1', is_supportive='1')
+	relation3 = RelationArgArg(weight='1', is_supportive='0')
+	relation4 = RelationPosPos(weight='1', is_supportive='0')
+	relation5 = RelationArgArg(weight='1', is_supportive='0')
+	relation6 = RelationPosArg(weight='1', is_supportive='0')
 	relation1.author = user1.uid
-	relation2.author = user1.uid
-	relation3.author = user2.uid
-	relation4.author = user2.uid
-	relation5.author = user2.uid
-	relation1.pos_uid = position1.uid
 	relation1.arg_uid = argument1.uid
-	relation2.pos_uid = position2.uid
+	relation1.pos_uid = position1.uid
+	relation2.author = user1.uid
 	relation2.arg_uid = argument2.uid
+	relation2.pos_uid = position2.uid
+	relation3.author = user2.uid
 	relation3.arg_uid1 = argument1.uid
 	relation3.arg_uid2 = argument2.uid
+	relation4.author = user2.uid
 	relation4.pos_uid1 = position1.uid
 	relation4.pos_uid2 = position2.uid
+	relation5.author = user2.uid
 	relation5.arg_uid = argument1.uid
-	relation5.pos_uid = position2.uid
-	session.add_all([relation1, relation2, relation3, relation4])
+	relation5.arg_uid = argument2.uid
+	relation6.author = user1.uid
+	relation6.pos_uid = position2.uid
+	relation6.arg_uid = argument1.uid
+	session.add_all([relation1, relation2, relation3, relation4, relation5, relation6])
 	session.flush()
 
 	return session
@@ -438,9 +442,9 @@ class FunctionalEMailTests(IntegrationTestBase):
 		print("FunctionalTests: test_email_send")
 		self.testapp.get('/contact', status=200)
 		mailer = DummyMailer()
-		mailer.send(Message(subject='hello world', 
-							sender='krauthoff@cs.uni-duesseldorf.de', 
-							recipients =['krauthoff@cs.uni-duesseldorf.de'], 
+		mailer.send(Message(subject='hello world',
+							sender='krauthoff@cs.uni-duesseldorf.de',
+							recipients =['krauthoff@cs.uni-duesseldorf.de'],
 							body='dummybody'))
 		self.assertEqual(len(mailer.outbox), 1)
 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
@@ -450,9 +454,9 @@ class FunctionalEMailTests(IntegrationTestBase):
 		print("FunctionalTests: test_email_send_immediately")
 		self.testapp.get('/contact', status=200)
 		mailer = DummyMailer()
-		mailer.send_immediately(Message(subject='hello world', 
-										sender='krauthoff@cs.uni-duesseldorf.de', 
-										recipients =['krauthoff@cs.uni-duesseldorf.de'], 
+		mailer.send_immediately(Message(subject='hello world',
+										sender='krauthoff@cs.uni-duesseldorf.de',
+										recipients =['krauthoff@cs.uni-duesseldorf.de'],
 										body='dummybody'))
 		self.assertEqual(len(mailer.outbox), 1)
 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
@@ -462,9 +466,9 @@ class FunctionalEMailTests(IntegrationTestBase):
 		print("FunctionalTests: test_email_send_immediately_sendmail")
 		self.testapp.get('/contact', status=200)
 		mailer = DummyMailer()
-		mailer.send_immediately_sendmail(Message(subject='hello world', 
-												 sender='krauthoff@cs.uni-duesseldorf.de', 
-												 recipients =['krauthoff@cs.uni-duesseldorf.de'], 
+		mailer.send_immediately_sendmail(Message(subject='hello world',
+												 sender='krauthoff@cs.uni-duesseldorf.de',
+												 recipients =['krauthoff@cs.uni-duesseldorf.de'],
 												 body='dummybody'))
 		self.assertEqual(len(mailer.outbox), 1)
 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
@@ -493,6 +497,7 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		self.assertTrue(group_by_name1.uid, group_by_uid1.uid)
 		self.assertTrue(group_by_name2.uid, group_by_uid2.uid)
 
+	# testing content
 	def test_database_content(self):
 		user1 = self.session.query(User).filter_by(nickname='test_user').first()
 		user2 = self.session.query(User).filter_by(nickname='test_editor').first()
@@ -500,8 +505,8 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		position2 = self.session.query(Position).filter_by(text='I like dogs.').first()#, weight='20')
 		self.assertTrue(user1.firstname,'user')
 		self.assertTrue(user2.firstname,'editor')
-		self.assertTrue(position1.weight, 100)
-		self.assertTrue(position2.weight, 20)
+		self.assertTrue(position1.weight, 1)
+		self.assertTrue(position2.weight, 1)
 
 	# testing group content
 	def test_database_user_content(self):
@@ -518,7 +523,7 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		print("DatabaseTests: test_database_position_content")
 		position = self.session.query(Position).filter_by(uid=1).first()
 		self.assertTrue(position.text, 'I like cats.')
-		self.assertTrue(position.weight, '100')
+		self.assertTrue(position.weight, 1)
 		self.assertTrue(position.author, self.session.query(User).filter_by(uid=1).first().uid)
 
 	# testing argument content
@@ -526,14 +531,14 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		print("DatabaseTests: test_database_argument_content")
 		argument = self.session.query(Argument).filter_by(uid=1).first()
 		self.assertTrue(argument.text, 'They are hating all humans!')
-		self.assertTrue(argument.weight, '70')
+		self.assertTrue(argument.weight, 1)
 		self.assertTrue(argument.author, self.session.query(User).filter_by(uid=1).first().uid)
 
 	# testing relation arg pos content
 	def test_database_RelationArgPos(self):
 		print("DatabaseTests: test_database_RelationArgPos")
 		relationAP = self.session.query(RelationArgPos).filter_by(uid=1).first()
-		self.assertTrue(relationAP.weight, 134)
+		self.assertTrue(relationAP.weight, 1)
 		self.assertTrue(relationAP.is_supportive, True)
 		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=1).first().uid)
 		self.assertTrue(relationAP.pos_uid, self.session.query(Position).filter_by(uid=1).first().uid)
@@ -543,9 +548,9 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	def test_database_RelationPosArg(self):
 		print("DatabaseTests: test_database_RelationPosArg")
 		relationAP = self.session.query(RelationPosArg).filter_by(uid=1).first()
-		self.assertTrue(relationAP.weight, 18)
-		self.assertTrue(relationAP.is_supportive, True)
-		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=2).first().uid)
+		self.assertTrue(relationAP.weight, 1)
+		self.assertFalse(relationAP.is_supportive, False)
+		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=1).first().uid)
 		self.assertTrue(relationAP.pos_uid, self.session.query(Position).filter_by(uid=2).first().uid)
 		self.assertTrue(relationAP.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
 
@@ -553,9 +558,9 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	def test_database_RelationArgArg(self):
 		print("DatabaseTests: test_database_RelationArgArg")
 		relationAA = self.session.query(RelationArgArg).filter_by(uid=1).first()
-		self.assertTrue(relationAA.weight, 14)
+		self.assertTrue(relationAA.weight, 1)
 		self.assertFalse(relationAA.is_supportive, True)
-		self.assertTrue(relationAA.author, self.session.query(User).filter_by(uid=2).first().uid)
+		self.assertTrue(relationAA.author, self.session.query(User).filter_by(uid=1).first().uid)
 		self.assertTrue(relationAA.arg_uid1, self.session.query(Argument).filter_by(uid=1).first().uid)
 		self.assertTrue(relationAA.arg_uid2, self.session.query(Argument).filter_by(uid=2).first().uid)
 
@@ -563,7 +568,7 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	def test_database_RelationPosPos(self):
 		print("DatabaseTests: test_database_RelationPosPos")
 		relationPP = self.session.query(RelationPosPos).filter_by(uid=1).first()
-		self.assertTrue(relationPP.weight, 98)
+		self.assertTrue(relationPP.weight, 1)
 		self.assertFalse(relationPP.is_supportive, True)
 		self.assertTrue(relationPP.author, self.session.query(User).filter_by(uid=2).first().uid)
 		self.assertTrue(relationPP.pos_uid1, self.session.query(Position).filter_by(uid=1).first().uid)
@@ -585,8 +590,8 @@ class AjaxTests(IntegrationTestBase):
 		print("AjaxViewTest: setUp")
 		request = testing.DummyRequest()
 		response = Dbas(request).get_ajax_positions()
-		self.assertEqual('I like cats.', response['1'])
-		self.assertEqual('I like dogs.', response['2'])
+		self.assertEqual('We should get a cat.', response['1'])
+		self.assertEqual('We should get a dog.', response['2'])
 
 	def test_get_all_pro_arguments(self):
 		print("AjaxProArgumentTest: setUp")
