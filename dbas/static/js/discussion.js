@@ -277,8 +277,8 @@ $(document).ready(function () {
 	$('#add-argument-container').hide(); // hiding container for adding arguments
 
 	// starts the discussion with getting all positions
-	$('#get-positions').on('click', function () {
-		$('#get-positions').hide(); // hides the start button
+	$('#start-discussion').on('click', function () {
+		$('#start-discussion').hide(); // hides the start button
 		$('#start-description').hide(); // hides the start description
 		$('#restart-discussion').show(); // show the restart button
 
@@ -288,7 +288,7 @@ $(document).ready(function () {
 	// hide the restart button and add click function
 	$('#restart-discussion').hide(); // hides the restart button
 	$('#restart-discussion').on('click', function () {
-		$('#get-positions').show(); // show the start description
+		$('#start-discussion').show(); // show the start description
 		$('#restart-discussion').hide(); // hide the restart button
 
 		// clear the discussion space

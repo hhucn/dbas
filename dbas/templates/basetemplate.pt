@@ -23,7 +23,7 @@
 	<div metal:use-macro="load: snippet-popups.pt" />
 
 	<!-- scroll to top -->
-	<a href="#" class="back-to-top" title="Go to the top"></a>
+	<a href="#top" class="back-to-top" title="Go to the top"></a>
 
 	<!-- Bootstrap core, JavaScript, jquery
 		<!-- Placed at the end of the document so the pages load faster -->

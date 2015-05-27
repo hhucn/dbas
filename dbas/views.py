@@ -576,15 +576,19 @@ class Dbas(object):
 		except KeyError as e:
 			logger('get_ajax_pro_arguments', 'error', repr(e))
 
-		logger('get_ajax_pro_arguments', 'send uid', str(uid))
-
-		# raw query
+		## raw query
 		# select * from arguments where uid in (
 		# 	select arg_uid from relation_argpos where pos_uid=UID and is_supportive = 1
 		# );
+		## tried sql query
+		# db_arguments = DBSession.query(Argument).filter_by(Argument.uid.in_(
+		# 	DBSession.query(RelationArgPos).options(load_only("arg_uid")).filter(
+		# 	and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
+		# ))
 
-
+		logger('get_ajax_pro_arguments', 'def', 'check for uid')
 		if (uid):
+			logger('get_ajax_pro_arguments', ' def ', 'send uid ' + str(uid))
 			db_arguid = DBSession.query(RelationArgPos).filter(
 				and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
 			list_arg_ids = []
@@ -594,6 +598,8 @@ class Dbas(object):
 				all_uids += str(arg.arg_uid) + ' '
 			logger('get_ajax_pro_arguments','all arg_uids', all_uids)
 			i = 0
+
+			logger('get_ajax_pro_arguments', 'def', 'iterate all arguemnts for that uid')
 			for arg in db_arguid:
 				logger('get_ajax_pro_arguments','current arg_uids', str(arg.arg_uid))
 				if arg.uid not in list_arg_ids:
@@ -608,13 +614,9 @@ class Dbas(object):
 						return_dict[str(db_argument.uid)] = db_argument.text
 						i += 1
 					else :
-						logger('get_ajax_pro_arguments','no argument exists, uid', str(arg.uid))
-
-
-		# db_arguments = DBSession.query(Argument).filter_by(Argument.uid.in_(
-		# 	DBSession.query(RelationArgPos).options(load_only("arg_uid")).filter(
-		# 	and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
-		# ))
+						logger('get_ajax_pro_arguments', 'def', 'no argument exists, uid ' + str(arg.uid))
+		else:
+			logger('get_ajax_pro_arguments', 'ERROR', 'uid not found')
 
 		return return_dict
 
