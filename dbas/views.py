@@ -537,7 +537,7 @@ class Dbas(object):
 			logged_in=self.request.authenticated_userid
 		)
 
-	# ajax
+	# ajax - getting all positions
 	@view_config(route_name='get_ajax_positions', renderer='json')
 	def get_ajax_positions(self):
 		"""
@@ -563,35 +563,67 @@ class Dbas(object):
 
 		return return_dict
 
-	# ajax
-	@view_config(route_name='get_ajax_pro_arguments_by_uid', renderer='json')
-	def get_ajax_pro_arguments(self):
+	# ajax - getting every pro argument, which is connected to the given position uid
+	@view_config(route_name='ajax_pro_arguments_connected_to_position_uid', renderer='json')
+	def get_ajax_pro_arguments_by_pos(self):
 		logger('get_ajax_pro_arguments', 'def', 'main')
 		# get evers relation from current argument to an position with uid send
 		uid = ''
 		try:
 			uid = self.request.params['uid']
 		except KeyError as e:
-			logger('get_ajax_pro_arguments', 'error', repr(e))
+			logger('get_ajax_pro_arguments_by_pos', 'error', repr(e))
 
 		queryHelper = QueryHelper()
-		return_dict = queryHelper.get_all_arguments_for_uid(uid, True)
+		return_dict = queryHelper.get_all_arguments_for_by_pos_uid(uid, True)
 
 		return return_dict
 
-	# ajax
-	@view_config(route_name='get_ajax_con_arguments_by_uid', renderer='json')
-	def get_ajax_con_arguments(self):
-		logger('get_ajax_con_arguments', 'def', 'main')
-		# get evers relation from current argument to an position with uid send
+	# ajax - getting every con argument, which is connected to the given position uid
+	@view_config(route_name='ajax_con_arguments_connected_to_position_uid', renderer='json')
+	def get_ajax_con_arguments_by_pos(self):
+		logger('get_ajax_con_arguments_by_pos', 'def', 'main')
+		# get every relation from current argument to an position with uid send
 		uid = ''
 		try:
 			uid = self.request.params['uid']
 		except KeyError as e:
-			logger('get_ajax_con_arguments', 'error', repr(e))
+			logger('get_ajax_con_arguments_by_pos', 'error', repr(e))
 
 		queryHelper = QueryHelper()
-		return_dict = queryHelper.get_all_arguments_for_uid(uid, False)
+		return_dict = queryHelper.get_all_arguments_for_by_pos_uid(uid, False)
+
+		return return_dict
+
+	# ajax - getting every pro arument, which is for the same position as the given argument uid
+	@view_config(route_name='ajax_pro_arguments_against_same_positions_by_argument_uid', renderer='json')
+	def get_ajax_pro_arguments_by_arg(self):
+		logger('get_ajax_pro_arguments_by_arg', 'def', 'main')
+		# get every relation from current argument to an position with uid send
+		uid = ''
+		try:
+			uid = self.request.params['uid']
+		except KeyError as e:
+			logger('get_ajax_pro_arguments_by_arg', 'error', repr(e))
+
+		queryHelper = QueryHelper()
+		return_dict = queryHelper.get_all_arguments_for_by_arg_uid(uid, True)
+
+		return return_dict
+
+	# ajax - getting every con arument, which is against the same position as the given argument uid
+	@view_config(route_name='ajax_con_arguments_against_same_positions_by_argument_uid', renderer='json')
+	def get_ajax_con_arguments_by_arg(self):
+		logger('get_ajax_con_arguments_by_arg', 'def', 'main')
+		# get every relation from current argument to an position with uid send
+		uid = ''
+		try:
+			uid = self.request.params['uid']
+		except KeyError as e:
+			logger('get_ajax_con_arguments_by_arg', 'error', repr(e))
+
+		queryHelper = QueryHelper()
+		return_dict = queryHelper.get_all_arguments_for_by_arg_uid(uid, False)
 
 		return return_dict
 

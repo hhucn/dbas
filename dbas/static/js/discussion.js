@@ -2,24 +2,25 @@
 
 var addStatementButtonId = 'add-statement';
 var addPositionButtonId = 'add-position';
-var startDiscussionButtonId = 'start-discussion';
-var restartDiscussionButtonId = 'restart-discussion';
-var discussionContainerId = 'discussion-container';
 var addArgumentContainerId = 'add-argument-container';
 var addProTextareaId = 'add-pro-textarea';
-var addConTextareaId = 'add-con-textarea';
+var addConTextareaId = 'add-con-textarea'
+var argumentList = 'argument-list';
 var closeArgumentContainerId = 'closeArgumentContainer';
-var startDescriptionId = 'start-description';
 var discussionsDescriptionId = 'discussions-description';
-var sendAnswerButtonId = 'send-answer';
+var discussionContainerId = 'discussion-container';
 var discussionSpaceId = 'discussions-space';
-var rightPositionColumnId = 'right-position-column';
+var errorDescriptionId = 'error-description';
 var leftPositionColumnId = 'left-position-column';
-var rightPositionTextareaId = 'right-textareas';
 var leftPositionTextareaId = 'left-textareas';
+var restartDiscussionButtonId = 'restart-discussion';
+var rightPositionColumnId = 'right-position-column';
+var rightPositionTextareaId = 'right-textareas';
 var radioButtonGroup = 'radioButtonGroup';
+var startDiscussionButtonId = 'start-discussion';
+var startDescriptionId = 'start-description';
+var sendAnswerButtonId = 'send-answer';
 var statementList = 'statement-list';
-var errorDescriptionId = 'error-description'
 
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
@@ -38,7 +39,7 @@ function AjaxHandler() {
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
 	 * If done: call setJsonDataToContentAsPositions
-	 * If fail: call setOnlyNewArgumentButton
+	 * If fail: call setNewArgumentButtonOnly
 	 */
 	this.getAllPositionsAndSetInGui = function () {
 		$.ajax({
@@ -49,19 +50,20 @@ function AjaxHandler() {
 			guiHandler.setJsonDataToContentAsPositions(data);
 		}).fail(function () {
 			alert('failed request');
-			guiHandler.setOnlyNewArgumentButton();
+			guiHandler.setNewArgumentButtonOnly();
 		});
 	};
 
 	/**
-	 * Send an ajax request for getting all pro arguments as dicitonary uid <-> value
-	 * If done: call
-	 * If fail: call
-	 * @param ofPositionWithUid
+	 * Send an ajax request for getting all pro or contra arguments as dicitonary uid <-> value. Every argument has a connection to the
+	 * position with given uid.
+	 * @param ofPositionWithUid uid of clicked position
+	 * @param shouldGetProArgument true, if the pro arguments should be fetched, false for the con
 	 */
-	this.getAllProArgumentsAndSetInGui = function (ofPositionWithUid) {
+	this.getAllProOrConArgumentsConnectedToPositionUidAndSetInGui = function (ofPositionWithUid, shouldGetProArgument) {
+		var url = shouldGetProArgument ? "ajax_pro_arguments_connected_to_position_uid" : "ajax_con_arguments_connected_to_position_uid";
 		$.ajax({
-			url: "ajax_all_pro_arguments_by_uid",
+			url: url,
 			method: "POST",
 			data: { uid : ofPositionWithUid },
 			dataType: "json"
@@ -69,27 +71,29 @@ function AjaxHandler() {
 			guiHandler.setJsonDataToContentAsArguments(data);
 		}).fail(function () {
 			alert('failed request');
-			guiHandler.setOnlyNewArgumentButton();
+			guiHandler.setNewArgumentButtonOnly();
 		});
 	};
 
 	/**
-	 * Send an ajax request for getting all contra arguments as dicitonary uid <-> value
-	 * If done: call
-	 * If fail: call
-	 * @param ofPositionWithUid
+	 * Send an ajax request for getting all pro or contra arguments as dicitonary uid <-> value. Every argument is for or against the
+	 * the same position as the given argument uid.
+	 * position with given uid
+	 * @param ofPositionWithUid uid of clicked position
+	 * @param shouldGetProArgument true, if the pro arguments should be fetched, false for the con
 	 */
-	this.getAllConArgumentsAndSetInGui = function (ofPositionWithUid) {
+	this.getAllProOrConArgumentsWhichAreAgainstOrForTheSamePositionForArgumentUidAndSetInGui = function (ofArgumentWithUid, shouldGetProArgument) {
+		var url = shouldGetProArgument ? "ajax_pro_arguments_against_same_positions_by_argument_uid" : "ajax_con_arguments_against_same_positions_by_argument_uid";
 		$.ajax({
-			url: "ajax_all_con_arguments_by_uid",
+			url: url,
 			method: "POST",
-			data: { uid : ofPositionWithUid },
+			data: { uid : ofArgumentWithUid },
 			dataType: "json"
 		}).done(function (data) {
 			guiHandler.setJsonDataToContentAsArguments(data);
 		}).fail(function () {
 			alert('failed request');
-			guiHandler.setOnlyNewArgumentButton();
+			guiHandler.setNewArgumentButtonOnly();
 		});
 	};
 }
@@ -107,6 +111,12 @@ function GuiHandler() {
 			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, true));
 			listitems.push(_this.getKeyValAsInputRadioInLiWithType(key, val, true));
 		});
+
+		// sanity check for an empty list
+		if (listitems.length === 0){
+			this.setDiscussionsDescription(firstOneText);
+		}
+
 		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
 		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
 
@@ -124,22 +134,27 @@ function GuiHandler() {
 			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, false));
 			listitems.push(_this.getKeyValAsInputRadioInLiWithType(key, val, false));
 		});
+
+		// sanity check for an empty list
+		if (listitems.length === 0){
+			this.setDiscussionsDescription(firstOneText);
+		}
+
 		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new position.', true));
 		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new position.', true));
-		this.addListItemsToDiscussionsSpace(listitems, 'argument-list');
-
+		this.addListItemsToDiscussionsSpace(listitems, argumentList);
 	};
 
 	/**
 	 * Sets an "add statement" button as content
 	 */
-	this.setOnlyNewArgumentButton = function () {
+	this.setNewArgumentButtonOnly = function () {
 		alert('Todo 2');
 		this.setDiscussionsDescription(firstOneText);
 		var listitem = [];
 		//listitem.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true));
 		listitem.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true, true));
-		this.addListItemsToDiscussionsSpace(listitem, 'statement-list');
+		this.addListItemsToDiscussionsSpace(listitem, statementList);
 	};
 
 	/**
@@ -336,7 +351,7 @@ function InteractionHandler() {
 		$('#' + discussionSpaceId).empty();
 
 		// add all positions
-		ajaxHandler.getAllProArgumentsAndSetInGui(id);
+		ajaxHandler.getAllProOrConArgumentsConnectedToPositionUidAndSetInGui(id, true);
 
 	};
 
@@ -345,15 +360,14 @@ function InteractionHandler() {
 	 * @param value of the button
 	 */
 	this.positionButtonWasClicked = function (id, value) {
-		var pos, ajaxHandler;
-		pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
+		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
 		guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + value + ' But an argument from the other side is:');
 
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 
 		// add all positions from the other side
-		alert('Todo 1: How to navigate here?');
+		ajaxHandler.getAllProOrConArgumentsWhichAreAgainstOrForTheSamePositionForArgumentUidAndSetInGui(id, false);
 	};
 
 	/**

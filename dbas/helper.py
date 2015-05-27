@@ -99,9 +99,9 @@ class PasswordHandler(object):
 
 class QueryHelper(object):
 
-	def get_all_arguments_for_uid(self, uid, isSupportive):
+	def get_all_arguments_for_by_pos_uid(self, uid, isSupportive):
 		"""
-		todo
+		Getting every pro/con argument, which is connected to the given position uid
 		:param uid: uid of the argument
 		:param isSupportive: true, if all supportive arguments should be fetched
 		:return:
@@ -120,35 +120,82 @@ class QueryHelper(object):
 		return_dict = {}
 		logger('QueryHelper', 'get_all_arguments_for_uid', 'check for uid')
 		support = 1 if isSupportive else 0
+
 		if (uid):
 			logger('QueryHelper', 'get_all_arguments_for_uid ', 'send uid ' + str(uid))
 			db_arguid = DBSession.query(RelationArgPos).filter(
 				and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == support)).all()
-			list_arg_ids = []
 
 			all_uids = ' '
 			for arg in db_arguid:
 				all_uids += str(arg.arg_uid) + ' '
 			logger('QueryHelper','get_all_arguments_for_uid',  'arg_uids' + all_uids)
-			i = 0
 
-			logger('QueryHelper', 'get_all_arguments_for_uid', 'iterate all arguemnts for that uid')
+			logger('QueryHelper', 'get_all_arguments_for_uid', 'iterate all arguments for that uid')
 			for arg in db_arguid:
-				logger('QueryHelper','get_all_arguments_for_uid', 'current arg_uids' + str(arg.arg_uid))
-				if arg.uid not in list_arg_ids:
-					logger('QueryHelper', 'get_all_arguments_for_uid' , 'get argument with' + str(arg.arg_uid))
-					list_arg_ids.append(arg.arg_uid)
-					db_argument = DBSession.query(Argument).filter_by(uid = arg.arg_uid).first()
+				logger('QueryHelper', 'get_all_arguments_for_uid' , 'get argument with' + str(arg.arg_uid))
+				db_argument = DBSession.query(Argument).filter_by(uid = arg.arg_uid).first()
 
-					logger('QueryHelper', 'get_all_arguments_for_uid', 'checks whether argument exists, uid ' + str(arg.uid))
-					if (db_argument):
-						logger('QueryHelper', 'get_all_arguments_for_uid' , 'add argument in dict' +
-					       'uid:' + str(db_argument.uid) + '   val: ' + db_argument.text)
-						return_dict[str(db_argument.uid)] = db_argument.text
-						i += 1
-					else :
-						logger('QueryHelper', 'get_all_arguments_for_uid', 'no argument exists, uid ' + str(arg.uid))
+				logger('QueryHelper', 'get_all_arguments_for_uid', 'checks whether argument exists, uid ' + str(arg.uid))
+				if (db_argument):
+					logger('QueryHelper', 'get_all_arguments_for_uid' , 'add argument in dict' +
+				       'uid:' + str(db_argument.uid) + '   val: ' + db_argument.text)
+					return_dict[str(db_argument.uid)] = db_argument.text
+				else :
+					logger('QueryHelper', 'get_all_arguments_for_uid', 'no argument exists, uid ' + str(uid))
 		else:
 			logger('QueryHelper', 'get_all_arguments_for_uid', 'ERROR: uid not found')
+
+		return return_dict
+
+
+	def get_all_arguments_for_by_arg_uid(self, uid, isSupportive):
+		'''
+		Getting every pro/con arument, which is for/against the same position as the given argument uid
+		:param uid: uid of the argument
+		:param isSupportive: true, if all supportive arguments should be fetched
+		:return:
+		'''
+
+		## raw query
+		#select * from arguments where uid in (
+        #    select arg_uid from relation_argpos where pos_uid in (
+        #      select pos_uid from relation_argpos where arg_uid = 3 and is_supportive = 1
+		#	) and is_supportive = 0
+		#);
+
+		return_dict = {}
+		logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'check for uid')
+		support = 1 if isSupportive else 0
+		wasSuportive = 0 if isSupportive else 1
+
+		if (uid):
+			logger('QueryHelper', 'get_all_arguments_for_by_arg_uid ', 'get connected position for argument uid ' + str(uid))
+			db_posuid = DBSession.query(RelationArgPos).filter(
+				and_(RelationArgPos.arg_uid == uid, RelationArgPos.is_supportive == wasSuportive)).first()
+
+			if db_posuid:
+				logger('QueryHelper', 'get_all_arguments_for_by_arg_uid',  'get all arguments from the opposite for position uid ' + str(
+					db_posuid.pos_uid))
+				db_arguids = DBSession.query(RelationArgPos).filter(
+					and_(RelationArgPos.pos_uid == db_posuid.pos_uid, RelationArgPos.is_supportive == support)).all()
+
+				logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'iterate all arguments for that uid')
+				for argid in db_arguids:
+					logger('QueryHelper', 'get_all_arguments_for_by_arg_uid' , 'get argument with' + str(argid.arg_uid))
+					db_argument = DBSession.query(Argument).filter_by(uid = argid.arg_uid).first()
+
+					logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'checks whether argument exists, uid ' + str(argid.uid))
+					if (db_argument):
+						logger('QueryHelper', 'get_all_arguments_for_by_arg_uid' , 'add argument in dict' +
+					       'uid:' + str(db_argument.uid) + '   val: ' + db_argument.text)
+						return_dict[str(db_argument.uid)] = db_argument.text
+					else:
+						logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'no argument exists, uid ' + str(argid.uid))
+			else:
+				logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'no argument exists, uid ' + str(uid))
+
+		else:
+			logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'ERROR: uid not found')
 
 		return return_dict
