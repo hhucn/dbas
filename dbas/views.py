@@ -13,7 +13,7 @@ from sqlalchemy import and_
 
 from .database import DBSession
 from .database.model import User, Group, Issue, Position, Argument, RelationArgPos
-from .helper import PasswordHandler, PasswordGenerator, logger
+from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper
 
 class Dbas(object):
 	def __init__(self, request):
@@ -567,8 +567,6 @@ class Dbas(object):
 	@view_config(route_name='get_ajax_pro_arguments_by_uid', renderer='json')
 	def get_ajax_pro_arguments(self):
 		logger('get_ajax_pro_arguments', 'def', 'main')
-		return_dict = {}
-
 		# get evers relation from current argument to an position with uid send
 		uid = ''
 		try:
@@ -576,47 +574,8 @@ class Dbas(object):
 		except KeyError as e:
 			logger('get_ajax_pro_arguments', 'error', repr(e))
 
-		## raw query
-		# select * from arguments where uid in (
-		# 	select arg_uid from relation_argpos where pos_uid=UID and is_supportive = 1
-		# );
-		## tried sql query
-		# db_arguments = DBSession.query(Argument).filter_by(Argument.uid.in_(
-		# 	DBSession.query(RelationArgPos).options(load_only("arg_uid")).filter(
-		# 	and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
-		# ))
-
-		logger('get_ajax_pro_arguments', 'def', 'check for uid')
-		if (uid):
-			logger('get_ajax_pro_arguments', ' def ', 'send uid ' + str(uid))
-			db_arguid = DBSession.query(RelationArgPos).filter(
-				and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
-			list_arg_ids = []
-
-			all_uids = ' '
-			for arg in db_arguid:
-				all_uids += str(arg.arg_uid) + ' '
-			logger('get_ajax_pro_arguments','all arg_uids', all_uids)
-			i = 0
-
-			logger('get_ajax_pro_arguments', 'def', 'iterate all arguemnts for that uid')
-			for arg in db_arguid:
-				logger('get_ajax_pro_arguments','current arg_uids', str(arg.arg_uid))
-				if arg.uid not in list_arg_ids:
-					logger('get_ajax_pro_arguments', 'get argument with', str(arg.arg_uid))
-					list_arg_ids.append(arg.arg_uid)
-					db_argument = DBSession.query(Argument).filter_by(uid = arg.arg_uid).first()
-
-					logger('get_ajax_pro_arguments','checks whether argument exists, uid', str(arg.uid))
-					if (db_argument):
-						logger('get_ajax_pro_arguments', 'add argument in dict',
-					       'uid:' + str(db_argument.uid) + '   val: ' + db_argument.text)
-						return_dict[str(db_argument.uid)] = db_argument.text
-						i += 1
-					else :
-						logger('get_ajax_pro_arguments', 'def', 'no argument exists, uid ' + str(arg.uid))
-		else:
-			logger('get_ajax_pro_arguments', 'ERROR', 'uid not found')
+		queryHelper = QueryHelper()
+		return_dict = queryHelper.get_all_arguments_for_uid(uid, True)
 
 		return return_dict
 
@@ -624,6 +583,15 @@ class Dbas(object):
 	@view_config(route_name='get_ajax_con_arguments_by_uid', renderer='json')
 	def get_ajax_con_arguments(self):
 		logger('get_ajax_con_arguments', 'def', 'main')
-		return_dict = {}
+		# get evers relation from current argument to an position with uid send
+		uid = ''
+		try:
+			uid = self.request.params['uid']
+		except KeyError as e:
+			logger('get_ajax_con_arguments', 'error', repr(e))
+
+		queryHelper = QueryHelper()
+		return_dict = queryHelper.get_all_arguments_for_uid(uid, False)
+
 		return return_dict
 
