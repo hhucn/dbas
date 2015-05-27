@@ -225,14 +225,18 @@ function GuiHandler() {
 	this.addListItemsToDiscussionsSpace = function (items, id) {
 		var i, size, ulElement;
 
+		// wrap all elements into a list
 		ulElement = $('<ul>');
 		ulElement.attr({id: id});
+		ulElement.append(items);
 
-		for (i = 0, size = items.length; i < size; i += 1) {
-			ulElement.append(items[i]);
-		}
-
+		// append them to the space
 		$('#' + discussionSpaceId).append(ulElement);
+
+		// hover style element for the list elements
+		ulElement.children().hover(function(){
+		    $(this).toggleClass('hover');
+		});
 	};
 
 	/**
@@ -373,14 +377,6 @@ $(document).ready(function () {
 	// handler for the send answer button
 	$('#' + sendAnswerButtonId).on('click', function () {
 
-	});
-
-	// hover style element for the list elements
-	$('#' + discussionSpaceId + ' ul li').hover(function(){
-	    $(this).addClass('hover');
-		alert('fufu');
-	}, function(){
-	    $(this).removeClass('hover');
 	});
 
 	// hide the restart button and add click function
