@@ -569,7 +569,7 @@ class Dbas(object):
 		logger('get_ajax_pro_arguments', 'def', 'main')
 		return_dict = {}
 
-		# relation vom arugment zur position mit gesendeter uid
+		# get evers relation from current argument to an position with uid send
 		uid = ''
 		try:
 			uid = self.request.params['uid']
@@ -578,26 +578,38 @@ class Dbas(object):
 
 		logger('get_ajax_pro_arguments', 'send uid', str(uid))
 
+		# raw query
 		# select * from arguments where uid in (
-		# 	select arg_uid from relation_argpos where pos_uid=2 and is_supportive = 1
+		# 	select arg_uid from relation_argpos where pos_uid=UID and is_supportive = 1
 		# );
+
 
 		if (uid):
 			db_arguid = DBSession.query(RelationArgPos).filter(
 				and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
 			list_arg_ids = []
+
+			all_uids = ' '
+			for arg in db_arguid:
+				all_uids += str(arg.arg_uid) + ' '
+			logger('get_ajax_pro_arguments','all arg_uids', all_uids)
 			i = 0
 			for arg in db_arguid:
-				logger('get_ajax_pro_arguments','all arg_uids', str(arg.uid))
+				logger('get_ajax_pro_arguments','current arg_uids', str(arg.arg_uid))
 				if arg.uid not in list_arg_ids:
-					logger('get_ajax_pro_arguments', 'get argument with', str(arg.uid))
-					list_arg_ids.append(arg.uid)
-					db_argument = DBSession.query(Argument).filter_by(uid = arg.uid).first()
+					logger('get_ajax_pro_arguments', 'get argument with', str(arg.arg_uid))
+					list_arg_ids.append(arg.arg_uid)
+					db_argument = DBSession.query(Argument).filter_by(uid = arg.arg_uid).first()
 
-					logger('get_ajax_pro_arguments', 'add argument in dict',
+					logger('get_ajax_pro_arguments','checks whether argument exists, uid', str(arg.uid))
+					if (db_argument):
+						logger('get_ajax_pro_arguments', 'add argument in dict',
 					       'uid:' + str(db_argument.uid) + '   val: ' + db_argument.text)
-					return_dict[str(db_argument.uid)] = db_argument.text
-					i += 1
+						return_dict[str(db_argument.uid)] = db_argument.text
+						i += 1
+					else :
+						logger('get_ajax_pro_arguments','no argument exists, uid', str(arg.uid))
+
 
 		# db_arguments = DBSession.query(Argument).filter_by(Argument.uid.in_(
 		# 	DBSession.query(RelationArgPos).options(load_only("arg_uid")).filter(
