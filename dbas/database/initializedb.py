@@ -41,8 +41,8 @@ def main(argv=sys.argv):
 		# adding some dummy users
 		pwHandler = PasswordHandler()
 		pw1 = pwHandler.get_hashed_password('admin')
-		pw2 = pwHandler.get_hashed_password('test123')
-		pw3 = pwHandler.get_hashed_password('test123')
+		pw2 = pwHandler.get_hashed_password('tobias')
+		pw3 = pwHandler.get_hashed_password('martin')
 		pw4 = pwHandler.get_hashed_password('test')
 		pw5 = pwHandler.get_hashed_password('test')
 		user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1)
@@ -80,6 +80,7 @@ def main(argv=sys.argv):
 		argument11 = Argument(text='A cat will break our interior and will be more expensive than a dog.', weight=0)
 		argument12 = Argument(text='I am allergic to animal hair.', weight=0)
 		argument13 = Argument(text='Cats and dogs are loosing many hairs and this will cause more dirt in our flat.', weight=0)
+		argument14 = Argument(text='A cat does not cost any taxes and will be cheaper than a dog.', weight=0)
 		argument1.author = user1.uid
 		argument2.author = user1.uid
 		argument3.author = user1.uid
@@ -93,7 +94,8 @@ def main(argv=sys.argv):
 		argument11.author = user1.uid
 		argument12.author = user1.uid
 		argument13.author = user1.uid
-		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13])
+		argument14.author = user1.uid
+		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14])
 		DBSession.flush()
 
 		# adding all relations out of the discussion
@@ -119,6 +121,8 @@ def main(argv=sys.argv):
 		relation20 = RelationArgPos(weight=0, is_supportive=False)
 		relation21 = RelationArgPos(weight=0, is_supportive=True)
 		relation22 = RelationArgArg(weight=0, is_supportive=True)
+		relation23 = RelationArgArg(weight=0, is_supportive=False)
+		relation24 = RelationArgArg(weight=0, is_supportive=False)
 
 		# adding the startpoints of the relations
 		relation1.arg_uid = argument1.uid
@@ -143,6 +147,8 @@ def main(argv=sys.argv):
 		relation20.arg_uid = argument13.uid
 		relation21.arg_uid = argument13.uid
 		relation22.arg_uid = argument13.uid
+		relation23.arg_uid = argument14.uid
+		relation24.arg_uid = argument11.uid
 
 
 		# adding the endpoints of the relations
@@ -168,6 +174,8 @@ def main(argv=sys.argv):
 		relation20.pos_uid = position2.uid
 		relation21.pos_uid = position3.uid
 		relation22.arg_uid = argument12.uid
+		relation23.arg_uid = argument9.uid
+		relation24.arg_uid = argument14.uid
 
 
 		# adding the authors
@@ -193,8 +201,10 @@ def main(argv=sys.argv):
 		relation20.author = user1.uid
 		relation21.author = user1.uid
 		relation22.author = user1.uid
+		relation23.author = user1.uid
+		relation24.author = user1.uid
 
-		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8, relation9, relation10, relation11, relation12, relation13, relation14, relation15, relation16, relation17, relation18, relation19, relation20, relation21, relation22])
+		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8, relation9, relation10, relation11, relation12, relation13, relation14, relation15, relation16, relation17, relation18, relation19, relation20, relation21, relation22, relation23, relation24])
 		DBSession.flush()
 
 		transaction.commit()
