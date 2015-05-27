@@ -280,10 +280,22 @@ $(document).ready(function () {
 	$('#get-positions').on('click', function () {
 		$('#get-positions').hide(); // hides the start button
 		$('#start-description').hide(); // hides the start description
+		$('#restart-discussion').show(); // show the restart button
 
 		ajaxHandler.getAllPositionsAndSetInGui();
 	});
 
+	// hide the restart button and add click function
+	$('#restart-discussion').hide(); // hides the restart button
+	$('#restart-discussion').on('click', function () {
+		$('#get-positions').show(); // show the start description
+		$('#restart-discussion').hide(); // hide the restart button
+
+		// clear the discussion space
+		$('#' + discussionSpaceId).empty();
+		$('#discussion-container').hide();
+	});
+	
 	// adding a textarea in the right column
 	$('#add-con-textarea').on('click', function () {
 		guiHandler.addTextareaAsChildIn('right-position-column');
