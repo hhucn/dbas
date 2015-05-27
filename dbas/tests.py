@@ -597,13 +597,11 @@ class AjaxTests(IntegrationTestBase):
 		print("AjaxProArgumentTest: setUp")
 		request = testing.DummyRequest()
 		response = Dbas(request).get_ajax_pro_arguments()
-		# self.assertEqual('This is for test.py', response['test'])
 		# self.assertEqual('They are very devoted.', response['2'])
 
 	def test_get_all_con_arguments(self):
 		print("AjaxConArgumentTest: setUp")
 		request = testing.DummyRequest()
 		response = Dbas(request).get_ajax_con_arguments()
-		# self.assertEqual('This is for test.py', response['test'])
 		# self.assertEqual('They are hating all humans!', response['1'])
 

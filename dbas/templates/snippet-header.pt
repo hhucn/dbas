@@ -76,15 +76,15 @@
 								<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li>
-							<a href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
+							<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
 								<i class="glyphicon glyphicon-user"></i>&thinsp;Author</a>
 						</li>
 						<li>
-							<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
+							<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
 								<i class="glyphicon glyphicon-floppy-disk"></i>&thinsp;Licence</a>
 						</li>
 						<li>
-							<a href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
+							<a id="link_popup_privacy" href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
 								<i class="glyphicon glyphicon-sunglasses"></i>&thinsp;Privacy Policy</a>
 						</li>
 					</ul>

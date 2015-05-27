@@ -67,7 +67,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+				<button id="popup_author_btn_close" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>
@@ -108,7 +108,7 @@
 				THE SOFTWARE.</span>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button id="popup_licence_btn_close" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>
@@ -124,8 +124,6 @@
 				<h4 class="modal-title" id="myModalLabel">Privacy Policy</h4>
 			</div>
 			<div class="modal-body">
-
-
 
 				<style>
 					#ppBody {
@@ -351,7 +349,7 @@
 
 		</div>
 		<div class="modal-footer">
-			<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+			<button id="popup_privacy_btn_close" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
 		</div>
 	</div>
 </div>
