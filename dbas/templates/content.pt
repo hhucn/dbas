@@ -41,19 +41,21 @@
 	</div>
 
 
-	<div class="container" id="add-argument-container">
-		<button id="closeArgumentContainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+	<div class="container" id="add-statement-container">
+		<button id="closeStatementContainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+				aria-hidden="true">&times;</span>
 		</button>
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
 
-				<form id="insert_argument_form" action="/not_implemented" method="post">
-					<h2>Please insert a new Argument</h2>
-					<input type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="">
+				<form id="insert_statement_form" action="/not_implemented" method="post">
+					<h2 id='add-statement-container-h2'>Please insert a new Argument</h2>
+					<input id ='add-statement-container-main-input' type="text" class="" name="" autocomplete="off" placeholder="example:
+					Build a new opera house" value="">
 
 					<div id="left-position-column">
-						<h3 id="heading-pro-positions" class="font-semi-bold">Pro-positions</h3>
+						<h3 id="heading-pro-positions" class="font-semi-bold">Pro</h3>
 						<div id="left-textareas">
 						</div>
 						<a>
@@ -63,7 +65,7 @@
 					</div>
 
 					<div id="right-position-column">
-						<h3 id="heading-contra-positions" class="font-semi-bold">Contra-positions</h3>
+						<h3 id="heading-contra-positions" class="font-semi-bold">Contra</h3>
 						<div id="right-textareas">
 						</div>
 						<a>

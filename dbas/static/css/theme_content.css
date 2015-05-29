@@ -35,15 +35,15 @@
 	font-size: 15px;
 }
 
-#insert_argument_form {
+#insert_statement_form {
 	text-align: center;
 }
-#insert_argument_form  textarea{
+#insert_statement_form  textarea{
 	resize: vertical;
 }
 
-#insert_argument_form input,
-#insert_argument_form textarea {
+#insert_statement_form input,
+#insert_statement_form textarea {
 	outline: none;
 	font-size: 18px;
 	font-weight: 400;
@@ -59,11 +59,11 @@
 	width: 100%;
 }
 
-#insert_argument_form div a {
+#insert_statement_form div a {
 	text-decoration: none;
 	color: #000;
 }
-#insert_argument_form div a:hover {
+#insert_statement_form div a:hover {
 	text-decoration: underline;
 	color: #006ab3;
 }

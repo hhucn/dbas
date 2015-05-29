@@ -2,7 +2,9 @@
 
 var addStatementButtonId = 'add-statement';
 var addPositionButtonId = 'add-position';
-var addArgumentContainerId = 'add-argument-container';
+var addStatementContainerId = 'add-statement-container';
+var addStatementContainerH2Id = 'add-statement-container-h2';
+var addStatementContainerMainInputId = 'add-statement-container-main-input';
 var addProTextareaId = 'add-pro-textarea';
 var addConTextareaId = 'add-con-textarea';
 var adminsSpaceId = 'admins-space';
@@ -15,6 +17,7 @@ var errorDescriptionId = 'error-description';
 var leftPositionColumnId = 'left-position-column';
 var leftPositionTextareaId = 'left-textareas';
 var listAllUsersButtonId = 'list-all-users';
+var insertStatementForm = 'insert_statement_form';
 var restartDiscussionButtonId = 'restart-discussion';
 var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'right-textareas';
@@ -136,7 +139,7 @@ function GuiHandler() {
 		}
 
 		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
-		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
+		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new position.', true));
 
 		$('#' + discussionContainerId).show();
 		this.addListItemsToDiscussionsSpace(listitems, statementList);
@@ -159,7 +162,7 @@ function GuiHandler() {
 		}
 
 		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new position.', true));
-		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new position.', true));
+		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new argument.', true));
 		this.addListItemsToDiscussionsSpace(listitems, argumentList);
 	};
 
@@ -405,10 +408,10 @@ function GuiHandler() {
 	 */
 	this.displayStyleOfAddArgumentContiner = function (isVisible) {
 		if (isVisible) {
-			$('#' + addArgumentContainerId).show();
+			$('#' + addStatementContainerId).show();
 			$('#' + addStatementButtonId).disable = true;
 		} else {
-			$('#' + addArgumentContainerId).hide();
+			$('#' + addStatementContainerId).hide();
 			$('#' + addStatementButtonId).disable = false;
 		}
 	};
@@ -465,6 +468,15 @@ function InteractionHandler() {
 		if ($('#' + addStatementButtonId).is(':checked')) {
 			guiHandler.displayStyleOfAddArgumentContiner(true);
 			$('#' + sendAnswerButtonId).hide();
+
+			// get the second child, which is the label
+			if ($('#' + addStatementButtonId).parent().children().eq(1).text().indexOf('position') >= 0){
+				$('#' + addStatementContainerH2Id).text('Please insert a new position');
+				$('#' + addStatementContainerMainInputId).show();
+			} else {
+				$('#' + addStatementContainerH2Id).text('Please insert new arguments');
+				$('#' + addStatementContainerMainInputId).hide();
+			}
 		} else {
 			guiHandler.displayStyleOfAddArgumentContiner(false);
 			$('#' + sendAnswerButtonId).show();
@@ -505,7 +517,7 @@ $(document).ready(function () {
 	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), interactionHandler = new InteractionHandler();
 
 	$('#' + discussionContainerId).hide(); // hiding discussions container
-	$('#' + addArgumentContainerId).hide(); // hiding container for adding arguments
+	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 
 	// starts the discussion with getting all positions
 	$('#' + startDiscussionButtonId).click(function () {
@@ -556,7 +568,7 @@ $(document).ready(function () {
 
 	// hiding the argument container, when the X button is clicked
 	$('#' + closeArgumentContainerId).click(function () {
-		$('#' + addArgumentContainerId).hide();
+		$('#' + addStatementContainerId).hide();
 		$('#' + addStatementButtonId).enable = true;
 		$('#' + addStatementButtonId).removeAttr('checked');
 		$('#' + sendAnswerButtonId).hide();
