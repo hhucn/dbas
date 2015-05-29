@@ -534,7 +534,13 @@ $(document).ready(function () {
 
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function() {
-		ajaxHandler.getAllUsersAndSetInGui();
+		if ($(this).val() === 'List all users') {
+			ajaxHandler.getAllUsersAndSetInGui();
+			$(this).val('Hide all users');
+		} else {
+			$('#' + adminsSpaceId).empty();
+			$(this).val('List all users');
+		}
 	});
 
 	// adding a textarea in the right column

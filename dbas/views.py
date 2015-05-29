@@ -1,5 +1,7 @@
 import transaction
 
+import os
+
 import smtplib
 from socket import error as socket_error
 
@@ -9,7 +11,8 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyramid.security import remember, forget
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
-from sqlalchemy.sql import func, update
+from pyramid.response import FileResponse
+from pyramid.response import Response
 
 from .database import DBSession
 from .database.model import User, Group, Issue, Position, Argument, RelationArgPos
@@ -612,8 +615,8 @@ class Dbas(object):
 							+ ", registered: " + str(user.registered)
 				       )
 				return_dict[user.uid] = return_user
-
 		return return_dict
+
 
 	# ajax - getting every pro argument, which is connected to the given position uid
 	@view_config(route_name='ajax_pro_arguments_connected_to_position_uid', renderer='json')

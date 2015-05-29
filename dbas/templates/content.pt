@@ -157,8 +157,7 @@
 				<h1><span class="font-semi-bold">Special rights</span></h1>
 				<p>Only the administrator has some special rights and this is the placeholder.
 					<br>
-					<input id="" type="button" name="" value="Get a database dump" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
-					<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />	
+					<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
 
 				<div id="admins-space"> </div>
 				</p>
