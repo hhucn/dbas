@@ -13,7 +13,44 @@
 		<h1><span class="font-semi-bold">News</span></h1>
 		<p class="lead">This will be the news page and currently I think...this will be some kind of blog</p>
 	</div>
+
+	<div class="newscontainer span_1_of_4">
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">Workshop</span></h2>
+		<h3><p>27.05.2015</p></h3>
+		<h4>Author: Tobias Krauthoff</h4>
+		<br>Today: A new workshop at the O.A.S.E. :)
+	</div>
 	
+	<div class="newscontainer span_1_of_4">
+		<ul class="share-table">
+			<li>
+				<a class="share-icon share-def"></a>
+				<ul>
+					<li><a class="share-icon share-mail"></a></li>
+					<li><a class="share-icon share-twitter"></a></li>
+					<li><a class="share-icon share-google"></a></li>
+					<li><a class="share-icon share-facebook"></a></li>
+				</ul>
+			</li>
+		</ul>
+		<h2><span class="font-semi-bold">Sharing</span></h2>
+		<h3><p>29.05.2015</p></h3>
+		<h4>Author: Tobias Krauthoff</h4>
+		<br>Everything is growing, we have now a little admin interface and a navigation for the discussion is finshed, but this is very
+			basic and simple
+	</div>
+
 	<div class="newscontainer span_1_of_4">
 		<ul class="share-table">
 			<li>
@@ -32,7 +69,7 @@
 		<br>Every news can now be shared via FB, G+, Twitter and Mail. Not very important, but in some kind it is...
 	</div>
 	
-	<div class="newscontainer span_2_of_4">
+	<div class="newscontainer span_1_of_4">
 		<ul class="share-table">
 			<li>
 				<a class="share-icon share-def"></a>
