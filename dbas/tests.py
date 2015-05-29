@@ -587,20 +587,25 @@ class AjaxTests(IntegrationTestBase):
 		self.session = addTestingDB(self.session)
 
 	def test_get_all_positions(self):
-		print("AjaxViewTest: setUp")
+		print("AjaxTests: test_get_all_positions")
 		request = testing.DummyRequest()
 		response = Dbas(request).get_ajax_positions()
 		self.assertEqual('We should get a cat.', response['1'])
 		self.assertEqual('We should get a dog.', response['2'])
 
+	def test_get_all_users(self):
+		print("AjaxTests: test_get_all_users")
+		request = testing.DummyRequest()
+		response = Dbas(request).ajax_all_users()
+
 	def test_get_all_pro_arguments(self):
-		print("AjaxProArgumentTest: setUp")
+		print("AjaxTests: test_get_all_pro_arguments")
 		request = testing.DummyRequest()
 		response = Dbas(request).get_ajax_pro_arguments()
 		# self.assertEqual('They are very devoted.', response['2'])
 
 	def test_get_all_con_arguments(self):
-		print("AjaxConArgumentTest: setUp")
+		print("AjaxTests: test_get_all_con_arguments")
 		request = testing.DummyRequest()
 		response = Dbas(request).get_ajax_con_arguments()
 		# self.assertEqual('They are hating all humans!', response['1'])

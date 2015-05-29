@@ -9,7 +9,7 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyramid.security import remember, forget
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
-from sqlalchemy import and_
+from sqlalchemy.sql import func, update
 
 from .database import DBSession
 from .database.model import User, Group, Issue, Position, Argument, RelationArgPos
@@ -91,6 +91,12 @@ class Dbas(object):
 			else:
 				logger('main_login', 'form.login.submitted', 'login successful')
 				headers = remember(self.request, nickname)
+
+				# update timestamp
+				logger('main_login', 'form.login.submitted', 'update login timestamp')
+				db_user.update_last_logged()
+				transaction.commit()
+
 				return HTTPFound(
 					location=self.request.route_url('main_content'),
 					headers=headers
@@ -553,13 +559,59 @@ class Dbas(object):
 
 		if db_positions:
 			logger('get_ajax_positions', 'def', 'iterate all positions')
-			i = 0
 			# get every position
 			for pos in db_positions:
-				logger('get_ajax_positions', 'position iterator ' + str(i) + ' of ' + str(len(db_positions)-1),
+				logger('get_ajax_positions', 'position iterator ' + str(pos.uid) + ' of ' + str(len(db_positions)-1),
 				       "uid: " + str(pos.uid) + "   val: " + pos.text)
 				return_dict[str(pos.uid)] = pos.text
-				i += 1
+
+		return return_dict
+
+	# ajax - getting every user, and returns dicts with name <-> group
+	@view_config(route_name='ajax_all_users', renderer='json')
+	def get_ajax_users(self):
+		"""
+		Ajax rocks :)
+		Returns all users as dictionary with name <-> group
+		:return: list of all positions
+		"""
+		logger('get_ajax_users', 'def', 'main')
+		logger('get_ajax_users', 'def', 'get all users')
+		db_users = DBSession.query(User).all()
+		logger('get_ajax_users', 'def', 'get all groups')
+
+		db_groups = DBSession.query(Group).all()
+		groups = {}
+		for g in db_groups:
+			logger('get_ajax_users', 'def', str(g.uid) + " - " + g.name)
+			groups[str(g.uid)] = g.name
+
+		return_dict = {}
+		return_user = {}
+
+		if db_users:
+			logger('get_ajax_users', 'def', 'iterate all users')
+			for user in db_users:
+				return_user = {}
+				return_user['uid']         = user.uid
+				return_user['firstname']   = user.firstname
+				return_user['surname']     = user.surname
+				return_user['nickname']    = user.nickname
+				return_user['email']       = user.email
+				return_user['group']       = groups.get(str(user.group))
+				return_user['last_logged'] = str(user.last_logged)
+				return_user['registered']  = str(user.registered)
+				logger('get_ajax_users', 'user iterator ' + str(user.uid) + ' of ' + str(len(db_users)),
+							"uid: " + str(user.uid)
+							+ ", firstname: " + user.firstname
+							+ ", surname: " + user.surname
+							+ ", nickname: " + user.nickname
+							+ ", email: " + user.email
+							+ ", group: " + groups.get(str(user.group))
+							+ ", last_logged: " + str(user.last_logged)
+							+ ", registered: " + str(user.registered)
+				       )
+				return_dict[user.uid] = return_user
 
 		return return_dict
 

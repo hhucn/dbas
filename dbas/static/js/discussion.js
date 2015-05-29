@@ -4,7 +4,8 @@ var addStatementButtonId = 'add-statement';
 var addPositionButtonId = 'add-position';
 var addArgumentContainerId = 'add-argument-container';
 var addProTextareaId = 'add-pro-textarea';
-var addConTextareaId = 'add-con-textarea'
+var addConTextareaId = 'add-con-textarea';
+var adminsSpaceId = 'admins-space';
 var argumentList = 'argument-list';
 var closeArgumentContainerId = 'closeArgumentContainer';
 var discussionsDescriptionId = 'discussions-description';
@@ -13,6 +14,7 @@ var discussionSpaceId = 'discussions-space';
 var errorDescriptionId = 'error-description';
 var leftPositionColumnId = 'left-position-column';
 var leftPositionTextareaId = 'left-textareas';
+var listAllUsersButtonId = 'list-all-users';
 var restartDiscussionButtonId = 'restart-discussion';
 var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'right-textareas';
@@ -96,7 +98,23 @@ function AjaxHandler() {
 			guiHandler.setNewArgumentButtonOnly();
 		});
 	};
+
+	/**
+	 * Request all users
+	 */
+	this.getAllUsersAndSetInGui = function () {
+		$.ajax({
+			url: 'ajax_all_users',
+			type: 'GET',
+			dataType: 'json'
+		}).done(function (data) {
+			guiHandler.setJsonDataToAdminContent(data);
+		}).fail(function () {
+			alert('internal failure');
+		});
+	};
 }
+
 
 function GuiHandler() {
 	'use strict';
@@ -113,7 +131,7 @@ function GuiHandler() {
 		});
 
 		// sanity check for an empty list
-		if (listitems.length === 0){
+		if (listitems.length === 0) {
 			this.setDiscussionsDescription(firstOneText);
 		}
 
@@ -136,13 +154,82 @@ function GuiHandler() {
 		});
 
 		// sanity check for an empty list
-		if (listitems.length === 0){
+		if (listitems.length === 0) {
 			this.setDiscussionsDescription(firstOneText);
 		}
 
 		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new position.', true));
 		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new position.', true));
 		this.addListItemsToDiscussionsSpace(listitems, argumentList);
+	};
+
+	/**
+	 * Sets given json data to admins content
+	 * @param jsonData
+	 */
+	this.setJsonDataToAdminContent = function (jsonData) {
+		var ulElement, trElement, tdElement, spanElement;
+		tdElement = ['','','','','','','',''];
+		spanElement = ['','','','','','','',''];
+		ulElement = $('<table>');
+		ulElement.attr({class: 'table table-condensed',
+						border: '0',
+						style: 'border-collapse: separate; border-spacing: 5px 5px;'});
+
+		trElement = $('<tr>');
+
+		for (var i=0; i<tdElement.length; i++){
+			tdElement[i] = $('<td>');
+			spanElement[i] = $('<spand>');
+			spanElement[i].attr({class: 'font-semi-bold'});
+		}
+
+		spanElement[0].text('uid');
+		spanElement[1].text('firstname');
+		spanElement[2].text('surname');
+		spanElement[3].text('nickname');
+		spanElement[4].text('email');
+		spanElement[5].text('group');
+		spanElement[6].text('last_logged');
+		spanElement[7].text('last_logged');
+
+		for (var i=0; i<tdElement.length; i++){
+			tdElement[i].append(spanElement[i]);
+			trElement.append(tdElement[i]);
+			ulElement.append(trElement);
+		}
+
+		$.each(jsonData, function (key, val) {
+			//$.each(val, function (valkey, valval) {
+			//	alert(key + " " + valkey + " " + valval);
+			//});
+			trElement = $('<tr>');
+			for (var i=0; i<tdElement.length; i++){
+				tdElement[i] = $('<td>');
+			};
+			//alert(key + " " + (typeof val));
+			tdElement[0].text(val.uid);
+			tdElement[1].text(val.firstname);
+			tdElement[2].text(val.surname);
+			tdElement[3].text(val.nickname);
+			tdElement[4].text(val.email);
+			tdElement[5].text(val.group);
+			tdElement[6].text(val.last_logged);
+			tdElement[7].text(val.last_logged);
+
+			for (var i=0; i<tdElement.length; i++){
+				trElement.append(tdElement[i]);
+			}
+			trElement.hover(function() {
+				$(this).toggleClass('hover');
+			});
+			ulElement.append(trElement);
+		});
+
+
+
+		$('#' + adminsSpaceId).empty();
+		$('#' + adminsSpaceId).append(ulElement);
 	};
 
 	/**
@@ -261,8 +348,8 @@ function GuiHandler() {
 		$('#' + discussionSpaceId).append(ulElement);
 
 		// hover style element for the list elements
-		ulElement.children().hover(function(){
-		    $(this).toggleClass('hover');
+		ulElement.children().hover(function() {
+			$(this).toggleClass('hover');
 		});
 	};
 
@@ -280,20 +367,20 @@ function GuiHandler() {
 		childCount = parent.children().length;
 		//alert('TOD-O');
 
-        div = $('<div>');
-        div.attr({id: 'div' + childCount.toString()});
+		div = $('<div>');
+		div.attr({id: 'div' + childCount.toString()});
 
-        button = $('<button>');
+		button = $('<button>');
 		button.attr({type: 'button',
 			class: 'close',
 			id: 'button' + childCount.toString()});
 
-        span = $('<span>');
-        //span.setAttribute('aria-hidden', 'true');
-        span.html('&times;');
+		span = $('<span>');
+		//span.setAttribute('aria-hidden', 'true');
+		span.html('&times;');
 
-        area = $('<textarea>');
-        area.attr({type: 'text',
+		area = $('<textarea>');
+		area.attr({type: 'text',
 			class: '',
 			name: '',
 			autocomplete: 'off',
@@ -301,12 +388,12 @@ function GuiHandler() {
 			value: '',
 			id: 'area' + childCount.toString()});
 
-        button.append(span);
-        div.append(area);
-        div.append(button);
+		button.append(span);
+		div.append(area);
+		div.append(button);
 
-        // remove everything on click
-        button.attr({onclick: "var parentNode = this.parentNode;var grandParentNode = parentNode.parentNode;grandParentNode.removeChild(parentNode);"});
+		// remove everything on click
+		button.attr({onclick: "var parentNode = this.parentNode;var grandParentNode = parentNode.parentNode;grandParentNode.removeChild(parentNode);"});
 
 		// add everything
 		parent.append(div);
@@ -334,6 +421,7 @@ function GuiHandler() {
 		return $('<div>').append(element).html();
 	};
 }
+
 
 function InteractionHandler() {
 	'use strict';
@@ -383,19 +471,19 @@ function InteractionHandler() {
 		}
 
 		// enable or disable the send button
-		$('#' + sendAnswerButtonId).prop('disabled', ($('input[name=' + radioButtonGroup + ']:checked') == 'undefined' ? true : false));
+		$('#' + sendAnswerButtonId).prop('disabled', ($('input[name=' + radioButtonGroup + ']:checked') === 'undefined' ? true : false));
 	};
 
 	/**
 	 * Defines the action for the send button
 	 */
-	this.sendAnswerButtonClicked = function (){
+	this.sendAnswerButtonClicked = function () {
 		var radioButton, id, value;
 		radioButton = $('input[name=' + radioButtonGroup + ']:checked');
 		id = radioButton.attr('id');
 		value = radioButton.val();
 
-		if (typeof id === 'undefined' || typeof value === 'undefined'){
+		if (typeof id === 'undefined' || typeof value === 'undefined') {
 			guiHandler.setErrorDescription('Please select a statement!');
 		} else {
 			guiHandler.setErrorDescription('');
@@ -420,7 +508,7 @@ $(document).ready(function () {
 	$('#' + addArgumentContainerId).hide(); // hiding container for adding arguments
 
 	// starts the discussion with getting all positions
-	$('#' + startDiscussionButtonId).on('click', function () {
+	$('#' + startDiscussionButtonId).click(function () {
 		$('#' + startDiscussionButtonId).hide(); // hides the start button
 		$('#' + startDescriptionId).hide(); // hides the start description
 		$('#' + restartDiscussionButtonId).show(); // show the restart button
@@ -429,13 +517,13 @@ $(document).ready(function () {
 	});
 
 	// handler for the send answer button
-	$('#' + sendAnswerButtonId).on('click', function () {
+	$('#' + sendAnswerButtonId).click(function () {
 		interactionHandler.sendAnswerButtonClicked();
 	});
 
 	// hide the restart button and add click function
 	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
-	$('#' + restartDiscussionButtonId).on('click', function () {
+	$('#' + restartDiscussionButtonId).click(function () {
 		$('#' + startDiscussionButtonId).show(); // show the start description
 		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
 
@@ -443,20 +531,25 @@ $(document).ready(function () {
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionContainerId).hide();
 	});
-	
+
+	// admin list all users button
+	$('#' + listAllUsersButtonId).click(function() {
+		ajaxHandler.getAllUsersAndSetInGui();
+	});
+
 	// adding a textarea in the right column
-	$('#' + addConTextareaId).on('click', function () {
+	$('#' + addConTextareaId).click(function () {
 		guiHandler.addTextareaAsChildIn(rightPositionTextareaId);
 	});
 
 	// adding a textarea in the left column
-	$('#' + addProTextareaId).on('click', function () {
+	$('#' + addProTextareaId).click(function () {
 
 		guiHandler.addTextareaAsChildIn(leftPositionTextareaId);
 	});
 
 	// hiding the argument container, when the X button is clicked
-	$('#' + closeArgumentContainerId).on('click', function () {
+	$('#' + closeArgumentContainerId).click(function () {
 		$('#' + addArgumentContainerId).hide();
 		$('#' + addStatementButtonId).enable = true;
 		$('#' + addStatementButtonId).removeAttr('checked');

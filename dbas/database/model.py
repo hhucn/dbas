@@ -68,6 +68,7 @@ class User(Base):
 	password = sa.Column(sa.Text, nullable=False)
 	group = sa.Column(sa.Integer, sa.ForeignKey(Group.uid)) # many-to-one
 	last_logged = sa.Column(sa.DateTime, default=func.now())
+	registered = sa.Column(sa.DateTime, default=func.now())
 
 	#position = orm.relationship("Position", backref=__tablename__) # one-to-many
 	#argument = orm.relationship("Argument", backref=__tablename__) # one-to-many
@@ -94,6 +95,10 @@ class User(Base):
 	def validate_password(self, password):
 		manager = BCRYPTPasswordManager()
 		return manager.check(self.password, password)
+
+	def update_last_logged(self):
+		self.last_logged = func.now()
+
 
 
 class Position(Base):
