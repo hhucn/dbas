@@ -75,16 +75,16 @@ $(document).ready(function () {
 	var path = document.location.pathname.match(/[^\/]+$/);
 	if (path == "contact") {
 		setOnlyGivenLinkToActive('#contact-link');
-		$('navbar-left').hide();
+		$('#navbar-left').hide();
 	} else if (path == "login") {
 		setOnlyGivenLinkToActive('#login-link');
-		$('navbar-left').hide();
+		$('#navbar-left').hide();
 	} else if (path == "news") {
 		setOnlyGivenLinkToActive('#news-link');
-		$('navbar-left').hide();
+		$('#navbar-left').hide();
 	} else if (path == "content") {
-		setOnlyGivenLinkToActive('#content-link')
-		$('navbar-left').hide();
+		setOnlyGivenLinkToActive('#content-link');
+		$('#navbar-left').hide();
 	} else if (path == "logout") { 	// Your application has indicated you are logged out
 		hideMainPageHooks();
 		var myCounter = new Countdown({
@@ -107,7 +107,7 @@ $(document).ready(function () {
 		});
 		myCounter.start();
 	} else {
-		$('navbar-left').show();
+		$('#navbar-left').show();
 		setOnlyGivenLinkToActive('#content-link');
 	}
 });

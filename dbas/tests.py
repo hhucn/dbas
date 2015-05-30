@@ -8,8 +8,7 @@ from dbas.views import Dbas
 from dbas import main
 from dbas.helper import PasswordHandler
 from dbas.database import Base as Entity
-from dbas.database.model import Group, User, Argument, RelationArgPos, RelationArgArg, RelationPosPos, \
-	RelationPosArg, Position
+from dbas.database.model import Group, User, Argument, RelationArgPos, RelationArgArg, RelationPosPos, RelationPosArg, Position
 from mock import Mock
 from paste.deploy.loadwsgi import appconfig
 from pyramid import testing
@@ -397,7 +396,6 @@ class FunctionalViewTests(IntegrationTestBase):
 		res = self.testapp.get('/settings', status=200)
 		self.assertIn(b'Settings', res.body)
 
-
 #	def test_anonymous_user_cannot_edit(self):
 #		res = self.testapp.get('/FrontPage/edit_page', status=200)
 #		self.assertTrue(b'Login' in res.body)
@@ -596,7 +594,10 @@ class AjaxTests(IntegrationTestBase):
 	def test_get_all_users(self):
 		print("AjaxTests: test_get_all_users")
 		request = testing.DummyRequest()
-		response = Dbas(request).ajax_all_users()
+		response = Dbas(request).get_ajax_users()
+		self.assertEqual('admin', response['nickname'])
+		self.assertEqual('firstname', response['nickname'])
+		self.assertEqual('surname', response['nickname'])
 
 	def test_get_all_pro_arguments(self):
 		print("AjaxTests: test_get_all_pro_arguments")

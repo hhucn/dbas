@@ -11,7 +11,7 @@
 		</div>
 		
 		<div class="collapse navbar-collapse navbar-menubuilder">
-			<ul class="nav navbar-nav navbar-left">
+			<ul id ="navbar-left" class="nav navbar-nav navbar-left">
 				<li id="home-hook">
 					<a href="#home-template" title="Go to the top">Home</a>
 				</li>
@@ -28,7 +28,7 @@
 				</li>
 			</ul>
 
-			<ul class="nav navbar-nav navbar-right">
+			<ul id="navbar-right" class="nav navbar-nav navbar-right">
 				<li id="content-link" tal:condition="logged_in">
 					<a href="${request.application_url}/content" title="Get the party started">
 						<span class="glyphicon glyphicon-erase glyphicon-icon">&thinsp;Let's&thinsp;&thinsp;go</span>
