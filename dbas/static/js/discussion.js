@@ -9,7 +9,7 @@ var addProTextareaId = 'add-pro-textarea';
 var addConTextareaId = 'add-con-textarea';
 var adminsSpaceId = 'admins-space';
 var argumentList = 'argument-list';
-var closeArgumentContainerId = 'closeArgumentContainer';
+var closeStatementContainerId = 'closeStatementContainer';
 var discussionsDescriptionId = 'discussions-description';
 var discussionContainerId = 'discussion-container';
 var discussionSpaceId = 'discussions-space';
@@ -64,13 +64,15 @@ function AjaxHandler() {
 	 * position with given uid.
 	 * @param ofPositionWithUid uid of clicked position
 	 * @param shouldGetProArgument true, if the pro arguments should be fetched, false for the con
+	 * @param numberOfReturnArguments number of arguments, which should be returned, -1 for all
 	 */
-	this.getAllProOrConArgumentsConnectedToPositionUidAndSetInGui = function (ofPositionWithUid, shouldGetProArgument) {
+	this.getProOrConArgumentsConnectedToPositionUidAndSetInGui = function (ofPositionWithUid, shouldGetProArgument, numberOfReturnArguments) {
 		var url = shouldGetProArgument ? "ajax_pro_arguments_connected_to_position_uid" : "ajax_con_arguments_connected_to_position_uid";
+		var no = typeof numberOfReturnArguments === 'undefined' || numberOfReturnArguments < -1 ? -1 : Math.round(numberOfReturnArguments);
 		$.ajax({
 			url: url,
 			method: "POST",
-			data: { uid : ofPositionWithUid },
+			data: { uid : ofPositionWithUid, returnCount : no },
 			dataType: "json"
 		}).done(function (data) {
 			guiHandler.setJsonDataToContentAsArguments(data);
@@ -86,13 +88,15 @@ function AjaxHandler() {
 	 * position with given uid
 	 * @param ofPositionWithUid uid of clicked position
 	 * @param shouldGetProArgument true, if the pro arguments should be fetched, false for the con
+	 * @param numberOfReturnArguments number of arguments, which should be returned, -1 for all
 	 */
-	this.getAllProOrConArgumentsWhichAreAgainstOrForTheSamePositionForArgumentUidAndSetInGui = function (ofArgumentWithUid, shouldGetProArgument) {
+	this.getProOrConArgumentsWhichAreAgainstOrForTheSamePositionForArgumentUidAndSetInGui = function (ofArgumentWithUid, shouldGetProArgument, numberOfReturnArguments) {
 		var url = shouldGetProArgument ? "ajax_pro_arguments_against_same_positions_by_argument_uid" : "ajax_con_arguments_against_same_positions_by_argument_uid";
+		var no = typeof numberOfReturnArguments === 'undefined' || numberOfReturnArguments < -1 ? -1 : Math.round(numberOfReturnArguments);
 		$.ajax({
 			url: url,
 			method: "POST",
-			data: { uid : ofArgumentWithUid },
+			data: { uid : ofArgumentWithUid, returnCount : no },
 			dataType: "json"
 		}).done(function (data) {
 			guiHandler.setJsonDataToContentAsArguments(data);
@@ -171,9 +175,9 @@ function GuiHandler() {
 	 * @param jsonData
 	 */
 	this.setJsonDataToAdminContent = function (jsonData) {
-		var ulElement, trElement, tdElement, spanElement;
-		tdElement = ['','','','','','','',''];
-		spanElement = ['','','','','','','',''];
+		var ulElement, trElement, tdElement, spanElement, i;
+		tdElement = ['', '', '', '', '', '', '', ''];
+		spanElement = ['', '', '', '', '', '', '', ''];
 		ulElement = $('<table>');
 		ulElement.attr({class: 'table table-condensed',
 						border: '0',
@@ -181,7 +185,7 @@ function GuiHandler() {
 
 		trElement = $('<tr>');
 
-		for (var i=0; i<tdElement.length; i++){
+		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i] = $('<td>');
 			spanElement[i] = $('<spand>');
 			spanElement[i].attr({class: 'font-semi-bold'});
@@ -194,23 +198,19 @@ function GuiHandler() {
 		spanElement[4].text('email');
 		spanElement[5].text('group');
 		spanElement[6].text('last_logged');
-		spanElement[7].text('last_logged');
+		spanElement[7].text('registered');
 
-		for (var i=0; i<tdElement.length; i++){
+		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
 			trElement.append(tdElement[i]);
 			ulElement.append(trElement);
 		}
 
 		$.each(jsonData, function (key, val) {
-			//$.each(val, function (valkey, valval) {
-			//	alert(key + " " + valkey + " " + valval);
-			//});
 			trElement = $('<tr>');
-			for (var i=0; i<tdElement.length; i++){
+			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
-			};
-			//alert(key + " " + (typeof val));
+			}
 			tdElement[0].text(val.uid);
 			tdElement[1].text(val.firstname);
 			tdElement[2].text(val.surname);
@@ -218,13 +218,13 @@ function GuiHandler() {
 			tdElement[4].text(val.email);
 			tdElement[5].text(val.group);
 			tdElement[6].text(val.last_logged);
-			tdElement[7].text(val.last_logged);
+			tdElement[7].text(val.registered);
 
-			for (var i=0; i<tdElement.length; i++){
+			for (i = 0; i < tdElement.length; i += 1) {
 				trElement.append(tdElement[i]);
 			}
-			trElement.hover(function() {
-				$(this).toggleClass('hover');
+			trElement.hover(function () {
+				$(this).toggleClass('table-hover');
 			});
 			ulElement.append(trElement);
 		});
@@ -351,8 +351,8 @@ function GuiHandler() {
 		$('#' + discussionSpaceId).append(ulElement);
 
 		// hover style element for the list elements
-		ulElement.children().hover(function() {
-			$(this).toggleClass('hover');
+		ulElement.children().hover(function () {
+			$(this).toggleClass('table-hover');
 		});
 	};
 
@@ -442,7 +442,7 @@ function InteractionHandler() {
 		$('#' + discussionSpaceId).empty();
 
 		// add all positions
-		ajaxHandler.getAllProOrConArgumentsConnectedToPositionUidAndSetInGui(id, true);
+		ajaxHandler.getProOrConArgumentsConnectedToPositionUidAndSetInGui(id, true);
 
 	};
 
@@ -458,7 +458,7 @@ function InteractionHandler() {
 		$('#' + discussionSpaceId).empty();
 
 		// add all positions from the other side
-		ajaxHandler.getAllProOrConArgumentsWhichAreAgainstOrForTheSamePositionForArgumentUidAndSetInGui(id, false);
+		ajaxHandler.getProOrConArgumentsWhichAreAgainstOrForTheSamePositionForArgumentUidAndSetInGui(id, false);
 	};
 
 	/**
@@ -470,7 +470,7 @@ function InteractionHandler() {
 			$('#' + sendAnswerButtonId).hide();
 
 			// get the second child, which is the label
-			if ($('#' + addStatementButtonId).parent().children().eq(1).text().indexOf('position') >= 0){
+			if ($('#' + addStatementButtonId).parent().children().eq(1).text().indexOf('position') >= 0) {
 				$('#' + addStatementContainerH2Id).text('Please insert a new position');
 				$('#' + addStatementContainerMainInputId).show();
 			} else {
@@ -545,7 +545,7 @@ $(document).ready(function () {
 	});
 
 	// admin list all users button
-	$('#' + listAllUsersButtonId).click(function() {
+	$('#' + listAllUsersButtonId).click(function () {
 		if ($(this).val() === 'List all users') {
 			ajaxHandler.getAllUsersAndSetInGui();
 			$(this).val('Hide all users');
@@ -567,12 +567,17 @@ $(document).ready(function () {
 	});
 
 	// hiding the argument container, when the X button is clicked
-	$('#' + closeArgumentContainerId).click(function () {
+	$('#' + closeStatementContainerId).click(function () {
 		$('#' + addStatementContainerId).hide();
 		$('#' + addStatementButtonId).enable = true;
 		$('#' + addStatementButtonId).removeAttr('checked');
 		$('#' + sendAnswerButtonId).hide();
-
+	});
+	
+	// ajax loading animation
+	$(document).on({
+		ajaxStart: function() { $('body').addClass('loading'); },
+		ajaxStop: function() { $('body').removeClass('loading'); }    
 	});
 
 });

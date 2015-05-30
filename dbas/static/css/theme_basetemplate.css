@@ -46,6 +46,37 @@ a:hover {
 	text-decoration: underline;
 }
 
+/* Start by setting display:none to make this hidden. Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating
+*/
+/* http://stackoverflow.com/questions/1964839/jquery-please-wait-loading-animation*/
+.ajaxloader {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .7 ) 
+                url('../images/ajax-loader-pacman.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn the scrollbar off with overflow:hidden */
+/* http://stackoverflow.com/questions/1964839/jquery-please-wait-loading-animation*/
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our modal element will be visible */
+/* http://stackoverflow.com/questions/1964839/jquery-please-wait-loading-animation*/
+body.loading .ajaxloader {
+    display: block;
+}
+
 .navbar-left {
 	display: none
 }
@@ -120,6 +151,8 @@ a:hover {
 	border-radius: 4px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
+
+
 
 .button:hover {
 	transition: 0.5s all;

@@ -1,6 +1,6 @@
 import transaction
 
-import os
+import time
 
 import smtplib
 from socket import error as socket_error
@@ -11,8 +11,6 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyramid.security import remember, forget
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
-from pyramid.response import FileResponse
-from pyramid.response import Response
 
 from .database import DBSession
 from .database.model import User, Group, Issue, Position, Argument, RelationArgPos
@@ -590,7 +588,6 @@ class Dbas(object):
 			groups[str(g.uid)] = g.name
 
 		return_dict = {}
-		return_user = {}
 
 		if db_users:
 			logger('get_ajax_users', 'def', 'iterate all users')
@@ -615,6 +612,10 @@ class Dbas(object):
 							+ ", registered: " + str(user.registered)
 				       )
 				return_dict[user.uid] = return_user
+
+		logger('get_ajax_users', 'def', 'SLEEEEEPING')
+		time.sleep(2)
+
 		return return_dict
 
 

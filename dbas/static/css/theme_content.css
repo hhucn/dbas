@@ -2,8 +2,10 @@
 	margin: 10px;
 }
 
-.hover {
-    background-color: #d9dadb;
+.table-hover {
+  color: rgba(0, 106, 179, 1.0);
+	font-weight: 300;
+	font-style: italic;
 }
 
 .center{
@@ -100,6 +102,13 @@
 }
 #heading-contra-positions{
 	color: rgba(190,10,38,1.0); <!-- official uni green -->
+}
+
+#admins-space table tbody tr:nth-child(even) {
+	background-color: rgba(217, 218, 219, 0.7);
+}
+#admins-space table tbody tr:nth-child(1) {
+	background-color: rgba(0, 106, 179, 0.3);
 }
 
 

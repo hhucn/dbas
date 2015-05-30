@@ -24,9 +24,11 @@
 
 	<!-- scroll to top -->
 	<a href="#top" class="back-to-top" title="Go to the top"></a>
+	
+	<div class="ajaxloader"></div>
 
 	<!-- Bootstrap core, JavaScript, jquery
-		<!-- Placed at the end of the document so the pages load faster -->
+	<!-- Placed at the end of the document so the pages load faster -->
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-1.11.2.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.4.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
