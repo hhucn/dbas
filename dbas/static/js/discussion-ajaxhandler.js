@@ -1,4 +1,4 @@
-/*global $, jQuery, alert, AjaxHandler, GuiHandler, InteractionHandler */
+/*global $, jQuery, alert */
 
 function AjaxHandler() {
 	'use strict';

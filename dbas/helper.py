@@ -208,12 +208,19 @@ class DictionaryHelper():
 	def get_subdictionary_out_of_orderer_dict(self, ordered_dict, count):
 		return_dict = {}
 		logger('helper', 'get_subdictionary_out_of_orderer_dict', 'count: ' + str(count))
+		items = list(ordered_dict.items())
+		for item in items:
+			logger('helper', 'get_subdictionary_out_of_orderer_dict', 'all items: ' + ''.join(str(item)))
 		if count < 0:
 			return ordered_dict
+		elif count == 1:
+			if len(items) > 1:
+				rnd = random.randint(0, len(items)-1)
+				logger('helper', 'get_subdictionary_out_of_orderer_dict', 'return item at ' + str(rnd))
+				return_dict[items[rnd][0]] = items[rnd][1]
+			else:
+				return ordered_dict
 		else:
-			items = list(ordered_dict.items())
-			for item in items:
-				logger('helper', 'get_subdictionary_out_of_orderer_dict', 'items: ' + ''.join(str(item)))
 
 			for i in range (0, count):
 				rnd = random.randint(0, len(items)-1)

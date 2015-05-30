@@ -1,4 +1,4 @@
-/*global $, jQuery, alert, AjaxHandler, GuiHandler, InteractionHandler */
+/*global $, jQuery */
 
 
 function InteractionHandler() {
@@ -9,7 +9,7 @@ function InteractionHandler() {
 	 * @param value of the button
 	 */
 	this.argumentButtonWasClicked = function (id, value) {
-		var pos, data;
+		var pos;
 		pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
 		guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + '<b>' + value + '</b> But why?');
 
@@ -18,7 +18,6 @@ function InteractionHandler() {
 
 		// add all positions
 		ajaxHandler.getArgumentsConnectedToPositionUidAndSetInGui(id, true);
-
 	};
 
 	/**
