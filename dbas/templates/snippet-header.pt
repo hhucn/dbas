@@ -9,9 +9,11 @@
 				<span class="icon-bar"></span>
 			</button>
 		</div>
+		
 		<div class="collapse navbar-collapse navbar-menubuilder">
 			<ul class="nav navbar-nav navbar-left">
-				<li id="home-hook"><a href="#home-template" title="Go to the top">Home</a>
+				<li id="home-hook">
+					<a href="#home-template" title="Go to the top">Home</a>
 				</li>
 				<li id="description-hook">
 					<a href="#description-template" title="Go to Description" i18n:translate="description">Description</a>
@@ -27,25 +29,25 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
-				<li id="contentLink" tal:condition="logged_in">
-					<a href="${request.application_url}/content" id="partyLink" title="Get the party started">
+				<li id="content-link" tal:condition="logged_in">
+					<a href="${request.application_url}/content" title="Get the party started">
 						<span class="glyphicon glyphicon-erase glyphicon-icon">&thinsp;Let's&thinsp;&thinsp;go</span>
 					</a>
 				</li>
 
-				<li id="newsLink">
+				<li id="news-link">
 					<a href="${request.application_url}/news" title="News about D-BAS">
 						<span class="glyphicon glyphicon-file glyphicon-icon">&thinsp;News</span>
 					</a>
 				</li>
 
-				<li id="contactLink">
+				<li id="contact-link">
 					<a href="${request.application_url}/contact" title="Get in touch with us">
 						<span class="glyphicon glyphicon-comment glyphicon-icon">&thinsp;Contact</span>
 					</a>
 				</li>
 
-				<li id="loginLink" tal:condition="not:logged_in">
+				<li id="login-link" tal:condition="not:logged_in">
 					<a href="${request.application_url}/login" title="Login">
 						<span class="glyphicon glyphicon-log-in glyphicon-icon">&thinsp;Login</span>
 					</a>

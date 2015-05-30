@@ -28,6 +28,16 @@ function Countdown(options) {
 	};
 }
 
+function setOnlyGivenLinkToActive( linkname ) {
+	var linkIds = ['#contact-link', '#login-link', '#news-link', '#content-link' ];
+	for (var i = 0; i < linkIds; i++) {
+		if (linkIds[i] == linkname){
+			$(linkIds[i]).addClass('active');
+		} else {
+			$(linkIds[i]).removeClass('active');
+		}
+	}
+}
 
 /*global $, jQuery, alert, addActiveLinksInNavBar, removeActiveLinksInNavBar*/
 //jQuery(function ($) {
@@ -62,36 +72,21 @@ $(document).ready(function () {
 	});
 
 	// set current file to active
-	var path = document.location.pathname.match(/[^\/]+$/)[0];
-	if (path === "contact") {
-		$('#contactLink').addClass('active');
-		$('#loginLink').removeClass('active');
-		$('#newsLink').removeClass('active');
-		$('#contentLink').removeClass('active');
-	} else if (path === "login") {
-		$('#loginLink').addClass('active');
-		$('#contactLink').removeClass('active');
-		$('#newsLink').removeClass('active');
-		$('#contentLink').removeClass('active');
-	} else if (path === "news") {
-		$('#newsLink').addClass('active');
-		$('#contactLink').removeClass('active');
-		$('#loginLink').removeClass('active');
-		$('#contentLink').removeClass('active');
-	} else if (path === "content") {
-		$('#contentLink').addClass('active');
-		$('#contactLink').removeClass('active');
-		$('#loginLink').removeClass('active');
-		$('#newsLink').removeClass('active');
-	} else {
-		$('#contactLink').removeClass('active');
-		$('#loginLink').removeClass('active');
-		$('#newsLink').removeClass('active');
-		$('#contentLink').removeClass('active');
-	}
-
-	// Your application has indicated you are logged out
-	if (path === "logout") {
+	var path = document.location.pathname.match(/[^\/]+$/);
+	if (path == "contact") {
+		setOnlyGivenLinkToActive('#contact-link');
+		$('navbar-left').hide();
+	} else if (path == "login") {
+		setOnlyGivenLinkToActive('#login-link');
+		$('navbar-left').hide();
+	} else if (path == "news") {
+		setOnlyGivenLinkToActive('#news-link');
+		$('navbar-left').hide();
+	} else if (path == "content") {
+		setOnlyGivenLinkToActive('#content-link')
+		$('navbar-left').hide();
+	} else if (path == "logout") { 	// Your application has indicated you are logged out
+		hideMainPageHooks();
 		var myCounter = new Countdown({
 			seconds: 4, // seconds to count down
 			onUpdateStatus: function (sec) {
@@ -111,5 +106,8 @@ $(document).ready(function () {
 				} // final action
 		});
 		myCounter.start();
+	} else {
+		$('navbar-left').show();
+		setOnlyGivenLinkToActive('#content-link');
 	}
 });

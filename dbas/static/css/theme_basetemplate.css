@@ -77,9 +77,7 @@ body.loading .ajaxloader {
     display: block;
 }
 
-.navbar-left {
-	display: none
-}
+
 
 .font-normal {
 	font-weight: 400;

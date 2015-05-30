@@ -538,6 +538,7 @@ $(document).ready(function () {
 	$('#' + restartDiscussionButtonId).click(function () {
 		$('#' + startDiscussionButtonId).show(); // show the start description
 		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
+		$('#' + addStatementContainerId).hide(); // hide add statement container
 
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
