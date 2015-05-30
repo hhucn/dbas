@@ -154,19 +154,20 @@
 		<div class="row">
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
-				<h1><span class="font-semi-bold">Special rights</span></h1>
-				<p>Only the administrator has some special rights and this is the placeholder.
+				<h2><span class="font-semi-bold">Special rights</span></h2>
+				<p>Some additional options for the administrator.
 					<br>
 					<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
-
 					<div id="admins-space"> </div>
 				</p>
 			</div>
 			<div class="col-md-2"></div>
 		</div>
 	</div>
-
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
 
 </body>
 <html>

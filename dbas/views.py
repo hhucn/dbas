@@ -14,7 +14,7 @@ from pyramid_mailer.message import Message
 
 from .database import DBSession
 from .database.model import User, Group, Issue, Position, Argument, RelationArgPos
-from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper
+from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper
 
 class Dbas(object):
 	def __init__(self, request):
@@ -618,68 +618,55 @@ class Dbas(object):
 
 		return return_dict
 
-
-	# ajax - getting every pro argument, which is connected to the given position uid
-	@view_config(route_name='ajax_pro_arguments_connected_to_position_uid', renderer='json')
-	def get_ajax_pro_arguments_by_pos(self):
-		logger('get_ajax_pro_arguments', 'def', 'main')
-		# get evers relation from current argument to an position with uid send
+	# ajax - getting every argument, which is connected to the given position uid
+	@view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')
+	def get_ajax_arguments_by_pos(self):
+		logger('get_ajax_arguments_by_pos', 'def', 'main')
+		# get every relation from current argument to an position with uid send
 		uid = ''
+		count = ''
+		type = ''
 		try:
 			uid = self.request.params['uid']
+			count = int(self.request.params['returnCount'])
+			type = self.request.params['type']
 		except KeyError as e:
-			logger('get_ajax_pro_arguments_by_pos', 'error', repr(e))
+			logger('get_ajax_arguments_by_pos', 'error', repr(e))
+
+		logger('get_ajax_arguments_by_pos', 'def', 'uid: ' + uid + ', count: ' + str(count) + ', type: ' + type)
 
 		queryHelper = QueryHelper()
-		return_dict = queryHelper.get_all_arguments_for_by_pos_uid(uid, True)
+		ordered_dict = queryHelper.get_all_arguments_for_by_pos_uid(uid, (True if type == 'pro' else False))
+
+		# get return count of arguments
+		dictionaryHelper = DictionaryHelper()
+		return_dict = dictionaryHelper.get_subdictionary_out_of_orderer_dict(ordered_dict, count)
 
 		return return_dict
 
-	# ajax - getting every con argument, which is connected to the given position uid
-	@view_config(route_name='ajax_con_arguments_connected_to_position_uid', renderer='json')
-	def get_ajax_con_arguments_by_pos(self):
-		logger('get_ajax_con_arguments_by_pos', 'def', 'main')
+	# ajax - getting every arument, which is for the same position as the given argument uid
+	@view_config(route_name='ajax_arguments_against_same_positions_by_argument_uid', renderer='json')
+	def get_ajax_arguments_by_arg(self):
+		logger('get_ajax_arguments_by_arg', 'def', 'main')
 		# get every relation from current argument to an position with uid send
 		uid = ''
+		count = ''
+		type = ''
 		try:
 			uid = self.request.params['uid']
+			count = int(self.request.params['returnCount'])
+			type = self.request.params['type']
 		except KeyError as e:
-			logger('get_ajax_con_arguments_by_pos', 'error', repr(e))
+			logger('get_ajax_arguments_by_arg', 'error', repr(e))
+
+		logger('get_ajax_arguments_by_arg', 'def', 'uid: ' + uid + ', count: ' + str(count) + ', type: ' + type)
 
 		queryHelper = QueryHelper()
-		return_dict = queryHelper.get_all_arguments_for_by_pos_uid(uid, False)
+		ordered_dict = queryHelper.get_all_arguments_for_by_arg_uid(uid, (True if type == 'pro' else False))
 
-		return return_dict
-
-	# ajax - getting every pro arument, which is for the same position as the given argument uid
-	@view_config(route_name='ajax_pro_arguments_against_same_positions_by_argument_uid', renderer='json')
-	def get_ajax_pro_arguments_by_arg(self):
-		logger('get_ajax_pro_arguments_by_arg', 'def', 'main')
-		# get every relation from current argument to an position with uid send
-		uid = ''
-		try:
-			uid = self.request.params['uid']
-		except KeyError as e:
-			logger('get_ajax_pro_arguments_by_arg', 'error', repr(e))
-
-		queryHelper = QueryHelper()
-		return_dict = queryHelper.get_all_arguments_for_by_arg_uid(uid, True)
-
-		return return_dict
-
-	# ajax - getting every con arument, which is against the same position as the given argument uid
-	@view_config(route_name='ajax_con_arguments_against_same_positions_by_argument_uid', renderer='json')
-	def get_ajax_con_arguments_by_arg(self):
-		logger('get_ajax_con_arguments_by_arg', 'def', 'main')
-		# get every relation from current argument to an position with uid send
-		uid = ''
-		try:
-			uid = self.request.params['uid']
-		except KeyError as e:
-			logger('get_ajax_con_arguments_by_arg', 'error', repr(e))
-
-		queryHelper = QueryHelper()
-		return_dict = queryHelper.get_all_arguments_for_by_arg_uid(uid, False)
+		# get return count of arguments
+		dictionaryHelper = DictionaryHelper()
+		return_dict = dictionaryHelper.get_subdictionary_out_of_orderer_dict(ordered_dict, count)
 
 		return return_dict
 

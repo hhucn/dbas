@@ -54,10 +54,8 @@ def main(global_config, **settings):
 	config.add_route('get_ajax_positions', '/ajax_all_positions')
 	config.add_route('ajax_all_users', '/ajax_all_users')
 
-	config.add_route('ajax_pro_arguments_connected_to_position_uid', '/ajax_pro_arguments_connected_to_position_uid')
-	config.add_route('ajax_con_arguments_connected_to_position_uid', '/ajax_con_arguments_connected_to_position_uid')
-	config.add_route('ajax_pro_arguments_against_same_positions_by_argument_uid', '/ajax_pro_arguments_against_same_positions_by_argument_uid')
-	config.add_route('ajax_con_arguments_against_same_positions_by_argument_uid', '/ajax_con_arguments_against_same_positions_by_argument_uid')
+	config.add_route('ajax_arguments_connected_to_position_uid', '/ajax_arguments_connected_to_position_uid')
+	config.add_route('ajax_arguments_against_same_positions_by_argument_uid', '/ajax_arguments_against_same_positions_by_argument_uid')
 
 	# read the input and start
 	config.scan()

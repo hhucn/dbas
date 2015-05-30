@@ -1,6 +1,8 @@
 import logging
 import random
 import smtplib
+import collections
+
 from socket import error as socket_error
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -104,7 +106,7 @@ class QueryHelper(object):
 		Getting every pro/con argument, which is connected to the given position uid
 		:param uid: uid of the argument
 		:param isSupportive: true, if all supportive arguments should be fetched
-		:return:
+		:return: ordered dictionary
 		"""
 
 		## raw query
@@ -117,7 +119,7 @@ class QueryHelper(object):
 		# 	and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
 		# ))
 
-		return_dict = {}
+		return_dict = collections.OrderedDict()
 		logger('QueryHelper', 'get_all_arguments_for_uid', 'check for uid')
 		support = 1 if isSupportive else 0
 
@@ -154,7 +156,7 @@ class QueryHelper(object):
 		Getting every pro/con arument, which is for/against the same position as the given argument uid
 		:param uid: uid of the argument
 		:param isSupportive: true, if all supportive arguments should be fetched
-		:return:
+		:return: ordered dictionary
 		'''
 
 		## raw query
@@ -164,7 +166,7 @@ class QueryHelper(object):
 		#	) and is_supportive = 0
 		#);
 
-		return_dict = {}
+		return_dict = collections.OrderedDict()
 		logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'check for uid')
 		support = 1 if isSupportive else 0
 		wasSuportive = 0 if isSupportive else 1
@@ -197,5 +199,26 @@ class QueryHelper(object):
 
 		else:
 			logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'ERROR: uid not found')
+
+		return return_dict
+
+
+class DictionaryHelper():
+
+	def get_subdictionary_out_of_orderer_dict(self, ordered_dict, count):
+		return_dict = {}
+		logger('helper', 'get_subdictionary_out_of_orderer_dict', 'count: ' + str(count))
+		if count < 0:
+			return ordered_dict
+		else:
+			items = list(ordered_dict.items())
+			for item in items:
+				logger('helper', 'get_subdictionary_out_of_orderer_dict', 'items: ' + ''.join(str(item)))
+
+			for i in range (0, count):
+				rnd = random.randint(0, len(items)-1)
+				logger('helper', 'get_subdictionary_out_of_orderer_dict', 'for loop ' + str(i) + '. add element at ' + str(rnd))
+				return_dict[items[rnd][0]] = items[rnd][1]
+				items.pop(rnd)
 
 		return return_dict
