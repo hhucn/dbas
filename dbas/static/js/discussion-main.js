@@ -1,0 +1,113 @@
+/*global $, jQuery, alert, AjaxHandler, GuiHandler, InteractionHandler */
+
+var addStatementButtonId = 'add-statement';
+var addPositionButtonId = 'add-position';
+var addStatementContainerId = 'add-statement-container';
+var addStatementContainerH2Id = 'add-statement-container-h2';
+var addStatementContainerMainInputId = 'add-statement-container-main-input';
+var addProTextareaId = 'add-pro-textarea';
+var addConTextareaId = 'add-con-textarea';
+var adminsSpaceId = 'admins-space';
+var argumentList = 'argument-list';
+var closeStatementContainerId = 'closeStatementContainer';
+var discussionsDescriptionId = 'discussions-description';
+var discussionContainerId = 'discussion-container';
+var discussionSpaceId = 'discussions-space';
+var errorDescriptionId = 'error-description';
+var leftPositionColumnId = 'left-position-column';
+var leftPositionTextareaId = 'left-textareas';
+var listAllUsersButtonId = 'list-all-users';
+var insertStatementForm = 'insert_statement_form';
+var restartDiscussionButtonId = 'restart-discussion';
+var rightPositionColumnId = 'right-position-column';
+var rightPositionTextareaId = 'right-textareas';
+var radioButtonGroup = 'radioButtonGroup';
+var startDiscussionButtonId = 'start-discussion';
+var startDescriptionId = 'start-description';
+var sendAnswerButtonId = 'send-answer';
+var statementList = 'statement-list';
+
+var argumentSentencesOpeners = [
+	'Okay, you have got the opinion: ',
+	'Interesting, your opinion is: ',
+	'So you meant: ',
+	'You have said, that: ',
+	'So your opinion is: '];
+var startDiscussionText = 'These are the current statements, given by users input. You can choose a' +
+		' position, which is next to your own intention or add a new one.';
+var firstOneText = 'You are the first one. Please add a new statement:';
+
+
+/**
+ * main function
+ */
+$(document).ready(function () {
+	'use strict';
+	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), interactionHandler = new InteractionHandler();
+
+	$('#' + discussionContainerId).hide(); // hiding discussions container
+	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
+
+	// starts the discussion with getting all positions
+	$('#' + startDiscussionButtonId).click(function () {
+		$('#' + startDiscussionButtonId).hide(); // hides the start button
+		$('#' + startDescriptionId).hide(); // hides the start description
+		$('#' + restartDiscussionButtonId).show(); // show the restart button
+
+		ajaxHandler.getAllPositionsAndSetInGui();
+	});
+
+	// handler for the send answer button
+	$('#' + sendAnswerButtonId).click(function () {
+		interactionHandler.sendAnswerButtonClicked();
+	});
+
+	// hide the restart button and add click function
+	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
+	$('#' + restartDiscussionButtonId).click(function () {
+		$('#' + startDiscussionButtonId).show(); // show the start description
+		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
+		$('#' + addStatementContainerId).hide(); // hide add statement container
+
+		// clear the discussion space
+		$('#' + discussionSpaceId).empty();
+		$('#' + discussionContainerId).hide();
+	});
+
+	// admin list all users button
+	$('#' + listAllUsersButtonId).click(function () {
+		if ($(this).val() === 'List all users') {
+			ajaxHandler.getAllUsersAndSetInGui();
+			$(this).val('Hide all users');
+		} else {
+			$('#' + adminsSpaceId).empty();
+			$(this).val('List all users');
+		}
+	});
+
+	// adding a textarea in the right column
+	$('#' + addConTextareaId).click(function () {
+		guiHandler.addTextareaAsChildIn(rightPositionTextareaId);
+	});
+
+	// adding a textarea in the left column
+	$('#' + addProTextareaId).click(function () {
+
+		guiHandler.addTextareaAsChildIn(leftPositionTextareaId);
+	});
+
+	// hiding the argument container, when the X button is clicked
+	$('#' + closeStatementContainerId).click(function () {
+		$('#' + addStatementContainerId).hide();
+		$('#' + addStatementButtonId).enable = true;
+		$('#' + addStatementButtonId).removeAttr('checked');
+		$('#' + sendAnswerButtonId).hide();
+	});
+	
+	// ajax loading animation
+	$(document).on({
+		ajaxStart: function() { $('body').addClass('loading'); },
+		ajaxStop: function() { $('body').removeClass('loading'); }    
+	});
+
+});

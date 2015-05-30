@@ -28,9 +28,9 @@ function Countdown(options) {
 	};
 }
 
-function setOnlyGivenLinkToActive( linkname ) {
+function setLinkActive( linkname ) {
 	var linkIds = ['#contact-link', '#login-link', '#news-link', '#content-link' ];
-	for (var i = 0; i < linkIds; i++) {
+	for (var i = 0; i < linkIds.length; i++) {
 		if (linkIds[i] == linkname){
 			$(linkIds[i]).addClass('active');
 		} else {
@@ -74,16 +74,16 @@ $(document).ready(function () {
 	// set current file to active
 	var path = document.location.pathname.match(/[^\/]+$/);
 	if (path == "contact") {
-		setOnlyGivenLinkToActive('#contact-link');
+		setLinkActive('#contact-link');
 		$('#navbar-left').hide();
 	} else if (path == "login") {
-		setOnlyGivenLinkToActive('#login-link');
+		setLinkActive('#login-link');
 		$('#navbar-left').hide();
 	} else if (path == "news") {
-		setOnlyGivenLinkToActive('#news-link');
+		setLinkActive('#news-link');
 		$('#navbar-left').hide();
 	} else if (path == "content") {
-		setOnlyGivenLinkToActive('#content-link');
+		setLinkActive('#content-link');
 		$('#navbar-left').hide();
 	} else if (path == "logout") { 	// Your application has indicated you are logged out
 		hideMainPageHooks();
@@ -108,6 +108,6 @@ $(document).ready(function () {
 		myCounter.start();
 	} else {
 		$('#navbar-left').show();
-		setOnlyGivenLinkToActive('#content-link');
+		setLinkActive('');
 	}
 });
