@@ -37,7 +37,7 @@ function InteractionHandler () {
 		$('#' + discussionSpaceId).empty();
 
 		// add all positions from the other side
-		ajaxHandler.getArgumentsForTheSamePositionByArgUidAndSetInGui(id, false, true, 1, value);
+		ajaxHandler.getArgumentsForTheSamePositionByArgUid(id, false, true, 1, value);
 		ajaxHandler.getArgumentsConnectedToPositionUid(id, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
 	};
 

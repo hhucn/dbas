@@ -56,7 +56,7 @@ function AjaxHandler () {
 	 * @param setAsDescr true, if the pro arguments set as description
 	 * @param numberOfReturnArguments number of arguments, which should be returned, -1 for all
 	 */
-	this.getArgumentsForTheSamePositionByArgUidAndSetInGui = function (ofArgumentWithUid, shouldGetProArgument, setAsDescr, numberOfReturnArguments, userArg) {
+	this.getArgumentsForTheSamePositionByArgUid = function (ofArgumentWithUid, shouldGetProArgument, setAsDescr, numberOfReturnArguments, userArg) {
 		var type = shouldGetProArgument ? 'pro' : 'con';
 		var no = typeof numberOfReturnArguments === 'undefined' || numberOfReturnArguments < -1 ? -1 : Math.round(numberOfReturnArguments);
 		$.ajax({
@@ -65,7 +65,7 @@ function AjaxHandler () {
 			data: { uid : ofArgumentWithUid, returnCount : no, type: type },
 			dataType: 'json',
 			async: true
-		}).done(function ajaxGetArgumentsForTheSamePositionByArgUidAndSetInGuiDone (data) {
+		}).done(function ajaxGetArgumentsForTheSamePositionByArgUidDone (data) {
 			var guiHandler = new GuiHandler();
 			if (setAsDescr) {
 				$.each($.parseJSON(data), function (key, val) {
@@ -77,7 +77,7 @@ function AjaxHandler () {
 			} else {
 				guiHandler.setJsonDataToContentAsArguments(data);
 			}
-		}).fail(function ajaxGetArgumentsForTheSamePositionByArgUidAndSetInGuiFail () {
+		}).fail(function ajaxGetArgumentsForTheSamePositionByArgUidFail () {
 			alert('failed request');
 			var guiHandler = new GuiHandler();
 			guiHandler.setNewArgumentButtonOnly();
