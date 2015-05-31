@@ -165,6 +165,12 @@ input.active {
 	text-align: right;
 }
 
+.center {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 #password-strength,
 #password-info-link {
 	float: right;

@@ -21,7 +21,7 @@ function InteractionHandler () {
 		$('#' + discussionSpaceId).empty();
 
 		// add all positions
-		ajaxHandler.getArgumentsConnectedToPositionUid(id, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
+		ajaxHandler.getArgsConnectedToPosUid(id, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
 	};
 
 	/**
@@ -37,8 +37,8 @@ function InteractionHandler () {
 		$('#' + discussionSpaceId).empty();
 
 		// add all positions from the other side
-		ajaxHandler.getArgumentsForTheSamePositionByArgUid(id, false, true, 1, value);
-		ajaxHandler.getArgumentsConnectedToPositionUid(id, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
+		ajaxHandler.getArgsForSamePosByArgUid(id, false, true, 1, value);
+		ajaxHandler.getArgsConnectedToPosUid(id, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
 	};
 
 	/**
@@ -53,10 +53,10 @@ function InteractionHandler () {
 			// get the second child, which is the label
 			if ($('#' + addStatementButtonId).parent().children().eq(1).text().indexOf('position') >= 0) {
 				$('#' + addStatementContainerH2Id).text('Please insert a new position');
-				$('#' + addStatementContainerMainInputId).show();
+				//$('#' + addStatementContainerMainInputId).show();
 			} else {
 				$('#' + addStatementContainerH2Id).text('Please insert new arguments');
-				$('#' + addStatementContainerMainInputId).hide();
+				//$('#' + addStatementContainerMainInputId).hide();
 			}
 		} else {
 			guiHandler.setDisplayStylesOfAddArgumentContainer(false);
@@ -99,4 +99,4 @@ function InteractionHandler () {
 			guiHandler.setJsonDataToContentAsPositions(data);
 		}
 	};
-};
+}

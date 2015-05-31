@@ -28,7 +28,6 @@ function GuiHandler () {
 		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
 		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new position.', true));
 
-		$('#' + discussionContainerId).show();
 		_this.addListItemsToDiscussionsSpace(listitems, statementList);
 	};
 
@@ -128,6 +127,19 @@ function GuiHandler () {
 		//listitem.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true));
 		listitem.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true, true));
 		this.addListItemsToDiscussionsSpace(listitem, statementList);
+	};
+
+	/**
+	 * Setting a description in some p-tag for confrontation
+	 * @param currentUserArgument
+	 * @param confrontationArgument
+	 */
+	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
+		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
+		var text = argumentSentencesOpeners[pos] + '<b>' + currentUserArgument + '</b>'
+			+ ' But an argument from the other side is: '
+			+ '<b>' + confrontationArgument + '</b>' + ' What\'s your opinion?';
+		$('#' + discussionsDescriptionId).html(text);
 	};
 
 	/**
@@ -281,7 +293,7 @@ function GuiHandler () {
 		div.append(button);
 
 		// remove everything on click
-		button.attr({onclick: "var parentNode = this.parentNode;var grandParentNode = parentNode.parentNode;grandParentNode.removeChild(parentNode);"});
+		button.attr({onclick: "this.parentNode.parentNode.removeChild(parentNode);"});
 
 		// add everything
 		parent.append(div);
@@ -293,10 +305,10 @@ function GuiHandler () {
 	 */
 	this.setDisplayStylesOfAddArgumentContainer = function (isVisible) {
 		if (isVisible) {
-			$('#' + addStatementContainerId).show();
+			$('#' + addStatementContainerId).fadeIn('slow');
 			$('#' + addStatementButtonId).disable = true;
 		} else {
-			$('#' + addStatementContainerId).hide();
+			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementButtonId).disable = false;
 		}
 	};
@@ -308,4 +320,4 @@ function GuiHandler () {
 	this.getFullHtmlTextOf = function (element) {
 		return $('<div>').append(element).html();
 	};
-};
+}

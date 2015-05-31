@@ -624,6 +624,49 @@ class Dbas(object):
 
 		return return_json
 
+	# ajax - getting complete track of the user
+	@view_config(route_name='ajax_get_user_track', renderer='json')
+	def ajax_get_user_track(self):
+		"""
+		Request the complete track of the user
+		:return:
+		"""
+		logger('ajax_get_user_track', 'def', 'main')
+
+		nickname = ''
+		try:
+			nickname = self.request.params['nickname']
+		except KeyError as e:
+			logger('ajax_get_user_track', 'error', repr(e))
+
+		return_dict = {}
+		internal_dict = {}
+		internal_dict['date'] = '2015-06-02'
+		internal_dict['track'] = '1 2 3 4 5 6'
+		return_dict['1'] = internal_dict
+		internal_dict = {}
+		internal_dict['date'] = '2015-06-03'
+		internal_dict['track'] = '7 8 9 10'
+		return_dict['2'] = internal_dict
+
+		# todo: ajax_get_user_track
+
+		dictionaryHelper = DictionaryHelper()
+		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - remove complete track of the user
+	@view_config(route_name='ajax_remove_user_track', renderer='json')
+	def ajax_remove_user_track(self):
+		"""
+		Remove the complete track of the user
+		:return:
+		"""
+		# todo: ajax_remove_user_track
+		logger('ajax_remove_user_track', 'def', 'main')
+		return {}
+
 	# ajax - getting every argument, which is connected to the given position uid
 	@view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')
 	def get_ajax_arguments_by_pos(self):
@@ -675,6 +718,52 @@ class Dbas(object):
 		dictionaryHelper = DictionaryHelper()
 		return_dict = dictionaryHelper.get_subdictionary_out_of_orderer_dict(ordered_dict, count)
 		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+
+	# ajax - getting next argument for confrontation
+	@view_config(route_name='ajax_next_arg_for_confrontation', renderer='json')
+	def get_ajax_next_arg_for_confrontation(self):
+		logger('get_ajax_next_arg_for_confrontation', 'def', 'main')
+		uid = ''
+		try:
+			uid = self.request.params['uid']
+		except KeyError as e:
+			logger('get_ajax_next_arg_for_confrontation', 'error', repr(e))
+
+		logger('get_ajax_next_arg_for_confrontation', 'def', 'uid: ' + uid)
+
+		queryHelper = QueryHelper()
+		return_dict = queryHelper.get_next_arg_for_confrontation(uid)
+
+		# todo: get_ajax_next_arg_for_confrontation
+
+		dictionaryHelper = DictionaryHelper()
+		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+
+	# ajax - getting next arguments for justification
+	@view_config(route_name='ajax_next_args_for_justification', renderer='json')
+	def get_ajax_next_args_for_justification(self):
+		logger('get_ajax_next_args_for_justification', 'def', 'main')
+		uid = ''
+		try:
+			uid = self.request.params['uid']
+		except KeyError as e:
+			logger('get_ajax_next_args_for_justification', 'error', repr(e))
+
+		logger('get_ajax_next_args_for_justification', 'def', 'uid: ' + uid)
+
+		queryHelper = QueryHelper()
+		return_dicht = queryHelper.get_next_args_for_justification(uid)
+
+		# todo: get_ajax_next_args_for_justification
+
+		dictionaryHelper = DictionaryHelper()
+		return_json = dictionaryHelper.dictionarty_to_json_array(return_dicht, True)
 
 		return return_json
 

@@ -54,6 +54,8 @@ def main(global_config, **settings):
 
 	config.add_route('get_ajax_positions', '/ajax_all_positions')
 	config.add_route('ajax_all_users', '/ajax_all_users')
+	config.add_route('ajax_get_user_track', '/ajax_get_user_track')
+	config.add_route('ajax_remove_user_track', '/ajax_remove_user_track')
 
 	config.add_route('ajax_next_arg_for_confrontation', '/ajax_next_arg_for_confrontation')
 	config.add_route('ajax_next_args_for_justification', '/ajax_next_args_for_justification')

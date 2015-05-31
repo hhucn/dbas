@@ -38,7 +38,7 @@
 						<td>
 							<spand class="font-semi-bold">Nickname</spand>
 						</td>
-						<td><span tal:replace="db_nickname" />
+						<td id='table_nickname'><span tal:replace="db_nickname" />
 						</td>
 					</tr>
 					<tr>
@@ -56,6 +56,39 @@
 						</td>
 					</tr>
 				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="form">
+		<h2>Tracked user decisions</h2>
+		<div class="row">
+			<div class="col-md-8">
+				<div id="track-table-space">
+					<table id="track-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<tr>
+							<td>
+								<spand class="font-semi-bold">Date / Time</spand>
+							</td>
+							<td>
+								<spand class="font-semi-bold">Track</spand>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<input id="request-track" type="button" value="Request track" class="button button-block btn btn-primary" data-dismiss="modal" />
+				<br>
+				<input id="delete-track" type="button" value="Delete track" class="button button-block btn btn-primary" data-dismiss="modal" />
+					<br>
+				<div id="track-table-success" class="alert alert-success" role="alert">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span class="sr-only">Success:</span> <p id="track-success-msg"></p>
+				</div>
+
+					<div id="track-table-failure" class="alert alert-danger" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span class="sr-only">Error:</span> <p id="track-failure-msg"></p>
+					</div>
 			</div>
 		</div>
 	</div>
@@ -104,5 +137,6 @@
 	<div metal:use-macro="load: snippet-footer.pt" />
 
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/password-handler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
 </body>
 <html>
