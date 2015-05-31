@@ -22,6 +22,7 @@ requires = [
 	'WebTest',
 	'cryptacular',
     'validate_email',
+	'splinter',
 	]
 
 setup(name='DBAS',

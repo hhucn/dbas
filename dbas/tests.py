@@ -361,7 +361,7 @@ class FunctionalViewTests(IntegrationTestBase):
 		print("FunctionalTests: test_redirection_when_logged_in")
 		res = self.testapp.get(self.editor_login, status=302)
 		self.assertEqual(res.location, 'http://localhost/content')
-		res = self.testapp.get('/login', status=302)
+		self.testapp.get('/login', status=302)
 
 	# testing wheather the login link is there, when we are logged in
 	def test_logout_link_present_when_logged_in(self):
@@ -395,39 +395,6 @@ class FunctionalViewTests(IntegrationTestBase):
 		self.testapp.get(self.editor_login, status=302)
 		res = self.testapp.get('/settings', status=200)
 		self.assertIn(b'Settings', res.body)
-
-#	def test_anonymous_user_cannot_edit(self):
-#		res = self.testapp.get('/FrontPage/edit_page', status=200)
-#		self.assertTrue(b'Login' in res.body)
-
-#	def test_anonymous_user_cannot_add(self):
-#		res = self.testapp.get('/add_page/NewPage', status=200)
-#		self.assertTrue(b'Login' in res.body)
-
-#	def test_viewer_user_cannot_edit(self):
-#		self.testapp.get(self.editor_login, status=302)
-#		res = self.testapp.get('/FrontPage/edit_page', status=200)
-#		self.assertTrue(b'Login' in res.body)
-
-#	def test_viewer_user_cannot_add(self):
-#		self.testapp.get(self.editor_login, status=302)
-#		res = self.testapp.get('/add_page/NewPage', status=200)
-#		self.assertTrue(b'Login' in res.body)
-
-#	def test_editors_member_user_can_edit(self):
-#		self.testapp.get(self.editor_login, status=302)
-#		res = self.testapp.get('/FrontPage/edit_page', status=200)
-#		self.assertTrue(b'Editing' in res.body)
-
-#	def test_editors_member_user_can_add(self):
-#		self.testapp.get(self.editor_login, status=302)
-#		res = self.testapp.get('/add_page/NewPage', status=200)
-#		self.assertTrue(b'Editing' in res.body)
-
-#	def test_editors_member_user_can_view(self):
-#		self.testapp.get(self.editor_login, status=302)
-#		res = self.testapp.get('/FrontPage', status=200)
-#		self.assertTrue(b'FrontPage' in res.body)
 
 ##########################################################################################################
 ##########################################################################################################
@@ -465,9 +432,9 @@ class FunctionalEMailTests(IntegrationTestBase):
 		self.testapp.get('/contact', status=200)
 		mailer = DummyMailer()
 		mailer.send_immediately_sendmail(Message(subject='hello world',
-												 sender='krauthoff@cs.uni-duesseldorf.de',
-												 recipients =['krauthoff@cs.uni-duesseldorf.de'],
-												 body='dummybody'))
+													sender='krauthoff@cs.uni-duesseldorf.de',
+													recipients =['krauthoff@cs.uni-duesseldorf.de'],
+													body='dummybody'))
 		self.assertEqual(len(mailer.outbox), 1)
 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
 
@@ -499,10 +466,10 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	def test_database_content(self):
 		user1 = self.session.query(User).filter_by(nickname='test_user').first()
 		user2 = self.session.query(User).filter_by(nickname='test_editor').first()
-		position1 = self.session.query(Position).filter_by(text='I like cats.').first()#, weight='100')
-		position2 = self.session.query(Position).filter_by(text='I like dogs.').first()#, weight='20')
-		self.assertTrue(user1.firstname,'user')
-		self.assertTrue(user2.firstname,'editor')
+		position1 = self.session.query(Position).filter_by(text='I like cats.').first()  #, weight='100')
+		position2 = self.session.query(Position).filter_by(text='I like dogs.').first()  #, weight='20')
+		self.assertTrue(user1.firstname, 'user')
+		self.assertTrue(user2.firstname, 'editor')
 		self.assertTrue(position1.weight, 1)
 		self.assertTrue(position2.weight, 1)
 
@@ -535,42 +502,42 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	# testing relation arg pos content
 	def test_database_RelationArgPos(self):
 		print("DatabaseTests: test_database_RelationArgPos")
-		relationAP = self.session.query(RelationArgPos).filter_by(uid=1).first()
-		self.assertTrue(relationAP.weight, 1)
-		self.assertTrue(relationAP.is_supportive, True)
-		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=1).first().uid)
-		self.assertTrue(relationAP.pos_uid, self.session.query(Position).filter_by(uid=1).first().uid)
-		self.assertTrue(relationAP.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
+		relation = self.session.query(RelationArgPos).filter_by(uid=1).first()
+		self.assertTrue(relation.weight, 1)
+		self.assertTrue(relation.is_supportive, True)
+		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=1).first().uid)
+		self.assertTrue(relation.pos_uid, self.session.query(Position).filter_by(uid=1).first().uid)
+		self.assertTrue(relation.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
 
 	# testing relation arg pos content
 	def test_database_RelationPosArg(self):
 		print("DatabaseTests: test_database_RelationPosArg")
-		relationAP = self.session.query(RelationPosArg).filter_by(uid=1).first()
-		self.assertTrue(relationAP.weight, 1)
-		self.assertFalse(relationAP.is_supportive, False)
-		self.assertTrue(relationAP.author, self.session.query(User).filter_by(uid=1).first().uid)
-		self.assertTrue(relationAP.pos_uid, self.session.query(Position).filter_by(uid=2).first().uid)
-		self.assertTrue(relationAP.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
+		relation = self.session.query(RelationPosArg).filter_by(uid=1).first()
+		self.assertTrue(relation.weight, 1)
+		self.assertFalse(relation.is_supportive, False)
+		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=1).first().uid)
+		self.assertTrue(relation.pos_uid, self.session.query(Position).filter_by(uid=2).first().uid)
+		self.assertTrue(relation.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
 
 	# testing relation arg arg content
 	def test_database_RelationArgArg(self):
 		print("DatabaseTests: test_database_RelationArgArg")
-		relationAA = self.session.query(RelationArgArg).filter_by(uid=1).first()
-		self.assertTrue(relationAA.weight, 1)
-		self.assertFalse(relationAA.is_supportive, True)
-		self.assertTrue(relationAA.author, self.session.query(User).filter_by(uid=1).first().uid)
-		self.assertTrue(relationAA.arg_uid1, self.session.query(Argument).filter_by(uid=1).first().uid)
-		self.assertTrue(relationAA.arg_uid2, self.session.query(Argument).filter_by(uid=2).first().uid)
+		relation = self.session.query(RelationArgArg).filter_by(uid=1).first()
+		self.assertTrue(relation.weight, 1)
+		self.assertFalse(relation.is_supportive, True)
+		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=1).first().uid)
+		self.assertTrue(relation.arg_uid1, self.session.query(Argument).filter_by(uid=1).first().uid)
+		self.assertTrue(relation.arg_uid2, self.session.query(Argument).filter_by(uid=2).first().uid)
 
 	# testing relation pos pos content
 	def test_database_RelationPosPos(self):
 		print("DatabaseTests: test_database_RelationPosPos")
-		relationPP = self.session.query(RelationPosPos).filter_by(uid=1).first()
-		self.assertTrue(relationPP.weight, 1)
-		self.assertFalse(relationPP.is_supportive, True)
-		self.assertTrue(relationPP.author, self.session.query(User).filter_by(uid=2).first().uid)
-		self.assertTrue(relationPP.pos_uid1, self.session.query(Position).filter_by(uid=1).first().uid)
-		self.assertTrue(relationPP.pos_uid2, self.session.query(Position).filter_by(uid=2).first().uid)
+		relation = self.session.query(RelationPosPos).filter_by(uid=1).first()
+		self.assertTrue(relation.weight, 1)
+		self.assertFalse(relation.is_supportive, True)
+		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=2).first().uid)
+		self.assertTrue(relation.pos_uid1, self.session.query(Position).filter_by(uid=1).first().uid)
+		self.assertTrue(relation.pos_uid2, self.session.query(Position).filter_by(uid=2).first().uid)
 
 ##########################################################################################################
 ##########################################################################################################
@@ -610,4 +577,6 @@ class AjaxTests(IntegrationTestBase):
 		request = testing.DummyRequest()
 		response = Dbas(request).get_ajax_con_arguments()
 		# self.assertEqual('They are hating all humans!', response['1'])
+
+	# todo: more testcases
 

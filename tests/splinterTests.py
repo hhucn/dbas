@@ -1,6 +1,6 @@
 from splinter import Browser, exceptions
 
-class WebTests():
+class WebTests:
 	browser = None
 
 	def __init__(self, browser):
@@ -12,11 +12,10 @@ class WebTests():
 		"""
 
 		# server check
-		if not self.__check_for_server(self.browserStyle):
+		if not self.__check_for_server():
 			return
 
-
-		testCount = 6
+		test_count = 6
 		success = 0
 
 		tmp = self.browserStyle
@@ -27,32 +26,28 @@ class WebTests():
 		success += self.__test_wrapper('test contact formular', self.__test_contact_formular(tmp))
 		success += self.__test_wrapper('test sharing news', self.__test_sharing_news(tmp))
 		success += self.__test_wrapper('test popups', self.__test_popups(tmp))
-
-
+		# todo: more testscases
 
 		print("====================================================")
-		print("Failed " + str(testCount-success) + " out of " + str(testCount))
-
+		print("Failed " + str(test_count-success) + " out of " + str(test_count))
 
 	def __test_wrapper(self, name, testfunction):
 		"""
-		Try catch wrapper for textclasses
+
 		:param name:
-		:param test:
-		:param parameter:
+		:param testfunction:
 		:return:
 		"""
 		try:
 			return testfunction
-		except AttributeError as e:
-			print("  Some AttributeError occured in " + name + ": " + str(e))
+		except AttributeError as e1:
+			print("  Some AttributeError occured in " + name + ": " + str(e1))
 			webtests.browser.quit()
 			return False
-		except exceptions.ElementDoesNotExist as e:
-			print("  Some ElementDoesNotExist occured in " + name + ": " + str(e))
+		except exceptions.ElementDoesNotExist as e2:
+			print("  Some ElementDoesNotExist occured in " + name + ": " + str(e2))
 			webtests.browser.quit()
 			return False
-
 
 	def __check_for_present_text(self, browser, text, message):
 		"""
@@ -72,10 +67,9 @@ class WebTests():
 	def __print_success(self, hasSuccess, message):
 		print("    " + ("SUCCESS" if hasSuccess else "FAILED") + ": " + message)
 
-	def __check_for_server(self, browser):
+	def __check_for_server(self):
 		"""
 		Checks whether the server if online
-		:param browser: current browser
 		:return: true when the server is on, false otherwise
 		"""
 		b = Browser(self.browserStyle)
@@ -256,33 +250,30 @@ class WebTests():
 		b.visit('http://localhost:4284/')
 
 		success = False
-#		# open author popup
-#		b.find_by_xpath("//a[@class='dropdown-toggle']/a[text()='Author']").click()
-#		success = sucess or self.__check_for_present_text(b, 'About me', 'check for author text')
-#		close = b.find_by_id('popup_author_btn_close')
-#		close.click()
+		# # open author popup
+		# b.find_by_xpath("//a[@class='dropdown-toggle']/a[text()='Author']").click()
+		# success = sucess or self.__check_for_present_text(b, 'About me', 'check for author text')
+		# close = b.find_by_id('popup_author_btn_close')
+		# close.click()
 
-#		# open licence popup
-#		b.find_by_xpath("//select[@class='dropdown-toggle']/option[text()='Licence']").click()
-#		success = success and self.__check_for_present_text(b, 'MIT', 'check for licence text')
-#		close = b.find_by_id('popup_licence_btn_close')
-#		close.click()
+		# # open licence popup
+		# b.find_by_xpath("//select[@class='dropdown-toggle']/option[text()='Licence']").click()
+		# success = success and self.__check_for_present_text(b, 'MIT', 'check for licence text')
+		# close = b.find_by_id('popup_licence_btn_close')
+		# close.click()
 
-#		# open privacy policy popup
-#		b.find_by_xpath("//select[@class='dropdown-toggle']/option[text()='Privacy Policy']").click()
-#		success = success and self.__check_for_present_text(b, 'Policy', 'check for policy text')
-#		close = b.find_by_id('popup_licence_btn_close')
-#		close.click()
+		# # open privacy policy popup
+		# b.find_by_xpath("//select[@class='dropdown-toggle']/option[text()='Privacy Policy']").click()
+		# success = success and self.__check_for_present_text(b, 'Policy', 'check for policy text')
+		# close = b.find_by_id('popup_licence_btn_close')
+		# close.click()
 
 		self.__print_success(success, "testing popups")
-
 
 		b.quit()
 		self.browser = None
 		print("")
-		return 1 if success  else 0
-
-
+		return 1 if success else 0
 
 browserStyle = 'firefox'
 webtests = WebTests(browserStyle)

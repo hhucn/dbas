@@ -51,8 +51,12 @@ def main(global_config, **settings):
 	config.add_route('main_news', '/news')
 	config.add_route('main_impressum', '/impressum')
 	config.add_route('404', '/404')
+
 	config.add_route('get_ajax_positions', '/ajax_all_positions')
 	config.add_route('ajax_all_users', '/ajax_all_users')
+
+	config.add_route('ajax_next_arg_for_confrontation', '/ajax_next_arg_for_confrontation')
+	config.add_route('ajax_next_args_for_justification', '/ajax_next_args_for_justification')
 
 	config.add_route('ajax_arguments_connected_to_position_uid', '/ajax_arguments_connected_to_position_uid')
 	config.add_route('ajax_arguments_against_same_positions_by_argument_uid', '/ajax_arguments_against_same_positions_by_argument_uid')
