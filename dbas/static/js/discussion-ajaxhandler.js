@@ -1,23 +1,23 @@
 /*global $, jQuery, alert */
 
-function AjaxHandler() {
+function AjaxHandler () {
 	'use strict';
-	var guiHandler = new GuiHandler();
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
-	 * If done: call setJsonDataToContentAsPositions
-	 * If fail: call setNewArgumentButtonOnly
+	 * @param posCallbackFunction callback if done
+	 * @param negCallbackFunction callback if fail
 	 */
-	this.getAllPositionsAndSetInGui = function () {
+	this.getAllPositions = function (posCallbackFunction, negCallbackFunction) {
 		$.ajax({
 			url: 'ajax_all_positions',
 			type: 'GET',
-			dataType: 'json'
-		}).done(function (data) {
-			guiHandler.setJsonDataToContentAsPositions(data);
-		}).fail(function () {
+			dataType: 'json',
+			async: true
+		}).done(function ajaxGetAllPositionsDone (data) {
+			posCallbackFunction(data);
+		}).fail(function ajaxGetAllPositionsFail () {
 			alert('failed request');
-			guiHandler.setNewArgumentButtonOnly();
+			negCallbackFunction();
 		});
 	};
 
@@ -27,20 +27,23 @@ function AjaxHandler() {
 	 * @param ofPositionWithUid uid of clicked position
 	 * @param shouldGetProArgument true, if the pro arguments should be fetched, false for the con
 	 * @param numberOfReturnArguments number of arguments, which should be returned, -1 for all
+	 * @param posCallbackFunction callback if done
+	 * @param negCallbackFunction callback if fail
 	 */
-	this.getArgumentsConnectedToPositionUidAndSetInGui = function (ofPositionWithUid, shouldGetProArgument, numberOfReturnArguments) {
+	this.getArgumentsConnectedToPositionUid = function (ofPositionWithUid, shouldGetProArgument, numberOfReturnArguments, posCallbackFunction, negCallbackFunction) {
 		var type = shouldGetProArgument ? 'pro' : 'con';
 		var no = typeof numberOfReturnArguments === 'undefined' || numberOfReturnArguments < -1 ? -1 : Math.round(numberOfReturnArguments);
 		$.ajax({
 			url: 'ajax_arguments_connected_to_position_uid',
 			method: 'POST',
 			data: { uid : ofPositionWithUid, returnCount : no, type: type },
-			dataType: 'json'
-		}).done(function (data) {
-			guiHandler.setJsonDataToContentAsArguments(data);
-		}).fail(function () {
+			dataType: 'json',
+			async: true
+		}).done(function ajaxGetArgumentsConnectedToPositionUidDone (data) {
+			posCallbackFunction(data);
+		}).fail(function ajaxGetArgumentsConnectedToPositionUidFail () {
 			alert('failed request');
-			guiHandler.setNewArgumentButtonOnly();
+			negCallbackFunction();
 		});
 	};
 
@@ -60,40 +63,42 @@ function AjaxHandler() {
 			url: 'ajax_arguments_against_same_positions_by_argument_uid',
 			method: 'POST',
 			data: { uid : ofArgumentWithUid, returnCount : no, type: type },
-			dataType: 'json'
-		}).done(function (data) {
-			if (setAsDescr){
-				if (no != 1){
-					alert('error with args in getArgumentsForTheSamePositionByArgUidAndSetInGui')
-				} else {
-					$.each(data, function (key, val) {
-						var pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-						var text = argumentSentencesOpeners[pos] + '<b>' + userArg + '</b> But an argument from the other side is: <b>'
-							+ val + '</b> What\'s your opiniion?';
-						guiHandler.setDiscussionsDescription(text);
-					});
-				}
+			dataType: 'json',
+			async: true
+		}).done(function ajaxGetArgumentsForTheSamePositionByArgUidAndSetInGuiDone (data) {
+			var guiHandler = new GuiHandler();
+			if (setAsDescr) {
+				$.each($.parseJSON(data), function (key, val) {
+					var pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
+					var text = argumentSentencesOpeners[pos] + '<b>' + userArg + '</b> But an argument from the other side is: <b>'
+						+ val + '</b> What\'s your opiniion?';
+					guiHandler.setDiscussionsDescription(text);
+				});
 			} else {
 				guiHandler.setJsonDataToContentAsArguments(data);
 			}
-		}).fail(function () {
+		}).fail(function ajaxGetArgumentsForTheSamePositionByArgUidAndSetInGuiFail () {
 			alert('failed request');
+			var guiHandler = new GuiHandler();
 			guiHandler.setNewArgumentButtonOnly();
 		});
 	};
 
 	/**
 	 * Request all users
+	 * @param posCallbackFunction callback if done
+	 * @param negCallbackText for an alert if fail
 	 */
-	this.getAllUsersAndSetInGui = function () {
+	this.getAllUsersAndSetInGui = function (posCallbackFunction, negCallbackText) {
 		$.ajax({
 			url: 'ajax_all_users',
 			type: 'GET',
-			dataType: 'json'
-		}).done(function (data) {
-			guiHandler.setJsonDataToAdminContent(data);
-		}).fail(function () {
-			alert('internal failure');
+			dataType: 'json',
+			async: true
+		}).done(function ajaxGetAllUsersDone (data) {
+			posCallbackFunction(data);
+		}).fail(function ajaxGetAllUsersFail () {
+			alert(negCallbackText);
 		});
 	};
-}
+};

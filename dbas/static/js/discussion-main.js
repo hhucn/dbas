@@ -41,9 +41,12 @@ var firstOneText = 'You are the first one. Please add a new statement:';
 /**
  * main function
  */
-$(document).ready(function () {
+$(function () {
 	'use strict';
 	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), interactionHandler = new InteractionHandler();
+
+	guiHandler.setHandler(interactionHandler);
+	interactionHandler.setHandler(guiHandler, ajaxHandler);
 
 	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
@@ -54,7 +57,7 @@ $(document).ready(function () {
 		$('#' + startDescriptionId).hide(); // hides the start description
 		$('#' + restartDiscussionButtonId).show(); // show the restart button
 
-		ajaxHandler.getAllPositionsAndSetInGui();
+		ajaxHandler.getAllPositions(interactionHandler.callbackAjaxGetAllPositions, guiHandler.setNewArgumentButtonOnly);
 	});
 
 	// handler for the send answer button
@@ -77,11 +80,11 @@ $(document).ready(function () {
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function () {
 		if ($(this).val() === 'List all users') {
-			ajaxHandler.getAllUsersAndSetInGui();
-			$(this).val('Hide all users');
+			ajaxHandler.getAllUsersAndSetInGui(guiHandler.setJsonDataToAdminContent, 'internal failure while requesting all users');
+			$(this).val('Hide all users'); // will be done in the ajaxhandler
 		} else {
 			$('#' + adminsSpaceId).empty();
-			$(this).val('List all users');
+			$(this).val('List all users'); // will be done in the ajaxhandler
 		}
 	});
 
@@ -92,7 +95,6 @@ $(document).ready(function () {
 
 	// adding a textarea in the left column
 	$('#' + addProTextareaId).click(function () {
-
 		guiHandler.addTextareaAsChildIn(leftPositionTextareaId);
 	});
 
@@ -106,8 +108,23 @@ $(document).ready(function () {
 	
 	// ajax loading animation
 	$(document).on({
-		ajaxStart: function() { $('body').addClass('loading'); },
-		ajaxStop: function() { $('body').removeClass('loading'); }    
+		ajaxStart: function() { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a flickering screen
+		ajaxStop: function() { setTimeout("$('body').removeClass('loading')", 0); }
 	});
+
+	/*
+	// ask for refreshing
+	$(window).bind('beforeunload', function(){
+		return 'Every data in this documt will be lost during a reload of the page.';
+	});
+
+	// logout user on unload
+	$(window).on('unload', function(){
+		// todo:
+		// set checkbox on login
+		// new db field for "stay_logged_in"
+		// send request on unload
+	});
+	*/
 
 });

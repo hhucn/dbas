@@ -1,19 +1,20 @@
 @import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
 @import url(http://fonts.googleapis.com/css?family=Indie+Flower);
-
 body {
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: 300;
 	color: #000;
 	background: url('../images/bg4.png') repeat fixed center;
 	font-size: 16px;
-	<!--background: #b3b3b3;
-	-->
+	/* background: #b3b3b3; */
 }
 
+/* new scale for bg for retina displays */
 @media screen and (min-width: 2560px),
 screen and (min-height: 1600px) {
-	<!-- new scale for bg for retina displays --> background: url('../images/bg5.png') repeat fixed center;
+	body {
+		background: url('../images/bg5.png') repeat fixed center;
+	}
 }
 
 h1,
@@ -24,60 +25,53 @@ h5,
 h6 {
 	font-weight: 400;
 }
+
 h1 {
 	font-size: 40px;
 }
+
 h2 {
 	font-size: 30px;
 }
+
 h3 {
 	font-size: 16px;
 }
+
 h4 {
 	font-size: 14px;
 }
+
 p {
 	font-weight: 300;
 }
+
 a {
 	color: #006ab3;
 }
+
 a:hover {
 	text-decoration: underline;
 }
 
-/* Start by setting display:none to make this hidden. Then we position it in relation to the viewport window
-   with position:fixed. Width, height, top and left speak for themselves. Background we set to 80% white with
-   our animation centered, and no-repeating
-*/
-/* http://stackoverflow.com/questions/1964839/jquery-please-wait-loading-animation*/
 .ajaxloader {
-    display:    none;
-    position:   fixed;
-    z-index:    1000;
-    top:        0;
-    left:       0;
-    height:     100%;
-    width:      100%;
-    background: rgba( 255, 255, 255, .7 ) 
-                url('../images/ajax-loader-pacman.gif') 
-                50% 50% 
-                no-repeat;
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: rgba( 0, 0, 0, 0.3) url('../images/ajax-loader-pacman.gif') 50% 50% no-repeat;
 }
 
-/* When the body has the loading class, we turn the scrollbar off with overflow:hidden */
-/* http://stackoverflow.com/questions/1964839/jquery-please-wait-loading-animation*/
 body.loading {
-    overflow: hidden;   
+	overflow: hidden;
 }
 
-/* Anytime the body has the loading class, our modal element will be visible */
-/* http://stackoverflow.com/questions/1964839/jquery-please-wait-loading-animation*/
 body.loading .ajaxloader {
-    display: block;
+	display: block;
 }
-
-
 
 .font-normal {
 	font-weight: 400;
@@ -124,7 +118,7 @@ body.loading .ajaxloader {
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
 
-.container:hover{
+.container:hover {
 	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
 	transition: .5s ease;
 }
@@ -150,13 +144,11 @@ body.loading .ajaxloader {
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
 
-
-
 .button:hover {
 	transition: 0.5s all;
 }
 
-.modal-title{
+.modal-title {
 	font-family: "Indie Flower", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 30px;
 }
@@ -174,12 +166,14 @@ body.loading .ajaxloader {
 	padding: 0px;
 	margin: 0px;
 }
+
 .links ul li {
 	list-style: none;
 	display: inline;
 	margin: 0 10px;
 	text-align: center;
 }
+
 .links ul li a:hover {
 	text-decoration: underline;
 	color: #006ab3;
@@ -217,7 +211,7 @@ body.loading .ajaxloader {
 }
 
 @media (max-width: 991px) {
-	#footer{
+	#footer {
 		height: 150px;
 	}
 }
@@ -227,7 +221,7 @@ body.loading .ajaxloader {
 		margin-left: 10px;
 		margin-right: 10px;
 	}
-	#footer{
+	#footer {
 		height: 220px;
 	}
 	.links ul li {

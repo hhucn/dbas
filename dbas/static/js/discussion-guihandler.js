@@ -1,29 +1,35 @@
 /*global $, jQuery, alert */
 
-function GuiHandler() {
+function GuiHandler () {
 	'use strict';
+	var interactionHandler;
+
+	this.setHandler = function(externInteractionHandler) {
+		interactionHandler = externInteractionHandler;
+	};
+
 	/**
 	 * Sets given json content as position buttons in the discussions space
 	 * @param jsonData data with json content
 	 */
 	this.setJsonDataToContentAsPositions = function (jsonData) {
-		var listitems = [], _this = this;
+		var listitems = [], _this = new GuiHandler();
 		this.setDiscussionsDescription(startDiscussionText);
-		$.each(jsonData, function (key, val) {
+		$.each($.parseJSON(jsonData), function setJsonDataToContentAsPositionsEach (key, val) {
 			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, true));
 			listitems.push(_this.getKeyValAsInputRadioInLiWithType(key, val, true));
 		});
 
 		// sanity check for an empty list
 		if (listitems.length === 0) {
-			this.setDiscussionsDescription(firstOneText);
+			_this.setDiscussionsDescription(firstOneText);
 		}
 
 		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
 		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new position.', true));
 
 		$('#' + discussionContainerId).show();
-		this.addListItemsToDiscussionsSpace(listitems, statementList);
+		_this.addListItemsToDiscussionsSpace(listitems, statementList);
 	};
 
 	/**
@@ -31,20 +37,20 @@ function GuiHandler() {
 	 * @param jsonData data with json content
 	 */
 	this.setJsonDataToContentAsArguments = function (jsonData) {
-		var listitems = [], _this = this;
-		$.each(jsonData, function (key, val) {
+		var listitems = [], _this = new GuiHandler();
+		$.each($.parseJSON(jsonData), function setJsonDataToContentAsArgumentsEach(key, val) {
 			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, false));
 			listitems.push(_this.getKeyValAsInputRadioInLiWithType(key, val, false));
 		});
 
 		// sanity check for an empty list
 		if (listitems.length === 0) {
-			this.setDiscussionsDescription(firstOneText);
+			_this.setDiscussionsDescription(firstOneText);
 		}
 
 		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new position.', true));
-		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new argument.', true));
-		this.addListItemsToDiscussionsSpace(listitems, argumentList);
+		listitems.push(_this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new argument.', true));
+		_this.addListItemsToDiscussionsSpace(listitems, argumentList);
 	};
 
 	/**
@@ -85,19 +91,19 @@ function GuiHandler() {
 		}
 
 		// add each user element
-		$.each(jsonData, function (key, val) {
+		$.each($.parseJSON(jsonData), function setJsonDataToAdminContentEach (key,value){
 			trElement = $('<tr>');
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
 			}
-			tdElement[0].text(val.uid);
-			tdElement[1].text(val.firstname);
-			tdElement[2].text(val.surname);
-			tdElement[3].text(val.nickname);
-			tdElement[4].text(val.email);
-			tdElement[5].text(val.group);
-			tdElement[6].text(val.last_logged);
-			tdElement[7].text(val.registered);
+			tdElement[0].text(value.uid);
+			tdElement[1].text(value.firstname);
+			tdElement[2].text(value.surname);
+			tdElement[3].text(value.nickname);
+			tdElement[4].text(value.email);
+			tdElement[5].text(value.group);
+			tdElement[6].text(value.last_logged);
+			tdElement[7].text(value.registered);
 
 			for (i = 0; i < tdElement.length; i += 1) {
 				trElement.append(tdElement[i]);
@@ -192,14 +198,16 @@ function GuiHandler() {
 		}
 
 		if (key === addStatementButtonId) {
-			//inputElement.setAttribute('onclick', "new GuiHandler().displayStyleOfAddArgumentContiner(true)");
+			//inputElement.setAttribute('onclick', "new GuiHandler().setDisplayStylesOfAddArgumentContainer(true)");
 		}
+
+
 		if (type === 'button') {
 			alert('check code for completion');
 			if (isArgument) {
-				inputElement.attr({onclick: "new InteractionHandler().argumentButtonWasClicked(this.id, this.value);"});
+				inputElement.attr({onclick: "new InteractionHandler().argumentButtonWasClicked(this.id);"});
 			} else {
-				inputElement.attr({onclick: "new InteractionHandler().positionButtonWasClicked(this.id, this.value);"});
+				inputElement.attr({onclick: "new InteractionHandler().positionButtonWasClicked(this.id);"});
 			}
 		} else if (type === 'radio') {
 			inputElement.attr({onclick: "new InteractionHandler().radioButtonChanged(this.id);"});
@@ -283,7 +291,7 @@ function GuiHandler() {
 	 * Set some style attributes, 
 	 * @param isVisible
 	 */
-	this.displayStyleOfAddArgumentContiner = function (isVisible) {
+	this.setDisplayStylesOfAddArgumentContainer = function (isVisible) {
 		if (isVisible) {
 			$('#' + addStatementContainerId).show();
 			$('#' + addStatementButtonId).disable = true;
@@ -300,4 +308,4 @@ function GuiHandler() {
 	this.getFullHtmlTextOf = function (element) {
 		return $('<div>').append(element).html();
 	};
-}
+};

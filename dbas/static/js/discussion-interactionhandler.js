@@ -1,15 +1,19 @@
 /*global $, jQuery */
 
-
-function InteractionHandler() {
+function InteractionHandler () {
 	'use strict';
-	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler();
+	var guiHandler, ajaxHandler;
+
+	this.setHandler = function (externGuiHandler, externAjaxHandler) {
+		guiHandler = externGuiHandler;
+		ajaxHandler = externAjaxHandler;
+	};
 	/**
 	 * Handler when an argument button was clicked
 	 * @param value of the button
 	 */
 	this.argumentButtonWasClicked = function (id, value) {
-		var pos;
+		var guiHandler = new GuiHandler(), pos;
 		pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
 		guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + '<b>' + value + '</b> But why?');
 
@@ -17,7 +21,7 @@ function InteractionHandler() {
 		$('#' + discussionSpaceId).empty();
 
 		// add all positions
-		ajaxHandler.getArgumentsConnectedToPositionUidAndSetInGui(id, true);
+		ajaxHandler.getArgumentsConnectedToPositionUid(id, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
 	};
 
 	/**
@@ -34,15 +38,16 @@ function InteractionHandler() {
 
 		// add all positions from the other side
 		ajaxHandler.getArgumentsForTheSamePositionByArgUidAndSetInGui(id, false, true, 1, value);
-		ajaxHandler.getArgumentsConnectedToPositionUidAndSetInGui(id, true);
+		ajaxHandler.getArgumentsConnectedToPositionUid(id, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
 	};
 
 	/**
 	 * Method for some style attributes, when the radio buttons are chaning
 	 */
 	this.radioButtonChanged = function (buttonId) {
+		var guiHandler = new GuiHandler();
 		if ($('#' + addStatementButtonId).is(':checked')) {
-			guiHandler.displayStyleOfAddArgumentContiner(true);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(true);
 			$('#' + sendAnswerButtonId).hide();
 
 			// get the second child, which is the label
@@ -54,7 +59,7 @@ function InteractionHandler() {
 				$('#' + addStatementContainerMainInputId).hide();
 			}
 		} else {
-			guiHandler.displayStyleOfAddArgumentContiner(false);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(false);
 			$('#' + sendAnswerButtonId).show();
 		}
 
@@ -66,7 +71,7 @@ function InteractionHandler() {
 	 * Defines the action for the send button
 	 */
 	this.sendAnswerButtonClicked = function () {
-		var radioButton, id, value;
+		var guiHandler = new GuiHandler(), radioButton, id, value;
 		radioButton = $('input[name=' + radioButtonGroup + ']:checked');
 		id = radioButton.attr('id');
 		value = radioButton.val();
@@ -82,4 +87,16 @@ function InteractionHandler() {
 			}
 		}
 	};
-}
+
+	/**
+	 * Callback for the ajax method getAllPositions
+	 * @param data returned json data
+	 */
+	this.callbackAjaxGetAllPositions = function (data) {
+		if (typeof data === 'undefined') {
+			guiHandler.setNewArgumentButtonOnly();
+		} else {
+			guiHandler.setJsonDataToContentAsPositions(data);
+		}
+	};
+};

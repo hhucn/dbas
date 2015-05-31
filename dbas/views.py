@@ -566,7 +566,10 @@ class Dbas(object):
 				       "uid: " + str(pos.uid) + "   val: " + pos.text)
 				return_dict[str(pos.uid)] = pos.text
 
-		return return_dict
+		dictionaryHelper = DictionaryHelper()
+		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
+
+		return return_json
 
 	# ajax - getting every user, and returns dicts with name <-> group
 	@view_config(route_name='ajax_all_users', renderer='json')
@@ -614,9 +617,12 @@ class Dbas(object):
 				return_dict[user.uid] = return_user
 
 		logger('get_ajax_users', 'def', 'SLEEEEEPING')
-		time.sleep(2)
+		time.sleep(1)
 
-		return return_dict
+		dictionaryHelper = DictionaryHelper()
+		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
+
+		return return_json
 
 	# ajax - getting every argument, which is connected to the given position uid
 	@view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')
@@ -641,8 +647,9 @@ class Dbas(object):
 		# get return count of arguments
 		dictionaryHelper = DictionaryHelper()
 		return_dict = dictionaryHelper.get_subdictionary_out_of_orderer_dict(ordered_dict, count)
+		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
 
-		return return_dict
+		return return_json
 
 	# ajax - getting every arument, which is for the same position as the given argument uid
 	@view_config(route_name='ajax_arguments_against_same_positions_by_argument_uid', renderer='json')
@@ -667,6 +674,7 @@ class Dbas(object):
 		# get return count of arguments
 		dictionaryHelper = DictionaryHelper()
 		return_dict = dictionaryHelper.get_subdictionary_out_of_orderer_dict(ordered_dict, count)
+		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
 
-		return return_dict
+		return return_json
 

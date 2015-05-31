@@ -2,6 +2,7 @@ import logging
 import random
 import smtplib
 import collections
+import json
 
 from socket import error as socket_error
 
@@ -229,3 +230,7 @@ class DictionaryHelper():
 				items.pop(rnd)
 
 		return return_dict
+
+
+	def dictionarty_to_json_array(self, dict, ensure_ascii):
+		return json.dumps(dict, ensure_ascii)
