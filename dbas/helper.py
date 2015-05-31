@@ -231,8 +231,17 @@ class QueryHelper(object):
 
 		return return_dict
 
+	def save_track_for_user(self, arg_uid, user):
+		"""
 
-class DictionaryHelper():
+		:param arg_uid:
+		:param user:
+		:return:
+		"""
+		logger('QueryHelper', 'save_track_for_user', 'arg_uid ' + str(arg_uid) + ', user' + str(user))
+
+
+class DictionaryHelper(object):
 
 	def get_subdictionary_out_of_orderer_dict(self, ordered_dict, count):
 		"""
@@ -258,7 +267,7 @@ class DictionaryHelper():
 				return ordered_dict
 		else:
 
-			for i in range (0, count):
+			for i in range(0, count):
 				rnd = random.randint(0, len(items)-1)
 				logger('helper', 'get_subdictionary_out_of_orderer_dict', 'for loop ' + str(i) + '. add element at ' + str(rnd))
 				return_dict[items[rnd][0]] = items[rnd][1]
@@ -273,4 +282,5 @@ class DictionaryHelper():
 		:param ensure_ascii: if true, ascii will be checked
 		:return: json data
 		"""
-		return json.dumps(dict, ensure_ascii)
+		return_dict = json.dumps(dict, ensure_ascii)
+		return return_dict

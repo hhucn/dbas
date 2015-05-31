@@ -1,0 +1,23 @@
+.container{
+	margin-top: 50px;
+}
+
+.button{
+	width: 49%;
+}
+
+#request-track{
+	float: left
+}
+
+#delete-track{
+	float: right;
+}
+
+
+@media(max-width:640px) {
+
+#request-track,
+#delete-track {
+	float: none;
+}

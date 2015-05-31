@@ -4,6 +4,7 @@
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_settings.css')}" rel="stylesheet">
 </head>
 
 <body>
@@ -15,7 +16,7 @@
 		</div>
 	</div>
 
-	<div class="form">
+	<div class="form container">
 		<h2>Information about yourself</h2>
 		<div class="row">
 			<div class="col-md-8">
@@ -60,7 +61,7 @@
 		</div>
 	</div>
 
-	<div class="form">
+	<div class="form container">
 		<h2>Tracked user decisions</h2>
 		<div class="row">
 			<div class="col-md-8">
@@ -77,7 +78,6 @@
 					</table>
 				</div>
 				<input id="request-track" type="button" value="Request track" class="button button-block btn btn-primary" data-dismiss="modal" />
-				<br>
 				<input id="delete-track" type="button" value="Delete track" class="button button-block btn btn-primary" data-dismiss="modal" />
 					<br>
 				<div id="track-table-success" class="alert alert-success" role="alert">
@@ -93,7 +93,7 @@
 		</div>
 	</div>
 
-	<div class="form">
+	<div class="form container">
 		<h2>Change your password</h2>
 		<form action="/settings" method="post">
 

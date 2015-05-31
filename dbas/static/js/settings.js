@@ -21,10 +21,10 @@ function TrackHandler() {
 		}).done(function ajaxGetUserTrackDone(data) {
 			new TrackHandler().setDataInTrackTable(data);
 
-			$('#delete-track').show();
+			$('#delete-track').fadeIn('slow');
 		}).fail(function ajaxGetUserTrackFail() {
 			$('#track-table-success').hide();
-			$('#track-table-failure').show();
+			$('#track-table-failure').fadeIn('slow');
 			$('#track-failure-msg').text("Internal Failure");
 		});
 	};
@@ -46,12 +46,12 @@ function TrackHandler() {
 		}).done(function ajaxRemoveUserTrackDone() {
 			$('#track-table-space').empty();
 			$('#delete-track').hide();
-			$('#track-table-success').show();
+			$('#track-table-success').fadeIn('slow');
 			$('#track-table-failure').hide();
 			$('#track-success-msg').text("Data was successfully removed.");
 		}).fail(function ajaxRemoveUserTrackFail() {
 			$('#track-table-success').hide();
-			$('#track-table-failure').show();
+			$('#track-table-failure').fadeIn('slow');
 			$('#track-failure-msg').text("Internal Failure");
 		});
 	};
@@ -119,15 +119,17 @@ function TrackHandler() {
 
 $(function () {
 	'use strict';
+
 	$('#request-track').click(function requestTrack() {
 		new TrackHandler().getUserTrack($('#table_nickname').text());
-		$('#track-table-success').hide();
-	$('#track-table-failure').hide();
+		$('#track-table-success').fadeOut('slow');
+		$('#track-table-failure').fadeOut('slow');
 	});
+
 	$('#delete-track').click(function requestTrack() {
 		new TrackHandler().removeUserTrack($('#table_nickname').text());
-		$('#track-table-success').hide();
-		$('#track-table-failure').hide();
+		$('#track-table-success').fadeOut('slow');
+		$('#track-table-failure').fadeOut('slow');
 	});
 
 	$('#delete-track').hide();
