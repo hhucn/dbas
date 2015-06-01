@@ -12,7 +12,7 @@ from pyramid_mailer.message import Message
 from sqlalchemy import and_
 
 from .database import DBSession
-from .database.model import Argument, RelationArgPos
+from .database.model import Argument, RelationArgPos, Track, User, Group, Position
 
 
 log = logging.getLogger(__name__)
@@ -97,7 +97,24 @@ class PasswordHandler(object):
 
 class QueryHelper(object):
 
-	def get_all_arguments_for_by_pos_uid(self, uid, is_supportive):
+	def is_user_admin(self, uid):
+		"""
+		Check, if the given uid has admin rights or is admin
+		:param uid:
+		:return: true, if user is admin, false otherwise
+		"""
+		db_user = DBSession.query(User).filter_by(nickname=str(uid)).first()
+		db_group = DBSession.query(Group).filter_by(name='admins').first()
+		logger('QueryHelper', 'is_user_admin', 'check for current user')
+		if db_user:
+			logger('QueryHelper', 'is_user_admin', 'user exists; check for admin')
+			if db_user.nickname == 'admin' or db_user.group == db_group.uid:
+				logger('QueryHelper', 'is_user_admin', 'user is admin')
+				return True
+
+		return False
+
+	def get_all_arguments_by_pos_uid(self, uid, is_supportive):
 		"""
 		Getting every pro/con argument, which is connected to the given position uid
 		:param uid: uid of the argument
@@ -137,7 +154,7 @@ class QueryHelper(object):
 				logger('QueryHelper', 'get_all_arguments_for_uid', 'checks whether argument exists, uid ' + str(arg.uid))
 				if db_argument:
 					logger('QueryHelper', 'get_all_arguments_for_uid' , 'add argument in dict' +
-						'uid:' + str(db_argument.uid) + '	val: ' + db_argument.text)
+						'uid:' + str(db_argument.uid) + ', val: ' + db_argument.text)
 					return_dict[str(db_argument.uid)] = db_argument.text
 				else :
 					logger('QueryHelper', 'get_all_arguments_for_uid', 'no argument exists, uid ' + str(uid))
@@ -146,7 +163,7 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def get_all_arguments_for_by_arg_uid(self, uid, is_supportive):
+	def get_all_arguments_by_arg_uid(self, uid, is_supportive):
 		"""
 		Getting every pro/con arument, which is for/against the same position as the given argument uid
 		:param uid: uid of the argument
@@ -162,38 +179,38 @@ class QueryHelper(object):
 		# );
 
 		return_dict = collections.OrderedDict()
-		logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'check for uid')
+		logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'check for uid')
 		support = 1 if is_supportive else 0
 		was_suportive = 0 if is_supportive else 1
 
 		if uid:
-			logger('QueryHelper', 'get_all_arguments_for_by_arg_uid ', 'get connected position for argument uid ' + str(uid))
+			logger('QueryHelper', 'get_all_arguments_by_arg_uid ', 'get connected position for argument uid ' + str(uid))
 			db_posuid = DBSession.query(RelationArgPos).filter(
 				and_(RelationArgPos.arg_uid == uid, RelationArgPos.is_supportive == was_suportive)).first()
 
 			if db_posuid:
-				logger('QueryHelper', 'get_all_arguments_for_by_arg_uid',  'get all arguments from the opposite for position uid ' + str(
+				logger('QueryHelper', 'get_all_arguments_by_arg_uid',  'get all arguments from the opposite for position uid ' + str(
 					db_posuid.pos_uid))
 				db_arguids = DBSession.query(RelationArgPos).filter(
 					and_(RelationArgPos.pos_uid == db_posuid.pos_uid, RelationArgPos.is_supportive == support)).all()
 
-				logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'iterate all arguments for that uid')
+				logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'iterate all arguments for that uid')
 				for argid in db_arguids:
-					logger('QueryHelper', 'get_all_arguments_for_by_arg_uid' , 'get argument with' + str(argid.arg_uid))
+					logger('QueryHelper', 'get_all_arguments_by_arg_uid' , 'get argument with' + str(argid.arg_uid))
 					db_argument = DBSession.query(Argument).filter_by(uid = argid.arg_uid).first()
 
-					logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'checks whether argument exists, uid ' + str(argid.uid))
+					logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'checks whether argument exists, uid ' + str(argid.uid))
 					if db_argument:
-						logger('QueryHelper', 'get_all_arguments_for_by_arg_uid' , 'add argument in dict' +
-							'uid:' + str(db_argument.uid) + '	val: ' + db_argument.text)
+						logger('QueryHelper', 'get_all_arguments_by_arg_uid' , 'add argument in dict' +
+							'uid:' + str(db_argument.uid) + ', val: ' + db_argument.text)
 						return_dict[str(db_argument.uid)] = db_argument.text
 					else:
-						logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'no argument exists, uid ' + str(argid.uid))
+						logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'no argument exists, uid ' + str(argid.uid))
 			else:
-				logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'no argument exists, uid ' + str(uid))
+				logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'no argument exists, uid ' + str(uid))
 
 		else:
-			logger('QueryHelper', 'get_all_arguments_for_by_arg_uid', 'ERROR: uid not found')
+			logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'ERROR: uid not found')
 
 		return return_dict
 
@@ -231,14 +248,60 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def save_track_for_user(self, arg_uid, user):
+	def save_track_for_user(self, DBSession, transaction, user_id, pos_id, arg_id, is_arg):
 		"""
-
+		Saves given data as track for the given user
 		:param arg_uid:
 		:param user:
 		:return:
 		"""
-		logger('QueryHelper', 'save_track_for_user', 'arg_uid ' + str(arg_uid) + ', user' + str(user))
+		logger('QueryHelper', 'save_track_for_user', 'user: ' + str(user_id) +  ', pos_uid: ' + str(pos_id) + ', arg_uid: ' + str(arg_id) + ', is_argument: ' + str(is_arg))
+		new_track = Track(user=user_id, pos_uid=pos_id, arg_uid=arg_id, is_argument=is_arg)
+		DBSession.add(new_track)
+		transaction.commit()
+
+	def get_track_for_user(self, DBSession, user_uid):
+		"""
+		Returns the complete track of given user
+		:param DBSession: current session
+		:param user_uid: current user id
+		:return: track os the user id as dictionary
+		"""
+		logger('QueryHelper','get_track_for_user','user ' + user_uid)
+
+		db_track = DBSession.query(Track).filter_by(user=user_uid).all()
+		return_dict = collections.OrderedDict()
+		for track in db_track:
+			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid))
+			track_dict = {}
+			track_dict['user'] = track.user
+			track_dict['date'] = str(track.date)
+			track_dict['pos_uid'] = track.pos_uid
+			track_dict['arg_uid'] = track.arg_uid
+			if track.is_argument:
+				db_row = DBSession.query(Argument).filter_by(uid=track.arg_uid).first()
+			else:
+				db_row = DBSession.query(Position).filter_by(uid=track.pos_uid).first()
+			track_dict['text'] = db_row.text
+			track_dict['is_argument'] = track.is_argument
+			return_dict[track.uid] = track_dict
+		else:
+			logger('QueryHelper','get_track_for_user','no track')
+
+		return return_dict
+
+	def del_track_for_user(self, DBSession, transaction, user_uid):
+		"""
+		Returns the complete track of given user
+		:param DBSession: current session
+		:param transaction: current transaction
+		:param user_uid: current user id
+		:return: undefined
+		"""
+		logger('QueryHelper','del_track_for_user','user ' + user_uid)
+		DBSession.query(Track).filter_by(user=user_uid).delete()
+		transaction.commit()
+
 
 
 class DictionaryHelper(object):

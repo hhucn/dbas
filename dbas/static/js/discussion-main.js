@@ -56,7 +56,7 @@ $(function () {
 		$('#' + startDiscussionButtonId).hide(); // hides the start button
 		$('#' + startDescriptionId).hide(); // hides the start description
 		$('#' + restartDiscussionButtonId).show(); // show the restart button
-		$('#' + discussionContainerId).fadeIn('slow');
+		$('#' + discussionContainerId).fadeIn('fast');
 
 		ajaxHandler.getAllPositions(interactionHandler.callbackAjaxGetAllPositions, guiHandler.setNewArgumentButtonOnly);
 	});
@@ -71,11 +71,11 @@ $(function () {
 	$('#' + restartDiscussionButtonId).click(function () {
 		$('#' + startDiscussionButtonId).show(); // show the start description
 		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
-		$('#' + addStatementContainerId).fadeOut('slow'); // hide add statement container
+		$('#' + addStatementContainerId).hide(); // hide add statement container
 
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		$('#' + discussionContainerId).fadeOut('slow');
+		$('#' + discussionContainerId).hide();
 	});
 
 	// admin list all users button

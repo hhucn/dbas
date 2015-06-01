@@ -7,53 +7,51 @@ function TrackHandler() {
 	/**
 	 *
 	 * @param nickname
+	 * @param get_track_data is true, when the data should be get, false, when it should be deleted
 	 */
-	this.getUserTrack = function (nickname) {
+	this.manageUserTrackData = function ( get_track_data) {
 		'use strict';
 		$.ajax({
-			url: 'ajax_get_user_track',
+			url: 'ajax_manage_user_track',
 			method: 'POST',
 			data: {
-				nickname: nickname
+				get_data: get_track_data ? '1' : '0'
 			},
 			dataType: 'json',
 			async: true
 		}).done(function ajaxGetUserTrackDone(data) {
-			new TrackHandler().setDataInTrackTable(data);
-
-			$('#delete-track').fadeIn('slow');
+			var th = new TrackHandler();
+			get_track_data ? th.getUserTrackDataDone(data) : th.removeUserTrackDataDone();
 		}).fail(function ajaxGetUserTrackFail() {
-			$('#track-table-success').hide();
-			$('#track-table-failure').fadeIn('slow');
-			$('#track-failure-msg').text("Internal Failure");
+			var th = new TrackHandler();
+			get_track_data ? th.getUserTrackDataFail() : th.removeUserTrackDataFail();
 		});
 	};
 
-	/**
-	 *
-	 * @param nickname
-	 */
-	this.removeUserTrack = function (nickname) {
-		'use strict';
-		$.ajax({
-			url: 'ajax_remove_user_track',
-			method: 'POST',
-			data: {
-				nickname: nickname
-			},
-			dataType: 'json',
-			async: true
-		}).done(function ajaxRemoveUserTrackDone() {
-			$('#track-table-space').empty();
-			$('#delete-track').hide();
-			$('#track-table-success').fadeIn('slow');
-			$('#track-table-failure').hide();
-			$('#track-success-msg').text("Data was successfully removed.");
-		}).fail(function ajaxRemoveUserTrackFail() {
-			$('#track-table-success').hide();
-			$('#track-table-failure').fadeIn('slow');
-			$('#track-failure-msg').text("Internal Failure");
-		});
+	this.getUserTrackDataDone = function(data){
+		new TrackHandler().setDataInTrackTable(data);
+		$('#delete-track').fadeIn('slow');
+	};
+
+	this.getUserTrackDataFail = function(){
+		$('#track-table-success').hide();
+		$('#track-table-failure').fadeIn('slow');
+		$('#track-failure-msg').text("Internal Failure");
+	};
+
+	this.removeUserTrackDataDone = function(){
+		$('#track-table-space').empty();
+		$('#delete-track').hide();
+		$('#track-table-success').show();
+		$('#track-table-failure').hide();
+		$('#track-success-msg').text("Data was successfully removed.");
+
+	};
+
+	this.removeUserTrackDataFail = function(){
+		$('#track-table-success').hide();
+		$('#track-table-failure').show();
+		$('#track-failure-msg').text("Internal Failure");
 	};
 
 
@@ -63,15 +61,18 @@ function TrackHandler() {
 	 */
 	this.setDataInTrackTable = function (jsonData) {
 		'use strict';
-		var tableElement, trElement, tdElement, spanElement, i;
-		tdElement = ['', ''];
-		spanElement = ['', ''];
+		var tableElement, trElement, tdElement, spanElement, i, is_argument;
+		tdElement = ['', '', '', '', ''];
+		spanElement = ['', '', '', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr({
 			class: 'table table-condensed',
 			border: '0',
 			style: 'border-collapse: separate; border-spacing: 0px;'
 		});
+
+		alert('DEBUG HERE');
+		// todo: DEBUG HERE
 
 		trElement = $('<tr>');
 
@@ -84,8 +85,11 @@ function TrackHandler() {
 		}
 
 		// add header row
-		spanElement[0].text('Date / Time');
-		spanElement[1].text('Track');
+		spanElement[0].text('UID');
+		spanElement[1].text('Date');
+		spanElement[2].text('Arg/Pos');
+		spanElement[3].text('ID');
+		spanElement[4].text('Text');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -99,8 +103,12 @@ function TrackHandler() {
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
 			}
-			tdElement[0].text(value.date);
-			tdElement[1].text(value.track);
+			is_argument = value.is_argument;
+			tdElement[0].text(key);
+			tdElement[1].text(value.date);
+			tdElement[2].text(is_argument? 'Arg' : 'Pos');
+			tdElement[3].text(is_argument === 'True' ? value.arg_uid : value.pos_uid);
+			tdElement[4].text(value.text);
 
 			for (i = 0; i < tdElement.length; i += 1) {
 				trElement.append(tdElement[i]);
@@ -121,13 +129,13 @@ $(function () {
 	'use strict';
 
 	$('#request-track').click(function requestTrack() {
-		new TrackHandler().getUserTrack($('#table_nickname').text());
+		new TrackHandler().manageUserTrackData(true);
 		$('#track-table-success').fadeOut('slow');
 		$('#track-table-failure').fadeOut('slow');
 	});
 
 	$('#delete-track').click(function requestTrack() {
-		new TrackHandler().removeUserTrack($('#table_nickname').text());
+		new TrackHandler().manageUserTrackData(false);
 		$('#track-table-success').fadeOut('slow');
 		$('#track-table-failure').fadeOut('slow');
 	});

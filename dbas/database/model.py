@@ -66,15 +66,9 @@ class User(Base):
 	nickname = sa.Column(sa.Text, nullable=False)
 	email = sa.Column(sa.Text, nullable=False, unique=True)
 	password = sa.Column(sa.Text, nullable=False)
-	group = sa.Column(sa.Integer, sa.ForeignKey(Group.uid)) # many-to-one
+	group = sa.Column(sa.Integer, sa.ForeignKey(Group.uid))
 	last_logged = sa.Column(sa.DateTime, default=func.now())
 	registered = sa.Column(sa.DateTime, default=func.now())
-
-	#position = orm.relationship("Position", backref=__tablename__) # one-to-many
-	#argument = orm.relationship("Argument", backref=__tablename__) # one-to-many
-	#relationArgPos = orm.relationship("RelationArgPos", backref=__tablename__) # one-to-many
-	#relationArgArg = orm.relationship("RelationArgArg", backref=__tablename__) # one-to-many
-	#relationPosPos = orm.relationship("RelationPosPos", backref=__tablename__) # one-to-many
 
 	def __init__(self, firstname, surname, nickname, email, password):
 		"""
@@ -100,21 +94,17 @@ class User(Base):
 		self.last_logged = func.now()
 
 
-
 class Position(Base):
 	"""
-	User-table with several columns.
-	Each user has a firsstname, lastname, email, password, belongs to a group and has a last loggin date
+	Position-table with several columns.
+	Each position hast text, date, weight, author
 	"""
 	__tablename__ = 'positions'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	text = sa.Column(sa.Text, nullable=False)
 	date = sa.Column(sa.DateTime, default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid)) # many-to-one
-
-	#relationArgPos = orm.relationship("RelationArgPos", backref=__tablename__, uselist=False) # one-to-one
-	#relationPosPos = orm.relationship("RelationPosPos", backref=__tablename__, uselist=False) # one-to-one
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 
 	def __init__(self, text, weight):
 		"""
@@ -139,10 +129,7 @@ class Argument(Base):
 	text = sa.Column(sa.Text, nullable=False)
 	date = sa.Column(sa.DateTime, default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid)) # many-to-one
-
-	#relationArgPos = orm.relationship("RelationArgPos", backref=__tablename__, uselist=False) # one-to-one
-	#relationArgArg = orm.relationship("RelationArgArg", backref=__tablename__, uselist=False) # one-to-one
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 
 	def __init__(self, text, weight, ):
 		"""
@@ -178,7 +165,7 @@ class RelationArgPos(Base):
 	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
 	date = sa.Column(sa.DateTime, default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid)) # many-to-one
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	is_supportive = sa.Column(sa.Boolean, nullable=False)
 
 	def __init__(self, weight, is_supportive):
@@ -205,7 +192,7 @@ class RelationPosArg(Base):
 	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
 	date = sa.Column(sa.DateTime, default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid)) # many-to-one
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	is_supportive = sa.Column(sa.Boolean, nullable=False)
 
 	def __init__(self, weight, is_supportive):
@@ -228,15 +215,12 @@ class RelationArgArg(Base):
 	"""
 	__tablename__ = 'relation_argarg'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	arg_uid1 = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid)) # one-to-one
-	arg_uid2 = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid)) # one-to-one
+	arg_uid1 = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
+	arg_uid2 = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
 	date = sa.Column(sa.DateTime, default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid)) # many-to-one
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	#arg1 = orm.relationship('Argument', foreign_keys=[arg_uid1])
-	#arg2 = orm.relationship('Argument', foreign_keys=[arg_uid2])
 
 	def __init__(self, weight, is_supportive):
 		"""
@@ -258,15 +242,12 @@ class RelationPosPos(Base):
 	"""
 	__tablename__ = 'relation_pospos'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	pos_uid1 = sa.Column(sa.Integer, sa.ForeignKey(Position.uid)) # one-to-one
-	pos_uid2 = sa.Column(sa.Integer, sa.ForeignKey(Position.uid)) # one-to-one
+	pos_uid1 = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
+	pos_uid2 = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
 	date = sa.Column(sa.DateTime, default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid)) # many-to-one
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	#pos1 = orm.relationship('Position', foreign_keys=[pos_uid1])
-	#pos2 = orm.relationship('Position', foreign_keys=[pos_uid2])
 
 	def __init__(self, weight, is_supportive):
 		"""
@@ -281,35 +262,24 @@ class RelationPosPos(Base):
 		return DBSession.query(RelationPosPos).order_by(RelationPosPos.date)
 
 
-#user_group_table = sa.Table('user_group', Base.metadata,
-#                            sa.Column('user_id', sa.Integer, sa.ForeignKey(User.uid)),
-#                            sa.Column('group_id', sa.Integer, sa.ForeignKey(Group.uid)),
-#                            )
-#user_position_table = sa.Table('user_position', Base.metadata,
-#                               sa.Column('user_id', sa.Integer, sa.ForeignKey(User.uid)),
-#                               sa.Column('position_id', sa.Integer, sa.ForeignKey(Position.uid)),
-#                               )
-#user_argument_table = sa.Table('user_argument', Base.metadata,
-#                               sa.Column('user_id', sa.Integer, sa.ForeignKey(User.uid)),
-#                               sa.Column('argument_id', sa.Integer, sa.ForeignKey(Argument.uid)),
-#                               )
-#user_relation_argarg_table = sa.Table('user_relation_argarg', Base.metadata,
-#                                      sa.Column('user_id', sa.Integer, sa.ForeignKey(User.uid)),
-#                                      sa.Column('relation_argarg_id', sa.Integer, sa.ForeignKey(RelationArgArg.uid)),
-#                                      )
-#user_relation_argpos_table = sa.Table('user_relation_argpos', Base.metadata,
-#                                      sa.Column('user_id', sa.Integer, sa.ForeignKey(User.uid)),
-#                                      sa.Column('relation_argpos_id', sa.Integer, sa.ForeignKey(RelationArgPos.uid)),
-#                                      )
-#argument_argument_table = sa.Table('argument_argument', Base.metadata,
-#                                   sa.Column('argument_id1', sa.Integer, sa.ForeignKey(Argument.uid)),
-#                                   sa.Column('argument_id2', sa.Integer, sa.ForeignKey(Argument.uid)),
-#                                   )
-#argument_position_table = sa.Table('argument_position', Base.metadata,
-#                                   sa.Column('argument_id', sa.Integer, sa.ForeignKey(Argument.uid)),
-#                                   sa.Column('position_id', sa.Integer, sa.ForeignKey(Position.uid)),
-#                                   )
-#position_position_table = sa.Table('argument_position', Base.metadata,
-#                                   sa.Column('argument_id1', sa.Integer, sa.ForeignKey(Argument.uid)),
-#                                   sa.Column('argument_id2', sa.Integer, sa.ForeignKey(Argument.uid)),
-#                                   )
+class Track(Base):
+	"""
+	Track-table with several columns.
+	Each user will be tracked
+	"""
+	__tablename__ = 'track'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	user = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	date = sa.Column(sa.DateTime, default=func.now())
+	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
+	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
+	is_argument = sa.Column(sa.Boolean, nullable=False)
+
+	def __init__(self, user, pos_uid, arg_uid, is_argument):
+		"""
+		Initializes a row in current position-table
+		"""
+		self.user = user
+		self.pos_uid = pos_uid
+		self.arg_uid = arg_uid
+		self.is_argument = is_argument

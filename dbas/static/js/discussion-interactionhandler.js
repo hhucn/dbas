@@ -21,7 +21,7 @@ function InteractionHandler () {
 		$('#' + discussionSpaceId).empty();
 
 		// add all positions
-		ajaxHandler.getArgsConnectedToPosUid(id, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
+		ajaxHandler.getArgsConnectedToPosUid(id, true, false, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
 	};
 
 	/**
@@ -38,7 +38,7 @@ function InteractionHandler () {
 
 		// add all positions from the other side
 		ajaxHandler.getArgsForSamePosByArgUid(id, false, true, 1, value);
-		ajaxHandler.getArgsConnectedToPosUid(id, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
+		ajaxHandler.getArgsConnectedToPosUid(id, true, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
 	};
 
 	/**

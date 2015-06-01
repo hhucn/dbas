@@ -380,13 +380,7 @@ class Dbas(object):
 		#	statement_inserted = False
 
 		# checks whether the current user is admin
-		db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
-		logger('main_content', 'def', 'check for current user')
-		if db_user:
-			logger('main_content', 'def', 'user exists; check for admin')
-			if db_user.nickname == 'admin':
-				logger('main_content', 'def', 'user is admin')
-				is_admin = True
+		is_admin = QueryHelper().is_user_admin(self.request.authenticated_userid)
 
 		return dict(
 			title='Content',
@@ -545,24 +539,24 @@ class Dbas(object):
 		)
 
 	# ajax - getting all positions
-	@view_config(route_name='get_ajax_positions', renderer='json')
-	def get_ajax_positions(self):
+	@view_config(route_name='ajax_all_positions', renderer='json')
+	def ajax_all_positions(self):
 		"""
 		Ajax rocks :)
 		Returns all positions as dictionary with uid <-> value
 		:return: list of all positions
 		"""
-		logger('get_ajax_positions', 'def', 'main')
+		logger('ajax_all_positions', 'def', 'main')
 		db_positions = DBSession.query(Position).all()
-		logger('get_ajax_positions', 'def', 'get all positions')
+		logger('ajax_all_positions', 'def', 'get all positions')
 
 		return_dict = {}
 
 		if db_positions:
-			logger('get_ajax_positions', 'def', 'iterate all positions')
+			logger('ajax_all_positions', 'def', 'iterate all positions')
 			# get every position
 			for pos in db_positions:
-				logger('get_ajax_positions', 'position iterator ' + str(pos.uid) + ' of ' + str(len(db_positions)-1),
+				logger('ajax_all_positions', 'position iterator ' + str(pos.uid) + ' of ' + str(len(db_positions)-1),
 				       "uid: " + str(pos.uid) + "   val: " + pos.text)
 				return_dict[str(pos.uid)] = pos.text
 
@@ -625,47 +619,37 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting complete track of the user
-	@view_config(route_name='ajax_get_user_track', renderer='json')
-	def ajax_get_user_track(self):
+	@view_config(route_name='ajax_manage_user_track', renderer='json')
+	def ajax_manage_user_track(self):
 		"""
 		Request the complete track of the user
 		:return:
 		"""
-		logger('ajax_get_user_track', 'def', 'main')
+		logger('ajax_manage_user_track', 'def', 'main')
 
-		nickname = ''
+		nickname = 'unknown'
+		get_data = ''
 		try:
-			nickname = self.request.params['nickname']
+			logger('ajax_manage_user_track', 'def', 'read params')
+			nickname = str(self.request.authenticated_userid)
+			get_data = self.request.params['get_data']
+			logger('ajax_manage_user_track', 'def', 'nickname ' + nickname + ', get ' + get_data)
 		except KeyError as e:
-			logger('ajax_get_user_track', 'error', repr(e))
+			logger('ajax_manage_user_track', 'error', repr(e))
 
 		return_dict = {}
-		internal_dict = {}
-		internal_dict['date'] = '2015-06-02'
-		internal_dict['track'] = '1 2 3 4 5 6'
-		return_dict['1'] = internal_dict
-		internal_dict = {}
-		internal_dict['date'] = '2015-06-03'
-		internal_dict['track'] = '7 8 9 10'
-		return_dict['2'] = internal_dict
-
-		# todo: ajax_get_user_track
+		if get_data == '1':
+			logger('ajax_manage_user_track', 'def', 'get track data')
+			return_dict = QueryHelper().get_track_for_user(DBSession, nickname)
+		else:
+			logger('ajax_manage_user_track', 'def', 'remove track data')
+			return_dict['removed data'] = 'true'
+			QueryHelper().del_track_for_user(DBSession, transaction, nickname)
 
 		dictionaryHelper = DictionaryHelper()
 		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
 
 		return return_json
-
-	# ajax - remove complete track of the user
-	@view_config(route_name='ajax_remove_user_track', renderer='json')
-	def ajax_remove_user_track(self):
-		"""
-		Remove the complete track of the user
-		:return:
-		"""
-		# todo: ajax_remove_user_track
-		logger('ajax_remove_user_track', 'def', 'main')
-		return {}
 
 	# ajax - getting every argument, which is connected to the given position uid
 	@view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')
@@ -675,17 +659,27 @@ class Dbas(object):
 		uid = ''
 		count = ''
 		type = ''
+		wasPosition = ''
 		try:
 			uid = self.request.params['uid']
 			count = int(self.request.params['returnCount'])
 			type = self.request.params['type']
+			wasPosition = self.request.params['wasPosition']
 		except KeyError as e:
 			logger('get_ajax_arguments_by_pos', 'error', repr(e))
 
 		logger('get_ajax_arguments_by_pos', 'def', 'uid: ' + uid + ', count: ' + str(count) + ', type: ' + type)
 
 		queryHelper = QueryHelper()
-		ordered_dict = queryHelper.get_all_arguments_for_by_pos_uid(uid, (True if type == 'pro' else False))
+		# get all arguments
+		ordered_dict = queryHelper.get_all_arguments_by_pos_uid(uid, (True if type == 'pro' else False))
+
+		# save track, because the given uid is a position uid
+		if wasPosition != '1':
+			queryHelper.save_track_for_user(DBSession, transaction, self.request.authenticated_userid, -1, uid, True)
+		else:
+			queryHelper.save_track_for_user(DBSession, transaction, self.request.authenticated_userid, uid, -1, False)
+
 
 		# get return count of arguments
 		dictionaryHelper = DictionaryHelper()
@@ -712,7 +706,9 @@ class Dbas(object):
 		logger('get_ajax_arguments_by_arg', 'def', 'uid: ' + uid + ', count: ' + str(count) + ', type: ' + type)
 
 		queryHelper = QueryHelper()
-		ordered_dict = queryHelper.get_all_arguments_for_by_arg_uid(uid, (True if type == 'pro' else False))
+		ordered_dict = queryHelper.get_all_arguments_by_arg_uid(uid, (True if type == 'pro' else False))
+
+		# in here, we do not need to save tracking data, because this is just a request
 
 		# get return count of arguments
 		dictionaryHelper = DictionaryHelper()
@@ -720,7 +716,6 @@ class Dbas(object):
 		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
 
 		return return_json
-
 
 	# ajax - getting next argument for confrontation
 	@view_config(route_name='ajax_next_arg_for_confrontation', renderer='json')
@@ -738,12 +733,12 @@ class Dbas(object):
 		return_dict = queryHelper.get_next_arg_for_confrontation(uid)
 
 		# todo: get_ajax_next_arg_for_confrontation
+		# queryHelper.save_track_for_user(DBSession, transaction, self.request.authenticated_userid, uid, -1, True)
 
 		dictionaryHelper = DictionaryHelper()
 		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
 
 		return return_json
-
 
 	# ajax - getting next arguments for justification
 	@view_config(route_name='ajax_next_args_for_justification', renderer='json')
@@ -761,6 +756,7 @@ class Dbas(object):
 		return_dicht = queryHelper.get_next_args_for_justification(uid)
 
 		# todo: get_ajax_next_args_for_justification
+		# queryHelper.save_track_for_user(DBSession, transaction, self.request.authenticated_userid, uid, -1, True)
 
 		dictionaryHelper = DictionaryHelper()
 		return_json = dictionaryHelper.dictionarty_to_json_array(return_dicht, True)

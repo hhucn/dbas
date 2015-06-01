@@ -30,14 +30,16 @@ function AjaxHandler () {
 	 * @param posCallbackFct callback if done
 	 * @param negCallbackFct callback if fail
 	 */
-	this.getArgsConnectedToPosUid = function (ofPositionWithUid, getProArgument, noOfReturnArguments, posCallbackFct, negCallbackFct) {
+	this.getArgsConnectedToPosUid = function (ofPositionWithUid, getProArgument, wasPosition, noOfReturnArguments, posCallbackFct, negCallbackFct) {
 		var type = getProArgument ? 'pro' : 'con';
+		var pos = wasPosition? '1' : '0';
 		var no = typeof noOfReturnArguments === 'undefined' || noOfReturnArguments < -1 ? -1 : Math.round(noOfReturnArguments);
 		$.ajax({
 			url: 'ajax_arguments_connected_to_position_uid',
 			method: 'POST',
 			data: { uid : ofPositionWithUid,
 					returnCount : no,
+					wasPosition : pos,
 					type: type },
 			dataType: 'json',
 			async: true

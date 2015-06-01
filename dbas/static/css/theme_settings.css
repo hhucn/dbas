@@ -14,10 +14,16 @@
 	float: right;
 }
 
+#track-table-success,
+#track-table-failure{
+	margin-top: 75px;
+}
+
 
 @media(max-width:640px) {
 
-#request-track,
-#delete-track {
-	float: none;
+	#request-track,
+	#delete-track {
+		float: none;
+	}
 }
