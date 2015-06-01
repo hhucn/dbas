@@ -29,8 +29,8 @@ function TrackHandler() {
 	};
 
 	this.getUserTrackDataDone = function(data){
-		new TrackHandler().setDataInTrackTable(data);
 		$('#delete-track').fadeIn('slow');
+		new TrackHandler().setDataInTrackTable(data);
 	};
 
 	this.getUserTrackDataFail = function(){
@@ -98,7 +98,9 @@ function TrackHandler() {
 		}
 
 		// adding the tracks
+		var has_data = false;
 		$.each($.parseJSON(jsonData), function setDataInTrackTableEach(key, value) {
+			has_data = true;
 			trElement = $('<tr>');
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
@@ -106,8 +108,8 @@ function TrackHandler() {
 			is_argument = value.is_argument;
 			tdElement[0].text(key);
 			tdElement[1].text(value.date);
-			tdElement[2].text(is_argument? 'Arg' : 'Pos');
-			tdElement[3].text(is_argument === 'True' ? value.arg_uid : value.pos_uid);
+			tdElement[2].text(is_argument ? 'Arg' : 'Pos');
+			tdElement[3].text(is_argument == true ? value.arg_uid : value.pos_uid);
 			tdElement[4].text(value.text);
 
 			for (i = 0; i < tdElement.length; i += 1) {
@@ -120,7 +122,14 @@ function TrackHandler() {
 		});
 
 		$('#track-table-space').empty();
-		$('#track-table-space').append(tableElement);
+		if (has_data) {
+			$('#track-table-space').append(tableElement);
+		} else {
+			$('#track-table-success').show();
+			$('#track-success-msg').text("No data was tracked.");
+			$('#delete-track').hide();
+			$('#request-track').hide();
+		}
 	};
 
 }
