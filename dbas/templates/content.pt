@@ -11,7 +11,7 @@
 	<div class="container" id="firstcontainer">
 		<div class="row">
 			<div class="col-md-1"></div>
-			<div class="col-md-10 center">
+			<div class="col-md-10 center text-center">
 				<h1><span class="font-semi-bold">Dialogue-Based Argumentation System</span></h1>
 				<p>The current discussion is about
 					<br>
@@ -33,8 +33,8 @@
 				<h4><p id='error-description'></p></h4>
 				<h3><p id='discussions-description'></p></h3>
 				<div id="discussions-space"> </div>
-				<div class="center">
-					<input id="send-answer" type="button" value="Send Answer" class="center button button-block btn-lg btn-primary" data-dismiss="modal" />
+				<div class="center text-center">
+					<input id="send-answer" type="button" value="Send Answer" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
 				</div>
 			</div>
 			<div class="col-md-2"></div>
@@ -158,10 +158,12 @@
 				<p>Some additional options for the administrator.
 					<br>
 					<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
-					<div id="admins-space"> </div>
 				</p>
 			</div>
 			<div class="col-md-2"></div>
+			<div class="col-md-12">
+					<div id="admins-space"> </div>
+			</div>
 		</div>
 	</div>
 	

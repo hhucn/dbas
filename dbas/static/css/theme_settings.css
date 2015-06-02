@@ -14,11 +14,29 @@
 	float: right;
 }
 
+#info-table,
+#track-table{
+	margin-left: auto;
+	margin-right: auto;
+}
+
 #track-table-success,
 #track-table-failure{
 	margin-top: 75px;
 }
 
+#password-submit{
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.settings-container{
+	max-width: 800px;
+}
+
+#password-form{
+	margin-top: 50px;
+}
 
 @media(max-width:640px) {
 

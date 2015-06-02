@@ -272,7 +272,9 @@ class QueryHelper(object):
 		db_track = DBSession.query(Track).filter_by(user=user_uid).all()
 		return_dict = collections.OrderedDict()
 		for track in db_track:
-			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid))
+			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', user ' + str(track.user) + ', date ' + str(
+				track.date) + ', pos_uid ' + str(track.pos_uid) + ', arg_uid ' + str(track.arg_uid))
+
 			track_dict = {}
 			track_dict['user'] = track.user
 			track_dict['date'] = str(track.date)

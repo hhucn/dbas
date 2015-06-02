@@ -71,7 +71,6 @@ function TrackHandler() {
 			style: 'border-collapse: separate; border-spacing: 0px;'
 		});
 
-		alert('DEBUG HERE');
 		// todo: DEBUG HERE
 
 		trElement = $('<tr>');
@@ -101,7 +100,6 @@ function TrackHandler() {
 		var has_data = false;
 		$.each($.parseJSON(jsonData), function setDataInTrackTableEach(key, value) {
 			has_data = true;
-			trElement = $('<tr>');
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
 			}
@@ -112,6 +110,7 @@ function TrackHandler() {
 			tdElement[3].text(is_argument == true ? value.arg_uid : value.pos_uid);
 			tdElement[4].text(value.text);
 
+			trElement = $('<tr>');
 			for (i = 0; i < tdElement.length; i += 1) {
 				trElement.append(tdElement[i]);
 			}
@@ -131,7 +130,6 @@ function TrackHandler() {
 			$('#request-track').hide();
 		}
 	};
-
 }
 
 $(function () {
@@ -141,16 +139,18 @@ $(function () {
 		new TrackHandler().manageUserTrackData(true);
 		$('#track-table-success').fadeOut('slow');
 		$('#track-table-failure').fadeOut('slow');
+		$('#track-table-space').empty();
+		$('#request-track').val('Refresh track');
 	});
 
 	$('#delete-track').click(function requestTrack() {
 		new TrackHandler().manageUserTrackData(false);
 		$('#track-table-success').fadeOut('slow');
 		$('#track-table-failure').fadeOut('slow');
+		$('#request-track').val('Request track');
 	});
 
 	$('#delete-track').hide();
 	$('#track-table-success').hide();
 	$('#track-table-failure').hide();
-
 });

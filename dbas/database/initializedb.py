@@ -50,7 +50,7 @@ def main(argv=sys.argv):
 		user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf', password=pw3)
 		user4 = User(firstname='editor', surname='editor', nickname='editor', email='nope1@nopeville.com', password=pw4)
 		user5 = User(firstname='user', surname='user', nickname='user', email='nope2@nopeville.com', password=pw5)
-		user1.group = group1.uid
+		user1.group = group0.uid
 		user2.group = group1.uid
 		user3.group = group1.uid
 		user4.group = group1.uid

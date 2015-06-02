@@ -16,77 +16,71 @@
 		</div>
 	</div>
 
-	<div class="form container">
+	<div class="container settings-container">
 		<h2>Information about yourself</h2>
-		<div class="row">
-			<div class="col-md-6">
-				<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
-					<tr>
-						<td>
-							<spand class="font-semi-bold">Firstname</spand>
-						</td>
-						<td><span tal:replace="db_firstname" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<spand class="font-semi-bold">Surname</spand>
-						</td>
-						<td><span tal:replace="db_surname" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<spand class="font-semi-bold">Nickname</spand>
-						</td>
-						<td id='table_nickname'><span tal:replace="db_nickname" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<spand class="font-semi-bold">E-Mail</spand>
-						</td>
-						<td><span tal:replace="db_mail" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<spand class="font-semi-bold">Group</spand>
-						</td>
-						<td><span tal:replace="db_group" />
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
+		<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+			<tr>
+				<td>
+					<spand class="font-semi-bold">Firstname</spand>
+				</td>
+				<td><span tal:replace="db_firstname" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<spand class="font-semi-bold">Surname</spand>
+				</td>
+				<td><span tal:replace="db_surname" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<spand class="font-semi-bold">Nickname</spand>
+				</td>
+				<td id='table_nickname'><span tal:replace="db_nickname" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<spand class="font-semi-bold">E-Mail</spand>
+				</td>
+				<td><span tal:replace="db_mail" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<spand class="font-semi-bold">Group</spand>
+				</td>
+				<td><span tal:replace="db_group" />
+				</td>
+			</tr>
+		</table>
 	</div>
 
-	<div class="form container">
+	<div class="container settings-container">
 		<h2>Tracked user decisions</h2>
-		<div class="row">
-			<div class="col-md-10">
-				<div id="track-table-space">
-					<table id="track-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
-						<tr>
-						</tr>
-					</table>
-				</div>
-				<input id="request-track" type="button" value="Request track" class="button button-block btn btn-primary" data-dismiss="modal" />
-				<input id="delete-track" type="button" value="Delete track" class="button button-block btn btn-primary" data-dismiss="modal" />
-				<div id="track-table-success" class="alert alert-success" role="alert">
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-					<span class="sr-only">Success:</span> <p id="track-success-msg"></p>
-				</div>
+		<div id="track-table-space">
+			<table id="track-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+				<tr>
+				</tr>
+			</table>
+		</div>
+		<input id="request-track" type="button" value="Request track" class="button button-block btn btn-primary" data-dismiss="modal" />
+		<input id="delete-track" type="button" value="Delete track" class="button button-block btn btn-primary" data-dismiss="modal" />
+		<div id="track-table-success" class="alert alert-success" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Success:</span>
+			<p id="track-success-msg"></p>
+		</div>
 
-					<div id="track-table-failure" class="alert alert-danger" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="sr-only">Error:</span> <p id="track-failure-msg"></p>
-					</div>
-			</div>
+		<div id="track-table-failure" class="alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			<p id="track-failure-msg"></p>
 		</div>
 	</div>
 
-	<div class="form container">
+	<div class="form" id="password-form">
 		<h2>Change your password</h2>
 		<form action="/settings" method="post">
 
@@ -115,7 +109,6 @@
 				<div id="danger-message-text"><span tal:replace="message" />
 				</div>
 			</div>
-
 
 			<div tal:condition="change_success" class="alert alert-success" role="alert">
 				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
