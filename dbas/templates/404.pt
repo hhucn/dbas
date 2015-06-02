@@ -2,13 +2,13 @@
 <html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
 
 <head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_center.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_404_logout.css')}" rel="stylesheet">
 </head>
 
 <body>
 
 	<div id="page-content-wrapper">
-		<div class="center">
+		<div class="center text-center">
 			<div class="error">
 				<h1><span class="font-semi-bold" i18n:translate="404">404 Error</span></h1>
 				<p class="lead font-normal">The page &quot;<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; for could not be found.</p>
