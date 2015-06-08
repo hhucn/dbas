@@ -85,6 +85,8 @@ $(document).ready(function () {
 	} else if (path == "content") {
 		setLinkActive('#content-link');
 		$('#navbar-left').hide();
+	} else if (path == "settings") {
+		$('#navbar-left').hide();
 	} else if (path == "logout") { 	// Your application has indicated you are logged out
 		hideMainPageHooks();
 		var myCounter = new Countdown({

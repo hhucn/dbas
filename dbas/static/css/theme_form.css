@@ -5,8 +5,12 @@
 	max-width: 600px;
 	margin: 40px auto;
 	border-radius: 4px;
-	margin-top: 100px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+}
+
+.first-form{
+	margin-top: 0px;
+	text-align: center;
 }
 
 .form:hover{

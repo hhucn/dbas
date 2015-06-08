@@ -5,17 +5,25 @@
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_404_logout.css')}" rel="stylesheet">
 </head>
 
+	
+	
+	
 <body>
+	
+	<div id="wrapper">
+		<div id="content">
 
-	<div id="page-content-wrapper">
-		<div class="center text-center">
-			<div class="error">
-				<h1><span class="font-semi-bold" i18n:translate="404">404 Error</span></h1>
-				<p class="lead font-normal">The page &quot;<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; for could not be found.</p>
-				<br>
-				<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
+			<div class="center text-center">
+				<div class="error">
+					<h1><span class="font-semi-bold" i18n:translate="404">404 Error</span></h1>
+					<p class="lead font-normal">The page &quot;<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; for could not be found.</p>
+					<br>
+					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
+				</div>
 			</div>
 		</div>
+		
+		<div metal:use-macro="load: snippet-footer.pt" />
 	</div>
 
 </body>

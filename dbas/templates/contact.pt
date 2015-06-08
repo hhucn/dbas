@@ -7,52 +7,59 @@
 </head>
 
 <body>
+	
+	<div id="wrapper">
+		<div id="content">
+			<div class="contact form">
+				<h2>Get In Touch With Us</h2>
+				<h5>Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</h5>
+				<br>
+				<form action="/contact" method="post">
 
-	<div class="contact form">
-		<h2>Get In Touch With Us</h2>
-		<h5>Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</h5>
-		<br>
-		<form action="/contact" method="post">
+					<h3>Your Name (required)</h3>
+					<input type="text" class="name active" name="name" placeholder="example: Tobias Krauthoff" tabindex="1" autofocus autocomplete="on" value="${name}">
 
-			<h3>Your Name (required)</h3>
-			<input type="text" class="name active" name="name" placeholder="example: Tobias Krauthoff" tabindex="1" autofocus autocomplete="on" value="${name}">
+					<h3>Your E-Mail (required)</h3>
+					<input type="email" class="email" name="mail" placeholder="example: krauthoff@cs.uni-duesseldorf.de" tabindex="2" autocomplete="on" value="${mail}">
 
-			<h3>Your E-Mail (required)</h3>
-			<input type="email" class="email" name="mail" placeholder="example: krauthoff@cs.uni-duesseldorf.de" tabindex="2" autocomplete="on" value="${mail}">
+					<h3>Your Phone Number</h3>
+					<input type="tel" class="tel" name="phone" autocomplete="on" placeholder="example: +49 (0)211 81-13461" tabindex="3" autocomplete="on" value="${phone}">
 
-			<h3>Your Phone Number</h3>
-			<input type="tel" class="tel" name="phone" autocomplete="on" placeholder="example: +49 (0)211 81-13461" tabindex="3" autocomplete="on" value="${phone}">
+					<h3>Your Message (required)</h3>
+					<textarea type="text" class="content" name="content" autocomplete="on" placeholder="example: I’d like to say good job!" tabindex="4" value="${content}"></textarea>
 
-			<h3>Your Message (required)</h3>
-			<textarea type="text" class="content" name="content" autocomplete="on" placeholder="example: I’d like to say good job!" tabindex="4" value="${content}"></textarea>
+					<h3>Anti-Spam (required)</h3>
+					<input type="text" id="spam-input" class="spam" name="spam" autocomplete="on" placeholder="What is one plus three?" tabindex="5" value="${spam}">
 
-			<h3>Anti-Spam (required)</h3>
-			<input type="text" id="spam-input" class="spam" name="spam" autocomplete="on" placeholder="What is one plus three?" tabindex="5" value="${spam}">
-
-			<!--
+					<!--
 			<div id="alert-message" class="alert alert-danger alert-error">
 				<a href="" class="close" data-dismiss="alert">&times;</a>
 				<strong>Error!</strong> A problem has been occurred with your anti-spam message.
 			</div>
 			-->
 
-			<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible">
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<strong>Warning!</strong><div id="warning-message-text"><span tal:replace="message" /></div>
+					<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong>Warning!</strong>
+						<div id="warning-message-text"><span tal:replace="message" />
+						</div>
+					</div>
+
+
+					<div tal:condition="was_message_send" class="alert alert-success" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span class="sr-only">Great:</span> Your message was sent.
+					</div>
+
+					<input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+				</form>
 			</div>
+		</div>
 
-
-			<div tal:condition="was_message_send" class="alert alert-success" role="alert">
-				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-				<span class="sr-only">Great:</span> Your message was sent.
-			</div>
-
-			<input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
-		</form>
+		<div metal:use-macro="load: snippet-footer.pt" />
 	</div>
-
 	<!--
 <script type="text/javascript" src="${request.static_url('dbas:static/js/contact.js')}"></script>
 -->

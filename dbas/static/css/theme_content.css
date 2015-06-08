@@ -104,6 +104,10 @@
 	color: rgba(190,10,38,1.0); <!-- official uni green -->
 }
 
+#discussion-failure-row{
+	padding-top: 25px;
+}
+
 #admins-space table tbody tr:nth-child(even) {
 	background-color: rgba(217, 218, 219, 0.7);
 }

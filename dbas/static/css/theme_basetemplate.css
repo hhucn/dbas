@@ -8,6 +8,12 @@ body {
 	font-size: 16px;
 	/* background: #b3b3b3; */
 }
+html,
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
 
 /* new scale for bg for retina displays */
 @media screen and (min-width: 2560px),
@@ -25,27 +31,21 @@ h5,
 h6 {
 	font-weight: 400;
 }
-
 h1 {
 	font-size: 40px;
 }
-
 h2 {
 	font-size: 30px;
 }
-
 h3 {
 	font-size: 16px;
 }
-
 h4 {
 	font-size: 14px;
 }
-
 p {
 	font-weight: 300;
 }
-
 a {
 	color: #006ab3;
 }
@@ -68,7 +68,6 @@ a:hover {
 body.loading {
 	overflow: hidden;
 }
-
 body.loading .ajaxloader {
 	display: block;
 }
@@ -76,11 +75,9 @@ body.loading .ajaxloader {
 .font-normal {
 	font-weight: 400;
 }
-
 .font-semi-bold {
 	font-weight: 600;
 }
-
 .font-bold {
 	font-weight: 700;
 }
@@ -96,7 +93,6 @@ body.loading .ajaxloader {
 	opacity: 0.75;
 	filter: alpha(opacity=70);
 }
-
 .back-to-top:hover {
 	opacity: 0.4;
 	filter: alpha(opacity=40);
@@ -106,7 +102,8 @@ body.loading .ajaxloader {
 	text-align: left;
 }
 
-.container {
+.container,
+.first-container{
 	margin-top: 50px;
 	padding-left: 50px;
 	padding-right: 50px;
@@ -117,15 +114,13 @@ body.loading .ajaxloader {
 	border-radius: 4px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
+.first-container{
+	margin-top: -20px;
+}
 
 .container:hover {
 	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
 	transition: .5s ease;
-}
-
-#firstcontainer {
-	margin-top: 100px;
-	text-align: center;
 }
 
 .jsdiabled {
@@ -144,11 +139,9 @@ body.loading .ajaxloader {
 	border-radius: 4px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
-
 .button:hover {
 	transition: 0.5s all;
 }
-
 .modal-title {
 	font-family: "Indie Flower", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 30px;
@@ -161,20 +154,17 @@ body.loading .ajaxloader {
 	margin-right: 15px;
 	color: #000;
 }
-
 .links ul {
 	display: block;
 	padding: 0px;
 	margin: 0px;
 }
-
 .links ul li {
 	list-style: none;
 	display: inline;
 	margin: 0 10px;
 	text-align: center;
 }
-
 .links ul li a:hover {
 	text-decoration: underline;
 	color: #006ab3;
@@ -187,18 +177,24 @@ body.loading .ajaxloader {
 .links ul li .icon-muted {
 	color: #000;
 }
-
 .list {
 	text-align: left;
 }
-
 .links ul li:hover .icon-muted {
 	color: #006ab3;
 }
-
 .project {
 	text-transform: uppercase;
 	display: inline;
+}
+
+#wrapper {
+	min-height: 100%;
+	position: relative;
+}
+#content {
+	padding-top: 100px;
+	padding-bottom: 125px; /* Height of the footer element */
 }
 
 #footer {
@@ -209,6 +205,8 @@ body.loading .ajaxloader {
 	padding-top: 15px;
 	background: #d9dadb;
 	border-top: thin solid #006ab3;
+	bottom:0;
+	left:0;
 }
 
 @media (max-width: 991px) {

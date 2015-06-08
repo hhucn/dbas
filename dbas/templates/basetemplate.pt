@@ -19,13 +19,15 @@
 
 <body>
 
-	<div metal:use-macro="load: snippet-header.pt" />
-	<div metal:use-macro="load: snippet-popups.pt" />
+	<div id="additional-wrapper">
+		<div metal:use-macro="load: snippet-header.pt" />
+		<div metal:use-macro="load: snippet-popups.pt" />
 
-	<!-- scroll to top -->
-	<a href="#top" class="back-to-top" title="Go to the top"></a>
-	
-	<div class="ajaxloader"></div>
+		<!-- scroll to top -->
+		<a href="#top" class="back-to-top" title="Go to the top"></a>
+
+		<div class="ajaxloader"></div>
+	</div>
 
 	<!-- Bootstrap core, JavaScript, jquery
 	<!-- Placed at the end of the document so the pages load faster -->
