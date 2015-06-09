@@ -56,7 +56,7 @@
 
 					<li tal:condition="logged_in">
 						<li class="dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#user" title="User options"><span tal:replace="logged_in" />
+							<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" title="User options"><span tal:replace="logged_in" />
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -75,7 +75,7 @@
 					</li>
 
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#more" title="Show more">More
+						<a class="dropdown-toggle" name="show-more-toggle" data-toggle="dropdown" href="#more" title="Show more">More
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>

@@ -88,7 +88,7 @@ $(document).ready(function () {
 	} else if (path == "settings") {
 		$('#navbar-left').hide();
 	} else if (path == "logout") { 	// Your application has indicated you are logged out
-		hideMainPageHooks();
+		$('#navbar-left').hide();
 		var myCounter = new Countdown({
 			seconds: 4, // seconds to count down
 			onUpdateStatus: function (sec) {
