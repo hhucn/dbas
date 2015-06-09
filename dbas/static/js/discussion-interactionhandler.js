@@ -1,4 +1,4 @@
-/*global $, jQuery, alert, GuiHandler, firstOneText , addStatementButtonId , argumentList , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementContainerId, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId, sendAnswerButtonId, addStatementContainerH2Id, AjaxHandler
+/*global $, jQuery, alert, GuiHandler, firstOneText , addStatementButtonId , argumentList , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId, sendAnswerButtonId, addStatementContainerH2Id, AjaxHandler
 */
 
 function InteractionHandler() {
@@ -41,7 +41,7 @@ function InteractionHandler() {
 	this.radioButtonChanged = function (buttonId) {
 		var guiHandler = new GuiHandler();
 		if ($('#' + addStatementButtonId).is(':checked')) {
-			guiHandler.setDisplayStylesOfAddArgumentContainer(true);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(true, true);
 			$('#' + sendAnswerButtonId).hide();
 
 			// get the second child, which is the label
@@ -53,7 +53,7 @@ function InteractionHandler() {
 				//$('#' + addStatementContainerMainInputId).hide();
 			}
 		} else {
-			guiHandler.setDisplayStylesOfAddArgumentContainer(false);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
 			$('#' + sendAnswerButtonId).show();
 		}
 

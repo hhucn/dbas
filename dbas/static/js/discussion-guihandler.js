@@ -277,10 +277,17 @@ function GuiHandler() {
 	 * Set some style attributes,
 	 * @param isVisible
 	 */
-	this.setDisplayStylesOfAddArgumentContainer = function (isVisible) {
+	this.setDisplayStylesOfAddArgumentContainer = function (isVisible, is_argument) {
 		if (isVisible) {
 			$('#' + addStatementContainerId).fadeIn('slow');
 			$('#' + addStatementButtonId).disable = true;
+			if (is_argument){
+				$('#' + addStatementContainerH2Id).text('Please insert new arguments');
+				$('#' + addStatementContainerMainInputId).hide();
+			} else {
+				$('#' + addStatementContainerH2Id).text('Please insert a new statement');
+				$('#' + addStatementContainerMainInputId).show();
+			}
 		} else {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementButtonId).disable = false;

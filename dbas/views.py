@@ -538,7 +538,7 @@ class Dbas(object):
 
 	# ajax - getting all positions
 	@view_config(route_name='ajax_all_positions', renderer='json')
-	def ajax_all_positions(self):
+	def get_ajax_all_positions(self):
 		"""
 		Returns all positions as dictionary with uid <-> value
 		:return: list of all positions
@@ -564,7 +564,7 @@ class Dbas(object):
 
 	# ajax - getting every user, and returns dicts with name <-> group
 	@view_config(route_name='ajax_all_users', renderer='json')
-	def get_ajax_users(self):
+	def get_ajax_all_users(self):
 		"""
 		Returns all users as dictionary with name <-> group
 		:return: list of all positions
@@ -679,22 +679,22 @@ class Dbas(object):
 
 	# ajax - getting next argument for confrontation
 	@view_config(route_name='ajax_args_for_new_discussion_round', renderer='json')
-	def get_args_for_new_round(self):
+	def get_ajax_args_for_new_round(self):
 		logger('get_args_for_new_round', 'def', 'main')
 
 		# TODO: FINISHED; BUT NOT DEBUGGED:
 		uid = ''
-		statement_type = ''
+		is_argument = ''
 		try:
 			uid = self.request.params['uid']
-			statement_type = True if self.request.params['is_argument'] == 'argument' else False
-			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument ' + str(statement_type) + '(' + str(self.request.params['is_argument']) + ')')
+			is_argument = True if self.request.params['is_argument'] == 'argument' else False
+			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument ' + str(is_argument) + '(' + str(self.request.params['is_argument']) + ')')
 		except KeyError as e:
 			logger('get_args_for_new_round', 'error', repr(e))
 
 		# saving track
 		query_helper = QueryHelper()
-		if statement_type == 'argument':
+		if is_argument:
 			logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: argument id ' + str(uid))
 			query_helper.save_track_argument_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 		else:
@@ -702,7 +702,7 @@ class Dbas(object):
 			query_helper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 
 		# get data
-		return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid, statement_type)
+		return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid, is_argument)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
