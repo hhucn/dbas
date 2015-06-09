@@ -1,7 +1,8 @@
-/*global $, jQuery, alert */
+/*global $, jQuery, alert, GuiHandler, InteractionHandler */
 
-function AjaxHandler () {
+function AjaxHandler() {
 	'use strict';
+
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
 	 * @param posCallbackFct callback if done
@@ -13,109 +14,54 @@ function AjaxHandler () {
 			type: 'GET',
 			dataType: 'json',
 			async: true
-		}).done(function ajaxGetAllPositionsDone (data) {
-			posCallbackFct(data);
-		}).fail(function ajaxGetAllPositionsFail () {
+		}).done(function ajaxGetAllPositionsDone(data) {
+			new InteractionHandler().callbackAjaxGetAllPositions(data);
+		}).fail(function ajaxGetAllPositionsFail() {
 			alert('failed request');
-			negCallbackFct();
+			//negCallbackFct();
 		});
 	};
 
 	/**
 	 * Send an ajax request for getting all pro or contra arguments as dicitonary uid <-> value. Every argument has a connection to the
 	 * position with given uid.
-	 * @param ofPositionWithUid uid of clicked position
-	 * @param getProArgument true, if the pro arguments should be fetched, false for the con
-	 * @param noOfReturnArguments number of arguments, which should be returned, -1 for all
-	 * @param posCallbackFct callback if done
-	 * @param negCallbackFct callback if fail
+	 * @param pos_uid uid of clicked position
 	 */
-	this.getArgsConnectedToPosUid = function (ofPositionWithUid, getProArgument, wasPosition, noOfReturnArguments, posCallbackFct, negCallbackFct) {
-		var type = getProArgument ? 'pro' : 'con';
-		var pos = wasPosition? '1' : '0';
-		var no = typeof noOfReturnArguments === 'undefined' || noOfReturnArguments < -1 ? -1 : Math.round(noOfReturnArguments);
+	this.getArgumentsForJustification = function (pos_uid) {
 		$.ajax({
 			url: 'ajax_arguments_connected_to_position_uid',
 			method: 'POST',
-			data: { uid : ofPositionWithUid,
-					returnCount : no,
-					wasPosition : pos,
-					type: type },
+			data: { uid : pos_uid},
 			dataType: 'json',
 			async: true
-		}).done(function ajaxGetArgsConnectedToPosUidDone (data) {
-			posCallbackFct(data);
-		}).fail(function ajaxGetArgsConnectedToPosUidFail () {
+		}).done(function ajaxGetArgumentsForJustificationDone(data) {
+			new InteractionHandler().callbackIfDoneForArgsForJustification(data);
+		}).fail(function ajaxGetArgumentsForJustificationFail() {
 			alert('failed request');
-			negCallbackFct();
+			new GuiHandler().showDiscussionError('Internal failure in ajaxGetArgumentsForJustificationFail',
+				pos_uid, false, 'getArgumentsForJustification', true);
 		});
 	};
 
 	/**
-	 * Send an ajax request for getting all pro or contra arguments as dicitonary uid <-> value. Every argument is for or against the
-	 * the same position as the given argument uid.
-	 * position with given uid
-	 * @param ofArgumentWithUid uid of clicked position
-	 * @param getProArgument true, if the pro arguments should be fetched, false for the con
-	 * @param setAsDescr true, if the pro arguments set as description
-	 * @param numberOfReturnArguments number of arguments, which should be returned, -1 for all
+	 *
+	 * @param currentStatementId
+	 * @param is_argument
 	 */
-	this.getArgsForSamePosByArgUid = function (ofArgumentWithUid, getProArgument, setAsDescr, numberOfReturnArguments, userArg) {
-		var type = getProArgument ? 'pro' : 'con';
-		var no = typeof numberOfReturnArguments === 'undefined' || numberOfReturnArguments < -1 ? -1 : Math.round(numberOfReturnArguments);
-		// todo: diese methode raus, sofern die anderen beiden stehen?
+	this.getNewArgumentationRound = function (currentStatementId, is_argument) {
+		is_argument = is_argument ? 'argument' : 'position';
 		$.ajax({
-			url: 'ajax_arguments_against_same_positions_by_argument_uid',
+			url: 'ajax_args_for_new_discussion_round',
 			method: 'POST',
-			data: { uid : ofArgumentWithUid,
-					returnCount : no,
-					type: type },
+			data: { is_argument : is_argument, uid : currentStatementId},
 			dataType: 'json',
 			async: true
-		}).done(function ajaxGetArgsForSamePosByArgUidDone (data) {
-			var guiHandler = new GuiHandler();
-			if (setAsDescr) {
-				$.each($.parseJSON(data), function ajaxGetArgsForSamePosByArgUidDoneEach (key, val) {
-					var pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-					var text = argumentSentencesOpeners[pos] + '<b>' + userArg + '</b> But an argument from the other side is: <b>'
-						+ val + '</b> What\'s your opinion?';
-					guiHandler.setDiscussionsDescription(text);
-				});
-			} else {
-				guiHandler.setJsonDataToContentAsArguments(data);
-			}
-		}).fail(function ajaxGetArgsForSamePosByArgUidFail () {
-			alert('failed request');
-			new GuiHandler().setNewArgumentButtonOnly();
-		});
-	};
-
-	this.getNextArgumentForConfrontation = function (currentArgumentUid, currentArgumentText) {
-		$.ajax({
-			url: 'ajax_next_arg_for_confrontation',
-			method: 'POST',
-			data: { uid : currentArgumentUid },
-			dataType: 'json',
-			async: true
-		}).done(function ajaxGetNextArgumentForConfrontation (data) {
-			var obj = $.parseJSON(data);
-			new GuiHandler().setDiscussionsDescriptionForConfrontation(currentArgumentText, obj['confrontation']);
-		}).fail(function ajaxGetNextArgumentForConfrontation () {
-			new GuiHandler().setDiscussionsDescriptionForConfrontation(currentArgumentText, 'nothing');
-		});
-	};
-
-	this.getNextArgumentsForJustification = function (currentArgumentUid) {
-		$.ajax({
-			url: 'ajax_next_args_for_justification',
-			method: 'POST',
-			data: { uid : currentArgumentUid },
-			dataType: 'json',
-			async: true
-		}).done(function ajaxGetNextArgumentForJustification (data) {
-			new GuiHandler().setJsonDataToContentAsArguments(data);
-		}).fail(function ajaxGetNextArgumentForJustification () {
-			new GuiHandler().setNewArgumentButtonOnly();
+		}).done(function ajaxGetNewArgumentationRoundDone(data) {
+			new InteractionHandler().callbackIfDoneForGetNewArgumentationRound(data);
+		}).fail(function ajaxGetNewArgumentationRoundFail() {
+			alert("debug");
+			new GuiHandler().showDiscussionError('Internal failure in ajaxGetNewArgumentationRound',
+				currentStatementId, is_argument, 'getNewArgumentationRound', false);
 		});
 	};
 
@@ -130,9 +76,9 @@ function AjaxHandler () {
 			type: 'GET',
 			dataType: 'json',
 			async: true
-		}).done(function ajaxGetAllUsersDone (data) {
+		}).done(function ajaxGetAllUsersDone(data) {
 			posCallbackFct(data);
-		}).fail(function ajaxGetAllUsersFail () {
+		}).fail(function ajaxGetAllUsersFail() {
 			alert(negCallbackText);
 		});
 	};

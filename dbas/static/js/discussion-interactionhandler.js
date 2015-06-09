@@ -1,6 +1,7 @@
-/*global $, jQuery */
+/*global $, jQuery, alert, GuiHandler, firstOneText , addStatementButtonId , argumentList , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementContainerId, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId, sendAnswerButtonId, addStatementContainerH2Id, AjaxHandler
+*/
 
-function InteractionHandler () {
+function InteractionHandler() {
 	'use strict';
 	var guiHandler, ajaxHandler;
 
@@ -13,15 +14,14 @@ function InteractionHandler () {
 	 * @param value of the button
 	 */
 	this.argumentButtonWasClicked = function (id, value) {
-		var guiHandler = new GuiHandler(), pos;
+		var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), pos;
 		pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
 		guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + '<b>' + value + '</b> But why?');
 
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 
-		// add all positions
-		ajaxHandler.getArgsConnectedToPosUid(id, true, false, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
+		ajaxHandler.getNewArgumentationRound(id, true);
 	};
 
 	/**
@@ -29,16 +29,10 @@ function InteractionHandler () {
 	 * @param value of the button
 	 */
 	this.positionButtonWasClicked = function (id, value) {
-		//var pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-		//guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + '<b>' + value + '</b> But an argument from the other side' +
-		//	' is:');
-
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 
-		// add all positions from the other side
-		ajaxHandler.getArgsForSamePosByArgUid(id, false, true, 1, value);
-		ajaxHandler.getArgsConnectedToPosUid(id, true, true, -1, guiHandler.setJsonDataToContentAsArguments, guiHandler.setNewArgumentButtonOnly);
+		ajaxHandler.getArgumentsForJustification(id);
 	};
 
 	/**
@@ -75,7 +69,6 @@ function InteractionHandler () {
 		radioButton = $('input[name=' + radioButtonGroup + ']:checked');
 		id = radioButton.attr('id');
 		value = radioButton.val();
-
 		if (typeof id === 'undefined' || typeof value === 'undefined') {
 			guiHandler.setErrorDescription('Please select a statement!');
 		} else {
@@ -88,15 +81,42 @@ function InteractionHandler () {
 		}
 	};
 
+
+	/**
+	 * Callback for the ajax method getArgsForJustification
+	 * @param data returned json data
+	 */
+	this.callbackIfDoneForArgsForJustification = function (data) {
+		if (data.length > 0) {
+			var parsedData = $.parseJSON(data);
+			new GuiHandler().setJsonDataToContentAsArguments(parsedData);
+		} else {
+			new GuiHandler().setNewArgumentButtonOnly();
+		}
+	};
+
+
+	/**
+	 * Callback for the ajax method getGetNewArgumentationRound
+	 * @param data returned json data
+	 */
+	this.callbackIfDoneForGetNewArgumentationRound = function (data) {
+		var parsedData = $.parseJSON(data);
+		// justification
+		new GuiHandler().setJsonDataToContentAsArguments(parsedData.justifications);
+		// confrontation
+		new GuiHandler().setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
+	};
+
 	/**
 	 * Callback for the ajax method getAllPositions
 	 * @param data returned json data
 	 */
 	this.callbackAjaxGetAllPositions = function (data) {
 		if (typeof data === 'undefined') {
-			guiHandler.setNewArgumentButtonOnly();
+			new GuiHandler().setNewArgumentButtonOnly();
 		} else {
-			guiHandler.setJsonDataToContentAsPositions(data);
+			new GuiHandler().setJsonDataToContentAsPositions(data);
 		}
 	};
 }

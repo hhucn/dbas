@@ -4,6 +4,8 @@ import smtplib
 import collections
 import json
 
+from random import randint
+
 from socket import error as socket_error
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -12,7 +14,7 @@ from pyramid_mailer.message import Message
 from sqlalchemy import and_
 
 from .database import DBSession
-from .database.model import Argument, RelationArgPos, Track, User, Group, Position
+from .database.model import Argument, RelationArgPos, RelationArgArg, Track, User, Group, Position
 
 
 log = logging.getLogger(__name__)
@@ -114,54 +116,55 @@ class QueryHelper(object):
 
 		return False
 
-	def get_all_arguments_by_pos_uid(self, uid, is_supportive):
-		"""
-		Getting every pro/con argument, which is connected to the given position uid
-		:param uid: uid of the argument
-		:param is_supportive: true, if all supportive arguments should be fetched
-		:return: ordered dictionary
-		"""
 
-		## raw query
-		# select * from arguments where uid in (
-		# 	select arg_uid from relation_argpos where pos_uid=UID and is_supportive = 1
-		# );
-		## tried sql query
-		# db_arguments = DBSession.query(Argument).filter_by(Argument.uid.in_(
-		# 	DBSession.query(RelationArgPos).options(load_only("arg_uid")).filter(
-		# 	and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
-		# ))
-
-		return_dict = collections.OrderedDict()
-		logger('QueryHelper', 'get_all_arguments_for_uid', 'check for uid')
-		support = 1 if is_supportive else 0
-
-		if uid:
-			logger('QueryHelper', 'get_all_arguments_for_uid ', 'send uid ' + str(uid))
-			db_arguid = DBSession.query(RelationArgPos).filter(
-				and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == support)).all()
-
-			all_uids = ' '
-			for arg in db_arguid:
-				all_uids += str(arg.arg_uid) + ' '
-			logger('QueryHelper','get_all_arguments_for_uid',  'arg_uids' + all_uids)
-
-			logger('QueryHelper', 'get_all_arguments_for_uid', 'iterate all arguments for that uid')
-			for arg in db_arguid:
-				logger('QueryHelper', 'get_all_arguments_for_uid' , 'get argument with' + str(arg.arg_uid))
-				db_argument = DBSession.query(Argument).filter_by(uid = arg.arg_uid).first()
-
-				logger('QueryHelper', 'get_all_arguments_for_uid', 'checks whether argument exists, uid ' + str(arg.uid))
-				if db_argument:
-					logger('QueryHelper', 'get_all_arguments_for_uid' , 'add argument in dict' +
-						'uid:' + str(db_argument.uid) + ', val: ' + db_argument.text)
-					return_dict[str(db_argument.uid)] = db_argument.text
-				else :
-					logger('QueryHelper', 'get_all_arguments_for_uid', 'no argument exists, uid ' + str(uid))
-		else:
-			logger('QueryHelper', 'get_all_arguments_for_uid', 'ERROR: uid not found')
-
-		return return_dict
+#	def get_all_arguments_by_pos_uid(self, uid, is_supportive):
+#		"""
+#		Getting every pro/con argument, which is connected to the given position uid
+#		:param uid: uid of the argument
+#		:param is_supportive: true, if all supportive arguments should be fetched
+#		:return: ordered dictionary
+#		"""
+#
+#		## raw query
+#		# select * from arguments where uid in (
+#		# 	select arg_uid from relation_argpos where pos_uid=UID and is_supportive = 1
+#		# );
+#		## tried sql query
+#		# db_arguments = DBSession.query(Argument).filter_by(Argument.uid.in_(
+#		# 	DBSession.query(RelationArgPos).options(load_only("arg_uid")).filter(
+#		# 	and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
+#		# ))
+#
+#		return_dict = collections.OrderedDict()
+#		logger('QueryHelper', 'get_all_arguments_for_uid', 'check for uid')
+#		support = 1 if is_supportive else 0
+#
+#		if uid:
+#			logger('QueryHelper', 'get_all_arguments_for_uid ', 'send uid ' + str(uid))
+#			db_arguid = DBSession.query(RelationArgPos).filter(
+#				and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == support)).all()
+#
+#			all_uids = ' '
+#			for arg in db_arguid:
+#				all_uids += str(arg.arg_uid) + ' '
+#			logger('QueryHelper','get_all_arguments_for_uid',  'arg_uids' + all_uids)
+#
+#			logger('QueryHelper', 'get_all_arguments_for_uid', 'iterate all arguments for that uid')
+#			for arg in db_arguid:
+#				logger('QueryHelper', 'get_all_arguments_for_uid' , 'get argument with' + str(arg.arg_uid))
+#				db_argument = DBSession.query(Argument).filter_by(uid = arg.arg_uid).first()
+#
+#				logger('QueryHelper', 'get_all_arguments_for_uid', 'checks whether argument exists, uid ' + str(arg.uid))
+#				if db_argument:
+#					logger('QueryHelper', 'get_all_arguments_for_uid' , 'add argument in dict' +
+#						'uid:' + str(db_argument.uid) + ', val: ' + db_argument.text)
+#					return_dict[str(db_argument.uid)] = db_argument.text
+#				else :
+#					logger('QueryHelper', 'get_all_arguments_for_uid', 'no argument exists, uid ' + str(uid))
+#		else:
+#			logger('QueryHelper', 'get_all_arguments_for_uid', 'ERROR: uid not found')
+#
+#		return return_dict
 
 	def get_all_arguments_by_arg_uid(self, uid, is_supportive):
 		"""
@@ -196,7 +199,7 @@ class QueryHelper(object):
 
 				logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'iterate all arguments for that uid')
 				for argid in db_arguids:
-					logger('QueryHelper', 'get_all_arguments_by_arg_uid' , 'get argument with' + str(argid.arg_uid))
+					logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'get argument with' + str(argid.arg_uid))
 					db_argument = DBSession.query(Argument).filter_by(uid = argid.arg_uid).first()
 
 					logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'checks whether argument exists, uid ' + str(argid.uid))
@@ -214,49 +217,136 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def get_next_arg_for_confrontation(self, uid):
+	def get_args_for_new_round(self, user_id, id, is_argument):
 		"""
-
-		:param uid:
-		:return:
+		Returns the next argument for a confrontation. This is based on the last given id.
+		:param user_id: current user id, as given in the request params
+		:param id: current statement id
+		:param is_argument: true, when the id is for an argument
+		:return: dictionary with 'confrontation' <-> argument , the 'currentStatementText' <-> argument of the user and a justification
+		dictionary with mapping uid <-> argument dictionary
 		"""
+		logger('QueryHelper', 'get_args_for_new_round', 'user ' + str(user_id)  + ', is_argument ' + str(is_argument) + ', statement id ' + str(id))
 		return_dict = collections.OrderedDict()
+		justifications_dict = collections.OrderedDict()
 
-		if uid:
-			logger('QueryHelper', 'get_next_arg_for_confrontation', 'uid ' + str(uid))
-			# todo: get_next_arg_for_confrontation
-
+		# get the last used statement
+		if is_argument:
+			db_last_statement = DBSession.query(Argument).filter_by(uid=id).first()
 		else:
-			logger('QueryHelper', 'get_next_arg_for_confrontation', 'ERROR: uid not found')
+			db_last_statement = DBSession.query(Position).filter_by(uid=id).first()
 
+		# save the last statement text
+		statement = 'argument' if is_argument else 'position'
+		logger('QueryHelper', 'get_args_for_new_round', 'last statement is ' + statement + ': ' + db_last_statement.text)
+		return_dict['currentStatementText'] = db_last_statement.text
+
+		# get all statements against and for our statement
+		if is_argument:
+			contra_argument_rows = self.get_argument_list_in_relation_to_statement(id, False, False)
+			pro_argument_rows = self.get_argument_list_in_relation_to_statement(id, True, False)
+		else:
+			contra_argument_rows = self.get_argument_list_in_relation_to_statement(id, False, True)
+			pro_argument_rows = self.get_argument_list_in_relation_to_statement(id, True, True)
+
+		# todo: what to do, when there is no argument for an confrontation?
+
+		# pick a random contra argument
+		if len(contra_argument_rows) > 0:
+			rnd = randint(0,len(contra_argument_rows)-1)
+			logger('QueryHelper', 'get_args_for_new_round', 'get the nth argument ' + str(rnd))
+			return_dict['confrontation'] = contra_argument_rows[rnd]['text']
+		else :
+			return_dict['confrontation'] = 'There is no contra argument!'
+
+		# get all justifications
+		for justification in pro_argument_rows:
+			argument_dict = {}
+			argument_dict['uid'] = justification['uid']
+			argument_dict['text'] = justification['text']
+			argument_dict['date'] = str(justification['date'])
+			argument_dict['weight'] = str(justification['weight'])
+			argument_dict['author'] = justification['author']
+			justifications_dict[str(justification['uid'])] = argument_dict
+
+		return_dict['justifications'] = justifications_dict
 		return return_dict
 
-	def get_next_args_for_justification(self, uid):
+
+	def get_argument_list_in_relation_to_statement(self, uid, is_supportive, is_position):
+		"""
+		Returns every argument with a non-supportive connection to the given position
+		:param pos_uid: uid of the position
+		:param is_supportive: 1 if it is supportive, 0 otherwise
+		:param is_position: true, if it is a position
+		:return: list with arguments
 		"""
 
-		:param uid:
-		:return:
-		"""
-		return_dict = collections.OrderedDict()
-
-		if uid:
-			logger('QueryHelper', 'get_next_args_for_justification', 'uid ' + str(uid))
-			# todo: get_next_args_for_justification
-
+		if is_position:
+			# # raw query
+			# select * from arguments where uid in (
+			#   select arg_uid from relation_argpos where pos_uid = 1 and is_supportive = 1
+			# )
+			logger('QueryHelper', 'get_arguments_in_relation_to_statement', 'pos_uid ' + str(uid) + ' support ' + str(is_supportive))
+			db_arg_uids = DBSession.query(RelationArgPos).filter(and_(RelationArgPos.pos_uid == uid,
+		                                                            RelationArgPos.is_supportive == is_supportive)).all()
 		else:
-			logger('QueryHelper', 'get_next_args_for_justification', 'ERROR: uid not found')
+			# # raw query
+			# select * from arguments where uid in (
+			# 	select arg_uid1 from relation_argarg where arg_uid2 = 7 and is_supportive = 0
+			# )
+			logger('QueryHelper', 'get_arguments_in_relation_to_statement', 'arg_uid2 ' + str(uid) + ' support ' + str(is_supportive))
+			db_arg_uids = DBSession.query(RelationArgArg).filter(and_(RelationArgArg.arg_uid2 == uid,
+		                                                            RelationArgArg.is_supportive == is_supportive)).all()
 
-		return return_dict
+		return_list = []
+		for arg in db_arg_uids:
 
-	def save_track_for_user(self, DBSession, transaction, user_id, pos_id, arg_id, is_arg):
+			if is_position:
+				logger('QueryHelper', 'get_arguments_against_position', 'connected ' + ('pro' if is_supportive else 'contra')
+					+ ' argument ' + str(arg.arg_uid))
+				db_arg = DBSession.query(Argument).filter_by(uid=arg.arg_uid).first()
+			else:
+				logger('QueryHelper', 'get_arguments_against_argument', 'connected ' + ('pro' if is_supportive else 'contra')
+					+ ' argument ' + str(arg.arg_uid1))
+				db_arg = DBSession.query(Argument).filter_by(uid=arg.arg_uid1).first()
+
+			argument_dict = {}
+			argument_dict['uid'] = db_arg.uid
+			argument_dict['text'] = db_arg.text
+			argument_dict['date'] = str(db_arg.date)
+			argument_dict['weight'] = str(db_arg.weight)
+			author = DBSession.query(User).filter_by(uid=db_arg.author).first()
+			argument_dict['author'] = author.nickname
+			return_list.append(argument_dict)
+
+		return return_list
+
+	def save_track_position_for_user(self, DBSession, transaction, user_id, pos_id):
 		"""
-		Saves given data as track for the given user
-		:param arg_uid:
-		:param user:
-		:return:
+
+		:param DBSession: current session
+		:param transaction: current transaction
+		:param user_id: authentication id of the user
+		:param pos_id: id of the clicked position
+		:return: undefined
 		"""
-		logger('QueryHelper', 'save_track_for_user', 'user: ' + str(user_id) +  ', pos_uid: ' + str(pos_id) + ', arg_uid: ' + str(arg_id) + ', is_argument: ' + str(is_arg))
-		new_track = Track(user=user_id, pos_uid=pos_id, arg_uid=arg_id, is_argument=is_arg)
+		logger('QueryHelper', 'save_track_position_for_user', 'user: ' + str(user_id) +  ', pos_uid: ' + str(pos_id))
+		new_track = Track(user=user_id, pos_uid=pos_id, arg_uid=-1, is_argument=False)
+		DBSession.add(new_track)
+		transaction.commit()
+
+	def save_track_argument_for_user(self, DBSession, transaction, user_id, arg_id):
+		"""
+
+		:param DBSession: current session
+		:param transaction: current transaction
+		:param user_id: authentication id of the user
+		:param arg_id: id of the clicked argument
+		:return: undefined
+		"""
+		logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + str(user_id) + ', arg_uid: ' + str(arg_id))
+		new_track = Track(user=user_id, pos_uid=-1, arg_uid=arg_id, is_argument=True)
 		DBSession.add(new_track)
 		transaction.commit()
 
@@ -273,7 +363,7 @@ class QueryHelper(object):
 		return_dict = collections.OrderedDict()
 		for track in db_track:
 			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', user ' + str(track.user) + ', date ' + str(
-				track.date) + ', pos_uid ' + str(track.pos_uid) + ', arg_uid ' + str(track.arg_uid))
+				track.date) + ', pos_uid ' + str(track.pos_uid) + ', arg_uid ' + str(track.arg_uid) + ', is_arg ' + str(track.is_argument))
 
 			track_dict = {}
 			track_dict['user'] = track.user
@@ -303,7 +393,6 @@ class QueryHelper(object):
 		logger('QueryHelper','del_track_for_user','user ' + user_uid)
 		DBSession.query(Track).filter_by(user=user_uid).delete()
 		transaction.commit()
-
 
 
 class DictionaryHelper(object):

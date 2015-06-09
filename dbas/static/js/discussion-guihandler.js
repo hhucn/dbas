@@ -1,10 +1,11 @@
-/*global $, jQuery, alert */
+/*global $, jQuery, alert, startDiscussionText , addStatementButtonId , statementList , GuiHandler , firstOneText , addStatementButtonId , argumentList , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementContainerId, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId
+*/
 
-function GuiHandler () {
+function GuiHandler() {
 	'use strict';
 	var interactionHandler;
 
-	this.setHandler = function(externInteractionHandler) {
+	this.setHandler = function (externInteractionHandler) {
 		interactionHandler = externInteractionHandler;
 	};
 
@@ -15,9 +16,9 @@ function GuiHandler () {
 	this.setJsonDataToContentAsPositions = function (jsonData) {
 		var listitems = [], _this = new GuiHandler();
 		this.setDiscussionsDescription(startDiscussionText);
-		$.each($.parseJSON(jsonData), function setJsonDataToContentAsPositionsEach (key, val) {
-			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, true));
-			listitems.push(_this.getKeyValAsInputRadioInLiWithType(key, val, true));
+		$.each($.parseJSON(jsonData), function setJsonDataToContentAsPositionsEach(key, val) {
+			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, false));
+			listitems.push(_this.getKeyValAsInputInLiWithType(key, val, false, 'radio'));
 		});
 
 		// sanity check for an empty list
@@ -25,8 +26,7 @@ function GuiHandler () {
 			_this.setDiscussionsDescription(firstOneText);
 		}
 
-		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new statement.', true));
-		listitems.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new position.', true));
+		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, 'Adding a new position.', false, 'radio'));
 
 		_this.addListItemsToDiscussionsSpace(listitems, statementList);
 	};
@@ -37,9 +37,9 @@ function GuiHandler () {
 	 */
 	this.setJsonDataToContentAsArguments = function (jsonData) {
 		var listitems = [], _this = new GuiHandler();
-		$.each($.parseJSON(jsonData), function setJsonDataToContentAsArgumentsEach(key, val) {
-			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, false));
-			listitems.push(_this.getKeyValAsInputRadioInLiWithType(key, val, false));
+		$.each(jsonData, function setJsonDataToContentAsArgumentsEach(key, val) {
+			// grep text
+			listitems.push(_this.getKeyValAsInputInLiWithType(key, val.text, true, 'radio'));
 		});
 
 		// sanity check for an empty list
@@ -47,8 +47,7 @@ function GuiHandler () {
 			_this.setDiscussionsDescription(firstOneText);
 		}
 
-		//listitems.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Adding a new position.', true));
-		listitems.push(_this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Adding a new argument.', true));
+		listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, 'Adding a new argument.', true, 'radio'));
 		_this.addListItemsToDiscussionsSpace(listitems, argumentList);
 	};
 
@@ -90,7 +89,7 @@ function GuiHandler () {
 		}
 
 		// add each user element
-		$.each($.parseJSON(jsonData), function setJsonDataToAdminContentEach (key,value){
+		$.each($.parseJSON(jsonData), function setJsonDataToAdminContentEach(key, value) {
 			trElement = $('<tr>');
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
@@ -124,8 +123,7 @@ function GuiHandler () {
 		alert('Todo 2');
 		this.setDiscussionsDescription(firstOneText);
 		var listitem = [];
-		//listitem.push(this.getKeyValAsInputButtonInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true));
-		listitem.push(this.getKeyValAsInputRadioInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true, true));
+		listitem.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true, true, 'radio'));
 		this.addListItemsToDiscussionsSpace(listitem, statementList);
 	};
 
@@ -135,8 +133,7 @@ function GuiHandler () {
 	 * @param confrontationArgument
 	 */
 	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
-		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-		var text = argumentSentencesOpeners[pos] + '<b>' + currentUserArgument + '</b>'
+		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length), text = argumentSentencesOpeners[pos] + '<b>' + currentUserArgument + '</b>'
 			+ ' But an argument from the other side is: '
 			+ '<b>' + confrontationArgument + '</b>' + ' What\'s your opinion?';
 		$('#' + discussionsDescriptionId).html(text);
@@ -156,28 +153,6 @@ function GuiHandler () {
 	 */
 	this.setErrorDescription = function (text) {
 		$('#' + errorDescriptionId).text(text);
-	};
-
-	/**
-	 * Wrapper for getKeyValAsInputInLiWithType
-	 * @param key will be used as id
-	 * @param val will be used as value
-	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
-	 * @returns {*} a button in li element
-	 */
-	this.getKeyValAsInputButtonInLiWithType = function (key, val, isArgument) {
-		return this.getKeyValAsInputInLiWithType(key, val, isArgument, 'button');
-	};
-
-	/**
-	 * Wrapper for getKeyValAsInputInLiWithType
-	 * @param key will be used as id
-	 * @param val will be used as value
-	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
-	 * @returns {*} a radio button in li element
-	 */
-	this.getKeyValAsInputRadioInLiWithType = function (key, val, isArgument) {
-		return this.getKeyValAsInputInLiWithType(key, val, isArgument, 'radio');
 	};
 
 	/**
@@ -237,7 +212,7 @@ function GuiHandler () {
 	 * @param id for the ul list, where all items are appended
 	 */
 	this.addListItemsToDiscussionsSpace = function (items, id) {
-		var i, size, ulElement;
+		var ulElement;
 
 		// wrap all elements into a list
 		ulElement = $('<ul>');
@@ -265,7 +240,6 @@ function GuiHandler () {
 		var area, parent, div, button, span, childCount;
 		parent = $('#' + parentid);
 		childCount = parent.children().length;
-		//alert('TOD-O');
 
 		div = $('<div>');
 		div.attr({id: 'div' + childCount.toString()});
@@ -311,6 +285,26 @@ function GuiHandler () {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementButtonId).disable = false;
 		}
+	};
+
+	/**
+	 * Shows an error on discussion space as well as a retry button
+	 * @param error_msg message of the error
+	 * @param id of the last choosen statement
+	 * @param is_argument, if it was an argument
+	 * @param try_again_fct the function, which should be called
+	 */
+	this.showDiscussionError = function (error_msg, id, is_argument, try_again_fct, is_only_justification) {
+		$('#' + discussionFailureRowId).fadeIn('slow');
+		$('#' + discussionFailureMsgId).text(error_msg);
+		$('#' + tryAgainDiscussionButtonId).fadeIn('slow');
+
+		var fct1, fct2;
+		fct1 = 'new AjaxHandler().' + try_again_fct + '(' + id;
+		fct1 += !is_only_justification ? ', ' + is_argument + '); ' : '); ';
+		fct2 = '$(#' + tryAgainDiscussionButtonId + ').hide();';
+
+		$('#' + tryAgainDiscussionButtonId).attr({onclick: fct1 + fct2});
 	};
 
 	/**

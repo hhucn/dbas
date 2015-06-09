@@ -427,17 +427,17 @@ class Dbas(object):
 
 		if 'form.passwordchange.submitted' in self.request.params:
 			logger('main_settings', 'form.changepassword.submitted', 'requesting params')
-			oldpw = self.request.params['passwordold']
-			newpw = self.request.params['password']
+			old_pw = self.request.params['passwordold']
+			new_pw = self.request.params['password']
 			confirmpw = self.request.params['passwordconfirm']
 
 			# is the old password given?
-			if not oldpw:
+			if not old_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'old pwd is empty')
 				message = 'The old password field is empty.'
 				error = True
 			# is the new password given?
-			elif not newpw:
+			elif not new_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'new pwd is empty')
 				message = 'The new password field is empty.'
 				error = True
@@ -447,12 +447,12 @@ class Dbas(object):
 				message = 'The password confirmation field is empty.'
 				error = True
 			# is new password equals the confirmation?
-			elif not newpw == confirmpw:
+			elif not new_pw == confirmpw:
 				logger('main_settings', 'form.changepassword.submitted', 'new pwds not equal')
 				message = 'The new passwords are not equal'
 				error = True
 			# is new old password equals the new one?
-			elif oldpw == newpw:
+			elif oldpw == new_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'pwds are the same')
 				message = 'The new and old password are the same'
 				error = True
@@ -463,13 +463,13 @@ class Dbas(object):
 					message = 'Your old password is wrong.'
 					error = True
 				else:
-					logger('main_login', 'form.passwordrequest.submitted', 'new password is ' + newpw)
+					logger('main_login', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
 					password_handler = PasswordHandler()
-					hashedpwd = password_handler.get_hashed_password(self, newpw)
-					logger('main_login', 'form.passwordrequest.submitted', 'New hashed password is ' + hashedpwd)
+					hashed_pw = password_handler.get_hashed_password(self, new_pw)
+					logger('main_login', 'form.passwordrequest.submitted', 'New hashed password is ' + hashed_pw)
 
 					# set the hased one
-					db_user.password = hashedpwd
+					db_user.password = hashed_pw
 					DBSession.add(db_user)
 					transaction.commit()
 
@@ -542,7 +542,6 @@ class Dbas(object):
 	@view_config(route_name='ajax_all_positions', renderer='json')
 	def ajax_all_positions(self):
 		"""
-		Ajax rocks :)
 		Returns all positions as dictionary with uid <-> value
 		:return: list of all positions
 		"""
@@ -569,7 +568,6 @@ class Dbas(object):
 	@view_config(route_name='ajax_all_users', renderer='json')
 	def get_ajax_users(self):
 		"""
-		Ajax rocks :)
 		Returns all users as dictionary with name <-> group
 		:return: list of all positions
 		"""
@@ -622,7 +620,7 @@ class Dbas(object):
 	@view_config(route_name='ajax_manage_user_track', renderer='json')
 	def ajax_manage_user_track(self):
 		"""
-		Request the complete track of the user
+		Request the complete user track
 		:return:
 		"""
 		logger('ajax_manage_user_track', 'def', 'main')
@@ -654,112 +652,60 @@ class Dbas(object):
 	# ajax - getting every argument, which is connected to the given position uid
 	@view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')
 	def get_ajax_arguments_by_pos(self):
-		logger('get_ajax_arguments_by_pos', 'def', 'main')
+		logger('ajax_arguments_connected_to_position_uid', 'def', 'main')
+
 		# get every relation from current argument to an position with uid send
 		uid = ''
-		count = ''
-		type = ''
-		wasPosition = ''
 		try:
 			uid = self.request.params['uid']
-			count = int(self.request.params['returnCount'])
-			type = self.request.params['type']
-			wasPosition = self.request.params['wasPosition']
 		except KeyError as e:
-			logger('get_ajax_arguments_by_pos', 'error', repr(e))
+			logger('ajax_arguments_connected_to_position_uid', 'error', repr(e))
 
-		logger('get_ajax_arguments_by_pos', 'def', 'uid: ' + uid + ', count: ' + str(count) + ', type: ' + type)
+		logger('ajax_arguments_connected_to_position_uid', 'def', 'uid: ' + uid )
 
-		queryHelper = QueryHelper()
 		# get all arguments
-		ordered_dict = queryHelper.get_all_arguments_by_pos_uid(uid, (True if type == 'pro' else False))
+		queryHelper = QueryHelper()
+		return_list = QueryHelper().get_argument_list_in_relation_to_statement(uid, True, True)
+		return_dict = {}
+		for entry in return_list:
+			return_dict[entry['uid']] = entry
 
 		# save track, because the given uid is a position uid
-		if wasPosition != '1':
-			queryHelper.save_track_for_user(DBSession, transaction, self.request.authenticated_userid, -1, uid, True)
-		else:
-			queryHelper.save_track_for_user(DBSession, transaction, self.request.authenticated_userid, uid, -1, False)
-
+		logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: position id ' + str(uid))
+		queryHelper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 
 		# get return count of arguments
-		dictionaryHelper = DictionaryHelper()
-		return_dict = dictionaryHelper.get_subdictionary_out_of_orderer_dict(ordered_dict, count)
-		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - getting every arument, which is for the same position as the given argument uid
-	@view_config(route_name='ajax_arguments_against_same_positions_by_argument_uid', renderer='json')
-	def get_ajax_arguments_by_arg(self):
-		logger('get_ajax_arguments_by_arg', 'def', 'main')
-		# get every relation from current argument to an position with uid send
-		uid = ''
-		count = ''
-		type = ''
-		try:
-			uid = self.request.params['uid']
-			count = int(self.request.params['returnCount'])
-			type = self.request.params['type']
-		except KeyError as e:
-			logger('get_ajax_arguments_by_arg', 'error', repr(e))
-
-		logger('get_ajax_arguments_by_arg', 'def', 'uid: ' + uid + ', count: ' + str(count) + ', type: ' + type)
-
-		queryHelper = QueryHelper()
-		ordered_dict = queryHelper.get_all_arguments_by_arg_uid(uid, (True if type == 'pro' else False))
-
-		# in here, we do not need to save tracking data, because this is just a request
-
-		# get return count of arguments
-		dictionaryHelper = DictionaryHelper()
-		return_dict = dictionaryHelper.get_subdictionary_out_of_orderer_dict(ordered_dict, count)
-		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
 	# ajax - getting next argument for confrontation
-	@view_config(route_name='ajax_next_arg_for_confrontation', renderer='json')
-	def get_ajax_next_arg_for_confrontation(self):
-		logger('get_ajax_next_arg_for_confrontation', 'def', 'main')
+	@view_config(route_name='ajax_args_for_new_discussion_round', renderer='json')
+	def get_args_for_new_round(self):
+		logger('get_args_for_new_round', 'def', 'main')
+
+		# TODO: FINISHED; BUT NOT DEBUGGED:
 		uid = ''
+		type = ''
 		try:
 			uid = self.request.params['uid']
+			type = True if self.request.params['is_argument'] == 'argument' else False
+			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument ' + str(type) + '(' + str(self.request.params['is_argument']) +  ')')
 		except KeyError as e:
-			logger('get_ajax_next_arg_for_confrontation', 'error', repr(e))
+			logger('get_args_for_new_round', 'error', repr(e))
 
-		logger('get_ajax_next_arg_for_confrontation', 'def', 'uid: ' + uid)
-
+		# saving track
 		queryHelper = QueryHelper()
-		return_dict = queryHelper.get_next_arg_for_confrontation(uid)
+		if type == 'argument':
+			logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: argument id ' + str(uid))
+			queryHelper.save_track_argument_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
+		else:
+			logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: position id ' + str(uid))
+			queryHelper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 
-		# todo: get_ajax_next_arg_for_confrontation
-		# queryHelper.save_track_for_user(DBSession, transaction, self.request.authenticated_userid, uid, -1, True)
-
-		dictionaryHelper = DictionaryHelper()
-		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - getting next arguments for justification
-	@view_config(route_name='ajax_next_args_for_justification', renderer='json')
-	def get_ajax_next_args_for_justification(self):
-		logger('get_ajax_next_args_for_justification', 'def', 'main')
-		uid = ''
-		try:
-			uid = self.request.params['uid']
-		except KeyError as e:
-			logger('get_ajax_next_args_for_justification', 'error', repr(e))
-
-		logger('get_ajax_next_args_for_justification', 'def', 'uid: ' + uid)
-
-		queryHelper = QueryHelper()
-		return_dicht = queryHelper.get_next_args_for_justification(uid)
-
-		# todo: get_ajax_next_args_for_justification
-		# queryHelper.save_track_for_user(DBSession, transaction, self.request.authenticated_userid, uid, -1, True)
-
-		dictionaryHelper = DictionaryHelper()
-		return_json = dictionaryHelper.dictionarty_to_json_array(return_dicht, True)
+		# get data
+		return_dict = queryHelper.get_args_for_new_round(self.request.authenticated_userid, uid, type)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 

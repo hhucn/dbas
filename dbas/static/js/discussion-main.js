@@ -13,6 +13,8 @@ var closeStatementContainerId = 'closeStatementContainer';
 var discussionsDescriptionId = 'discussions-description';
 var discussionContainerId = 'discussion-container';
 var discussionSpaceId = 'discussions-space';
+var discussionFailureRowId = 'discussion-failure-row';
+var discussionFailureMsgId = 'discussion-failure-msg';
 var errorDescriptionId = 'error-description';
 var leftPositionColumnId = 'left-position-column';
 var leftPositionTextareaId = 'left-textareas';
@@ -26,6 +28,7 @@ var startDiscussionButtonId = 'start-discussion';
 var startDescriptionId = 'start-description';
 var sendAnswerButtonId = 'send-answer';
 var statementList = 'statement-list';
+var tryAgainDiscussionButtonId = 'try-again-discussion';
 
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
@@ -50,15 +53,17 @@ $(function () {
 
 	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
+	$('#' + discussionFailureRowId).hide(); // hiding error message at start
+	$('#' + tryAgainDiscussionButtonId).hide();
 
 	// starts the discussion with getting all positions
 	$('#' + startDiscussionButtonId).click(function () {
 		$('#' + startDiscussionButtonId).hide(); // hides the start button
 		$('#' + startDescriptionId).hide(); // hides the start description
 		$('#' + restartDiscussionButtonId).show(); // show the restart button
-		$('#' + discussionContainerId).fadeIn('fast');
+		$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
 
-		ajaxHandler.getAllPositions(interactionHandler.callbackAjaxGetAllPositions, guiHandler.setNewArgumentButtonOnly);
+		ajaxHandler.getAllPositions(interactionHandler.callbackAjaxGetAllPositions);
 	});
 
 	// handler for the send answer button
@@ -67,11 +72,12 @@ $(function () {
 	});
 
 	// hide the restart button and add click function
-	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
-	$('#' + restartDiscussionButtonId).click(function () {
+		$('#' + restartDiscussionButtonId).hide(); // hides the restart button
+		$('#' + restartDiscussionButtonId).click(function () {
 		$('#' + startDiscussionButtonId).show(); // show the start description
 		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
 		$('#' + addStatementContainerId).hide(); // hide add statement container
+		$('#' + tryAgainDiscussionButtonId).hide(); // hiding retry button
 
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
@@ -109,8 +115,8 @@ $(function () {
 	
 	// ajax loading animation
 	$(document).on({
-		ajaxStart: function() { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a flickering screen
-		ajaxStop: function() { setTimeout("$('body').removeClass('loading')", 0); }
+		ajaxStart: function () { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a flickering screen
+		ajaxStop: function () { setTimeout("$('body').removeClass('loading')", 0); }
 	});
 
 	/*
