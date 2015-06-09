@@ -20,72 +20,76 @@ from sqlalchemy.orm import sessionmaker
 here = os.path.dirname(__file__)
 settings = appconfig('config:' + os.path.join(here, '../', 'development.ini'))
 
-def addTestingDB(session):
-	group1 = session.query(Group).filter_by(name='editors').first()
-	group2 = session.query(Group).filter_by(name='users').first()
 
-	pw1 = PasswordHandler.get_hashed_password(None, 'test')
-	pw2 = PasswordHandler.get_hashed_password(None, 'test')
-	user1 = User(firstname='editor', surname='editor', nickname='test_editor', email='dbas1@cs.uni-duesseldorf.de', password=pw1)
-	user2 = User(firstname='user', surname='user', nickname='test_user', email='dbas2@cs.uni-duesseldorf.de', password=pw2)
-	user1.group = group1.uid
-	user2.group = group2.uid
-	session.add_all([user1, user2])
-	session.flush()
-	position1 = Position(text='I like cats.', weight='1')
-	position2 = Position(text='I like dogs.', weight='1')
-	position1.author = user2.uid
-	position2.author = user1.uid
-	session.add_all([position1, position2])
-	session.flush()
-	argument1 = Argument(text='They are hating all humans!', weight='1')
-	argument2 = Argument(text='They are very devoted.', weight='1')
-	argument1.author = user1.uid
-	argument2.author = user2.uid
-	session.add_all([argument1, argument2])
-	session.flush()
-	relation1 = RelationArgPos(weight='1', is_supportive='1')
-	relation2 = RelationArgPos(weight='1', is_supportive='1')
-	relation3 = RelationArgArg(weight='1', is_supportive='0')
-	relation4 = RelationPosPos(weight='1', is_supportive='0')
-	relation5 = RelationArgArg(weight='1', is_supportive='0')
-	relation6 = RelationPosArg(weight='1', is_supportive='0')
-	relation1.author = user1.uid
-	relation1.arg_uid = argument1.uid
-	relation1.pos_uid = position1.uid
-	relation2.author = user1.uid
-	relation2.arg_uid = argument2.uid
-	relation2.pos_uid = position2.uid
-	relation3.author = user2.uid
-	relation3.arg_uid1 = argument1.uid
-	relation3.arg_uid2 = argument2.uid
-	relation4.author = user2.uid
-	relation4.pos_uid1 = position1.uid
-	relation4.pos_uid2 = position2.uid
-	relation5.author = user2.uid
-	relation5.arg_uid = argument1.uid
-	relation5.arg_uid = argument2.uid
-	relation6.author = user1.uid
-	relation6.pos_uid = position2.uid
-	relation6.arg_uid = argument1.uid
-	session.add_all([relation1, relation2, relation3, relation4, relation5, relation6])
-	session.flush()
+class Setup:
+	def __init__(self):
+		print("Setup __init__")
 
-	return session
+	def add_testing_db(self, session):
+		group1 = session.query(Group).filter_by(name='editors').first()
+		group2 = session.query(Group).filter_by(name='users').first()
 
+		pw1 = PasswordHandler.get_hashed_password(None, 'test')
+		pw2 = PasswordHandler.get_hashed_password(None, 'test')
+		user1 = User(firstname='editor', surname='editor', nickname='test_editor', email='dbas1@cs.uni-duesseldorf.de', password=pw1)
+		user2 = User(firstname='user', surname='user', nickname='test_user', email='dbas2@cs.uni-duesseldorf.de', password=pw2)
+		user1.group = group1.uid
+		user2.group = group2.uid
+		session.add_all([user1, user2])
+		session.flush()
+		position1 = Position(text='I like cats.', weight=1)
+		position2 = Position(text='I like dogs.', weight=2)
+		position1.author = user2.uid
+		position2.author = user1.uid
+		session.add_all([position1, position2])
+		session.flush()
+		argument1 = Argument(text='They are hating all humans!', weight=1)
+		argument2 = Argument(text='They are very devoted.', weight=2)
+		argument1.author = user1.uid
+		argument2.author = user2.uid
+		session.add_all([argument1, argument2])
+		session.flush()
+		relation1 = RelationArgPos(weight=1, is_supportive=True)
+		relation2 = RelationArgPos(weight=2, is_supportive=True)
+		relation3 = RelationArgArg(weight=3, is_supportive=False)
+		relation4 = RelationPosPos(weight=4, is_supportive=False)
+		relation5 = RelationArgArg(weight=5, is_supportive=False)
+		relation6 = RelationPosArg(weight=6, is_supportive=False)
+		relation1.author = user1.uid
+		relation1.arg_uid = argument1.uid
+		relation1.pos_uid = position1.uid
+		relation2.author = user1.uid
+		relation2.arg_uid = argument2.uid
+		relation2.pos_uid = position2.uid
+		relation3.author = user2.uid
+		relation3.arg_uid1 = argument1.uid
+		relation3.arg_uid2 = argument2.uid
+		relation4.author = user2.uid
+		relation4.pos_uid1 = position1.uid
+		relation4.pos_uid2 = position2.uid
+		relation5.author = user2.uid
+		relation5.arg_uid = argument1.uid
+		relation5.arg_uid = argument2.uid
+		relation6.author = user1.uid
+		relation6.pos_uid = position2.uid
+		relation6.arg_uid = argument1.uid
+		session.add_all([relation1, relation2, relation3, relation4, relation5, relation6])
+		session.flush()
 
-def addRoutes(config):
-	config.add_route('main_page', '/')
-	config.add_route('main_login', '/login')
-	config.add_route('main_logout', '/logout')
-	config.add_route('main_logout_redirect', '/logout_redirect')
-	config.add_route('main_contact', '/contact')
-	config.add_route('main_content', '/content')
-	config.add_route('main_news', '/news')
-	config.add_route('main_settings', '/settings')
-	config.add_route('main_impressum', '/impressum')
-	config.add_route('404', '/404')
-	return config
+		return session
+
+	def add_routes(self, config):
+		config.add_route('main_page', '/')
+		config.add_route('main_login', '/login')
+		config.add_route('main_logout', '/logout')
+		config.add_route('main_logout_redirect', '/logout_redirect')
+		config.add_route('main_contact', '/contact')
+		config.add_route('main_content', '/content')
+		config.add_route('main_news', '/news')
+		config.add_route('main_settings', '/settings')
+		config.add_route('main_impressum', '/impressum')
+		config.add_route('404', '/404')
+		return config
 
 
 # setup the Base testing class what will manage our transactions
@@ -93,7 +97,7 @@ class BaseTestCase(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
 		cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
-		cls.Session =  sessionmaker()
+		cls.Session = sessionmaker()
 
 	def setUp(self):
 		connection = self.engine.connect()
@@ -119,7 +123,7 @@ class UnitTestBase(BaseTestCase):
 		print("UnitTestBase: setUp")
 		self.config = testing.setUp(request=testing.DummyRequest())
 		super(UnitTestBase, self).setUp()
-		self.config = addRoutes(self.config)
+		self.config = Setup().add_routes(self.config)
 
 	def tearDown(self):
 		print("UnitTestBase: tearDown")
@@ -128,7 +132,7 @@ class UnitTestBase(BaseTestCase):
 	def get_csrf_request(self, post=None):
 		print("UnitTestBase: get_csrf_request")
 		csrf = 'abc'
-		if not u'csrf_token' in post.keys():
+		if u'csrf_token' not in post.keys():
 			post.update({
 				'csrf_token': csrf
 			})
@@ -141,6 +145,8 @@ class UnitTestBase(BaseTestCase):
 
 # integrate with the whole web framework and actually hit the define routes, render the templates,
 # and actually test the full stack of your application
+
+
 class IntegrationTestBase(BaseTestCase):
 	@classmethod
 	def setUpClass(cls):
@@ -151,14 +157,14 @@ class IntegrationTestBase(BaseTestCase):
 		self.testapp = TestApp(self.app)
 		self.config = testing.setUp()
 		super(IntegrationTestBase, self).setUp()
-		self.config = addRoutes(self.config)
+		self.config = Setup().add_routes(self.config)
 
 
 ##########################################################################################################
 ##########################################################################################################
 ##########################################################################################################
 
-#testing main page
+# testing main page
 class ViewMainTests(UnitTestBase):
 	def _callFUT(self, request):
 		print("ViewLoginTests: _callFUT")
@@ -296,7 +302,7 @@ class ViewNotFoundTests(UnitTestBase):
 
 # check, if every site responds with 200 except the error page
 class FunctionalViewTests(IntegrationTestBase):
-	editor_login	 = '/login?nickname=editor&password=test&came_from=main_page&form.login.submitted=Login'
+	editor_login = '/login?nickname=editor&password=test&came_from=main_page&form.login.submitted=Login'
 	viewer_wrong_login = '/login?nickname=randomguest&password=incorrect&came_from=main_page&form.login.submitted=Login'
 
 	# testing main page
@@ -448,7 +454,7 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 
 	def setUp(self):
 		super(FunctionalDatabaseTests, self).setUp()
-		self.session = addTestingDB(self.session)
+		self.session = Setup().add_testing_db(self.session)
 
 	# testing group content
 	def test_database_group_content(self):
@@ -470,8 +476,8 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		position2 = self.session.query(Position).filter_by(text='I like dogs.').first()  #, weight='20')
 		self.assertTrue(user1.firstname, 'user')
 		self.assertTrue(user2.firstname, 'editor')
-		self.assertTrue(position1.weight, 1)
-		self.assertTrue(position2.weight, 1)
+		self.assertEqual(position1.weight, 1)
+		self.assertEqual(position2.weight, 2)
 
 	# testing group content
 	def test_database_user_content(self):
@@ -488,7 +494,7 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		print("DatabaseTests: test_database_position_content")
 		position = self.session.query(Position).filter_by(uid=1).first()
 		self.assertTrue(position.text, 'I like cats.')
-		self.assertTrue(position.weight, 1)
+		self.assertEqual(position.weight, 0)
 		self.assertTrue(position.author, self.session.query(User).filter_by(uid=1).first().uid)
 
 	# testing argument content
@@ -496,14 +502,14 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		print("DatabaseTests: test_database_argument_content")
 		argument = self.session.query(Argument).filter_by(uid=1).first()
 		self.assertTrue(argument.text, 'They are hating all humans!')
-		self.assertTrue(argument.weight, 1)
+		self.assertEqual(argument.weight, 0)
 		self.assertTrue(argument.author, self.session.query(User).filter_by(uid=1).first().uid)
 
 	# testing relation arg pos content
 	def test_database_RelationArgPos(self):
 		print("DatabaseTests: test_database_RelationArgPos")
 		relation = self.session.query(RelationArgPos).filter_by(uid=1).first()
-		self.assertTrue(relation.weight, 1)
+		self.assertEqual(relation.weight, 0)
 		self.assertTrue(relation.is_supportive, True)
 		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=1).first().uid)
 		self.assertTrue(relation.pos_uid, self.session.query(Position).filter_by(uid=1).first().uid)
@@ -513,7 +519,7 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	def test_database_RelationPosArg(self):
 		print("DatabaseTests: test_database_RelationPosArg")
 		relation = self.session.query(RelationPosArg).filter_by(uid=1).first()
-		self.assertTrue(relation.weight, 1)
+		self.assertEqual(relation.weight, 6)
 		self.assertFalse(relation.is_supportive, False)
 		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=1).first().uid)
 		self.assertTrue(relation.pos_uid, self.session.query(Position).filter_by(uid=2).first().uid)
@@ -523,7 +529,7 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	def test_database_RelationArgArg(self):
 		print("DatabaseTests: test_database_RelationArgArg")
 		relation = self.session.query(RelationArgArg).filter_by(uid=1).first()
-		self.assertTrue(relation.weight, 1)
+		self.assertEqual(relation.weight, 0)
 		self.assertFalse(relation.is_supportive, True)
 		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=1).first().uid)
 		self.assertTrue(relation.arg_uid1, self.session.query(Argument).filter_by(uid=1).first().uid)
@@ -533,50 +539,8 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 	def test_database_RelationPosPos(self):
 		print("DatabaseTests: test_database_RelationPosPos")
 		relation = self.session.query(RelationPosPos).filter_by(uid=1).first()
-		self.assertTrue(relation.weight, 1)
+		self.assertEqual(relation.weight, 4)
 		self.assertFalse(relation.is_supportive, True)
 		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=2).first().uid)
 		self.assertTrue(relation.pos_uid1, self.session.query(Position).filter_by(uid=1).first().uid)
 		self.assertTrue(relation.pos_uid2, self.session.query(Position).filter_by(uid=2).first().uid)
-
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
-
-
-# checks for the ajax features
-class AjaxTests(IntegrationTestBase):
-
-	def setUp(self):
-		super(AjaxTests, self).setUp()
-		self.session = addTestingDB(self.session)
-
-	def test_get_all_positions(self):
-		print("AjaxTests: test_get_all_positions")
-		request = testing.DummyRequest()
-		response = Dbas(request).get_ajax_positions()
-		self.assertEqual('We should get a cat.', response['1'])
-		self.assertEqual('We should get a dog.', response['2'])
-
-	def test_get_all_users(self):
-		print("AjaxTests: test_get_all_users")
-		request = testing.DummyRequest()
-		response = Dbas(request).get_ajax_users()
-		self.assertEqual('admin', response['nickname'])
-		self.assertEqual('firstname', response['nickname'])
-		self.assertEqual('surname', response['nickname'])
-
-	def test_get_all_pro_arguments(self):
-		print("AjaxTests: test_get_all_pro_arguments")
-		request = testing.DummyRequest()
-		response = Dbas(request).get_ajax_pro_arguments()
-		# self.assertEqual('They are very devoted.', response['2'])
-
-	def test_get_all_con_arguments(self):
-		print("AjaxTests: test_get_all_con_arguments")
-		request = testing.DummyRequest()
-		response = Dbas(request).get_ajax_con_arguments()
-		# self.assertEqual('They are hating all humans!', response['1'])
-
-	# todo: more testcases
-
