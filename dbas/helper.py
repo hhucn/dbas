@@ -74,7 +74,7 @@ class PasswordHandler(object):
 		body = 'Your new password is: ' + password
 		logger('main_contact', 'form.contact.submitted', 'sending mail')
 		mailer = get_mailer(request)
-		message = Message( subject=subject, sender=systemmail, recipients =[email], body=body)
+		message = Message(subject=subject, sender=systemmail, recipients =[email], body=body)
 		send_error = False
 		send_message = False
 		# try sending an catching errors
@@ -116,69 +116,19 @@ class QueryHelper(object):
 
 		return False
 
-
-#	def get_all_arguments_by_pos_uid(self, uid, is_supportive):
-#		"""
-#		Getting every pro/con argument, which is connected to the given position uid
-#		:param uid: uid of the argument
-#		:param is_supportive: true, if all supportive arguments should be fetched
-#		:return: ordered dictionary
-#		"""
-#
-#		## raw query
-#		# select * from arguments where uid in (
-#		# 	select arg_uid from relation_argpos where pos_uid=UID and is_supportive = 1
-#		# );
-#		## tried sql query
-#		# db_arguments = DBSession.query(Argument).filter_by(Argument.uid.in_(
-#		# 	DBSession.query(RelationArgPos).options(load_only("arg_uid")).filter(
-#		# 	and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == 1)).all()
-#		# ))
-#
-#		return_dict = collections.OrderedDict()
-#		logger('QueryHelper', 'get_all_arguments_for_uid', 'check for uid')
-#		support = 1 if is_supportive else 0
-#
-#		if uid:
-#			logger('QueryHelper', 'get_all_arguments_for_uid ', 'send uid ' + str(uid))
-#			db_arguid = DBSession.query(RelationArgPos).filter(
-#				and_(RelationArgPos.pos_uid == uid, RelationArgPos.is_supportive == support)).all()
-#
-#			all_uids = ' '
-#			for arg in db_arguid:
-#				all_uids += str(arg.arg_uid) + ' '
-#			logger('QueryHelper','get_all_arguments_for_uid',  'arg_uids' + all_uids)
-#
-#			logger('QueryHelper', 'get_all_arguments_for_uid', 'iterate all arguments for that uid')
-#			for arg in db_arguid:
-#				logger('QueryHelper', 'get_all_arguments_for_uid' , 'get argument with' + str(arg.arg_uid))
-#				db_argument = DBSession.query(Argument).filter_by(uid = arg.arg_uid).first()
-#
-#				logger('QueryHelper', 'get_all_arguments_for_uid', 'checks whether argument exists, uid ' + str(arg.uid))
-#				if db_argument:
-#					logger('QueryHelper', 'get_all_arguments_for_uid' , 'add argument in dict' +
-#						'uid:' + str(db_argument.uid) + ', val: ' + db_argument.text)
-#					return_dict[str(db_argument.uid)] = db_argument.text
-#				else :
-#					logger('QueryHelper', 'get_all_arguments_for_uid', 'no argument exists, uid ' + str(uid))
-#		else:
-#			logger('QueryHelper', 'get_all_arguments_for_uid', 'ERROR: uid not found')
-#
-#		return return_dict
-
 	def get_all_arguments_by_arg_uid(self, uid, is_supportive):
 		"""
 		Getting every pro/con arument, which is for/against the same position as the given argument uid
 		:param uid: uid of the argument
-		:param isSupportive: true, if all supportive arguments should be fetched
+		:param is_supportive: true, if all supportive arguments should be fetched
 		:return: ordered dictionary
 		"""
 
 		# # raw query
 		# select * from arguments where uid in (
-		#	select arg_uid from relation_argpos where pos_uid in (
-		#	  select pos_uid from relation_argpos where arg_uid = 3 and is_supportive = 1
-		#	) and is_supportive = 0
+		# select arg_uid from relation_argpos where pos_uid in (
+		# select pos_uid from relation_argpos where arg_uid = 3 and is_supportive = 1
+		# ) and is_supportive = 0
 		# );
 
 		return_dict = collections.OrderedDict()
@@ -217,24 +167,24 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def get_args_for_new_round(self, user_id, id, is_argument):
+	def get_args_for_new_round(self, user_id, statement_id, is_argument):
 		"""
 		Returns the next argument for a confrontation. This is based on the last given id.
 		:param user_id: current user id, as given in the request params
-		:param id: current statement id
+		:param statement_id: current statement id
 		:param is_argument: true, when the id is for an argument
 		:return: dictionary with 'confrontation' <-> argument , the 'currentStatementText' <-> argument of the user and a justification
 		dictionary with mapping uid <-> argument dictionary
 		"""
-		logger('QueryHelper', 'get_args_for_new_round', 'user ' + str(user_id)  + ', is_argument ' + str(is_argument) + ', statement id ' + str(id))
+		logger('QueryHelper', 'get_args_for_new_round', 'user ' + str(user_id)  + ', is_argument ' + str(is_argument) + ', statement id ' + str(statement_id))
 		return_dict = collections.OrderedDict()
 		justifications_dict = collections.OrderedDict()
 
 		# get the last used statement
 		if is_argument:
-			db_last_statement = DBSession.query(Argument).filter_by(uid=id).first()
+			db_last_statement = DBSession.query(Argument).filter_by(uid=statement_id).first()
 		else:
-			db_last_statement = DBSession.query(Position).filter_by(uid=id).first()
+			db_last_statement = DBSession.query(Position).filter_by(uid=statement_id).first()
 
 		# save the last statement text
 		statement = 'argument' if is_argument else 'position'
@@ -243,11 +193,11 @@ class QueryHelper(object):
 
 		# get all statements against and for our statement
 		if is_argument:
-			contra_argument_rows = self.get_argument_list_in_relation_to_statement(id, False, False)
-			pro_argument_rows = self.get_argument_list_in_relation_to_statement(id, True, False)
+			contra_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, False, False)
+			pro_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, True, False)
 		else:
-			contra_argument_rows = self.get_argument_list_in_relation_to_statement(id, False, True)
-			pro_argument_rows = self.get_argument_list_in_relation_to_statement(id, True, True)
+			contra_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, False, True)
+			pro_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, True, True)
 
 		# todo: what to do, when there is no argument for an confrontation?
 
@@ -272,7 +222,6 @@ class QueryHelper(object):
 		return_dict['justifications'] = justifications_dict
 		return return_dict
 
-
 	def get_argument_list_in_relation_to_statement(self, uid, is_supportive, is_position):
 		"""
 		Returns every argument with a non-supportive connection to the given position
@@ -285,7 +234,7 @@ class QueryHelper(object):
 		if is_position:
 			# # raw query
 			# select * from arguments where uid in (
-			#   select arg_uid from relation_argpos where pos_uid = 1 and is_supportive = 1
+			# select arg_uid from relation_argpos where pos_uid = 1 and is_supportive = 1
 			# )
 			logger('QueryHelper', 'get_arguments_in_relation_to_statement', 'pos_uid ' + str(uid) + ' support ' + str(is_supportive))
 			db_arg_uids = DBSession.query(RelationArgPos).filter(and_(RelationArgPos.pos_uid == uid,
@@ -293,7 +242,7 @@ class QueryHelper(object):
 		else:
 			# # raw query
 			# select * from arguments where uid in (
-			# 	select arg_uid1 from relation_argarg where arg_uid2 = 7 and is_supportive = 0
+			# select arg_uid1 from relation_argarg where arg_uid2 = 7 and is_supportive = 0
 			# )
 			logger('QueryHelper', 'get_arguments_in_relation_to_statement', 'arg_uid2 ' + str(uid) + ' support ' + str(is_supportive))
 			db_arg_uids = DBSession.query(RelationArgArg).filter(and_(RelationArgArg.arg_uid2 == uid,
@@ -322,24 +271,24 @@ class QueryHelper(object):
 
 		return return_list
 
-	def save_track_position_for_user(self, DBSession, transaction, user_id, pos_id):
+	def save_track_position_for_user(self, db_session, transaction, user_id, pos_id):
 		"""
 
-		:param DBSession: current session
+		:param db_session: current session
 		:param transaction: current transaction
 		:param user_id: authentication id of the user
 		:param pos_id: id of the clicked position
 		:return: undefined
 		"""
-		logger('QueryHelper', 'save_track_position_for_user', 'user: ' + str(user_id) +  ', pos_uid: ' + str(pos_id))
+		logger('QueryHelper', 'save_track_position_for_user', 'user: ' + str(user_id) + ', pos_uid: ' + str(pos_id))
 		new_track = Track(user=user_id, pos_uid=pos_id, arg_uid=-1, is_argument=False)
-		DBSession.add(new_track)
+		db_session.add(new_track)
 		transaction.commit()
 
-	def save_track_argument_for_user(self, DBSession, transaction, user_id, arg_id):
+	def save_track_argument_for_user(self, db_session, transaction, user_id, arg_id):
 		"""
 
-		:param DBSession: current session
+		:param db_session: current session
 		:param transaction: current transaction
 		:param user_id: authentication id of the user
 		:param arg_id: id of the clicked argument
@@ -347,19 +296,19 @@ class QueryHelper(object):
 		"""
 		logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + str(user_id) + ', arg_uid: ' + str(arg_id))
 		new_track = Track(user=user_id, pos_uid=-1, arg_uid=arg_id, is_argument=True)
-		DBSession.add(new_track)
+		db_session.add(new_track)
 		transaction.commit()
 
-	def get_track_for_user(self, DBSession, user_uid):
+	def get_track_for_user(self, db_session, user_uid):
 		"""
 		Returns the complete track of given user
-		:param DBSession: current session
+		:param db_session: current session
 		:param user_uid: current user id
 		:return: track os the user id as dictionary
 		"""
 		logger('QueryHelper','get_track_for_user','user ' + user_uid)
 
-		db_track = DBSession.query(Track).filter_by(user=user_uid).all()
+		db_track = db_session.query(Track).filter_by(user=user_uid).all()
 		return_dict = collections.OrderedDict()
 		for track in db_track:
 			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', user ' + str(track.user) + ', date ' + str(
@@ -371,9 +320,9 @@ class QueryHelper(object):
 			track_dict['pos_uid'] = track.pos_uid
 			track_dict['arg_uid'] = track.arg_uid
 			if track.is_argument:
-				db_row = DBSession.query(Argument).filter_by(uid=track.arg_uid).first()
+				db_row = db_session.query(Argument).filter_by(uid=track.arg_uid).first()
 			else:
-				db_row = DBSession.query(Position).filter_by(uid=track.pos_uid).first()
+				db_row = db_session.query(Position).filter_by(uid=track.pos_uid).first()
 			track_dict['text'] = db_row.text
 			track_dict['is_argument'] = track.is_argument
 			return_dict[track.uid] = track_dict

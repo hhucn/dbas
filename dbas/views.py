@@ -362,7 +362,6 @@ class Dbas(object):
 		date = 'empty'
 		logger('main_content', 'def', 'check for an issue')
 		statement_inserted = False
-		is_admin = False
 		msg = ''
 
 		# get the current issue
@@ -373,11 +372,10 @@ class Dbas(object):
 		else:
 			logger('main_content', 'def', 'issue does not exists')
 
-
 		# adding a statement
-		#if 'form.contact.submitted' in self.request.params:
-		#	msg = 'Statement could not be added (not implemented yet)!'
-		#	statement_inserted = False
+		# if 'form.contact.submitted' in self.request.params:
+		# msg = 'Statement could not be added (not implemented yet)!'
+		# statement_inserted = False
 
 		# checks whether the current user is admin
 		is_admin = QueryHelper().is_user_admin(self.request.authenticated_userid)
@@ -389,7 +387,7 @@ class Dbas(object):
 			message=msg,
 			issue=issue,
 			date=date,
-			is_admin = is_admin,
+			is_admin=is_admin,
 			was_statement_inserted=statement_inserted,
 		)
 
@@ -644,8 +642,8 @@ class Dbas(object):
 			return_dict['removed data'] = 'true'
 			QueryHelper().del_track_for_user(DBSession, transaction, nickname)
 
-		dictionaryHelper = DictionaryHelper()
-		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
+		dictionary_helper = DictionaryHelper()
+		return_json = dictionary_helper.dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -661,10 +659,10 @@ class Dbas(object):
 		except KeyError as e:
 			logger('ajax_arguments_connected_to_position_uid', 'error', repr(e))
 
-		logger('ajax_arguments_connected_to_position_uid', 'def', 'uid: ' + uid )
+		logger('ajax_arguments_connected_to_position_uid', 'def', 'uid: ' + uid)
 
 		# get all arguments
-		queryHelper = QueryHelper()
+		query_helper = QueryHelper()
 		return_list = QueryHelper().get_argument_list_in_relation_to_statement(uid, True, True)
 		return_dict = {}
 		for entry in return_list:
@@ -672,7 +670,7 @@ class Dbas(object):
 
 		# save track, because the given uid is a position uid
 		logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: position id ' + str(uid))
-		queryHelper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
+		query_helper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 
 		# get return count of arguments
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
@@ -686,26 +684,25 @@ class Dbas(object):
 
 		# TODO: FINISHED; BUT NOT DEBUGGED:
 		uid = ''
-		type = ''
+		statement_type = ''
 		try:
 			uid = self.request.params['uid']
-			type = True if self.request.params['is_argument'] == 'argument' else False
-			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument ' + str(type) + '(' + str(self.request.params['is_argument']) +  ')')
+			statement_type = True if self.request.params['is_argument'] == 'argument' else False
+			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument ' + str(statement_type) + '(' + str(self.request.params['is_argument']) + ')')
 		except KeyError as e:
 			logger('get_args_for_new_round', 'error', repr(e))
 
 		# saving track
-		queryHelper = QueryHelper()
-		if type == 'argument':
+		query_helper = QueryHelper()
+		if statement_type == 'argument':
 			logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: argument id ' + str(uid))
-			queryHelper.save_track_argument_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
+			query_helper.save_track_argument_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 		else:
 			logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: position id ' + str(uid))
-			queryHelper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
+			query_helper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 
 		# get data
-		return_dict = queryHelper.get_args_for_new_round(self.request.authenticated_userid, uid, type)
+		return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid, statement_type)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
-

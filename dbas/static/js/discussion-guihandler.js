@@ -232,7 +232,7 @@ function GuiHandler() {
 	 * Adds a textarea with a little close button (both in a div tag) to a parend tag
 	 * @param parentid id-tag of the parent element, where a textare should be added
 	 */
-	this.addTextareaAsChildIn = function (parentid) {
+	this.addTextareaAsChildInParent = function (parentid) {
 		/**
 		 * The structure is like:
 		 * <div><textarea .../><button...></button></div>
@@ -274,7 +274,7 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Set some style attributes, 
+	 * Set some style attributes,
 	 * @param isVisible
 	 */
 	this.setDisplayStylesOfAddArgumentContainer = function (isVisible) {
