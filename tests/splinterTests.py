@@ -135,6 +135,12 @@ class WebTests:
 			b.quit()
 			self.browser = None
 			return False
+		except ConnectionRefusedError:
+			print("  FAIL")
+			print("")
+			b.quit()
+			self.browser = None
+			return False
 
 	def __test_index(self, browser):
 		"""

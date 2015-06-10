@@ -3,3 +3,9 @@
 
 -  Initial version
 -  Starting the project
+
+0.1 (09.06.2015)
+---
+
+- first milestone
+- suitable discussion is missing

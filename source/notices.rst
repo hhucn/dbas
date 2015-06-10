@@ -11,7 +11,13 @@ Notices
 		Just a nice wrapper around the lowlevel python functions
 
 	Unit-tests and integration tests
-	Both are created with the help of  http://www.sontek.net/blog/2011/12/01/writing_tests_for_pyramid_and_sqlalchemy.html
+		Both are created with the help of  http://www.sontek.net/blog/2011/12/01/writing_tests_for_pyramid_and_sqlalchemy.html
+
+	Frontend-tests
+		Done with splinter https://splinter.readthedocs.org
+
+	Javascript-tests
+		Done with mocha http://mochajs.org/
 
 	Internationalization / Localization
 		Internationalization (i18n)

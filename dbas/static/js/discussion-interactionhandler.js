@@ -46,11 +46,10 @@ function InteractionHandler() {
 
 			// get the second child, which is the label
 			if ($('#' + addStatementButtonId).parent().children().eq(1).text().indexOf('position') >= 0) {
-				$('#' + addStatementContainerH2Id).text('Please insert a new position');
-				//$('#' + addStatementContainerMainInputId).show();
+				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false);
 			} else {
 				$('#' + addStatementContainerH2Id).text('Please insert new arguments');
-				//$('#' + addStatementContainerMainInputId).hide();
+				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true);
 			}
 		} else {
 			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
