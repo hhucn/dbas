@@ -688,7 +688,8 @@ class Dbas(object):
 		try:
 			uid = self.request.params['uid']
 			is_argument = True if self.request.params['is_argument'] == 'argument' else False
-			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument ' + str(is_argument) + '(' + str(self.request.params['is_argument']) + ')')
+			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument '
+			       + str(is_argument) + '(' + str(self.request.params['is_argument']) + ')')
 		except KeyError as e:
 			logger('get_args_for_new_round', 'error', repr(e))
 

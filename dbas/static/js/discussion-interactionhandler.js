@@ -37,6 +37,7 @@ function InteractionHandler() {
 
 	/**
 	 * Method for some style attributes, when the radio buttons are chaning
+	 * @param buttonId current id
 	 */
 	this.radioButtonChanged = function (buttonId) {
 		var guiHandler = new GuiHandler();
@@ -58,6 +59,16 @@ function InteractionHandler() {
 
 		// enable or disable the send button
 		$('#' + sendAnswerButtonId).prop('disabled', ($('input[name=' + radioButtonGroup + ']:checked') === 'undefined' ? true : false));
+	};
+
+	/**
+	 * Segmented button for display style was pressed
+	 * @param buttonId current id
+	 */
+	this.styleButtonChanged = function (buttonId) {
+		if ($('#' + buttonId).text() != $('#' + scStyle1Id)){
+			alert('This will be done in the future :-)');
+		}
 	};
 
 	/**

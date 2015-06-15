@@ -115,11 +115,23 @@
 	background-color: rgba(0, 106, 179, 0.3);
 }
 
+#display-control-container{
+	position: absolute;
+	display: inline-block;
+	color: #006AB3;
+	bottom: 80px;
+	right: 0px;
+}
+
 
 @media (max-width: 767px) {
 	#discussions-space ul {
 		margin: 10px;
 		display: block;
+	}
+
+	#display-control-container{
+		bottom: 150px;
 	}
 	#discussions-space ul li {
 		margin: 10px;

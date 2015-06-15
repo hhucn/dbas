@@ -24,6 +24,10 @@ var restartDiscussionButtonId = 'restart-discussion';
 var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'right-textareas';
 var radioButtonGroup = 'radioButtonGroup';
+var scStyleGroupId = 'sc-display-style';
+var scStyle1Id = 'sc-style-1';
+var scStyle2Id = 'sc-style-2';
+var scStyle3Id = 'sc-style-3';
 var startDiscussionButtonId = 'start-discussion';
 var startDescriptionId = 'start-description';
 var sendAnswerButtonId = 'send-answer';
@@ -98,6 +102,11 @@ $(function () {
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).click(function () {
 		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId);
+	});
+
+	// adding a textarea in the left column
+	$('#' + addProTextareaId).click(function () {
+		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId);
 	});
 
 	// adding a textarea in the left column

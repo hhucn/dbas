@@ -114,6 +114,14 @@ body.loading .ajaxloader {
 	border-radius: 4px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
+.wrapped_content_container{
+	border-radius: 4px;
+	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+	background: #f4f4f4;
+	padding: 10px;
+	margin: 10px;
+}
+
 .first-container{
 	margin-top: -20px;
 }

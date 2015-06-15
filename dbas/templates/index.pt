@@ -44,7 +44,7 @@
 								</li>
 							</ul>
 							<br>
-							<p class="lead">And don't forget to check the <a href="${request.application_url}/news" title="news">news-page</a> reguarly.</p>
+							<p class="lead">And don't forget to check reguarly the <a href="${request.application_url}/news" title="news">news-page</a>.</p>
 						</div>
 					</div>
 				</div>

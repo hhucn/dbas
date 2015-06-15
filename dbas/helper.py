@@ -186,31 +186,36 @@ class QueryHelper(object):
 		else:
 			db_last_statement = DBSession.query(Position).filter_by(uid=statement_id).first()
 
-		# save the last statement text
+		# save the last statement text in the return dictionary
 		statement = 'argument' if is_argument else 'position'
 		logger('QueryHelper', 'get_args_for_new_round', 'last statement is ' + statement + ': ' + db_last_statement.text)
 		return_dict['currentStatementText'] = db_last_statement.text
 
-		# get all statements against and for our statement
+		# get all statements against our statement
 		if is_argument:
 			contra_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, False, False)
-			pro_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, True, False)
+			# pro_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, True, False)
 		else:
 			contra_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, False, True)
-			pro_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, True, True)
+			# pro_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, True, True)
 
 		# todo: what to do, when there is no argument for an confrontation?
 
-		# pick a random contra argument
+		# pick a random contra argument and get all arguments against the confrontation argument
 		if len(contra_argument_rows) > 0:
 			rnd = randint(0,len(contra_argument_rows)-1)
 			logger('QueryHelper', 'get_args_for_new_round', 'get the nth argument ' + str(rnd))
 			return_dict['confrontation'] = contra_argument_rows[rnd]['text']
+			confrontation_uid = contra_argument_rows[rnd]['uid']
+
+			# get all arguments against the confrontation argument
+			contra_argument_rows = self.get_argument_list_in_relation_to_statement(confrontation_uid, False, False)
 		else :
 			return_dict['confrontation'] = 'There is no contra argument!'
 
+
 		# get all justifications
-		for justification in pro_argument_rows:
+		for justification in contra_argument_rows:
 			argument_dict = {}
 			argument_dict['uid'] = justification['uid']
 			argument_dict['text'] = justification['text']
