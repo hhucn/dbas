@@ -13,7 +13,7 @@ function InteractionHandler() {
 	 * Handler when an argument button was clicked
 	 * @param value of the button
 	 */
-	this.argumentButtonWasClicked = function (id, value) {
+	this.argumentButtonWasClicked = function (id) {
 		var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), pos;
 		// pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
 		// guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + '<b>' + value + '</b> But why?');
@@ -43,6 +43,7 @@ function InteractionHandler() {
 		var guiHandler = new GuiHandler();
 		if ($('#' + addStatementButtonId).is(':checked')) {
 			guiHandler.setDisplayStylesOfAddArgumentContainer(true, true);
+			$('#' + stepBackButtonId).hide();
 			$('#' + sendAnswerButtonId).hide();
 
 			// get the second child, which is the label
@@ -54,11 +55,12 @@ function InteractionHandler() {
 				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true);
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
-			alert ('one step back please');
-			new AjaxHandler.getOneStepBack();
+			$('#' + stepBackButtonId).show();
+			$('#' + sendAnswerButtonId).hide();
 		} else {
 			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
 			$('#' + sendAnswerButtonId).show();
+			$('#' + stepBackButtonId).hide();
 		}
 
 		// enable or disable the send button
@@ -100,7 +102,6 @@ function InteractionHandler() {
 		}
 	};
 
-
 	/**
 	 * Callback for the ajax method getArgsForJustification
 	 * @param data returned json data
@@ -114,7 +115,6 @@ function InteractionHandler() {
 		}
 	};
 
-
 	/**
 	 * Callback for the ajax method getGetNewArgumentationRound
 	 * @param data returned json data
@@ -124,7 +124,6 @@ function InteractionHandler() {
 		// -1 confrontation, but no justification
 		//  0 no confrontation
 		//  1 everything is fine
-		alert(parsedData.status);
 		switch(parsedData.status){
 			case '-1':
 				new gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
@@ -168,7 +167,21 @@ function InteractionHandler() {
 	 * @param data returned data
 	 */
 	this.callbackGetOneStepBack = function (data) {
-		var parsedData = $.parseJSON(data);
-		new GuiHandler().setNewPositionAsLastChild(parsedData);
+		var parsedData = $.parseJSON(data), ah = new AjaxHandler();
+		$('#' + discussionSpaceId).empty();
+		// -1 user has no history/trace
+		//  0 user's last track is one argument
+		// >0 user's last track is more than one argument
+		switch(parsedData.status){
+			case '-1':
+				ah.getAllPositions();
+				break;
+			case '0':
+				ah.getAllPositions();
+				break;
+			default:
+				ah.getNewArgumentationRound(parsedData.status, true);
+				break;
+		}
 	};
 }

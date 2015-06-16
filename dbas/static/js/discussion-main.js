@@ -26,9 +26,9 @@ var restartDiscussionButtonId = 'restart-discussion';
 var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'right-textareas';
 var radioButtonGroup = 'radioButtonGroup';
-var scStyleGroupId = 'sc-display-style';
 var newArgumentRadioButtonText = 'Let me state my own reason(s)!';
 var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
+var scStyleGroupId = 'sc-display-style';
 var scStyle1Id = 'sc-style-1';
 var scStyle2Id = 'sc-style-2';
 var scStyle3Id = 'sc-style-3';
@@ -36,6 +36,7 @@ var startDiscussionButtonId = 'start-discussion';
 var startDescriptionId = 'start-description';
 var statementContainerH2TextIfArgument = 'What are your arguments for and against?';
 var statementContainerH2TextIfPosition = 'What is your idea?';
+var stepBackButtonId = 'step-back';
 var sendAnswerButtonId = 'send-answer';
 var sendNewStatementId = 'send-new-statement';
 var statementListId = 'statement-list';
@@ -65,6 +66,7 @@ $(function () {
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
 	$('#' + tryAgainDiscussionButtonId).hide();
+	$('#' + stepBackButtonId).hide();
 
 	// starts the discussion with getting all positions
 	$('#' + startDiscussionButtonId).click(function () {
@@ -81,6 +83,11 @@ $(function () {
 		interactionHandler.sendAnswerButtonClicked();
 	});
 
+	// handler for the step back button
+	$('#' + stepBackButtonId).click(function () {
+		new AjaxHandler().getOneStepBack();
+	});
+
 	// hide the restart button and add click function
 	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
 	$('#' + restartDiscussionButtonId).click(function () {
@@ -94,6 +101,7 @@ $(function () {
 		$('#' + discussionContainerId).hide();
 		$('#' + errorDescriptionId).hide();
 		$('#' + discussionFailureRowId).hide();
+		$('#' + stepBackButtonId).hide();
 	});
 
 	// admin list all users button

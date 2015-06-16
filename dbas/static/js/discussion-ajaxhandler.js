@@ -92,8 +92,12 @@ function AjaxHandler() {
 			dataType: 'json',
 			async: true
 		}).done(function ajaxGetOneStepBackDone(data) {
+			$('#' + stepBackButtonId).hide();
+			$('#' + sendAnswerButtonId).show();
 			new InteractionHandler().callbackGetOneStepBack(data);
 		}).fail(function ajaxGetOneStepBackFail() {
+			$('#' + stepBackButtonId).hide();
+			$('#' + sendAnswerButtonId).show();
 			new GuiHandler().setErrorDescription('Internal Error :(');
 			new GuiHandler().showDiscussionError('Internal failure in ajaxGetAllPositionsFail',
 				'', false, 'ajaxGetOneStepBackFail', true);

@@ -125,9 +125,44 @@ class QueryHelper(object):
 		db_user = DBSession.query(User).filter_by(nickname=str(user)).first()
 		logger('QueryHelper', 'get_data_for_one_step_back', 'user id ' + str(db_user.uid))
 
-		db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).all()
+		# get the track of arguments for this user
+		db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).order_by(Track.uid.desc()).first()
+		db_argument_track = DBSession.query(Track).filter(and_(Track.user_uid == db_user.uid, Track.is_argument == True)).order_by(
+			Track.uid.desc()).all()
 
-		return {}
+		return_dict = {}
+		if db_track:
+			logger('QueryHelper', 'get_data_for_one_step_back', 'user has history/trace')
+
+			if not db_track.is_argument:
+				logger('QueryHelper', 'get_data_for_one_step_back', 'user\'s last track is a position')
+				return_dict['status'] = '0'
+			else:
+				logger('QueryHelper', 'get_data_for_one_step_back', 'user\'s last track is at least one argument')
+
+				if len(db_argument_track) > 1:
+					logger('QueryHelper', 'get_data_for_one_step_back', 'user\'s last track is one argument')
+					return_dict['status'] = '0'
+				else:
+					logger('QueryHelper', 'get_data_for_one_step_back', 'user\'s last track is more than one argument')
+					firstRow = True
+					secondRow = ''
+					for track in db_argument_track:
+						secondRow = track
+						if firstRow:
+							logger('QueryHelper', 'get_data_for_one_step_back', 'passed first row')
+							firstRow = False
+						else:
+							logger('QueryHelper', 'get_data_for_one_step_back', 'get second row')
+							break
+
+					return_dict['status'] = str(secondRow.arg_uid)
+
+		else:
+			logger('QueryHelper', 'get_data_for_one_step_back', 'user has no history/trace')
+			return_dict['status'] = '-1'
+
+		return return_dict
 
 	def get_all_arguments_by_arg_uid(self, uid, is_supportive):
 		"""
