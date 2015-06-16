@@ -217,19 +217,10 @@ body.loading .ajaxloader {
 	left:0;
 }
 
-@media (max-width: 991px) {
-	#footer {
-		height: 150px;
-	}
-}
-
 @media (max-width: 767px) {
 	.container {
 		margin-left: 10px;
 		margin-right: 10px;
-	}
-	#footer {
-		height: 220px;
 	}
 	.links ul li {
 		display: block;
