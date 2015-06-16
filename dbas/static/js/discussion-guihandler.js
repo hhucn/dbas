@@ -357,22 +357,10 @@ function GuiHandler() {
 	/**
 	 * Shows an error on discussion space as well as a retry button
 	 * @param error_msg message of the error
-	 * @param id of the last choosen statement
-	 * @param is_argument, if it was an argument
-	 * @param try_again_fct the function, which should be called
 	 */
-	this.showDiscussionError = function (error_msg, id, is_argument, try_again_fct, is_only_justification) {
+	this.showDiscussionError = function (error_msg) {
 		$('#' + discussionFailureRowId).fadeIn('slow');
 		$('#' + discussionFailureMsgId).text(error_msg);
-		$('#' + tryAgainDiscussionButtonId).fadeIn('slow');
-
-		var fct1, fct2;
-		fct1 = 'new AjaxHandler().' + try_again_fct;
-		fct1 += is_argument !== '' ? '(' + id : '(';
-		fct1 += !is_only_justification ? ', ' + is_argument + '); ' : '); ';
-		fct2 = '$(#' + tryAgainDiscussionButtonId + ').hide();';
-
-		$('#' + tryAgainDiscussionButtonId).attr({onclick: fct1 + fct2});
 	};
 
 	/**

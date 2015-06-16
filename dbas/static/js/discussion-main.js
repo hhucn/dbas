@@ -40,7 +40,6 @@ var stepBackButtonId = 'step-back';
 var sendAnswerButtonId = 'send-answer';
 var sendNewStatementId = 'send-new-statement';
 var statementListId = 'statement-list';
-var tryAgainDiscussionButtonId = 'try-again-discussion';
 
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
