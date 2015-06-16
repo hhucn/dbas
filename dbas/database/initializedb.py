@@ -5,7 +5,7 @@ import transaction
 from dbas.helper import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, \
+from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos,\
     RelationPosArg, RelationPosPos, Group, Issue, Base
 
 
@@ -45,18 +45,23 @@ def main(argv=sys.argv):
 		pw3 = pwHandler.get_hashed_password('martin')
 		pw4 = pwHandler.get_hashed_password('test')
 		pw5 = pwHandler.get_hashed_password('test')
+		pw6 = pwHandler.get_hashed_password('mladen123')
 		user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1)
 		user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2)
 		user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3)
 		user4 = User(firstname='editor', surname='editor', nickname='editor', email='nope1@nopeville.com', password=pw4)
 		user5 = User(firstname='user', surname='user', nickname='user', email='nope2@nopeville.com', password=pw5)
+		user6 = User(firstname='mladen', surname='topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw6)
 		user1.group = group0.uid
 		user2.group = group1.uid
 		user3.group = group1.uid
 		user4.group = group1.uid
 		user5.group = group2.uid
-		DBSession.add_all([user1, user2, user3, user4, user5])
-		DBSession.flush()		# adding all positions out of the discussion
+		user6.group = group1.uid
+		DBSession.add_all([user1, user2, user3, user4, user5, user6])
+		DBSession.flush()
+
+		# adding all positions out of the discussion
 		position1 = Position(text='We should get a cat.', weight=0)
 		position2 = Position(text='We should get a dog.', weight=0)
 		position3 = Position(text='We should neither get a cat nor a dog.', weight=0)
@@ -109,7 +114,9 @@ def main(argv=sys.argv):
 		argument19.author = user1.uid
 		argument20.author = user1.uid
 		argument21.author = user1.uid
-		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21])
+		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, \
+        argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, \
+        argument18, argument19, argument20, argument21])
 		DBSession.flush()
 
 		# adding all relations out of the discussion
@@ -306,7 +313,12 @@ def main(argv=sys.argv):
 		relation45.author = user1.uid
 		relation46.author = user1.uid
 
-		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8, relation9, relation10, relation11, relation12, relation13, relation14, relation15, relation16, relation17, relation18, relation19, relation20, relation21, relation22, relation23, relation24, relation25, relation26, relation27, relation28, relation29, relation30, relation31, relation32, relation33, relation34, relation35, relation36, relation37, relation38, relation39, relation40, relation41, relation42, relation43, relation44, relation45, relation46])
+		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8, \
+        relation9, relation10, relation11, relation12, relation13, relation14, relation15, relation16, relation17, \
+        relation18, relation19, relation20, relation21, relation22, relation23, relation24, relation25, relation26, \
+        relation27, relation28, relation29, relation30, relation31, relation32, relation33, relation34, relation35, \
+        relation36, relation37, relation38, relation39, relation40, relation41, relation42, relation43, relation44, \
+        relation45, relation46])
 		DBSession.flush()
 
 		transaction.commit()

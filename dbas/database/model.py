@@ -269,17 +269,17 @@ class Track(Base):
 	"""
 	__tablename__ = 'track'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	user = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	user_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	date = sa.Column(sa.DateTime, default=func.now())
 	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
 	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
 	is_argument = sa.Column(sa.Boolean, nullable=False)
 
-	def __init__(self, user, pos_uid, arg_uid, is_argument):
+	def __init__(self, user_uid, pos_uid, arg_uid, is_argument):
 		"""
 		Initializes a row in current position-table
 		"""
-		self.user = user
+		self.user_uid = user_uid
 		self.pos_uid = pos_uid
 		self.arg_uid = arg_uid
 		self.is_argument = is_argument

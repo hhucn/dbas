@@ -9,7 +9,8 @@
 	<meta name="author" content="Tobias Krauthoff">
 	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
 	<title>${project} - ${title}</title>
-	<!-- Bootstrap core CSS -->
+	<!-- Bootstrap core CSS
+	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.4.min.css')}" rel="stylesheet"> -->
 	<link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 	<!-- Custom styles for this scaffold -->
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">

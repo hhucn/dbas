@@ -82,4 +82,22 @@ function AjaxHandler() {
 			alert(negCallbackText);
 		});
 	};
+
+	this.sendNewArgument = function () {
+		alert('todo: sendNewArgument');
+	};
+
+	this.sendNewPosition = function (position) {
+		$.ajax({
+			url: 'ajax_send_new_position',
+			type: 'GET',
+			data: { position : position},
+			dataType: 'json',
+			async: true
+		}).done(function ajaxSendNewPositionDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewPosition(data);
+		}).fail(function ajaxSendNewPositionFail() {
+			new GuiHandler().setErrorDescription('New idea could not be sent. Sorry!')
+		});
+	};
 }

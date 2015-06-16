@@ -1,8 +1,8 @@
 import transaction
-
 import time
-
 import smtplib
+import collections
+
 from socket import error as socket_error
 
 from validate_email import validate_email
@@ -227,28 +227,14 @@ class Dbas(object):
 		)
 
 	# logout page
-	@view_config(route_name='main_logout', renderer='templates/logout.pt', permission='use')
+	@view_config(route_name='main_logout', permission='use')
 	def main_logout(self):
-		"""
-		View configuration for the logout view. This will will automatically redirect to main_logout_redirect via JS
-		:return: dictionary with title and project name as well as a value, weather the user is logged in
-		"""
-		logger('main_logout', 'def', 'user will be logged out')
-		return dict(
-			title='Logout',
-			project='DBAS',
-			logged_in=self.request.authenticated_userid
-		)
-
-	# logout redirect page
-	@view_config(route_name='main_logout_redirect', permission='use')
-	def main_logout_redirect(self):
 		"""
 		View configuration for the redirect logout view. This method will forget the headers of self.request
 		:return: HTTPFound with location for the main page
 		"""
-		logger('main_logout_redirect', 'def', 'headers are now forgotten')
-		logger('main_logout_redirect', 'def', 'redirecting to the main_page')
+		logger('main_logout', 'def', 'headers are now forgotten')
+		logger('main_logout', 'def', 'redirecting to the main_page')
 		headers = forget(self.request)
 		return HTTPFound(
 			location=self.request.route_url('main_page'),
@@ -567,44 +553,50 @@ class Dbas(object):
 	def get_ajax_all_users(self):
 		"""
 		Returns all users as dictionary with name <-> group
-		:return: list of all positions
+		:return: list of all users
 		"""
 		logger('get_ajax_users', 'def', 'main')
-		logger('get_ajax_users', 'def', 'get all users')
-		db_users = DBSession.query(User).all()
-		logger('get_ajax_users', 'def', 'get all groups')
+		is_admin = QueryHelper().is_user_admin(self.request.authenticated_userid)
 
-		db_groups = DBSession.query(Group).all()
-		groups = {}
-		for g in db_groups:
-			logger('get_ajax_users', 'def', str(g.uid) + " - " + g.name)
-			groups[str(g.uid)] = g.name
+		logger('get_ajax_users', 'def', 'is_admin ' + str(is_admin))
+		if is_admin:
+			logger('get_ajax_users', 'def', 'get all users')
+			db_users = DBSession.query(User).all()
+			logger('get_ajax_users', 'def', 'get all groups')
 
-		return_dict = {}
+			db_groups = DBSession.query(Group).all()
+			groups = {}
+			for g in db_groups:
+				logger('get_ajax_users', 'def', str(g.uid) + " - " + g.name)
+				groups[str(g.uid)] = g.name
 
-		if db_users:
-			logger('get_ajax_users', 'def', 'iterate all users')
-			for user in db_users:
-				return_user = {}
-				return_user['uid']         = user.uid
-				return_user['firstname']   = user.firstname
-				return_user['surname']     = user.surname
-				return_user['nickname']    = user.nickname
-				return_user['email']       = user.email
-				return_user['group']       = groups.get(str(user.group))
-				return_user['last_logged'] = str(user.last_logged)
-				return_user['registered']  = str(user.registered)
-				logger('get_ajax_users', 'user iterator ' + str(user.uid) + ' of ' + str(len(db_users)),
-							"uid: " + str(user.uid)
-							+ ", firstname: " + user.firstname
-							+ ", surname: " + user.surname
-							+ ", nickname: " + user.nickname
-							+ ", email: " + user.email
-							+ ", group: " + groups.get(str(user.group))
-							+ ", last_logged: " + str(user.last_logged)
-							+ ", registered: " + str(user.registered)
-				       )
-				return_dict[user.uid] = return_user
+			return_dict = {}
+
+			if db_users:
+				logger('get_ajax_users', 'def', 'iterate all users')
+				for user in db_users:
+					return_user = {}
+					return_user['uid']         = user.uid
+					return_user['firstname']   = user.firstname
+					return_user['surname']     = user.surname
+					return_user['nickname']    = user.nickname
+					return_user['email']       = user.email
+					return_user['group']       = groups.get(str(user.group))
+					return_user['last_logged'] = str(user.last_logged)
+					return_user['registered']  = str(user.registered)
+					logger('get_ajax_users', 'user iterator ' + str(user.uid) + ' of ' + str(len(db_users)),
+								"uid: " + str(user.uid)
+								+ ", firstname: " + user.firstname
+								+ ", surname: " + user.surname
+								+ ", nickname: " + user.nickname
+								+ ", email: " + user.email
+								+ ", group: " + groups.get(str(user.group))
+								+ ", last_logged: " + str(user.last_logged)
+								+ ", registered: " + str(user.registered)
+					       )
+					return_dict[user.uid] = return_user
+		else:
+			return_dict={}
 
 		logger('get_ajax_users', 'def', 'SLEEEEEPING')
 		time.sleep(1)
@@ -672,6 +664,10 @@ class Dbas(object):
 		logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: position id ' + str(uid))
 		query_helper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 
+		# get last statement
+		db_last_statement = DBSession.query(Position).filter_by(uid=uid).first()
+		return_dict['currentStatementText'] = db_last_statement.text
+
 		# get return count of arguments
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
@@ -688,8 +684,8 @@ class Dbas(object):
 		try:
 			uid = self.request.params['uid']
 			is_argument = True if self.request.params['is_argument'] == 'argument' else False
-			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument '
-			       + str(is_argument) + '(' + str(self.request.params['is_argument']) + ')')
+			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument ' + str(is_argument) + '(' + str(
+				self.request.params['is_argument']) + ')')
 		except KeyError as e:
 			logger('get_args_for_new_round', 'error', repr(e))
 
@@ -704,6 +700,38 @@ class Dbas(object):
 
 		# get data
 		return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid, is_argument)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return return_json
+
+	# ajax - getting next argument for confrontation
+	@view_config(route_name='ajax_send_new_position', renderer='json')
+	def set_ajax_send_new_position(self):
+		logger('set_ajax_send_new_position', 'def', 'main')
+
+		position = ''
+		try:
+			position = self.request.params['position']
+			logger('set_ajax_send_new_position', 'def', 'request data: position ' + str(position))
+		except KeyError as e:
+			logger('set_ajax_send_new_position', 'error', repr(e))
+
+		# is position already inserted?
+		return_dict = {}
+		query_helper = QueryHelper()
+		if query_helper.is_statement_already_in_database(position, True):
+			logger('set_ajax_send_new_position', 'def', 'duplicate')
+			return_dict['result'] = 'failed'
+			return_dict['reason'] = 'duplicate'
+		else:
+			logger('set_ajax_send_new_position', 'def', 'saving position')
+			# saving position
+			if position != '':
+				return_dict['result'] = 'success'
+				return_dict['position'] = query_helper.set_new_position(DBSession, transaction, position, self.request.authenticated_userid)
+			else:
+				return_dict['result'] = 'failed'
+				return_dict['reason'] = 'empty text'
+
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json

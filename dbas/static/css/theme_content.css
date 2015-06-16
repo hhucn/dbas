@@ -116,6 +116,7 @@
 }
 
 #display-control-container{
+	visibility: hidden;
 	position: absolute;
 	display: inline-block;
 	color: #006AB3;

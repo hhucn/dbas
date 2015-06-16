@@ -31,7 +31,7 @@ function InteractionHandler() {
 	this.positionButtonWasClicked = function (id, value) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-
+		guiHandler.setDiscussionsDescription('Why do you think that: <b>' + value + '</b>');
 		ajaxHandler.getArgumentsForJustification(id);
 	};
 
@@ -46,10 +46,11 @@ function InteractionHandler() {
 			$('#' + sendAnswerButtonId).hide();
 
 			// get the second child, which is the label
-			if ($('#' + addStatementButtonId).parent().children().eq(1).text().indexOf('position') >= 0) {
+			if ($('#' + addStatementButtonId).parent().children().eq(1).text().indexOf(newPositionRadioButtonText) >= 0) {
+				// no argument -> position
 				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false);
 			} else {
-				$('#' + addStatementContainerH2Id).text('Please insert new arguments');
+				// argument
 				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true);
 			}
 		} else {
@@ -66,8 +67,13 @@ function InteractionHandler() {
 	 * @param buttonId current id
 	 */
 	this.styleButtonChanged = function (buttonId) {
-		if ($('#' + buttonId).text() != $('#' + scStyle1Id)){
-			alert('This will be done in the future :-)');
+		var guiHandler = new GuiHandler();
+		if ($('#' + buttonId).text() == $('#' + scStyle1Id)){
+			guiHandler.setDisplayStyleAsDiscussion();
+		} else if ($('#' + buttonId).text() == $('#' + scStyle2Id)){
+			guiHandler.setDisplayStyleAsProContraList();
+		} else if ($('#' + buttonId).text() == $('#' + scStyle3Id)){
+			guiHandler.setDisplayStyleAsFullView();
 		}
 	};
 
@@ -129,4 +135,13 @@ function InteractionHandler() {
 			new GuiHandler().setJsonDataToContentAsPositions(data);
 		}
 	};
+
+	/**
+	 * Callback, when a new position was send
+	 * @param data returned data
+	 */
+	this.callbackIfDoneForSendNewPosition = function (data) {
+		var parsedData = $.parseJSON(data);
+		new GuiHandler().setNewPositionAsLastChild(parsedData);
+	}
 }

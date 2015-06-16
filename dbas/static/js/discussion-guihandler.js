@@ -23,12 +23,12 @@ function GuiHandler() {
 
 		// sanity check for an empty list
 		if (listitems.length === 0) {
-			_this.setDiscussionsDescription(firstOneText);
+			_this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
 		}
 
-		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, 'Adding a new position.', false, 'radio'));
+		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newPositionRadioButtonText, false, 'radio'));
 
-		_this.addListItemsToDiscussionsSpace(listitems, statementList);
+		_this.addListItemsToDiscussionsSpace(listitems, statementListId);
 	};
 
 	/**
@@ -39,15 +39,18 @@ function GuiHandler() {
 		var listitems = [], _this = new GuiHandler();
 		$.each(jsonData, function setJsonDataToContentAsArgumentsEach(key, val) {
 			// grep text
-			listitems.push(_this.getKeyValAsInputInLiWithType(key, val.text, true, 'radio'));
+			if (key !== 'currentStatementText') {
+				var text = "Because " + val.text.substring(0, 1).toLowerCase() + val.text.substring(1, val.text.length);
+				listitems.push(_this.getKeyValAsInputInLiWithType(key, text, true, 'radio'));
+			}
 		});
 
 		// sanity check for an empty list
 		if (listitems.length === 0) {
-			_this.setDiscussionsDescription(firstOneText);
+			_this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
 		}
 
-		listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, 'Adding a new argument.', true, 'radio'));
+		listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newArgumentRadioButtonText, true, 'radio'));
 		_this.addListItemsToDiscussionsSpace(listitems, argumentList);
 	};
 
@@ -124,7 +127,7 @@ function GuiHandler() {
 		this.setDiscussionsDescription(firstOneText);
 		var listitem = [];
 		listitem.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true, true, 'radio'));
-		this.addListItemsToDiscussionsSpace(listitem, statementList);
+		this.addListItemsToDiscussionsSpace(listitem, statementListId);
 	};
 
 	/**
@@ -274,6 +277,25 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Sets the new position as lsat child in discussion space or displays an error
+	 * @param jsonData returned data
+	 */
+	this.setNewPositionAsLastChild = function (jsonData) {
+		if (jsonData.result === 'failed') {
+			if (jsonData.reason === 'empty text') {
+				this.setErrorDescription('Your idea was not inserted, because your input text is empty.');
+			} else if (jsonData.reason === 'duplicate'){
+				this.setErrorDescription('Your idea was not inserted, because your idea is a duplicate.');
+			} else {
+				this.setErrorDescription('Your idea was not inserted due to an unkown error.');
+			}
+		} else {
+			var newElement = this.getKeyValAsInputInLiWithType(jsonData.position.uid, jsonData.position.text, false, 'radio');
+			$('#li_' + addStatementButtonId).before(newElement);
+		}
+	};
+
+	/**
 	 * Set some style attributes,
 	 * @param isVisible
 	 */
@@ -282,11 +304,23 @@ function GuiHandler() {
 			$('#' + addStatementContainerId).fadeIn('slow');
 			$('#' + addStatementButtonId).disable = true;
 			if (is_argument){
-				$('#' + addStatementContainerH2Id).text('Please insert new arguments');
+				$('#' + addStatementContainerH2Id).text(statementContainerH2TextIfArgument);
 				$('#' + addStatementContainerMainInputId).hide();
+				$('#' + leftPositionColumnId).show();
+				$('#' + rightPositionColumnId).show();
+				$('#' + sendNewStatementId).off("click");
+				$('#' + sendNewStatementId).click(function () {
+					new AjaxHandler().sendNewArgument();
+				});
 			} else {
-				$('#' + addStatementContainerH2Id).text('Please insert a new statement');
+				$('#' + addStatementContainerH2Id).text(statementContainerH2TextIfPosition);
 				$('#' + addStatementContainerMainInputId).show();
+				$('#' + leftPositionColumnId).hide();
+				$('#' + rightPositionColumnId).hide();
+				$('#' + sendNewStatementId).off("click");
+				$('#' + sendNewStatementId).click(function () {
+					new AjaxHandler().sendNewPosition($('#' + addStatementContainerMainInputId).val());
+				});
 			}
 		} else {
 			$('#' + addStatementContainerId).fadeOut('slow');
@@ -320,5 +354,29 @@ function GuiHandler() {
 	 */
 	this.getFullHtmlTextOf = function (element) {
 		return $('<div>').append(element).html();
+	};
+
+
+	/**
+	 * Dialog based discussion modi
+	 */
+	this.setDisplayStyleAsDiscussion  = function () {
+		// todo setDisplayStyleAsDiscussion
+	};
+
+	/**
+	 * Some kind of pro contra list, but how?
+	 */
+	this.setDisplayStyleAsProContraList  = function () {
+		alert('todo: pro con');
+		// todo setDisplayStyleAsProContraList
+	};
+
+	/**
+	 * Full view, full interaction range for the graph
+	 */
+	this.setDisplayStyleAsFullView  = function () {
+		alert('todo: full view');
+		// todo setDisplayStyleAsFullView
 	};
 }

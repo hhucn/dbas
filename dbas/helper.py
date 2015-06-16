@@ -227,6 +227,25 @@ class QueryHelper(object):
 		return_dict['justifications'] = justifications_dict
 		return return_dict
 
+	def is_statement_already_in_database(self, statement_text, is_position):
+		"""
+		Checks whether the given statement is already inserted
+		:param statement_text: text for the check
+		:param is_position: true, if it is a position
+		:return: true, if it was already inserted
+		"""
+		if is_position:
+			db_statement = DBSession.query(Position).filter_by(text=statement_text).first()
+		else:
+			db_statement = DBSession.query(Argument).filter_by(text=statement_text).first()
+
+		if db_statement:
+			logger('QueryHelper', 'is_statement_already_in_database', 'new statement is already in the db')
+			return True
+		else:
+			logger('QueryHelper', 'is_statement_already_in_database', 'new statement is not in the db')
+			return False
+
 	def get_argument_list_in_relation_to_statement(self, uid, is_supportive, is_position):
 		"""
 		Returns every argument with a non-supportive connection to the given position
@@ -276,7 +295,7 @@ class QueryHelper(object):
 
 		return return_list
 
-	def save_track_position_for_user(self, db_session, transaction, user_id, pos_id):
+	def save_track_position_for_user(self, db_session, transaction, user, pos_id):
 		"""
 
 		:param db_session: current session
@@ -285,42 +304,46 @@ class QueryHelper(object):
 		:param pos_id: id of the clicked position
 		:return: undefined
 		"""
-		logger('QueryHelper', 'save_track_position_for_user', 'user: ' + str(user_id) + ', pos_uid: ' + str(pos_id))
-		new_track = Track(user=user_id, pos_uid=pos_id, arg_uid=-1, is_argument=False)
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'save_track_position_for_user', 'user: ' + str(user) + ', user_uid: ' + str(db_user.uid)+ ', pos_uid: ' + str(
+			pos_id))
+		new_track = Track(user_uid=db_user.uid, pos_uid=pos_id, arg_uid=-1, is_argument=False)
 		db_session.add(new_track)
 		transaction.commit()
 
-	def save_track_argument_for_user(self, db_session, transaction, user_id, arg_id):
+	def save_track_argument_for_user(self, db_session, transaction, user, arg_id):
 		"""
-
+		Saves track for user
 		:param db_session: current session
 		:param transaction: current transaction
 		:param user_id: authentication id of the user
 		:param arg_id: id of the clicked argument
 		:return: undefined
 		"""
-		logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + str(user_id) + ', arg_uid: ' + str(arg_id))
-		new_track = Track(user=user_id, pos_uid=-1, arg_uid=arg_id, is_argument=True)
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', arg_uid: ' + str(
+			arg_id))
+		new_track = Track(user_uid=db_user.uid, pos_uid=-1, arg_uid=arg_id, is_argument=True)
 		db_session.add(new_track)
 		transaction.commit()
 
-	def get_track_for_user(self, db_session, user_uid):
+	def get_track_for_user(self, db_session, user):
 		"""
 		Returns the complete track of given user
 		:param db_session: current session
-		:param user_uid: current user id
+		:param user: current user id
 		:return: track os the user id as dictionary
 		"""
-		logger('QueryHelper','get_track_for_user','user ' + user_uid)
+		logger('QueryHelper','get_track_for_user','user ' + user)
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
 
-		db_track = db_session.query(Track).filter_by(user=user_uid).all()
+		db_track = db_session.query(Track).filter_by(user_uid=db_user.uid).all()
 		return_dict = collections.OrderedDict()
 		for track in db_track:
 			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', user ' + str(track.user) + ', date ' + str(
 				track.date) + ', pos_uid ' + str(track.pos_uid) + ', arg_uid ' + str(track.arg_uid) + ', is_arg ' + str(track.is_argument))
 
 			track_dict = {}
-			track_dict['user'] = track.user
 			track_dict['date'] = str(track.date)
 			track_dict['pos_uid'] = track.pos_uid
 			track_dict['arg_uid'] = track.arg_uid
@@ -336,17 +359,53 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def del_track_for_user(self, DBSession, transaction, user_uid):
+	def del_track_for_user(self, DBSession, transaction, user):
 		"""
 		Returns the complete track of given user
 		:param DBSession: current session
 		:param transaction: current transaction
-		:param user_uid: current user id
+		:param user: current user
 		:return: undefined
 		"""
-		logger('QueryHelper','del_track_for_user','user ' + user_uid)
-		DBSession.query(Track).filter_by(user=user_uid).delete()
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'del_track_for_user','user ' + db_user.uid)
+		DBSession.query(Track).filter_by(user_uid=db_user.uid).delete()
 		transaction.commit()
+
+	def set_new_position(self, db_session, transaction, position, user):
+		"""
+		Saves position for user
+		:param db_session: current session
+		:param transaction: current transaction
+		:param position: given position
+		:param user: given user
+		:return: dictionary of the new position
+		"""
+		return_dict = collections.OrderedDict()
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + str(user) + 'user_id: ' + str(db_user.uid)
+		       + ', position: ' + str(position))
+
+		# save position
+		new_position = Position(text=position, weight=0)
+		new_position.author = db_user.uid
+		db_session.add(new_position)
+		transaction.commit()
+
+		# check out, if it is there
+		db_position = DBSession.query(Position).filter_by(text=position).order_by(Position.uid.desc()).first()
+		return_dict = {}
+		if db_position:
+			logger('QueryHelper', 'save_track_argument_for_user', 'position was inserted with uid ' + str(db_position.uid))
+			return_dict['uid'] = db_position.uid
+			return_dict['text'] = db_position.text
+			return_dict['date'] = str(db_position.date)
+			return_dict['weight'] = str(db_position.weight)
+			return_dict['author'] = user
+		else:
+			logger('QueryHelper', 'save_track_argument_for_user', 'cannot get uid of position')
+
+		return return_dict
 
 
 class DictionaryHelper(object):

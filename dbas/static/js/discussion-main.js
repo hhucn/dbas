@@ -25,13 +25,18 @@ var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'right-textareas';
 var radioButtonGroup = 'radioButtonGroup';
 var scStyleGroupId = 'sc-display-style';
+var newArgumentRadioButtonText = 'Let me state my own reason!';
+var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
 var scStyle1Id = 'sc-style-1';
 var scStyle2Id = 'sc-style-2';
 var scStyle3Id = 'sc-style-3';
 var startDiscussionButtonId = 'start-discussion';
 var startDescriptionId = 'start-description';
+var statementContainerH2TextIfArgument = 'What are your arguments for and against?';
+var statementContainerH2TextIfPosition = 'What is your idea?';
 var sendAnswerButtonId = 'send-answer';
-var statementList = 'statement-list';
+var sendNewStatementId = 'send-new-statement';
+var statementListId = 'statement-list';
 var tryAgainDiscussionButtonId = 'try-again-discussion';
 
 var argumentSentencesOpeners = [
@@ -40,9 +45,8 @@ var argumentSentencesOpeners = [
 	'So you meant: ',
 	'You have said, that: ',
 	'So your opinion is: '];
-var startDiscussionText = 'These are the current statements, given by users input. You can choose a' +
-		' position, which is next to your own intention or add a new one.';
-var firstOneText = 'You are the first one. Please add a new statement:';
+var startDiscussionText = 'How should we decide?';
+var firstOneText = 'You are the first one, who said: ';
 
 
 /**
@@ -102,11 +106,6 @@ $(function () {
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).click(function () {
 		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId);
-	});
-
-	// adding a textarea in the left column
-	$('#' + addProTextareaId).click(function () {
-		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId);
 	});
 
 	// adding a textarea in the left column

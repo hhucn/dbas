@@ -92,10 +92,8 @@
 								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 								<span tal:replace="message" />
 							</div>
-							<input id="send-statement" type="submit" name="insert.statement" value="Send statement" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
+							<input id="send-new-statement" value="Save it..." type="button" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
 						</form>
-
-						<div id="discussions-space"> </div>
 					</div>
 					<div class="col-md-1"></div>
 				</div>

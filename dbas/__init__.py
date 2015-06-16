@@ -44,7 +44,6 @@ def main(global_config, **settings):
 	config.add_route('main_page', '/')
 	config.add_route('main_login', '/login')
 	config.add_route('main_logout', '/logout')
-	config.add_route('main_logout_redirect', '/logout_redirect')
 	config.add_route('main_contact', '/contact')
 	config.add_route('main_content', '/content')
 	config.add_route('main_settings', '/settings')
@@ -58,6 +57,8 @@ def main(global_config, **settings):
 
 	config.add_route('ajax_args_for_new_discussion_round', '/ajax_args_for_new_discussion_round')
 	config.add_route('ajax_arguments_connected_to_position_uid', '/ajax_arguments_connected_to_position_uid')
+
+	config.add_route('ajax_send_new_position', '/ajax_send_new_position');
 
 	# read the input and start
 	config.scan()

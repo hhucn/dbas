@@ -82,7 +82,6 @@ class Setup:
 		config.add_route('main_page', '/')
 		config.add_route('main_login', '/login')
 		config.add_route('main_logout', '/logout')
-		config.add_route('main_logout_redirect', '/logout_redirect')
 		config.add_route('main_contact', '/contact')
 		config.add_route('main_content', '/content')
 		config.add_route('main_news', '/news')
@@ -196,26 +195,27 @@ class ViewLogoutTests(UnitTestBase):
 		print("ViewLogoutTests: _callFUT")
 		return Dbas.main_logout(request)
 
-	def test_logout(self):
-		print("ViewLogoutTests: test_logout")
-		request = testing.DummyRequest()
-		response = Dbas(request).main_logout()
-		self.assertEqual('Logout', response['title'])
+	# logout has no niew
+	# def test_logout(self):
+		# print("ViewLogoutTests: test_logout")
+		# request = testing.DummyRequest()
+		# response = Dbas(request).main_logout()
+		# self.assertEqual('Logout', response['title'])
 
 
 # testing logout redirection page
-class ViewLogoutRedirectTests(UnitTestBase):
-	def _callFUT(self, request):
-		print("ViewLogoutRedirectTests: tearDown")
-		return Dbas.main_logout_redirect(request)
+# class ViewLogoutRedirectTests(UnitTestBase):
+	# def _callFUT(self, request):
+		# print("ViewLogoutRedirectTests: tearDown")
+		# return Dbas.main_logout_redirect(request)
 
-	def test_logout_redirect(self):
-		print("ViewLogoutRedirectTests: setUp")
-		request = testing.DummyRequest()
-		response = Dbas(request).main_logout_redirect()
-		# do NOT follow HTTPFound with webtest
-		# therefore we have function testings
-		self.assertEqual(response.status, '302 Found')
+	# def test_logout_redirect(self):
+		# print("ViewLogoutRedirectTests: setUp")
+		# request = testing.DummyRequest()
+		# response = Dbas(request).main_logout_redirect()
+		# # do NOT follow HTTPFound with webtest
+		# # therefore we have function testings
+		# self.assertEqual(response.status, '302 Found')
 
 
 # testing contact page
@@ -331,10 +331,10 @@ class FunctionalViewTests(IntegrationTestBase):
 		self.assertNotIn(b'You will be logged out and redirected', res.body)
 
 	# testing logout page without login
-	def logout_redirect_when_logged_out(self):
-		print("FunctionalTests: logout_redirect_when_logged_out")
-		res = self.testapp.get('/logout_redirect', status=302)
-		self.assertIn(b'You will be logged out and redirected', res.body)
+	# def logout_redirect_when_logged_out(self):
+		# print("FunctionalTests: logout_redirect_when_logged_out")
+		# res = self.testapp.get('/logout_redirect', status=302)
+		# self.assertIn(b'You will be logged out and redirected', res.body)
 
 	# testing contact page
 	def test_impressum(self):
@@ -381,17 +381,17 @@ class FunctionalViewTests(IntegrationTestBase):
 		print("FunctionalTests: test_logout_link_not_present_after_logged_out")
 		self.testapp.get(self.editor_login, status=302)
 		self.testapp.get('/', status=200)
-		res = self.testapp.get('/logout_redirect', status=302)
+		res = self.testapp.get('/logout', status=302)
 		self.assertTrue(b'Logout' not in res.body)
 
 	# testing to get the content page when logged out / logged in
 	def test_content_only_when_logged_in(self):
 		print("FunctionalTests: test_content_only_when_logged_in")
 		res = self.testapp.get('/content', status=200)
-		self.assertNotIn(b'Carousel', res.body)  # due to login error
+		self.assertNotIn(b'The current discussion is about', res.body)  # due to login error
 		self.testapp.get(self.editor_login, status=302)
 		res = self.testapp.get('/content', status=200)
-		self.assertIn(b'Carousel', res.body)
+		self.assertIn(b'The current discussion is about', res.body)
 
 	# testing to get the settings page when logged out / logged in
 	def test_settings_only_when_logged_in(self):

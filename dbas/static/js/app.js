@@ -46,11 +46,15 @@ $(document).ready(function () {
 
 	// jump to chapter-function
 	$('a[href^=#]').on('click', function (e) {
-		var href = $(this).attr('href');
-		$('html, body').animate({
-			scrollTop: ($(href).offset().top - 100)
-		}, 'slow');
-		e.preventDefault();
+		try {
+			var href = $(this).attr('href');
+			$('html, body').animate({
+				scrollTop: ($(href).offset().top - 100)
+			}, 'slow');
+			e.preventDefault();
+		} catch (err){
+			// something like 'Cannot read property 'top' of undefined'
+		};
 	});
 
 	// back to top arrow
@@ -89,6 +93,8 @@ $(document).ready(function () {
 		$('#navbar-left').hide();
 	} else if (path == "logout") { 	// Your application has indicated you are logged out
 		$('#navbar-left').hide();
+		// eliminated
+		/*
 		var myCounter = new Countdown({
 			seconds: 4, // seconds to count down
 			onUpdateStatus: function (sec) {
@@ -108,6 +114,7 @@ $(document).ready(function () {
 			} // final action
 		});
 		myCounter.start();
+		*/
 	} else {
 		$('#navbar-left').show();
 		setLinkActive('');
