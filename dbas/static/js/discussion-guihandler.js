@@ -135,6 +135,19 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Sets an "add statement" button as content
+	 * @param val will be used as value
+	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
+	 * @param btnType for the input element
+	 */
+	this.setNewArgumentAndGoodPointButton = function (val, isArgument, btnType) {
+		var listitems = [], gh = new GuiHandler();
+		listitems.push(gh.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true, 'radio'));
+		listitems.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, btnType));
+		new GuiHandler().addListItemsToDiscussionsSpace(listitems, statementListId);
+	};
+
+	/**
 	 * Setting a description in some p-tag for confrontation
 	 * @param currentUserArgument
 	 * @param confrontationArgument

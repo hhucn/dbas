@@ -82,6 +82,24 @@ function AjaxHandler() {
 		});
 	};
 
+	/**
+	 * Request data for getting one step back
+	 */
+	this.getOneStepBack = function () {
+		$.ajax({
+			url: 'ajax_one_step_back',
+			type: 'GET',
+			dataType: 'json',
+			async: true
+		}).done(function ajaxGetOneStepBackDone(data) {
+			new InteractionHandler().callbackGetOneStepBack(data);
+		}).fail(function ajaxGetOneStepBackFail() {
+			new GuiHandler().setErrorDescription('Internal Error :(');
+			new GuiHandler().showDiscussionError('Internal failure in ajaxGetAllPositionsFail',
+				'', false, 'ajaxGetOneStepBackFail', true);
+		});
+	};
+
 	this.sendNewArgument = function () {
 		alert('todo: sendNewArgument');
 	};

@@ -116,6 +116,19 @@ class QueryHelper(object):
 
 		return False
 
+	def get_data_for_one_step_back(self, user):
+		"""
+		Gets data to get one step back
+		:param user: current user
+		:return: dictionary with necessary data
+		"""
+		db_user = DBSession.query(User).filter_by(nickname=str(user)).first()
+		logger('QueryHelper', 'get_data_for_one_step_back', 'user id ' + str(db_user.uid))
+
+		db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).all()
+
+		return {}
+
 	def get_all_arguments_by_arg_uid(self, uid, is_supportive):
 		"""
 		Getting every pro/con arument, which is for/against the same position as the given argument uid
@@ -303,10 +316,9 @@ class QueryHelper(object):
 
 		return return_list
 
-	def save_track_position_for_user(self, db_session, transaction, user, pos_id):
+	def save_track_position_for_user(self, transaction, user, pos_id):
 		"""
 
-		:param db_session: current session
 		:param transaction: current transaction
 		:param user_id: authentication id of the user
 		:param pos_id: id of the clicked position
@@ -316,13 +328,12 @@ class QueryHelper(object):
 		logger('QueryHelper', 'save_track_position_for_user', 'user: ' + str(user) + ', user_uid: ' + str(db_user.uid)+ ', pos_uid: ' + str(
 			pos_id))
 		new_track = Track(user_uid=db_user.uid, pos_uid=pos_id, arg_uid=-1, is_argument=False)
-		db_session.add(new_track)
+		DBSession.add(new_track)
 		transaction.commit()
 
-	def save_track_argument_for_user(self, db_session, transaction, user, arg_id):
+	def save_track_argument_for_user(self, transaction, user, arg_id):
 		"""
 		Saves track for user
-		:param db_session: current session
 		:param transaction: current transaction
 		:param user_id: authentication id of the user
 		:param arg_id: id of the clicked argument
@@ -332,20 +343,19 @@ class QueryHelper(object):
 		logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', arg_uid: ' + str(
 			arg_id))
 		new_track = Track(user_uid=db_user.uid, pos_uid=-1, arg_uid=arg_id, is_argument=True)
-		db_session.add(new_track)
+		DBSession.add(new_track)
 		transaction.commit()
 
-	def get_track_for_user(self, db_session, user):
+	def get_track_for_user(self, user):
 		"""
 		Returns the complete track of given user
-		:param db_session: current session
 		:param user: current user id
 		:return: track os the user id as dictionary
 		"""
 		logger('QueryHelper','get_track_for_user','user ' + user)
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 
-		db_track = db_session.query(Track).filter_by(user_uid=db_user.uid).all()
+		db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).all()
 		return_dict = collections.OrderedDict()
 		for track in db_track:
 			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', date ' + str(
@@ -356,9 +366,9 @@ class QueryHelper(object):
 			track_dict['pos_uid'] = track.pos_uid
 			track_dict['arg_uid'] = track.arg_uid
 			if track.is_argument:
-				db_row = db_session.query(Argument).filter_by(uid=track.arg_uid).first()
+				db_row = DBSession.query(Argument).filter_by(uid=track.arg_uid).first()
 			else:
-				db_row = db_session.query(Position).filter_by(uid=track.pos_uid).first()
+				db_row = DBSession.query(Position).filter_by(uid=track.pos_uid).first()
 			track_dict['text'] = db_row.text
 			track_dict['is_argument'] = track.is_argument
 			return_dict[track.uid] = track_dict
@@ -380,10 +390,9 @@ class QueryHelper(object):
 		DBSession.query(Track).filter_by(user_uid=db_user.uid).delete()
 		transaction.commit()
 
-	def set_new_position(self, db_session, transaction, position, user):
+	def set_new_position(self, DBSession, transaction, position, user):
 		"""
 		Saves position for user
-		:param db_session: current session
 		:param transaction: current transaction
 		:param position: given position
 		:param user: given user
@@ -397,7 +406,7 @@ class QueryHelper(object):
 		# save position
 		new_position = Position(text=position, weight=0)
 		new_position.author = db_user.uid
-		db_session.add(new_position)
+		DBSession.add(new_position)
 		transaction.commit()
 
 		# check out, if it is there

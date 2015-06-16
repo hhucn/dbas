@@ -55,6 +55,7 @@ function InteractionHandler() {
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			alert ('one step back please');
+			new AjaxHandler.getOneStepBack();
 		} else {
 			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
 			$('#' + sendAnswerButtonId).show();
@@ -123,10 +124,11 @@ function InteractionHandler() {
 		// -1 confrontation, but no justification
 		//  0 no confrontation
 		//  1 everything is fine
+		alert(parsedData.status);
 		switch(parsedData.status){
 			case '-1':
 				new gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
-				new gh.setNewArgumentButtonOnly(newArgumentRadioButtonText, true, 'radio');
+				new gh.setNewArgumentAndGoodPointButton(newArgumentRadioButtonText, true, 'radio');
 				break;
 			case '0':
 				new gh.setDiscussionsDescriptionWithoutConfrontation(parsedData.currentStatementText);
@@ -159,5 +161,14 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendNewPosition = function (data) {
 		var parsedData = $.parseJSON(data);
 		new GuiHandler().setNewPositionAsLastChild(parsedData);
-	}
+	};
+
+	/**
+	 * Callback, when the user want to step back
+	 * @param data returned data
+	 */
+	this.callbackGetOneStepBack = function (data) {
+		var parsedData = $.parseJSON(data);
+		new GuiHandler().setNewPositionAsLastChild(parsedData);
+	};
 }

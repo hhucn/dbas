@@ -628,11 +628,11 @@ class Dbas(object):
 		return_dict = {}
 		if get_data == '1':
 			logger('ajax_manage_user_track', 'def', 'get track data')
-			return_dict = QueryHelper().get_track_for_user(DBSession, nickname)
+			return_dict = QueryHelper().get_track_for_user(nickname)
 		else:
 			logger('ajax_manage_user_track', 'def', 'remove track data')
 			return_dict['removed data'] = 'true'
-			QueryHelper().del_track_for_user(DBSession, transaction, nickname)
+			QueryHelper().del_track_for_user(transaction, nickname)
 
 		dictionary_helper = DictionaryHelper()
 		return_json = dictionary_helper.dictionarty_to_json_array(return_dict, True)
@@ -662,7 +662,7 @@ class Dbas(object):
 
 		# save track, because the given uid is a position uid
 		logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: position id ' + str(uid))
-		query_helper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
+		query_helper.save_track_position_for_user(transaction, self.request.authenticated_userid, uid)
 
 		# get last statement
 		db_last_statement = DBSession.query(Position).filter_by(uid=uid).first()
@@ -693,10 +693,10 @@ class Dbas(object):
 		query_helper = QueryHelper()
 		if is_argument:
 			logger('get_args_for_new_round', 'def', 'saving track: argument id ' + str(uid))
-			query_helper.save_track_argument_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
+			query_helper.save_track_argument_for_user(transaction, self.request.authenticated_userid, uid)
 		else:
 			logger('get_args_for_new_round', 'def', 'saving track: position id ' + str(uid))
-			query_helper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
+			query_helper.save_track_position_for_user(transaction, self.request.authenticated_userid, uid)
 
 		# get data
 		return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid, is_argument)
@@ -728,11 +728,21 @@ class Dbas(object):
 			# saving position
 			if position != '':
 				return_dict['result'] = 'success'
-				return_dict['position'] = query_helper.set_new_position(DBSession, transaction, position, self.request.authenticated_userid)
+				return_dict['position'] = query_helper.set_new_position(transaction, position, self.request.authenticated_userid)
 			else:
 				return_dict['result'] = 'failed'
 				return_dict['reason'] = 'empty text'
 
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - getting next argument for confrontation
+	@view_config(route_name='ajax_one_step_back', renderer='json')
+	def get_ajax_one_step_back(self):
+		logger('get_ajax_one_step_back', 'def', 'main')
+
+		return_dict = QueryHelper().get_data_for_one_step_back(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
