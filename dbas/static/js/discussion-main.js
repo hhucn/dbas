@@ -19,13 +19,15 @@ var errorDescriptionId = 'error-description';
 var leftPositionColumnId = 'left-position-column';
 var leftPositionTextareaId = 'left-textareas';
 var listAllUsersButtonId = 'list-all-users';
+var goodPointTakeMeBackButtonId = 'good-point-of-the-others';
+var goodPointTakeMeBackButtonText = 'I agree, that is a good argument! Take me one step back.';
 var insertStatementForm = 'insert_statement_form';
 var restartDiscussionButtonId = 'restart-discussion';
 var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'right-textareas';
 var radioButtonGroup = 'radioButtonGroup';
 var scStyleGroupId = 'sc-display-style';
-var newArgumentRadioButtonText = 'Let me state my own reason!';
+var newArgumentRadioButtonText = 'Let me state my own reason(s)!';
 var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
 var scStyle1Id = 'sc-style-1';
 var scStyle2Id = 'sc-style-2';
@@ -80,8 +82,8 @@ $(function () {
 	});
 
 	// hide the restart button and add click function
-		$('#' + restartDiscussionButtonId).hide(); // hides the restart button
-		$('#' + restartDiscussionButtonId).click(function () {
+	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
+	$('#' + restartDiscussionButtonId).click(function () {
 		$('#' + startDiscussionButtonId).show(); // show the start description
 		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
 		$('#' + addStatementContainerId).hide(); // hide add statement container
@@ -90,6 +92,8 @@ $(function () {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionContainerId).hide();
+		$('#' + errorDescriptionId).hide();
+		$('#' + discussionFailureRowId).hide();
 	});
 
 	// admin list all users button

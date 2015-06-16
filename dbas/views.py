@@ -692,15 +692,16 @@ class Dbas(object):
 		# saving track
 		query_helper = QueryHelper()
 		if is_argument:
-			logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: argument id ' + str(uid))
+			logger('get_args_for_new_round', 'def', 'saving track: argument id ' + str(uid))
 			query_helper.save_track_argument_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 		else:
-			logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: position id ' + str(uid))
+			logger('get_args_for_new_round', 'def', 'saving track: position id ' + str(uid))
 			query_helper.save_track_position_for_user(DBSession, transaction, self.request.authenticated_userid, uid)
 
 		# get data
 		return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid, is_argument)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
 		return return_json
 
 	# ajax - getting next argument for confrontation

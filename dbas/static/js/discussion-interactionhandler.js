@@ -53,6 +53,8 @@ function InteractionHandler() {
 				// argument
 				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true);
 			}
+		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
+			alert ('one step back please');
 		} else {
 			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
 			$('#' + sendAnswerButtonId).show();
@@ -105,7 +107,7 @@ function InteractionHandler() {
 	this.callbackIfDoneForArgsForJustification = function (data) {
 		if (data.length > 0) {
 			var parsedData = $.parseJSON(data);
-			new GuiHandler().setJsonDataToContentAsArguments(parsedData);
+			new GuiHandler().setJsonDataToContentAsArguments(parsedData, true);
 		} else {
 			new GuiHandler().setNewArgumentButtonOnly();
 		}
@@ -117,15 +119,25 @@ function InteractionHandler() {
 	 * @param data returned json data
 	 */
 	this.callbackIfDoneForGetNewArgumentationRound = function (data) {
-		var parsedData = $.parseJSON(data), containedArguments;
-		// justification
-		containedArguments = new GuiHandler().setJsonDataToContentAsArguments(parsedData.justifications);
-		// confrontation
-		if (containedArguments) {
-			new GuiHandler().setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
-		} else {
-			new GuiHandler().setDiscussionsDescription(firstOneText + '<b>' + parsedData.currentStatementText + '</b>');
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		// -1 confrontation, but no justification
+		//  0 no confrontation
+		//  1 everything is fine
+		switch(parsedData.status){
+			case '-1':
+				new gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
+				new gh.setNewArgumentButtonOnly(newArgumentRadioButtonText, true, 'radio');
+				break;
+			case '0':
+				new gh.setDiscussionsDescriptionWithoutConfrontation(parsedData.currentStatementText);
+				new gh.setNewArgumentButtonOnly(newArgumentRadioButtonText, true, 'radio');
+				break;
+			case '1':
+				new gh.setJsonDataToContentAsArguments(parsedData.justifications, false);
+				new gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
+				break;
 		}
+
 	};
 
 	/**

@@ -173,12 +173,11 @@ class QueryHelper(object):
 		:param user_id: current user id, as given in the request params
 		:param statement_id: current statement id
 		:param is_argument: true, when the id is for an argument
-		:return: dictionary with 'confrontation' <-> argument , the 'currentStatementText' <-> argument of the user and a justification
-		dictionary with mapping uid <-> argument dictionary
+		:return: dictionary with 'status' <-> {0 (no contra), 1 (everything is fine), -1 (no justification)},
+		the 'currentStatementText' <-> argument of the user and a justification dictionary with mapping uid <-> argument dictionary
 		"""
 		logger('QueryHelper', 'get_args_for_new_round', 'user ' + str(user_id)  + ', is_argument ' + str(is_argument) + ', statement id ' + str(statement_id))
 		return_dict = collections.OrderedDict()
-		justifications_dict = collections.OrderedDict()
 
 		# get the last used statement
 		if is_argument:
@@ -202,29 +201,38 @@ class QueryHelper(object):
 		# todo: what to do, when there is no argument for an confrontation?
 
 		# pick a random contra argument and get all arguments against the confrontation argument
-		if len(contra_argument_rows) > 0:
+		if contra_argument_rows:
 			rnd = randint(0,len(contra_argument_rows)-1)
-			logger('QueryHelper', 'get_args_for_new_round', 'get the nth argument ' + str(rnd))
+			logger('QueryHelper', 'get_args_for_new_round', 'get the nth argument as contra ' + str(rnd))
 			return_dict['confrontation'] = contra_argument_rows[rnd]['text']
 			confrontation_uid = contra_argument_rows[rnd]['uid']
 
 			# get all arguments against the confrontation argument
-			contra_argument_rows = self.get_argument_list_in_relation_to_statement(confrontation_uid, False, False)
+			logger('QueryHelper', 'get_args_for_new_round', 'get arguments against the contra argument nth argument as contra ' + str(confrontation_uid))
+			justificiation_argument_rows = self.get_argument_list_in_relation_to_statement(confrontation_uid, False, False)
+
+			# get all justifications
+			justifications_dict = collections.OrderedDict()
+			if justificiation_argument_rows:
+				logger('QueryHelper', 'get_args_for_new_round', 'There are arguments against the contra argument')
+				for justification in justificiation_argument_rows:
+					argument_dict = {}
+					argument_dict['uid'] = justification['uid']
+					argument_dict['text'] = justification['text']
+					argument_dict['date'] = str(justification['date'])
+					argument_dict['weight'] = str(justification['weight'])
+					argument_dict['author'] = justification['author']
+					justifications_dict[str(justification['uid'])] = argument_dict
+				return_dict['justifications'] = justifications_dict
+				return_dict['status'] = '1'
+			else:
+				logger('QueryHelper', 'get_args_for_new_round', 'No arguments against the contra argument')
+				return_dict['status'] = '-1'
+
 		else :
-			return_dict['confrontation'] = 'There is no contra argument!'
+			logger('QueryHelper', 'get_args_for_new_round', 'No arguments for confrontation')
+			return_dict['status'] = '0'
 
-
-		# get all justifications
-		for justification in contra_argument_rows:
-			argument_dict = {}
-			argument_dict['uid'] = justification['uid']
-			argument_dict['text'] = justification['text']
-			argument_dict['date'] = str(justification['date'])
-			argument_dict['weight'] = str(justification['weight'])
-			argument_dict['author'] = justification['author']
-			justifications_dict[str(justification['uid'])] = argument_dict
-
-		return_dict['justifications'] = justifications_dict
 		return return_dict
 
 	def is_statement_already_in_database(self, statement_text, is_position):
@@ -340,7 +348,7 @@ class QueryHelper(object):
 		db_track = db_session.query(Track).filter_by(user_uid=db_user.uid).all()
 		return_dict = collections.OrderedDict()
 		for track in db_track:
-			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', user ' + str(track.user) + ', date ' + str(
+			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', date ' + str(
 				track.date) + ', pos_uid ' + str(track.pos_uid) + ', arg_uid ' + str(track.arg_uid) + ', is_arg ' + str(track.is_argument))
 
 			track_dict = {}

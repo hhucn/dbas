@@ -5,10 +5,8 @@ function AjaxHandler() {
 
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
-	 * @param posCallbackFct callback if done
-	 * @param negCallbackFct callback if fail
 	 */
-	this.getAllPositions = function (posCallbackFct, negCallbackFct) {
+	this.getAllPositions = function () {
 		$.ajax({
 			url: 'ajax_all_positions',
 			type: 'GET',
@@ -17,8 +15,9 @@ function AjaxHandler() {
 		}).done(function ajaxGetAllPositionsDone(data) {
 			new InteractionHandler().callbackAjaxGetAllPositions(data);
 		}).fail(function ajaxGetAllPositionsFail() {
-			alert('failed request');
-			//negCallbackFct();
+			new GuiHandler().setErrorDescription('Internal Error :(');
+			new GuiHandler().showDiscussionError('Internal failure in ajaxGetAllPositionsFail',
+				'', false, 'getArgumentsForJustification', true);
 		});
 	};
 
@@ -37,7 +36,7 @@ function AjaxHandler() {
 		}).done(function ajaxGetArgumentsForJustificationDone(data) {
 			new InteractionHandler().callbackIfDoneForArgsForJustification(data);
 		}).fail(function ajaxGetArgumentsForJustificationFail() {
-			alert('failed request');
+			new GuiHandler().setErrorDescription('Internal Error :(');
 			new GuiHandler().showDiscussionError('Internal failure in ajaxGetArgumentsForJustificationFail',
 				pos_uid, false, 'getArgumentsForJustification', true);
 		});

@@ -23,37 +23,38 @@ function GuiHandler() {
 
 		// sanity check for an empty list
 		if (listitems.length === 0) {
-			_this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
+			this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
 		}
 
 		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newPositionRadioButtonText, false, 'radio'));
 
-		_this.addListItemsToDiscussionsSpace(listitems, statementListId);
+		this.addListItemsToDiscussionsSpace(listitems, statementListId);
 	};
 
 	/**
-	 * Sets given json content as argumen buttons in the discussions space
+	 * Sets given json content as argument buttons in the discussions space
 	 * @param jsonData data with json content
-	 * @returns {boolean} true, when something could be added
+	 * @param isUserExplainingHisPosition true, when the prefix should be 'because', because user should explain his position
 	 */
-	this.setJsonDataToContentAsArguments = function (jsonData) {
-		var listitems = [], _this = new GuiHandler(), retValue = true;
+	this.setJsonDataToContentAsArguments = function (jsonData, isUserExplainingHisPosition) {
+		var listitems = [], _this = new GuiHandler();
+
 		$.each(jsonData, function setJsonDataToContentAsArgumentsEach(key, val) {
-			// grep text
+			// set text, if it not the current statement
 			if (key !== 'currentStatementText') {
-				var text = "Because " + val.text.substring(0, 1).toLowerCase() + val.text.substring(1, val.text.length);
+				// prefix, when it is the first justification
+				var text = isUserExplainingHisPosition ? "Because " + val.text.substring(0, 1).toLowerCase() + val.text.substring(1, val.text.length) : val.text;
 				listitems.push(_this.getKeyValAsInputInLiWithType(key, text, true, 'radio'));
 			}
 		});
 
-		// sanity check for an empty list
-		if (listitems.length === 0) {
-			retValue = false;
+		// button, when the users agree and want to step back
+		if (!isUserExplainingHisPosition){
+			listitems.push(_this.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true, 'radio'));
 		}
-
+		// button for new statements
 		listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newArgumentRadioButtonText, true, 'radio'));
 		_this.addListItemsToDiscussionsSpace(listitems, argumentList);
-		return retValue;
 	};
 
 	/**
@@ -123,13 +124,14 @@ function GuiHandler() {
 
 	/**
 	 * Sets an "add statement" button as content
+	 * @param val will be used as value
+	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
+	 * @param btnType for the input element
 	 */
-	this.setNewArgumentButtonOnly = function () {
-		alert('Todo 2');
-		this.setDiscussionsDescription(firstOneText);
+	this.setNewArgumentButtonOnly = function (val, isArgument, btnType) {
 		var listitem = [];
-		listitem.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, 'Yeah, I will add a statement!', true, true, 'radio'));
-		this.addListItemsToDiscussionsSpace(listitem, statementListId);
+		listitem.push(new GuiHandler().getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, btnType));
+		new GuiHandler().addListItemsToDiscussionsSpace(listitem, statementListId);
 	};
 
 	/**
@@ -140,7 +142,17 @@ function GuiHandler() {
 	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
 		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length), text = argumentSentencesOpeners[pos] + '<b>' + currentUserArgument + '</b>'
 			+ ' However, other users argued that: ' + '<b>' + confrontationArgument + '</b>' + ' What do you think about that?';
-		this.setDiscussionsDescription(text);
+		new GuiHandler().setDiscussionsDescription(text);
+	};
+
+	/**
+	 * Setting a description in some p-tag for confrontation, whereby we have no justifications
+	 * @param currentUserArgument
+	 */
+	this.setDiscussionsDescriptionWithoutConfrontation = function (currentUserArgument) {
+		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length), text = argumentSentencesOpeners[pos] + '<b>' + currentUserArgument + '</b>'
+			+ ' However, other users argued nothing yet:';
+		new GuiHandler().setDiscussionsDescription(text);
 	};
 
 	/**
@@ -185,7 +197,7 @@ function GuiHandler() {
 		if (type === 'radio') {
 			inputElement.attr({name: radioButtonGroup});
 			// adding label for the value
-			labelElement = '<label for="' + key + '">&nbsp;&nbsp;' + val + '</label>';
+			labelElement = '<label for="' + key + '">' + val + '</label>';
 		}
 
 		if (key === addStatementButtonId) {
@@ -342,7 +354,8 @@ function GuiHandler() {
 		$('#' + tryAgainDiscussionButtonId).fadeIn('slow');
 
 		var fct1, fct2;
-		fct1 = 'new AjaxHandler().' + try_again_fct + '(' + id;
+		fct1 = 'new AjaxHandler().' + try_again_fct;
+		fct1 += is_argument !== '' ? '(' + id : '(';
 		fct1 += !is_only_justification ? ', ' + is_argument + '); ' : '); ';
 		fct2 = '$(#' + tryAgainDiscussionButtonId + ').hide();';
 

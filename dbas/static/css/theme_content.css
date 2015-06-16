@@ -15,12 +15,10 @@
 }
 
 #discussions-space ul {
-	margin: 20px;
 	display: inline-block;
 }
 
 #discussions-space ul li {
-	margin: 20px;
 	list-style: none;
 	<!--
 	display: inline;
@@ -35,6 +33,17 @@
 
 #discussions-space ul li input {
 	font-size: 15px;
+	margin-right: 5px;
+}
+
+#discussions-space ul,
+#discussions-space ul li {
+	width: 100%;
+}
+
+#discussions-space ul li label {
+	width: 95%;
+	vertical-align: middle;
 }
 
 #insert_statement_form {
@@ -127,7 +136,6 @@
 
 @media (max-width: 767px) {
 	#discussions-space ul {
-		margin: 10px;
 		display: block;
 	}
 
@@ -135,7 +143,6 @@
 		bottom: 150px;
 	}
 	#discussions-space ul li {
-		margin: 10px;
 		display: block;
 	}
 	#left-position-column. #right-position-column {
