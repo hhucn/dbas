@@ -9,10 +9,8 @@
 	<meta name="author" content="Tobias Krauthoff">
 	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
 	<title>${project} - ${title}</title>
-	<!-- Bootstrap core CSS
-	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.4.min.css')}" rel="stylesheet"> -->
-	<link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-	<!-- Custom styles for this scaffold -->
+	<!-- Bootstrap core CSS -->
+	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5.min.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.css')}" rel="stylesheet">
 
@@ -33,7 +31,7 @@
 	<!-- Bootstrap core, JavaScript, jquery
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-1.11.2.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.4.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.5.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
 
 </body>
