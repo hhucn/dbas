@@ -34,9 +34,10 @@ function GuiHandler() {
 	/**
 	 * Sets given json content as argumen buttons in the discussions space
 	 * @param jsonData data with json content
+	 * @returns {boolean} true, when something could be added
 	 */
 	this.setJsonDataToContentAsArguments = function (jsonData) {
-		var listitems = [], _this = new GuiHandler();
+		var listitems = [], _this = new GuiHandler(), retValue = true;
 		$.each(jsonData, function setJsonDataToContentAsArgumentsEach(key, val) {
 			// grep text
 			if (key !== 'currentStatementText') {
@@ -47,11 +48,12 @@ function GuiHandler() {
 
 		// sanity check for an empty list
 		if (listitems.length === 0) {
-			_this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
+			retValue = false;
 		}
 
 		listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newArgumentRadioButtonText, true, 'radio'));
 		_this.addListItemsToDiscussionsSpace(listitems, argumentList);
+		return retValue;
 	};
 
 	/**
@@ -137,9 +139,8 @@ function GuiHandler() {
 	 */
 	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
 		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length), text = argumentSentencesOpeners[pos] + '<b>' + currentUserArgument + '</b>'
-			+ ' But an argument from the other side is: '
-			+ '<b>' + confrontationArgument + '</b>' + ' What\'s your opinion?';
-		$('#' + discussionsDescriptionId).html(text);
+			+ ' However, other users argued that: ' + '<b>' + confrontationArgument + '</b>' + ' What do you think about that?';
+		this.setDiscussionsDescription(text);
 	};
 
 	/**

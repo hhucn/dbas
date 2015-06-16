@@ -15,8 +15,8 @@ function InteractionHandler() {
 	 */
 	this.argumentButtonWasClicked = function (id, value) {
 		var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), pos;
-		pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-		guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + '<b>' + value + '</b> But why?');
+		// pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
+		// guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + '<b>' + value + '</b> But why?');
 
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
@@ -117,11 +117,15 @@ function InteractionHandler() {
 	 * @param data returned json data
 	 */
 	this.callbackIfDoneForGetNewArgumentationRound = function (data) {
-		var parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data), containedArguments;
 		// justification
-		new GuiHandler().setJsonDataToContentAsArguments(parsedData.justifications);
+		containedArguments = new GuiHandler().setJsonDataToContentAsArguments(parsedData.justifications);
 		// confrontation
-		new GuiHandler().setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
+		if (containedArguments) {
+			new GuiHandler().setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
+		} else {
+			new GuiHandler().setDiscussionsDescription(firstOneText + '<b>' + parsedData.currentStatementText + '</b>');
+		}
 	};
 
 	/**
