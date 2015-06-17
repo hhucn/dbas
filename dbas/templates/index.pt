@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbasdomain">
+
+<head>
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
+</head>
+
+<body>
+
+	<div id="wrapper">
+		<div id="content">
+			<div class="container first-container" id="home-template">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="content">
+							<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
+							<h2><span class="font-semi-bold">Welcome</span> <span class="smaller">to the <span class="font-semi-bold">D</span>ialogue-<span class="font-semi-bold">B</span>ased <span class="font-semi-bold">A</span>rgumentation <span class="font-semi-bold">S</span>oftware, or short <span class="font-semi-bold">D-BAS</span></span></h2>
+							<p class="lead">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
+							<br>
+							<p class="lead">D-Bas offers a lot of advantages, here are a few of them:</p>
+							<ul class="lead list">
+								<li>Use the wisdom of the crowd</li>
+								<li>Easy to use and very powerful</li>
+								<li>Avoid redundancy created as known in normal forums</li>
+								<li>Every argument and position will be connected logically to each other</li>
+							</ul>
+							<br>
+							<p class="lead">This project is based on research of the graduation school Online-Participation, subsidised governmentally by <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank" alt="Ministry of Innovation, Science and Research in North Rhine-Westphalia">Ministry of Innovation, Science and Research in North Rhine-Westphalia</a>.</p>
+							<ul class="list-logos">
+								<li>
+									<a target="_blank" id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
+										<img class="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo" />
+									</a>
+								</li>
+								<li>
+									<a target="_blank" id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
+										<img class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo" />
+									</a>
+								</li>
+								<li>
+									<a target="_blank" id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
+										<img class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" alt="fhoev logo" />
+									</a>
+								</li>
+							</ul>
+							<br>
+							<p class="lead">And don't forget to check reguarly the <a href="${request.application_url}/news" title="news">news-page</a>.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container" id="description-template">
+				<div class="row">
+					<div class="col-md-2">
+						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/icon.png')}" alt="dbas logo">
+					</div>
+					<div class="col-md-10">
+						<div class="content">
+							<h2><span class="font-semi-bold">Description</span> <span class="smaller">of D-BAS</span></h2>
+
+							<p class="lead">In the following a <span class="font-normal">short description</span> of D-BAS will be given with the help of bulletpoints:
+								<ul class="lead list">
+									<li> Participants are able to add and modify positions and arguments in every discussion.
+										<li> Positions and arguments are connected logically by participants</li>
+										<li> The system is very easy to use.</li>
+										<li> It offers a time-shifted discussion in three modes:</li>
+										<ul class="lead list">
+											<li> Guided Discussion: The participants will be lead through the discussion .</li>
+											<li> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
+											<li> Expert View: Participants are able to see and do everything.</li>
+										</ul>
+										<li> Contributions can be rated by the participants.</li>
+										<li> You have the huge power of the crowd!.</li>
+								</ul>
+								<br>
+								<p class="lead">This sounds amazing, but every egg-laying, milk-bearing woolly sow has its beginning. Due to this the <span class="font-normal">first milesstone</span> contains:
+									<ul class="lead list">
+										<li> System is based on a finished argumentation map.</li>
+										<li> A base form of the guided view will be avbailable:</li>
+										<ul class="lead list">
+											<li> The participant will be confronted with an argument out of the finished argumentation map.
+												<li> He has several options to choose, so this will be a kind of led <a href="http://www.bpb.de/politik/wahlen/wahl-o-mat/" target="_blank" alt="Wahl-O-Mat">Wahl-O-Mat</a>.</li>
+												<li> We will have no KI, recommender systems or predictions of the next post. Everything will be statically.
+										</ul>
+										<li> Participants will be tracked, but every data is accessible.</li>
+										<li> Everything will be done with unit and integration tests.</li>
+									</ul>
+								</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container" id="features-template">
+				<div class="row">
+					<div class="col-md-2">
+						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/icon.png')}" alt="dbas logo">
+					</div>
+					<div class="col-md-10">
+						<div class="content">
+							<h2><span class="font-semi-bold">Features</span> <span class="smaller">of D-BAS</span></h2>
+							<p class="lead">This is about
+								<span class="font-normal">... features ...</span>
+							</p>
+							<dl class="dl-horizontal lead list">
+								<dt>ArguMaps:</dt>
+								<dd>A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense. </dd>
+								<dt>Dialogue-based:</dt>
+								<dd> Yeah, this is a novel and it will work with a kind of dialogue-based approach. This means that the system will represnt the panelist and the claims will be given through the other participants.</dd>
+								<dt>Guided View:</dt>
+								<dd> You will never see something like an argumentation map, because the systems seems to be like dynamic and generic <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> for you.</dd>
+								<dt>Island View:</dt>
+								<dd> Okay, you want to see more as with the guided view, but not everything. Therefore the island view will present you a list of every argument for an specific position.</dd>
+								<dt>Expert View:</dt>
+								<dd> So, you think you are an expert? Okay, you will have a view of the complet argumentation map.</dd>
+							</dl>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container" id="about-template">
+				<div class="row">
+					<div class="col-md-2">
+						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/icon.png')}" alt="dbas logo">
+					</div>
+					<div class="col-md-10">
+						<div class="content">
+							<h2><span class="font-semi-bold">About</span> <span class="smaller"> D-BAS</span></h2>
+							<p class="lead">D-BAS is a <span class="font-normal">novel approach</span> of discussions in the field of online participation
+								<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+							</p>
+							<ul class="lead list">
+								<li>
+									<span class="font-normal">Cooperation with <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a>:</span>
+								</li>
+								<li>
+									<span class="font-normal">Cooperation with the <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php">Karlsruhe Institut of Technology</a>:</span>
+								</li>
+								<li>
+									<span class="font-normal">Graduation School <a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" target="_blank" title="Graduation School Online Participation" target="_blank">Online-Participation:</a></span>
+									<br>Das NRW Fortschrittskolleg Online-Partizipation ist ein vom Land Nordrhein-Westfalen gefördertes Graduiertenkolleg, in dem Wissenschaftlerinnen und Wissenschaftler aus der Betriebswirtschaft, Informatik, Kommunikationswissenschaft, Politikwissenschaft, Rechtswissenschaft und Soziologie gemeinsam mit Partnern aus der Praxis zusammenarbeiten. Ziel des Fortschrittskollegs ist es, die Möglichkeiten des Internets zur Beteiligung von Betroffenen an für sie relevanten Entscheidungen zu untersuchen.
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container" id="research-template">
+				<div class="row">
+					<div class="col-md-2">
+						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/icon.png')}" alt="dbas logo">
+					</div>
+					<div class="col-md-10">
+						<div class="content">
+							<h2><span class="font-semi-bold">Research</span> <span class="smaller">of D-BAS</span></h2>
+							<ul class="lead list">
+								<li>
+									<span class="font-normal">Our data structure:</span>
+									<br>We are using a modified argumentation map as data structure. More information can be afforded via the <a href="${request.application_url}/contact" title="Contact">contact</a>-formular.
+								</li>
+							</ul>
+							<p class="lead">In addition, we have studied several tools:</p>
+							<ul class="lead list">
+								<li>
+									<span class="font-normal">Forum:</span>
+									<br>Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.
+								</li>
+								<li>
+									<span class="font-normal">Pro-Contra Lists:</span>
+									<br>These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.
+								</li>
+								<li>
+									<span class="font-normal">Argumentation-based Approaches:</span>
+									<br>This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.
+								</li>
+							</ul>
+							<span class="lead">For these reason the novel approach of a dialogue-based argumendation system was developed. Additionally have a look at our publications:</span>
+							<ul class="lead list">
+								<li>Yeah, I know. This is empty now, but the first one will be here...soon.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	
+		<div metal:use-macro="load: snippet-footer.pt" />
+	</div>
+
+</body>
+<html>

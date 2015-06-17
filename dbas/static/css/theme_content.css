@@ -1,0 +1,158 @@
+.btn-discussion {
+	margin: 10px;
+}
+
+.table-hover {
+  color: rgba(0, 106, 179, 1.0);
+	font-weight: 300;
+	font-style: italic;
+}
+
+.center{
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+#discussions-space ul {
+	display: inline-block;
+}
+
+#discussions-space ul li {
+	list-style: none;
+	<!--
+	display: inline;
+	-->
+}
+
+#error-description {
+	color: #be0a26;
+	font-size: 15;
+	font-weight: 600;
+}
+
+#success-description {
+	color: #97bf0d;
+	font-size: 15;
+	font-weight: 600;
+}
+
+#discussions-space ul li input {
+	font-size: 15px;
+	margin-right: 5px;
+}
+
+#discussions-space ul,
+#discussions-space ul li {
+	width: 100%;
+}
+
+#discussions-space ul li label {
+	width: 95%;
+	vertical-align: middle;
+}
+
+#insert_statement_form {
+	text-align: center;
+}
+#insert_statement_form  textarea{
+	resize: vertical;
+}
+
+#insert_statement_form input,
+#insert_statement_form textarea {
+	outline: none;
+	font-size: 18px;
+	font-weight: 400;
+	color: #bcbcbc;
+	padding: 12px 10px 12px 10px;
+	border-radius: 5px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	margin: 0px 0px 10px 0px;
+	-webkit-appearance: none;
+	border: 1px solid;
+	width: 100%;
+}
+
+#insert_statement_form div a {
+	text-decoration: none;
+	color: #000;
+}
+#insert_statement_form div a:hover {
+	text-decoration: underline;
+	color: #006ab3;
+}
+
+#add-pro-position,
+#add-con-position,{
+	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-433-plus.png) center no-repeat 12px 10px;
+}
+
+#left-position-column {
+	float: left;
+	width: 50%;
+	margin-bottom:50px;
+}
+
+#right-position-column {
+	float: right;
+	width: 50%;
+	margin-bottom:50px;
+}
+
+#left-position-column textarea,
+#right-position-column textarea{
+	width: 95%;
+}
+
+#left-position-column button,
+#right-position-column button{
+	float: 5%;
+}
+
+#heading-pro-positions{
+	color: rgba(151,191,13,1.0); <!-- official uni red -->
+}
+#heading-contra-positions{
+	color: rgba(190,10,38,1.0); <!-- official uni green -->
+}
+
+#discussion-failure-row{
+	padding-top: 25px;
+}
+
+#admins-space table tbody tr:nth-child(even) {
+	background-color: rgba(217, 218, 219, 0.7);
+}
+#admins-space table tbody tr:nth-child(1) {
+	background-color: rgba(0, 106, 179, 0.3);
+}
+
+#display-control-container{
+	visibility: hidden;
+	position: absolute;
+	display: inline-block;
+	color: #006AB3;
+	bottom: 80px;
+	right: 0px;
+}
+
+
+@media (max-width: 767px) {
+	#discussions-space ul {
+		display: block;
+	}
+
+	#display-control-container{
+		bottom: 150px;
+	}
+	#discussions-space ul li {
+		display: block;
+	}
+	#left-position-column. #right-position-column {
+		float: none;
+		width: 95%;
+	}
+}

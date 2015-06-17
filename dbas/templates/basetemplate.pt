@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="${request.locale_name}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="chameleoni18n">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="pyramid web application">
+	<meta name="author" content="Tobias Krauthoff">
+	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
+	<title>${project} - ${title}</title>
+	<!-- Bootstrap core CSS -->
+	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5.min.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.css')}" rel="stylesheet">
+
+</head>
+
+<body>
+
+	<div id="additional-wrapper">
+		<div metal:use-macro="load: snippet-header.pt" />
+		<div metal:use-macro="load: snippet-popups.pt" />
+
+		<!-- scroll to top -->
+		<a href="#top" class="back-to-top" title="Go to the top"></a>
+
+		<div class="ajaxloader"></div>
+	</div>
+
+	<!-- Bootstrap core, JavaScript, jquery
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-1.11.2.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.5.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
+
+</body>
+<html>

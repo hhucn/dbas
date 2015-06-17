@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; D-BAS 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="D-BAS 0.0.1 documentation" href="index.html"/>
+        <link rel="next" title="Development" href="development.html"/>
+        <link rel="prev" title="D-BAS" href="home.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="home.html" class="fa fa-home"> D-BAS</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation-everything-for-developing">Installation everything for developing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-with-vagrant-virtual-machine">Installation with Vagrant virtual machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-the-application">Run the application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-test-suites">Run test suites</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="development.html#general-remarks">General Remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#running-the-testsuite">Running the Testsuite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#generate-html-documentation">Generate html documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#create-scaffold-for-extension-packages">Create scaffold for extension packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#update-packages">Update packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#adhocracy-releases">Adhocracy Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture/index.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture/overview.html">Software Stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/frontend_structure.html">Frontend Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/backend_structure.html">Backend Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="views/index.html">Views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="views/guided.html">Guided View</a></li>
+<li class="toctree-l2"><a class="reference internal" href="views/island.html">Island View</a></li>
+<li class="toctree-l2"><a class="reference internal" href="views/expert.html">Expert View</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="datastructure/index.html">Datastrucutres</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="datastructure/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datastructure/argumentation.html">Argumentation Scheme</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notices.html">Notices</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="home.html">D-BAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="home.html">Docs</a> &raquo;</li>
+      
+    <li>Installation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/installation.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation-everything-for-developing">
+<h2>Installation everything for developing<a class="headerlink" href="#installation-everything-for-developing" title="Permalink to this headline">¶</a></h2>
+<p>Requirements:</p>
+<ol class="arabic simple">
+<li>python python-setuptools easy_install</li>
+<li>easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy pyramid_mailer</li>
+<li>pip3 install validate_email cryptacular</li>
+</ol>
+</div>
+<div class="section" id="installation-with-vagrant-virtual-machine">
+<h2>Installation with Vagrant virtual machine<a class="headerlink" href="#installation-with-vagrant-virtual-machine" title="Permalink to this headline">¶</a></h2>
+<p>Requirements:</p>
+<ol class="arabic simple">
+<li>virtualbox: <a class="reference external" href="https://virtualbox.org/wiki/Downloads">https://virtualbox.org/wiki/Downloads</a></li>
+<li>vagrant: <a class="reference external" href="http://docs.vagrantup.com/v2/installation/index.html">http://docs.vagrantup.com/v2/installation/index.html</a></li>
+</ol>
+<p>create virtual machine and login:</p>
+<blockquote>
+<div>(LINUX:)    wget <a class="reference external" href="https://raw.githubusercontent.com/liqd/adhocracy3/master/Vagrantfile">https://raw.githubusercontent.com/liqd/adhocracy3/master/Vagrantfile</a>
+(OSX:)      curl <a class="reference external" href="https://raw.githubusercontent.com/liqd/adhocracy3/master/Vagrantfile">https://raw.githubusercontent.com/liqd/adhocracy3/master/Vagrantfile</a>
+vagrant up
+vagrant ssh</div></blockquote>
+</div>
+<div class="section" id="id1">
+<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Requirements (Tested on DebianUbuntu,  64-Bit is mandatory):</p>
+<ol class="arabic simple">
+<li>...</li>
+</ol>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>build sphinx documentation</p>
+<div class="highlight-python"><div class="highlight"><pre>sphinx-build -b html source docs
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-the-application">
+<h2>Run the application<a class="headerlink" href="#run-the-application" title="Permalink to this headline">¶</a></h2>
+<p>Start ... (which manages the ZODB database, the Pyramid application
+and the ... websocket server):</p>
+<div class="highlight-python"><div class="highlight"><pre>... ?
+</pre></div>
+</div>
+<p>Shutdown everything nicely:</p>
+<div class="highlight-python"><div class="highlight"><pre>./bin/supervisorctl shutdown
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-test-suites">
+<h2>Run test suites<a class="headerlink" href="#run-test-suites" title="Permalink to this headline">¶</a></h2>
+<p>Run pytest suite:</p>
+<div class="highlight-python"><div class="highlight"><pre>nosetest dbas
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="development.html" class="btn btn-neutral float-right" title="Development">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="home.html" class="btn btn-neutral" title="D-BAS"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Tobias Krauthoff.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

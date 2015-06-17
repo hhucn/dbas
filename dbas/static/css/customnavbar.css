@@ -1,82 +1,74 @@
-.navbar-default {
+<!-- signalblue #006ab3 (0, 106, 179), to use in 1, 0.7, 0.5, 0.3 and 0.1 -->
+<!-- achatgrey #d9dadb (217, 218, 219), to use in 1.0 and 0.1 -->
+<!-- gelbruen #97bf0d (151, 191, 13), to use in 1, 0.7, 0.5, 0.3 and 0.1 -->
+<!-- verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1 -->
+
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+	color: #d9dadb;
+	font-size: 20px;
+	font-weight: bold;
+}
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+	width: 85px;
+	background: transparent url('../images/brand_black_small.png') center no-repeat;
+}
+#custom-bootstrap-menu.navbar-default .navbar-brand:hover {
 	background-color: #006ab3;
-	border-color: #f0f0ff;
+	background-image: url('../images/brand_white_small.png');
+}
+#custom-bootstrap-menu.navbar-default {
+	font-size: 16px;
+	background-color: #d9dadb;
+  border-bottom: thin solid #006ab3;
 }
 
-.navbar-default .navbar-brand {
-	color: #ffffff;
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+	color: #000;
+	background-color: #d9dadb;
 }
-
-.navbar-default .navbar-brand:hover,
-.navbar-default .navbar-brand:focus {
-	color: #000000;
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+	color: #fff;
+	background-color: #006ab3;
 }
-
-.navbar-default .navbar-text {
-	color: #ffffff;
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+	color: #fff;
+	background-color: #006ab3;
 }
-
-.navbar-default .navbar-nav > li > a {
-	color: #ffffff;
+#custom-bootstrap-menu.navbar-default .navbar-toggle {
+	border-color: #ddd;
 }
-
-.navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > li > a:focus {
-	color: #000000;
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
+	background-color: #006ab3;
 }
-
-.navbar-default .navbar-nav > .active > a,
-.navbar-default .navbar-nav > .active > a:hover,
-.navbar-default .navbar-nav > .active > a:focus {
-	color: #000000;
-	background-color: #f0f0ff;
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+	background-color: #000;
 }
-
-.navbar-default .navbar-nav > .open > a,
-.navbar-default .navbar-nav > .open > a:hover,
-.navbar-default .navbar-nav > .open > a:focus {
-	color: #000000;
-	background-color: #f0f0ff;
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+	background-color: #fff;
 }
-
-.navbar-default .navbar-toggle {
-	border-color: #f0f0ff;
+.nav li a:hover,
+.dropdown-menu li a:hover {
+	color: #fff;
+	background-color: #006ab3;
 }
-
-.navbar-default .navbar-toggle:hover,
-.navbar-default .navbar-toggle:focus {
-	background-color: #f0f0ff;
+.dropdown-menu {
+	background-color: #d9dadb;
 }
-
-.navbar-default .navbar-toggle .icon-bar {
-	background-color: #ffffff;
+.dropdown-menu li.active {
+	font-weight: bold;
 }
-
-.navbar-default .navbar-collapse,
-.navbar-default .navbar-form {
-	border-color: #ffffff;
+.nav {
+	font-weight: normal;
+	font-size: 16px;
 }
-
-.navbar-default .navbar-link {
-	color: #ffffff;
+.navbar-nav.navbar-right:last-child {
+	margin-right: 20px;
 }
-
-.navbar-default .navbar-link:hover {
-	color: #000000;
-}
-
-@media (max-width: 767px) {
-	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
-		color: #ffffff;
-	}
-	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
-	.navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-		color: #000000;
-	}
-	.navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-	.navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-	.navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-		color: #000000;
-		background-color: #f0f0ff;
-	}
+.language_selector_img {
+	padding-right: 10px;
 }

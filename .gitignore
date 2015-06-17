@@ -26,11 +26,15 @@ coverage.xml
 *.log
 *.pid
 *.db
-*.sqlite
+#*.sqlite
 
 # Sphinx documentation
-docs/_build/
+# docs/
 
 # Misc
 .python-version
 *.sh
+*.bak
+
+# Pycharm
+.idea/

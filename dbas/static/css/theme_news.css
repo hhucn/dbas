@@ -1,0 +1,167 @@
+.box {
+	display: inline-block;
+	margin: 50px;
+}
+
+.container {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.newscontainer {
+	display: inline-block;
+	margin: 15px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	background: #f4f4f4;
+	border-radius: 4px;
+	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+	vertical-align: top;
+}
+.newscontainer:hover{
+	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
+	transition: .5s ease;
+}
+
+/*  GRID OF FOUR  */
+.span_4_of_4 {
+	width: 100%;
+}
+
+.span_3_of_4 {
+	width: 70%;
+}
+
+.span_2_of_4 {
+	width: 45%;
+}
+
+.span_1_of_4 {
+	width: 23%;
+}
+
+
+.share-icon{
+	float: right;
+	padding: 1em;
+	opacity: 0.5;
+	transition: 1s ease;
+}
+.share-icon:hover{
+	opacity: 1.0;
+	transition: .2s ease;
+}
+.share-table,
+.share-table ul {
+ 	list-style-type:none;
+ 	margin:0;
+ 	padding:0;
+	float: right;
+}
+
+.share-table li ul {
+	display: none;
+	opacity: 0.5;
+}
+.share-table li ul li {
+	display: inline;
+}
+.share-table li:hover ul {
+	display: block;
+	float: right;
+	opacity: 1.0;
+}
+
+.share-def{
+	background: url('../images/glyphicons_free/glyphicons/png/glyphicons-309-share-alt.png') no-repeat 10px 10px;
+}
+.share-facebook{
+	background: url('../images/glyphicons_free/glyphicons_social/png/social-31-facebook.png') no-repeat 10px 10px;
+}
+.share-google{
+	background: url('../images/glyphicons_free/glyphicons_social/png/social-3-google-plus.png') no-repeat 10px 10px;
+}
+.share-twitter{
+	background: url('../images/glyphicons_free/glyphicons_social/png/social-32-twitter.png') no-repeat 10px 10px;
+}
+.share-mail{
+	background: url('../images/glyphicons_free/glyphicons_social/png/social-40-e-mail.png') no-repeat 10px 10px;
+}
+.share-facebook:hover{
+	background: url('../images/glyphicons_free/glyphicons_social/png/hover-social-31-facebook.png') no-repeat 10px 10px;
+}
+.share-google:hover{
+	background: url('../images/glyphicons_free/glyphicons_social/png/hover-social-3-google-plus.png') no-repeat 10px 10px;
+}
+.share-twitter:hover{
+	background: url('../images/glyphicons_free/glyphicons_social/png/hover-social-32-twitter.png') no-repeat 10px 10px;
+}
+.share-mail:hover{
+	background: url('../images/glyphicons_free/glyphicons_social/png/hover-social-40-e-mail.png') no-repeat 10px 10px;
+}
+
+
+
+
+@media(max-width:1280px) {
+	.newscontainer {
+		margin: 14px;
+	}
+	.span_4_of_4 {
+		width: 100%;
+	}
+	.span_3_of_4 {
+		width: 70%;
+	}
+	.span_2_of_4 {
+		width: 45%;
+	}
+	.span_1_of_4 {
+		width: 30%;
+	}
+}
+
+@media(max-width:1024px) {
+	.container{
+		width: 75%;
+	}
+	.newscontainer {
+		margin: 12px;
+	}
+	.span_4_of_4 {
+		width: 100%;
+	}
+	.span_3_of_4 ,
+	.span_2_of_4 ,
+	.span_1_of_4 {
+		width: 47%;
+	}
+}
+
+@media(max-width:640px) {
+	.newscontainer {
+		display: block;
+		margin: 12px;
+	}
+	.span_4_of_4 ,
+	.span_3_of_4 ,
+	.span_2_of_4 ,
+	.span_1_of_4 {
+		width: 95%;
+	}
+}
+
+@media(max-width:320px) {
+	.newscontainer {
+		display: block;
+		margin: 10px;
+	}
+	.span_4_of_4 ,
+	.span_3_of_4 ,
+	.span_2_of_4 ,
+	.span_1_of_4 {
+		width: 95%;
+	}
+}

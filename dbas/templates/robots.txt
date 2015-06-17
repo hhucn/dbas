@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /content
+Disallow: /static
+Disallow: /database
+Allow: /

@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Frontend Routing &mdash; D-BAS 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="D-BAS 0.0.1 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../home.html" class="fa fa-home"> D-BAS</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="simple">
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../home.html">D-BAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../home.html">Docs</a> &raquo;</li>
+      
+    <li>Frontend Routing</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../_sources/architecture/frontend_routing.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="frontend-routing">
+<h1>Frontend Routing<a class="headerlink" href="#frontend-routing" title="Permalink to this headline">¶</a></h1>
+<p>As Adhocracy 3 is a single page application, the routing is done in the
+frontend.  Unfortunately, the obvious choice <a class="reference external" href="https://docs.angularjs.org/api/ngRoute">angular-route</a> does not
+meet our requirements so we wrote our own router.  This document gives
+a brief overview over the routing system.</p>
+<div class="section" id="basics">
+<h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
+<p>Adhocracy 3 consists of a backend with a rest API and a frontend with
+a server part and a client part (JavaScript).  The frontend server
+serves static files for the most part.  The frontend client is a complex
+application that manages most of the routing.</p>
+<p>Routing in Adhocracy 3 relies on angular&#8217;s <code class="docutils literal"><span class="pre">$location</span></code> service which
+in turn uses the browser&#8217;s <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/History">history API</a> (or a fallback if that is not
+available).  This allows us to change the URL from JavaScript code
+without triggering a browser redirect.</p>
+</div>
+<div class="section" id="server">
+<h2>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h2>
+<p>The routing is done on the client.  However, the server still needs to
+serve the frontend code on all valid URLs.  The existing rules already
+cover quite a lot.  If you want to add another rule (basically if you
+want to add another <em>space</em>, see below) you need to edit
+<code class="docutils literal"><span class="pre">src/adhocracy_frontend/adhocracy_frontend/__init__.py</span></code> or the
+corresponding file in a customization package.  Simply add a line like
+this to <code class="xref py py-func docutils literal"><span class="pre">includeme()</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">add_frontend_route</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rule</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal"><span class="pre">name</span></code> is the name of this route and <code class="docutils literal"><span class="pre">rule</span></code> is a rule that the
+URL will have to match.  See <a class="reference external" href="http://docs.pylonsproject.org/projects/pyramid/en/latest/api/config.html#pyramid.config.Configurator.add_route">pyramid add_route documentation</a> for
+further details.</p>
+</div>
+<div class="section" id="top-level-state">
+<h2>Top Level State<a class="headerlink" href="#top-level-state" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">adhTopLevelState</span></code> service provides the infrastructure for
+routing in the Adhocracy 3 frontend.  It manages an internal flat object
+called the <em>state</em> and syncs it with the URL.  So whenever the URL
+changes, the state is updated and vice versa.  The service provides an
+interface to get, set and watch the state.</p>
+<p>The service also defines a template that is rendered by the <code class="docutils literal"><span class="pre">adhView</span></code>
+directive.</p>
+<p>In some respects, <code class="docutils literal"><span class="pre">adhTopLevelState</span></code> is similar to <a class="reference external" href="https://docs.angularjs.org/api/ngRoute">angular-route</a>
+but much more flexible.</p>
+<div class="section" id="areas">
+<h3>Areas<a class="headerlink" href="#areas" title="Permalink to this headline">¶</a></h3>
+<p>The actual work of syncing URL and state as well as defining the
+template is not done by <code class="docutils literal"><span class="pre">adhTopLevelState</span></code> itself but by so called
+<em>areas</em>.  This allows us to have very different routing methods in
+different areas.</p>
+<p>The current area is selected by the first part of the URL path.  So if
+the URL is <code class="docutils literal"><span class="pre">http://example.com/foo/bar/1?key=value</span></code>, the area is
+<code class="docutils literal"><span class="pre">foo</span></code>.</p>
+<p>Each area defines a function <code class="xref js js-func docutils literal"><span class="pre">route()</span></code> to convert the URL to a
+state object, <code class="xref js js-func docutils literal"><span class="pre">reverse()</span></code> to convert a state object to an URL,
+and a template.</p>
+<p>Currently, we use some simple areas for login related functionality, one
+area for embedding and (the most important) one for resources.</p>
+</div>
+<div class="section" id="resource-area">
+<h3>Resource Area<a class="headerlink" href="#resource-area" title="Permalink to this headline">¶</a></h3>
+<p>The most important area is the resource area.  URLs in this area are
+directly derived from backend paths.  If a resource has the path
+<code class="docutils literal"><span class="pre">/some/path</span></code> in the backend, the corresponding route in the frontend
+would be <code class="docutils literal"><span class="pre">/r/some/path</span></code>.</p>
+<p>Much like <code class="docutils literal"><span class="pre">adhTopLevelState</span></code>, the resource area only provides an
+infrastructure.  You need to configure what the state should be based on
+<em>resource type</em>, <em>view</em> and <em>process type</em>.</p>
+<p>While the resource type can be deduced from the path, view and process
+type are new concepts. <em>Process type</em> will be discussed later in this
+document.</p>
+<p><em>Views</em> allow to have multiple routes to a single resource.  So while
+<code class="docutils literal"><span class="pre">/r/some/path</span></code> might point to a detail view of the resource,
+<code class="docutils literal"><span class="pre">/r/some/path/&#64;edit</span></code> might point to a form where the resource
+can be edited.  Note that the view is prefixed with an <code class="docutils literal"><span class="pre">&#64;</span></code>.</p>
+</div>
+<div class="section" id="spaces">
+<h3>Spaces<a class="headerlink" href="#spaces" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">adhTopLevelState</span></code> can store multiple state objects at the same time.
+These are called <em>spaces</em>.  They allow to easily switch between multiple
+application states.</p>
+<p>This is backed by the <code class="docutils literal"><span class="pre">adhSpace</span></code> directive which will only show its
+contents if the passed key is that of the current space.  This way not
+only the top level state object, but also the complete DOM is preserved.</p>
+<p>Currently, only the resource area makes use of spaces.  It divides its
+pages into a &#8220;user&#8221; and a &#8220;content&#8221; space.</p>
+</div>
+</div>
+<div class="section" id="process">
+<h2>Process<a class="headerlink" href="#process" title="Permalink to this headline">¶</a></h2>
+<p>While the previous concepts were frontend specific, <em>processes</em> also
+exist in the backend.  A process contains a resource subtree and defines
+roles and permissions for that subtree.</p>
+<p>In the frontend it also defines which template should be used.  The
+directive <code class="docutils literal"><span class="pre">adhProcessView</span></code> is used to render that template.  It is
+currently used in the resource area&#8217;s content space.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>So here is a rough overview of what happens when I enter
+<code class="docutils literal"><span class="pre">/r/some/path</span></code> into my browser address bar:</p>
+<ol class="arabic simple">
+<li>The server serves an HTML bootstrap page.</li>
+<li><code class="docutils literal"><span class="pre">adhTopLevelState</span></code> notices a change to the URL and starts
+processing it.  From the first part of the URL (<code class="docutils literal"><span class="pre">/r/</span></code>) it knows
+that it has to use the resource area.</li>
+<li>The resource area converts the URL to a flat state object.
+This object contains information about space and process type.</li>
+<li><code class="docutils literal"><span class="pre">adhView</span></code> renders the area template.</li>
+<li>The <code class="docutils literal"><span class="pre">adhSpace</span></code> directive for the content space renders its
+contents, while all other spaces are being hidden.</li>
+<li><code class="docutils literal"><span class="pre">adhProcessView</span></code> renders the process template.</li>
+</ol>
+<p>Note that everything except for the first step also happens when I click
+on a link within Adhocracy.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Tobias Krauthoff.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

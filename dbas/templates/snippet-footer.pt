@@ -1,0 +1,20 @@
+<div id="footer">
+	<div class="col-md-12">
+		<div class="row links">
+			<ul>
+				<li>
+					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;
+					<a href="${request.application_url}/impressum">
+						<i class="glyphicon glyphicon-th-list icon-muted">&thinsp;</i>Impressum</a>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					Icons by&#160;&#160;<a href="http://glyphicons.com/"><i class="glyphicon glyphicon-asterisk icon-muted">&thinsp;</i>glyphicons</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+

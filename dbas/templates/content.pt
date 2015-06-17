@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="mydbas">
+
+<head>
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
+</head>
+
+<body>
+
+	<div id="wrapper">
+		<div id="content">
+
+			<div class="container">
+				<div class="row">
+					<div class="col-md-1"></div>
+					<div class="col-md-10 center text-center">
+						<h1><span class="font-semi-bold">Dialogue-Based Argumentation System</span></h1>
+						<p>The current discussion is about
+							<br>
+							<span class="font-semi-bold">'<span tal:replace="issue"/>'</span>
+							<br> and was started at <span class="font-semi-bold" tal:replace="date" />.</p>
+						<p id='start-description'>You're free to join the discussion. When you want to join, just press the button:</p>
+						<input id="start-discussion" type="button" value="Start Discussion" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
+						<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
+					</div>
+					<div class="col-md-1"></div>
+				</div>
+			</div>
+
+
+			<div class="container" id="discussion-container">
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<h4><p id='error-description'></p></h4>
+						<h4><p id='success-description'></p></h4>
+						<h3><p id='discussions-description'></p></h3>
+						<div id="discussions-space"> </div>
+						<div class="center text-center">
+							<input id="send-answer" type="button" value="Send Answer" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
+							<input id="step-back" type="button" value="Step back" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
+						</div>
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+				<div class="row" id="discussion-failure-row">
+					<div class="col-md-3"></div>
+					<div class="col-md-6">
+						<div class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="font-semi-bold">Error:</span>
+							<span id="discussion-failure-msg"></span>
+						</div>
+						<div class="col-md-3"></div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="container" id="add-statement-container">
+				<button id="closeStatementContainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				</button>
+				<div class="row">
+					<div class="col-md-1"></div>
+					<div class="col-md-10">
+
+						<form id="insert_statement_form" action="/not_implemented" method="post">
+							<h2 id='add-statement-container-h2'>Please insert a new Argument</h2>
+							<input id='add-statement-container-main-input' type="text" class="" name="" autocomplete="off" placeholder="example:
+					Build a new opera house" value="">
+
+							<div id="left-position-column">
+								<h3 id="heading-pro-positions" class="font-semi-bold">Pro</h3>
+								<div id="left-textareas">
+								</div>
+								<a>
+									<div id="add-pro-textarea">
+										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add something for the argument</div>
+								</a>
+							</div>
+
+							<div id="right-position-column">
+								<h3 id="heading-contra-positions" class="font-semi-bold">Contra</h3>
+								<div id="right-textareas">
+								</div>
+								<a>
+									<div id="add-con-textarea">
+										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add something against the argument</div>
+								</a>
+							</div>
+							<div tal:condition="was_statement_inserted" class="alert alert-success" role="alert">
+								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+								<span tal:replace="message" />
+							</div>
+							<input id="send-new-statement" value="Save it..." type="button" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
+						</form>
+					</div>
+					<div class="col-md-1"></div>
+				</div>
+			</div>
+			
+
+			<div tal:condition="is_admin" class="container">
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<h2><span class="font-semi-bold">Special rights</span></h2>
+						<p>Some additional options for the administrator.
+							<br>
+							<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
+						</p>
+					</div>
+					<div class="col-md-2"></div>
+					<div class="col-md-12">
+						<div id="admins-space"> </div>
+					</div>
+				</div>
+			</div>
+
+			<div class="wrapped_content_container" id="display-control-container">
+				<p>Change display style:</p>
+				<div class="segmented-control">
+					<input type="radio" name="sc-display-style" id="sc-style-1" checked value="Dialog View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
+					<label for="sc-style-1" data-value="Dialog View">
+						<p>Dialog View</p>
+					</label>
+					<br>
+					<input type="radio" name="sc-display-style" id="sc-style-2" value="Island View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
+					<label for="sc-style-2" data-value="Island View">
+						<p>Island View</p>
+					</label>
+					<br>
+					<input type="radio" name="sc-display-style" id="sc-style-3" value="Complete View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
+					<label for="sc-style-3" data-value="Complete View">
+						<p>Complete View</p>
+					</label>
+				</div>
+			</div>
+
+		</div>
+
+		<div metal:use-macro="load: snippet-footer.pt" />
+	</div>
+
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
+
+</body>
+<html>

@@ -1,0 +1,51 @@
+.button {
+	width: 40%;
+}
+
+.error,
+.logout {
+	margin-top: 75px;
+	background: #f4f4f4;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-bottom: 10px;
+	border-radius: 4px;
+	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+}
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
+	width: 40%;
+}
+
+.text-center {
+	text-align: center;
+}
+
+@media (max-width: 1199px) {
+	.button {
+		width: 30%;
+	}
+	.center {
+		width: 55%;
+	}
+}
+
+@media (max-width: 991px) {
+	.button {
+		width: 45%;
+	}
+	.center {
+		width: 70%;
+	}
+}
+
+@media (max-width: 767px) {
+	.button {
+		width: 50%;
+	}
+	.center {
+		width: 80%;
+	}
+}
