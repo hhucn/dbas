@@ -22,7 +22,7 @@ def main(global_config, **settings):
 
 	# creating the configurator
 	settings={'pyramid.default_locale_name':'en',
-			  'mail.host':'rohrpostix.cs.uni-duesseldorf.de',
+			  'mail.host':'mail.uni-duesseldorf.de',
 			  'mail.port':'465',
 			  'mail.username':'krauthoff',
 			  'mail.password':'cs_kraut#1989',
@@ -54,6 +54,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_all_positions', '/ajax_all_positions')
 	config.add_route('ajax_all_users', '/ajax_all_users')
 	config.add_route('ajax_manage_user_track', '/ajax_manage_user_track')
+	config.add_route('ajax_all_arguments_for_island', '/ajax_all_arguments_for_island');
 
 	config.add_route('ajax_args_for_new_discussion_round', '/ajax_args_for_new_discussion_round')
 	config.add_route('ajax_arguments_connected_to_position_uid', '/ajax_arguments_connected_to_position_uid')

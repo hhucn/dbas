@@ -3,28 +3,35 @@
 var addStatementButtonId = 'add-statement';
 var addPositionButtonId = 'add-position';
 var addStatementContainerId = 'add-statement-container';
-var addStatementContainerH2Id = 'add-statement-container-h2';
+var addStatementContainerH3Id = 'add-statement-container-h3';
 var addStatementContainerMainInputId = 'add-statement-container-main-input';
 var addProTextareaId = 'add-pro-textarea';
 var addConTextareaId = 'add-con-textarea';
 var adminsSpaceId = 'admins-space';
 var argumentListId = 'argument-list';
 var closeStatementContainerId = 'closeStatementContainer';
+var closeIslandViewContainerId = 'closeIslandViewContainer';
 var discussionsDescriptionId = 'discussions-description';
 var discussionContainerId = 'discussion-container';
 var discussionSpaceId = 'discussions-space';
 var discussionFailureRowId = 'discussion-failure-row';
 var discussionFailureMsgId = 'discussion-failure-msg';
+var displayControlContainerId = 'display-control-container';
 var errorDescriptionId = 'error-description';
 var leftPositionColumnId = 'left-position-column';
 var leftPositionTextareaId = 'left-textareas';
+var leftIslandId = 'left-island';
 var listAllUsersButtonId = 'list-all-users';
 var goodPointTakeMeBackButtonId = 'good-point-of-the-others';
 var goodPointTakeMeBackButtonText = 'I agree, that is a good argument! Take me one step back.';
 var insertStatementForm = 'insert_statement_form';
+var islandViewContainerId = 'island-view-container';
+var islandViewHeaderText = 'These are all arguments for';
+var islandViewContainerH3Id = 'island-view-container-h3';
 var restartDiscussionButtonId = 'restart-discussion';
 var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'right-textareas';
+var rightIslandId = 'right-island';
 var radioButtonGroup = 'radioButtonGroup';
 var newArgumentRadioButtonText = 'Let me state my own reason(s)!';
 var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
@@ -34,13 +41,15 @@ var scStyle2Id = 'sc-style-2';
 var scStyle3Id = 'sc-style-3';
 var startDiscussionButtonId = 'start-discussion';
 var startDescriptionId = 'start-description';
-var statementContainerH2TextIfArgument = 'What are your arguments for and against: ';
-var statementContainerH2TextIfPosition = 'What is your idea?';
+var statementContainerH3TextIfArgument = 'What are your arguments for and against: ';
+var statementContainerH3TextIfPosition = 'What is your idea?';
 var stepBackButtonId = 'step-back';
 var sendAnswerButtonId = 'send-answer';
 var sendNewStatementId = 'send-new-statement';
 var statementListId = 'statement-list';
 var successDescriptionId = 'success-description';
+
+
 
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
@@ -65,7 +74,9 @@ $(function () {
 	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
-	$('#' + stepBackButtonId).hide();
+	$('#' + stepBackButtonId).hide(); // hiding the step one round back button
+	$('#' + islandViewContainerId).hide(); // hidding the islandView
+	$('#' + displayControlContainerId).hide(); // hidding the control container
 
 	// starts the discussion with getting all positions
 	$('#' + startDiscussionButtonId).click(function () {
@@ -74,7 +85,7 @@ $(function () {
 		$('#' + restartDiscussionButtonId).show(); // show the restart button
 		$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
 
-		ajaxHandler.getAllPositions(interactionHandler.callbackAjaxGetAllPositions);
+		ajaxHandler.getAllPositions(interactionHandler.callbackIfDoneForGetAllPositions);
 	});
 
 	// handler for the send answer button
@@ -93,6 +104,8 @@ $(function () {
 		$('#' + startDiscussionButtonId).show(); // show the start description
 		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
 		$('#' + addStatementContainerId).hide(); // hide add statement container
+		$('#' + islandViewContainerId).hide(); // hidding the islandView
+		$('#' + displayControlContainerId).hide(); // hidding the control container
 
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
@@ -132,6 +145,19 @@ $(function () {
 		$('#' + addStatementButtonId).removeAttr('checked');
 		$('#' + sendAnswerButtonId).hide();
 	});
+
+	// hiding the island view, when the X button is clicked
+	$('#' + closeIslandViewContainerId).click(function () {
+		$('#' + islandViewContainerId).hide();
+		$('#' + scStyle1Id).attr('checked');
+		$('#' + scStyle2Id).removeAttr('checked');
+	});
+
+	// managed in the html file
+	// $('#' + scStyle1Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	// $('#' + scStyle2Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	// $('#' + scStyle3Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+
 	
 	// ajax loading animation
 	$(document).on({

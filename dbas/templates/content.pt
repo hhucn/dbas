@@ -15,7 +15,7 @@
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col-md-10 center text-center">
-						<h1><span class="font-semi-bold">Dialogue-Based Argumentation System</span></h1>
+						<h2><span class="font-semi-bold">Dialogue-Based Argumentation System</span></h2>
 						<p>The current discussion is about
 							<br>
 							<span class="font-semi-bold">'<span tal:replace="issue"/>'</span>
@@ -58,6 +58,33 @@
 			</div>
 
 
+			<div class="container" id="island-view-container">
+				<button id="closeIslandViewContainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				</button>
+				<div class="row">
+					<div class="col-md-1"></div>
+					<div class="col-md-10">
+						<h3><span class="font-semi-bold">Island View</span></h3>
+						<h3 id='island-view-container-h3'><span class="font-semi-bold">Island View</span></h3>
+
+							<div id="left-island-column">
+								<h3 id="heading-pro-island" class="font-semi-bold">Pro</h3>
+								<div id="left-island">
+								</div>
+							</div>
+
+							<div id="right-island-column">
+								<h3 id="heading-contra-island" class="font-semi-bold">Contra</h3>
+								<div id="right-island">
+								</div>
+							</div>
+						
+					</div>
+					<div class="col-md-1"></div>
+				</div>
+			</div>
+
+
 			<div class="container" id="add-statement-container">
 				<button id="closeStatementContainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
@@ -66,7 +93,7 @@
 					<div class="col-md-10">
 
 						<form id="insert_statement_form" action="/not_implemented" method="post">
-							<h2 id='add-statement-container-h2'>Please insert a new Argument</h2>
+							<h3 id='add-statement-container-h3'>Please insert a new Argument</h3>
 							<input id='add-statement-container-main-input' type="text" class="" name="" autocomplete="off" placeholder="example:
 					Build a new opera house" value="">
 
@@ -105,7 +132,7 @@
 				<div class="row">
 					<div class="col-md-2"></div>
 					<div class="col-md-8">
-						<h2><span class="font-semi-bold">Special rights</span></h2>
+						<h3><span class="font-semi-bold">Special rights</span></h3>
 						<p>Some additional options for the administrator.
 							<br>
 							<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />

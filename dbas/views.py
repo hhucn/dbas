@@ -768,3 +768,13 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
+
+	# ajax - getting all arguments for the island view
+	@view_config(route_name='ajax_all_arguments_for_island', renderer='json')
+	def get_all_arguments_for_island(self):
+		logger('get_all_arguments_for_island', 'def', 'main')
+
+		return_dict = QueryHelper().get_arguments_for_island(self.request.authenticated_userid)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json

@@ -257,15 +257,14 @@ class QueryHelper(object):
 
 			# get all arguments against the confrontation argument
 			logger('QueryHelper', 'get_args_for_new_round', 'get arguments against the contra argument nth argument as contra ' + str(confrontation_uid))
-			justificiation_argument_rows = self.get_argument_list_in_relation_to_statement(confrontation_uid, False, False)
+			justificiation_argument_list = self.get_argument_list_in_relation_to_statement(confrontation_uid, False, False)
 
 			# get all justifications
 			justifications_dict = collections.OrderedDict()
-			if justificiation_argument_rows:
+			if justificiation_argument_list:
 				logger('QueryHelper', 'get_args_for_new_round', 'There are arguments against the contra argument')
-				for justification in justificiation_argument_rows:
-					argument_dict = DictionaryHelper().save_argument_row_in_dictionary(justification)
-					justifications_dict[str(justification['uid'])] = argument_dict
+				for justification in justificiation_argument_list:
+					justifications_dict[str(justification['uid'])] = justification
 				return_dict['justifications'] = justifications_dict
 				return_dict['status'] = '1'
 			else:
@@ -418,7 +417,6 @@ class QueryHelper(object):
 		:param user: given user
 		:return: dictionary of the new position
 		"""
-		return_dict = collections.OrderedDict()
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 		logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + str(user) + 'user_id: ' + str(db_user.uid)
 		       + ', position: ' + str(position))
@@ -431,7 +429,7 @@ class QueryHelper(object):
 
 		# check out, if it is there
 		db_position = DBSession.query(Position).filter_by(text=position).order_by(Position.uid.desc()).first()
-		return_dict = {}
+		return_dict = collections.OrderedDict()
 		if db_position:
 			logger('QueryHelper', 'save_track_argument_for_user', 'position was inserted with uid ' + str(db_position.uid))
 			return_dict['uid'] = db_position.uid
@@ -531,6 +529,48 @@ class QueryHelper(object):
 
 		return return_dict
 
+	def get_arguments_for_island(self, user):
+		"""
+		Returns every argument for and against the last tracked argument as json dict with {pro_i: {...}, con_i {...}}
+		:param user: requesting user
+		:return: dict
+		"""
+		logger('QueryHelper', 'get_arguments_for_island', 'def')
+		return_dict = collections.OrderedDict()
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).order_by(Track.uid.desc()).first()
+		logger('QueryHelper', 'get_arguments_for_island', 'get island view for last selected statement (track:' + str(db_track.arg_uid) + ') '
+		                                                                                                                           'from user ' + user)
+
+		if db_track:
+			if db_track.is_argument:
+				arg_dict = {}
+				dict_pro = self.get_argument_list_in_relation_to_statement(db_track.arg_uid, True, False)
+				dict_con = self.get_argument_list_in_relation_to_statement(db_track.arg_uid, False, False)
+
+				counter = 0
+				logger('QueryHelper', 'get_arguments_for_island', 'pro arguments: ' + str(len(dict_pro)))
+				for pro_arg in dict_pro:
+					arg_dict['pro_' + str(counter)] = pro_arg
+					counter += 1
+
+				logger('QueryHelper', 'get_arguments_for_island', 'con arguments: ' + str(len(dict_con)))
+				counter = 0
+				for con_arg in dict_con:
+					arg_dict['con_' + str(counter)] = con_arg
+					counter += 1
+
+				return_dict['status'] = '1'
+				return_dict['arguments'] = arg_dict
+			else:
+				logger('QueryHelper', 'get_arguments_for_island', 'no saved argument')
+				return_dict['status'] = '-1'
+		else:
+			logger('QueryHelper', 'get_arguments_for_island', 'no saved track')
+			return_dict['status'] = '-1'
+
+		return return_dict
+
 class DictionaryHelper(object):
 
 	def get_subdictionary_out_of_orderer_dict(self, ordered_dict, count):
@@ -581,6 +621,7 @@ class DictionaryHelper(object):
 		:param argument_row: for saving
 		:return: dictionary
 		"""
+		logger('DictionaryHelper', 'save_argument_row_in_dictionary', str(argument_row.uid) + ', ' + argument_row.text + ', ' + str(argument_row.date) + ', ' + str(argument_row.weight) + ', ' + str(argument_row.author))
 		dict = {}
 		dict['uid'] = str(argument_row.uid)
 		dict['text'] = argument_row.text

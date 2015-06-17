@@ -219,6 +219,20 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Sets the visibility of the island view conainter
+	 * @param shouldBeVisibile true, when it should be visible
+	 * @param currentStatementText current user statement
+	 */
+	this.setVisibilityOfDisplayStyleContainer = function (shouldBeVisibile, currentStatementText){
+		if (shouldBeVisibile){
+			$('#' + displayControlContainerId).fadeIn('slow');
+			$('#' + islandViewContainerH3Id).html(islandViewHeaderText + ' <b>' + currentStatementText + '</b>');
+		} else {
+			$('#' + displayControlContainerId).hide();
+		}
+	};
+
+	/**
 	 * Creates an input element tih key as id and val as value. This is embedded in an li element
 	 * @param key will be used as id
 	 * @param val will be used as value
@@ -267,6 +281,39 @@ function GuiHandler() {
 		liElement.html(this.getFullHtmlTextOf(inputElement) + labelElement);
 
 		return liElement;
+	};
+
+	/**
+	 * Displays given data in the island view
+	 * @param jsonData json encoded dictionary
+	 */
+	this.displayDataInIslandView = function (jsonData){
+		var liElement, ulProElement, ulConElement;
+		ulProElement = $('<ul>');
+		ulConElement = $('<ul>');
+
+		// empty
+		$('#' + leftIslandId).empty();
+		$('#' + rightIslandId).empty();
+
+		// get all values as text in list
+		$.each(jsonData, function displayDataInIslandViewEach(key, val) {
+			// is there a con or pro element?
+			if (key.indexOf('pro') == 0) {
+				liElement = $('<li>');
+				liElement.text(val.text);
+				ulProElement.append(liElement);
+			} else if (key.indexOf('con') == 0) {
+				liElement = $('<li>');
+				liElement.text(val.text);
+				ulConElement.append(liElement);
+			}
+		});
+
+		// append in divs
+		$('#' + leftIslandId).append(ulProElement);
+		$('#' + rightIslandId).append(ulConElement);
+
 	};
 
 	/**
@@ -366,7 +413,7 @@ function GuiHandler() {
 			$('#' + addStatementButtonId).disable = true;
 			if (is_argument){
 				var statement = $('#' + discussionsDescriptionId + ' b').text();
-				$('#' + addStatementContainerH2Id).text(statementContainerH2TextIfArgument + statement);
+				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfArgument + statement);
 				$('#' + addStatementContainerMainInputId).hide();
 				$('#' + leftPositionColumnId).show();
 				$('#' + rightPositionColumnId).show();
@@ -375,7 +422,7 @@ function GuiHandler() {
 					new InteractionHandler().getArgumentsAndSendThem();
 				});
 			} else {
-				$('#' + addStatementContainerH2Id).text(statementContainerH2TextIfPosition);
+				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfPosition);
 				$('#' + addStatementContainerMainInputId).show();
 				$('#' + leftPositionColumnId).hide();
 				$('#' + rightPositionColumnId).hide();
@@ -413,14 +460,15 @@ function GuiHandler() {
 	 */
 	this.setDisplayStyleAsDiscussion  = function () {
 		// todo setDisplayStyleAsDiscussion
+		$('#' + islandViewContainerId).hide();
 	};
 
 	/**
 	 * Some kind of pro contra list, but how?
 	 */
 	this.setDisplayStyleAsProContraList  = function () {
-		alert('todo: pro con');
-		// todo setDisplayStyleAsProContraList
+		$('#' + islandViewContainerId).fadeIn('slow');
+		new AjaxHandler().getAllArgumentsForIslandView();
 	};
 
 	/**
@@ -429,5 +477,6 @@ function GuiHandler() {
 	this.setDisplayStyleAsFullView  = function () {
 		alert('todo: full view');
 		// todo setDisplayStyleAsFullView
+		$('#' + islandViewContainerId).hide();
 	};
 }

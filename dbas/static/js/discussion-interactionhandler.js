@@ -11,13 +11,10 @@ function InteractionHandler() {
 	};
 	/**
 	 * Handler when an argument button was clicked
-	 * @param value of the button
+	 * @param id of the button
 	 */
 	this.argumentButtonWasClicked = function (id) {
-		var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), pos;
-		// pos = Math.floor(Math.random() * argumentSentencesOpeners.length);
-		// guiHandler.setDiscussionsDescription(argumentSentencesOpeners[pos] + '<b>' + value + '</b> But why?');
-
+		var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler();
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 
@@ -26,6 +23,7 @@ function InteractionHandler() {
 
 	/**
 	 * Handler when an position button was clicked
+	 * @param id of the button
 	 * @param value of the button
 	 */
 	this.positionButtonWasClicked = function (id, value) {
@@ -73,12 +71,17 @@ function InteractionHandler() {
 	 */
 	this.styleButtonChanged = function (buttonId) {
 		var guiHandler = new GuiHandler();
-		if ($('#' + buttonId).text() == $('#' + scStyle1Id)){
-			guiHandler.setDisplayStyleAsDiscussion();
-		} else if ($('#' + buttonId).text() == $('#' + scStyle2Id)){
-			guiHandler.setDisplayStyleAsProContraList();
-		} else if ($('#' + buttonId).text() == $('#' + scStyle3Id)){
-			guiHandler.setDisplayStyleAsFullView();
+		switch (buttonId){
+			case scStyle1Id:
+				guiHandler.setDisplayStyleAsDiscussion();
+				break;
+			case scStyle2Id:
+				guiHandler.setDisplayStyleAsProContraList();
+				break;
+			case scStyle3Id:
+				guiHandler.setDisplayStyleAsFullView();
+				break;
+			default: alert ('unknown id: ' + buttonId);
 		}
 	};
 
@@ -122,6 +125,7 @@ function InteractionHandler() {
 				this.positionButtonWasClicked(id, value);
 			}
 		}
+		guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
 	};
 
 	/**
@@ -129,11 +133,12 @@ function InteractionHandler() {
 	 * @param data returned json data
 	 */
 	this.callbackIfDoneForArgsForJustification = function (data) {
+		var gh = new GuiHandler();
 		if (data.length > 0) {
 			var parsedData = $.parseJSON(data);
-			new GuiHandler().setJsonDataToContentAsArguments(parsedData, true);
+			gh.setJsonDataToContentAsArguments(parsedData, true);
 		} else {
-			new GuiHandler().setNewArgumentButtonOnly();
+			gh.setNewArgumentButtonOnly();
 		}
 	};
 
@@ -158,6 +163,7 @@ function InteractionHandler() {
 			case '1':
 				gh.setJsonDataToContentAsArguments(parsedData.justifications, false);
 				gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
+				gh.setVisibilityOfDisplayStyleContainer(true, parsedData.currentStatementText);
 				break;
 		}
 
@@ -167,7 +173,7 @@ function InteractionHandler() {
 	 * Callback for the ajax method getAllPositions
 	 * @param data returned json data
 	 */
-	this.callbackAjaxGetAllPositions = function (data) {
+	this.callbackIfDoneForGetAllPositions = function (data) {
 		if (typeof data === 'undefined') {
 			new GuiHandler().setNewArgumentButtonOnly();
 		} else {
@@ -194,7 +200,7 @@ function InteractionHandler() {
 		//  1 everything is fine
 		switch(parsedData.status){
 			case '-1':
-				gh.setErrorDescription('Internal failure, please try again or did you have deleted your track recently?')
+				gh.setErrorDescription('Internal failure, please try again or did you have deleted your track recently?');
 				break;
 			case '1':
 				gh.setSuccessDescription('Everything was added.');
@@ -222,6 +228,26 @@ function InteractionHandler() {
 				break;
 			default:
 				ah.getNewArgumentationRound(parsedData.status, true);
+				break;
+		}
+	};
+
+	/**
+	 * Callback, when island data was fetched
+	 * @param data
+	 */
+	this.callbackIfDoneForGetAllArgumentsForIslandView = function (data) {
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		// -1 no data
+		// >0 island data
+		switch(parsedData.status){
+			case '-1':
+				gh.setErrorDescription('Could not fetch data for the sialnd view. Sorry!');
+				gh.setVisibilityOfDisplayStyleContainer(false, '');
+				$('#' + scStyle2Id).removeAttr('checked');
+				break;
+			default:
+				gh.displayDataInIslandView(parsedData.arguments, true);
 				break;
 		}
 	};

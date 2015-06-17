@@ -13,7 +13,7 @@ function AjaxHandler() {
 			dataType: 'json',
 			async: true
 		}).done(function ajaxGetAllPositionsDone(data) {
-			new InteractionHandler().callbackAjaxGetAllPositions(data);
+			new InteractionHandler().callbackIfDoneForGetAllPositions(data);
 		}).fail(function ajaxGetAllPositionsFail() {
 			new GuiHandler().setErrorDescription('Internal Error :(');
 			new GuiHandler().showDiscussionError('Internal failure in ajaxGetAllPositionsFail',
@@ -137,6 +137,20 @@ function AjaxHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewPosition(data);
 		}).fail(function ajaxSendNewPositionFail() {
 			new GuiHandler().setErrorDescription('New idea could not be sent. Sorry!')
+		});
+	};
+
+	this.getAllArgumentsForIslandView = function () {
+		$.ajax({
+			url: 'ajax_all_arguments_for_island',
+			type: 'GET',
+			dataType: 'json',
+			async: true
+		}).done(function ajaxgetAllArgumentsForIslandViewDone(data) {
+			new InteractionHandler().callbackIfDoneForGetAllArgumentsForIslandView(data);
+		}).fail(function ajaxgetAllArgumentsForIslandViewFail() {
+			new GuiHandler().setErrorDescription('Island view could not be displayed. Sorry!');
+			new GuiHandler().setVisibilityOfDisplayStyleContainer(false, '');
 		});
 	};
 }

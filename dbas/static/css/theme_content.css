@@ -90,13 +90,15 @@
 	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-433-plus.png) center no-repeat 12px 10px;
 }
 
-#left-position-column {
+#left-position-column,
+#left-island-column{
 	float: left;
 	width: 50%;
 	margin-bottom:50px;
 }
 
-#right-position-column {
+#right-position-column,
+#right-island-column{
 	float: right;
 	width: 50%;
 	margin-bottom:50px;
@@ -112,11 +114,19 @@
 	float: 5%;
 }
 
-#heading-pro-positions{
+#heading-pro-positions,
+#heading-pro-island{
 	color: rgba(151,191,13,1.0); <!-- official uni red -->
 }
-#heading-contra-positions{
+#heading-contra-positions,
+#heading-contra-island{
 	color: rgba(190,10,38,1.0); <!-- official uni green -->
+}
+#heading-pro-island,
+#heading-contra-island,
+#island-view-container-h3,
+#island-view-container-header-h3{
+	text-align: center;
 }
 
 #discussion-failure-row{
@@ -131,7 +141,6 @@
 }
 
 #display-control-container{
-	visibility: hidden;
 	position: absolute;
 	display: inline-block;
 	color: #006AB3;

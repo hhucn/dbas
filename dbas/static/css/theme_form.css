@@ -135,6 +135,7 @@ input.spam {
 
 textarea.content {
 	background: url(../images/glyphicons_free/glyphicons/png/glyphicons-196-circle-info.png) no-repeat 12px 10px;
+	resize: vertical;
 }
 
 input.name:hover,
