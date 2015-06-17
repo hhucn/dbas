@@ -16,7 +16,26 @@
 				<p class="lead">This will be the news page and currently I think...this will be some kind of blog</p>
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="newscontainer span_2_of_4">
+				<ul class="share-table">
+					<li>
+						<a class="share-icon share-def"></a>
+						<ul>
+							<li><a class="share-icon share-mail"></a></li>
+							<li><a class="share-icon share-twitter"></a></li>
+							<li><a class="share-icon share-google"></a></li>
+							<li><a class="share-icon share-facebook"></a></li>
+						</ul>
+					</li>
+				</ul>
+				<h2><span class="font-semi-bold">Simple Navigation was improved</span></h2>
+				<h3><p>19.06.2015</p></h3>
+				<h4>Author: Tobias Krauthoff</h4>
+				<br>Because the first kind of navigation was finished recently, D-BAS is now dynamically. That means, that each user can add positions and arguments on his own.<br>
+				<b>Open issues</b> are i18n, a framework for JS-tests as well as the content of the popups.
+			</div>
+
+			<div class="newscontainer span_2_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
@@ -31,7 +50,7 @@
 				<h2><span class="font-semi-bold">Simple Navigation ready</span></h2>
 				<h3><p>09.06.2015</p></h3>
 				<h4>Author: Tobias Krauthoff</h4>
-				<br>First beta of D-BAS is now ready.
+				<br>First beta of D-BAS' navigation is now ready. Within this kind the user will be permantly confronted with arguments, which have a attack relation to the current selected argument/position. For an justification the user can select out of all arguments, which have a attack relation to the 'attacking' argument. Unfortunately the support-relation are currently useless except for the justification for the position at start.
 			</div>
 
 			<div class="newscontainer span_1_of_4">
