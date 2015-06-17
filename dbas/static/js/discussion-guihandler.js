@@ -66,8 +66,6 @@ function GuiHandler() {
 		var _this = new GuiHandler(), text;
 		alert('1 addJsonDataToContentAsArguments');
 		$.each(jsonData, function addJsonDataToContentAsArgumentsEach(key, val) {
-			alert('2 key ' + key + ', val ' + val + ', uid ' + val.uid + ', text: ' + val.text);
-
 			// we only want attacking arguments
 			if (val.is_supportive === '0') {
 				if (val.text.toLowerCase()() !== 'because') {
@@ -367,7 +365,8 @@ function GuiHandler() {
 			$('#' + addStatementContainerId).fadeIn('slow');
 			$('#' + addStatementButtonId).disable = true;
 			if (is_argument){
-				$('#' + addStatementContainerH2Id).text(statementContainerH2TextIfArgument);
+				var statement = $('#' + discussionsDescriptionId + ' b').text();
+				$('#' + addStatementContainerH2Id).text(statementContainerH2TextIfArgument + statement);
 				$('#' + addStatementContainerMainInputId).hide();
 				$('#' + leftPositionColumnId).show();
 				$('#' + rightPositionColumnId).show();

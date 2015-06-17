@@ -14,7 +14,7 @@ class Issue(Base):
 	__tablename__ = 'issue'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	text = sa.Column(sa.Text, nullable=False)
-	date = sa.Column(sa.DateTime, default=func.now())
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
 	def __init__(self, text):
 		"""
@@ -67,8 +67,8 @@ class User(Base):
 	email = sa.Column(sa.Text, nullable=False, unique=True)
 	password = sa.Column(sa.Text, nullable=False)
 	group = sa.Column(sa.Integer, sa.ForeignKey(Group.uid))
-	last_logged = sa.Column(sa.DateTime, default=func.now())
-	registered = sa.Column(sa.DateTime, default=func.now())
+	last_logged = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	registered = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
 	def __init__(self, firstname, surname, nickname, email, password):
 		"""
@@ -102,7 +102,7 @@ class Position(Base):
 	__tablename__ = 'positions'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	text = sa.Column(sa.Text, nullable=False)
-	date = sa.Column(sa.DateTime, default=func.now())
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
 	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 
@@ -127,7 +127,7 @@ class Argument(Base):
 	__tablename__ = 'arguments'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	text = sa.Column(sa.Text, nullable=False)
-	date = sa.Column(sa.DateTime, default=func.now())
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
 	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 
@@ -163,7 +163,7 @@ class RelationArgPos(Base):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
 	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
-	date = sa.Column(sa.DateTime, default=func.now())
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
 	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	is_supportive = sa.Column(sa.Boolean, nullable=False)
@@ -190,7 +190,7 @@ class RelationPosArg(Base):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
 	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	date = sa.Column(sa.DateTime, default=func.now())
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
 	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	is_supportive = sa.Column(sa.Boolean, nullable=False)
@@ -217,7 +217,7 @@ class RelationArgArg(Base):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	arg_uid1 = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
 	arg_uid2 = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	date = sa.Column(sa.DateTime, default=func.now())
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
 	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	is_supportive = sa.Column(sa.Boolean, nullable=False)
@@ -244,7 +244,7 @@ class RelationPosPos(Base):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	pos_uid1 = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
 	pos_uid2 = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
-	date = sa.Column(sa.DateTime, default=func.now())
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
 	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	is_supportive = sa.Column(sa.Boolean, nullable=False)
@@ -270,7 +270,7 @@ class Track(Base):
 	__tablename__ = 'track'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	user_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	date = sa.Column(sa.DateTime, default=func.now())
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
 	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
 	is_argument = sa.Column(sa.Boolean, nullable=False)

@@ -598,9 +598,6 @@ class Dbas(object):
 		else:
 			return_dict={}
 
-		logger('get_ajax_users', 'def', 'SLEEEEEPING')
-		time.sleep(1)
-
 		dictionaryHelper = DictionaryHelper()
 		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
 
