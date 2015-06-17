@@ -83,6 +83,27 @@ function InteractionHandler() {
 	};
 
 	/**
+	 * Fetches all arguments out of the textares and send them
+	 */
+	this.getArgumentsAndSendThem = function () {
+		var i = 0, dict = {};
+		$('#' + leftPositionTextareaId + ' > div').children().each(function (){
+		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
+				dict['pro_' + i] = $(this).val();
+				i = i + 1;
+			}
+		});
+		i = 0;
+		$('#' + rightPositionTextareaId + ' > div').children().each(function (){
+		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
+				dict['con_' + i] = $(this).val();
+				i = i + 1;
+			}
+		});
+		new AjaxHandler().sendNewArgument(dict);
+	};
+
+	/**
 	 * Defines the action for the send button
 	 */
 	this.sendAnswerButtonClicked = function () {
@@ -94,6 +115,7 @@ function InteractionHandler() {
 			guiHandler.setErrorDescription('Please select a statement!');
 		} else {
 			guiHandler.setErrorDescription('');
+			guiHandler.setSuccessDescription('');
 			if (radioButton.hasClass('argument')) {
 				this.argumentButtonWasClicked(id, value);
 			} else {
@@ -126,16 +148,16 @@ function InteractionHandler() {
 		//  1 everything is fine
 		switch(parsedData.status){
 			case '-1':
-				new gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
-				new gh.setNewArgumentAndGoodPointButton(newArgumentRadioButtonText, true, 'radio');
+				gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
+				gh.setNewArgumentAndGoodPointButton(newArgumentRadioButtonText, true, 'radio');
 				break;
 			case '0':
-				new gh.setDiscussionsDescriptionWithoutConfrontation(parsedData.currentStatementText);
-				new gh.setNewArgumentButtonOnly(newArgumentRadioButtonText, true, 'radio');
+				gh.setDiscussionsDescriptionWithoutConfrontation(parsedData.currentStatementText);
+				gh.setNewArgumentButtonOnly(newArgumentRadioButtonText, true, 'radio');
 				break;
 			case '1':
-				new gh.setJsonDataToContentAsArguments(parsedData.justifications, false);
-				new gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
+				gh.setJsonDataToContentAsArguments(parsedData.justifications, false);
+				gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
 				break;
 		}
 
@@ -160,6 +182,25 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendNewPosition = function (data) {
 		var parsedData = $.parseJSON(data);
 		new GuiHandler().setNewPositionAsLastChild(parsedData);
+	};
+
+	/**
+	 * Callback, when a new arguments were send
+	 * @param data returned data
+	 */
+	this.callbackIfDoneForSendNewArguments = function (data) {
+		var parsedData = $.parseJSON(data), gh = new GuiHandler;
+		// -1 something went wrong
+		//  1 everything is fine
+		switch(parsedData.status){
+			case '-1':
+				gh.setErrorDescription('Internal failure, please try again or did you have deleted your track recently?')
+				break;
+			case '1':
+				gh.setSuccessDescription('Everything was added.');
+				gh.addJsonDataToContentAsArguments(parsedData.arguments);
+				break;
+		}
 	};
 
 	/**

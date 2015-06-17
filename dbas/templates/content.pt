@@ -34,6 +34,7 @@
 					<div class="col-md-2"></div>
 					<div class="col-md-8">
 						<h4><p id='error-description'></p></h4>
+						<h4><p id='success-description'></p></h4>
 						<h3><p id='discussions-description'></p></h3>
 						<div id="discussions-space"> </div>
 						<div class="center text-center">
@@ -75,7 +76,7 @@
 								</div>
 								<a>
 									<div id="add-pro-textarea">
-										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add another pro argument</div>
+										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add something for the argument</div>
 								</a>
 							</div>
 
@@ -85,7 +86,7 @@
 								</div>
 								<a>
 									<div id="add-con-textarea">
-										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add another contra argument</div>
+										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add something against the argument</div>
 								</a>
 							</div>
 							<div tal:condition="was_statement_inserted" class="alert alert-success" role="alert">

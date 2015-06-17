@@ -6,10 +6,9 @@ function TrackHandler() {
 
 	/**
 	 *
-	 * @param nickname
 	 * @param get_track_data is true, when the data should be get, false, when it should be deleted
 	 */
-	this.manageUserTrackData = function ( get_track_data) {
+	this.manageUserTrackData = function ( get_track_data ) {
 		'use strict';
 		$.ajax({
 			url: 'ajax_manage_user_track',

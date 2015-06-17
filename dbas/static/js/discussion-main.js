@@ -8,7 +8,7 @@ var addStatementContainerMainInputId = 'add-statement-container-main-input';
 var addProTextareaId = 'add-pro-textarea';
 var addConTextareaId = 'add-con-textarea';
 var adminsSpaceId = 'admins-space';
-var argumentList = 'argument-list';
+var argumentListId = 'argument-list';
 var closeStatementContainerId = 'closeStatementContainer';
 var discussionsDescriptionId = 'discussions-description';
 var discussionContainerId = 'discussion-container';
@@ -40,6 +40,7 @@ var stepBackButtonId = 'step-back';
 var sendAnswerButtonId = 'send-answer';
 var sendNewStatementId = 'send-new-statement';
 var statementListId = 'statement-list';
+var successDescriptionId = 'success-description';
 
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
@@ -64,7 +65,6 @@ $(function () {
 	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
-	$('#' + tryAgainDiscussionButtonId).hide();
 	$('#' + stepBackButtonId).hide();
 
 	// starts the discussion with getting all positions
@@ -93,14 +93,15 @@ $(function () {
 		$('#' + startDiscussionButtonId).show(); // show the start description
 		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
 		$('#' + addStatementContainerId).hide(); // hide add statement container
-		$('#' + tryAgainDiscussionButtonId).hide(); // hiding retry button
 
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionContainerId).hide();
-		$('#' + errorDescriptionId).hide();
 		$('#' + discussionFailureRowId).hide();
 		$('#' + stepBackButtonId).hide();
+		guiHandler.setErrorDescription('');
+		guiHandler.setSuccessDescription('');
+
 	});
 
 	// admin list all users button
@@ -116,12 +117,12 @@ $(function () {
 
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).click(function () {
-		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId);
+		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId, 'right');
 	});
 
 	// adding a textarea in the left column
 	$('#' + addProTextareaId).click(function () {
-		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId);
+		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId, 'left');
 	});
 
 	// hiding the argument container, when the X button is clicked
@@ -134,8 +135,9 @@ $(function () {
 	
 	// ajax loading animation
 	$(document).on({
-		ajaxStart: function () { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a flickering screen
-		ajaxStop: function () { setTimeout("$('body').removeClass('loading')", 0); }
+		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a
+		// flickering screen
+		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
 	});
 
 	/*

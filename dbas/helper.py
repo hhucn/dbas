@@ -264,12 +264,7 @@ class QueryHelper(object):
 			if justificiation_argument_rows:
 				logger('QueryHelper', 'get_args_for_new_round', 'There are arguments against the contra argument')
 				for justification in justificiation_argument_rows:
-					argument_dict = {}
-					argument_dict['uid'] = justification['uid']
-					argument_dict['text'] = justification['text']
-					argument_dict['date'] = str(justification['date'])
-					argument_dict['weight'] = str(justification['weight'])
-					argument_dict['author'] = justification['author']
+					argument_dict = DictionaryHelper().save_argument_row_in_dictionary(justification)
 					justifications_dict[str(justification['uid'])] = argument_dict
 				return_dict['justifications'] = justifications_dict
 				return_dict['status'] = '1'
@@ -288,23 +283,19 @@ class QueryHelper(object):
 		Checks whether the given statement is already inserted
 		:param statement_text: text for the check
 		:param is_position: true, if it is a position
-		:return: true, if it was already inserted
+		:return: >0, if it was already inserted, -1 otherwise
 		"""
 		if is_position:
-			db_statement = DBSession.query(Position).filter_by(text=statement_text).first()
+			db_statement = DBSession.query(Position).filter_by(text=statement_text).order_by(Position.uid.desc()).first()
 		else:
-			db_statement = DBSession.query(Argument).filter_by(text=statement_text).first()
+			db_statement = DBSession.query(Argument).filter_by(text=statement_text).order_by(Argument.uid.desc()).first()
 
-		if db_statement:
-			logger('QueryHelper', 'is_statement_already_in_database', 'new statement is already in the db')
-			return True
-		else:
-			logger('QueryHelper', 'is_statement_already_in_database', 'new statement is not in the db')
-			return False
+		logger('QueryHelper', 'is_statement_already_in_database', 'new statement is already' if db_statement else 'not in the db')
+		return db_statement.uid if db_statement else -1
 
 	def get_argument_list_in_relation_to_statement(self, uid, is_supportive, is_position):
 		"""
-		Returns every argument with a non-supportive connection to the given position
+		Returns every statement with a (non-)supportive connection to the given statement uid
 		:param pos_uid: uid of the position
 		:param is_supportive: 1 if it is supportive, 0 otherwise
 		:param is_position: true, if it is a position
@@ -340,13 +331,7 @@ class QueryHelper(object):
 					+ ' argument ' + str(arg.arg_uid1))
 				db_arg = DBSession.query(Argument).filter_by(uid=arg.arg_uid1).first()
 
-			argument_dict = {}
-			argument_dict['uid'] = db_arg.uid
-			argument_dict['text'] = db_arg.text
-			argument_dict['date'] = str(db_arg.date)
-			argument_dict['weight'] = str(db_arg.weight)
-			author = DBSession.query(User).filter_by(uid=db_arg.author).first()
-			argument_dict['author'] = author.nickname
+			argument_dict = DictionaryHelper().save_argument_row_in_dictionary(db_arg)
 			return_list.append(argument_dict)
 
 		return return_list
@@ -387,7 +372,7 @@ class QueryHelper(object):
 		:param user: current user id
 		:return: track os the user id as dictionary
 		"""
-		logger('QueryHelper','get_track_for_user','user ' + user)
+		logger('QueryHelper', 'get_track_for_user', 'user ' + user)
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 
 		db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).all()
@@ -412,7 +397,7 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def del_track_for_user(self, DBSession, transaction, user):
+	def del_track_for_user(self, transaction, user):
 		"""
 		Returns the complete track of given user
 		:param DBSession: current session
@@ -421,11 +406,11 @@ class QueryHelper(object):
 		:return: undefined
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'del_track_for_user','user ' + db_user.uid)
+		logger('QueryHelper', 'del_track_for_user','user ' + str(db_user.uid))
 		DBSession.query(Track).filter_by(user_uid=db_user.uid).delete()
 		transaction.commit()
 
-	def set_new_position(self, DBSession, transaction, position, user):
+	def set_new_position(self, transaction, position, user):
 		"""
 		Saves position for user
 		:param transaction: current transaction
@@ -438,7 +423,7 @@ class QueryHelper(object):
 		logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + str(user) + 'user_id: ' + str(db_user.uid)
 		       + ', position: ' + str(position))
 
-		# save position
+		# save position, but we cannot set any relation here
 		new_position = Position(text=position, weight=0)
 		new_position.author = db_user.uid
 		DBSession.add(new_position)
@@ -459,6 +444,92 @@ class QueryHelper(object):
 
 		return return_dict
 
+	def set_new_arguments(self, transaction, params, user):
+		"""
+		Saves arguments for user
+		:param transaction: current transaction
+		:param params: self.request.params with pro and con keys as well as values
+		:param user: given user
+		:return: dictionary of the new arguments
+		"""
+
+		# get author and last selected statement
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		db_user_uid = db_user.uid
+		db_last_statement = DBSession.query(Track).filter_by(user_uid=db_user.uid).order_by(Track.uid.desc()).first()
+		is_argument = db_last_statement.is_argument
+		last_statement_uid = db_last_statement.arg_uid if is_argument else db_last_statement.pos_uid
+
+		text = 'last tracked statement of user ' + user + '(uid ' + str(db_user_uid) + ') is '
+		if db_last_statement:
+			text += 'argument' if is_argument else 'position' + ', uid ' + str(last_statement_uid)
+		else:
+			text += 'empty'
+			return_dict = {}
+			return_dict['status'] = '-1'
+			return return_dict
+
+		logger('QueryHelper', 'set_new_arguments', text)
+
+		return_dict = {}
+		all_arguments_dict = {}
+		for key in params:
+			value = str(params[key])
+			logger('QueryHelper', 'set_new_arguments', '====================================')
+			logger('QueryHelper', 'set_new_arguments', 'argument will be added: (' + str(key) + ') ' + value)
+			# set argument
+			new_argument = Argument(text=value, weight=0)
+			new_argument.author = db_user_uid
+			DBSession.add(new_argument)
+			transaction.commit()
+
+			# check if it was added
+			is_supportive = key.startswith('pro')
+			db_new_argument = DBSession.query(Argument).filter_by(text=value).order_by(Argument.uid.desc()).first()
+			uid = db_new_argument.uid
+			text = 'did db request whether the new argument was added: uid ' + str(uid) + ', support ' + str(is_supportive)
+			logger('QueryHelper', 'set_new_arguments', text)
+
+			# save the argument
+			additional_key = 'is_supportive'
+			additional_value = '1' if is_supportive else '0'
+			argument_dict = DictionaryHelper().save_argument_row_in_dictionary(db_new_argument, additional_key, additional_value)
+			all_arguments_dict[str(argument_dict['uid'])] = argument_dict
+
+			# set relation to the last selected statement
+			# case 1. last statement is argument + support relation
+			# case 2. last statement is argument +  attack relation
+			# case 3. last statement is position + support relation
+			# case 4. last statement is position +  attack relation
+
+			if is_argument:
+				text = 'set relation: last statement is argument, ' + ('support' if is_supportive else 'attack')  + ' relation'
+				new_relation = RelationArgArg(weight=0, is_supportive=is_supportive)
+				new_relation.arg_uid1 = uid
+				new_relation.arg_uid2 = last_statement_uid
+				DBSession.add(new_relation)
+				new_relation.author = db_user_uid
+				transaction.commit()
+
+			elif not is_argument:
+				text = 'set relation: last statement is position, ' + ('support' if is_supportive else 'attack')  + ' relation'
+				new_relation = RelationArgPos(weight=0, is_supportive=is_supportive)
+				new_relation.arg_uid = uid
+				new_relation.pos_uid = last_statement_uid
+				new_relation.author = db_user_uid
+				DBSession.add(new_relation)
+				transaction.commit()
+
+			else:
+				text = 'relation is unknown'
+
+			logger('QueryHelper', 'set_new_arguments', text)
+
+			return_dict['status'] = '1'
+
+		return_dict['arguments'] = all_arguments_dict
+
+		return return_dict
 
 class DictionaryHelper(object):
 
@@ -503,3 +574,21 @@ class DictionaryHelper(object):
 		"""
 		return_dict = json.dumps(dict, ensure_ascii)
 		return return_dict
+
+	def save_argument_row_in_dictionary(self, argument_row, additional_key='', additional_value=''):
+		"""
+		Saved a row in dictionary
+		:param argument_row: for saving
+		:return: dictionary
+		"""
+		dict = {}
+		dict['uid'] = str(argument_row.uid)
+		dict['text'] = argument_row.text
+		dict['date'] = str(argument_row.date)
+		dict['weight'] = str(argument_row.weight)
+		author = DBSession.query(User).filter_by(uid=argument_row.author).first()
+		dict['author'] = author.nickname
+		if len(additional_key) > 0 and len(additional_value) > 0:
+			dict[additional_key] = additional_value
+		return dict
+

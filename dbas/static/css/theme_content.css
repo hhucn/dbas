@@ -31,6 +31,12 @@
 	font-weight: 600;
 }
 
+#success-description {
+	color: #97bf0d;
+	font-size: 15;
+	font-weight: 600;
+}
+
 #discussions-space ul li input {
 	font-size: 15px;
 	margin-right: 5px;

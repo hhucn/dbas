@@ -54,7 +54,35 @@ function GuiHandler() {
 		}
 		// button for new statements
 		listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newArgumentRadioButtonText, true, 'radio'));
-		_this.addListItemsToDiscussionsSpace(listitems, argumentList);
+		_this.addListItemsToDiscussionsSpace(listitems, argumentListId);
+	};
+
+
+	/**
+	 * Adds given json content as argument buttons in the discussions space
+	 * @param jsonData data with json content
+	 */
+	this.addJsonDataToContentAsArguments = function (jsonData) {
+		var _this = new GuiHandler(), text;
+		alert('1 addJsonDataToContentAsArguments');
+		$.each(jsonData, function addJsonDataToContentAsArgumentsEach(key, val) {
+			alert('2 key ' + key + ', val ' + val + ', uid ' + val.uid + ', text: ' + val.text);
+
+			// we only want attacking arguments
+			if (val.is_supportive === '0') {
+				if (val.text.toLowerCase()() !== 'because') {
+					text = "Because " + val.text.substring(0, 1).toLowerCase();
+				} else {
+					text = val.text;
+				}
+				$('#li_' + addStatementButtonId).before(_this.getKeyValAsInputInLiWithType(val.uid, text, true, 'radio'));
+			}
+		});
+
+		// hover style element for the list elements
+		$('#' + argumentListId).children().hover(function () {
+			$(this).toggleClass('table-hover');
+		});
 	};
 
 	/**
@@ -185,6 +213,14 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Setting a success description in some p-tag
+	 * @param text to set
+	 */
+	this.setSuccessDescription = function (text) {
+		$('#' + successDescriptionId).text(text);
+	};
+
+	/**
 	 * Creates an input element tih key as id and val as value. This is embedded in an li element
 	 * @param key will be used as id
 	 * @param val will be used as value
@@ -260,8 +296,9 @@ function GuiHandler() {
 	/**
 	 * Adds a textarea with a little close button (both in a div tag) to a parend tag
 	 * @param parentid id-tag of the parent element, where a textare should be added
+	 * @param identifier additional id
 	 */
-	this.addTextareaAsChildInParent = function (parentid) {
+	this.addTextareaAsChildInParent = function (parentid, identifier) {
 		/**
 		 * The structure is like:
 		 * <div><textarea .../><button...></button></div>
@@ -276,10 +313,9 @@ function GuiHandler() {
 		button = $('<button>');
 		button.attr({type: 'button',
 			class: 'close',
-			id: 'button' + childCount.toString()});
+			id: 'button_' + identifier + childCount.toString()});
 
 		span = $('<span>');
-		//span.setAttribute('aria-hidden', 'true');
 		span.html('&times;');
 
 		area = $('<textarea>');
@@ -287,9 +323,9 @@ function GuiHandler() {
 			class: '',
 			name: '',
 			autocomplete: 'off',
-			placeholder: 'example: I am the area number ' + (childCount).toString() + '.',
+			placeholder: (childCount).toString() + '. argument, ' + identifier,
 			value: '',
-			id: 'area' + childCount.toString()});
+			id: 'textarea_' + identifier + childCount.toString()});
 
 		button.append(span);
 		div.append(area);
@@ -318,6 +354,7 @@ function GuiHandler() {
 		} else {
 			var newElement = this.getKeyValAsInputInLiWithType(jsonData.position.uid, jsonData.position.text, false, 'radio');
 			$('#li_' + addStatementButtonId).before(newElement);
+			new GuiHandler().setSuccessDescription('Everything was added.');
 		}
 	};
 
@@ -336,7 +373,7 @@ function GuiHandler() {
 				$('#' + rightPositionColumnId).show();
 				$('#' + sendNewStatementId).off("click");
 				$('#' + sendNewStatementId).click(function () {
-					new AjaxHandler().sendNewArgument();
+					new InteractionHandler().getArgumentsAndSendThem();
 				});
 			} else {
 				$('#' + addStatementContainerH2Id).text(statementContainerH2TextIfPosition);

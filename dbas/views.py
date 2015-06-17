@@ -522,7 +522,7 @@ class Dbas(object):
 			logged_in=self.request.authenticated_userid
 		)
 
-	# ajax - getting all positions
+	# ajax - return all position in the database
 	@view_config(route_name='ajax_all_positions', renderer='json')
 	def get_ajax_all_positions(self):
 		"""
@@ -642,6 +642,10 @@ class Dbas(object):
 	# ajax - getting every argument, which is connected to the given position uid
 	@view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')
 	def get_ajax_arguments_by_pos(self):
+		"""
+		Returns all arguments, which are connected to a position, which uid is delivered in the params
+		:return: dictionary with db-rows, json-encoded
+		"""
 		logger('ajax_arguments_connected_to_position_uid', 'def', 'main')
 
 		# get every relation from current argument to an position with uid send
@@ -676,6 +680,10 @@ class Dbas(object):
 	# ajax - getting next argument for confrontation
 	@view_config(route_name='ajax_args_for_new_discussion_round', renderer='json')
 	def get_ajax_args_for_new_round(self):
+		"""
+		Returns arguments for a new confrontation and justification
+		:return: dictionary with db-rows, json-encoded
+		"""
 		logger('get_args_for_new_round', 'def', 'main')
 
 		# TODO: FINISHED; BUT NOT DEBUGGED:
@@ -704,9 +712,13 @@ class Dbas(object):
 
 		return return_json
 
-	# ajax - getting next argument for confrontation
+	# ajax - send new position
 	@view_config(route_name='ajax_send_new_position', renderer='json')
 	def set_ajax_send_new_position(self):
+		"""
+		Inserts a new position into the database
+		:return: a status code, if everything was successfull
+		"""
 		logger('set_ajax_send_new_position', 'def', 'main')
 
 		position = ''
@@ -719,7 +731,7 @@ class Dbas(object):
 		# is position already inserted?
 		return_dict = {}
 		query_helper = QueryHelper()
-		if query_helper.is_statement_already_in_database(position, True):
+		if query_helper.is_statement_already_in_database(position, True) > -1:
 			logger('set_ajax_send_new_position', 'def', 'duplicate')
 			return_dict['result'] = 'failed'
 			return_dict['reason'] = 'duplicate'
@@ -733,6 +745,19 @@ class Dbas(object):
 				return_dict['result'] = 'failed'
 				return_dict['reason'] = 'empty text'
 
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - getting next argument for confrontation
+	@view_config(route_name='ajax_send_new_arguments', renderer='json')
+	def set_ajax_send_new_arguments(self):
+		"""
+		Insert new arguments into the database
+		:return: dictionary with every arguments
+		"""
+		logger('set_ajax_send_new_arguments', 'def', 'main')
+		return_dict = QueryHelper().set_new_arguments(transaction, self.request.params, self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json

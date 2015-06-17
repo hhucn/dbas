@@ -104,10 +104,28 @@ function AjaxHandler() {
 		});
 	};
 
-	this.sendNewArgument = function () {
-		alert('todo: sendNewArgument');
+	/**
+	 * Sends new position to the server. Answer will be given to a callback
+	 * @param argument_dictionary for inserting
+	 */
+	this.sendNewArgument = function (argument_dictionary) {
+		$.ajax({
+			url: 'ajax_send_new_arguments',
+			type: 'GET',
+			data: argument_dictionary,
+			dataType: 'json',
+			async: true
+		}).done(function ajaxSendNewArgumentDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewArguments(data);
+		}).fail(function ajaxSendNewArgumentFail() {
+			new GuiHandler().setErrorDescription('New arguments could not be sent. Sorry!')
+		});
 	};
 
+	/**
+	 * Sends new position to the server. Answer will be given to a callback
+	 * @param position for sending
+	 */
 	this.sendNewPosition = function (position) {
 		$.ajax({
 			url: 'ajax_send_new_position',
