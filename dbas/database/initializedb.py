@@ -5,7 +5,7 @@ import transaction
 from dbas.helper import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos,\
+from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, \
     RelationPosArg, RelationPosPos, Group, Issue, Base
 
 
@@ -65,10 +65,12 @@ def main(argv=sys.argv):
 		position1 = Position(text='We should get a cat.', weight=0)
 		position2 = Position(text='We should get a dog.', weight=0)
 		position3 = Position(text='We should neither get a cat nor a dog.', weight=0)
+		position4 = Position(text='We could get both, a cat and a dog.', weight=0)
 		position1.author = user1.uid
 		position2.author = user1.uid
 		position3.author = user1.uid
-		DBSession.add_all([position1, position2, position3])
+		position4.author = user1.uid
+		DBSession.add_all([position1, position2, position3, position4])
 		DBSession.flush()
 
 		# adding all arguments out of the discussion
@@ -92,7 +94,13 @@ def main(argv=sys.argv):
 		argument18 = Argument(text='Trained animals are like slaves.', weight=0)
 		argument19 = Argument(text='Dogs can be teached and learn cool tricks.', weight=0)
 		argument20 = Argument(text='Neither we have use for a cat.', weight=0)
-		argument21 = Argument(text='You cannot go on vaction, because you have to take care of your pet.', weight=0)
+		argument21 = Argument(text='You cannot go on vacation, because you have to take care of your pet.', weight=0)
+		argument22 = Argument(text='They are not like trained animals in the zoo, but rather well educated.', weight=0)
+		argument23 = Argument(text='This only happens in comics.', weight=0)
+		argument24 = Argument(text='Cats must be fed, too.', weight=0)
+		argument25 = Argument(text='Cats want expressives toys, dogs only a bone or branch.', weight=0)
+		argument26 = Argument(text='There are naked cats without any hair.', weight=0)
+		argument27 = Argument(text='Even a cat can be trained.', weight=0)
 		argument1.author = user1.uid
 		argument2.author = user1.uid
 		argument3.author = user1.uid
@@ -114,9 +122,13 @@ def main(argv=sys.argv):
 		argument19.author = user1.uid
 		argument20.author = user1.uid
 		argument21.author = user1.uid
-		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, \
-        argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, \
-        argument18, argument19, argument20, argument21])
+		argument22.author = user1.uid
+		argument23.author = user1.uid
+		argument24.author = user1.uid
+		argument25.author = user1.uid
+		argument26.author = user1.uid
+		argument27.author = user1.uid
+		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27])
 		DBSession.flush()
 
 		# adding all relations out of the discussion
@@ -166,6 +178,17 @@ def main(argv=sys.argv):
 		relation44 = RelationArgPos(weight=0, is_supportive=False)
 		relation45 = RelationArgPos(weight=0, is_supportive=True)
 		relation46 = RelationArgArg(weight=0, is_supportive=True)
+		relation47 = RelationArgArg(weight=0, is_supportive=False)
+		relation48 = RelationArgArg(weight=0, is_supportive=False)
+		relation49 = RelationArgArg(weight=0, is_supportive=False)
+		relation50 = RelationArgArg(weight=0, is_supportive=False)
+		relation51 = RelationArgArg(weight=0, is_supportive=False)
+		relation52 = RelationArgArg(weight=0, is_supportive=False)
+		relation53 = RelationArgArg(weight=0, is_supportive=False)
+		relation54 = RelationArgArg(weight=0, is_supportive=False)
+		relation55 = RelationArgPos(weight=0, is_supportive=False)
+		relation56 = RelationArgPos(weight=0, is_supportive=False)
+		relation57 = RelationArgPos(weight=0, is_supportive=True)
 
 		# adding the startpoints of the relations
 		relation1.arg_uid = argument1.uid
@@ -214,6 +237,17 @@ def main(argv=sys.argv):
 		relation44.arg_uid = argument14.uid
 		relation45.arg_uid = argument20.uid
 		relation46.arg_uid1 = argument20.uid
+		relation47.arg_uid1 = argument21.uid
+		relation48.arg_uid1 = argument22.uid
+		relation49.arg_uid1 = argument23.uid
+		relation50.arg_uid1 = argument24.uid
+		relation51.arg_uid1 = argument25.uid
+		relation52.arg_uid1 = argument26.uid
+		relation53.arg_uid1 = argument26.uid
+		relation54.arg_uid1 = argument27.uid
+		relation55.arg_uid = argument8.uid
+		relation56.arg_uid = argument9.uid
+		relation57.arg_uid = argument7.uid
 
 
 		# adding the endpoints of the relations
@@ -263,6 +297,17 @@ def main(argv=sys.argv):
 		relation44.pos_uid = position2.uid
 		relation45.pos_uid = position3.uid
 		relation46.arg_uid2 = argument5.uid
+		relation47.arg_uid2 = argument4.uid
+		relation48.arg_uid2 = argument18.uid
+		relation49.arg_uid2 = argument8.uid
+		relation50.arg_uid2 = argument1.uid
+		relation51.arg_uid2 = argument14.uid
+		relation52.arg_uid2 = argument13.uid
+		relation53.arg_uid2 = argument12.uid
+		relation54.arg_uid2 = argument11.uid
+		relation55.pos_uid = position4.uid
+		relation56.pos_uid = position4.uid
+		relation57.pos_uid = position4.uid
 
 
 		# adding the authors
@@ -312,13 +357,19 @@ def main(argv=sys.argv):
 		relation44.author = user1.uid
 		relation45.author = user1.uid
 		relation46.author = user1.uid
+		relation47.author = user1.uid
+		relation48.author = user1.uid
+		relation49.author = user1.uid
+		relation50.author = user1.uid
+		relation51.author = user1.uid
+		relation52.author = user1.uid
+		relation53.author = user1.uid
+		relation54.author = user1.uid
+		relation55.author = user1.uid
+		relation56.author = user1.uid
+		relation57.author = user1.uid
 
-		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8, \
-        relation9, relation10, relation11, relation12, relation13, relation14, relation15, relation16, relation17, \
-        relation18, relation19, relation20, relation21, relation22, relation23, relation24, relation25, relation26, \
-        relation27, relation28, relation29, relation30, relation31, relation32, relation33, relation34, relation35, \
-        relation36, relation37, relation38, relation39, relation40, relation41, relation42, relation43, relation44, \
-        relation45, relation46])
+		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8, relation9, relation10, relation11, relation12, relation13, relation14, relation15, relation16, relation17, relation18, relation19, relation20, relation21, relation22, relation23, relation24, relation25, relation26, relation27, relation28, relation29, relation30, relation31, relation32, relation33, relation34, relation35, relation36, relation37, relation38, relation39, relation40, relation41, relation42, relation43, relation44, relation45, relation46, relation47, relation48, relation49, relation50, relation51, relation52, relation53, relation54, relation55, relation56, relation57])
 		DBSession.flush()
 
 		transaction.commit()
