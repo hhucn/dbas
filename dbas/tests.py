@@ -131,7 +131,7 @@ class UnitTestBase(BaseTestCase):
 	def get_csrf_request(self, post=None):
 		print("UnitTestBase: get_csrf_request")
 		csrf = 'abc'
-		if u'csrf_token' not in post.keys():
+		if 'csrf_token' not in post.keys():
 			post.update({
 				'csrf_token': csrf
 			})
