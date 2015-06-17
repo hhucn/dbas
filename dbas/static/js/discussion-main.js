@@ -77,6 +77,8 @@ $(function () {
 	$('#' + stepBackButtonId).hide(); // hiding the step one round back button
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
 	$('#' + displayControlContainerId).hide(); // hidding the control container
+	$('#sc-style-3').hide();
+	$('#label-sc-style-3').hide();
 
 	// starts the discussion with getting all positions
 	$('#' + startDiscussionButtonId).click(function () {
@@ -91,6 +93,8 @@ $(function () {
 	// handler for the send answer button
 	$('#' + sendAnswerButtonId).click(function () {
 		interactionHandler.sendAnswerButtonClicked();
+		guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
+		$('#' + islandViewContainerId).fadeOut('slow');
 	});
 
 	// handler for the step back button

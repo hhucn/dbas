@@ -125,7 +125,6 @@ function InteractionHandler() {
 				this.positionButtonWasClicked(id, value);
 			}
 		}
-		guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
 	};
 
 	/**

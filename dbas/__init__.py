@@ -25,7 +25,7 @@ def main(global_config, **settings):
 			  'mail.host':'mail.uni-duesseldorf.de',
 			  'mail.port':'465',
 			  'mail.username':'krauthoff',
-			  'mail.password':'cs_kraut#1989',
+			  'mail.password':'-',
 			  'mail.ssl':'True',
 	          'mail.tls':'False',
 	          'mail.default_sender':'krauthoff@cs.uni-duesseldorf'

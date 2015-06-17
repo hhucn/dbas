@@ -64,7 +64,7 @@
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col-md-10">
-						<h3><span class="font-semi-bold">Island View</span></h3>
+						<h3 id='island-view-container-header-h3'><span class="font-semi-bold">Island View</span></h3>
 						<h3 id='island-view-container-h3'><span class="font-semi-bold">Island View</span></h3>
 
 							<div id="left-island-column">
@@ -149,17 +149,17 @@
 				<p>Change display style:</p>
 				<div class="segmented-control">
 					<input type="radio" name="sc-display-style" id="sc-style-1" checked value="Dialog View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
-					<label for="sc-style-1" data-value="Dialog View">
+					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
 						<p>Dialog View</p>
 					</label>
 					<br>
 					<input type="radio" name="sc-display-style" id="sc-style-2" value="Island View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
-					<label for="sc-style-2" data-value="Island View">
+					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
 						<p>Island View</p>
 					</label>
 					<br>
 					<input type="radio" name="sc-display-style" id="sc-style-3" value="Complete View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
-					<label for="sc-style-3" data-value="Complete View">
+					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
 						<p>Complete View</p>
 					</label>
 				</div>
