@@ -92,21 +92,6 @@ textarea[type="text"]  {
 	border-color: #bcbcbc;
 }
 
-::-webkit-input-placeholder { /* WebKit browsers */
-	color: #bcbcbc;
-}
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-	color:  #bcbcbc;
-	opacity: 1;
-}
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-	color:  #bcbcbc;
-	opacity: 1;
-}
-:-ms-input-placeholder { /* Internet Explorer 10+ */
-	color: #bcbcbc;
-}
-
 .top-row:after {
 	content: "";
 	display: table;

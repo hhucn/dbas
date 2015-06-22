@@ -93,9 +93,8 @@
 					<div class="col-md-10">
 
 						<form id="insert_statement_form" action="/not_implemented" method="post">
-							<h3 id='add-statement-container-h3'>Please insert a new Argument</h3>
-							<input id='add-statement-container-main-input' type="text" class="" name="" autocomplete="off" placeholder="example:
-					Build a new opera house" value="">
+							<h3 id="add-statement-container-h3">Please insert a new Argument</h3>
+							<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="">
 
 							<div id="left-position-column">
 								<h3 id="heading-pro-positions" class="font-semi-bold">Pro</h3>
@@ -103,7 +102,7 @@
 								</div>
 								<a>
 									<div id="add-pro-textarea">
-										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add something for the argument</div>
+										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add a textfield</div>
 								</a>
 							</div>
 
@@ -113,7 +112,7 @@
 								</div>
 								<a>
 									<div id="add-con-textarea">
-										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add something against the argument</div>
+										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add a textfield</div>
 								</a>
 							</div>
 							<div tal:condition="was_statement_inserted" class="alert alert-success" role="alert">
