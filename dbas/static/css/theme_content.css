@@ -148,12 +148,20 @@
 }
 
 #display-control-container{
-	position: absolute;
+	position: fixed;
 	display: inline-block;
 	color: #006AB3;
-	bottom: 80px;
+	bottom: 75px;
 	right: 0px;
 }
+#navigation-minimap-container{
+	visibility: hidden;
+	position: fixed;
+	color: #006AB3;
+	top: 50px;
+	right: 0px;
+}
+	
 
 
 @media (max-width: 767px) {

@@ -99,13 +99,13 @@ class PasswordHandler(object):
 
 class QueryHelper(object):
 
-	def is_user_admin(self, uid):
+	def is_user_admin(self, user):
 		"""
 		Check, if the given uid has admin rights or is admin
-		:param uid:
+		:param user:
 		:return: true, if user is admin, false otherwise
 		"""
-		db_user = DBSession.query(User).filter_by(nickname=str(uid)).first()
+		db_user = DBSession.query(User).filter_by(nickname=str(user)).first()
 		db_group = DBSession.query(Group).filter_by(name='admins').first()
 		logger('QueryHelper', 'is_user_admin', 'check for current user')
 		if db_user:
@@ -126,42 +126,40 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_data_for_one_step_back', 'user id ' + str(db_user.uid))
 
 		# get the track of arguments for this user
-		db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).order_by(Track.uid.desc()).first()
-		db_argument_track = DBSession.query(Track).filter(and_(Track.user_uid == db_user.uid, Track.is_argument == True)).order_by(
-			Track.uid.desc()).all()
+		db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).order_by(Track.uid.desc()).all()
 
 		return_dict = {}
-		if db_track:
-			logger('QueryHelper', 'get_data_for_one_step_back', 'user has history/trace')
+		# check for history
+		if not db_track:
+			logger('QueryHelper', 'get_data_for_one_step_back', 'user has no argument trace')
+			return_dict['status'] = '-1'
+		else:
+			logger('QueryHelper', 'get_data_for_one_step_back', 'user has a trace')
+			row = True
+			# get second entry, because this is the decision made one step back
+			for track in db_track:
+				if row:
+					logger('QueryHelper', 'get_data_for_one_step_back', 'passed first row')
+					row = False
+				else:
+					row = track
+					logger('QueryHelper', 'get_data_for_one_step_back', 'get second row with arg_uid ' + str(track.arg_uid)
+					       + ', pos_uid ' + str(track.pos_uid) + ', is_argument ' + str(track.is_argument))
+					break
 
-			if not db_track.is_argument:
-				logger('QueryHelper', 'get_data_for_one_step_back', 'user\'s last track is a position')
+			# do we have a position or an argument?
+			if row.arg_uid == -1:
+				logger('QueryHelper', 'get_data_for_one_step_back', 'last statement was a position with uid : ' + str(row.pos_uid))
+				return_dict = self.get_arguments_for_justifications(row.pos_uid)
+				db_last_position = DBSession.query(Position).filter_by(uid=row.pos_uid).first()
+				return_dict['currentStatementText'] = db_last_position.text
 				return_dict['status'] = '0'
 			else:
-				logger('QueryHelper', 'get_data_for_one_step_back', 'user\'s last track is at least one argument')
+				logger('QueryHelper', 'get_data_for_one_step_back', 'last statement was an argument with uid : ' + str(row.arg_uid))
+				return_dict = self.get_args_for_new_round(user, row.arg_uid)
+				return_dict['status'] = '1'
 
-				if len(db_argument_track) > 1:
-					logger('QueryHelper', 'get_data_for_one_step_back', 'user\'s last track is one argument')
-					return_dict['status'] = '0'
-				else:
-					logger('QueryHelper', 'get_data_for_one_step_back', 'user\'s last track is more than one argument')
-					firstRow = True
-					secondRow = ''
-					for track in db_argument_track:
-						secondRow = track
-						if firstRow:
-							logger('QueryHelper', 'get_data_for_one_step_back', 'passed first row')
-							firstRow = False
-						else:
-							logger('QueryHelper', 'get_data_for_one_step_back', 'get second row')
-							break
-
-					return_dict['status'] = str(secondRow.arg_uid)
-
-		else:
-			logger('QueryHelper', 'get_data_for_one_step_back', 'user has no history/trace')
-			return_dict['status'] = '-1'
-
+		logger('QueryHelper', 'get_data_for_one_step_back', 'finished')
 		return return_dict
 
 	def get_all_arguments_by_arg_uid(self, uid, is_supportive):
@@ -215,60 +213,91 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def get_args_for_new_round(self, user_id, statement_id, is_argument):
+	def get_all_positions(self):
+		"""
+		Returns all positions
+		:return: dictionary
+		"""
+		return_dict = {}
+		positions_dict = {}
+		db_positions = DBSession.query(Position).all()
+		logger('QueryHelper', 'get_all_positions', 'get all positions')
+		dh = DictionaryHelper()
+		if db_positions:
+			return_dict['status'] = '1'
+			logger('QueryHelper', 'get_all_positions', 'there are positions')
+			for pos in db_positions:
+				logger('QueryHelper', 'get_all_positions', 'pos ' + str(pos.uid) + ': ' + pos.text)
+				positions_dict[str(pos.uid)] = dh.save_statement_row_in_dictionary(pos)
+		else:
+			logger('QueryHelper', 'get_all_positions', 'there no positions')
+			return_dict['status'] = '-1'
+
+		return_dict['positions'] = positions_dict
+		return return_dict
+
+	def get_arguments_for_justifications(self, uid):
+		"""
+		Retruns all arguments for justification for the given id
+		:param uid:
+		:return:
+		"""
+		return_list = QueryHelper().get_argument_list_in_relation_to_statement(uid, True, True)
+		justification_dict = {}
+		return_dict = {}
+
+		if return_list == []:
+			return_dict['status'] = '-1'
+		else:
+			return_dict['status'] = '1'
+			for entry in return_list:
+				justification_dict[entry['uid']] = entry
+
+			return_dict['justification'] = justification_dict
+
+		return return_dict
+
+	def get_args_for_new_round(self, user, statement_id):
 		"""
 		Returns the next argument for a confrontation. This is based on the last given id.
-		:param user_id: current user id, as given in the request params
+		:param user: current user id, as given in the request params
 		:param statement_id: current statement id
-		:param is_argument: true, when the id is for an argument
 		:return: dictionary with 'status' <-> {0 (no contra), 1 (everything is fine), -1 (no justification)},
 		the 'currentStatementText' <-> argument of the user and a justification dictionary with mapping uid <-> argument dictionary
 		"""
-		logger('QueryHelper', 'get_args_for_new_round', 'user ' + str(user_id)  + ', is_argument ' + str(is_argument) + ', statement id ' + str(statement_id))
+		logger('QueryHelper', 'get_args_for_new_round', 'user ' + str(user)  + ', statement id ' + str(statement_id))
 		return_dict = collections.OrderedDict()
 
 		# get the last used statement
-		if is_argument:
-			db_last_statement = DBSession.query(Argument).filter_by(uid=statement_id).first()
-		else:
-			db_last_statement = DBSession.query(Position).filter_by(uid=statement_id).first()
+		db_last_statement = DBSession.query(Argument).filter_by(uid=statement_id).first()
 
 		# save the last statement text in the return dictionary
-		statement = 'argument' if is_argument else 'position'
-		logger('QueryHelper', 'get_args_for_new_round', 'last statement is ' + statement + ': ' + db_last_statement.text)
+		logger('QueryHelper', 'get_args_for_new_round', 'last statement is an argument: ' + db_last_statement.text)
 		return_dict['currentStatementText'] = db_last_statement.text
 
 		# get all statements against our statement
-		if is_argument:
-			contra_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, False, False)
-			# pro_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, True, False)
-		else:
-			contra_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, False, True)
-			# pro_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, True, True)
-
-		# todo: what to do, when there is no argument for an confrontation?
-
-		# pick a random contra argument and get all arguments against the confrontation argument
+		contra_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, False, False)
 		if contra_argument_rows:
-			rnd = randint(0,len(contra_argument_rows)-1)
-			logger('QueryHelper', 'get_args_for_new_round', 'get the nth argument as contra ' + str(rnd))
-			return_dict['confrontation'] = contra_argument_rows[rnd]['text']
-			confrontation_uid = contra_argument_rows[rnd]['uid']
+			# fetch a random contra argument
+			contra_argument = self.get_confrontation_argument(contra_argument_rows)
+
+			# pick a random contra argument and get all arguments against the confrontation argument
+			return_dict['confrontation'] = contra_argument['text']
 
 			# get all arguments against the confrontation argument
-			logger('QueryHelper', 'get_args_for_new_round', 'get arguments against the contra argument nth argument as contra ' + str(confrontation_uid))
-			justificiation_argument_list = self.get_argument_list_in_relation_to_statement(confrontation_uid, False, False)
+			logger('QueryHelper', 'get_args_for_new_round', 'get arguments against the contra argument nth argument as contra ' + str(contra_argument['uid']))
+			justifications_dict = collections.OrderedDict()
+			justificiation_argument_list = self.get_argument_list_in_relation_to_statement(contra_argument['uid'], False, False)
 
 			# get all justifications
-			justifications_dict = collections.OrderedDict()
 			if justificiation_argument_list:
-				logger('QueryHelper', 'get_args_for_new_round', 'There are arguments against the contra argument')
+				logger('QueryHelper', 'get_justification_against_statement_uid_as_dict', 'There are arguments against the contra argument')
 				for justification in justificiation_argument_list:
 					justifications_dict[str(justification['uid'])] = justification
 				return_dict['justifications'] = justifications_dict
 				return_dict['status'] = '1'
 			else:
-				logger('QueryHelper', 'get_args_for_new_round', 'No arguments against the contra argument')
+				logger('QueryHelper', 'get_justification_against_statement_uid_as_dict', 'No arguments against the contra argument')
 				return_dict['status'] = '-1'
 
 		else :
@@ -330,7 +359,7 @@ class QueryHelper(object):
 					+ ' argument ' + str(arg.arg_uid1))
 				db_arg = DBSession.query(Argument).filter_by(uid=arg.arg_uid1).first()
 
-			argument_dict = DictionaryHelper().save_argument_row_in_dictionary(db_arg)
+			argument_dict = DictionaryHelper().save_statement_row_in_dictionary(db_arg)
 			return_list.append(argument_dict)
 
 		return return_list
@@ -339,7 +368,7 @@ class QueryHelper(object):
 		"""
 
 		:param transaction: current transaction
-		:param user_id: authentication id of the user
+		:param user: authentication id of the user
 		:param pos_id: id of the clicked position
 		:return: undefined
 		"""
@@ -380,17 +409,21 @@ class QueryHelper(object):
 			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', date ' + str(
 				track.date) + ', pos_uid ' + str(track.pos_uid) + ', arg_uid ' + str(track.arg_uid) + ', is_arg ' + str(track.is_argument))
 
-			track_dict = {}
-			track_dict['date'] = str(track.date)
-			track_dict['pos_uid'] = track.pos_uid
-			track_dict['arg_uid'] = track.arg_uid
-			if track.is_argument:
-				db_row = DBSession.query(Argument).filter_by(uid=track.arg_uid).first()
-			else:
-				db_row = DBSession.query(Position).filter_by(uid=track.pos_uid).first()
-			track_dict['text'] = db_row.text
-			track_dict['is_argument'] = track.is_argument
-			return_dict[track.uid] = track_dict
+			try:
+				track_dict = {}
+				track_dict['date'] = str(track.date)
+				track_dict['pos_uid'] = track.pos_uid
+				track_dict['arg_uid'] = track.arg_uid
+				if track.is_argument:
+					db_row = DBSession.query(Argument).filter_by(uid=track.arg_uid).first()
+				else:
+					db_row = DBSession.query(Position).filter_by(uid=track.pos_uid).first()
+				track_dict['text'] = db_row.text
+				track_dict['is_argument'] = track.is_argument
+				return_dict[track.uid] = track_dict
+			except AttributeError as ae:
+				logger('>>> QueryHelper <<<', 'get_track_for_user', 'ATTRIBUTE ERROR uid ' + str(ae))
+
 		else:
 			logger('QueryHelper','get_track_for_user','no track')
 
@@ -491,7 +524,7 @@ class QueryHelper(object):
 			# save the argument
 			additional_key = 'is_supportive'
 			additional_value = '1' if is_supportive else '0'
-			argument_dict = DictionaryHelper().save_argument_row_in_dictionary(db_new_argument, additional_key, additional_value)
+			argument_dict = DictionaryHelper().save_statement_row_in_dictionary(db_new_argument, additional_key, additional_value)
 			all_arguments_dict[str(argument_dict['uid'])] = argument_dict
 
 			# set relation to the last selected statement
@@ -571,6 +604,65 @@ class QueryHelper(object):
 
 		return return_dict
 
+	def get_all_users(self, user):
+		"""
+		Returns all users, if the given user is admin
+		:param user: self.request.authenticated_userid
+		:return: dictionary
+		"""
+		is_admin = self.is_user_admin(user)
+		logger('QueryHelper', 'get_all_users', 'is_admin ' + str(is_admin))
+		if not is_admin:
+			return_dict = {}
+		else:
+			logger('QueryHelper', 'get_all_users', 'get all users')
+			db_users = DBSession.query(User).all()
+			logger('QueryHelper', 'get_all_users', 'get all groups')
+
+			db_groups = DBSession.query(Group).all()
+			groups = {}
+			for g in db_groups:
+				logger('QueryHelper', 'get_all_users', str(g.uid) + " - " + g.name)
+				groups[str(g.uid)] = g.name
+
+			return_dict = {}
+
+			if db_users:
+				logger('QueryHelper', 'get_all_users', 'iterate all users')
+				for user in db_users:
+					return_user = {}
+					return_user['uid']         = user.uid
+					return_user['firstname']   = user.firstname
+					return_user['surname']     = user.surname
+					return_user['nickname']    = user.nickname
+					return_user['email']       = user.email
+					return_user['group']       = groups.get(str(user.group))
+					return_user['last_logged'] = str(user.last_logged)
+					return_user['registered']  = str(user.registered)
+					logger('QueryHelper', 'get_all_users ' + str(user.uid) + ' of ' + str(len(db_users)),
+								"uid: " + str(user.uid)
+								+ ", firstname: " + user.firstname
+								+ ", surname: " + user.surname
+								+ ", nickname: " + user.nickname
+								+ ", email: " + user.email
+								+ ", group: " + groups.get(str(user.group))
+								+ ", last_logged: " + str(user.last_logged)
+								+ ", registered: " + str(user.registered)
+					       )
+					return_dict[user.uid] = return_user
+		return return_dict
+
+	def get_confrontation_argument(self, contra_argument_rows):
+		"""
+		Returns a argument for confrontation
+		:param contra_argument_rows: rows of contra arguments
+		:return: argument row
+		"""
+		# fetch a random contra argument
+		rnd = randint(0,len(contra_argument_rows)-1)
+		logger('QueryHelper', 'get_confrontation_argument', 'get the nth argument as contra ' + str(rnd))
+		return contra_argument_rows[rnd]
+
 class DictionaryHelper(object):
 
 	def get_subdictionary_out_of_orderer_dict(self, ordered_dict, count):
@@ -582,16 +674,16 @@ class DictionaryHelper(object):
 		:return: dictionary
 		"""
 		return_dict = {}
-		logger('helper', 'get_subdictionary_out_of_orderer_dict', 'count: ' + str(count))
+		logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'count: ' + str(count))
 		items = list(ordered_dict.items())
 		for item in items:
-			logger('helper', 'get_subdictionary_out_of_orderer_dict', 'all items: ' + ''.join(str(item)))
+			logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'all items: ' + ''.join(str(item)))
 		if count < 0:
 			return ordered_dict
 		elif count == 1:
 			if len(items) > 1:
 				rnd = random.randint(0, len(items)-1)
-				logger('helper', 'get_subdictionary_out_of_orderer_dict', 'return item at ' + str(rnd))
+				logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'return item at ' + str(rnd))
 				return_dict[items[rnd][0]] = items[rnd][1]
 			else:
 				return ordered_dict
@@ -599,7 +691,7 @@ class DictionaryHelper(object):
 
 			for i in range(0, count):
 				rnd = random.randint(0, len(items)-1)
-				logger('helper', 'get_subdictionary_out_of_orderer_dict', 'for loop ' + str(i) + '. add element at ' + str(rnd))
+				logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'for loop ' + str(i) + '. add element at ' + str(rnd))
 				return_dict[items[rnd][0]] = items[rnd][1]
 				items.pop(rnd)
 
@@ -615,7 +707,7 @@ class DictionaryHelper(object):
 		return_dict = json.dumps(dict, ensure_ascii)
 		return return_dict
 
-	def save_argument_row_in_dictionary(self, argument_row, additional_key='', additional_value=''):
+	def save_statement_row_in_dictionary(self, argument_row, additional_key='', additional_value=''):
 		"""
 		Saved a row in dictionary
 		:param argument_row: for saving

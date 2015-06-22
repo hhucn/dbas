@@ -16,13 +16,14 @@ function GuiHandler() {
 	this.setJsonDataToContentAsPositions = function (jsonData) {
 		var listitems = [], _this = new GuiHandler();
 		this.setDiscussionsDescription(startDiscussionText);
-		$.each($.parseJSON(jsonData), function setJsonDataToContentAsPositionsEach(key, val) {
-			//listitems.push(_this.getKeyValAsInputButtonInLiWithType(key, val, false));
-			listitems.push(_this.getKeyValAsInputInLiWithType(key, val, false, 'radio'));
+		$.each(jsonData, function setJsonDataToContentAsPositionsEach(key, val) {
+			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text, false, 'radio'));
 		});
 
 		// sanity check for an empty list
 		if (listitems.length === 0) {
+			// todo: is this even used?
+			alert('discussion-handler: setJsonDataToContentAsPositions');
 			this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
 		}
 
@@ -120,7 +121,7 @@ function GuiHandler() {
 		}
 
 		// add each user element
-		$.each($.parseJSON(jsonData), function setJsonDataToAdminContentEach(key, value) {
+		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
 			trElement = $('<tr>');
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
@@ -259,11 +260,6 @@ function GuiHandler() {
 			// adding label for the value
 			labelElement = '<label for="' + key + '">' + val + '</label>';
 		}
-
-		if (key === addStatementButtonId) {
-			//inputElement.setAttribute('onclick', "new GuiHandler().setDisplayStylesOfAddArgumentContainer(true)");
-		}
-
 
 		if (type === 'button') {
 			alert('check code for completion');
@@ -416,8 +412,10 @@ function GuiHandler() {
 					statement = statement.substr(0, statement.length -1);
 				}
 				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfArgument + statement);
-				$('#' + headingProPositionTextId).html(' I <span id=\'green\'>agree</span> with the statement <\b>\'' + statement + '\', because:');
-				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with the statement <\b>\'' + statement + '\', because:');
+				$('#' + headingProPositionTextId).html(' I <span id=\'green\'>agree</span> with the statement <b>\''
+					+ statement + '</b>\',  because:');
+				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with the statement <b>\''
+					+ statement + '</b>\', because:');
 				$('#' + addStatementContainerMainInputId).hide();
 				$('#' + leftPositionColumnId).show();
 				$('#' + rightPositionColumnId).show();
@@ -445,8 +443,8 @@ function GuiHandler() {
 	 * Restets the values of the add statement container to default.
 	 */
 	this.resetAddStatementContainer = function () {
-		$('#' + leftPositionTextareaId).emtpy();
-		$('#' + rightPositionTextareaId).emtpy();
+		$('#' + leftPositionTextareaId).empty();
+		$('#' + rightPositionTextareaId).empty();
 	};
 
 	/**

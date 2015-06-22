@@ -18,7 +18,7 @@ function InteractionHandler() {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 
-		ajaxHandler.getNewArgumentationRound(id, true);
+		ajaxHandler.getNewArgumentationRound(id);
 	};
 
 	/**
@@ -29,7 +29,6 @@ function InteractionHandler() {
 	this.positionButtonWasClicked = function (id, value) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		guiHandler.setDiscussionsDescription('Why do you think that: <b>' + value + '</b>');
 		ajaxHandler.getArgumentsForJustification(id);
 	};
 
@@ -132,10 +131,10 @@ function InteractionHandler() {
 	 * @param data returned json data
 	 */
 	this.callbackIfDoneForArgsForJustification = function (data) {
-		var gh = new GuiHandler();
-		if (data.length > 0) {
-			var parsedData = $.parseJSON(data);
-			gh.setJsonDataToContentAsArguments(parsedData, true);
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		if (parsedData.status != '-1') {
+			gh.setDiscussionsDescription('Why do you think that: <b>' + parsedData.currentStatementText + '</b>');
+			gh.setJsonDataToContentAsArguments(parsedData.justification, true);
 		} else {
 			gh.setNewArgumentButtonOnly();
 		}
@@ -173,10 +172,11 @@ function InteractionHandler() {
 	 * @param data returned json data
 	 */
 	this.callbackIfDoneForGetAllPositions = function (data) {
-		if (typeof data === 'undefined') {
+		var parsedData = $.parseJSON(data);
+		if (parsedData.status == '-1') {
 			new GuiHandler().setNewArgumentButtonOnly();
 		} else {
-			new GuiHandler().setJsonDataToContentAsPositions(data);
+			new GuiHandler().setJsonDataToContentAsPositions(parsedData.positions);
 		}
 	};
 
@@ -214,20 +214,22 @@ function InteractionHandler() {
 	 * @param data returned data
 	 */
 	this.callbackGetOneStepBack = function (data) {
-		var parsedData = $.parseJSON(data), ah = new AjaxHandler();
+		var parsedData = $.parseJSON(data), ah = new AjaxHandler(), ih = new InteractionHandler();
 		$('#' + discussionSpaceId).empty();
 		// -1 user has no history/trace
-		//  0 user's last track is one argument
-		// >0 user's last track is more than one argument
-		switch(parsedData.status){
+		//  0 given data is for a positions callback
+		//  1 given data is for an argument callback
+		switch (parsedData.status){
 			case '-1':
 				ah.getAllPositions();
 				break;
 			case '0':
-				ah.getAllPositions();
+				new GuiHandler().setDiscussionsDescription('Why do you think that: <b>' + parsedData.currentStatementText + '</b>');
+				ih.callbackIfDoneForArgsForJustification(data);
 				break;
-			default:
-				ah.getNewArgumentationRound(parsedData.status, true);
+			case '1':
+				alert('1 callbackGetOneStepBack');
+				ih.callbackIfDoneForGetNewArgumentationRound(data);
 				break;
 		}
 	};

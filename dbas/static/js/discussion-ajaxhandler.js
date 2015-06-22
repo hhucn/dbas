@@ -43,16 +43,14 @@ function AjaxHandler() {
 	};
 
 	/**
-	 *
-	 * @param currentStatementId
-	 * @param is_argument
+	 * Requests data for a new argumentation round. This includes a statement, an confrontation and justifications
+	 * @param currentStatementId uid of the current statement
 	 */
-	this.getNewArgumentationRound = function (currentStatementId, is_argument) {
-		is_argument = is_argument ? 'argument' : 'position';
+	this.getNewArgumentationRound = function (currentStatementId) {
 		$.ajax({
 			url: 'ajax_args_for_new_discussion_round',
 			method: 'POST',
-			data: { is_argument : is_argument, uid : currentStatementId},
+			data: { uid: currentStatementId},
 			dataType: 'json',
 			async: true
 		}).done(function ajaxGetNewArgumentationRoundDone(data) {
@@ -60,25 +58,23 @@ function AjaxHandler() {
 		}).fail(function ajaxGetNewArgumentationRoundFail() {
 			alert("debug");
 			new GuiHandler().showDiscussionError('Internal failure in ajaxGetNewArgumentationRound',
-				currentStatementId, is_argument, 'getNewArgumentationRound', false);
+				currentStatementId, is_argument, 'getNewArgumentationRound');
 		});
 	};
 
 	/**
 	 * Request all users
-	 * @param posCallbackFct callback if done
-	 * @param negCallbackText for an alert if fail
 	 */
-	this.getAllUsersAndSetInGui = function (posCallbackFct, negCallbackText) {
+	this.getAllUsersAndSetInGui = function () {
 		$.ajax({
 			url: 'ajax_all_users',
 			type: 'GET',
 			dataType: 'json',
 			async: true
 		}).done(function ajaxGetAllUsersDone(data) {
-			posCallbackFct(data);
+			new GuiHandler().setJsonDataToAdminContent($.parseJSON(data));
 		}).fail(function ajaxGetAllUsersFail() {
-			alert(negCallbackText);
+			alert('internal failure while requesting all users');
 		});
 	};
 

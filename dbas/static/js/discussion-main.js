@@ -126,7 +126,7 @@ $(function () {
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function () {
 		if ($(this).val() === 'List all users') {
-			ajaxHandler.getAllUsersAndSetInGui(guiHandler.setJsonDataToAdminContent, 'internal failure while requesting all users');
+			ajaxHandler.getAllUsersAndSetInGui();
 			$(this).val('Hide all users'); // will be done in the ajaxhandler
 		} else {
 			$('#' + adminsSpaceId).empty();

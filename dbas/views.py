@@ -530,21 +530,8 @@ class Dbas(object):
 		:return: list of all positions
 		"""
 		logger('ajax_all_positions', 'def', 'main')
-		db_positions = DBSession.query(Position).all()
-		logger('ajax_all_positions', 'def', 'get all positions')
-
-		return_dict = {}
-
-		if db_positions:
-			logger('ajax_all_positions', 'def', 'iterate all positions')
-			# get every position
-			for pos in db_positions:
-				logger('ajax_all_positions', 'position iterator ' + str(pos.uid) + ' of ' + str(len(db_positions)-1),
-				       "uid: " + str(pos.uid) + "   val: " + pos.text)
-				return_dict[str(pos.uid)] = pos.text
-
-		dictionaryHelper = DictionaryHelper()
-		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
+		return_dict = QueryHelper().get_all_positions()
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -556,50 +543,8 @@ class Dbas(object):
 		:return: list of all users
 		"""
 		logger('get_ajax_users', 'def', 'main')
-		is_admin = QueryHelper().is_user_admin(self.request.authenticated_userid)
-
-		logger('get_ajax_users', 'def', 'is_admin ' + str(is_admin))
-		if is_admin:
-			logger('get_ajax_users', 'def', 'get all users')
-			db_users = DBSession.query(User).all()
-			logger('get_ajax_users', 'def', 'get all groups')
-
-			db_groups = DBSession.query(Group).all()
-			groups = {}
-			for g in db_groups:
-				logger('get_ajax_users', 'def', str(g.uid) + " - " + g.name)
-				groups[str(g.uid)] = g.name
-
-			return_dict = {}
-
-			if db_users:
-				logger('get_ajax_users', 'def', 'iterate all users')
-				for user in db_users:
-					return_user = {}
-					return_user['uid']         = user.uid
-					return_user['firstname']   = user.firstname
-					return_user['surname']     = user.surname
-					return_user['nickname']    = user.nickname
-					return_user['email']       = user.email
-					return_user['group']       = groups.get(str(user.group))
-					return_user['last_logged'] = str(user.last_logged)
-					return_user['registered']  = str(user.registered)
-					logger('get_ajax_users', 'user iterator ' + str(user.uid) + ' of ' + str(len(db_users)),
-								"uid: " + str(user.uid)
-								+ ", firstname: " + user.firstname
-								+ ", surname: " + user.surname
-								+ ", nickname: " + user.nickname
-								+ ", email: " + user.email
-								+ ", group: " + groups.get(str(user.group))
-								+ ", last_logged: " + str(user.last_logged)
-								+ ", registered: " + str(user.registered)
-					       )
-					return_dict[user.uid] = return_user
-		else:
-			return_dict={}
-
-		dictionaryHelper = DictionaryHelper()
-		return_json = dictionaryHelper.dictionarty_to_json_array(return_dict, True)
+		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -656,10 +601,7 @@ class Dbas(object):
 
 		# get all arguments
 		query_helper = QueryHelper()
-		return_list = QueryHelper().get_argument_list_in_relation_to_statement(uid, True, True)
-		return_dict = {}
-		for entry in return_list:
-			return_dict[entry['uid']] = entry
+		return_dict = query_helper.get_arguments_for_justifications(uid)
 
 		# save track, because the given uid is a position uid
 		logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: position id ' + str(uid))
@@ -683,28 +625,21 @@ class Dbas(object):
 		"""
 		logger('get_args_for_new_round', 'def', 'main')
 
-		# TODO: FINISHED; BUT NOT DEBUGGED:
 		uid = ''
-		is_argument = ''
 		try:
 			uid = self.request.params['uid']
-			is_argument = True if self.request.params['is_argument'] == 'argument' else False
-			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid) + ', isArgument ' + str(is_argument) + '(' + str(
-				self.request.params['is_argument']) + ')')
+			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid))
 		except KeyError as e:
 			logger('get_args_for_new_round', 'error', repr(e))
 
-		# saving track
 		query_helper = QueryHelper()
-		if is_argument:
-			logger('get_args_for_new_round', 'def', 'saving track: argument id ' + str(uid))
-			query_helper.save_track_argument_for_user(transaction, self.request.authenticated_userid, uid)
-		else:
-			logger('get_args_for_new_round', 'def', 'saving track: position id ' + str(uid))
-			query_helper.save_track_position_for_user(transaction, self.request.authenticated_userid, uid)
+		# save only, when we are not stepping back and results should be based on the track
+		# saving track
+		logger('get_args_for_new_round', 'def', 'saving track: argument id ' + str(uid))
+		query_helper.save_track_argument_for_user(transaction, self.request.authenticated_userid, uid)
 
 		# get data
-		return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid, is_argument)
+		return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json

@@ -164,6 +164,10 @@
 				</div>
 			</div>
 
+			<div class="wrapped_content_container" id="navigation-minimap-container">
+				<p>Minimap:</p>
+			</div>
+
 		</div>
 
 		<div metal:use-macro="load: snippet-footer.pt" />
