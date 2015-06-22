@@ -17,6 +17,7 @@ var discussionSpaceId = 'discussions-space';
 var discussionFailureRowId = 'discussion-failure-row';
 var discussionFailureMsgId = 'discussion-failure-msg';
 var displayControlContainerId = 'display-control-container';
+var editButtonId = 'edit-statement';
 var errorDescriptionId = 'error-description';
 var headingProPositionTextId = 'heading-pro-positions';
 var headingConPositionTextId = 'heading-contra-positions';
@@ -37,6 +38,9 @@ var rightIslandId = 'right-island';
 var radioButtonGroup = 'radioButtonGroup';
 var newArgumentRadioButtonText = 'Let me state my own reason(s)!';
 var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
+var minimapId = 'navigation-minimap-container';
+var popupEditStatementId = 'popup_edit_statement';
+var popupEditStatementBodyId = 'popup_edit_statement-modal-body';
 var scStyleGroupId = 'sc-display-style';
 var scStyle1Id = 'sc-style-1';
 var scStyle2Id = 'sc-style-2';
@@ -81,6 +85,7 @@ $(function () {
 	$('#' + displayControlContainerId).hide(); // hidding the control container
 	$('#sc-style-3').hide();
 	$('#label-sc-style-3').hide();
+	$('#' + minimapId).hide();
 
 	// starts the discussion with getting all positions
 	$('#' + startDiscussionButtonId).click(function () {
@@ -157,6 +162,10 @@ $(function () {
 		$('#' + islandViewContainerId).hide();
 		$('#' + scStyle1Id).attr('checked');
 		$('#' + scStyle2Id).removeAttr('checked');
+	});
+
+	$('#' + editButtonId).click(function(){
+		guiHandler.openEditStatementsPopup();
 	});
 
 	// managed in the html file

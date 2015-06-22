@@ -155,7 +155,6 @@
 	right: 0px;
 }
 #navigation-minimap-container{
-	visibility: hidden;
 	position: fixed;
 	color: #006AB3;
 	top: 50px;

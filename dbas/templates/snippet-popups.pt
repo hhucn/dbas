@@ -392,6 +392,24 @@
 	</div>
 </div>
 
+<!-- EDIT STATEMENTS-->
+<div class="modal fade" id="popup_edit_statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Edit Statement</h4>
+			</div>
+			<div class="popup_edit_statement-modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 <!-- JS DISABLED -->
 <noscript>

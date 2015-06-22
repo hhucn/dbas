@@ -423,6 +423,7 @@ function GuiHandler() {
 				$('#' + sendNewStatementId).click(function () {
 					new InteractionHandler().getArgumentsAndSendThem();
 				});
+				$('#' + addStatementContainerMainInputId).focus();
 			} else {
 				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfPosition);
 				$('#' + addStatementContainerMainInputId).show();
@@ -462,6 +463,14 @@ function GuiHandler() {
 	 */
 	this.getFullHtmlTextOf = function (element) {
 		return $('<div>').append(element).html();
+	};
+
+	/**
+	 * Opens the edit statements popup
+	 */
+	this.openEditStatementsPopup = function(){
+		$('#' + popupEditStatementId).modal('show');
+		$('#' + popupEditStatementBodyId).text('Todo:');
 	};
 
 
