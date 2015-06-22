@@ -79,8 +79,7 @@ textarea[type="text"]  {
 	outline: none;
 	font-size: 18px;
 	font-weight: 400;
-	color: #bcbcbc;
-	border-color: #f00;
+	color: #000;
 	padding: 12px 10px 12px 50px;
 	border-radius: 5px;
 	-webkit-border-radius: 3px;
@@ -90,6 +89,22 @@ textarea[type="text"]  {
 	-webkit-appearance: none;
 	border: 1px solid;
 	width: 100%;
+	border-color: #bcbcbc;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+	color: #bcbcbc;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+	color:  #bcbcbc;
+	opacity: 1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+	color:  #bcbcbc;
+	opacity: 1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+	color: #bcbcbc;
 }
 
 .top-row:after {

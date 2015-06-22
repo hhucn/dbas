@@ -64,11 +64,10 @@ function GuiHandler() {
 	 */
 	this.addJsonDataToContentAsArguments = function (jsonData) {
 		var _this = new GuiHandler(), text;
-		alert('1 addJsonDataToContentAsArguments');
 		$.each(jsonData, function addJsonDataToContentAsArgumentsEach(key, val) {
 			// we only want attacking arguments
 			if (val.is_supportive === '0') {
-				if (val.text.toLowerCase()() !== 'because') {
+				if (val.text.toLowerCase() !== 'because') {
 					text = "Because " + val.text.substring(0, 1).toLowerCase();
 				} else {
 					text = val.text;
@@ -413,7 +412,12 @@ function GuiHandler() {
 			$('#' + addStatementButtonId).disable = true;
 			if (is_argument){
 				var statement = $('#' + discussionsDescriptionId + ' b').text();
+				if (statement.substr(statement.length -1) === '.'){
+					statement = statement.substr(0, statement.length -1);
+				}
 				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfArgument + statement);
+				$('#' + headingProPositionTextId).html(' I <span id=\'green\'>agree</span> with the statement <\b>\'' + statement + '\', because:');
+				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with the statement <\b>\'' + statement + '\', because:');
 				$('#' + addStatementContainerMainInputId).hide();
 				$('#' + leftPositionColumnId).show();
 				$('#' + rightPositionColumnId).show();
@@ -435,6 +439,14 @@ function GuiHandler() {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementButtonId).disable = false;
 		}
+	};
+
+	/**
+	 * Restets the values of the add statement container to default.
+	 */
+	this.resetAddStatementContainer = function () {
+		$('#' + leftPositionTextareaId).emtpy();
+		$('#' + rightPositionTextareaId).emtpy();
 	};
 
 	/**

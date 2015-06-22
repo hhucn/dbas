@@ -51,10 +51,6 @@ and the ... websocket server)::
 
     ... ?
 
-Shutdown everything nicely::
-
-    ./bin/supervisorctl shutdown
-
 
 Run test suites
 ---------------

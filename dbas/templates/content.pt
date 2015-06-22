@@ -99,7 +99,7 @@
 
 							<div id="left-position-column">
 								<h3 id="heading-pro-positions" class="font-semi-bold">Pro</h3>
-								<div id="left-textareas">
+								<div id="pro-textareas">
 								</div>
 								<a>
 									<div id="add-pro-textarea">
@@ -109,7 +109,7 @@
 
 							<div id="right-position-column">
 								<h3 id="heading-contra-positions" class="font-semi-bold">Contra</h3>
-								<div id="right-textareas">
+								<div id="con-textareas">
 								</div>
 								<a>
 									<div id="add-con-textarea">

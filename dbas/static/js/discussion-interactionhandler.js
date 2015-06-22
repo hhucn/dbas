@@ -204,6 +204,7 @@ function InteractionHandler() {
 			case '1':
 				gh.setSuccessDescription('Everything was added.');
 				gh.addJsonDataToContentAsArguments(parsedData.arguments);
+				gh.resetAddStatementContainer();
 				break;
 		}
 	};
