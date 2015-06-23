@@ -403,29 +403,34 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_track_for_user', 'user ' + user)
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 
-		db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).all()
-		return_dict = collections.OrderedDict()
-		for track in db_track:
-			logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', date ' + str(
-				track.date) + ', pos_uid ' + str(track.pos_uid) + ', arg_uid ' + str(track.arg_uid) + ', is_arg ' + str(track.is_argument))
+		if db_user:
+			db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).all()
+			return_dict = collections.OrderedDict()
+			for track in db_track:
+				logger('QueryHelper','get_track_for_user','track uid ' + str(track.uid) + ', date ' + str(
+					track.date) + ', pos_uid ' + str(track.pos_uid) + ', arg_uid ' + str(track.arg_uid) + ', is_arg ' + str(track.is_argument))
 
-			try:
-				track_dict = {}
-				track_dict['date'] = str(track.date)
-				track_dict['pos_uid'] = track.pos_uid
-				track_dict['arg_uid'] = track.arg_uid
-				if track.is_argument:
-					db_row = DBSession.query(Argument).filter_by(uid=track.arg_uid).first()
-				else:
-					db_row = DBSession.query(Position).filter_by(uid=track.pos_uid).first()
-				track_dict['text'] = db_row.text
-				track_dict['is_argument'] = track.is_argument
-				return_dict[track.uid] = track_dict
-			except AttributeError as ae:
-				logger('>>> QueryHelper <<<', 'get_track_for_user', 'ATTRIBUTE ERROR uid ' + str(ae))
+				try:
+					track_dict = {}
+					track_dict['date'] = str(track.date)
+					track_dict['pos_uid'] = track.pos_uid
+					track_dict['arg_uid'] = track.arg_uid
+					if track.is_argument:
+						db_row = DBSession.query(Argument).filter_by(uid=track.arg_uid).first()
+					else:
+						db_row = DBSession.query(Position).filter_by(uid=track.pos_uid).first()
+					track_dict['text'] = db_row.text
+					track_dict['is_argument'] = track.is_argument
+					return_dict[track.uid] = track_dict
+				except AttributeError as ae:
+					logger('>>> QueryHelper <<<', 'get_track_for_user', 'ATTRIBUTE ERROR uid ' + str(ae))
 
+			else:
+				logger('QueryHelper','get_track_for_user','no track')
 		else:
-			logger('QueryHelper','get_track_for_user','no track')
+			return_dict = {}
+			logger('QueryHelper','get_track_for_user','no user')
+
 
 		return return_dict
 

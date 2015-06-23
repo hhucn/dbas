@@ -1,6 +1,7 @@
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
+from pyramid_redis_sessions import session_factory_from_settings
 
 from dbas.security import groupfinder
 
@@ -11,33 +12,39 @@ from .database import *
 def main(global_config, **settings):
 	""" This function returns a Pyramid WSGI application.
 	"""
+
 	# authentication and authorization
-	authn_policy = AuthTktAuthenticationPolicy(
-		'sosecret', callback=groupfinder, hashalg='sha512')
+	authn_policy = AuthTktAuthenticationPolicy('sosecret', callback=groupfinder, hashalg='sha512')
 	authz_policy = ACLAuthorizationPolicy()
 
 	# load database
 	engine = engine_from_config(settings, 'sqlalchemy.')
 	load_database(engine)
 
+	# session management with pyramid_redis_sessions
+	session_factory = session_factory_from_settings(settings)
+
 	# creating the configurator
 	settings={'pyramid.default_locale_name':'en',
 			  'mail.host':'mail.uni-duesseldorf.de',
 			  'mail.port':'465',
-			  'mail.username':'krauthoff',
-			  'mail.password':'-',
+			  'mail.username':'dbas@cs.uni-duesseldorf.de',
+			  'mail.password':'dbas_System#2015',
 			  'mail.ssl':'True',
 	          'mail.tls':'False',
-	          'mail.default_sender':'krauthoff@cs.uni-duesseldorf'
+	          'mail.default_sender':'dbas@cs.uni-duesseldorf.de'
 			  }
+
+	# creating the configurator
 	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory')
 	config.set_authentication_policy(authn_policy)
 	config.set_authorization_policy(authz_policy)
+	config.set_session_factory(session_factory) # session management with pyramid_redis_sessions
 
 	# includings for the config
 	config.include('pyramid_chameleon')
-	config.include('pyramid_debugtoolbar')
 	config.include('pyramid_mailer')
+	# config.include('pyramid_redis_sessions') # done in the ini
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)

@@ -223,7 +223,7 @@ class Dbas(object):
 			login_failed=log_failed, 
 			registration_failed=reg_failed, 
 			registration_success=reg_success, 
-			logged_in=self.request.authenticated_userid 
+			logged_in=self.request.authenticated_userid
 		)
 
 	# logout page

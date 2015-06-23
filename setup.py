@@ -23,6 +23,7 @@ requires = [
 	'cryptacular',
     'validate_email',
 	'splinter',
+    'pyramid_redis_sessions',
 	]
 
 setup(name='DBAS',

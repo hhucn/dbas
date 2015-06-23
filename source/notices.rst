@@ -27,3 +27,7 @@ Notices
 		
 	Logging
 		Logging enabled with http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html#logging-chapter
+
+	Session Managing
+		Sesseion managing is done with pyramid_redis_sessions http://pyramid-redis-sessions.readthedocs.org/en/latest/index.html
+		Sesseion managing is done with pyramid_beaker https://pypi.python.org/pypi/pyramid_beaker

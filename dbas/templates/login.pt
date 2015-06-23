@@ -23,6 +23,7 @@
 						<h2>Welcome Back!</h2>
 
 						<form action="/login" method="post">
+							
 							<input type="hidden" name="came_from" value="${came_from}" />
 							<h3>Your Nickname</h3>
 							<input type="text" class="nickname" name="nickname" autocomplete="off" placeholder="example: Democrator" value="${nickname}">
