@@ -31,7 +31,8 @@
 
   
     <link rel="top" title="D-BAS 0.0.1 documentation" href="index.html"/>
-        <link rel="prev" title="Backend Structure" href="architecture/backend_structure.html"/> 
+        <link rel="next" title="Notices" href="notices.html"/>
+        <link rel="prev" title="Argumentation Scheme" href="datastructure/argumentation.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -64,8 +65,9 @@
           
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-everything-for-developing">Installation everything for developing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#installation-with-vagrant-virtual-machine">Installation with Vagrant virtual machine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-backend">Installation (backend)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#documentation">Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#run-the-application">Run the application</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#run-test-suites">Run test suites</a></li>
@@ -81,11 +83,24 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="architecture/index.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture/overview.html">Software Stack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture/frontend_structure.html">Frontend Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture/backend_structure.html">Backend Structure</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="views/index.html">Views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="views/guided.html">Guided View</a></li>
+<li class="toctree-l2"><a class="reference internal" href="views/island.html">Island View</a></li>
+<li class="toctree-l2"><a class="reference internal" href="views/expert.html">Expert View</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="datastructure/index.html">Datastrucutres</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="datastructure/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datastructure/argumentation.html">Argumentation Scheme</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notices.html">Notices</a></li>
 </ul>
 
           
@@ -125,41 +140,15 @@
 <span id="id1"></span><h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
 <dl class="glossary docutils">
 <dt id="term-group">group</dt>
-<dd>A set of users. Can be mapped to permission :term:<a href="#id2"><span class="problematic" id="id3">`</span></a>role`s.</dd>
+<dd>A set of users. Can be mapped to permission ...</dd>
 <dt id="term-groupid">groupid</dt>
-<dd>Unique id of one <a class="reference internal" href="#term-group"><span class="xref std std-term">group</span></a>: &#8220;group:&lt;name&gt;&#8221;.</dd>
-<dt id="term-local-role">local role</dt>
-<dd>A <a class="reference internal" href="#term-role"><span class="xref std std-term">role</span></a> mapped to a <a class="reference internal" href="#term-principal"><span class="xref std std-term">principal</span></a> within a local
-context and all his children.</dd>
-<dt id="term-post-pool">post_pool</dt>
-<dd>A normal or <a class="reference internal" href="#term-service"><span class="xref std std-term">service</span></a> <code class="xref py py-class docutils literal"><span class="pre">adhocracy_core.interfaces.IPool</span></code> that
-serves as the common place to post resources of a special type for a
-given context.
-If <cite>resource sheet</cite> field with backreferences sets a
-<code class="xref py py-class docutils literal"><span class="pre">adhocracy_core.schema.PostPool</span></code> field, the
-referencing resources can only be postet at the <a class="reference internal" href="#term-post-pool"><span class="xref std std-term">post_pool</span></a>.
-This assumes that a post_pool exists in the lineage of the referenced
-resources.
-If a <cite>resource sheet</cite> field with references sets this, the
-referenced resource type can only be posted to <a class="reference internal" href="#term-post-pool"><span class="xref std std-term">post_pool</span></a>.</dd>
-<dt id="term-principal">principal</dt>
-<dd>A principal is a string representing a <a class="reference internal" href="#term-userid"><span class="xref std std-term">userid</span></a>, <a class="reference internal" href="#term-groupid"><span class="xref std std-term">groupid</span></a>,
-or <a class="reference internal" href="#term-roleid"><span class="xref std std-term">roleid</span></a>. It is provided by an <span class="xref std std-term">authentication policy</span>.
-For more information about the permission system read
-<code class="xref doc docutils literal"><span class="pre">api/authentication_api</span></code>.</dd>
+<dd>Unique id of one ...</dd>
 <dt id="term-role">role</dt>
-<dd>A set of permissions that can be mapped to :term:<a href="#id4"><span class="problematic" id="id5">`</span></a>principals`s</dd>
+<dd>A set of permissions that can be mapped to ...</dd>
 <dt id="term-roleid">roleid</dt>
-<dd>Unique id of one permission <a class="reference internal" href="#term-role"><span class="xref std std-term">role</span></a>: &#8220;role:&lt;name&gt;&#8221;.</dd>
-<dt id="term-service">service</dt>
-<dd>A resource marked as <cite>service</cite>. Services
-may provide special rest api end points
-and helper methods. You can find them by their name with
-<code class="xref py py-func docutils literal"><span class="pre">adhocracy_core.interfaces.IPool.find_service()</span></code>.
-The <cite>service</cite> has to be in <span class="xref std std-term">lineage</span> or a child of a
-<span class="xref std std-term">lineage</span> pool for a given <cite>context</cite>.</dd>
+<dd>Unique id of one permission ...</dd>
 <dt id="term-userid">userid</dt>
-<dd>The unique id for one userique id of one <a class="reference internal" href="#term-group"><span class="xref std std-term">group</span></a>: &#8220;group:&lt;name&gt;&#8221;.</dd>
+<dd>The unique id for one userique id of one ...</dd>
 </dl>
 </div>
 
@@ -169,8 +158,10 @@ The <cite>service</cite> has to be in <span class="xref std std-term">lineage</s
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="notices.html" class="btn btn-neutral float-right" title="Notices">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="architecture/backend_structure.html" class="btn btn-neutral" title="Backend Structure"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="datastructure/argumentation.html" class="btn btn-neutral" title="Argumentation Scheme"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

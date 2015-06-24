@@ -143,8 +143,9 @@
 <p>Requirements:</p>
 <ol class="arabic simple">
 <li>python python-setuptools easy_install</li>
-<li>easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy pyramid_mailer</li>
-<li>pip3 install validate_email cryptacular</li>
+<li>easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy pyramid_mailer zope.i18n babel lingua mock</li>
+<li>pip3 install validate_email cryptacular pyramid_redis_sessions pyramid_beaker</li>
+<li>sudo apt-get install npm; npm install -g mocha; npm install chai sinon jasmine</li>
 </ol>
 </div>
 <div class="section" id="installation-with-vagrant-virtual-machine">
@@ -180,10 +181,6 @@ vagrant ssh</div></blockquote>
 <p>Start ... (which manages the ZODB database, the Pyramid application
 and the ... websocket server):</p>
 <div class="highlight-python"><div class="highlight"><pre>... ?
-</pre></div>
-</div>
-<p>Shutdown everything nicely:</p>
-<div class="highlight-python"><div class="highlight"><pre>./bin/supervisorctl shutdown
 </pre></div>
 </div>
 </div>

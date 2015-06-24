@@ -17,3 +17,4 @@
 - Options for editing statement
 - Added an email address
 - Sessions management and cache region support with beaker
+- CSRF prevention

@@ -7,8 +7,9 @@ Installation everything for developing
 Requirements:
 
 1. python python-setuptools easy_install
-2. easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy pyramid_mailer
-3. pip3 install validate_email cryptacular
+2. easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy pyramid_mailer zope.i18n babel lingua mock
+3. pip3 install validate_email cryptacular pyramid_redis_sessions pyramid_beaker
+4. sudo apt-get install npm; npm install -g mocha; npm install chai sinon jasmine
 
 Installation with Vagrant virtual machine
 -----------------------------------------
@@ -49,10 +50,6 @@ Start ... (which manages the ZODB database, the Pyramid application
 and the ... websocket server)::
 
     ... ?
-
-Shutdown everything nicely::
-
-    ./bin/supervisorctl shutdown
 
 
 Run test suites
