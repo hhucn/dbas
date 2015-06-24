@@ -26,13 +26,13 @@ def main(global_config, **settings):
 
 	# creating the configurator
 	settings={'pyramid.default_locale_name':'en',
-			  'mail.host':'mail.uni-duesseldorf.de',
+			  'mail.host':'imap.googlemail.com',
 			  'mail.port':'465',
-			  'mail.username':'dbas@cs.uni-duesseldorf.de',
+			  'mail.username':'dbas.hhu@gmail.com',
 			  'mail.password':'dbas_System#2015',
 			  'mail.ssl':'True',
 	          'mail.tls':'False',
-	          'mail.default_sender':'dbas@cs.uni-duesseldorf.de'
+	          'mail.default_sender':'dbas.hhu@gmail.com'
 			  }
 
 	# creating the configurator

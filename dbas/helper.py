@@ -851,3 +851,34 @@ class DictionaryHelper(object):
 			dict[additional_key] = additional_value
 		return dict
 
+class EmailHelper(object):
+
+	def send_mail(self, request, subject, body, recipient):
+		logger('EmailHelper', 'send_mail', 'sending mail')
+		send_message = False
+		contact_error = False
+		mailer = get_mailer(request)
+		message = Message(subject = subject,
+		  					  sender = 'dbas.hhu@gmail.com',
+		  					  recipients = [recipient],
+		  					  body = body
+		  					)
+		# try sending an catching errors
+		try:
+			mailer.send_immediately(message, fail_silently=False)
+			send_message = True
+		except smtplib.SMTPConnectError as exception:
+			logger('EmailHelper', 'send_mail', 'error while sending')
+			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_code ' + str(exception.smtp_code))
+			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_error ' + str(exception.smtp_error))
+			contact_error = True
+			message = 'Your message could not be send due to a system error! (' + 'smtp_code '\
+					  + str(exception.smtp_code) + ' || smtp_error ' + str(exception.smtp_error) + ')'
+		except socket_error as serr:
+			logger('EmailHelper', 'send_mail', 'error while sending')
+			logger('EmailHelper', 'send_mail', 'socket_error ' + str(serr))
+			contact_error = True
+			message = 'Your message could not be send due to a system error! (' + 'socket_error ' + str(serr) + ')'
+
+		return send_message, contact_error, message
+

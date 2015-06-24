@@ -13,8 +13,8 @@ from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 
 from .database import DBSession
-from .database.model import User, Group, Issue, Position, Argument, RelationArgPos
-from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, Correction
+from .database.model import User, Group, Issue
+from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, EmailHelper
 
 class Dbas(object):
 	def __init__(self, request):
@@ -159,7 +159,7 @@ class Dbas(object):
 				else:
 					# creating a new user with hased password
 					logger('main_login', 'form.registration.submitted', 'Adding user')
-					hashedPassword = password_handler.get_hashed_password(self, password)
+					hashedPassword = password_handler.get_hashed_password(password)
 					newuser = User(firstname=firstname, surname=surname, email=email,
 					               nickname=nickname, password=hashedPassword)
 					newuser.group = group.uid
@@ -172,6 +172,12 @@ class Dbas(object):
 						logger('main_login', 'form.registration.submitted', 'New data was added with uid ' + str(checknewuser.uid))
 						message = 'Your account was added and you are able to login now'
 						reg_success = True
+
+						# sending an email
+						subject = 'Account registration for D-BAS'
+						body = 'Your account was successfully registered for this e-mail.'
+						EmailHelper().send_mail(self.request, subject, body, email)
+
 					else:
 						logger('main_login', 'form.registration.submitted', 'New data was not added')
 						message = 'Your account with the nick could not be added. Please try again or contact the author'
@@ -295,31 +301,8 @@ class Dbas(object):
 
 			else:
 				subject = 'Contact D-BAS'
-				systemmail = 'krauthoff@cs.uni-duesseldorf.de'
 				body = 'Name: ' + name + '\n' + 'Mail: ' + email + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
-				logger('main_contact', 'form.contact.submitted', 'sending mail')
-				mailer = get_mailer(self.request)
-				message = Message(subject = subject,
-			   					  sender = systemmail,
-			   					  recipients = ["krauthoff@cs.uni-duesseldorf.de",email],
-			   					  body = body
-			   					)
-				# try sending an catching errors
-				try:
-					mailer.send_immediately(message, fail_silently=False)
-					send_message = True
-				except smtplib.SMTPConnectError as exception:
-					logger('main_contact', 'form.contact.submitted', 'error while sending')
-					logger('main_contact', 'exception smtplib.SMTPConnectError smtp_code', str(exception.smtp_code))
-					logger('main_contact', 'exception smtplib.SMTPConnectError smtp_error', str(exception.smtp_error))
-					contact_error = True
-					message = 'Your message could not be send due to a system error! (' + 'smtp_code '\
-							  + str(exception.smtp_code) + ' || smtp_error ' + str(exception.smtp_error) + ')'
-				except socket_error as serr:
-					logger('main_contact', 'form.contact.submitted', 'error while sending')
-					logger('main_contact', 'form.contact.submitted', 'socket_error ' + str(serr))
-					contact_error = True
-					message = 'Your message could not be send due to a system error! (' + 'socket_error ' + str(serr) + ')'
+				send_message, contact_error, message = EmailHelper().send_mail(self.request, subject, body, email)
 
 		return dict(
 			title='Contact',

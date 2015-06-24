@@ -540,7 +540,7 @@ function GuiHandler() {
 				// show logfile
 				log_button.attr({id:'show_log_of_statement',
 					type: 'button',
-					value: 'show log',
+					value: 'show changelog',
 					class: 'btn-sm btn button-primary',
 					statement_type: type,
 					statement_text: statement,

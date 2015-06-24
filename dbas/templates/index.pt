@@ -19,9 +19,8 @@
 							<br>
 							<p class="lead">D-Bas offers a lot of advantages, here are a few of them:</p>
 							<ul class="lead list">
-								<li>Use the wisdom of the crowd</li>
 								<li>Easy to use and very powerful</li>
-								<li>Avoid redundancy created as known in normal forums</li>
+								<li>Avoid redundancy due to multiple statements because an argumentation map is used as background structure</li>
 								<li>Every argument and position will be connected logically to each other</li>
 							</ul>
 							<br>
@@ -109,11 +108,11 @@
 								<dt>Dialogue-based:</dt>
 								<dd> Yeah, this is a novel and it will work with a kind of dialogue-based approach. This means that the system will represnt the panelist and the claims will be given through the other participants.</dd>
 								<dt>Guided View:</dt>
-								<dd> You will never see something like an argumentation map, because the systems seems to be like dynamic and generic <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> for you.</dd>
+								<dd> You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> for you.</dd>
 								<dt>Island View:</dt>
-								<dd> Okay, you want to see more as with the guided view, but not everything. Therefore the island view will present you a list of every argument for an specific position.</dd>
+								<dd> Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.</dd>
 								<dt>Expert View:</dt>
-								<dd> So, you think you are an expert? Okay, you will have a view of the complet argumentation map.</dd>
+								<dd> So, you think you are an expert? Okay, you can have a view of the complete argumentation map.</dd>
 							</dl>
 						</div>
 					</div>
@@ -128,8 +127,7 @@
 					<div class="col-md-10">
 						<div class="content">
 							<h2><span class="font-semi-bold">About</span> <span class="smaller"> D-BAS</span></h2>
-							<p class="lead">D-BAS is a <span class="font-normal">novel approach</span> of discussions in the field of online participation
-								<br>Hallo, ich bin ein Platzhalter und für des Design doch recht wichtig!
+							<p class="lead">D-BAS is a <span class="font-normal">novel approach</span> of discussions in the field of online participation and developed by <a href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html">Tobias Krauthoff</a>.
 							</p>
 							<ul class="lead list">
 								<li>
