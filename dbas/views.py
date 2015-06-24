@@ -202,7 +202,10 @@ class Dbas(object):
 				db_user.password = hashedpwd
 				DBSession.add(db_user)
 				transaction.commit()
-				message, reg_success, reg_failed = password_handler.send_password_to_email(self.request, pwd)
+
+				body = 'Your new password is: ' + password
+				subject = 'D-BAS Password Request'
+				message, reg_success, reg_failed = EmailHelper().send_mail(self.request, subject, body, email)
 
 				# logger
 				if reg_success:
@@ -583,7 +586,7 @@ class Dbas(object):
 		logger('get_ajax_arguments_by_pos', 'def', 'uid: ' + uid)
 
 		# get all arguments
-		return_dict = QueryHelper().get_ajax_arguments_by_pos(transaction, uid)
+		return_dict = QueryHelper().get_args_by_pos(uid)
 
 		# save track, because the given uid is a position uid
 		logger('get_ajax_arguments_by_pos', 'def', 'saving track: position id ' + str(uid))
@@ -686,7 +689,7 @@ class Dbas(object):
 	def get_all_arguments_for_island(self):
 		logger('get_all_arguments_for_island', 'def', 'main')
 
-		return_dict = QueryHelper().get_arguments_for_island(self.request.authenticated_userid)
+		return_dict = QueryHelper().get_args_for_island(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
