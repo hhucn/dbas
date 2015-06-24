@@ -25,13 +25,13 @@
 	-->
 }
 
-#error-description {
+.error-description {
 	color: #be0a26;
 	font-size: 15;
 	font-weight: 600;
 }
 
-#success-description {
+.success-description {
 	color: #97bf0d;
 	font-size: 15;
 	font-weight: 600;
@@ -154,14 +154,40 @@
 	bottom: 75px;
 	right: 0px;
 }
+
 #navigation-minimap-container{
 	position: fixed;
 	color: #006AB3;
 	top: 50px;
 	right: 0px;
 }
-	
 
+#popup_edit_statement_body{
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#popup_edit_statement_logfile_header{
+	margin-top: 20px;
+}
+	
+#popup_edit_statement_textarea{
+	outline: none;
+	font-size: 18px;
+	font-weight: 400;
+	color: #000;
+	padding: 12px 10px 12px 10px;
+	border-radius: 5px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	margin: 0px 0px 10px 0px;
+	-webkit-appearance: none;
+	border: 1px solid;
+	width: 100%;
+	border-color: #bcbcbc;
+	resize: vertical;
+}
 
 @media (max-width: 767px) {
 	#discussions-space ul {

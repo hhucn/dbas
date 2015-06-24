@@ -136,17 +136,61 @@ function AjaxHandler() {
 		});
 	};
 
+	/**
+	 * Request for all arguments, which have a relation to the last saved one
+	 */
 	this.getAllArgumentsForIslandView = function () {
 		$.ajax({
 			url: 'ajax_all_arguments_for_island',
 			type: 'GET',
 			dataType: 'json',
 			async: true
-		}).done(function ajaxgetAllArgumentsForIslandViewDone(data) {
+		}).done(function ajaxGetAllArgumentsForIslandViewDone(data) {
 			new InteractionHandler().callbackIfDoneForGetAllArgumentsForIslandView(data);
-		}).fail(function ajaxgetAllArgumentsForIslandViewFail() {
+		}).fail(function ajaxGetAllArgumentsForIslandViewFail() {
 			new GuiHandler().setErrorDescription('Island view could not be displayed. Sorry!');
 			new GuiHandler().setVisibilityOfDisplayStyleContainer(false, '');
 		});
 	};
+
+	/***
+	 * Requests the logfile for the given uid
+	 * @param statement_uid current uid of the statement
+	 * @param is_argument true, if it is an argument
+	 */
+	this.getLogfileForStatement = function (statement_uid, is_argument){
+		$.ajax({
+			url: 'ajax_get_logfile_for_statement',
+			type: 'GET',
+			data: { uid: statement_uid, is_argument: is_argument },
+			dataType: 'json',
+			async: true
+		}).done(function ajaxGetLogfileForStatementDone(data) {
+			new InteractionHandler().callbackIfDoneForGetLogfileForStatement(data);
+		}).fail(function ajaxGetLogfileForStatementFail() {
+			$('#' + popupErrorDescriptionId).text('Unfortunately, the log file could not be requested. Sorry!');
+		});
+	};
+
+	/**
+	 * Sends a correcture of a statement
+	 * @param statement_uid current uid of the statement
+	 * @param is_argument true, if it is an argument
+	 * @param corrected_text the corrected text
+	 */
+	this.sendCorrectureOfStatement = function (statement_uid, is_argument, corrected_text){
+		$.ajax({
+			url: 'ajax_send_correcture_of_statement',
+			type: 'GET',
+			data: { uid: statement_uid, is_argument: is_argument, text: corrected_text},
+			dataType: 'json',
+			async: true
+		}).done(function ajaxSendCorrectureOfStatementDone(data) {
+			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data);
+		}).fail(function ajaxSendCorrectureOfStatementFail() {
+			new GuiHandler().setErrorDescription('Island view could not be displayed. Sorry!');
+			$('#' + popupErrorDescriptionId).text('Unfortunately, the correcture could not be send.');
+		});
+	};
+
 }

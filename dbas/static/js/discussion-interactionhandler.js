@@ -228,7 +228,6 @@ function InteractionHandler() {
 				ih.callbackIfDoneForArgsForJustification(data);
 				break;
 			case '1':
-				alert('1 callbackGetOneStepBack');
 				ih.callbackIfDoneForGetNewArgumentationRound(data);
 				break;
 		}
@@ -236,7 +235,7 @@ function InteractionHandler() {
 
 	/**
 	 * Callback, when island data was fetched
-	 * @param data
+	 * @param data of the ajax request
 	 */
 	this.callbackIfDoneForGetAllArgumentsForIslandView = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
@@ -253,4 +252,37 @@ function InteractionHandler() {
 				break;
 		}
 	};
+
+	/**
+	 * Callback, when the logfile was fetched
+	 * @param data of the ajax request
+	 */
+	this.callbackIfDoneForGetLogfileForStatement = function (data) {
+		var parsedData = $.parseJSON(data);
+		// status is the length of the content
+		if (parsedData.status == '0'){
+			$('#' + popupEditStatementLogfileSpaceId).text('No corrections for the given statement.');
+		} else {
+			$('#' + popupEditStatementLogfileSpaceId).text('');
+			new GuiHandler().displayStatementCorrectionsInPopup(parsedData.content);
+		}
+	};
+
+	/**
+	 * Callback, when a correcture could be send
+	 * @param data of the ajax request
+	 */
+	this.callbackIfDoneForSendCorrectureOfStatement = function (data) {
+		var parsedData = $.parseJSON(data);
+		if (parsedData.status == '-1'){
+			$('#' + popupErrorDescriptionId).text('Correction could not be set, because your user was not fount in the database. Are you' +
+				' currently logged in?');
+		} else {
+			new GuiHandler().updateOfStatementInDiscussion(parsedData);
+			$('#' + popupErrorDescriptionId).text('');
+			$('#' + popupSuccessDescriptionId).text('Your correction was set.');
+		}
+	};
+
+
 }

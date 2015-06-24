@@ -1,4 +1,4 @@
-/*global $, jQuery, alert, startDiscussionText , addStatementButtonId , statementList , GuiHandler , firstOneText , addStatementButtonId , argumentList , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementContainerId, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId
+/*global $, jQuery, alert, startDiscussionText , addStatementButtonId , statementList , GuiHandler , firstOneText , addStatementButtonId , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementContainerId, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId
 */
 
 function GuiHandler() {
@@ -144,8 +144,7 @@ function GuiHandler() {
 			ulElement.append(trElement);
 		});
 
-		$('#' + adminsSpaceId).empty();
-		$('#' + adminsSpaceId).append(ulElement);
+		$('#' + adminsSpaceId).empty().append(ulElement);
 	};
 
 	/**
@@ -207,7 +206,7 @@ function GuiHandler() {
 	 * @param text to set
 	 */
 	this.setErrorDescription = function (text) {
-		$('#' + errorDescriptionId).text(text);
+		$('#' + discussionErrorDescriptionId).text(text);
 	};
 
 	/**
@@ -215,7 +214,7 @@ function GuiHandler() {
 	 * @param text to set
 	 */
 	this.setSuccessDescription = function (text) {
-		$('#' + successDescriptionId).text(text);
+		$('#' + discussionSuccessDescriptionId).text(text);
 	};
 
 	/**
@@ -287,10 +286,6 @@ function GuiHandler() {
 		ulProElement = $('<ul>');
 		ulConElement = $('<ul>');
 
-		// empty
-		$('#' + leftIslandId).empty();
-		$('#' + rightIslandId).empty();
-
 		// get all values as text in list
 		$.each(jsonData, function displayDataInIslandViewEach(key, val) {
 			// is there a con or pro element?
@@ -306,8 +301,8 @@ function GuiHandler() {
 		});
 
 		// append in divs
-		$('#' + leftIslandId).append(ulProElement);
-		$('#' + rightIslandId).append(ulConElement);
+		$('#' + leftIslandId).empty().append(ulProElement);
+		$('#' + rightIslandId).empty().append(ulConElement);
 
 	};
 
@@ -416,21 +411,18 @@ function GuiHandler() {
 					+ statement + '</b>\',  because:');
 				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with the statement <b>\''
 					+ statement + '</b>\', because:');
-				$('#' + addStatementContainerMainInputId).hide();
+				$('#' + addStatementContainerMainInputId).hide().focus();;
 				$('#' + leftPositionColumnId).show();
 				$('#' + rightPositionColumnId).show();
-				$('#' + sendNewStatementId).off("click");
-				$('#' + sendNewStatementId).click(function () {
+				$('#' + sendNewStatementId).off('click').click(function () {
 					new InteractionHandler().getArgumentsAndSendThem();
 				});
-				$('#' + addStatementContainerMainInputId).focus();
 			} else {
 				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfPosition);
 				$('#' + addStatementContainerMainInputId).show();
 				$('#' + leftPositionColumnId).hide();
 				$('#' + rightPositionColumnId).hide();
-				$('#' + sendNewStatementId).off("click");
-				$('#' + sendNewStatementId).click(function () {
+				$('#' + sendNewStatementId).off('click').click(function () {
 					new AjaxHandler().sendNewPosition($('#' + addStatementContainerMainInputId).val());
 				});
 			}
@@ -470,15 +462,197 @@ function GuiHandler() {
 	 */
 	this.openEditStatementsPopup = function(){
 		$('#' + popupEditStatementId).modal('show');
-		$('#' + popupEditStatementBodyId).text('Todo:');
+		var table, tr, td_text, td_index, td_buttons, list_id, i, edit_button, log_button, statement, uid, type;
+
+		// each statement will be in a table with row: index, text, button for editing
+		// more action will happen, if the button is pressed
+
+		// top row
+		table = $('<table>');
+		table.attr({
+			id: 'edit_statement_table',
+			class: 'table table-condensed',
+			border: '0',
+			style: 'border-collapse: separate; border-spacing: 5px 5px;'});
+		tr = $('<tr>');
+		td_index = $('<td>');
+		td_text = $('<td>');
+		td_buttons = $('<td>');
+		td_text.html('<b>Text</b>').css('text-align','center');
+		td_index.html('<b>Index</b>').css('text-align','center');
+		td_buttons.html('<b>Edit</b>').css('text-align','center');
+		tr.append(td_index);
+		tr.append(td_text);
+		tr.append(td_buttons);
+		table.append(tr);
+
+		// do we have an argument or a position?
+		list_id = $('#' + statementListId + ' > li').children().length > 0 ? statementListId : argumentListId;
+		i = 1;
+		uid = 0;
+		// append a row for each statement
+		$('#' + list_id + ' > li').children().each(function (){
+			statement = $(this).val();
+			uid = $(this).attr("id");
+			type = $(this).attr("class");
+			// do we have a child with input or just the label?
+		    if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid)) {
+				// create new items
+				tr = $('<tr>');
+				td_index = $('<td>').attr({id: 'edit_statement_td_index_' + i}).css('text-align','center');
+				td_text = $('<td>').attr({id: 'edit_statement_td_text_' + i});
+				td_buttons = $('<td>').css('text-align','center');
+				edit_button = $('<input>');
+				log_button = $('<input>');
+				edit_button.css('margin', '2px');
+				log_button.css('margin', '2px');
+
+				// set attributes, text, ...
+				td_index.text(i);
+				td_text.text(statement);
+
+				// some attributes and functions for the edit button
+				edit_button.attr({id:'edit-statement',
+					type: 'button',
+					value: 'click for editing',
+					class: 'btn-sm btn button-primary',
+					statement_type: type,
+					statement_text: statement,
+					statement_id: uid,
+					index: i
+				}).click(function edit_button_click () {
+					$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text')).prop('disabled', false);
+					$('#' + popupEditStatementSubmitButtonId).prop("disabled", false).attr({
+						statement_type: $(this).attr('statement_type'),
+						statement_text: $(this).attr('statement_text'),
+						statement_id: $(this).attr('statement_id')
+					});
+					$('#edit_statement_table td').removeClass('table-hover');
+					$('#edit_statement_td_index_' + $(this).attr('index')).addClass('table-hover');
+					$('#edit_statement_td_text_' + $(this).attr('index')).addClass('table-hover');
+					$('#' + popupErrorDescriptionId).text('');
+					$('#' + popupSuccessDescriptionId).text('');
+					$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text'));
+				}).hover(function edit_button_hover () {
+					$(this).toggleClass('btn-primary', 400);
+				});
+
+				// show logfile
+				log_button.attr({id:'show_log_of_statement',
+					type: 'button',
+					value: 'show log',
+					class: 'btn-sm btn button-primary',
+					statement_type: type,
+					statement_text: statement,
+					statement_id: uid,
+					index: i
+				}).click(function log_button_click () {
+					$('#' + popupEditStatementLogfileHeaderId).html('Logfile for: <b>' + $(this).attr('statement_text') + '</b>');
+					$('#' + popupErrorDescriptionId).text('');
+					$('#' + popupSuccessDescriptionId).text('');
+					new AjaxHandler().getLogfileForStatement($(this).attr('statement_id'), $(this).attr('statement_type') == 'argument');
+				}).hover(function log_button_hover () {
+					$(this).toggleClass('btn-primary', 400);
+				});
+
+				// append everything
+				td_buttons.append(edit_button);
+				td_buttons.append(log_button);
+				tr.append(td_index);
+				tr.append(td_text);
+				tr.append(td_buttons);
+				table.append(tr);
+				i = i + 1; // increasing index
+			}
+		});
+
+		$('#' + popupEditStatementContentId).empty().append(table);
+		$('#' + popupEditStatementSubmitButtonId).prop( "disabled", true ).click(function edit_statement_click () {
+			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('statement_type') == 'argument', $('#' + popupEditStatementTextareaId).val());
+		});
+
+		// on click: do ajax
+		// ajax done: refresh current statement with new text
 	};
 
+	/**
+	 * Closes the popup and deletes all of its content
+	 */
+	this.closeEditStatementsPopup = function () {
+		$('#' + popupEditStatementId).modal('hide');
+		$('#' + popupEditStatementContentId).empty();
+		$('#' + popupEditStatementLogfileSpaceId).text('');
+		$('#' + popupEditStatementLogfileHeaderId).text('');
+		$('#' + popupEditStatementTextareaId).text('');
+		$('#' + popupErrorDescriptionId).text('');
+		$('#' + popupSuccessDescriptionId).text('');
+	};
+
+	/**
+	 * Displays all corrections in the popup
+	 * @param jsonData json encoded return data
+	 */
+	this.displayStatementCorrectionsInPopup = function (jsonData) {
+		var table, tr, td_text, td_date, td_author;
+
+		// top row
+		table = $('<table>');
+		table.attr({
+			id: 'edit_statement_table',
+			class: 'table table-condensed',
+			border: '0',
+			style: 'border-collapse: separate; border-spacing: 5px 5px;'});
+		tr = $('<tr>');
+		td_date = $('<td>');
+		td_text = $('<td>');
+		td_author = $('<td>');
+		td_date.html('<b>Date</b>').css('text-align','center');
+		td_text.html('<b>Text</b>').css('text-align','center');
+		td_author.html('<b>Author</b>').css('text-align','center');
+		tr.append(td_date);
+		tr.append(td_text);
+		tr.append(td_author);
+		table.append(tr);
+
+		$.each(jsonData, function displayStatementCorrectionsInPopupEach(key, val) {
+			alert(key + " " + val.text);
+			tr = $('<tr>');
+			td_date = $('<td>');
+			td_text = $('<td>');
+			td_author = $('<td>');
+
+			td_date.text(val.date);
+			td_text.text(val.text);
+			td_author.text(val.author);
+
+			// append everything
+			tr.append(td_date);
+			tr.append(td_text);
+			tr.append(td_author);
+			table.append(tr);
+		});
+
+		$('#' + popupEditStatementLogfileSpaceId).empty().append(table);
+	};
+
+	/**
+	 * Updates an statement in the discussions list
+	 * @param jsonData
+	 */
+	this.updateOfStatementInDiscussion = function (jsonData) {
+		var is_argument = jsonData.is_argument == '1', list_id;
+
+		// do we have an argument or a position?
+		list_id = is_argument ? statementListId : argumentListId;
+		// append a row for each statement
+		$('#li_' + jsonData.uid + ' input').val(jsonData.text);
+		$('#li_' + jsonData.uid + ' label').text(jsonData.text);
+	};
 
 	/**
 	 * Dialog based discussion modi
 	 */
 	this.setDisplayStyleAsDiscussion  = function () {
-		// todo setDisplayStyleAsDiscussion
 		$('#' + islandViewContainerId).hide();
 	};
 
@@ -494,8 +668,6 @@ function GuiHandler() {
 	 * Full view, full interaction range for the graph
 	 */
 	this.setDisplayStyleAsFullView  = function () {
-		alert('todo: full view');
-		// todo setDisplayStyleAsFullView
 		$('#' + islandViewContainerId).hide();
 	};
 }

@@ -69,6 +69,8 @@ def main(global_config, **settings):
 	config.add_route('ajax_send_new_position', '/ajax_send_new_position');
 	config.add_route('ajax_send_new_arguments', '/ajax_send_new_arguments');
 	config.add_route('ajax_one_step_back', '/ajax_one_step_back');
+	config.add_route('ajax_get_logfile_for_statement', '/ajax_get_logfile_for_statement');
+	config.add_route('ajax_send_correcture_of_statement', '/ajax_send_correcture_of_statement');
 
 	# read the input and start
 	config.scan()

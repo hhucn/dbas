@@ -17,8 +17,9 @@ var discussionSpaceId = 'discussions-space';
 var discussionFailureRowId = 'discussion-failure-row';
 var discussionFailureMsgId = 'discussion-failure-msg';
 var displayControlContainerId = 'display-control-container';
-var editButtonId = 'edit-statement';
-var errorDescriptionId = 'error-description';
+var discussionErrorDescriptionId = 'discussion-error-description';
+var discussionSuccessDescriptionId = 'discussion-success-description';
+var editStatementButtonId = 'edit-statement';
 var headingProPositionTextId = 'heading-pro-positions';
 var headingConPositionTextId = 'heading-contra-positions';
 var leftPositionColumnId = 'left-position-column';
@@ -40,7 +41,15 @@ var newArgumentRadioButtonText = 'Let me state my own reason(s)!';
 var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
 var minimapId = 'navigation-minimap-container';
 var popupEditStatementId = 'popup_edit_statement';
-var popupEditStatementBodyId = 'popup_edit_statement-modal-body';
+var popupEditStatementCloseButtonXId = 'popup_edit_statement_close';
+var popupEditStatementCloseButtonId = 'popup_edit_statement_close_button';
+var popupEditStatementTextareaId = 'popup_edit_statement_textarea';
+var popupEditStatementContentId = 'popup_edit_statement_content';
+var popupEditStatementLogfileHeaderId = 'popup_edit_statement_logfile_header';
+var popupEditStatementLogfileSpaceId = 'popup_edit_statement_logfile';
+var popupEditStatementSubmitButtonId = "popup_edit_statement_submit";
+var popupErrorDescriptionId = 'popup-edit-error-description';
+var popupSuccessDescriptionId = 'popup-edit-success-description';
 var scStyleGroupId = 'sc-display-style';
 var scStyle1Id = 'sc-style-1';
 var scStyle2Id = 'sc-style-2';
@@ -53,7 +62,6 @@ var stepBackButtonId = 'step-back';
 var sendAnswerButtonId = 'send-answer';
 var sendNewStatementId = 'send-new-statement';
 var statementListId = 'statement-list';
-var successDescriptionId = 'success-description';
 
 
 
@@ -164,12 +172,23 @@ $(function () {
 		$('#' + scStyle2Id).removeAttr('checked');
 	});
 
-	$('#' + editButtonId).click(function(){
+	// open edit statement
+	$('#' + editStatementButtonId).click(function(){
 		guiHandler.openEditStatementsPopup();
+	}).hover(function () {
+		$(this).toggleClass('btn-primary', 400);
+	});
+
+	// close edit statement
+	$('#' + popupEditStatementCloseButtonXId).click(function(){
+		guiHandler.closeEditStatementsPopup();
+	});
+	$('#' + popupEditStatementCloseButtonId).click(function(){
+		guiHandler.closeEditStatementsPopup();
 	});
 
 	// managed in the html file
-	// $('#' + scStyle1Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	// $('#' + scSty$('#' + editStatementButtonId)le1Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
 	// $('#' + scStyle2Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
 	// $('#' + scStyle3Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
 

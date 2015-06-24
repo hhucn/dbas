@@ -14,7 +14,7 @@ from pyramid_mailer.message import Message
 from sqlalchemy import and_
 
 from .database import DBSession
-from .database.model import Argument, RelationArgPos, RelationArgArg, Track, User, Group, Position
+from .database.model import Argument, RelationArgPos, RelationArgArg, Track, User, Group, Position, Correction
 
 
 log = logging.getLogger(__name__)
@@ -102,7 +102,7 @@ class QueryHelper(object):
 	def is_user_admin(self, user):
 		"""
 		Check, if the given uid has admin rights or is admin
-		:param user:
+		:param user: current user name
 		:return: true, if user is admin, false otherwise
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=str(user)).first()
@@ -115,6 +115,23 @@ class QueryHelper(object):
 				return True
 
 		return False
+
+	def get_ajax_arguments_by_pos(self, transaction, uid):
+		"""
+		Returns all arguments, which are connected to the position
+		:param transaction: current transaction
+		:param uid: position uid
+		:return: dictioanry
+		"""
+		return_dict = self.get_arguments_for_justifications(uid)
+
+		# get last statement
+		db_last_statement = DBSession.query(Position).filter_by(uid=uid).first()
+		# check for correction
+		db_correction = DBSession.query(Correction).filter_by(pos_uid=uid).order_by(Correction.uid.desc()).first()
+		return_dict['currentStatementText'] = db_correction.text if db_correction else db_last_statement.text
+
+		return return_dict
 
 	def get_data_for_one_step_back(self, user):
 		"""
@@ -152,7 +169,8 @@ class QueryHelper(object):
 				logger('QueryHelper', 'get_data_for_one_step_back', 'last statement was a position with uid : ' + str(row.pos_uid))
 				return_dict = self.get_arguments_for_justifications(row.pos_uid)
 				db_last_position = DBSession.query(Position).filter_by(uid=row.pos_uid).first()
-				return_dict['currentStatementText'] = db_last_position.text
+				db_correction = DBSession.query(Correction).filter_by(pos_uid=row.pos_uid).order_by(Correction.uid.desc()).first()
+				return_dict['currentStatementText'] = db_correction.text if db_correction else db_last_position.text
 				return_dict['status'] = '0'
 			else:
 				logger('QueryHelper', 'get_data_for_one_step_back', 'last statement was an argument with uid : ' + str(row.arg_uid))
@@ -197,12 +215,13 @@ class QueryHelper(object):
 				for argid in db_arguids:
 					logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'get argument with' + str(argid.arg_uid))
 					db_argument = DBSession.query(Argument).filter_by(uid = argid.arg_uid).first()
+					db_correction = DBSession.query(Correction).filter_by(arg_uid=argid.arg_uid).order_by(Correction.uid.desc()).first()
 
 					logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'checks whether argument exists, uid ' + str(argid.uid))
 					if db_argument:
 						logger('QueryHelper', 'get_all_arguments_by_arg_uid' , 'add argument in dict' +
-							'uid:' + str(db_argument.uid) + ', val: ' + db_argument.text)
-						return_dict[str(db_argument.uid)] = db_argument.text
+							'uid:' + str(db_argument.uid) + ', val: ' + (db_correction.text if db_correction else db_argument.text))
+						return_dict[str(db_argument.uid)] = db_correction.text if db_correction else db_argument.text
 					else:
 						logger('QueryHelper', 'get_all_arguments_by_arg_uid', 'no argument exists, uid ' + str(argid.uid))
 			else:
@@ -228,7 +247,7 @@ class QueryHelper(object):
 			logger('QueryHelper', 'get_all_positions', 'there are positions')
 			for pos in db_positions:
 				logger('QueryHelper', 'get_all_positions', 'pos ' + str(pos.uid) + ': ' + pos.text)
-				positions_dict[str(pos.uid)] = dh.save_statement_row_in_dictionary(pos)
+				positions_dict[str(pos.uid)] = dh.save_corrected_statement_row_in_dictionary(pos, False)
 		else:
 			logger('QueryHelper', 'get_all_positions', 'there no positions')
 			return_dict['status'] = '-1'
@@ -270,10 +289,12 @@ class QueryHelper(object):
 
 		# get the last used statement
 		db_last_statement = DBSession.query(Argument).filter_by(uid=statement_id).first()
+		db_correction = DBSession.query(Correction).filter_by(arg_uid=statement_id).order_by(Correction.uid.desc()).first()
 
 		# save the last statement text in the return dictionary
-		logger('QueryHelper', 'get_args_for_new_round', 'last statement is an argument: ' + db_last_statement.text)
-		return_dict['currentStatementText'] = db_last_statement.text
+		logger('QueryHelper', 'get_args_for_new_round', 'last statement is an argument: ' + (db_correction.text if db_correction else
+		db_last_statement.text))
+		return_dict['currentStatementText'] = db_correction.text if db_correction else db_last_statement.text
 
 		# get all statements against our statement
 		contra_argument_rows = self.get_argument_list_in_relation_to_statement(statement_id, False, False)
@@ -318,6 +339,9 @@ class QueryHelper(object):
 		else:
 			db_statement = DBSession.query(Argument).filter_by(text=statement_text).order_by(Argument.uid.desc()).first()
 
+		if not db_statement:
+			db_statement = DBSession.query(Correction).filter_by(text=statement_text).order_by(Correction.uid.desc()).first()
+
 		logger('QueryHelper', 'is_statement_already_in_database', 'new statement is already' if db_statement else 'not in the db')
 		return db_statement.uid if db_statement else -1
 
@@ -359,7 +383,7 @@ class QueryHelper(object):
 					+ ' argument ' + str(arg.arg_uid1))
 				db_arg = DBSession.query(Argument).filter_by(uid=arg.arg_uid1).first()
 
-			argument_dict = DictionaryHelper().save_statement_row_in_dictionary(db_arg)
+			argument_dict = DictionaryHelper().save_corrected_statement_row_in_dictionary(db_arg, True)
 			return_list.append(argument_dict)
 
 		return return_list
@@ -398,7 +422,8 @@ class QueryHelper(object):
 		"""
 		Returns the complete track of given user
 		:param user: current user id
-		:return: track os the user id as dictionary
+		:return: track os the user id as tffö
+		ödictionary
 		"""
 		logger('QueryHelper', 'get_track_for_user', 'user ' + user)
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
@@ -417,9 +442,11 @@ class QueryHelper(object):
 					track_dict['arg_uid'] = track.arg_uid
 					if track.is_argument:
 						db_row = DBSession.query(Argument).filter_by(uid=track.arg_uid).first()
+						db_correction = DBSession.query(Correction).filter_by(arg_uid=track.arg_uid).order_by(Correction.uid.desc()).first()
 					else:
 						db_row = DBSession.query(Position).filter_by(uid=track.pos_uid).first()
-					track_dict['text'] = db_row.text
+						db_correction = DBSession.query(Correction).filter_by(pos_uid=track.pos_uid).order_by(Correction.uid.desc()).first()
+					track_dict['text'] = db_correction.text if db_correction else db_row.text
 					track_dict['is_argument'] = track.is_argument
 					return_dict[track.uid] = track_dict
 				except AttributeError as ae:
@@ -467,11 +494,12 @@ class QueryHelper(object):
 
 		# check out, if it is there
 		db_position = DBSession.query(Position).filter_by(text=position).order_by(Position.uid.desc()).first()
+		db_correction = DBSession.query(Correction).filter_by(pos_uid=db_position.uid).order_by(Correction.uid.desc()).first()
 		return_dict = collections.OrderedDict()
 		if db_position:
 			logger('QueryHelper', 'save_track_argument_for_user', 'position was inserted with uid ' + str(db_position.uid))
 			return_dict['uid'] = db_position.uid
-			return_dict['text'] = db_position.text
+			return_dict['text'] = db_correction.text if db_correction else db_position.text
 			return_dict['date'] = str(db_position.date)
 			return_dict['weight'] = str(db_position.weight)
 			return_dict['author'] = user
@@ -529,7 +557,7 @@ class QueryHelper(object):
 			# save the argument
 			additional_key = 'is_supportive'
 			additional_value = '1' if is_supportive else '0'
-			argument_dict = DictionaryHelper().save_statement_row_in_dictionary(db_new_argument, additional_key, additional_value)
+			argument_dict = DictionaryHelper().save_corrected_statement_row_in_dictionary(db_new_argument, True, additional_key, additional_value)
 			all_arguments_dict[str(argument_dict['uid'])] = argument_dict
 
 			# set relation to the last selected statement
@@ -668,6 +696,94 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_confrontation_argument', 'get the nth argument as contra ' + str(rnd))
 		return contra_argument_rows[rnd]
 
+	def get_logfile_for_statement(self, uid, is_argument):
+		"""
+		Returns the logfile for the given statement uid
+		:param uid: requested statement uid
+		:param is_argument: true, if it is an argument
+		:return: dictionary with the logfile-rows
+		"""
+		logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid) + ', is_argument: ' + str(is_argument))
+
+		pos_uid = -1 if is_argument else uid
+		arg_uid = uid if is_argument else -1
+		db_corrections = DBSession.query(Correction).filter(and_(Correction.arg_uid == arg_uid, Correction.pos_uid == pos_uid)).all()
+
+		logger('QueryHelper', 'get_logfile_for_statement', 'corrections for arg_uid: ' + str(arg_uid) + ', pos_uid: ' + str(pos_uid)
+		       + ', count: ' + str(len(db_corrections)) + ', is_argument: ' + str(is_argument))
+
+		return_dict = {}
+		content_dict = collections.OrderedDict()
+		return_dict['status'] = str(len(db_corrections))
+
+		# adding the 'source' of the statement
+		if is_argument:
+			db_source_statement = DBSession.query(Argument).filter_by(uid=uid).first()
+		else:
+			db_source_statement = DBSession.query(Position).filter_by(uid=uid).first()
+
+		index = 1
+		corr_dict  = {}
+		corr_dict['uid'] = str(db_source_statement.uid)
+		corr_dict['date'] = str(db_source_statement.date)
+		corr_dict['is_argument'] = '1' if is_argument else '0'
+		corr_dict['text'] = str(db_source_statement.text)
+		db_author = DBSession.query(User).filter_by(uid=db_source_statement.author).first()
+		corr_dict['author'] = str(db_author.nickname)
+		content_dict[str(index)] = corr_dict
+		logger('QueryHelper', 'get_logfile_for_statement', 'statement ' + str(index) + ': ' + db_source_statement.text)
+		index += 1
+
+		# add all corrections
+		for correction in db_corrections:
+			corr_dict = {}
+			corr_dict['uid'] = str(correction.uid)
+			db_author = DBSession.query(User).filter_by(uid=correction.user_uid).first()
+			corr_dict['author'] = str(db_author.nickname)
+			corr_dict['date'] = str(correction.date)
+			corr_dict['is_argument'] ='1' if correction.is_argument else '0'
+			corr_dict['text'] = str(correction.text)
+			content_dict[str(index)] = corr_dict
+			logger('QueryHelper', 'get_logfile_for_statement', 'statement ' + str(index) + ': ' + correction.text)
+			index += 1
+		return_dict['content'] = content_dict
+
+		return return_dict
+
+	def correct_statement(self, transaction, user, uid, is_argument, corrected_text):
+		"""
+		Corrects a statement
+		:param transaction: current transaction
+		:param user: requesting user
+		:param uid: requested statement uid
+		:param is_argument: true, if it is an argument
+		:param corrected_text: new text
+		:return: True
+		"""
+		logger('QueryHelper', 'correct_statement', 'def')
+
+		return_dict = {}
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		if db_user:
+			logger('QueryHelper', 'correct_statement', 'given user exists and correction will be set')
+			pos_uid = -1 if is_argument else uid
+			arg_uid = uid if is_argument else -1
+			is_argument = True if is_argument else False
+			correction = Correction(user_uid=db_user.uid, pos_uid=pos_uid, arg_uid=arg_uid, is_argument=is_argument, text=corrected_text)
+			DBSession.add(correction)
+			transaction.commit()
+			return_dict['status'] = '1'
+		else:
+			logger('QueryHelper', 'correct_statement', 'user not found')
+			return_dict['status'] = '-1'
+
+		# todo: alle weiteren requests überarbeiten
+		return_dict['uid'] = uid
+		return_dict['is_argument'] = '1' if is_argument else '0'
+		return_dict['text'] = corrected_text
+		return return_dict
+
+
 class DictionaryHelper(object):
 
 	def get_subdictionary_out_of_orderer_dict(self, ordered_dict, count):
@@ -712,19 +828,24 @@ class DictionaryHelper(object):
 		return_dict = json.dumps(dict, ensure_ascii)
 		return return_dict
 
-	def save_statement_row_in_dictionary(self, argument_row, additional_key='', additional_value=''):
+	def save_corrected_statement_row_in_dictionary(self, statement_row, is_argument, additional_key='', additional_value=''):
 		"""
 		Saved a row in dictionary
-		:param argument_row: for saving
+		:param statement_row: for saving
 		:return: dictionary
 		"""
-		logger('DictionaryHelper', 'save_argument_row_in_dictionary', str(argument_row.uid) + ', ' + argument_row.text + ', ' + str(argument_row.date) + ', ' + str(argument_row.weight) + ', ' + str(argument_row.author))
+		if is_argument:
+			db_correction = DBSession.query(Correction).filter_by(arg_uid=statement_row.uid).order_by(Correction.uid.desc()).first()
+		else:
+			db_correction = DBSession.query(Correction).filter_by(pos_uid=statement_row.uid).order_by(Correction.uid.desc()).first()
+
+		logger('DictionaryHelper', 'save_argument_row_in_dictionary', str(statement_row.uid) + ', ' + statement_row.text + ', ' + str(statement_row.date) + ', ' + str(statement_row.weight) + ', ' + str(statement_row.author))
 		dict = {}
-		dict['uid'] = str(argument_row.uid)
-		dict['text'] = argument_row.text
-		dict['date'] = str(argument_row.date)
-		dict['weight'] = str(argument_row.weight)
-		author = DBSession.query(User).filter_by(uid=argument_row.author).first()
+		dict['uid'] = str(statement_row.uid)
+		dict['text'] = db_correction.text if db_correction else statement_row.text
+		dict['date'] = str(statement_row.date)
+		dict['weight'] = str(statement_row.weight)
+		author = DBSession.query(User).filter_by(uid=statement_row.author).first()
 		dict['author'] = author.nickname
 		if len(additional_key) > 0 and len(additional_value) > 0:
 			dict[additional_key] = additional_value

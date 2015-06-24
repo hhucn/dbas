@@ -5,6 +5,7 @@ from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.sql import func
 from dbas.database import DBSession, Base
 
+# TODO: new initializations of each table, where all arguments can be directly assinged!
 
 class Issue(Base):
 	"""
@@ -277,9 +278,34 @@ class Track(Base):
 
 	def __init__(self, user_uid, pos_uid, arg_uid, is_argument):
 		"""
-		Initializes a row in current position-table
+		Initializes a row in current track-table
 		"""
 		self.user_uid = user_uid
 		self.pos_uid = pos_uid
 		self.arg_uid = arg_uid
 		self.is_argument = is_argument
+
+
+class Correction(Base):
+	"""
+	Correction-table with several columns.
+	Each statement can be corrected
+	"""
+	__tablename__ = 'correction'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	user_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
+	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
+	is_argument = sa.Column(sa.Boolean, nullable=False)
+	text = sa.Column(sa.Text, nullable=False)
+
+	def __init__(self, user_uid, pos_uid, arg_uid, is_argument, text):
+		"""
+		Initializes a row in current correction-table
+		"""
+		self.user_uid = user_uid
+		self.pos_uid = pos_uid
+		self.arg_uid = arg_uid
+		self.is_argument = is_argument
+		self.text = text

@@ -14,7 +14,7 @@ from pyramid_mailer.message import Message
 
 from .database import DBSession
 from .database.model import User, Group, Issue, Position, Argument, RelationArgPos
-from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper
+from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, Correction
 
 class Dbas(object):
 	def __init__(self, request):
@@ -588,30 +588,24 @@ class Dbas(object):
 		Returns all arguments, which are connected to a position, which uid is delivered in the params
 		:return: dictionary with db-rows, json-encoded
 		"""
-		logger('ajax_arguments_connected_to_position_uid', 'def', 'main')
+		logger('get_ajax_arguments_by_pos', 'def', 'main')
 
 		# get every relation from current argument to an position with uid send
 		uid = ''
 		try:
 			uid = self.request.params['uid']
 		except KeyError as e:
-			logger('ajax_arguments_connected_to_position_uid', 'error', repr(e))
+			logger('get_ajax_arguments_by_pos', 'error', repr(e))
 
-		logger('ajax_arguments_connected_to_position_uid', 'def', 'uid: ' + uid)
+		logger('get_ajax_arguments_by_pos', 'def', 'uid: ' + uid)
 
 		# get all arguments
-		query_helper = QueryHelper()
-		return_dict = query_helper.get_arguments_for_justifications(uid)
+		return_dict = QueryHelper().get_ajax_arguments_by_pos(transaction, uid)
 
 		# save track, because the given uid is a position uid
-		logger('ajax_arguments_connected_to_position_uid', 'def', 'saving track: position id ' + str(uid))
-		query_helper.save_track_position_for_user(transaction, self.request.authenticated_userid, uid)
+		logger('get_ajax_arguments_by_pos', 'def', 'saving track: position id ' + str(uid))
+		QueryHelper().save_track_position_for_user(transaction, self.request.authenticated_userid, uid)
 
-		# get last statement
-		db_last_statement = DBSession.query(Position).filter_by(uid=uid).first()
-		return_dict['currentStatementText'] = db_last_statement.text
-
-		# get return count of arguments
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
@@ -713,3 +707,45 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
+
+	# ajax - getting all arguments for the island view
+	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json')
+	def get_logfile_for_statement(self):
+		logger('get_logfile_for_statement', 'def', 'main')
+
+		uid = ''
+		is_argument = ''
+		try:
+			uid = self.request.params['uid']
+			is_argument = True if self.request.params['is_argument'] == 'true' else False
+			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid) + ', is_argument: ' + str(is_argument))
+		except KeyError as e:
+			logger('get_logfile_for_statement', 'error', repr(e))
+
+		return_dict = QueryHelper().get_logfile_for_statement(uid, is_argument)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - getting all arguments for the island view
+	@view_config(route_name='ajax_send_correcture_of_statement', renderer='json')
+	def send_correcture_of_statement(self):
+		logger('send_correcture_of_statement', 'def', 'main')
+
+		uid = ''
+		is_argument = ''
+		corrected_text = ''
+		try:
+			uid = self.request.params['uid']
+			is_argument = True if self.request.params['is_argument'] == 'true' else False
+			corrected_text = self.request.params['text']
+			logger('send_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', is_argument: ' + str(is_argument) + ', corrected_text: ' + str(corrected_text));
+		except KeyError as e:
+			logger('send_correcture_of_statement', 'error', repr(e))
+
+		return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, is_argument, corrected_text)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+
