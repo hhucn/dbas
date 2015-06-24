@@ -1,16 +1,10 @@
 import transaction
-import time
-import smtplib
-import collections
-
-from socket import error as socket_error
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
-from pyramid_mailer import get_mailer
-from pyramid_mailer.message import Message
+from pyramid.session import check_csrf_token
 
 from .database import DBSession
 from .database.model import User, Group, Issue
@@ -28,11 +22,11 @@ class Dbas(object):
 	# main page
 	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 	def main_page(self):
-		logger('main_page', 'def', 'main page')
 		"""
 		View configuration for the main page
 		:return:
 		"""
+		logger('main_page', 'def', 'main page')
 		return dict(
 			title='Main',
 			project='DBAS',
@@ -49,6 +43,10 @@ class Dbas(object):
 		"""
 		# check for already logged in users
 		logger('main_login', 'def', 'login page')
+
+		token = self.request.session.get_csrf_token()
+		logger('main_login', 'new token', str(token))
+
 		if self.request.authenticated_userid:
 			return HTTPFound(location=self.request.route_url('main_content'))
 
@@ -115,6 +113,7 @@ class Dbas(object):
 			email = self.request.params['email']
 			password = self.request.params['password']
 			passwordconfirm = self.request.params['passwordconfirm']
+			request_token = self.request.params['csrf_token']
 
 			# database queries mail verification
 			db_nick = DBSession.query(User).filter_by(nickname=nickname).first()
@@ -146,6 +145,13 @@ class Dbas(object):
 				logger('main_login', 'form.registration.submitted', 'E-Mail \'' + email + '\' is not valid')
 				message = 'E-Mail is not valid'
 				email = ''
+				reg_failed = True
+			# is the token valid?
+			elif request_token != token :
+				logger('main_login', 'form.registration.submitted', 'token is not valid')
+				logger('main_login', 'form.registration.submitted', 'request_token: ' + str(request_token))
+				logger('main_login', 'form.registration.submitted', 'token: ' + str(token))
+				message = 'CSRF-Token is not valid'
 				reg_failed = True
 			else:
 				# getting the editors group
@@ -232,7 +238,8 @@ class Dbas(object):
 			login_failed=log_failed, 
 			registration_failed=reg_failed, 
 			registration_success=reg_success, 
-			logged_in=self.request.authenticated_userid
+			logged_in=self.request.authenticated_userid,
+			csrf_token=token
 		)
 
 	# logout page
@@ -258,6 +265,10 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('main_contact', 'def', 'contact page')
+
+		token = self.request.session.new_csrf_token()
+		logger('main_contact', 'new token', str(token))
+
 		contact_error = False
 		send_message = False
 		message = ''
@@ -266,6 +277,8 @@ class Dbas(object):
 		phone = ''
 		content = ''
 		spam = ''
+		request_token = ''
+
 		if 'form.contact.submitted' in self.request.params:
 			logger('main_contact', 'form.contact.submitted', 'requesting params')
 			name = self.request.params['name']
@@ -273,6 +286,7 @@ class Dbas(object):
 			phone = self.request.params['phone']
 			content = self.request.params['content']
 			spam = self.request.params['spam']
+			request_token = self.request.params['csrf_token']
 
 			logger('main_contact', 'form.contact.submitted', 'validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
@@ -302,6 +316,14 @@ class Dbas(object):
 				contact_error = True
 				message = "Your anti-spam message is empty or wrong!"
 
+			# is the token valid?
+			elif request_token != token :
+				logger('main_contact', 'form.contact.submitted', 'token is not valid')
+				logger('main_contact', 'form.contact.submitted', 'request_token: ' + str(request_token))
+				logger('main_contact', 'form.contact.submitted', 'token: ' + str(token))
+				message = 'CSRF-Token is not valid'
+				contact_error = True
+
 			else:
 				subject = 'Contact D-BAS'
 				body = 'Name: ' + name + '\n' + 'Mail: ' + email + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
@@ -318,7 +340,8 @@ class Dbas(object):
 			mail=email,
 			phone=phone,
 			content=content,
-			spam=spam
+			spam=spam,
+			csrf_token=token
 		)
 
 	# content page, after login
@@ -329,6 +352,10 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('main_content', 'def', 'main')
+
+		token = self.request.session.new_csrf_token()
+		logger('main_content', 'new token', str(token))
+
 		db_issue = DBSession.query(Issue).filter_by(uid=1).first()
 		issue = 'none'
 		date = 'empty'
@@ -435,7 +462,7 @@ class Dbas(object):
 				else:
 					logger('main_login', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
 					password_handler = PasswordHandler()
-					hashed_pw = password_handler.get_hashed_password(self, new_pw)
+					hashed_pw = password_handler.get_hashed_password(new_pw)
 					logger('main_login', 'form.passwordrequest.submitted', 'New hashed password is ' + hashed_pw)
 
 					# set the hased one
@@ -509,56 +536,58 @@ class Dbas(object):
 		)
 
 	# ajax - return all position in the database
-	@view_config(route_name='ajax_all_positions', renderer='json')
-	def get_ajax_all_positions(self):
+	@view_config(route_name='ajax_all_positions', renderer='json', check_csrf=True)
+	def get_all_positions(self):
 		"""
 		Returns all positions as dictionary with uid <-> value
 		:return: list of all positions
 		"""
-		logger('ajax_all_positions', 'def', 'main')
+		logger('get_all_positions', 'def', 'main')
 		return_dict = QueryHelper().get_all_positions()
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
 	# ajax - getting every user, and returns dicts with name <-> group
-	@view_config(route_name='ajax_all_users', renderer='json')
-	def get_ajax_all_users(self):
+	@view_config(route_name='ajax_all_users', renderer='json', check_csrf=True)
+	def get_all_users(self):
 		"""
 		Returns all users as dictionary with name <-> group
 		:return: list of all users
 		"""
-		logger('get_ajax_users', 'def', 'main')
+		logger('get_all_users', 'def', 'main')
+		logger('get_all_users', 'check_csrf_token', str(check_csrf_token(self.request)))
+
 		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
 	# ajax - getting complete track of the user
-	@view_config(route_name='ajax_manage_user_track', renderer='json')
-	def ajax_manage_user_track(self):
+	@view_config(route_name='ajax_manage_user_track', renderer='json', check_csrf=True)
+	def manage_user_track(self):
 		"""
 		Request the complete user track
 		:return:
 		"""
-		logger('ajax_manage_user_track', 'def', 'main')
+		logger('manage_user_track', 'def', 'main')
 
 		nickname = 'unknown'
 		get_data = ''
 		try:
-			logger('ajax_manage_user_track', 'def', 'read params')
+			logger('manage_user_track', 'def', 'read params')
 			nickname = str(self.request.authenticated_userid)
 			get_data = self.request.params['get_data']
-			logger('ajax_manage_user_track', 'def', 'nickname ' + nickname + ', get ' + get_data)
+			logger('manage_user_track', 'def', 'nickname ' + nickname + ', get ' + get_data)
 		except KeyError as e:
-			logger('ajax_manage_user_track', 'error', repr(e))
+			logger('manage_user_track', 'error', repr(e))
 
 		return_dict = {}
 		if get_data == '1':
-			logger('ajax_manage_user_track', 'def', 'get track data')
+			logger('manage_user_track', 'def', 'get track data')
 			return_dict = QueryHelper().get_track_for_user(nickname)
 		else:
-			logger('ajax_manage_user_track', 'def', 'remove track data')
+			logger('manage_user_track', 'def', 'remove track data')
 			return_dict['removed data'] = 'true'
 			QueryHelper().del_track_for_user(transaction, nickname)
 
@@ -569,27 +598,27 @@ class Dbas(object):
 
 	# ajax - getting every argument, which is connected to the given position uid
 	@view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')
-	def get_ajax_arguments_by_pos(self):
+	def get_arguments_by_pos(self):
 		"""
 		Returns all arguments, which are connected to a position, which uid is delivered in the params
 		:return: dictionary with db-rows, json-encoded
 		"""
-		logger('get_ajax_arguments_by_pos', 'def', 'main')
+		logger('getarguments_by_pos', 'def', 'main')
 
 		# get every relation from current argument to an position with uid send
 		uid = ''
 		try:
 			uid = self.request.params['uid']
 		except KeyError as e:
-			logger('get_ajax_arguments_by_pos', 'error', repr(e))
+			logger('getarguments_by_pos', 'error', repr(e))
 
-		logger('get_ajax_arguments_by_pos', 'def', 'uid: ' + uid)
+		logger('getarguments_by_pos', 'def', 'uid: ' + uid)
 
 		# get all arguments
 		return_dict = QueryHelper().get_args_by_pos(uid)
 
 		# save track, because the given uid is a position uid
-		logger('get_ajax_arguments_by_pos', 'def', 'saving track: position id ' + str(uid))
+		logger('getarguments_by_pos', 'def', 'saving track: position id ' + str(uid))
 		QueryHelper().save_track_position_for_user(transaction, self.request.authenticated_userid, uid)
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
@@ -597,8 +626,8 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting next argument for confrontation
-	@view_config(route_name='ajax_args_for_new_discussion_round', renderer='json')
-	def get_ajax_args_for_new_round(self):
+	@view_config(route_name='ajax_args_for_new_discussion_round', renderer='json', check_csrf=True)
+	def get_args_for_new_round(self):
 		"""
 		Returns arguments for a new confrontation and justification
 		:return: dictionary with db-rows, json-encoded
@@ -625,30 +654,30 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new position
-	@view_config(route_name='ajax_send_new_position', renderer='json')
-	def set_ajax_send_new_position(self):
+	@view_config(route_name='ajax_send_new_position', renderer='json', check_csrf=True)
+	def set_send_new_position(self):
 		"""
 		Inserts a new position into the database
 		:return: a status code, if everything was successfull
 		"""
-		logger('set_ajax_send_new_position', 'def', 'main')
+		logger('setsend_new_position', 'def', 'main')
 
 		position = ''
 		try:
 			position = self.request.params['position']
-			logger('set_ajax_send_new_position', 'def', 'request data: position ' + str(position))
+			logger('setsend_new_position', 'def', 'request data: position ' + str(position))
 		except KeyError as e:
-			logger('set_ajax_send_new_position', 'error', repr(e))
+			logger('setsend_new_position', 'error', repr(e))
 
 		# is position already inserted?
 		return_dict = {}
 		query_helper = QueryHelper()
 		if query_helper.is_statement_already_in_database(position, True) > -1:
-			logger('set_ajax_send_new_position', 'def', 'duplicate')
+			logger('setsend_new_position', 'def', 'duplicate')
 			return_dict['result'] = 'failed'
 			return_dict['reason'] = 'duplicate'
 		else:
-			logger('set_ajax_send_new_position', 'def', 'saving position')
+			logger('setsend_new_position', 'def', 'saving position')
 			# saving position
 			if position != '':
 				return_dict['result'] = 'success'
@@ -662,22 +691,22 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting next argument for confrontation
-	@view_config(route_name='ajax_send_new_arguments', renderer='json')
-	def set_ajax_send_new_arguments(self):
+	@view_config(route_name='ajax_send_new_arguments', renderer='json', check_csrf=True)
+	def set_send_new_arguments(self):
 		"""
 		Insert new arguments into the database
 		:return: dictionary with every arguments
 		"""
-		logger('set_ajax_send_new_arguments', 'def', 'main')
+		logger('setsend_new_arguments', 'def', 'main')
 		return_dict = QueryHelper().set_new_arguments(transaction, self.request.params, self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
 	# ajax - getting next argument for confrontation
-	@view_config(route_name='ajax_one_step_back', renderer='json')
-	def get_ajax_one_step_back(self):
-		logger('get_ajax_one_step_back', 'def', 'main')
+	@view_config(route_name='ajax_one_step_back', renderer='json', check_csrf=True)
+	def get_one_step_back(self):
+		logger('getone_step_back', 'def', 'main')
 
 		return_dict = QueryHelper().get_data_for_one_step_back(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
@@ -685,7 +714,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_all_arguments_for_island', renderer='json')
+	@view_config(route_name='ajax_all_arguments_for_island', renderer='json', check_csrf=True)
 	def get_all_arguments_for_island(self):
 		logger('get_all_arguments_for_island', 'def', 'main')
 
@@ -695,7 +724,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json')
+	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=True)
 	def get_logfile_for_statement(self):
 		logger('get_logfile_for_statement', 'def', 'main')
 
@@ -714,8 +743,8 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_send_correcture_of_statement', renderer='json')
-	def send_correcture_of_statement(self):
+	@view_config(route_name='ajax_send_correcture_of_statement', renderer='json', check_csrf=True)
+	def send_correcture_of_statement(self, check_csrf=True):
 		logger('send_correcture_of_statement', 'def', 'main')
 
 		uid = ''

@@ -15,6 +15,7 @@
 				<h5>Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</h5>
 				<br>
 				<form action="/contact" method="post">
+					<input type="hidden" name="csrf_token" value="${csrf_token}">
 
 					<h3>Your Name (required)</h3>
 					<input type="text" class="name active" name="name" placeholder="example: Tobias Krauthoff" tabindex="1" autofocus autocomplete="on" value="${name}">

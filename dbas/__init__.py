@@ -1,28 +1,34 @@
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
-from pyramid_redis_sessions import session_factory_from_settings
+from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 
 from dbas.security import groupfinder
 
 from sqlalchemy import engine_from_config
 from .database import *
-
+import logging
 
 def main(global_config, **settings):
 	""" This function returns a Pyramid WSGI application.
 	"""
 
 	# authentication and authorization
-	authn_policy = AuthTktAuthenticationPolicy('sosecret', callback=groupfinder, hashalg='sha512')
+	authn_policy = AuthTktAuthenticationPolicy('89#s3cr3t_15', callback=groupfinder, hashalg='sha512')
 	authz_policy = ACLAuthorizationPolicy()
+
+	# log settings
+	log = logging.getLogger(__name__)
+	for k, v in settings.items():
+		log.debug('__init__() '.upper() + 'main <' + k + ' : ' + v + '>')
 
 	# load database
 	engine = engine_from_config(settings, 'sqlalchemy.')
 	load_database(engine)
 
-	# session management with pyramid_redis_sessions
+	# session management and cache region support with pyramid_beaker
 	session_factory = session_factory_from_settings(settings)
+	set_cache_regions_from_settings(settings)
 
 	# creating the configurator
 	settings={'pyramid.default_locale_name':'en',
@@ -35,16 +41,17 @@ def main(global_config, **settings):
 	          'mail.default_sender':'dbas.hhu@gmail.com'
 			  }
 
-	# creating the configurator
+	# creating the configurator	cache_regions = set_cache_regions_from_settings
+
 	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory')
 	config.set_authentication_policy(authn_policy)
 	config.set_authorization_policy(authz_policy)
-	config.set_session_factory(session_factory) # session management with pyramid_redis_sessions
+	config.set_session_factory(session_factory)
 
 	# includings for the config
 	config.include('pyramid_chameleon')
 	config.include('pyramid_mailer')
-	# config.include('pyramid_redis_sessions') # done in the ini
+	# config.include('pyramid_beaker') # done in the ini
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)

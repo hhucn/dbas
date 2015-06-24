@@ -23,6 +23,7 @@
 						<h2>Welcome Back!</h2>
 
 						<form action="/login" method="post">
+							<input type="hidden" name="csrf_token" value="${csrf_token}">
 							
 							<input type="hidden" name="came_from" value="${came_from}" />
 							<h3>Your Nickname</h3>
@@ -58,6 +59,7 @@
 						<h2>Sign Up for Free</h2>
 
 						<form action="/login" method="post">
+							<input type="hidden" name="csrf_token" value="${csrf_token}">
 
 							<h3>Your First Name</h3>
 							<input id="userfirstname-input" type="text" name="firstname" class="userfirstname active" autocomplete="on" placeholder="example: Tobias" value="${firstname}">

@@ -2,20 +2,23 @@
 
 function AjaxHandler() {
 	'use strict';
+	var internal_error = 'Internal Error: Maybe the server is offline or your data was not valid due to a CSRF check.';
 
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
 	 */
 	this.getAllPositions = function () {
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_all_positions',
 			type: 'GET',
 			dataType: 'json',
-			async: true
+			async: true,
+				headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetAllPositionsDone(data) {
 			new InteractionHandler().callbackIfDoneForGetAllPositions(data);
 		}).fail(function ajaxGetAllPositionsFail() {
-			new GuiHandler().setErrorDescription('Internal Error :(');
+			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure in ajaxGetAllPositionsFail',
 				'', false, 'getArgumentsForJustification', true);
 		});
@@ -27,17 +30,19 @@ function AjaxHandler() {
 	 * @param pos_uid uid of clicked position
 	 */
 	this.getArgumentsForJustification = function (pos_uid) {
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_arguments_connected_to_position_uid',
 			method: 'POST',
 			data: { uid : pos_uid},
 			dataType: 'json',
-			async: true
+			async: true,
+				headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetArgumentsForJustificationDone(data) {
 			new InteractionHandler().callbackIfDoneForArgsForJustification(data);
 		}).fail(function ajaxGetArgumentsForJustificationFail() {
-			new GuiHandler().setErrorDescription('Internal Error :(');
-			new GuiHandler().showDiscussionError('Internal failure in ajaxGetArgumentsForJustificationFail',
+			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().showDiscussionError('Internal failure while requesting data for the next argumentation.',
 				pos_uid, false, 'getArgumentsForJustification', true);
 		});
 	};
@@ -47,17 +52,19 @@ function AjaxHandler() {
 	 * @param currentStatementId uid of the current statement
 	 */
 	this.getNewArgumentationRound = function (currentStatementId) {
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_args_for_new_discussion_round',
 			method: 'POST',
 			data: { uid: currentStatementId},
 			dataType: 'json',
-			async: true
+			async: true,
+				headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetNewArgumentationRoundDone(data) {
 			new InteractionHandler().callbackIfDoneForGetNewArgumentationRound(data);
 		}).fail(function ajaxGetNewArgumentationRoundFail() {
-			alert("debug");
-			new GuiHandler().showDiscussionError('Internal failure in ajaxGetNewArgumentationRound',
+			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().showDiscussionError('Internal failure while requesting data for the next argumentation.',
 				currentStatementId, is_argument, 'getNewArgumentationRound');
 		});
 	};
@@ -66,15 +73,17 @@ function AjaxHandler() {
 	 * Request all users
 	 */
 	this.getAllUsersAndSetInGui = function () {
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_all_users',
 			type: 'GET',
 			dataType: 'json',
-			async: true
+			async: true,
+				headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetAllUsersDone(data) {
 			new GuiHandler().setJsonDataToAdminContent($.parseJSON(data));
 		}).fail(function ajaxGetAllUsersFail() {
-			alert('internal failure while requesting all users');
+			new GuiHandler().setErrorDescription(internal_error);
 		});
 	};
 
@@ -82,11 +91,13 @@ function AjaxHandler() {
 	 * Request data for getting one step back
 	 */
 	this.getOneStepBack = function () {
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_one_step_back',
 			type: 'GET',
 			dataType: 'json',
-			async: true
+			async: true,
+				headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetOneStepBackDone(data) {
 			$('#' + stepBackButtonId).hide();
 			$('#' + sendAnswerButtonId).show();
@@ -94,8 +105,8 @@ function AjaxHandler() {
 		}).fail(function ajaxGetOneStepBackFail() {
 			$('#' + stepBackButtonId).hide();
 			$('#' + sendAnswerButtonId).show();
-			new GuiHandler().setErrorDescription('Internal Error :(');
-			new GuiHandler().showDiscussionError('Internal failure in ajaxGetAllPositionsFail',
+			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().showDiscussionError('Internal failure while stepping back',
 				'', false, 'ajaxGetOneStepBackFail', true);
 		});
 	};
@@ -105,16 +116,18 @@ function AjaxHandler() {
 	 * @param argument_dictionary for inserting
 	 */
 	this.sendNewArgument = function (argument_dictionary) {
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_send_new_arguments',
-			type: 'GET',
+			type: 'POST',
 			data: argument_dictionary,
 			dataType: 'json',
-			async: true
+			async: true,
+				headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxSendNewArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewArguments(data);
 		}).fail(function ajaxSendNewArgumentFail() {
-			new GuiHandler().setErrorDescription('New arguments could not be sent. Sorry!')
+			new GuiHandler().setErrorDescription(internal_error);
 		});
 	};
 
@@ -123,16 +136,18 @@ function AjaxHandler() {
 	 * @param position for sending
 	 */
 	this.sendNewPosition = function (position) {
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_send_new_position',
-			type: 'GET',
+			type: 'POST',
 			data: { position : position},
 			dataType: 'json',
-			async: true
+			async: true,
+				headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxSendNewPositionDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewPosition(data);
 		}).fail(function ajaxSendNewPositionFail() {
-			new GuiHandler().setErrorDescription('New idea could not be sent. Sorry!')
+			new GuiHandler().setErrorDescription(internal_error);
 		});
 	};
 
@@ -140,15 +155,17 @@ function AjaxHandler() {
 	 * Request for all arguments, which have a relation to the last saved one
 	 */
 	this.getAllArgumentsForIslandView = function () {
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_all_arguments_for_island',
 			type: 'GET',
 			dataType: 'json',
-			async: true
+			async: true,
+				headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetAllArgumentsForIslandViewDone(data) {
 			new InteractionHandler().callbackIfDoneForGetAllArgumentsForIslandView(data);
 		}).fail(function ajaxGetAllArgumentsForIslandViewFail() {
-			new GuiHandler().setErrorDescription('Island view could not be displayed. Sorry!');
+			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().setVisibilityOfDisplayStyleContainer(false, '');
 		});
 	};
@@ -159,16 +176,19 @@ function AjaxHandler() {
 	 * @param is_argument true, if it is an argument
 	 */
 	this.getLogfileForStatement = function (statement_uid, is_argument){
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
-			type: 'GET',
+			type: 'POST',
 			data: { uid: statement_uid, is_argument: is_argument },
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetLogfileForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForGetLogfileForStatement(data);
 		}).fail(function ajaxGetLogfileForStatementFail() {
-			$('#' + popupErrorDescriptionId).text('Unfortunately, the log file could not be requested. Sorry!');
+			$('#' + popupErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
+				' failed. Sorry!');
 		});
 	};
 
@@ -179,17 +199,20 @@ function AjaxHandler() {
 	 * @param corrected_text the corrected text
 	 */
 	this.sendCorrectureOfStatement = function (statement_uid, is_argument, corrected_text){
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_send_correcture_of_statement',
-			type: 'GET',
+			type: 'POST',
 			data: { uid: statement_uid, is_argument: is_argument, text: corrected_text},
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			new GuiHandler().setErrorDescription('Island view could not be displayed. Sorry!');
-			$('#' + popupErrorDescriptionId).text('Unfortunately, the correcture could not be send.');
+			$('#' + popupErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
+				' failed. Sorry!');
 		});
 	};
 

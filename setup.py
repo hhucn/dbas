@@ -23,12 +23,12 @@ requires = [
 	'cryptacular',
     'validate_email',
 	'splinter',
-    'pyramid_redis_sessions',
+    'pyramid_beaker',
 	]
 
 setup(name='DBAS',
 	version='0.1',
-	description='Novel prototype',
+	description='Novel prototype for a dialogue based approach',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[
 		"Programming Language :: Python",
