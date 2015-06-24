@@ -615,7 +615,6 @@ function GuiHandler() {
 		table.append(tr);
 
 		$.each(jsonData, function displayStatementCorrectionsInPopupEach(key, val) {
-			alert(key + " " + val.text);
 			tr = $('<tr>');
 			td_date = $('<td>');
 			td_text = $('<td>');
