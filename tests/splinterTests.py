@@ -148,7 +148,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Staring __test_index:")
+		print("Starting __test_index:")
 		b = Browser(browser)
 		self.browser = b
 		b.visit('http://localhost:4284/')
@@ -165,7 +165,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Staring __test_popups:")
+		print("Starting __test_popups:")
 		b = Browser(browser)
 		self.browser = b
 		b.visit('http://localhost:4284/')
@@ -204,7 +204,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Staring __test_contact_formular:")
+		print("Starting __test_contact_formular:")
 		b = Browser(browser)
 		self.browser = b
 		b.visit('http://localhost:4284/contact')
@@ -235,7 +235,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Staring __test_sharing_news:")
+		print("Starting __test_sharing_news:")
 		b = Browser(browser)
 		self.browser = b
 		b.visit('http://localhost:4284/news')
@@ -266,7 +266,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Staring __test_login:")
+		print("Starting __test_login:")
 		b = Browser(browser)
 		self.browser = b
 		b = Helper().login(b, 'admin', 'admin')
@@ -286,7 +286,7 @@ class WebTests:
 		:param browser:
 		:return:
 		"""
-		print("Staring __test_logout:")
+		print("Starting __test_logout:")
 		b = Browser(browser)
 		self.browser = b
 
@@ -313,7 +313,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Staring __test_sign_up:")
+		print("Starting __test_sign_up:")
 		b = Browser(browser)
 		self.browser = b
 		b.visit('http://localhost:4284/login')
@@ -371,7 +371,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Staring __test_start_discussion_button:")
+		print("Starting __test_start_discussion_button:")
 		b = Browser(browser)
 		self.browser = b
 		b = Helper().login(b, 'admin', 'admin')
@@ -420,7 +420,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Staring __test_list_all_users:")
+		print("Starting __test_list_all_users:")
 		b = Browser(browser)
 		self.browser = b
 
@@ -448,7 +448,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Staring __test_dummy:")
+		print("Starting __test_dummy:")
 		b = Browser(browser)
 		self.browser = b
 		b = Helper().login(b, 'admin', 'admin')

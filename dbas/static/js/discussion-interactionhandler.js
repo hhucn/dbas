@@ -14,7 +14,7 @@ function InteractionHandler() {
 	 * @param id of the button
 	 */
 	this.argumentButtonWasClicked = function (id) {
-		var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler();
+		var ajaxHandler = new AjaxHandler();
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 
@@ -39,7 +39,6 @@ function InteractionHandler() {
 	this.radioButtonChanged = function (buttonId) {
 		var guiHandler = new GuiHandler();
 		if ($('#' + addStatementButtonId).is(':checked')) {
-			guiHandler.setDisplayStylesOfAddArgumentContainer(true, true);
 			$('#' + stepBackButtonId).hide();
 			$('#' + sendAnswerButtonId).hide();
 
@@ -138,6 +137,7 @@ function InteractionHandler() {
 		} else {
 			gh.setNewArgumentButtonOnly();
 		}
+		gh.resetEnAndDisableOfEditButton();
 	};
 
 	/**
@@ -164,7 +164,7 @@ function InteractionHandler() {
 				gh.setVisibilityOfDisplayStyleContainer(true, parsedData.currentStatementText);
 				break;
 		}
-
+		gh.resetEnAndDisableOfEditButton();
 	};
 
 	/**

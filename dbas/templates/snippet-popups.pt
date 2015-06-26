@@ -399,14 +399,9 @@
 			<div class="modal-header">
 				<button type="button" id="popup_edit_statement_close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myModalLabel">Edit Statement</h4>
+				<h4 class="modal-title" id="myModalLabel">Edit Statements / View Changelog</h4>
 			</div>
 			<div id="popup_edit_statement_body">
-				<ol>
-					<li>Please select a row for editing.</li>
-					<li>Modifiy the text in the textarea.</li>
-					<li>Hit submit.</li>
-				</ol>
 				<h4><p id="popup-edit-error-description" class="error-description"></p></h4>
 				<h4><p id="popup-edit-success-description" class="success-description"></p></h4>
 				<div id="popup_edit_statement_content">

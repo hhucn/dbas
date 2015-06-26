@@ -106,13 +106,13 @@ function GuiHandler() {
 
 		// add header row
 		spanElement[0].text('uid');
-		spanElement[1].text('firstname');
-		spanElement[2].text('surname');
-		spanElement[3].text('nickname');
-		spanElement[4].text('email');
-		spanElement[5].text('group');
-		spanElement[6].text('last_logged');
-		spanElement[7].text('registered');
+		spanElement[1].text('Firstname');
+		spanElement[2].text('Surname');
+		spanElement[3].text('Nickname');
+		spanElement[4].text('E-Mail');
+		spanElement[5].text('Group');
+		spanElement[6].text('Last Login');
+		spanElement[7].text('Registered');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -358,7 +358,6 @@ function GuiHandler() {
 			class: '',
 			name: '',
 			autocomplete: 'off',
-			placeholder: (childCount).toString() + '. argument, ' + identifier,
 			value: '',
 			id: 'textarea_' + identifier + childCount.toString()});
 
@@ -395,23 +394,19 @@ function GuiHandler() {
 
 	/**
 	 * Set some style attributes,
-	 * @param isVisible
+	 * @param isVisible true, if the container should be displayed
+	 * @params is_argument true, if we have an argument
 	 */
 	this.setDisplayStylesOfAddArgumentContainer = function (isVisible, is_argument) {
 		if (isVisible) {
 			$('#' + addStatementContainerId).fadeIn('slow');
 			$('#' + addStatementButtonId).disable = true;
 			if (is_argument){
-				var statement = $('#' + discussionsDescriptionId + ' b').text();
-				if (statement.substr(statement.length -1) === '.'){
-					statement = statement.substr(0, statement.length -1);
-				}
-				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfArgument + statement);
-				$('#' + headingProPositionTextId).html(' I <span id=\'green\'>agree</span> with the statement <b>\''
-					+ statement + '</b>\',  because:');
-				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with the statement <b>\''
-					+ statement + '</b>\', because:');
-				$('#' + addStatementContainerMainInputId).hide().focus();;
+				var statement = $('#' + discussionsDescriptionId + ' b:last-child').text();
+				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfArgument + ' ' + statement);
+				$('#' + headingProPositionTextId).html(' I <span id=\'green\'>agree</span> with <b>\'' + statement + '</b>\',  because:');
+				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with <b>\'' + statement + '</b>\', because:');
+				$('#' + addStatementContainerMainInputId).hide().focus();
 				$('#' + leftPositionColumnId).show();
 				$('#' + rightPositionColumnId).show();
 				$('#' + sendNewStatementId).off('click').click(function () {
@@ -426,6 +421,9 @@ function GuiHandler() {
 					new AjaxHandler().sendNewPosition($('#' + addStatementContainerMainInputId).val());
 				});
 			}
+			var gh = new GuiHandler();
+			gh.addTextareaAsChildInParent(leftPositionTextareaId, 'left');
+			gh.addTextareaAsChildInParent(rightPositionTextareaId, 'right');
 		} else {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementButtonId).disable = false;
@@ -458,11 +456,36 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Check whether the edit button should be visible or not
+	 */
+	this.resetEnAndDisableOfEditButton = function() {
+		var list_id, count, statement, uid;
+		count = 0;
+		list_id = $('#' + statementListId + ' > li').children().length > 0 ? statementListId : argumentListId;
+		$('#' + list_id + ' > li').children().each(function () {
+			statement = $(this).val();
+			uid = $(this).attr("id");
+			// do we have a child with input or just the label?
+			if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid)) {
+				count += 1;
+			}
+		});
+
+		// do we have an statement there?
+		if (count==0){
+			$('#' + editStatementButtonId).fadeOut('slow');
+		} else {
+			$('#' + editStatementButtonId).fadeIn('slow');
+		}
+	};
+
+	/**
 	 * Opens the edit statements popup
 	 */
 	this.openEditStatementsPopup = function(){
+		var table, tr, td_text, td_buttons, list_id, i, edit_button, log_button, statement, uid, type;
 		$('#' + popupEditStatementId).modal('show');
-		var table, tr, td_text, td_index, td_buttons, list_id, i, edit_button, log_button, statement, uid, type;
+		$('#' + popupEditStatementSubmitButtonId).hide();
 
 		// each statement will be in a table with row: index, text, button for editing
 		// more action will happen, if the button is pressed
@@ -475,13 +498,10 @@ function GuiHandler() {
 			border: '0',
 			style: 'border-collapse: separate; border-spacing: 5px 5px;'});
 		tr = $('<tr>');
-		td_index = $('<td>');
 		td_text = $('<td>');
 		td_buttons = $('<td>');
 		td_text.html('<b>Text</b>').css('text-align','center');
-		td_index.html('<b>Index</b>').css('text-align','center');
-		td_buttons.html('<b>Edit</b>').css('text-align','center');
-		tr.append(td_index);
+		td_buttons.html('<b>Options</b>').css('text-align','center');
 		tr.append(td_text);
 		tr.append(td_buttons);
 		table.append(tr);
@@ -499,7 +519,6 @@ function GuiHandler() {
 		    if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid)) {
 				// create new items
 				tr = $('<tr>');
-				td_index = $('<td>').attr({id: 'edit_statement_td_index_' + i}).css('text-align','center');
 				td_text = $('<td>').attr({id: 'edit_statement_td_text_' + i});
 				td_buttons = $('<td>').css('text-align','center');
 				edit_button = $('<input>');
@@ -508,13 +527,12 @@ function GuiHandler() {
 				log_button.css('margin', '2px');
 
 				// set attributes, text, ...
-				td_index.text(i);
 				td_text.text(statement);
 
 				// some attributes and functions for the edit button
 				edit_button.attr({id:'edit-statement',
 					type: 'button',
-					value: 'click for editing',
+					value: 'edit',
 					class: 'btn-sm btn button-primary',
 					statement_type: type,
 					statement_text: statement,
@@ -522,7 +540,7 @@ function GuiHandler() {
 					index: i
 				}).click(function edit_button_click () {
 					$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text')).prop('disabled', false);
-					$('#' + popupEditStatementSubmitButtonId).prop("disabled", false).attr({
+					$('#' + popupEditStatementSubmitButtonId).fadeIn('slow').attr({
 						statement_type: $(this).attr('statement_type'),
 						statement_text: $(this).attr('statement_text'),
 						statement_id: $(this).attr('statement_id')
@@ -532,7 +550,6 @@ function GuiHandler() {
 					$('#edit_statement_td_text_' + $(this).attr('index')).addClass('table-hover');
 					$('#' + popupErrorDescriptionId).text('');
 					$('#' + popupSuccessDescriptionId).text('');
-					$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text'));
 				}).hover(function edit_button_hover () {
 					$(this).toggleClass('btn-primary', 400);
 				});
@@ -540,7 +557,7 @@ function GuiHandler() {
 				// show logfile
 				log_button.attr({id:'show_log_of_statement',
 					type: 'button',
-					value: 'show changelog',
+					value: 'changelog',
 					class: 'btn-sm btn button-primary',
 					statement_type: type,
 					statement_text: statement,
@@ -558,7 +575,6 @@ function GuiHandler() {
 				// append everything
 				td_buttons.append(edit_button);
 				td_buttons.append(log_button);
-				tr.append(td_index);
 				tr.append(td_text);
 				tr.append(td_buttons);
 				table.append(tr);
@@ -567,8 +583,10 @@ function GuiHandler() {
 		});
 
 		$('#' + popupEditStatementContentId).empty().append(table);
-		$('#' + popupEditStatementSubmitButtonId).prop( "disabled", true ).click(function edit_statement_click () {
-			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('statement_type') == 'argument', $('#' + popupEditStatementTextareaId).val());
+		$('#' + popupEditStatementSubmitButtonId).click(function edit_statement_click () {
+			statement = $('#' + popupEditStatementTextareaId).val();
+			$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
+			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('statement_type') == 'argument', statement);
 		});
 
 		// on click: do ajax

@@ -37,7 +37,7 @@ var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'con-textareas';
 var rightIslandId = 'right-island';
 var radioButtonGroup = 'radioButtonGroup';
-var newArgumentRadioButtonText = 'Let me state my own reason(s)!';
+var newArgumentRadioButtonText = 'I disagree! Let me state my own reason(s)!';
 var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
 var minimapId = 'navigation-minimap-container';
 var popupEditStatementId = 'popup_edit_statement';
@@ -68,7 +68,6 @@ var statementListId = 'statement-list';
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
 	'Interesting, your opinion is: ',
-	'So you meant: ',
 	'You have said, that: ',
 	'So your opinion is: '];
 var startDiscussionText = 'How should we decide?';
