@@ -16,12 +16,15 @@
 					<div class="col-md-1"></div>
 					<div class="col-md-10 center text-center">
 						<h2><span class="font-semi-bold">Dialogue-Based Argumentation System</span></h2>
-						<p>The current discussion is about
-							<br>
-							<span class="font-semi-bold">'<span tal:replace="issue"/>'</span>
-							<br> and was started at <span class="font-semi-bold" tal:replace="date" />.</p>
+						<p>The current discussion is about<br>
+                            <span class="font-semi-bold">'<span tal:replace="issue"/>'</span>
+							<br> and was started at <span class="font-semi-bold" tal:replace="date" />.
+                        </p>
+						<!--
 						<p id='start-description'>You're free to join the discussion. When you want to join, just press the button:</p>
-						<input id="start-discussion" type="button" value="Start Discussion" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
+						<input id="start-discussion" type="button" value="Start Discussion" class="button button-block btn-lg
+						btn-primary" data-dismiss="modal" />
+						!-->
 						<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
 					</div>
 					<div class="col-md-1"></div>

@@ -54,16 +54,14 @@ var scStyleGroupId = 'sc-display-style';
 var scStyle1Id = 'sc-style-1';
 var scStyle2Id = 'sc-style-2';
 var scStyle3Id = 'sc-style-3';
-var startDiscussionButtonId = 'start-discussion';
-var startDescriptionId = 'start-description';
+// var startDiscussionButtonId = 'start-discussion';
+// var startDescriptionId = 'start-description';
 var statementContainerH3TextIfArgument = 'You want to state your own reason(s)?';
 var statementContainerH3TextIfPosition = 'What is your idea?';
 var stepBackButtonId = 'step-back';
 var sendAnswerButtonId = 'send-answer';
 var sendNewStatementId = 'send-new-statement';
 var statementListId = 'statement-list';
-
-
 
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
@@ -72,6 +70,35 @@ var argumentSentencesOpeners = [
 	'So your opinion is: '];
 var startDiscussionText = 'How should we decide?';
 var firstOneText = 'You are the first one, who said: ';
+
+
+startDiscussion = function () {
+	//$('#' + startDiscussionButtonId).hide(); // hides the start button
+	//$('#' + startDescriptionId).hide(); // hides the start description
+	$('#' + restartDiscussionButtonId).show(); // show the restart button
+	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
+
+	new AjaxHandler().getAllPositions(new InteractionHandler().callbackIfDoneForGetAllPositions);
+};
+
+restartDiscussion = function () {
+	// $('#' + startDiscussionButtonId).show(); // show the start description
+	$('#' + restartDiscussionButtonId).hide(); // hide the restart button
+	$('#' + addStatementContainerId).hide(); // hide add statement container
+	$('#' + islandViewContainerId).hide(); // hidding the islandView
+	$('#' + displayControlContainerId).hide(); // hidding the control container
+
+	// clear the discussion space
+	$('#' + discussionSpaceId).empty();
+	$('#' + discussionContainerId).hide();
+	$('#' + discussionFailureRowId).hide();
+	$('#' + stepBackButtonId).hide();
+	var guiHandler = new GuiHandler();
+	guiHandler.setErrorDescription('');
+	guiHandler.setSuccessDescription('');
+
+	startDiscussion();
+};
 
 
 /**
@@ -94,16 +121,6 @@ $(function () {
 	$('#label-sc-style-3').hide();
 	$('#' + minimapId).hide();
 
-	// starts the discussion with getting all positions
-	$('#' + startDiscussionButtonId).click(function () {
-		$('#' + startDiscussionButtonId).hide(); // hides the start button
-		$('#' + startDescriptionId).hide(); // hides the start description
-		$('#' + restartDiscussionButtonId).show(); // show the restart button
-		$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
-
-		ajaxHandler.getAllPositions(interactionHandler.callbackIfDoneForGetAllPositions);
-	});
-
 	// handler for the send answer button
 	$('#' + sendAnswerButtonId).click(function () {
 		interactionHandler.sendAnswerButtonClicked();
@@ -119,20 +136,7 @@ $(function () {
 	// hide the restart button and add click function
 	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
 	$('#' + restartDiscussionButtonId).click(function () {
-		$('#' + startDiscussionButtonId).show(); // show the start description
-		$('#' + restartDiscussionButtonId).hide(); // hide the restart button
-		$('#' + addStatementContainerId).hide(); // hide add statement container
-		$('#' + islandViewContainerId).hide(); // hidding the islandView
-		$('#' + displayControlContainerId).hide(); // hidding the control container
-
-		// clear the discussion space
-		$('#' + discussionSpaceId).empty();
-		$('#' + discussionContainerId).hide();
-		$('#' + discussionFailureRowId).hide();
-		$('#' + stepBackButtonId).hide();
-		guiHandler.setErrorDescription('');
-		guiHandler.setSuccessDescription('');
-
+		restartDiscussion();
 	});
 
 	// admin list all users button
@@ -213,5 +217,10 @@ $(function () {
 		// send request on unload
 	});
 	*/
+
+	// starts the discussion with getting all positions
+	//$('#' + startDiscussionButtonId).click(function () {
+	startDiscussion();
+	//});
 
 });

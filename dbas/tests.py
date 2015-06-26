@@ -29,8 +29,8 @@ class Setup:
 		group1 = session.query(Group).filter_by(name='editors').first()
 		group2 = session.query(Group).filter_by(name='users').first()
 
-		pw1 = PasswordHandler.get_hashed_password(None, 'test')
-		pw2 = PasswordHandler.get_hashed_password(None, 'test')
+		pw1 = PasswordHandler.get_hashed_password('test')
+		pw2 = PasswordHandler.get_hashed_password('test')
 		user1 = User(firstname='editor', surname='editor', nickname='test_editor', email='dbas1@cs.uni-duesseldorf.de', password=pw1)
 		user2 = User(firstname='user', surname='user', nickname='test_user', email='dbas2@cs.uni-duesseldorf.de', password=pw2)
 		user1.group = group1.uid
@@ -544,3 +544,5 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=2).first().uid)
 		self.assertTrue(relation.pos_uid1, self.session.query(Position).filter_by(uid=1).first().uid)
 		self.assertTrue(relation.pos_uid2, self.session.query(Position).filter_by(uid=2).first().uid)
+
+	# todo: test track and changelog2
