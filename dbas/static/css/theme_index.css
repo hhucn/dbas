@@ -3,7 +3,6 @@
 }
 
 .content .lead {
-	font-size: 20px;
 	color: #101000;
 }
 
@@ -29,18 +28,6 @@
 .list-logos li{
 	list-style: none;
 	display: inline;
-}
-
-@media (max-width: 1199px) {
-	.content h1 {
-		font-size: 45px;
-	}
-	.content h1 .smaller {
-		font-size: 30px;
-	}
-	.content .lead {
-		font-size: 20px;
-	}
 }
 
 @media (max-width: 991px) {
@@ -72,13 +59,9 @@
 	}
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
 	.content h1 .smaller {
-		font-size: 25px;
 		display: block;
-	}
-	.content .lead {
-		font-size: 16px;
 	}
 	.links {
 		margin-top: 40px;

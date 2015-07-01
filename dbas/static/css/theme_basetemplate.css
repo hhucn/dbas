@@ -5,7 +5,7 @@ body {
 	font-weight: 300;
 	color: #000;
 	background: url('../images/bg4.png') repeat fixed center;
-	font-size: 16px;
+	font-size: 14px;
 	/* background: #b3b3b3; */
 }
 html,
@@ -30,18 +30,6 @@ h4,
 h5,
 h6 {
 	font-weight: 400;
-}
-h1 {
-	font-size: 40px;
-}
-h2 {
-	font-size: 30px;
-}
-h3 {
-	font-size: 16px;
-}
-h4 {
-	font-size: 14px;
 }
 p {
 	font-weight: 300;
@@ -199,6 +187,7 @@ body.loading .ajaxloader {
 .links ul li a,
 .links ul li .icon-muted {
 	color: #000;
+  font-size: 18px;
 }
 .list {
 	text-align: left;
@@ -232,12 +221,15 @@ body.loading .ajaxloader {
 	left:0;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
 	.container {
 		margin-left: 10px;
 		margin-right: 10px;
 	}
 	.links ul li {
 		display: block;
+	}
+	.lead {
+		font-size: 18px;
 	}
 }

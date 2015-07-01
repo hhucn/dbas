@@ -89,8 +89,8 @@ function GuiHandler() {
 	 */
 	this.setJsonDataToAdminContent = function (jsonData) {
 		var ulElement, trElement, tdElement, spanElement, i;
-		tdElement = ['', '', '', '', '', '', '', ''];
-		spanElement = ['', '', '', '', '', '', '', ''];
+		tdElement = ['', '', '', '', '', '', '', '', ''];
+		spanElement = ['', '', '', '', '', '', '', '', ''];
 		ulElement = $('<table>');
 		ulElement.attr({class: 'table table-condensed',
 						border: '0',
@@ -113,6 +113,7 @@ function GuiHandler() {
 		spanElement[5].text('Group');
 		spanElement[6].text('Last Login');
 		spanElement[7].text('Registered');
+		spanElement[8].text('Gender');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -126,6 +127,7 @@ function GuiHandler() {
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
 			}
+
 			tdElement[0].text(value.uid);
 			tdElement[1].text(value.firstname);
 			tdElement[2].text(value.surname);
@@ -134,6 +136,7 @@ function GuiHandler() {
 			tdElement[5].text(value.group);
 			tdElement[6].text(value.last_logged);
 			tdElement[7].text(value.registered);
+			tdElement[8].text(value.gender);
 
 			for (i = 0; i < tdElement.length; i += 1) {
 				trElement.append(tdElement[i]);

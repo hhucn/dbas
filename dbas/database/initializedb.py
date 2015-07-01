@@ -45,11 +45,13 @@ def main(argv=sys.argv):
 		pw3 = pwHandler.get_hashed_password('martin')
 		pw4 = pwHandler.get_hashed_password('mladen123')
 		pw5 = pwHandler.get_hashed_password('kalman')
-		user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1)
-		user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2)
-		user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3)
-		user4 = User(firstname='mladen', surname='topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw4)
-		user5 = User(firstname='kalman', surname='graffi', nickname='kalman', email='graffi@cs.uni-duesseldorf.de', password=pw5)
+		user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1, gender='m')
+		user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2,
+		             gender='m')
+		user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3, gender='m')
+		user4 = User(firstname='mladen', surname='topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw4, gender='m')
+		user5 = User(firstname='kalman', surname='graffi', nickname='kalman', email='graffi@cs.uni-duesseldorf.de', password=pw5,
+		             gender='m')
 		user1.group = group0.uid
 		user2.group = group1.uid
 		user3.group = group1.uid

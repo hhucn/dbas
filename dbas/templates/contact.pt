@@ -7,30 +7,50 @@
 </head>
 
 <body>
-	
+
 	<div id="wrapper">
 		<div id="content">
 			<div class="contact form">
 				<h2>Get In Touch With Us</h2>
 				<h5>Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</h5>
 				<br>
-				<form action="/contact" method="post">
+				<form action="/contact" method="post" class="form-horizontal">
 					<input type="hidden" name="csrf_token" value="${csrf_token}">
 
-					<h3>Your Name (required)</h3>
-					<input type="text" class="name active" name="name" placeholder="example: Tobias Krauthoff" tabindex="1" autofocus autocomplete="on" value="${name}">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Your Name (required)</label>
+						<div class="col-sm-9">
+							<input type="text" class="name active" name="name" placeholder="example: Tobias Krauthoff" tabindex="1" autofocus autocomplete="on" value="${name}">
+						</div>
+					</div>
 
-					<h3>Your E-Mail (required)</h3>
-					<input type="email" class="email" name="mail" placeholder="example: krauthoff@cs.uni-duesseldorf.de" tabindex="2" autocomplete="on" value="${mail}">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Your E-Mail (required)</label>
+						<div class="col-sm-9">
+							<input type="email" class="email" name="mail" placeholder="example: krauthoff@cs.uni-duesseldorf.de" tabindex="2" autocomplete="on" value="${mail}">
+						</div>
+					</div>
 
-					<h3>Your Phone Number</h3>
-					<input type="tel" class="tel" name="phone" autocomplete="on" placeholder="example: +49 (0)211 81-13461" tabindex="3" autocomplete="on" value="${phone}">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Your Phone Number</label>
+						<div class="col-sm-9">
+							<input type="tel" class="tel" name="phone" autocomplete="on" placeholder="example: +49 (0)211 81-13461" tabindex="3" autocomplete="on" value="${phone}">
+						</div>
+					</div>
 
-					<h3>Your Message (required)</h3>
-					<textarea type="text" class="content" name="content" autocomplete="on" placeholder="example: I’d like to say good job!" tabindex="4" value="${content}"></textarea>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Your Message (required)</label>
+						<div class="col-sm-9">
+							<textarea type="text" class="content" name="content" autocomplete="on" placeholder="example: I’d like to say good job!" tabindex="4" value="${content}"></textarea>
+						</div>
+					</div>
 
-					<h3>Anti-Spam (required)</h3>
-					<input type="text" id="spam-input" class="spam" name="spam" autocomplete="on" placeholder="What is one plus three?" tabindex="5" value="${spam}">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Anti-Spam (required)</label>
+						<div class="col-sm-9">
+							<input type="text" id="spam-input" class="spam" name="spam" autocomplete="on" placeholder="What is one plus three?" tabindex="5" value="${spam}">
+						</div>
+					</div>
 
 					<!--
 			<div id="alert-message" class="alert alert-danger alert-error">

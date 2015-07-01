@@ -22,16 +22,26 @@
 					<div id="login">
 						<h2>Welcome Back!</h2>
 
-						<form action="/login" method="post">
+						<form action="/login" method="post" class="form-horizontal">
 							<input type="hidden" name="csrf_token" value="${csrf_token}">
-							
-							<input type="hidden" name="came_from" value="${came_from}" />
-							<h3>Your Nickname</h3>
-							<input type="text" class="nickname" name="nickname" autocomplete="off" placeholder="example: Democrator" value="${nickname}">
 
-							<h3>Your Password</h3>
-							<input type="password" class="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}" />
-							<p data-toggle="modal" data-target="#popup_password"><a>Forgot Password?</a>
+							<input type="hidden" name="came_from" value="${came_from}" />
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Your Nickname</label>
+								<div class="col-sm-9">
+									<input type="text" class="nickname" name="nickname" autocomplete="off" placeholder="example: Democrator" value="${nickname}">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Your Password</label>
+								<div class="col-sm-9">
+									<input type="password" class="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}" />
+								</div>
+							</div>
+
+							<p data-toggle="modal" data-target="#popup_password" id="forgot-password"><a>Forgot Password?</a>
 							</p>
 
 							<div tal:condition="login_failed" class="alert alert-danger" role="alert">
@@ -58,34 +68,73 @@
 					<div id="signup">
 						<h2>Sign Up for Free</h2>
 
-						<form action="/login" method="post">
+						<form action="/login" method="post" class="form-horizontal">
 							<input type="hidden" name="csrf_token" value="${csrf_token}">
 
-							<h3>Your First Name</h3>
-							<input id="userfirstname-input" type="text" name="firstname" class="userfirstname active" autocomplete="on" placeholder="example: Tobias" value="${firstname}">
-
-							<h3>Your Last Name</h3>
-							<input id="userlastname-input" type="text" name="surname" class="userlastname" autocomplete="on" placeholder="example: Krauthoff" value="${surname}">
-
-							<h3>Your Nickname</h3>
-							<input id="nick-input" type="text" class="nickname" name="nickname" autocomplete="on" placeholder="example: Democrator" value="${nickname}">
-
-							<h3>Your Email Address</h3>
-							<input id="email-input" type="email" class="email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de" value="${email}">
-
-							<h3>Your Password</h3>
-							<input id="password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
-							<div id="password-extras">
-								<div id="password-meter" class="veryweak"></div>
-								<h4 id="password-strength">Strength</h4>
-
-								<a id="password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
-									<i id="password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
-								</a>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Your First Name</label>
+								<div class="col-sm-9">
+									<input id="userfirstname-input" type="text" name="firstname" class="userfirstname active" autocomplete="on" placeholder="example: Tobias" value="${firstname}">
+								</div>
 							</div>
 
-							<h3>Your Password (confirm)</h3>
-							<input id="passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Your Last Name</label>
+								<div class="col-sm-9">
+									<input id="userlastname-input" type="text" name="surname" class="userlastname" autocomplete="on" placeholder="example: Krauthoff" value="${surname}">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Your Nickname</label>
+								<div class="col-sm-9">
+									<input id="nick-input" type="text" class="nickname" name="nickname" autocomplete="on" placeholder="example: Democrator" value="${nickname}">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Your Gender</label>
+								<div class="col-sm-9">
+									<label class="radio-inline">
+										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked> <b>none</b>
+									</label>
+									<label class="radio-inline">
+										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f"> <b>female</b>
+									</label>
+									<label class="radio-inline">
+										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m"> <b>male</b>
+									</label>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Your Email Address</label>
+								<div class="col-sm-9">
+									<input id="email-input" type="email" class="email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de" value="${email}">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Your Password</label>
+								<div class="col-sm-9">
+									<input id="password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
+								</div>
+								<div id="password-extras">
+									<div id="password-meter" class="veryweak"></div>
+									<h4 id="password-strength">Strength</h4>
+								</div>
+
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Password (confirm)</label>
+								<div class="col-sm-9">
+									<input id="passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+								</div>
+							</div>
+
+							<a id="password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
+								<i id="password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
+							</a>
 
 							<div id="warning-message" class="alert alert-warning alert-dismissible" role="alert">
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
@@ -128,7 +177,7 @@
 			</div>
 
 		</div>
-		
+
 		<div metal:use-macro="load: snippet-footer.pt" />
 	</div>
 

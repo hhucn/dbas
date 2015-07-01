@@ -148,6 +148,7 @@ class QueryHelper(object):
 					return_user['group'] = groups.get(str(user.group))
 					return_user['last_logged'] = str(user.last_logged)
 					return_user['registered'] = str(user.registered)
+					return_user['gender'] = str(user.gender)
 					logger('QueryHelper', 'get_all_users ' + str(user.uid) + ' of ' + str(len(db_users)),
 						"uid: " + str(user.uid)
 						+ ", firstname: " + user.firstname
@@ -157,6 +158,7 @@ class QueryHelper(object):
 						+ ", group: " + groups.get(str(user.group))
 						+ ", last_logged: " + str(user.last_logged)
 						+ ", registered: " + str(user.registered)
+						+ ", gender: " + str(user.gender)
 					)
 					return_dict[user.uid] = return_user
 		return return_dict

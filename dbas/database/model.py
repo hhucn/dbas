@@ -66,12 +66,13 @@ class User(Base):
 	surname = sa.Column(sa.Text, nullable=False)
 	nickname = sa.Column(sa.Text, nullable=False)
 	email = sa.Column(sa.Text, nullable=False, unique=True)
+	gender = sa.Column(sa.Text, nullable=False)
 	password = sa.Column(sa.Text, nullable=False)
 	group = sa.Column(sa.Integer, sa.ForeignKey(Group.uid))
 	last_logged = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	registered = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
-	def __init__(self, firstname, surname, nickname, email, password):
+	def __init__(self, firstname, surname, nickname, email, password, gender):
 		"""
 		Initializes a row in current user-table
 		"""
@@ -81,6 +82,7 @@ class User(Base):
 		self.email = email
 		self.password = password
 		self.last_logged = func.now()
+		self.gender = gender
 
 	@classmethod
 	def by_surname(cls):

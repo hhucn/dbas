@@ -227,6 +227,10 @@ input.active {
 	margin-top: 25px;
 }
 
+#forgot-password{
+	float: right;
+}
+
 #password-generator-output,
 #password-generator-button {
 	padding: 5px;
@@ -293,12 +297,6 @@ input.active {
 	.contact{
 		width: 73%;
 	}
-	.tab-content h2 {
-		font-size: 26px;
-	}
-	.tab-content h3 {
-		font-size: 15px;
-	}
 	input.name,
 	input.userfirstname,
 	input.userlastname,
@@ -345,18 +343,9 @@ input.active {
 	body {
 		padding: 50px 0px 30px 0px;
 	}
-	h1 {
-		font-size: 35PX;
-	}
 }
 
 @media(max-width:480px) {
-	.tab-content h2 {
-		font-size: 22px;
-	}
-	.tab-content h3 {
-		font-size: 13px;
-	}
 	input.name,
 	input.userfirstname,
 	input.userlastname,
@@ -373,15 +362,11 @@ input.active {
 		width: 80%;
 	}
 	h1 {
-		font-size: 30PX;
 		margin: 0px 0px 20px 0px;
 	}
 }
 
 @media(max-width:320px) {
-	.tab-content h2 {
-		font-size: 20px;
-	}
 	body {
 		padding: 30px 0px 30px 0px;
 	}
@@ -436,11 +421,9 @@ input.active {
 		margin: 0px 0px 0px 0px;
 	}
 	h1 {
-		font-size: 25PX;
 		margin: 0px 0px 13px 0px;
 	}
 	.tab-content h3 {
-		font-size: 11px;
 		margin: 1px 0px 6px 0px;
 	}
 }

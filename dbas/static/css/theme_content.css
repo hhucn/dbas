@@ -27,19 +27,19 @@
 
 .error-description {
 	color: #be0a26;
-	font-size: 15;
+	font-size: 15px;
 	font-weight: 600;
 }
 
 .success-description {
 	color: #97bf0d;
-	font-size: 15;
+	font-size: 15px;
 	font-weight: 600;
 }
 
 #discussions-space ul li input {
-	font-size: 15px;
 	margin-right: 5px;
+	<!-- font-size: 15px; -->
 }
 
 #discussions-space ul,

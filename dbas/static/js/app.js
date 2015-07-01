@@ -54,7 +54,7 @@ $(document).ready(function () {
 			e.preventDefault();
 		} catch (err){
 			// something like 'Cannot read property 'top' of undefined'
-		};
+		}
 	});
 
 	// back to top arrow
