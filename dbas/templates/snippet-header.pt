@@ -32,25 +32,25 @@
 				<ul id="navbar-right" class="nav navbar-nav navbar-right">
 					<li id="content-link" tal:condition="logged_in">
 						<a href="${request.application_url}/content" title="Get the party started">
-							<span class="glyphicon glyphicon-erase glyphicon-icon">&thinsp;Let's&thinsp;&thinsp;go</span>
+							<img id="header_letsgo">&thinsp;Let's&thinsp;&thinsp;go
 						</a>
 					</li>
 
 					<li id="news-link">
 						<a href="${request.application_url}/news" title="News about D-BAS">
-							<span class="glyphicon glyphicon-file glyphicon-icon">&thinsp;News</span>
+							<img id="header_news">&thinsp;News
 						</a>
 					</li>
 
 					<li id="contact-link">
 						<a href="${request.application_url}/contact" title="Get in touch with us">
-							<span class="glyphicon glyphicon-comment glyphicon-icon">&thinsp;Contact</span>
+							<img id="header_contact">&thinsp;Contact
 						</a>
 					</li>
 
 					<li id="login-link" tal:condition="not:logged_in">
 						<a href="${request.application_url}/login" title="Login">
-							<span class="glyphicon glyphicon-log-in glyphicon-icon">&thinsp;Login</span>
+							<img id="header_login">&thinsp;Login
 						</a>
 					</li>
 
@@ -62,12 +62,12 @@
 							<ul class="dropdown-menu">
 								<li>
 									<a href="${request.application_url}/settings" title="Settings">
-										<span class="glyphicon glyphicon-cog glyphicon-icon">&thinsp;Settings</span>
+										<img id="header_settings">&thinsp;Settings
 									</a>
 								</li>
 								<li>
 									<a href="${request.application_url}/logout" title="Logout">
-										<span class="glyphicon glyphicon-log-out glyphicon-icon">&thinsp;Logout</span>
+										<img id="header_logout">&thinsp;Logout
 									</a>
 								</li>
 							</ul>
@@ -80,15 +80,15 @@
 						<ul class="dropdown-menu">
 							<li>
 								<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
-									<i class="glyphicon glyphicon-user"></i>&thinsp;Author</a>
+									<img id="header_author">&thinsp;Author</a>
 							</li>
 							<li>
 								<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
-									<i class="glyphicon glyphicon-floppy-disk"></i>&thinsp;Licence</a>
+									<img id="header_licence">&thinsp;Licence</a>
 							</li>
 							<li>
 								<a id="link_popup_privacy" href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
-									<i class="glyphicon glyphicon-sunglasses"></i>&thinsp;Privacy Policy</a>
+									<img id="header_privacy">&thinsp;Privacy Policy</a>
 							</li>
 						</ul>
 					</li>
