@@ -16,10 +16,11 @@
 					<div class="col-md-1"></div>
 					<div class="col-md-10 center text-center">
 						<h2><span class="font-semi-bold">Dialogue-Based Argumentation System</span></h2>
-						<p>The current discussion is about<br>
-                            <span class="font-semi-bold">'<span tal:replace="issue"/>'</span>
+						<p>The current discussion is about
+							<br>
+							<span class="font-semi-bold">'<span tal:replace="issue"/>'</span>
 							<br> and was started at <span class="font-semi-bold" tal:replace="date" />.
-                        </p>
+						</p>
 						<!--
 						<p id='start-description'>You're free to join the discussion. When you want to join, just press the button:</p>
 						<input id="start-discussion" type="button" value="Start Discussion" class="button button-block btn-lg
@@ -49,7 +50,30 @@
 						</div>
 					</div>
 					<div class="col-md-2">
-							<input id="edit-statement" type="button" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" /></div>
+						<div id="discussion-sidebar">
+							<input id="edit-statement" type="button" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" />
+							<br>
+							<div id="display-control-container">
+								<p>Change display style:</p>
+								<div class="segmented-control">
+									<input type="radio" name="sc-display-style" id="sc-style-1" checked value="Dialog View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
+									<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
+										<p>Dialog View</p>
+									</label>
+									<br>
+									<input type="radio" name="sc-display-style" id="sc-style-2" value="Island View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
+									<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
+										<p>Island View</p>
+									</label>
+									<br>
+									<input type="radio" name="sc-display-style" id="sc-style-3" value="Complete View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
+									<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
+										<p>Complete View</p>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="row" id="discussion-failure-row">
 					<div class="col-md-3"></div>
@@ -74,18 +98,18 @@
 						<h4 id='island-view-container-header-h4'><span class="font-semi-bold">Island View</span></h4>
 						<h4 id='island-view-container-h4'><span class="font-semi-bold">Island View</span></h4>
 
-							<div id="left-island-column">
-								<h4 id="heading-pro-island" class="font-semi-bold">Pro</h4>
-								<div id="left-island">
-								</div>
+						<div id="left-island-column">
+							<h4 id="heading-pro-island" class="font-semi-bold">Pro</h4>
+							<div id="left-island">
 							</div>
+						</div>
 
-							<div id="right-island-column">
-								<h4 id="heading-contra-island" class="font-semi-bold">Contra</h4>
-								<div id="right-island">
-								</div>
+						<div id="right-island-column">
+							<h4 id="heading-contra-island" class="font-semi-bold">Contra</h4>
+							<div id="right-island">
 							</div>
-						
+						</div>
+
 					</div>
 					<div class="col-md-1"></div>
 				</div>
@@ -132,7 +156,7 @@
 					<div class="col-md-1"></div>
 				</div>
 			</div>
-			
+
 
 			<div tal:condition="is_admin" class="container">
 				<div class="row">
@@ -148,26 +172,6 @@
 					<div class="col-md-12">
 						<div id="admins-space"> </div>
 					</div>
-				</div>
-			</div>
-
-			<div class="wrapped_content_container" id="display-control-container">
-				<p>Change display style:</p>
-				<div class="segmented-control">
-					<input type="radio" name="sc-display-style" id="sc-style-1" checked value="Dialog View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
-					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
-						<p>Dialog View</p>
-					</label>
-					<br>
-					<input type="radio" name="sc-display-style" id="sc-style-2" value="Island View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
-					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
-						<p>Island View</p>
-					</label>
-					<br>
-					<input type="radio" name="sc-display-style" id="sc-style-3" value="Complete View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
-					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
-						<p>Complete View</p>
-					</label>
 				</div>
 			</div>
 
