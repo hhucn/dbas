@@ -3,7 +3,7 @@
 var addStatementButtonId = 'add-statement';
 var addPositionButtonId = 'add-position';
 var addStatementContainerId = 'add-statement-container';
-var addStatementContainerH3Id = 'add-statement-container-h3';
+var addStatementContainerH4Id = 'add-statement-container-h4';
 var addStatementContainerMainInputId = 'add-statement-container-main-input';
 var addProTextareaId = 'add-pro-textarea';
 var addConTextareaId = 'add-con-textarea';
@@ -12,8 +12,10 @@ var argumentListId = 'argument-list';
 var closeStatementContainerId = 'closeStatementContainer';
 var closeIslandViewContainerId = 'closeIslandViewContainer';
 var discussionsDescriptionId = 'discussions-description';
+var discussionsAvoidanceDescriptionId = 'discussions-avoidance-description';
 var discussionContainerId = 'discussion-container';
 var discussionSpaceId = 'discussions-space';
+var discussionAvoidanceSpaceId = 'discussions-avoidance-space';
 var discussionFailureRowId = 'discussion-failure-row';
 var discussionFailureMsgId = 'discussion-failure-msg';
 var displayControlContainerId = 'display-control-container';
@@ -31,7 +33,7 @@ var goodPointTakeMeBackButtonText = 'I agree, that is a good argument! Take me o
 var insertStatementForm = 'insert_statement_form';
 var islandViewContainerId = 'island-view-container';
 var islandViewHeaderText = 'These are all arguments for';
-var islandViewContainerH3Id = 'island-view-container-h3';
+var islandViewContainerH4Id = 'island-view-container-h4';
 var restartDiscussionButtonId = 'restart-discussion';
 var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'con-textareas';
@@ -56,8 +58,8 @@ var scStyle2Id = 'sc-style-2';
 var scStyle3Id = 'sc-style-3';
 // var startDiscussionButtonId = 'start-discussion';
 // var startDescriptionId = 'start-description';
-var statementContainerH3TextIfArgument = 'You want to state your own reason(s)?';
-var statementContainerH3TextIfPosition = 'What is your idea?';
+var statementContainerH4TextIfArgument = 'You want to state your own reason(s)?';
+var statementContainerH4TextIfPosition = 'What is your idea?';
 var stepBackButtonId = 'step-back';
 var sendAnswerButtonId = 'send-answer';
 var sendNewStatementId = 'send-new-statement';
@@ -88,14 +90,18 @@ restartDiscussion = function () {
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
 	$('#' + displayControlContainerId).hide(); // hidding the control container
 
-	// clear the discussion space
+	// clear the discussions spaces
 	$('#' + discussionSpaceId).empty();
+	$('#' + discussionAvoidanceSpaceId).empty();
 	$('#' + discussionContainerId).hide();
 	$('#' + discussionFailureRowId).hide();
 	$('#' + stepBackButtonId).hide();
+
 	var guiHandler = new GuiHandler();
 	guiHandler.setErrorDescription('');
 	guiHandler.setSuccessDescription('');
+	guiHandler.setDiscussionsAvoidanceDescription('');
+	guiHandler.resetChangeDisplayStyleBox();
 
 	startDiscussion();
 };

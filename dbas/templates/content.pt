@@ -39,8 +39,10 @@
 					<div class="col-md-8">
 						<h4><p id="discussion-error-description" class="error-description"></p></h4>
 						<h4><p id="discussion-success-description" class="success-description"></p></h4>
-						<h3><p id="discussions-description"></p></h3>
+						<h4><p id="discussions-description"></p></h4>
 						<div id="discussions-space"> </div>
+						<h4><p id="discussions-avoidance-description"></p></h4>
+						<div id="discussions-avoidance-space"> </div>
 						<div class="center text-center">
 							<input id="send-answer" type="button" value="Send Answer" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
 							<input id="step-back" type="button" value="Step back" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
@@ -69,17 +71,17 @@
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col-md-10">
-						<h3 id='island-view-container-header-h3'><span class="font-semi-bold">Island View</span></h3>
-						<h3 id='island-view-container-h3'><span class="font-semi-bold">Island View</span></h3>
+						<h4 id='island-view-container-header-h4'><span class="font-semi-bold">Island View</span></h4>
+						<h4 id='island-view-container-h4'><span class="font-semi-bold">Island View</span></h4>
 
 							<div id="left-island-column">
-								<h3 id="heading-pro-island" class="font-semi-bold">Pro</h3>
+								<h4 id="heading-pro-island" class="font-semi-bold">Pro</h4>
 								<div id="left-island">
 								</div>
 							</div>
 
 							<div id="right-island-column">
-								<h3 id="heading-contra-island" class="font-semi-bold">Contra</h3>
+								<h4 id="heading-contra-island" class="font-semi-bold">Contra</h4>
 								<div id="right-island">
 								</div>
 							</div>
@@ -98,11 +100,11 @@
 					<div class="col-md-10">
 
 						<form id="insert_statement_form" action="/not_implemented" method="post">
-							<h3 id="add-statement-container-h3">Please insert a new Argument</h3>
+							<h4 id="add-statement-container-h4">Please insert a new Argument</h4>
 							<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="">
 
 							<div id="left-position-column">
-								<h3 id="heading-pro-positions" class="font-semi-bold">Pro</h3>
+								<h4 id="heading-pro-positions" class="font-semi-bold">Pro</h4>
 								<div id="pro-textareas">
 								</div>
 								<a>
@@ -112,7 +114,7 @@
 							</div>
 
 							<div id="right-position-column">
-								<h3 id="heading-contra-positions" class="font-semi-bold">Contra</h3>
+								<h4 id="heading-contra-positions" class="font-semi-bold">Contra</h4>
 								<div id="con-textareas">
 								</div>
 								<a>
@@ -136,7 +138,7 @@
 				<div class="row">
 					<div class="col-md-2"></div>
 					<div class="col-md-8">
-						<h3><span class="font-semi-bold">Special rights</span></h3>
+						<h4><span class="font-semi-bold">Special rights</span></h4>
 						<p>Some additional options for the administrator.
 							<br>
 							<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />

@@ -36,8 +36,9 @@ function GuiHandler() {
 	 * Sets given json content as argument buttons in the discussions space
 	 * @param jsonData data with json content
 	 * @param isUserExplainingHisPosition true, when the prefix should be 'because', because user should explain his position
+	 * @param isAvoidance true, when the given data should be used as avoidance
 	 */
-	this.setJsonDataToContentAsArguments = function (jsonData, isUserExplainingHisPosition) {
+	this.setJsonDataToDiscussionContentAsArguments = function (jsonData, isUserExplainingHisPosition, isAvoidance) {
 		var listitems = [], _this = new GuiHandler();
 
 		$.each(jsonData, function setJsonDataToContentAsArgumentsEach(key, val) {
@@ -50,12 +51,14 @@ function GuiHandler() {
 		});
 
 		// button, when the users agree and want to step back
-		if (!isUserExplainingHisPosition){
+		if (!isUserExplainingHisPosition && !isAvoidance){
 			listitems.push(_this.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true, 'radio'));
 		}
+
 		// button for new statements
-		listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newArgumentRadioButtonText, true, 'radio'));
-		_this.addListItemsToDiscussionsSpace(listitems, argumentListId);
+		if (!isAvoidance)
+			listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newArgumentRadioButtonText, true, 'radio'));
+		_this.addListItemsToDiscussionsSpace(listitems, argumentListId, isAvoidance);
 	};
 
 
@@ -187,6 +190,15 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Setting a description in some p-tag for confrontation
+	 * @param currentUserArgument
+	 */
+	this.setDiscussionsAvoidanceDescriptionForConfrontation = function (currentUserArgument) {
+		var text = 'Or do you have want to give an better argument for: ' + '<b>' + currentUserArgument + '</b>';
+		new GuiHandler().setDiscussionsAvoidanceDescription(text);
+	};
+
+	/**
 	 * Setting a description in some p-tag for confrontation, whereby we have no justifications
 	 * @param currentUserArgument
 	 */
@@ -202,6 +214,14 @@ function GuiHandler() {
 	 */
 	this.setDiscussionsDescription = function (text) {
 		$('#' + discussionsDescriptionId).html(text);
+	};
+
+	/**
+	 * Setting a description in some p-tag
+	 * @param text to set
+	 */
+	this.setDiscussionsAvoidanceDescription = function (text) {
+		$('#' + discussionsAvoidanceDescriptionId).html(text);
 	};
 
 	/**
@@ -228,7 +248,7 @@ function GuiHandler() {
 	this.setVisibilityOfDisplayStyleContainer = function (shouldBeVisibile, currentStatementText){
 		if (shouldBeVisibile){
 			$('#' + displayControlContainerId).fadeIn('slow');
-			$('#' + islandViewContainerH3Id).html(islandViewHeaderText + ' <b>' + currentStatementText + '</b>');
+			$('#' + islandViewContainerH4Id).html(islandViewHeaderText + ' <b>' + currentStatementText + '</b>');
 		} else {
 			$('#' + displayControlContainerId).hide();
 		}
@@ -313,8 +333,9 @@ function GuiHandler() {
 	 * Appends all items in an ul list and this will be appended in the 'discussionsSpace'
 	 * @param items list with al items
 	 * @param id for the ul list, where all items are appended
+	 * @param isAvoidance true, when the given data should be used as avoidance
 	 */
-	this.addListItemsToDiscussionsSpace = function (items, id) {
+	this.addListItemsToDiscussionsSpace = function (items, id, isAvoidance) {
 		var ulElement;
 
 		// wrap all elements into a list
@@ -323,7 +344,10 @@ function GuiHandler() {
 		ulElement.append(items);
 
 		// append them to the space
-		$('#' + discussionSpaceId).append(ulElement);
+		if (isAvoidance)
+			$('#' + discussionAvoidanceSpaceId).append(ulElement);
+		else
+			$('#' + discussionSpaceId).append(ulElement);
 
 		// hover style element for the list elements
 		ulElement.children().hover(function () {
@@ -398,15 +422,17 @@ function GuiHandler() {
 	/**
 	 * Set some style attributes,
 	 * @param isVisible true, if the container should be displayed
-	 * @params is_argument true, if we have an argument
+	 * @param is_argument true, if we have an argument
 	 */
 	this.setDisplayStylesOfAddArgumentContainer = function (isVisible, is_argument) {
 		if (isVisible) {
+			$('#' + leftPositionTextareaId).empty();
+			$('#' + rightPositionTextareaId).empty();
 			$('#' + addStatementContainerId).fadeIn('slow');
 			$('#' + addStatementButtonId).disable = true;
 			if (is_argument){
 				var statement = $('#' + discussionsDescriptionId + ' b:last-child').text();
-				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfArgument + ' ' + statement);
+				$('#' + addStatementContainerH4Id).text(statementContainerH4TextIfArgument + ' ' + statement);
 				$('#' + headingProPositionTextId).html(' I <span id=\'green\'>agree</span> with <b>\'' + statement + '</b>\',  because:');
 				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with <b>\'' + statement + '</b>\', because:');
 				$('#' + addStatementContainerMainInputId).hide().focus();
@@ -416,7 +442,7 @@ function GuiHandler() {
 					new InteractionHandler().getArgumentsAndSendThem();
 				});
 			} else {
-				$('#' + addStatementContainerH3Id).text(statementContainerH3TextIfPosition);
+				$('#' + addStatementContainerH4Id).text(statementContainerH4TextIfPosition);
 				$('#' + addStatementContainerMainInputId).show();
 				$('#' + leftPositionColumnId).hide();
 				$('#' + rightPositionColumnId).hide();
@@ -461,7 +487,7 @@ function GuiHandler() {
 	/**
 	 * Check whether the edit button should be visible or not
 	 */
-	this.resetEnAndDisableOfEditButton = function() {
+	this.resetAndDisableEditButton = function() {
 		var list_id, count, statement, uid;
 		count = 0;
 		list_id = $('#' + statementListId + ' > li').children().length > 0 ? statementListId : argumentListId;
@@ -690,4 +716,13 @@ function GuiHandler() {
 	this.setDisplayStyleAsFullView  = function () {
 		$('#' + islandViewContainerId).hide();
 	};
+
+	/**
+	 * Sets style attributes to default
+	 */
+	this.resetChangeDisplayStyleBox = function () {
+		$('#' + scStyle1Id).attr('checked', true);
+		$('#' + scStyle2Id).attr('checked', false);
+		$('#' + scStyle3Id).attr('checked', false);
+	}
 }

@@ -299,14 +299,29 @@ class QueryHelper(object):
 				for justification in justificiation_argument_list:
 					justifications_dict[str(justification['uid'])] = justification
 				return_dict['justifications'] = justifications_dict
-				return_dict['status'] = '1'
+				return_dict['status_con'] = '1'
 			else:
 				logger('QueryHelper', 'get_justification_against_statement_uid_as_dict', 'No arguments against the contra argument')
-				return_dict['status'] = '-1'
+				return_dict['status_con'] = '-1'
 
 		else:
 			logger('QueryHelper', 'get_args_for_new_round', 'No arguments for confrontation')
-			return_dict['status'] = '0'
+			return_dict['status_con'] = '0'
+
+		# get all statements against for statement
+		pro_argument_rows = self.get_args_list_in_relation_to_statement(statement_id, True, False)
+		if pro_argument_rows:
+			logger('QueryHelper', 'get_args_for_new_round', 'got new pro arguments')
+			pro_arguments = collections.OrderedDict()
+			for pro in pro_argument_rows:
+				logger('QueryHelper', 'get_args_for_new_round', 'got new pro argument with uid ' + str (pro['uid']))
+				pro_arguments[str(pro['uid'])] = pro
+			return_dict['new_pros'] = pro_arguments
+			return_dict['status_pro'] = '1'
+		else:
+			logger('QueryHelper', 'get_args_for_new_round', 'No arguments for new pros')
+			return_dict['status_pro'] = '0'
+
 
 		return return_dict
 

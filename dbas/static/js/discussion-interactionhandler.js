@@ -123,6 +123,9 @@ function InteractionHandler() {
 				this.positionButtonWasClicked(id, value);
 			}
 		}
+
+		// reset style box
+		guiHandler.resetChangeDisplayStyleBox();
 	};
 
 	/**
@@ -133,11 +136,11 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status != '-1') {
 			gh.setDiscussionsDescription('Why do you think that: <b>' + parsedData.currentStatementText + '</b>');
-			gh.setJsonDataToContentAsArguments(parsedData.justification, true);
+			gh.setJsonDataToDiscussionContentAsArguments(parsedData.justification, true);
 		} else {
 			gh.setNewArgumentButtonOnly();
 		}
-		gh.resetEnAndDisableOfEditButton();
+		gh.resetAndDisableEditButton();
 	};
 
 	/**
@@ -149,7 +152,7 @@ function InteractionHandler() {
 		// -1 confrontation, but no justification
 		//  0 no confrontation
 		//  1 everything is fine
-		switch(parsedData.status){
+		switch(parsedData.status_con){
 			case '-1':
 				gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
 				gh.setNewArgumentAndGoodPointButton(newArgumentRadioButtonText, true, 'radio');
@@ -159,12 +162,25 @@ function InteractionHandler() {
 				gh.setNewArgumentButtonOnly(newArgumentRadioButtonText, true, 'radio');
 				break;
 			case '1':
-				gh.setJsonDataToContentAsArguments(parsedData.justifications, false);
+				gh.setJsonDataToDiscussionContentAsArguments(parsedData.justifications, false, false);
 				gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
 				gh.setVisibilityOfDisplayStyleContainer(true, parsedData.currentStatementText);
 				break;
 		}
-		gh.resetEnAndDisableOfEditButton();
+
+		//  0 no pro arguments
+		//  1 everything is fine
+		switch(parsedData.status_pro){
+			case '0':
+				gh.setDiscussionsAvoidanceDescription('');
+				break;
+			case '1':
+				gh.setDiscussionsAvoidanceDescriptionForConfrontation(parsedData.currentStatementText);
+				gh.setJsonDataToDiscussionContentAsArguments(parsedData.new_pros, false, true);
+				break;
+
+		}
+		gh.resetAndDisableEditButton();
 	};
 
 	/**

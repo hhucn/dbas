@@ -14,11 +14,13 @@
 	text-align: center;
 }
 
-#discussions-space ul {
+#discussions-space ul,
+#discussions-avoidance-space ul{
 	display: inline-block;
 }
 
-#discussions-space ul li {
+#discussions-space ul li,
+#discussions-avoidance-space ul li{
 	list-style: none;
 	<!--
 	display: inline;
@@ -37,17 +39,21 @@
 	font-weight: 600;
 }
 
-#discussions-space ul li input {
+#discussions-space ul li input,
+#discussions-avoidance-space ul li input{
 	margin-right: 5px;
 	<!-- font-size: 15px; -->
 }
 
 #discussions-space ul,
-#discussions-space ul li {
+#discussions-avoidance-space ul,
+#discussions-space ul li,
+#discussions-avoidance-space ul li{
 	width: 100%;
 }
 
-#discussions-space ul li label {
+#discussions-space ul li label,
+#discussions-avoidance-space ul li label{
 	width: 95%;
 	vertical-align: middle;
 }
@@ -131,8 +137,8 @@
 }
 #heading-pro-island,
 #heading-contra-island,
-#island-view-container-h3,
-#island-view-container-header-h3{
+#island-view-container-h4,
+#island-view-container-header-h4{
 	text-align: center;
 }
 
@@ -190,14 +196,16 @@
 }
 
 @media (max-width: 767px) {
-	#discussions-space ul {
+	#discussions-space ul,
+	#discussions-avoidance-space ul {
 		display: block;
 	}
 
 	#display-control-container{
 		bottom: 150px;
 	}
-	#discussions-space ul li {
+	#discussions-space ul li,
+	#discussions-avoidance-space ul li{
 		display: block;
 	}
 	#left-position-column. #right-position-column {

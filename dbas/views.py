@@ -747,7 +747,7 @@ class Dbas(object):
 
 	# ajax - getting all arguments for the island view
 	@view_config(route_name='ajax_send_correcture_of_statement', renderer='json', check_csrf=True)
-	def send_correcture_of_statement(self, check_csrf=True):
+	def send_correcture_of_statement(self):
 		logger('send_correcture_of_statement', 'def', 'main')
 
 		uid = ''
@@ -765,5 +765,3 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
-
-

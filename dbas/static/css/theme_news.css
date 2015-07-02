@@ -45,7 +45,7 @@
 
 .share-icon{
 	float: right;
-	padding: 1em;
+	padding: 1.3em;
 	opacity: 0.5;
 	transition: 1s ease;
 }
@@ -67,6 +67,7 @@
 }
 .share-table li ul li {
 	display: inline;
+	padding: 1em;
 }
 .share-table li:hover ul {
 	display: block;

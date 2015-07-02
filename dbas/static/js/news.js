@@ -92,7 +92,7 @@ $(document).ready(function () {
 	$(".share-google").click(function (event) {
 		var url;
 		url = document.location.pathname;
-		url = 'http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html';
+		url = 'https://dbas.cn.uni-duesseldorf.de';
 		googleShare(url);
 	});
 
@@ -100,7 +100,7 @@ $(document).ready(function () {
 	$(".share-facebook").click(function (event) {
 		var url;
 		url = document.location.pathname;
-		url = 'http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html';
+		url = 'https://dbas.cn.uni-duesseldorf.de';
 		fbShare(url, "FB Sharing", "Sharing of DBAS", "http://localhost:4284/static/images/logo.png");
 	});
 	
