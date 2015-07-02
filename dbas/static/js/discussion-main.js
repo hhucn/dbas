@@ -19,8 +19,8 @@ var addProTextareaId = 'add-pro-textarea';
 var addConTextareaId = 'add-con-textarea';
 var adminsSpaceId = 'admins-space';
 var argumentListId = 'argument-list';
-var closeStatementContainerId = 'closeStatementContainer';
-var closeIslandViewContainerId = 'closeIslandViewContainer';
+var closeStatementContainerId = 'close-statement-container';
+var closeIslandViewContainerId = 'close-island-view-container';
 var discussionsDescriptionId = 'discussions-description';
 var discussionsAvoidanceDescriptionId = 'discussions-avoidance-description';
 var discussionContainerId = 'discussion-container';
@@ -42,6 +42,7 @@ var goodPointTakeMeBackButtonId = 'good-point-of-the-others';
 var insertStatementForm = 'insert_statement_form';
 var islandViewContainerId = 'island-view-container';
 var islandViewContainerH4Id = 'island-view-container-h4';
+var islandViewAddArgumentsBtnid = 'island-view-add-arguments';
 var restartDiscussionButtonId = 'restart-discussion';
 var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'con-textareas';
@@ -172,6 +173,14 @@ $(function () {
 		}
 	});
 
+	// add argument button in the island view
+	$('#' + islandViewAddArgumentsBtnid).click(function () {
+		$('#' + scStyle2Id).attr('checked', true);
+		$('#' + scStyle1Id).attr('checked', false);
+		$('#' + scStyle3Id).attr('checked', false);
+		guiHandler.setDisplayStylesOfAddArgumentContainer(true,  true);
+	});
+
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).click(function () {
 		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId, 'right');
@@ -186,15 +195,15 @@ $(function () {
 	$('#' + closeStatementContainerId).click(function () {
 		$('#' + addStatementContainerId).hide();
 		$('#' + addStatementButtonId).enable = true;
-		$('#' + addStatementButtonId).removeAttr('checked');
+		$('#' + addStatementButtonId).attr('checked', false);
 		$('#' + sendAnswerButtonId).hide();
 	});
 
 	// hiding the island view, when the X button is clicked
 	$('#' + closeIslandViewContainerId).click(function () {
 		$('#' + islandViewContainerId).hide();
-		$('#' + scStyle1Id).attr('checked');
-		$('#' + scStyle2Id).removeAttr('checked');
+		guiHandler.resetChangeDisplayStyleBox();
+		$('#li_' + addStatementButtonId).attr('checked', true);
 	});
 
 	// open edit statement

@@ -90,7 +90,7 @@
 
 
 			<div class="container" id="island-view-container">
-				<button id="closeIslandViewContainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				<button id="close-island-view-ontainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
 				<div class="row">
 					<div class="col-md-1"></div>
@@ -110,6 +110,10 @@
 							</div>
 						</div>
 
+						<div class="center text-center">
+							<input id="island-view-add-arguments" type="button" name="" value="Add arguments" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+						</div>
+
 					</div>
 					<div class="col-md-1"></div>
 				</div>
@@ -117,7 +121,7 @@
 
 
 			<div class="container" id="add-statement-container">
-				<button id="closeStatementContainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
 				<div class="row">
 					<div class="col-md-1"></div>
@@ -150,7 +154,7 @@
 								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 								<span tal:replace="message" />
 							</div>
-							<input id="send-new-statement" value="Save it..." type="button" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
+							<input id="send-new-statement" type="button" name="" value="Save it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
 						</form>
 					</div>
 					<div class="col-md-1"></div>

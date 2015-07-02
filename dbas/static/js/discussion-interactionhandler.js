@@ -59,6 +59,7 @@ function InteractionHandler() {
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).show();
 			$('#' + sendAnswerButtonId).hide();
+			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
 		} else {
 			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
 			$('#' + sendAnswerButtonId).show();

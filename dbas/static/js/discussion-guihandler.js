@@ -191,7 +191,7 @@ function GuiHandler() {
 	 */
 	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
 		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length), text = argumentSentencesOpeners[pos] + '<b>' + currentUserArgument + '</b>'
-			+ ' However, other users argued that: ' + '<b>' + confrontationArgument + '</b>' + ' What do you think about that?';
+			+ '<br>However, other users argued that: ' + '<b>' + confrontationArgument + '</b>' + '<br><br>What do you think about that?';
 		new GuiHandler().setDiscussionsDescription(text);
 	};
 
