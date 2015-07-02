@@ -1,6 +1,12 @@
 /*global $, jQuery, alert, GuiHandler, firstOneText , addStatementButtonId , argumentList , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId, sendAnswerButtonId, addStatementContainerH2Id, AjaxHandler
 */
 
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
+
 function InteractionHandler() {
 	'use strict';
 	var guiHandler, ajaxHandler;
@@ -178,7 +184,6 @@ function InteractionHandler() {
 				gh.setDiscussionsAvoidanceDescriptionForConfrontation(parsedData.currentStatementText);
 				gh.setJsonDataToDiscussionContentAsArguments(parsedData.new_pros, false, true);
 				break;
-
 		}
 		gh.resetAndDisableEditButton();
 	};

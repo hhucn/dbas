@@ -1,6 +1,12 @@
 /*global $, jQuery, alert, startDiscussionText , addStatementButtonId , statementList , GuiHandler , firstOneText , addStatementButtonId , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementContainerId, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId
 */
 
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
+
 function GuiHandler() {
 	'use strict';
 	var interactionHandler;

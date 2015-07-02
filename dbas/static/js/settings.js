@@ -1,5 +1,10 @@
 /*global $, alert*/
 
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
 
 function TrackHandler() {
 	'use strict';

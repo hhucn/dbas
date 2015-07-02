@@ -1,5 +1,15 @@
 /*global $, jQuery, alert, AjaxHandler, GuiHandler, InteractionHandler */
 
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
+
+/**
+ * ID's
+ * @type {string[]}
+ */
 var addStatementButtonId = 'add-statement';
 var addPositionButtonId = 'add-position';
 var addStatementContainerId = 'add-statement-container';
@@ -29,18 +39,14 @@ var leftPositionTextareaId = 'pro-textareas';
 var leftIslandId = 'left-island';
 var listAllUsersButtonId = 'list-all-users';
 var goodPointTakeMeBackButtonId = 'good-point-of-the-others';
-var goodPointTakeMeBackButtonText = 'I agree, that is a good argument! Take me one step back.';
 var insertStatementForm = 'insert_statement_form';
 var islandViewContainerId = 'island-view-container';
-var islandViewHeaderText = 'These are all arguments for';
 var islandViewContainerH4Id = 'island-view-container-h4';
 var restartDiscussionButtonId = 'restart-discussion';
 var rightPositionColumnId = 'right-position-column';
 var rightPositionTextareaId = 'con-textareas';
 var rightIslandId = 'right-island';
 var radioButtonGroup = 'radioButtonGroup';
-var newArgumentRadioButtonText = 'I disagree! Let me state my own reason(s)!';
-var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
 var minimapId = 'navigation-minimap-container';
 var popupEditStatementId = 'popup_edit_statement';
 var popupEditStatementCloseButtonXId = 'popup_edit_statement_close';
@@ -58,20 +64,28 @@ var scStyle2Id = 'sc-style-2';
 var scStyle3Id = 'sc-style-3';
 // var startDiscussionButtonId = 'start-discussion';
 // var startDescriptionId = 'start-description';
-var statementContainerH4TextIfArgument = 'You want to state your own reason(s)?';
-var statementContainerH4TextIfPosition = 'What is your idea?';
 var stepBackButtonId = 'step-back';
 var sendAnswerButtonId = 'send-answer';
 var sendNewStatementId = 'send-new-statement';
 var statementListId = 'statement-list';
 
+/**
+ * TEXT
+ * @type {string[]}
+ */
 var argumentSentencesOpeners = [
 	'Okay, you have got the opinion: ',
 	'Interesting, your opinion is: ',
 	'You have said, that: ',
 	'So your opinion is: '];
-var startDiscussionText = 'How should we decide?';
 var firstOneText = 'You are the first one, who said: ';
+var goodPointTakeMeBackButtonText = 'I agree, that is a good argument! Take me one step back.';
+var islandViewHeaderText = 'These are all arguments for: ';
+var newArgumentRadioButtonText = 'I disagree! Let me state my own reason(s)!';
+var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
+var statementContainerH4TextIfArgument = 'You want to state your own reason(s)?';
+var statementContainerH4TextIfPosition = 'What is your idea?';
+var startDiscussionText = 'How should we decide?';
 
 
 startDiscussion = function () {
@@ -137,6 +151,8 @@ $(function () {
 	// handler for the step back button
 	$('#' + stepBackButtonId).click(function () {
 		new AjaxHandler().getOneStepBack();
+		new GuiHandler().resetChangeDisplayStyleBox();
+		$('#' + islandViewContainerId).fadeOut('slow');
 	});
 
 	// hide the restart button and add click function

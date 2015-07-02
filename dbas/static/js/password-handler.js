@@ -1,5 +1,11 @@
 /*global $, upperCase, set_total, check_strength, generate_password*/
 
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
+
 // check password strength
 // based on http://git.aaronlumsden.com/strength.js/
 var upperCase = new RegExp('[A-Z]'),

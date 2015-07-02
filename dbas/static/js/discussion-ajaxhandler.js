@@ -1,5 +1,11 @@
 /*global $, jQuery, alert, GuiHandler, InteractionHandler */
 
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
+
 function AjaxHandler() {
 	'use strict';
 	var internal_error = 'Internal Error: Maybe the server is offline or your data was not valid due to a CSRF check.';

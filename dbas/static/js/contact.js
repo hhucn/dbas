@@ -1,4 +1,11 @@
 /*global $ */
+
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
+
 $(document).ready(function () {
 	'use strict';
 

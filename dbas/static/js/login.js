@@ -1,4 +1,11 @@
 /*global $, jQuery, alert*/
+
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
+
 $('.tab a').on('click', function (e) {
 	'use strict';
 	e.preventDefault();

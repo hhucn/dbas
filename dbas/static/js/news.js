@@ -1,5 +1,11 @@
 /*global $, jQuery, alert*/
 
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
+
 function fbShare(url, title, descr, image) {
 	'use strict';
 	var winTop, winLeft, winWidth, winHeight;
