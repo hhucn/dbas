@@ -10,7 +10,8 @@ from .database import DBSession
 from .database.model import User, Group, Issue
 from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, EmailHelper
 
-version = '0.2'
+name = 'D-BAS'
+version = '0.21'
 
 class Dbas(object):
 	def __init__(self, request):
@@ -31,7 +32,7 @@ class Dbas(object):
 		logger('main_page', 'def', 'main page')
 		return dict(
 			title='Main',
-			project='D-BAS ' + version,
+			project=name + version,
 			logged_in=self.request.authenticated_userid
 		)
 
@@ -228,7 +229,7 @@ class Dbas(object):
 
 		return dict(
 			title='Login', 
-			project='D-BAS ' + version, 
+			project=name + version,
 			message=message, 
 			url=self.request.application_url + '/login', 
 			came_from=came_from, 
@@ -334,7 +335,7 @@ class Dbas(object):
 
 		return dict(
 			title='Contact',
-			project='D-BAS ' + version,
+			project=name + version,
 			logged_in=self.request.authenticated_userid,
 			was_message_send=send_message,
 			contact_error=contact_error,
@@ -384,7 +385,7 @@ class Dbas(object):
 
 		return dict(
 			title='Content',
-			project='D-BAS ' + version,
+			project=name + version,
 			logged_in=self.request.authenticated_userid,
 			message=msg,
 			issue=issue,
@@ -479,7 +480,7 @@ class Dbas(object):
 
 		return dict(
 			title='Settings',
-			project='D-BAS ' + version,
+			project=name + version,
 			logged_in=self.request.authenticated_userid,
 			passwordold=oldpw,
 			password=newpw,
@@ -504,7 +505,7 @@ class Dbas(object):
 		logger('main_news', 'def', 'main')
 		return dict(
 			title='News',
-			project='D-BAS ' + version,
+			project=name + version,
 			logged_in=self.request.authenticated_userid
 		)
 
@@ -518,7 +519,7 @@ class Dbas(object):
 		logger('main_impressum', 'def', 'main')
 		return dict(
 			title='Impressum',
-			project='D-BAS ' + version,
+			project=name + version,
 			logged_in=self.request.authenticated_userid
 		)
 
@@ -533,7 +534,7 @@ class Dbas(object):
 		self.request.response.status = 404
 		return dict(
 			title='Error',
-			project='D-BAS ' + version,
+			project=name + version,
 			page_notfound_viewname=self.request.view_name,
 			logged_in=self.request.authenticated_userid
 		)
