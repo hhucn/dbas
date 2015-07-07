@@ -32,25 +32,25 @@
 				<ul id="navbar-right" class="nav navbar-nav navbar-right">
 					<li id="content-link" tal:condition="logged_in">
 						<a href="${request.application_url}/content" title="Get the party started">
-							<img id="header_letsgo">&thinsp;Let's&thinsp;&thinsp;go
+							<img id="header_letsgo" class="glyphicon-local">&thinsp;Let's&thinsp;&thinsp;go
 						</a>
 					</li>
 
 					<li id="news-link">
 						<a href="${request.application_url}/news" title="News about D-BAS">
-							<img id="header_news">&thinsp;News
+							<img id="header_news" class="glyphicon-local">&thinsp;News
 						</a>
 					</li>
 
 					<li id="contact-link">
 						<a href="${request.application_url}/contact" title="Get in touch with us">
-							<img id="header_contact">&thinsp;Contact
+							<img id="header_contact" class="glyphicon-local">&thinsp;Contact
 						</a>
 					</li>
 
 					<li id="login-link" tal:condition="not:logged_in">
 						<a href="${request.application_url}/login" title="Login">
-							<img id="header_login">&thinsp;Login
+							<img id="header_login" class="glyphicon-local">&thinsp;Login
 						</a>
 					</li>
 
@@ -62,12 +62,12 @@
 							<ul class="dropdown-menu">
 								<li>
 									<a href="${request.application_url}/settings" title="Settings">
-										<img id="header_settings">&thinsp;Settings
+										<img id="header_settings" class="glyphicon-local">&thinsp;Settings
 									</a>
 								</li>
 								<li>
 									<a href="${request.application_url}/logout" title="Logout">
-										<img id="header_logout">&thinsp;Logout
+										<img id="header_logout" class="glyphicon-local">&thinsp;Logout
 									</a>
 								</li>
 							</ul>
@@ -80,15 +80,15 @@
 						<ul class="dropdown-menu">
 							<li>
 								<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
-									<img id="header_author">&thinsp;Author</a>
+									<img id="header_author" class="glyphicon-local">&thinsp;Author</a>
 							</li>
 							<li>
 								<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
-									<img id="header_licence">&thinsp;Licence</a>
+									<img id="header_licence" class="glyphicon-local">&thinsp;Licence</a>
 							</li>
 							<li>
 								<a id="link_popup_privacy" href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
-									<img id="header_privacy">&thinsp;Privacy Policy</a>
+									<img id="header_privacy" class="glyphicon-local">&thinsp;Privacy Policy</a>
 							</li>
 						</ul>
 					</li>

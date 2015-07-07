@@ -6,7 +6,7 @@
 					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;
 					<a href="${request.application_url}/impressum">
 						<!-- <i class="glyphicon glyphicon-th-list icon-muted">&thinsp;</i> -->
-						&thinsp; <img id="footer-impressum">Impressum</a>
+						&thinsp; <img id="footer-impressum" class="glyphicon-local">Impressum</a>
 				</li>
 			</ul>
 			<ul>
@@ -14,7 +14,7 @@
 					Icons by&#160;&#160;
 					<a href="http://glyphicons.com/">
 						<!-- <i class="glyphicon glyphicon-asterisk icon-muted">&thinsp;</i> -->
-						&thinsp; <img id="footer-glyphicons">glyphicons</a>
+						&thinsp; <img id="footer-glyphicons" class="glyphicon-local">glyphicons</a>
 				</li>
 			</ul>
 		</div>

@@ -852,11 +852,16 @@ class EmailHelper(object):
 		send_message = False
 		contact_error = False
 		mailer = get_mailer(request)
+		body = body +"\n\n---\n" + \
+		       "This is an automatically generated mail by the D-BAS System.\n" + \
+		       "For contact please write an mail to krauthoff@cs.uni-duesseldorf.de\n" + \
+		       "This system is part of a doctoral thesis and currently in an alpha-phase."
 		message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
 		# try sending an catching errors
 		try:
 			mailer.send_immediately(message, fail_silently=False)
 			send_message = True
+			message = 'An E-Mail was sent to the given address.'
 		except smtplib.SMTPConnectError as exception:
 			logger('EmailHelper', 'send_mail', 'error while sending')
 			code = str(exception.smtp_code)

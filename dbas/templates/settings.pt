@@ -8,6 +8,7 @@
 <body>
 	<div id="wrapper">
 		<div id="content">
+            <input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
 			<div class="form first-form">
 				<div class="row">

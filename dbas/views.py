@@ -12,6 +12,7 @@ from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, Dic
 
 name = 'D-BAS'
 version = '0.21'
+header = name + ' ' + version
 
 class Dbas(object):
 	def __init__(self, request):
@@ -32,7 +33,7 @@ class Dbas(object):
 		logger('main_page', 'def', 'main page')
 		return dict(
 			title='Main',
-			project=name + version,
+			project=header,
 			logged_in=self.request.authenticated_userid
 		)
 
@@ -184,7 +185,7 @@ class Dbas(object):
 						reg_success = True
 
 						# sending an email
-						subject = 'Account registration for D-BAS'
+						subject = 'D-BAS Account Registration'
 						body = 'Your account was successfully registered for this e-mail.'
 						EmailHelper().send_mail(self.request, subject, body, email)
 
@@ -213,9 +214,9 @@ class Dbas(object):
 				DBSession.add(db_user)
 				transaction.commit()
 
-				body = 'Your new password is: ' + password
+				body = 'Your new password is: ' + pwd
 				subject = 'D-BAS Password Request'
-				message, reg_success, reg_failed = EmailHelper().send_mail(self.request, subject, body, email)
+				reg_success, reg_failed, message= EmailHelper().send_mail(self.request, subject, body, email)
 
 				# logger
 				if reg_success:
@@ -229,7 +230,7 @@ class Dbas(object):
 
 		return dict(
 			title='Login', 
-			project=name + version,
+			project=header,
 			message=message, 
 			url=self.request.application_url + '/login', 
 			came_from=came_from, 
@@ -335,7 +336,7 @@ class Dbas(object):
 
 		return dict(
 			title='Contact',
-			project=name + version,
+			project=header,
 			logged_in=self.request.authenticated_userid,
 			was_message_send=send_message,
 			contact_error=contact_error,
@@ -385,7 +386,7 @@ class Dbas(object):
 
 		return dict(
 			title='Content',
-			project=name + version,
+			project=header,
 			logged_in=self.request.authenticated_userid,
 			message=msg,
 			issue=issue,
@@ -402,6 +403,9 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('main_settings', 'def', 'main')
+
+		token = self.request.session.new_csrf_token()
+		logger('main_settings', 'new token', str(token))
 		
 		oldpw = ''
 		newpw = ''
@@ -480,7 +484,7 @@ class Dbas(object):
 
 		return dict(
 			title='Settings',
-			project=name + version,
+			project=header,
 			logged_in=self.request.authenticated_userid,
 			passwordold=oldpw,
 			password=newpw,
@@ -492,7 +496,8 @@ class Dbas(object):
 			db_surname=db_user_surname,
 			db_nickname=db_user_nickname,
 			db_mail=db_user_mail,
-			db_group=db_user_group
+			db_group=db_user_group,
+			csrf_token=token
 		)
 
 	# news page for everybody
@@ -505,7 +510,7 @@ class Dbas(object):
 		logger('main_news', 'def', 'main')
 		return dict(
 			title='News',
-			project=name + version,
+			project=header,
 			logged_in=self.request.authenticated_userid
 		)
 
@@ -519,7 +524,7 @@ class Dbas(object):
 		logger('main_impressum', 'def', 'main')
 		return dict(
 			title='Impressum',
-			project=name + version,
+			project=header,
 			logged_in=self.request.authenticated_userid
 		)
 
@@ -534,7 +539,7 @@ class Dbas(object):
 		self.request.response.status = 404
 		return dict(
 			title='Error',
-			project=name + version,
+			project=header,
 			page_notfound_viewname=self.request.view_name,
 			logged_in=self.request.authenticated_userid
 		)

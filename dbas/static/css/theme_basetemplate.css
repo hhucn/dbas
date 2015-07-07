@@ -209,7 +209,7 @@ body.loading .ajaxloader {
 .lead,
 .font-normal,
 .links ul li a,
-.links ul li .icon-muted {
+.links ul li .glyphicon-local {
 	color: #000;
 	font-size: 18px;
 }
@@ -218,7 +218,7 @@ body.loading .ajaxloader {
 	text-align: left;
 }
 
-.links ul li:hover .icon-muted {
+.links ul li:hover .glyphicon-local {
 	color: #006ab3;
 }
 
@@ -250,59 +250,52 @@ body.loading .ajaxloader {
 	left: 0;
 }
 
+.glyphicon-local {
+	width: 15px;
+}
+
 #footer-impressum {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-158-show-thumbnails-with-lines.png) no-repeat;
-	width: 15px;
 }
 
 #footer-glyphicons {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-249-asterisk.png) no-repeat;
-	width: 15px;
 }
 
 #header_letsgo {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-551-erase.png) no-repeat;
-	width: 15px;
 }
 
 #header_news {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-609-newspaper.png) no-repeat;
-	width: 15px;
 }
 
 #header_contact {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-310-comments.png) no-repeat;
-	width: 15px;
 }
 
 #header_login {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-387-log-in.png) no-repeat;
-	width: 15px;
 }
 
 #header_settings {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-281-settings.png) no-repeat;
-	width: 15px;
 }
 
 #header_logout {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-388-log-out.png) no-repeat;
-	width: 15px;
 }
 
 #header_author {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-4-user.png) no-repeat;
-	width: 15px;
 }
 
 #header_licence {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-444-floppy-disk.png) no-repeat;
-	width: 15px;
 }
 
 #header_privacy {
 	content: url(../images/glyphicons_free/glyphicons/png/glyphicons-499-sunglasses.png) no-repeat;
-	width: 15px;
 }
 
 @media (max-width: 768px) {

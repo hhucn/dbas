@@ -15,6 +15,8 @@ function TrackHandler() {
 	 */
 	this.manageUserTrackData = function ( get_track_data ) {
 		'use strict';
+		var csrfToken = $('#hidden_csrf_token').val();
+		alert(csrfToken);
 		$.ajax({
 			url: 'ajax_manage_user_track',
 			method: 'POST',
@@ -22,7 +24,8 @@ function TrackHandler() {
 				get_data: get_track_data ? '1' : '0'
 			},
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetUserTrackDone(data) {
 			var th = new TrackHandler();
 			get_track_data ? th.getUserTrackDataDone(data) : th.removeUserTrackDataDone();

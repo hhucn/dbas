@@ -20,7 +20,7 @@ function AjaxHandler() {
 			type: 'GET',
 			dataType: 'json',
 			async: true,
-				headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetAllPositionsDone(data) {
 			new InteractionHandler().callbackIfDoneForGetAllPositions(data);
 		}).fail(function ajaxGetAllPositionsFail() {
@@ -43,7 +43,7 @@ function AjaxHandler() {
 			data: { uid : pos_uid},
 			dataType: 'json',
 			async: true,
-				headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetArgumentsForJustificationDone(data) {
 			new InteractionHandler().callbackIfDoneForArgsForJustification(data);
 		}).fail(function ajaxGetArgumentsForJustificationFail() {
@@ -65,7 +65,7 @@ function AjaxHandler() {
 			data: { uid: currentStatementId},
 			dataType: 'json',
 			async: true,
-				headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetNewArgumentationRoundDone(data) {
 			new InteractionHandler().callbackIfDoneForGetNewArgumentationRound(data);
 		}).fail(function ajaxGetNewArgumentationRoundFail() {
@@ -85,7 +85,7 @@ function AjaxHandler() {
 			type: 'GET',
 			dataType: 'json',
 			async: true,
-				headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetAllUsersDone(data) {
 			new GuiHandler().setJsonDataToAdminContent($.parseJSON(data));
 		}).fail(function ajaxGetAllUsersFail() {
@@ -103,7 +103,7 @@ function AjaxHandler() {
 			type: 'GET',
 			dataType: 'json',
 			async: true,
-				headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetOneStepBackDone(data) {
 			$('#' + stepBackButtonId).hide();
 			$('#' + sendAnswerButtonId).show();
@@ -129,7 +129,7 @@ function AjaxHandler() {
 			data: argument_dictionary,
 			dataType: 'json',
 			async: true,
-				headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxSendNewArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewArguments(data);
 		}).fail(function ajaxSendNewArgumentFail() {
@@ -149,7 +149,7 @@ function AjaxHandler() {
 			data: { position : position},
 			dataType: 'json',
 			async: true,
-				headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxSendNewPositionDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewPosition(data);
 		}).fail(function ajaxSendNewPositionFail() {
@@ -167,7 +167,7 @@ function AjaxHandler() {
 			type: 'GET',
 			dataType: 'json',
 			async: true,
-				headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetAllArgumentsForIslandViewDone(data) {
 			new InteractionHandler().callbackIfDoneForGetAllArgumentsForIslandView(data);
 		}).fail(function ajaxGetAllArgumentsForIslandViewFail() {
