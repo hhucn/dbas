@@ -18,7 +18,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 
 here = os.path.dirname(__file__)
-settings = appconfig('config:' + os.path.join(here, '../', 'development.ini'))
+settings = appconfig('config:' + os.path.join(here, '../', 'production.ini'))
 
 
 class Setup:
