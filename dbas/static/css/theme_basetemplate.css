@@ -132,13 +132,13 @@ body.loading .ajaxloader {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	margin-bottom: 10px;
-	border-radius: 4px;
-	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+	border-radius: 2px;
+	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
 }
 
 .wrapped_content_container {
-	border-radius: 4px;
-	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+	border-radius: 2px;
+	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
 	background: #f4f4f4;
 	padding: 10px;
 	margin: 10px;

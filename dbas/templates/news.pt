@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
 <!-- todo move news into second database -->
+
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.css')}" rel="stylesheet">
 </head>
 
 <body>
-	
+
 	<div id="wrapper">
 		<div id="content">
 
@@ -16,15 +17,23 @@
 				<p class="lead">This will be the news page and currently I think...this will be some kind of blog</p>
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -34,15 +43,23 @@
 				<br>D-BAS is no able to manage a session as well as it has protection against CSRF.
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -52,34 +69,51 @@
 				<br>Now, each user can edit positions and arguments. All changes will be saved and can be watched. Future work is the chance to edit the relations between positions.
 			</div>
 
-			<div class="newscontainer span_2_of_4">
+			<div class="container newscontainer span_2_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
 				<h3><span class="font-semi-bold">Simple Navigation was improved</span></h3>
 				<h4><p>19.06.2015</p></h4>
 				<h5>Author: Tobias Krauthoff</h5>
-				<br>Because the first kind of navigation was finished recently, D-BAS is now dynamically. That means, that each user can add positions and arguments on his own.<br>
+				<br>Because the first kind of navigation was finished recently, D-BAS is now dynamically. That means, that each user can add positions and arguments on his own.
+				<br>
 				<i>Open issues</i> are i18n, a framework for JS-tests as well as the content of the popups.
 			</div>
 
-			<div class="newscontainer span_2_of_4">
+			<div class="container newscontainer span_2_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -89,15 +123,23 @@
 				<br>First beta of D-BAS' navigation is now ready. Within this kind the user will be permantly confronted with arguments, which have a attack relation to the current selected argument/position. For an justification the user can select out of all arguments, which have a attack relation to the 'attacking' argument. Unfortunately the support-relation are currently useless except for the justification for the position at start.
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -107,15 +149,23 @@
 				<br>Today: A new workshop at the O.A.S.E. :)
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -125,15 +175,23 @@
 				<br>Everything is growing, we have now a little admin interface and a navigation for the discussion is finshed, but this is very basic and simple
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -143,15 +201,23 @@
 				<br>Every news can now be shared via FB, G+, Twitter and Mail. Not very important, but in some kind it is...
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -161,15 +227,23 @@
 				<br>Front-end tests with Splinter are now finished. They are great and easy to manage. Additionally I'am working on JS, so we can navigate in a static graph. Next to this, the I18N is waiting...
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -179,15 +253,23 @@
 				<br>Today started the funny part about the dialogue based part, embedded in the content page.
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -197,15 +279,23 @@
 				<br>Today started the funny part about the dialogue based part, embedded in the content page.
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -215,15 +305,23 @@
 				<br>Interationalization and localization is much more diffult than described by the pyramid. This has something todo with Chameleon 2, Lingua and Babel, so this feature has to wait.
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -233,15 +331,23 @@
 				<br> D-BAS, now with internationalization and translation.
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -251,15 +357,23 @@
 				<br>New part of the website is finished: a settings page for every user.
 			</div>
 
-			<div class="newscontainer span_2_of_4">
+			<div class="container newscontainer span_2_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -269,15 +383,23 @@
 				<br>The workshop was very interesting. We have had very interesting talks and got much great feedback vom Jun.-Prof. Dr. Betz and Mr. Voigt. A repetition will be planed for the middle of july.
 			</div>
 
-			<div class="newscontainer span_2_of_4">
+			<div class="container newscontainer span_2_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -287,15 +409,23 @@
 				<br>The working group 'functionality' will drive to Karlsruhe for a workshop with Jun.-Prof. Dr. Betz as well as with C. Voigt. Our main topics will be the measurement of quality of discussions and the design of online-participation. I think, this will be very interesting!
 			</div>
 
-			<div class="newscontainer span_2_of_4">
+			<div class="container newscontainer span_2_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -315,15 +445,23 @@
 				</ul>
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -333,15 +471,23 @@
 				<br>Finished first set of unit- and integration tests for the database and frontend.
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -351,15 +497,23 @@
 				<br>The contact page is now working as well as the password-request option.
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -369,15 +523,23 @@
 				<br>The webpage has now a contact, login and register site.
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -387,16 +549,24 @@
 				<br>I've started with the Prototype
 			</div>
 
-			<div class="newscontainer span_1_of_4">
+			<div class="container newscontainer span_1_of_4">
 
 				<ul class="share-table">
 					<li>
 						<a class="share-icon share-def"></a>
 						<ul>
-							<li><a class="share-icon share-mail"></a></li>
-							<li><a class="share-icon share-twitter"></a></li>
-							<li><a class="share-icon share-google"></a></li>
-							<li><a class="share-icon share-facebook"></a></li>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -406,7 +576,7 @@
 				<br>I've started with with my PhD.
 			</div>
 		</div>
-		
+
 		<div metal:use-macro="load: snippet-footer.pt" />
 	</div>
 

@@ -48,7 +48,7 @@ def main(argv=sys.argv):
 		user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, gender='m')
 		user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3, gender='m')
 		user4 = User(firstname='mladen', surname='topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw4, gender='m')
-		user5 = User(firstname='kalman', surname='graffi', nickname='kalman', email='graffi@cs.uni-duesseldorf.de', password=pw5, gender='m')
+		user5 = User(firstname='Kalman', surname='Graffi', nickname='Kalman', email='graffi@cs.uni-duesseldorf.de', password=pw5, gender='m')
 		user1.group = group0.uid
 		user2.group = group1.uid
 		user3.group = group1.uid
