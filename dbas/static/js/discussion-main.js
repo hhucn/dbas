@@ -80,10 +80,13 @@ var argumentSentencesOpeners = [
 	'You have said, that: ',
 	'So your opinion is: '];
 var firstOneText = 'You are the first one, who said: ';
+var firstPositionText = 'You are the first one in this discussion!';
 var goodPointTakeMeBackButtonText = 'I agree, that is a good argument! Take me one step back.';
 var islandViewHeaderText = 'These are all arguments for: ';
 var newArgumentRadioButtonText = 'I disagree! Let me state my own reason(s)!';
 var newPositionRadioButtonText = 'Neither of the above, I have a different idea!';
+var firstArgumentRadioButtonText = 'Let me insert my reasons!';
+var firstPositionRadioButtonText = 'Let me insert my ideas!';
 var statementContainerH4TextIfArgument = 'You want to state your own reason(s)?';
 var statementContainerH4TextIfPosition = 'What is your idea?';
 var startDiscussionText = 'How should we decide?';

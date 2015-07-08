@@ -247,7 +247,6 @@ class QueryHelper(object):
 		return_list = QueryHelper().get_args_list_in_relation_to_statement(uid, True, True)
 		justification_dict = dict()
 		return_dict = dict()
-
 		if return_list == []:
 			return_dict['status'] = '-1'
 		else:
@@ -332,6 +331,7 @@ class QueryHelper(object):
 		:return: dictioanry
 		"""
 		return_dict = self.get_args_for_justifications(uid)
+
 
 		# get last statement
 		db_last_statement = DBSession.query(Position).filter_by(uid=uid).first()

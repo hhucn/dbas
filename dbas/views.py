@@ -612,16 +612,16 @@ class Dbas(object):
 		Returns all arguments, which are connected to a position, which uid is delivered in the params
 		:return: dictionary with db-rows, json-encoded
 		"""
-		logger('getarguments_by_pos', 'def', 'main')
+		logger('get_arguments_by_pos', 'def', 'main')
 
 		# get every relation from current argument to an position with uid send
 		uid = ''
 		try:
 			uid = self.request.params['uid']
 		except KeyError as e:
-			logger('getarguments_by_pos', 'error', repr(e))
+			logger('get_arguments_by_pos', 'error', repr(e))
 
-		logger('getarguments_by_pos', 'def', 'uid: ' + uid)
+		logger('get_arguments_by_pos', 'def', 'uid: ' + uid)
 
 		# get all arguments
 		return_dict = QueryHelper().get_args_by_pos(uid)

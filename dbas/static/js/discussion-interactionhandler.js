@@ -43,13 +43,14 @@ function InteractionHandler() {
 	 * @param buttonId current id
 	 */
 	this.radioButtonChanged = function (buttonId) {
-		var guiHandler = new GuiHandler();
+		var guiHandler = new GuiHandler(), text;
 		if ($('#' + addStatementButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).hide();
 			$('#' + sendAnswerButtonId).hide();
 
 			// get the second child, which is the label
-			if ($('#' + addStatementButtonId).parent().children().eq(1).text().indexOf(newPositionRadioButtonText) >= 0) {
+			text = $('#' + addStatementButtonId).parent().children().eq(1).text();
+			if (text.indexOf(newPositionRadioButtonText) >= 0 || text.indexOf(firstPositionRadioButtonText) >= 0) {
 				// no argument -> position
 				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false);
 			} else {
@@ -141,11 +142,11 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForArgsForJustification = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		gh.setDiscussionsDescription('Why do you think that: <b>' + parsedData.currentStatementText + '</b>');
 		if (parsedData.status != '-1') {
-			gh.setDiscussionsDescription('Why do you think that: <b>' + parsedData.currentStatementText + '</b>');
 			gh.setJsonDataToDiscussionContentAsArguments(parsedData.justification, true);
 		} else {
-			gh.setNewArgumentButtonOnly();
+			gh.setNewArgumentButtonOnly(firstArgumentRadioButtonText, true, 'radio');
 		}
 		gh.resetAndDisableEditButton();
 	};
@@ -194,11 +195,13 @@ function InteractionHandler() {
 	 * @param data returned json data
 	 */
 	this.callbackIfDoneForGetAllPositions = function (data) {
-		var parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '-1') {
-			new GuiHandler().setNewArgumentButtonOnly();
+			gh.setDiscussionsDescription(firstPositionText);
+			gh.resetAndDisableEditButton();
+			gh.setNewArgumentButtonOnly(firstPositionRadioButtonText, false, 'radio');
 		} else {
-			new GuiHandler().setJsonDataToContentAsPositions(parsedData.positions);
+			gh.setJsonDataToContentAsPositions(parsedData.positions);
 		}
 	};
 

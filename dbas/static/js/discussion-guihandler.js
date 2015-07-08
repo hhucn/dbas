@@ -78,7 +78,7 @@ function GuiHandler() {
 			// we only want attacking arguments
 			if (val.is_supportive === '0') {
 				if (val.text.toLowerCase() !== 'because') {
-					text = "Because " + val.text.substring(0, 1).toLowerCase();
+					text = "Because " + val.text.substring(0, 1).toLowerCase() + val.text.substring(1, val.text.length);
 				} else {
 					text = val.text;
 				}
@@ -166,9 +166,9 @@ function GuiHandler() {
 	 * @param btnType for the input element
 	 */
 	this.setNewArgumentButtonOnly = function (val, isArgument, btnType) {
-		var listitem = [];
-		listitem.push(new GuiHandler().getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, btnType));
-		new GuiHandler().addListItemsToDiscussionsSpace(listitem, statementListId);
+		var listitem = [], gh = new GuiHandler();
+		listitem.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, btnType));
+		gh.addListItemsToDiscussionsSpace(listitem, statementListId);
 	};
 
 	/**
@@ -446,6 +446,9 @@ function GuiHandler() {
 				$('#' + rightPositionColumnId).show();
 				$('#' + sendNewStatementId).off('click').click(function () {
 					new InteractionHandler().getArgumentsAndSendThem();
+					var gh = new GuiHandler();
+					gh.setErrorDescription('');
+					gh.setSuccessDescription('');
 				});
 			} else {
 				$('#' + addStatementContainerH4Id).text(statementContainerH4TextIfPosition);
@@ -454,6 +457,9 @@ function GuiHandler() {
 				$('#' + rightPositionColumnId).hide();
 				$('#' + sendNewStatementId).off('click').click(function () {
 					new AjaxHandler().sendNewPosition($('#' + addStatementContainerMainInputId).val());
+					var gh = new GuiHandler();
+					gh.setErrorDescription('');
+					gh.setSuccessDescription('');
 				});
 			}
 			var gh = new GuiHandler();
