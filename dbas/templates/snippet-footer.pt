@@ -3,18 +3,18 @@
 		<div class="row links">
 			<ul>
 				<li>
-					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;
-					<a href="${request.application_url}/impressum">
-						<!-- <i class="glyphicon glyphicon-th-list icon-muted">&thinsp;</i> -->
-						&thinsp; <img id="footer-impressum" class="glyphicon-local">Impressum</a>
+					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;&#160;
+					<img id="footer-impressum" class="glyphicon-local">&#160;&#160;
+					<a href="${request.application_url}/impressum">Impressum</a>
 				</li>
 			</ul>
 			<ul>
 				<li>
-					Icons by&#160;&#160;
-					<a href="http://glyphicons.com/">
-						<!-- <i class="glyphicon glyphicon-asterisk icon-muted">&thinsp;</i> -->
-						&thinsp; <img id="footer-glyphicons" class="glyphicon-local">glyphicons</a>
+					Icons by&#160;&#160;<img id="footer-glyphicons" class="glyphicon-local">&#160;
+					<a href="http://glyphicons.com/">glyphicons</a>,&thinsp;
+					<a href=">https://www.iconfinder.com/iconsets/ballicons-free">ballicons</a>,&thinsp;
+					<a href=">https://www.iconfinder.com/iconsets/ballicons-2-free">ballicons-2</a>,&thinsp;
+					<a href=">https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons">keynote-and-powerpoint-icons</a>
 				</li>
 			</ul>
 		</div>
