@@ -89,6 +89,66 @@
 			</div>
 
 			<div class="container" id="features-template">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="content">
+							<h2><span class="font-semi-bold">Features</span> <span class="smaller">of D-BAS</span></h2>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-4 col-badge">
+						<img id="icon-map" class="icon-badge" />
+						<h3>Argumentation Maps</h3>
+						<p>A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense.</p>
+					</div>
+					<div class="col-md-4 col-badge">
+						<img id="icon-dialogue" class="icon-badge" />
+						<h3>Dialogue-based</h3>
+						<p>Yeah, this is a novel and it will work with a kind of dialogue-based approach. This means that the system will represnt the panelist and the claims will be given through the other participants.</p>
+					</div>
+					<div class="col-md-4 col-badge">
+						<img id="icon-simple" class="icon-badge" />
+						<h3>Simple UI</h3>
+						<p>Dummy Text</p>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-4 col-badge">
+						<img id="icon-guided" class="icon-badge" />
+						<h3>Guided View</h3>
+						<p>You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> for you.</p>
+					</div>
+					<div class="col-md-4 col-badge">
+						<img id="icon-island" class="icon-badge" />
+						<h3>Island View</h3>
+						<p>Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.</p>
+					</div>
+					<div class="col-md-4 col-badge">
+						<img id="icon-expert" class="icon-badge" />
+						<h3>Expert View</h3>
+						<p>So, you think you are an expert? Okay, you can have a view of the complete argumentation map.</p>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						Icons by:
+						<a href=">https://www.iconfinder.com/iconsets/ballicons-free">
+							iconfinder.com/iconsets/ballicons-free
+						</a>,
+						<a href=">https://www.iconfinder.com/iconsets/ballicons-2-free">
+							iconfinder.com/iconsets/ballicons-2-free
+						</a>,
+						<a href=">https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons">
+							iconfinder.com/iconsets/keynote-and-powerpoint-icons
+						</a>
+					</div>
+				</div>
+				<!--
 				<div class="row">
 					<div class="col-md-12">
 						<div class="content">
@@ -111,6 +171,8 @@
 						</div>
 					</div>
 				</div>
+!-->
+
 			</div>
 
 			<div class="container" id="about-template">
@@ -149,6 +211,26 @@
 								</li>
 							</ul>
 							<p class="lead">In addition, we have studied several tools:</p>
+
+							<div class="row">
+								<div class="col-md-4 col-badge">
+									<img id="icon-pro-con" class="icon-badge" />
+									<h3>Pro-Contra Lists</h3>
+									<p>These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.</p>
+								</div>
+								<div class="col-md-4 col-badge">
+									<img id="icon-forum" class="icon-badge" />
+									<h3>Forum</h3>
+									<p>Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.</p>
+								</div>
+								<div class="col-md-4 col-badge">
+									<img id="icon-argapproach" class="icon-badge" />
+									<h3>Argumentation-based Approaches</h3>
+									<p>This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.</p>
+								</div>
+							</div>
+
+							<!--
 							<ul class="lead list">
 								<li>
 									<span class="font-normal">Forum:</span>
@@ -167,13 +249,14 @@
 							<ul class="lead list">
 								<li>Yeah, I know. This is empty now, but the first one will be here...soon.</li>
 							</ul>
+-->
 						</div>
 					</div>
 				</div>
 			</div>
 
 		</div>
-	
+
 		<div metal:use-macro="load: snippet-footer.pt" />
 	</div>
 

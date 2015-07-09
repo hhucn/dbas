@@ -214,7 +214,8 @@ class Dbas(object):
 				DBSession.add(db_user)
 				transaction.commit()
 
-				body = 'Your new password is: ' + pwd
+				body = 'Your nickname is: ' + db_user.nickname + '\n'
+				body += 'Your new password is: ' + pwd
 				subject = 'D-BAS Password Request'
 				reg_success, reg_failed, message= EmailHelper().send_mail(self.request, subject, body, email)
 

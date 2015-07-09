@@ -200,7 +200,7 @@ function GuiHandler() {
 	 * @param currentUserArgument
 	 */
 	this.setDiscussionsAvoidanceDescriptionForConfrontation = function (currentUserArgument) {
-		var text = 'Or do you have want to give an better argument for: ' + '<b>' + currentUserArgument + '</b>';
+		var text = 'Or do you have a better argument for: ' + '<b>' + currentUserArgument + '</b>';
 		new GuiHandler().setDiscussionsAvoidanceDescription(text);
 	};
 
