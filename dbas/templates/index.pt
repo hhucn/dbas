@@ -49,45 +49,6 @@
 				</div>
 			</div>
 
-			<div class="container" id="description-template">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="content">
-							<h2><span class="font-semi-bold">Description</span> <span class="smaller">of D-BAS</span></h2>
-
-							<p class="lead">In the following a <span class="font-normal">short description</span> of D-BAS will be given with the help of bulletpoints:
-								<ul class="lead list">
-									<li> Participants are able to add and modify positions and arguments in every discussion.
-										<li> Positions and arguments are connected logically by participants</li>
-										<li> The system is very easy to use.</li>
-										<li> It offers a time-shifted discussion in three modes:</li>
-										<ul class="lead list">
-											<li> Guided Discussion: The participants will be lead through the discussion .</li>
-											<li> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
-											<li> Expert View: Participants are able to see and do everything.</li>
-										</ul>
-										<li> Contributions can be rated by the participants.</li>
-										<li> You have the huge power of the crowd!.</li>
-								</ul>
-								<br>
-								<p class="lead">This sounds amazing, but every egg-laying, milk-bearing woolly sow has its beginning. Due to this the <span class="font-normal">first milesstone</span> contains:
-									<ul class="lead list">
-										<li> System is based on a finished argumentation map.</li>
-										<li> A base form of the guided view will be avbailable:</li>
-										<ul class="lead list">
-											<li> The participant will be confronted with an argument out of the finished argumentation map.</li>
-											<li> He has several options to choose, so this will be a kind of led <a href="http://www.bpb.de/politik/wahlen/wahl-o-mat/" target="_blank" alt="Wahl-O-Mat">Wahl-O-Mat</a>.</li>
-											<li> We will have no KI, recommender systems or predictions of the next post. Everything will be statically.</li>
-										</ul>
-										<li> Participants will be tracked, but every data is accessible.</li>
-										<li> Everything will be done with unit and integration tests.</li>
-									</ul>
-								</p>
-						</div>
-					</div>
-				</div>
-			</div>
-
 			<div class="container" id="features-template">
 
 				<div class="row">
@@ -133,21 +94,6 @@
 						<p>So, you think you are an expert? Okay, you can have a view of the complete argumentation map.</p>
 					</div>
 				</div>
-
-				<div class="row">
-					<div class="col-md-12">
-						Icons by:
-						<a href=">https://www.iconfinder.com/iconsets/ballicons-free">
-							iconfinder.com/iconsets/ballicons-free
-						</a>,
-						<a href=">https://www.iconfinder.com/iconsets/ballicons-2-free">
-							iconfinder.com/iconsets/ballicons-2-free
-						</a>,
-						<a href=">https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons">
-							iconfinder.com/iconsets/keynote-and-powerpoint-icons
-						</a>
-					</div>
-				</div>
 				<!--
 				<div class="row">
 					<div class="col-md-12">
@@ -175,6 +121,45 @@
 
 			</div>
 
+			<div class="container" id="description-template">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="content">
+							<h2><span class="font-semi-bold">Description</span> <span class="smaller">of D-BAS</span></h2>
+
+							<p class="lead">In the following a <span class="font-normal">short description</span> of D-BAS will be given with the help of bulletpoints:
+								<ul class="lead list">
+									<li> Participants are able to add and modify positions and arguments in every discussion.
+										<li> Positions and arguments are connected logically by participants</li>
+										<li> The system is very easy to use.</li>
+										<li> It offers a time-shifted discussion in three modes:</li>
+										<ul class="lead list">
+											<li> Guided Discussion: The participants will be lead through the discussion .</li>
+											<li> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
+											<li> Expert View: Participants are able to see and do everything.</li>
+										</ul>
+										<li> Contributions can be rated by the participants.</li>
+										<li> You have the huge power of the crowd!.</li>
+								</ul>
+								<br>
+								<p class="lead">This sounds amazing, but every egg-laying, milk-bearing woolly sow has its beginning. Due to this the <span class="font-normal">first milesstone</span> contains:
+									<ul class="lead list">
+										<li> System is based on a finished argumentation map.</li>
+										<li> A base form of the guided view will be avbailable:</li>
+										<ul class="lead list">
+											<li> The participant will be confronted with an argument out of the finished argumentation map.</li>
+											<li> He has several options to choose, so this will be a kind of led <a href="http://www.bpb.de/politik/wahlen/wahl-o-mat/" target="_blank" alt="Wahl-O-Mat">Wahl-O-Mat</a>.</li>
+											<li> We will have no KI, recommender systems or predictions of the next post. Everything will be statically.</li>
+										</ul>
+										<li> Participants will be tracked, but every data is accessible.</li>
+										<li> Everything will be done with unit and integration tests.</li>
+									</ul>
+								</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="container" id="about-template">
 				<div class="row">
 					<div class="col-md-12">
@@ -182,18 +167,26 @@
 							<h2><span class="font-semi-bold">About</span> <span class="smaller"> D-BAS</span></h2>
 							<p class="lead">D-BAS is a <span class="font-normal">novel approach</span> of discussions in the field of online participation and developed by <a href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html">Tobias Krauthoff</a>.
 							</p>
-							<ul class="lead list">
-								<li>
-									<span class="font-normal">Cooperation with <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a>:</span>
-								</li>
-								<li>
-									<span class="font-normal">Cooperation with the <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php">Karlsruhe Institut of Technology</a>:</span>
-								</li>
-								<li>
-									<span class="font-normal">Graduation School <a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" target="_blank" title="Graduation School Online Participation" target="_blank">Online-Participation:</a></span>
-									<br>Das NRW Fortschrittskolleg Online-Partizipation ist ein vom Land Nordrhein-Westfalen gefördertes Graduiertenkolleg, in dem Wissenschaftlerinnen und Wissenschaftler aus der Betriebswirtschaft, Informatik, Kommunikationswissenschaft, Politikwissenschaft, Rechtswissenschaft und Soziologie gemeinsam mit Partnern aus der Praxis zusammenarbeiten. Ziel des Fortschrittskollegs ist es, die Möglichkeiten des Internets zur Beteiligung von Betroffenen an für sie relevanten Entscheidungen zu untersuchen.
-								</li>
-							</ul>
+
+
+
+							<div class="row">
+								<div class="col-md-4 col-badge">
+									<img id="icon-liqd" class="icon-badge" />
+									<h3>Cooperation with <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a></h3>
+									<p>Todo</p>
+								</div>
+								<div class="col-md-4 col-badge">
+									<img id="icon-kit" class="icon-badge" />
+									<h3>Cooperation with the <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php">Karlsruhe Institut of Technology</a></h3>
+									<p>Todo.</p>
+								</div>
+								<div class="col-md-4 col-badge">
+									<img id="icon-kolleg" class="icon-badge" />
+									<h3>Graduation School <a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" target="_blank" title="Graduation School Online Participation" target="_blank">Online-Participation</a></h3>
+									<p>Das NRW Fortschrittskolleg Online-Partizipation ist ein vom Land Nordrhein-Westfalen gefördertes Graduiertenkolleg, in dem Wissenschaftlerinnen und Wissenschaftler aus der Betriebswirtschaft, Informatik, Kommunikationswissenschaft, Politikwissenschaft, Rechtswissenschaft und Soziologie gemeinsam mit Partnern aus der Praxis zusammenarbeiten. Ziel des Fortschrittskollegs ist es, die Möglichkeiten des Internets zur Beteiligung von Betroffenen an für sie relevanten Entscheidungen zu untersuchen.</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

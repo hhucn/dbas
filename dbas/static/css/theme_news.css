@@ -77,39 +77,39 @@
 }
 
 .share-def {
-	background: url('../images/glyphicons_free/glyphicons/png/glyphicons-309-share-alt.png') no-repeat 10px 10px;
+	background: url('../images/glyphicons_free/glyphicons/glyphicons-309-share-alt.png') no-repeat 10px 10px;
 }
 
 .share-facebook {
-	background: url('../images/glyphicons_free/glyphicons_social/png/social-31-facebook.png') no-repeat 10px 10px;
+	background: url('../images/glyphicons_free/glyphicons_social/social-31-facebook.png') no-repeat 10px 10px;
 }
 
 .share-google {
-	background: url('../images/glyphicons_free/glyphicons_social/png/social-3-google-plus.png') no-repeat 10px 10px;
+	background: url('../images/glyphicons_free/glyphicons_social/social-3-google-plus.png') no-repeat 10px 10px;
 }
 
 .share-twitter {
-	background: url('../images/glyphicons_free/glyphicons_social/png/social-32-twitter.png') no-repeat 10px 10px;
+	background: url('../images/glyphicons_free/glyphicons_social/social-32-twitter.png') no-repeat 10px 10px;
 }
 
 .share-mail {
-	background: url('../images/glyphicons_free/glyphicons_social/png/social-40-e-mail.png') no-repeat 10px 10px;
+	background: url('../images/glyphicons_free/glyphicons_social/social-40-e-mail.png') no-repeat 10px 10px;
 }
 
 .share-facebook:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/png/hover-social-31-facebook.png') no-repeat 10px 10px;
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-31-facebook.png') no-repeat 10px 10px;
 }
 
 .share-google:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/png/hover-social-3-google-plus.png') no-repeat 10px 10px;
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-3-google-plus.png') no-repeat 10px 10px;
 }
 
 .share-twitter:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/png/hover-social-32-twitter.png') no-repeat 10px 10px;
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-32-twitter.png') no-repeat 10px 10px;
 }
 
 .share-mail:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/png/hover-social-40-e-mail.png') no-repeat 10px 10px;
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail.png') no-repeat 10px 10px;
 }
 
 @media(max-width:1280px) {

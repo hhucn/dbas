@@ -83,6 +83,21 @@
 	margin: auto;
 }
 
+#icon-liqd {
+	content: url('../images/icon_liqd.png') no-repeat center center;
+	margin: auto;
+}
+
+#icon-kolleg {
+	content: url('../images/icon_kolleg.png') no-repeat center center;
+	margin: auto;
+}
+
+#icon-kit {
+	content: url('../images/icon_kit.png') no-repeat center center;
+	margin: auto;
+}
+
 @media (max-width: 991px) {
 	.starter-template {
 		margin-top: 0;

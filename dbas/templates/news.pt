@@ -17,6 +17,34 @@
 				<p class="lead">This will be the news page and currently I think...this will be some kind of blog</p>
 			</div>
 
+			<div class="container newscontainer span_2_of_4">
+				<ul class="share-table">
+					<li>
+						<a class="share-icon share-def"></a>
+						<ul>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<h3><span class="font-semi-bold">Design & Research</span></h3>
+				<h4><p>13.07.2015</p></h4>
+				<h5>Author: Tobias Krauthoff</h5>
+				<br>D-BAS is still under construction. Meanwhile the index page was recreated and we are improving our algorithm for the
+				    guided view mode. Next to this we are inventing a bunch of metrics for measuring the quality of discussion in several
+				    software programs.
+			</div>
+
 			<div class="container newscontainer span_1_of_4">
 				<ul class="share-table">
 					<li>
