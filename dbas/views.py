@@ -11,7 +11,7 @@ from .database.model import User, Group, Issue
 from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, EmailHelper
 
 name = 'D-BAS'
-version = '0.21'
+version = '0.22'
 header = name + ' ' + version
 
 class Dbas(object):

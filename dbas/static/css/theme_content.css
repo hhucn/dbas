@@ -127,18 +127,13 @@
 	width: 95%;
 }
 
-#left-position-column button,
-#right-position-column button{
-	float: 5%;
-}
-
 #green,
 #heading-pro-island{
-	color: rgba(151,191,13,1.0); <!-- official uni red -->
+	color: rgba(151,191,13,1.0); /* official uni red */
 }
 #red,
 #heading-contra-island{
-	color: rgba(190,10,38,1.0); <!-- official uni green -->
+	color: rgba(190,10,38,1.0); /* official uni green */
 }
 #heading-pro-island,
 #heading-contra-island,
@@ -218,7 +213,8 @@
 	#discussions-avoidance-space ul li{
 		display: block;
 	}
-	#left-position-column. #right-position-column {
+	#left-position-column,
+	#right-position-column {
 		float: none;
 		width: 95%;
 	}

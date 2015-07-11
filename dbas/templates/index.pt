@@ -68,12 +68,12 @@
 					<div class="col-md-4 col-badge">
 						<img id="icon-dialogue" class="icon-badge" />
 						<h3>Dialogue-based</h3>
-						<p>Yeah, this is a novel and it will work with a kind of dialogue-based approach. This means that the system will represnt the panelist and the claims will be given through the other participants.</p>
+						<p>Yeah, this is a novel and it is a kind of dialogue-based approach. This means that the system will represent argumentations of panelist and claims will be given through the other participants.</p>
 					</div>
 					<div class="col-md-4 col-badge">
 						<img id="icon-simple" class="icon-badge" />
 						<h3>Simple UI</h3>
-						<p>Dummy Text</p>
+						<p>The user interface of D-BAS is simple, clear and easy. At any point during the discussion the choices for the participant are bounded, but not isolating him/her.</p>
 					</div>
 				</div>
 
@@ -174,17 +174,17 @@
 								<div class="col-md-4 col-badge">
 									<img id="icon-liqd" class="icon-badge" />
 									<h3>Cooperation with <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a></h3>
-									<p>Todo</p>
-								</div>
-								<div class="col-md-4 col-badge">
-									<img id="icon-kit" class="icon-badge" />
-									<h3>Cooperation with the <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php">Karlsruhe Institut of Technology</a></h3>
-									<p>Todo.</p>
+									<p>A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid Democracy e.V.</p>
 								</div>
 								<div class="col-md-4 col-badge">
 									<img id="icon-kolleg" class="icon-badge" />
 									<h3>Graduation School <a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" target="_blank" title="Graduation School Online Participation" target="_blank">Online-Participation</a></h3>
-									<p>Das NRW Fortschrittskolleg Online-Partizipation ist ein vom Land Nordrhein-Westfalen gefördertes Graduiertenkolleg, in dem Wissenschaftlerinnen und Wissenschaftler aus der Betriebswirtschaft, Informatik, Kommunikationswissenschaft, Politikwissenschaft, Rechtswissenschaft und Soziologie gemeinsam mit Partnern aus der Praxis zusammenarbeiten. Ziel des Fortschrittskollegs ist es, die Möglichkeiten des Internets zur Beteiligung von Betroffenen an für sie relevanten Entscheidungen zu untersuchen.</p>
+									<p>The NRW Graduation School Online-Participation is subsidised governmentally by Ministry of Innovation, Science and Research in North Rhine-Westphalia. The Graduation School is a network of business economics, computer scientiests, communication scientists, political scientists, jurists and sociologist, which are wokring together with partners from practice. The objective is the examination of opportunities of the internet, where affected persons are able to participate in decisions, where they are affected.</p>
+								</div>
+								<div class="col-md-4 col-badge">
+									<img id="icon-kit" class="icon-badge" />
+									<h3>Cooperation with the <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php">Karlsruhe Institut of Technology</a></h3>
+									<p>The workging group of functionality of the graduation school has a close-knit connection with the Institute for Technology Assessment and Systems Analysis (ITAS) of the Karlsruhe Institut of Technology.</p>
 								</div>
 							</div>
 						</div>

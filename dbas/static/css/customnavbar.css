@@ -1,25 +1,10 @@
-<!-- signalblue #006ab3 (0,
-106,
-179),
-to use in 1,
-0.7,
-0.5,
-0.3 and 0.1 --> <!-- achatgrey #d9dadb (217,
-218,
-219),
-to use in 1.0 and 0.1 --> <!-- gelbruen #97bf0d (151,
-191,
-13),
-to use in 1,
-0.7,
-0.5,
-0.3 and 0.1 --> <!-- verkehrsrot #8e0a26 (142,
-10,
-38),
-to use in 1,
-0.7,
-0.5,
-0.3 and 0.1 --> #custom-bootstrap-menu.navbar-default .navbar-brand {
+/*
+signalblue #006ab3 (0, 106, 179), to use in 1, 0.7, 0.5, 0.3 and 0.1
+achatgrey #d9dadb (217, 218, 219), to use in 1.0 and 0.1
+gelbruen #97bf0d (151, 191, 13), to use in 1, 0.7, 0.5, 0.3 and 0.1
+verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
+*/
+#custom-bootstrap-menu.navbar-default .navbar-brand {
 	color: #d9dadb;
 	font-size: 20px;
 	font-weight: bold;

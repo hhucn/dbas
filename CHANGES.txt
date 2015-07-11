@@ -19,3 +19,7 @@
 0.21 (07.07.2015)
 ---
 - Ready for production
+
+0.22 (07.07.2015)
+---
+- smaller changes of design aspects
