@@ -455,24 +455,25 @@ class QueryHelper(object):
 
 		return_dict = dict()
 		content_dict = collections.OrderedDict()
-		return_dict['status'] = str(len(db_corrections))
+		return_dict['status'] = str(len(db_corrections) + 1)
 
-		# adding the 'source' of the statement
+		# querying the 'source' of the statement
 		if is_argument:
 			db_source_statement = DBSession.query(Argument).filter_by(uid=uid).first()
 		else:
 			db_source_statement = DBSession.query(Position).filter_by(uid=uid).first()
 
+		# adding the 'source' of the statement
 		index = 1
 		corr_dict  = dict()
 		corr_dict['uid'] = str(db_source_statement.uid)
+		db_author = DBSession.query(User).filter_by(uid=db_source_statement.author).first()
+		corr_dict['author'] = str(db_author.nickname)
 		corr_dict['date'] = str(db_source_statement.date)
 		corr_dict['is_argument'] = '1' if is_argument else '0'
 		corr_dict['text'] = str(db_source_statement.text)
-		db_author = DBSession.query(User).filter_by(uid=db_source_statement.author).first()
-		corr_dict['author'] = str(db_author.nickname)
 		content_dict[str(index)] = corr_dict
-		logger('QueryHelper', 'get_logfile_for_statement', 'statement ' + str(index) + ': ' + db_source_statement.text)
+		logger('QueryHelper', 'get_logfile_for_statement', 'add statement ' + str(index) + ': ' + db_source_statement.text)
 		index += 1
 
 		# add all corrections
@@ -485,7 +486,7 @@ class QueryHelper(object):
 			corr_dict['is_argument'] ='1' if correction.is_argument else '0'
 			corr_dict['text'] = str(correction.text)
 			content_dict[str(index)] = corr_dict
-			logger('QueryHelper', 'get_logfile_for_statement', 'statement ' + str(index) + ': ' + correction.text)
+			logger('QueryHelper', 'get_logfile_for_statement', 'add statement ' + str(index) + ': ' + correction.text)
 			index += 1
 		return_dict['content'] = content_dict
 

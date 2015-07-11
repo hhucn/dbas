@@ -581,7 +581,7 @@ function GuiHandler() {
 					index: i
 				}).click(function edit_button_click () {
 					$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text')).prop('disabled', false);
-					$('#' + popupEditStatementSubmitButtonId).fadeIn('slow').attr({
+					$('#' + popupEditStatementSubmitButtonId).attr({
 						statement_type: $(this).attr('statement_type'),
 						statement_text: $(this).attr('statement_text'),
 						statement_id: $(this).attr('statement_id')
@@ -591,6 +591,7 @@ function GuiHandler() {
 					$('#edit_statement_td_text_' + $(this).attr('index')).addClass('table-hover');
 					$('#' + popupErrorDescriptionId).text('');
 					$('#' + popupSuccessDescriptionId).text('');
+					new GuiHandler().shouldHideEditFieldsinEditPopup(true);
 				}).hover(function edit_button_hover () {
 					$(this).toggleClass('btn-primary', 400);
 				});
@@ -609,6 +610,7 @@ function GuiHandler() {
 					$('#' + popupErrorDescriptionId).text('');
 					$('#' + popupSuccessDescriptionId).text('');
 					new AjaxHandler().getLogfileForStatement($(this).attr('statement_id'), $(this).attr('statement_type') == 'argument');
+					new GuiHandler().shouldHideEditFieldsinEditPopup(false);
 				}).hover(function log_button_hover () {
 					$(this).toggleClass('btn-primary', 400);
 				});
@@ -624,7 +626,9 @@ function GuiHandler() {
 		});
 
 		$('#' + popupEditStatementContentId).empty().append(table);
-		$('#' + popupEditStatementSubmitButtonId).click(function edit_statement_click () {
+		$('#' + popupEditStatementTextareaId).hide();
+		$('#' + popupEditStatementDescriptionId).hide();
+		$('#' + popupEditStatementSubmitButtonId).hide().click(function edit_statement_click () {
 			statement = $('#' + popupEditStatementTextareaId).val();
 			$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
 			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('statement_type') == 'argument', statement);
@@ -632,6 +636,22 @@ function GuiHandler() {
 
 		// on click: do ajax
 		// ajax done: refresh current statement with new text
+	};
+
+	/**
+	 * Displays or hide the edit text field
+	 * @param isVisible
+	 */
+	this.shouldHideEditFieldsinEditPopup = function (isVisible){
+		if (isVisible){
+			$('#' + popupEditStatementSubmitButtonId).fadeIn('slow');
+			$('#' + popupEditStatementTextareaId).fadeIn('slow');
+			$('#' + popupEditStatementDescriptionId).fadeIn('slow');
+		} else {
+			$('#' + popupEditStatementSubmitButtonId).hide();
+			$('#' + popupEditStatementTextareaId).hide();
+			$('#' + popupEditStatementDescriptionId).hide();
+		}
 	};
 
 	/**

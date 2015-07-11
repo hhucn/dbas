@@ -406,7 +406,7 @@
 				<h4><p id="popup-edit-success-description" class="success-description"></p></h4>
 				<div id="popup_edit_statement_content">
 				</div>
-				<p>Please, edit the selected statement here:</p>
+				<p id="popup-edit-statement-description-p">Please, edit the selected statement here:</p>
 				<textarea id="popup_edit_statement_textarea" type="text" placeholder="some corrected statement"></textarea>
 				<h3 id="popup_edit_statement_logfile_header"></h3>
 				<div id="popup_edit_statement_logfile">

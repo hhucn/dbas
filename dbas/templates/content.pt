@@ -11,7 +11,7 @@
 	<div id="wrapper">
 		<div id="content">
 
-			<div class="container">
+			<div class="first-container">
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col-md-10 center text-center">
@@ -110,7 +110,7 @@
 							</div>
 						</div>
 
-						<div class="center text-center">
+						<div class="center text-center" id="">
 							<input id="island-view-add-arguments" type="button" name="" value="Add arguments" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
 						</div>
 

@@ -3,13 +3,14 @@
 }
 
 .table-hover {
-  color: rgba(0, 106, 179, 1.0);
+	color: rgba(0, 106, 179, 1.0);
 	font-weight: 300;
 	font-style: italic;
 }
 
-.center{
+.center {
 	margin-left: auto;
+	margin-right: auto;
 	margin-right: auto;
 	text-align: center;
 }
@@ -20,15 +21,14 @@
 }
 
 #discussions-space ul,
-#discussions-avoidance-space ul{
+#discussions-avoidance-space ul {
 	display: inline-block;
 }
 
 #discussions-space ul li,
-#discussions-avoidance-space ul li{
+#discussions-avoidance-space ul li {
 	list-style: none;
-	<!--
-	display: inline;
+	<!-- display: inline;
 	-->
 }
 
@@ -45,20 +45,21 @@
 }
 
 #discussions-space ul li input,
-#discussions-avoidance-space ul li input{
+#discussions-avoidance-space ul li input {
 	margin-right: 5px;
-	<!-- font-size: 15px; -->
+	<!-- font-size: 15px;
+	-->
 }
 
 #discussions-space ul,
 #discussions-avoidance-space ul,
 #discussions-space ul li,
-#discussions-avoidance-space ul li{
+#discussions-avoidance-space ul li {
 	width: 100%;
 }
 
 #discussions-space ul li label,
-#discussions-avoidance-space ul li label{
+#discussions-avoidance-space ul li label {
 	width: 95%;
 	vertical-align: middle;
 }
@@ -66,7 +67,8 @@
 #insert_statement_form {
 	text-align: center;
 }
-#insert_statement_form  textarea{
+
+#insert_statement_form textarea {
 	resize: vertical;
 }
 
@@ -92,72 +94,82 @@
 	text-decoration: none;
 	color: #000;
 }
+
 #insert_statement_form div a:hover {
 	text-decoration: underline;
 	color: #006ab3;
 }
 
 #add-pro-position,
-#add-con-position,{
+#add-con-position,
+{
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-433-plus.png) center no-repeat 12px 10px;
 }
 
-#left-island-column{
+#left-island-column {
 	float: left;
 }
-#right-island-column{
+
+#right-island-column {
 	float: right;
 }
+
 #left-island-column,
-#right-island-column{
+#right-island-column {
 	width: 50%;
-	margin-bottom:50px;
+	margin-bottom: 50px;
 }
 
 #right-island-column,
-#right-position-column{
-	margin-bottom:50px;
+#right-position-column {
+	margin-bottom: 50px;
 }
-#right-position-column{
+
+#right-position-column {
 	margin-top: 25px;
 }
 
 #left-position-column textarea,
-#right-position-column textarea{
+#right-position-column textarea {
 	width: 95%;
 }
 
 #green,
-#heading-pro-island{
-	color: rgba(151,191,13,1.0); /* official uni red */
+#heading-pro-island {
+	color: rgba(151, 191, 13, 1.0);
+	/* official uni red */
 }
+
 #red,
-#heading-contra-island{
-	color: rgba(190,10,38,1.0); /* official uni green */
+#heading-contra-island {
+	color: rgba(190, 10, 38, 1.0);
+	/* official uni green */
 }
+
 #heading-pro-island,
 #heading-contra-island,
 #island-view-container-h4,
-#island-view-container-header-h4{
+#island-view-container-header-h4 {
 	text-align: center;
 }
 
-#discussion-failure-row{
+#discussion-failure-row {
 	padding-top: 25px;
 }
 
 #admins-space table tbody tr:nth-child(even) {
 	background-color: rgba(217, 218, 219, 0.7);
 }
+
 #admins-space table tbody tr:nth-child(1) {
 	background-color: rgba(0, 106, 179, 0.3);
 }
 
-#display-control-container{
+#display-control-container {
 	<!-- position: fixed;
 	bottom: 75px;
-	right: 0px; -->
-	display: inline-block;
+	right: 0px;
+	--> display: inline-block;
 	color: #006AB3;
 	margin-top: 25px;
 	padding-top: 5px;
@@ -166,23 +178,23 @@
 	box-shadow: 0px 0px 2px 2px rgba(19, 35, 47, 0.3);
 }
 
-#navigation-minimap-container{
+#navigation-minimap-container {
 	position: fixed;
 	color: #006AB3;
 	top: 50px;
 	right: 0px;
 }
 
-#popup_edit_statement_body{
+#popup_edit_statement_body {
 	padding-left: 10px;
 	padding-right: 10px;
 }
 
-#popup_edit_statement_logfile_header{
+#popup_edit_statement_logfile_header {
 	margin-top: 20px;
 }
-	
-#popup_edit_statement_textarea{
+
+#popup_edit_statement_textarea {
 	outline: none;
 	font-size: 18px;
 	font-weight: 400;
@@ -205,12 +217,12 @@
 	#discussions-avoidance-space ul {
 		display: block;
 	}
-
-	#display-control-container{
-		<!-- bottom: 150px; -->
+	#display-control-container {
+		<!-- bottom: 150px;
+		-->
 	}
 	#discussions-space ul li,
-	#discussions-avoidance-space ul li{
+	#discussions-avoidance-space ul li {
 		display: block;
 	}
 	#left-position-column,

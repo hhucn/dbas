@@ -4,6 +4,7 @@ achatgrey #d9dadb (217, 218, 219), to use in 1.0 and 0.1
 gelbruen #97bf0d (151, 191, 13), to use in 1, 0.7, 0.5, 0.3 and 0.1
 verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 */
+
 #custom-bootstrap-menu.navbar-default .navbar-brand {
 	color: #d9dadb;
 	font-size: 20px;
@@ -91,6 +92,7 @@ verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 
 .dropdown-menu li a:hover img,
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover img,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a img,
 #custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover img,
 .glyphicon-local:hover {
 	-webkit-filter: invert(100%);

@@ -57,6 +57,7 @@ var popupEditStatementContentId = 'popup_edit_statement_content';
 var popupEditStatementLogfileHeaderId = 'popup_edit_statement_logfile_header';
 var popupEditStatementLogfileSpaceId = 'popup_edit_statement_logfile';
 var popupEditStatementSubmitButtonId = "popup_edit_statement_submit";
+var popupEditStatementDescriptionId = "popup-edit-statement-description-p";
 var popupErrorDescriptionId = 'popup-edit-error-description';
 var popupSuccessDescriptionId = 'popup-edit-success-description';
 var scStyleGroupId = 'sc-display-style';
