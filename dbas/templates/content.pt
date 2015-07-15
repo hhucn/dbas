@@ -11,7 +11,7 @@
 	<div id="wrapper">
 		<div id="content">
 
-			<div class="first-container">
+			<div class="container first-container">
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col-md-10 center text-center">
@@ -179,7 +179,7 @@
 				</div>
 			</div>
 
-			<div class="wrapped_content_container" id="navigation-minimap-container">
+			<div id="navigation-minimap-container">
 				<p>Minimap:</p>
 			</div>
 

@@ -1,47 +1,41 @@
-.container{
-	margin-top: 50px;
-}
-
-.button{
+.button {
 	width: 49%;
 }
 
-#request-track{
+#request-track {
 	float: left
 }
 
-#delete-track{
+#delete-track {
 	float: right;
 }
 
 #info-table,
-#track-table{
+#track-table {
 	margin-left: auto;
 	margin-right: auto;
 }
 
 #track-table-success,
-#track-table-failure{
+#track-table-failure {
 	margin-top: 75px;
 }
 
-#password-submit{
+#password-submit {
 	margin-left: auto;
 	margin-right: auto;
 }
 
-.settings-container{
+.settings-container {
 	max-width: 800px;
 }
 
-#password-form{
+#password-form {
 	margin-top: 50px;
 }
 
 @media(max-width:640px) {
-
-	#request-track,
-	#delete-track {
+	#request-track, #delete-track {
 		float: none;
 	}
 }

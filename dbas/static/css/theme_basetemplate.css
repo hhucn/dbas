@@ -135,8 +135,13 @@ body.loading .ajaxloader {
 	background: #f4f4f4;
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
 }
+/**
+comment .container and wrap each container with <div class="coloured-div">
+#content .coloured-div:nth-child(odd) {}
+#content .coloured-div:nth-child(even) {background: #d9dadb;}
+**/
 
-.wrapped_content_container {
+#navigation-minimap-container {
 	border-radius: 2px;
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
 	background: #f4f4f4;
@@ -215,6 +220,13 @@ body.loading .ajaxloader {
 	font-size: 18px;
 }
 
+#footer,
+#footer > a,
+#footer .links ul li a,
+#footer .links ul li .glyphicon-local {
+	font-size: 12px;
+}
+
 .list {
 	text-align: left;
 }
@@ -230,6 +242,10 @@ body.loading .ajaxloader {
 
 .glyphicon-local:hover {
 	-webkit-filter: invert(100%);
+}
+
+.icon-badge:hover {
+	-webkit-filter: saturate(200%);
 }
 
 #wrapper {

@@ -9,6 +9,7 @@
 
 	<div id="wrapper">
 		<div id="content">
+
 			<div class="container first-container" id="home-template">
 				<div class="row">
 					<div class="col-md-12">
@@ -192,38 +193,39 @@
 				</div>
 			</div>
 
-			<div class="container" id="research-template">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="content">
-							<h2><span class="font-semi-bold">Research</span> <span class="smaller">of D-BAS</span></h2>
-							<ul class="lead list">
-								<li>
-									<span class="font-normal">Our data structure:</span>
-									<br>We are using a modified argumentation map as data structure. More information can be afforded via the <a href="${request.application_url}/contact" title="Contact">contact</a>-formular.
-								</li>
-							</ul>
-							<p class="lead">In addition, we have studied several tools:</p>
+			<div class="coloured-div">
+				<div class="container" id="research-template">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="content">
+								<h2><span class="font-semi-bold">Research</span> <span class="smaller">of D-BAS</span></h2>
+								<ul class="lead list">
+									<li>
+										<span class="font-normal">Our data structure:</span>
+										<br>We are using a modified argumentation map as data structure. More information can be afforded via the <a href="${request.application_url}/contact" title="Contact">contact</a>-formular.
+									</li>
+								</ul>
+								<p class="lead">In addition, we have studied several tools:</p>
 
-							<div class="row">
-								<div class="col-md-4 col-badge">
-									<img id="icon-pro-con" class="icon-badge" />
-									<h3>Pro-Contra Lists</h3>
-									<p>These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.</p>
+								<div class="row">
+									<div class="col-md-4 col-badge">
+										<img id="icon-pro-con" class="icon-badge" />
+										<h3>Pro-Contra Lists</h3>
+										<p>These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.</p>
+									</div>
+									<div class="col-md-4 col-badge">
+										<img id="icon-forum" class="icon-badge" />
+										<h3>Forum</h3>
+										<p>Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.</p>
+									</div>
+									<div class="col-md-4 col-badge">
+										<img id="icon-argapproach" class="icon-badge" />
+										<h3>Argumentation-based Approaches</h3>
+										<p>This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.</p>
+									</div>
 								</div>
-								<div class="col-md-4 col-badge">
-									<img id="icon-forum" class="icon-badge" />
-									<h3>Forum</h3>
-									<p>Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.</p>
-								</div>
-								<div class="col-md-4 col-badge">
-									<img id="icon-argapproach" class="icon-badge" />
-									<h3>Argumentation-based Approaches</h3>
-									<p>This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.</p>
-								</div>
-							</div>
 
-							<!--
+								<!--
 							<ul class="lead list">
 								<li>
 									<span class="font-normal">Forum:</span>
@@ -243,6 +245,7 @@
 								<li>Yeah, I know. This is empty now, but the first one will be here...soon.</li>
 							</ul>
 -->
+							</div>
 						</div>
 					</div>
 				</div>
