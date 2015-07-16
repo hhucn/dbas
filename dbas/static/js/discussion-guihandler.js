@@ -433,7 +433,6 @@ function GuiHandler() {
 		span = $('<span>');
 		span.attr('class', 'caret');
 		button = $('<button>');
-		alert(identifier);
 		button.attr('class', 'btn btn-default dropdown-toggle ' + (identifier.toLowerCase()  == 'left' ? 'btn-success' : 'btn-danger'));
 		button.attr('type', 'button');
 		btn_id = identifier + '-dropdown-sentences-openers-' + number;
@@ -529,8 +528,9 @@ function GuiHandler() {
 			if (is_argument){
 				var statement = $('#' + discussionsDescriptionId + ' b:last-child').text();
 				$('#' + addStatementContainerH4Id).text(statementContainerH4TextIfArgument + ' ' + statement);
-				$('#' + headingProPositionTextId).html(' I <span id=\'green\'>agree</span> with <b>\'' + statement + '</b>\':');
-				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with <b>\'' + statement + '</b>\':');
+				// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
+				$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with <b>\'' + statement + '</b>\':');
+				$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with <b>\'' + statement + '</b>\':');
 				$('#' + addStatementContainerMainInputId).hide().focus();
 				$('#' + leftPositionColumnId).show();
 				$('#' + rightPositionColumnId).show();

@@ -142,13 +142,13 @@
 	width: 95%;
 }
 
-#green,
+.green-bg,
 #heading-pro-island {
 	color: rgba(151, 191, 13, 1.0);
 	/* official uni red */
 }
 
-#red,
+.red-bg,
 #heading-contra-island {
 	color: rgba(190, 10, 38, 1.0);
 	/* official uni green */
