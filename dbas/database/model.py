@@ -1,4 +1,3 @@
-import os
 import sqlalchemy as sa
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -147,11 +146,6 @@ class Argument(Base):
 		return DBSession.query(Argument).order_by(Argument.text)
 
 	@classmethod
-	def by_date(cls):
-		"""Return a query of arguments sorted by text."""
-		return DBSession.query(Argument).order_by(Argument.date)
-
-	@classmethod
 	def by_authorid(cls, author):
 		"""Return a query of arguments sorted by authorid."""
 		return DBSession.query(Argument).filter(Argument.author == author)
@@ -178,11 +172,6 @@ class RelationArgPos(Base):
 		self.weight = weight
 		self.is_supportive = is_supportive
 
-	@classmethod
-	def by_date(cls):
-		"""Return a query of positions sorted by date."""
-		return DBSession.query(RelationArgPos).order_by(RelationArgPos.date)
-
 
 class RelationPosArg(Base):
 	"""
@@ -204,11 +193,6 @@ class RelationPosArg(Base):
 		"""
 		self.weight = weight
 		self.is_supportive = is_supportive
-
-	@classmethod
-	def by_date(cls):
-		"""Return a query of positions sorted by date."""
-		return DBSession.query(RelationArgPos).order_by(RelationArgPos.date)
 
 
 class RelationArgArg(Base):
@@ -232,11 +216,6 @@ class RelationArgArg(Base):
 		self.weight = weight
 		self.is_supportive = is_supportive
 
-	@classmethod
-	def by_date(cls):
-		"""Return a query of positions sorted by date."""
-		return DBSession.query(RelationArgArg).order_by(RelationArgArg.date)
-
 
 class RelationPosPos(Base):
 	"""
@@ -258,11 +237,6 @@ class RelationPosPos(Base):
 		"""
 		self.weight = weight
 		self.is_supportive = is_supportive
-
-	@classmethod
-	def by_date(cls):
-		"""Return a query of positions sorted by date."""
-		return DBSession.query(RelationPosPos).order_by(RelationPosPos.date)
 
 
 class RelationArgToArgPosRel(Base):
@@ -286,11 +260,6 @@ class RelationArgToArgPosRel(Base):
 		self.weight = weight
 		self.is_supportive = is_supportive
 
-	@classmethod
-	def by_date(cls):
-		"""Return a query of positions sorted by date."""
-		return DBSession.query(RelationArgToArgPosRel).order_by(RelationArgToArgPosRel.date)
-
 
 class RelationArgToArgArgRel(Base):
 	"""
@@ -312,11 +281,6 @@ class RelationArgToArgArgRel(Base):
 		"""
 		self.weight = weight
 		self.is_supportive = is_supportive
-
-	@classmethod
-	def by_date(cls):
-		"""Return a query of positions sorted by date."""
-		return DBSession.query(RelationArgToArgPosRel).order_by(RelationArgToArgPosRel.date)
 
 
 class RelationArgToPosArgRel(Base):
@@ -340,11 +304,6 @@ class RelationArgToPosArgRel(Base):
 		self.weight = weight
 		self.is_supportive = is_supportive
 
-	@classmethod
-	def by_date(cls):
-		"""Return a query of positions sorted by date."""
-		return DBSession.query(RelationArgToArgPosRel).order_by(RelationArgToArgPosRel.date)
-
 
 class RelationArgToPosPosRel(Base):
 	"""
@@ -366,11 +325,6 @@ class RelationArgToPosPosRel(Base):
 		"""
 		self.weight = weight
 		self.is_supportive = is_supportive
-
-	@classmethod
-	def by_date(cls):
-		"""Return a query of positions sorted by date."""
-		return DBSession.query(RelationArgToArgPosRel).order_by(RelationArgToArgPosRel.date)
 
 
 class Track(Base):

@@ -6,6 +6,12 @@
  * @copyright Krauthoff 2015
  */
 
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
+ */
+
 function Helper() {
 
 	this.getATagForDropDown = function (id, title, text) {

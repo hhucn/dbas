@@ -127,7 +127,7 @@ function InteractionHandler() {
 		id = radioButton.attr('id');
 		value = radioButton.val();
 		if (typeof id === 'undefined' || typeof value === 'undefined') {
-			guiHandler.setErrorDescription('Please select a statement!');
+			guiHandler.setErrorDescription(selectStatement);
 		} else {
 			guiHandler.setErrorDescription('');
 			guiHandler.setSuccessDescription('');
@@ -230,10 +230,10 @@ function InteractionHandler() {
 		//  1 everything is fine
 		switch(parsedData.status){
 			case '-1':
-				gh.setErrorDescription('Internal failure, please try again or did you have deleted your track recently?');
+				gh.setErrorDescription(internalFailureWhileDeletingTrack);
 				break;
 			case '1':
-				gh.setSuccessDescription('Everything was added.');
+				gh.setSuccessDescription(addedEverything);
 				gh.addJsonDataToContentAsArguments(parsedData.arguments);
 				gh.resetAddStatementContainer();
 				break;
@@ -274,7 +274,7 @@ function InteractionHandler() {
 		// >0 island data
 		switch(parsedData.status){
 			case '-1':
-				gh.setErrorDescription('Could not fetch data for the sialnd view. Sorry!');
+				gh.setErrorDescription(noIslandView);
 				gh.setVisibilityOfDisplayStyleContainer(false, '');
 				$('#' + scStyle2Id).removeAttr('checked');
 				break;
@@ -292,7 +292,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		// status is the length of the content
 		if (parsedData.status == '0'){
-			$('#' + popupEditStatementLogfileSpaceId).text('No corrections for the given statement.');
+			$('#' + popupEditStatementLogfileSpaceId).text(noCorrections);
 		} else {
 			$('#' + popupEditStatementLogfileSpaceId).text('');
 			new GuiHandler().displayStatementCorrectionsInPopup(parsedData.content);
@@ -306,12 +306,11 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1'){
-			$('#' + popupErrorDescriptionId).text('Correction could not be set, because your user was not fount in the database. Are you' +
-				' currently logged in?');
+			$('#' + popupErrorDescriptionId).text(noCorrectionsSet);
 		} else {
 			new GuiHandler().updateOfStatementInDiscussion(parsedData);
 			$('#' + popupErrorDescriptionId).text('');
-			$('#' + popupSuccessDescriptionId).text('Your correction was set.');
+			$('#' + popupSuccessDescriptionId).text(correctionsSet);
 		}
 	};
 

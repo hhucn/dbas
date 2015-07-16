@@ -500,17 +500,14 @@ function GuiHandler() {
 	 */
 	this.setNewPositionAsLastChild = function (jsonData) {
 		if (jsonData.result === 'failed') {
-			if (jsonData.reason === 'empty text') {
-				this.setErrorDescription('Your idea was not inserted, because your input text is empty.');
-			} else if (jsonData.reason === 'duplicate'){
-				this.setErrorDescription('Your idea was not inserted, because your idea is a duplicate.');
-			} else {
-				this.setErrorDescription('Your idea was not inserted due to an unkown error.');
+			if (jsonData.reason === 'empty text') {			this.setErrorDescription(notInsertedErrorBecauseEmpty);
+			} else if (jsonData.reason === 'duplicate'){	this.setErrorDescription(notInsertedErrorBecauseDuplicate);
+			} else {										this.setErrorDescription(notInsertedErrorBecauseUnknown);
 			}
 		} else {
 			var newElement = this.getKeyValAsInputInLiWithType(jsonData.position.uid, jsonData.position.text, false, 'radio');
 			$('#li_' + addStatementButtonId).before(newElement);
-			new GuiHandler().setSuccessDescription('Everything was added.');
+			new GuiHandler().setSuccessDescription(addedEverything);
 		}
 	};
 

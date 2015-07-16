@@ -79,7 +79,6 @@ verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 .nav li a:hover,
 .nav {
 	font-weight: normal;
-	font-size: 16px;
 }
 
 .navbar-nav.navbar-right:last-child {
@@ -91,6 +90,7 @@ verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 }
 
 .dropdown-menu li a:hover img,
+.dropdown-menu li .active,
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover img,
 #custom-bootstrap-menu.navbar-default .navbar-nav>.active>a img,
 #custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover img,

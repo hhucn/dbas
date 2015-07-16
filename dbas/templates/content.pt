@@ -51,7 +51,7 @@
 					</div>
 					<div class="col-md-2">
 						<div id="discussion-sidebar">
-							<input id="edit-statement" type="button" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" />
+							<input id="edit-statement" type="button" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
 							<br>
 							<div id="display-control-container">
 								<p>Change display style:</p>
@@ -155,7 +155,7 @@
 								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 								<span tal:replace="message" />
 							</div>
-							<input id="send-new-statement" type="button" name="" value="Save it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+							<input id="send-new-statement" type="button" name="" value="Save it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 						</form>
 					</div>
 					<div class="col-md-1"></div>
@@ -193,6 +193,8 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-id.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-strings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
 
 </body>
