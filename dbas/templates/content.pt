@@ -134,6 +134,7 @@
 							<div id="left-position-column">
 								<h4 id="heading-pro-positions" class="font-semi-bold">Pro</h4>
 								<div id="pro-textareas">
+
 								</div>
 								<a>
 									<div id="add-pro-textarea">
@@ -191,6 +192,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
 
 </body>

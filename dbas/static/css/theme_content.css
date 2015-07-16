@@ -95,10 +95,18 @@
 	color: #000;
 }
 
-#insert_statement_form div a:hover {
+#add-pro-textarea:hover,
+#add-con-textarea:hover {
 	text-decoration: underline;
 	color: #006ab3;
 }
+/* link color of 'add a textfield' */
+
+#pro-textareas li a:hover,
+#con-textareas li a:hover {
+	color: #fff;
+}
+/* link color for the 'dropdown' */
 
 #add-pro-position,
 #add-con-position,

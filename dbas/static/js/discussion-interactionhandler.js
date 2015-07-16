@@ -95,17 +95,23 @@ function InteractionHandler() {
 	 * Fetches all arguments out of the textares and send them
 	 */
 	this.getArgumentsAndSendThem = function () {
-		var i = 0, dict = {};
-		$('#' + leftPositionTextareaId + ' > div').children().each(function (){
+		var i = 0, dict = {}, no, intro;
+		$('#' + leftPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
-				dict['pro_' + i] = $(this).val();
+				// get current number and then the value of the dropdown
+				no = $(this).prop('id').substr($(this).prop('id').length-1);
+				intro = $('#left-dropdown-sentences-openers-' + no).text();
+				dict['pro_' + i] = intro + $(this).val();
 				i = i + 1;
 			}
 		});
 		i = 0;
-		$('#' + rightPositionTextareaId + ' > div').children().each(function (){
+		$('#' + rightPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
-				dict['con_' + i] = $(this).val();
+				// get current number and then the value of the dropdown
+				no = $(this).prop('id').substr($(this).prop('id').length-1);
+				intro = $('#left-dropdown-sentences-openers-' + no).text();
+				dict['con_' + i] = intro + $(this).val();
 				i = i + 1;
 			}
 		});

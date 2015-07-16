@@ -75,11 +75,26 @@ var statementListId = 'statement-list';
  * TEXT
  * @type {string[]}
  */
-var argumentSentencesOpeners = [
+var sentencesOpenersForArguments = [
 	'Okay, you have got the opinion: ',
 	'Interesting, your opinion is: ',
 	'You have said, that: ',
 	'So your opinion is: '];
+var sentencesOpenersArguing = [
+	'I agree because ',
+	'I disagree because ',
+	'Alternatively ',
+	'Therefore '];
+var sentencesOpenersInforming = [
+	'I think we should ',
+	'Let me explain it this way ',
+	'I\'m reasonably sure that '];
+var sentencesOpenersRequesting = [
+	'Can you explain why  ',
+	'Why do you think that '];
+var clickToChoose = 'Click to choose';
+var agreeBecause = 'I agree because';
+var disagreeBecause = 'I disagree because ';
 var firstOneText = 'You are the first one, who said: ';
 var firstPositionText = 'You are the first one in this discussion!';
 var goodPointTakeMeBackButtonText = 'I agree, that is a good argument! Take me one step back.';

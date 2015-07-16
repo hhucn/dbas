@@ -63,7 +63,6 @@ verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 	background-color: #fff;
 }
 
-.nav li a:hover,
 .dropdown-menu li a:hover {
 	color: #fff;
 	background-color: #006ab3;
@@ -77,6 +76,7 @@ verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 	font-weight: bold;
 }
 
+.nav li a:hover,
 .nav {
 	font-weight: normal;
 	font-size: 16px;

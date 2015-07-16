@@ -190,7 +190,7 @@ function GuiHandler() {
 	 * @param confrontationArgument
 	 */
 	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
-		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length), text = argumentSentencesOpeners[pos] + '<b>' + currentUserArgument + '</b>'
+		var pos = Math.floor(Math.random() * sentencesOpenersForArguments.length), text = sentencesOpenersForArguments[pos] + '<b>' + currentUserArgument + '</b>'
 			+ '<br>However, other users argued that: ' + '<b>' + confrontationArgument + '</b>' + '<br><br>What do you think about that?';
 		new GuiHandler().setDiscussionsDescription(text);
 	};
@@ -209,7 +209,7 @@ function GuiHandler() {
 	 * @param currentUserArgument
 	 */
 	this.setDiscussionsDescriptionWithoutConfrontation = function (currentUserArgument) {
-		var pos = Math.floor(Math.random() * argumentSentencesOpeners.length), text = argumentSentencesOpeners[pos] + '<b>' + currentUserArgument + '</b>'
+		var pos = Math.floor(Math.random() * sentencesOpenersForArguments.length), text = sentencesOpenersForArguments[pos] + '<b>' + currentUserArgument + '</b>'
 			+ ' However, other users argued nothing yet:';
 		new GuiHandler().setDiscussionsDescription(text);
 	};
@@ -371,12 +371,15 @@ function GuiHandler() {
 		 * The structure is like:
 		 * <div><textarea .../><button...></button></div>
 		 */
-		var area, parent, div, button, span, childCount;
+		var area, parent, div, div_content, button, span, childCount, div_dropdown;
 		parent = $('#' + parentid);
 		childCount = parent.children().length;
 
 		div = $('<div>');
-		div.attr({id: 'div' + childCount.toString()});
+		div.attr({class: 'row', id: 'div' + childCount.toString()});
+
+		div_content = $('<div>');
+		div_content.attr({id: 'div-content-' + childCount.toString()});
 
 		button = $('<button>');
 		button.attr({type: 'button',
@@ -395,14 +398,101 @@ function GuiHandler() {
 			id: 'textarea_' + identifier + childCount.toString()});
 
 		button.append(span);
-		div.append(area);
-		div.append(button);
+		div_dropdown = this.getDropdownWithSentencesOpeners(identifier, childCount.toString());
+		div_content.append(area);
+		div_content.append(button);
 
 		// remove everything on click
 		button.attr({onclick: "this.parentNode.parentNode.removeChild(parentNode);"});
 
 		// add everything
+		div_dropdown.attr('class', 'col-md-3');
+		div_content.attr('class', 'col-md-9');
+		div.append(div_dropdown);
+		div.append(div_content);
 		parent.append(div);
+
+		this.setDropdownClickListener(identifier, childCount.toString());
+	};
+
+	/**
+	 *
+	 * @param identifier
+	 * @param number
+	 * @returns {jQuery|HTMLElement|*}
+	 */
+	this.getDropdownWithSentencesOpeners = function (identifier, number) {
+		var dropdown, button, span, ul, li_content, li_header, i, a, btn_id, a_id, h = new Helper();
+
+		// div tag for the dropdown
+		dropdown = $('<div>');
+		dropdown.attr('id', 'div-' + identifier + '-dropdown-' + number);
+		dropdown.attr('class', 'dropdown');
+
+		// button with span element
+		span = $('<span>');
+		span.attr('class', 'caret');
+		button = $('<button>');
+		alert(identifier);
+		button.attr('class', 'btn btn-default dropdown-toggle ' + (identifier.toLowerCase()  == 'left' ? 'btn-success' : 'btn-danger'));
+		button.attr('type', 'button');
+		btn_id = identifier + '-dropdown-sentences-openers-' + number;
+		button.attr('id', btn_id);
+		button.attr('data-toggle', 'dropdown');
+		button.text(identifier.toLowerCase() == 'left' ? agreeBecause : disagreeBecause);
+		button.append(span);
+		dropdown.append(button);
+
+		ul = $('<ul>');
+		ul.attr('class', 'dropdown-menu');
+		ul.attr('role', 'menu');
+
+		// first categorie
+		li_header = $('<li>');
+		li_header.attr('class', 'dropdown-header');
+		li_header.text('Argue');
+		ul.append(li_header);
+		for (i = 0; i < sentencesOpenersArguing.length; i++) {
+			li_content = $('<li>');
+			a_id = identifier + '-sentence-opener-' + i;
+			a = h.getATagForDropDown(a_id, clickToChoose + ': ' + sentencesOpenersArguing[i], sentencesOpenersArguing[i]);
+			li_content.append(a);
+			ul.append(li_content);
+		}
+
+		// second categorie
+		li_header = $('<li>');
+		li_header.attr('class', 'dropdown-header');
+		li_header.text('Inform');
+		ul.append(li_header);
+		for (i=0; i < sentencesOpenersInforming.length; i++) {
+			li_content = $('<li>');
+			a_id = identifier + '-sentence-opener-' + (sentencesOpenersArguing.length + i);
+			a = h.getATagForDropDown(a_id, clickToChoose + ': ' + sentencesOpenersInforming[i], sentencesOpenersInforming[i]);
+			li_content.append(a);
+			ul.append(li_content);
+		}
+
+		// append everything
+		dropdown.append(ul);
+
+		return dropdown;
+	};
+
+	/**
+	 *
+	 * @param identifier
+	 * @param number
+	 */
+	this.setDropdownClickListener = function (identifier, number) {
+		var a_id, i;
+		// add clicks
+		for (i = 0; i < sentencesOpenersInforming.length + sentencesOpenersArguing.length; i++) {
+			a_id = identifier + '-sentence-opener-' + i;
+			$('#' + a_id).click(function () {
+				$('#' + identifier + '-dropdown-sentences-openers-' + number).html($(this).text() + '<span class="caret"></span>');
+			});
+		}
 	};
 
 	/**
@@ -439,8 +529,8 @@ function GuiHandler() {
 			if (is_argument){
 				var statement = $('#' + discussionsDescriptionId + ' b:last-child').text();
 				$('#' + addStatementContainerH4Id).text(statementContainerH4TextIfArgument + ' ' + statement);
-				$('#' + headingProPositionTextId).html(' I <span id=\'green\'>agree</span> with <b>\'' + statement + '</b>\',  because:');
-				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with <b>\'' + statement + '</b>\', because:');
+				$('#' + headingProPositionTextId).html(' I <span id=\'green\'>agree</span> with <b>\'' + statement + '</b>\':');
+				$('#' + headingConPositionTextId).html(' I <span id=\'red\'>disagree</span> with <b>\'' + statement + '</b>\':');
 				$('#' + addStatementContainerMainInputId).hide().focus();
 				$('#' + leftPositionColumnId).show();
 				$('#' + rightPositionColumnId).show();

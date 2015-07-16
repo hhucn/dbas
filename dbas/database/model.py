@@ -265,6 +265,114 @@ class RelationPosPos(Base):
 		return DBSession.query(RelationPosPos).order_by(RelationPosPos.date)
 
 
+class RelationArgToArgPosRel(Base):
+	"""
+	Relation-table between an argument and an relation with several columns.
+	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
+	"""
+	__tablename__ = 'relation_argtoargposrel'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
+	rel_uid = sa.Column(sa.Integer, sa.ForeignKey(RelationArgPos.uid))
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	weight = sa.Column(sa.Integer, nullable=False)
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	is_supportive = sa.Column(sa.Boolean, nullable=False)
+
+	def __init__(self, weight, is_supportive):
+		"""
+		Initializes a row in current relation-table
+		"""
+		self.weight = weight
+		self.is_supportive = is_supportive
+
+	@classmethod
+	def by_date(cls):
+		"""Return a query of positions sorted by date."""
+		return DBSession.query(RelationArgToArgPosRel).order_by(RelationArgToArgPosRel.date)
+
+
+class RelationArgToArgArgRel(Base):
+	"""
+	Relation-table between an argument and an relation with several columns.
+	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
+	"""
+	__tablename__ = 'relation_argtoargargrel'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
+	rel_uid = sa.Column(sa.Integer, sa.ForeignKey(RelationArgArg.uid))
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	weight = sa.Column(sa.Integer, nullable=False)
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	is_supportive = sa.Column(sa.Boolean, nullable=False)
+
+	def __init__(self, weight, is_supportive):
+		"""
+		Initializes a row in current relation-table
+		"""
+		self.weight = weight
+		self.is_supportive = is_supportive
+
+	@classmethod
+	def by_date(cls):
+		"""Return a query of positions sorted by date."""
+		return DBSession.query(RelationArgToArgPosRel).order_by(RelationArgToArgPosRel.date)
+
+
+class RelationArgToPosArgRel(Base):
+	"""
+	Relation-table between an argument and an relation with several columns.
+	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
+	"""
+	__tablename__ = 'relation_argtoposargrel'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
+	rel_uid = sa.Column(sa.Integer, sa.ForeignKey(RelationPosArg.uid))
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	weight = sa.Column(sa.Integer, nullable=False)
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	is_supportive = sa.Column(sa.Boolean, nullable=False)
+
+	def __init__(self, weight, is_supportive):
+		"""
+		Initializes a row in current relation-table
+		"""
+		self.weight = weight
+		self.is_supportive = is_supportive
+
+	@classmethod
+	def by_date(cls):
+		"""Return a query of positions sorted by date."""
+		return DBSession.query(RelationArgToArgPosRel).order_by(RelationArgToArgPosRel.date)
+
+
+class RelationArgToPosPosRel(Base):
+	"""
+	Relation-table between an argument and an relation with several columns.
+	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
+	"""
+	__tablename__ = 'relation_argtoposposrel'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
+	rel_uid = sa.Column(sa.Integer, sa.ForeignKey(RelationPosPos.uid))
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	weight = sa.Column(sa.Integer, nullable=False)
+	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	is_supportive = sa.Column(sa.Boolean, nullable=False)
+
+	def __init__(self, weight, is_supportive):
+		"""
+		Initializes a row in current relation-table
+		"""
+		self.weight = weight
+		self.is_supportive = is_supportive
+
+	@classmethod
+	def by_date(cls):
+		"""Return a query of positions sorted by date."""
+		return DBSession.query(RelationArgToArgPosRel).order_by(RelationArgToArgPosRel.date)
+
+
 class Track(Base):
 	"""
 	Track-table with several columns.
