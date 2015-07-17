@@ -1,11 +1,5 @@
 <!DOCTYPE html>
-<html	lang="${request.locale_name}"
-			metal:use-macro="load: basetemplate.pt"
-			xmlns="http://www.w3.org/1999/xhtml"
-			xml:lang="en"
-			xmlns:metal="http://xml.zope.org/namespaces/metal"
-			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-			i18n:domain="dbas">
+<html	lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
@@ -27,7 +21,7 @@
 									<span class="font-semi-bold">D</span>ialogue-
 									<span class="font-semi-bold">B</span>ased 
 									<span class="font-semi-bold">A</span>rgumentation 
-									<span class="font-semi-bold">S</span>oftware, or short 
+									<span class="font-semi-bold">S</span>oftware, <span i18n:translate="or_short">or short</span> 
 									<span class="font-semi-bold">D-BAS</span>
 								</span></h2>
 							<p class="lead">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
@@ -96,7 +90,7 @@
 					<div class="col-md-4 col-badge">
 						<img id="icon-guided" class="icon-badge" alt="icon-guided" src="" />
 						<h3 i18n:translate="guided_view">Guided View</h3>
-						<p i18n:translate="guided_view_content">You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> for you.</p>
+						<p><span i18n:translate="guided_view_content1">You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic</span> <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> <span i18n:translate="guided_view_content2">for you</span>.</p>
 					</div>
 					<div class="col-md-4 col-badge">
 						<img id="icon-island" class="icon-badge" alt="icon-island" src="" />
@@ -224,4 +218,4 @@
 	</div>
 </body>
 
-</html>
+<html>

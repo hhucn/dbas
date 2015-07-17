@@ -28,8 +28,8 @@ requires = [
 ]
 
 setup(name='D-BAS',
-	version='0.22',
-	description='Novel prototype for a dialogue argumentation software approach',
+	version='0.23',
+	description='Novel prototype for a dialogue based argumentation software',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[
 		"Programming Language :: Python",
@@ -40,7 +40,7 @@ setup(name='D-BAS',
 	author='Tobias Krauthoff',
 	author_email='krauthoff@cs.uni-duesseldorf.de',
 	url='htp://dbas.cs.uni-duesseldorf.de',
-	keywords='web pyramid pylons dialoge-based argumentation software',
+	keywords='web pyramid pylons dialogue-based argumentation software',
 	packages=find_packages(),
 	include_package_data=True,
 	zip_safe=False,

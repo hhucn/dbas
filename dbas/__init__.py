@@ -9,6 +9,26 @@ from sqlalchemy import engine_from_config
 from .database import *
 import logging
 
+def my_locale_negotiator(request):
+	locale_name = request.params.get('my_locale')
+
+	log = logging.getLogger(__name__)
+	log.debug('AAAAAAAAAAAAA')
+	if not hasattr(request.params, 'my_locale'):
+		log.debug('__init__() my_locale_negotiator() <request.params.get(my_locale) : None>')
+
+	if not hasattr(request, '_LOCALE_'):
+		locale_name = request.params.get('my_locale')
+		if locale_name == None:
+			log.debug('__init__() my_locale_negotiator() <request.params.get(my_locale) : None>')
+
+		request._LOCALE_ = request.accept_language.best_match(('en', 'de'), 'de')
+		log.debug('__init__() my_locale_negotiator() set <request._LOCALE_ : ' + str(request._LOCALE_) + '>')
+	else:
+		log.debug('__init__() my_locale_negotiator() has <request._LOCALE_ : ' + str(request._LOCALE_) + '>')
+
+	return request._LOCALE_
+
 def main(global_config, **settings):
 	""" This function returns a Pyramid WSGI application.
 	"""
@@ -20,7 +40,7 @@ def main(global_config, **settings):
 	# log settings
 	log = logging.getLogger(__name__)
 	for k, v in settings.items():
-		log.debug('__init__() '.upper() + 'main <' + k + ' : ' + v + '>')
+		log.debug('__init__() '.upper() + 'main() <' + k + ' : ' + v + '>')
 
 	# load database
 	engine = engine_from_config(settings, 'sqlalchemy.')
@@ -42,16 +62,17 @@ def main(global_config, **settings):
 			  }
 
 	# creating the configurator	cache_regions = set_cache_regions_from_settings
-	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory')
+	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory')#,locale_negotiator=my_locale_negotiator)
 	config.set_authentication_policy(authn_policy)
 	config.set_authorization_policy(authz_policy)
 	config.set_session_factory(session_factory)
+	config.set_locale_negotiator(my_locale_negotiator)
 
 	# includings for the config
 	config.include('pyramid_chameleon')
 	config.include('pyramid_mailer')
 	# config.include('pyramid_beaker') # done in the ini
-	# config.add_translation_dirs('dbas:locale')
+	config.add_translation_dirs('dbas:locale', 'dbas:locale/')
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)

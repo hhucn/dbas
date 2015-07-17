@@ -23,3 +23,7 @@
 0.22 (07.07.2015)
 ---
 - smaller changes of design aspects
+
+0.23 (23.07.2015)
+---
+- i18n / l10n

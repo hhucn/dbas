@@ -1,5 +1,5 @@
 #
-# Englisch translations for PACKAGE package
+# German translations for PACKAGE package
 # This file is distributed under the same license as the PACKAGE package.
 # Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>, 2015.
 msgid ""
@@ -20,82 +20,80 @@ msgstr ""
 #. some kind of blog
 #: dbas/templates/news.pt:25
 msgid "news_intro"
-msgstr ""
-"This will be the news page and currently I think...this will be some kind of "
-"blog"
+msgstr "Dies, wird so etwas wie die Nachrichten-Seite"
 
 #. Default: Get In Touch With Us
 #: dbas/templates/contact.pt:22
 msgid "contact_header_1"
-msgstr "Get In Touch With Us"
+msgstr "Tritt mit uns in Kontakt"
 
 #. Default: Feel free to drop us a line and we’ll try to get back to you in 48
 #. hours max!
 #: dbas/templates/contact.pt:23
 msgid "contact_header_2"
 msgstr ""
-"Default: Feel free to drop us a line and we’ll try to get back to you in 48 "
-"hours max!"
+"Trau dich, hinterlass uns eine Nachricht und wir werden uns innerhalb von 48 "
+"Stunden bei dir melden"
 
 #. Default: Your Name (required)
 #: dbas/templates/contact.pt:29
 msgid "name_req"
-msgstr "Your Name (required)"
+msgstr "Dein Name (notwendig)"
 
 #. Default: Your E-Mail (required)
 #: dbas/templates/contact.pt:36
 msgid "mail_req"
-msgstr "Your E-Mail (required)"
+msgstr "Deine E-Mail (notwendig)"
 
 #. Default: Your Phone Number
 #: dbas/templates/contact.pt:43
 msgid "phone_no"
-msgstr "Your Phone Number"
+msgstr "Deine Telefonnr."
 
 #. Default: Your Message (required)
 #: dbas/templates/contact.pt:50
 msgid "message_req"
-msgstr "Your Message (required)"
+msgstr "Deine Nachricht (notwendig)"
 
 #. Default: Anti-Spam (required)
 #: dbas/templates/contact.pt:57
 msgid "spam_req"
-msgstr "Anti-Spam (required)"
+msgstr "Anti-Spam (notwendig)"
 
 #. Default: Warning!
 #: dbas/templates/contact.pt:74 dbas/templates/login.pt:148
 msgid "warning"
-msgstr "Warning!"
+msgstr "Warnung!"
 
 #. Default: Great:
 #: dbas/templates/contact.pt:82 dbas/templates/settings.pt:121
 msgid "great"
-msgstr "Great:"
+msgstr "Großartig:"
 
 #. Default: Your message was sent.
 #: dbas/templates/contact.pt:82
 msgid "message_sent"
-msgstr "Your message was sent."
+msgstr "Deine Nachricht wurde gesendet"
 
 #. Default: Settings of:
 #: dbas/templates/settings.pt:22
 msgid "settings"
-msgstr "Settings of:"
+msgstr "Einstellungen von:"
 
 #. Default: Information about yourself
 #: dbas/templates/settings.pt:27
 msgid "info_about_yourself"
-msgstr "Information about yourself"
+msgstr "Informationen über dich"
 
 #. Default: Firstname
 #: dbas/templates/settings.pt:31
 msgid "firstname"
-msgstr "Firstname"
+msgstr "Vorname"
 
 #. Default: Surname
 #: dbas/templates/settings.pt:38
 msgid "surname"
-msgstr "Surname"
+msgstr "Nachname"
 
 #. Default: Nickname
 #. Default: Your Nickname
@@ -106,17 +104,17 @@ msgstr "Nickname"
 #. Default: Group
 #: dbas/templates/settings.pt:59
 msgid "group"
-msgstr "Group"
+msgstr "Gruppe"
 
 #. Default: Your decisions
 #: dbas/templates/settings.pt:68
 msgid "decisions"
-msgstr "Your decisions"
+msgstr "Deine Entscheidungen"
 
 #. Default: Success:
 #: dbas/templates/settings.pt:79 dbas/templates/login.pt:61
 msgid "success"
-msgstr "Success:"
+msgstr "Erfolg"
 
 #. Default: Error:
 #: dbas/templates/settings.pt:84 dbas/templates/login.pt:56
@@ -127,32 +125,32 @@ msgstr "Fehler:"
 #. Default: Change your password
 #: dbas/templates/settings.pt:90
 msgid "change_password"
-msgstr "Change your password"
+msgstr "Ändere dein Passwort"
 
 #. Default: Old password
 #: dbas/templates/settings.pt:93
 msgid "old_password"
-msgstr "Old password"
+msgstr "Altes Password"
 
 #. Default: New Password
 #: dbas/templates/settings.pt:97
 msgid "new_password"
-msgstr "New Password"
+msgstr "Neues Password"
 
 #. Default: Strength
 #: dbas/templates/settings.pt:101
 msgid "strength"
-msgstr "Strength"
+msgstr "Stärke"
 
 #. Default: New Password (confirm)
 #: dbas/templates/settings.pt:107
 msgid "new_password_confirm"
-msgstr "New Password (confirm)"
+msgstr "Neues Password (Bestätigung)"
 
 #. Default: Your password was changed
 #: dbas/templates/settings.pt:121
 msgid "password_changed"
-msgstr "Your password was changed"
+msgstr "Dein Passwurd wurde geändert"
 
 #. Default: Angaben gemäß § 5 TMG
 #: dbas/templates/imprint.pt:22 dbas/templates/impressum.pt:22
@@ -162,254 +160,249 @@ msgstr "Angaben gemäß § 5 TMG"
 #. Default: Log In
 #: dbas/templates/login.pt:22
 msgid "login"
-msgstr "Log In"
+msgstr "Login"
 
 #. Default: Sign Up
 #: dbas/templates/login.pt:24
 msgid "sign_up"
-msgstr "Sign Up"
+msgstr "Melde dich an"
 
 #. Default: Welcome Back!
 #: dbas/templates/login.pt:30
 msgid "welcome_back"
-msgstr "Welcome Back!"
+msgstr "Willkommen zurück!"
 
 #. Default: Your Nickname
 #: dbas/templates/login.pt:38
 msgid "your_nickname"
-msgstr "Your Nickname"
+msgstr "Dein Nickname"
 
 #. Default: Your Password
 #: dbas/templates/login.pt:45
 msgid "your_password"
-msgstr "Your Password"
+msgstr "Dein Passwort"
 
 #. Default: Forgot Password?
 #: dbas/templates/login.pt:51
 msgid "forgot_password"
-msgstr "<dynamic element>"
+msgstr "Passwort vergessen"
 
 #. Default: Sign Up for Free
 #: dbas/templates/login.pt:75
 msgid "signup_free"
-msgstr "Sign Up for Free"
+msgstr "Registriere dich kostenfrei"
 
 #. Default: Your First Name
 #: dbas/templates/login.pt:81
 msgid "first_name"
-msgstr "Your First Name"
+msgstr "Vorname"
 
 #. Default: Your Last Name
 #: dbas/templates/login.pt:88
 msgid "last_name"
-msgstr "Your Last Name"
+msgstr "Nachname"
 
 #. Default: Your Gender
 #: dbas/templates/login.pt:102
 msgid "gender"
-msgstr "Your Gender"
+msgstr "Dein Geschlecht"
 
 #. Default: none
 #: dbas/templates/login.pt:105
 msgid "none"
-msgstr "none"
+msgstr "keine Angabe"
 
 #. Default: female
 #: dbas/templates/login.pt:108
 msgid "female"
-msgstr "female"
+msgstr "weiblich"
 
 #. Default: male
 #: dbas/templates/login.pt:111
 msgid "male"
-msgstr "male"
+msgstr "männlich"
 
 #. Default: Your Email Address
 #: dbas/templates/login.pt:117
 msgid "email"
-msgstr "Your Email Address"
+msgstr "Deine E-Mail"
 
 #. Default: Your Password
 #: dbas/templates/login.pt:124
 msgid "password"
-msgstr "Your Password"
+msgstr "Passwort"
 
 #. Default: Strength
 #: dbas/templates/login.pt:130
 msgid "password_strength"
-msgstr "Strength"
+msgstr "Stärke"
 
 #. Default: Password (confirm)
 #: dbas/templates/login.pt:135
 msgid "password-confirm"
-msgstr "Password (confirm)"
+msgstr "Passwort (Bestätigung)"
 
 #. Default: Password-Request
 #: dbas/templates/login.pt:168
 msgid "password_request"
-msgstr "Password-Request"
+msgstr "Passwort-Nachfrage"
 
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
 #: dbas/templates/login.pt:172
 msgid "fill_in_mail_for_password"
 msgstr ""
-"Please fill in your e-mail below. A new password will be send this address:"
+"Bitte trage unten deine E-Mail-Adresse ein. Ein neues Passwort wird an diese "
+"Adresse gesendet."
 
 #. Default: Close
 #: dbas/templates/login.pt:179
 msgid "close"
-msgstr "Close"
+msgstr "Schließen"
 
 #. Default: 404 Error
 #: dbas/templates/404.pt:22
 msgid "404"
-msgstr "404 Error"
+msgstr "404 Fehler"
 
 #. Default: The page &quot;${page_notfound_viewname}&quot; for could not be
 #. found.
 #. Canonical text for ${page_notfound_viewname} is: "${page_notfound_viewname}"
 #: dbas/templates/404.pt:23
 msgid "404_text"
-msgstr "The page &quot;<dynamic element>&quot; for could not be found."
+msgstr "Die Seite &quot;<dynamic element>&quot; konnte nicht gefunden werden"
 
 #~ msgid "dbas_long"
-#~ msgstr "Dialogue-Based Argumentation System"
+#~ msgstr "Dialog-basiertes Argumentations System"
 
 #~ msgid "current_discussion"
-#~ msgstr "The current discussion is about"
+#~ msgstr "Die aktuelle Diskussion handelt von"
 
 #~ msgid "startet_at"
-#~ msgstr "and was started at"
+#~ msgstr "und wurde gestartet am"
 
 #~ msgid "change_style"
-#~ msgstr "Change display style:"
+#~ msgstr "Wechsel die Darstellung:"
 
 #~ msgid "dialog_view"
-#~ msgstr "Dialog View"
+#~ msgstr "Dialog-Ansicht"
 
 #~ msgid "island_view"
-#~ msgstr "Island View"
+#~ msgstr "Insel-Ansicht"
 
 #~ msgid "complete_view"
-#~ msgstr "Complete View"
+#~ msgstr "Komplette Ansicht"
 
 #, fuzzy
 #~ msgid "istland_view"
-#~ msgstr "Island View"
+#~ msgstr "Insel-Ansicht"
 
 #~ msgid "pro"
 #~ msgstr "Pro"
 
 #~ msgid "contra"
-#~ msgstr "Contra"
+#~ msgstr "Kontra"
 
 #~ msgid "insert-argument"
-#~ msgstr "Please insert a new Argument"
+#~ msgstr "Bitte füge ein neues Argument hinzu"
 
 #~ msgid "add_textfield"
-#~ msgstr "Add a textfield"
+#~ msgstr "weiteres Textfeld"
 
 #~ msgid "special_rights"
-#~ msgstr "Special rights"
+#~ msgstr "Besondere Recht"
 
 #~ msgid "admin_only"
-#~ msgstr ""
-#~ "Default: Some additional options for the administrator. <dynamic element>"
+#~ msgstr "Manche Sachen sind nur für den Admin. <dynamic element>"
 
 #~ msgid "minimap"
 #~ msgstr "Minimap:"
 
 #~ msgid "welcome"
-#~ msgstr "Welcome"
+#~ msgstr "Willkommen"
+
+#~ msgid "or_short"
+#~ msgstr "oder kurz"
 
 #~ msgid "dbas_intro_advantages_intro"
-#~ msgstr "D-Bas offers a lot of advantages, here are a few of them:"
+#~ msgstr "D-BAS hat viele Vorteile, hier sind einige davon:"
 
 #~ msgid "dbas_intro_advantages_1"
-#~ msgstr "Easy to use and very powerful"
+#~ msgstr "Einfach zu benutzen und sehr mächtig"
 
 #~ msgid "dbas_intro_advantages_2"
 #~ msgstr ""
-#~ "Avoid redundancy due to multiple statements because an argumentation map "
-#~ "is used as background structure"
+#~ "Reduziert Redundanz und Wiederholungen, da eine Argumentationskarte "
+#~ "benutzt wird"
 
 #~ msgid "dbas_intro_advantages_3"
-#~ msgstr ""
-#~ "Every argument and position will be connected logically to each other"
+#~ msgstr "Jede Aussage steht logisch korrekt zu weiteren Aussagen"
 
 #~ msgid "features"
-#~ msgstr "Features"
+#~ msgstr "Besonderheiten"
 
 #~ msgid "of_dbas"
-#~ msgstr "of D-BAS"
+#~ msgstr "von D-BAS"
 
 #~ msgid "argu_maps"
-#~ msgstr "Argumentation Maps"
+#~ msgstr "Argumentationskarten"
 
 #~ msgid "argu_maps_content"
 #~ msgstr ""
-#~ "A argumentation map is like a mind map, but the relations between the "
-#~ "nodes are highly important and can have several meanings. Additionally "
-#~ "the bubbles of the map can have play a important role. Therefore using "
-#~ "this data structure for logically presentations of some graphs makes "
-#~ "sense."
+#~ "Eine Argumentationskarte ist wie eine Mind-Map, jedoch haben die Striche "
+#~ "zwischen den Blasen jeweils eine Andere Bedeutung. Dadurch bekommen auch "
+#~ "die Blasen eine andere Bedeutung. Daher eignet sich die Struktur sehr gut "
+#~ "für logische Aussagen."
 
 #~ msgid "dialogue_based"
-#~ msgstr "Dialogue-based"
+#~ msgstr "Dialog-basiert"
 
 #~ msgid "dialogue_based_content"
 #~ msgstr ""
-#~ "Yeah, this is a novel and it is a kind of dialogue-based approach. This "
-#~ "means that the system will represent argumentations of panelist and "
-#~ "claims will be given through the other participants."
+#~ "Yeah, das ist neu und verwirklicht eine Art dialog-basierten Ansatz. "
+#~ "Demnach wird das System Antworten für den Benutzer vorbereiten, welche "
+#~ "auf Aussagen weiterer Benutzer beruhen."
 
 #~ msgid "simple_ui"
-#~ msgstr "Simple UI"
+#~ msgstr "Einfache Oberfläche"
 
 #~ msgid "simple_ui_content"
 #~ msgstr ""
-#~ "The user interface of D-BAS is simple, clear and easy. At any point "
-#~ "during the discussion the choices for the participant are bounded, but "
-#~ "not isolating him/her."
+#~ "Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
+#~ "sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
 
 #~ msgid "guided_view"
-#~ msgstr "Guided View"
+#~ msgstr "Geführte Ansicht"
 
 #, fuzzy
 #~ msgid "guided_view_content1"
 #~ msgstr ""
-#~ "You will never see something like an argumentation map, because the "
-#~ "systems seems to be like a dynamic and generic <dynamic element> for you."
+#~ "Du wirst nie etwas wie eine Argumentationskarte sehen, da das System dich "
+#~ "führt. Das System ist daher dynamisch und generisch ."
 
 #, fuzzy
 #~ msgid "guided_view_content2"
-#~ msgstr ""
-#~ "You will never see something like an argumentation map, because the "
-#~ "systems seems to be like a dynamic and generic <dynamic element> for you."
+#~ msgstr "für dich."
 
 #~ msgid "island_view_content"
-#~ msgstr ""
-#~ "Okay, you want to see more as, but not everything. Therefore the island "
-#~ "view will present you a list of every connected statement for an specific "
-#~ "statement."
+#~ msgstr "Insel Ansicht"
 
 #~ msgid "expert_view"
-#~ msgstr "Expert View"
+#~ msgstr "Experten Ansicht"
 
 #~ msgid "expert_view_content"
 #~ msgstr ""
-#~ "So, you think you are an expert? Okay, you can have a view of the "
-#~ "complete argumentation map."
+#~ "Experten Ansicht: Du bist also ein Experte? Okay, dann darfst du wirklich "
+#~ "alles auf einen Blick sehen."
 
 #~ msgid "guided_view_description"
-#~ msgstr "Guided View: The participants will be lead through the discussion ."
+#~ msgstr "Geführte Asnicht: Teilnehmer werden durch die Diskussion geführt."
 
 #~ msgid "island_view_description"
 #~ msgstr ""
-#~ "Island View: A position with all connected arguments is presented as "
-#~ "island. This supports the insight of a discussion about a specific "
-#~ "position."
+#~ "Insel Ansicht: Eine Aussage mit allen verknüpften Aussagen wird als Insel "
+#~ "bezeichnet. Die Aussagen werden nach Pro und Kontra sortiert. Dies erhöht "
+#~ "die Übersicht"
 
 #~ msgid "expert_view_description"
-#~ msgstr "Expert View: Participants are able to see and do everything."
+#~ msgstr "Experten Ansicht: Teilnehmer können die Argumentationskarte sehen."

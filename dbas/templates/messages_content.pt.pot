@@ -1,0 +1,97 @@
+# 
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2015-07-17 08:24+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 3.10\n"
+
+#. Default: Dialogue-Based Argumentation System
+#: ./content.pt:26
+msgid "dbas_long"
+msgstr ""
+
+#. Default: The current discussion is about
+#: ./content.pt:27
+msgid "current_discussion"
+msgstr ""
+
+#. Default: and was started at
+#: ./content.pt:30
+msgid "startet_at"
+msgstr ""
+
+#. Default: Change display style:
+#: ./content.pt:65
+msgid "change_style"
+msgstr ""
+
+#. Default: Dialog View
+#: ./content.pt:69
+msgid "dialog_view"
+msgstr ""
+
+#. Default: Island View
+#: ./content.pt:74 ./content.pt:107
+msgid "island_view"
+msgstr ""
+
+#. Default: Complete View
+#: ./content.pt:79
+msgid "complete_view"
+msgstr ""
+
+#. Default: Error:
+#: ./content.pt:91
+msgid "error"
+msgstr ""
+
+#. Default: Island View
+#: ./content.pt:106
+msgid "istland_view"
+msgstr ""
+
+#. Default: Pro
+#: ./content.pt:110 ./content.pt:143
+msgid "pro"
+msgstr ""
+
+#. Default: Contra
+#: ./content.pt:116 ./content.pt:154
+msgid "contra"
+msgstr ""
+
+#. Default: Please insert a new Argument
+#: ./content.pt:139
+msgid "insert-argument"
+msgstr ""
+
+#. Default: Add a textfield
+#: ./content.pt:149 ./content.pt:159
+msgid "add_textfield"
+msgstr ""
+
+#. Default: Special rights
+#: ./content.pt:178
+msgid "special_rights"
+msgstr ""
+
+#. Default: Some additional options for the administrator.
+#: ./content.pt:179
+msgid "admin_only"
+msgstr ""
+
+#. Default: Minimap:
+#: ./content.pt:190
+msgid "minimap"
+msgstr ""

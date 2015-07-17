@@ -1,0 +1,29 @@
+# 
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2015-07-17 08:24+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 3.10\n"
+
+#. Default: 404 Error
+#: ./404.pt:22
+msgid "404"
+msgstr ""
+
+#. Default: The page &quot;${page_notfound_viewname}&quot; for could not be
+#. found.
+#. Canonical text for ${page_notfound_viewname} is: "${page_notfound_viewname}"
+#: ./404.pt:23
+msgid "404_text"
+msgstr ""

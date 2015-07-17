@@ -36,12 +36,8 @@ Client (frontend):
 
 - `JavaScript <https://developer.mozilla.org/en-US/docs/Web/JavaScript>`_ (programming language)
 
+- `JQuery <https://jquery.com/>`_ (javascript helper library)
+
 - `HTML5 <http://www.w3.org/TR/html5/>`_ (text markup)
 
 - `Bootstrap <getbootstrap.com/>`_ (css preprocessor)
-
-- `JQuery <https://jquery.com/>`_ (javascript helper library)
-
-- `Splinter <http://splinter.cobrateam.info/>`_ (acceptance and frontend tests)
-
-- `Jasmine <https://jasmine.github.io/>`_ (unit tests)

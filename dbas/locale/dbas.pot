@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-07-17 06:06+0200\n"
+"POT-Creation-Date: 2015-07-17 10:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,142 +18,59 @@ msgstr ""
 
 #. Default: This will be the news page and currently I think...this will be
 #. some kind of blog
-#: ./dbas/templates/news.pt:24
+#: ./dbas/templates/news.pt:25
 msgid "news_intro"
 msgstr ""
 
 #. Default: Get In Touch With Us
-#: ./dbas/templates/contact.pt:21
+#: ./dbas/templates/contact.pt:22
 msgid "contact_header_1"
 msgstr ""
 
 #. Default: Feel free to drop us a line and we’ll try to get back to you in 48
 #. hours max!
-#: ./dbas/templates/contact.pt:22
+#: ./dbas/templates/contact.pt:23
 msgid "contact_header_2"
 msgstr ""
 
 #. Default: Your Name (required)
-#: ./dbas/templates/contact.pt:28
+#: ./dbas/templates/contact.pt:29
 msgid "name_req"
 msgstr ""
 
 #. Default: Your E-Mail (required)
-#: ./dbas/templates/contact.pt:35
+#: ./dbas/templates/contact.pt:36
 msgid "mail_req"
 msgstr ""
 
 #. Default: Your Phone Number
-#: ./dbas/templates/contact.pt:42
+#: ./dbas/templates/contact.pt:43
 msgid "phone_no"
 msgstr ""
 
 #. Default: Your Message (required)
-#: ./dbas/templates/contact.pt:49
+#: ./dbas/templates/contact.pt:50
 msgid "message_req"
 msgstr ""
 
 #. Default: Anti-Spam (required)
-#: ./dbas/templates/contact.pt:56
+#: ./dbas/templates/contact.pt:57
 msgid "spam_req"
 msgstr ""
 
 #. Default: Warning!
-#: ./dbas/templates/contact.pt:73 ./dbas/templates/login.pt:148
+#: ./dbas/templates/contact.pt:74 ./dbas/templates/login.pt:148
 msgid "warning"
 msgstr ""
 
 #. Default: Great:
-#: ./dbas/templates/contact.pt:81 ./dbas/templates/settings.pt:121
+#: ./dbas/templates/contact.pt:82 ./dbas/templates/settings.pt:121
 msgid "great"
 msgstr ""
 
 #. Default: Your message was sent.
-#: ./dbas/templates/contact.pt:81
+#: ./dbas/templates/contact.pt:82
 msgid "message_sent"
-msgstr ""
-
-#. Default: Dialogue-Based Argumentation System
-#: ./dbas/templates/content.pt:25
-msgid "dbas_long"
-msgstr ""
-
-#. Default: The current discussion is about
-#: ./dbas/templates/content.pt:26
-msgid "current_discussion"
-msgstr ""
-
-#. Default: and was started at
-#: ./dbas/templates/content.pt:29
-msgid "startet_at"
-msgstr ""
-
-#. Default: Change display style:
-#: ./dbas/templates/content.pt:64
-msgid "change_style"
-msgstr ""
-
-#. Default: Dialog View
-#: ./dbas/templates/content.pt:68
-msgid "dialog_view"
-msgstr ""
-
-#. Default: Island View
-#: ./dbas/templates/content.pt:73 ./dbas/templates/content.pt:106
-#: ./dbas/templates/index.pt:102
-msgid "island_view"
-msgstr ""
-
-#. Default: Complete View
-#: ./dbas/templates/content.pt:78
-msgid "complete_view"
-msgstr ""
-
-#. Default: Error:
-#: ./dbas/templates/content.pt:90 ./dbas/templates/settings.pt:84
-#: ./dbas/templates/login.pt:56 ./dbas/templates/login.pt:66
-msgid "error"
-msgstr ""
-
-#. Default: Island View
-#: ./dbas/templates/content.pt:105
-msgid "istland_view"
-msgstr ""
-
-#. Default: Pro
-#: ./dbas/templates/content.pt:109 ./dbas/templates/content.pt:142
-msgid "pro"
-msgstr ""
-
-#. Default: Contra
-#: ./dbas/templates/content.pt:115 ./dbas/templates/content.pt:153
-msgid "contra"
-msgstr ""
-
-#. Default: Please insert a new Argument
-#: ./dbas/templates/content.pt:138
-msgid "insert-argument"
-msgstr ""
-
-#. Default: Add a textfield
-#: ./dbas/templates/content.pt:148 ./dbas/templates/content.pt:158
-msgid "add_textfield"
-msgstr ""
-
-#. Default: Special rights
-#: ./dbas/templates/content.pt:177
-msgid "special_rights"
-msgstr ""
-
-#. Default: Some additional options for the administrator. <dynamic element>
-#. <dynamic element>
-#: ./dbas/templates/content.pt:178
-msgid "admin_only"
-msgstr ""
-
-#. Default: Minimap:
-#: ./dbas/templates/content.pt:191
-msgid "minimap"
 msgstr ""
 
 #. Default: Settings of:
@@ -197,6 +114,12 @@ msgstr ""
 msgid "success"
 msgstr ""
 
+#. Default: Error:
+#: ./dbas/templates/settings.pt:84 ./dbas/templates/login.pt:56
+#: ./dbas/templates/login.pt:66
+msgid "error"
+msgstr ""
+
 #. Default: Change your password
 #: ./dbas/templates/settings.pt:90
 msgid "change_password"
@@ -228,128 +151,8 @@ msgid "password_changed"
 msgstr ""
 
 #. Default: Angaben gemäß § 5 TMG
-#: ./dbas/templates/imprint.pt:22
+#: ./dbas/templates/imprint.pt:22 ./dbas/templates/impressum.pt:22
 msgid "impressum_intro"
-msgstr ""
-
-#. Default: Welcome
-#: ./dbas/templates/index.pt:24
-msgid "welcome"
-msgstr ""
-
-#. Default: D-Bas offers a lot of advantages, here are a few of them:
-#: ./dbas/templates/index.pt:34
-msgid "dbas_intro_advantages_intro"
-msgstr ""
-
-#. Default: Easy to use and very powerful
-#: ./dbas/templates/index.pt:36
-msgid "dbas_intro_advantages_1"
-msgstr ""
-
-#. Default: Avoid redundancy due to multiple statements because an
-#. argumentation map is used as background structure
-#: ./dbas/templates/index.pt:37
-msgid "dbas_intro_advantages_2"
-msgstr ""
-
-#. Default: Every argument and position will be connected logically to each
-#. other
-#: ./dbas/templates/index.pt:38
-msgid "dbas_intro_advantages_3"
-msgstr ""
-
-#. Default: Features
-#: ./dbas/templates/index.pt:71
-msgid "features"
-msgstr ""
-
-#. Default: of D-BAS
-#: ./dbas/templates/index.pt:71
-msgid "of_dbas"
-msgstr ""
-
-#. Default: Argumentation Maps
-#: ./dbas/templates/index.pt:79
-msgid "argu_maps"
-msgstr ""
-
-#. Default: A argumentation map is like a mind map, but the relations between
-#. the nodes are highly important and can have several meanings. Additionally
-#. the bubbles of the map can have play a important role. Therefore using this
-#. data structure for logically presentations of some graphs makes sense.
-#: ./dbas/templates/index.pt:80
-msgid "argu_maps_content"
-msgstr ""
-
-#. Default: Dialogue-based
-#: ./dbas/templates/index.pt:84
-msgid "dialogue_based"
-msgstr ""
-
-#. Default: Yeah, this is a novel and it is a kind of dialogue-based approach.
-#. This means that the system will represent argumentations of panelist and
-#. claims will be given through the other participants.
-#: ./dbas/templates/index.pt:85
-msgid "dialogue_based_content"
-msgstr ""
-
-#. Default: Simple UI
-#: ./dbas/templates/index.pt:89
-msgid "simple_ui"
-msgstr ""
-
-#. Default: The user interface of D-BAS is simple, clear and easy. At any point
-#. during the discussion the choices for the participant are bounded, but not
-#. isolating him/her.
-#: ./dbas/templates/index.pt:90
-msgid "simple_ui_content"
-msgstr ""
-
-#. Default: Guided View
-#: ./dbas/templates/index.pt:97
-msgid "guided_view"
-msgstr ""
-
-#. Default: You will never see something like an argumentation map, because the
-#. systems seems to be like a dynamic and generic <dynamic element> for you.
-#: ./dbas/templates/index.pt:98
-msgid "guided_view_content"
-msgstr ""
-
-#. Default: Okay, you want to see more as, but not everything. Therefore the
-#. island view will present you a list of every connected statement for an
-#. specific statement.
-#: ./dbas/templates/index.pt:103
-msgid "island_view_content"
-msgstr ""
-
-#. Default: Expert View
-#: ./dbas/templates/index.pt:107
-msgid "expert_view"
-msgstr ""
-
-#. Default: So, you think you are an expert? Okay, you can have a view of the
-#. complete argumentation map.
-#: ./dbas/templates/index.pt:108
-msgid "expert_view_content"
-msgstr ""
-
-#. Default: Guided View: The participants will be lead through the discussion .
-#: ./dbas/templates/index.pt:127
-msgid "guided_view_description"
-msgstr ""
-
-#. Default: Island View: A position with all connected arguments is presented
-#. as island. This supports the insight of a discussion about a specific
-#. position.
-#: ./dbas/templates/index.pt:128
-msgid "island_view_description"
-msgstr ""
-
-#. Default: Expert View: Participants are able to see and do everything.
-#: ./dbas/templates/index.pt:129
-msgid "expert_view_description"
 msgstr ""
 
 #. Default: Log In
@@ -377,7 +180,7 @@ msgstr ""
 msgid "your_password"
 msgstr ""
 
-#. Default: <dynamic element>
+#. Default: Forgot Password?
 #: ./dbas/templates/login.pt:51
 msgid "forgot_password"
 msgstr ""
@@ -458,7 +261,9 @@ msgstr ""
 msgid "404"
 msgstr ""
 
-#. Default: The page &quot;<dynamic element>&quot; for could not be found.
+#. Default: The page &quot;${page_notfound_viewname}&quot; for could not be
+#. found.
+#. Canonical text for ${page_notfound_viewname} is: "${page_notfound_viewname}"
 #: ./dbas/templates/404.pt:23
 msgid "404_text"
 msgstr ""

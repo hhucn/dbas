@@ -176,10 +176,8 @@
 					<div class="col-md-2"></div>
 					<div class="col-md-8">
 						<h4><span class="font-semi-bold" i18n:translate="special_rights">Special rights</span></h4>
-						<p i18n:translate="admin_only">Some additional options for the administrator.
-							<br>
-							<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
-						</p>
+						<p i18n:translate="admin_only">Some additional options for the administrator.</p>
+						<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
 					</div>
 					<div class="col-md-2"></div>
 					<div class="col-md-12">
@@ -207,4 +205,4 @@
 	
 
 </body>
-</html>
+<html>

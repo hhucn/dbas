@@ -1,10 +1,6 @@
 <!DOCTYPE html>
-<html	lang="${request.locale_name}"
-			xmlns="http://www.w3.org/1999/xhtml"
-			xml:lang="en"
-			xmlns:metal="http://xml.zope.org/namespaces/metal"
-			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-			i18n:domain="dbas">
+<html lang="$de" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,4 +35,5 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
 
 </body>
+
 </html>

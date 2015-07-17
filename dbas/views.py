@@ -11,8 +11,10 @@ from .database import DBSession
 from .database.model import User, Group, Issue
 from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, EmailHelper
 
+from pyramid.threadlocal import get_current_registry
+
 name = 'D-BAS'
-version = '0.22'
+version = '0.23'
 header = name + ' ' + version
 
 class Dbas(object):
@@ -23,6 +25,8 @@ class Dbas(object):
 		:return:
 		"""
 		self.request = request
+		self.request.session['_LOCALE_'] = 'de'
+		self.request.cookies['_LOCALE_'] = 'de'
 
 	# main page
 	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
@@ -32,6 +36,14 @@ class Dbas(object):
 		:return:
 		"""
 		logger('main_page', 'def', 'main page')
+
+		settings = get_current_registry().settings
+		logger('xxxxxxx', 'DEF LANGUAGE', str(settings['pyramid.default_locale_name']))
+		logger('xxxxxxx', 'request.session[_LOCALE_]', str(self.request.session['_LOCALE_']))
+		logger('xxxxxxx', 'request.cookies[_LOCALE_]', str(self.request.cookies['_LOCALE_']))
+		logger('xxxxxxx', 'request.accept_language', str(self.request.accept_language))
+		logger('xxxxxxx', 'request._LOCALE_', str(self.request._LOCALE_))
+
 		return dict(
 			title='Main',
 			project=header,

@@ -1,0 +1,138 @@
+# 
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2015-07-17 08:24+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 3.10\n"
+
+#. Default: Log In
+#: ./login.pt:22
+msgid "login"
+msgstr ""
+
+#. Default: Sign Up
+#: ./login.pt:24
+msgid "sign_up"
+msgstr ""
+
+#. Default: Welcome Back!
+#: ./login.pt:30
+msgid "welcome_back"
+msgstr ""
+
+#. Default: Your Nickname
+#: ./login.pt:38
+msgid "your_nickname"
+msgstr ""
+
+#. Default: Your Password
+#: ./login.pt:45
+msgid "your_password"
+msgstr ""
+
+#. Default: Forgot Password?
+#: ./login.pt:51
+msgid "forgot_password"
+msgstr ""
+
+#. Default: Error:
+#: ./login.pt:56 ./login.pt:66
+msgid "error"
+msgstr ""
+
+#. Default: Success:
+#: ./login.pt:61
+msgid "success"
+msgstr ""
+
+#. Default: Sign Up for Free
+#: ./login.pt:75
+msgid "signup_free"
+msgstr ""
+
+#. Default: Your First Name
+#: ./login.pt:81
+msgid "first_name"
+msgstr ""
+
+#. Default: Your Last Name
+#: ./login.pt:88
+msgid "last_name"
+msgstr ""
+
+#. Default: Your Nickname
+#: ./login.pt:95
+msgid "nickname"
+msgstr ""
+
+#. Default: Your Gender
+#: ./login.pt:102
+msgid "gender"
+msgstr ""
+
+#. Default: none
+#: ./login.pt:105
+msgid "none"
+msgstr ""
+
+#. Default: female
+#: ./login.pt:108
+msgid "female"
+msgstr ""
+
+#. Default: male
+#: ./login.pt:111
+msgid "male"
+msgstr ""
+
+#. Default: Your Email Address
+#: ./login.pt:117
+msgid "email"
+msgstr ""
+
+#. Default: Your Password
+#: ./login.pt:124
+msgid "password"
+msgstr ""
+
+#. Default: Strength
+#: ./login.pt:130
+msgid "password_strength"
+msgstr ""
+
+#. Default: Password (confirm)
+#: ./login.pt:135
+msgid "password-confirm"
+msgstr ""
+
+#. Default: Warning!
+#: ./login.pt:148
+msgid "warning"
+msgstr ""
+
+#. Default: Password-Request
+#: ./login.pt:168
+msgid "password_request"
+msgstr ""
+
+#. Default: Please fill in your e-mail below. A new password will be send this
+#. address:
+#: ./login.pt:172
+msgid "fill_in_mail_for_password"
+msgstr ""
+
+#. Default: Close
+#: ./login.pt:179
+msgid "close"
+msgstr ""
