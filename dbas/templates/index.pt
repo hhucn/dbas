@@ -1,8 +1,15 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
+<html	lang="${request.locale_name}"
+			metal:use-macro="load: basetemplate.pt"
+			xmlns="http://www.w3.org/1999/xhtml"
+			xml:lang="en"
+			xmlns:metal="http://xml.zope.org/namespaces/metal"
+			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+			i18n:domain="dbas">
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
+	<title>${project} - ${title}</title>
 </head>
 
 <body>
@@ -117,11 +124,13 @@
 										<li> Positions and arguments are connected logically by participants</li>
 										<li> The system is very easy to use.</li>
 										<li> It offers a time-shifted discussion in three modes:</li>
-										<ul class="lead list">
-											<li i18n:translate="guided_view_description"> Guided View: The participants will be lead through the discussion .</li>
-											<li i18n:translate="island_view_description"> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
+										<li>
+											<ul class="lead list">
+												<li i18n:translate="guided_view_description"> Guided View: The participants will be lead through the discussion .</li>
+												<li i18n:translate="island_view_description"> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
 											<li i18n:translate="expert_view_description"> Expert View: Participants are able to see and do everything.</li>
-										</ul>
+											</ul>
+										</li>
 										<li> Contributions can be rated by the participants.</li>
 										<li> You have the huge power of the crowd!.</li>
 								</ul>
@@ -160,7 +169,7 @@
 								</div>
 								<div class="col-md-4 col-badge">
 									<img id="icon-kolleg" class="icon-badge" alt="icon-kolleg" src="" />
-									<h3>Graduation School <a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" target="_blank" title="Graduation School Online Participation" target="_blank">Online-Participation</a></h3>
+									<h3>Graduation School <a href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">Online-Participation</a></h3>
 									<p>The NRW Graduation School Online-Participation is subsidised governmentally by Ministry of Innovation, Science and Research in North Rhine-Westphalia. The Graduation School is a network of business economics, computer scientiests, communication scientists, political scientists, jurists and sociologist, which are wokring together with partners from practice. The objective is the examination of opportunities of the internet, where affected persons are able to participate in decisions, where they are affected.</p>
 								</div>
 								<div class="col-md-4 col-badge">

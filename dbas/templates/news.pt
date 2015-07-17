@@ -12,6 +12,7 @@
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.css')}" rel="stylesheet">
+	<title>${project} - ${title}</title>
 </head>
 
 <body>
