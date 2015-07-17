@@ -1,5 +1,12 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html
+			lang="${request.locale_name}"
+			metal:use-macro="load: basetemplate.pt"
+			xmlns="http://www.w3.org/1999/xhtml"
+			xml:lang="en"
+			xmlns:metal="http://xml.zope.org/namespaces/metal"
+			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+			i18n:domain="dbas">
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_contact_login.css')}" rel="stylesheet">
@@ -95,13 +102,13 @@
 								<label class="col-sm-3 control-label" i18n:translate="gender">Your Gender</label>
 								<div class="col-sm-9">
 									<label class="radio-inline">
-										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked i18n:translate="none"> <b>none</b>
+										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked> <b i18n:translate="none">none</b>
 									</label>
 									<label class="radio-inline">
-										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f" i18n:translate="female"> <b>female</b>
+										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f"> <b i18n:translate="female">female</b>
 									</label>
 									<label class="radio-inline">
-										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m" i18n:translate="male"> <b>male</b>
+										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m"> <b i18n:translate="male">male</b>
 									</label>
 								</div>
 							</div>

@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}"
+<html	lang="${request.locale_name}"
 			metal:use-macro="load: basetemplate.pt"
 			xmlns="http://www.w3.org/1999/xhtml"
-			xml:lang="en">
+			xml:lang="en"
+			xmlns:metal="http://xml.zope.org/namespaces/metal"
+			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+			i18n:domain="dbas">
+
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
@@ -98,8 +102,8 @@
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col-md-10">
-						<h4 id='island-view-container-header-h4'><span class="font-semi-bold" i18n:translate="sialnd_view">Island View</span></h4>
-						<h4 id='island-view-container-h4'><span class="font-semi-bold" i18n:translate="sialnd_view">Island View</span></h4>
+						<h4 id='island-view-container-header-h4'><span class="font-semi-bold" i18n:translate="istland_view">Island View</span></h4>
+						<h4 id='island-view-container-h4'><span class="font-semi-bold" i18n:translate="island_view">Island View</span></h4>
 
 						<div id="left-island-column">
 							<h4 id="heading-pro-island" class="font-semi-bold" i18n:translate="pro">Pro</h4>

@@ -5,7 +5,7 @@
 				<li>
 					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;&#160;
 					<img id="footer-impressum" class="glyphicon-local">&#160;&#160;
-					<a href="${request.application_url}/impressum">Impressum</a>
+					<a href="${request.application_url}/imprint" i18n:translate="news_intro">Imprint</a>
 				</li>
 			</ul>
 			<ul>

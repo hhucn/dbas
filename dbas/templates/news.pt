@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}"
+<html	lang="${request.locale_name}"
 			metal:use-macro="load: basetemplate.pt"
 			xmlns="http://www.w3.org/1999/xhtml"
-			xml:lang="en">
+			xml:lang="en"
+			xmlns:metal="http://xml.zope.org/namespaces/metal"
+			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+			i18n:domain="dbas">
+
 <!-- todo move news into second database -->
 
 <head>
@@ -17,7 +21,7 @@
 
 			<div class="container first-container">
 				<h1><span class="font-semi-bold">News</span></h1>
-				<p class="lead">This will be the news page and currently I think...this will be some kind of blog</p>
+				<p class="lead" i18n:translate="news_intro">This will be the news page and currently I think...this will be some kind of blog</p>
 			</div>
 
 			<div class="container newscontainer span_1_of_4">

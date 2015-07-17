@@ -42,7 +42,6 @@ def main(global_config, **settings):
 			  }
 
 	# creating the configurator	cache_regions = set_cache_regions_from_settings
-
 	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory')
 	config.set_authentication_policy(authn_policy)
 	config.set_authorization_policy(authz_policy)
@@ -52,7 +51,7 @@ def main(global_config, **settings):
 	config.include('pyramid_chameleon')
 	config.include('pyramid_mailer')
 	# config.include('pyramid_beaker') # done in the ini
-	config.add_translation_dirs('dbas:locale')
+	# config.add_translation_dirs('dbas:locale')
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)
@@ -63,7 +62,7 @@ def main(global_config, **settings):
 	config.add_route('main_content', '/content')
 	config.add_route('main_settings', '/settings')
 	config.add_route('main_news', '/news')
-	config.add_route('main_impressum', '/impressum')
+	config.add_route('main_imprint', '/imprint')
 	config.add_route('404', '/404')
 
 	config.add_route('ajax_all_positions', '/ajax_all_positions')

@@ -5,7 +5,7 @@
 			<div class="modal-header">
 				<button name="popup_author_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myModalLabel">About me</h4>
+				<h4 class="modal-title" id="myModalLabel" i18n:translate="about_me">About me</h4>
 			</div>
 			<div class="modal-body">
 				<div class="container-fluid">
@@ -14,17 +14,17 @@
 							<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 								<tr>
 									<td>
-										<spand class="font-semi-bold">Name</spand>
+										<spand class="font-semi-bold" i18n:translate="name">Name</spand>
 									</td>
 									<td>Tobias Krauthoff, M.Sc.</td>
 								</tr>
 								<tr>
 									<td>
-										<spand class="font-semi-bold">Role</spand>
+										<spand class="font-semi-bold" i18n:translate="role">Role</spand>
 									</td>
-									<td>Doctoral Student
+									<td i18n:translate="role_value_1">Doctoral Student
 										<br><a href="http://www.tsn.hhu.de/en.html">Lab for Technology of Social Networks</a>
-										<br>Member of the graduation school <a href="http://www.fortschrittskolleg.de/" target="_blank">Online Participation</a>
+										<br><span i18n:translate="role_value_2">Member of the graduation school</span> <a href="http://www.fortschrittskolleg.de/" target="_blank"><span i18n:translate="role_value_3">Online Participation</span></a>
 									</td>
 								</tr>
 								<tr>
@@ -36,18 +36,18 @@
 								</tr>
 								<tr>
 									<td>
-										<spand class="font-semi-bold">Office</spand>
+										<spand class="font-semi-bold" i18n:translate="office">Office</spand>
 									</td>
-									<td>Heinrich-Heine University Duesseldorf
-										<br>Universitätsstraße 1
-										<br>40225 Duesseldorf
-										<br>Department of Computer Science
-										<br>Building 25.12, Room 02.45
+									<td i18n:translate="office_value_1">Heinrich-Heine University Duesseldorf
+										<br><span i18n:translate="office_value_2">Universitätsstraße 1</span>
+										<br><span i18n:translate="office_value_3">40225 Duesseldorf</span>
+										<br><span i18n:translate="office_value_4">Department of Computer Science</span>
+										<br><span i18n:translate="office_value_5">Building 25.12, Room 02.45</span>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<spand class="font-semi-bold">Telephone</spand>
+										<spand class="font-semi-bold" i18n:translate="telephone">Telephone</spand>
 									</td>
 									<td>+49 211 81-13461</td>
 								</tr>
@@ -67,7 +67,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="popup_author_btn_close" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+				<button id="popup_author_btn_close" type="button" class="btn btn-primary" data-dismiss="modal" i18n:translate="close">Close</button>
 			</div>
 		</div>
 	</div>
@@ -80,10 +80,10 @@
 			<div class="modal-header">
 				<button name="popup_licence_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myModalLabel">The MIT License (MIT)</h4>
+				<h4 class="modal-title" id="myModalLabel">MIT License (MIT)</h4>
 			</div>
 			<div class="modal-body">
-				<span>
+				<span i18n:translate="mit_licence">
 					Copyright &copy; 2015 
 					<a href="mailto:krauthoff@cs.uni-duesseldorf.de">
 						Tobias Krauthoff
@@ -108,7 +108,7 @@
 				THE SOFTWARE.</span>
 			</div>
 			<div class="modal-footer">
-				<button id="popup_licence_btn_close" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+				<button id="popup_licence_btn_close" type="button" class="btn btn-primary" data-dismiss="modal" i18n:translate="close">Close</button>
 			</div>
 		</div>
 	</div>
@@ -121,7 +121,7 @@
 			<div class="modal-header">
 				<button name="popup_privacy_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myModalLabel">Privacy Policy</h4>
+				<h4 class="modal-title" id="myModalLabel" i18n:translate="privacy_policy">Privacy Policy</h4>
 			</div>
 			<div class="modal-body">
 
@@ -360,24 +360,24 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myModalLabel">How to select a strong password</h4>
+				<h4 class="modal-title" id="myModalLabel" i18n:translate="select_password">How to select a strong password</h4>
 			</div>
 			<div class="modal-body">
-				A Password is strong, when it contains at least :
+				<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>
 				<ul>
-					<li>eight characters</li>
-					<li>one uppercase letter</li>
-					<li>one lowercase letter</li>
-					<li>one special sign</li>
+					<li i18n:translate="select_password_rule1">eight characters</li>
+					<li i18n:translate="select_password_rule2">one uppercase letter</li>
+					<li i18n:translate="select_password_rule3">one lowercase letter</li>
+					<li i18n:translate="select_password_rule4">one special sign</li>
 				</ul>
-				For example 'M2015_fiO' is a strong password. And it would take 275 days to crack this password with a desktop pc in 2015. Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 yearsIt should be noted:
+				<span i18n:translate="popup_password_text">For example 'M2015_fiO' is a strong password. And it would take 275 days to crack this password with a desktop pc in 2015. Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 yearsIt should be noted:</span>
 				<ul>
-					<li>Avoid using a password on several pages</li>
-					<li>Avoid using patterns, which can be found in a dictionary</li>
-					<li>Avoid using information that is or might become publicly associated with the user or the account</li>
-					<li>Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user</li>
+					<li i18n:translate="select_password_avoid1">Avoid using a password on several pages</li>
+					<li i18n:translate="select_password_avoid2">Avoid using patterns, which can be found in a dictionary</li>
+					<li i18n:translate="select_password_avoid3">Avoid using information that is or might become publicly associated with the user or the account</li>
+					<li i18n:translate="select_password_avoid4">Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user</li>
 				</ul>
-				<br> If you need some help with our password, you can get one here:
+				<br><span i18n:translate="select_password_help">If you need some help with our password, you can get one here:</span>
 				<br>
 				<br>
 				<input type="text" id="password-generator-output">
@@ -386,7 +386,7 @@
 				<br>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="close">Close</button>
 			</div>
 		</div>
 	</div>
@@ -399,22 +399,22 @@
 			<div class="modal-header">
 				<button type="button" id="popup-edit-statement_close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myModalLabel">Edit Statements / View Changelog</h4>
+				<h4 class="modal-title" id="myModalLabel" i18n:translate="edit_statement_view_changelog">Edit Statements / View Changelog</h4>
 			</div>
 			<div id="popup-edit-statement_body">
 				<h4><p id="popup-edit-error-description" class="error-description"></p></h4>
 				<h4><p id="popup-edit-success-description" class="success-description"></p></h4>
 				<div id="popup-edit-statement_content">
 				</div>
-				<p id="popup-edit-statement-description-p">Please, edit the selected statement here:</p>
+				<p id="popup-edit-statement-description-p" i18n:translate="edit_statement_here">Please, edit the selected statement here:</p>
 				<textarea id="popup-edit-statement_textarea" type="text" placeholder="some corrected statement"></textarea>
 				<h3 id="popup-edit-statement_logfile_header"></h3>
 				<div id="popup-edit-statement_logfile">
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="popup-edit-statement_submit">Submit</button>
-				<button type="button" class="btn btn-default" id="popup-edit-statement_close_button">Close</button>
+				<button type="button" class="btn btn-primary" id="popup-edit-statement_submit" i18n:translate="submit">Submit</button>
+				<button type="button" class="btn btn-default" id="popup-edit-statement_close_button" i18n:translate="close">Close</button>
 			</div>
 		</div>
 	</div>
@@ -439,11 +439,10 @@
 	</div>
 </div>
 
-
 <!-- JS DISABLED -->
 <noscript>
 	<div class="jsdiabled">
-		<span class="font-semi-bold">JavaScript is not enabled:</span>
-		<span class="font-normal">Please enable JavaScript!</span>
+		<span class="font-semi-bold" i18n:translate="js_disabled1">JavaScript is not enabled:</span>
+		<span class="font-normal" i18n:translate="js_disabled2">Please enable JavaScript!</span>
 	</div>
 </noscript>

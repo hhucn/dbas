@@ -6,7 +6,6 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyramid.security import remember, forget
 from pyramid.session import check_csrf_token
 from pyramid.i18n import TranslationString as ts
-from zope.i18n import translate
 
 from .database import DBSession
 from .database.model import User, Group, Issue
@@ -89,7 +88,7 @@ class Dbas(object):
 			# check for user and password validations
 			if not db_user:
 				logger('main_login', 'form.login.submitted', 'user \'' + nickname + '\' does not exists')
-				message = translate('nouser')#ts('NoUser', domain='dbas', default='User does not exists')
+				message = ts('NoUser', domain='dbas', default='User does not exists')
 			elif not db_user.validate_password(password):  # dbUser.validate_password(password)
 				logger('main_login', 'form.login.submitted', 'wrong password')
 				message = 'Wrong password'
@@ -517,16 +516,16 @@ class Dbas(object):
 			logged_in=self.request.authenticated_userid
 		)
 
-	# impressum
-	@view_config(route_name='main_impressum', renderer='templates/impressum.pt', permission='everybody')
-	def main_impressum(self):
+	# imprint
+	@view_config(route_name='main_imprint', renderer='templates/imprint.pt', permission='everybody')
+	def main_imprint(self):
 		"""
-		View configuration for the impressum.
+		View configuration for the imprint.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
-		logger('main_impressum', 'def', 'main')
+		logger('main_imprint', 'def', 'main')
 		return dict(
-			title='Impressum',
+			title='Imprint',
 			project=header,
 			logged_in=self.request.authenticated_userid
 		)
@@ -535,7 +534,7 @@ class Dbas(object):
 	@notfound_view_config(renderer='templates/404.pt')
 	def notfound(self):
 		"""
-		View configuration for the impressum.
+		View configuration for the 404 page.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('notfound', 'def', 'view \'' + self.request.view_name + '\' not found')
