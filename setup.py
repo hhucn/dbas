@@ -24,7 +24,8 @@ requires = [
     'validate_email',
 	'splinter',
     'pyramid_beaker',
-	]
+	'lingua',
+]
 
 setup(name='D-BAS',
 	version='0.22',

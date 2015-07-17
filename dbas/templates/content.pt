@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="mydbas">
+<html lang="${request.locale_name}"
+			metal:use-macro="load: basetemplate.pt"
+			xmlns="http://www.w3.org/1999/xhtml"
+			xml:lang="en">
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
@@ -15,11 +18,11 @@
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col-md-10 center text-center">
-						<h2><span class="font-semi-bold">Dialogue-Based Argumentation System</span></h2>
-						<p>The current discussion is about
+						<h2><span class="font-semi-bold" i18n:translate="dbas_long">Dialogue-Based Argumentation System</span></h2>
+						<p><span i18n:translate="current_discussion">The current discussion is about</span>
 							<br>
 							<span class="font-semi-bold">'<span tal:replace="issue"/>'</span>
-							<br> and was started at <span class="font-semi-bold" tal:replace="date" />.
+							<br> <span i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" tal:replace="date" />.
 						</p>
 						<!--
 						<p id='start-description'>You're free to join the discussion. When you want to join, just press the button:</p>
@@ -54,21 +57,21 @@
 							<input id="edit-statement" type="button" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
 							<br>
 							<div id="display-control-container">
-								<p>Change display style:</p>
+								<p i18n:translate="change_style">Change display style:</p>
 								<div class="segmented-control">
 									<input type="radio" name="sc-display-style" id="sc-style-1" checked value="Dialog View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
 									<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
-										<p>Dialog View</p>
+										<p i18n:translate="dialog_view">Dialog View</p>
 									</label>
 									<br>
 									<input type="radio" name="sc-display-style" id="sc-style-2" value="Island View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
 									<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
-										<p>Island View</p>
+										<p i18n:translate="island_view">Island View</p>
 									</label>
 									<br>
 									<input type="radio" name="sc-display-style" id="sc-style-3" value="Complete View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
 									<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
-										<p>Complete View</p>
+										<p i18n:translate="complete_view">Complete View</p>
 									</label>
 								</div>
 							</div>
@@ -80,7 +83,7 @@
 					<div class="col-md-6">
 						<div class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="font-semi-bold">Error:</span>
+							<span class="font-semi-bold" i18n:translate="error">Error:</span>
 							<span id="discussion-failure-msg"></span>
 						</div>
 						<div class="col-md-3"></div>
@@ -95,17 +98,17 @@
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col-md-10">
-						<h4 id='island-view-container-header-h4'><span class="font-semi-bold">Island View</span></h4>
-						<h4 id='island-view-container-h4'><span class="font-semi-bold">Island View</span></h4>
+						<h4 id='island-view-container-header-h4'><span class="font-semi-bold" i18n:translate="sialnd_view">Island View</span></h4>
+						<h4 id='island-view-container-h4'><span class="font-semi-bold" i18n:translate="sialnd_view">Island View</span></h4>
 
 						<div id="left-island-column">
-							<h4 id="heading-pro-island" class="font-semi-bold">Pro</h4>
+							<h4 id="heading-pro-island" class="font-semi-bold" i18n:translate="pro">Pro</h4>
 							<div id="left-island">
 							</div>
 						</div>
 
 						<div id="right-island-column">
-							<h4 id="heading-contra-island" class="font-semi-bold">Contra</h4>
+							<h4 id="heading-contra-island" class="font-semi-bold" i18n:translate="contra">Contra</h4>
 							<div id="right-island">
 							</div>
 						</div>
@@ -127,28 +130,28 @@
 					<div class="col-md-1"></div>
 					<div class="col-md-10">
 
-						<form id="insert_statement_form" action="/not_implemented" method="post">
-							<h4 id="add-statement-container-h4">Please insert a new Argument</h4>
+						<form id="insert-statement-form" action="/not_implemented" method="post">
+							<h4 id="add-statement-container-h4" i18n:translate="insert-argument">Please insert a new Argument</h4>
 							<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="">
 
 							<div id="left-position-column">
-								<h4 id="heading-pro-positions" class="font-semi-bold">Pro</h4>
+								<h4 id="heading-pro-positions" class="font-semi-bold" i18n:translate="pro">Pro</h4>
 								<div id="pro-textareas">
 
 								</div>
 								<a>
 									<div id="add-pro-textarea">
-										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add a textfield</div>
+										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> <span i18n:translate="add_textfield">Add a textfield</span></div>
 								</a>
 							</div>
 
 							<div id="right-position-column">
-								<h4 id="heading-contra-positions" class="font-semi-bold">Contra</h4>
+								<h4 id="heading-contra-positions" class="font-semi-bold" i18n:translate="contra">Contra</h4>
 								<div id="con-textareas">
 								</div>
 								<a>
 									<div id="add-con-textarea">
-										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> Add a textfield</div>
+										<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> <span i18n:translate="add_textfield">Add a textfield</span></div>
 								</a>
 							</div>
 							<div tal:condition="was_statement_inserted" class="alert alert-success" role="alert">
@@ -167,8 +170,8 @@
 				<div class="row">
 					<div class="col-md-2"></div>
 					<div class="col-md-8">
-						<h4><span class="font-semi-bold">Special rights</span></h4>
-						<p>Some additional options for the administrator.
+						<h4><span class="font-semi-bold" i18n:translate="special_rights">Special rights</span></h4>
+						<p i18n:translate="admin_only">Some additional options for the administrator.
 							<br>
 							<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
 						</p>
@@ -181,7 +184,7 @@
 			</div>
 
 			<div id="navigation-minimap-container">
-				<p>Minimap:</p>
+				<p i18n:translate="minimap">Minimap:</p>
 			</div>
 
 		</div>
@@ -193,9 +196,10 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-id.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ids.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-strings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
+	
 
 </body>
-<html>
+</html>

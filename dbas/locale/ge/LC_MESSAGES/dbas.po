@@ -1,0 +1,185 @@
+#. Default: Get In Touch With Us
+#: dbas/templates/contact.pt:20
+msgid "contact_header_1"
+msgstr ""
+
+#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
+#. hours max!
+#: dbas/templates/contact.pt:21
+msgid "contact_header_2"
+msgstr ""
+
+#. Default: Your Name (required)
+#: dbas/templates/contact.pt:27
+msgid "name"
+msgstr ""
+
+#. Default: Your E-Mail (required)
+#: dbas/templates/contact.pt:34
+msgid "mail_req"
+msgstr ""
+
+#. Default: Your Phone Number
+#: dbas/templates/contact.pt:41
+msgid "phone_no"
+msgstr ""
+
+#. Default: Your Message (required)
+#: dbas/templates/contact.pt:48
+msgid "message_req"
+msgstr ""
+
+#. Default: Anti-Spam (required)
+#: dbas/templates/contact.pt:55
+msgid "spam_req"
+msgstr ""
+
+#. Default: Warning!
+#: dbas/templates/contact.pt:72
+msgid "warning"
+msgstr ""
+
+#. Default: Great:
+#: dbas/templates/contact.pt:80
+msgid "great"
+msgstr ""
+
+#. Default: Your message was sent.
+#: dbas/templates/contact.pt:80
+msgid "message_sent"
+msgstr ""
+
+#. Default: Welcome
+#: dbas/templates/index.pt:18
+msgid "welcome"
+msgstr ""
+
+#. Default: D-Bas offers a lot of advantages, here are a few of them:
+#: dbas/templates/index.pt:28
+msgid "dbas_intro_advantages_intro"
+msgstr ""
+
+#. Default: Easy to use and very powerful
+#: dbas/templates/index.pt:30
+msgid "dbas_intro_advantages_1"
+msgstr ""
+
+#. Default: Avoid redundancy due to multiple statements because an
+#. argumentation map is used as background structure
+#: dbas/templates/index.pt:31
+msgid "dbas_intro_advantages_2"
+msgstr ""
+
+#. Default: Every argument and position will be connected logically to each
+#. other
+#: dbas/templates/index.pt:32
+msgid "dbas_intro_advantages_3"
+msgstr ""
+
+#. Default: Features
+#: dbas/templates/index.pt:65
+msgid "features"
+msgstr ""
+
+#. Default: of D-BAS
+#: dbas/templates/index.pt:65
+msgid "of_dbas"
+msgstr ""
+
+#. Default: Argumentation Maps
+#: dbas/templates/index.pt:73
+msgid "argu_maps"
+msgstr ""
+
+#. Default: A argumentation map is like a mind map, but the relations between
+#. the nodes are highly important and can have several meanings. Additionally
+#. the bubbles of the map can have play a important role. Therefore using this
+#. data structure for logically presentations of some graphs makes sense.
+#: dbas/templates/index.pt:74
+msgid "argu_maps_content"
+msgstr ""
+
+#. Default: Dialogue-based
+#: dbas/templates/index.pt:78
+msgid "dialogue_based"
+msgstr ""
+
+#. Default: Yeah, this is a novel and it is a kind of dialogue-based approach.
+#. This means that the system will represent argumentations of panelist and
+#. claims will be given through the other participants.
+#: dbas/templates/index.pt:79
+msgid "dialogue_based_content"
+msgstr ""
+
+#. Default: Simple UI
+#: dbas/templates/index.pt:83
+msgid "simple_ui"
+msgstr ""
+
+#. Default: The user interface of D-BAS is simple, clear and easy. At any point
+#. during the discussion the choices for the participant are bounded, but not
+#. isolating him/her.
+#: dbas/templates/index.pt:84
+msgid "simple_ui_content"
+msgstr ""
+
+#. Default: Guided View
+#: dbas/templates/index.pt:91
+msgid "guided_view"
+msgstr ""
+
+#. Default: You will never see something like an argumentation map, because the
+#. systems seems to be like a dynamic and generic <dynamic element> for you.
+#: dbas/templates/index.pt:92
+msgid "guided_view_content"
+msgstr ""
+
+#. Default: Island View
+#: dbas/templates/index.pt:96
+msgid "island_view"
+msgstr ""
+
+#. Default: Okay, you want to see more as, but not everything. Therefore the
+#. island view will present you a list of every connected statement for an
+#. specific statement.
+#: dbas/templates/index.pt:97
+msgid "island_view_content"
+msgstr ""
+
+#. Default: Expert View
+#: dbas/templates/index.pt:101
+msgid "expert_view"
+msgstr ""
+
+#. Default: So, you think you are an expert? Okay, you can have a view of the
+#. complete argumentation map.
+#: dbas/templates/index.pt:102
+msgid "expert_view_content"
+msgstr ""
+
+#. Default: Guided View: The participants will be lead through the discussion .
+#: dbas/templates/index.pt:121
+msgid "guided_view_description"
+msgstr ""
+
+#. Default: Island View: A position with all connected arguments is presented
+#. as island. This supports the insight of a discussion about a specific
+#. position.
+#: dbas/templates/index.pt:122
+msgid "island_view_description"
+msgstr ""
+
+#. Default: Expert View: Participants are able to see and do everything.
+#: dbas/templates/index.pt:123
+msgid "expert_view_description"
+msgstr ""
+
+#. Default: 404 Error
+#: dbas/templates/404.pt:15
+msgid "404"
+msgstr ""
+
+#. Default: The page &quot;<dynamic element>&quot; for could not be found.
+#: dbas/templates/404.pt:16
+msgid "404_text"
+msgstr ""

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbasdomain">
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
@@ -15,30 +15,37 @@
 					<div class="col-md-12">
 						<div class="content">
 							<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
-							<h2><span class="font-semi-bold">Welcome</span> <span class="smaller">to the <span class="font-semi-bold">D</span>ialogue-<span class="font-semi-bold">B</span>ased <span class="font-semi-bold">A</span>rgumentation <span class="font-semi-bold">S</span>oftware, or short <span class="font-semi-bold">D-BAS</span></span></h2>
+							<h2><span class="font-semi-bold" i18n:translate="welcome">Welcome</span>
+								<span class="smaller">to the
+									<span class="font-semi-bold">D</span>ialogue-
+									<span class="font-semi-bold">B</span>ased 
+									<span class="font-semi-bold">A</span>rgumentation 
+									<span class="font-semi-bold">S</span>oftware, or short 
+									<span class="font-semi-bold">D-BAS</span>
+								</span></h2>
 							<p class="lead">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
 							<br>
-							<p class="lead">D-Bas offers a lot of advantages, here are a few of them:</p>
+							<p class="lead" i18n:translate="dbas_intro_advantages_intro">D-Bas offers a lot of advantages, here are a few of them:</p>
 							<ul class="lead list">
-								<li>Easy to use and very powerful</li>
-								<li>Avoid redundancy due to multiple statements because an argumentation map is used as background structure</li>
-								<li>Every argument and position will be connected logically to each other</li>
+								<li i18n:translate="dbas_intro_advantages_1">Easy to use and very powerful</li>
+								<li i18n:translate="dbas_intro_advantages_2">Avoid redundancy due to multiple statements because an argumentation map is used as background structure</li>
+								<li i18n:translate="dbas_intro_advantages_3">Every argument and position will be connected logically to each other</li>
 							</ul>
 							<br>
-							<p class="lead">This project is based on research of the graduation school Online-Participation, subsidised governmentally by <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank" alt="Ministry of Innovation, Science and Research in North Rhine-Westphalia">Ministry of Innovation, Science and Research in North Rhine-Westphalia</a>.</p>
+							<p class="lead">This project is based on research of the graduation school Online-Participation, subsidised governmentally by <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank">Ministry of Innovation, Science and Research in North Rhine-Westphalia</a>.</p>
 							<ul class="list-logos">
 								<li>
-									<a target="_blank" id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
+									<a id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
 										<img class="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo" />
 									</a>
 								</li>
 								<li>
-									<a target="_blank" id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
+									<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
 										<img class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo" />
 									</a>
 								</li>
 								<li>
-									<a target="_blank" id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
+									<a id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
 										<img class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" alt="fhoev logo" />
 									</a>
 								</li>
@@ -55,70 +62,46 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="content">
-							<h2><span class="font-semi-bold">Features</span> <span class="smaller">of D-BAS</span></h2>
+							<h2><span class="font-semi-bold" i18n:translate="features">Features</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
 						</div>
 					</div>
 				</div>
 
 				<div class="row">
 					<div class="col-md-4 col-badge">
-						<img id="icon-map" class="icon-badge" />
-						<h3>Argumentation Maps</h3>
-						<p>A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense.</p>
+						<img id="icon-map" class="icon-badge" alt="icon-map" src=""/>
+						<h3 i18n:translate="argu_maps">Argumentation Maps</h3>
+						<p i18n:translate="argu_maps_content">A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense.</p>
 					</div>
 					<div class="col-md-4 col-badge">
-						<img id="icon-dialogue" class="icon-badge" />
-						<h3>Dialogue-based</h3>
-						<p>Yeah, this is a novel and it is a kind of dialogue-based approach. This means that the system will represent argumentations of panelist and claims will be given through the other participants.</p>
+						<img id="icon-dialogue" class="icon-badge" alt="icon-dialogue" src=""/>
+						<h3 i18n:translate="dialogue_based">Dialogue-based</h3>
+						<p i18n:translate="dialogue_based_content">Yeah, this is a novel and it is a kind of dialogue-based approach. This means that the system will represent argumentations of panelist and claims will be given through the other participants.</p>
 					</div>
 					<div class="col-md-4 col-badge">
-						<img id="icon-simple" class="icon-badge" />
-						<h3>Simple UI</h3>
-						<p>The user interface of D-BAS is simple, clear and easy. At any point during the discussion the choices for the participant are bounded, but not isolating him/her.</p>
+						<img id="icon-simple" class="icon-badge" alt="icon-simple" src=""/>
+						<h3 i18n:translate="simple_ui">Simple UI</h3>
+						<p i18n:translate="simple_ui_content">The user interface of D-BAS is simple, clear and easy. At any point during the discussion the choices for the participant are bounded, but not isolating him/her.</p>
 					</div>
 				</div>
 
 				<div class="row">
 					<div class="col-md-4 col-badge">
-						<img id="icon-guided" class="icon-badge" />
-						<h3>Guided View</h3>
-						<p>You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> for you.</p>
+						<img id="icon-guided" class="icon-badge" alt="icon-guided" src=""/>
+						<h3 i18n:translate="guided_view">Guided View</h3>
+						<p i18n:translate="guided_view_content">You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> for you.</p>
 					</div>
 					<div class="col-md-4 col-badge">
-						<img id="icon-island" class="icon-badge" />
-						<h3>Island View</h3>
-						<p>Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.</p>
+						<img id="icon-island" class="icon-badge" alt="icon-island" src=""/>
+						<h3 i18n:translate="island_view">Island View</h3>
+						<p i18n:translate="island_view_content">Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.</p>
 					</div>
 					<div class="col-md-4 col-badge">
-						<img id="icon-expert" class="icon-badge" />
-						<h3>Expert View</h3>
-						<p>So, you think you are an expert? Okay, you can have a view of the complete argumentation map.</p>
+						<img id="icon-expert" class="icon-badge" alt="icon-expert" src=""/>
+						<h3 i18n:translate="expert_view">Expert View</h3>
+						<p i18n:translate="expert_view_content">So, you think you are an expert? Okay, you can have a view of the complete argumentation map.</p>
 					</div>
 				</div>
-				<!--
-				<div class="row">
-					<div class="col-md-12">
-						<div class="content">
-							<h2><span class="font-semi-bold">Features</span> <span class="smaller">of D-BAS</span></h2>
-							<p class="lead">This is about
-								<span class="font-normal">... features ...</span>
-							</p>
-							<dl class="dl-horizontal lead list">
-								<dt>ArguMaps:</dt>
-								<dd>A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense. </dd>
-								<dt>Dialogue-based:</dt>
-								<dd> Yeah, this is a novel and it will work with a kind of dialogue-based approach. This means that the system will represnt the panelist and the claims will be given through the other participants.</dd>
-								<dt>Guided View:</dt>
-								<dd> You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> for you.</dd>
-								<dt>Island View:</dt>
-								<dd> Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.</dd>
-								<dt>Expert View:</dt>
-								<dd> So, you think you are an expert? Okay, you can have a view of the complete argumentation map.</dd>
-							</dl>
-						</div>
-					</div>
-				</div>
-!-->
 
 			</div>
 
@@ -135,27 +118,27 @@
 										<li> The system is very easy to use.</li>
 										<li> It offers a time-shifted discussion in three modes:</li>
 										<ul class="lead list">
-											<li> Guided Discussion: The participants will be lead through the discussion .</li>
-											<li> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
-											<li> Expert View: Participants are able to see and do everything.</li>
+											<li i18n:translate="guided_view_description"> Guided View: The participants will be lead through the discussion .</li>
+											<li i18n:translate="island_view_description"> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
+											<li i18n:translate="expert_view_description"> Expert View: Participants are able to see and do everything.</li>
 										</ul>
 										<li> Contributions can be rated by the participants.</li>
 										<li> You have the huge power of the crowd!.</li>
 								</ul>
 								<br>
 								<p class="lead">This sounds amazing, but every egg-laying, milk-bearing woolly sow has its beginning. Due to this the <span class="font-normal">first milesstone</span> contains:
-									<ul class="lead list">
-										<li> System is based on a finished argumentation map.</li>
-										<li> A base form of the guided view will be avbailable:</li>
-										<ul class="lead list">
-											<li> The participant will be confronted with an argument out of the finished argumentation map.</li>
-											<li> He has several options to choose, so this will be a kind of led <a href="http://www.bpb.de/politik/wahlen/wahl-o-mat/" target="_blank" alt="Wahl-O-Mat">Wahl-O-Mat</a>.</li>
-											<li> We will have no KI, recommender systems or predictions of the next post. Everything will be statically.</li>
-										</ul>
-										<li> Participants will be tracked, but every data is accessible.</li>
-										<li> Everything will be done with unit and integration tests.</li>
-									</ul>
 								</p>
+								<ul class="lead list">
+									<li> System is based on a finished argumentation map.</li>
+									<li> A base form of the guided view will be avbailable:</li>
+									<ul class="lead list">
+										<li> The participant will be confronted with an argument out of the finished argumentation map.</li>
+										<li> He has several options to choose, so this will be a kind of led <a href="http://www.bpb.de/politik/wahlen/wahl-o-mat/" target="_blank" alt="Wahl-O-Mat">Wahl-O-Mat</a>.</li>
+										<li> We will have no KI, recommender systems or predictions of the next post. Everything will be statically.</li>
+									</ul>
+									<li> Participants will be tracked, but every data is accessible.</li>
+									<li> Everything will be done with unit and integration tests.</li>
+								</ul>
 						</div>
 					</div>
 				</div>
@@ -169,21 +152,19 @@
 							<p class="lead">D-BAS is a <span class="font-normal">novel approach</span> of discussions in the field of online participation and developed by <a href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html">Tobias Krauthoff</a>.
 							</p>
 
-
-
 							<div class="row">
 								<div class="col-md-4 col-badge">
-									<img id="icon-liqd" class="icon-badge" />
+									<img id="icon-liqd" class="icon-badge" alt="icon-liqd" src=""/>
 									<h3>Cooperation with <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a></h3>
 									<p>A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid Democracy e.V.</p>
 								</div>
 								<div class="col-md-4 col-badge">
-									<img id="icon-kolleg" class="icon-badge" />
+									<img id="icon-kolleg" class="icon-badge" alt="icon-kolleg" src=""/>
 									<h3>Graduation School <a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" target="_blank" title="Graduation School Online Participation" target="_blank">Online-Participation</a></h3>
 									<p>The NRW Graduation School Online-Participation is subsidised governmentally by Ministry of Innovation, Science and Research in North Rhine-Westphalia. The Graduation School is a network of business economics, computer scientiests, communication scientists, political scientists, jurists and sociologist, which are wokring together with partners from practice. The objective is the examination of opportunities of the internet, where affected persons are able to participate in decisions, where they are affected.</p>
 								</div>
 								<div class="col-md-4 col-badge">
-									<img id="icon-kit" class="icon-badge" />
+									<img id="icon-kit" class="icon-badge" alt="icon-kit" src=""/>
 									<h3>Cooperation with the <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php">Karlsruhe Institut of Technology</a></h3>
 									<p>The workging group of functionality of the graduation school has a close-knit connection with the Institute for Technology Assessment and Systems Analysis (ITAS) of the Karlsruhe Institut of Technology.</p>
 								</div>
@@ -209,42 +190,21 @@
 
 								<div class="row">
 									<div class="col-md-4 col-badge">
-										<img id="icon-pro-con" class="icon-badge" />
+										<img id="icon-pro-con" class="icon-badge" alt="icon-pro-con" src=""/>
 										<h3>Pro-Contra Lists</h3>
 										<p>These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.</p>
 									</div>
 									<div class="col-md-4 col-badge">
-										<img id="icon-forum" class="icon-badge" />
+										<img id="icon-forum" class="icon-badge" alt="icon-forum" src=""/>
 										<h3>Forum</h3>
 										<p>Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.</p>
 									</div>
 									<div class="col-md-4 col-badge">
-										<img id="icon-argapproach" class="icon-badge" />
+										<img id="icon-argapproach" class="icon-badge" alt="icon-argapproach" src=""/>
 										<h3>Argumentation-based Approaches</h3>
 										<p>This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.</p>
 									</div>
 								</div>
-
-								<!--
-							<ul class="lead list">
-								<li>
-									<span class="font-normal">Forum:</span>
-									<br>Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.
-								</li>
-								<li>
-									<span class="font-normal">Pro-Contra Lists:</span>
-									<br>These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.
-								</li>
-								<li>
-									<span class="font-normal">Argumentation-based Approaches:</span>
-									<br>This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.
-								</li>
-							</ul>
-							<span class="lead">For these reason the novel approach of a dialogue-based argumendation system was developed. Additionally have a look at our publications:</span>
-							<ul class="lead list">
-								<li>Yeah, I know. This is empty now, but the first one will be here...soon.</li>
-							</ul>
--->
 							</div>
 						</div>
 					</div>
@@ -255,6 +215,5 @@
 
 		<div metal:use-macro="load: snippet-footer.pt" />
 	</div>
-
 </body>
-<html>
+</html>

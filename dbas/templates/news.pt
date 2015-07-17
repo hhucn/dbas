@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
+<html lang="${request.locale_name}"
+			metal:use-macro="load: basetemplate.pt"
+			xmlns="http://www.w3.org/1999/xhtml"
+			xml:lang="en">
 <!-- todo move news into second database -->
 
 <head>
@@ -15,6 +18,32 @@
 			<div class="container first-container">
 				<h1><span class="font-semi-bold">News</span></h1>
 				<p class="lead">This will be the news page and currently I think...this will be some kind of blog</p>
+			</div>
+
+			<div class="container newscontainer span_1_of_4">
+				<ul class="share-table">
+					<li>
+						<a class="share-icon share-def"></a>
+						<ul>
+							<li>
+								<a class="share-icon share-mail"></a>
+							</li>
+							<li>
+								<a class="share-icon share-twitter"></a>
+							</li>
+							<li>
+								<a class="share-icon share-google"></a>
+							</li>
+							<li>
+								<a class="share-icon share-facebook"></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<h3><span class="font-semi-bold">i18n</span></h3>
+				<h4><p>22.07.2015</p></h4>
+				<h5>Author: Tobias Krauthoff</h5>
+				<br>Still working on i18n-problems of chameleon templates due to lingua. If this is fixed, i18n of jQuery will happen. Afterwards l10n will take place.
 			</div>
 
 			<div class="container newscontainer span_2_of_4">
@@ -612,4 +641,4 @@
 
 
 </body>
-<html>
+</html>

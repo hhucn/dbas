@@ -52,6 +52,7 @@ def main(global_config, **settings):
 	config.include('pyramid_chameleon')
 	config.include('pyramid_mailer')
 	# config.include('pyramid_beaker') # done in the ini
+	config.add_translation_dirs('dbas:locale')
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)

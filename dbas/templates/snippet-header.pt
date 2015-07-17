@@ -32,25 +32,25 @@
 				<ul id="navbar-right" class="nav navbar-nav navbar-right">
 					<li id="content-link" tal:condition="logged_in">
 						<a href="${request.application_url}/content" title="Get the party started">
-							<img id="header_letsgo" class="glyphicon-local">&thinsp;Let's&thinsp;&thinsp;go
+							<img id="header_letsgo" class="glyphicon-local" i18n:translate="lets_go">&thinsp;Let's&thinsp;&thinsp;go
 						</a>
 					</li>
 
 					<li id="news-link">
 						<a href="${request.application_url}/news" title="News about D-BAS">
-							<img id="header_news" class="glyphicon-local">&thinsp;News
+							<img id="header_news" class="glyphicon-local" i18n:translate="news">&thinsp;News
 						</a>
 					</li>
 
 					<li id="contact-link">
 						<a href="${request.application_url}/contact" title="Get in touch with us">
-							<img id="header_contact" class="glyphicon-local">&thinsp;Contact
+							<img id="header_contact" class="glyphicon-local" i18n:translate="contact">&thinsp;Contact
 						</a>
 					</li>
 
 					<li id="login-link" tal:condition="not:logged_in">
 						<a href="${request.application_url}/login" title="Login">
-							<img id="header_login" class="glyphicon-local">&thinsp;Login
+							<img id="header_login" class="glyphicon-local" i18n:translate="login">&thinsp;Login
 						</a>
 					</li>
 
@@ -62,12 +62,12 @@
 							<ul class="dropdown-menu">
 								<li>
 									<a href="${request.application_url}/settings" title="Settings">
-										<img id="header_settings" class="glyphicon-local">&thinsp;Settings
+										<img id="header_settings" class="glyphicon-local" i18n:translate="settings">&thinsp;Settings
 									</a>
 								</li>
 								<li>
 									<a href="${request.application_url}/logout" title="Logout">
-										<img id="header_logout" class="glyphicon-local">&thinsp;Logout
+										<img id="header_logout" class="glyphicon-local" i18n:translate="logout">&thinsp;Logout
 									</a>
 								</li>
 							</ul>
@@ -75,40 +75,40 @@
 					</li>
 
 					<li class="dropdown">
-						<a class="dropdown-toggle" name="show-more-toggle" data-toggle="dropdown" href="#more" title="Show more">More
+						<a class="dropdown-toggle" name="show-more-toggle" data-toggle="dropdown" href="#more" title="Show more" i18n:translate="more">More
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>
 								<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
-									<img id="header_author" class="glyphicon-local">&thinsp;Author</a>
+									<img id="header_author" class="glyphicon-local" i18n:translate="author">&thinsp;Author</a>
 							</li>
 							<li>
 								<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
-									<img id="header_licence" class="glyphicon-local">&thinsp;Licence</a>
+									<img id="header_licence" class="glyphicon-local" i18n:translate="licence">&thinsp;Licence</a>
 							</li>
 							<li>
 								<a id="link_popup_privacy" href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
-									<img id="header_privacy" class="glyphicon-local">&thinsp;Privacy Policy</a>
+									<img id="header_privacy" class="glyphicon-local" i18n:translate="privacy_policy">&thinsp;Privacy Policy</a>
 							</li>
 						</ul>
 					</li>
 
 					<li class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#language" title="Switch
-						language">Language
+						language" i18n:translate="language">Language
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag_ge">Deutsch</a>
+								<a class="link-trans" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag_ge">Deutsch</a>
 							</li>
 							<li class="active">
-								<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag_en">English</a>
+								<a class="link-trans" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag_en">English</a>
 							</li>
 							<li>
-								<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/spain-flag-16.png')}" alt="flag_es">Espa&ntilde;ol</a>
+								<a class="link-trans" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/spain-flag-16.png')}" alt="flag_es">Espa&ntilde;ol</a>
 							</li>
 							<li>
-								<a href=""><img class="language_selector_img" src="${request.static_url('dbas:static/images/sweden-flag-16.png')}" alt="flag_sw">Svensk</a>
+								<a class="link-trans" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/sweden-flag-16.png')}" alt="flag_sw">Svensk</a>
 							</li>
 						</ul>
 					</li>

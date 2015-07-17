@@ -393,28 +393,47 @@
 </div>
 
 <!-- EDIT STATEMENTS-->
-<div class="modal fade" id="popup_edit_statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" id="popup_edit_statement_close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				<button type="button" id="popup-edit-statement_close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
 				<h4 class="modal-title" id="myModalLabel">Edit Statements / View Changelog</h4>
 			</div>
-			<div id="popup_edit_statement_body">
+			<div id="popup-edit-statement_body">
 				<h4><p id="popup-edit-error-description" class="error-description"></p></h4>
 				<h4><p id="popup-edit-success-description" class="success-description"></p></h4>
-				<div id="popup_edit_statement_content">
+				<div id="popup-edit-statement_content">
 				</div>
 				<p id="popup-edit-statement-description-p">Please, edit the selected statement here:</p>
-				<textarea id="popup_edit_statement_textarea" type="text" placeholder="some corrected statement"></textarea>
-				<h3 id="popup_edit_statement_logfile_header"></h3>
-				<div id="popup_edit_statement_logfile">
+				<textarea id="popup-edit-statement_textarea" type="text" placeholder="some corrected statement"></textarea>
+				<h3 id="popup-edit-statement_logfile_header"></h3>
+				<div id="popup-edit-statement_logfile">
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="popup_edit_statement_submit">Submit</button>
-				<button type="button" class="btn btn-default" id="popup_edit_statement_close_button">Close</button>
+				<button type="button" class="btn btn-primary" id="popup-edit-statement_submit">Submit</button>
+				<button type="button" class="btn btn-default" id="popup-edit-statement_close_button">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- CONFIRM DIALOG POPUP -->
+<div class="modal fade" id="confirm-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel"></h4>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button id="confirm-dialog-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
+				<button id="confirm-dialog-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
 			</div>
 		</div>
 	</div>

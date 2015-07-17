@@ -610,7 +610,7 @@ function GuiHandler() {
 	/**
 	 * Opens the edit statements popup
 	 */
-	this.openEditStatementsPopup = function(){
+	this.displayEditStatementsPopup = function(){
 		var table, tr, td_text, td_buttons, list_id, i, edit_button, log_button, statement, uid, type;
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementSubmitButtonId).hide();
@@ -843,5 +843,23 @@ function GuiHandler() {
 		$('#' + scStyle1Id).attr('checked', true);
 		$('#' + scStyle2Id).attr('checked', false);
 		$('#' + scStyle3Id).attr('checked', false);
-	}
+	};
+
+	/**
+	 * Displays dialog for language translation
+	 */
+	this.displayConfirmTranslationDialog = function () {
+		$('#' + popupConfirmDialogId).modal('show');
+		$('#' + popupConfirmDialogId + ' h4.modal-title').text(confirmation);
+		$('#' + popupConfirmDialogId + ' div.modal-body').text(confirmTranslation);
+
+		$('#' + confirmDialogAcceptBtn).click( function () {
+			alert("y");
+			$('#' + popupConfirmDialogId).modal('hide');
+		});
+		$('#' + confirmDialogRefuseBtn).click( function () {
+			alert("n");
+			$('#' + popupConfirmDialogId).modal('hide');
+		});
+	};
 }

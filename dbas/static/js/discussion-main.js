@@ -125,7 +125,7 @@ $(function () {
 
 	// open edit statement
 	$('#' + editStatementButtonId).click(function(){
-		guiHandler.openEditStatementsPopup();
+		guiHandler.displayEditStatementsPopup();
 	}).hover(function () {
 		$(this).toggleClass('btn-primary', 400);
 	});
@@ -149,6 +149,14 @@ $(function () {
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a
 		// flickering screen
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
+	});
+
+	$('.' + translationLink).click(function (){
+		guiHandler.displayConfirmTranslationDialog();
+	});
+
+	$('.' + translationLink + " img").click(function (){
+		guiHandler.displayConfirmTranslationDialog();
 	});
 
 	/*

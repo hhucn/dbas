@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="chameleoni18n">
+<html lang="${request.locale_name}"
+			xmlns="http://www.w3.org/1999/xhtml"
+			xml:lang="en">
 
 <head>
 	<meta charset="utf-8">
@@ -35,4 +37,4 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
 
 </body>
-<html>
+</html>

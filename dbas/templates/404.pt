@@ -1,30 +1,27 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
+<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
 
 <head>
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_404_logout.css')}" rel="stylesheet">
 </head>
 
-	
-	
-	
 <body>
-	
+
 	<div id="wrapper">
 		<div id="content">
 
 			<div class="center text-center">
 				<div class="error">
 					<h1><span class="font-semi-bold" i18n:translate="404">404 Error</span></h1>
-					<p class="lead font-normal">The page &quot;<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; for could not be found.</p>
+					<p class="lead font-normal" i18n:translate="404_text">The page &quot;<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; for could not be found.</p>
 					<br>
 					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
 				</div>
 			</div>
 		</div>
-		
+
 		<div metal:use-macro="load: snippet-footer.pt" />
 	</div>
 
 </body>
-<html>
+</html>
