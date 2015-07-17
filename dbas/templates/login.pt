@@ -48,7 +48,7 @@
 								</div>
 							</div>
 
-							<p data-toggle="modal" data-target="#popup_password" id="forgot-password" i18n:translate="forgot_password"><a>Forgot Password?</a>
+							<p data-toggle="modal" data-target="#popup_password" id="forgot-password"><a i18n:translate="forgot_password">Forgot Password?</a>
 							</p>
 
 							<div tal:condition="login_failed" class="alert alert-danger" role="alert">
