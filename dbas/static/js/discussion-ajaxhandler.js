@@ -219,5 +219,4 @@ function AjaxHandler() {
 				' failed. Sorry!');
 		});
 	};
-
 }

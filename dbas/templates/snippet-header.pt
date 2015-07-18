@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+
 <div id="header">
 	<div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
@@ -22,7 +25,7 @@
 					<li id="features-hook">
 						<a href="#features-template" title="Go to Features" i18n:translate="features">Features</a>
 					</li>
-					<li id="about-hook"><a href="#about-template" title="Go to About">About</a>
+					<li id="about-hook"><a href="#about-template" title="Go to About" i18n:translate="about">About</a>
 					</li>
 					<li id="research-hook">
 						<a href="#research-template" title="Go to Research" i18n:translate="research">Research</a>
@@ -45,7 +48,7 @@
 
 					<li id="contact-link">
 						<a href="${request.application_url}/contact" title="Get in touch with us">
-							<img id="header_contact" class="glyphicon-local" i18n:translate="contact">&thinsp;Contact
+							<img id="header_contact" class="glyphicon-local">&thinsp;<span i18n:translate="contact">Contact</span>
 						</a>
 					</li>
 
@@ -63,12 +66,12 @@
 							<ul class="dropdown-menu">
 								<li>
 									<a href="${request.application_url}/settings" title="Settings">
-										<img id="header_settings" class="glyphicon-local" i18n:translate="settings">&thinsp;Settings
+										<img id="header_settings" class="glyphicon-local">&thinsp;<span i18n:translate="settings">Settings</span>
 									</a>
 								</li>
 								<li>
 									<a href="${request.application_url}/logout" title="Logout">
-										<img id="header_logout" class="glyphicon-local" i18n:translate="logout">&thinsp;Logout
+										<img id="header_logout" class="glyphicon-local">&thinsp;<span i18n:translate="logout">Logout</span>
 									</a>
 								</li>
 							</ul>
@@ -96,21 +99,22 @@
 
 					<li class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#language" title="Switch
-						language" i18n:translate="language">Language
-								<span class="caret"></span></a>
+																																											language"><span i18n:translate="language">Language</span>
+							<span class="caret"></span>
+						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a class="link-trans" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag_ge">Deutsch</a>
+								<a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag_ge">Deutsch</a>
 							</li>
-							<li class="active">
-								<a class="link-trans" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag_en">English</a>
+							<li>
+								<a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag_en">English</a>
 							</li>
 							<!--
 							<li>
-								<a class="link-trans" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/spain-flag-16.png')}" alt="flag_es">Espa&ntilde;ol</a>
+								<a class="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/spain-flag-16.png')}" alt="flag_es">Espa&ntilde;ol</a>
 							</li>
 							<li>
-								<a class="link-trans" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/sweden-flag-16.png')}" alt="flag_sw">Svensk</a>
+								<a class="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/sweden-flag-16.png')}" alt="flag_sw">Svensk</a>
 							</li>
 							-->
 						</ul>
@@ -121,3 +125,5 @@
 		</div>
 	</div>
 </div>
+
+</html>

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-07-18 05:19+0200\n"
+"POT-Creation-Date: 2015-07-18 06:01+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -23,6 +23,231 @@ msgid "news_intro"
 msgstr ""
 "This will be the news page and currently I think...this will be some kind of "
 "blog"
+
+#. Default: About me
+#: dbas/templates/snippet-popups.pt:10
+msgid "about_me"
+msgstr ""
+
+#. Default: Name
+#: dbas/templates/snippet-popups.pt:19
+#, fuzzy
+msgid "name"
+msgstr "Surname"
+
+#. Default: Role
+#: dbas/templates/snippet-popups.pt:25
+msgid "role"
+msgstr ""
+
+#. Default: Doctoral Student
+#: dbas/templates/snippet-popups.pt:27
+msgid "role_value_1"
+msgstr ""
+
+#. Default: Member of the graduation school
+#: dbas/templates/snippet-popups.pt:29
+msgid "role_value_2"
+msgstr ""
+
+#. Default: Online Participation
+#: dbas/templates/snippet-popups.pt:29
+msgid "role_value_3"
+msgstr ""
+
+#. Default: Office
+#: dbas/templates/snippet-popups.pt:41
+msgid "office"
+msgstr ""
+
+#. Default: Universitätsstraße 1
+#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
+#. element><dynamic element> <dynamic element><dynamic element> <dynamic
+#. element><dynamic element> <dynamic element><dynamic element>"
+#: dbas/templates/snippet-popups.pt:44
+msgid "office_value_2"
+msgstr ""
+
+#. Default: 40225 Duesseldorf
+#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
+#. element><dynamic element> <dynamic element><dynamic element> <dynamic
+#. element><dynamic element> <dynamic element><dynamic element>"
+#: dbas/templates/snippet-popups.pt:45
+msgid "office_value_3"
+msgstr ""
+
+#. Default: Department of Computer Science
+#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
+#. element><dynamic element> <dynamic element><dynamic element> <dynamic
+#. element><dynamic element> <dynamic element><dynamic element>"
+#: dbas/templates/snippet-popups.pt:46
+msgid "office_value_4"
+msgstr ""
+
+#. Default: Building 25.12, Room 02.45
+#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
+#. element><dynamic element> <dynamic element><dynamic element> <dynamic
+#. element><dynamic element> <dynamic element><dynamic element>"
+#: dbas/templates/snippet-popups.pt:47
+msgid "office_value_5"
+msgstr ""
+
+#. Default: Heinrich-Heine University Duesseldorf <dynamic element><dynamic
+#. element> <dynamic element><dynamic element> <dynamic element><dynamic
+#. element> <dynamic element><dynamic element>
+#: dbas/templates/snippet-popups.pt:43
+msgid "office_value_1"
+msgstr ""
+
+#. Default: Telephone
+#: dbas/templates/snippet-popups.pt:52
+msgid "telephone"
+msgstr ""
+
+#. Default: Close
+#: dbas/templates/snippet-popups.pt:72 dbas/templates/snippet-popups.pt:113
+#: dbas/templates/snippet-popups.pt:391 dbas/templates/snippet-popups.pt:419
+#: dbas/templates/login.pt:170
+msgid "close"
+msgstr "Close"
+
+#. Default: Copyright &copy; 2015 <dynamic element><dynamic element><dynamic
+#. element> Permission is hereby granted, free of charge, to any person
+#. obtaining a copy of this software and associated documentation files (the
+#. "Software"), to deal in the Software without restriction, including without
+#. limitation the rights to use, copy, modify, merge, publish, distribute,
+#. sublicense, and/or sell copies of the Software, and to permit persons to
+#. whom the Software is furnished to do so, subject to the following
+#. conditions:<dynamic element><dynamic element> The above copyright notice and
+#. this permission notice shall be included in all copies or substantial
+#. portions of the Software.<dynamic element><dynamic element> THE SOFTWARE IS
+#. PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+#. INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR
+#. A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+#. COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+#. WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+#. IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#. SOFTWARE.
+#: dbas/templates/snippet-popups.pt:88
+msgid "mit_licence"
+msgstr ""
+
+#. Default: Privacy Policy
+#: dbas/templates/snippet-popups.pt:126
+msgid "privacy_policy"
+msgstr ""
+
+#. Default: How to select a strong password
+#: dbas/templates/snippet-popups.pt:365
+#, fuzzy
+msgid "select_password"
+msgstr "Old password"
+
+#. Default: A Password is strong, when it contains at least:
+#: dbas/templates/snippet-popups.pt:368
+#, fuzzy
+msgid "select_password_intro"
+msgstr "New Password (confirm)"
+
+#. Default: eight characters
+#: dbas/templates/snippet-popups.pt:370
+#, fuzzy
+msgid "select_password_rule1"
+msgstr "Password-Request"
+
+#. Default: one uppercase letter
+#: dbas/templates/snippet-popups.pt:371
+#, fuzzy
+msgid "select_password_rule2"
+msgstr "Password-Request"
+
+#. Default: one lowercase letter
+#: dbas/templates/snippet-popups.pt:372
+#, fuzzy
+msgid "select_password_rule3"
+msgstr "Password-Request"
+
+#. Default: one special sign
+#: dbas/templates/snippet-popups.pt:373
+#, fuzzy
+msgid "select_password_rule4"
+msgstr "Password-Request"
+
+#. Default: For example 'M2015_fiO' is a strong password. And it would take 275
+#. days to crack this password with a desktop pc in 2015. Removing one sign,
+#. reduces the time to 3 days, and adding a sign increases the time to 57
+#. yearsIt should be noted:
+#: dbas/templates/snippet-popups.pt:375
+#, fuzzy
+msgid "popup_password_text"
+msgstr "Your Password"
+
+#. Default: Avoid using a password on several pages
+#: dbas/templates/snippet-popups.pt:377
+#, fuzzy
+msgid "select_password_avoid1"
+msgstr "New Password (confirm)"
+
+#. Default: Avoid using patterns, which can be found in a dictionary
+#: dbas/templates/snippet-popups.pt:378
+#, fuzzy
+msgid "select_password_avoid2"
+msgstr "New Password (confirm)"
+
+#. Default: Avoid using information that is or might become publicly associated
+#. with the user or the account
+#: dbas/templates/snippet-popups.pt:379
+#, fuzzy
+msgid "select_password_avoid3"
+msgstr "New Password (confirm)"
+
+#. Default: Avoid using information that the user's colleagues and/or
+#. acquaintances might know to be associated with the user
+#: dbas/templates/snippet-popups.pt:380
+#, fuzzy
+msgid "select_password_avoid4"
+msgstr "New Password (confirm)"
+
+#. Default: If you need some help with our password, you can get one here:
+#: dbas/templates/snippet-popups.pt:382
+#, fuzzy
+msgid "select_password_help"
+msgstr "Old password"
+
+#. Default: Edit Statements / View Changelog
+#: dbas/templates/snippet-popups.pt:404
+msgid "edit_statement_view_changelog"
+msgstr ""
+
+#. Default: Please, edit the selected statement here:
+#: dbas/templates/snippet-popups.pt:411
+msgid "edit_statement_here"
+msgstr ""
+
+#. Default: Submit
+#: dbas/templates/snippet-popups.pt:418
+msgid "submit"
+msgstr ""
+
+#. Default: Okay
+#: dbas/templates/snippet-popups.pt:437
+msgid "okay"
+msgstr ""
+
+#. Default: Cancel
+#: dbas/templates/snippet-popups.pt:438
+msgid "cancel"
+msgstr ""
+
+#. Default: JavaScript is not enabled:
+#: dbas/templates/snippet-popups.pt:447
+msgid "js_disabled1"
+msgstr ""
+
+#. Default: Please enable JavaScript!
+#: dbas/templates/snippet-popups.pt:448
+msgid "js_disabled2"
+msgstr ""
 
 #. Default: Get In Touch With Us
 #: dbas/templates/contact.pt:12
@@ -104,7 +329,7 @@ msgstr "Dialog View"
 
 #. Default: Island View
 #: dbas/templates/content.pt:62 dbas/templates/content.pt:95
-#: dbas/templates/index.pt:93
+#: dbas/templates/index.pt:90
 msgid "island_view"
 msgstr "Island View"
 
@@ -154,15 +379,28 @@ msgstr "Special rights"
 #: dbas/templates/content.pt:169
 msgid "admin_only"
 msgstr ""
-"Default: Some additional options for the administrator. <dynamic element>"
+"Some additional options for the administrator.Default: Some additional "
+"options for the administrator. <dynamic element>"
 
 #. Default: Minimap:
 #: dbas/templates/content.pt:180
 msgid "minimap"
 msgstr "Minimap:"
 
+#. Default: Imprint
+#: dbas/templates/snippet-footer.pt:11
+#, fuzzy
+msgid "imprint"
+msgstr "Information required according to § 5 TMG"
+
+#. Default: Icons by
+#: dbas/templates/snippet-footer.pt:16
+msgid "icons_by"
+msgstr ""
+
 #. Default: Settings of:
-#: dbas/templates/settings.pt:15
+#. Default: Settings
+#: dbas/templates/settings.pt:15 dbas/templates/snippet-header.pt:69
 msgid "settings"
 msgstr "Settings of:"
 
@@ -254,24 +492,36 @@ msgstr "Information required according to § 5 TMG"
 msgid "welcome"
 msgstr "Welcome"
 
+#. Default: to the
+#: dbas/templates/index.pt:16
+#, fuzzy
+msgid "to_the_dbas"
+msgstr "to the"
+
 #. Default: or short
-#: dbas/templates/index.pt:20
+#: dbas/templates/index.pt:17
 msgid "or_short"
+msgstr "or short"
+
+#. Default: This novel discussions software will help you to discuss a problem
+#. or statement in a structured manner.
+#: dbas/templates/index.pt:20
+msgid "novel_software"
 msgstr ""
 
 #. Default: D-Bas offers a lot of advantages, here are a few of them:
-#: dbas/templates/index.pt:25
+#: dbas/templates/index.pt:22
 msgid "dbas_intro_advantages_intro"
 msgstr "D-Bas offers a lot of advantages, here are a few of them:"
 
 #. Default: Easy to use and very powerful
-#: dbas/templates/index.pt:27
+#: dbas/templates/index.pt:24
 msgid "dbas_intro_advantages_1"
 msgstr "Easy to use and very powerful"
 
 #. Default: Avoid redundancy due to multiple statements because an
 #. argumentation map is used as background structure
-#: dbas/templates/index.pt:28
+#: dbas/templates/index.pt:25
 msgid "dbas_intro_advantages_2"
 msgstr ""
 "Avoid redundancy due to multiple statements because an argumentation map is "
@@ -279,22 +529,45 @@ msgstr ""
 
 #. Default: Every argument and position will be connected logically to each
 #. other
-#: dbas/templates/index.pt:29
+#: dbas/templates/index.pt:26
 msgid "dbas_intro_advantages_3"
 msgstr "Every argument and position will be connected logically to each other"
 
+#. Default: This project is based on research of the graduation school Online-
+#. Participation, subsidised governmentally by
+#: dbas/templates/index.pt:29
+msgid "projec_based_on"
+msgstr ""
+
+#. Default: Ministry of Innovation, Science and Research in North Rhine-
+#. Westphalia
+#: dbas/templates/index.pt:29
+msgid "ministry_of_innovation"
+msgstr ""
+
+#. Default: And don't forget to check reguarly the
+#: dbas/templates/index.pt:48
+msgid "dont_forget"
+msgstr ""
+
+#. Default: news-page
+#: dbas/templates/index.pt:48
+msgid "news_page"
+msgstr ""
+
 #. Default: Features
-#: dbas/templates/index.pt:62
+#: dbas/templates/index.pt:59 dbas/templates/snippet-header.pt:26
 msgid "features"
 msgstr "Features"
 
 #. Default: of D-BAS
-#: dbas/templates/index.pt:62
+#: dbas/templates/index.pt:59 dbas/templates/index.pt:106
+#: dbas/templates/index.pt:177
 msgid "of_dbas"
 msgstr "of D-BAS"
 
 #. Default: Argumentation Maps
-#: dbas/templates/index.pt:70
+#: dbas/templates/index.pt:67
 msgid "argu_maps"
 msgstr "Argumentation Maps"
 
@@ -302,7 +575,7 @@ msgstr "Argumentation Maps"
 #. the nodes are highly important and can have several meanings. Additionally
 #. the bubbles of the map can have play a important role. Therefore using this
 #. data structure for logically presentations of some graphs makes sense.
-#: dbas/templates/index.pt:71
+#: dbas/templates/index.pt:68
 msgid "argu_maps_content"
 msgstr ""
 "A argumentation map is like a mind map, but the relations between the nodes "
@@ -311,14 +584,14 @@ msgstr ""
 "structure for logically presentations of some graphs makes sense."
 
 #. Default: Dialogue-based
-#: dbas/templates/index.pt:75
+#: dbas/templates/index.pt:72
 msgid "dialogue_based"
 msgstr "Dialogue-based"
 
 #. Default: Yeah, this is a novel and it is a kind of dialogue-based approach.
 #. This means that the system will represent argumentations of panelist and
 #. claims will be given through the other participants.
-#: dbas/templates/index.pt:76
+#: dbas/templates/index.pt:73
 msgid "dialogue_based_content"
 msgstr ""
 "Yeah, this is a novel and it is a kind of dialogue-based approach. This "
@@ -326,14 +599,14 @@ msgstr ""
 "will be given through the other participants."
 
 #. Default: Simple UI
-#: dbas/templates/index.pt:80
+#: dbas/templates/index.pt:77
 msgid "simple_ui"
 msgstr "Simple UI"
 
 #. Default: The user interface of D-BAS is simple, clear and easy. At any point
 #. during the discussion the choices for the participant are bounded, but not
 #. isolating him/her.
-#: dbas/templates/index.pt:81
+#: dbas/templates/index.pt:78
 msgid "simple_ui_content"
 msgstr ""
 "The user interface of D-BAS is simple, clear and easy. At any point during "
@@ -341,13 +614,13 @@ msgstr ""
 "isolating him/her."
 
 #. Default: Guided View
-#: dbas/templates/index.pt:88
+#: dbas/templates/index.pt:85
 msgid "guided_view"
 msgstr "Guided View"
 
 #. Default: You will never see something like an argumentation map, because the
 #. systems seems to be like a dynamic and generic
-#: dbas/templates/index.pt:89
+#: dbas/templates/index.pt:86
 #, fuzzy
 msgid "guided_view_content1"
 msgstr ""
@@ -355,7 +628,7 @@ msgstr ""
 "seems to be like a dynamic and generic <dynamic element> for you."
 
 #. Default: for you
-#: dbas/templates/index.pt:89
+#: dbas/templates/index.pt:86
 #, fuzzy
 msgid "guided_view_content2"
 msgstr ""
@@ -365,7 +638,7 @@ msgstr ""
 #. Default: Okay, you want to see more as, but not everything. Therefore the
 #. island view will present you a list of every connected statement for an
 #. specific statement.
-#: dbas/templates/index.pt:94
+#: dbas/templates/index.pt:91
 msgid "island_view_content"
 msgstr ""
 "Okay, you want to see more as, but not everything. Therefore the island view "
@@ -373,36 +646,52 @@ msgstr ""
 "statement."
 
 #. Default: Expert View
-#: dbas/templates/index.pt:98
+#: dbas/templates/index.pt:95
 msgid "expert_view"
 msgstr "Expert View"
 
 #. Default: So, you think you are an expert? Okay, you can have a view of the
 #. complete argumentation map.
-#: dbas/templates/index.pt:99
+#: dbas/templates/index.pt:96
 msgid "expert_view_content"
 msgstr ""
 "So, you think you are an expert? Okay, you can have a view of the complete "
 "argumentation map."
 
+#. Default: Description
+#: dbas/templates/index.pt:106 dbas/templates/snippet-header.pt:23
+#, fuzzy
+msgid "description"
+msgstr "Guided View: The participants will be lead through the discussion ."
+
 #. Default: Guided View: The participants will be lead through the discussion .
-#: dbas/templates/index.pt:119
+#: dbas/templates/index.pt:116
 msgid "guided_view_description"
 msgstr "Guided View: The participants will be lead through the discussion ."
 
 #. Default: Island View: A position with all connected arguments is presented
 #. as island. This supports the insight of a discussion about a specific
 #. position.
-#: dbas/templates/index.pt:120
+#: dbas/templates/index.pt:117
 msgid "island_view_description"
 msgstr ""
 "Island View: A position with all connected arguments is presented as island. "
 "This supports the insight of a discussion about a specific position."
 
 #. Default: Expert View: Participants are able to see and do everything.
-#: dbas/templates/index.pt:121
+#: dbas/templates/index.pt:118
 msgid "expert_view_description"
 msgstr "Expert View: Participants are able to see and do everything."
+
+#. Default: About
+#: dbas/templates/index.pt:147 dbas/templates/snippet-header.pt:28
+msgid "about"
+msgstr ""
+
+#. Default: Research
+#: dbas/templates/index.pt:177 dbas/templates/snippet-header.pt:31
+msgid "research"
+msgstr ""
 
 #. Default: Log In
 #: dbas/templates/login.pt:13
@@ -501,10 +790,31 @@ msgid "fill_in_mail_for_password"
 msgstr ""
 "Please fill in your e-mail below. A new password will be send this address:"
 
-#. Default: Close
-#: dbas/templates/login.pt:170
-msgid "close"
-msgstr "Close"
+#. Default: Toggle navigation
+#: dbas/templates/snippet-header.pt:10
+msgid "Toggle Navigation"
+msgstr ""
+
+#. Default: Contact
+#: dbas/templates/snippet-header.pt:51
+#, fuzzy
+msgid "contact"
+msgstr "Contra"
+
+#. Default: Logout
+#: dbas/templates/snippet-header.pt:74
+msgid "logout"
+msgstr ""
+
+#. Default: More <dynamic element>
+#: dbas/templates/snippet-header.pt:82
+msgid "more"
+msgstr ""
+
+#. Default: Language
+#: dbas/templates/snippet-header.pt:102
+msgid "language"
+msgstr ""
 
 #. Default: 404 Error
 #: dbas/templates/404.pt:13

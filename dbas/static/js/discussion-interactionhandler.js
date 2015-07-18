@@ -312,6 +312,4 @@ function InteractionHandler() {
 			$('#' + popupSuccessDescriptionId).text(correctionsSet);
 		}
 	};
-
-
 }

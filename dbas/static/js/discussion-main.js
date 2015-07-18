@@ -142,14 +142,6 @@ $(function () {
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
 	});
 
-	$('.' + translationLink).click(function (){
-		guiHandler.displayConfirmTranslationDialog();
-	});
-
-	$('.' + translationLink + " img").click(function (){
-		guiHandler.displayConfirmTranslationDialog();
-	});
-
 	/*
 	// ask for refreshing
 	$(window).bind('beforeunload', function(){

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="$de" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
 <tal:block metal:use-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
@@ -184,7 +184,6 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ids.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-strings.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
 

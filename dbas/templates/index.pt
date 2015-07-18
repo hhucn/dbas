@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="$de" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
 <tal:block metal:use-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
@@ -13,14 +13,11 @@
 					<div class="content">
 						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
 						<h2><span class="font-semi-bold" i18n:translate="welcome">Welcome</span>
-								<span class="smaller">to the
-									<span class="font-semi-bold">D</span>ialogue-
-									<span class="font-semi-bold">B</span>ased 
-									<span class="font-semi-bold">A</span>rgumentation 
-									<span class="font-semi-bold">S</span>oftware, <span i18n:translate="or_short">or short</span> 
+								<span class="smaller"><span i18n:translate="to_the_dbas">to the</span>
+									<span class="font-semi-bold">D</span>ialogue-<span class="font-semi-bold">B</span>ased <span class="font-semi-bold">A</span>rgumentation <span class="font-semi-bold">S</span>oftware, <span i18n:translate="or_short">or short</span> 
 									<span class="font-semi-bold">D-BAS</span>
 								</span></h2>
-						<p class="lead">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
+						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
 						<br>
 						<p class="lead" i18n:translate="dbas_intro_advantages_intro">D-Bas offers a lot of advantages, here are a few of them:</p>
 						<ul class="lead list">
@@ -29,7 +26,7 @@
 							<li i18n:translate="dbas_intro_advantages_3">Every argument and position will be connected logically to each other</li>
 						</ul>
 						<br>
-						<p class="lead">This project is based on research of the graduation school Online-Participation, subsidised governmentally by <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank">Ministry of Innovation, Science and Research in North Rhine-Westphalia</a>.</p>
+						<p class="lead"><span i18n:translate="projec_based_on">This project is based on research of the graduation school Online-Participation, subsidised governmentally by</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.</p>
 						<ul class="list-logos">
 							<li>
 								<a id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
@@ -48,7 +45,7 @@
 							</li>
 						</ul>
 						<br>
-						<p class="lead">And don't forget to check reguarly the <a href="${request.application_url}/news" title="news">news-page</a>.</p>
+						<p class="lead"><span i18n:translate="dont_forget">And don't forget to check reguarly the</span> <a href="${request.application_url}/news" title="news"><span i18n:translate="news_page">news-page</span></a>.</p>
 					</div>
 				</div>
 			</div>
@@ -106,7 +103,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<h2><span class="font-semi-bold">Description</span> <span class="smaller">of D-BAS</span></h2>
+						<h2><span class="font-semi-bold" i18n:translate="description">Description</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
 
 						<p class="lead">In the following a <span class="font-normal">short description</span> of D-BAS will be given with the help of bulletpoints:
 							<ul class="lead list">
@@ -147,7 +144,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<h2><span class="font-semi-bold">About</span> <span class="smaller"> D-BAS</span></h2>
+						<h2><span class="font-semi-bold" i18n:translate="about">About</span> <span class="smaller">D-BAS</span></h2>
 						<p class="lead">D-BAS is a <span class="font-normal">novel approach</span> of discussions in the field of online participation and developed by <a href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html">Tobias Krauthoff</a>.
 						</p>
 
@@ -177,7 +174,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<h2><span class="font-semi-bold">Research</span> <span class="smaller">of D-BAS</span></h2>
+						<h2><span class="font-semi-bold" i18n:translate="research">Research</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
 						<ul class="lead list">
 							<li>
 								<span class="font-normal">Our data structure:</span>
@@ -209,5 +206,6 @@
 		</div>
 
 	</tal:block>
-	</tal:block>
+</tal:block>
+
 </html>

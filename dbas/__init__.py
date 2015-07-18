@@ -10,50 +10,6 @@ from sqlalchemy import engine_from_config
 from .database import *
 import logging
 
-def my_locale_negotiator(request):
-	log = logging.getLogger(__name__)
-	log.debug('------------------------------------------------------------------------------------------------------')
-
-	# request.get('my_locale')
-	msg = 'None' if not hasattr(request, 'my_locale') else str(request.get('my_locale'))
-	val = 'NN' if not hasattr(request, 'my_locale') else 'YY'
-	log.debug(val + ' __init__() my_locale_negotiator() <request.my_locale : ' + msg + '>')
-
-	#request.params.get('my_locale')
-	msg = 'None' if not hasattr(request.params, 'my_locale') else str(request.params.get('my_locale'))
-	val = 'NN' if not hasattr(request.params, 'my_locale') else 'YY'
-	log.debug(val + ' __init__() my_locale_negotiator() <request.params.my_locale : ' + msg + '>')
-
-	#request.params.get('_LOCALE_')
-	msg = 'None' if not hasattr(request.params, '_LOCALE_') else str(request.params.get('_LOCALE_'))
-	val = 'NN' if not hasattr(request.params, '_LOCALE_') else 'YY'
-	log.debug(val + ' __init__() my_locale_negotiator() <request.params._LOCALE_ : ' + msg + '>')
-
-	# settings['available_languages']
-	settings = get_current_registry().settings
-	msg = 'None' if not hasattr(settings, 'available_languages') else str(settings['available_languages'])
-	val = 'NN' if not hasattr(settings, 'available_languages') else 'YY'
-	log.debug(val + ' __init__() my_locale_negotiator() <settings.[available_languages] : ' + msg + '>')
-
-	# settings['pyramid.default_locale_name']
-	msg = 'None' if not hasattr(settings, 'default_locale_name') else str(settings['default_locale_name'])
-	val = 'NN' if not hasattr(settings, 'default_locale_name') else 'YY'
-	log.debug(val + ' __init__() my_locale_negotiator() <settings.[default_locale_name] : ' + msg + '>')
-
-	if not hasattr(request, '_LOCALE_'):
-		request._LOCALE_ = request.accept_language.best_match(('en', 'de'), 'de')
-		log.debug('NN __init__() my_locale_negotiator() <request._LOCALE_ : ' + str(request._LOCALE_) + '>')
-	else:
-		log.debug('YY __init__() my_locale_negotiator() <request._LOCALE_ : ' + str(request._LOCALE_) + '>')
-
-
-	for k, v in settings.items():
-		log.debug('>>> __init__() '.upper() + ' <' + str(k) + ' : ' + str(v) + '>')
-
-	log.debug('------------------------------------------------------------------------------------------------------')
-
-	return request._LOCALE_
-
 def main(global_config, **settings):
 	""" This function returns a Pyramid WSGI application.
 	"""
@@ -93,7 +49,6 @@ def main(global_config, **settings):
 	config.set_authentication_policy(authn_policy)
 	config.set_authorization_policy(authz_policy)
 	config.set_session_factory(session_factory)
-	config.set_locale_negotiator(my_locale_negotiator)
 
 	# includings for the config
 	config.include('pyramid_chameleon')
@@ -111,6 +66,8 @@ def main(global_config, **settings):
 	config.add_route('main_news', '/news')
 	config.add_route('main_imprint', '/imprint')
 	config.add_route('404', '/404')
+
+	config.add_route('ajax_switch_language', '/ajax_switch_language')
 
 	config.add_route('ajax_all_positions', '/ajax_all_positions')
 	config.add_route('ajax_all_users', '/ajax_all_users')

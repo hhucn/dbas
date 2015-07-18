@@ -13,8 +13,6 @@ from .database import DBSession
 from .database.model import User, Group, Issue
 from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, EmailHelper
 
-from pyramid.threadlocal import get_current_registry
-
 name = 'D-BAS'
 version = '0.23'
 header = name + ' ' + version
@@ -26,9 +24,8 @@ class Dbas(object):
 		:param request: init http request
 		:return:
 		"""
+
 		self.request = request
-		self.request.session['_LOCALE_'] = 'de'
-		self.request.cookies['_LOCALE_'] = 'de'
 
 
 	def base_layout(self):
@@ -44,26 +41,14 @@ class Dbas(object):
 		:return:
 		"""
 		logger('main_page', 'def', 'main page')
-
-		settings = get_current_registry().settings
-		logger('xxxxxxx', '------------------------------------------', '------------------------------------------')
-		logger('xxxxxxx', 'DEF LANGUAGE', str(settings['pyramid.default_locale_name']))
-		logger('xxxxxxx', 'request.session[_LOCALE_]', str(self.request.session['_LOCALE_']))
-		logger('xxxxxxx', 'request.cookies[_LOCALE_]', str(self.request.cookies['_LOCALE_']))
-		logger('xxxxxxx', 'request.accept_language', str(self.request.accept_language))
-		self.request._LOCALE_ = 'de'
-		logger('xxxxxxx', 'request._LOCALE_', str(self.request._LOCALE_))
-		logger('xxxxxxx', '------------------------------------------', '------------------------------------------')
-
-		self.request.response.set_cookie('_LOCALE_', 'de')
 		
 		return {
 			'layout': self.base_layout(),
+			'language': str(self.request.cookies['_LOCALE_']),
 			'title': 'Main',
 			'project': header,
 			'logged_in': self.request.authenticated_userid
 		}
-
 
 	# login page
 	@view_config(route_name='main_login', renderer='templates/login.pt', permission='everybody')
@@ -806,3 +791,22 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
+
+	# ajax - for language switch
+	@view_config(route_name='ajax_switch_language', renderer='json')
+	def switch_language(self):
+		logger('switch_language', 'def', 'main')
+
+		return_dict = {}
+		try:
+			lang = self.request.params['lang']
+			logger('switch_language', 'def', 'params uid: ' + str(lang))
+			self.request.response.set_cookie('_LOCALE_', str(lang))
+			return_dict['status'] = '1'
+		except KeyError as e:
+			logger('swich_language', 'error', repr(e))
+			return_dict['status'] = '0'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return return_json
+
