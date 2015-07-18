@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-07-17 10:25+0200\n"
+"POT-Creation-Date: 2015-07-18 03:02+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -16,261 +16,159 @@ msgstr ""
 "Generated-By: Lingua 3.10\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. Default: This will be the news page and currently I think...this will be
-#. some kind of blog
-#: dbas/templates/news.pt:25
-msgid "news_intro"
-msgstr "Dies, wird so etwas wie die Nachrichten-Seite"
-
-#. Default: Get In Touch With Us
-#: dbas/templates/contact.pt:22
-msgid "contact_header_1"
-msgstr "Tritt mit uns in Kontakt"
-
-#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
-#. hours max!
-#: dbas/templates/contact.pt:23
-msgid "contact_header_2"
-msgstr ""
-"Trau dich, hinterlass uns eine Nachricht und wir werden uns innerhalb von 48 "
-"Stunden bei dir melden"
-
-#. Default: Your Name (required)
-#: dbas/templates/contact.pt:29
-msgid "name_req"
-msgstr "Dein Name (notwendig)"
-
-#. Default: Your E-Mail (required)
-#: dbas/templates/contact.pt:36
-msgid "mail_req"
-msgstr "Deine E-Mail (notwendig)"
-
-#. Default: Your Phone Number
-#: dbas/templates/contact.pt:43
-msgid "phone_no"
-msgstr "Deine Telefonnr."
-
-#. Default: Your Message (required)
-#: dbas/templates/contact.pt:50
-msgid "message_req"
-msgstr "Deine Nachricht (notwendig)"
-
-#. Default: Anti-Spam (required)
-#: dbas/templates/contact.pt:57
-msgid "spam_req"
-msgstr "Anti-Spam (notwendig)"
-
-#. Default: Warning!
-#: dbas/templates/contact.pt:74 dbas/templates/login.pt:148
-msgid "warning"
-msgstr "Warnung!"
-
-#. Default: Great:
-#: dbas/templates/contact.pt:82 dbas/templates/settings.pt:121
-msgid "great"
-msgstr "Großartig:"
-
-#. Default: Your message was sent.
-#: dbas/templates/contact.pt:82
-msgid "message_sent"
-msgstr "Deine Nachricht wurde gesendet"
-
-#. Default: Settings of:
-#: dbas/templates/settings.pt:22
-msgid "settings"
-msgstr "Einstellungen von:"
-
-#. Default: Information about yourself
-#: dbas/templates/settings.pt:27
-msgid "info_about_yourself"
-msgstr "Informationen über dich"
-
-#. Default: Firstname
-#: dbas/templates/settings.pt:31
-msgid "firstname"
-msgstr "Vorname"
-
-#. Default: Surname
-#: dbas/templates/settings.pt:38
-msgid "surname"
-msgstr "Nachname"
-
-#. Default: Nickname
-#. Default: Your Nickname
-#: dbas/templates/settings.pt:45 dbas/templates/login.pt:95
-msgid "nickname"
-msgstr "Nickname"
-
-#. Default: Group
-#: dbas/templates/settings.pt:59
-msgid "group"
-msgstr "Gruppe"
-
-#. Default: Your decisions
-#: dbas/templates/settings.pt:68
-msgid "decisions"
-msgstr "Deine Entscheidungen"
-
-#. Default: Success:
-#: dbas/templates/settings.pt:79 dbas/templates/login.pt:61
-msgid "success"
-msgstr "Erfolg"
-
-#. Default: Error:
-#: dbas/templates/settings.pt:84 dbas/templates/login.pt:56
-#: dbas/templates/login.pt:66
-msgid "error"
-msgstr "Fehler:"
-
-#. Default: Change your password
-#: dbas/templates/settings.pt:90
-msgid "change_password"
-msgstr "Ändere dein Passwort"
-
-#. Default: Old password
-#: dbas/templates/settings.pt:93
-msgid "old_password"
-msgstr "Altes Password"
-
-#. Default: New Password
-#: dbas/templates/settings.pt:97
-msgid "new_password"
-msgstr "Neues Password"
-
-#. Default: Strength
-#: dbas/templates/settings.pt:101
-msgid "strength"
-msgstr "Stärke"
-
-#. Default: New Password (confirm)
-#: dbas/templates/settings.pt:107
-msgid "new_password_confirm"
-msgstr "Neues Password (Bestätigung)"
-
-#. Default: Your password was changed
-#: dbas/templates/settings.pt:121
-msgid "password_changed"
-msgstr "Dein Passwurd wurde geändert"
-
 #. Default: Angaben gemäß § 5 TMG
-#: dbas/templates/imprint.pt:22 dbas/templates/impressum.pt:22
+#: dbas/templates/imprint.pt:22
 msgid "impressum_intro"
 msgstr "Angaben gemäß § 5 TMG"
 
-#. Default: Log In
-#: dbas/templates/login.pt:22
-msgid "login"
-msgstr "Login"
+#~ msgid "news_intro"
+#~ msgstr "Dies, wird so etwas wie die Nachrichten-Seite"
 
-#. Default: Sign Up
-#: dbas/templates/login.pt:24
-msgid "sign_up"
-msgstr "Melde dich an"
+#~ msgid "contact_header_1"
+#~ msgstr "Tritt mit uns in Kontakt"
 
-#. Default: Welcome Back!
-#: dbas/templates/login.pt:30
-msgid "welcome_back"
-msgstr "Willkommen zurück!"
+#~ msgid "contact_header_2"
+#~ msgstr ""
+#~ "Trau dich, hinterlass uns eine Nachricht und wir werden uns innerhalb von "
+#~ "48 Stunden bei dir melden"
 
-#. Default: Your Nickname
-#: dbas/templates/login.pt:38
-msgid "your_nickname"
-msgstr "Dein Nickname"
+#~ msgid "name_req"
+#~ msgstr "Dein Name (notwendig)"
 
-#. Default: Your Password
-#: dbas/templates/login.pt:45
-msgid "your_password"
-msgstr "Dein Passwort"
+#~ msgid "mail_req"
+#~ msgstr "Deine E-Mail (notwendig)"
 
-#. Default: Forgot Password?
-#: dbas/templates/login.pt:51
-msgid "forgot_password"
-msgstr "Passwort vergessen"
+#~ msgid "phone_no"
+#~ msgstr "Deine Telefonnr."
 
-#. Default: Sign Up for Free
-#: dbas/templates/login.pt:75
-msgid "signup_free"
-msgstr "Registriere dich kostenfrei"
+#~ msgid "message_req"
+#~ msgstr "Deine Nachricht (notwendig)"
 
-#. Default: Your First Name
-#: dbas/templates/login.pt:81
-msgid "first_name"
-msgstr "Vorname"
+#~ msgid "spam_req"
+#~ msgstr "Anti-Spam (notwendig)"
 
-#. Default: Your Last Name
-#: dbas/templates/login.pt:88
-msgid "last_name"
-msgstr "Nachname"
+#~ msgid "warning"
+#~ msgstr "Warnung!"
 
-#. Default: Your Gender
-#: dbas/templates/login.pt:102
-msgid "gender"
-msgstr "Dein Geschlecht"
+#~ msgid "great"
+#~ msgstr "Großartig:"
 
-#. Default: none
-#: dbas/templates/login.pt:105
-msgid "none"
-msgstr "keine Angabe"
+#~ msgid "message_sent"
+#~ msgstr "Deine Nachricht wurde gesendet"
 
-#. Default: female
-#: dbas/templates/login.pt:108
-msgid "female"
-msgstr "weiblich"
+#~ msgid "settings"
+#~ msgstr "Einstellungen von:"
 
-#. Default: male
-#: dbas/templates/login.pt:111
-msgid "male"
-msgstr "männlich"
+#~ msgid "info_about_yourself"
+#~ msgstr "Informationen über dich"
 
-#. Default: Your Email Address
-#: dbas/templates/login.pt:117
-msgid "email"
-msgstr "Deine E-Mail"
+#~ msgid "firstname"
+#~ msgstr "Vorname"
 
-#. Default: Your Password
-#: dbas/templates/login.pt:124
-msgid "password"
-msgstr "Passwort"
+#~ msgid "surname"
+#~ msgstr "Nachname"
 
-#. Default: Strength
-#: dbas/templates/login.pt:130
-msgid "password_strength"
-msgstr "Stärke"
+#~ msgid "nickname"
+#~ msgstr "Nickname"
 
-#. Default: Password (confirm)
-#: dbas/templates/login.pt:135
-msgid "password-confirm"
-msgstr "Passwort (Bestätigung)"
+#~ msgid "group"
+#~ msgstr "Gruppe"
 
-#. Default: Password-Request
-#: dbas/templates/login.pt:168
-msgid "password_request"
-msgstr "Passwort-Nachfrage"
+#~ msgid "decisions"
+#~ msgstr "Deine Entscheidungen"
 
-#. Default: Please fill in your e-mail below. A new password will be send this
-#. address:
-#: dbas/templates/login.pt:172
-msgid "fill_in_mail_for_password"
-msgstr ""
-"Bitte trage unten deine E-Mail-Adresse ein. Ein neues Passwort wird an diese "
-"Adresse gesendet."
+#~ msgid "success"
+#~ msgstr "Erfolg"
 
-#. Default: Close
-#: dbas/templates/login.pt:179
-msgid "close"
-msgstr "Schließen"
+#~ msgid "error"
+#~ msgstr "Fehler:"
 
-#. Default: 404 Error
-#: dbas/templates/404.pt:22
-msgid "404"
-msgstr "404 Fehler"
+#~ msgid "change_password"
+#~ msgstr "Ändere dein Passwort"
 
-#. Default: The page &quot;${page_notfound_viewname}&quot; for could not be
-#. found.
-#. Canonical text for ${page_notfound_viewname} is: "${page_notfound_viewname}"
-#: dbas/templates/404.pt:23
-msgid "404_text"
-msgstr "Die Seite &quot;<dynamic element>&quot; konnte nicht gefunden werden"
+#~ msgid "old_password"
+#~ msgstr "Altes Password"
+
+#~ msgid "new_password"
+#~ msgstr "Neues Password"
+
+#~ msgid "strength"
+#~ msgstr "Stärke"
+
+#~ msgid "new_password_confirm"
+#~ msgstr "Neues Password (Bestätigung)"
+
+#~ msgid "password_changed"
+#~ msgstr "Dein Passwurd wurde geändert"
+
+#~ msgid "login"
+#~ msgstr "Login"
+
+#~ msgid "sign_up"
+#~ msgstr "Melde dich an"
+
+#~ msgid "welcome_back"
+#~ msgstr "Willkommen zurück!"
+
+#~ msgid "your_nickname"
+#~ msgstr "Dein Nickname"
+
+#~ msgid "your_password"
+#~ msgstr "Dein Passwort"
+
+#~ msgid "forgot_password"
+#~ msgstr "Passwort vergessen"
+
+#~ msgid "signup_free"
+#~ msgstr "Registriere dich kostenfrei"
+
+#~ msgid "first_name"
+#~ msgstr "Vorname"
+
+#~ msgid "last_name"
+#~ msgstr "Nachname"
+
+#~ msgid "gender"
+#~ msgstr "Dein Geschlecht"
+
+#~ msgid "none"
+#~ msgstr "keine Angabe"
+
+#~ msgid "female"
+#~ msgstr "weiblich"
+
+#~ msgid "male"
+#~ msgstr "männlich"
+
+#~ msgid "email"
+#~ msgstr "Deine E-Mail"
+
+#~ msgid "password"
+#~ msgstr "Passwort"
+
+#~ msgid "password_strength"
+#~ msgstr "Stärke"
+
+#~ msgid "password-confirm"
+#~ msgstr "Passwort (Bestätigung)"
+
+#~ msgid "password_request"
+#~ msgstr "Passwort-Nachfrage"
+
+#~ msgid "fill_in_mail_for_password"
+#~ msgstr ""
+#~ "Bitte trage unten deine E-Mail-Adresse ein. Ein neues Passwort wird an "
+#~ "diese Adresse gesendet."
+
+#~ msgid "close"
+#~ msgstr "Schließen"
+
+#~ msgid "404"
+#~ msgstr "404 Fehler"
+
+#~ msgid "404_text"
+#~ msgstr ""
+#~ "Die Seite &quot;<dynamic element>&quot; konnte nicht gefunden werden"
 
 #~ msgid "dbas_long"
 #~ msgstr "Dialog-basiertes Argumentations System"

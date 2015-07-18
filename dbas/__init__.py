@@ -2,6 +2,7 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
+from pyramid.threadlocal import get_current_registry
 
 from dbas.security import groupfinder
 
@@ -10,22 +11,46 @@ from .database import *
 import logging
 
 def my_locale_negotiator(request):
-	locale_name = request.params.get('my_locale')
-
 	log = logging.getLogger(__name__)
-	log.debug('AAAAAAAAAAAAA')
-	if not hasattr(request.params, 'my_locale'):
-		log.debug('__init__() my_locale_negotiator() <request.params.get(my_locale) : None>')
+	log.debug('------------------------------------------------------------------------------------------------------')
+
+	# request.get('my_locale')
+	msg = 'None' if not hasattr(request, 'my_locale') else str(request.get('my_locale'))
+	val = 'NN' if not hasattr(request, 'my_locale') else 'YY'
+	log.debug(val + ' __init__() my_locale_negotiator() <request.my_locale : ' + msg + '>')
+
+	#request.params.get('my_locale')
+	msg = 'None' if not hasattr(request.params, 'my_locale') else str(request.params.get('my_locale'))
+	val = 'NN' if not hasattr(request.params, 'my_locale') else 'YY'
+	log.debug(val + ' __init__() my_locale_negotiator() <request.params.my_locale : ' + msg + '>')
+
+	#request.params.get('_LOCALE_')
+	msg = 'None' if not hasattr(request.params, '_LOCALE_') else str(request.params.get('_LOCALE_'))
+	val = 'NN' if not hasattr(request.params, '_LOCALE_') else 'YY'
+	log.debug(val + ' __init__() my_locale_negotiator() <request.params._LOCALE_ : ' + msg + '>')
+
+	# settings['available_languages']
+	settings = get_current_registry().settings
+	msg = 'None' if not hasattr(settings, 'available_languages') else str(settings['available_languages'])
+	val = 'NN' if not hasattr(settings, 'available_languages') else 'YY'
+	log.debug(val + ' __init__() my_locale_negotiator() <settings.[available_languages] : ' + msg + '>')
+
+	# settings['pyramid.default_locale_name']
+	msg = 'None' if not hasattr(settings, 'default_locale_name') else str(settings['default_locale_name'])
+	val = 'NN' if not hasattr(settings, 'default_locale_name') else 'YY'
+	log.debug(val + ' __init__() my_locale_negotiator() <settings.[default_locale_name] : ' + msg + '>')
 
 	if not hasattr(request, '_LOCALE_'):
-		locale_name = request.params.get('my_locale')
-		if locale_name == None:
-			log.debug('__init__() my_locale_negotiator() <request.params.get(my_locale) : None>')
-
 		request._LOCALE_ = request.accept_language.best_match(('en', 'de'), 'de')
-		log.debug('__init__() my_locale_negotiator() set <request._LOCALE_ : ' + str(request._LOCALE_) + '>')
+		log.debug('NN __init__() my_locale_negotiator() <request._LOCALE_ : ' + str(request._LOCALE_) + '>')
 	else:
-		log.debug('__init__() my_locale_negotiator() has <request._LOCALE_ : ' + str(request._LOCALE_) + '>')
+		log.debug('YY __init__() my_locale_negotiator() <request._LOCALE_ : ' + str(request._LOCALE_) + '>')
+
+
+	for k, v in settings.items():
+		log.debug('>>> __init__() '.upper() + ' <' + str(k) + ' : ' + str(v) + '>')
+
+	log.debug('------------------------------------------------------------------------------------------------------')
 
 	return request._LOCALE_
 
@@ -40,7 +65,7 @@ def main(global_config, **settings):
 	# log settings
 	log = logging.getLogger(__name__)
 	for k, v in settings.items():
-		log.debug('__init__() '.upper() + 'main() <' + k + ' : ' + v + '>')
+		log.debug('__init__() '.upper() + 'main() <' + str(k) + ' : ' + str(v) + '>')
 
 	# load database
 	engine = engine_from_config(settings, 'sqlalchemy.')
@@ -62,7 +87,9 @@ def main(global_config, **settings):
 			  }
 
 	# creating the configurator	cache_regions = set_cache_regions_from_settings
-	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory')#,locale_negotiator=my_locale_negotiator)
+	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory') # ,locale_negotiator=my_locale_negotiator)
+	config.add_translation_dirs('dbas:locale') # add this before the locale negotiator
+
 	config.set_authentication_policy(authn_policy)
 	config.set_authorization_policy(authz_policy)
 	config.set_session_factory(session_factory)
@@ -72,7 +99,6 @@ def main(global_config, **settings):
 	config.include('pyramid_chameleon')
 	config.include('pyramid_mailer')
 	# config.include('pyramid_beaker') # done in the ini
-	config.add_translation_dirs('dbas:locale', 'dbas:locale/')
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)
