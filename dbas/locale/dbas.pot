@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-07-18 03:02+0200\n"
+"POT-Creation-Date: 2015-07-18 05:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,470 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 3.10\n"
 
+#. Default: This will be the news page and currently I think...this will be
+#. some kind of blog
+#: ./dbas/templates/news.pt:13
+msgid "news_intro"
+msgstr ""
+
+#. Default: Get In Touch With Us
+#: ./dbas/templates/contact.pt:12
+msgid "contact_header_1"
+msgstr ""
+
+#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
+#. hours max!
+#: ./dbas/templates/contact.pt:13
+msgid "contact_header_2"
+msgstr ""
+
+#. Default: Your Name (required)
+#: ./dbas/templates/contact.pt:19
+msgid "name_req"
+msgstr ""
+
+#. Default: Your E-Mail (required)
+#: ./dbas/templates/contact.pt:26
+msgid "mail_req"
+msgstr ""
+
+#. Default: Your Phone Number
+#: ./dbas/templates/contact.pt:33
+msgid "phone_no"
+msgstr ""
+
+#. Default: Your Message (required)
+#: ./dbas/templates/contact.pt:40
+msgid "message_req"
+msgstr ""
+
+#. Default: Anti-Spam (required)
+#: ./dbas/templates/contact.pt:47
+msgid "spam_req"
+msgstr ""
+
+#. Default: Warning!
+#: ./dbas/templates/contact.pt:64 ./dbas/templates/login.pt:139
+msgid "warning"
+msgstr ""
+
+#. Default: Great:
+#: ./dbas/templates/contact.pt:72 ./dbas/templates/settings.pt:114
+msgid "great"
+msgstr ""
+
+#. Default: Your message was sent.
+#: ./dbas/templates/contact.pt:72
+msgid "message_sent"
+msgstr ""
+
+#. Default: Dialogue-Based Argumentation System
+#: ./dbas/templates/content.pt:15
+msgid "dbas_long"
+msgstr ""
+
+#. Default: The current discussion is about
+#: ./dbas/templates/content.pt:16
+msgid "current_discussion"
+msgstr ""
+
+#. Default: and was started at
+#: ./dbas/templates/content.pt:19
+msgid "startet_at"
+msgstr ""
+
+#. Default: Change display style:
+#: ./dbas/templates/content.pt:53
+msgid "change_style"
+msgstr ""
+
+#. Default: Dialog View
+#: ./dbas/templates/content.pt:57
+msgid "dialog_view"
+msgstr ""
+
+#. Default: Island View
+#: ./dbas/templates/content.pt:62 ./dbas/templates/content.pt:95
+#: ./dbas/templates/index.pt:93
+msgid "island_view"
+msgstr ""
+
+#. Default: Complete View
+#: ./dbas/templates/content.pt:67
+msgid "complete_view"
+msgstr ""
+
+#. Default: Error:
+#: ./dbas/templates/content.pt:79 ./dbas/templates/settings.pt:77
+#: ./dbas/templates/login.pt:47 ./dbas/templates/login.pt:57
+msgid "error"
+msgstr ""
+
+#. Default: Island View
+#: ./dbas/templates/content.pt:94
+msgid "istland_view"
+msgstr ""
+
+#. Default: Pro
+#: ./dbas/templates/content.pt:98 ./dbas/templates/content.pt:131
+msgid "pro"
+msgstr ""
+
+#. Default: Contra
+#: ./dbas/templates/content.pt:104 ./dbas/templates/content.pt:143
+msgid "contra"
+msgstr ""
+
+#. Default: Please insert a new Argument
+#: ./dbas/templates/content.pt:127
+msgid "insert-argument"
+msgstr ""
+
+#. Default: Add a textfield
+#: ./dbas/templates/content.pt:137 ./dbas/templates/content.pt:148
+msgid "add_textfield"
+msgstr ""
+
+#. Default: Special rights
+#: ./dbas/templates/content.pt:168
+msgid "special_rights"
+msgstr ""
+
+#. Default: Some additional options for the administrator.
+#: ./dbas/templates/content.pt:169
+msgid "admin_only"
+msgstr ""
+
+#. Default: Minimap:
+#: ./dbas/templates/content.pt:180
+msgid "minimap"
+msgstr ""
+
+#. Default: Settings of:
+#: ./dbas/templates/settings.pt:15
+msgid "settings"
+msgstr ""
+
+#. Default: Information about yourself
+#: ./dbas/templates/settings.pt:20
+msgid "info_about_yourself"
+msgstr ""
+
+#. Default: Firstname
+#: ./dbas/templates/settings.pt:24
+msgid "firstname"
+msgstr ""
+
+#. Default: Surname
+#: ./dbas/templates/settings.pt:31
+msgid "surname"
+msgstr ""
+
+#. Default: Nickname
+#. Default: Your Nickname
+#: ./dbas/templates/settings.pt:38 ./dbas/templates/login.pt:86
+msgid "nickname"
+msgstr ""
+
+#. Default: Group
+#: ./dbas/templates/settings.pt:52
+msgid "group"
+msgstr ""
+
+#. Default: Your decisions
+#: ./dbas/templates/settings.pt:61
+msgid "decisions"
+msgstr ""
+
+#. Default: Success:
+#: ./dbas/templates/settings.pt:72 ./dbas/templates/login.pt:52
+msgid "success"
+msgstr ""
+
+#. Default: Change your password
+#: ./dbas/templates/settings.pt:83
+msgid "change_password"
+msgstr ""
+
+#. Default: Old password
+#: ./dbas/templates/settings.pt:86
+msgid "old_password"
+msgstr ""
+
+#. Default: New Password
+#: ./dbas/templates/settings.pt:90
+msgid "new_password"
+msgstr ""
+
+#. Default: Strength
+#: ./dbas/templates/settings.pt:94
+msgid "strength"
+msgstr ""
+
+#. Default: New Password (confirm)
+#: ./dbas/templates/settings.pt:100
+msgid "new_password_confirm"
+msgstr ""
+
+#. Default: Your password was changed
+#: ./dbas/templates/settings.pt:114
+msgid "password_changed"
+msgstr ""
+
 #. Default: Angaben gemäß § 5 TMG
-#: ./dbas/templates/imprint.pt:22
+#: ./dbas/templates/imprint.pt:13
 msgid "impressum_intro"
+msgstr ""
+
+#. Default: Impressum erstellt mit
+#: ./dbas/templates/imprint.pt:60
+msgid "impressum_done_with"
+msgstr ""
+
+#. Default: is generated with Pyramid Web Framework 1.5.4
+#: ./dbas/templates/imprint.pt:71
+msgid "impressum_generated_with"
+msgstr ""
+
+#. Default: Welcome
+#: ./dbas/templates/index.pt:15
+msgid "welcome"
+msgstr ""
+
+#. Default: or short
+#: ./dbas/templates/index.pt:20
+msgid "or_short"
+msgstr ""
+
+#. Default: D-Bas offers a lot of advantages, here are a few of them:
+#: ./dbas/templates/index.pt:25
+msgid "dbas_intro_advantages_intro"
+msgstr ""
+
+#. Default: Easy to use and very powerful
+#: ./dbas/templates/index.pt:27
+msgid "dbas_intro_advantages_1"
+msgstr ""
+
+#. Default: Avoid redundancy due to multiple statements because an
+#. argumentation map is used as background structure
+#: ./dbas/templates/index.pt:28
+msgid "dbas_intro_advantages_2"
+msgstr ""
+
+#. Default: Every argument and position will be connected logically to each
+#. other
+#: ./dbas/templates/index.pt:29
+msgid "dbas_intro_advantages_3"
+msgstr ""
+
+#. Default: Features
+#: ./dbas/templates/index.pt:62
+msgid "features"
+msgstr ""
+
+#. Default: of D-BAS
+#: ./dbas/templates/index.pt:62
+msgid "of_dbas"
+msgstr ""
+
+#. Default: Argumentation Maps
+#: ./dbas/templates/index.pt:70
+msgid "argu_maps"
+msgstr ""
+
+#. Default: A argumentation map is like a mind map, but the relations between
+#. the nodes are highly important and can have several meanings. Additionally
+#. the bubbles of the map can have play a important role. Therefore using this
+#. data structure for logically presentations of some graphs makes sense.
+#: ./dbas/templates/index.pt:71
+msgid "argu_maps_content"
+msgstr ""
+
+#. Default: Dialogue-based
+#: ./dbas/templates/index.pt:75
+msgid "dialogue_based"
+msgstr ""
+
+#. Default: Yeah, this is a novel and it is a kind of dialogue-based approach.
+#. This means that the system will represent argumentations of panelist and
+#. claims will be given through the other participants.
+#: ./dbas/templates/index.pt:76
+msgid "dialogue_based_content"
+msgstr ""
+
+#. Default: Simple UI
+#: ./dbas/templates/index.pt:80
+msgid "simple_ui"
+msgstr ""
+
+#. Default: The user interface of D-BAS is simple, clear and easy. At any point
+#. during the discussion the choices for the participant are bounded, but not
+#. isolating him/her.
+#: ./dbas/templates/index.pt:81
+msgid "simple_ui_content"
+msgstr ""
+
+#. Default: Guided View
+#: ./dbas/templates/index.pt:88
+msgid "guided_view"
+msgstr ""
+
+#. Default: You will never see something like an argumentation map, because the
+#. systems seems to be like a dynamic and generic
+#: ./dbas/templates/index.pt:89
+msgid "guided_view_content1"
+msgstr ""
+
+#. Default: for you
+#: ./dbas/templates/index.pt:89
+msgid "guided_view_content2"
+msgstr ""
+
+#. Default: Okay, you want to see more as, but not everything. Therefore the
+#. island view will present you a list of every connected statement for an
+#. specific statement.
+#: ./dbas/templates/index.pt:94
+msgid "island_view_content"
+msgstr ""
+
+#. Default: Expert View
+#: ./dbas/templates/index.pt:98
+msgid "expert_view"
+msgstr ""
+
+#. Default: So, you think you are an expert? Okay, you can have a view of the
+#. complete argumentation map.
+#: ./dbas/templates/index.pt:99
+msgid "expert_view_content"
+msgstr ""
+
+#. Default: Guided View: The participants will be lead through the discussion .
+#: ./dbas/templates/index.pt:119
+msgid "guided_view_description"
+msgstr ""
+
+#. Default: Island View: A position with all connected arguments is presented
+#. as island. This supports the insight of a discussion about a specific
+#. position.
+#: ./dbas/templates/index.pt:120
+msgid "island_view_description"
+msgstr ""
+
+#. Default: Expert View: Participants are able to see and do everything.
+#: ./dbas/templates/index.pt:121
+msgid "expert_view_description"
+msgstr ""
+
+#. Default: Log In
+#: ./dbas/templates/login.pt:13
+msgid "login"
+msgstr ""
+
+#. Default: Sign Up
+#: ./dbas/templates/login.pt:15
+msgid "sign_up"
+msgstr ""
+
+#. Default: Welcome Back!
+#: ./dbas/templates/login.pt:21
+msgid "welcome_back"
+msgstr ""
+
+#. Default: Your Nickname
+#: ./dbas/templates/login.pt:29
+msgid "your_nickname"
+msgstr ""
+
+#. Default: Your Password
+#: ./dbas/templates/login.pt:36
+msgid "your_password"
+msgstr ""
+
+#. Default: Forgot Password?
+#: ./dbas/templates/login.pt:42
+msgid "forgot_password"
+msgstr ""
+
+#. Default: Sign Up for Free
+#: ./dbas/templates/login.pt:66
+msgid "signup_free"
+msgstr ""
+
+#. Default: Your First Name
+#: ./dbas/templates/login.pt:72
+msgid "first_name"
+msgstr ""
+
+#. Default: Your Last Name
+#: ./dbas/templates/login.pt:79
+msgid "last_name"
+msgstr ""
+
+#. Default: Your Gender
+#: ./dbas/templates/login.pt:93
+msgid "gender"
+msgstr ""
+
+#. Default: none
+#: ./dbas/templates/login.pt:96
+msgid "none"
+msgstr ""
+
+#. Default: female
+#: ./dbas/templates/login.pt:99
+msgid "female"
+msgstr ""
+
+#. Default: male
+#: ./dbas/templates/login.pt:102
+msgid "male"
+msgstr ""
+
+#. Default: Your Email Address
+#: ./dbas/templates/login.pt:108
+msgid "email"
+msgstr ""
+
+#. Default: Your Password
+#: ./dbas/templates/login.pt:115
+msgid "password"
+msgstr ""
+
+#. Default: Strength
+#: ./dbas/templates/login.pt:121
+msgid "password_strength"
+msgstr ""
+
+#. Default: Password (confirm)
+#: ./dbas/templates/login.pt:126
+msgid "password-confirm"
+msgstr ""
+
+#. Default: Password-Request
+#: ./dbas/templates/login.pt:159
+msgid "password_request"
+msgstr ""
+
+#. Default: Please fill in your e-mail below. A new password will be send this
+#. address:
+#: ./dbas/templates/login.pt:163
+msgid "fill_in_mail_for_password"
+msgstr ""
+
+#. Default: Close
+#: ./dbas/templates/login.pt:170
+msgid "close"
+msgstr ""
+
+#. Default: 404 Error
+#: ./dbas/templates/404.pt:13
+msgid "404"
+msgstr ""
+
+#. Default: The page &quot;${page_notfound_viewname}&quot; for could not be
+#. found.
+#. Canonical text for ${page_notfound_viewname} is: "${page_notfound_viewname}"
+#: ./dbas/templates/404.pt:14
+msgid "404_text"
 msgstr ""

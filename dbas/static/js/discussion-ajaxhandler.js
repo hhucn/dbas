@@ -106,11 +106,9 @@ function AjaxHandler() {
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetOneStepBackDone(data) {
 			$('#' + stepBackButtonId).hide();
-			$('#' + sendAnswerButtonId).show();
 			new InteractionHandler().callbackGetOneStepBack(data);
 		}).fail(function ajaxGetOneStepBackFail() {
 			$('#' + stepBackButtonId).hide();
-			$('#' + sendAnswerButtonId).show();
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while stepping back',
 				'', false, 'ajaxGetOneStepBackFail', true);

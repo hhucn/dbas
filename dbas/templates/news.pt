@@ -1,5 +1,7 @@
-<div metal:use-macro="layout">
-	<div metal:fill-slot="content_page">
+<!DOCTYPE html>
+<html lang="$de" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="layout">
+	<tal:block metal:fill-slot="content_page">
 		<!-- todo move news into second database -->
 
 		<head>
@@ -625,5 +627,6 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
 
 
-	</div>
-</div>
+	</tal:block>
+	</tal:block>
+</html>

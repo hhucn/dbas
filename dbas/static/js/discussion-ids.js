@@ -69,6 +69,5 @@ var scStyle3Id = 'sc-style-3';
 // var startDiscussionButtonId = 'start-discussion';
 // var startDescriptionId = 'start-description';
 var stepBackButtonId = 'step-back';
-var sendAnswerButtonId = 'send-answer';
 var sendNewStatementId = 'send-new-statement';
 var statementListId = 'statement-list';

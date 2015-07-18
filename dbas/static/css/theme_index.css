@@ -38,6 +38,12 @@
 	margin: auto;
 }
 
+@media (max-width: 1242px) {
+	.first-container {
+		margin-top: 60px;
+	}
+}
+
 @media (max-width: 991px) {
 	.starter-template {
 		margin-top: 0;

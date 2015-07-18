@@ -1,5 +1,7 @@
-<div metal:use-macro="layout">
-	<div metal:fill-slot="content_page">
+<!DOCTYPE html>
+<html lang="$de" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="layout">
+	<tal:block metal:fill-slot="content_page">
 
 		<head>
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
@@ -119,5 +121,6 @@
 			<script type="text/javascript" src="${request.static_url('dbas:static/js/password-handler.js')}"></script>
 			<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
 		</div>
-	</div>
-</div>
+	</tal:block>
+	</tal:block>
+</html>

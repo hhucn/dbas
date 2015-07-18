@@ -23,7 +23,6 @@ function InteractionHandler() {
 		var ajaxHandler = new AjaxHandler();
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-
 		ajaxHandler.getNewArgumentationRound(id);
 	};
 
@@ -33,6 +32,7 @@ function InteractionHandler() {
 	 * @param value of the button
 	 */
 	this.positionButtonWasClicked = function (id, value) {
+		var ajaxHandler = new AjaxHandler();
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		ajaxHandler.getArgumentsForJustification(id);
@@ -46,7 +46,6 @@ function InteractionHandler() {
 		var guiHandler = new GuiHandler(), text;
 		if ($('#' + addStatementButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).hide();
-			$('#' + sendAnswerButtonId).hide();
 
 			// get the second child, which is the label
 			text = $('#' + addStatementButtonId).parent().children().eq(1).text();
@@ -59,16 +58,16 @@ function InteractionHandler() {
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).show();
-			$('#' + sendAnswerButtonId).hide();
 			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
 		} else {
 			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
-			$('#' + sendAnswerButtonId).show();
 			$('#' + stepBackButtonId).hide();
-		}
 
-		// enable or disable the send button
-		$('#' + sendAnswerButtonId).prop('disabled', ($('input[name=' + radioButtonGroup + ']:checked') === 'undefined' ? true : false));
+
+			this.sendAnswerButtonClicked();
+			guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
+			$('#' + islandViewContainerId).fadeOut('slow');
+		}
 	};
 
 	/**

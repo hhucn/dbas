@@ -58,18 +58,10 @@ $(function () {
 	$('#sc-style-3').hide();
 	$('#label-sc-style-3').hide();
 	$('#' + minimapId).hide();
-
-	// handler for the send answer button
-	$('#' + sendAnswerButtonId).click(function () {
-		interactionHandler.sendAnswerButtonClicked();
-		guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
-		$('#' + islandViewContainerId).fadeOut('slow');
-	});
-
 	// handler for the step back button
 	$('#' + stepBackButtonId).click(function () {
-		new AjaxHandler().getOneStepBack();
-		new GuiHandler().resetChangeDisplayStyleBox();
+		ajaxHandler.getOneStepBack();
+		guiHandler.resetChangeDisplayStyleBox();
 		$('#' + islandViewContainerId).fadeOut('slow');
 	});
 
@@ -113,7 +105,6 @@ $(function () {
 		$('#' + addStatementContainerId).hide();
 		$('#' + addStatementButtonId).enable = true;
 		$('#' + addStatementButtonId).attr('checked', false);
-		$('#' + sendAnswerButtonId).hide();
 	});
 
 	// hiding the island view, when the X button is clicked
@@ -162,8 +153,14 @@ $(function () {
 	/*
 	// ask for refreshing
 	$(window).bind('beforeunload', function(){
-		return 'Every data in this documt will be lost during a reload of the page.';
+		return 'If you refresh this page, your progress will be lost.';
 	});
+
+	// asks for go back
+	$(window).bind('statechange', function(){
+		return 'If you refresh this page, your progress will be lost.';
+	});
+	*/
 
 	// logout user on unload
 	$(window).on('unload', function(){
@@ -172,11 +169,8 @@ $(function () {
 		// new db field for "stay_logged_in"
 		// send request on unload
 	});
-	*/
 
-	// starts the discussion with getting all positions
-	//$('#' + startDiscussionButtonId).click(function () {
+
 	startDiscussion();
-	//});
 
 });
