@@ -11,11 +11,13 @@
 		<div class="center text-center">
 			<div class="error">
 				<h1><span class="font-semi-bold" i18n:translate="404">404 Error</span></h1>
-				<p class="lead font-normal" i18n:translate="404_text">The page &quot;<span i18n:name="page_notfound_viewname" i18n:translate="" class="font-semi-bold">${page_notfound_viewname}</span>&quot; for could not be found.</p>
+				<p class="lead font-normal"><span i18n:translate="404_text_part1">The page</span>&quot;<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; <span i18n:translate="404_text_part2">for could not be found.</span>
+				</p>
 				<br>
-				<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
+				<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" i18n:translate="lets_go_home" />
 			</div>
 		</div>
 	</tal:block>
-	</tal:block>
+</tal:block>
+
 </html>

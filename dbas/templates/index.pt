@@ -14,7 +14,7 @@
 						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
 						<h2><span class="font-semi-bold" i18n:translate="welcome">Welcome</span>
 								<span class="smaller"><span i18n:translate="to_the_dbas">to the</span>
-									<span class="font-semi-bold">D</span>ialogue-<span class="font-semi-bold">B</span>ased <span class="font-semi-bold">A</span>rgumentation <span class="font-semi-bold">S</span>oftware, <span i18n:translate="or_short">or short</span> 
+									<span class="font-semi-bold">D</span><span i18n:translate="ialogue">ialogue</span>-<span class="font-semi-bold">B</span><span i18n:translate="ased">ased</span> <span class="font-semi-bold">A</span><span i18n:translate="rgumentation">rgumentation</span> <span class="font-semi-bold">S</span><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span> 
 									<span class="font-semi-bold">D-BAS</span>
 								</span></h2>
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>

@@ -12,7 +12,7 @@
 
 		<div class="form first-form">
 			<div class="row">
-				<h1><span class="font-semi-bold" i18n:translate="settings">Settings of: </span><span tal:replace="logged_in"/></h1>
+				<h1><span class="font-semi-bold" i18n:translate="settings_of">Settings of: </span><span tal:replace="logged_in"/></h1>
 			</div>
 		</div>
 
@@ -122,5 +122,6 @@
 			<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
 		</div>
 	</tal:block>
-	</tal:block>
+</tal:block>
+
 </html>

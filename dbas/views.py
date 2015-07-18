@@ -243,6 +243,7 @@ class Dbas(object):
 				reg_failed = True
 
 		return {
+			'language': str(self.request.cookies['_LOCALE_']),
 			'title': 'Login',
 			'project': header,
 			'message': message,
@@ -350,6 +351,7 @@ class Dbas(object):
 
 		return {
 			'layout': self.base_layout(),
+			'language': str(self.request.cookies['_LOCALE_']),
 			'title': 'Contact',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
@@ -401,6 +403,7 @@ class Dbas(object):
 
 		return {
 			'layout': self.base_layout(),
+			'language': str(self.request.cookies['_LOCALE_']),
 			'title': 'Content',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
@@ -500,6 +503,7 @@ class Dbas(object):
 
 		return {
 			'layout': self.base_layout(),
+			'language': str(self.request.cookies['_LOCALE_']),
 			'title': 'Settings',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
@@ -527,6 +531,7 @@ class Dbas(object):
 		logger('main_news', 'def', 'main')
 		return {
 			'layout': self.base_layout(),
+			'language': str(self.request.cookies['_LOCALE_']),
 			'title': 'News',
 			'project': header,
 			'logged_in': self.request.authenticated_userid
@@ -542,6 +547,7 @@ class Dbas(object):
 		logger('main_imprint', 'def', 'main')
 		return {
 			'layout': self.base_layout(),
+			'language': str(self.request.cookies['_LOCALE_']),
 			'title': 'Imprint',
 			'project': header,
 			'logged_in': self.request.authenticated_userid
@@ -558,6 +564,7 @@ class Dbas(object):
 		self.request.response.status = 404
 		return {
 			'layout': self.base_layout(),
+			'language': str(self.request.cookies['_LOCALE_']),
 			'title': 'Error',
 			'project': header,
 			'page_notfound_viewname': self.request.view_name,
