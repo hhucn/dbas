@@ -28,10 +28,10 @@ function Countdown(options) {
 	};
 }
 
-function setLinkActive( linkname ) {
-	var linkIds = ['#contact-link', '#login-link', '#news-link', '#content-link' ];
+function setLinkActive(linkname) {
+	var linkIds = ['#contact-link', '#login-link', '#news-link', '#content-link'];
 	for (var i = 0; i < linkIds.length; i++) {
-		if (linkIds[i] == linkname){
+		if (linkIds[i] == linkname) {
 			$(linkIds[i]).addClass('active');
 		} else {
 			$(linkIds[i]).removeClass('active');
@@ -52,7 +52,7 @@ $(document).ready(function () {
 				scrollTop: ($(href).offset().top - 100)
 			}, 'slow');
 			e.preventDefault();
-		} catch (err){
+		} catch (err) {
 			// something like 'Cannot read property 'top' of undefined'
 		}
 	});
@@ -91,30 +91,10 @@ $(document).ready(function () {
 		$('#navbar-left').hide();
 	} else if (path == "settings") {
 		$('#navbar-left').hide();
-	} else if (path == "logout") { 	// Your application has indicated you are logged out
+	} else if (path == "imprint") {
 		$('#navbar-left').hide();
-		// eliminated
-		/*
-		var myCounter = new Countdown({
-			seconds: 4, // seconds to count down
-			onUpdateStatus: function (sec) {
-				$('.timer').text(sec + " s");
-			},
-			onCounterEnd: function () {
-				//this gets the full url and an index
-				var url = document.location.href,
-					index = url.indexOf("/logout");
-				//this removes the logout at the end, if there is one
-				url = url.substring(0, (index === -1) ? url.length : index);
-				url = url + "/logout_redirect";
-				// new text to the button
-				$('#homebutton').text("Redirecting to " + url);
-				// Move to a new location or you can do something else
-				window.location.href = url;
-			} // final action
-		});
-		myCounter.start();
-		*/
+	} else if (path == "logout") { // Your application has indicated you are logged out
+		$('#navbar-left').hide();
 	} else {
 		$('#navbar-left').show();
 		setLinkActive('');

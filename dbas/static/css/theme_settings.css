@@ -1,3 +1,7 @@
+#navbar-left {
+	visibility: hidden;
+}
+
 .button {
 	width: 49%;
 }

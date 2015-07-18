@@ -6,6 +6,8 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyramid.security import remember, forget
 from pyramid.session import check_csrf_token
 from pyramid.i18n import TranslationString as ts
+from pyramid.renderers import get_renderer
+from pyramid.renderers import render_to_response
 
 from .database import DBSession
 from .database.model import User, Group, Issue
@@ -28,8 +30,14 @@ class Dbas(object):
 		self.request.session['_LOCALE_'] = 'de'
 		self.request.cookies['_LOCALE_'] = 'de'
 
+
+	def base_layout(self):
+		renderer = get_renderer('templates/basetemplate.pt')
+		layout = renderer.implementation().macros['layout']
+		return layout
+
 	# main page
-	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
+	@view_config(route_name='main_page', renderer='templates/index.pt' ,permission='everybody')
 	def main_page(self):
 		"""
 		View configuration for the main page
@@ -38,17 +46,24 @@ class Dbas(object):
 		logger('main_page', 'def', 'main page')
 
 		settings = get_current_registry().settings
+		logger('xxxxxxx', '------------------------------------------', '------------------------------------------')
 		logger('xxxxxxx', 'DEF LANGUAGE', str(settings['pyramid.default_locale_name']))
 		logger('xxxxxxx', 'request.session[_LOCALE_]', str(self.request.session['_LOCALE_']))
 		logger('xxxxxxx', 'request.cookies[_LOCALE_]', str(self.request.cookies['_LOCALE_']))
 		logger('xxxxxxx', 'request.accept_language', str(self.request.accept_language))
+		self.request._LOCALE_ = 'de'
 		logger('xxxxxxx', 'request._LOCALE_', str(self.request._LOCALE_))
+		logger('xxxxxxx', '------------------------------------------', '------------------------------------------')
 
-		return dict(
-			title='Main',
-			project=header,
-			logged_in=self.request.authenticated_userid
-		)
+		self.request.response.set_cookie('_LOCALE_', 'de')
+		
+		return {
+			'layout': self.base_layout(),
+			'title': 'Main',
+			'project': header,
+			'logged_in': self.request.authenticated_userid
+		}
+
 
 	# login page
 	@view_config(route_name='main_login', renderer='templates/login.pt', permission='everybody')
@@ -242,24 +257,24 @@ class Dbas(object):
 				message = 'The given e-mail address is unkown'
 				reg_failed = True
 
-		return dict(
-			title='Login', 
-			project=header,
-			message=message, 
-			url=self.request.application_url + '/login', 
-			came_from=came_from, 
-			password=password, 
-			passwordconfirm=passwordconfirm, 
-			firstname=firstname, 
-			surname=surname, 
-			nickname=nickname, 
-			email=email, 
-			login_failed=log_failed, 
-			registration_failed=reg_failed, 
-			registration_success=reg_success, 
-			logged_in=self.request.authenticated_userid,
-			csrf_token=token
-		)
+		return {
+			'title': 'Login',
+			'project': header,
+			'message': message,
+			'url': self.request.application_url + '/login',
+			'came_from': came_from,
+			'password': password,
+			'passwordconfirm': passwordconfirm,
+			'firstname': firstname,
+			'surname': surname,
+			'nickname': nickname,
+			'email': email,
+			'login_failed': log_failed,
+			'registration_failed': reg_failed,
+			'registration_success': reg_success,
+			'logged_in': self.request.authenticated_userid,
+			'csrf_token': token
+		}
 
 	# logout page
 	@view_config(route_name='main_logout', permission='use')
@@ -348,20 +363,21 @@ class Dbas(object):
 				body = 'Name: ' + name + '\n' + 'Mail: ' + email + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
 				send_message, contact_error, message = EmailHelper().send_mail(self.request, subject, body, email)
 
-		return dict(
-			title='Contact',
-			project=header,
-			logged_in=self.request.authenticated_userid,
-			was_message_send=send_message,
-			contact_error=contact_error,
-			message=message,
-			name=name,
-			mail=email,
-			phone=phone,
-			content=content,
-			spam=spam,
-			csrf_token=token
-		)
+		return {
+			'layout': self.base_layout(),
+			'title': 'Contact',
+			'project': header,
+			'logged_in': self.request.authenticated_userid,
+			'was_message_send': send_message,
+			'contact_error': contact_error,
+			'message': message,
+			'name': name,
+			'mail': email,
+			'phone': phone,
+			'content': content,
+			'spam': spam,
+			'csrf_token': token
+		}
 
 	# content page, after login
 	@view_config(route_name='main_content', renderer='templates/content.pt', permission='use')
@@ -398,16 +414,17 @@ class Dbas(object):
 		# checks whether the current user is admin
 		is_admin = QueryHelper().is_user_admin(self.request.authenticated_userid)
 
-		return dict(
-			title='Content',
-			project=header,
-			logged_in=self.request.authenticated_userid,
-			message=msg,
-			issue=issue,
-			date=date,
-			is_admin=is_admin,
-			was_statement_inserted=statement_inserted,
-		)
+		return {
+			'layout': self.base_layout(),
+			'title': 'Content',
+			'project': header,
+			'logged_in': self.request.authenticated_userid,
+			'message': msg,
+			'issue': issue,
+			'date': date,
+			'is_admin': is_admin,
+			'was_statement_inserted': statement_inserted,
+		}
 
 	# settings page, when logged in
 	@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
@@ -496,23 +513,24 @@ class Dbas(object):
 					message = 'Your password was changed'
 					success = True
 
-		return dict(
-			title='Settings',
-			project=header,
-			logged_in=self.request.authenticated_userid,
-			passwordold=oldpw,
-			password=newpw,
-			passwordconfirm=confirmpw,
-			change_error=error,
-			change_success=success,
-			message=message,
-			db_firstname=db_user_firstname,
-			db_surname=db_user_surname,
-			db_nickname=db_user_nickname,
-			db_mail=db_user_mail,
-			db_group=db_user_group,
-			csrf_token=token
-		)
+		return {
+			'layout': self.base_layout(),
+			'title': 'Settings',
+			'project': header,
+			'logged_in': self.request.authenticated_userid,
+			'passwordold': oldpw,
+			'password': newpw,
+			'passwordconfirm': confirmpw,
+			'change_error': error,
+			'change_success': success,
+			'message': message,
+			'db_firstname': db_user_firstname,
+			'db_surname': db_user_surname,
+			'db_nickname': db_user_nickname,
+			'db_mail': db_user_mail,
+			'db_group': db_user_group,
+			'csrf_token': token
+		}
 
 	# news page for everybody
 	@view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
@@ -522,11 +540,12 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('main_news', 'def', 'main')
-		return dict(
-			title='News',
-			project=header,
-			logged_in=self.request.authenticated_userid
-		)
+		return {
+			'layout': self.base_layout(),
+			'title': 'News',
+			'project': header,
+			'logged_in': self.request.authenticated_userid
+		}
 
 	# imprint
 	@view_config(route_name='main_imprint', renderer='templates/imprint.pt', permission='everybody')
@@ -536,11 +555,12 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('main_imprint', 'def', 'main')
-		return dict(
-			title='Imprint',
-			project=header,
-			logged_in=self.request.authenticated_userid
-		)
+		return {
+			'layout': self.base_layout(),
+			'title': 'Imprint',
+			'project': header,
+			'logged_in': self.request.authenticated_userid
+		}
 
 	# 404 page
 	@notfound_view_config(renderer='templates/404.pt')
@@ -551,12 +571,13 @@ class Dbas(object):
 		"""
 		logger('notfound', 'def', 'view \'' + self.request.view_name + '\' not found')
 		self.request.response.status = 404
-		return dict(
-			title='Error',
-			project=header,
-			page_notfound_viewname=self.request.view_name,
-			logged_in=self.request.authenticated_userid
-		)
+		return {
+			'layout': self.base_layout(),
+			'title': 'Error',
+			'project': header,
+			'page_notfound_viewname': self.request.view_name,
+			'logged_in': self.request.authenticated_userid
+		}
 
 	# ajax - return all position in the database
 	@view_config(route_name='ajax_all_positions', renderer='json', check_csrf=True)

@@ -8,12 +8,12 @@
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
 
-.first-form{
+.first-form {
 	margin-top: 0px;
 	text-align: center;
 }
 
-.form:hover{
+.form:hover {
 	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
 	transition: .5s ease;
 }
@@ -75,7 +75,7 @@ input[type="text"],
 input[type="email"],
 input[type="tel"],
 input[type="password"],
-textarea[type="text"]  {
+textarea[type="text"] {
 	outline: none;
 	font-size: 18px;
 	font-weight: 400;
@@ -227,7 +227,7 @@ input.active {
 	margin-top: 25px;
 }
 
-#forgot-password{
+#forgot-password {
 	float: right;
 }
 
@@ -259,22 +259,19 @@ input.active {
 }
 
 @media(max-width:1440px) {
-	.login,
-	.contact{
+	.login, .contact {
 		width: 40%;
 	}
 }
 
 @media(max-width:1366px) {
-	.login,
-	.contact{
+	.login, .contact {
 		width: 43%;
 	}
 }
 
 @media(max-width:1280px) {
-	.login,
-	.contact{
+	.login, .contact {
 		width: 45%;
 	}
 }
@@ -286,15 +283,13 @@ input.active {
 }
 
 @media(max-width:1024px) {
-	.login,
-	.contact{
+	.login, .contact {
 		width: 56%;
 	}
 }
 
 @media(max-width:768px) {
-	.login,
-	.contact{
+	.login, .contact {
 		width: 73%;
 	}
 	input.name,
@@ -346,16 +341,7 @@ input.active {
 }
 
 @media(max-width:480px) {
-	input.name,
-	input.userfirstname,
-	input.userlastname,
-	input.email,
-	input.nickname,
-	input.password,
-	input.passwordconfirm,
-	input.spam,
-	input.tel,
-	textarea.content {
+	input.name, input.userfirstname, input.userlastname, input.email, input.nickname, input.password, input.passwordconfirm, input.spam, input.tel, textarea.content {
 		width: 61%;
 	}
 	input[type="submit"] {
@@ -401,7 +387,7 @@ input.active {
 		background: url(../images/glyphicons_free/glyphicons/glyphicons-121-message-full.png) no-repeat 8px 6px;
 	}
 	input.password,
-	input.passwordold{
+	input.passwordold {
 		background: url(../images/glyphicons_free/glyphicons/glyphicons-204-lock.png) no-repeat 8px 6px;
 	}
 	input.password,

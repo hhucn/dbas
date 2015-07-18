@@ -248,12 +248,12 @@ comment .container and wrap each container with <div class="coloured-div">
 	-webkit-filter: saturate(200%);
 }
 
-#wrapper {
+#additional-wrapper {
 	min-height: 100%;
 	position: relative;
 }
 
-#content {
+#wrapper-content {
 	padding-top: 100px;
 	padding-bottom: 100px;
 	/* Height of the footer element */

@@ -1,3 +1,7 @@
+#navbar-left {
+	visibility: hidden;
+}
+
 .box {
 	display: inline-block;
 	margin: 50px;

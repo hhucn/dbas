@@ -34,63 +34,7 @@
 	text-align: left;
 }
 
-#icon-map {
-	content: url('../images/icon_graph.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-dialogue {
-	content: url('../images/icon_dialogue.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-simple {
-	content: url('../images/icon_simple.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-guided {
-	content: url('../images/icon_guided.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-island {
-	content: url('../images/icon_island.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-expert {
-	content: url('../images/icon_expert.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-forum {
-	content: url('../images/icon_forum.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-pro-con {
-	content: url('../images/icon_procon.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-argapproach {
-	content: url('../images/icon_argu.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-liqd {
-	content: url('../images/icon_liqd.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-kolleg {
-	content: url('../images/icon_kolleg.png') no-repeat center center;
-	margin: auto;
-}
-
-#icon-kit {
-	content: url('../images/icon_kit.png') no-repeat center center;
+.icon-badge {
 	margin: auto;
 }
 
