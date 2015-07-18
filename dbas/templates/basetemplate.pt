@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="$de" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas">
+<html lang="$de" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
 
 <head>
 	<meta charset="utf-8">
@@ -18,14 +18,26 @@
 
 <body>
 
+	<!-- Inlcuding this at top for references -->
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.1.3.min.js')}"></script>
+
 	<div id="additional-wrapper">
-		<div metal:use-macro="load: snippet-header.pt" />
-		<div metal:use-macro="load: snippet-popups.pt" />
+		<div id="wrapper-header">
+			<div metal:use-macro="load: snippet-header.pt" />
+			<div metal:use-macro="load: snippet-popups.pt" />
 
-		<!-- scroll to top -->
-		<a href="#top" class="back-to-top" title="Go to the top"></a>
+			<div id="wrapper-content">
+				<div metal:define-slot="content_page"></div>
+			</div>
 
-		<div class="ajaxloader"></div>
+			<div id="wrapper-footer">
+				<a href="#top" class="back-to-top" title="Go to the top"></a>
+
+				<div metal:use-macro="load: snippet-footer.pt" />
+			</div>
+
+			<div class="ajaxloader"></div>
+		</div>
 	</div>
 
 	<!-- Bootstrap core, JavaScript, jquery

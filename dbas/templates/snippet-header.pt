@@ -30,6 +30,7 @@
 				</ul>
 
 				<ul id="navbar-right" class="nav navbar-nav navbar-right">
+
 					<li id="content-link" tal:condition="logged_in">
 						<a href="${request.application_url}/content" title="Get the party started">
 							<img id="header_letsgo" class="glyphicon-local" i18n:translate="lets_go">&thinsp;Let's&thinsp;&thinsp;go
@@ -114,6 +115,8 @@
 							-->
 						</ul>
 					</li>
+
+				</ul>
 			</div>
 		</div>
 	</div>

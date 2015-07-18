@@ -1,649 +1,629 @@
-<!DOCTYPE html>
-<html	lang="${request.locale_name}"
-			metal:use-macro="load: basetemplate.pt"
-			xmlns="http://www.w3.org/1999/xhtml"
-			xml:lang="en"
-			xmlns:metal="http://xml.zope.org/namespaces/metal"
-			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-			i18n:domain="dbas">
+<div metal:use-macro="layout">
+	<div metal:fill-slot="content_page">
+		<!-- todo move news into second database -->
 
-<!-- todo move news into second database -->
+		<head>
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.css')}" rel="stylesheet">
+		</head>
 
-<head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.css')}" rel="stylesheet">
-	<title>${project} - ${title}</title>
-</head>
-
-<body>
-
-	<div id="wrapper">
-		<div id="content">
-
-			<div class="container first-container">
-				<h1><span class="font-semi-bold">News</span></h1>
-				<p class="lead" i18n:translate="news_intro">This will be the news page and currently I think...this will be some kind of blog</p>
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">i18n</span></h3>
-				<h4><p>22.07.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Still working on i18n-problems of chameleon templates due to lingua. If this is fixed, i18n of jQuery will happen. Afterwards l10n will take place.
-			</div>
-
-			<div class="container newscontainer span_2_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Design & Research</span></h3>
-				<h4><p>13.07.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>D-BAS is still under construction. Meanwhile the index page was recreated and we are improving our algorithm for the
-				    guided view mode. Next to this we are inventing a bunch of metrics for measuring the quality of discussion in several
-				    software programs.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Session Management / CSRF</span></h3>
-				<h4><p>25.06.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>D-BAS is no able to manage a session as well as it has protection against CSRF.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Edit/Changelog</span></h3>
-				<h4><p>24.06.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Now, each user can edit positions and arguments. All changes will be saved and can be watched. Future work is the chance to edit the relations between positions.
-			</div>
-
-			<div class="container newscontainer span_2_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Simple Navigation was improved</span></h3>
-				<h4><p>19.06.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Because the first kind of navigation was finished recently, D-BAS is now dynamically. That means, that each user can add positions and arguments on his own.
-				<br>
-				<i>Open issues</i> are i18n, a framework for JS-tests as well as the content of the popups.
-			</div>
-
-			<div class="container newscontainer span_2_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Simple Navigation ready</span></h3>
-				<h4><p>09.06.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>First beta of D-BAS' navigation is now ready. Within this kind the user will be permantly confronted with arguments, which have a attack relation to the current selected argument/position. For an justification the user can select out of all arguments, which have a attack relation to the 'attacking' argument. Unfortunately the support-relation are currently useless except for the justification for the position at start.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Workshop</span></h3>
-				<h4><p>27.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Today: A new workshop at the O.A.S.E. :)
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Admin Interface</span></h3>
-				<h4><p>29.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Everything is growing, we have now a little admin interface and a navigation for the discussion is finshed, but this is very basic and simple
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Sharing</span></h3>
-				<h4><p>27.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Every news can now be shared via FB, G+, Twitter and Mail. Not very important, but in some kind it is...
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Tests and JS</span></h3>
-				<h4><p>26.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Front-end tests with Splinter are now finished. They are great and easy to manage. Additionally I'am working on JS, so we can navigate in a static graph. Next to this, the I18N is waiting...
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">JS Starts</span></h3>
-				<h4><p>18.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Today started the funny part about the dialogue based part, embedded in the content page.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Fun Part Starts</span></h3>
-				<h4><p>18.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Today started the funny part about the dialogue based part, embedded in the content page.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">No I18N + L10N</span></h3>
-				<h4><p>18.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Interationalization and localization is much more diffult than described by the pyramid. This has something todo with Chameleon 2, Lingua and Babel, so this feature has to wait.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">I18N + L10N</span></h3>
-				<h4><p>12.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br> D-BAS, now with internationalization and translation.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Settings</span></h3>
-				<h4><p>10.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>New part of the website is finished: a settings page for every user.
-			</div>
-
-			<div class="container newscontainer span_2_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">About the Workshop in Karlsruhe</span></h3>
-				<h4><p>09.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>The workshop was very interesting. We have had very interesting talks and got much great feedback vom Jun.-Prof. Dr. Betz and Mr. Voigt. A repetition will be planed for the middle of july.
-			</div>
-
-			<div class="container newscontainer span_2_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Workshop in Karlsruhe</span></h3>
-				<h4><p>07.05.2015 - 08.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>The working group 'functionality' will drive to Karlsruhe for a workshop with Jun.-Prof. Dr. Betz as well as with C. Voigt. Our main topics will be the measurement of quality of discussions and the design of online-participation. I think, this will be very interesting!
-			</div>
-
-			<div class="container newscontainer span_2_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">System will be build up</span></h3>
-				<h4><p>01.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Currently I am working a lot at the system. This work includes:
-				<ul>
-					<li>frontend-design with CSS and jQuery</li>
-					<li>backend-development with pything</li>
-					<li>development of unit- and integration tests</li>
-					<li>a database scheme</li>
-					<li>validating and deserializing data with <a href="http://docs.pylonsproject.org/projects/colander/en/latest/">Colander</a>
-					</li>
-					<li>translating string with <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/i18n.html#localization-deployment-settings">internationalization</a>
-					</li>
-				</ul>
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">First set of tests</span></h3>
-				<h4><p>06.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>Finished first set of unit- and integration tests for the database and frontend.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Page is growing</span></h3>
-				<h4><p>05.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>The contact page is now working as well as the password-request option.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">First mockup</span></h3>
-				<h4><p>01.05.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>The webpage has now a contact, login and register site.
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">Start</span></h3>
-				<h4><p>14.04.2015</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>I've started with the Prototype
-			</div>
-
-			<div class="container newscontainer span_1_of_4">
-
-				<ul class="share-table">
-					<li>
-						<a class="share-icon share-def"></a>
-						<ul>
-							<li>
-								<a class="share-icon share-mail"></a>
-							</li>
-							<li>
-								<a class="share-icon share-twitter"></a>
-							</li>
-							<li>
-								<a class="share-icon share-google"></a>
-							</li>
-							<li>
-								<a class="share-icon share-facebook"></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<h3><span class="font-semi-bold">First steps</span></h3>
-				<h4><p>01.12.2014</p></h4>
-				<h5>Author: Tobias Krauthoff</h5>
-				<br>I've started with with my PhD.
-			</div>
+		<div class="container first-container">
+			<h1><span class="font-semi-bold">News</span></h1>
+			<p class="lead" i18n:translate="news_intro">This will be the news page and currently I think...this will be some kind of blog</p>
 		</div>
 
-		<div metal:use-macro="load: snippet-footer.pt" />
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">i18n</span></h3>
+			<h4><p>22.07.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Still working on i18n-problems of chameleon templates due to lingua. If this is fixed, i18n of jQuery will happen. Afterwards l10n will take place.
+		</div>
+
+		<div class="container newscontainer span_2_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Design & Research</span></h3>
+			<h4><p>13.07.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>D-BAS is still under construction. Meanwhile the index page was recreated and we are improving our algorithm for the guided view mode. Next to this we are inventing a bunch of metrics for measuring the quality of discussion in several software programs.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Session Management / CSRF</span></h3>
+			<h4><p>25.06.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>D-BAS is no able to manage a session as well as it has protection against CSRF.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Edit/Changelog</span></h3>
+			<h4><p>24.06.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Now, each user can edit positions and arguments. All changes will be saved and can be watched. Future work is the chance to edit the relations between positions.
+		</div>
+
+		<div class="container newscontainer span_2_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Simple Navigation was improved</span></h3>
+			<h4><p>19.06.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Because the first kind of navigation was finished recently, D-BAS is now dynamically. That means, that each user can add positions and arguments on his own.
+			<br>
+			<i>Open issues</i> are i18n, a framework for JS-tests as well as the content of the popups.
+		</div>
+
+		<div class="container newscontainer span_2_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Simple Navigation ready</span></h3>
+			<h4><p>09.06.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>First beta of D-BAS' navigation is now ready. Within this kind the user will be permantly confronted with arguments, which have a attack relation to the current selected argument/position. For an justification the user can select out of all arguments, which have a attack relation to the 'attacking' argument. Unfortunately the support-relation are currently useless except for the justification for the position at start.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Workshop</span></h3>
+			<h4><p>27.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Today: A new workshop at the O.A.S.E. :)
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Admin Interface</span></h3>
+			<h4><p>29.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Everything is growing, we have now a little admin interface and a navigation for the discussion is finshed, but this is very basic and simple
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Sharing</span></h3>
+			<h4><p>27.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Every news can now be shared via FB, G+, Twitter and Mail. Not very important, but in some kind it is...
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Tests and JS</span></h3>
+			<h4><p>26.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Front-end tests with Splinter are now finished. They are great and easy to manage. Additionally I'am working on JS, so we can navigate in a static graph. Next to this, the I18N is waiting...
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">JS Starts</span></h3>
+			<h4><p>18.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Today started the funny part about the dialogue based part, embedded in the content page.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Fun Part Starts</span></h3>
+			<h4><p>18.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Today started the funny part about the dialogue based part, embedded in the content page.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">No I18N + L10N</span></h3>
+			<h4><p>18.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Interationalization and localization is much more diffult than described by the pyramid. This has something todo with Chameleon 2, Lingua and Babel, so this feature has to wait.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">I18N + L10N</span></h3>
+			<h4><p>12.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br> D-BAS, now with internationalization and translation.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Settings</span></h3>
+			<h4><p>10.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>New part of the website is finished: a settings page for every user.
+		</div>
+
+		<div class="container newscontainer span_2_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">About the Workshop in Karlsruhe</span></h3>
+			<h4><p>09.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>The workshop was very interesting. We have had very interesting talks and got much great feedback vom Jun.-Prof. Dr. Betz and Mr. Voigt. A repetition will be planed for the middle of july.
+		</div>
+
+		<div class="container newscontainer span_2_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Workshop in Karlsruhe</span></h3>
+			<h4><p>07.05.2015 - 08.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>The working group 'functionality' will drive to Karlsruhe for a workshop with Jun.-Prof. Dr. Betz as well as with C. Voigt. Our main topics will be the measurement of quality of discussions and the design of online-participation. I think, this will be very interesting!
+		</div>
+
+		<div class="container newscontainer span_2_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">System will be build up</span></h3>
+			<h4><p>01.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Currently I am working a lot at the system. This work includes:
+			<ul>
+				<li>frontend-design with CSS and jQuery</li>
+				<li>backend-development with pything</li>
+				<li>development of unit- and integration tests</li>
+				<li>a database scheme</li>
+				<li>validating and deserializing data with <a href="http://docs.pylonsproject.org/projects/colander/en/latest/">Colander</a>
+				</li>
+				<li>translating string with <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/i18n.html#localization-deployment-settings">internationalization</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">First set of tests</span></h3>
+			<h4><p>06.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>Finished first set of unit- and integration tests for the database and frontend.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Page is growing</span></h3>
+			<h4><p>05.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>The contact page is now working as well as the password-request option.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">First mockup</span></h3>
+			<h4><p>01.05.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>The webpage has now a contact, login and register site.
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">Start</span></h3>
+			<h4><p>14.04.2015</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>I've started with the Prototype
+		</div>
+
+		<div class="container newscontainer span_1_of_4">
+
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3><span class="font-semi-bold">First steps</span></h3>
+			<h4><p>01.12.2014</p></h4>
+			<h5>Author: Tobias Krauthoff</h5>
+			<br>I've started with with my PhD.
+		</div>
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
+
+
 	</div>
-
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
-
-
-</body>
-</html>
+</div>

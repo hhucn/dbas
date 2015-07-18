@@ -1,195 +1,179 @@
-<!DOCTYPE html>
-<html	lang="${request.locale_name}"
-			metal:use-macro="load: basetemplate.pt"
-			xmlns="http://www.w3.org/1999/xhtml"
-			xml:lang="en"
-			xmlns:metal="http://xml.zope.org/namespaces/metal"
-			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-			i18n:domain="dbas">
+<div metal:use-macro="layout">
+	<div metal:fill-slot="content_page">
 
-<head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_contact_login.css')}" rel="stylesheet">
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
-	<title>${project} - ${title}</title>
-</head>
+		<head>
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_contact_login.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
+		</head>
 
-<body>
+		<div class="login form">
+			<ul class="tab-group">
+				<li class="tab active"><a href="#login" i18n:translate="login">Log In</a>
+				</li>
+				<li class="tab"><a href="#signup" i18n:translate="sign_up">Sign Up</a>
+				</li>
+			</ul>
+			<div class="tab-content">
 
-	<div id="wrapper">
-		<div id="content">
-			<div class="login form">
-				<ul class="tab-group">
-					<li class="tab active"><a href="#login" i18n:translate="login">Log In</a>
-					</li>
-					<li class="tab"><a href="#signup" i18n:translate="sign_up">Sign Up</a>
-					</li>
-				</ul>
-				<div class="tab-content">
+				<div id="login">
+					<h2 i18n:translate="welcome_back">Welcome Back!</h2>
 
-					<div id="login">
-						<h2 i18n:translate="welcome_back">Welcome Back!</h2>
+					<form action="/login" method="post" class="form-horizontal">
+						<input type="hidden" name="csrf_token" value="${csrf_token}">
 
-						<form action="/login" method="post" class="form-horizontal">
-							<input type="hidden" name="csrf_token" value="${csrf_token}">
+						<input type="hidden" name="came_from" value="${came_from}" />
 
-							<input type="hidden" name="came_from" value="${came_from}" />
-
-							<div class="form-group">
-								<label class="col-sm-3 control-label" i18n:translate="your_nickname">Your Nickname</label>
-								<div class="col-sm-9">
-									<input type="text" class="nickname" name="nickname" autocomplete="off" placeholder="example: Democrator" value="${nickname}">
-								</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="your_nickname">Your Nickname</label>
+							<div class="col-sm-9">
+								<input type="text" class="nickname" name="nickname" autocomplete="off" placeholder="example: Democrator" value="${nickname}">
 							</div>
-
-							<div class="form-group">
-								<label class="col-sm-3 control-label" i18n:translate="your_password">Your Password</label>
-								<div class="col-sm-9">
-									<input type="password" class="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}" />
-								</div>
-							</div>
-
-							<p data-toggle="modal" data-target="#popup_password" id="forgot-password"><a><span i18n:translate="forgot_password">Forgot Password?</span></a>
-							</p>
-
-							<div tal:condition="login_failed" class="alert alert-danger" role="alert">
-								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-								<span class="sr-only" i18n:translate="error">Error:</span> <span tal:replace="message" />
-							</div>
-
-							<div tal:condition="registration_success" class="alert alert-success" role="alert">
-								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-								<span class="sr-only" i18n:translate="success">Success:</span> <span tal:replace="message" />
-							</div>
-
-							<div tal:condition="registration_failed" class="alert alert-danger" role="alert">
-								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-								<span class="sr-only" i18n:translate="error">Error:</span> <span tal:replace="message" />
-							</div>
-
-							<input type="submit" name="form.login.submitted" value="Log In" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
-
-						</form>
-					</div>
-
-					<div id="signup">
-						<h2 i18n:translate="signup_free">Sign Up for Free</h2>
-
-						<form action="/login" method="post" class="form-horizontal">
-							<input type="hidden" name="csrf_token" value="${csrf_token}">
-
-							<div class="form-group">
-								<label class="col-sm-3 control-label" i18n:translate="first_name">Your First Name</label>
-								<div class="col-sm-9">
-									<input id="userfirstname-input" type="text" name="firstname" class="userfirstname active" autocomplete="on" placeholder="example: Tobias" value="${firstname}">
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="col-sm-3 control-label" i18n:translate="last_name">Your Last Name</label>
-								<div class="col-sm-9">
-									<input id="userlastname-input" type="text" name="surname" class="userlastname" autocomplete="on" placeholder="example: Krauthoff" value="${surname}">
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="col-sm-3 control-label" i18n:translate="nickname">Your Nickname</label>
-								<div class="col-sm-9">
-									<input id="nick-input" type="text" class="nickname" name="nickname" autocomplete="on" placeholder="example: Democrator" value="${nickname}">
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="col-sm-3 control-label" i18n:translate="gender">Your Gender</label>
-								<div class="col-sm-9">
-									<label class="radio-inline">
-										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked> <b i18n:translate="none">none</b>
-									</label>
-									<label class="radio-inline">
-										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f"> <b i18n:translate="female">female</b>
-									</label>
-									<label class="radio-inline">
-										<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m"> <b i18n:translate="male">male</b>
-									</label>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="col-sm-3 control-label" i18n:translate="email">Your Email Address</label>
-								<div class="col-sm-9">
-									<input id="email-input" type="email" class="email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de" value="${email}">
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="col-sm-3 control-label" i18n:translate="password">Your Password</label>
-								<div class="col-sm-9">
-									<input id="password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
-								</div>
-								<div id="password-extras">
-									<div id="password-meter" class="veryweak"></div>
-									<h4 id="password-strength" i18n:translate="password_strength">Strength</h4>
-								</div>
-
-							</div>
-							<div class="form-group">
-								<label class="col-sm-3 control-label" i18n:translate="password-confirm">Password (confirm)</label>
-								<div class="col-sm-9">
-									<input id="passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
-								</div>
-							</div>
-
-							<a id="password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
-								<i id="password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
-							</a>
-
-							<div id="warning-message" class="alert alert-warning alert-dismissible" role="alert">
-								<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-								</button>
-								<strong i18n:translate="warning">Warning!</strong>
-
-								<div id="warning-message-text"><span tal:replace="message" />
-								</div>
-							</div>
-
-							<input id="login-register-submit" type="submit" name="form.registration.submitted" value="Register" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
-
-						</form>
-					</div>
-				</div>
-			</div>
-
-			<!-- PASSWORD REQUEST -->
-			<div class="modal fade" id="popup_password" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-							</button>
-							<h4 class="modal-title" id="exampleModalLabel" i18n:translate="password_request">Password-Request</h4>
 						</div>
-						<div class="modal-body">
-							<form action="/login" method="post">
-								<label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="your_password">Your Password</label>
+							<div class="col-sm-9">
+								<input type="password" class="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}" />
+							</div>
+						</div>
+
+						<p data-toggle="modal" data-target="#popup_password" id="forgot-password"><a><span i18n:translate="forgot_password">Forgot Password?</span></a>
+						</p>
+
+						<div tal:condition="login_failed" class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="error">Error:</span> <span tal:replace="message" />
+						</div>
+
+						<div tal:condition="registration_success" class="alert alert-success" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="success">Success:</span> <span tal:replace="message" />
+						</div>
+
+						<div tal:condition="registration_failed" class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="error">Error:</span> <span tal:replace="message" />
+						</div>
+
+						<input type="submit" name="form.login.submitted" value="Log In" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+
+					</form>
+				</div>
+
+				<div id="signup">
+					<h2 i18n:translate="signup_free">Sign Up for Free</h2>
+
+					<form action="/login" method="post" class="form-horizontal">
+						<input type="hidden" name="csrf_token" value="${csrf_token}">
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="first_name">Your First Name</label>
+							<div class="col-sm-9">
+								<input id="userfirstname-input" type="text" name="firstname" class="userfirstname active" autocomplete="on" placeholder="example: Tobias" value="${firstname}">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="last_name">Your Last Name</label>
+							<div class="col-sm-9">
+								<input id="userlastname-input" type="text" name="surname" class="userlastname" autocomplete="on" placeholder="example: Krauthoff" value="${surname}">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="nickname">Your Nickname</label>
+							<div class="col-sm-9">
+								<input id="nick-input" type="text" class="nickname" name="nickname" autocomplete="on" placeholder="example: Democrator" value="${nickname}">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="gender">Your Gender</label>
+							<div class="col-sm-9">
+								<label class="radio-inline">
+									<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked> <b i18n:translate="none">none</b>
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f"> <b i18n:translate="female">female</b>
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m"> <b i18n:translate="male">male</b>
+								</label>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="email">Your Email Address</label>
+							<div class="col-sm-9">
 								<input id="email-input" type="email" class="email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de" value="${email}">
-								<input type="submit" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" />
-								<!-- data-dismiss="modal"-->
-							</form>
+							</div>
 						</div>
-						<div class="modal-password">
-							<button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="close">Close</button>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="password">Your Password</label>
+							<div class="col-sm-9">
+								<input id="password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
+							</div>
+							<div id="password-extras">
+								<div id="password-meter" class="veryweak"></div>
+								<h4 id="password-strength" i18n:translate="password_strength">Strength</h4>
+							</div>
+
 						</div>
-					</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="password-confirm">Password (confirm)</label>
+							<div class="col-sm-9">
+								<input id="passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+							</div>
+						</div>
+
+						<a id="password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
+							<i id="password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
+						</a>
+
+						<div id="warning-message" class="alert alert-warning alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+							</button>
+							<strong i18n:translate="warning">Warning!</strong>
+
+							<div id="warning-message-text"><span tal:replace="message" />
+							</div>
+						</div>
+
+						<input id="login-register-submit" type="submit" name="form.registration.submitted" value="Register" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+
+					</form>
 				</div>
 			</div>
-
 		</div>
 
-		<div metal:use-macro="load: snippet-footer.pt" />
+		<!-- PASSWORD REQUEST -->
+		<div class="modal fade" id="popup_password" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="exampleModalLabel" i18n:translate="password_request">Password-Request</h4>
+					</div>
+					<div class="modal-body">
+						<form action="/login" method="post">
+							<label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>
+							<input id="email-input" type="email" class="email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de" value="${email}">
+							<input type="submit" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" />
+							<!-- data-dismiss="modal"-->
+						</form>
+					</div>
+					<div class="modal-password">
+						<button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="close">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/login.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/password-handler.js')}"></script>
+
 	</div>
-
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/login.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/password-handler.js')}"></script>
-
-</body>
-
-</html>
+</div>

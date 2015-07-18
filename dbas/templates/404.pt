@@ -1,34 +1,18 @@
-<!DOCTYPE html>
-<html	lang="${request.locale_name}"
-			metal:use-macro="load: basetemplate.pt"
-			xmlns="http://www.w3.org/1999/xhtml"
-			xml:lang="en"
-			xmlns:metal="http://xml.zope.org/namespaces/metal"
-			xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-			i18n:domain="dbas">
+<div metal:use-macro="layout">
+	<div metal:fill-slot="content_page">
 
-<head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_404_logout.css')}" rel="stylesheet">
-	<title>${project} - ${title}</title>
-</head>
+		<head>
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_404_logout.css')}" rel="stylesheet">
+		</head>
 
-<body>
 
-	<div id="wrapper">
-		<div id="content">
-
-			<div class="center text-center">
-				<div class="error">
-					<h1><span class="font-semi-bold" i18n:translate="404">404 Error</span></h1>
-					<p class="lead font-normal" i18n:translate="404_text">The page &quot;<span i18n:name="page_notfound_viewname" i18n:translate="" class="font-semi-bold">${page_notfound_viewname}</span>&quot; for could not be found.</p>
-					<br>
-					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
-				</div>
+		<div class="center text-center">
+			<div class="error">
+				<h1><span class="font-semi-bold" i18n:translate="404">404 Error</span></h1>
+				<p class="lead font-normal" i18n:translate="404_text">The page &quot;<span i18n:name="page_notfound_viewname" i18n:translate="" class="font-semi-bold">${page_notfound_viewname}</span>&quot; for could not be found.</p>
+				<br>
+				<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
 			</div>
 		</div>
-
-		<div metal:use-macro="load: snippet-footer.pt" />
 	</div>
-
-</body>
-</html>
+</div>
