@@ -7,7 +7,7 @@ from pyramid.security import remember, forget
 from pyramid.session import check_csrf_token
 from pyramid.i18n import TranslationString as ts
 from pyramid.renderers import get_renderer
-from pyramid.renderers import render_to_response
+from pyramid.threadlocal import get_current_registry
 
 from .database import DBSession
 from .database.model import User, Group, Issue
@@ -41,10 +41,10 @@ class Dbas(object):
 		:return:
 		"""
 		logger('main_page', 'def', 'main page')
-		
+		lang = str(self.request.cookies['_LOCALE_']) if self.request.cookies['_LOCALE_'] else get_current_registry().settings['pyramid.default_locale_name']
 		return {
 			'layout': self.base_layout(),
-			'language': str(self.request.cookies['_LOCALE_']),
+			'language': str(lang),
 			'title': 'Main',
 			'project': header,
 			'logged_in': self.request.authenticated_userid
@@ -242,8 +242,9 @@ class Dbas(object):
 				message = 'The given e-mail address is unkown'
 				reg_failed = True
 
+		lang = str(self.request.cookies['_LOCALE_']) if self.request.cookies['_LOCALE_'] else get_current_registry().settings['pyramid.default_locale_name']
 		return {
-			'language': str(self.request.cookies['_LOCALE_']),
+			'language': lang,
 			'title': 'Login',
 			'project': header,
 			'message': message,
@@ -297,7 +298,6 @@ class Dbas(object):
 		phone = ''
 		content = ''
 		spam = ''
-		request_token = ''
 
 		if 'form.contact.submitted' in self.request.params:
 			logger('main_contact', 'form.contact.submitted', 'requesting params')
@@ -349,9 +349,10 @@ class Dbas(object):
 				body = 'Name: ' + name + '\n' + 'Mail: ' + email + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
 				send_message, contact_error, message = EmailHelper().send_mail(self.request, subject, body, email)
 
+		lang = str(self.request.cookies['_LOCALE_']) if self.request.cookies['_LOCALE_'] else get_current_registry().settings['pyramid.default_locale_name']
 		return {
 			'layout': self.base_layout(),
-			'language': str(self.request.cookies['_LOCALE_']),
+			'language': str(lang),
 			'title': 'Contact',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
@@ -401,9 +402,10 @@ class Dbas(object):
 		# checks whether the current user is admin
 		is_admin = QueryHelper().is_user_admin(self.request.authenticated_userid)
 
+		lang = str(self.request.cookies['_LOCALE_']) if self.request.cookies['_LOCALE_'] else get_current_registry().settings['pyramid.default_locale_name']
 		return {
 			'layout': self.base_layout(),
-			'language': str(self.request.cookies['_LOCALE_']),
+			'language': str(lang),
 			'title': 'Content',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
@@ -501,9 +503,10 @@ class Dbas(object):
 					message = 'Your password was changed'
 					success = True
 
+		lang = str(self.request.cookies['_LOCALE_']) if self.request.cookies['_LOCALE_'] else get_current_registry().settings['pyramid.default_locale_name']
 		return {
 			'layout': self.base_layout(),
-			'language': str(self.request.cookies['_LOCALE_']),
+			'language': str(lang),
 			'title': 'Settings',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
@@ -529,9 +532,10 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('main_news', 'def', 'main')
+		lang = str(self.request.cookies['_LOCALE_']) if self.request.cookies['_LOCALE_'] else get_current_registry().settings['pyramid.default_locale_name']
 		return {
 			'layout': self.base_layout(),
-			'language': str(self.request.cookies['_LOCALE_']),
+			'language': str(lang),
 			'title': 'News',
 			'project': header,
 			'logged_in': self.request.authenticated_userid
@@ -545,9 +549,10 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('main_imprint', 'def', 'main')
+		lang = str(self.request.cookies['_LOCALE_']) if self.request.cookies['_LOCALE_'] else get_current_registry().settings['pyramid.default_locale_name']
 		return {
 			'layout': self.base_layout(),
-			'language': str(self.request.cookies['_LOCALE_']),
+			'language': str(lang),
 			'title': 'Imprint',
 			'project': header,
 			'logged_in': self.request.authenticated_userid
@@ -562,9 +567,10 @@ class Dbas(object):
 		"""
 		logger('notfound', 'def', 'view \'' + self.request.view_name + '\' not found')
 		self.request.response.status = 404
+		lang = str(self.request.cookies['_LOCALE_']) if self.request.cookies['_LOCALE_'] else get_current_registry().settings['pyramid.default_locale_name']
 		return {
 			'layout': self.base_layout(),
-			'language': str(self.request.cookies['_LOCALE_']),
+			'language': str(lang),
 			'title': 'Error',
 			'project': header,
 			'page_notfound_viewname': self.request.view_name,

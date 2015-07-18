@@ -79,7 +79,7 @@
 					</li>
 
 					<li class="dropdown">
-						<a class="dropdown-toggle" name="show-more-toggle" data-toggle="dropdown" href="#more" title="Show more" i18n:translate="more">More
+						<a class="dropdown-toggle" name="show-more-toggle" data-toggle="dropdown" href="#more" title="Show more"><span i18n:translate="more">More</span>
 								<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li>
