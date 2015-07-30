@@ -5,7 +5,6 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 from pyramid.session import check_csrf_token
-from pyramid.i18n import TranslationString as ts
 from pyramid.renderers import get_renderer
 from pyramid.threadlocal import get_current_registry
 
@@ -104,7 +103,7 @@ class Dbas(object):
 			# check for user and password validations
 			if not db_user:
 				logger('main_login', 'form.login.submitted', 'user \'' + nickname + '\' does not exists')
-				message = ts('NoUser', domain='dbas', default='User does not exists')
+				message = 'User does not exists'
 			elif not db_user.validate_password(password):  # dbUser.validate_password(password)
 				logger('main_login', 'form.login.submitted', 'wrong password')
 				message = 'Wrong password'

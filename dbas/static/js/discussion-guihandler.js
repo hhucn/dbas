@@ -416,13 +416,14 @@ function GuiHandler() {
 	};
 
 	/**
-	 *
+	 * Creates dropdown button
 	 * @param identifier
 	 * @param number
 	 * @returns {jQuery|HTMLElement|*}
 	 */
 	this.getDropdownWithSentencesOpeners = function (identifier, number) {
-		var dropdown, button, span, ul, li_content, li_header, i, a, btn_id, a_id, h = new Helper();
+		var dropdown, button, span, ul, li_content, li_header, i, a, btn_id, a_id, h = new Helper(), sentencesOpeners;
+		sentencesOpeners = identifier == id_left ? sentencesOpenersArguingWithAgreeing : sentencesOpenersArguingWithDisagreeing;
 
 		// div tag for the dropdown
 		dropdown = $('<div>');
@@ -451,10 +452,10 @@ function GuiHandler() {
 		li_header.attr('class', 'dropdown-header');
 		li_header.text('Argue');
 		ul.append(li_header);
-		for (i = 0; i < sentencesOpenersArguing.length; i++) {
+		for (i = 0; i < sentencesOpeners.length; i++) {
 			li_content = $('<li>');
 			a_id = identifier + '-sentence-opener-' + i;
-			a = h.getATagForDropDown(a_id, clickToChoose + ': ' + sentencesOpenersArguing[i], sentencesOpenersArguing[i]);
+			a = h.getATagForDropDown(a_id, clickToChoose + ': ' + sentencesOpeners[i], sentencesOpeners[i]);
 			li_content.append(a);
 			ul.append(li_content);
 		}
@@ -466,7 +467,7 @@ function GuiHandler() {
 		ul.append(li_header);
 		for (i=0; i < sentencesOpenersInforming.length; i++) {
 			li_content = $('<li>');
-			a_id = identifier + '-sentence-opener-' + (sentencesOpenersArguing.length + i);
+			a_id = identifier + '-sentence-opener-' + (sentencesOpeners.length + i);
 			a = h.getATagForDropDown(a_id, clickToChoose + ': ' + sentencesOpenersInforming[i], sentencesOpenersInforming[i]);
 			li_content.append(a);
 			ul.append(li_content);
@@ -484,9 +485,11 @@ function GuiHandler() {
 	 * @param number
 	 */
 	this.setDropdownClickListener = function (identifier, number) {
-		var a_id, i;
+		var a_id, i, sentencesOpeners;
+		sentencesOpeners = identifier == id_left ? sentencesOpenersArguingWithAgreeing : sentencesOpenersArguingWithDisagreeing;
+
 		// add clicks
-		for (i = 0; i < sentencesOpenersInforming.length + sentencesOpenersArguing.length; i++) {
+		for (i = 0; i < sentencesOpenersInforming.length + sentencesOpeners.length; i++) {
 			a_id = identifier + '-sentence-opener-' + i;
 			$('#' + a_id).click(function () {
 				$('#' + identifier + '-dropdown-sentences-openers-' + number).html($(this).text() + '<span class="caret"></span>');
@@ -550,8 +553,8 @@ function GuiHandler() {
 				});
 			}
 			var gh = new GuiHandler();
-			gh.addTextareaAsChildInParent(leftPositionTextareaId, 'left');
-			gh.addTextareaAsChildInParent(rightPositionTextareaId, 'right');
+			gh.addTextareaAsChildInParent(leftPositionTextareaId, id_left);
+			gh.addTextareaAsChildInParent(rightPositionTextareaId, id_right);
 		} else {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementButtonId).disable = false;

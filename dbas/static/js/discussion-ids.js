@@ -61,6 +61,7 @@ var popupEditStatementSubmitButtonId = "popup-edit-statement_submit";
 var popupEditStatementDescriptionId = "popup-edit-statement-description-p";
 var popupErrorDescriptionId = 'popup-edit-error-description';
 var popupSuccessDescriptionId = 'popup-edit-success-description';
+var translationLink = 'link-trans-';
 var translationLinkDe = 'link-trans-de';
 var translationLinkEn = 'link-trans-en';
 var scStyleGroupId = 'sc-display-style';
@@ -72,3 +73,7 @@ var scStyle3Id = 'sc-style-3';
 var stepBackButtonId = 'step-back';
 var sendNewStatementId = 'send-new-statement';
 var statementListId = 'statement-list';
+
+// id's for identifiying
+var id_left = 'left';
+var id_right = 'iight';
