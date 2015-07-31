@@ -107,7 +107,7 @@ $(document).ready(function () {
 		var url;
 		url = document.location.pathname;
 		url = 'https://dbas.cn.uni-duesseldorf.de';
-		fbShare(url, "FB Sharing", "Sharing of DBAS", "http://localhost:4284/static/images/logo.png");
+		fbShare(url, "FB Sharing", "Sharing of DBAS", "https://dbas.cs.uni-duesseldorf.de/static/images/logo.png");
 	});
 	
 

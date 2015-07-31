@@ -12,7 +12,7 @@ startDiscussion = function () {
 	$('#' + restartDiscussionButtonId).show(); // show the restart button
 	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
 
-	new AjaxHandler().getAllPositions(new InteractionHandler().callbackIfDoneForGetAllPositions);
+	new AjaxHandler().getStartStatements();
 };
 
 restartDiscussion = function () {
@@ -47,7 +47,6 @@ $(function () {
 	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), interactionHandler = new InteractionHandler();
 
 	guiHandler.setHandler(interactionHandler);
-	interactionHandler.setHandler(guiHandler, ajaxHandler);
 
 	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
@@ -74,7 +73,7 @@ $(function () {
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function () {
 		if ($(this).val() === 'List all users') {
-			ajaxHandler.getAllUsersAndSetInGui();
+			ajaxHandler.getUsersAndSetInGui();
 			$(this).val('Hide all users'); // will be done in the ajaxhandler
 		} else {
 			$('#' + adminsSpaceId).empty();
@@ -92,26 +91,26 @@ $(function () {
 
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).click(function () {
-		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId, 'right');
+		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'));
 	});
 
 	// adding a textarea in the left column
 	$('#' + addProTextareaId).click(function () {
-		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId, 'left');
+		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId, 'left', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'));
 	});
 
 	// hiding the argument container, when the X button is clicked
 	$('#' + closeStatementContainerId).click(function () {
 		$('#' + addStatementContainerId).hide();
-		$('#' + addStatementButtonId).enable = true;
-		$('#' + addStatementButtonId).attr('checked', false);
+		$('#' + addReasonButtonId).enable = true;
+		$('#' + addReasonButtonId).attr('checked', false);
 	});
 
 	// hiding the island view, when the X button is clicked
 	$('#' + closeIslandViewContainerId).click(function () {
 		$('#' + islandViewContainerId).hide();
 		guiHandler.resetChangeDisplayStyleBox();
-		$('#li_' + addStatementButtonId).attr('checked', true);
+		$('#li_' + addReasonButtonId).attr('checked', true);
 	});
 
 	// open edit statement

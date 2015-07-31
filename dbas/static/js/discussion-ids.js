@@ -8,7 +8,7 @@
  * ID's
  * @type {string}
  */
-var addStatementButtonId = 'add-statement';
+var addReasonButtonId = 'add-reason';
 var addPositionButtonId = 'add-position';
 var addStatementContainerId = 'add-statement-container';
 var addStatementContainerH4Id = 'add-statement-container-h4';
@@ -16,7 +16,6 @@ var addStatementContainerMainInputId = 'add-statement-container-main-input';
 var addProTextareaId = 'add-pro-textarea';
 var addConTextareaId = 'add-con-textarea';
 var adminsSpaceId = 'admins-space';
-var argumentListId = 'argument-list';
 var closeStatementContainerId = 'close-statement-container';
 var closeIslandViewContainerId = 'close-island-view-container';
 var confirmDialogAcceptBtn = 'confirm-dialog-accept-btn';
@@ -51,16 +50,17 @@ var radioButtonGroup = 'radioButtonGroup';
 var minimapId = 'navigation-minimap-container';
 var popupConfirmDialogId = 'confirm-dialog';
 var popupEditStatementId = 'popup-edit-statement';
-var popupEditStatementCloseButtonXId = 'popup-edit-statement_close';
-var popupEditStatementCloseButtonId = 'popup-edit-statement_close_button';
-var popupEditStatementTextareaId = 'popup-edit-statement_textarea';
-var popupEditStatementContentId = 'popup-edit-statement_content';
-var popupEditStatementLogfileHeaderId = 'popup-edit-statement_logfile_header';
-var popupEditStatementLogfileSpaceId = 'popup-edit-statement_logfile';
-var popupEditStatementSubmitButtonId = "popup-edit-statement_submit";
+var popupEditStatementCloseButtonXId = 'popup-edit-statement-close';
+var popupEditStatementCloseButtonId = 'popup-edit-statement-close-button';
+var popupEditStatementTextareaId = 'popup-edit-statement-textarea';
+var popupEditStatementContentId = 'popup-edit-statement-content';
+var popupEditStatementLogfileHeaderId = 'popup-edit-statement-logfile-header';
+var popupEditStatementLogfileSpaceId = 'popup-edit-statement-logfile';
+var popupEditStatementSubmitButtonId = "popup-edit-statement-submit";
 var popupEditStatementDescriptionId = "popup-edit-statement-description-p";
 var popupErrorDescriptionId = 'popup-edit-error-description';
 var popupSuccessDescriptionId = 'popup-edit-success-description';
+var translationLink = 'link-trans-';
 var translationLinkDe = 'link-trans-de';
 var translationLinkEn = 'link-trans-en';
 var scStyleGroupId = 'sc-display-style';
@@ -71,4 +71,7 @@ var scStyle3Id = 'sc-style-3';
 // var startDescriptionId = 'start-description';
 var stepBackButtonId = 'step-back';
 var sendNewStatementId = 'send-new-statement';
-var statementListId = 'statement-list';
+
+// id's for identifiying
+var id_left = 'left';
+var id_right = 'iight';

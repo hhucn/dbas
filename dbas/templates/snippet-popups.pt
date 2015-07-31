@@ -403,24 +403,24 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" id="popup-edit-statement_close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				<button type="button" id="popup-edit-statement-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
 				<h4 class="modal-title" id="myModalLabel" i18n:translate="edit_statement_view_changelog">Edit Statements / View Changelog</h4>
 			</div>
-			<div id="popup-edit-statement_body">
+			<div id="popup-edit-statement-body">
 				<h4><p id="popup-edit-error-description" class="error-description"></p></h4>
 				<h4><p id="popup-edit-success-description" class="success-description"></p></h4>
-				<div id="popup-edit-statement_content">
+				<div id="popup-edit-statement-content">
 				</div>
 				<p id="popup-edit-statement-description-p" i18n:translate="edit_statement_here">Please, edit the selected statement here:</p>
-				<textarea id="popup-edit-statement_textarea" type="text" placeholder="some corrected statement"></textarea>
-				<h3 id="popup-edit-statement_logfile_header"></h3>
-				<div id="popup-edit-statement_logfile">
+				<textarea id="popup-edit-statement-textarea" type="text" placeholder="some corrected statement"></textarea>
+				<h3 id="popup-edit-statement-logfile-header"></h3>
+				<div id="popup-edit-statement-logfile">
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="popup-edit-statement_submit" i18n:translate="submit">Submit</button>
-				<button type="button" class="btn btn-default" id="popup-edit-statement_close_button" i18n:translate="close">Close</button>
+				<button type="button" class="btn btn-primary" id="popup-edit-statement-submit" i18n:translate="submit">Submit</button>
+				<button type="button" class="btn btn-default" id="popup-edit-statement-close-button" i18n:translate="close">Close</button>
 			</div>
 		</div>
 	</div>

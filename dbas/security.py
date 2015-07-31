@@ -10,14 +10,14 @@ def groupfinder(nick, request):
 	:return: given group or none as list
 	'''
 	logger('security','groupfinder','parameter nick = ' + nick)
-	DBUser = DBSession.query(User).filter_by(nickname=nick).first()
+	user = DBSession.query(User).filter_by(nickname=nick).first()
 
-	if (DBUser):
-		logger('security','groupfinder','nick is in group id ' + str(DBUser.group))
-		DBGroup = DBSession.query(Group).filter_by(uid=DBUser.group).first()
-		if (DBGroup):
-			logger('security','groupfinder','return group name = group:' + DBGroup.name + '')
-			return ['group:'+DBGroup.name]
+	if (user):
+		logger('security','groupfinder','nick is in group id ' + str(user.group_uid))
+		group = DBSession.query(Group).filter_by(uid=user.group_uid).first()
+		if (group):
+			logger('security','groupfinder','return group name = group:' + group.name + '')
+			return ['group:'+group.name]
 
 	logger('security','groupfinder','return []')
 	return []

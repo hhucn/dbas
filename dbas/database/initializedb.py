@@ -5,7 +5,8 @@ import transaction
 from dbas.helper import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from dbas.database.model import DBSession, User, Argument, Position, RelationArgArg, RelationArgPos, Group, Issue, Base
+from dbas.database.model import DBSession, User, Argument, Statement, TextValue, TextVersion, \
+	PremisseGroup, Premisse, Group, Issue, Base
 
 
 def usage(argv):
@@ -42,372 +43,271 @@ def main(argv=sys.argv):
 		pw1 = pwHandler.get_hashed_password('admin')
 		pw2 = pwHandler.get_hashed_password('tobias')
 		pw3 = pwHandler.get_hashed_password('martin')
-		pw4 = pwHandler.get_hashed_password('mladen123')
-		pw5 = pwHandler.get_hashed_password('kalman')
-		user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1, gender='m')
-		user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, gender='m')
-		user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3, gender='m')
-		user4 = User(firstname='mladen', surname='topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw4, gender='m')
-		user5 = User(firstname='Kalman', surname='Graffi', nickname='Kalman', email='graffi@cs.uni-duesseldorf.de', password=pw5, gender='m')
-		user1.group = group0.uid
-		user2.group = group1.uid
-		user3.group = group1.uid
-		user4.group = group1.uid
-		user5.group = group2.uid
-		user4.group = group1.uid
-		user5.group = group1.uid
+		pw4 = pwHandler.get_hashed_password('kalman')
+		pw5 = pwHandler.get_hashed_password('mladen')
+		user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1, group=group0.uid, gender='m')
+		user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group1.uid, gender='m')
+		user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3, group=group1.uid, gender='m')
+		user4 = User(firstname='Kalman', surname='Graffi', nickname='kalman', email='graffi@cs.uni-duesseldorf.de', password=pw4, group=group1.uid, gender='m')
+		user5 = User(firstname='Mladen', surname='Topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw5, group=group1.uid, gender='m')
 		DBSession.add_all([user1, user2, user3, user4, user5])
 		DBSession.flush()
 
-		# adding all positions out of the discussion
-		position1 = Position(text='We should get a cat.', weight=0)
-		position2 = Position(text='We should get a dog.', weight=0)
-		position3 = Position(text='We should neither get a cat nor a dog.', weight=0)
-		position4 = Position(text='We could get both, a cat and a dog.', weight=0)
-		position1.author = user1.uid
-		position2.author = user1.uid
-		position3.author = user1.uid
-		position4.author = user1.uid
-		DBSession.add_all([position1, position2, position3, position4])
+		#Adding all textversions
+		textversion1 = TextVersion(content="We should get a cat.", author=user2.uid, weight=0)
+		textversion2 = TextVersion(content="We should get a dog.", author=user2.uid, weight=0)
+		textversion3 = TextVersion(content="We could get both, a cat and a dog.", author=user2.uid, weight=0)
+		textversion4 = TextVersion(content="Cats are very independent.", author=user2.uid, weight=0)
+		textversion5 = TextVersion(content="Cats are capricious.", author=user2.uid, weight=0)
+		textversion6 = TextVersion(content="Dogs can act as watch dogs.", author=user2.uid, weight=0)
+		textversion7 = TextVersion(content="You have to take the dog for a walk every day, which is tedious.", author=user2.uid, weight=0)
+		textversion8 = TextVersion(content="We have no use for a watch dog.", author=user2.uid, weight=0)
+		textversion9 = TextVersion(content="Going for a walk with the dog every day is not bad, because it is good for social interaction and physical exercise.", author=user2.uid, weight=0)
+		textversion10 = TextVersion(content="It would be no problem to get both a cat and a dog.", author=user2.uid, weight=0)
+		textversion11 = TextVersion(content="A cat and a dog will generally not get along well.", author=user2.uid, weight=0)
+		textversion12 = TextVersion(content="We do not have enough money for two pets.", author=user2.uid, weight=0)
+		textversion13 = TextVersion(content="A dog costs taxes and will be more expensive than a cat.", author=user2.uid, weight=0)
+		textversion14 = TextVersion(content="Cats are fluffy.", author=user2.uid, weight=0)
+		textversion15 = TextVersion(content="Cats are small.", author=user2.uid, weight=0)
+		textversion16 = TextVersion(content="Fluffy animals losing much hair and I'm allergic to animal hair.", author=user2.uid, weight=0)
+		textversion17 = TextVersion(content="You could use a automatic vacuum cleaner.", author=user2.uid, weight=0)
+		textversion18 = TextVersion(content="Cats ancestors are animals in wildlife, who are hunting alone and not in groups.", author=user2.uid, weight=0)
+		textversion19 = TextVersion(content="This is not true for overbred races.", author=user2.uid, weight=0)
+		textversion20 = TextVersion(content="This lies in their the natural conditions.", author=user2.uid, weight=0)
+		textversion21 = TextVersion(content="There is no sense for an independent pet, because why are you having it, if it does not need you?", author=user2.uid, weight=0)
+		textversion22 = TextVersion(content="Several cats of friends of mine are real as*holes.", author=user2.uid, weight=0)
+		textversion23 = TextVersion(content="This fact is based on the cats race.", author=user2.uid, weight=0)
+		textversion24 = TextVersion(content="All cats of my friends are capricious.", author=user2.uid, weight=0)
+		textversion25 = TextVersion(content="This is based on the cats race and a little bit on the breeding.", author=user2.uid, weight=0)
+		textversion26 = TextVersion(content="Next to the taxes you will need equipment like a dog lead, anti-flea-spray, ...", author=user2.uid, weight=0)
+		textversion27 = TextVersion(content="the equipment running costs of cats and dogs are nearly the same.", author=user2.uid, weight=0)
+		textversion29 = TextVersion(content="This is just a claim without any justification.", author=user2.uid, weight=0)
+		textversion30 = TextVersion(content="In Germany you have to pay for your second dog even more taxes!", author=user2.uid, weight=0)
+		textversion31 = TextVersion(content="It is important, that pets are small and fluffy!", author=user2.uid, weight=0)
+		textversion32 = TextVersion(content="Cats are little, sweet and innocent cuddle toys.", author=user2.uid, weight=0)
+		textversion33 = TextVersion(content="Do you have ever seen a sphinx cat or savannah cats?", author=user2.uid, weight=0)
+		DBSession.add_all([textversion1,textversion2,textversion3,textversion4,textversion5,textversion6,textversion7,textversion8,textversion9,textversion10,textversion11,textversion12,textversion13,textversion14,textversion15,textversion16,textversion17,textversion18,textversion19,textversion20,textversion21,textversion22,textversion23,textversion24,textversion25,textversion26,textversion27,textversion29,textversion30,textversion31,textversion32,textversion33])
 		DBSession.flush()
 
-		# adding all arguments out of the discussion
-		argument1 = Argument(text='Cats are very independent.', weight=0)
-		argument2 = Argument(text='Cats are capricious.', weight=0)
-		argument3 = Argument(text='Dogs can act as watch dogs.', weight=0)
-		argument4 = Argument(text='You have to take the dog for a walk every day, which is tedious.', weight=0)
-		argument5 = Argument(text='We have no use for a watch dog.', weight=0)
-		argument6 = Argument(text='Going for a walk with the dog every day is not bad, because it is good for social interaction and physical exercise.', weight=0)
-		argument7 = Argument(text='It would be no problem to get both a cat and a dog.', weight=0)
-		argument8 = Argument(text='A cat and a dog will generally not get along well.', weight=0)
-		argument9 = Argument(text='We do not have enough money for two pets.', weight=0)
-		argument10 = Argument(text='A dog costs taxes and will be more expensive than a cat.', weight=0)
-		argument11 = Argument(text='A cat will break our interior and will be more expensive than a dog.', weight=0)
-		argument12 = Argument(text='I am allergic to animal hair.', weight=0)
-		argument13 = Argument(text='Cats and dogs are loosing many hairs and this will cause more dirt in our flat.', weight=0)
-		argument14 = Argument(text='A cat does not cost any taxes.', weight=0)
-		argument15 = Argument(text='A dog can be trained to detect cancer in humans, neither can a cat.', weight=0)
-		argument16 = Argument(text='A cat just shits in a box.', weight=0)
-		argument17 = Argument(text='Dogs are dependent on human for everything with personality of a slave.', weight=0)
-		argument18 = Argument(text='Trained animals are like slaves.', weight=0)
-		argument19 = Argument(text='Dogs can be teached and learn cool tricks.', weight=0)
-		argument20 = Argument(text='Neither we have use for a cat.', weight=0)
-		argument21 = Argument(text='You cannot go on vaction, because you have to take care of your pet.', weight=0)
-		argument22 = Argument(text='They are not like trained animals in the zoo, but rather well educated.', weight=0)
-		argument23 = Argument(text='This is a cliche, which only happens in comics.', weight=0)
-		argument24 = Argument(text='Cats must be fed, too.', weight=0)
-		argument25 = Argument(text='Cats want expressives toys, dogs only a bone or branch.', weight=0)
-		argument26 = Argument(text='There are naked cats without any hair.', weight=0)
-		argument27 = Argument(text='Even a cat can be trained.', weight=0)
-		argument28 = Argument(text='You have to dispose your dog\'s poop while taking him for a walk.', weight=0)
-		argument29 = Argument(text='But there are still some races who cannot be trained.', weight=0)
-		argument30 = Argument(text='They can get along well, if they are early next to each other.', weight=0)
-		argument31 = Argument(text='They can get along well, because I\'ve seen this by a friend of mine.', weight=0)
-		argument32 = Argument(text='You can go on vacation, because often family & friends take care of your pet.', weight=0)
-		argument33 = Argument(text='Naked cats are ugly. Then I prefer dogs.', weight=0)
-		argument34 = Argument(text='If you\'ve got a pet, this is your job, because you have the responsibility for a living beeing.', weight=0)
-		argument1.author = user1.uid
-		argument2.author = user1.uid
-		argument3.author = user1.uid
-		argument4.author = user1.uid
-		argument5.author = user1.uid
-		argument6.author = user1.uid
-		argument7.author = user1.uid
-		argument8.author = user1.uid
-		argument9.author = user1.uid
-		argument10.author = user1.uid
-		argument11.author = user1.uid
-		argument12.author = user1.uid
-		argument13.author = user1.uid
-		argument14.author = user1.uid
-		argument15.author = user1.uid
-		argument16.author = user1.uid
-		argument17.author = user1.uid
-		argument18.author = user1.uid
-		argument19.author = user1.uid
-		argument20.author = user1.uid
-		argument21.author = user1.uid
-		argument22.author = user1.uid
-		argument23.author = user1.uid
-		argument24.author = user1.uid
-		argument25.author = user1.uid
-		argument26.author = user1.uid
-		argument27.author = user1.uid
-		argument28.author = user1.uid
-		argument29.author = user1.uid
-		argument30.author = user1.uid
-		argument31.author = user1.uid
-		argument32.author = user1.uid
-		argument33.author = user1.uid
-		argument34.author = user1.uid
-		DBSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27, argument28, argument29, argument30, argument31, argument32, argument33, argument34])
+		#Adding all textvalues
+		textvalue1 = TextValue(textversion=textversion1.uid)
+		textvalue2 = TextValue(textversion=textversion2.uid)
+		textvalue3 = TextValue(textversion=textversion3.uid)
+		textvalue4 = TextValue(textversion=textversion4.uid)
+		textvalue5 = TextValue(textversion=textversion5.uid)
+		textvalue6 = TextValue(textversion=textversion6.uid)
+		textvalue7 = TextValue(textversion=textversion7.uid)
+		textvalue8 = TextValue(textversion=textversion8.uid)
+		textvalue9 = TextValue(textversion=textversion9.uid)
+		textvalue10 = TextValue(textversion=textversion10.uid)
+		textvalue11 = TextValue(textversion=textversion11.uid)
+		textvalue12 = TextValue(textversion=textversion12.uid)
+		textvalue13 = TextValue(textversion=textversion13.uid)
+		textvalue14 = TextValue(textversion=textversion14.uid)
+		textvalue15 = TextValue(textversion=textversion15.uid)
+		textvalue16 = TextValue(textversion=textversion16.uid)
+		textvalue17 = TextValue(textversion=textversion17.uid)
+		textvalue18 = TextValue(textversion=textversion18.uid)
+		textvalue19 = TextValue(textversion=textversion19.uid)
+		textvalue20 = TextValue(textversion=textversion20.uid)
+		textvalue21 = TextValue(textversion=textversion21.uid)
+		textvalue22 = TextValue(textversion=textversion22.uid)
+		textvalue23 = TextValue(textversion=textversion23.uid)
+		textvalue24 = TextValue(textversion=textversion24.uid)
+		textvalue25 = TextValue(textversion=textversion25.uid)
+		textvalue26 = TextValue(textversion=textversion26.uid)
+		textvalue27 = TextValue(textversion=textversion27.uid)
+		textvalue29 = TextValue(textversion=textversion29.uid)
+		textvalue30 = TextValue(textversion=textversion30.uid)
+		textvalue31 = TextValue(textversion=textversion31.uid)
+		textvalue32 = TextValue(textversion=textversion32.uid)
+		textvalue33 = TextValue(textversion=textversion33.uid)
+		DBSession.add_all([textvalue1,textvalue2,textvalue3,textvalue4,textvalue5,textvalue6,textvalue7,textvalue8,textvalue9,textvalue10,textvalue11,textvalue12,textvalue13,textvalue14,textvalue15,textvalue16,textvalue17,textvalue18,textvalue19,textvalue20,textvalue21,textvalue22,textvalue23,textvalue24,textvalue25,textvalue26,textvalue27,textvalue29,textvalue30,textvalue31,textvalue32,textvalue33])
 		DBSession.flush()
 
-		# adding all relations out of the discussion
-		relation1 = RelationArgPos(weight=0, is_supportive=True)
-		relation2 = RelationArgPos(weight=0, is_supportive=False)
-		relation3 = RelationArgPos(weight=0, is_supportive=True)
-		relation4 = RelationArgPos(weight=0, is_supportive=False)
-		relation5 = RelationArgArg(weight=0, is_supportive=False)
-		relation6 = RelationArgArg(weight=0, is_supportive=False)
-		relation7 = RelationArgPos(weight=0, is_supportive=True)
-		relation8 = RelationArgPos(weight=0, is_supportive=True)
-		relation9 = RelationArgArg(weight=0, is_supportive=False)
-		relation10 = RelationArgArg(weight=0, is_supportive=False)
-		relation11 = RelationArgPos(weight=0, is_supportive=False)
-		relation12 = RelationArgPos(weight=0, is_supportive=False)
-		relation13 = RelationArgArg(weight=0, is_supportive=False)
-		relation14 = RelationArgArg(weight=0, is_supportive=False)
-		relation15 = RelationArgPos(weight=0, is_supportive=True)
-		relation16 = RelationArgPos(weight=0, is_supportive=True)
-		relation17 = RelationArgPos(weight=0, is_supportive=False)
-		relation18 = RelationArgPos(weight=0, is_supportive=False)
-		relation19 = RelationArgPos(weight=0, is_supportive=False)
-		relation20 = RelationArgPos(weight=0, is_supportive=False)
-		relation21 = RelationArgPos(weight=0, is_supportive=True)
-		relation22 = RelationArgArg(weight=0, is_supportive=True)
-		relation23 = RelationArgArg(weight=0, is_supportive=False)
-		relation24 = RelationArgArg(weight=0, is_supportive=False)
-		relation25 = RelationArgPos(weight=0, is_supportive=True)
-		relation26 = RelationArgPos(weight=0, is_supportive=False)
-		relation27 = RelationArgArg(weight=0, is_supportive=True)
-		relation28 = RelationArgPos(weight=0, is_supportive=False)
-		relation29 = RelationArgPos(weight=0, is_supportive=False)
-		relation30 = RelationArgArg(weight=0, is_supportive=False)
-		relation31 = RelationArgArg(weight=0, is_supportive=True)
-		relation32 = RelationArgPos(weight=0, is_supportive=False)
-		relation33 = RelationArgPos(weight=0, is_supportive=True)
-		relation34 = RelationArgArg(weight=0, is_supportive=False)
-		relation35 = RelationArgArg(weight=0, is_supportive=False)
-		relation36 = RelationArgPos(weight=0, is_supportive=True)
-		relation37 = RelationArgArg(weight=0, is_supportive=True)
-		relation38 = RelationArgArg(weight=0, is_supportive=True)
-		relation39 = RelationArgArg(weight=0, is_supportive=False)
-		relation40 = RelationArgPos(weight=0, is_supportive=False)
-		relation41 = RelationArgPos(weight=0, is_supportive=False)
-		relation42 = RelationArgPos(weight=0, is_supportive=True)
-		relation43 = RelationArgArg(weight=0, is_supportive=True)
-		relation44 = RelationArgArg(weight=0, is_supportive=False)
-		relation45 = RelationArgArg(weight=0, is_supportive=False)
-		relation46 = RelationArgArg(weight=0, is_supportive=False)
-		relation47 = RelationArgArg(weight=0, is_supportive=False)
-		relation48 = RelationArgArg(weight=0, is_supportive=False)
-		relation49 = RelationArgArg(weight=0, is_supportive=False)
-		relation50 = RelationArgArg(weight=0, is_supportive=False)
-		relation51 = RelationArgArg(weight=0, is_supportive=False)
-		relation52 = RelationArgPos(weight=0, is_supportive=False)
-		relation53 = RelationArgPos(weight=0, is_supportive=False)
-		relation54 = RelationArgPos(weight=0, is_supportive=True)
-		relation55 = RelationArgPos(weight=0, is_supportive=False)
-		relation56 = RelationArgArg(weight=0, is_supportive=False)
-		relation57 = RelationArgArg(weight=0, is_supportive=False)
-		relation58 = RelationArgArg(weight=0, is_supportive=False)
-		relation59 = RelationArgArg(weight=0, is_supportive=False)
-		relation60 = RelationArgArg(weight=0, is_supportive=False)
-		relation61 = RelationArgArg(weight=0, is_supportive=False)
-		relation62 = RelationArgArg(weight=0, is_supportive=False)
+		#Set textvalues of the textversions
+		textversion1.set_textvalue(textvalue1.uid)
+		textversion2.set_textvalue(textvalue2.uid)
+		textversion3.set_textvalue(textvalue3.uid)
+		textversion4.set_textvalue(textvalue4.uid)
+		textversion5.set_textvalue(textvalue5.uid)
+		textversion6.set_textvalue(textvalue6.uid)
+		textversion7.set_textvalue(textvalue7.uid)
+		textversion8.set_textvalue(textvalue8.uid)
+		textversion9.set_textvalue(textvalue9.uid)
+		textversion10.set_textvalue(textvalue10.uid)
+		textversion11.set_textvalue(textvalue11.uid)
+		textversion12.set_textvalue(textvalue12.uid)
+		textversion13.set_textvalue(textvalue13.uid)
+		textversion14.set_textvalue(textvalue14.uid)
+		textversion15.set_textvalue(textvalue15.uid)
+		textversion16.set_textvalue(textvalue16.uid)
+		textversion17.set_textvalue(textvalue17.uid)
+		textversion18.set_textvalue(textvalue18.uid)
+		textversion19.set_textvalue(textvalue19.uid)
+		textversion20.set_textvalue(textvalue20.uid)
+		textversion21.set_textvalue(textvalue21.uid)
+		textversion22.set_textvalue(textvalue22.uid)
+		textversion23.set_textvalue(textvalue23.uid)
+		textversion24.set_textvalue(textvalue24.uid)
+		textversion25.set_textvalue(textvalue25.uid)
+		textversion26.set_textvalue(textvalue26.uid)
+		textversion27.set_textvalue(textvalue27.uid)
+		textversion29.set_textvalue(textvalue29.uid)
+		textversion30.set_textvalue(textvalue30.uid)
+		textversion31.set_textvalue(textvalue31.uid)
+		textversion32.set_textvalue(textvalue32.uid)
+		textversion33.set_textvalue(textvalue33.uid)
+		DBSession.flush()
 
-		# adding the startpoints of the relations
-		relation1.arg_uid = argument1.uid
-		relation2.arg_uid = argument2.uid
-		relation3.arg_uid = argument3.uid
-		relation4.arg_uid = argument4.uid
-		relation5.arg_uid1 = argument5.uid
-		relation6.arg_uid1 = argument6.uid
-		relation7.arg_uid = argument7.uid
-		relation8.arg_uid = argument7.uid
-		relation9.arg_uid1 = argument8.uid
-		relation10.arg_uid1 = argument9.uid
-		relation11.arg_uid = argument10.uid
-		relation12.arg_uid = argument11.uid
-		relation13.arg_uid1 = argument11.uid
-		relation14.arg_uid1 = argument10.uid
-		relation15.arg_uid = argument11.uid
-		relation16.arg_uid = argument12.uid
-		relation17.arg_uid = argument12.uid
-		relation18.arg_uid = argument12.uid
-		relation19.arg_uid = argument13.uid
-		relation20.arg_uid = argument13.uid
-		relation21.arg_uid = argument13.uid
-		relation22.arg_uid1 = argument13.uid
-		relation23.arg_uid1 = argument14.uid
-		relation24.arg_uid1 = argument11.uid
-		relation25.arg_uid = argument15.uid
-		relation26.arg_uid = argument15.uid
-		relation27.arg_uid1 = argument15.uid
-		relation28.arg_uid = argument16.uid
-		relation29.arg_uid = argument17.uid
-		relation30.arg_uid1 = argument16.uid
-		relation31.arg_uid1 = argument19.uid
-		relation32.arg_uid = argument21.uid
-		relation33.arg_uid = argument14.uid
-		relation34.arg_uid1 = argument18.uid
-		relation35.arg_uid1 = argument18.uid
-		relation36.arg_uid = argument19.uid
-		relation37.arg_uid1 = argument14.uid
-		relation38.arg_uid1 = argument10.uid
-		relation39.arg_uid1 = argument21.uid
-		relation40.arg_uid = argument21.uid
-		relation41.arg_uid = argument14.uid
-		relation42.arg_uid = argument20.uid
-		relation43.arg_uid1 = argument20.uid
-		relation44.arg_uid1 = argument21.uid
-		relation45.arg_uid1 = argument22.uid
-		relation46.arg_uid1 = argument23.uid
-		relation47.arg_uid1 = argument24.uid
-		relation48.arg_uid1 = argument25.uid
-		relation49.arg_uid1 = argument26.uid
-		relation50.arg_uid1 = argument26.uid
-		relation51.arg_uid1 = argument27.uid
-		relation52.arg_uid = argument8.uid
-		relation53.arg_uid = argument9.uid
-		relation54.arg_uid = argument7.uid
-		relation55.arg_uid = argument28.uid
-		relation56.arg_uid1 = argument28.uid
-		relation57.arg_uid1 = argument32.uid
-		relation58.arg_uid1 = argument33.uid
-		relation59.arg_uid1 = argument34.uid
-		relation60.arg_uid1 = argument29.uid
-		relation61.arg_uid1 = argument30.uid
-		relation62.arg_uid1 = argument31.uid
+		#Adding all statements
+		statement1 = Statement(text=textvalue1.uid, isstartpoint=True)
+		statement2 = Statement(text=textvalue2.uid, isstartpoint=True)
+		statement3 = Statement(text=textvalue3.uid, isstartpoint=True)
+		statement4 = Statement(text=textvalue4.uid, isstartpoint=False)
+		statement5 = Statement(text=textvalue5.uid, isstartpoint=False)
+		statement6 = Statement(text=textvalue6.uid, isstartpoint=False)
+		statement7 = Statement(text=textvalue7.uid, isstartpoint=False)
+		statement8 = Statement(text=textvalue8.uid, isstartpoint=False)
+		statement9 = Statement(text=textvalue9.uid, isstartpoint=False)
+		statement10 = Statement(text=textvalue10.uid, isstartpoint=False)
+		statement11 = Statement(text=textvalue11.uid, isstartpoint=False)
+		statement12 = Statement(text=textvalue12.uid, isstartpoint=False)
+		statement13 = Statement(text=textvalue13.uid, isstartpoint=False)
+		statement14 = Statement(text=textvalue14.uid, isstartpoint=False)
+		statement15 = Statement(text=textvalue15.uid, isstartpoint=False)
+		statement16 = Statement(text=textvalue16.uid, isstartpoint=False)
+		statement17 = Statement(text=textvalue17.uid, isstartpoint=False)
+		statement18 = Statement(text=textvalue18.uid, isstartpoint=False)
+		statement19 = Statement(text=textvalue19.uid, isstartpoint=False)
+		statement20 = Statement(text=textvalue20.uid, isstartpoint=False)
+		statement21 = Statement(text=textvalue21.uid, isstartpoint=False)
+		statement22 = Statement(text=textvalue22.uid, isstartpoint=False)
+		statement23 = Statement(text=textvalue23.uid, isstartpoint=False)
+		statement24 = Statement(text=textvalue24.uid, isstartpoint=False)
+		statement25 = Statement(text=textvalue25.uid, isstartpoint=False)
+		statement26 = Statement(text=textvalue26.uid, isstartpoint=False)
+		statement27 = Statement(text=textvalue27.uid, isstartpoint=False)
+		statement29 = Statement(text=textvalue29.uid, isstartpoint=False)
+		statement30 = Statement(text=textvalue30.uid, isstartpoint=False)
+		statement31 = Statement(text=textvalue31.uid, isstartpoint=False)
+		statement32 = Statement(text=textvalue32.uid, isstartpoint=False)
+		statement33 = Statement(text=textvalue33.uid, isstartpoint=False)
+		DBSession.add_all([statement1,statement2,statement3,statement4,statement5,statement6,statement7,statement8,statement9,statement10,statement11,statement12,statement13,statement14,statement15,statement16,statement17,statement18,statement19,statement20,statement21,statement22,statement23,statement24,statement25,statement26,statement27,statement29,statement30,statement31,statement32,statement33])
+		DBSession.flush()
 
+		#Adding all premissegroups
+		premissegroup1 = PremisseGroup(author=user2.uid)
+		premissegroup2 = PremisseGroup(author=user2.uid)
+		premissegroup3 = PremisseGroup(author=user2.uid)
+		premissegroup4 = PremisseGroup(author=user2.uid)
+		premissegroup5 = PremisseGroup(author=user2.uid)
+		premissegroup6 = PremisseGroup(author=user2.uid)
+		premissegroup7 = PremisseGroup(author=user2.uid)
+		premissegroup8 = PremisseGroup(author=user2.uid)
+		premissegroup9 = PremisseGroup(author=user2.uid)
+		premissegroup10 = PremisseGroup(author=user2.uid)
+		premissegroup11 = PremisseGroup(author=user2.uid)
+		premissegroup12 = PremisseGroup(author=user2.uid)
+		premissegroup13 = PremisseGroup(author=user2.uid)
+		premissegroup14 = PremisseGroup(author=user2.uid)
+		premissegroup15 = PremisseGroup(author=user2.uid)
+		premissegroup16 = PremisseGroup(author=user2.uid)
+		premissegroup17 = PremisseGroup(author=user2.uid)
+		premissegroup18 = PremisseGroup(author=user2.uid)
+		premissegroup19 = PremisseGroup(author=user2.uid)
+		premissegroup20 = PremisseGroup(author=user2.uid)
+		premissegroup21 = PremisseGroup(author=user2.uid)
+		premissegroup22 = PremisseGroup(author=user2.uid)
+		premissegroup23 = PremisseGroup(author=user2.uid)
+		premissegroup24 = PremisseGroup(author=user2.uid)
+		premissegroup25 = PremisseGroup(author=user2.uid)
+		premissegroup26 = PremisseGroup(author=user2.uid)
+		premissegroup27 = PremisseGroup(author=user2.uid)
+		premissegroup28 = PremisseGroup(author=user2.uid)
+		DBSession.add_all([premissegroup1,premissegroup2,premissegroup3,premissegroup4,premissegroup5,premissegroup6,premissegroup7,premissegroup8,premissegroup9,premissegroup10,premissegroup11,premissegroup12,premissegroup13,premissegroup14,premissegroup15,premissegroup16,premissegroup17,premissegroup18,premissegroup19,premissegroup20,premissegroup21,premissegroup22,premissegroup23,premissegroup24,premissegroup25,premissegroup26,premissegroup27,premissegroup28])
+		DBSession.flush()
 
-		# adding the endpoints of the relations
-		relation1.pos_uid = position1.uid
-		relation2.pos_uid = position1.uid
-		relation3.pos_uid = position2.uid
-		relation4.pos_uid = position2.uid
-		relation5.arg_uid2 = argument3.uid
-		relation6.arg_uid2 = argument4.uid
-		relation7.pos_uid = position1.uid
-		relation8.pos_uid = position2.uid
-		relation9.arg_uid2 = argument7.uid
-		relation10.arg_uid2 = argument7.uid
-		relation11.pos_uid = position2.uid
-		relation12.pos_uid = position1.uid
-		relation13.arg_uid2 = argument10.uid
-		relation14.arg_uid2 = argument11.uid
-		relation15.pos_uid = position2.uid
-		relation16.pos_uid = position3.uid
-		relation17.pos_uid = position1.uid
-		relation18.pos_uid = position2.uid
-		relation19.pos_uid = position1.uid
-		relation20.pos_uid = position2.uid
-		relation21.pos_uid = position3.uid
-		relation22.arg_uid2 = argument12.uid
-		relation23.arg_uid2 = argument9.uid
-		relation24.arg_uid2 = argument14.uid
-		relation25.pos_uid = position2.uid
-		relation26.pos_uid = position1.uid
-		relation27.arg_uid2 = argument16.uid
-		relation28.pos_uid = position1.uid
-		relation29.pos_uid = position2.uid
-		relation30.arg_uid2 = argument4.uid
-		relation31.arg_uid2 = argument15.uid
-		relation32.pos_uid = position1.uid
-		relation33.pos_uid = position1.uid
-		relation34.arg_uid2 = argument7.uid
-		relation35.arg_uid2 = argument19.uid
-		relation36.pos_uid = position2.uid
-		relation37.arg_uid2 = argument10.uid
-		relation38.arg_uid2 = argument14.uid
-		relation39.arg_uid2 = argument6.uid
-		relation40.pos_uid = position2.uid
-		relation41.pos_uid = position2.uid
-		relation42.pos_uid = position3.uid
-		relation43.arg_uid2 = argument5.uid
-		relation44.arg_uid2 = argument4.uid
-		relation45.arg_uid2 = argument18.uid
-		relation46.arg_uid2 = argument8.uid
-		relation47.arg_uid2 = argument1.uid
-		relation48.arg_uid2 = argument14.uid
-		relation49.arg_uid2 = argument13.uid
-		relation50.arg_uid2 = argument12.uid
-		relation51.arg_uid2 = argument11.uid
-		relation52.pos_uid = position4.uid
-		relation53.pos_uid = position4.uid
-		relation54.pos_uid = position4.uid
-		relation55.pos_uid = position2.uid
-		relation56.arg_uid2 = argument6.uid
-		relation57.arg_uid2 = argument21.uid
-		relation58.arg_uid2 = argument26.uid
-		relation59.arg_uid2 = argument24.uid
-		relation60.arg_uid2 = argument27.uid
-		relation61.arg_uid2 = argument23.uid
-		relation62.arg_uid2 = argument23.uid
+		premisse1 = Premisse(premissesgroup=premissegroup1.uid, statement=statement4.uid, isnegated=False, author=user2.uid)
+		premisse2 = Premisse(premissesgroup=premissegroup2.uid, statement=statement5.uid, isnegated=False, author=user2.uid)
+		premisse3 = Premisse(premissesgroup=premissegroup3.uid, statement=statement6.uid, isnegated=False, author=user2.uid)
+		premisse4 = Premisse(premissesgroup=premissegroup4.uid, statement=statement7.uid, isnegated=False, author=user2.uid)
+		premisse5 = Premisse(premissesgroup=premissegroup5.uid, statement=statement8.uid, isnegated=False, author=user2.uid)
+		premisse6 = Premisse(premissesgroup=premissegroup6.uid, statement=statement9.uid, isnegated=False, author=user2.uid)
+		premisse7 = Premisse(premissesgroup=premissegroup7.uid, statement=statement10.uid, isnegated=False, author=user2.uid)
+		premisse8 = Premisse(premissesgroup=premissegroup8.uid, statement=statement11.uid, isnegated=False, author=user2.uid)
+		premisse9 = Premisse(premissesgroup=premissegroup9.uid, statement=statement12.uid, isnegated=False, author=user2.uid)
+		premisse10 = Premisse(premissesgroup=premissegroup10.uid, statement=statement13.uid, isnegated=False, author=user2.uid)
+		premisse11 = Premisse(premissesgroup=premissegroup11.uid, statement=statement14.uid, isnegated=False, author=user2.uid)
+		premisse12 = Premisse(premissesgroup=premissegroup11.uid, statement=statement15.uid, isnegated=False, author=user2.uid)
+		premisse13 = Premisse(premissesgroup=premissegroup12.uid, statement=statement16.uid, isnegated=False, author=user2.uid)
+		premisse14 = Premisse(premissesgroup=premissegroup13.uid, statement=statement17.uid, isnegated=False, author=user2.uid)
+		premisse15 = Premisse(premissesgroup=premissegroup14.uid, statement=statement18.uid, isnegated=False, author=user2.uid)
+		premisse16 = Premisse(premissesgroup=premissegroup15.uid, statement=statement19.uid, isnegated=False, author=user2.uid)
+		premisse17 = Premisse(premissesgroup=premissegroup16.uid, statement=statement20.uid, isnegated=False, author=user2.uid)
+		premisse18 = Premisse(premissesgroup=premissegroup17.uid, statement=statement21.uid, isnegated=False, author=user2.uid)
+		premisse19 = Premisse(premissesgroup=premissegroup18.uid, statement=statement22.uid, isnegated=False, author=user2.uid)
+		premisse20 = Premisse(premissesgroup=premissegroup19.uid, statement=statement23.uid, isnegated=False, author=user2.uid)
+		premisse21 = Premisse(premissesgroup=premissegroup20.uid, statement=statement24.uid, isnegated=False, author=user2.uid)
+		premisse22 = Premisse(premissesgroup=premissegroup21.uid, statement=statement25.uid, isnegated=False, author=user2.uid)
+		premisse23 = Premisse(premissesgroup=premissegroup22.uid, statement=statement26.uid, isnegated=False, author=user2.uid)
+		premisse24 = Premisse(premissesgroup=premissegroup23.uid, statement=statement27.uid, isnegated=False, author=user2.uid)
+		premisse25 = Premisse(premissesgroup=premissegroup24.uid, statement=statement29.uid, isnegated=False, author=user2.uid)
+		premisse26 = Premisse(premissesgroup=premissegroup25.uid, statement=statement30.uid, isnegated=False, author=user2.uid)
+		premisse27 = Premisse(premissesgroup=premissegroup26.uid, statement=statement31.uid, isnegated=False, author=user2.uid)
+		premisse28 = Premisse(premissesgroup=premissegroup27.uid, statement=statement32.uid, isnegated=False, author=user2.uid)
+		premisse29 = Premisse(premissesgroup=premissegroup28.uid, statement=statement33.uid, isnegated=False, author=user2.uid)
+		DBSession.add_all([premisse1,premisse2,premisse3,premisse4,premisse5,premisse6,premisse7,premisse8,premisse9,premisse10,premisse11,premisse12,premisse13,premisse14,premisse15,premisse16,premisse17,premisse18,premisse19,premisse20,premisse21,premisse22,premisse23,premisse24,premisse25,premisse26,premisse27,premisse28,premisse29])
+		DBSession.flush()
 
+		#Adding all arguments and set the adjacency list
+		argument1 = Argument(premissegroup=premissegroup1.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement1.uid)
+		argument2 = Argument(premissegroup=premissegroup2.uid, issupportive=False, author=user2.uid, weight=0, conclusion=statement1.uid)
+		argument3 = Argument(premissegroup=premissegroup3.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement2.uid)
+		argument4 = Argument(premissegroup=premissegroup4.uid, issupportive=False, author=user2.uid, weight=0, conclusion=statement2.uid)
+		argument5 = Argument(premissegroup=premissegroup5.uid, issupportive=False, author=user2.uid, weight=0)
+		argument6 = Argument(premissegroup=premissegroup6.uid, issupportive=False, author=user2.uid, weight=0)
+		argument7 = Argument(premissegroup=premissegroup7.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement3.uid)
+		argument8 = Argument(premissegroup=premissegroup8.uid, issupportive=False, author=user2.uid, weight=0)
+		argument9 = Argument(premissegroup=premissegroup9.uid, issupportive=False, author=user2.uid, weight=0, conclusion=statement10.uid)
+		argument10 = Argument(premissegroup=premissegroup10.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement1.uid)
+		argument11 = Argument(premissegroup=premissegroup11.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement1.uid)
+		argument12 = Argument(premissegroup=premissegroup12.uid, issupportive=False, author=user2.uid, weight=0)
+		argument13 = Argument(premissegroup=premissegroup13.uid, issupportive=False, author=user2.uid, weight=0)
+		argument14 = Argument(premissegroup=premissegroup14.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement4.uid)
+		argument15 = Argument(premissegroup=premissegroup15.uid, issupportive=False, author=user2.uid, weight=0, conclusion=statement4.uid)
+		argument16 = Argument(premissegroup=premissegroup16.uid, issupportive=True, author=user2.uid, weight=0)
+		argument17 = Argument(premissegroup=premissegroup17.uid, issupportive=False, author=user2.uid, weight=0)
+		argument18 = Argument(premissegroup=premissegroup18.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement5.uid)
+		argument19 = Argument(premissegroup=premissegroup19.uid, issupportive=False, author=user2.uid, weight=0, conclusion=statement5.uid)
+		argument20 = Argument(premissegroup=premissegroup20.uid, issupportive=True, author=user2.uid, weight=0)
+		argument21 = Argument(premissegroup=premissegroup21.uid, issupportive=False, author=user2.uid, weight=0)
+		argument22 = Argument(premissegroup=premissegroup22.uid, issupportive=False, author=user2.uid, weight=0, conclusion=statement13.uid)
+		argument23 = Argument(premissegroup=premissegroup23.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement13.uid)
+		argument24 = Argument(premissegroup=premissegroup24.uid, issupportive=False, author=user2.uid, weight=0)
+		argument25 = Argument(premissegroup=premissegroup25.uid, issupportive=True, author=user2.uid, weight=0)
+		argument26 = Argument(premissegroup=premissegroup26.uid, issupportive=True, author=user2.uid, weight=0)
+		argument27 = Argument(premissegroup=premissegroup27.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement14.uid)
+		argument28 = Argument(premissegroup=premissegroup27.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement15.uid)
+		# IMPORTANT: If the conclusion is an argument, check the counter!
+		argument29 = Argument(premissegroup=premissegroup28.uid, issupportive=False, author=user2.uid, weight=0, conclusion=statement14.uid)
+		argument30 = Argument(premissegroup=premissegroup28.uid, issupportive=False, author=user2.uid, weight=0, conclusion=statement15.uid)
+		# IMPORTANT: If the conclusion is an argument, check the counter!
+		DBSession.add_all([argument1,argument2,argument3,argument4,argument5,argument6,argument7,argument8,argument9,argument10,argument11,argument12,argument13,argument14,argument15,argument16,argument17,argument18,argument19,argument20,argument21,argument22,argument23,argument24,argument25,argument26,argument27,argument28,argument29,argument30])
+		DBSession.flush()
 
-		# adding the authors
-		relation1.author = user1.uid
-		relation2.author = user1.uid
-		relation3.author = user1.uid
-		relation4.author = user1.uid
-		relation5.author = user1.uid
-		relation6.author = user1.uid
-		relation7.author = user1.uid
-		relation8.author = user1.uid
-		relation9.author = user1.uid
-		relation10.author = user1.uid
-		relation11.author = user1.uid
-		relation12.author = user1.uid
-		relation13.author = user1.uid
-		relation14.author = user1.uid
-		relation15.author = user1.uid
-		relation16.author = user1.uid
-		relation17.author = user1.uid
-		relation18.author = user1.uid
-		relation19.author = user1.uid
-		relation20.author = user1.uid
-		relation21.author = user1.uid
-		relation22.author = user1.uid
-		relation23.author = user1.uid
-		relation24.author = user1.uid
-		relation25.author = user1.uid
-		relation26.author = user1.uid
-		relation27.author = user1.uid
-		relation28.author = user1.uid
-		relation29.author = user1.uid
-		relation30.author = user1.uid
-		relation31.author = user1.uid
-		relation32.author = user1.uid
-		relation33.author = user1.uid
-		relation34.author = user1.uid
-		relation35.author = user1.uid
-		relation36.author = user1.uid
-		relation37.author = user1.uid
-		relation38.author = user1.uid
-		relation39.author = user1.uid
-		relation40.author = user1.uid
-		relation41.author = user1.uid
-		relation42.author = user1.uid
-		relation43.author = user1.uid
-		relation44.author = user1.uid
-		relation45.author = user1.uid
-		relation46.author = user1.uid
-		relation47.author = user1.uid
-		relation48.author = user1.uid
-		relation49.author = user1.uid
-		relation50.author = user1.uid
-		relation51.author = user1.uid
-		relation52.author = user1.uid
-		relation53.author = user1.uid
-		relation54.author = user1.uid
-		relation55.author = user1.uid
-		relation56.author = user1.uid
-		relation57.author = user1.uid
-		relation58.author = user1.uid
-		relation59.author = user1.uid
-		relation60.author = user1.uid
-		relation61.author = user1.uid
-		relation62.author = user1.uid
-
-		DBSession.add_all([relation1, relation2, relation3, relation4, relation5, relation6, relation7, relation8, relation9, relation10,
-		                   relation11, relation12, relation13, relation14, relation15, relation16, relation17, relation18, relation19,
-		                   relation20, relation21, relation22, relation23, relation24, relation25, relation26, relation27, relation28,
-		                   relation29, relation30, relation31, relation32, relation33, relation34, relation35, relation36, relation37,
-		                   relation38, relation39, relation40, relation41, relation42, relation43, relation44, relation45, relation46,
-		                   relation47, relation48, relation49, relation50, relation51, relation52, relation53, relation54, relation55,
-		                   relation56, relation57, relation58, relation59, relation60, relation61, relation62])
+		argument5.conclusions_argument(argument3.uid)
+		argument6.conclusions_argument(argument4.uid)
+		argument8.conclusions_argument(argument7.uid)
+		argument12.conclusions_argument(argument11.uid)
+		argument13.conclusions_argument(argument12.uid)
+		argument16.conclusions_argument(argument1.uid)
+		argument17.conclusions_argument(argument1.uid)
+		argument20.conclusions_argument(argument2.uid)
+		argument21.conclusions_argument(argument2.uid)
+		argument24.conclusions_argument(argument10.uid)
+		argument25.conclusions_argument(argument10.uid)
+		argument26.conclusions_argument(argument11.uid)
 		DBSession.flush()
 
 		transaction.commit()

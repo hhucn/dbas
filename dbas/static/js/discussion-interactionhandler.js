@@ -1,4 +1,4 @@
-/*global $, jQuery, alert, GuiHandler, firstOneText , addStatementButtonId , argumentList , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId, sendAnswerButtonId, addStatementContainerH2Id, AjaxHandler
+/*global $, jQuery, alert, GuiHandler
 */
 
 /**
@@ -7,64 +7,80 @@
  * @copyright Krauthoff 2015
  */
 
+// TODO KICK ALL METHODS WHICH ARE NOT USED
+
 function InteractionHandler() {
 	'use strict';
-	var guiHandler, ajaxHandler;
 
-	this.setHandler = function (externGuiHandler, externAjaxHandler) {
-		guiHandler = externGuiHandler;
-		ajaxHandler = externAjaxHandler;
-	};
 	/**
-	 * Handler when an argument button was clicked
+	 * Handler when an start statement was clicked
 	 * @param id of the button
 	 */
-	this.argumentButtonWasClicked = function (id) {
-		var ajaxHandler = new AjaxHandler();
+	this.startStatementButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		ajaxHandler.getNewArgumentationRound(id);
+		new AjaxHandler().getPremisseForStatement(id);
+	};
+
+	/**
+	 * Handler when an start premisse was clicked
+	 * @param id of the button
+	 */
+	this.startPremisseButtonWasClicked = function (id) {
+		// clear the discussion space
+		$('#' + discussionSpaceId).empty();
+		new AjaxHandler().getReplyForPremisseGroup(id);
+	};
+
+	/**
+	 * Handler when an relation button was clicked
+	 * @param id of the button
+	 */
+	this.startRelationButtonWasClicked = function (id) {
+		// clear the discussion space
+		$('#' + discussionSpaceId).empty();
+		$('#' + discussionsDescriptionId).empty();
+		new AjaxHandler().handleReplyForResponseOfConfrontation(id);
 	};
 
 	/**
 	 * Handler when an position button was clicked
 	 * @param id of the button
-	 * @param value of the button
 	 */
-	this.positionButtonWasClicked = function (id, value) {
+	/*
+	this.positionButtonWasClicked = function (id) {
 		var ajaxHandler = new AjaxHandler();
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		ajaxHandler.getArgumentsForJustification(id);
 	};
+	*/
 
 	/**
 	 * Method for some style attributes, when the radio buttons are chaning
-	 * @param buttonId current id
 	 */
-	this.radioButtonChanged = function (buttonId) {
-		var guiHandler = new GuiHandler(), text;
-		if ($('#' + addStatementButtonId).is(':checked')) {
+	this.radioButtonChanged = function () {
+		var guiHandler = new GuiHandler(), text, isStart = $('#' + discussionSpaceId + ' ul li input').hasClass('start');
+		if ($('#' + addReasonButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).hide();
 
 			// get the second child, which is the label
-			text = $('#' + addStatementButtonId).parent().children().eq(1).text();
-			if (text.indexOf(newPositionRadioButtonText) >= 0 || text.indexOf(firstPositionRadioButtonText) >= 0) {
-				// no argument -> position
-				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false);
+			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
+			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
+				// statement
+				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true, isStart, false);
 			} else {
-				// argument
-				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true);
+				// premisse
+				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false, isStart, true);
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).show();
-			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart, false);
 		} else {
-			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart, false);
 			$('#' + stepBackButtonId).hide();
 
-
-			this.sendAnswerButtonClicked();
+			this.radioButtonWasChoosen();
 			guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
 			$('#' + islandViewContainerId).fadeOut('slow');
 		}
@@ -91,15 +107,15 @@ function InteractionHandler() {
 	};
 
 	/**
-	 * Fetches all arguments out of the textares and send them
+	 * Fetches all premisses out of the textares and send them
 	 */
-	this.getArgumentsAndSendThem = function () {
+	this.getPremissesAndSendThem = function (useIntro) {
 		var i = 0, dict = {}, no, intro;
 		$('#' + leftPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);
-				intro = $('#left-dropdown-sentences-openers-' + no).text();
+				intro = useIntro ? $('#left-dropdown-sentences-openers-' + no).text() : '';
 				dict['pro_' + i] = intro + $(this).val();
 				i = i + 1;
 			}
@@ -109,18 +125,18 @@ function InteractionHandler() {
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);
-				intro = $('#left-dropdown-sentences-openers-' + no).text();
+				intro = useIntro ? $('#right-dropdown-sentences-openers-' + no).text() : '';
 				dict['con_' + i] = intro + $(this).val();
 				i = i + 1;
 			}
 		});
-		new AjaxHandler().sendNewArgument(dict);
+		new AjaxHandler().sendNewPremisses(dict);
 	};
 
 	/**
 	 * Defines the action for the send button
 	 */
-	this.sendAnswerButtonClicked = function () {
+	this.radioButtonWasChoosen = function () {
 		var guiHandler = new GuiHandler(), radioButton, id, value;
 		radioButton = $('input[name=' + radioButtonGroup + ']:checked');
 		id = radioButton.attr('id');
@@ -130,10 +146,14 @@ function InteractionHandler() {
 		} else {
 			guiHandler.setErrorDescription('');
 			guiHandler.setSuccessDescription('');
-			if (radioButton.hasClass('argument')) {
-				this.argumentButtonWasClicked(id, value);
+			if (radioButton.hasClass('start')) {
+				this.startStatementButtonWasClicked(id, value);
+			} else if (radioButton.hasClass('premisse')) {
+				this.startPremisseButtonWasClicked(id, value);
+			} else if (radioButton.hasClass('relation')) {
+				this.startRelationButtonWasClicked(id, value);
 			} else {
-				this.positionButtonWasClicked(id, value);
+				alert('new class in InteractionHandler: radioButtonWasChoosen')
 			}
 		}
 
@@ -142,24 +162,73 @@ function InteractionHandler() {
 	};
 
 	/**
+	 * Callback for the ajax method getPremisseForStatement
+	 * @param data returned json data
+	 */
+	this.callbackIfDoneForPremisseForStatement = function (data) {
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		if (parsedData.status == '1') {
+			gh.setJsonDataToContentAsStartPremisses(parsedData.premisses, parsedData.currentStatementText);
+		} else {
+			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
+		}
+		gh.resetAndDisableEditButton();
+	};
+
+	/**
+	 * Callback for the ajax method getPremisseForStatement
+	 * @param data returned json data
+	 */
+	this.callbackIfDoneReplyForPremisse = function (data) {
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		if (parsedData.status == '1') {
+			gh.setJsonDataAsFirstConfrontation(parsedData);
+		} else if (parsedData.status == '0') {
+			alert('TODO: callbackIfDoneReplyForPremisse')
+		} else {
+			alert('error in callbackIfDoneReplyForPremisse');
+		}
+		gh.resetAndDisableEditButton();
+	};
+
+	/**
+	 * Callback for the ajax method handleReplyForResponseOfConfrontation
+	 * @param data
+	 */
+	this.callbackIfDoneHandleReplyForResponseOfConfrontation = function (data) {
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		if (parsedData.status == '1') {
+			gh.setJsonDataAsConfrontationReasoning(parsedData);
+		} else if (parsedData.status == '0') {
+			alert('ohh');
+		} else {
+			alert('error in callbackIfDoneHandleReplyForResponseOfConfrontation');
+		}
+		gh.resetAndDisableEditButton();
+	};
+
+	/**
 	 * Callback for the ajax method getArgsForJustification
 	 * @param data returned json data
 	 */
+	/*
 	this.callbackIfDoneForArgsForJustification = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		gh.setDiscussionsDescription('Why do you think that: <b>' + parsedData.currentStatementText + '</b>');
 		if (parsedData.status != '-1') {
 			gh.setJsonDataToDiscussionContentAsArguments(parsedData.justification, true);
 		} else {
-			gh.setNewArgumentButtonOnly(firstArgumentRadioButtonText, true, 'radio');
+			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
 		}
 		gh.resetAndDisableEditButton();
 	};
+	*/
 
 	/**
 	 * Callback for the ajax method getGetNewArgumentationRound
 	 * @param data returned json data
 	 */
+	/*
 	this.callbackIfDoneForGetNewArgumentationRound = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		// -1 confrontation, but no justification
@@ -168,11 +237,11 @@ function InteractionHandler() {
 		switch(parsedData.status_con){
 			case '-1':
 				gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
-				gh.setNewArgumentAndGoodPointButton(newArgumentRadioButtonText, true, 'radio');
+				gh.setNewArgumentAndGoodPointButton(newPremisseRadioButtonText, true);
 				break;
 			case '0':
 				gh.setDiscussionsDescriptionWithoutConfrontation(parsedData.currentStatementText);
-				gh.setNewArgumentButtonOnly(newArgumentRadioButtonText, true, 'radio');
+				gh.setNewArgumentButtonOnly(newPremisseRadioButtonText, true);
 				break;
 			case '1':
 				gh.setJsonDataToDiscussionContentAsArguments(parsedData.justifications, false, false);
@@ -194,19 +263,20 @@ function InteractionHandler() {
 		}
 		gh.resetAndDisableEditButton();
 	};
+	*/
 
 	/**
-	 * Callback for the ajax method getAllPositions
+	 * Callback for the ajax method getStartStatements
 	 * @param data returned json data
 	 */
-	this.callbackIfDoneForGetAllPositions = function (data) {
+	this.callbackIfDoneForGetStartStatements = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '-1') {
 			gh.setDiscussionsDescription(firstPositionText);
 			gh.resetAndDisableEditButton();
-			gh.setNewArgumentButtonOnly(firstPositionRadioButtonText, false, 'radio');
+			gh.setNewArgumentButtonOnly(firstConclusionRadioButtonText, false);
 		} else {
-			gh.setJsonDataToContentAsPositions(parsedData.positions);
+			gh.setJsonDataToContentAsStartStatement(parsedData.statements);
 		}
 	};
 
@@ -214,15 +284,33 @@ function InteractionHandler() {
 	 * Callback, when a new position was send
 	 * @param data returned data
 	 */
-	this.callbackIfDoneForSendNewPosition = function (data) {
+	this.callbackIfDoneForSendNewStartStatement = function (data) {
 		var parsedData = $.parseJSON(data);
-		new GuiHandler().setNewPositionAsLastChild(parsedData);
+		if (parsedData.status == '-1') {
+			alert('success -1 in callbackIfDoneForSendNewStartStatement');
+		} else {
+			new GuiHandler().setNewStatementAsLastChild(parsedData);
+		}
+	};
+
+	/**
+	 * Callback, when new premisses were send
+	 * @param data returned data
+	 */
+	this.callbackIfDoneForSendNewPremisses = function (data) {
+		var parsedData = $.parseJSON(data);
+		if (parsedData.status == '-1') {
+			alert('success -1 in callbackIfDoneForSendNewPremisses');
+		} else {
+			new GuiHandler().setPremissesAsLastChild(parsedData);
+		}
 	};
 
 	/**
 	 * Callback, when a new arguments were send
 	 * @param data returned data
 	 */
+	/*
 	this.callbackIfDoneForSendNewArguments = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler;
 		// -1 something went wrong
@@ -238,11 +326,13 @@ function InteractionHandler() {
 				break;
 		}
 	};
+	*/
 
 	/**
 	 * Callback, when the user want to step back
 	 * @param data returned data
 	 */
+	/*
 	this.callbackGetOneStepBack = function (data) {
 		var parsedData = $.parseJSON(data), ah = new AjaxHandler(), ih = new InteractionHandler();
 		$('#' + discussionSpaceId).empty();
@@ -251,7 +341,7 @@ function InteractionHandler() {
 		//  1 given data is for an argument callback
 		switch (parsedData.status){
 			case '-1':
-				ah.getAllPositions();
+				ah.getStartStatements();
 				break;
 			case '0':
 				new GuiHandler().setDiscussionsDescription('Why do you think that: <b>' + parsedData.currentStatementText + '</b>');
@@ -262,11 +352,13 @@ function InteractionHandler() {
 				break;
 		}
 	};
+	*/
 
 	/**
 	 * Callback, when island data was fetched
 	 * @param data of the ajax request
 	 */
+	/*
 	this.callbackIfDoneForGetAllArgumentsForIslandView = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		// -1 no data
@@ -282,6 +374,7 @@ function InteractionHandler() {
 				break;
 		}
 	};
+	*/
 
 	/**
 	 * Callback, when the logfile was fetched
@@ -310,6 +403,7 @@ function InteractionHandler() {
 			new GuiHandler().updateOfStatementInDiscussion(parsedData);
 			$('#' + popupErrorDescriptionId).text('');
 			$('#' + popupSuccessDescriptionId).text(correctionsSet);
+			$('#edit_statement_td_text_' + parsedData.uid).text(parsedData.text);
 		}
 	};
 }

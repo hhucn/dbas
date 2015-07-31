@@ -5,13 +5,12 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 from pyramid.session import check_csrf_token
-from pyramid.i18n import TranslationString as ts
 from pyramid.renderers import get_renderer
 from pyramid.threadlocal import get_current_registry
 
 from .database import DBSession
 from .database.model import User, Group, Issue
-from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, EmailHelper
+from .helper import PasswordHandler, PasswordGenerator, logger, DatabaseHelper, DictionaryHelper, EmailHelper, UserHandler
 
 name = 'D-BAS'
 version = '0.23'
@@ -24,7 +23,6 @@ class Dbas(object):
 		:param request: init http request
 		:return:
 		"""
-
 		self.request = request
 
 
@@ -34,7 +32,7 @@ class Dbas(object):
 		return layout
 
 	# main page
-	@view_config(route_name='main_page', renderer='templates/index.pt' ,permission='everybody')
+	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 	def main_page(self):
 		"""
 		View configuration for the main page
@@ -104,7 +102,7 @@ class Dbas(object):
 			# check for user and password validations
 			if not db_user:
 				logger('main_login', 'form.login.submitted', 'user \'' + nickname + '\' does not exists')
-				message = ts('NoUser', domain='dbas', default='User does not exists')
+				message = 'User does not exists'
 			elif not db_user.validate_password(password):  # dbUser.validate_password(password)
 				logger('main_login', 'form.login.submitted', 'wrong password')
 				message = 'Wrong password'
@@ -252,6 +250,7 @@ class Dbas(object):
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
 		return {
+			'layout': self.base_layout(),
 			'language': lang,
 			'title': 'Login',
 			'project': header,
@@ -412,7 +411,7 @@ class Dbas(object):
 		# statement_inserted = False
 
 		# checks whether the current user is admin
-		is_admin = QueryHelper().is_user_admin(self.request.authenticated_userid)
+		is_admin = DatabaseHelper().is_user_admin(self.request.authenticated_userid)
 
 		try:
 			lang = str(self.request.cookies['_LOCALE_'])
@@ -443,7 +442,7 @@ class Dbas(object):
 
 		token = self.request.session.new_csrf_token()
 		logger('main_settings', 'new token', str(token))
-		
+
 		oldpw = ''
 		newpw = ''
 		confirmpw = ''
@@ -457,15 +456,13 @@ class Dbas(object):
 		db_user_mail = 'unknown'
 		db_user_group = 'unknown'
 
-		db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
+		db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
 		if db_user:
 			db_user_firstname = db_user.firstname
 			db_user_surname = db_user.surname
 			db_user_nickname = db_user.nickname
 			db_user_mail = db_user.email
-			db_user_group = DBSession.query(Group).filter_by(uid=db_user.group).first()
-			if db_user_group:
-				db_user_group = db_user_group.name
+			db_user_group = db_user.groups.name
 
 		if 'form.passwordchange.submitted' in self.request.params:
 			logger('main_settings', 'form.changepassword.submitted', 'requesting params')
@@ -609,19 +606,6 @@ class Dbas(object):
 			'logged_in': self.request.authenticated_userid
 		}
 
-	# ajax - return all position in the database
-	@view_config(route_name='ajax_all_positions', renderer='json', check_csrf=True)
-	def get_all_positions(self):
-		"""
-		Returns all positions as dictionary with uid <-> value
-		:return: list of all positions
-		"""
-		logger('get_all_positions', 'def', 'main')
-		return_dict = QueryHelper().get_all_positions()
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-
-		return return_json
-
 	# ajax - getting every user, and returns dicts with name <-> group
 	@view_config(route_name='ajax_all_users', renderer='json', check_csrf=True)
 	def get_all_users(self):
@@ -632,7 +616,102 @@ class Dbas(object):
 		logger('get_all_users', 'def', 'main')
 		logger('get_all_users', 'check_csrf_token', str(check_csrf_token(self.request)))
 
-		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid)
+		return_dict = DatabaseHelper().get_all_users(self.request.authenticated_userid)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - return all start statements in the database
+	@view_config(route_name='ajax_get_start_statements', renderer='json', check_csrf=True)
+	def get_start_statemens(self):
+		"""
+		Returns all positions as dictionary with uid <-> value
+		:return: list of all positions
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('get_start_statemens', 'def', 'main')
+		return_dict = DatabaseHelper().get_start_statements()
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		# update timestamp
+		logger('get_start_statemens', 'def',  'update login timestamp')
+
+		return return_json
+
+	# ajax - getting all arguments for the island view
+	@view_config(route_name='ajax_premisses_for_statement', renderer='json', check_csrf=True)
+	def get_premisses_for_statement(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('get_all_arguments_for_island', 'def', 'main')
+
+		return_dict = {}
+		try:
+			logger('get_all_arguments_for_island', 'def', 'read params')
+			uid = self.request.params['uid']
+			DatabaseHelper().save_track_for_user(transaction, self.request.authenticated_userid, uid)
+			return_dict = DatabaseHelper().get_premisses_for_statement(uid, True)
+			return_dict['status'] = '1'
+		except KeyError as e:
+			logger('get_all_arguments_for_island', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - get reply for a premisse group
+	@view_config(route_name='ajax_reply_for_premissegroup', renderer='json', check_csrf=True)
+	def reply_for_premissegroup(self):
+		"""
+		Get reply for a premisse
+		:return: dictionary with every arguments
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('reply_for_premissegroup', 'def', 'main')
+
+		return_dict = {}
+		try:
+			uid = self.request.params['uid']
+			logger('reply_for_premissegroup', 'def', 'premissegroup ' + str(uid))
+			DatabaseHelper().save_premissegroup_for_user(transaction, self.request.authenticated_userid, uid)
+			return_dict, status = DatabaseHelper().get_reply_for_premissegroup(uid, self.request.authenticated_userid)
+			return_dict['status'] = str(status)
+		except KeyError as e:
+			logger('reply_for_premissegroup', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - get reply for a confrontation
+	@view_config(route_name='ajax_reply_for_response_of_confrontation', renderer='json', check_csrf=True)
+	def reply_for_response_of_confrontation(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('reply_for_response_of_confrontation', 'def', 'main')
+
+		return_dict = {}
+		try:
+			id = self.request.params['id']
+			logger('reply_for_response_of_confrontation', 'def', 'id ' + id)
+			return_dict = DatabaseHelper().get_reply_confrontations_response(id)
+			return_dict['status'] = '1'
+		except KeyError as e:
+			logger('reply_for_response_of_confrontation', 'error', repr(e))
+			return_dict['status'] = '-1'
+
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
@@ -644,6 +723,8 @@ class Dbas(object):
 		Request the complete user track
 		:return:
 		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('manage_user_track', 'def', 'main')
 
 		nickname = 'unknown'
@@ -659,180 +740,120 @@ class Dbas(object):
 		return_dict = {}
 		if get_data == '1':
 			logger('manage_user_track', 'def', 'get track data')
-			return_dict = QueryHelper().get_track_for_user(nickname)
+			return_dict = DatabaseHelper().get_track_for_user(nickname)
 		else:
 			logger('manage_user_track', 'def', 'remove track data')
 			return_dict['removed data'] = 'true'
-			QueryHelper().del_track_for_user(transaction, nickname)
+			DatabaseHelper().del_track_for_user(transaction, nickname)
 
 		dictionary_helper = DictionaryHelper()
 		return_json = dictionary_helper.dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
-	# ajax - getting every argument, which is connected to the given position uid
-	@view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')
-	def get_arguments_by_pos(self):
+	# ajax - send new start statement
+	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
+	def set_new_start_statement(self):
 		"""
-		Returns all arguments, which are connected to a position, which uid is delivered in the params
-		:return: dictionary with db-rows, json-encoded
-		"""
-		logger('get_arguments_by_pos', 'def', 'main')
-
-		# get every relation from current argument to an position with uid send
-		uid = ''
-		try:
-			uid = self.request.params['uid']
-		except KeyError as e:
-			logger('get_arguments_by_pos', 'error', repr(e))
-
-		logger('get_arguments_by_pos', 'def', 'uid: ' + uid)
-
-		# get all arguments
-		return_dict = QueryHelper().get_args_by_pos(uid)
-
-		# save track, because the given uid is a position uid
-		logger('getarguments_by_pos', 'def', 'saving track: position id ' + str(uid))
-		QueryHelper().save_track_position_for_user(transaction, self.request.authenticated_userid, uid)
-
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - getting next argument for confrontation
-	@view_config(route_name='ajax_args_for_new_discussion_round', renderer='json', check_csrf=True)
-	def get_args_for_new_round(self):
-		"""
-		Returns arguments for a new confrontation and justification
-		:return: dictionary with db-rows, json-encoded
-		"""
-		logger('get_args_for_new_round', 'def', 'main')
-
-		uid = ''
-		try:
-			uid = self.request.params['uid']
-			logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid))
-		except KeyError as e:
-			logger('get_args_for_new_round', 'error', repr(e))
-
-		query_helper = QueryHelper()
-		# save only, when we are not stepping back and results should be based on the track
-		# saving track
-		logger('get_args_for_new_round', 'def', 'saving track: argument id ' + str(uid))
-		query_helper.save_track_argument_for_user(transaction, self.request.authenticated_userid, uid)
-
-		# get data
-		return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid)
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - send new position
-	@view_config(route_name='ajax_send_new_position', renderer='json', check_csrf=True)
-	def set_send_new_position(self):
-		"""
-		Inserts a new position into the database
+		Inserts a new statement into the database
 		:return: a status code, if everything was successfull
 		"""
-		logger('setsend_new_position', 'def', 'main')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		position = ''
-		try:
-			position = self.request.params['position']
-			logger('setsend_new_position', 'def', 'request data: position ' + str(position))
-		except KeyError as e:
-			logger('setsend_new_position', 'error', repr(e))
+		logger('set_new_start_statement', 'def', 'main')
 
-		# is position already inserted?
 		return_dict = {}
-		query_helper = QueryHelper()
-		if query_helper.is_statement_already_in_database(position, True) > -1:
-			logger('setsend_new_position', 'def', 'duplicate')
-			return_dict['result'] = 'failed'
-			return_dict['reason'] = 'duplicate'
-		else:
-			logger('setsend_new_position', 'def', 'saving position')
-			# saving position
-			if position != '':
-				return_dict['result'] = 'success'
-				return_dict['position'] = query_helper.set_new_position(transaction, position, self.request.authenticated_userid)
-			else:
-				return_dict['result'] = 'failed'
-				return_dict['reason'] = 'empty text'
+		try:
+			statement = self.request.params['statement']
+			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
+			return_dict['success'] = '1'
+			return_dict['statement'] = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True)
+		except KeyError as e:
+			logger('set_new_start_statement', 'error', repr(e))
+			return_dict['success'] = '-1'
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
-	# ajax - getting next argument for confrontation
-	@view_config(route_name='ajax_send_new_arguments', renderer='json', check_csrf=True)
-	def set_send_new_arguments(self):
+	# ajax - send new premisses
+	@view_config(route_name='ajax_set_new_premisses', renderer='json', check_csrf=True)
+	def set_new_premisses(self):
 		"""
-		Insert new arguments into the database
-		:return: dictionary with every arguments
+
+		:return:
 		"""
-		logger('setsend_new_arguments', 'def', 'main')
-		return_dict = QueryHelper().set_new_arguments(transaction, self.request.params, self.request.authenticated_userid)
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_new_premisses', 'def', 'main')
+
+		return_dict = {}
+		try:
+			pro_dict = {}
+			con_dict = {}
+			for k in self.request.params:
+				if 'pro' in k:
+					logger('set_new_premisses', k, self.request.params[k])
+					pro_dict[k] = self.request.params[k]
+				if 'con' in k:
+					logger('set_new_premisses', k, self.request.params[k])
+					con_dict[k] = self.request.params[k]
+			return_dict = DatabaseHelper().set_premisses(transaction, pro_dict, con_dict, self.request.authenticated_userid)
+			return_dict['success'] = '1'
+
+		except KeyError as e:
+			logger('set_new_start_statement', 'error', repr(e))
+			return_dict['success'] = '-1'
+
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
-	# ajax - getting next argument for confrontation
-	@view_config(route_name='ajax_one_step_back', renderer='json', check_csrf=True)
-	def get_one_step_back(self):
-		logger('getone_step_back', 'def', 'main')
-
-		return_dict = QueryHelper().get_data_for_one_step_back(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_all_arguments_for_island', renderer='json', check_csrf=True)
-	def get_all_arguments_for_island(self):
-		logger('get_all_arguments_for_island', 'def', 'main')
-
-		return_dict = QueryHelper().get_args_for_island(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-
-		return return_json
 
 	# ajax - getting all arguments for the island view
 	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=True)
 	def get_logfile_for_statement(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('get_logfile_for_statement', 'def', 'main')
 
 		uid = ''
-		is_argument = ''
 		try:
 			uid = self.request.params['uid']
-			is_argument = True if self.request.params['is_argument'] == 'true' else False
-			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid) + ', is_argument: ' + str(is_argument))
+			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
 
-		return_dict = QueryHelper().get_logfile_for_statement(uid, is_argument)
+		return_dict = DatabaseHelper().get_logfile_for_statement(uid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_send_correcture_of_statement', renderer='json', check_csrf=True)
-	def send_correcture_of_statement(self):
-		logger('send_correcture_of_statement', 'def', 'main')
+	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
+	def set_correcture_of_statement(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_correcture_of_statement', 'def', 'main')
 
 		uid = ''
-		is_argument = ''
 		corrected_text = ''
 		try:
 			uid = self.request.params['uid']
-			is_argument = True if self.request.params['is_argument'] == 'true' else False
 			corrected_text = self.request.params['text']
-			logger('send_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', is_argument: ' + str(is_argument) + ', corrected_text: ' + str(corrected_text));
+			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text))
 		except KeyError as e:
-			logger('send_correcture_of_statement', 'error', repr(e))
+			logger('set_correcture_of_statement', 'error', repr(e))
 
-		return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, is_argument, corrected_text)
+		return_dict = DatabaseHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
@@ -840,6 +861,12 @@ class Dbas(object):
 	# ajax - for language switch
 	@view_config(route_name='ajax_switch_language', renderer='json')
 	def switch_language(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('switch_language', 'def', 'main')
 
 		return_dict = {}

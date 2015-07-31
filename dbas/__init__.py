@@ -43,7 +43,7 @@ def main(global_config, **settings):
 			  }
 
 	# creating the configurator	cache_regions = set_cache_regions_from_settings
-	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory') # ,locale_negotiator=my_locale_negotiator)
+	config = Configurator(settings=settings,root_factory='dbas.database.RootFactory')
 	config.add_translation_dirs('dbas:locale') # add this before the locale negotiator
 
 	config.set_authentication_policy(authn_policy)
@@ -53,7 +53,7 @@ def main(global_config, **settings):
 	# includings for the config
 	config.include('pyramid_chameleon')
 	config.include('pyramid_mailer')
-	# config.include('pyramid_beaker') # done in the ini
+	config.include('pyramid_beaker')
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)
@@ -67,21 +67,30 @@ def main(global_config, **settings):
 	config.add_route('main_imprint', '/imprint')
 	config.add_route('404', '/404')
 
+	# administration
 	config.add_route('ajax_switch_language', '/ajax_switch_language')
-
-	config.add_route('ajax_all_positions', '/ajax_all_positions')
 	config.add_route('ajax_all_users', '/ajax_all_users')
+
+	# main stuff
+	config.add_route('ajax_get_start_statements', '/ajax_get_start_statements')
+	config.add_route('ajax_premisses_for_statement', '/ajax_premisses_for_statement')
+	config.add_route('ajax_reply_for_premissegroup', '/ajax_reply_for_premissegroup')
+	config.add_route('ajax_reply_for_response_of_confrontation', '/ajax_reply_for_response_of_confrontation')
+	config.add_route('ajax_set_new_start_statement', '/ajax_set_new_start_statement')
+	config.add_route('ajax_set_new_premisses', '/ajax_set_new_premisses')
+
+	# settings
 	config.add_route('ajax_manage_user_track', '/ajax_manage_user_track')
-	config.add_route('ajax_all_arguments_for_island', '/ajax_all_arguments_for_island')
 
-	config.add_route('ajax_args_for_new_discussion_round', '/ajax_args_for_new_discussion_round')
-	config.add_route('ajax_arguments_connected_to_position_uid', '/ajax_arguments_connected_to_position_uid')
-
-	config.add_route('ajax_send_new_position', '/ajax_send_new_position')
-	config.add_route('ajax_send_new_arguments', '/ajax_send_new_arguments')
-	config.add_route('ajax_one_step_back', '/ajax_one_step_back')
+	# editing / viewing log
 	config.add_route('ajax_get_logfile_for_statement', '/ajax_get_logfile_for_statement')
-	config.add_route('ajax_send_correcture_of_statement', '/ajax_send_correcture_of_statement')
+	config.add_route('ajax_set_correcture_of_statement', '/ajax_set_correcture_of_statement')
+
+	# config.add_route('ajax_all_arguments_for_island', '/ajax_all_arguments_for_island')
+	# config.add_route('ajax_args_for_new_discussion_round', '/ajax_args_for_new_discussion_round')
+	# config.add_route('ajax_arguments_connected_to_position_uid', '/ajax_arguments_connected_to_position_uid')
+	# config.add_route('ajax_send_new_arguments', '/ajax_send_new_arguments')
+	# config.add_route('ajax_one_step_back', '/ajax_one_step_back')
 
 	# read the input and start
 	config.scan()

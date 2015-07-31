@@ -2,9 +2,25 @@ import sqlalchemy as sa
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 from dbas.database import DBSession, Base
 
-# TODO: new initializations of each table, where all arguments can be directly assinged!
+# ORM Relationships
+# Statement : Text              many-to-one     fk on the parent referencing the child, relationship() on the parent
+# Statement : Author            many-to-one
+# Statement : Premisses         many-to-one
+# PremisseGroups : Author       many-to-one
+# Argument : Statement          many-to-one
+# Argument : Author             many-to-one
+# Premisses : Author            many-to-one
+# TextValue : TextVersions      one-to-many     fk on the child referencing the parent, relationship() on the parent
+# Author : TextVersions         one-to-many
+# PremisseGroups : Premisses    one-to-many
+# Track : Author                one-to-many
+# Track : Statement             one-to-many
+# Argument : PremisseGroups     many-to-many    association tables
+# Argument : Argument           many-to-many    adjacency list relationship
+
 
 class Issue(Base):
 	"""
@@ -37,8 +53,6 @@ class Group(Base):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	name = sa.Column(sa.Text, nullable=False, unique=True)
 
-	#author = orm.relationship("User", backref=__tablename__) # one-to-many
-
 	def __init__(self, name):
 		"""
 		Initializes a row in current group-table
@@ -67,11 +81,14 @@ class User(Base):
 	email = sa.Column(sa.Text, nullable=False, unique=True)
 	gender = sa.Column(sa.Text, nullable=False)
 	password = sa.Column(sa.Text, nullable=False)
-	group = sa.Column(sa.Integer, sa.ForeignKey(Group.uid))
-	last_logged = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	group_uid = sa.Column(sa.Integer, sa.ForeignKey('groups.uid'))
+	last_action = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	last_login = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	registered = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
-	def __init__(self, firstname, surname, nickname, email, password, gender):
+	groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
+
+	def __init__(self, group, firstname, surname, nickname, email, password, gender):
 		"""
 		Initializes a row in current user-table
 		"""
@@ -79,9 +96,12 @@ class User(Base):
 		self.surname = surname
 		self.nickname = nickname
 		self.email = email
-		self.password = password
-		self.last_logged = func.now()
 		self.gender = gender
+		self.password = password
+		self.group_uid = group
+		self.last_action = func.now()
+		self.last_login = func.now()
+		self.registered = func.now()
 
 	@classmethod
 	def by_surname(cls):
@@ -93,238 +113,170 @@ class User(Base):
 		return manager.check(self.password, password)
 
 	def update_last_logged(self):
-		self.last_logged = func.now()
+		self.last_login = func.now()
+
+	def update_last_action(self):
+		self.last_action = func.now()
 
 
-class Position(Base):
+class Statement(Base):
 	"""
-	Position-table with several columns.
-	Each position hast text, date, weight, author
+	Statement-table with several columns.
+	Each statement has link to its text
 	"""
-	__tablename__ = 'positions'
+	__tablename__ = 'statements'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	text = sa.Column(sa.Text, nullable=False)
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	text_uid = sa.Column(sa.Integer, sa.ForeignKey('textvalues.uid'))
+	isStartpoint = sa.Column(sa.Boolean, nullable=False)
 
-	def __init__(self, text, weight):
+	textvalues = relationship('TextValue', foreign_keys=[text_uid])
+
+	def __init__(self, text, isstartpoint):
 		"""
-		Initializes a row in current position-table
+		Initializes a row in current statement-table
 		"""
-		self.text = text
+		self.text_uid = text
+		self.isStartpoint = isstartpoint
+
+
+class TextValue(Base):
+	"""
+	Text-Value-table with several columns.
+	Each text value has a link to its most recent text value and a weight
+	"""
+	__tablename__ = 'textvalues'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	textVersion_uid = sa.Column(sa.Integer, sa.ForeignKey('textversions.uid'))
+
+	textversions = relationship('TextVersion', foreign_keys=[textVersion_uid])
+
+	def __init__(self, textversion):
+		"""
+		Initializes a row in current text-value-table
+		"""
+		self.textVersion_uid = textversion
+
+	def update_textversion(self, textVersion_uid):
+		self.textVersion_uid = textVersion_uid
+
+
+class TextVersion(Base):
+	"""
+	TextVersions-table with several columns.
+	Each text versions has link to the recent link and fields for content, author, timestamp and weight
+	"""
+	__tablename__ = 'textversions'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	textValue_uid = sa.Column(sa.Integer, sa.ForeignKey('textvalues.uid'), nullable=True)
+	content = sa.Column(sa.Text, nullable=False)
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	weight = sa.Column(sa.Integer, nullable=False)
+
+	textvalues = relationship('TextValue', foreign_keys=[textValue_uid])
+	users = relationship('User', foreign_keys=[author_uid])
+
+	def __init__(self, content, author, weight):
+		"""
+		Initializes a row in current text versions-table
+		"""
+		self.content = content
+		self.author_uid = author
 		self.weight = weight
+		self.timestamp = func.now()
+
+	def set_textvalue(self, value):
+		self.textValue_uid = value
 
 	@classmethod
-	def by_text(cls):
-		"""Return a query of positions sorted by text."""
-		return DBSession.query(Position).order_by(Position.text)
+	def by_timestamp(cls):
+		"""Return a query of text versions sorted by timestamp."""
+		return DBSession.query(TextVersion).order_by(TextVersion.timestamp)
+
+	@classmethod
+	def by_weight(cls):
+		"""Return a query of text versions sorted by wight."""
+		return DBSession.query(TextVersion).order_by(TextVersion.weight)
+
+
+class PremisseGroup(Base):
+	"""
+	PremisseGroup-table with several columns.
+	Each premissesGroup has a id and an author
+	"""
+	__tablename__ = 'premissegroups'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	users = relationship('User', foreign_keys=[author_uid])
+
+	def __init__(self, author):
+		"""
+		Initializes a row in current premissesGroup-table
+		"""
+		self.author_uid = author
+
+
+class Premisse(Base):
+	"""
+	Premisses-table with several columns.
+	Each premisses has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
+	"""
+	__tablename__ = 'premisses'
+	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'), primary_key=True)
+	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'), primary_key=True)
+	isNegated = sa.Column(sa.Boolean, nullable=False)
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+
+	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
+	statements = relationship('Statement', foreign_keys=[statement_uid])
+	users = relationship('User', foreign_keys=[author_uid])
+
+	def __init__(self, premissesgroup, statement, isnegated, author):
+		"""
+		Initializes a row in current premisses-table
+		"""
+		self.premissesGroup_uid = premissesgroup
+		self.statement_uid = statement
+		self.isNegated = isnegated
+		self.author_uid = author
+		self.timestamp = func.now()
 
 
 class Argument(Base):
 	"""
 	Argument-table with several columns.
-	Each argument has text, creation date, weight and a author
+	Each argument has justifying statement(s) (premisses) and the the statement-to-be-justified (argument or statement).
+	Additionally there is a relation, timestamp, author, weight, ...
 	"""
 	__tablename__ = 'arguments'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	text = sa.Column(sa.Text, nullable=False)
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'))
+	conclusion_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
+	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
+	isSupportive = sa.Column(sa.Boolean, nullable=False)
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 
-	def __init__(self, text, weight, ):
+	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
+	statements = relationship('Statement', foreign_keys=[conclusion_uid])
+	users = relationship('User', foreign_keys=[author_uid])
+	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)  # TODO
+
+	def __init__(self, premissegroup, issupportive, author, weight, conclusion=0):
 		"""
 		Initializes a row in current argument-table
 		"""
-		self.text = text
+		self.premissesGroup_uid = premissegroup
+		self.conclusion_uid = conclusion
+		self.argument_uid = None
+		self.isSupportive = issupportive
+		self.author_uid = author
 		self.weight = weight
 
-	@classmethod
-	def by_text(cls):
-		"""Return a query of arguments sorted by text."""
-		return DBSession.query(Argument).order_by(Argument.text)
-
-	@classmethod
-	def by_authorid(cls, author):
-		"""Return a query of arguments sorted by authorid."""
-		return DBSession.query(Argument).filter(Argument.author == author)
-
-
-class RelationArgPos(Base):
-	"""
-	Relation-table between position and arguments with several columns.
-	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
-	"""
-	__tablename__ = 'relation_argpos'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	def __init__(self, weight, is_supportive):
-		"""
-		Initializes a row in current relation-table
-		"""
-		self.weight = weight
-		self.is_supportive = is_supportive
-
-
-class RelationPosArg(Base):
-	"""
-	Relation-table between arguments and position with several columns.
-	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
-	"""
-	__tablename__ = 'relation_posarg'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
-	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	def __init__(self, weight, is_supportive):
-		"""
-		Initializes a row in current relation-table
-		"""
-		self.weight = weight
-		self.is_supportive = is_supportive
-
-
-class RelationArgArg(Base):
-	"""
-	Relation-table between argument with several columns.
-	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
-	"""
-	__tablename__ = 'relation_argarg'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	arg_uid1 = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	arg_uid2 = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	def __init__(self, weight, is_supportive):
-		"""
-		Initializes a row in current relation-table
-		"""
-		self.weight = weight
-		self.is_supportive = is_supportive
-
-
-class RelationPosPos(Base):
-	"""
-	Relation-table between positions with several columns.
-	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
-	"""
-	__tablename__ = 'relation_pospos'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	pos_uid1 = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
-	pos_uid2 = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	def __init__(self, weight, is_supportive):
-		"""
-		Initializes a row in current relation-table
-		"""
-		self.weight = weight
-		self.is_supportive = is_supportive
-
-
-class RelationArgToArgPosRel(Base):
-	"""
-	Relation-table between an argument and an relation with several columns.
-	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
-	"""
-	__tablename__ = 'relation_argtoargposrel'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	rel_uid = sa.Column(sa.Integer, sa.ForeignKey(RelationArgPos.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	def __init__(self, weight, is_supportive):
-		"""
-		Initializes a row in current relation-table
-		"""
-		self.weight = weight
-		self.is_supportive = is_supportive
-
-
-class RelationArgToArgArgRel(Base):
-	"""
-	Relation-table between an argument and an relation with several columns.
-	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
-	"""
-	__tablename__ = 'relation_argtoargargrel'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	rel_uid = sa.Column(sa.Integer, sa.ForeignKey(RelationArgArg.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	def __init__(self, weight, is_supportive):
-		"""
-		Initializes a row in current relation-table
-		"""
-		self.weight = weight
-		self.is_supportive = is_supportive
-
-
-class RelationArgToPosArgRel(Base):
-	"""
-	Relation-table between an argument and an relation with several columns.
-	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
-	"""
-	__tablename__ = 'relation_argtoposargrel'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	rel_uid = sa.Column(sa.Integer, sa.ForeignKey(RelationPosArg.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	def __init__(self, weight, is_supportive):
-		"""
-		Initializes a row in current relation-table
-		"""
-		self.weight = weight
-		self.is_supportive = is_supportive
-
-
-class RelationArgToPosPosRel(Base):
-	"""
-	Relation-table between an argument and an relation with several columns.
-	Each relation has creation date, weight, author and a boolean whether it is supportive or attacking
-	"""
-	__tablename__ = 'relation_argtoposposrel'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	rel_uid = sa.Column(sa.Integer, sa.ForeignKey(RelationPosPos.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
-	author = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	is_supportive = sa.Column(sa.Boolean, nullable=False)
-
-	def __init__(self, weight, is_supportive):
-		"""
-		Initializes a row in current relation-table
-		"""
-		self.weight = weight
-		self.is_supportive = is_supportive
+	def conclusions_argument(self, argument):
+		self.argument_uid = argument
 
 
 class Track(Base):
@@ -334,42 +286,20 @@ class Track(Base):
 	"""
 	__tablename__ = 'track'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	user_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
-	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	is_argument = sa.Column(sa.Boolean, nullable=False)
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
+	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'))
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
-	def __init__(self, user_uid, pos_uid, arg_uid, is_argument):
+	users = relationship('User', foreign_keys=[author_uid])
+	statements = relationship('Statement', foreign_keys=[statement_uid])
+	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
+
+	def __init__(self, user, statement, premissegroup=0):
 		"""
 		Initializes a row in current track-table
 		"""
-		self.user_uid = user_uid
-		self.pos_uid = pos_uid
-		self.arg_uid = arg_uid
-		self.is_argument = is_argument
-
-
-class Correction(Base):
-	"""
-	Correction-table with several columns.
-	Each statement can be corrected
-	"""
-	__tablename__ = 'correction'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	user_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	pos_uid = sa.Column(sa.Integer, sa.ForeignKey(Position.uid))
-	arg_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid))
-	is_argument = sa.Column(sa.Boolean, nullable=False)
-	text = sa.Column(sa.Text, nullable=False)
-
-	def __init__(self, user_uid, pos_uid, arg_uid, is_argument, text):
-		"""
-		Initializes a row in current correction-table
-		"""
-		self.user_uid = user_uid
-		self.pos_uid = pos_uid
-		self.arg_uid = arg_uid
-		self.is_argument = is_argument
-		self.text = text
+		self.author_uid = user
+		self.statement_uid = statement
+		self.premissesGroup_uid = premissegroup
+		self.timestamp = func.now()

@@ -195,16 +195,16 @@
 	right: 0px;
 }
 
-#popup_edit_statement_body {
+#popup-edit-statement-body {
 	padding-left: 10px;
 	padding-right: 10px;
 }
 
-#popup_edit_statement_logfile_header {
+#popup-edit-statement-logfile-header {
 	margin-top: 20px;
 }
 
-#popup_edit_statement_textarea {
+#popup-edit-statement-textarea {
 	outline: none;
 	font-size: 18px;
 	font-weight: 400;

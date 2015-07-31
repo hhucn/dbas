@@ -48,7 +48,7 @@ function setLinkActive(linkname) {
  */
 function displayConfirmTranslationDialog(id) {
 	// if parent is already active, nothing will happen
-	if ($('#' + id).parent().hasClass('active')){
+	if ($('#' + translationLink + id).parent().hasClass('active')){
 		return;
 	}
 	// display dialog
@@ -58,23 +58,23 @@ function displayConfirmTranslationDialog(id) {
 	// ask for display switch
 	$('#' + confirmDialogAcceptBtn).click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
-		// get new language
-		var lang;
-		if (id == translationLinkDe) lang = 'de';
-		if (id == translationLinkEn) lang = 'en';
 		// ajax
-		switchDisplayLanguage(lang);
+		switchDisplayLanguage(id);
 	});
 	$('#' + confirmDialogRefuseBtn).click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
 	});
 }
 
-
+/**
+ * Will display a dialog, when we are on the content page, otherwise it will change de language
+ * @param path current path
+ * @param lang current language code
+ */
 function language_switcher (path, lang){
 	// preserve reload, when the user is arguing
 	if (path == 'content')
-		displayConfirmTranslationDialog(translationLinkDe);
+		displayConfirmTranslationDialog(lang);
 	else
 		switchDisplayLanguage(lang);
 }
@@ -104,16 +104,25 @@ function callbackIfDoneForSwitchDisplayLanguage (data, new_lang) {
 	setActiveLanguage(new_lang);
 }
 
+/**
+ * DOM manipulation for the active class
+ * @param lang current language code
+ */
 function setActiveLanguage(lang){
 	if (lang === 'en'){
 		$('#' + translationLinkDe).parent().removeClass('active');
 		$('#' + translationLinkEn).parent().addClass('active');
+		$('.logo').attr('src','../static/images/logo.png');
 	} else {
 		$('#' + translationLinkEn).parent().removeClass('active');
 		$('#' + translationLinkDe).parent().addClass('active');
+		$('.logo').attr('src','../static/images/logo_de.png');
 	}
 }
 
+/**
+ * Jumps to clicked chapter, which is defined in the header
+ */
 function jmpToChapter() {
 	// jump to chapter-function
 	$('a[href^=#]').on('click', function (e) {
@@ -129,8 +138,10 @@ function jmpToChapter() {
 	});
 }
 
+/**
+ * Go back to top arrow
+ */
 function goBackToTop() {
-	// back to top arrow
 	$(window).scroll(function () {
 		if (jQuery(this).scrollTop() > 220) {
 			$('.back-to-top').fadeIn(500);
@@ -164,9 +175,7 @@ $(document).ready(function () {
 	else if (path == 'login'){		setLinkActive('#login-link');	$('#navbar-left').hide(); }
 	else if (path == 'news'){ 		setLinkActive('#news-link');	$('#navbar-left').hide(); }
 	else if (path == 'content'){ 	setLinkActive('#content-link');	$('#navbar-left').hide(); }
-	else if (path == 'settings'){ 									$('#navbar-left').hide(); }
-	else if (path == 'imprint'){ 									$('#navbar-left').hide(); }
-	else if (path == 'logout'){ 									$('#navbar-left').hide(); }
+	else if (path == 'settings' || path == 'imprint' || path == 'logout'){ $('#navbar-left').hide(); }
 	else {							setLinkActive(''); 				$('#navbar-left').show(); }
 
 	// language switch

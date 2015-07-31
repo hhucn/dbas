@@ -38,6 +38,12 @@
 	margin: auto;
 }
 
+.icon-badge:hover {
+	transform: rotateY(180deg);
+	transition: 0.6s;
+	transform-style: preserve-3d;
+}
+
 @media (max-width: 1242px) {
 	.first-container {
 		margin-top: 60px;
