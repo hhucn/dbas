@@ -2,10 +2,10 @@ import sqlalchemy as sa
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.sql import func
+from sqlalchemy.schema import ForeignKeyConstraint
+from sqlalchemy.orm import relationship
 from dbas.database import DBSession, Base
 
-# TODO 1: new initializations of each table, where all arguments can be directly assinged!
-# TODO 2: can everything be assigned directly?
 # TODO 3: ORM Relationships
 
 class Issue(Base):
@@ -128,7 +128,7 @@ class TextValue(Base):
 	"""
 	__tablename__ = 'textvalue'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	textVersion_uid = sa.Column(sa.Integer, sa.ForeignKey(TextVersions.uid))
+	textVersion_uid = sa.Column(sa.Integer, sa.ForeignKey(TextVersion.uid))
 
 	def __init__(self, textVersion):
 		"""
@@ -137,7 +137,7 @@ class TextValue(Base):
 		self.textVersion_uid = textVersion
 
 
-class TextVersions(Base):
+class TextVersion(Base):
 	"""
 	TextVersions-table with several columns.
 	Each text versions has link to the recent link and fields for content, author, timestamp and weight
@@ -163,15 +163,15 @@ class TextVersions(Base):
 	@classmethod
 	def by_timestamp(cls):
 		"""Return a query of text versions sorted by timestamp."""
-		return DBSession.query(TextVersions).order_by(TextVersions.timestamp)
+		return DBSession.query(TextVersion).order_by(TextVersion.timestamp)
 
 	@classmethod
 	def by_weight(cls):
 		"""Return a query of text versions sorted by wight."""
-		return DBSession.query(TextVersions).order_by(TextVersions.weight)
+		return DBSession.query(TextVersion).order_by(TextVersion.weight)
 
 
-class PremisseGroups(Base):
+class PremisseGroup(Base):
 	"""
 	PremisseGroup-table with several columns.
 	Each premissesGroup has a id and an author
@@ -187,17 +187,18 @@ class PremisseGroups(Base):
 		self.author_uid = author
 
 
-class Premisses(Base):
+class Premisse(Base):
 	"""
 	Premisses-table with several columns.
 	Each premisses has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
 	"""
 	__tablename__ = 'premisses'
-	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey(PremisseGroups.uid), primary_key=True)
+	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey(PremisseGroup.uid), primary_key=True)
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey(Statement.uid), primary_key=True)
 	isNegated = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	ForeignKeyConstraint(['premissesGroup_uid', 'statement_uid'], ['PremisseGroups.uid', 'Statement.uid'])
 
 	def __init__(self, premissesGroup, statement, isNegated, author):
 		"""
@@ -218,13 +219,15 @@ class Argument(Base):
 	"""
 	__tablename__ = 'arguments'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	premissegroup_uid = (sa.Integer, sa.ForeignKey(PremisseGroups.uid))
-	conclusion_uid = (sa.Integer, sa.ForeignKey(Statement.uid))
-	argument_uid = (sa.Integer, sa.ForeignKey(ArgumentLink.uid))
+	premissegroup_uid = sa.Column(sa.Integer, sa.ForeignKey(PremisseGroup.uid))
+	conclusion_uid = sa.Column(sa.Integer, sa.ForeignKey(Statement.uid))
+	argument_uid = sa.Column(sa.Integer, sa.ForeignKey("arguments.uid"))
 	isSupportive = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
+	argument_link = relationship("Argument")#, remote_side=[uid])
+
 
 	def __init__(self, premissegroup, conclusion, argument, isSupportive, author):
 		"""
@@ -235,21 +238,6 @@ class Argument(Base):
 		self.argument_uid = argument
 		self.isSupportive = isSupportive
 		self.author_uid = author
-
-
-class ArgumentLink(Base):
-	"""
-	ArgumentLink-table with several columns.
-	Necessary, because the argument_uid in Argument is s FK on its own PK
-	"""
-	uid = sa.Column(sa.Integer, primary_key=True)
-	argument_uid = sa.Column(sa.Integer, sa.ForeignKey(Argument.uid), primary_key=True)
-
-	def __init__(self, argument):
-		"""
-		Initializes a row in current track-table
-		"""
-		self.argument_uid = argument
 
 
 class Track(Base):
