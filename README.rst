@@ -17,11 +17,9 @@ Softwarestack
 
 Server (backend):
 
-- `Python 3 <http://www.python.org>`_ (programming language)
-
 - `Pyramid <http://pylonsproject.org>`_  (web framework)
 
-- `ZODB <http://zodb.org>`_ (database)
+- `Python 3 <http://www.python.org>`_ (programming language)
 
 - `SQLAlchemy <http://www.sqlalchemy.org/>`_ (database)
 
