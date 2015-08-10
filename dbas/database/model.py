@@ -2,8 +2,7 @@ import sqlalchemy as sa
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.sql import func
-from sqlalchemy.schema import ForeignKeyConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from dbas.database import DBSession, Base
 
 # ORM Relationships
@@ -21,6 +20,7 @@ from dbas.database import DBSession, Base
 # Track : Statement             one-to-many
 # Argument : PremisseGroups     many-to-many    association tables
 # Argument : Argument           many-to-many    adjacency list relationship
+
 
 class Issue(Base):
 	"""
@@ -52,8 +52,6 @@ class Group(Base):
 	__tablename__ = 'groups'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	name = sa.Column(sa.Text, nullable=False, unique=True)
-
-	#author = orm.relationship("User", backref=__tablename__) # one-to-many
 
 	def __init__(self, name):
 		"""
@@ -87,6 +85,7 @@ class User(Base):
 	last_action = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	last_login = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	registered = sa.Column(sa.DateTime(timezone=True), default=func.now())
+
 	groups = relationship('Group', foreign_keys=[group_uid])
 
 	def __init__(self, group, firstname, surname, nickname, email, password, gender):
@@ -114,7 +113,7 @@ class User(Base):
 		return manager.check(self.password, password)
 
 	def update_last_logged(self):
-		self.last_logged = func.now()
+		self.last_login = func.now()
 
 	def update_last_action(self):
 		self.last_action = func.now()
@@ -128,13 +127,16 @@ class Statement(Base):
 	__tablename__ = 'statements'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	text_uid = sa.Column(sa.Integer, sa.ForeignKey('textvalues.uid'))
+	isStartpoint = sa.Column(sa.Boolean, nullable=False)
+
 	textvalues = relationship('TextValue', foreign_keys=[text_uid])
 
-	def __init__(self, text):
+	def __init__(self, text, isstartpoint):
 		"""
 		Initializes a row in current statement-table
 		"""
 		self.text_uid = text
+		self.isStartpoint = isstartpoint
 
 
 class TextValue(Base):
@@ -145,13 +147,14 @@ class TextValue(Base):
 	__tablename__ = 'textvalues'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	textVersion_uid = sa.Column(sa.Integer, sa.ForeignKey('textversions.uid'))
+
 	textversions = relationship('TextVersion', foreign_keys=[textVersion_uid])
 
-	def __init__(self, textVersion):
+	def __init__(self, textversion):
 		"""
 		Initializes a row in current text-value-table
 		"""
-		self.textVersion_uid = textVersion
+		self.textVersion_uid = textversion
 
 
 class TextVersion(Base):
@@ -166,6 +169,7 @@ class TextVersion(Base):
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
+
 	textvalues = relationship('TextValue', foreign_keys=[textValue_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
@@ -217,18 +221,18 @@ class Premisse(Base):
 	isNegated = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	ForeignKeyConstraint(['premissesGroup_uid', 'statement_uid'], ['PremisseGroups.uid', 'Statement.uid']) # TODO
+
 	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, premissesGroup, statement, isNegated, author):
+	def __init__(self, premissesgroup, statement, isnegated, author):
 		"""
 		Initializes a row in current premisses-table
 		"""
-		self.premissesGroup_uid = premissesGroup
+		self.premissesGroup_uid = premissesgroup
 		self.statement_uid = statement
-		self.isNegated = isNegated
+		self.isNegated = isnegated
 		self.author_uid = author
 		self.timestamp = func.now()
 
@@ -248,21 +252,26 @@ class Argument(Base):
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
+
 	premissegroups = relationship('PremisseGroup', foreign_keys=[premissegroup_uid])
 	statements = relationship('Statement', foreign_keys=[conclusion_uid])
 	users = relationship('User', foreign_keys=[author_uid])
-	arguments = relationship('Argument', foreign_keys=[argument_uid])
+	arguments = relationship('Argument', cascade='all, delete-orphan', foreign_keys=[argument_uid],
+	                         backref=backref('parent_argument', remote_side=uid))  # TODO
 
-	def __init__(self, premissegroup, conclusion, argument, isSupportive, author, weight):
+	def __init__(self, premissegroup, issupportive, author, weight, conclusion=None):
 		"""
 		Initializes a row in current argument-table
 		"""
 		self.premissegroup_uid = premissegroup
 		self.conclusion_uid = conclusion
-		self.argument_uid = argument
-		self.isSupportive = isSupportive
+		self.argument_uid = None
+		self.isSupportive = issupportive
 		self.author_uid = author
 		self.weight = weight
+
+	def conclusions_argument(self, argument):
+		self.argument_uid = argument
 
 
 class Track(Base):
@@ -275,6 +284,7 @@ class Track(Base):
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+
 	users = relationship('User', foreign_keys=[author_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 
