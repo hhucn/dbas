@@ -817,24 +817,22 @@ class Dbas(object):
 	#
 	# 	return return_json
 
-	# # ajax - getting all arguments for the island view
-	# @view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=True)
-	# def get_logfile_for_statement(self):
-	# 	logger('get_logfile_for_statement', 'def', 'main')
-	#
-	# 	uid = ''
-	# 	is_argument = ''
-	# 	try:
-	# 		uid = self.request.params['uid']
-	# 		is_argument = True if self.request.params['is_argument'] == 'true' else False
-	# 		logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid) + ', is_argument: ' + str(is_argument))
-	# 	except KeyError as e:
-	# 		logger('get_logfile_for_statement', 'error', repr(e))
-	#
-	# 	return_dict = QueryHelper().get_logfile_for_statement(uid, is_argument)
-	# 	return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
+	# ajax - getting all arguments for the island view
+	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=True)
+	def get_logfile_for_statement(self):
+		logger('get_logfile_for_statement', 'def', 'main')
+
+		uid = ''
+		try:
+			uid = self.request.params['uid']
+			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
+		except KeyError as e:
+			logger('get_logfile_for_statement', 'error', repr(e))
+
+		return_dict = QueryHelper().get_logfile_for_statement(uid)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
 
 	# # ajax - getting all arguments for the island view
 	# @view_config(route_name='ajax_send_correcture_of_statement', renderer='json', check_csrf=True)

@@ -193,17 +193,16 @@ function AjaxHandler() {
 		});
 	};
 
-	/***
+	/**
 	 * Requests the logfile for the given uid
 	 * @param statement_uid current uid of the statement
-	 * @param is_argument true, if it is an argument
-	 *
-	this.getLogfileForStatement = function (statement_uid, is_argument){
+	 */
+	this.getLogfileForStatement = function (statement_uid){
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
 			type: 'POST',
-			data: { uid: statement_uid, is_argument: is_argument },
+			data: { uid: statement_uid},
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }

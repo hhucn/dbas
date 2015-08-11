@@ -701,7 +701,7 @@ function GuiHandler() {
 					$('#' + popupEditStatementLogfileHeaderId).html('Logfile for: <b>' + $(this).attr('statement_text') + '</b>');
 					$('#' + popupErrorDescriptionId).text('');
 					$('#' + popupSuccessDescriptionId).text('');
-					new AjaxHandler().getLogfileForStatement($(this).attr('statement_id'), $(this).attr('statement_type') == 'argument');
+					new AjaxHandler().getLogfileForStatement($(this).attr('statement_id'));
 					new GuiHandler().shouldHideEditFieldsinEditPopup(false);
 				}).hover(function log_button_hover () {
 					$(this).toggleClass('btn-primary', 400);

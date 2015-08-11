@@ -335,7 +335,6 @@ function InteractionHandler() {
 	 * Callback, when the logfile was fetched
 	 * @param data of the ajax request
 	 */
-	/*
 	this.callbackIfDoneForGetLogfileForStatement = function (data) {
 		var parsedData = $.parseJSON(data);
 		// status is the length of the content
@@ -346,7 +345,6 @@ function InteractionHandler() {
 			new GuiHandler().displayStatementCorrectionsInPopup(parsedData.content);
 		}
 	};
-	*/
 
 	/**
 	 * Callback, when a correcture could be send

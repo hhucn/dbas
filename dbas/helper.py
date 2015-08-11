@@ -469,60 +469,33 @@ class QueryHelper(object):
 	# 	logger('QueryHelper', 'get_confrontation_argument', 'get the nth argument as contra ' + str(rnd))
 	# 	return contra_argument_rows[rnd]
 
-	# def get_logfile_for_statement(self, uid, is_argument):
-	# 	"""
-	# 	Returns the logfile for the given statement uid
-	# 	:param uid: requested statement uid
-	# 	:param is_argument: true, if it is an argument
-	# 	:return: dictionary with the logfile-rows
-	# 	"""
-	# 	logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid) + ', is_argument: ' + str(is_argument))
-	#
-	# 	pos_uid = -1 if is_argument else uid
-	# 	arg_uid = uid if is_argument else -1
-	# 	db_corrections = DBSession.query(Correction).filter(and_(Correction.arg_uid == arg_uid, Correction.pos_uid == pos_uid)).all()
-	#
-	# 	logger('QueryHelper', 'get_logfile_for_statement', 'corrections for arg_uid: ' + str(arg_uid) + ', pos_uid: ' + str(pos_uid)
-	# 	       + ', count: ' + str(len(db_corrections)) + ', is_argument: ' + str(is_argument))
-	#
-	# 	return_dict = dict()
-	# 	content_dict = collections.OrderedDict()
-	# 	return_dict['status'] = str(len(db_corrections) + 1)
-	#
-	# 	# querying the 'source' of the statement
-	# 	if is_argument:
-	# 		db_source_statement = DBSession.query(Argument).filter_by(uid=uid).first()
-	# 	else:
-	# 		db_source_statement = DBSession.query(Position).filter_by(uid=uid).first()
-	#
-	# 	# adding the 'source' of the statement
-	# 	index = 1
-	# 	corr_dict  = dict()
-	# 	corr_dict['uid'] = str(db_source_statement.uid)
-	# 	db_author = DBSession.query(User).filter_by(uid=db_source_statement.author).first()
-	# 	corr_dict['author'] = str(db_author.nickname)
-	# 	corr_dict['date'] = str(db_source_statement.date)
-	# 	corr_dict['is_argument'] = '1' if is_argument else '0'
-	# 	corr_dict['text'] = str(db_source_statement.text)
-	# 	content_dict[str(index)] = corr_dict
-	# 	logger('QueryHelper', 'get_logfile_for_statement', 'add statement ' + str(index) + ': ' + db_source_statement.text)
-	# 	index += 1
-	#
-	# 	# add all corrections
-	# 	for correction in db_corrections:
-	# 		corr_dict = dict()
-	# 		corr_dict['uid'] = str(correction.uid)
-	# 		db_author = DBSession.query(User).filter_by(uid=correction.user_uid).first()
-	# 		corr_dict['author'] = str(db_author.nickname)
-	# 		corr_dict['date'] = str(correction.date)
-	# 		corr_dict['is_argument'] ='1' if correction.is_argument else '0'
-	# 		corr_dict['text'] = str(correction.text)
-	# 		content_dict[str(index)] = corr_dict
-	# 		logger('QueryHelper', 'get_logfile_for_statement', 'add statement ' + str(index) + ': ' + correction.text)
-	# 		index += 1
-	# 	return_dict['content'] = content_dict
-	#
-	# 	return return_dict
+	def get_logfile_for_statement(self, uid):
+		"""
+		Returns the logfile for the given statement uid
+		:param uid: requested statement uid
+		:return: dictionary with the logfile-rows
+		"""
+		logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
+
+		db_statement = DBSession.query(Statement).filter_by(uid=uid).first()
+		db_textversions = DBSession.query(TextVersion).filter_by(textValue_uid=db_statement.text_uid).join(User).all()
+
+		index = 0
+		return_dict = {}
+		content_dict = {}
+		# add all corrections
+		for versions in db_textversions:
+			corr_dict = dict()
+			corr_dict['uid'] = str(versions.uid)
+			corr_dict['author'] = str(versions.users.nickname)
+			corr_dict['date'] = str(versions.timestamp)
+			corr_dict['text'] = str(versions.content)
+			content_dict[str(index)] = corr_dict
+			logger('QueryHelper', 'get_logfile_for_statement', 'statement ' + str(index) + ': ' + versions.content)
+			index += 1
+		return_dict['content'] = content_dict
+
+		return return_dict
 
 	# def get_data_for_one_step_back(self, user):
 	# 	"""
