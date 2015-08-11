@@ -10,7 +10,7 @@ from pyramid.threadlocal import get_current_registry
 
 from .database import DBSession
 from .database.model import User, Group, Issue
-from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, EmailHelper
+from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, EmailHelper, UserHandler
 
 name = 'D-BAS'
 version = '0.23'
@@ -455,15 +455,13 @@ class Dbas(object):
 		db_user_mail = 'unknown'
 		db_user_group = 'unknown'
 
-		db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).first()
+		db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
 		if db_user:
 			db_user_firstname = db_user.firstname
 			db_user_surname = db_user.surname
 			db_user_nickname = db_user.nickname
 			db_user_mail = db_user.email
-			db_user_group = DBSession.query(Group).filter_by(uid=db_user.group).first()
-			if db_user_group:
-				db_user_group = db_user_group.name
+			db_user_group = db_user.groups.name
 
 		if 'form.passwordchange.submitted' in self.request.params:
 			logger('main_settings', 'form.changepassword.submitted', 'requesting params')
@@ -607,19 +605,6 @@ class Dbas(object):
 			'logged_in': self.request.authenticated_userid
 		}
 
-	# # ajax - return all position in the database
-	# @view_config(route_name='ajax_all_positions', renderer='json', check_csrf=True)
-	# def get_all_positions(self):
-	# 	"""
-	# 	Returns all positions as dictionary with uid <-> value
-	# 	:return: list of all positions
-	# 	"""
-	# 	logger('get_all_positions', 'def', 'main')
-	# 	return_dict = QueryHelper().get_all_positions()
-	# 	return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
-
 	# ajax - getting every user, and returns dicts with name <-> group
 	@view_config(route_name='ajax_all_users', renderer='json', check_csrf=True)
 	def get_all_users(self):
@@ -635,38 +620,75 @@ class Dbas(object):
 
 		return return_json
 
-	# # ajax - getting complete track of the user
-	# @view_config(route_name='ajax_manage_user_track', renderer='json', check_csrf=True)
-	# def manage_user_track(self):
-	# 	"""
-	# 	Request the complete user track
-	# 	:return:
-	# 	"""
-	# 	logger('manage_user_track', 'def', 'main')
-	#
-	# 	nickname = 'unknown'
-	# 	get_data = ''
-	# 	try:
-	# 		logger('manage_user_track', 'def', 'read params')
-	# 		nickname = str(self.request.authenticated_userid)
-	# 		get_data = self.request.params['get_data']
-	# 		logger('manage_user_track', 'def', 'nickname ' + nickname + ', get ' + get_data)
-	# 	except KeyError as e:
-	# 		logger('manage_user_track', 'error', repr(e))
-	#
-	# 	return_dict = {}
-	# 	if get_data == '1':
-	# 		logger('manage_user_track', 'def', 'get track data')
-	# 		return_dict = QueryHelper().get_track_for_user(nickname)
-	# 	else:
-	# 		logger('manage_user_track', 'def', 'remove track data')
-	# 		return_dict['removed data'] = 'true'
-	# 		QueryHelper().del_track_for_user(transaction, nickname)
-	#
-	# 	dictionary_helper = DictionaryHelper()
-	# 	return_json = dictionary_helper.dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
+	# ajax - return all start statements in the database
+	@view_config(route_name='ajax_start_statements', renderer='json', check_csrf=True)
+	def get_start_statemens(self):
+		"""
+		Returns all positions as dictionary with uid <-> value
+		:return: list of all positions
+		"""
+		logger('get_start_statemens', 'def', 'main')
+		return_dict = QueryHelper().get_start_statements()
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		# update timestamp
+		logger('get_start_statemens', 'def',  'update login timestamp')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		return return_json
+
+	# ajax - getting all arguments for the island view
+	@view_config(route_name='ajax_premisses_for_statement', renderer='json', check_csrf=True)
+	def get_premisses_for_statement(self):
+		logger('get_all_arguments_for_island', 'def', 'main')
+
+		return_dict = {}
+		try:
+			logger('get_all_arguments_for_island', 'def', 'read params')
+			uid = self.request.params['uid']
+			return_dict = QueryHelper().get_premisses_for_statement(uid, True)
+			QueryHelper().save_track_for_user(transaction, self.request.authenticated_userid, uid)
+			return_dict['status'] = '1'
+		except KeyError as e:
+			logger('get_all_arguments_for_island', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - getting complete track of the user
+	@view_config(route_name='ajax_manage_user_track', renderer='json', check_csrf=True)
+	def manage_user_track(self):
+		"""
+		Request the complete user track
+		:return:
+		"""
+		logger('manage_user_track', 'def', 'main')
+
+		nickname = 'unknown'
+		get_data = ''
+		try:
+			logger('manage_user_track', 'def', 'read params')
+			nickname = str(self.request.authenticated_userid)
+			get_data = self.request.params['get_data']
+			logger('manage_user_track', 'def', 'nickname ' + nickname + ', get ' + get_data)
+		except KeyError as e:
+			logger('manage_user_track', 'error', repr(e))
+
+		return_dict = {}
+		if get_data == '1':
+			logger('manage_user_track', 'def', 'get track data')
+			return_dict = QueryHelper().get_track_for_user(nickname)
+		else:
+			logger('manage_user_track', 'def', 'remove track data')
+			return_dict['removed data'] = 'true'
+			QueryHelper().del_track_for_user(transaction, nickname)
+
+		dictionary_helper = DictionaryHelper()
+		return_json = dictionary_helper.dictionarty_to_json_array(return_dict, True)
+
+		return return_json
 
 	# # ajax - getting every argument, which is connected to the given position uid
 	# @view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')

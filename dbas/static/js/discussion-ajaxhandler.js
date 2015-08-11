@@ -6,6 +6,8 @@
  * @copyright Krauthoff 2015
  */
 
+// TODO KICK ALL METHODS WHICH ARE NOT USED
+
 function AjaxHandler() {
 	'use strict';
 	var internal_error = 'Internal Error: Maybe the server is offline or your data was not valid due to a CSRF check.';
@@ -13,72 +15,47 @@ function AjaxHandler() {
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
 	 */
-	this.getAllPositions = function () {
+	this.getStartStatements = function () {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_all_positions',
+			url: 'ajax_start_statements',
 			type: 'GET',
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetAllPositionsDone(data) {
-			new InteractionHandler().callbackIfDoneForGetAllPositions(data);
+			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
 		}).fail(function ajaxGetAllPositionsFail() {
 			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure in ajaxGetAllPositionsFail',
-				'', false, 'getArgumentsForJustification', true);
+			new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
 		});
 	};
 
 	/**
-	 * Send an ajax request for getting all pro or contra arguments as dicitonary uid <-> value. Every argument has a connection to the
-	 * position with given uid.
-	 * @param pos_uid uid of clicked position
+	 * Send an ajax request for getting all premisses for a givens tatement
+	 * @param uid of clicked statement
 	 */
-	this.getArgumentsForJustification = function (pos_uid) {
+	this.getPremisseForStatement = function (uid) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_arguments_connected_to_position_uid',
+			url: 'ajax_premisses_for_statement',
 			method: 'POST',
-			data: { uid : pos_uid},
+			data: { uid : uid},
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxGetArgumentsForJustificationDone(data) {
-			new InteractionHandler().callbackIfDoneForArgsForJustification(data);
-		}).fail(function ajaxGetArgumentsForJustificationFail() {
+		}).done(function ajaxGetPremisseForStatementDone(data) {
+			new InteractionHandler().callbackIfDoneForPremisseForStatement(data);
+		}).fail(function ajaxGetPremisseForStatementFail() {
 			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while requesting data for the next argumentation.',
-				pos_uid, false, 'getArgumentsForJustification', true);
-		});
-	};
-
-	/**
-	 * Requests data for a new argumentation round. This includes a statement, an confrontation and justifications
-	 * @param currentStatementId uid of the current statement
-	 */
-	this.getNewArgumentationRound = function (currentStatementId) {
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_args_for_new_discussion_round',
-			method: 'POST',
-			data: { uid: currentStatementId},
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxGetNewArgumentationRoundDone(data) {
-			new InteractionHandler().callbackIfDoneForGetNewArgumentationRound(data);
-		}).fail(function ajaxGetNewArgumentationRoundFail() {
-			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while requesting data for the next argumentation.',
-				currentStatementId, is_argument, 'getNewArgumentationRound');
+			new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
 		});
 	};
 
 	/**
 	 * Request all users
 	 */
-	this.getAllUsersAndSetInGui = function () {
+	this.getUsersAndSetInGui = function () {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_all_users',
@@ -94,8 +71,51 @@ function AjaxHandler() {
 	};
 
 	/**
+	 * Send an ajax request for getting all pro or contra arguments as dicitonary uid <-> value. Every argument has a connection to the
+	 * position with given uid.
+	 * @param pos_uid uid of clicked position
+	 *
+	this.getArgumentsForJustification = function (pos_uid) {
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_arguments_connected_to_position_uid',
+			method: 'POST',
+			data: { uid : pos_uid},
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function ajaxGetArgumentsForJustificationDone(data) {
+			new InteractionHandler().callbackIfDoneForArgsForJustification(data);
+		}).fail(function ajaxGetArgumentsForJustificationFail() {
+			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().showDiscussionError('Internal failure while requesting data for the next argumentation.');
+		});
+	};
+
+	/**
+	 * Requests data for a new argumentation round. This includes a statement, an confrontation and justifications
+	 * @param currentStatementId uid of the current statement
+	 *
+	this.getNewArgumentationRound = function (currentStatementId) {
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_args_for_new_discussion_round',
+			method: 'POST',
+			data: { uid: currentStatementId},
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function ajaxGetNewArgumentationRoundDone(data) {
+			new InteractionHandler().callbackIfDoneForGetNewArgumentationRound(data);
+		}).fail(function ajaxGetNewArgumentationRoundFail() {
+			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().showDiscussionError('Internal failure while requesting data for the next argumentation.');
+		});
+	};
+
+	/**
 	 * Request data for getting one step back
-	 */
+	 *
 	this.getOneStepBack = function () {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
@@ -110,15 +130,14 @@ function AjaxHandler() {
 		}).fail(function ajaxGetOneStepBackFail() {
 			$('#' + stepBackButtonId).hide();
 			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while stepping back',
-				'', false, 'ajaxGetOneStepBackFail', true);
+			new GuiHandler().showDiscussionError('Internal failure while stepping back');
 		});
 	};
 
 	/**
 	 * Sends new position to the server. Answer will be given to a callback
 	 * @param argument_dictionary for inserting
-	 */
+	 *
 	this.sendNewArgument = function (argument_dictionary) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
@@ -138,7 +157,7 @@ function AjaxHandler() {
 	/**
 	 * Sends new position to the server. Answer will be given to a callback
 	 * @param position for sending
-	 */
+	 *
 	this.sendNewPosition = function (position) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
@@ -157,7 +176,7 @@ function AjaxHandler() {
 
 	/**
 	 * Request for all arguments, which have a relation to the last saved one
-	 */
+	 *
 	this.getAllArgumentsForIslandView = function () {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
@@ -178,7 +197,7 @@ function AjaxHandler() {
 	 * Requests the logfile for the given uid
 	 * @param statement_uid current uid of the statement
 	 * @param is_argument true, if it is an argument
-	 */
+	 *
 	this.getLogfileForStatement = function (statement_uid, is_argument){
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
@@ -201,7 +220,7 @@ function AjaxHandler() {
 	 * @param statement_uid current uid of the statement
 	 * @param is_argument true, if it is an argument
 	 * @param corrected_text the corrected text
-	 */
+	 *
 	this.sendCorrectureOfStatement = function (statement_uid, is_argument, corrected_text){
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
@@ -219,4 +238,6 @@ function AjaxHandler() {
 				' failed. Sorry!');
 		});
 	};
+
+	 */
 }

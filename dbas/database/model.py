@@ -2,7 +2,7 @@ import sqlalchemy as sa
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from dbas.database import DBSession, Base
 
 # ORM Relationships
@@ -86,7 +86,7 @@ class User(Base):
 	last_login = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	registered = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
-	groups = relationship('Group', foreign_keys=[group_uid])
+	groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
 	def __init__(self, group, firstname, surname, nickname, email, password, gender):
 		"""
@@ -182,6 +182,9 @@ class TextVersion(Base):
 		self.weight = weight
 		self.timestamp = func.now()
 
+	def set_textvalue(self, value):
+		self.textValue_uid = value
+
 	@classmethod
 	def by_timestamp(cls):
 		"""Return a query of text versions sorted by timestamp."""
@@ -245,7 +248,7 @@ class Argument(Base):
 	"""
 	__tablename__ = 'arguments'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	premissegroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'))
+	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'))
 	conclusion_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
 	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
 	isSupportive = sa.Column(sa.Boolean, nullable=False)
@@ -253,17 +256,16 @@ class Argument(Base):
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
 
-	premissegroups = relationship('PremisseGroup', foreign_keys=[premissegroup_uid])
+	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
 	statements = relationship('Statement', foreign_keys=[conclusion_uid])
 	users = relationship('User', foreign_keys=[author_uid])
-	arguments = relationship('Argument', cascade='all, delete-orphan', foreign_keys=[argument_uid],
-	                         backref=backref('parent_argument', remote_side=uid))  # TODO
+	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)  # TODO
 
 	def __init__(self, premissegroup, issupportive, author, weight, conclusion=None):
 		"""
 		Initializes a row in current argument-table
 		"""
-		self.premissegroup_uid = premissegroup
+		self.premissesGroup_uid = premissegroup
 		self.conclusion_uid = conclusion
 		self.argument_uid = None
 		self.isSupportive = issupportive
@@ -288,10 +290,10 @@ class Track(Base):
 	users = relationship('User', foreign_keys=[author_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 
-	def __init__(self, user_uid, statement_uid):
+	def __init__(self, user, statement):
 		"""
 		Initializes a row in current track-table
 		"""
-		self.user_uid = user_uid
-		self.statement_uid = statement_uid
+		self.author_uid = user
+		self.statement_uid = statement
 		self.timestamp = func.now()

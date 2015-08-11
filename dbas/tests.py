@@ -8,7 +8,7 @@ from dbas.views import Dbas
 from dbas import main
 from dbas.helper import PasswordHandler
 from dbas.database import Base as Entity
-from dbas.database.model import Group, User, Argument, RelationArgPos, RelationArgArg, RelationPosPos, RelationPosArg, Position
+from dbas.database.model import Group, User, Argument
 from mock import Mock
 from paste.deploy.loadwsgi import appconfig
 from pyramid import testing
@@ -28,7 +28,6 @@ class Setup:
 	def add_testing_db(self, session):
 		group1 = session.query(Group).filter_by(name='editors').first()
 		group2 = session.query(Group).filter_by(name='users').first()
-
 		pw1 = PasswordHandler.get_hashed_password('test')
 		pw2 = PasswordHandler.get_hashed_password('test')
 		user1 = User(firstname='editor', surname='editor', nickname='test_editor', email='dbas1@cs.uni-duesseldorf.de', password=pw1)
@@ -37,45 +36,44 @@ class Setup:
 		user2.group = group2.uid
 		session.add_all([user1, user2])
 		session.flush()
-		position1 = Position(text='I like cats.', weight=1)
-		position2 = Position(text='I like dogs.', weight=2)
-		position1.author = user2.uid
-		position2.author = user1.uid
-		session.add_all([position1, position2])
-		session.flush()
-		argument1 = Argument(text='They are hating all humans!', weight=1)
-		argument2 = Argument(text='They are very devoted.', weight=2)
-		argument1.author = user1.uid
-		argument2.author = user2.uid
-		session.add_all([argument1, argument2])
-		session.flush()
-		relation1 = RelationArgPos(weight=1, is_supportive=True)
-		relation2 = RelationArgPos(weight=2, is_supportive=True)
-		relation3 = RelationArgArg(weight=3, is_supportive=False)
-		relation4 = RelationPosPos(weight=4, is_supportive=False)
-		relation5 = RelationArgArg(weight=5, is_supportive=False)
-		relation6 = RelationPosArg(weight=6, is_supportive=False)
-		relation1.author = user1.uid
-		relation1.arg_uid = argument1.uid
-		relation1.pos_uid = position1.uid
-		relation2.author = user1.uid
-		relation2.arg_uid = argument2.uid
-		relation2.pos_uid = position2.uid
-		relation3.author = user2.uid
-		relation3.arg_uid1 = argument1.uid
-		relation3.arg_uid2 = argument2.uid
-		relation4.author = user2.uid
-		relation4.pos_uid1 = position1.uid
-		relation4.pos_uid2 = position2.uid
-		relation5.author = user2.uid
-		relation5.arg_uid = argument1.uid
-		relation5.arg_uid = argument2.uid
-		relation6.author = user1.uid
-		relation6.pos_uid = position2.uid
-		relation6.arg_uid = argument1.uid
-		session.add_all([relation1, relation2, relation3, relation4, relation5, relation6])
-		session.flush()
-
+	#	position1 = Position(text='I like cats.', weight=1)
+	#	position2 = Position(text='I like dogs.', weight=2)
+	#	position1.author = user2.uid
+	#	position2.author = user1.uid
+	#	session.add_all([position1, position2])
+	#	session.flush()
+	#	argument1 = Argument(text='They are hating all humans!', weight=1)
+	#	argument2 = Argument(text='They are very devoted.', weight=2)
+	#	argument1.author = user1.uid
+	#	argument2.author = user2.uid
+	#	session.add_all([argument1, argument2])
+	#	session.flush()
+	#	relation1 = RelationArgPos(weight=1, is_supportive=True)
+	#	relation2 = RelationArgPos(weight=2, is_supportive=True)
+	#	relation3 = RelationArgArg(weight=3, is_supportive=False)
+	#	relation4 = RelationPosPos(weight=4, is_supportive=False)
+	#	relation5 = RelationArgArg(weight=5, is_supportive=False)
+	#	relation6 = RelationPosArg(weight=6, is_supportive=False)
+	#	relation1.author = user1.uid
+	#	relation1.arg_uid = argument1.uid
+	#	relation1.pos_uid = position1.uid
+	#	relation2.author = user1.uid
+	#	relation2.arg_uid = argument2.uid
+	#	relation2.pos_uid = position2.uid
+	#	relation3.author = user2.uid
+	#	relation3.arg_uid1 = argument1.uid
+	#	relation3.arg_uid2 = argument2.uid
+	#	relation4.author = user2.uid
+	#	relation4.pos_uid1 = position1.uid
+	#	relation4.pos_uid2 = position2.uid
+	#	relation5.author = user2.uid
+	#	relation5.arg_uid = argument1.uid
+	#	relation5.arg_uid = argument2.uid
+	#	relation6.author = user1.uid
+	#	relation6.pos_uid = position2.uid
+	#	relation6.arg_uid = argument1.uid
+	#	session.add_all([relation1, relation2, relation3, relation4, relation5, relation6])
+	#	session.flush()
 		return session
 
 	def add_routes(self, config):
@@ -467,82 +465,3 @@ class FunctionalDatabaseTests(IntegrationTestBase):
 		self.assertTrue(group_by_name2.name, group_by_uid2.name)
 		self.assertTrue(group_by_name1.uid, group_by_uid1.uid)
 		self.assertTrue(group_by_name2.uid, group_by_uid2.uid)
-
-	# testing content
-	def test_database_content(self):
-		user1 = self.session.query(User).filter_by(nickname='test_user').first()
-		user2 = self.session.query(User).filter_by(nickname='test_editor').first()
-		position1 = self.session.query(Position).filter_by(text='I like cats.').first()  #, weight='100')
-		position2 = self.session.query(Position).filter_by(text='I like dogs.').first()  #, weight='20')
-		self.assertTrue(user1.firstname, 'user')
-		self.assertTrue(user2.firstname, 'editor')
-		self.assertEqual(position1.weight, 1)
-		self.assertEqual(position2.weight, 2)
-
-	# testing group content
-	def test_database_user_content(self):
-		print("DatabaseTests: test_database_user_content")
-		user = self.session.query(User).filter_by(nickname='test_user').first()
-		self.assertTrue(user.firstname, 'user')
-		self.assertTrue(user.surname, 'user')
-		self.assertTrue(user.nickname, 'user')
-		self.assertTrue(user.email, 'dbas1@cs.uni-duesseldorf.de')
-		self.assertTrue(user.password, PasswordHandler.get_hashed_password(None,'test'))
-
-	# testing position content
-	def test_database_position_content(self):
-		print("DatabaseTests: test_database_position_content")
-		position = self.session.query(Position).filter_by(uid=1).first()
-		self.assertTrue(position.text, 'I like cats.')
-		self.assertEqual(position.weight, 0)
-		self.assertTrue(position.author, self.session.query(User).filter_by(uid=1).first().uid)
-
-	# testing argument content
-	def test_database_argument_content(self):
-		print("DatabaseTests: test_database_argument_content")
-		argument = self.session.query(Argument).filter_by(uid=1).first()
-		self.assertTrue(argument.text, 'They are hating all humans!')
-		self.assertEqual(argument.weight, 0)
-		self.assertTrue(argument.author, self.session.query(User).filter_by(uid=1).first().uid)
-
-	# testing relation arg pos content
-	def test_database_RelationArgPos(self):
-		print("DatabaseTests: test_database_RelationArgPos")
-		relation = self.session.query(RelationArgPos).filter_by(uid=1).first()
-		self.assertEqual(relation.weight, 0)
-		self.assertTrue(relation.is_supportive, True)
-		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=1).first().uid)
-		self.assertTrue(relation.pos_uid, self.session.query(Position).filter_by(uid=1).first().uid)
-		self.assertTrue(relation.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
-
-	# testing relation arg pos content
-	def test_database_RelationPosArg(self):
-		print("DatabaseTests: test_database_RelationPosArg")
-		relation = self.session.query(RelationPosArg).filter_by(uid=1).first()
-		self.assertEqual(relation.weight, 6)
-		self.assertFalse(relation.is_supportive, False)
-		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=1).first().uid)
-		self.assertTrue(relation.pos_uid, self.session.query(Position).filter_by(uid=2).first().uid)
-		self.assertTrue(relation.arg_uid, self.session.query(Argument).filter_by(uid=1).first().uid)
-
-	# testing relation arg arg content
-	def test_database_RelationArgArg(self):
-		print("DatabaseTests: test_database_RelationArgArg")
-		relation = self.session.query(RelationArgArg).filter_by(uid=1).first()
-		self.assertEqual(relation.weight, 0)
-		self.assertFalse(relation.is_supportive, True)
-		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=1).first().uid)
-		self.assertTrue(relation.arg_uid1, self.session.query(Argument).filter_by(uid=1).first().uid)
-		self.assertTrue(relation.arg_uid2, self.session.query(Argument).filter_by(uid=2).first().uid)
-
-	# testing relation pos pos content
-	def test_database_RelationPosPos(self):
-		print("DatabaseTests: test_database_RelationPosPos")
-		relation = self.session.query(RelationPosPos).filter_by(uid=1).first()
-		self.assertEqual(relation.weight, 4)
-		self.assertFalse(relation.is_supportive, True)
-		self.assertTrue(relation.author, self.session.query(User).filter_by(uid=2).first().uid)
-		self.assertTrue(relation.pos_uid1, self.session.query(Position).filter_by(uid=1).first().uid)
-		self.assertTrue(relation.pos_uid2, self.session.query(Position).filter_by(uid=2).first().uid)
-
-	# todo: test track and changelog2

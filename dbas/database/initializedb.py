@@ -74,7 +74,7 @@ def main(argv=sys.argv):
 		DBSession.add_all([textversion1,textversion2,textversion3,textversion4,textversion5,textversion6,textversion7,textversion8,textversion9,textversion10,textversion11,textversion12,textversion13,textversion14,textversion15,textversion16,textversion17])
 		DBSession.flush()
 
-		#Adding all textvalues and set the textvalues of the textversions
+		#Adding all textvalues
 		textvalue1 = TextValue(textversion=textversion1.uid)
 		textvalue2 = TextValue(textversion=textversion2.uid)
 		textvalue3 = TextValue(textversion=textversion3.uid)
@@ -92,24 +92,27 @@ def main(argv=sys.argv):
 		textvalue15 = TextValue(textversion=textversion15.uid)
 		textvalue16 = TextValue(textversion=textversion16.uid)
 		textvalue17 = TextValue(textversion=textversion17.uid)
-		textversion1.textvalue = textvalue1.uid
-		textversion2.textvalue = textvalue2.uid
-		textversion3.textvalue = textvalue3.uid
-		textversion4.textvalue = textvalue4.uid
-		textversion5.textvalue = textvalue5.uid
-		textversion6.textvalue = textvalue6.uid
-		textversion7.textvalue = textvalue7.uid
-		textversion8.textvalue = textvalue8.uid
-		textversion9.textvalue = textvalue9.uid
-		textversion10.textvalue = textvalue10.uid
-		textversion11.textvalue = textvalue11.uid
-		textversion12.textvalue = textvalue12.uid
-		textversion13.textvalue = textvalue13.uid
-		textversion14.textvalue = textvalue14.uid
-		textversion15.textvalue = textvalue15.uid
-		textversion16.textvalue = textvalue16.uid
-		textversion17.textvalue = textvalue17.uid
 		DBSession.add_all([textvalue1,textvalue2,textvalue3,textvalue4,textvalue5,textvalue6,textvalue7,textvalue8,textvalue9,textvalue10,textvalue11,textvalue12,textvalue13,textvalue14,textvalue15,textvalue16,textvalue17])
+		DBSession.flush()
+
+		#Set textvalues of the textversions
+		textversion1.set_textvalue(textvalue1.uid)
+		textversion2.set_textvalue(textvalue2.uid)
+		textversion3.set_textvalue(textvalue3.uid)
+		textversion4.set_textvalue(textvalue4.uid)
+		textversion5.set_textvalue(textvalue5.uid)
+		textversion6.set_textvalue(textvalue6.uid)
+		textversion7.set_textvalue(textvalue7.uid)
+		textversion8.set_textvalue(textvalue8.uid)
+		textversion9.set_textvalue(textvalue9.uid)
+		textversion10.set_textvalue(textvalue10.uid)
+		textversion11.set_textvalue(textvalue11.uid)
+		textversion12.set_textvalue(textvalue12.uid)
+		textversion13.set_textvalue(textvalue13.uid)
+		textversion14.set_textvalue(textvalue14.uid)
+		textversion15.set_textvalue(textvalue15.uid)
+		textversion16.set_textvalue(textvalue16.uid)
+		textversion17.set_textvalue(textvalue17.uid)
 		DBSession.flush()
 
 		#Adding all statements

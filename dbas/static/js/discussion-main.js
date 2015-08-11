@@ -12,7 +12,7 @@ startDiscussion = function () {
 	$('#' + restartDiscussionButtonId).show(); // show the restart button
 	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
 
-	new AjaxHandler().getAllPositions(new InteractionHandler().callbackIfDoneForGetAllPositions);
+	new AjaxHandler().getStartStatements();
 };
 
 restartDiscussion = function () {
@@ -74,7 +74,7 @@ $(function () {
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function () {
 		if ($(this).val() === 'List all users') {
-			ajaxHandler.getAllUsersAndSetInGui();
+			ajaxHandler.getUsersAndSetInGui();
 			$(this).val('Hide all users'); // will be done in the ajaxhandler
 		} else {
 			$('#' + adminsSpaceId).empty();

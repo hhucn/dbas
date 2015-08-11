@@ -90,11 +90,11 @@ function TrackHandler() {
 		}
 
 		// add header row
-		spanElement[0].text('UID');
-		spanElement[1].text('Date');
-		spanElement[2].text('Arg/Pos');
-		spanElement[3].text('ID');
-		spanElement[4].text('Text');
+		spanElement[0].text('No');
+		spanElement[1].text('Track ID');
+		spanElement[2].text('Statement ID');
+		spanElement[3].text('Text');
+		spanElement[4].text('Date');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -111,10 +111,10 @@ function TrackHandler() {
 			}
 			is_argument = value.is_argument;
 			tdElement[0].text(key);
-			tdElement[1].text(value.date);
-			tdElement[2].text(is_argument ? 'Arg' : 'Pos');
-			tdElement[3].text(is_argument == true ? value.arg_uid : value.pos_uid);
-			tdElement[4].text(value.text);
+			tdElement[1].text(value.uid);
+			tdElement[2].text(value.statement_uid);
+			tdElement[3].text(value.text);
+			tdElement[4].text(value.timestamp);
 
 			trElement = $('<tr>');
 			for (i = 0; i < tdElement.length; i += 1) {

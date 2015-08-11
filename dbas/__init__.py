@@ -53,7 +53,7 @@ def main(global_config, **settings):
 	# includings for the config
 	config.include('pyramid_chameleon')
 	config.include('pyramid_mailer')
-	# config.include('pyramid_beaker') # done in the ini
+	config.include('pyramid_beaker')
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)
@@ -70,8 +70,9 @@ def main(global_config, **settings):
 	config.add_route('ajax_switch_language', '/ajax_switch_language')
 	config.add_route('ajax_all_users', '/ajax_all_users')
 
-	# config.add_route('ajax_all_positions', '/ajax_all_positions')
-	# config.add_route('ajax_manage_user_track', '/ajax_manage_user_track')
+	config.add_route('ajax_start_statements', '/ajax_start_statements')
+	config.add_route('ajax_premisses_for_statement', '/ajax_premisses_for_statement')
+	config.add_route('ajax_manage_user_track', '/ajax_manage_user_track')
 	# config.add_route('ajax_all_arguments_for_island', '/ajax_all_arguments_for_island')
 
 	# config.add_route('ajax_args_for_new_discussion_round', '/ajax_args_for_new_discussion_round')

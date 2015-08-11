@@ -7,6 +7,8 @@
  * @copyright Krauthoff 2015
  */
 
+// TODO KICK ALL METHODS WHICH ARE NOT USED
+
 function GuiHandler() {
 	'use strict';
 	var interactionHandler;
@@ -16,24 +18,42 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Sets given json content as position buttons in the discussions space
+	 * Sets given json content as start statement buttons in the discussions space
 	 * @param jsonData data with json content
 	 */
-	this.setJsonDataToContentAsPositions = function (jsonData) {
+	this.setJsonDataToContentAsStartStatement = function (jsonData) {
 		var listitems = [], _this = new GuiHandler();
 		this.setDiscussionsDescription(startDiscussionText);
-		$.each(jsonData, function setJsonDataToContentAsPositionsEach(key, val) {
-			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text, false, 'radio'));
+		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
+			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text, true, false));
 		});
 
 		// sanity check for an empty list
 		if (listitems.length === 0) {
 			// todo: is this even used?
-			alert('discussion-handler: setJsonDataToContentAsPositions');
+			alert('discussion-guihandler: setJsonDataToContentAsStartStatement');
 			this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
 		}
 
-		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newPositionRadioButtonText, false, 'radio'));
+		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newConclusionRadioButtonText, true));
+
+		this.addListItemsToDiscussionsSpace(listitems, statementListId);
+	};
+
+	/**
+	 * Sets given json content as start premisses buttons in the discussions space
+	 * @param jsonData data with json content
+	 * @param currentStatementText
+	 */
+	this.setJsonDataToContentAsStartPremisses = function (jsonData, currentStatementText) {
+		var listitems = [], _this = new GuiHandler(), text;
+		text = currentStatementText.text.substring(0, 1).toLowerCase() + currentStatementText.text.substring(1, currentStatementText.text.length);
+		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b>');
+		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
+			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text, false, true));
+		});
+
+		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newPremisseRadioButtonText, true)); // TODO change button id
 
 		this.addListItemsToDiscussionsSpace(listitems, statementListId);
 	};
@@ -52,21 +72,20 @@ function GuiHandler() {
 			if (key !== 'currentStatementText') {
 				// prefix, when it is the first justification
 				var text = isUserExplainingHisPosition ? "Because " + val.text.substring(0, 1).toLowerCase() + val.text.substring(1, val.text.length) : val.text;
-				listitems.push(_this.getKeyValAsInputInLiWithType(key, text, true, 'radio'));
+				listitems.push(_this.getKeyValAsInputInLiWithType(key, text, true));
 			}
 		});
 
 		// button, when the users agree and want to step back
 		if (!isUserExplainingHisPosition && !isAvoidance){
-			listitems.push(_this.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true, 'radio'));
+			listitems.push(_this.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true));
 		}
 
 		// button for new statements
 		if (!isAvoidance)
-			listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newArgumentRadioButtonText, true, 'radio'));
+			listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newPremisseRadioButtonText, true));
 		_this.addListItemsToDiscussionsSpace(listitems, argumentListId, isAvoidance);
 	};
-
 
 	/**
 	 * Adds given json content as argument buttons in the discussions space
@@ -82,7 +101,7 @@ function GuiHandler() {
 				} else {
 					text = val.text;
 				}
-				$('#li_' + addStatementButtonId).before(_this.getKeyValAsInputInLiWithType(val.uid, text, true, 'radio'));
+				$('#li_' + addStatementButtonId).before(_this.getKeyValAsInputInLiWithType(val.uid, text, true));
 			}
 		});
 
@@ -98,8 +117,8 @@ function GuiHandler() {
 	 */
 	this.setJsonDataToAdminContent = function (jsonData) {
 		var ulElement, trElement, tdElement, spanElement, i;
-		tdElement = ['', '', '', '', '', '', '', '', ''];
-		spanElement = ['', '', '', '', '', '', '', '', ''];
+		tdElement = ['', '', '', '', '', '', '', '', '', ''];
+		spanElement = ['', '', '', '', '', '', '', '', '', ''];
 		ulElement = $('<table>');
 		ulElement.attr({class: 'table table-condensed',
 						border: '0',
@@ -120,9 +139,10 @@ function GuiHandler() {
 		spanElement[3].text('Nickname');
 		spanElement[4].text('E-Mail');
 		spanElement[5].text('Group');
-		spanElement[6].text('Last Login');
-		spanElement[7].text('Registered');
-		spanElement[8].text('Gender');
+		spanElement[6].text('Last Action');
+		spanElement[7].text('Last Login');
+		spanElement[8].text('Registered');
+		spanElement[9].text('Gender');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -142,10 +162,11 @@ function GuiHandler() {
 			tdElement[2].text(value.surname);
 			tdElement[3].text(value.nickname);
 			tdElement[4].text(value.email);
-			tdElement[5].text(value.group);
-			tdElement[6].text(value.last_logged);
-			tdElement[7].text(value.registered);
-			tdElement[8].text(value.gender);
+			tdElement[5].text(value.group_uid);
+			tdElement[6].text(value.last_action);
+			tdElement[7].text(value.last_login);
+			tdElement[8].text(value.registered);
+			tdElement[9].text(value.gender);
 
 			for (i = 0; i < tdElement.length; i += 1) {
 				trElement.append(tdElement[i]);
@@ -163,11 +184,10 @@ function GuiHandler() {
 	 * Sets an "add statement" button as content
 	 * @param val will be used as value
 	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
-	 * @param btnType for the input element
 	 */
-	this.setNewArgumentButtonOnly = function (val, isArgument, btnType) {
+	this.setNewArgumentButtonOnly = function (val, isArgument) {
 		var listitem = [], gh = new GuiHandler();
-		listitem.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, btnType));
+		listitem.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument));
 		gh.addListItemsToDiscussionsSpace(listitem, statementListId);
 	};
 
@@ -175,12 +195,11 @@ function GuiHandler() {
 	 * Sets an "add statement" button as content
 	 * @param val will be used as value
 	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
-	 * @param btnType for the input element
 	 */
-	this.setNewArgumentAndGoodPointButton = function (val, isArgument, btnType) {
+	this.setNewArgumentAndGoodPointButton = function (val, isArgument) {
 		var listitems = [], gh = new GuiHandler();
-		listitems.push(gh.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true, 'radio'));
-		listitems.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, btnType));
+		listitems.push(gh.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true));
+		listitems.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument));
 		new GuiHandler().addListItemsToDiscussionsSpace(listitems, statementListId);
 	};
 
@@ -264,42 +283,25 @@ function GuiHandler() {
 	 * Creates an input element tih key as id and val as value. This is embedded in an li element
 	 * @param key will be used as id
 	 * @param val will be used as value
-	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
-	 * @param type for the input element
+	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
 	 * @returns {Element|*} a type-input element in a li tag
 	 */
-	this.getKeyValAsInputInLiWithType = function (key, val, isArgument, type) {
+	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse) {
 		var liElement, inputElement, labelElement;
 		liElement = $('<li>');
 		liElement.attr({id: 'li_' + key});
 
 		inputElement = $('<input>');
-		inputElement.attr({id: key, type: type, value: val});
+		inputElement.attr({id: key, type: 'radio', value: val});
 		//inputElement.attr({data-dismiss: 'modal'});
 
-		// additional attributes for a button
-		if (type === 'button') {
-			inputElement.attr({class: 'button button-block btn btn-primary btn-default btn-discussion'});
-		}
+		inputElement.attr({name: radioButtonGroup});
+		// adding label for the value
+		labelElement = '<label for="' + key + '">' + val + '</label>';
 
-		// additional attributes for a radio button
-		if (type === 'radio') {
-			inputElement.attr({name: radioButtonGroup});
-			// adding label for the value
-			labelElement = '<label for="' + key + '">' + val + '</label>';
-		}
-
-		if (type === 'button') {
-			alert('check code for completion');
-			if (isArgument) {
-				inputElement.attr({onclick: "new InteractionHandler().argumentButtonWasClicked(this.id);"});
-			} else {
-				inputElement.attr({onclick: "new InteractionHandler().positionButtonWasClicked(this.id);"});
-			}
-		} else if (type === 'radio') {
-			inputElement.attr({onclick: "new InteractionHandler().radioButtonChanged(this.id);"});
-			inputElement.addClass((isArgument ? 'argument' : 'position'));
-		}
+		inputElement.attr({onclick: "new InteractionHandler().radioButtonChanged(this.id);"});
+		if (isStartStatement){ inputElement.addClass('start'); }
+		if (isPremisse){ inputElement.addClass('premisse'); }
 
 		liElement.html(this.getFullHtmlTextOf(inputElement) + labelElement);
 
@@ -508,7 +510,7 @@ function GuiHandler() {
 			} else {										this.setErrorDescription(notInsertedErrorBecauseUnknown);
 			}
 		} else {
-			var newElement = this.getKeyValAsInputInLiWithType(jsonData.position.uid, jsonData.position.text, false, 'radio');
+			var newElement = this.getKeyValAsInputInLiWithType(jsonData.position.uid, jsonData.position.text, false);
 			$('#li_' + addStatementButtonId).before(newElement);
 			new GuiHandler().setSuccessDescription(addedEverything);
 		}
@@ -527,7 +529,7 @@ function GuiHandler() {
 			$('#' + addStatementButtonId).disable = true;
 			if (is_argument){
 				var statement = $('#' + discussionsDescriptionId + ' b:last-child').text();
-				$('#' + addStatementContainerH4Id).text(statementContainerH4TextIfArgument + ' ' + statement);
+				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse + ' ' + statement);
 				// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
 				$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with <b>\'' + statement + '</b>\':');
 				$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with <b>\'' + statement + '</b>\':');
@@ -541,7 +543,7 @@ function GuiHandler() {
 					gh.setSuccessDescription('');
 				});
 			} else {
-				$('#' + addStatementContainerH4Id).text(statementContainerH4TextIfPosition);
+				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
 				$('#' + addStatementContainerMainInputId).show();
 				$('#' + leftPositionColumnId).hide();
 				$('#' + rightPositionColumnId).hide();
