@@ -616,7 +616,7 @@ function GuiHandler() {
 	 * Opens the edit statements popup
 	 */
 	this.displayEditStatementsPopup = function(){
-		var table, tr, td_text, td_buttons, list_id, i, edit_button, log_button, statement, uid, type;
+		var table, tr, td_text, td_buttons, list_id, edit_button, log_button, statement, uid, type;
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementSubmitButtonId).hide();
 
@@ -641,7 +641,6 @@ function GuiHandler() {
 
 		// do we have an argument or a position?
 		list_id = $('#' + statementListId + ' > li').children().length > 0 ? statementListId : argumentListId;
-		i = 1;
 		uid = 0;
 		// append a row for each statement
 		$('#' + list_id + ' > li').children().each(function (){
@@ -652,7 +651,7 @@ function GuiHandler() {
 		    if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid)) {
 				// create new items
 				tr = $('<tr>');
-				td_text = $('<td>').attr({id: 'edit_statement_td_text_' + i});
+				td_text = $('<td>').attr({id: 'edit_statement_td_text_' + $(this).attr('id')});
 				td_buttons = $('<td>').css('text-align','center');
 				edit_button = $('<input>');
 				log_button = $('<input>');
@@ -670,9 +669,9 @@ function GuiHandler() {
 					statement_type: type,
 					statement_text: statement,
 					statement_id: uid,
-					index: i
+					index: $(this).attr('id')
 				}).click(function edit_button_click () {
-					$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text')).prop('disabled', false);
+					$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text'));
 					$('#' + popupEditStatementSubmitButtonId).attr({
 						statement_type: $(this).attr('statement_type'),
 						statement_text: $(this).attr('statement_text'),
@@ -683,7 +682,8 @@ function GuiHandler() {
 					$('#edit_statement_td_text_' + $(this).attr('index')).addClass('table-hover');
 					$('#' + popupErrorDescriptionId).text('');
 					$('#' + popupSuccessDescriptionId).text('');
-					new GuiHandler().shouldHideEditFieldsinEditPopup(true);
+					new GuiHandler().showEditFieldsInEditPopup();
+					new GuiHandler().hideLogfileInEditPopup();
 				}).hover(function edit_button_hover () {
 					$(this).toggleClass('btn-primary', 400);
 				});
@@ -696,13 +696,14 @@ function GuiHandler() {
 					statement_type: type,
 					statement_text: statement,
 					statement_id: uid,
-					index: i
+					index: $(this).attr('id')
 				}).click(function log_button_click () {
 					$('#' + popupEditStatementLogfileHeaderId).html('Logfile for: <b>' + $(this).attr('statement_text') + '</b>');
 					$('#' + popupErrorDescriptionId).text('');
 					$('#' + popupSuccessDescriptionId).text('');
+					$('#edit_statement_table td').removeClass('table-hover');
 					new AjaxHandler().getLogfileForStatement($(this).attr('statement_id'));
-					new GuiHandler().shouldHideEditFieldsinEditPopup(false);
+					new GuiHandler().hideEditFieldsInEditPopup();
 				}).hover(function log_button_hover () {
 					$(this).toggleClass('btn-primary', 400);
 				});
@@ -713,7 +714,6 @@ function GuiHandler() {
 				tr.append(td_text);
 				tr.append(td_buttons);
 				table.append(tr);
-				i = i + 1; // increasing index
 			}
 		});
 
@@ -722,8 +722,8 @@ function GuiHandler() {
 		$('#' + popupEditStatementDescriptionId).hide();
 		$('#' + popupEditStatementSubmitButtonId).hide().click(function edit_statement_click () {
 			statement = $('#' + popupEditStatementTextareaId).val();
-			$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
-			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('statement_type') == 'argument', statement);
+			//$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
+			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), statement);
 		});
 
 		// on click: do ajax
@@ -731,19 +731,29 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Displays or hide the edit text field
-	 * @param isVisible
+	 * Displays the edit text field
 	 */
-	this.shouldHideEditFieldsinEditPopup = function (isVisible){
-		if (isVisible){
-			$('#' + popupEditStatementSubmitButtonId).fadeIn('slow');
-			$('#' + popupEditStatementTextareaId).fadeIn('slow');
-			$('#' + popupEditStatementDescriptionId).fadeIn('slow');
-		} else {
-			$('#' + popupEditStatementSubmitButtonId).hide();
-			$('#' + popupEditStatementTextareaId).hide();
-			$('#' + popupEditStatementDescriptionId).hide();
-		}
+	this.showEditFieldsInEditPopup = function (){
+		$('#' + popupEditStatementSubmitButtonId).fadeIn('slow');
+		$('#' + popupEditStatementTextareaId).fadeIn('slow');
+		$('#' + popupEditStatementDescriptionId).fadeIn('slow');
+	};
+
+	/**
+	 * Hides the edit text field
+	 */
+	this.hideEditFieldsInEditPopup = function (){
+		$('#' + popupEditStatementSubmitButtonId).hide();
+		$('#' + popupEditStatementTextareaId).hide();
+		$('#' + popupEditStatementDescriptionId).hide();
+	};
+
+	/**
+	 * Hides the logfiles
+	 */
+	this.hideLogfileInEditPopup = function (){
+		$('#' + popupEditStatementLogfileSpaceId).empty();
+		$('#' + popupEditStatementLogfileHeaderId).html('');
 	};
 
 	/**
@@ -810,10 +820,6 @@ function GuiHandler() {
 	 * @param jsonData
 	 */
 	this.updateOfStatementInDiscussion = function (jsonData) {
-		var is_argument = jsonData.is_argument == '1', list_id;
-
-		// do we have an argument or a position?
-		list_id = is_argument ? statementListId : argumentListId;
 		// append a row for each statement
 		$('#li_' + jsonData.uid + ' input').val(jsonData.text);
 		$('#li_' + jsonData.uid + ' label').text(jsonData.text);

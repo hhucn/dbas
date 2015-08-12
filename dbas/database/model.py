@@ -156,6 +156,9 @@ class TextValue(Base):
 		"""
 		self.textVersion_uid = textversion
 
+	def update_textversion(self, textVersion_uid):
+		self.textVersion_uid = textVersion_uid
+
 
 class TextVersion(Base):
 	"""

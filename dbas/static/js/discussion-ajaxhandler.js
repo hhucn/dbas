@@ -219,24 +219,21 @@ function AjaxHandler() {
 	 * @param statement_uid current uid of the statement
 	 * @param is_argument true, if it is an argument
 	 * @param corrected_text the corrected text
-	 *
-	this.sendCorrectureOfStatement = function (statement_uid, is_argument, corrected_text){
+	 */
+	this.sendCorrectureOfStatement = function (statement_uid, corrected_text){
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_send_correcture_of_statement',
+			url: 'ajax_set_correcture_of_statement',
 			type: 'POST',
-			data: { uid: statement_uid, is_argument: is_argument, text: corrected_text},
+			data: { uid: statement_uid, text: corrected_text},
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data);
+			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, statement_uid);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
-			new GuiHandler().setErrorDescription('Island view could not be displayed. Sorry!');
 			$('#' + popupErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
 				' failed. Sorry!');
 		});
 	};
-
-	 */
 }

@@ -88,37 +88,38 @@ class QueryHelper(object):
 
 		return False
 
-	# def correct_statement(self, transaction, user, uid, is_argument, corrected_text):
-	# 	"""
-	# 	Corrects a statement
-	# 	:param transaction: current transaction
-	# 	:param user: requesting user
-	# 	:param uid: requested statement uid
-	# 	:param is_argument: true, if it is an argument
-	# 	:param corrected_text: new text
-	# 	:return: True
-	# 	"""
-	# 	logger('QueryHelper', 'correct_statement', 'def')
-	#
-	# 	return_dict = dict()
-	# 	db_user = DBSession.query(User).filter_by(nickname=user).first()
-	# 	if db_user:
-	# 		logger('QueryHelper', 'correct_statement', 'given user exists and correction will be set')
-	# 		pos_uid = -1 if is_argument else uid
-	# 		arg_uid = uid if is_argument else -1
-	# 		is_argument = True if is_argument else False
-	# 		correction = Correction(user_uid=db_user.uid, pos_uid=pos_uid, arg_uid=arg_uid, is_argument=is_argument, text=corrected_text)
-	# 		DBSession.add(correction)
-	# 		transaction.commit()
-	# 		return_dict['status'] = '1'
-	# 	else:
-	# 		logger('QueryHelper', 'correct_statement', 'user not found')
-	# 		return_dict['status'] = '-1'
-	#
-	# 	return_dict['uid'] = uid
-	# 	return_dict['is_argument'] = '1' if is_argument else '0'
-	# 	return_dict['text'] = corrected_text
-	# 	return return_dict
+	def correct_statement(self, transaction, user, uid, corrected_text):
+		"""
+		Corrects a statement
+		:param transaction: current transaction
+		:param user: requesting user
+		:param uid: requested statement uid
+		:param corrected_text: new text
+		:return: True
+		"""
+		logger('QueryHelper', 'correct_statement', 'def')
+
+		return_dict = dict()
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		db_statement = DBSession.query(Statement).filter_by(uid=uid).join(TextValue).first()
+		db_textvalue = DBSession.query(TextValue).filter_by(uid=db_statement.text_uid).join(TextVersion,
+		                                                                                    TextVersion.uid==TextValue.textVersion_uid).first()
+		if db_user:
+			logger('QueryHelper', 'correct_statement', 'given user exists and correction will be set')
+			textversion = TextVersion(content=corrected_text, author=db_user.uid, weight=db_textvalue.textversions.weight)
+			textversion.set_textvalue(db_textvalue.uid)
+			DBSession.add(textversion)
+			DBSession.flush()
+			db_textvalue.update_textversion(textversion.uid)
+			transaction.commit()
+			return_dict['status'] = '1'
+		else:
+			logger('QueryHelper', 'correct_statement', 'user not found')
+			return_dict['status'] = '-1'
+
+		return_dict['uid'] = uid
+		return_dict['text'] = corrected_text
+		return return_dict
 
 	def get_all_users(self, user):
 		"""
@@ -800,7 +801,11 @@ class DictionaryHelper(object):
 		:return: dictionary
 		"""
 		db_statement = DBSession.query(Statement).filter_by(uid=statement_row.uid).join(TextValue).first()
-		db_textversion = DBSession.query(TextVersion).filter_by(textValue_uid=db_statement.textvalues.uid).join(User).first()
+		db_textversion = DBSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
+		logger('DictionaryHelper', 'save_statement_row_in_dictionary',
+		       'db_statement.uid ' + str(db_statement.uid) + ', ' +
+		       'db_statement.textvalues.textVersion_uid ' + str(db_statement.textvalues.textVersion_uid) + ', ' +
+		       'db_textversion.uid ' + str(db_textversion.uid))
 		uid = str(db_statement.uid)
 		text = db_textversion.content
 		date = str(db_textversion.timestamp)

@@ -13,7 +13,7 @@ function TrackHandler() {
 	 *
 	 * @param get_track_data is true, when the data should be get, false, when it should be deleted
 	 */
-	this.manageUserTrackData = function ( get_track_data ) {
+	this.manageUserTrackData = function(get_track_data){
 		'use strict';
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({

@@ -834,26 +834,24 @@ class Dbas(object):
 
 		return return_json
 
-	# # ajax - getting all arguments for the island view
-	# @view_config(route_name='ajax_send_correcture_of_statement', renderer='json', check_csrf=True)
-	# def send_correcture_of_statement(self):
-	# 	logger('send_correcture_of_statement', 'def', 'main')
-	#
-	# 	uid = ''
-	# 	is_argument = ''
-	# 	corrected_text = ''
-	# 	try:
-	# 		uid = self.request.params['uid']
-	# 		is_argument = True if self.request.params['is_argument'] == 'true' else False
-	# 		corrected_text = self.request.params['text']
-	# 		logger('send_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', is_argument: ' + str(is_argument) + ', corrected_text: ' + str(corrected_text));
-	# 	except KeyError as e:
-	# 		logger('send_correcture_of_statement', 'error', repr(e))
-	#
-	# 	return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, is_argument, corrected_text)
-	# 	return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
+	# ajax - getting all arguments for the island view
+	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
+	def set_correcture_of_statement(self):
+		logger('set_correcture_of_statement', 'def', 'main')
+
+		uid = ''
+		corrected_text = ''
+		try:
+			uid = self.request.params['uid']
+			corrected_text = self.request.params['text']
+			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text))
+		except KeyError as e:
+			logger('set_correcture_of_statement', 'error', repr(e))
+
+		return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
 
 	# ajax - for language switch
 	@view_config(route_name='ajax_switch_language', renderer='json')

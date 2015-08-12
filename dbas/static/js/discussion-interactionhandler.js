@@ -349,8 +349,8 @@ function InteractionHandler() {
 	/**
 	 * Callback, when a correcture could be send
 	 * @param data of the ajax request
+	 * @param statement_uid
 	 */
-	/*
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1'){
@@ -359,7 +359,7 @@ function InteractionHandler() {
 			new GuiHandler().updateOfStatementInDiscussion(parsedData);
 			$('#' + popupErrorDescriptionId).text('');
 			$('#' + popupSuccessDescriptionId).text(correctionsSet);
+			$('#edit_statement_td_text_' + parsedData.uid).text(parsedData.text);
 		}
 	};
-	*/
 }
