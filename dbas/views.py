@@ -627,19 +627,26 @@ class Dbas(object):
 		Returns all positions as dictionary with uid <-> value
 		:return: list of all positions
 		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('get_start_statemens', 'def', 'main')
 		return_dict = QueryHelper().get_start_statements()
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		# update timestamp
 		logger('get_start_statemens', 'def',  'update login timestamp')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		return return_json
 
 	# ajax - getting all arguments for the island view
 	@view_config(route_name='ajax_premisses_for_statement', renderer='json', check_csrf=True)
 	def get_premisses_for_statement(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('get_all_arguments_for_island', 'def', 'main')
 
 		return_dict = {}
@@ -664,6 +671,8 @@ class Dbas(object):
 		Request the complete user track
 		:return:
 		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('manage_user_track', 'def', 'main')
 
 		nickname = 'unknown'
@@ -754,6 +763,8 @@ class Dbas(object):
 		Inserts a new position into the database
 		:return: a status code, if everything was successfull
 		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('send_start_statement', 'def', 'main')
 
 		statement = ''
@@ -807,6 +818,12 @@ class Dbas(object):
 	# ajax - getting all arguments for the island view
 	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=True)
 	def get_logfile_for_statement(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('get_logfile_for_statement', 'def', 'main')
 
 		uid = ''
@@ -824,6 +841,12 @@ class Dbas(object):
 	# ajax - getting all arguments for the island view
 	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
 	def set_correcture_of_statement(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('set_correcture_of_statement', 'def', 'main')
 
 		uid = ''
@@ -843,6 +866,12 @@ class Dbas(object):
 	# ajax - for language switch
 	@view_config(route_name='ajax_switch_language', renderer='json')
 	def switch_language(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
 		logger('switch_language', 'def', 'main')
 
 		return_dict = {}

@@ -92,12 +92,12 @@ $(function () {
 
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).click(function () {
-		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId, 'right');
+		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId, 'right', $('#' + statementListId + ' li input').hasClass('statement'));
 	});
 
 	// adding a textarea in the left column
 	$('#' + addProTextareaId).click(function () {
-		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId, 'left');
+		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId, 'left', $('#' + statementListId + ' li input').hasClass('statement'));
 	});
 
 	// hiding the argument container, when the X button is clicked

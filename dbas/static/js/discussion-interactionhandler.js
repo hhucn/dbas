@@ -65,11 +65,11 @@ function InteractionHandler() {
 			// get the second child, which is the label
 			text = $('#' + addStatementButtonId).parent().children().eq(1).text();
 			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
-				// no argument -> position
-				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false, isStart);
-			} else {
-				// argument
+				// statement
 				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true, isStart);
+			} else {
+				// premisse
+				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false, isStart);
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).show();

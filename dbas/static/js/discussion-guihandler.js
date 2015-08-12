@@ -367,8 +367,9 @@ function GuiHandler() {
 	 * Adds a textarea with a little close button (both in a div tag) to a parend tag
 	 * @param parentid id-tag of the parent element, where a textare should be added
 	 * @param identifier additional id
+	 * @param is_statement
 	 */
-	this.addTextareaAsChildInParent = function (parentid, identifier) {
+	this.addTextareaAsChildInParent = function (parentid, identifier, is_statement) {
 		/**
 		 * The structure is like:
 		 * <div><textarea .../><button...></button></div>
@@ -413,6 +414,12 @@ function GuiHandler() {
 		div.append(div_dropdown);
 		div.append(div_content);
 		parent.append(div);
+
+		if (is_statement){
+			div_dropdown.show();
+		} else {
+			div_dropdown.hide();
+		}
 
 		this.setDropdownClickListener(identifier, childCount.toString());
 	};
@@ -520,6 +527,7 @@ function GuiHandler() {
 	 * Set some style attributes,
 	 * @param isVisible true, if the container should be displayed
 	 * @param is_statement true, if we have an argument
+	 * @param is_start
 	 */
 	this.setDisplayStylesOfAddArgumentContainer = function (isVisible, is_statement, is_start) {
 		if (isVisible) {
@@ -528,21 +536,6 @@ function GuiHandler() {
 			$('#' + addStatementContainerId).fadeIn('slow');
 			$('#' + addStatementButtonId).disable = true;
 			if (is_statement){
-				var statement = $('#' + discussionsDescriptionId + ' b:last-child').text();
-				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse + ' ' + statement);
-				// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
-				$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with <b>\'' + statement + '</b>\':');
-				$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with <b>\'' + statement + '</b>\':');
-				$('#' + addStatementContainerMainInputId).hide().focus();
-				$('#' + leftPositionColumnId).show();
-				$('#' + rightPositionColumnId).show();
-				$('#' + sendNewStatementId).off('click').click(function () {
-					new InteractionHandler().getArgumentsAndSendThem();
-					var gh = new GuiHandler();
-					gh.setErrorDescription('');
-					gh.setSuccessDescription('');
-				});
-			} else {
 				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
 				$('#' + addStatementContainerMainInputId).show();
 				$('#' + leftPositionColumnId).hide();
@@ -557,10 +550,26 @@ function GuiHandler() {
 					gh.setErrorDescription('');
 					gh.setSuccessDescription('');
 				});
+			} else {
+				var statement = $('#' + discussionsDescriptionId + ' b:last-child').text();
+				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse);
+				// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
+				$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with <b>\'' + statement + '</b>\', because ...');
+				$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with <b>\'' + statement + '</b>\',' +
+					' because ...');
+				$('#' + addStatementContainerMainInputId).hide().focus();
+				$('#' + leftPositionColumnId).show();
+				$('#' + rightPositionColumnId).show();
+				$('#' + sendNewStatementId).off('click').click(function () {
+					new InteractionHandler().getArgumentsAndSendThem();
+					var gh = new GuiHandler();
+					gh.setErrorDescription('');
+					gh.setSuccessDescription('');
+				});
 			}
 			var gh = new GuiHandler();
-			gh.addTextareaAsChildInParent(leftPositionTextareaId, id_left);
-			gh.addTextareaAsChildInParent(rightPositionTextareaId, id_right);
+			gh.addTextareaAsChildInParent(leftPositionTextareaId, id_left, is_statement);
+			gh.addTextareaAsChildInParent(rightPositionTextareaId, id_right, is_statement);
 		} else {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementContainerMainInputId).val('');
