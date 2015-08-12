@@ -74,6 +74,7 @@ def main(global_config, **settings):
 	# main stuff
 	config.add_route('ajax_start_statements', '/ajax_start_statements')
 	config.add_route('ajax_premisses_for_statement', '/ajax_premisses_for_statement')
+	config.add_route('ajax_send_start_statement', '/ajax_send_start_statement')
 
 	# settings
 	config.add_route('ajax_manage_user_track', '/ajax_manage_user_track')
@@ -85,7 +86,6 @@ def main(global_config, **settings):
 	# config.add_route('ajax_all_arguments_for_island', '/ajax_all_arguments_for_island')
 	# config.add_route('ajax_args_for_new_discussion_round', '/ajax_args_for_new_discussion_round')
 	# config.add_route('ajax_arguments_connected_to_position_uid', '/ajax_arguments_connected_to_position_uid')
-	# config.add_route('ajax_send_new_position', '/ajax_send_new_position')
 	# config.add_route('ajax_send_new_arguments', '/ajax_send_new_arguments')
 	# config.add_route('ajax_one_step_back', '/ajax_one_step_back')
 

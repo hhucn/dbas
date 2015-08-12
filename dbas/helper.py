@@ -595,39 +595,40 @@ class QueryHelper(object):
 		DBSession.query(Track).filter_by(author_uid=db_user.uid).delete()
 		transaction.commit()
 
-	# def set_new_position(self, transaction, position, user):
-	# 	"""
-	# 	Saves position for user
-	# 	:param transaction: current transaction
-	# 	:param position: given position
-	# 	:param user: given user
-	# 	:return: dictionary of the new position
-	# 	"""
-	# 	db_user = DBSession.query(User).filter_by(nickname=user).first()
-	# 	logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + str(user) + 'user_id: ' + str(db_user.uid)
-	# 	       + ', position: ' + str(position))
-	#
-	# 	# save position, but we cannot set any relation here
-	# 	new_position = Position(text=position, weight=0)
-	# 	new_position.author = db_user.uid
-	# 	DBSession.add(new_position)
-	# 	transaction.commit()
-	#
-	# 	# check out, if it is there
-	# 	db_position = DBSession.query(Position).filter_by(text=position).order_by(Position.uid.desc()).first()
-	# 	db_correction = DBSession.query(Correction).filter_by(pos_uid=db_position.uid).order_by(Correction.uid.desc()).first()
-	# 	return_dict = collections.OrderedDict()
-	# 	if db_position:
-	# 		logger('QueryHelper', 'save_track_argument_for_user', 'position was inserted with uid ' + str(db_position.uid))
-	# 		return_dict['uid'] = db_position.uid
-	# 		return_dict['text'] = db_correction.text if db_correction else db_position.text
-	# 		return_dict['date'] = str(db_position.date)
-	# 		return_dict['weight'] = str(db_position.weight)
-	# 		return_dict['author'] = user
-	# 	else:
-	# 		logger('QueryHelper', 'save_track_argument_for_user', 'cannot get uid of position')
-	#
-	# 	return return_dict
+
+	def set_statement(self, transaction, statement, user, isStart):
+		"""
+		Saves position for user
+		:param transaction: current transaction
+		:param statement: given statement
+		:param user: given user
+		:param isStart: if it is a start statement
+		:return: '1'
+		"""
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'save_track_argument_for_user', 'user: ' + str(user) + 'user_id: ' + str(db_user.uid) + ', statement: ' + str(statement))
+
+		# add the version
+		textversion = TextVersion(content=statement, author=db_user.uid, weight=0)
+		DBSession.add(textversion)
+		DBSession.flush()
+
+		# add a new cache
+		textvalue = TextValue(textversion=textversion.uid)
+		DBSession.add(textvalue)
+		DBSession.flush()
+		textversion.set_textvalue(textvalue.uid)
+
+		# add the statement
+		statement = Statement(text=textvalue.uid, isstartpoint=isStart)
+		DBSession.add(statement)
+		DBSession.flush()
+
+		# get the new statement
+		new_statement = DBSession.query(Statement).filter_by(text_uid=textvalue.uid).order_by(Statement.uid.desc()).first()
+
+		transaction.commit()
+		return DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 
 	# def set_new_arguments(self, transaction, params, user):
 	# 	"""

@@ -503,14 +503,14 @@ function GuiHandler() {
 	 * Sets the new position as lsat child in discussion space or displays an error
 	 * @param jsonData returned data
 	 */
-	this.setNewPositionAsLastChild = function (jsonData) {
+	this.setNewStatementAsLastChild = function (jsonData) {
 		if (jsonData.result === 'failed') {
 			if (jsonData.reason === 'empty text') {			this.setErrorDescription(notInsertedErrorBecauseEmpty);
 			} else if (jsonData.reason === 'duplicate'){	this.setErrorDescription(notInsertedErrorBecauseDuplicate);
 			} else {										this.setErrorDescription(notInsertedErrorBecauseUnknown);
 			}
 		} else {
-			var newElement = this.getKeyValAsInputInLiWithType(jsonData.position.uid, jsonData.position.text, false);
+			var newElement = this.getKeyValAsInputInLiWithType(jsonData.statement.uid, jsonData.statement.text, false);
 			$('#li_' + addStatementButtonId).before(newElement);
 			new GuiHandler().setSuccessDescription(addedEverything);
 		}
@@ -519,15 +519,15 @@ function GuiHandler() {
 	/**
 	 * Set some style attributes,
 	 * @param isVisible true, if the container should be displayed
-	 * @param is_argument true, if we have an argument
+	 * @param is_statement true, if we have an argument
 	 */
-	this.setDisplayStylesOfAddArgumentContainer = function (isVisible, is_argument) {
+	this.setDisplayStylesOfAddArgumentContainer = function (isVisible, is_statement, is_start) {
 		if (isVisible) {
 			$('#' + leftPositionTextareaId).empty();
 			$('#' + rightPositionTextareaId).empty();
 			$('#' + addStatementContainerId).fadeIn('slow');
 			$('#' + addStatementButtonId).disable = true;
-			if (is_argument){
+			if (is_statement){
 				var statement = $('#' + discussionsDescriptionId + ' b:last-child').text();
 				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse + ' ' + statement);
 				// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
@@ -548,7 +548,11 @@ function GuiHandler() {
 				$('#' + leftPositionColumnId).hide();
 				$('#' + rightPositionColumnId).hide();
 				$('#' + sendNewStatementId).off('click').click(function () {
-					new AjaxHandler().sendNewPosition($('#' + addStatementContainerMainInputId).val());
+					if (is_start) {
+						new AjaxHandler().sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
+					} else {
+						alert("new case in guihandler setDisplayStylesOfAddArgumentContainer");
+					}
 					var gh = new GuiHandler();
 					gh.setErrorDescription('');
 					gh.setSuccessDescription('');
@@ -559,6 +563,7 @@ function GuiHandler() {
 			gh.addTextareaAsChildInParent(rightPositionTextareaId, id_right);
 		} else {
 			$('#' + addStatementContainerId).fadeOut('slow');
+			$('#' + addStatementContainerMainInputId).val('');
 			$('#' + addStatementButtonId).disable = false;
 		}
 	};

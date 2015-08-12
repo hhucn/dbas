@@ -58,7 +58,7 @@ function InteractionHandler() {
 	 * Method for some style attributes, when the radio buttons are chaning
 	 */
 	this.radioButtonChanged = function () {
-		var guiHandler = new GuiHandler(), text;
+		var guiHandler = new GuiHandler(), text, isStart = $('#' + statementListId + ' li input').hasClass('start');
 		if ($('#' + addStatementButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).hide();
 
@@ -66,16 +66,16 @@ function InteractionHandler() {
 			text = $('#' + addStatementButtonId).parent().children().eq(1).text();
 			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
 				// no argument -> position
-				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false);
+				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false, isStart);
 			} else {
 				// argument
-				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true);
+				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true, isStart);
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).show();
-			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart);
 		} else {
-			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart);
 			$('#' + stepBackButtonId).hide();
 
 
@@ -254,12 +254,10 @@ function InteractionHandler() {
 	 * Callback, when a new position was send
 	 * @param data returned data
 	 */
-	/*
-	this.callbackIfDoneForSendNewPosition = function (data) {
+	this.callbackIfDoneForSendNewStartStatement = function (data) {
 		var parsedData = $.parseJSON(data);
-		new GuiHandler().setNewPositionAsLastChild(parsedData);
+		new GuiHandler().setNewStatementAsLastChild(parsedData);
 	};
-	*/
 
 	/**
 	 * Callback, when a new arguments were send
@@ -349,7 +347,6 @@ function InteractionHandler() {
 	/**
 	 * Callback, when a correcture could be send
 	 * @param data of the ajax request
-	 * @param statement_uid
 	 */
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data) {
 		var parsedData = $.parseJSON(data);

@@ -747,42 +747,29 @@ class Dbas(object):
 	#
 	# 	return return_json
 
-	# # ajax - send new position
-	# @view_config(route_name='ajax_send_new_position', renderer='json', check_csrf=True)
-	# def set_send_new_position(self):
-	# 	"""
-	# 	Inserts a new position into the database
-	# 	:return: a status code, if everything was successfull
-	# 	"""
-	# 	logger('setsend_new_position', 'def', 'main')
-	#
-	# 	position = ''
-	# 	try:
-	# 		position = self.request.params['position']
-	# 		logger('setsend_new_position', 'def', 'request data: position ' + str(position))
-	# 	except KeyError as e:
-	# 		logger('setsend_new_position', 'error', repr(e))
-	#
-	# 	# is position already inserted?
-	# 	return_dict = {}
-	# 	query_helper = QueryHelper()
-	# 	if query_helper.is_statement_already_in_database(position, True) > -1:
-	# 		logger('setsend_new_position', 'def', 'duplicate')
-	# 		return_dict['result'] = 'failed'
-	# 		return_dict['reason'] = 'duplicate'
-	# 	else:
-	# 		logger('setsend_new_position', 'def', 'saving position')
-	# 		# saving position
-	# 		if position != '':
-	# 			return_dict['result'] = 'success'
-	# 			return_dict['position'] = query_helper.set_new_position(transaction, position, self.request.authenticated_userid)
-	# 		else:
-	# 			return_dict['result'] = 'failed'
-	# 			return_dict['reason'] = 'empty text'
-	#
-	# 	return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
+	# ajax - send new start statement
+	@view_config(route_name='ajax_send_start_statement', renderer='json', check_csrf=True)
+	def send_start_statement(self):
+		"""
+		Inserts a new position into the database
+		:return: a status code, if everything was successfull
+		"""
+		logger('send_start_statement', 'def', 'main')
+
+		statement = ''
+		return_dict = {}
+		try:
+			statement = self.request.params['statement']
+			logger('send_start_statement', 'def', 'request data: statement ' + str(statement))
+			return_dict['success'] = '1'
+			return_dict['statement'] = QueryHelper().set_statement(transaction, statement, self.request.authenticated_userid, True)
+		except KeyError as e:
+			logger('send_start_statement', 'error', repr(e))
+			return_dict['success'] = '-1'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
 
 	# # ajax - getting next argument for confrontation
 	# @view_config(route_name='ajax_send_new_arguments', renderer='json', check_csrf=True)

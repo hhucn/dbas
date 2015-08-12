@@ -156,20 +156,20 @@ function AjaxHandler() {
 
 	/**
 	 * Sends new position to the server. Answer will be given to a callback
-	 * @param position for sending
-	 *
-	this.sendNewPosition = function (position) {
+	 * @param statement for sending
+	 */
+	this.sendNewStartStatement = function (statement) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_send_new_position',
+			url: 'ajax_send_start_statement',
 			type: 'POST',
-			data: { position : position},
+			data: { statement : statement },
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxSendNewPositionDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewPosition(data);
-		}).fail(function ajaxSendNewPositionFail() {
+		}).done(function ajaxSendStartStatementDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
+		}).fail(function ajaxSendStartStatementFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 		});
 	};
