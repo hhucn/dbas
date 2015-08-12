@@ -249,21 +249,28 @@ class QueryHelper(object):
 		"""
 		return_dict = dict()
 		premisses_dict = dict()
+		premissesgroups_dict = dict()
 		logger('QueryHelper', 'get_premisses_for_statement', 'get all premisses')
 		db_arguments = DBSession.query(Argument).filter(and_(Argument.isSupportive==issupportive, Argument.conclusion_uid==statement_uid)).all()
 
-		logger('QueryHelper', 'get_premisses_for_statement', '------')
+		logger('QueryHelper', 'get_premisses_for_statement', '------------')
 		for argument in db_arguments:
-			logger('QueryHelper', 'get_premisses_for_statement', 'argument ' + str(argument.uid) + '(' + str(argument.premissesGroup_uid) + ')')
+			logger('QueryHelper', 'get_premisses_for_statement', 'argument ' + str(argument.uid) + ' (' + str(argument.premissesGroup_uid) + ')')
 			db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=argument.premissesGroup_uid).all()
+
+			# check out the group
+			premissesgroups_dict = dict()
 			for premisse in db_premisses:
-				logger('QueryHelper', 'get_premisses_for_statement', 'argument premisses ' + str(premisse.premissesGroup_uid))
+				logger('QueryHelper', 'get_premisses_for_statement', 'premisses group ' + str(premisse.premissesGroup_uid))
 				db_statements = DBSession.query(Statement).filter_by(uid=premisse.statement_uid).all()
 				for statement in db_statements:
-					logger('QueryHelper', 'get_premisses_for_statement', 'argument premisses stat ' + str(statement.uid))
-					premisses_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement)
-		logger('QueryHelper', 'get_premisses_for_statement', '------')
+					logger('QueryHelper', 'get_premisses_for_statement', 'premisses group has statement ' + str(statement.uid))
+					premissesgroups_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement)
 
+			premisses_dict[str(premisse.premissesGroup_uid)] = premissesgroups_dict
+		logger('QueryHelper', 'get_premisses_for_statement', '------------')
+
+		# premisses dict has for each group a new dictionary
 		return_dict['premisses'] = premisses_dict
 		return_dict['status'] = '1'
 

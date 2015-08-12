@@ -50,7 +50,20 @@ function GuiHandler() {
 		text = currentStatementText.text.substring(0, 1).toLowerCase() + currentStatementText.text.substring(1, currentStatementText.text.length);
 		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b>');
 		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
-			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text, false, true));
+			//alert("1: " + key + " " + val);
+			text = '';
+			$.each(val, function setJsonDataToContentAsConclusionEachVal(valkey, valval) {
+				//alert("2: " + valkey + " " + valval);
+				if (text=='')
+					text = 'Because ';
+				else
+					text += ' _AND_ because ';
+
+				text += valval.text.substring(0, 1).toLowerCase() + valval.text.substring(1, valval.text.length - 1);
+			});
+			text += '.';
+			// we are saving the group id ad key
+			listitems.push(_this.getKeyValAsInputInLiWithType(key, text, false, true));
 		});
 
 		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newPremisseRadioButtonText, true)); // TODO change button id
@@ -63,7 +76,7 @@ function GuiHandler() {
 	 * @param jsonData data with json content
 	 * @param isUserExplainingHisPosition true, when the prefix should be 'because', because user should explain his position
 	 * @param isAvoidance true, when the given data should be used as avoidance
-	 */
+	 *
 	this.setJsonDataToDiscussionContentAsArguments = function (jsonData, isUserExplainingHisPosition, isAvoidance) {
 		var listitems = [], _this = new GuiHandler();
 
@@ -85,7 +98,7 @@ function GuiHandler() {
 		if (!isAvoidance)
 			listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newPremisseRadioButtonText, true));
 		_this.addListItemsToDiscussionsSpace(listitems, argumentListId, isAvoidance);
-	};
+	};*/
 
 	/**
 	 * Adds given json content as argument buttons in the discussions space
@@ -284,6 +297,7 @@ function GuiHandler() {
 	 * @param key will be used as id
 	 * @param val will be used as value
 	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
+	 * @param isPremisse
 	 * @returns {Element|*} a type-input element in a li tag
 	 */
 	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse) {

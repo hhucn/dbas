@@ -150,7 +150,7 @@ function InteractionHandler() {
 			if (radioButton.hasClass('start')) {
 				this.startStatementButtonWasClicked(id, value);
 			} else if (radioButton.hasClass('premisse')) {
-				alert('what now?');
+				alert('what now?'); // todo what now
 				// this.startPremisseButtonWasClicked(id, value);
 			} else if (radioButton.hasClass('argument')) {
 				this.argumentButtonWasClicked(id, value);
