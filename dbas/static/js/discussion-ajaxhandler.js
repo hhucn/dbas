@@ -18,7 +18,7 @@ function AjaxHandler() {
 	this.getStartStatements = function () {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_start_statements',
+			url: 'ajax_get_start_statements',
 			type: 'GET',
 			dataType: 'json',
 			async: true,
@@ -40,7 +40,7 @@ function AjaxHandler() {
 		$.ajax({
 			url: 'ajax_premisses_for_statement',
 			method: 'POST',
-			data: { uid : uid},
+			data: { uid : uid },
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
@@ -49,6 +49,27 @@ function AjaxHandler() {
 		}).fail(function ajaxGetPremisseForStatementFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
+		});
+	};
+
+	/**
+	 * Send an ajax request for getting all premisses for a givens tatement
+	 * @param uid of clicked statement
+	 */
+	this.getReplyForPremisseGroup = function (uid) {
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_reply_for_premisse',
+			method: 'POST',
+			data: { uid : uid },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function ajaxGetReplyForPremisseDone(data) {
+			new InteractionHandler().callbackIfDoneReplyForPremisse(data);
+		}).fail(function ajaxGetReplyForPremisseFail() {
+			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
 		});
 	};
 
@@ -161,7 +182,7 @@ function AjaxHandler() {
 	this.sendNewStartStatement = function (statement) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_send_start_statement',
+			url: 'ajax_set_new_start_statement',
 			type: 'POST',
 			data: { statement : statement },
 			dataType: 'json',
@@ -217,7 +238,6 @@ function AjaxHandler() {
 	/**
 	 * Sends a correcture of a statement
 	 * @param statement_uid current uid of the statement
-	 * @param is_argument true, if it is an argument
 	 * @param corrected_text the corrected text
 	 */
 	this.sendCorrectureOfStatement = function (statement_uid, corrected_text){

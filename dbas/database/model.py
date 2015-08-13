@@ -288,15 +288,18 @@ class Track(Base):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
+	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
 	users = relationship('User', foreign_keys=[author_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
+	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
 
-	def __init__(self, user, statement):
+	def __init__(self, user, statement, premissegroup=0):
 		"""
 		Initializes a row in current track-table
 		"""
 		self.author_uid = user
 		self.statement_uid = statement
+		self.premissesGroup_uid = premissegroup
 		self.timestamp = func.now()

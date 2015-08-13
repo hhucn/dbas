@@ -30,6 +30,17 @@ function InteractionHandler() {
 	};
 
 	/**
+	 * Handler when an start premisse was clicked
+	 * @param id of the button
+	 */
+	this.startPremisseButtonWasClicked = function (id) {
+		var ajaxHandler = new AjaxHandler();
+		// clear the discussion space
+		$('#' + discussionSpaceId).empty();
+		ajaxHandler.getReplyForPremisseGroup(id);
+	};
+
+	/**
 	 * Handler when an argument button was clicked
 	 * @param id of the button
 	 */
@@ -150,8 +161,7 @@ function InteractionHandler() {
 			if (radioButton.hasClass('start')) {
 				this.startStatementButtonWasClicked(id, value);
 			} else if (radioButton.hasClass('premisse')) {
-				alert('what now?'); // todo what now
-				// this.startPremisseButtonWasClicked(id, value);
+				this.startPremisseButtonWasClicked(id, value);
 			} else if (radioButton.hasClass('argument')) {
 				this.argumentButtonWasClicked(id, value);
 			} else {
@@ -173,6 +183,20 @@ function InteractionHandler() {
 			gh.setJsonDataToContentAsStartPremisses(parsedData.premisses, parsedData.currentStatementText);
 		} else {
 			gh.setNewArgumentButtonOnly(firstPremisseRadioButtonText, true);
+		}
+		gh.resetAndDisableEditButton();
+	};
+
+	/**
+	 * Callback for the ajax method getPremisseForStatement
+	 * @param data returned json data
+	 */
+	this.callbackIfDoneReplyForPremisse = function (data) {
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		if (parsedData.status == '1') {
+			gh.setJsonDataAsFirstConfrontation(parsedData)
+		} else {
+			alert('error in callbackIfDoneReplyForPremisse')
 		}
 		gh.resetAndDisableEditButton();
 	};

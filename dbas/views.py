@@ -621,7 +621,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - return all start statements in the database
-	@view_config(route_name='ajax_start_statements', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_get_start_statements', renderer='json', check_csrf=True)
 	def get_start_statemens(self):
 		"""
 		Returns all positions as dictionary with uid <-> value
@@ -653,11 +653,37 @@ class Dbas(object):
 		try:
 			logger('get_all_arguments_for_island', 'def', 'read params')
 			uid = self.request.params['uid']
-			return_dict = QueryHelper().get_premisses_for_statement(uid, True)
 			QueryHelper().save_track_for_user(transaction, self.request.authenticated_userid, uid)
+			return_dict = QueryHelper().get_premisses_for_statement(uid, True)
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('get_all_arguments_for_island', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - get reply for a premisse
+	@view_config(route_name='ajax_reply_for_premisse', renderer='json', check_csrf=True)
+	def reply_for_premisse(self):
+		"""
+		Get reply for a premisse
+		:return: dictionary with every arguments
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('reply_for_premisse', 'def', 'main')
+
+		return_dict = {}
+		try:
+			uid = self.request.params['uid']
+			logger('reply_for_premisse', 'def', 'premissegroup ' + str(uid))
+			QueryHelper().save_premissegroup_for_user(transaction, self.request.authenticated_userid, uid)
+			return_dict['status'] = '1'
+			return_dict.update(QueryHelper().get_reply_for_premissegroup(uid, self.request.authenticated_userid,))
+		except KeyError as e:
+			logger('reply_for_premisse', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
@@ -757,45 +783,31 @@ class Dbas(object):
 	# 	return return_json
 
 	# ajax - send new start statement
-	@view_config(route_name='ajax_send_start_statement', renderer='json', check_csrf=True)
-	def send_start_statement(self):
+	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
+	def set_new_start_statement(self):
 		"""
-		Inserts a new position into the database
+		Inserts a new statement into the database
 		:return: a status code, if everything was successfull
 		"""
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		logger('send_start_statement', 'def', 'main')
+		logger('set_new_start_statement', 'def', 'main')
 
-		statement = ''
 		return_dict = {}
 		try:
 			statement = self.request.params['statement']
-			logger('send_start_statement', 'def', 'request data: statement ' + str(statement))
+			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
 			return_dict['success'] = '1'
 			return_dict['statement'] = QueryHelper().set_statement(transaction, statement, self.request.authenticated_userid, True)
 		except KeyError as e:
-			logger('send_start_statement', 'error', repr(e))
+			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['success'] = '-1'
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
 
-	# # ajax - getting next argument for confrontation
-	# @view_config(route_name='ajax_send_new_arguments', renderer='json', check_csrf=True)
-	# def set_send_new_arguments(self):
-	# 	"""
-	# 	Insert new arguments into the database
-	# 	:return: dictionary with every arguments
-	# 	"""
-	# 	logger('setsend_new_arguments', 'def', 'main')
-	# 	return_dict = QueryHelper().set_new_arguments(transaction, self.request.params, self.request.authenticated_userid)
-	# 	return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
-
-	# # ajax - getting next argument for confrontation
+	# # ajax - go one step back
 	# @view_config(route_name='ajax_one_step_back', renderer='json', check_csrf=True)
 	# def get_one_step_back(self):
 	# 	logger('getone_step_back', 'def', 'main')

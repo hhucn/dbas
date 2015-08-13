@@ -72,6 +72,47 @@ function GuiHandler() {
 	};
 
 	/**
+	 *
+	 * @param jsonData
+	 */
+	this.setJsonDataAsFirstConfrontation = function (jsonData) {
+		var conclusion = jsonData.conclusion_text.substring(0, jsonData.conclusion_text.length -1),
+			premisse = jsonData.premisse_text,
+			opinion = conclusion + ', because' +	' ' + premisse,
+			confrontation = jsonData.confrontation,
+			i, tmp1='', tmp2='', tmp3='', listitems = [], tmp;
+		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + opinion + '.</b><br>'
+			+ othersHaveArguedThat + ' <b>' + confrontation + '.</b><br><br>' + whatDoYouThink);
+
+		for (i=0; i< parseInt(jsonData.undermine); i++){
+			tmp1 += '\n      ' + jsonData['undermine'+i];
+			tmp = 'Undermine: Other participants say, that ' + premisse + ' is not right, because ' + jsonData['undermine'+i];
+			listitems.push(this.getKeyValAsInputInLiWithType('XXX', tmp, false, true));
+		}
+		for (i=0; i< parseInt(jsonData.undercut); i++){
+			tmp2 += '\n      ' + jsonData['undercut'+i];
+			tmp = 'Undercut: Other participants say, that ' + premisse + ', but is not a good reason for ' + opinion + ', because ' + jsonData['undercut'+i];
+			listitems.push(this.getKeyValAsInputInLiWithType('XXX', tmp, false, true));
+		}
+		for (i=0; i< parseInt(jsonData.rebut); i++){
+			tmp3 += '\n      ' + jsonData['rebut'+i];
+			tmp = 'Rebut: Other participants say, that ' + premisse + ' and they accept, that ' + opinion + ', a much stronger' +
+				' argument for rejecting, like this: ' + jsonData['rebut'+i];
+			listitems.push(this.getKeyValAsInputInLiWithType('XXX', tmp, false, true));
+		}
+
+		alert('confrontation'+
+			'\n  undermine ' + jsonData.undermine + tmp1 +
+			'\n  undercut '  + jsonData.undercut + tmp2 +
+			'\n  rebut '     + jsonData.rebut + tmp3);
+
+		this.addListItemsToDiscussionsSpace(listitems, 'XXX');
+		// TODO ID'S
+
+		// alert(jsonData.argument_id);
+	};
+
+	/**
 	 * Sets given json content as argument buttons in the discussions space
 	 * @param jsonData data with json content
 	 * @param isUserExplainingHisPosition true, when the prefix should be 'because', because user should explain his position

@@ -279,6 +279,101 @@ class QueryHelper(object):
 
 		return return_dict
 
+
+	def get_reply_for_premissegroup(self, premissegroup_uid, user):
+		"""
+		Returns reply for a premisse
+		:return: dictionary
+		"""
+
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'get_reply_for_premissegroup', 'get everthing for/against ' + str(premissegroup_uid))
+		db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).order_by(Track.uid.desc()).join(Statement).join(TextValue).all()
+
+		# get current argument
+		premisses_as_statements_uid = set()
+		# conclusion_as_textversion = ''
+		premisses_as_text = ''
+		conclusion_as_text = ''
+		conclusion = None
+		for track in db_track:
+			db_textversion = DBSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(textValue_uid=track.statements.textvalues.uid).first()
+			logger('QueryHelper', 'get_reply_for_premissegroup', 'track.statements.textvalues.uid ' + str(track.statements.textvalues.uid)
+			       +', text ' + db_textversion.content)
+			if track.premissesGroup_uid == 0:
+				conclusion = track
+				db_textversion = DBSession.query(TextVersion).filter_by(textValue_uid=track.statements.textvalues.uid).order_by(
+					TextVersion.uid.desc()).first()
+				conclusion_as_text = db_textversion.content
+				break
+
+			# save all premisses
+			premisses_as_statements_uid.add(track.statements.uid)
+			# build text for premisse
+			premisses_as_text += ' and ' + db_textversion.content[:1].lower() + db_textversion.content[1:len(db_textversion.content)-1]
+
+
+		return_dict = {}
+		# cut first 'and ' and set the text in the dictionary
+		return_dict['premisse_text'] = premisses_as_text[5:]
+		return_dict['conclusion_text'] = conclusion_as_text
+
+		# getting the argument id
+		logger('QueryHelper', 'get_reply_for_premissegroup', 'find argument with group ' + str(premissegroup_uid)
+		       + ' conclusion statement ' + str(conclusion.statements.uid))
+		db_argument = DBSession.query(Argument).filter(and_(Argument.premissesGroup_uid==premissegroup_uid,
+		        Argument.conclusion_uid==conclusion.statements.uid, Argument.isSupportive==True)).order_by(Argument.uid.desc()).first()
+
+		if db_argument:
+			logger('QueryHelper', 'get_reply_for_premissegroup', 'argument: ' + str(db_argument.uid))
+			return_dict['argument_id'] = str(db_argument.uid)
+		else:
+			logger('QueryHelper', 'get_reply_for_premissegroup', 'argument: none')
+			return_dict['argument_id'] = '0'
+
+
+		# getting undermines
+		index=0
+		for s_uid in premisses_as_statements_uid:
+			logger('QueryHelper', 'get_reply_for_premissegroup', 'db_undermine against Argument.conclusion_uid=='+str(s_uid))
+			db_undermine = DBSession.query(Argument).filter(Argument.isSupportive==False, Argument.conclusion_uid==s_uid).all()
+			for undermine in db_undermine:
+				logger('QueryHelper', 'get_reply_for_premissegroup', 'found db_undermine ' + str(undermine.uid))
+				return_dict['undermine' + str(index)] = self.get_text_for_premissesGroup_uid(undermine.premissesGroup_uid)
+				return_dict['undermine' + str(index) + 'id'] = undermine.premissesGroup_uid
+				index += 1
+		return_dict['undermine'] = str(index)
+
+		# getting undercuts
+		if db_argument:
+			index=0
+			logger('QueryHelper', 'get_reply_for_premissegroup', 'db_undercut against Argument.argument_uid=='+str(db_argument.uid))
+			db_undercut = DBSession.query(Argument).filter(Argument.isSupportive==False, Argument.argument_uid==db_argument.uid).all()
+			return_dict['undercut'] = str(len(db_undercut))
+			for undercut in db_undercut:
+				logger('QueryHelper', 'get_reply_for_premissegroup', 'found db_undercut ' + str(undercut.uid))
+				return_dict['undercut' + str(index)] = self.get_text_for_premissesGroup_uid(undercut.premissesGroup_uid)
+				return_dict['undercut' + str(index) + 'id'] = undercut.premissesGroup_uid
+				index += 1
+		return_dict['undercut'] = str(index)
+
+
+		# getting rebuts
+		index=0
+		logger('QueryHelper', 'get_reply_for_premissegroup', 'db_rebut against Argument.conclusion_uid=='+str(conclusion.statements.uid))
+		db_rebut =  DBSession.query(Argument).filter(Argument.isSupportive==False, Argument.conclusion_uid==conclusion.statements.uid).all()
+		for rebut in db_rebut:
+			logger('QueryHelper', 'get_reply_for_premissegroup', 'found db_rebut ' + str(rebut.uid))
+			return_dict['rebut' + str(index)] = self.get_text_for_premissesGroup_uid(rebut.premissesGroup_uid)
+			return_dict['rebut' + str(index) + 'id'] = rebut.premissesGroup_uid
+			index += 1
+		return_dict['rebut'] = str(index)
+
+
+		return_dict['confrontation'] = 'nothing'
+
+		return return_dict
+
 	# def get_args_for_justifications(self, uid):
 	# 	"""
 	# 	Retruns all arguments for justification for the given id
@@ -575,6 +670,7 @@ class QueryHelper(object):
 					track_dict = dict()
 					track_dict['uid'] = str(track.uid)
 					track_dict['statement_uid'] = str(track.statement_uid)
+					track_dict['premissesGroup_uid'] = str(track.premissesGroup_uid)
 					track_dict['timestamp'] = str(track.timestamp)
 					track_dict['text'] = str(tmp_dict['text'])
 					return_dict[track.uid] = track_dict
@@ -757,6 +853,50 @@ class QueryHelper(object):
 		DBSession.add(new_track)
 		transaction.commit()
 
+	def save_premissegroup_for_user(self, transaction, user, premissesGroup_uid):
+		"""
+		Saves track for user
+		:param transaction: current transaction
+		:param user: authentication nick id of the user
+		:param premissesGroup_uid: id of the clicked premisseGroup
+		:return: undefined
+		"""
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'save_premissegroup_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', premissesGroup_uid: ' + str(
+			premissesGroup_uid))
+		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid = premissesGroup_uid).all()
+		for p in db_premisses:
+			logger('QueryHelper', 'save_premissegroup_for_user', str(premissesGroup_uid) + "  " + str(p.statement_uid))
+			new_track = Track(user=db_user.uid, statement=p.statement_uid, premissegroup=premissesGroup_uid)
+			DBSession.add(new_track)
+		transaction.commit()
+
+	def get_text_for_statement_uid(self, uid):
+		"""
+
+		:param uid: id of a statement
+		:return: text of the mapped textvalue for this statement
+		"""
+		db_statement = DBSession.query(Statement).filter_by(uid=uid).join(TextValue).first()
+		db_textversion = DBSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
+			textValue_uid=db_statement.textvalues.uid).first()
+		# logger('DictionaryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid) + ', text ' + db_textversion.content)
+		return db_textversion.content
+
+	def get_text_for_premissesGroup_uid(self, uid):
+		"""
+
+		:param uid: id of a premisse group
+		:return: text of all premisses in this group
+		"""
+		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=uid).join(Statement).all()
+		text = ''
+		for premisse in db_premisses:
+			tmp = self.get_text_for_statement_uid(premisse.statements.uid)
+			text += ' and ' + tmp[:1].lower() + tmp[1:]
+
+		return text[5:]
+
 
 class DictionaryHelper(object):
 
@@ -791,6 +931,7 @@ class DictionaryHelper(object):
 				items.pop(rnd)
 
 		return return_dict
+
 
 	def dictionarty_to_json_array(self, raw_dict, ensure_ascii):
 		"""

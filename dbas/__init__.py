@@ -72,9 +72,10 @@ def main(global_config, **settings):
 	config.add_route('ajax_all_users', '/ajax_all_users')
 
 	# main stuff
-	config.add_route('ajax_start_statements', '/ajax_start_statements')
+	config.add_route('ajax_get_start_statements', '/ajax_get_start_statements')
 	config.add_route('ajax_premisses_for_statement', '/ajax_premisses_for_statement')
-	config.add_route('ajax_send_start_statement', '/ajax_send_start_statement')
+	config.add_route('ajax_reply_for_premisse', '/ajax_reply_for_premisse')
+	config.add_route('ajax_set_new_start_statement', '/ajax_set_new_start_statement')
 
 	# settings
 	config.add_route('ajax_manage_user_track', '/ajax_manage_user_track')
