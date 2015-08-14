@@ -53,13 +53,13 @@ function AjaxHandler() {
 	};
 
 	/**
-	 * Send an ajax request for getting all premisses for a givens tatement
+	 * Sends an ajax request for getting all premisses for a givens tatement
 	 * @param uid of clicked statement
 	 */
 	this.getReplyForPremisseGroup = function (uid) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_reply_for_premisse',
+			url: 'ajax_reply_for_premissegroup',
 			method: 'POST',
 			data: { uid : uid },
 			dataType: 'json',
@@ -68,6 +68,27 @@ function AjaxHandler() {
 		}).done(function ajaxGetReplyForPremisseDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForPremisse(data);
 		}).fail(function ajaxGetReplyForPremisseFail() {
+			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
+		});
+	};
+
+	/**
+	 * Sends an ajax request for handle the reaction of a confrontation
+	 * @param id of clicked relation and statement
+	 */
+	this.handleReplyForResponseOfConfrontation = function (id) {
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_reply_for_response_of_confrontation',
+			method: 'POST',
+			data: { id : id },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
+			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data);
+		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
 		});

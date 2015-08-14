@@ -25,7 +25,7 @@ function GuiHandler() {
 		var listitems = [], _this = new GuiHandler();
 		this.setDiscussionsDescription(startDiscussionText);
 		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
-			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text, true, false));
+			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text, true, false, false, ''));
 		});
 
 		// sanity check for an empty list
@@ -35,9 +35,9 @@ function GuiHandler() {
 			this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
 		}
 
-		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newConclusionRadioButtonText, true));
+		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newConclusionRadioButtonText, true, false, ''));
 
-		this.addListItemsToDiscussionsSpace(listitems, statementListId);
+		this.addListItemsToDiscussionsSpace(listitems);
 	};
 
 	/**
@@ -63,12 +63,13 @@ function GuiHandler() {
 			});
 			text += '.';
 			// we are saving the group id ad key
-			listitems.push(_this.getKeyValAsInputInLiWithType(key, text, false, true));
+			listitems.push(_this.getKeyValAsInputInLiWithType(key, text, false, true, false, ''));
 		});
 
-		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newPremisseRadioButtonText, true)); // TODO change button id
+		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newPremisseRadioButtonText, true, false, ''));
+		// TODO change button id
 
-		this.addListItemsToDiscussionsSpace(listitems, statementListId);
+		this.addListItemsToDiscussionsSpace(listitems);
 	};
 
 	/**
@@ -76,40 +77,64 @@ function GuiHandler() {
 	 * @param jsonData
 	 */
 	this.setJsonDataAsFirstConfrontation = function (jsonData) {
-		var conclusion = jsonData.conclusion_text.substring(0, jsonData.conclusion_text.length -1),
+		var conclusion = jsonData.conclusion_text.substring(0, 1).toLowerCase() +
+				jsonData.conclusion_text.substring(1, jsonData.conclusion_text.length -1),
 			premisse = jsonData.premisse_text,
-			opinion = conclusion + ', because' +	' ' + premisse,
-			confrontation = jsonData.confrontation,
-			i, tmp1='', tmp2='', tmp3='', listitems = [], tmp;
-		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + opinion + '.</b><br>'
-			+ othersHaveArguedThat + ' <b>' + confrontation + '.</b><br><br>' + whatDoYouThink);
+			opinion = conclusion + ', because' + ' ' + premisse, confrontationText, listitems = [],
+			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length - 1),
+			relationArray, id;
 
-		for (i=0; i< parseInt(jsonData.undermine); i++){
-			tmp1 += '\n      ' + jsonData['undermine'+i];
-			tmp = 'Undermine: Other participants say, that ' + premisse + ' is not right, because ' + jsonData['undermine'+i];
-			listitems.push(this.getKeyValAsInputInLiWithType('XXX', tmp, false, true));
+		// build some confrontation text
+		if (jsonData.attack == 'undermine'){
+			confrontationText = premisse + ' does not hold, because ';
+		} else if (jsonData.attack == 'rebut'){
+			confrontationText = 'they accept your argument, but they have a stronger argument for rejecting: ';
+		} else if (jsonData.attack == 'undercut'){
+			confrontationText = premisse + ' does not justifies that ' + conclusion + ', because ';
 		}
-		for (i=0; i< parseInt(jsonData.undercut); i++){
-			tmp2 += '\n      ' + jsonData['undercut'+i];
-			tmp = 'Undercut: Other participants say, that ' + premisse + ', but is not a good reason for ' + opinion + ', because ' + jsonData['undercut'+i];
-			listitems.push(this.getKeyValAsInputInLiWithType('XXX', tmp, false, true));
+		confrontationText += confrontation + '. [<i>' + jsonData.attack + '</i>]';
+
+		// set discussions text
+		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
+			+ othersHaveArguedThat + ' ' + confrontationText + '.<br><br>' + whatDoYouThink,
+			'The confrontation is a ' + jsonData.attack);
+
+		// text for the radio buttons
+		relationArray = new Helper().createRelationsText(premisse, conclusion);
+
+		// build the radio buttons
+		id = "_argument_" + jsonData.argument_id;
+		listitems.push(this.getKeyValAsInputInLiWithType('undermine' + id, relationArray[0], false, false, true, 'undermine'));
+		listitems.push(this.getKeyValAsInputInLiWithType('support' + id, relationArray[1], false, false, true, 'support'));
+		listitems.push(this.getKeyValAsInputInLiWithType('undercut' + id, relationArray[2], false, false, true, 'undercut'));
+		listitems.push(this.getKeyValAsInputInLiWithType('overbid' + id, relationArray[3], false, false, true, 'overbid'));
+		listitems.push(this.getKeyValAsInputInLiWithType('rebut' + id, relationArray[4], false, false, true, 'rebut'));
+
+		// set the buttons
+		this.addListItemsToDiscussionsSpace(listitems);
+	};
+
+	/**
+	 *
+	 * @param jsonData
+	 */
+	this.setJsonDataAsConfrontationReasoning = function (jsonData){
+		var premisse = jsonData.premisse.replace('.',''),
+			conclusion = jsonData.conclusion_text.substring(0, 1).toLowerCase() +
+				jsonData.conclusion_text.substring(1, jsonData.conclusion_text.length -1),
+			relationArray = new Helper().createRelationsText(premisse, conclusion), text, listitems = [];
+
+		if (jsonData.relation === 'undermine') {		text = relationArray[0];
+		} else if (jsonData.relation === 'support') {	text = relationArray[1];
+		} else if (jsonData.relation === 'undercut') {	text = relationArray[2];
+		} else if (jsonData.relation === 'overbid') {	text = relationArray[3];
+		} else if (jsonData.relation === 'rebut') {		text = relationArray[4];
 		}
-		for (i=0; i< parseInt(jsonData.rebut); i++){
-			tmp3 += '\n      ' + jsonData['rebut'+i];
-			tmp = 'Rebut: Other participants say, that ' + premisse + ' and they accept, that ' + opinion + ', a much stronger' +
-				' argument for rejecting, like this: ' + jsonData['rebut'+i];
-			listitems.push(this.getKeyValAsInputInLiWithType('XXX', tmp, false, true));
-		}
 
-		alert('confrontation'+
-			'\n  undermine ' + jsonData.undermine + tmp1 +
-			'\n  undercut '  + jsonData.undercut + tmp2 +
-			'\n  rebut '     + jsonData.rebut + tmp3);
-
-		this.addListItemsToDiscussionsSpace(listitems, 'XXX');
-		// TODO ID'S
-
-		// alert(jsonData.argument_id);
+		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text.substr(0, 1).toLowerCase() + text.substr(1, text.length) +
+		', but why?');
+		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, firstPremisseRadioButtonText, true)); // todo button id
+		this.addListItemsToDiscussionsSpace(listitems);
 	};
 
 	/**
@@ -241,8 +266,8 @@ function GuiHandler() {
 	 */
 	this.setNewArgumentButtonOnly = function (val, isArgument) {
 		var listitem = [], gh = new GuiHandler();
-		listitem.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument));
-		gh.addListItemsToDiscussionsSpace(listitem, statementListId);
+		listitem.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, false, false, ''));
+		gh.addListItemsToDiscussionsSpace(listitem);
 	};
 
 	/**
@@ -252,9 +277,9 @@ function GuiHandler() {
 	 */
 	this.setNewArgumentAndGoodPointButton = function (val, isArgument) {
 		var listitems = [], gh = new GuiHandler();
-		listitems.push(gh.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true));
-		listitems.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument));
-		new GuiHandler().addListItemsToDiscussionsSpace(listitems, statementListId);
+		listitems.push(gh.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true, false, false, ''));
+		listitems.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, false, false, ''));
+		new GuiHandler().addListItemsToDiscussionsSpace(listitems);
 	};
 
 	/**
@@ -288,11 +313,20 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Setting a description in some p-tag
+	 * Setting a description in some p-tag without mouse over
 	 * @param text to set
 	 */
 	this.setDiscussionsDescription = function (text) {
-		$('#' + discussionsDescriptionId).html(text);
+		$('#' + discussionsDescriptionId).html(text).attr('title', '');
+	};
+
+	/**
+	 * Setting a description in some p-tag with mouse over
+	 * @param text to set
+	 * @param mouseover hover-text
+	 */
+	this.setDiscussionsDescription = function (text, mouseover) {
+		$('#' + discussionsDescriptionId).html(text).attr('title', mouseover);
 	};
 
 	/**
@@ -339,9 +373,11 @@ function GuiHandler() {
 	 * @param val will be used as value
 	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
 	 * @param isPremisse
+	 * @param isRelation
+	 * @param mouseover
 	 * @returns {Element|*} a type-input element in a li tag
 	 */
-	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse) {
+	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse, isRelation, mouseover) {
 		var liElement, inputElement, labelElement;
 		liElement = $('<li>');
 		liElement.attr({id: 'li_' + key});
@@ -352,11 +388,12 @@ function GuiHandler() {
 
 		inputElement.attr({name: radioButtonGroup});
 		// adding label for the value
-		labelElement = '<label for="' + key + '">' + val + '</label>';
+		labelElement = '<label title="' + mouseover + '" for="' + key + '">' + val + '</label>';
 
 		inputElement.attr({onclick: "new InteractionHandler().radioButtonChanged(this.id);"});
 		if (isStartStatement){ inputElement.addClass('start'); }
 		if (isPremisse){ inputElement.addClass('premisse'); }
+		if (isRelation){ inputElement.addClass('relation'); }
 
 		liElement.html(this.getFullHtmlTextOf(inputElement) + labelElement);
 
@@ -395,15 +432,13 @@ function GuiHandler() {
 	/**
 	 * Appends all items in an ul list and this will be appended in the 'discussionsSpace'
 	 * @param items list with al items
-	 * @param id for the ul list, where all items are appended
 	 * @param isAvoidance true, when the given data should be used as avoidance
 	 */
-	this.addListItemsToDiscussionsSpace = function (items, id, isAvoidance) {
+	this.addListItemsToDiscussionsSpace = function (items, isAvoidance) {
 		var ulElement;
 
 		// wrap all elements into a list
 		ulElement = $('<ul>');
-		ulElement.attr({id: id});
 		ulElement.append(items);
 
 		// append them to the space
@@ -661,10 +696,9 @@ function GuiHandler() {
 	 * Check whether the edit button should be visible or not
 	 */
 	this.resetAndDisableEditButton = function() {
-		var list_id, count, statement, uid;
+		var count, statement, uid;
 		count = 0;
-		list_id = $('#' + statementListId + ' > li').children().length > 0 ? statementListId : argumentListId;
-		$('#' + list_id + ' > li').children().each(function () {
+		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();
 			uid = $(this).attr("id");
 			// do we have a child with input or just the label?
@@ -685,7 +719,7 @@ function GuiHandler() {
 	 * Opens the edit statements popup
 	 */
 	this.displayEditStatementsPopup = function(){
-		var table, tr, td_text, td_buttons, list_id, edit_button, log_button, statement, uid, type;
+		var table, tr, td_text, td_buttons, edit_button, log_button, statement, uid, type;
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementSubmitButtonId).hide();
 
@@ -708,11 +742,9 @@ function GuiHandler() {
 		tr.append(td_buttons);
 		table.append(tr);
 
-		// do we have an argument or a position?
-		list_id = $('#' + statementListId + ' > li').children().length > 0 ? statementListId : argumentListId;
 		uid = 0;
 		// append a row for each statement
-		$('#' + list_id + ' > li').children().each(function (){
+		$('#' + discussionSpaceId + ' ul > li').children().each(function (){
 			statement = $(this).val();
 			uid = $(this).attr("id");
 			type = $(this).attr("class");

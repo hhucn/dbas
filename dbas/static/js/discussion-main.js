@@ -47,7 +47,6 @@ $(function () {
 	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), interactionHandler = new InteractionHandler();
 
 	guiHandler.setHandler(interactionHandler);
-	interactionHandler.setHandler(guiHandler, ajaxHandler);
 
 	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments

@@ -16,7 +16,6 @@ var addStatementContainerMainInputId = 'add-statement-container-main-input';
 var addProTextareaId = 'add-pro-textarea';
 var addConTextareaId = 'add-con-textarea';
 var adminsSpaceId = 'admins-space';
-var argumentListId = 'argument-list';
 var closeStatementContainerId = 'close-statement-container';
 var closeIslandViewContainerId = 'close-island-view-container';
 var confirmDialogAcceptBtn = 'confirm-dialog-accept-btn';
@@ -72,7 +71,6 @@ var scStyle3Id = 'sc-style-3';
 // var startDescriptionId = 'start-description';
 var stepBackButtonId = 'step-back';
 var sendNewStatementId = 'send-new-statement';
-var statementListId = 'statement-list';
 
 // id's for identifiying
 var id_left = 'left';

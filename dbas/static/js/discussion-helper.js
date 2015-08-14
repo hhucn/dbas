@@ -25,4 +25,20 @@ function Helper() {
 		a.text(text);
 		return a
 	};
+
+	/**
+	 *
+	 * @param premisse
+	 * @param conclusion
+	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut]
+	 */
+	this.createRelationsText = function(premisse, conclusion){
+		var undermine	= 'Wrong, it is not true that ' + premisse + '. [undermine]',
+		support		= 'Right, it is true that ' + premisse + '. [support]',
+		undercut	= 'Right, ' + premisse + ', but I do not believe that this is a good argument for ' + conclusion + '. [undercut]',
+		overbid		= 'Right, ' + premisse + ', and I do believe that this is a good argument for ' + conclusion + '. [overbid]',
+		rebut		= 'Right, ' + premisse + ' and I do accept that this is an argument for ' + conclusion
+					+ '. However, I have a much stronger argument for rejecting that ' + conclusion + '. [rebut]';
+		return [undermine, support, undercut, overbid, rebut];
+	}
 }

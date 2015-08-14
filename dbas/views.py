@@ -10,7 +10,7 @@ from pyramid.threadlocal import get_current_registry
 
 from .database import DBSession
 from .database.model import User, Group, Issue
-from .helper import PasswordHandler, PasswordGenerator, logger, QueryHelper, DictionaryHelper, EmailHelper, UserHandler
+from .helper import PasswordHandler, PasswordGenerator, logger, DatabaseHelper, DictionaryHelper, EmailHelper, UserHandler
 
 name = 'D-BAS'
 version = '0.23'
@@ -410,7 +410,7 @@ class Dbas(object):
 		# statement_inserted = False
 
 		# checks whether the current user is admin
-		is_admin = QueryHelper().is_user_admin(self.request.authenticated_userid)
+		is_admin = DatabaseHelper().is_user_admin(self.request.authenticated_userid)
 
 		try:
 			lang = str(self.request.cookies['_LOCALE_'])
@@ -615,7 +615,7 @@ class Dbas(object):
 		logger('get_all_users', 'def', 'main')
 		logger('get_all_users', 'check_csrf_token', str(check_csrf_token(self.request)))
 
-		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid)
+		return_dict = DatabaseHelper().get_all_users(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
@@ -630,7 +630,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('get_start_statemens', 'def', 'main')
-		return_dict = QueryHelper().get_start_statements()
+		return_dict = DatabaseHelper().get_start_statements()
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		# update timestamp
@@ -653,8 +653,8 @@ class Dbas(object):
 		try:
 			logger('get_all_arguments_for_island', 'def', 'read params')
 			uid = self.request.params['uid']
-			QueryHelper().save_track_for_user(transaction, self.request.authenticated_userid, uid)
-			return_dict = QueryHelper().get_premisses_for_statement(uid, True)
+			DatabaseHelper().save_track_for_user(transaction, self.request.authenticated_userid, uid)
+			return_dict = DatabaseHelper().get_premisses_for_statement(uid, True)
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('get_all_arguments_for_island', 'error', repr(e))
@@ -664,26 +664,51 @@ class Dbas(object):
 
 		return return_json
 
-	# ajax - get reply for a premisse
-	@view_config(route_name='ajax_reply_for_premisse', renderer='json', check_csrf=True)
-	def reply_for_premisse(self):
+	# ajax - get reply for a premisse group
+	@view_config(route_name='ajax_reply_for_premissegroup', renderer='json', check_csrf=True)
+	def reply_for_premissegroup(self):
 		"""
 		Get reply for a premisse
 		:return: dictionary with every arguments
 		"""
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		logger('reply_for_premisse', 'def', 'main')
+		logger('reply_for_premissegroup', 'def', 'main')
 
 		return_dict = {}
 		try:
 			uid = self.request.params['uid']
-			logger('reply_for_premisse', 'def', 'premissegroup ' + str(uid))
-			QueryHelper().save_premissegroup_for_user(transaction, self.request.authenticated_userid, uid)
+			logger('reply_for_premissegroup', 'def', 'premissegroup ' + str(uid))
+			DatabaseHelper().save_premissegroup_for_user(transaction, self.request.authenticated_userid, uid)
+			return_dict = DatabaseHelper().get_reply_for_premissegroup(uid, self.request.authenticated_userid)
 			return_dict['status'] = '1'
-			return_dict.update(QueryHelper().get_reply_for_premissegroup(uid, self.request.authenticated_userid,))
 		except KeyError as e:
-			logger('reply_for_premisse', 'error', repr(e))
+			logger('reply_for_premissegroup', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - get reply for a confrontation
+	@view_config(route_name='ajax_reply_for_response_of_confrontation', renderer='json', check_csrf=True)
+	def reply_for_response_of_confrontation(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('reply_for_response_of_confrontation', 'def', 'main')
+
+		return_dict = {}
+		try:
+			id = self.request.params['id']
+			logger('reply_for_response_of_confrontation', 'def', 'id ' + id)
+			return_dict = DatabaseHelper().get_reply_confrontations_response(id)
+			return_dict['status'] = '1'
+		except KeyError as e:
+			logger('reply_for_response_of_confrontation', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
@@ -714,73 +739,16 @@ class Dbas(object):
 		return_dict = {}
 		if get_data == '1':
 			logger('manage_user_track', 'def', 'get track data')
-			return_dict = QueryHelper().get_track_for_user(nickname)
+			return_dict = DatabaseHelper().get_track_for_user(nickname)
 		else:
 			logger('manage_user_track', 'def', 'remove track data')
 			return_dict['removed data'] = 'true'
-			QueryHelper().del_track_for_user(transaction, nickname)
+			DatabaseHelper().del_track_for_user(transaction, nickname)
 
 		dictionary_helper = DictionaryHelper()
 		return_json = dictionary_helper.dictionarty_to_json_array(return_dict, True)
 
 		return return_json
-
-	# # ajax - getting every argument, which is connected to the given position uid
-	# @view_config(route_name='ajax_arguments_connected_to_position_uid', renderer='json')
-	# def get_arguments_by_pos(self):
-	# 	"""
-	# 	Returns all arguments, which are connected to a position, which uid is delivered in the params
-	# 	:return: dictionary with db-rows, json-encoded
-	# 	"""
-	# 	logger('get_arguments_by_pos', 'def', 'main')
-	#
-	# 	# get every relation from current argument to an position with uid send
-	# 	uid = ''
-	# 	try:
-	# 		uid = self.request.params['uid']
-	# 	except KeyError as e:
-	# 		logger('get_arguments_by_pos', 'error', repr(e))
-	#
-	# 	logger('get_arguments_by_pos', 'def', 'uid: ' + uid)
-	#
-	# 	# get all arguments
-	# 	return_dict = QueryHelper().get_args_by_pos(uid)
-	#
-	# 	# save track, because the given uid is a position uid
-	# 	logger('getarguments_by_pos', 'def', 'saving track: position id ' + str(uid))
-	# 	QueryHelper().save_track_position_for_user(transaction, self.request.authenticated_userid, uid)
-	#
-	# 	return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
-
-	# # ajax - getting next argument for confrontation
-	# @view_config(route_name='ajax_args_for_new_discussion_round', renderer='json', check_csrf=True)
-	# def get_args_for_new_round(self):
-	# 	"""
-	# 	Returns arguments for a new confrontation and justification
-	# 	:return: dictionary with db-rows, json-encoded
-	# 	"""
-	# 	logger('get_args_for_new_round', 'def', 'main')
-	#
-	# 	uid = ''
-	# 	try:
-	# 		uid = self.request.params['uid']
-	# 		logger('get_args_for_new_round', 'def', 'request data: uid ' + str(uid))
-	# 	except KeyError as e:
-	# 		logger('get_args_for_new_round', 'error', repr(e))
-	#
-	# 	query_helper = QueryHelper()
-	# 	# save only, when we are not stepping back and results should be based on the track
-	# 	# saving track
-	# 	logger('get_args_for_new_round', 'def', 'saving track: argument id ' + str(uid))
-	# 	query_helper.save_track_argument_for_user(transaction, self.request.authenticated_userid, uid)
-	#
-	# 	# get data
-	# 	return_dict = query_helper.get_args_for_new_round(self.request.authenticated_userid, uid)
-	# 	return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
 
 	# ajax - send new start statement
 	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
@@ -798,7 +766,7 @@ class Dbas(object):
 			statement = self.request.params['statement']
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
 			return_dict['success'] = '1'
-			return_dict['statement'] = QueryHelper().set_statement(transaction, statement, self.request.authenticated_userid, True)
+			return_dict['statement'] = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True)
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['success'] = '-1'
@@ -806,26 +774,6 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
-
-	# # ajax - go one step back
-	# @view_config(route_name='ajax_one_step_back', renderer='json', check_csrf=True)
-	# def get_one_step_back(self):
-	# 	logger('getone_step_back', 'def', 'main')
-	#
-	# 	return_dict = QueryHelper().get_data_for_one_step_back(self.request.authenticated_userid)
-	# 	return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
-
-	# # ajax - getting all arguments for the island view
-	# @view_config(route_name='ajax_all_arguments_for_island', renderer='json', check_csrf=True)
-	# def get_all_arguments_for_island(self):
-	# 	logger('get_all_arguments_for_island', 'def', 'main')
-	#
-	# 	return_dict = QueryHelper().get_args_for_island(self.request.authenticated_userid)
-	# 	return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
-	#
-	# 	return return_json
 
 	# ajax - getting all arguments for the island view
 	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=True)
@@ -845,7 +793,7 @@ class Dbas(object):
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
 
-		return_dict = QueryHelper().get_logfile_for_statement(uid)
+		return_dict = DatabaseHelper().get_logfile_for_statement(uid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
@@ -870,7 +818,7 @@ class Dbas(object):
 		except KeyError as e:
 			logger('set_correcture_of_statement', 'error', repr(e))
 
-		return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
+		return_dict = DatabaseHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json

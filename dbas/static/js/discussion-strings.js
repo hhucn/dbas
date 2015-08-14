@@ -29,7 +29,7 @@ var sentencesOpenersForArguments = [
 	//"Okay, you have got the opinion: ",
 	//"Interesting, your opinion is: ",
 	//"You have said, that: ",
-	"So your opinion is: "];
+	"So your opinion is that "];
 var sentencesOpenersArguingWithAgreeing = [
 	"I agree because ",
 	"Therefore "];
@@ -49,7 +49,9 @@ var disagreeBecause = "I disagree because ";
 var firstOneText = "You are the first one, who said: ";
 var firstPositionText = "You are the first one in this discussion!";
 var goodPointTakeMeBackButtonText = "I agree, that is a good argument! Take me one step back.";
-var othersHaveArguedThat = "However, other users argued that:";
+var othersHaveArguedThat = "However, other users argued that";
+var otherParticipantAgree = "Other partcipants agree, that ";
+var otherParticipantDisagree = "Other partcipants disagree, that ";
 var islandViewHeaderText = "These are all arguments for: ";
 var newPremisseRadioButtonText = "None of the above! Let me state my own reason(s)!";
 var newConclusionRadioButtonText = "Neither of the above, I have a different idea!";

@@ -11,22 +11,15 @@
 
 function InteractionHandler() {
 	'use strict';
-	var guiHandler, ajaxHandler;
-
-	this.setHandler = function (externGuiHandler, externAjaxHandler) {
-		guiHandler = externGuiHandler;
-		ajaxHandler = externAjaxHandler;
-	};
 
 	/**
 	 * Handler when an start statement was clicked
 	 * @param id of the button
 	 */
 	this.startStatementButtonWasClicked = function (id) {
-		var ajaxHandler = new AjaxHandler();
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		ajaxHandler.getPremisseForStatement(id);
+		new AjaxHandler().getPremisseForStatement(id);
 	};
 
 	/**
@@ -34,23 +27,21 @@ function InteractionHandler() {
 	 * @param id of the button
 	 */
 	this.startPremisseButtonWasClicked = function (id) {
-		var ajaxHandler = new AjaxHandler();
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		ajaxHandler.getReplyForPremisseGroup(id);
+		new AjaxHandler().getReplyForPremisseGroup(id);
 	};
 
 	/**
-	 * Handler when an argument button was clicked
+	 * Handler when an relation button was clicked
 	 * @param id of the button
 	 */
-	/*
-	this.argumentButtonWasClicked = function (id) {
-		var ajaxHandler = new AjaxHandler();
+	this.startRelationButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		ajaxHandler.getNewArgumentationRound(id);
-	};*/
+		$('#' + discussionsDescriptionId).empty();
+		new AjaxHandler().handleReplyForResponseOfConfrontation(id);
+	};
 
 	/**
 	 * Handler when an position button was clicked
@@ -69,7 +60,7 @@ function InteractionHandler() {
 	 * Method for some style attributes, when the radio buttons are chaning
 	 */
 	this.radioButtonChanged = function () {
-		var guiHandler = new GuiHandler(), text, isStart = $('#' + statementListId + ' li input').hasClass('start');
+		var guiHandler = new GuiHandler(), text, isStart = $('#' + discussionSpaceId + ' ul li input').hasClass('start');
 		if ($('#' + addStatementButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).hide();
 
@@ -162,10 +153,10 @@ function InteractionHandler() {
 				this.startStatementButtonWasClicked(id, value);
 			} else if (radioButton.hasClass('premisse')) {
 				this.startPremisseButtonWasClicked(id, value);
-			} else if (radioButton.hasClass('argument')) {
-				this.argumentButtonWasClicked(id, value);
+			} else if (radioButton.hasClass('relation')) {
+				this.startRelationButtonWasClicked(id, value);
 			} else {
-				this.positionButtonWasClicked(id, value);
+				alert('new class in InteractionHandler: radioButtonWasChoosen')
 			}
 		}
 
@@ -194,9 +185,25 @@ function InteractionHandler() {
 	this.callbackIfDoneReplyForPremisse = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			gh.setJsonDataAsFirstConfrontation(parsedData)
+			gh.setJsonDataAsFirstConfrontation(parsedData);
 		} else {
-			alert('error in callbackIfDoneReplyForPremisse')
+			alert('error in callbackIfDoneReplyForPremisse');
+		}
+		gh.resetAndDisableEditButton();
+	};
+
+	/**
+	 * Callback for the ajax method handleReplyForResponseOfConfrontation
+	 * @param data
+	 */
+	this.callbackIfDoneHandleReplyForResponseOfConfrontation = function (data) {
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		if (parsedData.status == '1') {
+			gh.setJsonDataAsConfrontationReasoning(parsedData);
+		} else if (parsedData.status == '0') {
+			alert('ohh');
+		} else {
+			alert('error in callbackIfDoneHandleReplyForResponseOfConfrontation');
 		}
 		gh.resetAndDisableEditButton();
 	};

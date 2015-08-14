@@ -74,7 +74,8 @@ def main(global_config, **settings):
 	# main stuff
 	config.add_route('ajax_get_start_statements', '/ajax_get_start_statements')
 	config.add_route('ajax_premisses_for_statement', '/ajax_premisses_for_statement')
-	config.add_route('ajax_reply_for_premisse', '/ajax_reply_for_premisse')
+	config.add_route('ajax_reply_for_premissegroup', '/ajax_reply_for_premissegroup')
+	config.add_route('ajax_reply_for_response_of_confrontation', '/ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_set_new_start_statement', '/ajax_set_new_start_statement')
 
 	# settings
