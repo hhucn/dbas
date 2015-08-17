@@ -1,5 +1,33 @@
 0.0 (14.04.2015)
 ---
-
 -  Initial version
 -  Starting the project
+
+0.1 (09.06.2015)
+---
+- First milestone
+- Suitable discussion is missing
+
+0.2 (25.06.2015)
+---
+- Options for adding statements
+- Options for editing statement
+- Added an email address
+- Sessions management and cache region support with beaker
+- CSRF prevention
+
+0.21 (07.07.2015)
+---
+- Ready for production
+
+0.22 (07.07.2015)
+---
+- smaller changes of design aspects
+
+0.23 (23.07.2015)
+---
+- i18n / l10n
+
+0.30(23.07.2015)
+---
+- new datastructure

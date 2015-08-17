@@ -1,26 +1,23 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="layout">
+	<tal:block metal:fill-slot="content_page">
 
-<head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_404.css')}" rel="stylesheet">
-</head>
+		<head>
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_404_logout.css')}" rel="stylesheet">
+		</head>
 
-<body>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-md-3"></div>
-			<div class="col-md-6">
-				<div class="content">
-					<h1><span class="font-semi-bold">404 Error</span></h1>
-				<p class="lead font-normal">The page you are looking for could not be found.</p>
+		<div class="center text-center">
+			<div class="error">
+				<h1><span class="font-semi-bold" i18n:translate="404">404 Error</span></h1>
+				<p class="lead font-normal"><span i18n:translate="404_text_part1">The page</span>&quot;<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; <span i18n:translate="404_text_part2">for could not be found.</span>
+				</p>
 				<br>
-				<input class="button" type="submit" onClick="self.location.href='/'" value="Let's go home!" />
-				</div>
-			<div class="col-md-3"></div>
+				<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" i18n:translate="lets_go_home" />
 			</div>
 		</div>
-	</div>
-	
-</body>
-<html>
+	</tal:block>
+</tal:block>
+
+</html>

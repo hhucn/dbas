@@ -29,8 +29,13 @@ coverage.xml
 *.sqlite
 
 # Sphinx documentation
-docs/_build/
+# docs/
 
 # Misc
 .python-version
 *.sh
+*.bak
+
+# Pycharm
+.idea/
+data/

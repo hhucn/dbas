@@ -1,0 +1,131 @@
+#navbar-left {
+	visibility: hidden;
+}
+
+.box {
+	display: inline-block;
+	margin: 50px;
+}
+
+.newscontainer {
+	display: inline-block;
+	padding-left: 1%;
+	padding-right: 1%;
+	padding-top: 1%;
+	padding-bottom: 1%;
+	margin: 1%;
+	vertical-align: top;
+}
+
+.newscontainer:hover {
+	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
+	transition: .5s ease;
+}
+
+.share-icon {
+	float: right;
+	padding: 1.3em;
+	opacity: 0.5;
+	transition: 1s ease;
+}
+
+.share-icon:hover {
+	opacity: 1.0;
+	transition: .2s ease;
+}
+
+.share-table,
+.share-table ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	float: right;
+}
+
+.share-table li ul {
+	display: none;
+	opacity: 0.5;
+}
+
+.share-table li ul li {
+	display: inline;
+	padding: 1em;
+}
+
+.share-table li:hover ul {
+	display: block;
+	float: right;
+	opacity: 1.0;
+}
+
+.share-def {
+	background: url('../images/glyphicons_free/glyphicons/glyphicons-309-share-alt.png') no-repeat 10px 10px;
+}
+
+.share-facebook {
+	background: url('../images/glyphicons_free/glyphicons_social/social-31-facebook.png') no-repeat 10px 10px;
+}
+
+.share-google {
+	background: url('../images/glyphicons_free/glyphicons_social/social-3-google-plus.png') no-repeat 10px 10px;
+}
+
+.share-twitter {
+	background: url('../images/glyphicons_free/glyphicons_social/social-32-twitter.png') no-repeat 10px 10px;
+}
+
+.share-mail {
+	background: url('../images/glyphicons_free/glyphicons_social/social-40-e-mail.png') no-repeat 10px 10px;
+}
+
+.share-facebook:hover {
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-31-facebook.png') no-repeat 10px 10px;
+}
+
+.share-google:hover {
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-3-google-plus.png') no-repeat 10px 10px;
+}
+
+.share-twitter:hover {
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-32-twitter.png') no-repeat 10px 10px;
+}
+
+.share-mail:hover {
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail.png') no-repeat 10px 10px;
+}
+
+@media only screen and (max-width: 480px) {
+	/* Smartphone view: 1 tile */
+	
+	.newscontainer {
+		width: 98%;
+	}
+}
+
+@media only screen and (max-width: 649px) and (min-width: 481px) {
+	.newscontainer {
+		width: 98%;
+	}
+}
+
+@media only screen and (max-width: 650px) and (min-width: 1051px) {
+	.newscontainer {
+		width: 98%;
+	}
+}
+
+@media only screen and (max-width: 1050px) and (min-width: 651px) {
+	/* Small desktop / ipad view: 3 tiles */
+	
+	.newscontainer {
+		width: 47%;
+	}
+}
+
+@media only screen and (min-width: 1051px) {
+	/* Medium desktop: 4 tiles */
+	
+	.newscontainer {
+		width: 30%;
+	}
+}

@@ -1,0 +1,97 @@
+# 
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2015-07-17 08:24+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 3.10\n"
+
+#. Default: Settings of:
+#: ./settings.pt:22
+msgid "settings"
+msgstr ""
+
+#. Default: Information about yourself
+#: ./settings.pt:27
+msgid "info_about_yourself"
+msgstr ""
+
+#. Default: Firstname
+#: ./settings.pt:31
+msgid "firstname"
+msgstr ""
+
+#. Default: Surname
+#: ./settings.pt:38
+msgid "surname"
+msgstr ""
+
+#. Default: Nickname
+#: ./settings.pt:45
+msgid "nickname"
+msgstr ""
+
+#. Default: Group
+#: ./settings.pt:59
+msgid "group"
+msgstr ""
+
+#. Default: Your decisions
+#: ./settings.pt:68
+msgid "decisions"
+msgstr ""
+
+#. Default: Success:
+#: ./settings.pt:79
+msgid "success"
+msgstr ""
+
+#. Default: Error:
+#: ./settings.pt:84
+msgid "error"
+msgstr ""
+
+#. Default: Change your password
+#: ./settings.pt:90
+msgid "change_password"
+msgstr ""
+
+#. Default: Old password
+#: ./settings.pt:93
+msgid "old_password"
+msgstr ""
+
+#. Default: New Password
+#: ./settings.pt:97
+msgid "new_password"
+msgstr ""
+
+#. Default: Strength
+#: ./settings.pt:101
+msgid "strength"
+msgstr ""
+
+#. Default: New Password (confirm)
+#: ./settings.pt:107
+msgid "new_password_confirm"
+msgstr ""
+
+#. Default: Great:
+#: ./settings.pt:121
+msgid "great"
+msgstr ""
+
+#. Default: Your password was changed
+#: ./settings.pt:121
+msgid "password_changed"
+msgstr ""

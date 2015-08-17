@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+
+<div id="header">
+	<div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/" title="Home"></a>
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
+					<span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+
+			<div class="collapse navbar-collapse navbar-menubuilder">
+				<ul id="navbar-left" class="nav navbar-nav navbar-left">
+					<li id="home-hook">
+						<a href="#home-template" title="Go to the top">Home</a>
+					</li>
+					<li id="description-hook">
+						<a href="#description-template" title="Go to Description" i18n:translate="description">Description</a>
+					</li>
+					<li id="features-hook">
+						<a href="#features-template" title="Go to Features" i18n:translate="features">Features</a>
+					</li>
+					<li id="about-hook"><a href="#about-template" title="Go to About" i18n:translate="about">About</a>
+					</li>
+					<li id="research-hook">
+						<a href="#research-template" title="Go to Research" i18n:translate="research">Research</a>
+					</li>
+				</ul>
+
+				<ul id="navbar-right" class="nav navbar-nav navbar-right">
+
+					<li id="content-link" tal:condition="logged_in">
+						<a href="${request.application_url}/content" title="Get the party started">
+							<img id="header_letsgo" class="glyphicon-local">&thinsp;<span i18n:translate="lets_go">Let's go</span>
+						</a>
+					</li>
+
+					<li id="news-link">
+						<a href="${request.application_url}/news" title="News about D-BAS">
+							<img id="header_news" class="glyphicon-local">&thinsp;<span i18n:translate="news">News</span>
+						</a>
+					</li>
+
+					<li id="contact-link">
+						<a href="${request.application_url}/contact" title="Get in touch with us">
+							<img id="header_contact" class="glyphicon-local">&thinsp;<span i18n:translate="contact">Contact</span>
+						</a>
+					</li>
+
+					<li id="login-link" tal:condition="not:logged_in">
+						<a href="${request.application_url}/login" title="Login">
+							<img id="header_login" class="glyphicon-local">&thinsp;<span i18n:translate="login">Login</span>
+						</a>
+					</li>
+
+					<li tal:condition="logged_in">
+						<li class="dropdown">
+							<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" title="User options"><span tal:replace="logged_in" />
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="${request.application_url}/settings" title="Settings">
+										<img id="header_settings" class="glyphicon-local">&thinsp;<span i18n:translate="settings">Settings</span>
+									</a>
+								</li>
+								<li>
+									<a href="${request.application_url}/logout" title="Logout">
+										<img id="header_logout" class="glyphicon-local">&thinsp;<span i18n:translate="logout">Logout</span>
+									</a>
+								</li>
+							</ul>
+						</li>
+					</li>
+
+					<li class="dropdown">
+						<a class="dropdown-toggle" name="show-more-toggle" data-toggle="dropdown" href="#more" title="Show more"><span i18n:translate="more">More</span>
+								<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li>
+								<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
+									<img id="header_author" class="glyphicon-local">&thinsp;<span i18n:translate="author">Author</span>
+								</a>
+							</li>
+							<li>
+								<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
+									<img id="header_licence" class="glyphicon-local">&thinsp;<span i18n:translate="licence">Licence</span>
+								</a>
+							</li>
+							<li>
+								<a id="link_popup_privacy" href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
+									<img id="header_privacy" class="glyphicon-local">&thinsp;<span i18n:translate="privacy_policy">Privacy Policy</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#language" title="Switch
+																																											language"><span i18n:translate="language">Language</span>
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag_ge">Deutsch</a>
+							</li>
+							<li>
+								<a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag_en">English</a>
+							</li>
+							<!--
+							<li>
+								<a class="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/spain-flag-16.png')}" alt="flag_es">Espa&ntilde;ol</a>
+							</li>
+							<li>
+								<a class="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/sweden-flag-16.png')}" alt="flag_sw">Svensk</a>
+							</li>
+							-->
+						</ul>
+					</li>
+
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+</html>

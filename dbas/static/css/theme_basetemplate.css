@@ -1,10 +1,27 @@
-@import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
+@import url(https://fonts.googleapis.com/css?family=Indie+Flower);
 body {
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: 300;
 	color: #000;
-	background: #eee;
-	<!--#006ab3-->
+	background: url('../images/bg4.png') repeat fixed center;
+	font-size: 14px;
+	/* background: #b3b3b3; */
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+/* new scale for bg for retina displays */
+
+@media screen and (min-width: 2560px),
+screen and (min-height: 1600px) {
+	body {
+		background: url('../images/bg5.png') repeat fixed center;
+	}
 }
 
 h1,
@@ -13,20 +30,64 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 }
 
 p {
 	font-weight: 300;
 }
 
-#home-hook,
-#description-hook,
-#features-hook,
-#about-hook,
-#research-hook {
-	visibility: hidden;
+a {
+	color: #006ab3;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.ajaxloader {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: rgba( 0, 0, 0, 0.3) url('../images/ajax-loader-pacman.gif') 50% 50% no-repeat;
+}
+
+body.loading {
+	overflow: hidden;
+}
+
+body.loading .ajaxloader {
+	display: block;
+}
+
+::-webkit-input-placeholder {
+	/* WebKit browsers */
+	
+	color: #bcbcbc;
+}
+
+:-moz-placeholder {
+	/* Mozilla Firefox 4 to 18 */
+	
+	color: #bcbcbc;
+	opacity: 1;
+}
+
+::-moz-placeholder {
+	/* Mozilla Firefox 19+ */
+	
+	color: #bcbcbc;
+	opacity: 1;
+}
+
+:-ms-input-placeholder {
+	/* Internet Explorer 10+ */
+	
+	color: #bcbcbc;
 }
 
 .font-normal {
@@ -44,6 +105,7 @@ p {
 .back-to-top {
 	position: fixed;
 	bottom: 1em;
+	z-index: 10;
 	right: 1em;
 	padding: 2em;
 	display: none;
@@ -61,26 +123,207 @@ p {
 	text-align: left;
 }
 
-.container {
-	margin-top: 75px;
+.container,
+.first-container {
+	margin-top: 50px;
 	padding-left: 50px;
-	background: #fff;
+	padding-right: 50px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	margin-bottom: 10px;
+	border-radius: 2px;
+	background: #f4f4f4;
+	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
+}
+/**
+comment .container and wrap each container with <div class="coloured-div">
+#content .coloured-div:nth-child(odd) {}
+#content .coloured-div:nth-child(even) {background: #d9dadb;}
+**/
+
+#navigation-minimap-container {
+	border-radius: 2px;
+	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
+	background: #f4f4f4;
+	padding: 10px;
+	margin: 10px;
+}
+
+.first-container {
+	margin-top: -20px;
+}
+
+.first-container:hover,
+.container:hover {
+	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
+	transition: .5s ease;
+}
+
+.jsdiabled {
+	z-index: 2;
+	position: fixed;
+	margin-top: -40px;
+	width: 98%;
+	text-align: center;
+	color: #fff;
+	background: url('../images/bg_diagonals1.png') repeat fixed center;
+	left: auto;
+	right: auto;
+	padding: 5px;
+	margin-left: 1%;
+	margin-right: 1%;
 	border-radius: 4px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
 
-#jsdiabled {
-	text-align: center;
-	background-color: #a00;
-	padding-bottom: 10px;
+.button:hover {
+	transition: 0.5s all;
 }
 
-@media (max-width: 767px) {
+.modal-title {
+	font-family: "Indie Flower", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 30px;
+}
+
+.links {
+	float: none;
+	text-align: center;
+	margin-bottom: 15px;
+	margin-right: 15px;
+	color: #000;
+}
+
+.links ul {
+	display: inline;
+	padding: 0px;
+	margin: 0px;
+}
+
+.links ul li {
+	list-style: none;
+	display: inline;
+	margin: 0 10px;
+	text-align: center;
+}
+
+.links ul li a:hover {
+	text-decoration: underline;
+	color: #006ab3;
+}
+
+.content,
+.lead,
+.font-normal,
+.links ul li a,
+.links ul li .glyphicon-local {
+	color: #000;
+	font-size: 18px;
+}
+
+#footer,
+#footer > a,
+#footer .links ul li a,
+#footer .links ul li .glyphicon-local {
+	font-size: 12px;
+}
+
+.list {
+	text-align: left;
+}
+
+.project {
+	text-transform: uppercase;
+	display: inline;
+}
+
+.glyphicon-local {
+	width: 15px;
+}
+
+.glyphicon-local:hover {
+	-webkit-filter: invert(100%);
+}
+
+.icon-badge:hover {
+	-webkit-filter: saturate(200%);
+}
+
+#additional-wrapper {
+	min-height: 100%;
+	position: relative;
+}
+
+#wrapper-content {
+	padding-top: 100px;
+	padding-bottom: 100px;
+	/* Height of the footer element */
+}
+
+#footer {
+	position: absolute;
+	width: 100%;
+	margin-top: 50px;
+	height: 50px;
+	padding-top: 15px;
+	background: #d9dadb;
+	border-top: thin solid #006ab3;
+	bottom: 0;
+	left: 0;
+}
+
+#footer-impressum {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-158-show-thumbnails-with-lines.png) no-repeat;
+}
+
+#footer-glyphicons {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-249-asterisk.png) no-repeat;
+}
+
+#header_letsgo {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-551-erase.png) no-repeat;
+}
+
+#header_news {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat;
+}
+
+#header_contact {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-310-comments.png) no-repeat;
+}
+
+#header_login {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-387-log-in.png) no-repeat;
+}
+
+#header_settings {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-281-settings.png) no-repeat;
+}
+
+#header_logout {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-388-log-out.png) no-repeat;
+}
+
+#header_author {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
+}
+
+#header_licence {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-444-floppy-disk.png) no-repeat;
+}
+
+#header_privacy {
+	content: url(../images/glyphicons_free/glyphicons/glyphicons-499-sunglasses.png) no-repeat;
+}
+
+@media (max-width: 768px) {
 	.container {
 		margin-left: 10px;
 		margin-right: 10px;
+	}
+	.links ul li {
+		display: block;
+	}
+	.lead {
+		font-size: 18px;
 	}
 }

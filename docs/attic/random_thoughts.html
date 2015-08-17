@@ -1,0 +1,285 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Random Thoughts &mdash; D-BAS 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="D-BAS 0.0.1 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../home.html" class="fa fa-home"> D-BAS</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="simple">
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../home.html">D-BAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../home.html">Docs</a> &raquo;</li>
+      
+    <li>Random Thoughts</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../_sources/attic/random_thoughts.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="random-thoughts">
+<h1>Random Thoughts<a class="headerlink" href="#random-thoughts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="object-hierarchy">
+<h2>object hierarchy<a class="headerlink" href="#object-hierarchy" title="Permalink to this headline">¶</a></h2>
+<p>must be optional: when posting a new document into a pool, the server
+does not consider the structure of the path of the pool, but the type
+of the supergraph node denoted by the path.  this way, a user can
+decide to install an a3 instance that has transparent rest paths or
+not, and someone can implement a new backend that does not support
+transparent paths.  rationale: there is a trade-off between data
+security requirements (&#8220;information must not be leaked through URLs&#8221;)
+and usability requirements (&#8220;URLs must be informative&#8221;).  users should
+be able to make different decisions.</p>
+<p>authorisation management: a server implementation MAY require an
+object hierarchy for authorization management purposes, but the
+protocol MUST be independent of this in the sense that it must be
+possible to implement a trusting server that that allows full
+read/write access to the complete supergraph for everybody under
+unstructured paths.</p>
+</div>
+<div class="section" id="lazy-bulk-loading">
+<h2>lazy / bulk loading<a class="headerlink" href="#lazy-bulk-loading" title="Permalink to this headline">¶</a></h2>
+<p>should there be rest machinery for pulling supergraph nodes partially?
+no: keeping nodes atomic reduces protocol complexity enormously.  it
+is in the responsibility of the data model designer that nodes are
+never getting too large.  if there is a list of outgoing edges in a
+node and that list is growing too big, the model designer can choose
+to replace the list by a reference, and move the actual list into the
+list node that reference points to.</p>
+<p>bulk get / post: yes, we want that.</p>
+<p>should the supergraph structure be kept intact on the client side?
+yes!  if the client wants to submit an update, it needs to know where
+nodes end and edges start, and cannot have a molten pile of nodes in
+one json object.  (the following client implementation approach is
+flawed: supergraph node references are path strings, and following a
+references is implemented by ajax-getting that path and replacing the
+path by it in the object.  this would give the client enough
+information to render the GUI, but when the nodes are to be posted
+back to the server because they have changed, the client has no way of
+knowing which attributes were originally internal to one node, and
+which were edges.)</p>
+</div>
+<div class="section" id="marker-vs-property-sheet-interfaces">
+<h2>marker vs. property sheet interfaces<a class="headerlink" href="#marker-vs-property-sheet-interfaces" title="Permalink to this headline">¶</a></h2>
+<p>property sheet interfaces are called e.g.
+&#8220;adhocracy_core.propertysheet.ILikeable&#8221;, marker interfaces e.g.
+&#8220;adhocracy_core.content.IProposal&#8221;.</p>
+<p>backend implementation: the goal is that schemas should be defined in
+a maximally concise way.  colander schema, management view, rest view,
+etc. are generated automatically, but not magically from that concise
+representation.</p>
+<p>concise schemas can have the following forms:</p>
+<blockquote>
+<div><ul class="simple">
+<li>&#8220;propsheet1 = {field1: type1, field2: type2, ...}&#8221;.</li>
+<li>&#8220;marker1 = [propsheet1, propsheet5, propsheet2, ...]&#8221;</li>
+<li>inheritance for markers: &#8220;markerx = markera + markerb + {propsheet12}&#8221;.</li>
+<li>inheritance for propsheets: &#8220;propsheet12 = propsheet1 + {field18: type18}&#8221;.</li>
+</ul>
+</div></blockquote>
+<p>some of this is provided by colander.  ideally, the backend could be
+made much less redundant by using colander more masterly.</p>
+</div>
+<div class="section" id="structure-of-the-json-objects-communicated-over-the-rest-api">
+<h2>structure of the json objects communicated over the rest api<a class="headerlink" href="#structure-of-the-json-objects-communicated-over-the-rest-api" title="Permalink to this headline">¶</a></h2>
+<p>since substance d is used as backend platform, the data model follows
+zope concepts and conventions.  but there is more.</p>
+<p>usually, a rest resource corresponds to a supergraph node (there may
+be other resources). it has the following structure:</p>
+<p>{ content-type: ..., path: ..., data: ... }</p>
+<p>content-type is a string that contains the type stored under data.  it
+may be &#8220;adhocracy_core.content.I*&#8221; or the typeof-string-representation of a
+javascript primitive type.  in this case, the data attribute will
+contain a json literal, not an object or a list of objects.  (what
+about &#8216;Object&#8217;?  &#8216;Function&#8217;?)</p>
+<p>path is a string that is the key of the resource.</p>
+<p>data is everything else.  it may be missing, in which case an ajax
+call will be triggered by the client if and when necessary, along the
+lines of:</p>
+<p>var x = { content-type: ..., path: ... };</p>
+<p>// force:
+x.data = $.ajax(&#8216;GET&#8217;, x.path).data;</p>
+<p>once the data attribute is retrieved, it consists of an object that
+has one attribute for each property sheet interface implemented by the
+resource.  the value of each property sheet interface attribute
+depends entirely on the data model, except that it may contain further
+lazily fetchable resources.</p>
+<p>note now that the content-type may NOT be
+&#8220;adhocracy_core.propertysheet.I*&#8221;: a resource (as it&#8217;s usually a supergraph
+node) implements a marker interface, and contains all data required by
+all property sheet interfaces subsumed in that marker interface.
+marker interfaces can be viewed as property sheet interface sets.
+since property sheet interfaces retrieval is never delayed like
+retrieval of referenced resources, there is no need to wrap them in an
+object containing a content-type, a path, and a data attribute.</p>
+<p>&#8220;content-type&#8221; is a reserved keyword in this api because of the
+special way it can be used to control selecting more resources for
+transport over the rest api (in either direction).</p>
+<p>the meta attribute from the prototype will go away.  some of the
+information it contains can move to the data section of resource
+objects, some is unnecessary, and content-type and path are already
+taken care of.</p>
+</div>
+<div class="section" id="dynamic-content">
+<h2>dynamic content<a class="headerlink" href="#dynamic-content" title="Permalink to this headline">¶</a></h2>
+<p>a resource / supergraph node is a python object.  the last chapter
+explains how to send attributes of those python objects to the client.
+what about the methods?</p>
+<p>the rest api is indifferent towards where the json object in the GET
+response is coming from (specifically whether it is from a database
+lookup or some on-demand computation).  for the client, there is
+therefore no difference between an attribute and a method: in both
+cases, some property sheet interface attribute contains an attribute
+with a content object missing the data attribute as value.  in the
+first case, if the path is called, a lookup will take place; in the
+second, a python method will be called.</p>
+<p>only that&#8217;s not true.  there are at least two differences: methods can
+have arguments, but attributes can&#8217;t.  and there is no way of telling
+in general whether invoking a method twice yields the same return
+value.</p>
+<p>rest apis do not provide any mechanism for sending functions or
+function calls to the server for evaluation, so there is no way of
+passing arguments to a method to be invoked.  (of course, there are
+many obvious ways: the arguments just need to be encoded in the url
+somehow.  but that would be rest-ish, not rest.)</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Tobias Krauthoff.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

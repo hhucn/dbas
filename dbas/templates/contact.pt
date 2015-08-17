@@ -1,33 +1,83 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}" metal:use-macro="load: basetemplate.pt">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="layout">
+	<tal:block metal:fill-slot="content_page">
 
-<head>
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_contact.css')}" rel="stylesheet">
-	<link type="text/css" href="${request.static_url('dbas:static/css/contact.css')}" rel="stylesheet">
-</head>
+		<head>
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_contact_login.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
+		</head>
 
-<body>
+		<div class="contact form">
+			<h2 i18n:translate="contact_header_1">Get In Touch With Us</h2>
+			<h5 i18n:translate="contact_header_2">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</h5>
+			<br>
+			<form action="/contact" method="post" class="form-horizontal">
+				<input type="hidden" name="csrf_token" value="${csrf_token}">
 
-	<div class="contact">
-		<h2>Get In Touch With Us</h2>
-		<p>Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</p>
-		<form action="/contact" method="post">
-			<h3>Your Name</h3>
-			<input type="text" class="user active" value="example : Tobias Krauthoff" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : Tobias Krauthoff';}">
-			<h3>Your Phone Number</h3>
-			<input type="text" class="tel" value="example : +49 (0)211 81-13461" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : +49 (0)211 81-13461';}">
-			<h3>Your Email Address</h3>
-			<input type="text" class="email" value="example : krauthoff@cs.uni-duesseldorf.de" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : krauthoff@cs.uni-duesseldorf.de';}">
-			<h3>Your Message</h3>
-			<textarea class="i" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'example : I’d like to say “good job!”';}">example : I’d like to say “good job!”</textarea>
-			<input type="submit" value="Submit Your message" />
-		</form>
-	</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" i18n:translate="name_req">Your Name (required)</label>
+					<div class="col-sm-9">
+						<input type="text" class="name active" name="name" placeholder="example: Tobias Krauthoff" tabindex="1" autofocus autocomplete="on" value="${name}">
+					</div>
+				</div>
 
-	<div class="copyright">
-		<p>Template by <a href="http://w3layouts.com/"> W3layouts </a>
-		</p>
-	</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" i18n:translate="mail_req">Your E-Mail (required)</label>
+					<div class="col-sm-9">
+						<input type="email" class="email" name="mail" placeholder="example: krauthoff@cs.uni-duesseldorf.de" tabindex="2" autocomplete="on" value="${mail}">
+					</div>
+				</div>
 
-</body>
-<html>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" i18n:translate="phone_no">Your Phone Number</label>
+					<div class="col-sm-9">
+						<input type="tel" class="tel" name="phone" autocomplete="on" placeholder="example: +49 (0)211 81-13461" tabindex="3" autocomplete="on" value="${phone}">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label" i18n:translate="message_req">Your Message (required)</label>
+					<div class="col-sm-9">
+						<textarea type="text" class="content" name="content" autocomplete="on" placeholder="example: I’d like to say good job!" tabindex="4" value="${content}"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label" i18n:translate="spam_req">Anti-Spam (required)</label>
+					<div class="col-sm-9">
+						<input type="text" id="spam-input" class="spam" name="spam" autocomplete="on" placeholder="What is one plus three?" tabindex="5" value="${spam}">
+					</div>
+				</div>
+
+				<!--
+			<div id="alert-message" class="alert alert-danger alert-error">
+				<a href="" class="close" data-dismiss="alert">&times;</a>
+				<strong>Error!</strong> A problem has been occurred with your anti-spam message.
+			</div>
+			-->
+
+				<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<strong i18n:translate="warning">Warning!</strong>
+					<div id="warning-message-text"><span tal:replace="message" />
+					</div>
+				</div>
+
+
+				<div tal:condition="was_message_send" class="alert alert-success" role="alert">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span class="sr-only" i18n:translate="great">Great:</span> <span i18n:translate="message_sent">Your message was sent.</span>
+				</div>
+
+				<input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+			</form>
+			<!--
+<script type="text/javascript" src="${request.static_url('dbas:static/js/contact.js')}"></script>
+-->
+		</div>
+	</tal:block>
+	</tal:block>
+</html>

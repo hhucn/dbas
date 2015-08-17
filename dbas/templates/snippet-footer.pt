@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+
+<div id="footer">
+	<div class="col-md-12">
+		<div class="row links">
+			<ul>
+				<li>
+					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;&#160;
+					<img id="footer-impressum" class="glyphicon-local">&#160;&#160;
+					<a href="${request.application_url}/imprint" i18n:translate="imprint">Imprint</a>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<span i18n:translate="icons_by">Icons by</span>&#160;&#160;<img id="footer-glyphicons" class="glyphicon-local">&#160;
+					<a href="http://glyphicons.com/">glyphicons</a>,&thinsp;
+					<a href="https://www.iconfinder.com/iconsets/ballicons-free">ballicons</a>,&thinsp;
+					<a href="https://www.iconfinder.com/iconsets/ballicons-2-free">ballicons-2</a>,&thinsp;
+					<a href="https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons">keynote-and-powerpoint-icons</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+</html>
