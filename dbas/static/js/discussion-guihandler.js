@@ -51,10 +51,8 @@ function GuiHandler() {
 		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ': <b>' + text + '</b>', text, text);
 
 		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
-			//alert("1: " + key + " " + val);
 			text = '';
 			$.each(val, function setJsonDataToContentAsConclusionEachVal(valkey, valval) {
-				//alert("2: " + valkey + " " + valval);
 				if (text=='')
 					text = 'Because ';
 				else
@@ -74,7 +72,7 @@ function GuiHandler() {
 	};
 
 	/**
-	 *
+	 * Sets given data in the list of the discussion space
 	 * @param jsonData
 	 */
 	this.setJsonDataAsFirstConfrontation = function (jsonData) {
@@ -116,15 +114,15 @@ function GuiHandler() {
 	};
 
 	/**
-	 *
+	 * Sets given data in the list of the discussion space
 	 * @param jsonData
 	 */
 	this.setJsonDataAsConfrontationReasoning = function (jsonData){
-		var premisse = jsonData.premisse.replace('.',''),
+		var premisse = jsonData.premissegroup.replace('.',''),
 			conclusion = jsonData.conclusion_text.substring(0, 1).toLowerCase() +
-				jsonData.conclusion_text.substring(1, jsonData.conclusion_text.length -1),
-			relationArray = new Helper().createRelationsText(premisse, conclusion, true, false),
-			text, listitems = [], size, i;
+				jsonData.conclusion_text.substring(1, jsonData.conclusion_text.length-1),
+			relationArray = new Helper().createRelationsText(premisse, conclusion, false, false),
+			text, listitems = [], size, i, uid, reason;
 
 		if (jsonData.relation === 'undermine') {		text = relationArray[0];
 		} else if (jsonData.relation === 'support') {	text = relationArray[1];
@@ -133,12 +131,12 @@ function GuiHandler() {
 		} else if (jsonData.relation === 'rebut') {		text = relationArray[4];
 		}
 
-		// todo text
 		size = parseInt(jsonData.reason);
-		alert(jsonData.argument_uid + " " + jsonData.relation + " " + size);
 		for (i=0; i<size; i++){
-			// todo
-			listitems.push(this.getKeyValAsInputInLiWithType(jsonData['reason' + str(i) + 'id'], jsonData['reason' + str(i)], false, false, false, jsonData['reason' + str(i)]));
+			uid = jsonData['reason' + i + 'id'];
+			//group_uid = jsonData['reason' + i + 'groupid'];
+			reason = jsonData['reason' + i].substring(0, 1).toUpperCase() + jsonData['reason' + i].substring(1);
+			listitems.push(this.getKeyValAsInputInLiWithType(uid, reason, false, false, false, reason));
 		}
 
 		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ': <b>' + text + '</b>, but why?', '', text);
