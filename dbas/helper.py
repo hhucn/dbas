@@ -284,12 +284,17 @@ class DatabaseHelper(object):
 		return_dict['attack'] = key
 
 		# save one random attack
-		attack_no = str(random.randrange(0, int(attacks[key])))
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'random attack ' + key + ':' + str(attack_no))
-		return_dict['confrontation'] = attacks[key + str(attack_no)]
-		return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
+		status = 1
+		if int(attacks[key]) == 0:
+			logger('DatabaseHelper', 'get_reply_for_premissegroup', 'there is no attack!')
+			status = 0
+		else:
+			attack_no = str(random.randrange(0, int(attacks[key])))
+			logger('DatabaseHelper', 'get_reply_for_premissegroup', 'random attack ' + key + ':' + str(attack_no))
+			return_dict['confrontation'] = attacks[key + str(attack_no)]
+			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
 
-		return return_dict
+		return return_dict, status
 
 	def get_reply_confrontations_response(self, id):
 		"""
@@ -304,7 +309,7 @@ class DatabaseHelper(object):
 
 		qh = QueryHelper()
 		key = 'reason'
-		if 'attack' in relation.lower():
+		if 'undermine' in relation.lower():
 			return_dict = qh.get_undermines_for_argument_uid(key, argument_uid)
 		elif 'support' in relation.lower():
 			return_dict = qh.get_supports_for_argument_uid(key, argument_uid)
@@ -320,8 +325,12 @@ class DatabaseHelper(object):
 
 		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).join(PremisseGroup).first()
 
+		if len(return_dict) == 0:
+			return_dict[key] = '0'
+
 		return_dict['premisse'] = qh.get_text_for_premissesGroup_uid(db_argument.premissegroups.uid)
 		return_dict['relation'] = splitted_id[0]
+		return_dict['argument_uid'] = argument_uid
 
 		if db_argument.conclusion_uid == None:
 			return_dict['conclusion_text'] = 'TODO' # todo
@@ -451,20 +460,27 @@ class DatabaseHelper(object):
 		DBSession.query(Track).filter_by(author_uid=db_user.uid).delete()
 		transaction.commit()
 
-	def set_statement(self, transaction, statement, user, isStart):
+	def set_statement(self, transaction, statement, user, is_start):
 		"""
-		Saves position for user
+		Saves statement for user
 		:param transaction: current transaction
 		:param statement: given statement
 		:param user: given user
-		:param isStart: if it is a start statement
+		:param is_start: if it is a start statement
 		:return: '1'
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 		logger('DatabaseHelper', 'set_statement', 'user: ' + str(user) + 'user_id: ' + str(db_user.uid) + ', statement: ' + str(statement))
 
+		# check for dot at the end
+		if not statement.endswith("."):
+			statement += "."
+
+		# check, if the statement already exists
+		db_duplicate = DBSession.query(TextVersion).filter_by(content=statement).first()
+
 		# add the version
-		textversion = TextVersion(content=statement, author=db_user.uid, weight=0)
+		textversion = db_duplicate if db_duplicate else TextVersion(content=statement, author=db_user.uid, weight=0)
 		DBSession.add(textversion)
 		DBSession.flush()
 
@@ -475,15 +491,63 @@ class DatabaseHelper(object):
 		textversion.set_textvalue(textvalue.uid)
 
 		# add the statement
-		statement = Statement(text=textvalue.uid, isstartpoint=isStart)
+		statement = Statement(text=textvalue.uid, isstartpoint=is_start)
 		DBSession.add(statement)
 		DBSession.flush()
 
 		# get the new statement
 		new_statement = DBSession.query(Statement).filter_by(text_uid=textvalue.uid).order_by(Statement.uid.desc()).first()
+		return_dict = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+		transaction.commit()
+
+		return return_dict
+
+	def set_premisses(self, transaction, pro_dict, con_dict, user):
+		"""
+		Saves every premisse
+		:param transaction:
+		:param pro_dict:
+		:param con_dict:
+		:param user:
+		:return:
+		"""
+		# user and last given statement
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).order_by(Track.uid.desc()).first()
+		db_track_statement_uid = db_track.statement_uid
+		db_track_premissesGroup_uid = db_track.premissesGroup_uid
+
+		# insert the premisses as statements
+		return_dict = {}
+		qh = QueryHelper()
+		index = 0
+
+		for pro in pro_dict:
+			# first, save the premisse as statement
+			statement_dict = self.set_statement(transaction, pro_dict[pro], user, False)
+			return_dict['pro_' + str(index)] = statement_dict
+			# second, set the new statement as premisse
+			new_premissegroup_uid = qh.set_statements_as_premisse(transaction, statement_dict, user)
+			logger('DatabaseHelper', 'set_premisses',  pro_dict[pro] + ' | new_premissegroup_uid ' + str(new_premissegroup_uid))
+			# third, insert the argument
+			qh.set_argument_with_premissegroup(new_premissegroup_uid, True, user, db_track_statement_uid, db_track_premissesGroup_uid)
+			index += 1
+
+		index = 0
+		for con in con_dict:
+			# first, save the premisse as statement
+			statement_dict = self.set_statement(transaction, con_dict[con], user, False)
+			return_dict['con_' + str(index)] = statement_dict
+			# second, set the new statement as premisse
+			new_premissegroup_uid = qh.set_statements_as_premisse(transaction, statement_dict, user)
+			logger('DatabaseHelper', 'set_premisses', con_dict[con] + ' | new_premissegroup_uid ' + str(new_premissegroup_uid))
+			# third, insert the argument
+			qh.set_argument_with_premissegroup(new_premissegroup_uid, False, user, db_track_statement_uid, db_track_premissesGroup_uid)
+			index += 1
 
 		transaction.commit()
-		return DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+
+		return return_dict
 
 	def save_track_for_user(self, transaction, user, statememt_id):
 		"""
@@ -521,6 +585,52 @@ class DatabaseHelper(object):
 
 class QueryHelper(object):
 
+	def set_statements_as_premisse(self, transaction, statement, user):
+		"""
+
+		:param transaction:
+		:param statement:
+		:param db_user:
+		:return: uid of the PremisseGroup
+		"""
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		premisse_group = PremisseGroup(author=db_user.uid)
+		DBSession.add(premisse_group)
+		DBSession.flush()
+
+		premisse_list = []
+		logger('DatabaseHelper', 'set_statements_as_premisse', 'premissesgroup=' + str(premisse_group.uid) + ', ')
+		logger('DatabaseHelper', 'set_statements_as_premisse', 'statement=' + statement['uid'] + ', ')
+		logger('DatabaseHelper', 'set_statements_as_premisse', 'isnegated=' + ('0' if False else '1') + ', ')
+		logger('DatabaseHelper', 'set_statements_as_premisse', 'author=' + str(db_user.uid))
+		premisse = Premisse(premissesgroup=premisse_group.uid, statement=int(statement['uid']), isnegated=False, author=db_user.uid)
+		premisse_list.append(premisse)
+
+		DBSession.add_all(premisse_list)
+		DBSession.flush()
+
+		db_premissegroup = DBSession.query(PremisseGroup).filter_by(author_uid=db_user.uid).order_by(PremisseGroup.uid.desc()).first()
+		return db_premissegroup.uid
+
+	def set_argument_with_premissegroup(self, premissegroup_uid, is_supportive, user, conclusion_uid, argument_uid):
+		"""
+
+		:param premissegroup_uid:
+		:param is_supportive:
+		:param user:
+		:param conclusion_uid:
+		:param argument_uid:
+		:return:
+		"""
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		argument = Argument(premissegroup=premissegroup_uid, issupportive=is_supportive, author=db_user.uid, weight=0,
+		                    conclusion=conclusion_uid)
+		argument.conclusions_argument(argument_uid)
+
+		DBSession.add(argument)
+		DBSession.flush()
+
+
 	def get_text_for_statement_uid(self, uid):
 		"""
 
@@ -530,7 +640,7 @@ class QueryHelper(object):
 		db_statement = DBSession.query(Statement).filter_by(uid=uid).join(TextValue).first()
 		db_textversion = DBSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
 			textValue_uid=db_statement.textvalues.uid).first()
-		# logger('DictionaryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid) + ', text ' + db_textversion.content)
+		logger('DictionaryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid) + ', text ' + db_textversion.content)
 		return db_textversion.content
 
 	def get_text_for_premissesGroup_uid(self, uid):

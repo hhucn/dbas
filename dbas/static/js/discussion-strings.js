@@ -42,7 +42,7 @@ var sentencesOpenersInforming = [
 	"I\"m reasonably sure that "];
 var sentencesOpenersRequesting = [
 	//"Can you explain why ",
-	"Why do you think that "];
+	"Why do you think that"];
 var clickToChoose = "Click to choose";
 var agreeBecause = "I agree because ";
 var disagreeBecause = "I disagree because ";
@@ -55,8 +55,8 @@ var otherParticipantDisagree = "Other partcipants disagree, that ";
 var islandViewHeaderText = "These are all arguments for: ";
 var newPremisseRadioButtonText = "None of the above! Let me state my own reason(s)!";
 var newConclusionRadioButtonText = "Neither of the above, I have a different idea!";
-var firstPremisseRadioButtonText = "Let me insert my reasons!";
-var firstConclusionRadioButtonText = "Let me insert my ideas!";
+var addPremisseRadioButtonText = "Let me insert my reason(s)!";
+var firstConclusionRadioButtonText = "Let me insert my idea!";
 var argumentContainerH4TextIfPremisse = "You want to state your own reason(s)?";
 var argumentContainerH4TextIfConclusion = "What is your idea? What should we do?";
 var startDiscussionText = "OK. Let\'s move on. Wich point do you want to discuss?";

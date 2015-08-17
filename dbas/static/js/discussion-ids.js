@@ -8,7 +8,7 @@
  * ID's
  * @type {string}
  */
-var addStatementButtonId = 'add-statement';
+var addReasonButtonId = 'add-reason';
 var addPositionButtonId = 'add-position';
 var addStatementContainerId = 'add-statement-container';
 var addStatementContainerH4Id = 'add-statement-container-h4';

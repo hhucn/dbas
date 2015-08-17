@@ -91,26 +91,26 @@ $(function () {
 
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).click(function () {
-		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId, 'right', $('#' + statementListId + ' li input').hasClass('statement'));
+		guiHandler.addTextareaAsChildInParent(rightPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'));
 	});
 
 	// adding a textarea in the left column
 	$('#' + addProTextareaId).click(function () {
-		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId, 'left', $('#' + statementListId + ' li input').hasClass('statement'));
+		guiHandler.addTextareaAsChildInParent(leftPositionTextareaId, 'left', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'));
 	});
 
 	// hiding the argument container, when the X button is clicked
 	$('#' + closeStatementContainerId).click(function () {
 		$('#' + addStatementContainerId).hide();
-		$('#' + addStatementButtonId).enable = true;
-		$('#' + addStatementButtonId).attr('checked', false);
+		$('#' + addReasonButtonId).enable = true;
+		$('#' + addReasonButtonId).attr('checked', false);
 	});
 
 	// hiding the island view, when the X button is clicked
 	$('#' + closeIslandViewContainerId).click(function () {
 		$('#' + islandViewContainerId).hide();
 		guiHandler.resetChangeDisplayStyleBox();
-		$('#li_' + addStatementButtonId).attr('checked', true);
+		$('#li_' + addReasonButtonId).attr('checked', true);
 	});
 
 	// open edit statement

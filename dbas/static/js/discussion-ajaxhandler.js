@@ -177,21 +177,21 @@ function AjaxHandler() {
 	};
 
 	/**
-	 * Sends new position to the server. Answer will be given to a callback
+	 * Sends new premisses to the server. Answer will be given to a callback
 	 * @param argument_dictionary for inserting
-	 *
-	this.sendNewArgument = function (argument_dictionary) {
+	 */
+	this.sendNewPremisses = function (argument_dictionary) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_send_new_arguments',
+			url: 'ajax_set_new_premisses',
 			type: 'POST',
 			data: argument_dictionary,
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxSendNewArgumentDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewArguments(data);
-		}).fail(function ajaxSendNewArgumentFail() {
+		}).done(function ajaxSendNewPremissesDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewPremisses(data);
+		}).fail(function ajaxSendNewPremissesFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 		});
 	};

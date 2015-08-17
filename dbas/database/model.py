@@ -264,7 +264,7 @@ class Argument(Base):
 	users = relationship('User', foreign_keys=[author_uid])
 	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)  # TODO
 
-	def __init__(self, premissegroup, issupportive, author, weight, conclusion=None):
+	def __init__(self, premissegroup, issupportive, author, weight, conclusion=0):
 		"""
 		Initializes a row in current argument-table
 		"""

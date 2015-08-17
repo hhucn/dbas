@@ -61,25 +61,24 @@ function InteractionHandler() {
 	 */
 	this.radioButtonChanged = function () {
 		var guiHandler = new GuiHandler(), text, isStart = $('#' + discussionSpaceId + ' ul li input').hasClass('start');
-		if ($('#' + addStatementButtonId).is(':checked')) {
+		if ($('#' + addReasonButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).hide();
 
 			// get the second child, which is the label
-			text = $('#' + addStatementButtonId).parent().children().eq(1).text();
+			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
 			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
 				// statement
-				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true, isStart);
+				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true, isStart, false);
 			} else {
 				// premisse
-				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false, isStart);
+				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false, isStart, true);
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).show();
-			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart, false);
 		} else {
-			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart);
+			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart, false);
 			$('#' + stepBackButtonId).hide();
-
 
 			this.radioButtonWasChoosen();
 			guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
@@ -108,16 +107,15 @@ function InteractionHandler() {
 	};
 
 	/**
-	 * Fetches all arguments out of the textares and send them
+	 * Fetches all premisses out of the textares and send them
 	 */
-	/*
-	this.getArgumentsAndSendThem = function () {
+	this.getPremissesAndSendThem = function (useIntro) {
 		var i = 0, dict = {}, no, intro;
 		$('#' + leftPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);
-				intro = $('#left-dropdown-sentences-openers-' + no).text();
+				intro = useIntro ? $('#left-dropdown-sentences-openers-' + no).text() : '';
 				dict['pro_' + i] = intro + $(this).val();
 				i = i + 1;
 			}
@@ -127,14 +125,13 @@ function InteractionHandler() {
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);
-				intro = $('#left-dropdown-sentences-openers-' + no).text();
+				intro = useIntro ? $('#right-dropdown-sentences-openers-' + no).text() : '';
 				dict['con_' + i] = intro + $(this).val();
 				i = i + 1;
 			}
 		});
-		new AjaxHandler().sendNewArgument(dict);
+		new AjaxHandler().sendNewPremisses(dict);
 	};
-	*/
 
 	/**
 	 * Defines the action for the send button
@@ -173,7 +170,7 @@ function InteractionHandler() {
 		if (parsedData.status == '1') {
 			gh.setJsonDataToContentAsStartPremisses(parsedData.premisses, parsedData.currentStatementText);
 		} else {
-			gh.setNewArgumentButtonOnly(firstPremisseRadioButtonText, true);
+			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
 		}
 		gh.resetAndDisableEditButton();
 	};
@@ -186,6 +183,8 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
 			gh.setJsonDataAsFirstConfrontation(parsedData);
+		} else if (parsedData.status == '0') {
+			alert('TODO: callbackIfDoneReplyForPremisse')
 		} else {
 			alert('error in callbackIfDoneReplyForPremisse');
 		}
@@ -219,7 +218,7 @@ function InteractionHandler() {
 		if (parsedData.status != '-1') {
 			gh.setJsonDataToDiscussionContentAsArguments(parsedData.justification, true);
 		} else {
-			gh.setNewArgumentButtonOnly(firstPremisseRadioButtonText, true);
+			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
 		}
 		gh.resetAndDisableEditButton();
 	};
@@ -287,7 +286,24 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendNewStartStatement = function (data) {
 		var parsedData = $.parseJSON(data);
-		new GuiHandler().setNewStatementAsLastChild(parsedData);
+		if (parsedData.status == '-1') {
+			alert('success -1 in callbackIfDoneForSendNewStartStatement');
+		} else {
+			new GuiHandler().setNewStatementAsLastChild(parsedData);
+		}
+	};
+
+	/**
+	 * Callback, when new premisses were send
+	 * @param data returned data
+	 */
+	this.callbackIfDoneForSendNewPremisses = function (data) {
+		var parsedData = $.parseJSON(data);
+		if (parsedData.status == '-1') {
+			alert('success -1 in callbackIfDoneForSendNewPremisses');
+		} else {
+			new GuiHandler().setPremissesAsLastChild(parsedData);
+		}
 	};
 
 	/**

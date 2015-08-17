@@ -35,7 +35,7 @@ function GuiHandler() {
 			this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
 		}
 
-		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newConclusionRadioButtonText, true, false, ''));
+		listitems.push(this.getKeyValAsInputInLiWithType(addReasonButtonId, newConclusionRadioButtonText, true, false, ''));
 
 		this.addListItemsToDiscussionsSpace(listitems);
 	};
@@ -46,9 +46,10 @@ function GuiHandler() {
 	 * @param currentStatementText
 	 */
 	this.setJsonDataToContentAsStartPremisses = function (jsonData, currentStatementText) {
-		var listitems = [], _this = new GuiHandler(), text;
+		var listitems = [], _this = new GuiHandler(), text, firstOne = true;
 		text = currentStatementText.text.substring(0, 1).toLowerCase() + currentStatementText.text.substring(1, currentStatementText.text.length);
-		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b>');
+		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ': <b>' + text + '</b>', text, text);
+
 		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
 			//alert("1: " + key + " " + val);
 			text = '';
@@ -60,14 +61,14 @@ function GuiHandler() {
 					text += ' _AND_ because ';
 
 				text += valval.text.substring(0, 1).toLowerCase() + valval.text.substring(1, valval.text.length - 1);
+				firstOne = false;
 			});
 			text += '.';
 			// we are saving the group id ad key
 			listitems.push(_this.getKeyValAsInputInLiWithType(key, text, false, true, false, ''));
 		});
 
-		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, newPremisseRadioButtonText, true, false, ''));
-		// TODO change button id
+		listitems.push(this.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? addPremisseRadioButtonText : newPremisseRadioButtonText, true, false, ''));
 
 		this.addListItemsToDiscussionsSpace(listitems);
 	};
@@ -95,12 +96,12 @@ function GuiHandler() {
 		confrontationText += confrontation + '. [<i>' + jsonData.attack + '</i>]';
 
 		// set discussions text
-		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
-			+ othersHaveArguedThat + ' ' + confrontationText + '.<br><br>' + whatDoYouThink,
-			'The confrontation is a ' + jsonData.attack);
+		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' <b>' + opinion + '</b>.<br><br>'
+			+ othersHaveArguedThat + ' <b>' + confrontationText + '</b>.<br><br>' + whatDoYouThink,
+			'This confrontation is a ' + jsonData.attack);
 
 		// text for the radio buttons
-		relationArray = new Helper().createRelationsText(premisse, conclusion);
+		relationArray = new Helper().createRelationsText(premisse, conclusion, false, true);
 
 		// build the radio buttons
 		id = "_argument_" + jsonData.argument_id;
@@ -122,7 +123,8 @@ function GuiHandler() {
 		var premisse = jsonData.premisse.replace('.',''),
 			conclusion = jsonData.conclusion_text.substring(0, 1).toLowerCase() +
 				jsonData.conclusion_text.substring(1, jsonData.conclusion_text.length -1),
-			relationArray = new Helper().createRelationsText(premisse, conclusion), text, listitems = [];
+			relationArray = new Helper().createRelationsText(premisse, conclusion, true, false),
+			text, listitems = [], size, i;
 
 		if (jsonData.relation === 'undermine') {		text = relationArray[0];
 		} else if (jsonData.relation === 'support') {	text = relationArray[1];
@@ -131,9 +133,16 @@ function GuiHandler() {
 		} else if (jsonData.relation === 'rebut') {		text = relationArray[4];
 		}
 
-		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text.substr(0, 1).toLowerCase() + text.substr(1, text.length) +
-		', but why?');
-		listitems.push(this.getKeyValAsInputInLiWithType(addStatementButtonId, firstPremisseRadioButtonText, true)); // todo button id
+		// todo text
+		size = parseInt(jsonData.reason);
+		alert(jsonData.argument_uid + " " + jsonData.relation + " " + size);
+		for (i=0; i<size; i++){
+			// todo
+			listitems.push(this.getKeyValAsInputInLiWithType(jsonData['reason' + str(i) + 'id'], jsonData['reason' + str(i)], false, false, false, jsonData['reason' + str(i)]));
+		}
+
+		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ': <b>' + text + '</b>, but why?', '', text);
+		listitems.push(this.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
 		this.addListItemsToDiscussionsSpace(listitems);
 	};
 
@@ -162,7 +171,7 @@ function GuiHandler() {
 
 		// button for new statements
 		if (!isAvoidance)
-			listitems.push(_this.getKeyValAsInputInLiWithType(addStatementButtonId, newPremisseRadioButtonText, true));
+			listitems.push(_this.getKeyValAsInputInLiWithType(addReasonButtonId, newPremisseRadioButtonText, true));
 		_this.addListItemsToDiscussionsSpace(listitems, argumentListId, isAvoidance);
 	};*/
 
@@ -180,7 +189,7 @@ function GuiHandler() {
 				} else {
 					text = val.text;
 				}
-				$('#li_' + addStatementButtonId).before(_this.getKeyValAsInputInLiWithType(val.uid, text, true));
+				$('#li_' + addReasonButtonId).before(_this.getKeyValAsInputInLiWithType(val.uid, text, true));
 			}
 		});
 
@@ -263,10 +272,10 @@ function GuiHandler() {
 	 * Sets an "add statement" button as content
 	 * @param val will be used as value
 	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
-	 */
+	 *
 	this.setNewArgumentButtonOnly = function (val, isArgument) {
 		var listitem = [], gh = new GuiHandler();
-		listitem.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, false, false, ''));
+		listitem.push(gh.getKeyValAsInputInLiWithType(addReasonButtonId, val, isArgument, false, false, ''));
 		gh.addListItemsToDiscussionsSpace(listitem);
 	};
 
@@ -274,11 +283,11 @@ function GuiHandler() {
 	 * Sets an "add statement" button as content
 	 * @param val will be used as value
 	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
-	 */
+	 *
 	this.setNewArgumentAndGoodPointButton = function (val, isArgument) {
 		var listitems = [], gh = new GuiHandler();
 		listitems.push(gh.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true, false, false, ''));
-		listitems.push(gh.getKeyValAsInputInLiWithType(addStatementButtonId, val, isArgument, false, false, ''));
+		listitems.push(gh.getKeyValAsInputInLiWithType(addReasonButtonId, val, isArgument, false, false, ''));
 		new GuiHandler().addListItemsToDiscussionsSpace(listitems);
 	};
 
@@ -286,7 +295,7 @@ function GuiHandler() {
 	 * Setting a description in some p-tag for confrontation
 	 * @param currentUserArgument
 	 * @param confrontationArgument
-	 */
+	 *
 	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
 		var pos = Math.floor(Math.random() * sentencesOpenersForArguments.length), text = sentencesOpenersForArguments[pos] + '<b>' + currentUserArgument + '</b>'
 			+ '<br>However, other users argued that: ' + '<b>' + confrontationArgument + '</b>' + '<br><br>What do you think about that?';
@@ -296,7 +305,7 @@ function GuiHandler() {
 	/**
 	 * Setting a description in some p-tag for confrontation
 	 * @param currentUserArgument
-	 */
+	 *
 	this.setDiscussionsAvoidanceDescriptionForConfrontation = function (currentUserArgument) {
 		var text = 'Or do you have a better argument for: ' + '<b>' + currentUserArgument + '</b>';
 		new GuiHandler().setDiscussionsAvoidanceDescription(text);
@@ -305,7 +314,7 @@ function GuiHandler() {
 	/**
 	 * Setting a description in some p-tag for confrontation, whereby we have no justifications
 	 * @param currentUserArgument
-	 */
+	 *
 	this.setDiscussionsDescriptionWithoutConfrontation = function (currentUserArgument) {
 		var pos = Math.floor(Math.random() * sentencesOpenersForArguments.length), text = sentencesOpenersForArguments[pos] + '<b>' + currentUserArgument + '</b>'
 			+ ' However, other users argued nothing yet:';
@@ -324,9 +333,10 @@ function GuiHandler() {
 	 * Setting a description in some p-tag with mouse over
 	 * @param text to set
 	 * @param mouseover hover-text
+	 * @param additionalAttribute additional attribute
 	 */
-	this.setDiscussionsDescription = function (text, mouseover) {
-		$('#' + discussionsDescriptionId).html(text).attr('title', mouseover);
+	this.setDiscussionsDescription = function (text, mouseover, additionalAttribute) {
+		$('#' + discussionsDescriptionId).html(text).attr('title', mouseover).attr('text', additionalAttribute);
 	};
 
 	/**
@@ -394,6 +404,7 @@ function GuiHandler() {
 		if (isStartStatement){ inputElement.addClass('start'); }
 		if (isPremisse){ inputElement.addClass('premisse'); }
 		if (isRelation){ inputElement.addClass('relation'); }
+		if (!isStartStatement && !isPremisse && !isRelation){ inputElement.addClass('add'); }
 
 		liElement.html(this.getFullHtmlTextOf(inputElement) + labelElement);
 
@@ -597,7 +608,7 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Sets the new position as lsat child in discussion space or displays an error
+	 * Sets the new position as list child in discussion space or displays an error
 	 * @param jsonData returned data
 	 */
 	this.setNewStatementAsLastChild = function (jsonData) {
@@ -608,63 +619,87 @@ function GuiHandler() {
 			}
 		} else {
 			var newElement = this.getKeyValAsInputInLiWithType(jsonData.statement.uid, jsonData.statement.text, false);
-			$('#li_' + addStatementButtonId).before(newElement);
+			$('#li_' + addReasonButtonId).before(newElement);
 			new GuiHandler().setSuccessDescription(addedEverything);
 		}
 	};
 
 	/**
+	 * Sets the new premisses as list child in discussion space or displays an error
+	 * @param jsonData returned data
+	 */
+	this.setPremissesAsLastChild = function (jsonData) {
+		var newElement, _this = this;
+		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
+			if (key.substr(0,3) == "pro"){
+				newElement = _this.getKeyValAsInputInLiWithType(val.uid, val.text, false, true, false, val.text);
+				$('#li_' + addReasonButtonId).before(newElement);
+			} else if (key.substr(0,3) == "con"){
+				// todo setPremissesAsLastChild contra premisses
+			}
+		});
+	};
+
+	/**
 	 * Set some style attributes,
 	 * @param isVisible true, if the container should be displayed
-	 * @param is_statement true, if we have an argument
-	 * @param is_start
+	 * @param isStatement true, if we have an argument
+	 * @param isStart
+	 * @param isPremisse
 	 */
-	this.setDisplayStylesOfAddArgumentContainer = function (isVisible, is_statement, is_start) {
-		if (isVisible) {
-			$('#' + leftPositionTextareaId).empty();
-			$('#' + rightPositionTextareaId).empty();
-			$('#' + addStatementContainerId).fadeIn('slow');
-			$('#' + addStatementButtonId).disable = true;
-			if (is_statement){
-				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
-				$('#' + addStatementContainerMainInputId).show();
-				$('#' + leftPositionColumnId).hide();
-				$('#' + rightPositionColumnId).hide();
-				$('#' + sendNewStatementId).off('click').click(function () {
-					if (is_start) {
-						new AjaxHandler().sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
-					} else {
-						alert("new case in guihandler setDisplayStylesOfAddArgumentContainer");
-					}
-					var gh = new GuiHandler();
-					gh.setErrorDescription('');
-					gh.setSuccessDescription('');
-				});
-			} else {
-				var statement = $('#' + discussionsDescriptionId + ' b:last-child').text();
-				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse);
-				// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
-				$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with <b>\'' + statement + '</b>\', because ...');
-				$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with <b>\'' + statement + '</b>\',' +
-					' because ...');
-				$('#' + addStatementContainerMainInputId).hide().focus();
-				$('#' + leftPositionColumnId).show();
-				$('#' + rightPositionColumnId).show();
-				$('#' + sendNewStatementId).off('click').click(function () {
-					new InteractionHandler().getArgumentsAndSendThem();
-					var gh = new GuiHandler();
-					gh.setErrorDescription('');
-					gh.setSuccessDescription('');
-				});
-			}
-			var gh = new GuiHandler();
-			gh.addTextareaAsChildInParent(leftPositionTextareaId, id_left, is_statement);
-			gh.addTextareaAsChildInParent(rightPositionTextareaId, id_right, is_statement);
-		} else {
+	this.setDisplayStylesOfAddArgumentContainer = function (isVisible, isStatement, isStart, isPremisse) {
+		if (!isVisible) {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementContainerMainInputId).val('');
-			$('#' + addStatementButtonId).disable = false;
+			$('#' + addReasonButtonId).disable = false;
+			return;
 		}
+
+		// isVisible == true:
+		$('#' + leftPositionTextareaId).empty();
+		$('#' + rightPositionTextareaId).empty();
+		$('#' + addStatementContainerId).fadeIn('slow');
+		$('#' + addReasonButtonId).disable = true;
+
+		if (isStatement){
+			$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
+			$('#' + addStatementContainerMainInputId).show();
+			$('#' + leftPositionColumnId).hide();
+			$('#' + rightPositionColumnId).hide();
+			$('#' + sendNewStatementId).off('click').click(function () {
+				if (isStart) {
+					new AjaxHandler().sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
+				} else {
+					alert('What now (I)? GuiHandler: setDisplayStylesOfAddArgumentContainer');
+				}
+				var gh = new GuiHandler();
+				gh.setErrorDescription('');
+				gh.setSuccessDescription('');
+			});
+
+		} else if (isPremisse){
+			var statement = $('#' + discussionsDescriptionId).attr('text');
+			$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse);
+			// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
+			$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with <b>\'' + statement + '</b>\', because ...');
+			$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with <b>\'' + statement + '</b>\',' +
+				' because ...');
+			$('#' + addStatementContainerMainInputId).hide().focus();
+			$('#' + leftPositionColumnId).show();
+			$('#' + rightPositionColumnId).show();
+			$('#' + sendNewStatementId).off('click').click(function () {
+				new InteractionHandler().getPremissesAndSendThem(false);
+				var gh = new GuiHandler();
+				gh.setErrorDescription('');
+				gh.setSuccessDescription('');
+			});
+		} else {
+			alert('What now (II)? GuiHandler: setDisplayStylesOfAddArgumentContainer');
+		}
+
+		var gh = new GuiHandler();
+		gh.addTextareaAsChildInParent(leftPositionTextareaId, id_left, isStatement);
+		gh.addTextareaAsChildInParent(rightPositionTextareaId, id_right, isStatement);
 	};
 
 	/**

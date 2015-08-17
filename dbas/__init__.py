@@ -77,6 +77,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_reply_for_premissegroup', '/ajax_reply_for_premissegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_set_new_start_statement', '/ajax_set_new_start_statement')
+	config.add_route('ajax_set_new_premisses', '/ajax_set_new_premisses')
 
 	# settings
 	config.add_route('ajax_manage_user_track', '/ajax_manage_user_track')

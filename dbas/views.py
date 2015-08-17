@@ -680,8 +680,8 @@ class Dbas(object):
 			uid = self.request.params['uid']
 			logger('reply_for_premissegroup', 'def', 'premissegroup ' + str(uid))
 			DatabaseHelper().save_premissegroup_for_user(transaction, self.request.authenticated_userid, uid)
-			return_dict = DatabaseHelper().get_reply_for_premissegroup(uid, self.request.authenticated_userid)
-			return_dict['status'] = '1'
+			return_dict, status = DatabaseHelper().get_reply_for_premissegroup(uid, self.request.authenticated_userid)
+			return_dict['status'] = str(status)
 		except KeyError as e:
 			logger('reply_for_premissegroup', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -774,6 +774,40 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
+
+	# ajax - send new premisses
+	@view_config(route_name='ajax_set_new_premisses', renderer='json', check_csrf=True)
+	def set_new_premisses(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_new_premisses', 'def', 'main')
+
+		return_dict = {}
+		try:
+			pro_dict = {}
+			con_dict = {}
+			for k in self.request.params:
+				if 'pro' in k:
+					logger('set_new_premisses', k, self.request.params[k])
+					pro_dict[k] = self.request.params[k]
+				if 'con' in k:
+					logger('set_new_premisses', k, self.request.params[k])
+					con_dict[k] = self.request.params[k]
+			return_dict = DatabaseHelper().set_premisses(transaction, pro_dict, con_dict, self.request.authenticated_userid)
+			return_dict['success'] = '1'
+
+		except KeyError as e:
+			logger('set_new_start_statement', 'error', repr(e))
+			return_dict['success'] = '-1'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
 
 	# ajax - getting all arguments for the island view
 	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=True)
