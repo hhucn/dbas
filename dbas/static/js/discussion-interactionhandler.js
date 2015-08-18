@@ -7,8 +7,6 @@
  * @copyright Krauthoff 2015
  */
 
-// TODO KICK ALL METHODS WHICH ARE NOT USED
-
 function InteractionHandler() {
 	'use strict';
 
@@ -42,19 +40,6 @@ function InteractionHandler() {
 		$('#' + discussionsDescriptionId).empty();
 		new AjaxHandler().handleReplyForResponseOfConfrontation(id);
 	};
-
-	/**
-	 * Handler when an position button was clicked
-	 * @param id of the button
-	 */
-	/*
-	this.positionButtonWasClicked = function (id) {
-		var ajaxHandler = new AjaxHandler();
-		// clear the discussion space
-		$('#' + discussionSpaceId).empty();
-		ajaxHandler.getArgumentsForJustification(id);
-	};
-	*/
 
 	/**
 	 * Method for some style attributes, when the radio buttons are chaning
@@ -179,14 +164,14 @@ function InteractionHandler() {
 	 * Callback for the ajax method getPremisseForStatement
 	 * @param data returned json data
 	 */
-	this.callbackIfDoneReplyForPremisse = function (data) {
+	this.callbackIfDoneReplyForPremissegroup = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			gh.setJsonDataAsFirstConfrontation(parsedData);
+			gh.setJsonDataAsConfrontation(parsedData);
 		} else if (parsedData.status == '0') {
-			alert('TODO: callbackIfDoneReplyForPremisse')
+			alert('TODO: callbackIfDoneReplyForPremissegroup')
 		} else {
-			alert('error in callbackIfDoneReplyForPremisse');
+			alert('error in callbackIfDoneReplyForPremissegroup');
 		}
 		gh.resetAndDisableEditButton();
 	};
@@ -206,64 +191,6 @@ function InteractionHandler() {
 		}
 		gh.resetAndDisableEditButton();
 	};
-
-	/**
-	 * Callback for the ajax method getArgsForJustification
-	 * @param data returned json data
-	 */
-	/*
-	this.callbackIfDoneForArgsForJustification = function (data) {
-		var parsedData = $.parseJSON(data), gh = new GuiHandler();
-		gh.setDiscussionsDescription('Why do you think that: <b>' + parsedData.currentStatementText + '</b>');
-		if (parsedData.status != '-1') {
-			gh.setJsonDataToDiscussionContentAsArguments(parsedData.justification, true);
-		} else {
-			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
-		}
-		gh.resetAndDisableEditButton();
-	};
-	*/
-
-	/**
-	 * Callback for the ajax method getGetNewArgumentationRound
-	 * @param data returned json data
-	 */
-	/*
-	this.callbackIfDoneForGetNewArgumentationRound = function (data) {
-		var parsedData = $.parseJSON(data), gh = new GuiHandler();
-		// -1 confrontation, but no justification
-		//  0 no confrontation
-		//  1 everything is fine
-		switch(parsedData.status_con){
-			case '-1':
-				gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
-				gh.setNewArgumentAndGoodPointButton(newPremisseRadioButtonText, true);
-				break;
-			case '0':
-				gh.setDiscussionsDescriptionWithoutConfrontation(parsedData.currentStatementText);
-				gh.setNewArgumentButtonOnly(newPremisseRadioButtonText, true);
-				break;
-			case '1':
-				gh.setJsonDataToDiscussionContentAsArguments(parsedData.justifications, false, false);
-				gh.setDiscussionsDescriptionForConfrontation(parsedData.currentStatementText, parsedData.confrontation);
-				gh.setVisibilityOfDisplayStyleContainer(true, parsedData.currentStatementText);
-				break;
-		}
-
-		//  0 no pro arguments
-		//  1 everything is fine
-		switch(parsedData.status_pro){
-			case '0':
-				gh.setDiscussionsAvoidanceDescription('');
-				break;
-			case '1':
-				gh.setDiscussionsAvoidanceDescriptionForConfrontation(parsedData.currentStatementText);
-				gh.setJsonDataToDiscussionContentAsArguments(parsedData.new_pros, false, true);
-				break;
-		}
-		gh.resetAndDisableEditButton();
-	};
-	*/
 
 	/**
 	 * Callback for the ajax method getStartStatements
@@ -305,76 +232,6 @@ function InteractionHandler() {
 			new GuiHandler().setPremissesAsLastChild(parsedData);
 		}
 	};
-
-	/**
-	 * Callback, when a new arguments were send
-	 * @param data returned data
-	 */
-	/*
-	this.callbackIfDoneForSendNewArguments = function (data) {
-		var parsedData = $.parseJSON(data), gh = new GuiHandler;
-		// -1 something went wrong
-		//  1 everything is fine
-		switch(parsedData.status){
-			case '-1':
-				gh.setErrorDescription(internalFailureWhileDeletingTrack);
-				break;
-			case '1':
-				gh.setSuccessDescription(addedEverything);
-				gh.addJsonDataToContentAsArguments(parsedData.arguments);
-				gh.resetAddStatementContainer();
-				break;
-		}
-	};
-	*/
-
-	/**
-	 * Callback, when the user want to step back
-	 * @param data returned data
-	 */
-	/*
-	this.callbackGetOneStepBack = function (data) {
-		var parsedData = $.parseJSON(data), ah = new AjaxHandler(), ih = new InteractionHandler();
-		$('#' + discussionSpaceId).empty();
-		// -1 user has no history/trace
-		//  0 given data is for a positions callback
-		//  1 given data is for an argument callback
-		switch (parsedData.status){
-			case '-1':
-				ah.getStartStatements();
-				break;
-			case '0':
-				new GuiHandler().setDiscussionsDescription('Why do you think that: <b>' + parsedData.currentStatementText + '</b>');
-				ih.callbackIfDoneForArgsForJustification(data);
-				break;
-			case '1':
-				ih.callbackIfDoneForGetNewArgumentationRound(data);
-				break;
-		}
-	};
-	*/
-
-	/**
-	 * Callback, when island data was fetched
-	 * @param data of the ajax request
-	 */
-	/*
-	this.callbackIfDoneForGetAllArgumentsForIslandView = function (data) {
-		var parsedData = $.parseJSON(data), gh = new GuiHandler();
-		// -1 no data
-		// >0 island data
-		switch(parsedData.status){
-			case '-1':
-				gh.setErrorDescription(noIslandView);
-				gh.setVisibilityOfDisplayStyleContainer(false, '');
-				$('#' + scStyle2Id).removeAttr('checked');
-				break;
-			default:
-				gh.displayDataInIslandView(parsedData.arguments, true);
-				break;
-		}
-	};
-	*/
 
 	/**
 	 * Callback, when the logfile was fetched

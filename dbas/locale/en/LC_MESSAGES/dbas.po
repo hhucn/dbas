@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-07-18 18:11+0200\n"
+"POT-Creation-Date: 2015-08-18 07:18+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -16,493 +16,22 @@ msgstr ""
 "Generated-By: Lingua 3.10\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. Default: This will be the news page and currently I think...this will be
-#. some kind of blog
-#: dbas/templates/news.pt:13
-msgid "news_intro"
-msgstr ""
-"This will be the news page and currently I think...this will be some kind of "
-"blog"
+#. Default: 404 Error
+#: dbas/templates/404.pt:13
+msgid "404"
+msgstr "404 Error"
 
-#. Default: Author
-#: dbas/templates/news.pt:45 dbas/templates/news.pt:78
-#: dbas/templates/news.pt:111 dbas/templates/news.pt:144
-#: dbas/templates/news.pt:171 dbas/templates/news.pt:204
-#: dbas/templates/news.pt:239 dbas/templates/news.pt:272
-#: dbas/templates/news.pt:305 dbas/templates/news.pt:338
-#: dbas/templates/news.pt:371 dbas/templates/news.pt:404
-#: dbas/templates/news.pt:437 dbas/templates/news.pt:470
-#: dbas/templates/news.pt:503 dbas/templates/news.pt:536
-#: dbas/templates/news.pt:569 dbas/templates/news.pt:602
-#: dbas/templates/news.pt:635 dbas/templates/news.pt:678
-#: dbas/templates/news.pt:711 dbas/templates/news.pt:744
-#: dbas/templates/news.pt:777 dbas/templates/news.pt:810
-#: dbas/templates/snippet-header.pt:87
-msgid "author"
-msgstr ""
-
-#. Default: About me
-#: dbas/templates/snippet-popups.pt:10
-msgid "about_me"
-msgstr ""
-
-#. Default: Name
-#: dbas/templates/snippet-popups.pt:19
+#. Default: The page
+#: dbas/templates/404.pt:14
 #, fuzzy
-msgid "name"
-msgstr "Surname"
+msgid "404_text_part1"
+msgstr "The page &quot;<dynamic element>&quot; for could not be found."
 
-#. Default: Role
-#: dbas/templates/snippet-popups.pt:25
-msgid "role"
-msgstr ""
-
-#. Default: Doctoral Student
-#: dbas/templates/snippet-popups.pt:27
-msgid "role_value_1"
-msgstr ""
-
-#. Default: Lab for Technology of Social Networks
-#: dbas/templates/snippet-popups.pt:28
-msgid "lab_tsn"
-msgstr ""
-
-#. Default: Member of the graduation school
-#: dbas/templates/snippet-popups.pt:29
-msgid "role_value_2"
-msgstr ""
-
-#. Default: Online Participation
-#: dbas/templates/snippet-popups.pt:29
-msgid "role_value_3"
-msgstr ""
-
-#. Default: Office
-#: dbas/templates/snippet-popups.pt:41
-msgid "office"
-msgstr ""
-
-#. Default: Universitätsstraße 1
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
-#: dbas/templates/snippet-popups.pt:44
-msgid "office_value_2"
-msgstr ""
-
-#. Default: 40225 Duesseldorf
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
-#: dbas/templates/snippet-popups.pt:45
-msgid "office_value_3"
-msgstr ""
-
-#. Default: Department of Computer Science
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
-#: dbas/templates/snippet-popups.pt:46
-msgid "office_value_4"
-msgstr ""
-
-#. Default: Building 25.12, Room 02.45
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
-#: dbas/templates/snippet-popups.pt:47
-msgid "office_value_5"
-msgstr ""
-
-#. Default: Heinrich-Heine University Duesseldorf <dynamic element><dynamic
-#. element> <dynamic element><dynamic element> <dynamic element><dynamic
-#. element> <dynamic element><dynamic element>
-#: dbas/templates/snippet-popups.pt:43
-msgid "office_value_1"
-msgstr ""
-
-#. Default: Telephone
-#: dbas/templates/snippet-popups.pt:52
-msgid "telephone"
-msgstr ""
-
-#. Default: Close
-#: dbas/templates/snippet-popups.pt:72 dbas/templates/snippet-popups.pt:117
-#: dbas/templates/snippet-popups.pt:395 dbas/templates/snippet-popups.pt:423
-#: dbas/templates/login.pt:170
-msgid "close"
-msgstr "Close"
-
-#. Default: MIT License (MIT)
-#: dbas/templates/snippet-popups.pt:85
-msgid "mit_licencse"
-msgstr ""
-
-#. Default: Permission is hereby granted, free of charge, to any person
-#. obtaining a copy of this software and associated documentation files (the
-#. "Software"), to deal in the Software without restriction, including without
-#. limitation the rights to use, copy, modify, merge, publish, distribute,
-#. sublicense, and/or sell copies of the Software, and to permit persons to
-#. whom the Software is furnished to do so, subject to the following
-#. conditions:
-#: dbas/templates/snippet-popups.pt:94
-msgid "mit_licence_part1"
-msgstr ""
-
-#. Default: The above copyright notice and this permission notice shall be
-#. included in all copies or substantial portions of the Software.
-#: dbas/templates/snippet-popups.pt:103
-msgid "mit_licence_part2"
-msgstr ""
-
-#. Default: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#. EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#. MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-#. EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-#. DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-#. OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-#. USE OR OTHER DEALINGS IN THE SOFTWARE.
-#: dbas/templates/snippet-popups.pt:108
-msgid "mit_licence_part3"
-msgstr ""
-
-#. Default: Privacy Policy
-#: dbas/templates/snippet-popups.pt:130 dbas/templates/snippet-header.pt:97
-msgid "privacy_policy"
-msgstr ""
-
-#. Default: How to select a strong password
-#: dbas/templates/snippet-popups.pt:369
+#. Default: for could not be found.
+#: dbas/templates/404.pt:14
 #, fuzzy
-msgid "select_password"
-msgstr "Old password"
-
-#. Default: A Password is strong, when it contains at least:
-#: dbas/templates/snippet-popups.pt:372
-#, fuzzy
-msgid "select_password_intro"
-msgstr "New Password (confirm)"
-
-#. Default: eight characters
-#: dbas/templates/snippet-popups.pt:374
-#, fuzzy
-msgid "select_password_rule1"
-msgstr "Password-Request"
-
-#. Default: one uppercase letter
-#: dbas/templates/snippet-popups.pt:375
-#, fuzzy
-msgid "select_password_rule2"
-msgstr "Password-Request"
-
-#. Default: one lowercase letter
-#: dbas/templates/snippet-popups.pt:376
-#, fuzzy
-msgid "select_password_rule3"
-msgstr "Password-Request"
-
-#. Default: one special sign
-#: dbas/templates/snippet-popups.pt:377
-#, fuzzy
-msgid "select_password_rule4"
-msgstr "Password-Request"
-
-#. Default: For example 'M2015_fiO' is a strong password. And it would take 275
-#. days to crack this password with a desktop pc in 2015. Removing one sign,
-#. reduces the time to 3 days, and adding a sign increases the time to 57
-#. yearsIt should be noted:
-#: dbas/templates/snippet-popups.pt:379
-#, fuzzy
-msgid "popup_password_text"
-msgstr "Your Password"
-
-#. Default: Avoid using a password on several pages
-#: dbas/templates/snippet-popups.pt:381
-#, fuzzy
-msgid "select_password_avoid1"
-msgstr "New Password (confirm)"
-
-#. Default: Avoid using patterns, which can be found in a dictionary
-#: dbas/templates/snippet-popups.pt:382
-#, fuzzy
-msgid "select_password_avoid2"
-msgstr "New Password (confirm)"
-
-#. Default: Avoid using information that is or might become publicly associated
-#. with the user or the account
-#: dbas/templates/snippet-popups.pt:383
-#, fuzzy
-msgid "select_password_avoid3"
-msgstr "New Password (confirm)"
-
-#. Default: Avoid using information that the user's colleagues and/or
-#. acquaintances might know to be associated with the user
-#: dbas/templates/snippet-popups.pt:384
-#, fuzzy
-msgid "select_password_avoid4"
-msgstr "New Password (confirm)"
-
-#. Default: If you need some help with our password, you can get one here:
-#: dbas/templates/snippet-popups.pt:386
-#, fuzzy
-msgid "select_password_help"
-msgstr "Old password"
-
-#. Default: Edit Statements / View Changelog
-#: dbas/templates/snippet-popups.pt:408
-msgid "edit_statement_view_changelog"
-msgstr ""
-
-#. Default: Please, edit the selected statement here:
-#: dbas/templates/snippet-popups.pt:415
-msgid "edit_statement_here"
-msgstr ""
-
-#. Default: Submit
-#: dbas/templates/snippet-popups.pt:422
-msgid "submit"
-msgstr ""
-
-#. Default: Okay
-#: dbas/templates/snippet-popups.pt:441
-msgid "okay"
-msgstr ""
-
-#. Default: Cancel
-#: dbas/templates/snippet-popups.pt:442
-msgid "cancel"
-msgstr ""
-
-#. Default: JavaScript is not enabled:
-#: dbas/templates/snippet-popups.pt:451
-msgid "js_disabled1"
-msgstr ""
-
-#. Default: Please enable JavaScript!
-#: dbas/templates/snippet-popups.pt:452
-msgid "js_disabled2"
-msgstr ""
-
-#. Default: Get In Touch With Us
-#: dbas/templates/contact.pt:12
-msgid "contact_header_1"
-msgstr "Get In Touch With Us"
-
-#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
-#. hours max!
-#: dbas/templates/contact.pt:13
-msgid "contact_header_2"
-msgstr ""
-"Default: Feel free to drop us a line and we’ll try to get back to you in 48 "
-"hours max!"
-
-#. Default: Your Name (required)
-#: dbas/templates/contact.pt:19
-msgid "name_req"
-msgstr "Your Name (required)"
-
-#. Default: Your E-Mail (required)
-#: dbas/templates/contact.pt:26
-msgid "mail_req"
-msgstr "Your E-Mail (required)"
-
-#. Default: Your Phone Number
-#: dbas/templates/contact.pt:33
-msgid "phone_no"
-msgstr "Your Phone Number"
-
-#. Default: Your Message (required)
-#: dbas/templates/contact.pt:40
-msgid "message_req"
-msgstr "Your Message (required)"
-
-#. Default: Anti-Spam (required)
-#: dbas/templates/contact.pt:47
-msgid "spam_req"
-msgstr "Anti-Spam (required)"
-
-#. Default: Warning!
-#: dbas/templates/contact.pt:64 dbas/templates/login.pt:139
-msgid "warning"
-msgstr "Warning!"
-
-#. Default: Great:
-#: dbas/templates/contact.pt:72 dbas/templates/settings.pt:114
-msgid "great"
-msgstr "Great:"
-
-#. Default: Your message was sent.
-#: dbas/templates/contact.pt:72
-msgid "message_sent"
-msgstr "Your message was sent."
-
-#. Default: Dialogue-Based Argumentation System
-#: dbas/templates/content.pt:15
-msgid "dbas_long"
-msgstr "Dialogue-Based Argumentation System"
-
-#. Default: The current discussion is about
-#: dbas/templates/content.pt:16
-msgid "current_discussion"
-msgstr "The current discussion is about"
-
-#. Default: and was started at
-#: dbas/templates/content.pt:19
-msgid "startet_at"
-msgstr "and was started at"
-
-#. Default: Change display style:
-#: dbas/templates/content.pt:53
-msgid "change_style"
-msgstr "Change display style:"
-
-#. Default: Dialog View
-#: dbas/templates/content.pt:57
-msgid "dialog_view"
-msgstr "Dialog View"
-
-#. Default: Island View
-#: dbas/templates/content.pt:62 dbas/templates/content.pt:95
-#: dbas/templates/index.pt:90
-msgid "island_view"
-msgstr "Island View"
-
-#. Default: Complete View
-#: dbas/templates/content.pt:67
-msgid "complete_view"
-msgstr "Complete View"
-
-#. Default: Error:
-#: dbas/templates/content.pt:79 dbas/templates/settings.pt:77
-#: dbas/templates/login.pt:47 dbas/templates/login.pt:57
-msgid "error"
-msgstr "Fehler:"
-
-#. Default: Island View
-#: dbas/templates/content.pt:94
-#, fuzzy
-msgid "istland_view"
-msgstr "Island View"
-
-#. Default: Pro
-#: dbas/templates/content.pt:98 dbas/templates/content.pt:131
-msgid "pro"
-msgstr "Pro"
-
-#. Default: Contra
-#: dbas/templates/content.pt:104 dbas/templates/content.pt:143
-msgid "contra"
-msgstr "Contra"
-
-#. Default: Please insert a new Argument
-#: dbas/templates/content.pt:127
-msgid "insert-argument"
-msgstr "Please insert a new Argument"
-
-#. Default: Add a textfield
-#: dbas/templates/content.pt:137 dbas/templates/content.pt:148
-msgid "add_textfield"
-msgstr "Add a textfield"
-
-#. Default: Special rights
-#: dbas/templates/content.pt:168
-msgid "special_rights"
-msgstr "Special rights"
-
-#. Default: Some additional options for the administrator.
-#: dbas/templates/content.pt:169
-msgid "admin_only"
-msgstr ""
-"Some additional options for the administrator.Default: Some additional "
-"options for the administrator. <dynamic element>"
-
-#. Default: Minimap:
-#: dbas/templates/content.pt:180
-msgid "minimap"
-msgstr "Minimap:"
-
-#. Default: Imprint
-#: dbas/templates/snippet-footer.pt:11
-#, fuzzy
-msgid "imprint"
-msgstr "Information required according to § 5 TMG"
-
-#. Default: Icons by
-#: dbas/templates/snippet-footer.pt:16
-msgid "icons_by"
-msgstr ""
-
-#. Default: Settings of:
-#: dbas/templates/settings.pt:15
-#, fuzzy
-msgid "settings_of"
-msgstr "Settings of:"
-
-#. Default: Information about yourself
-#: dbas/templates/settings.pt:20
-msgid "info_about_yourself"
-msgstr "Information about yourself"
-
-#. Default: Firstname
-#: dbas/templates/settings.pt:24
-msgid "firstname"
-msgstr "Firstname"
-
-#. Default: Surname
-#: dbas/templates/settings.pt:31
-msgid "surname"
-msgstr "Surname"
-
-#. Default: Nickname
-#. Default: Your Nickname
-#: dbas/templates/settings.pt:38 dbas/templates/login.pt:86
-msgid "nickname"
-msgstr "Nickname"
-
-#. Default: Group
-#: dbas/templates/settings.pt:52
-msgid "group"
-msgstr "Group"
-
-#. Default: Your decisions
-#: dbas/templates/settings.pt:61
-msgid "decisions"
-msgstr "Your decisions"
-
-#. Default: Success:
-#: dbas/templates/settings.pt:72 dbas/templates/login.pt:52
-msgid "success"
-msgstr "Success:"
-
-#. Default: Change your password
-#: dbas/templates/settings.pt:83
-msgid "change_password"
-msgstr "Change your password"
-
-#. Default: Old password
-#: dbas/templates/settings.pt:86
-msgid "old_password"
-msgstr "Old password"
-
-#. Default: New Password
-#: dbas/templates/settings.pt:90
-msgid "new_password"
-msgstr "New Password"
-
-#. Default: Strength
-#: dbas/templates/settings.pt:94
-msgid "strength"
-msgstr "Strength"
-
-#. Default: New Password (confirm)
-#: dbas/templates/settings.pt:100
-msgid "new_password_confirm"
-msgstr "New Password (confirm)"
-
-#. Default: Your password was changed
-#: dbas/templates/settings.pt:114
-msgid "password_changed"
-msgstr "Your password was changed"
+msgid "404_text_part2"
+msgstr "The page &quot;<dynamic element>&quot; for could not be found."
 
 #. Default: Welcome
 #: dbas/templates/index.pt:15
@@ -673,6 +202,12 @@ msgstr ""
 "You will never see something like an argumentation map, because the systems "
 "seems to be like a dynamic and generic <dynamic element> for you."
 
+#. Default: Island View
+#: dbas/templates/index.pt:90 dbas/templates/content.pt:62
+#: dbas/templates/content.pt:95
+msgid "island_view"
+msgstr "Island View"
+
 #. Default: Okay, you want to see more as, but not everything. Therefore the
 #. island view will present you a list of every connected statement for an
 #. specific statement.
@@ -731,11 +266,79 @@ msgstr ""
 msgid "research"
 msgstr ""
 
-#. Default: Log In
+#. Default: Toggle navigation
+#: dbas/templates/snippet-header.pt:10
+msgid "Toggle Navigation"
+msgstr ""
+
+#. Default: Let's go
+#: dbas/templates/snippet-header.pt:39
+msgid "lets_go"
+msgstr ""
+
+#. Default: News
+#: dbas/templates/snippet-header.pt:45
+msgid "news"
+msgstr ""
+
+#. Default: Contact
+#: dbas/templates/snippet-header.pt:51
+#, fuzzy
+msgid "contact"
+msgstr "Contra"
+
 #. Default: Login
-#: dbas/templates/login.pt:13 dbas/templates/snippet-header.pt:57
+#. Default: Log In
+#: dbas/templates/snippet-header.pt:57 dbas/templates/login.pt:13
 msgid "login"
 msgstr "Log In"
+
+#. Default: Settings
+#: dbas/templates/snippet-header.pt:69
+msgid "settings"
+msgstr "Settings of:"
+
+#. Default: Logout
+#: dbas/templates/snippet-header.pt:74
+msgid "logout"
+msgstr ""
+
+#. Default: More
+#: dbas/templates/snippet-header.pt:82
+msgid "more"
+msgstr ""
+
+#. Default: Author
+#: dbas/templates/snippet-header.pt:87 dbas/templates/news.pt:45
+#: dbas/templates/news.pt:78 dbas/templates/news.pt:111
+#: dbas/templates/news.pt:144 dbas/templates/news.pt:171
+#: dbas/templates/news.pt:204 dbas/templates/news.pt:239
+#: dbas/templates/news.pt:272 dbas/templates/news.pt:305
+#: dbas/templates/news.pt:338 dbas/templates/news.pt:371
+#: dbas/templates/news.pt:404 dbas/templates/news.pt:437
+#: dbas/templates/news.pt:470 dbas/templates/news.pt:503
+#: dbas/templates/news.pt:536 dbas/templates/news.pt:569
+#: dbas/templates/news.pt:602 dbas/templates/news.pt:635
+#: dbas/templates/news.pt:678 dbas/templates/news.pt:711
+#: dbas/templates/news.pt:744 dbas/templates/news.pt:777
+#: dbas/templates/news.pt:810
+msgid "author"
+msgstr ""
+
+#. Default: Licence
+#: dbas/templates/snippet-header.pt:92
+msgid "licence"
+msgstr ""
+
+#. Default: Privacy Policy
+#: dbas/templates/snippet-header.pt:97 dbas/templates/snippet-popups.pt:130
+msgid "privacy_policy"
+msgstr ""
+
+#. Default: Language
+#: dbas/templates/snippet-header.pt:105
+msgid "language"
+msgstr ""
 
 #. Default: Sign Up
 #: dbas/templates/login.pt:15
@@ -762,6 +365,17 @@ msgstr "Your Password"
 msgid "forgot_password"
 msgstr "<dynamic element>"
 
+#. Default: Error:
+#: dbas/templates/login.pt:47 dbas/templates/login.pt:57
+#: dbas/templates/settings.pt:77 dbas/templates/content.pt:79
+msgid "error"
+msgstr "Fehler:"
+
+#. Default: Success:
+#: dbas/templates/login.pt:52 dbas/templates/settings.pt:72
+msgid "success"
+msgstr "Success:"
+
 #. Default: Sign Up for Free
 #: dbas/templates/login.pt:66
 msgid "signup_free"
@@ -776,6 +390,12 @@ msgstr "Your First Name"
 #: dbas/templates/login.pt:79
 msgid "last_name"
 msgstr "Your Last Name"
+
+#. Default: Your Nickname
+#. Default: Nickname
+#: dbas/templates/login.pt:86 dbas/templates/settings.pt:38
+msgid "nickname"
+msgstr "Nickname"
 
 #. Default: Your Gender
 #: dbas/templates/login.pt:93
@@ -817,6 +437,11 @@ msgstr "Strength"
 msgid "password-confirm"
 msgstr "Password (confirm)"
 
+#. Default: Warning!
+#: dbas/templates/login.pt:139 dbas/templates/contact.pt:64
+msgid "warning"
+msgstr "Warning!"
+
 #. Default: Password-Request
 #: dbas/templates/login.pt:159
 msgid "password_request"
@@ -829,68 +454,443 @@ msgid "fill_in_mail_for_password"
 msgstr ""
 "Please fill in your e-mail below. A new password will be send this address:"
 
-#. Default: Toggle navigation
-#: dbas/templates/snippet-header.pt:10
-msgid "Toggle Navigation"
-msgstr ""
+#. Default: Close
+#: dbas/templates/login.pt:170 dbas/templates/snippet-popups.pt:72
+#: dbas/templates/snippet-popups.pt:117 dbas/templates/snippet-popups.pt:395
+#: dbas/templates/snippet-popups.pt:423
+msgid "close"
+msgstr "Close"
 
-#. Default: Let's go
-#: dbas/templates/snippet-header.pt:39
-msgid "lets_go"
-msgstr ""
-
-#. Default: News
-#: dbas/templates/snippet-header.pt:45
-msgid "news"
-msgstr ""
-
-#. Default: Contact
-#: dbas/templates/snippet-header.pt:51
+#. Default: Imprint
+#: dbas/templates/snippet-footer.pt:11
 #, fuzzy
-msgid "contact"
-msgstr "Contra"
+msgid "imprint"
+msgstr "Information required according to § 5 TMG"
 
-#. Default: Settings
-#: dbas/templates/snippet-header.pt:69
-msgid "settings"
+#. Default: Icons by
+#: dbas/templates/snippet-footer.pt:16
+msgid "icons_by"
+msgstr ""
+
+#. Default: About me
+#: dbas/templates/snippet-popups.pt:10
+msgid "about_me"
+msgstr ""
+
+#. Default: Name
+#: dbas/templates/snippet-popups.pt:19
+#, fuzzy
+msgid "name"
+msgstr "Surname"
+
+#. Default: Role
+#: dbas/templates/snippet-popups.pt:25
+msgid "role"
+msgstr ""
+
+#. Default: Doctoral Student
+#: dbas/templates/snippet-popups.pt:27
+msgid "role_value_1"
+msgstr ""
+
+#. Default: Lab for Technology of Social Networks
+#: dbas/templates/snippet-popups.pt:28
+msgid "lab_tsn"
+msgstr ""
+
+#. Default: Member of the graduation school
+#: dbas/templates/snippet-popups.pt:29
+msgid "role_value_2"
+msgstr ""
+
+#. Default: Online Participation
+#: dbas/templates/snippet-popups.pt:29
+msgid "role_value_3"
+msgstr ""
+
+#. Default: Office
+#: dbas/templates/snippet-popups.pt:41
+msgid "office"
+msgstr ""
+
+#. Default: Universitätsstraße 1
+#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
+#. element><dynamic element> <dynamic element><dynamic element> <dynamic
+#. element><dynamic element> <dynamic element><dynamic element>"
+#: dbas/templates/snippet-popups.pt:44
+msgid "office_value_2"
+msgstr ""
+
+#. Default: 40225 Duesseldorf
+#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
+#. element><dynamic element> <dynamic element><dynamic element> <dynamic
+#. element><dynamic element> <dynamic element><dynamic element>"
+#: dbas/templates/snippet-popups.pt:45
+msgid "office_value_3"
+msgstr ""
+
+#. Default: Department of Computer Science
+#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
+#. element><dynamic element> <dynamic element><dynamic element> <dynamic
+#. element><dynamic element> <dynamic element><dynamic element>"
+#: dbas/templates/snippet-popups.pt:46
+msgid "office_value_4"
+msgstr ""
+
+#. Default: Building 25.12, Room 02.45
+#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
+#. element><dynamic element> <dynamic element><dynamic element> <dynamic
+#. element><dynamic element> <dynamic element><dynamic element>"
+#: dbas/templates/snippet-popups.pt:47
+msgid "office_value_5"
+msgstr ""
+
+#. Default: Heinrich-Heine University Duesseldorf <dynamic element><dynamic
+#. element> <dynamic element><dynamic element> <dynamic element><dynamic
+#. element> <dynamic element><dynamic element>
+#: dbas/templates/snippet-popups.pt:43
+msgid "office_value_1"
+msgstr ""
+
+#. Default: Telephone
+#: dbas/templates/snippet-popups.pt:52
+msgid "telephone"
+msgstr ""
+
+#. Default: MIT License (MIT)
+#: dbas/templates/snippet-popups.pt:85
+msgid "mit_licencse"
+msgstr ""
+
+#. Default: Permission is hereby granted, free of charge, to any person
+#. obtaining a copy of this software and associated documentation files (the
+#. "Software"), to deal in the Software without restriction, including without
+#. limitation the rights to use, copy, modify, merge, publish, distribute,
+#. sublicense, and/or sell copies of the Software, and to permit persons to
+#. whom the Software is furnished to do so, subject to the following
+#. conditions:
+#: dbas/templates/snippet-popups.pt:94
+msgid "mit_licence_part1"
+msgstr ""
+
+#. Default: The above copyright notice and this permission notice shall be
+#. included in all copies or substantial portions of the Software.
+#: dbas/templates/snippet-popups.pt:103
+msgid "mit_licence_part2"
+msgstr ""
+
+#. Default: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+#. EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+#. MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+#. EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+#. DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+#. OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+#. USE OR OTHER DEALINGS IN THE SOFTWARE.
+#: dbas/templates/snippet-popups.pt:108
+msgid "mit_licence_part3"
+msgstr ""
+
+#. Default: How to select a strong password
+#: dbas/templates/snippet-popups.pt:369
+#, fuzzy
+msgid "select_password"
+msgstr "Old password"
+
+#. Default: A Password is strong, when it contains at least:
+#: dbas/templates/snippet-popups.pt:372
+#, fuzzy
+msgid "select_password_intro"
+msgstr "New Password (confirm)"
+
+#. Default: eight characters
+#: dbas/templates/snippet-popups.pt:374
+#, fuzzy
+msgid "select_password_rule1"
+msgstr "Password-Request"
+
+#. Default: one uppercase letter
+#: dbas/templates/snippet-popups.pt:375
+#, fuzzy
+msgid "select_password_rule2"
+msgstr "Password-Request"
+
+#. Default: one lowercase letter
+#: dbas/templates/snippet-popups.pt:376
+#, fuzzy
+msgid "select_password_rule3"
+msgstr "Password-Request"
+
+#. Default: one special sign
+#: dbas/templates/snippet-popups.pt:377
+#, fuzzy
+msgid "select_password_rule4"
+msgstr "Password-Request"
+
+#. Default: For example 'M2015_fiO' is a strong password. And it would take 275
+#. days to crack this password with a desktop pc in 2015. Removing one sign,
+#. reduces the time to 3 days, and adding a sign increases the time to 57
+#. yearsIt should be noted:
+#: dbas/templates/snippet-popups.pt:379
+#, fuzzy
+msgid "popup_password_text"
+msgstr "Your Password"
+
+#. Default: Avoid using a password on several pages
+#: dbas/templates/snippet-popups.pt:381
+#, fuzzy
+msgid "select_password_avoid1"
+msgstr "New Password (confirm)"
+
+#. Default: Avoid using patterns, which can be found in a dictionary
+#: dbas/templates/snippet-popups.pt:382
+#, fuzzy
+msgid "select_password_avoid2"
+msgstr "New Password (confirm)"
+
+#. Default: Avoid using information that is or might become publicly associated
+#. with the user or the account
+#: dbas/templates/snippet-popups.pt:383
+#, fuzzy
+msgid "select_password_avoid3"
+msgstr "New Password (confirm)"
+
+#. Default: Avoid using information that the user's colleagues and/or
+#. acquaintances might know to be associated with the user
+#: dbas/templates/snippet-popups.pt:384
+#, fuzzy
+msgid "select_password_avoid4"
+msgstr "New Password (confirm)"
+
+#. Default: If you need some help with our password, you can get one here:
+#: dbas/templates/snippet-popups.pt:386
+#, fuzzy
+msgid "select_password_help"
+msgstr "Old password"
+
+#. Default: Edit Statements / View Changelog
+#: dbas/templates/snippet-popups.pt:408
+msgid "edit_statement_view_changelog"
+msgstr ""
+
+#. Default: Please, edit the selected statement here:
+#: dbas/templates/snippet-popups.pt:415
+msgid "edit_statement_here"
+msgstr ""
+
+#. Default: Submit
+#: dbas/templates/snippet-popups.pt:422
+msgid "submit"
+msgstr ""
+
+#. Default: Okay
+#: dbas/templates/snippet-popups.pt:441
+msgid "okay"
+msgstr ""
+
+#. Default: Cancel
+#: dbas/templates/snippet-popups.pt:442
+msgid "cancel"
+msgstr ""
+
+#. Default: JavaScript is not enabled:
+#: dbas/templates/snippet-popups.pt:451
+msgid "js_disabled1"
+msgstr ""
+
+#. Default: Please enable JavaScript!
+#: dbas/templates/snippet-popups.pt:452
+msgid "js_disabled2"
+msgstr ""
+
+#. Default: This will be the news page and currently I think...this will be
+#. some kind of blog
+#: dbas/templates/news.pt:13
+msgid "news_intro"
+msgstr ""
+"This will be the news page and currently I think...this will be some kind of "
+"blog"
+
+#. Default: Settings of
+#: dbas/templates/settings.pt:15
+#, fuzzy
+msgid "settings_of"
 msgstr "Settings of:"
 
-#. Default: Logout
-#: dbas/templates/snippet-header.pt:74
-msgid "logout"
+#. Default: Information about yourself
+#: dbas/templates/settings.pt:20
+msgid "info_about_yourself"
+msgstr "Information about yourself"
+
+#. Default: Firstname
+#: dbas/templates/settings.pt:24
+msgid "firstname"
+msgstr "Firstname"
+
+#. Default: Surname
+#: dbas/templates/settings.pt:31
+msgid "surname"
+msgstr "Surname"
+
+#. Default: Group
+#: dbas/templates/settings.pt:52
+msgid "group"
+msgstr "Group"
+
+#. Default: Your decisions
+#: dbas/templates/settings.pt:61
+msgid "decisions"
+msgstr "Your decisions"
+
+#. Default: Change your password
+#: dbas/templates/settings.pt:83
+msgid "change_password"
+msgstr "Change your password"
+
+#. Default: Old password
+#: dbas/templates/settings.pt:86
+msgid "old_password"
+msgstr "Old password"
+
+#. Default: New Password
+#: dbas/templates/settings.pt:90
+msgid "new_password"
+msgstr "New Password"
+
+#. Default: Strength
+#: dbas/templates/settings.pt:94
+msgid "strength"
+msgstr "Strength"
+
+#. Default: New Password (confirm)
+#: dbas/templates/settings.pt:100
+msgid "new_password_confirm"
+msgstr "New Password (confirm)"
+
+#. Default: Great:
+#: dbas/templates/settings.pt:114 dbas/templates/contact.pt:72
+msgid "great"
+msgstr "Great:"
+
+#. Default: Your password was changed
+#: dbas/templates/settings.pt:114
+msgid "password_changed"
+msgstr "Your password was changed"
+
+#. Default: Get In Touch With Us
+#: dbas/templates/contact.pt:12
+msgid "contact_header_1"
+msgstr "Get In Touch With Us"
+
+#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
+#. hours max!
+#: dbas/templates/contact.pt:13
+msgid "contact_header_2"
 msgstr ""
+"Default: Feel free to drop us a line and we’ll try to get back to you in 48 "
+"hours max!"
 
-#. Default: More
-#: dbas/templates/snippet-header.pt:82
-msgid "more"
-msgstr ""
+#. Default: Your Name (required)
+#: dbas/templates/contact.pt:19
+msgid "name_req"
+msgstr "Your Name (required)"
 
-#. Default: Licence
-#: dbas/templates/snippet-header.pt:92
-msgid "licence"
-msgstr ""
+#. Default: Your E-Mail (required)
+#: dbas/templates/contact.pt:26
+msgid "mail_req"
+msgstr "Your E-Mail (required)"
 
-#. Default: Language
-#: dbas/templates/snippet-header.pt:105
-msgid "language"
-msgstr ""
+#. Default: Your Phone Number
+#: dbas/templates/contact.pt:33
+msgid "phone_no"
+msgstr "Your Phone Number"
 
-#. Default: 404 Error
-#: dbas/templates/404.pt:13
-msgid "404"
-msgstr "404 Error"
+#. Default: Your Message (required)
+#: dbas/templates/contact.pt:40
+msgid "message_req"
+msgstr "Your Message (required)"
 
-#. Default: The page
-#: dbas/templates/404.pt:14
+#. Default: Anti-Spam (required)
+#: dbas/templates/contact.pt:47
+msgid "spam_req"
+msgstr "Anti-Spam (required)"
+
+#. Default: Your message was sent.
+#: dbas/templates/contact.pt:72
+msgid "message_sent"
+msgstr "Your message was sent."
+
+#. Default: Dialogue-Based Argumentation System
+#: dbas/templates/content.pt:15
+msgid "dbas_long"
+msgstr "Dialogue-Based Argumentation System"
+
+#. Default: The current discussion is about
+#: dbas/templates/content.pt:16
+msgid "current_discussion"
+msgstr "The current discussion is about"
+
+#. Default: and was started at
+#: dbas/templates/content.pt:19
+msgid "startet_at"
+msgstr "and was started at"
+
+#. Default: Change display style:
+#: dbas/templates/content.pt:53
+msgid "change_style"
+msgstr "Change display style:"
+
+#. Default: Dialog View
+#: dbas/templates/content.pt:57
+msgid "dialog_view"
+msgstr "Dialog View"
+
+#. Default: Complete View
+#: dbas/templates/content.pt:67
+msgid "complete_view"
+msgstr "Complete View"
+
+#. Default: Island View
+#: dbas/templates/content.pt:94
 #, fuzzy
-msgid "404_text_part1"
-msgstr "The page &quot;<dynamic element>&quot; for could not be found."
+msgid "istland_view"
+msgstr "Island View"
 
-#. Default: for could not be found.
-#: dbas/templates/404.pt:14
-#, fuzzy
-msgid "404_text_part2"
-msgstr "The page &quot;<dynamic element>&quot; for could not be found."
+#. Default: Pro
+#: dbas/templates/content.pt:98 dbas/templates/content.pt:131
+msgid "pro"
+msgstr "Pro"
+
+#. Default: Contra
+#: dbas/templates/content.pt:104 dbas/templates/content.pt:143
+msgid "contra"
+msgstr "Contra"
+
+#. Default: Please insert a new Argument
+#: dbas/templates/content.pt:127
+msgid "insert-argument"
+msgstr "Please insert a new Argument"
+
+#. Default: Add a textfield
+#: dbas/templates/content.pt:137 dbas/templates/content.pt:148
+msgid "add_textfield"
+msgstr "Add a textfield"
+
+#. Default: Special rights
+#: dbas/templates/content.pt:168
+msgid "special_rights"
+msgstr "Special rights"
+
+#. Default: Some additional options for the administrator.
+#: dbas/templates/content.pt:169
+msgid "admin_only"
+msgstr ""
+"Some additional options for the administrator.Default: Some additional "
+"options for the administrator. <dynamic element>"
+
+#. Default: Minimap:
+#: dbas/templates/content.pt:180
+msgid "minimap"
+msgstr "Minimap:"
 
 #~ msgid "impressum_intro"
 #~ msgstr "Information required according to § 5 TMG"

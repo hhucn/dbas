@@ -15,7 +15,7 @@ module.exports = function(config) {
   if (!auth.SAUCE_USERNAME || !auth.SAUCE_ACCESS_KEY) return;
   if (process.env.SKIP_SAUCE) return;
 
-  var branch = process.env.TRAVIS_BRANCH || 'local'
+  var branch = process.env.TRAVIS_BRANCH || 'local';
   var browserConfig = require('./sauce.browsers');
   var browsers = Object.keys(browserConfig);
   var tags = [ 'chaijs_' + version, auth.SAUCE_USERNAME + '@' + branch ];

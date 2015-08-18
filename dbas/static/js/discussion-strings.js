@@ -59,5 +59,5 @@ var addPremisseRadioButtonText = "Let me insert my reason(s)!";
 var firstConclusionRadioButtonText = "Let me insert my idea!";
 var argumentContainerH4TextIfPremisse = "You want to state your own reason(s)?";
 var argumentContainerH4TextIfConclusion = "What is your idea? What should we do?";
-var startDiscussionText = "OK. Let\'s move on. Wich point do you want to discuss?";
+var startDiscussionText = "What is your initial position?"; //"OK. Let\'s move on. Wich point do you want to discuss?";
 var whatDoYouThink = "What do you think about that?";

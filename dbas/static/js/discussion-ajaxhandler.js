@@ -6,8 +6,6 @@
  * @copyright Krauthoff 2015
  */
 
-// TODO KICK ALL METHODS WHICH ARE NOT USED
-
 function AjaxHandler() {
 	'use strict';
 	var internal_error = 'Internal Error: Maybe the server is offline or your data was not valid due to a CSRF check.';
@@ -66,7 +64,7 @@ function AjaxHandler() {
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetReplyForPremisseDone(data) {
-			new InteractionHandler().callbackIfDoneReplyForPremisse(data);
+			new InteractionHandler().callbackIfDoneReplyForPremissegroup(data);
 		}).fail(function ajaxGetReplyForPremisseFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
@@ -113,70 +111,6 @@ function AjaxHandler() {
 	};
 
 	/**
-	 * Send an ajax request for getting all pro or contra arguments as dicitonary uid <-> value. Every argument has a connection to the
-	 * position with given uid.
-	 * @param pos_uid uid of clicked position
-	 *
-	this.getArgumentsForJustification = function (pos_uid) {
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_arguments_connected_to_position_uid',
-			method: 'POST',
-			data: { uid : pos_uid},
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxGetArgumentsForJustificationDone(data) {
-			new InteractionHandler().callbackIfDoneForArgsForJustification(data);
-		}).fail(function ajaxGetArgumentsForJustificationFail() {
-			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while requesting data for the next argumentation.');
-		});
-	};
-
-	/**
-	 * Requests data for a new argumentation round. This includes a statement, an confrontation and justifications
-	 * @param currentStatementId uid of the current statement
-	 *
-	this.getNewArgumentationRound = function (currentStatementId) {
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_args_for_new_discussion_round',
-			method: 'POST',
-			data: { uid: currentStatementId},
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxGetNewArgumentationRoundDone(data) {
-			new InteractionHandler().callbackIfDoneForGetNewArgumentationRound(data);
-		}).fail(function ajaxGetNewArgumentationRoundFail() {
-			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while requesting data for the next argumentation.');
-		});
-	};
-
-	/**
-	 * Request data for getting one step back
-	 *
-	this.getOneStepBack = function () {
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_one_step_back',
-			type: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxGetOneStepBackDone(data) {
-			$('#' + stepBackButtonId).hide();
-			new InteractionHandler().callbackGetOneStepBack(data);
-		}).fail(function ajaxGetOneStepBackFail() {
-			$('#' + stepBackButtonId).hide();
-			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while stepping back');
-		});
-	};
-
-	/**
 	 * Sends new premisses to the server. Answer will be given to a callback
 	 * @param argument_dictionary for inserting
 	 */
@@ -213,25 +147,6 @@ function AjaxHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			new GuiHandler().setErrorDescription(internal_error);
-		});
-	};
-
-	/**
-	 * Request for all arguments, which have a relation to the last saved one
-	 *
-	this.getAllArgumentsForIslandView = function () {
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_all_arguments_for_island',
-			type: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxGetAllArgumentsForIslandViewDone(data) {
-			new InteractionHandler().callbackIfDoneForGetAllArgumentsForIslandView(data);
-		}).fail(function ajaxGetAllArgumentsForIslandViewFail() {
-			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().setVisibilityOfDisplayStyleContainer(false, '');
 		});
 	};
 

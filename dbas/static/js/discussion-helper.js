@@ -6,14 +6,15 @@
  * @copyright Krauthoff 2015
  */
 
-/**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
- * @copyright Krauthoff 2015
- */
-
 function Helper() {
 
+	/**
+	 *
+	 * @param id
+	 * @param title
+	 * @param text
+	 * @returns {jQuery|HTMLElement}
+	 */
 	this.getATagForDropDown = function (id, title, text) {
 		var a = $('<a>');
 		a.attr('id', id);
@@ -27,11 +28,11 @@ function Helper() {
 	};
 
 	/**
-	 *
-	 * @param premisse
-	 * @param conclusion
-	 * @param startLowerCase
-	 * @param endWithDot
+	 * Returns all kinds of attacks for the given premisse and conclusion
+	 * @param premisse current premisses
+	 * @param conclusion current conclusion
+	 * @param startLowerCase, true, when each sentences should start as lowercase
+	 * @param endWithDot, true, when each sentences should end with a dot
 	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut]
 	 */
 	this.createRelationsText = function(premisse, conclusion, startLowerCase, endWithDot){
@@ -41,14 +42,13 @@ function Helper() {
 		if (conclusion.substr(conclusion.length-1) == ".")
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var undermine = (startLowerCase ? 'w' : 'W') + 'rong, it is not true that ' + premisse + (endWithDot ? '.' : '') + ' [undermine]',
-		support	= (startLowerCase ? 'r' : 'R') + 'ight, it is true that ' + premisse + (endWithDot ? '.' : '') + ' [support]',
-		undercut= (startLowerCase ? 'r' : 'R') + 'ight, ' + premisse + ', but I do not believe that this is a good argument for '
-			+ conclusion + (endWithDot ? '.' : '') + ' [undercut]',
-		overbid	= (startLowerCase ? 'r' : 'R') + 'ight, ' + premisse + ', and I do believe that this is a good argument for '
-			+ conclusion + (endWithDot ? '.' : '') + ' [overbid]',
-		rebut	= (startLowerCase ? 'r' : 'R') + 'ight, ' + premisse + ' and I do accept that this is an argument for '
-			+ conclusion + '. However, I have a much stronger argument for rejecting that ' + conclusion + (endWithDot ? '.' : '') + ' [rebut]';
+		var w = startLowerCase ? 'w' : 'W', r = startLowerCase ? 'r' : 'R', enddot = endWithDot ? '.' : '',
+			undermine = w + 'rong, it is not true that \'' + premisse + '\'' + enddot,
+			support	  = r + 'ight, it is true that \'' + premisse + '\'' + enddot,
+			undercut  = r + 'ight, \'' + premisse + '\', but I do not believe that this is a good counter-attack for \'' + conclusion + '\'' + enddot,
+			overbid	  = r + 'ight, \'' + premisse + '\', and I do believe that this is a good counter-attack for \'' + conclusion + '\'' + enddot,
+			rebut	  = r + 'ight, \'' + premisse + '\' and I do accept that this is an counter-attack for ' + conclusion
+				+ '. However, I have a much stronger argument for rejecting that \'' + conclusion + '\'' + enddot;
 		return [undermine, support, undercut, overbid, rebut];
 	}
 }

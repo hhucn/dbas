@@ -75,21 +75,25 @@ function GuiHandler() {
 	 * Sets given data in the list of the discussion space
 	 * @param jsonData
 	 */
-	this.setJsonDataAsFirstConfrontation = function (jsonData) {
+	this.setJsonDataAsConfrontation = function (jsonData) {
 		var conclusion = jsonData.conclusion_text.substring(0, 1).toLowerCase() +
 				jsonData.conclusion_text.substring(1, jsonData.conclusion_text.length -1),
 			premisse = jsonData.premisse_text,
 			opinion = conclusion + ', because' + ' ' + premisse, confrontationText, listitems = [],
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length - 1),
-			relationArray, id;
+			id = "_argument_" + jsonData.confrontation_id,
+			relationArray = new Helper().createRelationsText(confrontation, opinion, false, true);
 
 		// build some confrontation text
 		if (jsonData.attack == 'undermine'){
 			confrontationText = premisse + ' does not hold, because ';
+
 		} else if (jsonData.attack == 'rebut'){
 			confrontationText = 'they accept your argument, but they have a stronger argument for rejecting: ';
+
 		} else if (jsonData.attack == 'undercut'){
 			confrontationText = premisse + ' does not justifies that ' + conclusion + ', because ';
+
 		}
 		confrontationText += confrontation + '. [<i>' + jsonData.attack + '</i>]';
 
@@ -98,16 +102,12 @@ function GuiHandler() {
 			+ othersHaveArguedThat + ' <b>' + confrontationText + '</b>.<br><br>' + whatDoYouThink,
 			'This confrontation is a ' + jsonData.attack);
 
-		// text for the radio buttons
-		relationArray = new Helper().createRelationsText(premisse, conclusion, false, true);
-
 		// build the radio buttons
-		id = "_argument_" + jsonData.argument_id;
-		listitems.push(this.getKeyValAsInputInLiWithType('undermine' + id, relationArray[0], false, false, true, 'undermine'));
-		listitems.push(this.getKeyValAsInputInLiWithType('support' + id, relationArray[1], false, false, true, 'support'));
-		listitems.push(this.getKeyValAsInputInLiWithType('undercut' + id, relationArray[2], false, false, true, 'undercut'));
-		listitems.push(this.getKeyValAsInputInLiWithType('overbid' + id, relationArray[3], false, false, true, 'overbid'));
-		listitems.push(this.getKeyValAsInputInLiWithType('rebut' + id, relationArray[4], false, false, true, 'rebut'));
+		listitems.push(this.getKeyValAsInputInLiWithType('undermine' + id, relationArray[0] + ' [undermine]', false, false, true, 'undermine'));
+		listitems.push(this.getKeyValAsInputInLiWithType('support' + id, relationArray[1] + ' [support]', false, false, true, 'support'));
+		listitems.push(this.getKeyValAsInputInLiWithType('undercut' + id, relationArray[2] + ' [undercut]', false, false, true, 'undercut'));
+		listitems.push(this.getKeyValAsInputInLiWithType('overbid' + id, relationArray[3] + ' [overbid]', false, false, true, 'overbid'));
+		listitems.push(this.getKeyValAsInputInLiWithType('rebut' + id, relationArray[4] + ' [rebut]', false, false, true, 'rebut'));
 
 		// set the buttons
 		this.addListItemsToDiscussionsSpace(listitems);
@@ -124,11 +124,11 @@ function GuiHandler() {
 			relationArray = new Helper().createRelationsText(premisse, conclusion, false, false),
 			text, listitems = [], size, i, uid, reason;
 
-		if (jsonData.relation === 'undermine') {		text = relationArray[0];
-		} else if (jsonData.relation === 'support') {	text = relationArray[1];
-		} else if (jsonData.relation === 'undercut') {	text = relationArray[2];
-		} else if (jsonData.relation === 'overbid') {	text = relationArray[3];
-		} else if (jsonData.relation === 'rebut') {		text = relationArray[4];
+		if (jsonData.relation === 'undermine') {		text = relationArray[0] + ' is undermining ' + jsonData.conclusion_text;
+		} else if (jsonData.relation === 'support') {	text = relationArray[1] + ' is supporting ' + jsonData.conclusion_text;
+		} else if (jsonData.relation === 'undercut') {	text = relationArray[2] + ' is undercuting ' + jsonData.conclusion_text;
+		} else if (jsonData.relation === 'overbid') {	text = relationArray[3] + ' is overbiding ' + jsonData.conclusion_text;
+		} else if (jsonData.relation === 'rebut') {		text = relationArray[4] + ' is rebuting ' + jsonData.conclusion_text;
 		}
 
 		size = parseInt(jsonData.reason);
@@ -296,7 +296,7 @@ function GuiHandler() {
 	 *
 	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
 		var pos = Math.floor(Math.random() * sentencesOpenersForArguments.length), text = sentencesOpenersForArguments[pos] + '<b>' + currentUserArgument + '</b>'
-			+ '<br>However, other users argued that: ' + '<b>' + confrontationArgument + '</b>' + '<br><br>What do you think about that?';
+			+ '<br>' + othersHaveArguedThat + ': ' + '<b>' + confrontationArgument + '</b>' + '<br><br>What do you think about that?';
 		new GuiHandler().setDiscussionsDescription(text);
 	};
 

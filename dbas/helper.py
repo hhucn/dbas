@@ -254,7 +254,6 @@ class DatabaseHelper(object):
 			# build text for premisse
 			premisses_as_text += ' and ' + db_textversion.content[:1].lower() + db_textversion.content[1:len(db_textversion.content)-1]
 
-
 		return_dict = {}
 		# cut first 'and ' and set the text in the dictionary
 		return_dict['premisse_text'] = premisses_as_text[5:]
@@ -302,7 +301,7 @@ class DatabaseHelper(object):
 		:return:
 		"""
 		splitted_id = id.split('_')
-		relation = splitted_id[0]
+		relation = 'undermine' #splitted_id[0]
 		argument_uid = splitted_id[2]
 		logger('DatabaseHelper', 'get_reply_confrontations_response', 'relation is ' + relation + ' for arg ' + argument_uid)
 
@@ -322,8 +321,13 @@ class DatabaseHelper(object):
 			return_dict = {}
 			return_dict['status'] = '-1'
 
+		logger('DatabaseHelper', 'get_reply_confrontations_response', 'attack was fetched')
+		logger('DatabaseHelper', 'get_reply_confrontations_response', 'get argument ' + argument_uid)
 		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).join(PremisseGroup).first()
 
+		if not return_dict:
+			return_dict = {}
+			return_dict['status'] = '0'
 		if len(return_dict) == 0:
 			return_dict[key] = '0'
 
@@ -332,8 +336,15 @@ class DatabaseHelper(object):
 		return_dict['relation'] = splitted_id[0]
 		return_dict['argument_uid'] = argument_uid # todo
 
-		if db_argument.conclusion_uid == None:
-			return_dict['conclusion_text'] = 'TODO' # todo
+		if db_argument.conclusion_uid == None or db_argument.conclusion_uid == 0:
+			logger('DatabaseHelper', 'get_reply_confrontations_response', '-----TODO-----')
+			logger('DatabaseHelper', 'get_reply_confrontations_response', '-----TODO-----')
+			logger('DatabaseHelper', 'get_reply_confrontations_response', '-----TODO-----')
+			return_dict['conclusion_text'] = qh.get_text_for_argument_uid(db_argument.argument_uid)
+			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
+			logger('DatabaseHelper', 'get_reply_confrontations_response', '-----TODO-----')
+			logger('DatabaseHelper', 'get_reply_confrontations_response', '-----TODO-----')
+			logger('DatabaseHelper', 'get_reply_confrontations_response', '-----TODO-----')
 		else:
 			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid)
 
@@ -637,11 +648,44 @@ class QueryHelper(object):
 		:param uid: id of a statement
 		:return: text of the mapped textvalue for this statement
 		"""
+		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid))
 		db_statement = DBSession.query(Statement).filter_by(uid=uid).join(TextValue).first()
 		db_textversion = DBSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
 			textValue_uid=db_statement.textvalues.uid).first()
-		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid) + ', text ' + db_textversion.content)
+		logger('QueryHelper', 'get_text_for_statement_uid', 'text ' + db_textversion.content)
 		return db_textversion.content
+
+	def get_text_for_argument_uid(self, uid):
+		"""
+
+		:param uid:
+		:return:
+		"""
+		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid))
+		db_argument = DBSession.query(Argument).filter_by(uid=uid).join(Statement).first()
+
+		if db_argument.conclusion_uid == None or db_argument.conclusion_uid == 0:
+			argument = self.get_text_for_statement_uid(db_argument.argument_uid)
+			premisses, uids = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid)
+
+			if db_argument.isSupportive:
+				premisses += ' supports ' + argument
+			else:
+				premisses += ' attacks ' + argument
+
+
+		logger('QueryHelper', 'get_text_for_argument_uid', 'premissesGroup_uid ' + str(db_argument.premissesGroup_uid) +
+		       ', conclusion_uid ' + str(db_argument.conclusion_uid))
+		premisses, uids = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid)
+		conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
+
+		retValue = '\'' + conclusion + '\', because \'' + premisses + '\''
+		if not db_argument.isSupportive:
+			db_premissegroup = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_argument.premissesGroup_uid).join(Statement).all()
+			retValue += ' do not hold' if len(db_premissegroup) > 1 else ' does not hold'
+
+		return retValue
+
 
 	def get_text_for_premissesGroup_uid(self, uid):
 		"""
@@ -654,7 +698,8 @@ class QueryHelper(object):
 		text = ''
 		uids = []
 		for premisse in db_premisses:
-			logger('QueryHelper', 'get_text_for_premissesGroup_uid', 'premisse ' + str(premisse.statements.uid))
+			logger('QueryHelper', 'get_text_for_premissesGroup_uid', 'premisse ' + str(premisse.premissesGroup_uid) + '.'
+			       + str(premisse.statement_uid) + ', premisse.statement ' + str(premisse.statements.uid))
 			tmp = self.get_text_for_statement_uid(premisse.statements.uid)
 			uids.append(str(premisse.statements.uid))
 			text += ' and ' + tmp[:1].lower() + tmp[1:]
@@ -691,6 +736,8 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_undermines_for_argument_uid', 'main')
 		db_argument = DBSession.query(Argument).filter(and_(Argument.argument_uid==int(argument_uid), Argument.isSupportive==False))\
 			.join(PremisseGroup).first()
+		if not db_argument:
+			return None
 		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_argument.premissegroups.uid)
 		premisses_as_statements_uid = set()
 		for premisse in db_premisses:
@@ -743,6 +790,8 @@ class QueryHelper(object):
 		"""
 		logger('QueryHelper', 'get_rebuts_for_argument_uid', 'main')
 		db_argument = DBSession.query(Argument).filter_by(argument_uid=int(argument_uid)).first()
+		if not db_argument:
+			return None
 		return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid)
 
 	def get_supports_for_argument_uid(self, key, argument_uid):
@@ -754,6 +803,8 @@ class QueryHelper(object):
 		return_dict = {}
 		db_argument = DBSession.query(Argument).filter(and_(Argument.argument_uid==int(argument_uid), Argument.isSupportive==True))\
 			.join(PremisseGroup).first()
+		if not db_argument:
+			return None
 		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_argument.premissegroups.uid).all()
 		index = 0
 		for premisse in db_premisses:
@@ -775,6 +826,8 @@ class QueryHelper(object):
 		index=0
 		logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid', 'db_undercut against Argument.argument_uid=='+str(argument_uid))
 		db_relation = DBSession.query(Argument).filter(Argument.isSupportive==is_supportive, Argument.argument_uid==argument_uid).all()
+		if not db_relation:
+			return None
 		return_dict[key] = str(len(db_relation))
 		for relation in db_relation:
 			logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid', 'found relation, argument uid ' + str(relation.uid))
