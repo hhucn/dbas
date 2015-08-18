@@ -82,7 +82,7 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'is_user_admin', 'check for current user')
 		if db_user:
 			logger('DatabaseHelper', 'is_user_admin', 'user exists; check for admin')
-			if db_user.nickname == 'admin' or db_user.group == db_group.uid:
+			if db_user.nickname == 'admin' or db_user.group_uid == db_group.uid:
 				logger('DatabaseHelper', 'is_user_admin', 'user is admin')
 				return True
 
