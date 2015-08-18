@@ -32,7 +32,7 @@ class Dbas(object):
 		return layout
 
 	# main page
-	@view_config(route_name='main_page', renderer='templates/index.pt' ,permission='everybody')
+	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 	def main_page(self):
 		"""
 		View configuration for the main page
@@ -250,6 +250,7 @@ class Dbas(object):
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
 		return {
+			'layout': self.base_layout(),
 			'language': lang,
 			'title': 'Login',
 			'project': header,
