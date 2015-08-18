@@ -86,12 +86,6 @@ def main(global_config, **settings):
 	config.add_route('ajax_get_logfile_for_statement', '/ajax_get_logfile_for_statement')
 	config.add_route('ajax_set_correcture_of_statement', '/ajax_set_correcture_of_statement')
 
-	# config.add_route('ajax_all_arguments_for_island', '/ajax_all_arguments_for_island')
-	# config.add_route('ajax_args_for_new_discussion_round', '/ajax_args_for_new_discussion_round')
-	# config.add_route('ajax_arguments_connected_to_position_uid', '/ajax_arguments_connected_to_position_uid')
-	# config.add_route('ajax_send_new_arguments', '/ajax_send_new_arguments')
-	# config.add_route('ajax_one_step_back', '/ajax_one_step_back')
-
 	# read the input and start
 	config.scan()
 	return config.make_wsgi_app()

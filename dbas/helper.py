@@ -270,6 +270,7 @@ class DatabaseHelper(object):
 
 		# getting undermines or undercuts or rebuts
 		rnd = random.randrange(0, 3 if db_argument else 2)
+		rnd = 1
 		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'random attack is ' + str(rnd))
 		if rnd == 0:
 			key = 'undermine'

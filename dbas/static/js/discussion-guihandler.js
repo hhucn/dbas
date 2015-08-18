@@ -89,17 +89,17 @@ function GuiHandler() {
 			confrontationText = premisse + ' does not hold, because ';
 
 		} else if (jsonData.attack == 'rebut'){
-			confrontationText = 'they accept your argument, but they have a stronger argument for rejecting: ';
+			confrontationText = 'they accept your argument, but they have a stronger argument for rejecting <b>' + conclusion + ':</b> ';
 
 		} else if (jsonData.attack == 'undercut'){
 			confrontationText = premisse + ' does not justifies that ' + conclusion + ', because ';
 
 		}
-		confrontationText += confrontation + '. [<i>' + jsonData.attack + '</i>]';
+		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
 
 		// set discussions text
 		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' <b>' + opinion + '</b>.<br><br>'
-			+ othersHaveArguedThat + ' <b>' + confrontationText + '</b>.<br><br>' + whatDoYouThink,
+			+ otherParticipantsThinkThat + ' ' + confrontationText + '.<br><br>' + whatDoYouThink,
 			'This confrontation is a ' + jsonData.attack);
 
 		// build the radio buttons
@@ -296,7 +296,7 @@ function GuiHandler() {
 	 *
 	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
 		var pos = Math.floor(Math.random() * sentencesOpenersForArguments.length), text = sentencesOpenersForArguments[pos] + '<b>' + currentUserArgument + '</b>'
-			+ '<br>' + othersHaveArguedThat + ': ' + '<b>' + confrontationArgument + '</b>' + '<br><br>What do you think about that?';
+			+ '<br>' + otherParticipantsThinkThat + ': ' + '<b>' + confrontationArgument + '</b>' + '<br><br>What do you think about that?';
 		new GuiHandler().setDiscussionsDescription(text);
 	};
 
