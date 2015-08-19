@@ -53,7 +53,7 @@ a:hover {
 	left: 0;
 	height: 100%;
 	width: 100%;
-	background: rgba( 0, 0, 0, 0.3) url('../images/ajax-loader-pacman.gif') 50% 50% no-repeat;
+	background: rgba( 0, 0, 0, 0.3) url('../images/ajax-loader-comment-grey.gif') 50% 50% no-repeat;
 }
 
 body.loading {

@@ -86,7 +86,7 @@ $(function () {
 		$('#' + scStyle2Id).attr('checked', true);
 		$('#' + scStyle1Id).attr('checked', false);
 		$('#' + scStyle3Id).attr('checked', false);
-		guiHandler.setDisplayStylesOfAddArgumentContainer(true,  true);
+		guiHandler.setDisplayStylesOfAddStatementContainer(true,  true);
 	});
 
 	// adding a textarea in the right column

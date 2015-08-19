@@ -53,16 +53,16 @@ function InteractionHandler() {
 			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
 			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
 				// statement
-				guiHandler.setDisplayStylesOfAddArgumentContainer(true, true, isStart, false);
+				guiHandler.setDisplayStylesOfAddStatementContainer(true, true, isStart, false);
 			} else {
 				// premisse
-				guiHandler.setDisplayStylesOfAddArgumentContainer(true, false, isStart, true);
+				guiHandler.setDisplayStylesOfAddStatementContainer(true, false, isStart, true);
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).show();
-			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart, false);
+			guiHandler.setDisplayStylesOfAddStatementContainer(false, true, isStart, false);
 		} else {
-			guiHandler.setDisplayStylesOfAddArgumentContainer(false, true, isStart, false);
+			guiHandler.setDisplayStylesOfAddStatementContainer(false, true, isStart, false);
 			$('#' + stepBackButtonId).hide();
 
 			this.radioButtonWasChoosen();

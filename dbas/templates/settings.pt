@@ -12,7 +12,7 @@
 
 		<div class="form first-form">
 			<div class="row">
-				<h1><span class="font-semi-bold" i18n:translate="settings_of">Settings of</span><span tal:replace="logged_in"/>: </h1>
+				<h1><span class="font-semi-bold" i18n:translate="settings_of">Settings of</span>: <span tal:replace="logged_in"/></h1>
 			</div>
 		</div>
 

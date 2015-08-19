@@ -48,7 +48,7 @@ function Helper() {
 			undercut  = r + 'ight, \'' + premisse + '\', but I do not believe that this is a good counter-argument for \'' + conclusion + '\'' + enddot,
 			overbid	  = r + 'ight, \'' + premisse + '\', and I do believe that this is a good counter-argument for \'' + conclusion + '\'' + enddot,
 			rebut	  = r + 'ight, \'' + premisse + '\' and I do accept that this is an counter-argument for \'' + conclusion
-				+ '\'. However, I have a much stronger argument for accepting that \'' + conclusion + '\'' + enddot;
+				+ '\'. However, I have a much stronger argument for accepting my opinion' + enddot;//that \'' + conclusion + '\'' + enddot;
 		return [undermine, support, undercut, overbid, rebut];
 	}
 }

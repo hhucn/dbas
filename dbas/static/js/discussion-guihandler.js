@@ -124,11 +124,11 @@ function GuiHandler() {
 			relationArray = new Helper().createRelationsText(premisse, conclusion, false, false),
 			text, listitems = [], size, i, uid, reason;
 
-		if (jsonData.relation === 'undermine') {		text = relationArray[0] + ' is undermining ' + jsonData.conclusion_text;
-		} else if (jsonData.relation === 'support') {	text = relationArray[1] + ' is supporting ' + jsonData.conclusion_text;
-		} else if (jsonData.relation === 'undercut') {	text = relationArray[2] + ' is undercuting ' + jsonData.conclusion_text;
-		} else if (jsonData.relation === 'overbid') {	text = relationArray[3] + ' is overbiding ' + jsonData.conclusion_text;
-		} else if (jsonData.relation === 'rebut') {		text = relationArray[4] + ' is rebuting ' + jsonData.conclusion_text;
+		if (jsonData.relation === 'undermine') {		text = relationArray[0] + ' is undermining \'' + conclusion + '\'';
+		} else if (jsonData.relation === 'support') {	text = relationArray[1] + ' is supporting \'' + conclusion + '\'';
+		} else if (jsonData.relation === 'undercut') {	text = relationArray[2] + ' is undercuting \'' + conclusion + '\'';
+		} else if (jsonData.relation === 'overbid') {	text = relationArray[3] + ' is overbiding \'' + conclusion + '\'';
+		} else if (jsonData.relation === 'rebut') {		text = relationArray[4] + ' is rebuting \'' + conclusion + '\'';
 		}
 
 		size = parseInt(jsonData.reason);
@@ -645,7 +645,7 @@ function GuiHandler() {
 	 * @param isStart
 	 * @param isPremisse
 	 */
-	this.setDisplayStylesOfAddArgumentContainer = function (isVisible, isStatement, isStart, isPremisse) {
+	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStatement, isStart, isPremisse) {
 		if (!isVisible) {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementContainerMainInputId).val('');
@@ -668,7 +668,7 @@ function GuiHandler() {
 				if (isStart) {
 					new AjaxHandler().sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
 				} else {
-					alert('What now (I)? GuiHandler: setDisplayStylesOfAddArgumentContainer');
+					alert('What now (I)? GuiHandler: setDisplayStylesOfAddStatementContainer');
 				}
 				var gh = new GuiHandler();
 				gh.setErrorDescription('');
@@ -677,6 +677,7 @@ function GuiHandler() {
 
 		} else if (isPremisse){
 			var statement = $('#' + discussionsDescriptionId).attr('text');
+			statement = statement.substring(0,1).toLowerCase() + + statement.substring(1);
 			$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse);
 			// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
 			$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with <b>\'' + statement + '</b>\', because ...');
@@ -692,7 +693,7 @@ function GuiHandler() {
 				gh.setSuccessDescription('');
 			});
 		} else {
-			alert('What now (II)? GuiHandler: setDisplayStylesOfAddArgumentContainer');
+			alert('What now (II)? GuiHandler: setDisplayStylesOfAddStatementContainer');
 		}
 
 		var gh = new GuiHandler();

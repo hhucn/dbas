@@ -29,7 +29,7 @@ var sentencesOpenersForArguments = [
 	//"Okay, you have got the opinion: ",
 	//"Interesting, your opinion is: ",
 	//"You have said, that: ",
-	"So your opinion is that "];
+	"So your opinion is that"];
 var sentencesOpenersArguingWithAgreeing = [
 	"I agree because ",
 	"Therefore "];
