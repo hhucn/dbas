@@ -70,7 +70,8 @@
 	text-align: center;
 }
 
-#insert_statement_form textarea {
+#pro-textareas div div textarea,
+#con-textareas div div textarea {
 	resize: vertical;
 }
 
@@ -116,31 +117,31 @@
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-433-plus.png) center no-repeat 12px 10px;
 }
 
-#left-island-column {
+#pro-island-column {
 	float: left;
 }
 
-#right-island-column {
+#con-island-column {
 	float: right;
 }
 
-#left-island-column,
-#right-island-column {
+#pro-island-column,
+#con-island-column {
 	width: 50%;
 	margin-bottom: 50px;
 }
 
-#right-island-column,
-#right-position-column {
+#con-island-column,
+#con-position-column {
 	margin-bottom: 50px;
 }
 
-#right-position-column {
+#con-position-column {
 	margin-top: 25px;
 }
 
-#left-position-column textarea,
-#right-position-column textarea {
+#pro-position-column textarea,
+#con-position-column textarea {
 	width: 95%;
 }
 
@@ -235,8 +236,8 @@
 	#discussions-avoidance-space ul li {
 		display: block;
 	}
-	#left-position-column,
-	#right-position-column {
+	#pro-position-column,
+	#con-position-column {
 		float: none;
 		width: 95%;
 	}

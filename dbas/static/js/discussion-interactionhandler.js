@@ -96,7 +96,7 @@ function InteractionHandler() {
 	 */
 	this.getPremissesAndSendThem = function (useIntro) {
 		var i = 0, dict = {}, no, intro;
-		$('#' + leftPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
+		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);
@@ -106,7 +106,7 @@ function InteractionHandler() {
 			}
 		});
 		i = 0;
-		$('#' + rightPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
+		$('#' + conPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);

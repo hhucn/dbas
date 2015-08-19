@@ -94,15 +94,15 @@
 					<h4 id='island-view-container-header-h4'><span class="font-semi-bold" i18n:translate="istland_view">Island View</span></h4>
 					<h4 id='island-view-container-h4'><span class="font-semi-bold" i18n:translate="island_view">Island View</span></h4>
 
-					<div id="left-island-column">
+					<div id="pro-island-column">
 						<h4 id="heading-pro-island" class="font-semi-bold" i18n:translate="pro">Pro</h4>
-						<div id="left-island">
+						<div id="pro-island">
 						</div>
 					</div>
 
-					<div id="right-island-column">
+					<div id="con-island-column">
 						<h4 id="heading-contra-island" class="font-semi-bold" i18n:translate="contra">Contra</h4>
-						<div id="right-island">
+						<div id="con-island">
 						</div>
 					</div>
 
@@ -127,7 +127,7 @@
 						<h4 id="add-statement-container-h4" i18n:translate="insert-argument">Please insert a new Argument</h4>
 						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="">
 
-						<div id="left-position-column">
+						<div id="pro-position-column">
 							<h4 id="heading-pro-positions" class="font-semi-bold" i18n:translate="pro">Pro</h4>
 							<div id="pro-textareas">
 
@@ -139,7 +139,7 @@
 							</a>
 						</div>
 
-						<div id="right-position-column">
+						<div id="con-position-column">
 							<h4 id="heading-contra-positions" class="font-semi-bold" i18n:translate="contra">Contra</h4>
 							<div id="con-textareas">
 							</div>

@@ -433,8 +433,8 @@ function GuiHandler() {
 		});
 
 		// append in divs
-		$('#' + leftIslandId).empty().append(ulProElement);
-		$('#' + rightIslandId).empty().append(ulConElement);
+		$('#' + proIslandId).empty().append(ulProElement);
+		$('#' + conIslandId).empty().append(ulConElement);
 
 	};
 
@@ -531,7 +531,7 @@ function GuiHandler() {
 	 */
 	this.getDropdownWithSentencesOpeners = function (identifier, number) {
 		var dropdown, button, span, ul, li_content, li_header, i, a, btn_id, a_id, h = new Helper(), sentencesOpeners;
-		sentencesOpeners = identifier == id_left ? sentencesOpenersArguingWithAgreeing : sentencesOpenersArguingWithDisagreeing;
+		sentencesOpeners = identifier == id_pro ? sentencesOpenersArguingWithAgreeing : sentencesOpenersArguingWithDisagreeing;
 
 		// div tag for the dropdown
 		dropdown = $('<div>');
@@ -594,7 +594,7 @@ function GuiHandler() {
 	 */
 	this.setDropdownClickListener = function (identifier, number) {
 		var a_id, i, sentencesOpeners;
-		sentencesOpeners = identifier == id_left ? sentencesOpenersArguingWithAgreeing : sentencesOpenersArguingWithDisagreeing;
+		sentencesOpeners = identifier == id_pro ? sentencesOpenersArguingWithAgreeing : sentencesOpenersArguingWithDisagreeing;
 
 		// add clicks
 		for (i = 0; i < sentencesOpenersInforming.length + sentencesOpeners.length; i++) {
@@ -654,16 +654,16 @@ function GuiHandler() {
 		}
 
 		// isVisible == true:
-		$('#' + leftPositionTextareaId).empty();
-		$('#' + rightPositionTextareaId).empty();
+		$('#' + proPositionTextareaId).empty();
+		$('#' + conPositionTextareaId).empty();
 		$('#' + addStatementContainerId).fadeIn('slow');
 		$('#' + addReasonButtonId).disable = true;
 
 		if (isStatement){
 			$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
 			$('#' + addStatementContainerMainInputId).show();
-			$('#' + leftPositionColumnId).hide();
-			$('#' + rightPositionColumnId).hide();
+			$('#' + proPositionColumnId).hide();
+			$('#' + conPositionColumnId).hide();
 			$('#' + sendNewStatementId).off('click').click(function () {
 				if (isStart) {
 					new AjaxHandler().sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
@@ -677,15 +677,13 @@ function GuiHandler() {
 
 		} else if (isPremisse){
 			var statement = $('#' + discussionsDescriptionId).attr('text');
-			statement = statement.substring(0,1).toLowerCase() + + statement.substring(1);
 			$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse);
 			// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
-			$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with <b>\'' + statement + '</b>\', because ...');
-			$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with <b>\'' + statement + '</b>\',' +
-				' because ...');
+			$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with: <b>' + statement + '</b>, because ...');
+			$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with: <b>' + statement + '</b>, because ...');
 			$('#' + addStatementContainerMainInputId).hide().focus();
-			$('#' + leftPositionColumnId).show();
-			$('#' + rightPositionColumnId).show();
+			$('#' + proPositionColumnId).show();
+			$('#' + conPositionColumnId).show();
 			$('#' + sendNewStatementId).off('click').click(function () {
 				new InteractionHandler().getPremissesAndSendThem(false);
 				var gh = new GuiHandler();
@@ -697,16 +695,16 @@ function GuiHandler() {
 		}
 
 		var gh = new GuiHandler();
-		gh.addTextareaAsChildInParent(leftPositionTextareaId, id_left, isStatement);
-		gh.addTextareaAsChildInParent(rightPositionTextareaId, id_right, isStatement);
+		gh.addTextareaAsChildInParent(proPositionTextareaId, id_pro, isStatement);
+		gh.addTextareaAsChildInParent(conPositionTextareaId, id_con, isStatement);
 	};
 
 	/**
 	 * Restets the values of the add statement container to default.
 	 */
 	this.resetAddStatementContainer = function () {
-		$('#' + leftPositionTextareaId).empty();
-		$('#' + rightPositionTextareaId).empty();
+		$('#' + proPositionTextareaId).empty();
+		$('#' + conPositionTextareaId).empty();
 	};
 
 	/**
