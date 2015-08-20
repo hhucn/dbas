@@ -28,6 +28,14 @@ function Helper() {
 	};
 
 	/**
+	 * Return the full HTML text of an given element
+	 * @param element which should be translated
+	 */
+	this.getFullHtmlTextOf = function (element) {
+		return $('<div>').append(element).html();
+	};
+
+	/**
 	 * Returns all kinds of attacks for the given premisse and conclusion
 	 * @param premisse current premisses
 	 * @param conclusion current conclusion

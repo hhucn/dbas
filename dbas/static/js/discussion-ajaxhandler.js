@@ -8,7 +8,6 @@
 
 function AjaxHandler() {
 	'use strict';
-	var internal_error = 'Internal Error: Maybe the server is offline or your data was not valid due to a CSRF check.';
 
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
@@ -80,7 +79,7 @@ function AjaxHandler() {
 		$.ajax({
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
-			data: { id : id },
+			data: { id: id },
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
@@ -113,8 +112,14 @@ function AjaxHandler() {
 	/**
 	 * Sends new premisses to the server. Answer will be given to a callback
 	 * @param argument_dictionary for inserting
+	 * @param isPremisseForArgument
+	 * @param relation
+	 * @param related_argument
 	 */
-	this.sendNewPremisses = function (argument_dictionary) {
+	this.sendNewPremissesForArgument = function (argument_dictionary, isPremisseForArgument, relation, related_argument) {
+		argument_dictionary['isPremisseForArgument'] = isPremisseForArgument ? '1' : '0';
+		argument_dictionary['relation'] = relation;
+		argument_dictionary['related_argument'] = related_argument;
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_new_premisses',

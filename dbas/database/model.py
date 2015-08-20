@@ -274,6 +274,7 @@ class Argument(Base):
 		self.isSupportive = issupportive
 		self.author_uid = author
 		self.weight = weight
+		self.argument_uid = 0
 
 	def conclusions_argument(self, argument):
 		self.argument_uid = argument

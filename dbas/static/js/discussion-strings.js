@@ -20,6 +20,7 @@ var notInsertedErrorBecauseEmpty = "Your idea was not inserted, because your inp
 var notInsertedErrorBecauseDuplicate = "Your idea was not inserted, because your idea is a duplicate.";
 var notInsertedErrorBecauseUnknown = "Your idea was not inserted due to an unkown error.";
 var selectStatement = "Please select a statement!";
+var internal_error = 'Internal Error: Maybe the server is offline or your session run out.';
 
 /**
  * Text for the dialogue

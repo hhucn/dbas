@@ -53,16 +53,16 @@ function InteractionHandler() {
 			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
 			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
 				// statement
-				guiHandler.setDisplayStylesOfAddStatementContainer(true, true, isStart, false);
+				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, true);
 			} else {
 				// premisse
-				guiHandler.setDisplayStylesOfAddStatementContainer(true, false, isStart, true);
+				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, true, false);
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).show();
-			guiHandler.setDisplayStylesOfAddStatementContainer(false, true, isStart, false);
+			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true);
 		} else {
-			guiHandler.setDisplayStylesOfAddStatementContainer(false, true, isStart, false);
+			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true);
 			$('#' + stepBackButtonId).hide();
 
 			this.radioButtonWasChoosen();
@@ -93,8 +93,12 @@ function InteractionHandler() {
 
 	/**
 	 * Fetches all premisses out of the textares and send them
+	 * @param useIntro
+	 * @param isPremisseForArgument
+	 * @param relation
+	 * @param related_argument
 	 */
-	this.getPremissesAndSendThem = function (useIntro) {
+	this.getPremissesAndSendThem = function (useIntro, isPremisseForArgument, relation, related_argument) {
 		var i = 0, dict = {}, no, intro;
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
@@ -115,7 +119,7 @@ function InteractionHandler() {
 				i = i + 1;
 			}
 		});
-		new AjaxHandler().sendNewPremisses(dict);
+		new AjaxHandler().sendNewPremissesForArgument(dict, isPremisseForArgument, relation, related_argument);
 	};
 
 	/**

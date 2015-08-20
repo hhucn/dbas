@@ -48,7 +48,7 @@ function GuiHandler() {
 	this.setJsonDataToContentAsStartPremisses = function (jsonData, currentStatementText) {
 		var listitems = [], _this = new GuiHandler(), text, firstOne = true;
 		text = currentStatementText.text.substring(0, 1).toLowerCase() + currentStatementText.text.substring(1, currentStatementText.text.length);
-		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ': <b>' + text + '</b>', text, text);
+		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ': <b>' + text + '</b>', text, {'text': text});
 
 		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
 			text = '';
@@ -82,7 +82,7 @@ function GuiHandler() {
 			opinion = conclusion + ', because' + ' ' + premisse, confrontationText, listitems = [],
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length - 1),
 			id = "_argument_" + jsonData.confrontation_id,
-			relationArray = new Helper().createRelationsText(confrontation, opinion, false, true);
+			relationArray = new Helper().createRelationsText(confrontation, opinion, false, true), text;
 
 		// build some confrontation text
 		if (jsonData.attack == 'undermine'){
@@ -100,7 +100,7 @@ function GuiHandler() {
 		// set discussions text
 		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' <b>' + opinion + '</b>.<br><br>'
 			+ otherParticipantsThinkThat + ' ' + confrontationText + '.<br><br>' + whatDoYouThink,
-			'This confrontation is a ' + jsonData.attack);
+			'This confrontation is a ' + jsonData.attack, {});
 
 		// build the radio buttons
 		listitems.push(this.getKeyValAsInputInLiWithType('undermine' + id, relationArray[0] + ' [undermine]', false, false, true, 'undermine'));
@@ -124,11 +124,11 @@ function GuiHandler() {
 			relationArray = new Helper().createRelationsText(premisse, conclusion, false, false),
 			text, listitems = [], size, i, uid, reason;
 
-		if (jsonData.relation === 'undermine') {		text = relationArray[0] + ' is undermining \'' + conclusion + '\'';
-		} else if (jsonData.relation === 'support') {	text = relationArray[1] + ' is supporting \'' + conclusion + '\'';
-		} else if (jsonData.relation === 'undercut') {	text = relationArray[2] + ' is undercuting \'' + conclusion + '\'';
-		} else if (jsonData.relation === 'overbid') {	text = relationArray[3] + ' is overbiding \'' + conclusion + '\'';
-		} else if (jsonData.relation === 'rebut') {		text = relationArray[4] + ' is rebuting \'' + conclusion + '\'';
+		if (jsonData.relation === 'undermine') {		text = '<b>' + relationArray[0] + ' is undermining \'' + conclusion + '\'' + '</b>, but why?';
+		} else if (jsonData.relation === 'support') {	text = '<b>' + relationArray[1] + ' is supporting \'' + conclusion + '\'' + '</b>, but why?';
+		} else if (jsonData.relation === 'undercut') {	text = '<b>' + relationArray[2] + ' is undercuting \'' + conclusion + '\'' + '</b>, but why?';
+		} else if (jsonData.relation === 'overbid') {	text = '<b>' + relationArray[3] + ' is overbiding \'' + conclusion + '\'' + '</b>, but why?';
+		} else if (jsonData.relation === 'rebut') {		text = '<b>' + relationArray[4] + ', but which one?';
 		}
 
 		size = parseInt(jsonData.reason);
@@ -139,7 +139,7 @@ function GuiHandler() {
 			listitems.push(this.getKeyValAsInputInLiWithType(uid, reason, false, false, false, reason));
 		}
 
-		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ': <b>' + text + '</b>, but why?', '', text);
+		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ': ' + text, '', {'text': text, 'attack': jsonData.relation, 'attacked_argument': jsonData.argument_uid});
 		listitems.push(this.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
 		this.addListItemsToDiscussionsSpace(listitems);
 	};
@@ -324,17 +324,21 @@ function GuiHandler() {
 	 * @param text to set
 	 */
 	this.setDiscussionsDescription = function (text) {
-		$('#' + discussionsDescriptionId).html(text).attr('title', '');
+		$('#' + discussionsDescriptionId).html(text).attr('title', null);
 	};
 
 	/**
 	 * Setting a description in some p-tag with mouse over
 	 * @param text to set
 	 * @param mouseover hover-text
-	 * @param additionalAttribute additional attribute
+	 * @param additionalAttributesAsDict additional attribute
 	 */
-	this.setDiscussionsDescription = function (text, mouseover, additionalAttribute) {
-		$('#' + discussionsDescriptionId).html(text).attr('title', mouseover).attr('text', additionalAttribute);
+	this.setDiscussionsDescription = function (text, mouseover, additionalAttributesAsDict) {
+		$('#' + discussionsDescriptionId).html(text).attr('title', mouseover);
+		if (additionalAttributesAsDict != null)
+			$.each(additionalAttributesAsDict, function setDiscussionsDescriptionEach(key, val) {
+				$('#' + discussionsDescriptionId).attr(key, val);
+			});
 	};
 
 	/**
@@ -404,7 +408,7 @@ function GuiHandler() {
 		if (isRelation){ inputElement.addClass('relation'); }
 		if (!isStartStatement && !isPremisse && !isRelation){ inputElement.addClass('add'); }
 
-		liElement.html(this.getFullHtmlTextOf(inputElement) + labelElement);
+		liElement.html(new Helper().getFullHtmlTextOf(inputElement) + labelElement);
 
 		return liElement;
 	};
@@ -636,6 +640,7 @@ function GuiHandler() {
 				// todo setPremissesAsLastChild contra premisses
 			}
 		});
+		this.setDisplayStylesOfAddStatementContainer(false);
 	};
 
 	/**
@@ -645,7 +650,7 @@ function GuiHandler() {
 	 * @param isStart
 	 * @param isPremisse
 	 */
-	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStatement, isStart, isPremisse) {
+	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement) {
 		if (!isVisible) {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementContainerMainInputId).val('');
@@ -685,8 +690,10 @@ function GuiHandler() {
 			$('#' + proPositionColumnId).show();
 			$('#' + conPositionColumnId).show();
 			$('#' + sendNewStatementId).off('click').click(function () {
-				new InteractionHandler().getPremissesAndSendThem(false);
-				var gh = new GuiHandler();
+				var gh = new GuiHandler(), attack, argument;
+				attack = $('#' + discussionsDescriptionId).attr('attack');
+				argument = $('#' + discussionsDescriptionId).attr('attacked_argument')
+				new InteractionHandler().getPremissesAndSendThem(false, !isStart, attack, argument);
 				gh.setErrorDescription('');
 				gh.setSuccessDescription('');
 			});
@@ -714,14 +721,6 @@ function GuiHandler() {
 	this.showDiscussionError = function (error_msg) {
 		$('#' + discussionFailureRowId).fadeIn('slow');
 		$('#' + discussionFailureMsgId).text(error_msg);
-	};
-
-	/**
-	 * Return the full HTML text of an given element
-	 * @param element which should be translated
-	 */
-	this.getFullHtmlTextOf = function (element) {
-		return $('<div>').append(element).html();
 	};
 
 	/**
