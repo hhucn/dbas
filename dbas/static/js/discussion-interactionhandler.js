@@ -189,9 +189,9 @@ function InteractionHandler() {
 		if (parsedData.status == '1') {
 			gh.setJsonDataAsConfrontationReasoning(parsedData);
 		} else if (parsedData.status == '0') {
-			alert('ohh');
+			alert('callbackIfDoneHandleReplyForResponseOfConfrontation status 0');
 		} else {
-			alert('error in callbackIfDoneHandleReplyForResponseOfConfrontation');
+			alert('callbackIfDoneHandleReplyForResponseOfConfrontation status -1');
 		}
 		gh.resetAndDisableEditButton();
 	};
@@ -231,7 +231,7 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendNewPremisses = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
-			alert('success -1 in callbackIfDoneForSendNewPremisses');
+			alert('callbackIfDoneForSendNewPremisses status .1');
 		} else {
 			new GuiHandler().setPremissesAsLastChild(parsedData);
 		}

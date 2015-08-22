@@ -290,17 +290,42 @@ class Track(Base):
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
 	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'))
+	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
+	attacked_by_relation = sa.Column(sa.Integer, sa.ForeignKey('relation.uid'))
+	attacked_with_relation = sa.Column(sa.Integer, sa.ForeignKey('relation.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
 	users = relationship('User', foreign_keys=[author_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
+	arguments = relationship('Argument', foreign_keys=[argument_uid])
+	attacked_by = relationship('Relation', foreign_keys=[attacked_by_relation])
+	attacked_with = relationship('Relation', foreign_keys=[attacked_with_relation])
 
-	def __init__(self, user, statement, premissegroup=0):
+	def __init__(self, user, statement, premissegroup=0, argument=0, attacked_by=0, attacked_with=0):
 		"""
 		Initializes a row in current track-table
 		"""
 		self.author_uid = user
 		self.statement_uid = statement
 		self.premissesGroup_uid = premissegroup
+		self.argument_uid = argument
+		self.attacked_by_relation = attacked_by
+		self.attacked_with_relation = attacked_with
 		self.timestamp = func.now()
+
+
+class Relation(Base):
+	"""
+	Relation-table with several columns.
+	Each user will be tracked
+	"""
+	__tablename__ = 'relation'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	name = sa.Column(sa.Text, nullable=False)
+
+	def __init__(self, name):
+		"""
+		Initializes a row in current relation-table
+		"""
+		self.name = name

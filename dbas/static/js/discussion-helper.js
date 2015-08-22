@@ -53,10 +53,10 @@ function Helper() {
 		var w = startLowerCase ? 'w' : 'W', r = startLowerCase ? 'r' : 'R', enddot = endWithDot ? '.' : '',
 			undermine = w + 'rong, it is not true that \'' + premisse + '\'' + enddot,
 			support	  = r + 'ight, it is true that \'' + premisse + '\'' + enddot,
-			undercut  = r + 'ight, \'' + premisse + '\', but I do not believe that this is a good counter-argument for \'' + conclusion + '\'' + enddot,
-			overbid	  = r + 'ight, \'' + premisse + '\', and I do believe that this is a good counter-argument for \'' + conclusion + '\'' + enddot,
-			rebut	  = r + 'ight, \'' + premisse + '\' and I do accept that this is an counter-argument for \'' + conclusion
-				+ '\'. However, I have a much stronger argument for accepting my opinion' + enddot;//that \'' + conclusion + '\'' + enddot;
+			undercut  = r + 'ight, \'' + premisse + '\', but I do not believe that this is a good counter-argument for: \'' + conclusion + '\'' + enddot,
+			overbid	  = r + 'ight, \'' + premisse + '\', and I do believe that this is a good counter-argument for: \'' + conclusion + '\'' + enddot,
+			rebut	  = r + 'ight, \'' + premisse + '\' and I do accept that this is an counter-argument for: \'' + conclusion
+				+ '\'. However, I have a much stronger argument for accepting that: \'' + conclusion + '\'' + enddot;
 		return [undermine, support, undercut, overbid, rebut];
 	}
 }

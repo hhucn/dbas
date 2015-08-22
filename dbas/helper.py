@@ -4,18 +4,17 @@ import smtplib
 import collections
 import json
 
-from random import randint
-
 from socket import error as socket_error
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
-from sqlalchemy import and_
+from sqlalchemy import and_, not_
 
 from .database import DBSession
-from .database.model import Argument, Statement, Track, User, Group, TextValue, TextVersion, Premisse, PremisseGroup
+from .database.model import Argument, Statement, Track, User, Group, TextValue, TextVersion, Premisse, PremisseGroup, Relation
 
+# TODO: PEP 8
 
 log = logging.getLogger(__name__)
 
@@ -197,10 +196,12 @@ class DatabaseHelper(object):
 		return_dict = dict()
 		premisses_dict = dict()
 		logger('DatabaseHelper', 'get_premisses_for_statement', 'get all premisses')
-		db_arguments = DBSession.query(Argument).filter(and_(Argument.isSupportive==issupportive, Argument.conclusion_uid==statement_uid)).all()
+		db_arguments = DBSession.query(Argument).filter(and_(Argument.isSupportive==issupportive,
+																Argument.conclusion_uid==statement_uid)).all()
 
 		for argument in db_arguments:
-			logger('DatabaseHelper', 'get_premisses_for_statement', 'argument ' + str(argument.uid) + ' (' + str(argument.premissesGroup_uid) + ')')
+			logger('DatabaseHelper', 'get_premisses_for_statement', 'argument ' 
+					+ str(argument.uid) + ' (' + str(argument.premissesGroup_uid) + ')')
 			db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=argument.premissesGroup_uid).all()
 
 			# check out the group
@@ -223,168 +224,137 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-
-	def get_reply_for_premissegroup(self, premissegroup_uid, user):
+	def get_reply_for_premissegroup(self, transaction, user):
 		"""
-
-		:param premissegroup_uid:
-		:param user:
-		:return:
+		Based on the last given premissesgroup and statement, an attack will be choosen and replied.
+		:param transaction: current transaction
+		:param user: current nick of the user
+		:return: A random attack (undermine, rebut undercut) based on the last saved premissesgroup and statement as well as many texts
+		like the premisse as text, conclusion as text, attack as text, confrontation as text. Everything is in a dict.
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'get everthing for/against ' + str(premissegroup_uid))
-		db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).order_by(Track.uid.desc()).join(Statement).join(TextValue).all()
+		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'main')
 
-		# get current argument
-		premisses_as_statements_uid = set()
-		premisses_as_text = ''
-		conclusion_as_text = ''
-		conclusion = None
-		for track in db_track:
-			db_textversion = DBSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(textValue_uid=track.statements.textvalues.uid).first()
-			logger('DatabaseHelper', 'get_reply_for_premissegroup', 'track.statements.textvalues.uid ' + str(track.statements.textvalues.uid)
-			       + ', text ' + db_textversion.content)
-			if track.premissesGroup_uid == 0:
-				conclusion = track
-				conclusion_as_text = db_textversion.content
-				break
+		# get last statement out of the history
+		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'last statement with user ' + str(db_user.uid) + ', and statement not zero')
+		db_track_last_statement = DBSession.query(Track).filter(and_(Track.author_uid==db_user.uid, not_(Track.statement_uid == 0)))\
+			.order_by(Track.uid.desc()).join(Statement).first()
+		last_statement_uid = db_track_last_statement.statement_uid
+		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'last statement ' + str(last_statement_uid))
 
-			# save all premisses
-			premisses_as_statements_uid.add(track.statements.uid)
-			# build text for premisse
-			premisses_as_text += ' and ' + db_textversion.content[:1].lower() + db_textversion.content[1:len(db_textversion.content)-1]
+		# get last premisses out of the history
+		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'last pgroup with user ' + str(db_user.uid) + ', and pgroup not zero')
+		db_track_last_pgroup = DBSession.query(Track).filter(and_(Track.author_uid==db_user.uid, not_(Track.premissesGroup_uid == 0)))\
+			.order_by(Track.uid.desc()).join(PremisseGroup).first()
+		last_premisses_group_uid = db_track_last_pgroup.premissesGroup_uid
+		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'last premissesgroup ' + str(last_premisses_group_uid))
 
 		return_dict = {}
-		# cut first 'and ' and set the text in the dictionary
-		return_dict['premisse_text'] = premisses_as_text[5:]
-		return_dict['conclusion_text'] = conclusion_as_text
+		qh = QueryHelper()
+		# get premisses and conclusion as text
+		return_dict['premisse_text'], premisses_as_statements_uid = qh.get_text_for_premissesGroup_uid(last_premisses_group_uid)
+		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(last_statement_uid)
 
-		# getting the argument id
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'find argument with group ' + str(premissegroup_uid)
-		       + ' conclusion statement ' + str(conclusion.statements.uid))
-		db_argument = DBSession.query(Argument).filter(and_(Argument.premissesGroup_uid==premissegroup_uid,
-		        Argument.conclusion_uid==conclusion.statements.uid, Argument.isSupportive==True)).order_by(Argument.uid.desc()).first()
+		# getting the argument of the premisses and conclusion
+		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'find argument with group ' + str(last_premisses_group_uid)
+				+ ' conclusion statement ' + str(last_statement_uid))
+		db_argument = DBSession.query(Argument).filter(and_(Argument.premissesGroup_uid==last_premisses_group_uid,
+				Argument.conclusion_uid==last_statement_uid, Argument.isSupportive==True)).order_by(Argument.uid.desc()).first()
 
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'argument: ' + str(db_argument.uid) if db_argument else 'none')
+		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'argument uid ' + str(db_argument.uid) if db_argument else 'none')
 		return_dict['argument_id'] = str(db_argument.uid) if db_argument else '0'
 
 		# getting undermines or undercuts or rebuts
 		rnd = random.randrange(0, 3 if db_argument else 2)
-		rnd = 1
 		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'random attack is ' + str(rnd))
+		rnd = 1
 		if rnd == 0:
 			key = 'undermine'
-			attacks = QueryHelper().get_undermines_for_premisses(key, premisses_as_statements_uid)
+			attacks = qh.get_undermines_for_premisses(key, premisses_as_statements_uid)
 		elif rnd == 1:
 			key = 'rebut'
-			attacks = QueryHelper().get_rebuts_for_arguments_conclusion_uid(key, conclusion.statements.uid)
+			attacks = qh.get_rebuts_for_arguments_conclusion_uid(key, last_statement_uid)
 		else:
 			key = 'undercut'
-			attacks = QueryHelper().get_undercuts_for_argument_uid(key, db_argument.uid)
+			attacks = qh.get_undercuts_for_argument_uid(key, db_argument.uid)
 		return_dict['attack'] = key
 
-		# save one random attack
 		status = 1
 		if int(attacks[key]) == 0:
 			logger('DatabaseHelper', 'get_reply_for_premissegroup', 'there is no attack!')
 			status = 0
 		else:
 			attack_no = str(random.randrange(0, int(attacks[key])))
+			logger('DatabaseHelper', 'get_reply_for_premissegroup', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
 			return_dict['confrontation'] = attacks[key + str(attack_no)]
 			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
 
+			# save one random attack
+			self.save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
+		                             qh.get_relation_uid_by_name(key), 0)
+
 		return return_dict, status
 
-	def get_reply_confrontations_response(self, id):
+	def get_reply_confrontations_response(self, transaction, uid_text, user):
 		"""
 
-		:param id:
+		:param transaction:
+		:param uid:
+		:param user:
 		:return:
 		"""
-		splitted_id = id.split('_')
+		qh = QueryHelper()
+		splitted_id = uid_text.split('_')
 		relation = splitted_id[0]
 		argument_uid = splitted_id[2]
-		logger('DatabaseHelper', 'get_reply_confrontations_response', 'relation is ' + relation + ' for arg ' + argument_uid)
 
-		qh = QueryHelper()
+		# get argument
+		logger('DatabaseHelper', 'get_reply_confrontations_response', 'get reply confrontations for argument ' + argument_uid)
+		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).first()
+
 		key = 'reason'
+		status = '1'
 		if 'undermine' in relation.lower():
-			return_dict = qh.get_undermines_for_argument_uid(key, argument_uid)
+			return_dict = qh.get_undermines_for_argument_uid(key, argument_uid) # todo done
 		elif 'support' in relation.lower():
-			return_dict = qh.get_supports_for_argument_uid(key, argument_uid)
+			return_dict = qh.get_supports_for_argument_uid(key, argument_uid) # todo check
 		elif 'undercut' in relation.lower():
-			return_dict = qh.get_undercuts_for_argument_uid(key, argument_uid)
+			return_dict = qh.get_undercuts_for_argument_uid(key, argument_uid) # todo check
 		elif 'overbid' in relation.lower():
-			return_dict = qh.get_overbids_for_argument_uid(key, argument_uid)
+			return_dict = qh.get_overbids_for_argument_uid(key, argument_uid) # todo check
 		elif 'rebut' in relation.lower():
-			return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid)
+			return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid) # todo check
 		else:
 			return_dict = {}
-			return_dict['status'] = '-1'
+			status = '-1'
+		logger('DatabaseHelper', 'get_reply_confrontations_response', 'attack (' + relation + ') was fetched for ' + str(argument_uid))
 
-		logger('DatabaseHelper', 'get_reply_confrontations_response', 'attack was fetched')
-		logger('DatabaseHelper', 'get_reply_confrontations_response', 'get argument ' + argument_uid)
-		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).join(PremisseGroup).first()
-
+		# check return value
 		if not return_dict:
 			return_dict = {}
-			return_dict['status'] = '0'
+			return return_dict, '0'
 		if len(return_dict) == 0:
 			return_dict[key] = '0'
+			return return_dict, '0'
 
-		return_dict['premissegroup'], uids = qh.get_text_for_premissesGroup_uid(db_argument.premissegroups.uid)
+		return_dict['premissegroup'], uids = qh.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid)
+		return_dict['previous_argument'] = qh.get_text_for_argument_uid(argument_uid)
+		# Get right response with premisse, conclusion, attack and so on
+		# Todo: what is with an conclusion as premisse group?
 		return_dict['relation'] = splitted_id[0]
 		return_dict['argument_uid'] = argument_uid
 
-		if db_argument.conclusion_uid == None or db_argument.conclusion_uid == 0:
+		if db_argument.conclusion_uid is None or db_argument.conclusion_uid == 0:
 			return_dict['conclusion_text'] = qh.get_text_for_argument_uid(db_argument.argument_uid)
 			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
 		else:
 			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid)
 
-		return return_dict
+		# save track
+		relation_uid = qh.get_relation_uid_by_name(relation.lower())
+		self.save_track_for_user(transaction, user, 0, db_argument.premissesGroup_uid, argument_uid, 0, relation_uid)
 
-	# def get_args_for_island(self, user):
-	# 	"""
-	# 	Returns every argument for and against the last tracked argument as json dict with {pro_i: {...}, con_i {...}}
-	# 	:param user: requesting user
-	# 	:return: dict
-	# 	"""
-	# 	logger('DatabaseHelper', 'get_arguments_for_island', 'def')
-	# 	return_dict = collections.OrderedDict()
-	# 	db_user = DBSession.query(User).filter_by(nickname=user).first()
-	# 	db_track = DBSession.query(Track).filter_by(user_uid=db_user.uid).order_by(Track.uid.desc()).first()
-	# 	logger('DatabaseHelper', 'get_arguments_for_island', 'get island view for last selected statement (track:' + str(db_track.arg_uid) + ') '
-	# 	                                                                                                                           'from user ' + user)
-	#
-	# 	if db_track:
-	# 		if db_track.is_argument:
-	# 			arg_dict = dict()
-	# 			dict_pro = self.get_args_list_in_relation_to_statement(db_track.arg_uid, True, False)
-	# 			dict_con = self.get_args_list_in_relation_to_statement(db_track.arg_uid, False, False)
-	#
-	# 			counter = 0
-	# 			logger('DatabaseHelper', 'get_arguments_for_island', 'pro arguments: ' + str(len(dict_pro)))
-	# 			for pro_arg in dict_pro:
-	# 				arg_dict['pro_' + str(counter)] = pro_arg
-	# 				counter += 1
-	#
-	# 			logger('DatabaseHelper', 'get_arguments_for_island', 'con arguments: ' + str(len(dict_con)))
-	# 			counter = 0
-	# 			for con_arg in dict_con:
-	# 				arg_dict['con_' + str(counter)] = con_arg
-	# 				counter += 1
-	#
-	# 			return_dict['status'] = '1'
-	# 			return_dict['arguments'] = arg_dict
-	# 		else:
-	# 			logger('DatabaseHelper', 'get_arguments_for_island', 'no saved argument')
-	# 			return_dict['status'] = '-1'
-	# 	else:
-	# 		logger('DatabaseHelper', 'get_arguments_for_island', 'no saved track')
-	# 		return_dict['status'] = '-1'
-	#
-	# 	return return_dict
+		return return_dict, status
 
 	def get_logfile_for_statement(self, uid):
 		"""
@@ -425,22 +395,50 @@ class DatabaseHelper(object):
 		if db_user:
 			db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).all()
 			return_dict = collections.OrderedDict()
+			qh = QueryHelper()
 			for track in db_track:
 				logger('DatabaseHelper','get_track_for_user','track uid ' + str(track.uid))
 
-				try:
-					# Todo this can be optimized with joins ?
-					db_statement = DBSession.query(Statement).filter_by(uid=track.statement_uid).first()
-					tmp_dict = DictionaryHelper().save_statement_row_in_dictionary(db_statement)
-					track_dict = dict()
-					track_dict['uid'] = str(track.uid)
-					track_dict['statement_uid'] = str(track.statement_uid)
-					track_dict['premissesGroup_uid'] = str(track.premissesGroup_uid)
-					track_dict['timestamp'] = str(track.timestamp)
-					track_dict['text'] = str(tmp_dict['text'])
-					return_dict[track.uid] = track_dict
-				except AttributeError as ae:
-					logger('>>> DatabaseHelper <<<', 'get_track_for_user', 'ATTRIBUTE ERROR uid ' + str(ae))
+				# TODO GET TEXT
+				db_statement = DBSession.query(Statement).filter_by(uid=track.statement_uid).first()
+				# tmp_dict = DictionaryHelper().save_statement_row_in_dictionary(db_statement)
+				track_dict = dict()
+
+				attacked_by_relation = DBSession.query(Relation).filter_by(uid=track.attacked_by_relation).first()
+				attacked_with_relation = DBSession.query(Relation).filter_by(uid=track.attacked_with_relation).first()
+				attacked_by_relation = qh.get_relation_uid_by_name(attacked_by_relation.name) if attacked_by_relation else 'None'
+				attacked_with_relation = qh.get_relation_uid_by_name(attacked_with_relation.name) if attacked_with_relation else 'None'
+
+				if not attacked_by_relation == 'None':
+					# db_argument = DBSession.query(Argument).filter_by(uid=track.argument_uid).first()
+					# relation = ' supports ' if db_argument.isSupportive else ' attacks '
+					# text = qh.get_text_for_statement_uid(track.statement_uid)\
+					#       + relation\
+					#       + qh.get_text_for_premissesGroup_uid(track.premissesGroup_uid)
+					text = '2'
+				elif not attacked_with_relation == 'None':
+					# db_argument = DBSession.query(Argument).filter_by(uid=track.argument_uid).first()
+					# relation = ' supports ' if db_argument.isSupportive else ' attacks '
+					# text = qh.get_text_for_argument_uid(track.argument_uid)\
+					#       + relation\
+					#       + qh.get_text_for_statement_uid(track.statement_uid)
+					text = '2'
+				elif not track.statement_uid == 0:
+					text = '4'
+				elif not track.premissesGroup_uid == 0:
+					text = '4'
+				else:
+					text = '5'
+
+				track_dict['author_uid'] = str(track.author_uid)
+				track_dict['statement_uid'] = str(track.statement_uid)
+				track_dict['premissesGroup_uid'] = str(track.premissesGroup_uid)
+				track_dict['argument_uid'] = str(track.argument_uid)
+				track_dict['attacked_by_relation'] = attacked_by_relation
+				track_dict['attacked_with_relation'] = attacked_with_relation
+				track_dict['timestamp'] = str(track.timestamp)
+				track_dict['text'] = '? Todo: ' + text + ' ?'#str(tmp_dict['text'])
+				return_dict[track.uid] = track_dict
 
 			else:
 				logger('DatabaseHelper', 'get_track_for_user', 'no track')
@@ -453,7 +451,6 @@ class DatabaseHelper(object):
 	def del_track_for_user(self, transaction, user):
 		"""
 		Returns the complete track of given user
-		:param DBSession: current session
 		:param transaction: current transaction
 		:param user: current user
 		:return: undefined
@@ -520,7 +517,6 @@ class DatabaseHelper(object):
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 		db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).order_by(Track.uid.desc()).first()
 		db_track_statement_uid = db_track.statement_uid
-		db_track_premissesGroup_uid = db_track.premissesGroup_uid
 
 		# insert the premisses as statements
 		return_dict = {}
@@ -534,15 +530,15 @@ class DatabaseHelper(object):
 			return_dict['pro_' + str(index)] = statement_dict
 			# second, set the new statement as premisse
 			new_premissegroup_uid = qh.set_statements_as_premisse(transaction, statement_dict, user)
-			logger('DatabaseHelper', 'set_premisses',  pro_dict[pro] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid))
-			logger('DatabaseHelper', 'set_premisses', 'argument from group ' + str(new_premissegroup_uid) + ' to statement '  + str(
-				db_track_statement_uid) + ', not supportive ')
+			logger('DatabaseHelper', 'set_premisses', pro_dict[pro] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid))
+			logger('DatabaseHelper', 'set_premisses',
+			       'argument from group ' + str(new_premissegroup_uid) + ' to statement ' + str(db_track_statement_uid) + ', supportive')
 			# third, insert the argument
 			if belongsToArgument:
-				logger('DatabaseHelper', 'set_premisses',  'new argument in relation to an ' + relation)
-				success = success and '1' == qh.set_premisses_related_to_argument(new_premissegroup_uid, user, relation, related_argument)
+				logger('DatabaseHelper', 'set_premisses', 'new argument in relation to an ' + relation)
+				qh.set_premisses_related_to_argument(new_premissegroup_uid, user, relation, related_argument, True)
 			else:
-				success = success and '1' == qh.set_argument(new_premissegroup_uid, True, user, db_track_statement_uid, 0)
+				qh.set_argument(new_premissegroup_uid, True, user, db_track_statement_uid, 0)
 
 		logger('DatabaseHelper', 'set_premisses', 'starts with con_dict')
 		for index, con in enumerate(con_dict):
@@ -551,63 +547,79 @@ class DatabaseHelper(object):
 			return_dict['con_' + str(index)] = statement_dict
 			# second, set the new statement as premisse
 			new_premissegroup_uid = qh.set_statements_as_premisse(transaction, statement_dict, user)
-			logger('DatabaseHelper', 'set_premisses',  con_dict[con] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid))
-			logger('DatabaseHelper', 'set_premisses', 'argument from group ' + str(new_premissegroup_uid) + ' to statement '  + str(
-				db_track_statement_uid) + ', not supportive ')
+			logger('DatabaseHelper', 'set_premisses', con_dict[con] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid))
+			logger('DatabaseHelper', 'set_premisses', 'argument from group ' + str(new_premissegroup_uid) + ' to statement ' + str(db_track_statement_uid) + ', not supportive')
 			# third, insert the argument
 			if belongsToArgument:
-				logger('DatabaseHelper', 'set_premisses',  'new argument in relation to an ' + relation)
-				success = success and '1' == qh.set_premisses_related_to_argument(new_premissegroup_uid, user, relation, related_argument)
+				logger('DatabaseHelper', 'set_premisses', 'new argument in relation to an ' + relation)
+				qh.set_premisses_related_to_argument(new_premissegroup_uid, user, relation, related_argument, False)
 				# qh.set_attack_on_argument()
 			else:
-				success = success and '1' == qh.set_argument(new_premissegroup_uid, False, user, db_track_statement_uid, 0)
-		return_dict['success'] = '1' if success else '0'
+				qh.set_argument(new_premissegroup_uid, False, user, db_track_statement_uid, 0)
 		transaction.commit()
 
 		return return_dict
 
-	def save_track_for_user(self, transaction, user, statememt_id):
+	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation, \
+	                                                                                        attacked_with_relation): # TODO
 		"""
 		Saves track for user
 		:param transaction: current transaction
 		:param user: authentication nick id of the user
 		:param statememt_id: id of the clicked statement
+		:param premissesgroup_uid: id of the clicked premisseGroup
+		:param attacked_by_relation: id of attacked by relation
+		:param attacked_with_relation: id of attacked_w th relation
 		:return: undefined
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', statememt_uid: ' + str(
-			statememt_id))
-		new_track = Track(user=db_user.uid, statement=statememt_id)
-		DBSession.add(new_track)
+		logger('QueryHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
+														', statememt_id ' + str(statement_id) +
+														', premissesgroup_uid ' + str(premissesgroup_uid) +
+														', argument_uid ' + str(argument_uid) +
+														', attacked_by_relation ' + str(attacked_by_relation) +
+														', attacked_with_relation ' + str(attacked_with_relation))
+		DBSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
+		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation))
 		transaction.commit()
 
-	def save_premissegroup_for_user(self, transaction, user, premissesGroup_uid):
+	def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):
 		"""
 		Saves track for user
 		:param transaction: current transaction
 		:param user: authentication nick id of the user
-		:param premissesGroup_uid: id of the clicked premisseGroup
+		:param premissesgroup_uid: id of the clicked premisseGroup
 		:return: undefined
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'save_premissegroup_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', premissesGroup_uid: ' + str(
-			premissesGroup_uid))
-		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid = premissesGroup_uid).all()
-		for p in db_premisses:
-			logger('QueryHelper', 'save_premissegroup_for_user', str(premissesGroup_uid) + "  " + str(p.statement_uid))
-			new_track = Track(user=db_user.uid, statement=p.statement_uid, premissegroup=premissesGroup_uid)
+		logger('QueryHelper', 'save_premissegroup_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', premissesGroup_uid: '
+				+ str(premissesgroup_uid))
+		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid = premissesgroup_uid).all()
+		for premisse in db_premisses:
+			logger('QueryHelper', 'save_premissegroup_for_user', str(premissesgroup_uid) + " " + str(premisse.statement_uid))
+			new_track = Track(user=db_user.uid, statement=premisse.statement_uid, premissegroup=premissesgroup_uid)
 			DBSession.add(new_track)
 		transaction.commit()
 
 
 class QueryHelper(object):
 
+	def get_relation_uid_by_name(self, relation_name):
+		"""
+
+		:param relation_name:
+		:return:
+		"""
+		db_relation = DBSession.query(Relation).filter_by(name=relation_name).first()
+		logger('DatabaseHelper', 'set_statements_as_premisse', 'return ' + str(db_relation.name if db_relation else -1))
+		return db_relation.uid if db_relation else -1
+
 	def set_statements_as_premisse(self, transaction, statement, user):
 		"""
 
 		:param transaction:
 		:param statement:
-		:param db_user:
+		:param user:
 		:return: uid of the PremisseGroup
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
@@ -616,10 +628,8 @@ class QueryHelper(object):
 		DBSession.flush()
 
 		premisse_list = []
-		logger('DatabaseHelper', 'set_statements_as_premisse', 'premissesgroup=' + str(premisse_group.uid) + ', ')
-		logger('DatabaseHelper', 'set_statements_as_premisse', 'statement=' + statement['uid'] + ', ')
-		logger('DatabaseHelper', 'set_statements_as_premisse', 'isnegated=' + ('0' if False else '1') + ', ')
-		logger('DatabaseHelper', 'set_statements_as_premisse', 'author=' + str(db_user.uid))
+		logger('DatabaseHelper', 'set_statements_as_premisse', 'premissesgroup=' + str(premisse_group.uid) + ', statement='
+				+ statement['uid'] + ', isnegated=' + ('0' if False else '1') + ', author=' + str(db_user.uid))
 		premisse = Premisse(premissesgroup=premisse_group.uid, statement=int(statement['uid']), isnegated=False, author=db_user.uid)
 		premisse_list.append(premisse)
 
@@ -642,7 +652,7 @@ class QueryHelper(object):
 		logger('QueryHelper', 'set_argument_with_premissegroup', 'main')
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 		argument = Argument(premissegroup=premissegroup_uid, issupportive=is_supportive, author=db_user.uid, weight=0,
-		                    conclusion=conclusion_uid)
+							conclusion=conclusion_uid)
 		argument.conclusions_argument(argument_uid)
 
 		DBSession.add(argument)
@@ -650,43 +660,62 @@ class QueryHelper(object):
 
 		return '1'
 
-	def set_premisses_related_to_argument(self, premissegroup_uid, user, relation, related_argument_uid):
+	def set_premisses_related_to_argument(self, premissegroup_uid, user, relation, related_argument_uid, is_supportive):
 		"""
 
 		:param premissegroup_uid:
 		:param user:
 		:param relation:
 		:param related_argument_uid:
+		:param is_supportive:
 		:return:
 		"""
-		logger('QueryHelper', 'set_premisses_related_to_argument', 'main')
+		logger('QueryHelper', 'set_premisses_related_to_argument', 'main, ' + ('supports' if is_supportive else 'attacks') + ' related argument ' + str(related_argument_uid))
 
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 		db_related_argument = DBSession.query(Argument).filter_by(uid=related_argument_uid).first()
 
-		if 'undermine' in relation.lower():
-			argument = Argument(premissegroup=premissegroup_uid, issupportive=False, author=db_user.uid, weight=0,
-			                    conclusion=db_related_argument.premissesGroup_uid) # todo conclusions as premissesGroup_uid
-		elif 'support' in relation.lower():
-			argument = Argument(premissegroup=premissegroup_uid, issupportive=True, author=db_user.uid, weight=0,
-			                    conclusion=db_related_argument.conclusion_uid)
-		elif 'undercut' in relation.lower():
-			argument = Argument(premissegroup=premissegroup_uid, issupportive=False, author=db_user.uid, weight=0)
+		# todo: is this right?
+
+		lo = 'set_premisses_related_to_argument'
+		pg = str(premissegroup_uid)
+		if 'undermine' in relation.lower() or 'support' in relation.lower():
+			logger('QueryHelper', lo, relation + ' from group ' + pg + ' to statement ' + str(db_related_argument.premissesGroup_uid))
+			db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_related_argument.premissesGroup_uid).all()
+			arguments = []
+			for premisse in db_premisses:
+				argument = Argument(premissegroup=premissegroup_uid,
+									issupportive=is_supportive,
+									author=db_user.uid,
+									weight=0,
+									conclusion=premisse.statement_uid)
+				arguments.append(argument)
+
+		elif 'undercut' in relation.lower() or 'overbid' in relation.lower():
+			logger('QueryHelper', lo, relation + ' from group ' + pg + ' to argument ' + str(db_related_argument.uid))
+			argument = Argument(premissegroup=premissegroup_uid,
+								issupportive=is_supportive,
+								author=db_user.uid,
+								weight=0)
 			argument.conclusions_argument(db_related_argument.uid)
-		elif 'overbid' in relation.lower():
-			argument = Argument(premissegroup=premissegroup_uid, issupportive=True, author=db_user.uid, weight=0)
-			argument.conclusions_argument(db_related_argument.uid)
+			arguments = []
+			arguments.append(argument)
+
 		elif 'rebut' in relation.lower():
-			argument = Argument(premissegroup=premissegroup_uid, issupportive=False, author=db_user.uid, weight=0,
-			                    conclusion=db_related_argument.conclusion_uid)
+			logger('QueryHelper', lo, 'rebut from group ' + pg + ' to conclusiongroup ' + str(db_related_argument.conclusion_uid))
+			argument = Argument(premissegroup=premissegroup_uid,
+								issupportive=is_supportive,
+								author=db_user.uid,
+								weight=0,
+								conclusion=db_related_argument.conclusion_uid)
+			arguments = []
+			arguments.append(argument)
 		else:
+			logger('QueryHelper', 'set_premisses_related_to_argument', 'error')
 			return '-1'
 
-		DBSession.add(argument)
+		DBSession.add_all(arguments)
 		DBSession.flush()
-
-		return '1'
-
 
 	def get_text_for_statement_uid(self, uid):
 		"""
@@ -707,28 +736,28 @@ class QueryHelper(object):
 		:param uid:
 		:return:
 		"""
-		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid))
 		db_argument = DBSession.query(Argument).filter_by(uid=uid).join(Statement).first()
+		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid) +
+		       ', pgroup ' + str(db_argument.premissesGroup_uid) +
+		       ', concl ' + str(db_argument.conclusion_uid) +
+		       ', arg ' + str(db_argument.argument_uid))
 
-		if db_argument.conclusion_uid == None or db_argument.conclusion_uid == 0:
-			argument = self.get_text_for_statement_uid(db_argument.argument_uid)
+		# basecase
+		if db_argument.argument_uid == 0:
+			logger('QueryHelper', 'get_text_for_argument_uid', 'basecase')
 			premisses, uids = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid)
+			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
+			premisses = premisses[:-1] if premisses.endswith('.') else premisses # pretty print
+			conclusion = conclusion[0:1].lower() + conclusion[1:] # pretty print
+			argument = '\'' + premisses + (' supports ' if db_argument.isSupportive else ' attacks ') + conclusion + '\''
+			return argument
 
-			if db_argument.isSupportive:
-				premisses += ' supports ' + argument
-			else:
-				premisses += ' attacks ' + argument
-
-
-		logger('QueryHelper', 'get_text_for_argument_uid', 'premissesGroup_uid ' + str(db_argument.premissesGroup_uid) +
-		       ', conclusion_uid ' + str(db_argument.conclusion_uid))
-		premisses, uids = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid)
-		conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
-
-		retValue = '\'' + conclusion + '\', because \'' + premisses + '\''
-		if not db_argument.isSupportive:
-			db_premissegroup = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_argument.premissesGroup_uid).join(Statement).all()
-			retValue += ' do not hold' if len(db_premissegroup) > 1 else ' does not hold'
+		# recursion
+		if db_argument.conclusion_uid == 0:
+			logger('QueryHelper', 'get_text_for_argument_uid', 'recursion')
+			argument = self.get_text_for_argument_uid(db_argument.argument_uid)
+			premisses, uids = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid)
+			retValue = premisses + (' supports ' if db_argument.isSupportive else ' attacks ') + argument
 
 		return retValue
 
@@ -743,8 +772,8 @@ class QueryHelper(object):
 		text = ''
 		uids = []
 		for premisse in db_premisses:
-			logger('QueryHelper', 'get_text_for_premissesGroup_uid', 'premisse ' + str(premisse.premissesGroup_uid) + '.'
-			       + str(premisse.statement_uid) + ', premisse.statement ' + str(premisse.statements.uid))
+			logger('QueryHelper', 'get_text_for_premissesGroup_uid', 'premisse ' + str(premisse.premissesGroup_uid) + ' . statement'
+					+ str(premisse.statement_uid) + ', premisse.statement ' + str(premisse.statements.uid))
 			tmp = self.get_text_for_statement_uid(premisse.statements.uid)
 			uids.append(str(premisse.statements.uid))
 			text += ' and ' + tmp[:1].lower() + tmp[1:]
@@ -760,10 +789,10 @@ class QueryHelper(object):
 		"""
 		logger('QueryHelper', 'get_undermines_for_premisses', 'main')
 		return_dict = {}
-		index=0
+		index = 0
 		for s_uid in premisses_as_statements_uid:
 			logger('QueryHelper', 'get_undermines_for_premisses', 'db_undermine against Argument.conclusion_uid=='+str(s_uid))
-			db_undermine = DBSession.query(Argument).filter(Argument.isSupportive==False, Argument.conclusion_uid==s_uid).all()
+			db_undermine = DBSession.query(Argument).filter(and_(Argument.isSupportive==False, Argument.conclusion_uid==s_uid)).all()
 			for undermine in db_undermine:
 				logger('QueryHelper', 'get_undermines_for_premisses', 'found db_undermine ' + str(undermine.uid))
 				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(undermine.premissesGroup_uid)
@@ -778,15 +807,20 @@ class QueryHelper(object):
 		:param argument_uid: uid of the specified argument
 		:return: dictionary
 		"""
-		logger('QueryHelper', 'get_undermines_for_argument_uid', 'main')
-		db_argument = DBSession.query(Argument).filter(and_(Argument.argument_uid==int(argument_uid), Argument.isSupportive==False))\
-			.join(PremisseGroup).first()
-		if not db_argument:
-			return None
-		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_argument.premissegroups.uid)
+		logger('QueryHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(argument_uid))
+		db_attacked_argument = DBSession.query(Argument).filter_by(uid=argument_uid).first()
+		db_attacked_premisses = DBSession.query(Premisse).filter_by(
+			premissesGroup_uid=db_attacked_argument.premissesGroup_uid).order_by(Premisse.premissesGroup_uid.desc()).all()
+
 		premisses_as_statements_uid = set()
-		for premisse in db_premisses:
+		for premisse in db_attacked_premisses:
 			premisses_as_statements_uid.add(premisse.statement_uid)
+			logger('QueryHelper', 'get_undermines_for_argument_uid', 'db_attacked_argument has pgroup with pgroup ' +
+		           str(premisse.premissesGroup_uid) + ', statement ' + str(premisse.statement_uid))
+
+		if len(premisses_as_statements_uid) == 0:
+			return None
+
 		return self.get_undermines_for_premisses(key, premisses_as_statements_uid)
 
 	def get_overbids_for_argument_uid(self, key, argument_uid):
@@ -816,8 +850,9 @@ class QueryHelper(object):
 		:return:
 		"""
 		return_dict = {}
-		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'db_rebut against Argument.conclusion_uid=='+str(conclusion_statements_uid))
-		db_rebut =  DBSession.query(Argument).filter(Argument.isSupportive==False, Argument.conclusion_uid==conclusion_statements_uid).all()
+		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid',
+		       'db_rebut against Argument.conclusion_uid=='+str(conclusion_statements_uid))
+		db_rebut = DBSession.query(Argument).filter(Argument.isSupportive==False, Argument.conclusion_uid==conclusion_statements_uid).all()
 		for index, rebut in enumerate(db_rebut):
 			logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
 			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(rebut.premissesGroup_uid)
@@ -864,12 +899,14 @@ class QueryHelper(object):
 		:return:
 		"""
 		return_dict = {}
-		logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid', 'db_undercut against Argument.argument_uid=='+str(argument_uid))
+		logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
+		       'db_undercut against Argument.argument_uid=='+str(argument_uid))
 		db_relation = DBSession.query(Argument).filter(Argument.isSupportive==is_supportive, Argument.argument_uid==argument_uid).all()
 		if not db_relation:
 			return None
 		for index, relation in enumerate(db_relation):
-			logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid', 'found relation, argument uid ' + str(relation.uid))
+			logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
+					'found relation, argument uid ' + str(relation.uid))
 			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(relation.premissesGroup_uid)
 			return_dict[key + str(index) + 'groupid'] = relation.premissesGroup_uid
 			return_dict[key + str(index) + 'id'] = ','.join(uids)

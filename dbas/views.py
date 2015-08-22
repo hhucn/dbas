@@ -648,17 +648,17 @@ class Dbas(object):
 		"""
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		logger('get_all_arguments_for_island', 'def', 'main')
+		logger('get_premisses_for_statement', 'def', 'main')
 
 		return_dict = {}
 		try:
 			logger('get_all_arguments_for_island', 'def', 'read params')
 			uid = self.request.params['uid']
-			DatabaseHelper().save_track_for_user(transaction, self.request.authenticated_userid, uid)
+			DatabaseHelper().save_track_for_user(transaction, self.request.authenticated_userid, uid, 0, 0, 0, 0)
 			return_dict = DatabaseHelper().get_premisses_for_statement(uid, True)
 			return_dict['status'] = '1'
 		except KeyError as e:
-			logger('get_all_arguments_for_island', 'error', repr(e))
+			logger('get_premisses_for_statement', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
@@ -680,8 +680,8 @@ class Dbas(object):
 		try:
 			uid = self.request.params['uid']
 			logger('reply_for_premissegroup', 'def', 'premissegroup ' + str(uid))
-			DatabaseHelper().save_premissegroup_for_user(transaction, self.request.authenticated_userid, uid)
-			return_dict, status = DatabaseHelper().get_reply_for_premissegroup(uid, self.request.authenticated_userid)
+			DatabaseHelper().save_track_for_user(transaction, self.request.authenticated_userid, 0, uid, 0, 0, 0)
+			return_dict, status = DatabaseHelper().get_reply_for_premissegroup(transaction, self.request.authenticated_userid)
 			return_dict['status'] = str(status)
 		except KeyError as e:
 			logger('reply_for_premissegroup', 'error', repr(e))
@@ -704,10 +704,11 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			id = self.request.params['id']
-			logger('reply_for_response_of_confrontation', 'def', 'id ' + id)
-			return_dict = DatabaseHelper().get_reply_confrontations_response(id)
-			return_dict['status'] = '1'
+			uid = self.request.params['id']
+			# track will be saved in get_reply_confrontation_response
+			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid)
+			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid, self.request.authenticated_userid)
+			return_dict['status'] = status
 		except KeyError as e:
 			logger('reply_for_response_of_confrontation', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -805,6 +806,7 @@ class Dbas(object):
 					con_dict[k] = self.request.params[k]
 			return_dict = DatabaseHelper().set_premisses(transaction, pro_dict, con_dict, self.request.authenticated_userid,
 			                                             belongsToArgument, relation, related_argument)
+			return_dict['success'] = '1'
 
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))

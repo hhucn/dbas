@@ -68,8 +68,8 @@ function TrackHandler() {
 	this.setDataInTrackTable = function (jsonData) {
 		'use strict';
 		var tableElement, trElement, tdElement, spanElement, i, is_argument;
-		tdElement = ['', '', '', '', '', ''];
-		spanElement = ['', '', '', '', '', ''];
+		tdElement = ['', '', '', '', '', '', '', '', ''];
+		spanElement = ['', '', '', '', '', '', '', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr({
 			class: 'table table-condensed',
@@ -94,8 +94,11 @@ function TrackHandler() {
 		spanElement[1].text('Track ID');
 		spanElement[2].text('Statement ID');
 		spanElement[3].text('PremisseGroup ID');
-		spanElement[4].text('Text');
-		spanElement[5].text('Date');
+		spanElement[4].text('Argument ID');
+		spanElement[5].text('Attacked by');
+		spanElement[6].text('Attacked with');
+		spanElement[7].text('Text');
+		spanElement[8].text('Date');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -115,8 +118,11 @@ function TrackHandler() {
 			tdElement[1].text(value.uid);
 			tdElement[2].text(value.statement_uid);
 			tdElement[3].text(value.premissesGroup_uid);
-			tdElement[4].text(value.text);
-			tdElement[5].text(value.timestamp);
+			tdElement[4].text(value.attacked_by_relation);
+			tdElement[5].text(value.argument_uid);
+			tdElement[6].text(value.attacked_with_relation);
+			tdElement[7].text(value.text);
+			tdElement[8].text(value.timestamp);
 
 			trElement = $('<tr>');
 			for (i = 0; i < tdElement.length; i += 1) {

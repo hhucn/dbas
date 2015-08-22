@@ -122,21 +122,19 @@ function GuiHandler() {
 			conclusion = jsonData.conclusion_text.substring(0, 1).toLowerCase() +
 				jsonData.conclusion_text.substring(1, jsonData.conclusion_text.length-1),
 			relationArray = new Helper().createRelationsText(premisse, conclusion, false, false),
-			text, listitems = [], size, i, uid, reason;
+			text, listitems = [], i, reason;
 
-		if (jsonData.relation === 'undermine') {		text = '<b>' + relationArray[0] + ' is undermining \'' + conclusion + '\'' + '</b>, but why?';
-		} else if (jsonData.relation === 'support') {	text = '<b>' + relationArray[1] + ' is supporting \'' + conclusion + '\'' + '</b>, but why?';
-		} else if (jsonData.relation === 'undercut') {	text = '<b>' + relationArray[2] + ' is undercuting \'' + conclusion + '\'' + '</b>, but why?';
-		} else if (jsonData.relation === 'overbid') {	text = '<b>' + relationArray[3] + ' is overbiding \'' + conclusion + '\'' + '</b>, but why?';
-		} else if (jsonData.relation === 'rebut') {		text = '<b>' + relationArray[4] + ', but which one?';
+		if (jsonData.relation === 'undermine') {		text = '<b>' + relationArray[0] + ', but why? (You made an undermine)';
+		} else if (jsonData.relation === 'support') {	text = '<b>' + relationArray[1] + ', but why? (You made a support)';
+		} else if (jsonData.relation === 'undercut') {	text = '<b>' + relationArray[2] + ', but why? (You made an undercut)';
+		} else if (jsonData.relation === 'overbid') {	text = '<b>' + relationArray[3] + ', but why? (You made an overbid)';
+		} else if (jsonData.relation === 'rebut') {		text = '<b>' + relationArray[4] + ', but which one? (You made a rebut)';
 		}
 
-		size = parseInt(jsonData.reason);
-		for (i=0; i<size; i++){
-			uid = jsonData['reason' + i + 'id'];
+		for (i=0; i<parseInt(jsonData.reason); i++){
 			//group_uid = jsonData['reason' + i + 'groupid'];
-			reason = jsonData['reason' + i].substring(0, 1).toUpperCase() + jsonData['reason' + i].substring(1);
-			listitems.push(this.getKeyValAsInputInLiWithType(uid, reason, false, false, false, reason));
+			reason = 'Because ' + jsonData['reason' + i].substring(0, 1).toLowerCase() + jsonData['reason' + i].substring(1);
+			listitems.push(this.getKeyValAsInputInLiWithType(jsonData['reason' + i + 'id'], reason, false, false, false, reason));
 		}
 
 		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ': ' + text, '', {'text': text, 'attack': jsonData.relation, 'attacked_argument': jsonData.argument_uid});
@@ -641,6 +639,8 @@ function GuiHandler() {
 			}
 		});
 		this.setDisplayStylesOfAddStatementContainer(false);
+		$('#' + addReasonButtonId).attr('checked', false);
+
 	};
 
 	/**

@@ -6,7 +6,7 @@ from dbas.helper import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.model import DBSession, User, Argument, Statement, TextValue, TextVersion, \
-	PremisseGroup, Premisse, Group, Issue, Base
+	PremisseGroup, Premisse, Group, Relation, Issue, Base
 
 
 def usage(argv):
@@ -36,6 +36,15 @@ def main(argv=sys.argv):
 		group1 = Group(name='editors')
 		group2 = Group(name='users')
 		DBSession.add_all([group0, group1, group2])
+		DBSession.flush()
+
+		# adding relation
+		relation0 = Relation(name='undermine')
+		relation1 = Relation(name='support')
+		relation2 = Relation(name='undercut')
+		relation3 = Relation(name='overbid')
+		relation4 = Relation(name='rebut')
+		DBSession.add_all([relation0, relation1, relation2, relation3, relation4])
 		DBSession.flush()
 
 		# adding some dummy users
