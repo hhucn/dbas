@@ -13,7 +13,7 @@ from .database.model import User, Group, Issue
 from .helper import PasswordHandler, PasswordGenerator, logger, DatabaseHelper, DictionaryHelper, EmailHelper, UserHandler
 
 name = 'D-BAS'
-version = '0.23'
+version = '0.3.0'
 header = name + ' ' + version
 
 class Dbas(object):

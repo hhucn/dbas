@@ -16,18 +16,18 @@
 - Sessions management and cache region support with beaker
 - CSRF prevention
 
-0.21 (07.07.2015)
+0.2.1 (07.07.2015)
 ---
 - Ready for production
 
-0.22 (07.07.2015)
+0.2.2 (07.07.2015)
 ---
 - smaller changes of design aspects
 
-0.23 (23.07.2015)
+0.2.3 (23.07.2015)
 ---
 - i18n / l10n
 
-0.30(23.07.2015)
+0.3.0 (23.07.2015)
 ---
 - new datastructure

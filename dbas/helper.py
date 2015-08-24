@@ -267,7 +267,7 @@ class DatabaseHelper(object):
 		# getting undermines or undercuts or rebuts
 		rnd = random.randrange(0, 3 if db_argument else 2)
 		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'random attack is ' + str(rnd))
-		rnd = 1
+		#rnd = 1
 		if rnd == 0:
 			key = 'undermine'
 			attacks = qh.get_undermines_for_premisses(key, premisses_as_statements_uid)
