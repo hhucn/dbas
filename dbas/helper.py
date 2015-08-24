@@ -273,7 +273,7 @@ class DatabaseHelper(object):
 			attacks = qh.get_undermines_for_premisses(key, premisses_as_statements_uid)
 		elif rnd == 1:
 			key = 'rebut'
-			attacks = qh.get_rebuts_for_arguments_conclusion_uid(key, last_statement_uid)
+			attacks = qh.get_rebuts_for_arguments_conclusion_uid(key, last_statement_uid, True)
 		else:
 			key = 'undercut'
 			attacks = qh.get_undercuts_for_argument_uid(key, db_argument.uid)
@@ -313,19 +313,26 @@ class DatabaseHelper(object):
 		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 
 		key = 'reason'
+		type = ''
 		status = '1'
 		if 'undermine' in relation.lower():
-			return_dict = qh.get_undermines_for_argument_uid(key, argument_uid) # todo done
+			return_dict = qh.get_undermines_for_argument_uid(key, argument_uid)
+			type = 'premissesgroup'
 		elif 'support' in relation.lower():
-			return_dict = qh.get_supports_for_argument_uid(key, argument_uid) # todo check
+			return_dict = qh.get_supports_for_argument_uid(key, argument_uid)
+			type = 'premissesgroup'
 		elif 'undercut' in relation.lower():
-			return_dict = qh.get_undercuts_for_argument_uid(key, argument_uid) # todo check
+			return_dict = qh.get_undercuts_for_argument_uid(key, argument_uid)
+			type = 'statement'
 		elif 'overbid' in relation.lower():
-			return_dict = qh.get_overbids_for_argument_uid(key, argument_uid) # todo check
+			return_dict = qh.get_overbids_for_argument_uid(key, argument_uid)
+			type = 'statement'
 		elif 'rebut' in relation.lower():
-			return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid) # todo check
+			return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid)
+			type = 'premissesgroup'
 		else:
 			return_dict = {}
+			type = 'none'
 			status = '-1'
 		logger('DatabaseHelper', 'get_reply_confrontations_response', 'attack (' + relation + ') was fetched for ' + str(argument_uid))
 
@@ -343,6 +350,7 @@ class DatabaseHelper(object):
 		# Todo: what is with an conclusion as premisse group?
 		return_dict['relation'] = splitted_id[0]
 		return_dict['argument_uid'] = argument_uid
+		return_dict['type'] = type
 
 		if db_argument.conclusion_uid is None or db_argument.conclusion_uid == 0:
 			return_dict['conclusion_text'] = qh.get_text_for_argument_uid(db_argument.argument_uid)
@@ -728,7 +736,10 @@ class QueryHelper(object):
 		db_textversion = DBSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
 			textValue_uid=db_statement.textvalues.uid).first()
 		logger('QueryHelper', 'get_text_for_statement_uid', 'text ' + db_textversion.content)
-		return db_textversion.content
+		tmp = db_textversion.content
+		if tmp.endswith('.'):
+			tmp = tmp[:-1]
+		return tmp
 
 	def get_text_for_argument_uid(self, uid):
 		"""
@@ -741,6 +752,7 @@ class QueryHelper(object):
 		       ', pgroup ' + str(db_argument.premissesGroup_uid) +
 		       ', concl ' + str(db_argument.conclusion_uid) +
 		       ', arg ' + str(db_argument.argument_uid))
+		retValue = ''
 
 		# basecase
 		if db_argument.argument_uid == 0:
@@ -775,6 +787,8 @@ class QueryHelper(object):
 			logger('QueryHelper', 'get_text_for_premissesGroup_uid', 'premisse ' + str(premisse.premissesGroup_uid) + ' . statement'
 					+ str(premisse.statement_uid) + ', premisse.statement ' + str(premisse.statements.uid))
 			tmp = self.get_text_for_statement_uid(premisse.statements.uid)
+			if tmp.endswith('.'):
+				tmp = tmp[:-1]
 			uids.append(str(premisse.statements.uid))
 			text += ' and ' + tmp[:1].lower() + tmp[1:]
 
@@ -842,17 +856,19 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_undercuts_for_argument_uid', 'main')
 		return self.get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, False)
 
-	def get_rebuts_for_arguments_conclusion_uid(self, key, conclusion_statements_uid):
+	def get_rebuts_for_arguments_conclusion_uid(self, key, conclusion_statements_uid, is_current_argument_supportive):
 		"""
 
-		:param conclusion_statements_uid:
 		:param key:
+		:param conclusion_statements_uid:
+		:param is_current_argument_supportive:
 		:return:
 		"""
 		return_dict = {}
 		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid',
 		       'db_rebut against Argument.conclusion_uid=='+str(conclusion_statements_uid))
-		db_rebut = DBSession.query(Argument).filter(Argument.isSupportive==False, Argument.conclusion_uid==conclusion_statements_uid).all()
+		db_rebut = DBSession.query(Argument).filter(Argument.isSupportive==(not is_current_argument_supportive),
+		                                            Argument.conclusion_uid==conclusion_statements_uid).all()
 		for index, rebut in enumerate(db_rebut):
 			logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
 			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(rebut.premissesGroup_uid)
@@ -867,10 +883,10 @@ class QueryHelper(object):
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_rebuts_for_argument_uid', 'main')
-		db_argument = DBSession.query(Argument).filter_by(argument_uid=int(argument_uid)).first()
+		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 		if not db_argument:
 			return None
-		return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid)
+		return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid, db_argument.isSupportive)
 
 	def get_supports_for_argument_uid(self, key, argument_uid):
 		"""
@@ -878,17 +894,27 @@ class QueryHelper(object):
 		:param argument_uid: uid of the specified argument
 		:return: dictionary
 		"""
+		logger('QueryHelper', 'get_supports_for_argument_uid', 'main')
+
 		return_dict = {}
-		db_argument = DBSession.query(Argument).filter(and_(Argument.argument_uid==int(argument_uid), Argument.isSupportive==True))\
-			.join(PremisseGroup).first()
-		if not db_argument:
-			return None
-		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_argument.premissegroups.uid).all()
-		for index, premisse in enumerate(db_premisses):
-			return_dict[key + str(index)] = self.get_text_for_statement_uid(premisse.statement_uid)
-			return_dict[key + str(index) + 'id'] = premisse.statement_uid
-		return_dict[key] = str(len(db_premisses))
-		return return_dict
+		index = 0
+		db_argument = DBSession.query(Argument).filter_by(uid=argument_uid).join(PremisseGroup).first()
+		db_arguments_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_argument.premissesGroup_uid).all()
+
+		for arguments_premisses in db_arguments_premisses:
+			db_supports = DBSession.query(Argument).filter(and_(Argument.conclusion_uid==arguments_premisses.statement_uid,
+			                                                    Argument.isSupportive==True)).join(PremisseGroup).all()
+			if not db_supports:
+				continue
+
+			for support in db_supports:
+				return_dict[key + str(index)], trash = self.get_text_for_premissesGroup_uid(support.premissesGroup_uid)
+				return_dict[key + str(index) + 'id'] = support.premissesGroup_uid
+				index += 1
+
+		return_dict[key] = str(index)
+
+		return None if len(return_dict) == 0 else return_dict
 
 	def get_attack_or_support_for_justification_of_argument_uid(self, key, argument_uid, is_supportive):
 		"""
@@ -975,6 +1001,8 @@ class DictionaryHelper(object):
 		date = str(db_textversion.timestamp)
 		weight = str(db_textversion.weight)
 		author = db_textversion.users.nickname
+		if text.endswith('.'):
+			text = text[:-1]
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + weight + ', ' + author)
 		dic = dict()
 		dic['uid'] = uid

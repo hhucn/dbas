@@ -126,23 +126,33 @@ function InteractionHandler() {
 	 * Defines the action for the send button
 	 */
 	this.radioButtonWasChoosen = function () {
-		var guiHandler = new GuiHandler(), radioButton, id, value;
-		radioButton = $('input[name=' + radioButtonGroup + ']:checked');
-		id = radioButton.attr('id');
-		value = radioButton.val();
+		var guiHandler = new GuiHandler(),
+			radioButton= $('input[name=' + radioButtonGroup + ']:checked'),
+			hasRelation = radioButton.hasClass('relation'),
+			hasPremisse = radioButton.hasClass('premisse'),
+			hasStart = radioButton.hasClass('start'),
+			id = radioButton.attr('id'),
+			value = radioButton.val();
+
 		if (typeof id === 'undefined' || typeof value === 'undefined') {
 			guiHandler.setErrorDescription(selectStatement);
+			
 		} else {
 			guiHandler.setErrorDescription('');
 			guiHandler.setSuccessDescription('');
-			if (radioButton.hasClass('start')) {
+			if (hasStart && !hasRelation && !hasPremisse) {
 				this.startStatementButtonWasClicked(id, value);
-			} else if (radioButton.hasClass('premisse')) {
+			} else if (hasPremisse && !hasRelation && !hasStart) {
 				this.startPremisseButtonWasClicked(id, value);
-			} else if (radioButton.hasClass('relation')) {
+			} else if (hasRelation && !hasPremisse && !hasStart) {
 				this.startRelationButtonWasClicked(id, value);
+			} else if (hasPremisse && hasRelation && !hasStart){
+				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +'new round!')
 			} else {
-				alert('new class in InteractionHandler: radioButtonWasChoosen')
+				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +
+				'has start: ' + hasStart + '\n' +
+				'has premisse: ' + hasPremisse + '\n' +
+				'has relation: ' + hasRelation)
 			}
 		}
 

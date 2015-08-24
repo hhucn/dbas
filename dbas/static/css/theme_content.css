@@ -32,6 +32,7 @@
 #discussions-space ul li,
 #discussions-avoidance-space ul li {
 	list-style: none;
+	padding-bottom: 10px;
 }
 
 .error-description {
@@ -64,6 +65,7 @@
 #discussions-avoidance-space ul li label {
 	width: 95%;
 	vertical-align: middle;
+	font-weight: 400;
 }
 
 #insert_statement_form {

@@ -51,6 +51,7 @@ var firstOneText = "You are the first one, who said: ";
 var firstPositionText = "You are the first one in this discussion!";
 var goodPointTakeMeBackButtonText = "I agree, that is a good argument! Take me one step back.";
 var otherParticipantsThinkThat = "Other users think that";
+var otherParticipantsAcceptBut = "Other users accept your argument, but";
 var otherParticipantAgree = "Other partcipants agree, that ";
 var otherParticipantDisagree = "Other partcipants disagree, that ";
 var islandViewHeaderText = "These are all arguments for: ";

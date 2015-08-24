@@ -25,7 +25,7 @@ function GuiHandler() {
 		var listitems = [], _this = new GuiHandler();
 		this.setDiscussionsDescription(startDiscussionText);
 		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
-			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text, true, false, false, ''));
+			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text + '.', true, false, false, ''));
 		});
 
 		// sanity check for an empty list
@@ -43,12 +43,12 @@ function GuiHandler() {
 	/**
 	 * Sets given json content as start premisses buttons in the discussions space
 	 * @param jsonData data with json content
-	 * @param currentStatementText
+	 * @param currentStatement
 	 */
-	this.setJsonDataToContentAsStartPremisses = function (jsonData, currentStatementText) {
-		var listitems = [], _this = new GuiHandler(), text, firstOne = true;
-		text = currentStatementText.text.substring(0, 1).toLowerCase() + currentStatementText.text.substring(1, currentStatementText.text.length);
-		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ': <b>' + text + '</b>', text, {'text': text});
+	this.setJsonDataToContentAsStartPremisses = function (jsonData, currentStatement) {
+		var listitems = [], _this = new GuiHandler(), text, firstOne = true, helper = new Helper();
+		text = helper.startWithLowerCase(currentStatement.text);
+		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b> ?', text, {'text': text});
 
 		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
 			text = '';
@@ -58,7 +58,7 @@ function GuiHandler() {
 				else
 					text += ' _AND_ because ';
 
-				text += valval.text.substring(0, 1).toLowerCase() + valval.text.substring(1, valval.text.length - 1);
+				text += helper.startWithLowerCase(valval.text);
 				firstOne = false;
 			});
 			text += '.';
@@ -76,30 +76,31 @@ function GuiHandler() {
 	 * @param jsonData
 	 */
 	this.setJsonDataAsConfrontation = function (jsonData) {
-		var conclusion = jsonData.conclusion_text.substring(0, 1).toLowerCase() +
-				jsonData.conclusion_text.substring(1, jsonData.conclusion_text.length -1),
+		var conclusion = new Helper().startWithLowerCase(jsonData.conclusion_text),
 			premisse = jsonData.premisse_text,
-			opinion = conclusion + ', because' + ' ' + premisse, confrontationText, listitems = [],
-			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length - 1),
-			id = "_argument_" + jsonData.confrontation_id,
-			relationArray = new Helper().createRelationsText(confrontation, opinion, false, true), text;
+			opinion = conclusion + ', because ' + premisse,
+			confrontationText,
+			listitems = [],
+			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
+			id = '_argument_' + jsonData.confrontation_id,
+			relationArray = new Helper().createConfrontationsRelationsText(confrontation, premisse, conclusion, false, true);
 
 		// build some confrontation text
 		if (jsonData.attack == 'undermine'){
-			confrontationText = premisse + ' does not hold, because ';
+			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not hold, because ';
 
 		} else if (jsonData.attack == 'rebut'){
-			confrontationText = 'they accept your argument, but they have a stronger argument for rejecting <b>' + conclusion + ':</b> ';
+			confrontationText = otherParticipantsAcceptBut + ' they have a stronger argument for rejecting <b>' + conclusion + ':</b> ';
 
 		} else if (jsonData.attack == 'undercut'){
-			confrontationText = premisse + ' does not justifies that ' + conclusion + ', because ';
+			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not justifies that <b>' + conclusion + '</b>, because ';
 
 		}
 		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
 
 		// set discussions text
 		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' <b>' + opinion + '</b>.<br><br>'
-			+ otherParticipantsThinkThat + ' ' + confrontationText + '.<br><br>' + whatDoYouThink,
+			+ confrontationText + '.<br><br>' + whatDoYouThink,
 			'This confrontation is a ' + jsonData.attack, {});
 
 		// build the radio buttons
@@ -119,25 +120,25 @@ function GuiHandler() {
 	 */
 	this.setJsonDataAsConfrontationReasoning = function (jsonData){
 		var premisse = jsonData.premissegroup.replace('.',''),
-			conclusion = jsonData.conclusion_text.substring(0, 1).toLowerCase() +
-				jsonData.conclusion_text.substring(1, jsonData.conclusion_text.length-1),
-			relationArray = new Helper().createRelationsText(premisse, conclusion, false, false),
-			text, listitems = [], i, reason;
+			conclusion = new Helper().startWithLowerCase(jsonData.conclusion_text),
+			relationArray = new Helper().createRelationsText(premisse, conclusion, true, false),
+			text, listitems = [], i, reason, helper = new Helper(), id;
 
-		if (jsonData.relation === 'undermine') {		text = '<b>' + relationArray[0] + ', but why? (You made an undermine)';
-		} else if (jsonData.relation === 'support') {	text = '<b>' + relationArray[1] + ', but why? (You made a support)';
-		} else if (jsonData.relation === 'undercut') {	text = '<b>' + relationArray[2] + ', but why? (You made an undercut)';
-		} else if (jsonData.relation === 'overbid') {	text = '<b>' + relationArray[3] + ', but why? (You made an overbid)';
-		} else if (jsonData.relation === 'rebut') {		text = '<b>' + relationArray[4] + ', but which one? (You made a rebut)';
+		if (jsonData.relation === 'undermine') {		text = relationArray[0] + ', but why? (You made an undermine)';
+		} else if (jsonData.relation === 'support') {	text = relationArray[1] + ', but why? (You made a support)';
+		} else if (jsonData.relation === 'undercut') {	text = relationArray[2] + ', but why? (You made an undercut)';
+		} else if (jsonData.relation === 'overbid') {	text = relationArray[3] + ', but why? (You made an overbid)';
+		} else if (jsonData.relation === 'rebut') {		text = relationArray[4] + ', but which one? (You made a rebut)';
 		}
 
 		for (i=0; i<parseInt(jsonData.reason); i++){
 			//group_uid = jsonData['reason' + i + 'groupid'];
-			reason = 'Because ' + jsonData['reason' + i].substring(0, 1).toLowerCase() + jsonData['reason' + i].substring(1);
-			listitems.push(this.getKeyValAsInputInLiWithType(jsonData['reason' + i + 'id'], reason, false, false, false, reason));
+			id = jsonData.relation + '_' + jsonData.type + '_' + jsonData['reason' + i + 'id'];
+			reason = 'Because ' + helper.startWithLowerCase(jsonData['reason' + i]) + '.';
+			listitems.push(this.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason));
 		}
 
-		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ': ' + text, '', {'text': text, 'attack': jsonData.relation, 'attacked_argument': jsonData.argument_uid});
+		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', {'text': text, 'attack': jsonData.relation, 'attacked_argument': jsonData.argument_uid});
 		listitems.push(this.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
 		this.addListItemsToDiscussionsSpace(listitems);
 	};
@@ -176,12 +177,12 @@ function GuiHandler() {
 	 * @param jsonData data with json content
 	 */
 	this.addJsonDataToContentAsArguments = function (jsonData) {
-		var _this = new GuiHandler(), text;
+		var _this = new GuiHandler(), text, helper = new Helper();
 		$.each(jsonData, function addJsonDataToContentAsArgumentsEach(key, val) {
 			// we only want attacking arguments
 			if (val.is_supportive === '0') {
 				if (val.text.toLowerCase() !== 'because') {
-					text = "Because " + val.text.substring(0, 1).toLowerCase() + val.text.substring(1, val.text.length);
+					text = "Because " + helper.start(val.text);
 				} else {
 					text = val.text;
 				}

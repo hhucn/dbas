@@ -207,6 +207,7 @@ class PremisseGroup(Base):
 	__tablename__ = 'premissegroups'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+
 	users = relationship('User', foreign_keys=[author_uid])
 
 	def __init__(self, author):
