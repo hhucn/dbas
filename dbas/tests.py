@@ -6,7 +6,7 @@ import unittest
 from webtest import TestApp
 from dbas.views import Dbas
 from dbas import main
-from dbas.helper import PasswordHandler
+from dbas.user_management import PasswordHandler
 from dbas.database import Base as Entity
 from dbas.database.model import Group, User, Argument
 from mock import Mock

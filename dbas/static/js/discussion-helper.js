@@ -59,15 +59,16 @@ function Helper() {
 		if (conclusion.substr(conclusion.length-1) == ".")
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var w = startLowerCase ? 'w' : 'W', r = startLowerCase ? 'r' : 'R', enddot = endWithDot ? '.' : '',
-			undermine = '<b>' + w + 'rong, it is not true that \'' + premisse + '\'</b>' + enddot,
-			support	  = '<b>' + r + 'ight, it is true that \'' + premisse + '\'</b>' + enddot,
-			undercut  = '<b>' + r + 'ight, \'' + premisse + '\'</b>, but I do not believe that this is a good counter-argument for my justification.',
-				// <b>\'' + conclusion + '\'</b>' + enddot,
-			overbid	  = '<b>' + r + 'ight, \'' + premisse + '\'</b>, and I do believe that this is a good counter-argument for my justification.',
-				// <b>\'' + conclusion + '\'</b>' + enddot,
-			rebut	  = '<b>' + r + 'ight, \'' + premisse + '\'</b> and I do accept that this is an counter-argument for <b>\'' + conclusion
-				+ '\'</b>. However, I have a much stronger argument for accepting that <b>\'' + conclusion + '\'</b>' + enddot;
+		var w = startLowerCase ? 'wrong' : 'Wrong',
+			r = startLowerCase ? 'right' : 'Right',
+			enddot = endWithDot ? '.' : '',
+			belCounterJusti = 'believe that this is a good counter-argument for my justification',
+			undermine = '<b>' + w + ', it is not true that ' + premisse + '</b>' + enddot,
+			support	  = '<b>' + r + ', it is true that ' + premisse + '</b>' + enddot,
+			undercut  = '<b>' + r + ', ' + premisse + '</b>, but I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
+			overbid	  = '<b>' + r + ', ' + premisse + '</b>, and I do ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
+			rebut	  = '<b>' + r + ', ' + premisse + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
+				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot;
 		return [undermine, support, undercut, overbid, rebut];
 	};
 
@@ -90,15 +91,50 @@ function Helper() {
 		if (premisse.substr(premisse.length-1) == ".")
 			premisse = premisse.substr(0, premisse.length-1);
 
-		var w = startLowerCase ? 'w' : 'W', r = startLowerCase ? 'r' : 'R', enddot = endWithDot ? '.' : '',
-			undermine = w + 'rong, it is not true that <b>\'' + confrontation + '\'</b>' + enddot,
-			support	  = r + 'ight, it is true that <b>\'' + confrontation + '\'</b>' + enddot,
-			undercut  = r + 'ight, <b>\'' + confrontation + '\'</b>, but I do not believe that this is a good counter-argument for my justification.',
-				// <b>\'' + conclusion + '\'</b>' + enddot,
-			overbid	  = r + 'ight, <b>\'' + confrontation + '\'</b>, and I do believe that this is a good counter-argument for my justification.',
-				// <b>\'' + conclusion + '\'</b>' + enddot,
-			rebut	  = r + 'ight, <b>\'' + confrontation + '\'</b> and I do accept that this is an counter-argument for <b>\'' + conclusion
-				+ '\'</b>. However, I have a much stronger argument for accepting that <b>\'' + conclusion + '\'</b>' + enddot;
+		var w = startLowerCase ? 'wrong' : 'Wrong',
+			r = startLowerCase ? 'right' : 'Right',
+			enddot = endWithDot ? '.' : '',
+			belCounterJusti = 'believe that this is a good counter-argument for my justification',
+			undermine = w + ', it is not true that <b>' + confrontation + '</b>' + enddot,
+			support	  = r + ', it is true that <b>' + confrontation + '</b>' + enddot,
+			undercut  = r + ', <b>' + confrontation + '</b>, but I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
+			overbid	  = r + ', <b>' + confrontation + '</b>, and I do ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
+			rebut	  = r + ', <b>' + confrontation + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
+				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot;
 		return [undermine, support, undercut, overbid, rebut];
+	};
+
+	/**
+	 * Creates an input element tih key as id and val as value. This is embedded in an li element
+	 * @param key will be used as id
+	 * @param val will be used as value
+	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
+	 * @param isPremisse
+	 * @param isRelation
+	 * @param mouseover
+	 * @returns {Element|*} a type-input element in a li tag
+	 */
+	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse, isRelation, mouseover) {
+		var liElement, inputElement, labelElement;
+		liElement = $('<li>');
+		liElement.attr({id: 'li_' + key});
+
+		inputElement = $('<input>');
+		inputElement.attr({id: key, type: 'radio', value: val});
+		//inputElement.attr({data-dismiss: 'modal'});
+
+		inputElement.attr({name: radioButtonGroup});
+		// adding label for the value
+		labelElement = '<label title="' + mouseover + '" for="' + key + '">' + val + '</label>';
+
+		inputElement.attr({onclick: "new InteractionHandler().radioButtonChanged(this.id);"});
+		if (isStartStatement){ inputElement.addClass('start'); }
+		if (isPremisse){ inputElement.addClass('premisse'); }
+		if (isRelation){ inputElement.addClass('relation'); }
+		if (!isStartStatement && !isPremisse && !isRelation){ inputElement.addClass('add'); }
+
+		liElement.html(new Helper().getFullHtmlTextOf(inputElement) + labelElement);
+
+		return liElement;
 	};
 }

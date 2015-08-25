@@ -133,7 +133,6 @@ $(function () {
 	// $('#' + scStyle2Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
 	// $('#' + scStyle3Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
 
-	
 	// ajax loading animation
 	$(document).on({
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a

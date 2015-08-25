@@ -10,7 +10,10 @@ from pyramid.threadlocal import get_current_registry
 
 from .database import DBSession
 from .database.model import User, Group, Issue
-from .helper import PasswordHandler, PasswordGenerator, logger, DatabaseHelper, DictionaryHelper, EmailHelper, UserHandler
+from .helper import logger, DatabaseHelper
+from .user_management import PasswordGenerator, PasswordHandler, UserHandler
+from .email import EmailHelper
+from .dictionary_helper import DictionaryHelper
 
 name = 'D-BAS'
 version = '0.3.0'
@@ -411,7 +414,7 @@ class Dbas(object):
 		# statement_inserted = False
 
 		# checks whether the current user is admin
-		is_admin = DatabaseHelper().is_user_admin(self.request.authenticated_userid)
+		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
 
 		try:
 			lang = str(self.request.cookies['_LOCALE_'])
@@ -654,7 +657,7 @@ class Dbas(object):
 		try:
 			logger('get_all_arguments_for_island', 'def', 'read params')
 			uid = self.request.params['uid']
-			DatabaseHelper().save_track_for_user(transaction, self.request.authenticated_userid, uid, 0, 0, 0, 0)
+			UserHandler().save_track_for_user(transaction, self.request.authenticated_userid, uid, 0, 0, 0, 0)
 			return_dict = DatabaseHelper().get_premisses_for_statement(uid, True)
 			return_dict['status'] = '1'
 		except KeyError as e:
@@ -680,11 +683,38 @@ class Dbas(object):
 		try:
 			uid = self.request.params['uid']
 			logger('reply_for_premissegroup', 'def', 'premissegroup ' + str(uid))
-			DatabaseHelper().save_track_for_user(transaction, self.request.authenticated_userid, 0, uid, 0, 0, 0)
-			return_dict, status = DatabaseHelper().get_reply_for_premissegroup(transaction, self.request.authenticated_userid)
+			# UserHandler().save_track_for_user(transaction, self.request.authenticated_userid, 0, uid, 0, 0, 0)
+			# track will be saved in the method
+			return_dict, status = DatabaseHelper().get_attack_for_premissegroup(transaction, self.request.authenticated_userid, uid)
 			return_dict['status'] = str(status)
 		except KeyError as e:
 			logger('reply_for_premissegroup', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - get reply for an argument
+	@view_config(route_name='ajax_reply_for_argument', renderer='json', check_csrf=True)
+	def reply_for_argument(self):
+		"""
+		Get reply for ana rgument
+		:return: dictionary with every arguments
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('reply_for_argument', 'def', 'main')
+
+		return_dict = {}
+		try:
+			uid = self.request.params['uid']
+			logger('reply_for_argument', 'def', 'premissegroup ' + str(uid))
+			# track will be saved in the method
+			return_dict, status = DatabaseHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, uid)
+			return_dict['status'] = str(status)
+		except KeyError as e:
+			logger('reply_for_argument', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)

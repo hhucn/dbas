@@ -95,8 +95,8 @@ function TrackHandler() {
 		spanElement[2].text('Statement ID');
 		spanElement[3].text('PremisseGroup ID');
 		spanElement[4].text('Argument ID');
-		spanElement[5].text('Attacked by');
-		spanElement[6].text('Attacked with');
+		spanElement[5].text('You were attacked by');
+		spanElement[6].text('You\'ve attacked with');
 		spanElement[7].text('Text');
 		spanElement[8].text('Date');
 
@@ -116,21 +116,30 @@ function TrackHandler() {
 			is_argument = value.is_argument;
 			tdElement[0].text(key);
 			tdElement[1].text(value.uid);
-			tdElement[2].text(value.statement_uid);
-			tdElement[3].text(value.premissesGroup_uid);
-			tdElement[4].text(value.attacked_by_relation);
-			tdElement[5].text(value.argument_uid);
+			tdElement[2].text(value.statement);
+			tdElement[3].text(value.premissesGroup);
+			tdElement[4].text(value.argument);
+			tdElement[5].text(value.attacked_by_relation);
 			tdElement[6].text(value.attacked_with_relation);
-			tdElement[7].text(value.text);
+			tdElement[7].html(value.text);
 			tdElement[8].text(value.timestamp);
+			tdElement[0].attr('title', 'No: ' + key);
+			tdElement[1].attr('title', 'Track ID: ' + value.uid);
+			tdElement[2].attr('title', 'Statement ID: ' + value.statement_uid);
+			tdElement[3].attr('title', 'Premisses Groups ID: ' + value.premissesGroup_uid);
+			tdElement[4].attr('title', 'Argument ID: ' + value.argument_uid);
+			tdElement[5].attr('title', 'Relation ID: ' + value.attacked_by_relation_uid);
+			tdElement[6].attr('title', 'Relation ID: ' + value.attacked_with_relation_uid);
+			tdElement[7].attr('title', 'Text: ' + value.text);
+			tdElement[8].attr('title', 'Timestamp: ' + value.timestamp);
 
 			trElement = $('<tr>');
 			for (i = 0; i < tdElement.length; i += 1) {
 				trElement.append(tdElement[i]);
 			}
-			// trElement.hover(function () {
-			// $(this).toggleClass('table-hover');
-			// });
+			trElement.hover(function () {
+				$(this).toggleClass('table-hover');
+			});
 			tableElement.append(trElement);
 		});
 
@@ -167,4 +176,12 @@ $(function () {
 	$('#delete-track').hide();
 	$('#track-table-success').hide();
 	$('#track-table-failure').hide();
+
+
+	// ajax loading animation
+	$(document).on({
+		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a
+		// flickering screen
+		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
+	});
 });

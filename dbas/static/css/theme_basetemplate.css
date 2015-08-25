@@ -126,8 +126,8 @@ body.loading .ajaxloader {
 .container,
 .first-container {
 	margin-top: 50px;
-	padding-left: 50px;
-	padding-right: 50px;
+	padding-left: 30px;
+	padding-right: 30px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	margin-bottom: 10px;
@@ -246,6 +246,12 @@ comment .container and wrap each container with <div class="coloured-div">
 
 .icon-badge:hover {
 	-webkit-filter: saturate(200%);
+}
+
+.table-hover {
+	color: rgba(0, 106, 179, 1.0);
+	font-weight: 300;
+	font-style: italic;
 }
 
 #additional-wrapper {

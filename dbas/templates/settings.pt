@@ -57,7 +57,7 @@
 			</table>
 		</div>
 
-		<div class="container settings-container">
+		<div class="container settings-container-wide">
 			<h2 i18n:translate="decisions">Your decisions</h2>
 			<div id="track-table-space">
 				<table id="track-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">

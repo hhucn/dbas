@@ -1,6 +1,3 @@
-/*global $, jQuery, alert, GuiHandler
-*/
-
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
@@ -14,7 +11,7 @@ function InteractionHandler() {
 	 * Handler when an start statement was clicked
 	 * @param id of the button
 	 */
-	this.startStatementButtonWasClicked = function (id) {
+	this.statementButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		new AjaxHandler().getPremisseForStatement(id);
@@ -24,7 +21,7 @@ function InteractionHandler() {
 	 * Handler when an start premisse was clicked
 	 * @param id of the button
 	 */
-	this.startPremisseButtonWasClicked = function (id) {
+	this.premisseButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		new AjaxHandler().getReplyForPremisseGroup(id);
@@ -34,11 +31,22 @@ function InteractionHandler() {
 	 * Handler when an relation button was clicked
 	 * @param id of the button
 	 */
-	this.startRelationButtonWasClicked = function (id) {
+	this.relationButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
 		new AjaxHandler().handleReplyForResponseOfConfrontation(id);
+	};
+
+	/**
+	 * Handler when an argument button was clicked
+	 * @param id of the button
+	 */
+	this.argumentButtonWasClicked = function (id) {
+		// clear the discussion space
+		$('#' + discussionSpaceId).empty();
+		$('#' + discussionsDescriptionId).empty();
+		new AjaxHandler().getReplyForArgument(id);
 	};
 
 	/**
@@ -141,13 +149,13 @@ function InteractionHandler() {
 			guiHandler.setErrorDescription('');
 			guiHandler.setSuccessDescription('');
 			if (hasStart && !hasRelation && !hasPremisse) {
-				this.startStatementButtonWasClicked(id, value);
+				this.statementButtonWasClicked(id);
 			} else if (hasPremisse && !hasRelation && !hasStart) {
-				this.startPremisseButtonWasClicked(id, value);
+				this.premisseButtonWasClicked(id);
 			} else if (hasRelation && !hasPremisse && !hasStart) {
-				this.startRelationButtonWasClicked(id, value);
+				this.relationButtonWasClicked(id);
 			} else if (hasPremisse && hasRelation && !hasStart){
-				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +'new round!')
+				this.argumentButtonWasClicked(id);
 			} else {
 				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +
 				'has start: ' + hasStart + '\n' +
@@ -167,7 +175,7 @@ function InteractionHandler() {
 	this.callbackIfDoneForPremisseForStatement = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			gh.setJsonDataToContentAsStartPremisses(parsedData.premisses, parsedData.currentStatementText);
+			new JsonGuiHandler().setJsonDataToContentAsStartPremisses(parsedData.premisses, parsedData.currentStatementText);
 		} else {
 			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
 		}
@@ -181,7 +189,7 @@ function InteractionHandler() {
 	this.callbackIfDoneReplyForPremissegroup = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			gh.setJsonDataAsConfrontation(parsedData);
+			new JsonGuiHandler().setJsonDataAsConfrontation(parsedData);
 		} else if (parsedData.status == '0') {
 			alert('TODO: callbackIfDoneReplyForPremissegroup')
 		} else {
@@ -191,13 +199,21 @@ function InteractionHandler() {
 	};
 
 	/**
+	 * Callback for the ajax method getReplyForArgument
+	 * @param data returned json data
+	 */
+	this.callbackIfDoneReplyForArgument = function (data) {
+		this.callbackIfDoneReplyForPremissegroup(data);
+	};
+
+	/**
 	 * Callback for the ajax method handleReplyForResponseOfConfrontation
 	 * @param data
 	 */
 	this.callbackIfDoneHandleReplyForResponseOfConfrontation = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			gh.setJsonDataAsConfrontationReasoning(parsedData);
+			new JsonGuiHandler().setJsonDataAsConfrontationReasoning(parsedData);
 		} else if (parsedData.status == '0') {
 			alert('callbackIfDoneHandleReplyForResponseOfConfrontation status 0');
 		} else {
@@ -217,7 +233,7 @@ function InteractionHandler() {
 			gh.resetAndDisableEditButton();
 			gh.setNewArgumentButtonOnly(firstConclusionRadioButtonText, false);
 		} else {
-			gh.setJsonDataToContentAsStartStatement(parsedData.statements);
+			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData.statements);
 		}
 	};
 
@@ -260,6 +276,15 @@ function InteractionHandler() {
 			$('#' + popupEditStatementLogfileSpaceId).text('');
 			new GuiHandler().displayStatementCorrectionsInPopup(parsedData.content);
 		}
+	};
+
+	/**
+	 *
+	 * @param data
+	 */
+	this.callbackIfDoneGetUsersAndSetInGui = function (data){
+		var parsedData = $.parseJSON(data);
+		new JsonGuiHandler().setJsonUserDataToAdminContent(parsedData);
 	};
 
 	/**

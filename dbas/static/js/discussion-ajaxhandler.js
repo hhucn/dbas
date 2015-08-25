@@ -1,4 +1,4 @@
-/*global $, jQuery, alert, GuiHandler, InteractionHandler */
+/*global $, jQuery, alert, GuiHandler, InteractionHandler, internal_error, popupErrorDescriptionId */
 
 /**
  * @author Tobias Krauthoff
@@ -19,7 +19,9 @@ function AjaxHandler() {
 			type: 'GET',
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxGetAllPositionsDone(data) {
 			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
 		}).fail(function ajaxGetAllPositionsFail() {
@@ -37,10 +39,14 @@ function AjaxHandler() {
 		$.ajax({
 			url: 'ajax_premisses_for_statement',
 			method: 'POST',
-			data: { uid : uid },
+			data: {
+				uid: uid
+			},
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxGetPremisseForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForPremisseForStatement(data);
 		}).fail(function ajaxGetPremisseForStatementFail() {
@@ -50,7 +56,7 @@ function AjaxHandler() {
 	};
 
 	/**
-	 * Sends an ajax request for getting all premisses for a givens tatement
+	 * Sends an ajax request for getting all premisses for a given statement
 	 * @param uid of clicked statement
 	 */
 	this.getReplyForPremisseGroup = function (uid) {
@@ -58,13 +64,42 @@ function AjaxHandler() {
 		$.ajax({
 			url: 'ajax_reply_for_premissegroup',
 			method: 'POST',
-			data: { uid : uid },
+			data: {
+				uid: uid
+			},
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxGetReplyForPremisseDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForPremissegroup(data);
 		}).fail(function ajaxGetReplyForPremisseFail() {
+			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
+		});
+	};
+
+	/**
+	 * Sends an ajax request for getting all confrotations for a given argument
+	 * @param uid of the clicked premisse group
+	 */
+	this.getReplyForArgument = function (uid) {
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_reply_for_argument',
+			method: 'POST',
+			data: {
+				uid: uid
+			},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
+		}).done(function ajaxGetReplyForArgumentDone(data) {
+			new InteractionHandler().callbackIfDoneReplyForArgument(data);
+		}).fail(function ajaxGetReplyForArgumentFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
 		});
@@ -79,10 +114,14 @@ function AjaxHandler() {
 		$.ajax({
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
-			data: { id: id },
+			data: {
+				id: id
+			},
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
 			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data);
 		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
@@ -92,7 +131,7 @@ function AjaxHandler() {
 	};
 
 	/**
-	 * Request all users
+	 * Requests all users
 	 */
 	this.getUsersAndSetInGui = function () {
 		var csrfToken = $('#hidden_csrf_token').val();
@@ -101,9 +140,11 @@ function AjaxHandler() {
 			type: 'GET',
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxGetAllUsersDone(data) {
-			new GuiHandler().setJsonDataToAdminContent($.parseJSON(data));
+			new InteractionHandler().callbackIfDoneGetUsersAndSetInGui(data);
 		}).fail(function ajaxGetAllUsersFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 		});
@@ -117,9 +158,9 @@ function AjaxHandler() {
 	 * @param related_argument
 	 */
 	this.sendNewPremissesForArgument = function (argument_dictionary, isPremisseForArgument, relation, related_argument) {
-		argument_dictionary['isPremisseForArgument'] = isPremisseForArgument ? '1' : '0';
-		argument_dictionary['relation'] = relation;
-		argument_dictionary['related_argument'] = related_argument;
+		argument_dictionary.isPremisseForArgument = isPremisseForArgument ? '1' : '0';
+		argument_dictionary.relation = relation;
+		argument_dictionary.related_argument = related_argument;
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_new_premisses',
@@ -127,7 +168,9 @@ function AjaxHandler() {
 			data: argument_dictionary,
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxSendNewPremissesDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewPremisses(data);
 		}).fail(function ajaxSendNewPremissesFail() {
@@ -144,10 +187,14 @@ function AjaxHandler() {
 		$.ajax({
 			url: 'ajax_set_new_start_statement',
 			type: 'POST',
-			data: { statement : statement },
+			data: {
+				statement: statement
+			},
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxSendStartStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
 		}).fail(function ajaxSendStartStatementFail() {
@@ -159,15 +206,19 @@ function AjaxHandler() {
 	 * Requests the logfile for the given uid
 	 * @param statement_uid current uid of the statement
 	 */
-	this.getLogfileForStatement = function (statement_uid){
+	this.getLogfileForStatement = function (statement_uid) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
 			type: 'POST',
-			data: { uid: statement_uid},
+			data: {
+				uid: statement_uid
+			},
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxGetLogfileForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForGetLogfileForStatement(data);
 		}).fail(function ajaxGetLogfileForStatementFail() {
@@ -181,15 +232,20 @@ function AjaxHandler() {
 	 * @param statement_uid current uid of the statement
 	 * @param corrected_text the corrected text
 	 */
-	this.sendCorrectureOfStatement = function (statement_uid, corrected_text){
+	this.sendCorrectureOfStatement = function (statement_uid, corrected_text) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_correcture_of_statement',
 			type: 'POST',
-			data: { uid: statement_uid, text: corrected_text},
+			data: {
+				uid: statement_uid,
+				text: corrected_text
+			},
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, statement_uid);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {

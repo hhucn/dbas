@@ -1,5 +1,4 @@
-/*global $, jQuery, alert, startDiscussionText , addStatementButtonId , statementList , GuiHandler , firstOneText , addStatementButtonId , adminsSpaceId , addStatementButtonId , statementList, argumentSentencesOpeners, addStatementContainerId, addStatementButtonId, discussionFailureRowId, discussionFailureMsgId, tryAgainDiscussionButtonId, discussionsDescriptionId, errorDescriptionId, radioButtonGroup, discussionSpaceId
-*/
+/*global $, jQuery, discussionsDescriptionId, discussionContainerId, discussionSpaceId, discussionAvoidanceSpaceId */
 
 /**
  * @author Tobias Krauthoff
@@ -7,262 +6,12 @@
  * @copyright Krauthoff 2015
  */
 
-// TODO KICK ALL METHODS WHICH ARE NOT USED
-
 function GuiHandler() {
 	'use strict';
 	var interactionHandler;
 
 	this.setHandler = function (externInteractionHandler) {
 		interactionHandler = externInteractionHandler;
-	};
-
-	/**
-	 * Sets given json content as start statement buttons in the discussions space
-	 * @param jsonData data with json content
-	 */
-	this.setJsonDataToContentAsStartStatement = function (jsonData) {
-		var listitems = [], _this = new GuiHandler();
-		this.setDiscussionsDescription(startDiscussionText);
-		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
-			listitems.push(_this.getKeyValAsInputInLiWithType(val.uid, val.text + '.', true, false, false, ''));
-		});
-
-		// sanity check for an empty list
-		if (listitems.length === 0) {
-			// todo: is this even used?
-			alert('discussion-guihandler: setJsonDataToContentAsStartStatement');
-			this.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>');
-		}
-
-		listitems.push(this.getKeyValAsInputInLiWithType(addReasonButtonId, newConclusionRadioButtonText, true, false, ''));
-
-		this.addListItemsToDiscussionsSpace(listitems);
-	};
-
-	/**
-	 * Sets given json content as start premisses buttons in the discussions space
-	 * @param jsonData data with json content
-	 * @param currentStatement
-	 */
-	this.setJsonDataToContentAsStartPremisses = function (jsonData, currentStatement) {
-		var listitems = [], _this = new GuiHandler(), text, firstOne = true, helper = new Helper();
-		text = helper.startWithLowerCase(currentStatement.text);
-		this.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b> ?', text, {'text': text});
-
-		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
-			text = '';
-			$.each(val, function setJsonDataToContentAsConclusionEachVal(valkey, valval) {
-				if (text=='')
-					text = 'Because ';
-				else
-					text += ' _AND_ because ';
-
-				text += helper.startWithLowerCase(valval.text);
-				firstOne = false;
-			});
-			text += '.';
-			// we are saving the group id ad key
-			listitems.push(_this.getKeyValAsInputInLiWithType(key, text, false, true, false, ''));
-		});
-
-		listitems.push(this.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? addPremisseRadioButtonText : newPremisseRadioButtonText, true, false, ''));
-
-		this.addListItemsToDiscussionsSpace(listitems);
-	};
-
-	/**
-	 * Sets given data in the list of the discussion space
-	 * @param jsonData
-	 */
-	this.setJsonDataAsConfrontation = function (jsonData) {
-		var conclusion = new Helper().startWithLowerCase(jsonData.conclusion_text),
-			premisse = jsonData.premisse_text,
-			opinion = conclusion + ', because ' + premisse,
-			confrontationText,
-			listitems = [],
-			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
-			id = '_argument_' + jsonData.confrontation_id,
-			relationArray = new Helper().createConfrontationsRelationsText(confrontation, premisse, conclusion, false, true);
-
-		// build some confrontation text
-		if (jsonData.attack == 'undermine'){
-			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not hold, because ';
-
-		} else if (jsonData.attack == 'rebut'){
-			confrontationText = otherParticipantsAcceptBut + ' they have a stronger argument for rejecting <b>' + conclusion + ':</b> ';
-
-		} else if (jsonData.attack == 'undercut'){
-			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not justifies that <b>' + conclusion + '</b>, because ';
-
-		}
-		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
-
-		// set discussions text
-		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' <b>' + opinion + '</b>.<br><br>'
-			+ confrontationText + '.<br><br>' + whatDoYouThink,
-			'This confrontation is a ' + jsonData.attack, {});
-
-		// build the radio buttons
-		listitems.push(this.getKeyValAsInputInLiWithType('undermine' + id, relationArray[0] + ' [undermine]', false, false, true, 'undermine'));
-		listitems.push(this.getKeyValAsInputInLiWithType('support' + id, relationArray[1] + ' [support]', false, false, true, 'support'));
-		listitems.push(this.getKeyValAsInputInLiWithType('undercut' + id, relationArray[2] + ' [undercut]', false, false, true, 'undercut'));
-		listitems.push(this.getKeyValAsInputInLiWithType('overbid' + id, relationArray[3] + ' [overbid]', false, false, true, 'overbid'));
-		listitems.push(this.getKeyValAsInputInLiWithType('rebut' + id, relationArray[4] + ' [rebut]', false, false, true, 'rebut'));
-
-		// set the buttons
-		this.addListItemsToDiscussionsSpace(listitems);
-	};
-
-	/**
-	 * Sets given data in the list of the discussion space
-	 * @param jsonData
-	 */
-	this.setJsonDataAsConfrontationReasoning = function (jsonData){
-		var premisse = jsonData.premissegroup.replace('.',''),
-			conclusion = new Helper().startWithLowerCase(jsonData.conclusion_text),
-			relationArray = new Helper().createRelationsText(premisse, conclusion, true, false),
-			text, listitems = [], i, reason, helper = new Helper(), id;
-
-		if (jsonData.relation === 'undermine') {		text = relationArray[0] + ', but why? (You made an undermine)';
-		} else if (jsonData.relation === 'support') {	text = relationArray[1] + ', but why? (You made a support)';
-		} else if (jsonData.relation === 'undercut') {	text = relationArray[2] + ', but why? (You made an undercut)';
-		} else if (jsonData.relation === 'overbid') {	text = relationArray[3] + ', but why? (You made an overbid)';
-		} else if (jsonData.relation === 'rebut') {		text = relationArray[4] + ', but which one? (You made a rebut)';
-		}
-
-		for (i=0; i<parseInt(jsonData.reason); i++){
-			//group_uid = jsonData['reason' + i + 'groupid'];
-			id = jsonData.relation + '_' + jsonData.type + '_' + jsonData['reason' + i + 'id'];
-			reason = 'Because ' + helper.startWithLowerCase(jsonData['reason' + i]) + '.';
-			listitems.push(this.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason));
-		}
-
-		this.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', {'text': text, 'attack': jsonData.relation, 'attacked_argument': jsonData.argument_uid});
-		listitems.push(this.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
-		this.addListItemsToDiscussionsSpace(listitems);
-	};
-
-	/**
-	 * Sets given json content as argument buttons in the discussions space
-	 * @param jsonData data with json content
-	 * @param isUserExplainingHisPosition true, when the prefix should be 'because', because user should explain his position
-	 * @param isAvoidance true, when the given data should be used as avoidance
-	 *
-	this.setJsonDataToDiscussionContentAsArguments = function (jsonData, isUserExplainingHisPosition, isAvoidance) {
-		var listitems = [], _this = new GuiHandler();
-
-		$.each(jsonData, function setJsonDataToContentAsArgumentsEach(key, val) {
-			// set text, if it not the current statement
-			if (key !== 'currentStatementText') {
-				// prefix, when it is the first justification
-				var text = isUserExplainingHisPosition ? "Because " + val.text.substring(0, 1).toLowerCase() + val.text.substring(1, val.text.length) : val.text;
-				listitems.push(_this.getKeyValAsInputInLiWithType(key, text, true));
-			}
-		});
-
-		// button, when the users agree and want to step back
-		if (!isUserExplainingHisPosition && !isAvoidance){
-			listitems.push(_this.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true));
-		}
-
-		// button for new statements
-		if (!isAvoidance)
-			listitems.push(_this.getKeyValAsInputInLiWithType(addReasonButtonId, newPremisseRadioButtonText, true));
-		_this.addListItemsToDiscussionsSpace(listitems, argumentListId, isAvoidance);
-	};*/
-
-	/**
-	 * Adds given json content as argument buttons in the discussions space
-	 * @param jsonData data with json content
-	 */
-	this.addJsonDataToContentAsArguments = function (jsonData) {
-		var _this = new GuiHandler(), text, helper = new Helper();
-		$.each(jsonData, function addJsonDataToContentAsArgumentsEach(key, val) {
-			// we only want attacking arguments
-			if (val.is_supportive === '0') {
-				if (val.text.toLowerCase() !== 'because') {
-					text = "Because " + helper.start(val.text);
-				} else {
-					text = val.text;
-				}
-				$('#li_' + addReasonButtonId).before(_this.getKeyValAsInputInLiWithType(val.uid, text, true));
-			}
-		});
-
-		// hover style element for the list elements
-		$('#' + argumentListId).children().hover(function () {
-			$(this).toggleClass('table-hover');
-		});
-	};
-
-	/**
-	 * Sets given json data to admins content
-	 * @param jsonData
-	 */
-	this.setJsonDataToAdminContent = function (jsonData) {
-		var ulElement, trElement, tdElement, spanElement, i;
-		tdElement = ['', '', '', '', '', '', '', '', '', ''];
-		spanElement = ['', '', '', '', '', '', '', '', '', ''];
-		ulElement = $('<table>');
-		ulElement.attr({class: 'table table-condensed',
-						border: '0',
-						style: 'border-collapse: separate; border-spacing: 0px;'});
-
-		trElement = $('<tr>');
-
-		for (i = 0; i < tdElement.length; i += 1) {
-			tdElement[i] = $('<td>');
-			spanElement[i] = $('<spand>');
-			spanElement[i].attr({class: 'font-semi-bold'});
-		}
-
-		// add header row
-		spanElement[0].text('uid');
-		spanElement[1].text('Firstname');
-		spanElement[2].text('Surname');
-		spanElement[3].text('Nickname');
-		spanElement[4].text('E-Mail');
-		spanElement[5].text('Group');
-		spanElement[6].text('Last Action');
-		spanElement[7].text('Last Login');
-		spanElement[8].text('Registered');
-		spanElement[9].text('Gender');
-
-		for (i = 0; i < tdElement.length; i += 1) {
-			tdElement[i].append(spanElement[i]);
-			trElement.append(tdElement[i]);
-			ulElement.append(trElement);
-		}
-
-		// add each user element
-		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
-			trElement = $('<tr>');
-			for (i = 0; i < tdElement.length; i += 1) {
-				tdElement[i] = $('<td>');
-			}
-
-			tdElement[0].text(value.uid);
-			tdElement[1].text(value.firstname);
-			tdElement[2].text(value.surname);
-			tdElement[3].text(value.nickname);
-			tdElement[4].text(value.email);
-			tdElement[5].text(value.group_uid);
-			tdElement[6].text(value.last_action);
-			tdElement[7].text(value.last_login);
-			tdElement[8].text(value.registered);
-			tdElement[9].text(value.gender);
-
-			for (i = 0; i < tdElement.length; i += 1) {
-				trElement.append(tdElement[i]);
-			}
-			trElement.hover(function () {
-				$(this).toggleClass('table-hover');
-			});
-			ulElement.append(trElement);
-		});
-
-		$('#' + adminsSpaceId).empty().append(ulElement);
 	};
 
 	/**
@@ -275,6 +24,7 @@ function GuiHandler() {
 		listitem.push(gh.getKeyValAsInputInLiWithType(addReasonButtonId, val, isArgument, false, false, ''));
 		gh.addListItemsToDiscussionsSpace(listitem);
 	};
+	*/
 
 	/**
 	 * Sets an "add statement" button as content
@@ -287,6 +37,7 @@ function GuiHandler() {
 		listitems.push(gh.getKeyValAsInputInLiWithType(addReasonButtonId, val, isArgument, false, false, ''));
 		new GuiHandler().addListItemsToDiscussionsSpace(listitems);
 	};
+	*/
 
 	/**
 	 * Setting a description in some p-tag for confrontation
@@ -298,6 +49,7 @@ function GuiHandler() {
 			+ '<br>' + otherParticipantsThinkThat + ': ' + '<b>' + confrontationArgument + '</b>' + '<br><br>What do you think about that?';
 		new GuiHandler().setDiscussionsDescription(text);
 	};
+	*/
 
 	/**
 	 * Setting a description in some p-tag for confrontation
@@ -307,6 +59,7 @@ function GuiHandler() {
 		var text = 'Or do you have a better argument for: ' + '<b>' + currentUserArgument + '</b>';
 		new GuiHandler().setDiscussionsAvoidanceDescription(text);
 	};
+	*/
 
 	/**
 	 * Setting a description in some p-tag for confrontation, whereby we have no justifications
@@ -317,13 +70,14 @@ function GuiHandler() {
 			+ ' However, other users argued nothing yet:';
 		new GuiHandler().setDiscussionsDescription(text);
 	};
+	*/
 
 	/**
 	 * Setting a description in some p-tag without mouse over
 	 * @param text to set
 	 */
 	this.setDiscussionsDescription = function (text) {
-		$('#' + discussionsDescriptionId).html(text).attr('title', null);
+		$('#' + discussionsDescriptionId).html(text).attr('title', '');
 	};
 
 	/**
@@ -334,7 +88,7 @@ function GuiHandler() {
 	 */
 	this.setDiscussionsDescription = function (text, mouseover, additionalAttributesAsDict) {
 		$('#' + discussionsDescriptionId).html(text).attr('title', mouseover);
-		if (additionalAttributesAsDict != null)
+		if (additionalAttributesAsDict !== null)
 			$.each(additionalAttributesAsDict, function setDiscussionsDescriptionEach(key, val) {
 				$('#' + discussionsDescriptionId).attr(key, val);
 			});
@@ -369,8 +123,8 @@ function GuiHandler() {
 	 * @param shouldBeVisibile true, when it should be visible
 	 * @param currentStatementText current user statement
 	 */
-	this.setVisibilityOfDisplayStyleContainer = function (shouldBeVisibile, currentStatementText){
-		if (shouldBeVisibile){
+	this.setVisibilityOfDisplayStyleContainer = function (shouldBeVisibile, currentStatementText) {
+		if (shouldBeVisibile) {
 			$('#' + displayControlContainerId).fadeIn('slow');
 			$('#' + islandViewContainerH4Id).html(islandViewHeaderText + ' <b>' + currentStatementText + '</b>');
 		} else {
@@ -379,44 +133,10 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Creates an input element tih key as id and val as value. This is embedded in an li element
-	 * @param key will be used as id
-	 * @param val will be used as value
-	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
-	 * @param isPremisse
-	 * @param isRelation
-	 * @param mouseover
-	 * @returns {Element|*} a type-input element in a li tag
-	 */
-	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse, isRelation, mouseover) {
-		var liElement, inputElement, labelElement;
-		liElement = $('<li>');
-		liElement.attr({id: 'li_' + key});
-
-		inputElement = $('<input>');
-		inputElement.attr({id: key, type: 'radio', value: val});
-		//inputElement.attr({data-dismiss: 'modal'});
-
-		inputElement.attr({name: radioButtonGroup});
-		// adding label for the value
-		labelElement = '<label title="' + mouseover + '" for="' + key + '">' + val + '</label>';
-
-		inputElement.attr({onclick: "new InteractionHandler().radioButtonChanged(this.id);"});
-		if (isStartStatement){ inputElement.addClass('start'); }
-		if (isPremisse){ inputElement.addClass('premisse'); }
-		if (isRelation){ inputElement.addClass('relation'); }
-		if (!isStartStatement && !isPremisse && !isRelation){ inputElement.addClass('add'); }
-
-		liElement.html(new Helper().getFullHtmlTextOf(inputElement) + labelElement);
-
-		return liElement;
-	};
-
-	/**
 	 * Displays given data in the island view
 	 * @param jsonData json encoded dictionary
 	 */
-	this.displayDataInIslandView = function (jsonData){
+	this.displayDataInIslandView = function (jsonData) {
 		var liElement, ulProElement, ulConElement;
 		ulProElement = $('<ul>');
 		ulConElement = $('<ul>');
@@ -481,26 +201,35 @@ function GuiHandler() {
 		childCount = parent.children().length;
 
 		div = $('<div>');
-		div.attr({class: 'row', id: 'div' + childCount.toString()});
+		div.attr({
+			class: 'row',
+			id: 'div' + childCount.toString()
+		});
 
 		div_content = $('<div>');
-		div_content.attr({id: 'div-content-' + childCount.toString()});
+		div_content.attr({
+			id: 'div-content-' + childCount.toString()
+		});
 
 		button = $('<button>');
-		button.attr({type: 'button',
+		button.attr({
+			type: 'button',
 			class: 'close',
-			id: 'button_' + identifier + childCount.toString()});
+			id: 'button_' + identifier + childCount.toString()
+		});
 
 		span = $('<span>');
 		span.html('&times;');
 
 		area = $('<textarea>');
-		area.attr({type: 'text',
+		area.attr({
+			type: 'text',
 			class: '',
 			name: '',
 			autocomplete: 'off',
 			value: '',
-			id: 'textarea_' + identifier + childCount.toString()});
+			id: 'textarea_' + identifier + childCount.toString()
+		});
 
 		button.append(span);
 		div_dropdown = this.getDropdownWithSentencesOpeners(identifier, childCount.toString());
@@ -508,7 +237,9 @@ function GuiHandler() {
 		div_content.append(button);
 
 		// remove everything on click
-		button.attr({onclick: "this.parentNode.parentNode.removeChild(parentNode);"});
+		button.attr({
+			onclick: "this.parentNode.parentNode.removeChild(parentNode);"
+		});
 
 		// add everything
 		div_dropdown.attr('class', 'col-md-3');
@@ -517,7 +248,7 @@ function GuiHandler() {
 		div.append(div_content);
 		parent.append(div);
 
-		if (is_statement){
+		if (is_statement) {
 			div_dropdown.show();
 		} else {
 			div_dropdown.hide();
@@ -533,7 +264,8 @@ function GuiHandler() {
 	 * @returns {jQuery|HTMLElement|*}
 	 */
 	this.getDropdownWithSentencesOpeners = function (identifier, number) {
-		var dropdown, button, span, ul, li_content, li_header, i, a, btn_id, a_id, h = new Helper(), sentencesOpeners;
+		var dropdown, button, span, ul, li_content, li_header, i, a, btn_id, a_id, h = new Helper(),
+			sentencesOpeners;
 		sentencesOpeners = identifier == id_pro ? sentencesOpenersArguingWithAgreeing : sentencesOpenersArguingWithDisagreeing;
 
 		// div tag for the dropdown
@@ -545,7 +277,7 @@ function GuiHandler() {
 		span = $('<span>');
 		span.attr('class', 'caret');
 		button = $('<button>');
-		button.attr('class', 'btn btn-default dropdown-toggle ' + (identifier.toLowerCase()  == 'left' ? 'btn-success' : 'btn-danger'));
+		button.attr('class', 'btn btn-default dropdown-toggle ' + (identifier.toLowerCase() == 'left' ? 'btn-success' : 'btn-danger'));
 		button.attr('type', 'button');
 		btn_id = identifier + '-dropdown-sentences-openers-' + number;
 		button.attr('id', btn_id);
@@ -576,7 +308,7 @@ function GuiHandler() {
 		li_header.attr('class', 'dropdown-header');
 		li_header.text('Inform');
 		ul.append(li_header);
-		for (i=0; i < sentencesOpenersInforming.length; i++) {
+		for (i = 0; i < sentencesOpenersInforming.length; i++) {
 			li_content = $('<li>');
 			a_id = identifier + '-sentence-opener-' + (sentencesOpeners.length + i);
 			a = h.getATagForDropDown(a_id, clickToChoose + ': ' + sentencesOpenersInforming[i], sentencesOpenersInforming[i]);
@@ -614,12 +346,15 @@ function GuiHandler() {
 	 */
 	this.setNewStatementAsLastChild = function (jsonData) {
 		if (jsonData.result === 'failed') {
-			if (jsonData.reason === 'empty text') {			this.setErrorDescription(notInsertedErrorBecauseEmpty);
-			} else if (jsonData.reason === 'duplicate'){	this.setErrorDescription(notInsertedErrorBecauseDuplicate);
-			} else {										this.setErrorDescription(notInsertedErrorBecauseUnknown);
+			if (jsonData.reason === 'empty text') {
+				this.setErrorDescription(notInsertedErrorBecauseEmpty);
+			} else if (jsonData.reason === 'duplicate') {
+				this.setErrorDescription(notInsertedErrorBecauseDuplicate);
+			} else {
+				this.setErrorDescription(notInsertedErrorBecauseUnknown);
 			}
 		} else {
-			var newElement = this.getKeyValAsInputInLiWithType(jsonData.statement.uid, jsonData.statement.text, false);
+			var newElement = new Helper().getKeyValAsInputInLiWithType(jsonData.statement.uid, jsonData.statement.text, false);
 			$('#li_' + addReasonButtonId).before(newElement);
 			new GuiHandler().setSuccessDescription(addedEverything);
 		}
@@ -632,10 +367,10 @@ function GuiHandler() {
 	this.setPremissesAsLastChild = function (jsonData) {
 		var newElement, _this = this;
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
-			if (key.substr(0,3) == "pro"){
-				newElement = _this.getKeyValAsInputInLiWithType(val.uid, val.text, false, true, false, val.text);
+			if (key.substr(0, 3) == "pro") {
+				newElement = new Helper().getKeyValAsInputInLiWithType(val.uid, val.text, false, true, false, val.text);
 				$('#li_' + addReasonButtonId).before(newElement);
-			} else if (key.substr(0,3) == "con"){
+			} else if (key.substr(0, 3) == "con") {
 				// todo setPremissesAsLastChild contra premisses
 			}
 		});
@@ -665,7 +400,7 @@ function GuiHandler() {
 		$('#' + addStatementContainerId).fadeIn('slow');
 		$('#' + addReasonButtonId).disable = true;
 
-		if (isStatement){
+		if (isStatement) {
 			$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
 			$('#' + addStatementContainerMainInputId).show();
 			$('#' + proPositionColumnId).hide();
@@ -681,7 +416,7 @@ function GuiHandler() {
 				gh.setSuccessDescription('');
 			});
 
-		} else if (isPremisse){
+		} else if (isPremisse) {
 			var statement = $('#' + discussionsDescriptionId).attr('text');
 			$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse);
 			// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
@@ -691,7 +426,8 @@ function GuiHandler() {
 			$('#' + proPositionColumnId).show();
 			$('#' + conPositionColumnId).show();
 			$('#' + sendNewStatementId).off('click').click(function () {
-				var gh = new GuiHandler(), attack, argument;
+				var gh = new GuiHandler(),
+					attack, argument;
 				attack = $('#' + discussionsDescriptionId).attr('attack');
 				argument = $('#' + discussionsDescriptionId).attr('attacked_argument')
 				new InteractionHandler().getPremissesAndSendThem(false, !isStart, attack, argument);
@@ -727,7 +463,7 @@ function GuiHandler() {
 	/**
 	 * Check whether the edit button should be visible or not
 	 */
-	this.resetAndDisableEditButton = function() {
+	this.resetAndDisableEditButton = function () {
 		var count, statement, uid;
 		count = 0;
 		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
@@ -740,7 +476,7 @@ function GuiHandler() {
 		});
 
 		// do we have an statement there?
-		if (count==0){
+		if (count == 0) {
 			$('#' + editStatementButtonId).fadeOut('slow');
 		} else {
 			$('#' + editStatementButtonId).fadeIn('slow');
@@ -750,7 +486,7 @@ function GuiHandler() {
 	/**
 	 * Opens the edit statements popup
 	 */
-	this.displayEditStatementsPopup = function(){
+	this.displayEditStatementsPopup = function () {
 		var table, tr, td_text, td_buttons, edit_button, log_button, statement, uid, type;
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementSubmitButtonId).hide();
@@ -764,28 +500,31 @@ function GuiHandler() {
 			id: 'edit_statement_table',
 			class: 'table table-condensed',
 			border: '0',
-			style: 'border-collapse: separate; border-spacing: 5px 5px;'});
+			style: 'border-collapse: separate; border-spacing: 5px 5px;'
+		});
 		tr = $('<tr>');
 		td_text = $('<td>');
 		td_buttons = $('<td>');
-		td_text.html('<b>Text</b>').css('text-align','center');
-		td_buttons.html('<b>Options</b>').css('text-align','center');
+		td_text.html('<b>Text</b>').css('text-align', 'center');
+		td_buttons.html('<b>Options</b>').css('text-align', 'center');
 		tr.append(td_text);
 		tr.append(td_buttons);
 		table.append(tr);
 
 		uid = 0;
 		// append a row for each statement
-		$('#' + discussionSpaceId + ' ul > li').children().each(function (){
+		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();
 			uid = $(this).attr("id");
 			type = $(this).attr("class");
 			// do we have a child with input or just the label?
-		    if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid)) {
+			if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid)) {
 				// create new items
 				tr = $('<tr>');
-				td_text = $('<td>').attr({id: 'edit_statement_td_text_' + $(this).attr('id')});
-				td_buttons = $('<td>').css('text-align','center');
+				td_text = $('<td>').attr({
+					id: 'edit_statement_td_text_' + $(this).attr('id')
+				});
+				td_buttons = $('<td>').css('text-align', 'center');
 				edit_button = $('<input>');
 				log_button = $('<input>');
 				edit_button.css('margin', '2px');
@@ -795,7 +534,8 @@ function GuiHandler() {
 				td_text.text(statement);
 
 				// some attributes and functions for the edit button
-				edit_button.attr({id:'edit-statement',
+				edit_button.attr({
+					id: 'edit-statement',
 					type: 'button',
 					value: 'edit',
 					class: 'btn-sm btn button-primary',
@@ -803,7 +543,7 @@ function GuiHandler() {
 					statement_text: statement,
 					statement_id: uid,
 					index: $(this).attr('id')
-				}).click(function edit_button_click () {
+				}).click(function edit_button_click() {
 					$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text'));
 					$('#' + popupEditStatementSubmitButtonId).attr({
 						statement_type: $(this).attr('statement_type'),
@@ -817,12 +557,13 @@ function GuiHandler() {
 					$('#' + popupSuccessDescriptionId).text('');
 					new GuiHandler().showEditFieldsInEditPopup();
 					new GuiHandler().hideLogfileInEditPopup();
-				}).hover(function edit_button_hover () {
+				}).hover(function edit_button_hover() {
 					$(this).toggleClass('btn-primary', 400);
 				});
 
 				// show logfile
-				log_button.attr({id:'show_log_of_statement',
+				log_button.attr({
+					id: 'show_log_of_statement',
 					type: 'button',
 					value: 'changelog',
 					class: 'btn-sm btn button-primary',
@@ -830,14 +571,14 @@ function GuiHandler() {
 					statement_text: statement,
 					statement_id: uid,
 					index: $(this).attr('id')
-				}).click(function log_button_click () {
+				}).click(function log_button_click() {
 					$('#' + popupEditStatementLogfileHeaderId).html('Logfile for: <b>' + $(this).attr('statement_text') + '</b>');
 					$('#' + popupErrorDescriptionId).text('');
 					$('#' + popupSuccessDescriptionId).text('');
 					$('#edit_statement_table td').removeClass('table-hover');
 					new AjaxHandler().getLogfileForStatement($(this).attr('statement_id'));
 					new GuiHandler().hideEditFieldsInEditPopup();
-				}).hover(function log_button_hover () {
+				}).hover(function log_button_hover() {
 					$(this).toggleClass('btn-primary', 400);
 				});
 
@@ -853,7 +594,7 @@ function GuiHandler() {
 		$('#' + popupEditStatementContentId).empty().append(table);
 		$('#' + popupEditStatementTextareaId).hide();
 		$('#' + popupEditStatementDescriptionId).hide();
-		$('#' + popupEditStatementSubmitButtonId).hide().click(function edit_statement_click () {
+		$('#' + popupEditStatementSubmitButtonId).hide().click(function edit_statement_click() {
 			statement = $('#' + popupEditStatementTextareaId).val();
 			//$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
 			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), statement);
@@ -866,7 +607,7 @@ function GuiHandler() {
 	/**
 	 * Displays the edit text field
 	 */
-	this.showEditFieldsInEditPopup = function (){
+	this.showEditFieldsInEditPopup = function () {
 		$('#' + popupEditStatementSubmitButtonId).fadeIn('slow');
 		$('#' + popupEditStatementTextareaId).fadeIn('slow');
 		$('#' + popupEditStatementDescriptionId).fadeIn('slow');
@@ -875,7 +616,7 @@ function GuiHandler() {
 	/**
 	 * Hides the edit text field
 	 */
-	this.hideEditFieldsInEditPopup = function (){
+	this.hideEditFieldsInEditPopup = function () {
 		$('#' + popupEditStatementSubmitButtonId).hide();
 		$('#' + popupEditStatementTextareaId).hide();
 		$('#' + popupEditStatementDescriptionId).hide();
@@ -884,7 +625,7 @@ function GuiHandler() {
 	/**
 	 * Hides the logfiles
 	 */
-	this.hideLogfileInEditPopup = function (){
+	this.hideLogfileInEditPopup = function () {
 		$('#' + popupEditStatementLogfileSpaceId).empty();
 		$('#' + popupEditStatementLogfileHeaderId).html('');
 	};
@@ -915,14 +656,15 @@ function GuiHandler() {
 			id: 'edit_statement_table',
 			class: 'table table-condensed',
 			border: '0',
-			style: 'border-collapse: separate; border-spacing: 5px 5px;'});
+			style: 'border-collapse: separate; border-spacing: 5px 5px;'
+		});
 		tr = $('<tr>');
 		td_date = $('<td>');
 		td_text = $('<td>');
 		td_author = $('<td>');
-		td_date.html('<b>Date</b>').css('text-align','center');
-		td_text.html('<b>Text</b>').css('text-align','center');
-		td_author.html('<b>Author</b>').css('text-align','center');
+		td_date.html('<b>Date</b>').css('text-align', 'center');
+		td_text.html('<b>Text</b>').css('text-align', 'center');
+		td_author.html('<b>Author</b>').css('text-align', 'center');
 		tr.append(td_date);
 		tr.append(td_text);
 		tr.append(td_author);
@@ -961,14 +703,14 @@ function GuiHandler() {
 	/**
 	 * Dialog based discussion modi
 	 */
-	this.setDisplayStyleAsDiscussion  = function () {
+	this.setDisplayStyleAsDiscussion = function () {
 		$('#' + islandViewContainerId).hide();
 	};
 
 	/**
 	 * Some kind of pro contra list, but how?
 	 */
-	this.setDisplayStyleAsProContraList  = function () {
+	this.setDisplayStyleAsProContraList = function () {
 		$('#' + islandViewContainerId).fadeIn('slow');
 		new AjaxHandler().getAllArgumentsForIslandView();
 	};
@@ -976,7 +718,7 @@ function GuiHandler() {
 	/**
 	 * Full view, full interaction range for the graph
 	 */
-	this.setDisplayStyleAsFullView  = function () {
+	this.setDisplayStyleAsFullView = function () {
 		$('#' + islandViewContainerId).hide();
 	};
 

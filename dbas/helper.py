@@ -1,91 +1,21 @@
 import logging
 import random
-import smtplib
 import collections
-import json
-
-from socket import error as socket_error
-
-from cryptacular.bcrypt import BCRYPTPasswordManager
-from pyramid_mailer import get_mailer
-from pyramid_mailer.message import Message
 from sqlalchemy import and_, not_
 
 from .database import DBSession
 from .database.model import Argument, Statement, Track, User, Group, TextValue, TextVersion, Premisse, PremisseGroup, Relation
+from .dictionary_helper import DictionaryHelper
+from .user_management import UserHandler
 
 # TODO: PEP 8
 
 log = logging.getLogger(__name__)
 
-
 def logger(who, when, what):
 	log.debug(who.upper() + ' ' + when + ' <' + what + '>')
 
-
-class PasswordGenerator(object):
-
-	# http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
-	def get_rnd_passwd(self):
-		"""
-		Generates a password with the length of 8 out of [a-z][A-Z][+-*/#!*?]
-		:return: new secure password
-		"""
-		alphabet = 'abcdefghijklmnopqrstuvwxyz'
-		upperalphabet = alphabet.upper()
-		symbols = '+-*/#!*?'
-		pw_len = 8
-		pwlist = []
-
-		for i in range(pw_len//3):
-			pwlist.append(alphabet[random.randrange(len(alphabet))])
-			pwlist.append(upperalphabet[random.randrange(len(upperalphabet))])
-			pwlist.append(str(random.randrange(10)))
-		for i in range(pw_len-len(pwlist)):
-			pwlist.append(alphabet[random.randrange(len(alphabet))])
-
-		pwlist.append(symbols[random.randrange(len(symbols))])
-		pwlist.append(symbols[random.randrange(len(symbols))])
-
-		random.shuffle(pwlist)
-		pwstring = ''.join(pwlist)
-
-		return pwstring
-
-
-class PasswordHandler(object):
-
-	def get_hashed_password(self, password):
-		manager = BCRYPTPasswordManager()
-		return manager.encode(password)
-
-
-class UserHandler(object):
-
-	def update_last_action(self, transaction, nick):
-		db_user = DBSession.query(User).filter_by(nickname=str(nick)).first()
-		db_user.update_last_action()
-		transaction.commit()
-
-
 class DatabaseHelper(object):
-
-	def is_user_admin(self, user):
-		"""
-		Check, if the given uid has admin rights or is admin
-		:param user: current user name
-		:return: true, if user is admin, false otherwise
-		"""
-		db_user = DBSession.query(User).filter_by(nickname=str(user)).first()
-		db_group = DBSession.query(Group).filter_by(name='admins').first()
-		logger('DatabaseHelper', 'is_user_admin', 'check for current user')
-		if db_user:
-			logger('DatabaseHelper', 'is_user_admin', 'user exists; check for admin')
-			if db_user.nickname == 'admin' or db_user.group_uid == db_group.uid:
-				logger('DatabaseHelper', 'is_user_admin', 'user is admin')
-				return True
-
-		return False
 
 	def correct_statement(self, transaction, user, uid, corrected_text):
 		"""
@@ -224,30 +154,24 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def get_reply_for_premissegroup(self, transaction, user):
+	def get_attack_for_premissegroup(self, transaction, user, last_premisses_group_uid):
 		"""
 		Based on the last given premissesgroup and statement, an attack will be choosen and replied.
 		:param transaction: current transaction
 		:param user: current nick of the user
+		:param last_premisses_group_uid:
 		:return: A random attack (undermine, rebut undercut) based on the last saved premissesgroup and statement as well as many texts
 		like the premisse as text, conclusion as text, attack as text, confrontation as text. Everything is in a dict.
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'main')
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'main')
 
 		# get last statement out of the history
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'last statement with user ' + str(db_user.uid) + ', and statement not zero')
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last statement with user ' + str(db_user.uid) + ', and statement not zero')
 		db_track_last_statement = DBSession.query(Track).filter(and_(Track.author_uid==db_user.uid, not_(Track.statement_uid == 0)))\
 			.order_by(Track.uid.desc()).join(Statement).first()
 		last_statement_uid = db_track_last_statement.statement_uid
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'last statement ' + str(last_statement_uid))
-
-		# get last premisses out of the history
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'last pgroup with user ' + str(db_user.uid) + ', and pgroup not zero')
-		db_track_last_pgroup = DBSession.query(Track).filter(and_(Track.author_uid==db_user.uid, not_(Track.premissesGroup_uid == 0)))\
-			.order_by(Track.uid.desc()).join(PremisseGroup).first()
-		last_premisses_group_uid = db_track_last_pgroup.premissesGroup_uid
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'last premissesgroup ' + str(last_premisses_group_uid))
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last statement ' + str(last_statement_uid))
 
 		return_dict = {}
 		qh = QueryHelper()
@@ -256,42 +180,81 @@ class DatabaseHelper(object):
 		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(last_statement_uid)
 
 		# getting the argument of the premisses and conclusion
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'find argument with group ' + str(last_premisses_group_uid)
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'find argument with group ' + str(last_premisses_group_uid)
 				+ ' conclusion statement ' + str(last_statement_uid))
 		db_argument = DBSession.query(Argument).filter(and_(Argument.premissesGroup_uid==last_premisses_group_uid,
 				Argument.conclusion_uid==last_statement_uid, Argument.isSupportive==True)).order_by(Argument.uid.desc()).first()
 
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'argument uid ' + str(db_argument.uid) if db_argument else 'none')
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'argument uid ' + (str(db_argument.uid) if db_argument else 'none'))
 		return_dict['argument_id'] = str(db_argument.uid) if db_argument else '0'
 
 		# getting undermines or undercuts or rebuts
-		rnd = random.randrange(0, 3 if db_argument else 2)
-		logger('DatabaseHelper', 'get_reply_for_premissegroup', 'random attack is ' + str(rnd))
-		#rnd = 1
-		if rnd == 0:
-			key = 'undermine'
-			attacks = qh.get_undermines_for_premisses(key, premisses_as_statements_uid)
-		elif rnd == 1:
-			key = 'rebut'
-			attacks = qh.get_rebuts_for_arguments_conclusion_uid(key, last_statement_uid, True)
-		else:
-			key = 'undercut'
-			attacks = qh.get_undercuts_for_argument_uid(key, db_argument.uid)
+		attacks, key = qh.get_attack_for_argument_by_random(db_argument)
 		return_dict['attack'] = key
 
 		status = 1
 		if int(attacks[key]) == 0:
-			logger('DatabaseHelper', 'get_reply_for_premissegroup', 'there is no attack!')
+			logger('DatabaseHelper', 'get_attack_for_premissegroup', 'there is no attack!')
 			status = 0
 		else:
 			attack_no = str(random.randrange(0, int(attacks[key])))
-			logger('DatabaseHelper', 'get_reply_for_premissegroup', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
+			logger('DatabaseHelper', 'get_attack_for_premissegroup', 'attack with ' + attacks[key + str(attack_no)])
+			logger('DatabaseHelper', 'get_attack_for_premissegroup', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
 			return_dict['confrontation'] = attacks[key + str(attack_no)]
 			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
 
-			# save one random attack
-			self.save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
-		                             qh.get_relation_uid_by_name(key), 0)
+			# save the attack
+			UserHandler().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid, qh.get_relation_uid_by_name(key), 0)
+
+		return return_dict, status
+
+	def get_attack_for_argument(self, transaction, user, uid_text):
+		'''
+
+		:param transaction:
+		:param user:
+		:param uid_text:
+		:return:
+		'''
+
+		logger('DatabaseHelper', 'get_attack_for_argument', 'main')
+
+		qh = QueryHelper()
+		splitted_id = uid_text.split('_')
+		relation = splitted_id[0]
+		premissesgroup_uid = splitted_id[2]
+
+		# get last tracked conclusion
+		db_last_tracked_premissegroup = DBSession.query(Track).join(PremisseGroup).order_by(Track.uid.desc()).first()
+		db_last_conclusion = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_last_tracked_premissegroup.premissesGroup_uid).first() # todo
+
+		db_argument = DBSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
+		                                                    Argument.premissesGroup_uid==int(premissesgroup_uid),
+		                                                    Argument.isSupportive==False)).first()
+		return_dict = {}
+		return_dict['premisse_text'], trash = qh.get_text_for_premissesGroup_uid(int(premissesgroup_uid))
+		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_last_conclusion.statement_uid)
+		return_dict['argument_uid'] = db_argument.uid
+		return_dict['premissegroup_uid'] = db_argument.premissesGroup_uid
+		return_dict['relation'] = relation
+
+		# getting undermines or undercuts or rebuts
+		attacks, key = qh.get_attack_for_argument_by_random(db_argument)
+		return_dict['attack'] = key
+
+		status = 1
+		if int(attacks[key]) == 0:
+			logger('DatabaseHelper', 'get_attack_for_argument', 'there is no attack!')
+			status = 0
+		else:
+			attack_no = str(random.randrange(0, int(attacks[key])))
+			logger('DatabaseHelper', 'get_attack_for_argument', 'attack with ' + attacks[key + str(attack_no)])
+			logger('DatabaseHelper', 'get_attack_for_argument', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
+			return_dict['confrontation'] = attacks[key + str(attack_no)]
+			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
+
+			# save the attack
+			UserHandler().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid, qh.get_relation_uid_by_name(key), 0)
 
 		return return_dict, status
 
@@ -312,44 +275,22 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'get_reply_confrontations_response', 'get reply confrontations for argument ' + argument_uid)
 		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 
+		# get attack
 		key = 'reason'
-		type = ''
-		status = '1'
-		if 'undermine' in relation.lower():
-			return_dict = qh.get_undermines_for_argument_uid(key, argument_uid)
-			type = 'premissesgroup'
-		elif 'support' in relation.lower():
-			return_dict = qh.get_supports_for_argument_uid(key, argument_uid)
-			type = 'premissesgroup'
-		elif 'undercut' in relation.lower():
-			return_dict = qh.get_undercuts_for_argument_uid(key, argument_uid)
-			type = 'statement'
-		elif 'overbid' in relation.lower():
-			return_dict = qh.get_overbids_for_argument_uid(key, argument_uid)
-			type = 'statement'
-		elif 'rebut' in relation.lower():
-			return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid)
-			type = 'premissesgroup'
-		else:
-			return_dict = {}
-			type = 'none'
-			status = '-1'
+		return_dict, type, status = qh.get_attack_for_argument_uid_by_relation(db_argument.uid, relation, key)
 		logger('DatabaseHelper', 'get_reply_confrontations_response', 'attack (' + relation + ') was fetched for ' + str(argument_uid))
 
 		# check return value
 		if not return_dict:
 			return_dict = {}
-			return return_dict, '0'
 		if len(return_dict) == 0:
 			return_dict[key] = '0'
-			return return_dict, '0'
 
 		return_dict['premissegroup'], uids = qh.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid)
-		return_dict['previous_argument'] = qh.get_text_for_argument_uid(argument_uid)
-		# Get right response with premisse, conclusion, attack and so on
 		# Todo: what is with an conclusion as premisse group?
 		return_dict['relation'] = splitted_id[0]
 		return_dict['argument_uid'] = argument_uid
+		return_dict['premissegroup_uid'] = db_argument.premissesGroup_uid
 		return_dict['type'] = type
 
 		if db_argument.conclusion_uid is None or db_argument.conclusion_uid == 0:
@@ -358,9 +299,7 @@ class DatabaseHelper(object):
 		else:
 			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid)
 
-		# save track
-		relation_uid = qh.get_relation_uid_by_name(relation.lower())
-		self.save_track_for_user(transaction, user, 0, db_argument.premissesGroup_uid, argument_uid, 0, relation_uid)
+		UserHandler().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()))
 
 		return return_dict, status
 
@@ -407,45 +346,53 @@ class DatabaseHelper(object):
 			for track in db_track:
 				logger('DatabaseHelper','get_track_for_user','track uid ' + str(track.uid))
 
-				# TODO GET TEXT
-				db_statement = DBSession.query(Statement).filter_by(uid=track.statement_uid).first()
-				# tmp_dict = DictionaryHelper().save_statement_row_in_dictionary(db_statement)
 				track_dict = dict()
 
+				# get attacks
 				attacked_by_relation = DBSession.query(Relation).filter_by(uid=track.attacked_by_relation).first()
 				attacked_with_relation = DBSession.query(Relation).filter_by(uid=track.attacked_with_relation).first()
-				attacked_by_relation = qh.get_relation_uid_by_name(attacked_by_relation.name) if attacked_by_relation else 'None'
-				attacked_with_relation = qh.get_relation_uid_by_name(attacked_with_relation.name) if attacked_with_relation else 'None'
+				attacked_by_relation_id = qh.get_relation_uid_by_name(attacked_by_relation.name) if attacked_by_relation else 'None'
+				attacked_with_relation_id = qh.get_relation_uid_by_name(attacked_with_relation.name) if attacked_with_relation else 'None'
 
-				if not attacked_by_relation == 'None':
-					# db_argument = DBSession.query(Argument).filter_by(uid=track.argument_uid).first()
-					# relation = ' supports ' if db_argument.isSupportive else ' attacks '
-					# text = qh.get_text_for_statement_uid(track.statement_uid)\
-					#       + relation\
-					#       + qh.get_text_for_premissesGroup_uid(track.premissesGroup_uid)
-					text = '2'
-				elif not attacked_with_relation == 'None':
-					# db_argument = DBSession.query(Argument).filter_by(uid=track.argument_uid).first()
-					# relation = ' supports ' if db_argument.isSupportive else ' attacks '
-					# text = qh.get_text_for_argument_uid(track.argument_uid)\
-					#       + relation\
-					#       + qh.get_text_for_statement_uid(track.statement_uid)
-					text = '2'
-				elif not track.statement_uid == 0:
-					text = '4'
-				elif not track.premissesGroup_uid == 0:
-					text = '4'
+				# get text
+				attacked_by_relation_str = attacked_by_relation.name if attacked_by_relation else '-'
+				attacked_with_relation_str = attacked_with_relation.name if attacked_with_relation else '-'
+				track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid)
+				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid)[1:-1]
+				if track.premissesGroup_uid == 0:
+					track_premissesGroup = '-'
 				else:
-					text = '5'
+					track_premissesGroup,tash = qh.get_text_for_premissesGroup_uid(track.premissesGroup_uid)
 
-				track_dict['author_uid'] = str(track.author_uid)
-				track_dict['statement_uid'] = str(track.statement_uid)
-				track_dict['premissesGroup_uid'] = str(track.premissesGroup_uid)
-				track_dict['argument_uid'] = str(track.argument_uid)
-				track_dict['attacked_by_relation'] = attacked_by_relation
-				track_dict['attacked_with_relation'] = attacked_with_relation
-				track_dict['timestamp'] = str(track.timestamp)
-				track_dict['text'] = '? Todo: ' + text + ' ?'#str(tmp_dict['text'])
+				# text
+				track_dict['statement']                  = track_statement
+				track_dict['premissesGroup']             = track_premissesGroup
+				track_dict['argument']                   = track_argument
+				track_dict['attacked_by_relation']       = attacked_by_relation_str
+				track_dict['attacked_with_relation']     = attacked_with_relation_str
+
+				# ids
+				track_dict['uid']                        = str(track.uid)
+				track_dict['statement_uid']              = str(track.statement_uid)
+				track_dict['premissesGroup_uid']         = str(track.premissesGroup_uid)
+				track_dict['argument_uid']               = str(track.argument_uid)
+				track_dict['attacked_by_relation_uid']   = attacked_by_relation_id
+				track_dict['attacked_with_relation_uid'] = attacked_with_relation_id
+				track_dict['timestamp']                  = str(track.timestamp)
+
+				if not attacked_by_relation_str == '-':
+					track_dict['text'] = 'Others say: \'' + track_argument + \
+					                     '\' <i>' + attacked_by_relation_str + 's</i> \'' + \
+					                     track_premissesGroup + '\''
+				if not attacked_with_relation_str == '-':
+					if track_premissesGroup == '-':
+						track_dict['text'] = 'You will <i>' + attacked_with_relation_str + '</i> \'' + \
+					                         track_argument + '\''
+					else:
+						track_dict['text'] = 'You say: \'' + track_premissesGroup + \
+					                         '\' <i>' + attacked_with_relation_str + 's</i> \'' + \
+					                         track_argument + '\''
+
 				return_dict[track.uid] = track_dict
 
 			else:
@@ -568,59 +515,8 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation, \
-	                                                                                        attacked_with_relation): # TODO
-		"""
-		Saves track for user
-		:param transaction: current transaction
-		:param user: authentication nick id of the user
-		:param statememt_id: id of the clicked statement
-		:param premissesgroup_uid: id of the clicked premisseGroup
-		:param attacked_by_relation: id of attacked by relation
-		:param attacked_with_relation: id of attacked_w th relation
-		:return: undefined
-		"""
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
-														', statememt_id ' + str(statement_id) +
-														', premissesgroup_uid ' + str(premissesgroup_uid) +
-														', argument_uid ' + str(argument_uid) +
-														', attacked_by_relation ' + str(attacked_by_relation) +
-														', attacked_with_relation ' + str(attacked_with_relation))
-		DBSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
-		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation))
-		transaction.commit()
-
-	def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):
-		"""
-		Saves track for user
-		:param transaction: current transaction
-		:param user: authentication nick id of the user
-		:param premissesgroup_uid: id of the clicked premisseGroup
-		:return: undefined
-		"""
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'save_premissegroup_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', premissesGroup_uid: '
-				+ str(premissesgroup_uid))
-		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid = premissesgroup_uid).all()
-		for premisse in db_premisses:
-			logger('QueryHelper', 'save_premissegroup_for_user', str(premissesgroup_uid) + " " + str(premisse.statement_uid))
-			new_track = Track(user=db_user.uid, statement=premisse.statement_uid, premissegroup=premissesgroup_uid)
-			DBSession.add(new_track)
-		transaction.commit()
-
 
 class QueryHelper(object):
-
-	def get_relation_uid_by_name(self, relation_name):
-		"""
-
-		:param relation_name:
-		:return:
-		"""
-		db_relation = DBSession.query(Relation).filter_by(name=relation_name).first()
-		logger('DatabaseHelper', 'set_statements_as_premisse', 'return ' + str(db_relation.name if db_relation else -1))
-		return db_relation.uid if db_relation else -1
 
 	def set_statements_as_premisse(self, transaction, statement, user):
 		"""
@@ -724,6 +620,16 @@ class QueryHelper(object):
 
 		DBSession.add_all(arguments)
 		DBSession.flush()
+
+	def get_relation_uid_by_name(self, relation_name):
+		"""
+
+		:param relation_name:
+		:return:
+		"""
+		db_relation = DBSession.query(Relation).filter_by(name=relation_name).first()
+		logger('DatabaseHelper', 'get_relation_uid_by_name', 'return ' + str(db_relation.name if db_relation else -1))
+		return db_relation.uid if db_relation else -1
 
 	def get_text_for_statement_uid(self, uid):
 		"""
@@ -934,122 +840,57 @@ class QueryHelper(object):
 			logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 					'found relation, argument uid ' + str(relation.uid))
 			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(relation.premissesGroup_uid)
-			return_dict[key + str(index) + 'groupid'] = relation.premissesGroup_uid
-			return_dict[key + str(index) + 'id'] = ','.join(uids)
+			return_dict[key + str(index) + 'id'] = relation.premissesGroup_uid
+			#return_dict[key + str(index) + 'id'] = ','.join(uids)
 		return_dict[key] = str(len(db_relation))
 		return return_dict
 
+	def get_attack_for_argument_uid_by_relation(self, argument_uid, relation, key):
+		'''
 
-class DictionaryHelper(object):
-
-	def get_subdictionary_out_of_orderer_dict(self, ordered_dict, count):
-		"""
-		Creates a random subdictionary with given count out of the given ordered_dict.
-		With a count of <2 the dictionary itself will be returned.
-		:param ordered_dict: dictionary for the function
-		:param count: count of entries for the new dictionary
-		:return: dictionary
-		"""
-		return_dict = dict()
-		logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'count: ' + str(count))
-		items = list(ordered_dict.items())
-		for item in items:
-			logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'all items: ' + ''.join(str(item)))
-		if count < 0:
-			return ordered_dict
-		elif count == 1:
-			if len(items) > 1:
-				rnd = random.randint(0, len(items)-1)
-				logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'return item at ' + str(rnd))
-				return_dict[items[rnd][0]] = items[rnd][1]
-			else:
-				return ordered_dict
+		:param argument_uid:
+		:param relation:
+		:param key:
+		:return:
+		'''
+		status = '1'
+		if 'undermine' in relation.lower():
+			return_dict = self.get_undermines_for_argument_uid(key, argument_uid)
+			type = 'premissesgroup'
+		elif 'support' in relation.lower():
+			return_dict = self.get_supports_for_argument_uid(key, argument_uid)
+			type = 'premissesgroup'
+		elif 'undercut' in relation.lower():
+			return_dict = self.get_undercuts_for_argument_uid(key, argument_uid)
+			type = 'statement'
+		elif 'overbid' in relation.lower():
+			return_dict = self.get_overbids_for_argument_uid(key, argument_uid)
+			type = 'statement'
+		elif 'rebut' in relation.lower():
+			return_dict = self.get_rebuts_for_argument_uid(key, argument_uid)
+			type = 'premissesgroup'
 		else:
+			return_dict = {}
+			type = 'none'
+			status = '-1'
+		return return_dict, type, status
 
-			for i in range(0, count):
-				rnd = random.randint(0, len(items)-1)
-				logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'for loop ' + str(i) + '. add element at ' + str(rnd))
-				return_dict[items[rnd][0]] = items[rnd][1]
-				items.pop(rnd)
-
-		return return_dict
-
-	def dictionarty_to_json_array(self, raw_dict, ensure_ascii):
-		"""
-		Dumps given dictionary into json
-		:param raw_dict: dictionary for dumping
-		:param ensure_ascii: if true, ascii will be checked
-		:return: json data
-		"""
-		return_dict = json.dumps(raw_dict, ensure_ascii)
-		return return_dict
-
-	def save_statement_row_in_dictionary(self, statement_row):
-		"""
-		Saved a row in dictionary
-		:param statement_row: for saving
-		:return: dictionary
-		"""
-		db_statement = DBSession.query(Statement).filter_by(uid=statement_row.uid).join(TextValue).first()
-		db_textversion = DBSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
-		logger('DictionaryHelper', 'save_statement_row_in_dictionary',
-				'db_statement.uid ' + str(db_statement.uid) + ', ' +
-				'db_statement.textvalues.textVersion_uid ' + str(db_statement.textvalues.textVersion_uid) + ', ' +
-				'db_textversion.uid ' + str(db_textversion.uid))
-		uid = str(db_statement.uid)
-		text = db_textversion.content
-		date = str(db_textversion.timestamp)
-		weight = str(db_textversion.weight)
-		author = db_textversion.users.nickname
-		if text.endswith('.'):
-			text = text[:-1]
-		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + weight + ', ' + author)
-		dic = dict()
-		dic['uid'] = uid
-		dic['text'] = text
-		dic['date'] = date
-		dic['weight'] = weight
-		dic['author'] = author
-		return dic
-
-
-class EmailHelper(object):
-
-	def send_mail(self, request, subject, body, recipient):
-		"""
-		Try except block for sending an email
-		:param request: current request
-		:param subject: subject text of the mail
-		:param body: body text of the mail
-		:param recipient: recipient of the mail
-		:return: boolean if message was sent, boolean an error occured, message if an error occured
-		"""
-		logger('EmailHelper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
-		send_message = False
-		contact_error = False
-		mailer = get_mailer(request)
-		body = body +"\n\n---\n" + \
-				"This is an automatically generated mail by the D-BAS System.\n" + \
-				"For contact please write an mail to krauthoff@cs.uni-duesseldorf.de\n" + \
-				"This system is part of a doctoral thesis and currently in an alpha-phase."
-		message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
-		# try sending an catching errors
-		try:
-			mailer.send_immediately(message, fail_silently=False)
-			send_message = True
-			message = 'An E-Mail was sent to the given address.'
-		except smtplib.SMTPConnectError as exception:
-			logger('EmailHelper', 'send_mail', 'error while sending')
-			code = str(exception.smtp_code)
-			error = str(exception.smtp_error)
-			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_code ' + code)
-			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_error ' + error)
-			contact_error = True
-			message = 'Your message could not be send due to a system error! (' + 'smtp_code ' + code + ' || smtp_error ' + error + ')'
-		except socket_error as serr:
-			logger('EmailHelper', 'send_mail', 'error while sending')
-			logger('EmailHelper', 'send_mail', 'socket_error ' + str(serr))
-			contact_error = True
-			message = 'Your message could not be send due to a system error! (' + 'socket_error ' + str(serr) + ')'
-
-		return send_message, contact_error, message
+	def get_attack_for_argument_by_random(self, db_argument):
+		'''
+		Returns a dictionary with attacks. The attack itself is random.
+		if rnd is equal 0, get_undermines_for_argument_uid(...) is called
+		if rnd is equal 1, get_rebuts_for_argument_uid(...) is called
+		if rnd is equal 2, get_undercuts_for_argument_uid(...) is called
+		Additionally returns id's of premisses groups with [key + str(index) + 'id']
+		:param argument_uid:
+		:param key:
+		:return: dict, key
+		'''
+		rnd = random.randrange(0, 3 if db_argument else 2)
+		logger('QueryHelper', 'get_attack_for_argument_by_random', 'random attack is ' + str(rnd))
+		if rnd == 0:
+			return self.get_undermines_for_argument_uid('undermine', db_argument.uid), 'undermine'
+		elif rnd == 1:
+			return self.get_rebuts_for_argument_uid('rebut', db_argument.uid), 'rebut'
+		else:
+			return self.get_undercuts_for_argument_uid('undercut', db_argument.uid), 'undercut'

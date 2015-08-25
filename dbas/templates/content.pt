@@ -179,7 +179,7 @@
 		<div id="navigation-minimap-container">
 			<p i18n:translate="minimap">Minimap:</p>
 		</div>
-
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>

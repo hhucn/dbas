@@ -34,6 +34,19 @@
 	max-width: 800px;
 }
 
+.settings-container-wide {
+	max-width: 1920px;
+}
+
+#track-table-space table tbody tr:nth-child(even) {
+	background-color: rgba(217, 218, 219, 0.7);
+}
+
+#track-table-space table tbody tr:nth-child(1) {
+	text-align: center;
+	background-color: rgba(0, 106, 179, 0.3);
+}
+
 #password-form {
 	margin-top: 50px;
 }
