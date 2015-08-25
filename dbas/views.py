@@ -657,8 +657,7 @@ class Dbas(object):
 		try:
 			logger('get_all_arguments_for_island', 'def', 'read params')
 			uid = self.request.params['uid']
-			UserHandler().save_track_for_user(transaction, self.request.authenticated_userid, uid, 0, 0, 0, 0)
-			return_dict = DatabaseHelper().get_premisses_for_statement(uid, True)
+			return_dict = DatabaseHelper().get_premisses_for_statement(transaction, uid, True, self.request.authenticated_userid)
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('get_premisses_for_statement', 'error', repr(e))

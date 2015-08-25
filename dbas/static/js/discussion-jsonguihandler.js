@@ -75,11 +75,11 @@ function JsonGuiHandler() {
 			listitems = [],
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
 			id = '_argument_' + jsonData.confrontation_id,
-			relationArray = helper.createConfrontationsRelationsText(confrontation, premisse, conclusion, false, true),
+			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, false, true),
 			relation = jsonData.relation;
 
 		if (typeof relation == 'undefined'){
-			opinion = '<b>' + conclusion + ', because ' + premisse + '/<b>';
+			opinion = '<b>' + conclusion + ', because ' + premisse + '</b>';
 		} else {
 			opinion = '<b>' + conclusion + '</b> ' + relation + 's ' + '<b>' + premisse + '</b>';
 		}
@@ -100,7 +100,7 @@ function JsonGuiHandler() {
 		// set discussions text
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + whatDoYouThink,
-			'This confrontation is a ' + jsonData.attack, null);
+			'This confrontation is a ' + jsonData.attack, {title: '', text: ''});
 
 		// build the radio buttons
 		listitems.push(helper.getKeyValAsInputInLiWithType('undermine' + id, relationArray[0] + ' [undermine]', false, false, true, 'undermine'));
@@ -108,6 +108,43 @@ function JsonGuiHandler() {
 		listitems.push(helper.getKeyValAsInputInLiWithType('undercut' + id, relationArray[2] + ' [undercut]', false, false, true, 'undercut'));
 		listitems.push(helper.getKeyValAsInputInLiWithType('overbid' + id, relationArray[3] + ' [overbid]', false, false, true, 'overbid'));
 		listitems.push(helper.getKeyValAsInputInLiWithType('rebut' + id, relationArray[4] + ' [rebut]', false, false, true, 'rebut'));
+		listitems.push(helper.getKeyValAsInputInLiWithType('', '<b><i><u>HOW TO INSERT ATTACKING PREMISEGROUPS?</u></i></b>', false, false, false, ''));
+
+		// set the buttons
+		guihandler.addListItemsToDiscussionsSpace(listitems);
+	};
+
+	/**
+	 * Sets given data in the list of the discussion space
+	 * @param jsonData
+	 */
+	this.setJsonDataAsConfrontationWithoutConfrontation = function (jsonData) {
+		var helper = new Helper(),
+			guihandler = new GuiHandler(),
+			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
+			premisse = jsonData.premisse_text,
+			opinion,
+			confrontationText,
+			listitems = [],
+			relation = jsonData.relation;
+
+		if (typeof relation == 'undefined'){
+			opinion = '<b>' + conclusion + ', because ' + premisse + '</b>';
+		} else {
+			opinion = '<b>' + conclusion + '</b> ' + relation + 's ' + '<b>' + premisse + '</b>';
+		}
+
+		// build some confrontation text
+		confrontationText = otherParticipantsDontThinkThat + ' <b>' + premisse + '</b>. [<i>' + jsonData.attack + '</i>]';
+
+		// set discussions text
+		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
+			+ confrontationText + '.<br><br>' + whatDoYouThink,
+			'This confrontation is a ' + jsonData.attack, {title: premisse, text: premisse});
+
+		// build the radio buttons
+		listitems.push(helper.getKeyValAsInputInLiWithType('', '<b><i><u>HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>', false, false, false, ''));
+		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addArgumentRadioButtonText, false, false, false, addArgumentRadioButtonText));
 
 		// set the buttons
 		guihandler.addListItemsToDiscussionsSpace(listitems);

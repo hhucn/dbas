@@ -118,11 +118,18 @@ class DatabaseHelper(object):
 		return_dict['statements'] = statements_dict
 		return return_dict
 
-	def get_premisses_for_statement(self, statement_uid, issupportive):
+	def get_premisses_for_statement(self, transaction, statement_uid, issupportive, user):
 		"""
-		Returns premisses for statements
-		:return: dictionary
+
+		:param transaction:
+		:param statement_uid:
+		:param issupportive:
+		:param user:
+		:return:
 		"""
+
+		QueryHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0)
+
 		return_dict = dict()
 		premisses_dict = dict()
 		logger('DatabaseHelper', 'get_premisses_for_statement', 'get all premisses')
@@ -204,7 +211,7 @@ class DatabaseHelper(object):
 			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
 
 			# save the attack
-			UserHandler().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid, qh.get_relation_uid_by_name(key), 0)
+			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid, qh.get_relation_uid_by_name(key), 0)
 
 		return return_dict, status
 
@@ -233,6 +240,7 @@ class DatabaseHelper(object):
 		                                                    Argument.isSupportive==False)).first()
 		return_dict = {}
 		return_dict['premisse_text'], trash = qh.get_text_for_premissesGroup_uid(int(premissesgroup_uid))
+		return_dict['premissesgroup_uid'] = premissesgroup_uid
 		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_last_conclusion.statement_uid)
 		return_dict['argument_uid'] = db_argument.uid
 		return_dict['premissegroup_uid'] = db_argument.premissesGroup_uid
@@ -243,7 +251,7 @@ class DatabaseHelper(object):
 		return_dict['attack'] = key
 
 		status = 1
-		if int(attacks[key]) == 0:
+		if attacks == None or int(attacks[key]) == 0:
 			logger('DatabaseHelper', 'get_attack_for_argument', 'there is no attack!')
 			status = 0
 		else:
@@ -254,7 +262,7 @@ class DatabaseHelper(object):
 			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
 
 			# save the attack
-			UserHandler().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid, qh.get_relation_uid_by_name(key), 0)
+			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid, qh.get_relation_uid_by_name(key), 0)
 
 		return return_dict, status
 
@@ -299,7 +307,7 @@ class DatabaseHelper(object):
 		else:
 			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid)
 
-		UserHandler().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()))
+		QueryHelper().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()))
 
 		return return_dict, status
 
@@ -800,7 +808,7 @@ class QueryHelper(object):
 		:param key:
 		:return: dict, key
 		'''
-		rnd = random.randrange(0, 3 if db_argument else 2)
+		rnd = 0#random.randrange(0, 3 if db_argument else 2)
 		logger('QueryHelper', 'get_attack_for_argument_by_random', 'random attack is ' + str(rnd))
 		if rnd == 0:
 			return self.get_undermines_for_argument_uid('undermine', db_argument.uid), 'undermine'

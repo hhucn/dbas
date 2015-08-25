@@ -77,7 +77,7 @@ function GuiHandler() {
 	 * @param text to set
 	 */
 	this.setDiscussionsDescription = function (text) {
-		$('#' + discussionsDescriptionId).html(text).attr('title', '');
+		this.setDiscussionsDescription(text, text, {title: '', text: ''});
 	};
 
 	/**
@@ -374,7 +374,7 @@ function GuiHandler() {
 				// todo setPremissesAsLastChild contra premisses
 			}
 		});
-		this.setDisplayStylesOfAddStatementContainer(false);
+		this.setDisplayStylesOfAddStatementContainer(false, false, false, false, false);
 		$('#' + addReasonButtonId).attr('checked', false);
 
 	};
@@ -385,8 +385,13 @@ function GuiHandler() {
 	 * @param isStatement true, if we have an argument
 	 * @param isStart
 	 * @param isPremisse
+	 * @param isArgument
 	 */
-	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement) {
+	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
+		var statement, attack, argument,
+			guihandler = new GuiHandler(),
+			ajaxhandler = new AjaxHandler(),
+			interactionhandler = new InteractionHandler();
 		if (!isVisible) {
 			$('#' + addStatementContainerId).fadeOut('slow');
 			$('#' + addStatementContainerMainInputId).val('');
@@ -407,40 +412,39 @@ function GuiHandler() {
 			$('#' + conPositionColumnId).hide();
 			$('#' + sendNewStatementId).off('click').click(function () {
 				if (isStart) {
-					new AjaxHandler().sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
+					ajaxhandler.sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
 				} else {
 					alert('What now (I)? GuiHandler: setDisplayStylesOfAddStatementContainer');
 				}
-				var gh = new GuiHandler();
-				gh.setErrorDescription('');
-				gh.setSuccessDescription('');
+				guihandler.setErrorDescription('');
+				guihandler.setSuccessDescription('');
 			});
 
-		} else if (isPremisse) {
-			var statement = $('#' + discussionsDescriptionId).attr('text');
-			$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfPremisse);
+		} else if (isPremisse || isArgument) {
+			statement = $('#' + discussionsDescriptionId).attr('text');
+			$('#' + addStatementContainerH4Id).text(isPremisse ? argumentContainerH4TextIfPremisse : argumentContainerH4TextIfArgument);
 			// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
 			$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with: <b>' + statement + '</b>, because ...');
 			$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with: <b>' + statement + '</b>, because ...');
 			$('#' + addStatementContainerMainInputId).hide().focus();
 			$('#' + proPositionColumnId).show();
 			$('#' + conPositionColumnId).show();
-			$('#' + sendNewStatementId).off('click').click(function () {
-				var gh = new GuiHandler(),
-					attack, argument;
-				attack = $('#' + discussionsDescriptionId).attr('attack');
-				argument = $('#' + discussionsDescriptionId).attr('attacked_argument')
-				new InteractionHandler().getPremissesAndSendThem(false, !isStart, attack, argument);
-				gh.setErrorDescription('');
-				gh.setSuccessDescription('');
-			});
+			if (isPremisse)
+				$('#' + sendNewStatementId).off('click').click(function () {
+					attack = $('#' + discussionsDescriptionId).attr('attack');
+					argument = $('#' + discussionsDescriptionId).attr('attacked_argument');
+					interactionhandler.getPremissesAndSendThem(false, !isStart, attack, argument);
+					guihandler.setErrorDescription('');
+					guihandler.setSuccessDescription('');
+				});
+			else
+				alert('Todo: How to insert something at this place?');
 		} else {
 			alert('What now (II)? GuiHandler: setDisplayStylesOfAddStatementContainer');
 		}
 
-		var gh = new GuiHandler();
-		gh.addTextareaAsChildInParent(proPositionTextareaId, id_pro, isStatement);
-		gh.addTextareaAsChildInParent(conPositionTextareaId, id_con, isStatement);
+		guihandler.addTextareaAsChildInParent(proPositionTextareaId, id_pro, isStatement);
+		guihandler.addTextareaAsChildInParent(conPositionTextareaId, id_con, isStatement);
 	};
 
 	/**

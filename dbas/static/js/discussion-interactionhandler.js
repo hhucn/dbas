@@ -61,16 +61,19 @@ function InteractionHandler() {
 			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
 			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
 				// statement
-				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, true);
+				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, true, false);
+			} else if (text.indexOf(addArgumentRadioButtonText) >= 0) {
+				// argument
+				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, false, true);
 			} else {
 				// premisse
-				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, true, false);
+				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, true, false, false);
 			}
 		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).show();
-			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true);
+			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true, false);
 		} else {
-			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true);
+			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true, false);
 			$('#' + stepBackButtonId).hide();
 
 			this.radioButtonWasChoosen();
@@ -191,7 +194,7 @@ function InteractionHandler() {
 		if (parsedData.status == '1') {
 			new JsonGuiHandler().setJsonDataAsConfrontation(parsedData);
 		} else if (parsedData.status == '0') {
-			alert('TODO: callbackIfDoneReplyForPremissegroup')
+			new JsonGuiHandler().setJsonDataAsConfrontationWithoutConfrontation(parsedData);
 		} else {
 			alert('error in callbackIfDoneReplyForPremissegroup');
 		}
