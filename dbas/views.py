@@ -771,11 +771,11 @@ class Dbas(object):
 		return_dict = {}
 		if get_data == '1':
 			logger('manage_user_track', 'def', 'get track data')
-			return_dict = DatabaseHelper().get_track_for_user(nickname)
+			return_dict = UserHandler().get_track_of_user(nickname)
 		else:
 			logger('manage_user_track', 'def', 'remove track data')
 			return_dict['removed data'] = 'true'
-			DatabaseHelper().del_track_for_user(transaction, nickname)
+			UserHandler().del_track_of_user(transaction, nickname)
 
 		dictionary_helper = DictionaryHelper()
 		return_json = dictionary_helper.dictionarty_to_json_array(return_dict, True)

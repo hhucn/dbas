@@ -88,7 +88,7 @@ class User(Base):
 
 	groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
-	def __init__(self, group, firstname, surname, nickname, email, password, gender):
+	def __init__(self, firstname, surname, nickname, email, password, gender, group=0):
 		"""
 		Initializes a row in current user-table
 		"""

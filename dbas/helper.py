@@ -1,7 +1,7 @@
 import logging
 import random
-import collections
 from sqlalchemy import and_, not_
+import collections
 
 from .database import DBSession
 from .database.model import Argument, Statement, Track, User, Group, TextValue, TextVersion, Premisse, PremisseGroup, Relation
@@ -328,92 +328,6 @@ class DatabaseHelper(object):
 		return_dict['content'] = content_dict
 
 		return return_dict
-
-	def get_track_for_user(self, user):
-		"""
-		Returns the complete track of given user
-		:param user: current user id
-		:return: track os the user id as dict
-		ödictionary
-		"""
-		logger('DatabaseHelper', 'get_track_for_user', 'user ' + user)
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-
-		if db_user:
-			db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).all()
-			return_dict = collections.OrderedDict()
-			qh = QueryHelper()
-			for track in db_track:
-				logger('DatabaseHelper','get_track_for_user','track uid ' + str(track.uid))
-
-				track_dict = dict()
-
-				# get attacks
-				attacked_by_relation = DBSession.query(Relation).filter_by(uid=track.attacked_by_relation).first()
-				attacked_with_relation = DBSession.query(Relation).filter_by(uid=track.attacked_with_relation).first()
-				attacked_by_relation_id = qh.get_relation_uid_by_name(attacked_by_relation.name) if attacked_by_relation else 'None'
-				attacked_with_relation_id = qh.get_relation_uid_by_name(attacked_with_relation.name) if attacked_with_relation else 'None'
-
-				# get text
-				attacked_by_relation_str = attacked_by_relation.name if attacked_by_relation else '-'
-				attacked_with_relation_str = attacked_with_relation.name if attacked_with_relation else '-'
-				track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid)
-				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid)[1:-1]
-				if track.premissesGroup_uid == 0:
-					track_premissesGroup = '-'
-				else:
-					track_premissesGroup,tash = qh.get_text_for_premissesGroup_uid(track.premissesGroup_uid)
-
-				# text
-				track_dict['statement']                  = track_statement
-				track_dict['premissesGroup']             = track_premissesGroup
-				track_dict['argument']                   = track_argument
-				track_dict['attacked_by_relation']       = attacked_by_relation_str
-				track_dict['attacked_with_relation']     = attacked_with_relation_str
-
-				# ids
-				track_dict['uid']                        = str(track.uid)
-				track_dict['statement_uid']              = str(track.statement_uid)
-				track_dict['premissesGroup_uid']         = str(track.premissesGroup_uid)
-				track_dict['argument_uid']               = str(track.argument_uid)
-				track_dict['attacked_by_relation_uid']   = attacked_by_relation_id
-				track_dict['attacked_with_relation_uid'] = attacked_with_relation_id
-				track_dict['timestamp']                  = str(track.timestamp)
-
-				if not attacked_by_relation_str == '-':
-					track_dict['text'] = 'Others say: \'' + track_argument + \
-					                     '\' <i>' + attacked_by_relation_str + 's</i> \'' + \
-					                     track_premissesGroup + '\''
-				if not attacked_with_relation_str == '-':
-					if track_premissesGroup == '-':
-						track_dict['text'] = 'You will <i>' + attacked_with_relation_str + '</i> \'' + \
-					                         track_argument + '\''
-					else:
-						track_dict['text'] = 'You say: \'' + track_premissesGroup + \
-					                         '\' <i>' + attacked_with_relation_str + 's</i> \'' + \
-					                         track_argument + '\''
-
-				return_dict[track.uid] = track_dict
-
-			else:
-				logger('DatabaseHelper', 'get_track_for_user', 'no track')
-		else:
-			return_dict = dict()
-			logger('DatabaseHelper', 'get_track_for_user', 'no user')
-
-		return return_dict
-
-	def del_track_for_user(self, transaction, user):
-		"""
-		Returns the complete track of given user
-		:param transaction: current transaction
-		:param user: current user
-		:return: undefined
-		"""
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('DatabaseHelper', 'del_track_for_user','user ' + str(db_user.uid))
-		DBSession.query(Track).filter_by(author_uid=db_user.uid).delete()
-		transaction.commit()
 
 	def set_statement(self, transaction, statement, user, is_start):
 		"""
@@ -894,3 +808,129 @@ class QueryHelper(object):
 			return self.get_rebuts_for_argument_uid('rebut', db_argument.uid), 'rebut'
 		else:
 			return self.get_undercuts_for_argument_uid('undercut', db_argument.uid), 'undercut'
+
+	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation, attacked_with_relation): # TODO
+		"""
+		Saves track for user
+		:param transaction: current transaction
+		:param user: authentication nick id of the user
+		:param statement_id: id of the clicked statement
+		:param premissesgroup_uid: id of the clicked premisseGroup
+		:param attacked_by_relation: id of attacked by relation
+		:param attacked_with_relation: id of attacked_w th relation
+		:return: undefined
+		"""
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
+														', statememt_id ' + str(statement_id) +
+														', premissesgroup_uid ' + str(premissesgroup_uid) +
+														', argument_uid ' + str(argument_uid) +
+														', attacked_by_relation ' + str(attacked_by_relation) +
+														', attacked_with_relation ' + str(attacked_with_relation))
+		DBSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
+		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation))
+		transaction.commit()
+
+	def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):
+		"""
+		Saves track for user
+		:param transaction: current transaction
+		:param user: authentication nick id of the user
+		:param premissesgroup_uid: id of the clicked premisseGroup
+		:return: undefined
+		"""
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'save_premissegroup_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', premissesGroup_uid: '
+				+ str(premissesgroup_uid))
+		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid = premissesgroup_uid).all()
+		for premisse in db_premisses:
+			logger('QueryHelper', 'save_premissegroup_for_user', str(premissesgroup_uid) + " " + str(premisse.statement_uid))
+			new_track = Track(user=db_user.uid, statement=premisse.statement_uid, premissegroup=premissesgroup_uid)
+			DBSession.add(new_track)
+		transaction.commit()
+
+	def get_track_of_user(self, user):
+		"""
+		Returns the complete track of given user
+		:param user: current user id
+		:return: track os the user id as dict
+		ödictionary
+		"""
+		logger('QueryHelper', 'get_track_of_user', 'user ' + user)
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+
+		if db_user:
+			db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).all()
+			return_dict = collections.OrderedDict()
+			qh = QueryHelper()
+			for track in db_track:
+				logger('QueryHelper','get_track_of_user','track uid ' + str(track.uid))
+
+				track_dict = dict()
+
+				# get attacks
+				attacked_by_relation = DBSession.query(Relation).filter_by(uid=track.attacked_by_relation).first()
+				attacked_with_relation = DBSession.query(Relation).filter_by(uid=track.attacked_with_relation).first()
+				attacked_by_relation_id = qh.get_relation_uid_by_name(attacked_by_relation.name) if attacked_by_relation else 'None'
+				attacked_with_relation_id = qh.get_relation_uid_by_name(attacked_with_relation.name) if attacked_with_relation else 'None'
+
+				# get text
+				attacked_by_relation_str = attacked_by_relation.name if attacked_by_relation else '-'
+				attacked_with_relation_str = attacked_with_relation.name if attacked_with_relation else '-'
+				track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid)
+				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid)[1:-1]
+				if track.premissesGroup_uid == 0:
+					track_premissesGroup = '-'
+				else:
+					track_premissesGroup,tash = qh.get_text_for_premissesGroup_uid(track.premissesGroup_uid)
+
+				# text
+				track_dict['statement']                  = track_statement
+				track_dict['premissesGroup']             = track_premissesGroup
+				track_dict['argument']                   = track_argument
+				track_dict['attacked_by_relation']       = attacked_by_relation_str
+				track_dict['attacked_with_relation']     = attacked_with_relation_str
+
+				# ids
+				track_dict['uid']                        = str(track.uid)
+				track_dict['statement_uid']              = str(track.statement_uid)
+				track_dict['premissesGroup_uid']         = str(track.premissesGroup_uid)
+				track_dict['argument_uid']               = str(track.argument_uid)
+				track_dict['attacked_by_relation_uid']   = attacked_by_relation_id
+				track_dict['attacked_with_relation_uid'] = attacked_with_relation_id
+				track_dict['timestamp']                  = str(track.timestamp)
+
+				if not attacked_by_relation_str == '-':
+					track_dict['text'] = 'Others say: \'' + track_argument + \
+					                     '\' <i>' + attacked_by_relation_str + 's</i> \'' + \
+					                     track_premissesGroup + '\''
+				if not attacked_with_relation_str == '-':
+					if track_premissesGroup == '-':
+						track_dict['text'] = 'You will <i>' + attacked_with_relation_str + '</i> \'' + \
+					                         track_argument + '\''
+					else:
+						track_dict['text'] = 'You say: \'' + track_premissesGroup + \
+					                         '\' <i>' + attacked_with_relation_str + 's</i> \'' + \
+					                         track_argument + '\''
+
+				return_dict[track.uid] = track_dict
+
+			else:
+				logger('QueryHelper', 'get_track_of_user', 'no track')
+		else:
+			return_dict = dict()
+			logger('QueryHelper', 'get_track_of_user', 'no user')
+
+		return return_dict
+
+	def del_track_of_user(self, transaction, user):
+		"""
+		Returns the complete track of given user
+		:param transaction: current transaction
+		:param user: current user
+		:return: undefined
+		"""
+		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		DBSession.query(Track).filter_by(author_uid=db_user.uid).delete()
+		transaction.commit()

@@ -2,7 +2,7 @@ import logging
 import random
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBSession
-from .database.model import User, Group, Track, Premisse
+from .database.model import User, Group
 
 log = logging.getLogger(__name__)
 
@@ -69,43 +69,3 @@ class UserHandler(object):
 				return True
 
 		return False
-
-	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation, attacked_with_relation): # TODO
-		"""
-		Saves track for user
-		:param transaction: current transaction
-		:param user: authentication nick id of the user
-		:param statememt_id: id of the clicked statement
-		:param premissesgroup_uid: id of the clicked premisseGroup
-		:param attacked_by_relation: id of attacked by relation
-		:param attacked_with_relation: id of attacked_w th relation
-		:return: undefined
-		"""
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
-														', statememt_id ' + str(statement_id) +
-														', premissesgroup_uid ' + str(premissesgroup_uid) +
-														', argument_uid ' + str(argument_uid) +
-														', attacked_by_relation ' + str(attacked_by_relation) +
-														', attacked_with_relation ' + str(attacked_with_relation))
-		DBSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
-		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation))
-		transaction.commit()
-
-	def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):
-		"""
-		Saves track for user
-		:param transaction: current transaction
-		:param user: authentication nick id of the user
-		:param premissesgroup_uid: id of the clicked premisseGroup
-		:return: undefined
-		"""
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'save_premissegroup_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', premissesGroup_uid: '
-				+ str(premissesgroup_uid))
-		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid = premissesgroup_uid).all()
-		for premisse in db_premisses:
-			logger('QueryHelper', 'save_premissegroup_for_user', str(premissesgroup_uid) + " " + str(premisse.statement_uid))
-			new_track = Track(user=db_user.uid, statement=premisse.statement_uid, premissegroup=premissesgroup_uid)
-			DBSession.add(new_track)
-		transaction.commit()
