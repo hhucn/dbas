@@ -54,12 +54,14 @@ def main(argv=sys.argv):
 		pw3 = pwHandler.get_hashed_password('martin')
 		pw4 = pwHandler.get_hashed_password('kalman')
 		pw5 = pwHandler.get_hashed_password('mladen')
+		pw6 = pwHandler.get_hashed_password('drtobias')
 		user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas@cs.uni-duesseldorf.de', password=pw1, group=group0.uid, gender='m')
 		user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group1.uid, gender='m')
 		user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3, group=group1.uid, gender='m')
 		user4 = User(firstname='Kalman', surname='Graffi', nickname='kalman', email='graffi@cs.uni-duesseldorf.de', password=pw4, group=group1.uid, gender='m')
 		user5 = User(firstname='Mladen', surname='Topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw5, group=group1.uid, gender='m')
-		DBSession.add_all([user1, user2, user3, user4, user5])
+		user6 = User(firstname='Tobias', surname='Escher', nickname='drtobias', email='tobias.escher@hhu.de', password=pw6, group=group1.uid, gender='m')
+		DBSession.add_all([user1, user2, user3, user4, user5, user6])
 		DBSession.flush()
 
 		#Adding all textversions
