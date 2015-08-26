@@ -153,14 +153,8 @@ function AjaxHandler() {
 	/**
 	 * Sends new premisses to the server. Answer will be given to a callback
 	 * @param argument_dictionary for inserting
-	 * @param isPremisseForArgument
-	 * @param relation
-	 * @param related_argument
 	 */
-	this.sendNewPremissesForArgument = function (argument_dictionary, isPremisseForArgument, relation, related_argument) {
-		argument_dictionary.isPremisseForArgument = isPremisseForArgument ? '1' : '0';
-		argument_dictionary.relation = relation;
-		argument_dictionary.related_argument = related_argument;
+	this.sendNewPremissesForArgument = function (argument_dictionary) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_new_premisses',

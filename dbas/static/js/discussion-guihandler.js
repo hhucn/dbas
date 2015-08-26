@@ -388,7 +388,7 @@ function GuiHandler() {
 	 * @param isArgument
 	 */
 	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
-		var statement, attack, argument,
+		var statement, attack, argument, conclusion,
 			guihandler = new GuiHandler(),
 			ajaxhandler = new AjaxHandler(),
 			interactionhandler = new InteractionHandler();
@@ -410,7 +410,7 @@ function GuiHandler() {
 			$('#' + addStatementContainerMainInputId).show();
 			$('#' + proPositionColumnId).hide();
 			$('#' + conPositionColumnId).hide();
-			$('#' + sendNewStatementId).off('click').click(function () {
+			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenStatement() {
 				if (isStart) {
 					ajaxhandler.sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
 				} else {
@@ -430,10 +430,14 @@ function GuiHandler() {
 			$('#' + proPositionColumnId).show();
 			$('#' + conPositionColumnId).show();
 			if (isPremisse)
-				$('#' + sendNewStatementId).off('click').click(function () {
-					attack = $('#' + discussionsDescriptionId).attr('attack');
-					argument = $('#' + discussionsDescriptionId).attr('attacked_argument');
-					interactionhandler.getPremissesAndSendThem(false, !isStart, attack, argument);
+				$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenPremisse() {
+					// conclusion = $('#' + discussionsDescriptionId).attr('conclusion_id');
+					// attack = $('#' + discussionsDescriptionId).attr('attack');
+					// argument = $('#' + discussionsDescriptionId).attr('related_argument');
+					// conclusion = typeof conclusion === 'undefined' ? '' : conclusion;
+					// attack = typeof attack === 'undefined' ? '' : attack;
+					// argument = typeof argument === 'undefined' ? '' : argument;
+					interactionhandler.getPremissesAndSendThem(false);
 					guihandler.setErrorDescription('');
 					guihandler.setSuccessDescription('');
 				});

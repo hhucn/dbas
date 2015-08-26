@@ -11,7 +11,7 @@ class QueryHelper(object):
 
 	"""
 
-	def set_statements_as_premisse(self, transaction, statement, user):
+	def set_statements_as_premisse(self, statement, user):
 		"""
 
 		:param transaction:
@@ -147,10 +147,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		db_argument = DBSession.query(Argument).filter_by(uid=uid).join(Statement).first()
-		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid) +
-		       ', pgroup ' + str(db_argument.premissesGroup_uid) +
-		       ', concl ' + str(db_argument.conclusion_uid) +
-		       ', arg ' + str(db_argument.argument_uid))
+		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid))
 		retValue = ''
 
 		# basecase

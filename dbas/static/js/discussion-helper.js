@@ -74,7 +74,7 @@ function Helper() {
 			belCounterJusti = 'believe that this is a good counter-argument for my justification',
 			undermine = '<b>' + w + ', it is not true that ' + premisse + '</b>' + enddot,
 			support	  = '<b>' + r + ', it is true that ' + premisse + '</b>' + enddot,
-			undercut  = '<b>' + r + ', ' + premisse + '</b>, and I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
+			undercut  = '<b>' + r + ', ' + premisse + '</b>, but I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
 			overbid	  = '<b>' + r + ', ' + premisse + '</b>, and I do ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
 			rebut	  = '<b>' + r + ', ' + premisse + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
 				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot;
@@ -100,7 +100,7 @@ function Helper() {
 			belCounterJusti = 'believe that this is a good counter-argument for my justification',
 			undermine = w + ', it is not true that <b>' + confrontation + '</b>' + enddot,
 			support	  = r + ', it is true that <b>' + confrontation + '</b>' + enddot,
-			undercut  = r + ', <b>' + confrontation + '</b>, and I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
+			undercut  = r + ', <b>' + confrontation + '</b>, but				 I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
 			overbid	  = r + ', <b>' + confrontation + '</b>, and I do ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
 			rebut	  = r + ', <b>' + confrontation + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
 				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot;

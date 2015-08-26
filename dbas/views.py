@@ -821,11 +821,7 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			belongsToArgument = True if self.request.params['isPremisseForArgument'] == '1' else False
-			relation = self.request.params['relation']
-			related_argument = self.request.params['related_argument']
-			logger('set_new_premisses', 'def', 'belongsToArgument: ' + str(belongsToArgument) + ', relation ' + relation +
-			       ', related_argument ' + related_argument)
+			logger('set_new_premisses', 'def', 'main')
 			pro_dict = {}
 			con_dict = {}
 			for k in self.request.params:
@@ -835,8 +831,7 @@ class Dbas(object):
 				if 'con' in k:
 					logger('set_new_premisses', k, self.request.params[k])
 					con_dict[k] = self.request.params[k]
-			return_dict = DatabaseHelper().set_premisses(transaction, pro_dict, con_dict, self.request.authenticated_userid,
-			                                             belongsToArgument, relation, related_argument)
+			return_dict = DatabaseHelper().set_premisses(transaction, pro_dict, con_dict, self.request.authenticated_userid)
 			return_dict['success'] = '1'
 
 		except KeyError as e:

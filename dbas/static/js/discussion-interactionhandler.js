@@ -105,11 +105,9 @@ function InteractionHandler() {
 	/**
 	 * Fetches all premisses out of the textares and send them
 	 * @param useIntro
-	 * @param isPremisseForArgument
-	 * @param relation
-	 * @param related_argument
+	 * @param conclusion
 	 */
-	this.getPremissesAndSendThem = function (useIntro, isPremisseForArgument, relation, related_argument) {
+	this.getPremissesAndSendThem = function (useIntro, conclusion) {
 		var i = 0, dict = {}, no, intro;
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
@@ -130,7 +128,7 @@ function InteractionHandler() {
 				i = i + 1;
 			}
 		});
-		new AjaxHandler().sendNewPremissesForArgument(dict, isPremisseForArgument, relation, related_argument);
+		new AjaxHandler().sendNewPremissesForArgument(dict);
 	};
 
 	/**
@@ -178,7 +176,7 @@ function InteractionHandler() {
 	this.callbackIfDoneForPremisseForStatement = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			new JsonGuiHandler().setJsonDataToContentAsStartPremisses(parsedData.premisses, parsedData.currentStatementText);
+			new JsonGuiHandler().setJsonDataToContentAsStartPremisses(parsedData);
 		} else {
 			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
 		}

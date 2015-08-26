@@ -33,14 +33,17 @@ function JsonGuiHandler() {
 	/**
 	 * Sets given json content as start premisses buttons in the discussions space
 	 * @param jsonData data with json content
-	 * @param currentStatement
 	 */
-	this.setJsonDataToContentAsStartPremisses = function (jsonData, currentStatement) {
-		var listitems = [], guihandler = new GuiHandler(), text, firstOne = true, helper = new Helper();
-		text = helper.startWithLowerCase(currentStatement.text);
-		guihandler.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b> ?', text, {'text': text});
+	this.setJsonDataToContentAsStartPremisses = function (jsonData) {
+		var listitems = [],
+			guihandler = new GuiHandler(),
+			text,
+			firstOne = true,
+			helper = new Helper();
+		text = helper.startWithLowerCase(jsonData.currentStatement.text);
+		guihandler.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b> ?', text, {'text': text, 'conclusion_id': jsonData.conclusion_id});
 
-		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
+		$.each(jsonData.premisses, function setJsonDataToContentAsConclusionEach(key, val) {
 			text = '';
 			$.each(val, function setJsonDataToContentAsConclusionEachVal(valkey, valval) {
 				if (text=='')
@@ -108,7 +111,7 @@ function JsonGuiHandler() {
 		listitems.push(helper.getKeyValAsInputInLiWithType('undercut' + id, relationArray[2] + ' [<i>undercut</i>]', false, false, true, 'undercut'));
 		listitems.push(helper.getKeyValAsInputInLiWithType('overbid' + id, relationArray[3] + ' [<i>overbid</i>]', false, false, true, 'overbid'));
 		listitems.push(helper.getKeyValAsInputInLiWithType('rebut' + id, relationArray[4] + ' [<i>rebut</i>]', false, false, true, 'rebut'));
-		listitems.push(helper.getKeyValAsInputInLiWithType('', '<b><i><u>HOW TO INSERT ATTACKING PREMISEGROUPS?</u></i></b>', false, false, false, ''));
+		// TODO HOW TO INSERT ATTACKING PREMISEGROUPS?
 
 		// set the buttons
 		guihandler.addListItemsToDiscussionsSpace(listitems);
@@ -149,8 +152,8 @@ function JsonGuiHandler() {
 			'This confrontation is a ' + jsonData.attack, {title: premisse, text: premisse});
 
 		// build the radio buttons
-		listitems.push(helper.getKeyValAsInputInLiWithType('', '<b><i><u>HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>', false, false, false, ''));
-		listitems.push(helper.getKeyValAsInputInLiWithType('', '<b><i><u>BUTTONS ARE DEPENDING ON THE ATTACK?</u></i></b>', false, false, false, ''));
+		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>
+		// TODO BUTTONS ARE DEPENDING ON THE ATTACK?</u></i></b>
 		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addArgumentRadioButtonText, false, false, false, addArgumentRadioButtonText));
 
 		// set the buttons
@@ -182,7 +185,7 @@ function JsonGuiHandler() {
 			listitems.push(helper.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason));
 		}
 
-		dict = {'text': text, 'attack': jsonData.relation, 'attacked_argument': jsonData.argument_uid, 'premissegroup_uid': jsonData.premissegroup_uid};
+		dict = {'text': text, 'attack': jsonData.relation, 'related_argument': jsonData.argument_uid, 'premissegroup_uid': jsonData.premissegroup_uid};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
 		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
 		guihandler.addListItemsToDiscussionsSpace(listitems);
