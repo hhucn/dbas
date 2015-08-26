@@ -468,22 +468,24 @@ function GuiHandler() {
 	 * Check whether the edit button should be visible or not
 	 */
 	this.resetAndDisableEditButton = function () {
-		var count, statement, uid;
-		count = 0;
+		var is_editable = false, statement, uid, is_premisse, is_start;
 		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();
 			uid = $(this).attr("id");
+			is_premisse = $(this).hasClass('premisse');
+			is_start = $(this).hasClass('start');
 			// do we have a child with input or just the label?
-			if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid)) {
-				count += 1;
+			if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premisse || is_start) {
+				is_editable = true;
+				return false; // break
 			}
 		});
 
 		// do we have an statement there?
-		if (count == 0) {
-			$('#' + editStatementButtonId).fadeOut('slow');
-		} else {
+		if (is_editable) {
 			$('#' + editStatementButtonId).fadeIn('slow');
+		} else {
+			$('#' + editStatementButtonId).fadeOut('slow');
 		}
 	};
 
@@ -491,7 +493,7 @@ function GuiHandler() {
 	 * Opens the edit statements popup
 	 */
 	this.displayEditStatementsPopup = function () {
-		var table, tr, td_text, td_buttons, edit_button, log_button, statement, uid, type;
+		var table, tr, td_text, td_buttons, edit_button, log_button, statement, uid, type, is_start, is_premisse, tmp;
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementSubmitButtonId).hide();
 
@@ -519,10 +521,22 @@ function GuiHandler() {
 		// append a row for each statement
 		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();
+			if (statement.toLocaleLowerCase().indexOf('because ') == 0){
+				statement = new Helper().startWithUpperCase(statement.substring(8));
+			}
 			uid = $(this).attr("id");
 			type = $(this).attr("class");
+			is_premisse = $(this).hasClass('premisse');
+			is_start = $(this).hasClass('start');
+
+			// TODO edit premisse groups
+			if (typeof uid != 'undefined' && uid.indexOf('_') != -1){
+				tmp = uid.split('_');
+				uid = tmp[tmp.length -1];
+			}
+
 			// do we have a child with input or just the label?
-			if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid)) {
+			if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premisse || is_start) {
 				// create new items
 				tr = $('<tr>');
 				td_text = $('<td>').attr({

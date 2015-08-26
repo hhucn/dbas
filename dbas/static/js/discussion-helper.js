@@ -45,6 +45,15 @@ function Helper() {
 	};
 
 	/**
+	 *
+	 * @param text
+	 * @returns {string}
+	 */
+	this.startWithUpperCase = function (text){
+		return text.substr(0, 1).toLocaleUpperCase() + text.substr(1);
+	};
+
+	/**
 	 * Returns all kinds of attacks for the given premisse and conclusion
 	 * @param premisse current premisses
 	 * @param conclusion current conclusion

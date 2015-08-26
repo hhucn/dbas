@@ -332,6 +332,17 @@ class DatabaseHelper(object):
 
 		return return_dict
 
+	def get_logfile_for_premissegroup(self, uid):
+		"""
+		Returns the logfile for the given statement uid
+		:param uid: requested statement uid
+		:return: dictionary with the logfile-rows
+		"""
+		logger('DatabaseHelper', 'get_logfile_for_premissegroup', 'def with uid: ' + str(uid))
+
+		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=uid).first() # todo for premisse groups
+		return self.get_logfile_for_statement(db_premisses.statement_uid)
+
 	def set_statement(self, transaction, statement, user, is_start):
 		"""
 		Saves statement for user
@@ -393,7 +404,6 @@ class DatabaseHelper(object):
 		# insert the premisses as statements
 		return_dict = {}
 		qh = QueryHelper()
-		success = True
 
 		logger('DatabaseHelper', 'set_premisses', 'starts with pro_dict')
 		for index, pro in enumerate(pro_dict):

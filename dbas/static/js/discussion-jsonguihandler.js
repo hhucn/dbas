@@ -56,7 +56,7 @@ function JsonGuiHandler() {
 			listitems.push(helper.getKeyValAsInputInLiWithType(key, text, false, true, false, ''));
 		});
 
-		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? addPremisseRadioButtonText : newPremisseRadioButtonText, true, false, ''));
+		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? addPremisseRadioButtonText : newPremisseRadioButtonText, false, false, false, ''));
 
 		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
@@ -103,11 +103,11 @@ function JsonGuiHandler() {
 			'This confrontation is a ' + jsonData.attack, {title: '', text: ''});
 
 		// build the radio buttons
-		listitems.push(helper.getKeyValAsInputInLiWithType('undermine' + id, relationArray[0] + ' [undermine]', false, false, true, 'undermine'));
-		listitems.push(helper.getKeyValAsInputInLiWithType('support' + id, relationArray[1] + ' [support]', false, false, true, 'support'));
-		listitems.push(helper.getKeyValAsInputInLiWithType('undercut' + id, relationArray[2] + ' [undercut]', false, false, true, 'undercut'));
-		listitems.push(helper.getKeyValAsInputInLiWithType('overbid' + id, relationArray[3] + ' [overbid]', false, false, true, 'overbid'));
-		listitems.push(helper.getKeyValAsInputInLiWithType('rebut' + id, relationArray[4] + ' [rebut]', false, false, true, 'rebut'));
+		listitems.push(helper.getKeyValAsInputInLiWithType('undermine' + id, relationArray[0] + ' [<i>undermine</i>]', false, false, true, 'undermine'));
+		listitems.push(helper.getKeyValAsInputInLiWithType('support' + id, relationArray[1] + ' [<i>support</i>]', false, false, true, 'support'));
+		listitems.push(helper.getKeyValAsInputInLiWithType('undercut' + id, relationArray[2] + ' [<i>undercut</i>]', false, false, true, 'undercut'));
+		listitems.push(helper.getKeyValAsInputInLiWithType('overbid' + id, relationArray[3] + ' [<i>overbid</i>]', false, false, true, 'overbid'));
+		listitems.push(helper.getKeyValAsInputInLiWithType('rebut' + id, relationArray[4] + ' [<i>rebut</i>]', false, false, true, 'rebut'));
 		listitems.push(helper.getKeyValAsInputInLiWithType('', '<b><i><u>HOW TO INSERT ATTACKING PREMISEGROUPS?</u></i></b>', false, false, false, ''));
 
 		// set the buttons
@@ -129,13 +129,19 @@ function JsonGuiHandler() {
 			relation = jsonData.relation;
 
 		if (typeof relation == 'undefined'){
-			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(because) + ' ' + premisse + '</b>';
+			opinion = '<b>' + premisse + ', ' + helper.startWithLowerCase(because) + ' ' + conclusion + '</b>';
 		} else {
-			opinion = '<b>' + conclusion + '</b> ' + relation + 's ' + '<b>' + premisse + '</b>';
+			opinion = '<b>' + premisse + '</b> ' + relation + 's ' + '<b>' + conclusion + '</b>';
+		}
+
+		if (jsonData.relation === 'undermine' || jsonData.relation === 'undercut' || jsonData.relation === 'rebut') {
+
+		} else if (jsonData.relation === 'support' || jsonData.relation === 'overbid') {
+
 		}
 
 		// build some confrontation text
-		confrontationText = otherParticipantsDontThink + ' <b>' + premisse + '</b>. [<i>' + jsonData.attack + '</i>]';
+		confrontationText = otherParticipantsDontThink + ' <b>' + premisse + '</b>.';
 
 		// set discussions text
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
@@ -144,6 +150,7 @@ function JsonGuiHandler() {
 
 		// build the radio buttons
 		listitems.push(helper.getKeyValAsInputInLiWithType('', '<b><i><u>HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>', false, false, false, ''));
+		listitems.push(helper.getKeyValAsInputInLiWithType('', '<b><i><u>BUTTONS ARE DEPENDING ON THE ATTACK?</u></i></b>', false, false, false, ''));
 		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addArgumentRadioButtonText, false, false, false, addArgumentRadioButtonText));
 
 		// set the buttons

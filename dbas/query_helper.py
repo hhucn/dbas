@@ -1,3 +1,4 @@
+import random
 from sqlalchemy import and_
 import collections
 
@@ -378,7 +379,7 @@ class QueryHelper(object):
 		:param key:
 		:return: dict, key
 		"""
-		rnd = 0#random.randrange(0, 3 if db_argument else 2)
+		rnd = random.randrange(0, 3 if db_argument else 2)
 		logger('QueryHelper', 'get_attack_for_argument_by_random', 'random attack is ' + str(rnd))
 		if rnd == 0:
 			return self.get_undermines_for_argument_uid('undermine', db_argument.uid), 'undermine'
@@ -441,7 +442,7 @@ class QueryHelper(object):
 			db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).all()
 			return_dict = collections.OrderedDict()
 			qh = QueryHelper()
-			for track in db_track:
+			for index, track in enumerate(db_track):
 				logger('QueryHelper','get_track_of_user','track uid ' + str(track.uid))
 
 				track_dict = dict()
@@ -491,7 +492,7 @@ class QueryHelper(object):
 					                         '\' <i>' + attacked_with_relation_str + 's</i> \'' + \
 					                         track_argument + '\''
 
-				return_dict[track.uid] = track_dict
+				return_dict[track.uid] = str(index)
 
 			else:
 				logger('QueryHelper', 'get_track_of_user', 'no track')

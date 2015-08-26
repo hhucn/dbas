@@ -867,6 +867,7 @@ class Dbas(object):
 			logger('get_logfile_for_statement', 'error', repr(e))
 
 		return_dict = DatabaseHelper().get_logfile_for_statement(uid)
+		# return_dict = DatabaseHelper().get_logfile_for_premissegroup(uid)
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		return return_json
