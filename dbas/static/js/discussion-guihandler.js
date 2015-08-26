@@ -354,7 +354,10 @@ function GuiHandler() {
 				this.setErrorDescription(notInsertedErrorBecauseUnknown);
 			}
 		} else {
-			var newElement = new Helper().getKeyValAsInputInLiWithType(jsonData.statement.uid, jsonData.statement.text, false);
+			var newElement = new Helper().getKeyValAsInputInLiWithType(jsonData.statement.uid, jsonData.statement.text, true, false, false, '');
+			newElement.children().hover(function () {
+				$(this).toggleClass('table-hover');
+			});
 			$('#li_' + addReasonButtonId).before(newElement);
 			new GuiHandler().setSuccessDescription(addedEverything);
 		}
@@ -365,10 +368,13 @@ function GuiHandler() {
 	 * @param jsonData returned data
 	 */
 	this.setPremissesAsLastChild = function (jsonData) {
-		var newElement, _this = this;
+		var newElement;
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == "pro") {
 				newElement = new Helper().getKeyValAsInputInLiWithType(val.uid, val.text, false, true, false, val.text);
+				newElement.children().hover(function () {
+					$(this).toggleClass('table-hover');
+				});
 				$('#li_' + addReasonButtonId).before(newElement);
 			} else if (key.substr(0, 3) == "con") {
 				// todo setPremissesAsLastChild contra premisses

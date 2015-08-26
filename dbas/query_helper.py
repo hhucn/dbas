@@ -377,13 +377,29 @@ class QueryHelper(object):
 		:return: dict, key
 		"""
 		rnd = random.randrange(0, 3 if db_argument else 2)
-		logger('QueryHelper', 'get_attack_for_argument_by_random', 'random attack is ' + str(rnd))
-		if rnd == 0:
-			return self.get_undermines_for_argument_uid('undermine', db_argument.uid), 'undermine'
-		elif rnd == 1:
-			return self.get_rebuts_for_argument_uid('rebut', db_argument.uid), 'rebut'
-		else:
-			return self.get_undercuts_for_argument_uid('undercut', db_argument.uid), 'undercut'
+		startrnd = rnd
+		dict = None
+		key = ''
+
+		# randomize at least 1, maximal 3 times for getting an attack
+		while True:
+			logger('QueryHelper', 'get_attack_for_argument_by_random', 'random attack is ' + str(rnd))
+			if rnd == 0:
+				dict = self.get_undermines_for_argument_uid('undermine', db_argument.uid)
+				key = 'undermine'
+			elif rnd == 1:
+				dict = self.get_rebuts_for_argument_uid('rebut', db_argument.uid)
+				key = 'rebut'
+			else:
+				dict = self.get_undercuts_for_argument_uid('undercut', db_argument.uid)
+				key = 'undercut'
+
+			rnd = (rnd+1)%3
+			if int(dict[key]) != 0 or startrnd == rnd:
+				break
+
+
+		return dict, key
 
 	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation, attacked_with_relation): # TODO
 		"""

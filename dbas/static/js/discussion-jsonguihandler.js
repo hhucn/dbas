@@ -25,7 +25,7 @@ function JsonGuiHandler() {
 			guihandler.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>', '' , null);
 		}
 
-		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, newConclusionRadioButtonText, true, false, ''));
+		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, newConclusionRadioButtonText, false, false, false, ''));
 
 		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
@@ -132,19 +132,13 @@ function JsonGuiHandler() {
 			relation = jsonData.relation;
 
 		if (typeof relation == 'undefined'){
-			opinion = '<b>' + premisse + ', ' + helper.startWithLowerCase(because) + ' ' + conclusion + '</b>';
+			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(because) + ' ' + premisse + '</b>';
 		} else {
 			opinion = '<b>' + premisse + '</b> ' + relation + 's ' + '<b>' + conclusion + '</b>';
 		}
 
-		if (jsonData.relation === 'undermine' || jsonData.relation === 'undercut' || jsonData.relation === 'rebut') {
-
-		} else if (jsonData.relation === 'support' || jsonData.relation === 'overbid') {
-
-		}
-
 		// build some confrontation text
-		confrontationText = otherParticipantsDontThink + ' <b>' + premisse + '</b>.';
+		confrontationText = otherParticipantsDontThink + ' <b>' + premisse + '</b>';
 
 		// set discussions text
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
