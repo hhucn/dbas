@@ -44,9 +44,9 @@ function JsonGuiHandler() {
 			text = '';
 			$.each(val, function setJsonDataToContentAsConclusionEachVal(valkey, valval) {
 				if (text=='')
-					text = 'Because ';
+					text = because + ' ';
 				else
-					text += ' <i>_AND_</i> because ';
+					text += ' <i>_AND_</i> ' + helper.startWithLowerCase(because) + ' ';
 
 				text += helper.startWithLowerCase(valval.text);
 				firstOne = false;
@@ -79,7 +79,7 @@ function JsonGuiHandler() {
 			relation = jsonData.relation;
 
 		if (typeof relation == 'undefined'){
-			opinion = '<b>' + conclusion + ', because ' + premisse + '</b>';
+			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(because) + ' ' + premisse + '</b>';
 		} else {
 			opinion = '<b>' + conclusion + '</b> ' + relation + 's ' + '<b>' + premisse + '</b>';
 		}
@@ -129,13 +129,13 @@ function JsonGuiHandler() {
 			relation = jsonData.relation;
 
 		if (typeof relation == 'undefined'){
-			opinion = '<b>' + conclusion + ', because ' + premisse + '</b>';
+			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(because) + ' ' + premisse + '</b>';
 		} else {
 			opinion = '<b>' + conclusion + '</b> ' + relation + 's ' + '<b>' + premisse + '</b>';
 		}
 
 		// build some confrontation text
-		confrontationText = otherParticipantsDontThinkThat + ' <b>' + premisse + '</b>. [<i>' + jsonData.attack + '</i>]';
+		confrontationText = otherParticipantsDontThink + ' <b>' + premisse + '</b>. [<i>' + jsonData.attack + '</i>]';
 
 		// set discussions text
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
@@ -162,16 +162,16 @@ function JsonGuiHandler() {
 			guihandler = new GuiHandler(),
 			dict;
 
-		if (jsonData.relation === 'undermine') {		text = relationArray[0] + ', but why? (You made an undermine)';
-		} else if (jsonData.relation === 'support') {	text = relationArray[1] + ', but why? (You made a support)';
-		} else if (jsonData.relation === 'undercut') {	text = relationArray[2] + ', but why? (You made an undercut)';
-		} else if (jsonData.relation === 'overbid') {	text = relationArray[3] + ', but why? (You made an overbid)';
-		} else if (jsonData.relation === 'rebut') {		text = relationArray[4] + ', but which one? (You made a rebut)';
+		if (jsonData.relation === 'undermine') {		text = relationArray[0] + '. ' + canYouGiveAReason + ' (You made an undermine)';
+		} else if (jsonData.relation === 'support') {	text = relationArray[1] + '. ' + canYouGiveAReason + ' (You made a support)';
+		} else if (jsonData.relation === 'undercut') {	text = relationArray[2] + '. ' + canYouGiveAReason + ' (You made an undercut)';
+		} else if (jsonData.relation === 'overbid') {	text = relationArray[3] + '. ' + canYouGiveAReason + ' (You made an overbid)';
+		} else if (jsonData.relation === 'rebut') {		text = relationArray[4] + '. but which one? (You made a rebut)';
 		}
 
 		for (i=0; i<parseInt(jsonData.reason); i++){
 			id = jsonData.relation + '_' + jsonData.type + '_' + jsonData['reason' + i + 'id'];
-			reason = 'Because ' + helper.startWithLowerCase(jsonData['reason' + i]) + '.';
+			reason = because + ' ' + helper.startWithLowerCase(jsonData['reason' + i]) + '.';
 			listitems.push(helper.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason));
 		}
 
@@ -190,8 +190,8 @@ function JsonGuiHandler() {
 		$.each(jsonData, function addJsonDataToContentAsArgumentsEach(key, val) {
 			// we only want attacking arguments
 			if (val.is_supportive === '0') {
-				if (val.text.toLowerCase() !== 'because') {
-					text = "Because " + helper.start(val.text);
+				if (val.text.toLowerCase() !== helper.startWithLowerCase(because)) {
+					text = bcease + ' ' + helper.start(val.text);
 				} else {
 					text = val.text;
 				}

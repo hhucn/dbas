@@ -1,13 +1,8 @@
-import logging
 import random
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBSession
 from .database.model import User, Group
-
-log = logging.getLogger(__name__)
-
-def logger(who, when, what):
-	log.debug(who.upper() + ' ' + when + ' <' + what + '>')
+from .logger import logger
 
 class PasswordGenerator(object):
 
@@ -42,6 +37,11 @@ class PasswordGenerator(object):
 class PasswordHandler(object):
 
 	def get_hashed_password(self, password):
+		"""
+
+		:param password:
+		:return:
+		"""
 		manager = BCRYPTPasswordManager()
 		return manager.encode(password)
 

@@ -44,14 +44,16 @@ var sentencesOpenersInforming = [
 var sentencesOpenersRequesting = [
 	//"Can you explain why ",
 	"Why do you think that"];
-var clickToChoose = "Click to choose";
 var agreeBecause = "I agree because ";
+var because = "Because";
+var clickToChoose = "Click to choose";
+var canYouGiveAReason = "Can you give a reason?";
 var disagreeBecause = "I disagree because ";
 var firstOneText = "You are the first one, who said: ";
 var firstPositionText = "You are the first one in this discussion!";
 var goodPointTakeMeBackButtonText = "I agree, that is a good argument! Take me one step back.";
 var otherParticipantsThinkThat = "Other users think that";
-var otherParticipantsDontThinkThat = "Other users do not have any counter-argument for ";
+var otherParticipantsDontThink = "Other users do not have any counter-argument for ";
 var otherParticipantsAcceptBut = "Other users accept your argument, but";
 var otherParticipantAgree = "Other partcipants agree, that ";
 var otherParticipantDisagree = "Other partcipants disagree, that ";

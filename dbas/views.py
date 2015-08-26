@@ -10,10 +10,12 @@ from pyramid.threadlocal import get_current_registry
 
 from .database import DBSession
 from .database.model import User, Group, Issue
-from .helper import logger, DatabaseHelper
+from .database_helper import DatabaseHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
+from .query_helper import QueryHelper
 from .email import EmailHelper
 from .dictionary_helper import DictionaryHelper
+from .logger import logger
 
 name = 'D-BAS'
 version = '0.3.0'
@@ -770,11 +772,11 @@ class Dbas(object):
 		return_dict = {}
 		if get_data == '1':
 			logger('manage_user_track', 'def', 'get track data')
-			return_dict = UserHandler().get_track_of_user(nickname)
+			return_dict = QueryHelper().get_track_of_user(nickname)
 		else:
 			logger('manage_user_track', 'def', 'remove track data')
 			return_dict['removed data'] = 'true'
-			UserHandler().del_track_of_user(transaction, nickname)
+			QueryHelper().del_track_of_user(transaction, nickname)
 
 		dictionary_helper = DictionaryHelper()
 		return_json = dictionary_helper.dictionarty_to_json_array(return_dict, True)

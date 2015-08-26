@@ -1,17 +1,12 @@
-import logging
 import random
 import json
 from .database import DBSession
 from .database.model import Statement, User, TextValue, TextVersion
-
-log = logging.getLogger(__name__)
-
-def logger(who, when, what):
-	log.debug(who.upper() + ' ' + when + ' <' + what + '>')
+from .logger import logger
 
 class DictionaryHelper(object):
 
-	def get_subdictionary_out_of_orderer_dict(self, ordered_dict, count):
+	def get_random_subdict_out_of_orderer_dict(self, ordered_dict, count):
 		"""
 		Creates a random subdictionary with given count out of the given ordered_dict.
 		With a count of <2 the dictionary itself will be returned.
@@ -59,24 +54,17 @@ class DictionaryHelper(object):
 		:param statement_row: for saving
 		:return: dictionary
 		"""
-		db_statement = DBSession.query(Statement).filter_by(uid=statement_row.uid).join(TextValue).first()
-		db_textversion = DBSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
-		logger('DictionaryHelper', 'save_statement_row_in_dictionary',
-				'db_statement.uid ' + str(db_statement.uid) + ', ' +
-				'db_statement.textvalues.textVersion_uid ' + str(db_statement.textvalues.textVersion_uid) + ', ' +
-				'db_textversion.uid ' + str(db_textversion.uid))
-		uid = str(db_statement.uid)
-		text = db_textversion.content
-		date = str(db_textversion.timestamp)
-		weight = str(db_textversion.weight)
-		author = db_textversion.users.nickname
+		db_statement    = DBSession.query(Statement).filter_by(uid=statement_row.uid).join(TextValue).first()
+		db_textversion  = DBSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
+
+		uid     = str(db_statement.uid)
+		text    = db_textversion.content
+		date    = str(db_textversion.timestamp)
+		weight  = str(db_textversion.weight)
+		author  = db_textversion.users.nickname
+
 		if text.endswith('.'):
 			text = text[:-1]
+
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + weight + ', ' + author)
-		dic = dict()
-		dic['uid'] = uid
-		dic['text'] = text
-		dic['date'] = date
-		dic['weight'] = weight
-		dic['author'] = author
-		return dic
+		return {'uid':uid, 'text':text, 'date':date, 'weight':weight, 'author':author}

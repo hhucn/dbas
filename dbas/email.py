@@ -1,15 +1,10 @@
-import logging
 import smtplib
 
 from socket import error as socket_error
 
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
-
-log = logging.getLogger(__name__)
-
-def logger(who, when, what):
-	log.debug(who.upper() + ' ' + when + ' <' + what + '>')
+from .logger import logger
 
 class EmailHelper(object):
 
