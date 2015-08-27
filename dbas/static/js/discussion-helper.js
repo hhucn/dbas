@@ -118,13 +118,33 @@ function Helper() {
 	 * @returns {Element|*} a type-input element in a li tag
 	 */
 	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse, isRelation, mouseover) {
-		var liElement, inputElement, labelElement;
+		return this.getKeyValAsInputInLiWithType(key, val, isStartStatement, isPremisse, isRelation, mouseover, {'text_count':'0'});
+	};
+
+	/**
+	 * Creates an input element tih key as id and val as value. This is embedded in an li element
+	 * @param key will be used as id
+	 * @param val will be used as value
+	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
+	 * @param isPremisse
+	 * @param isRelation
+	 * @param mouseover
+	 * @param additionalAttributesAsDict
+	 * @returns {Element|*} a type-input element in a li tag
+	 */
+	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse, isRelation, mouseover, additionalAttributesAsDict) {
+		var liElement, inputElement, labelElement, extras = '', tmp;
 		liElement = $('<li>');
 		liElement.attr({id: 'li_' + key});
 
 		inputElement = $('<input>');
 		inputElement.attr({id: key, type: 'radio', value: val});
 		//inputElement.attr({data-dismiss: 'modal'});
+
+		if (typeof additionalAttributesAsDict !== 'undefined')
+			$.each(additionalAttributesAsDict, function getKeyValAsInputInLiWithTypeEach(key, val) {
+				extras += ' ' + key + '="' + val + '"';
+			});
 
 		inputElement.attr({name: radioButtonGroup});
 		// adding label for the value
@@ -136,8 +156,82 @@ function Helper() {
 		if (isRelation){ inputElement.addClass('relation'); }
 		if (!isStartStatement && !isPremisse && !isRelation){ inputElement.addClass('add'); }
 
-		liElement.html(new Helper().getFullHtmlTextOf(inputElement) + labelElement);
+		tmp = new Helper().getFullHtmlTextOf(inputElement);
+		tmp = tmp.substr(0,tmp.length-1) + extras + ">";
+		liElement.html(tmp + labelElement);
 
 		return liElement;
 	};
+
+	this.createRowInEditDialog = function(uid, statement, type){
+		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), tr, td_text, td_buttons;
+
+		// create new items
+		tr = $('<tr>');
+		td_text = $('<td>').attr({
+			id: 'edit_' + type + '_td_text_' + uid
+		});
+		td_buttons = $('<td>').css('text-align', 'center');
+		edit_button = $('<input>').css('margin', '2px');
+		log_button = $('<input>').css('margin', '2px');
+
+		// set attributes, text, ...
+		td_text.text(statement);
+
+		// some attributes and functions for the edit button
+		edit_button.attr({
+			id: 'edit-statement',
+			type: 'button',
+			value: 'edit',
+			class: 'btn-sm btn button-primary',
+			statement_type: type,
+			statement_text: statement,
+			statement_id: uid
+		}).click(function edit_button_click() {
+			$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text'));
+			$('#' + popupEditStatementSubmitButtonId).attr({
+				statement_type: $(this).attr('statement_type'),
+				statement_text: $(this).attr('statement_text'),
+				statement_id: $(this).attr('statement_id'),
+				callback_td: 'edit_' + type + '_td_text_' + uid
+			});
+			$('#edit_statement_table td').removeClass('table-hover');
+			$('#edit_' + type + '_td_index_' + uid).addClass('table-hover');
+			$('#edit_' + type + '_td_text_' + uid).addClass('table-hover');
+			$('#' + popupErrorDescriptionId).text('');
+			$('#' + popupSuccessDescriptionId).text('');
+			guiHandler.showEditFieldsInEditPopup();
+			guiHandler.hideLogfileInEditPopup();
+		}).hover(function edit_button_hover() {
+			$(this).toggleClass('btn-primary', 400);
+		});
+
+		// show logfile
+		log_button.attr({
+			id: 'show_log_of_statement',
+			type: 'button',
+			value: 'changelog',
+			class: 'btn-sm btn button-primary',
+			statement_type: type,
+			statement_text: statement,
+			statement_id: uid
+		}).click(function log_button_click() {
+			$('#' + popupEditStatementLogfileHeaderId).html('Logfile for: <b>' + $(this).attr('statement_text') + '</b>');
+			$('#' + popupErrorDescriptionId).text('');
+			$('#' + popupSuccessDescriptionId).text('');
+			$('#edit_statement_table td').removeClass('table-hover');
+			ajaxHandler.getLogfileForStatement($(this).attr('statement_id'));
+			guiHandler.hideEditFieldsInEditPopup();
+		}).hover(function log_button_hover() {
+			$(this).toggleClass('btn-primary', 400);
+		});
+
+		// append everything
+		td_buttons.append(edit_button);
+		td_buttons.append(log_button);
+		tr.append(td_text);
+		tr.append(td_buttons);
+
+		return tr;
+	}
 }

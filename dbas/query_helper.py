@@ -457,72 +457,74 @@ class QueryHelper(object):
 		Returns the complete track of given user
 		:param user: current user id
 		:return: track os the user id as dict
-		ödictionary
 		"""
 		logger('QueryHelper', 'get_track_of_user', 'user ' + user)
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 
-		if db_user:
-			db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).all()
-			return_dict = collections.OrderedDict()
-			qh = QueryHelper()
-			for index, track in enumerate(db_track):
-				logger('QueryHelper','get_track_of_user','track uid ' + str(track.uid))
-
-				track_dict = dict()
-
-				# get attacks
-				attacked_by_relation = DBSession.query(Relation).filter_by(uid=track.attacked_by_relation).first()
-				attacked_with_relation = DBSession.query(Relation).filter_by(uid=track.attacked_with_relation).first()
-				attacked_by_relation_id = qh.get_relation_uid_by_name(attacked_by_relation.name) if attacked_by_relation else 'None'
-				attacked_with_relation_id = qh.get_relation_uid_by_name(attacked_with_relation.name) if attacked_with_relation else 'None'
-
-				# get text
-				attacked_by_relation_str = attacked_by_relation.name if attacked_by_relation else '-'
-				attacked_with_relation_str = attacked_with_relation.name if attacked_with_relation else '-'
-				track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid)
-				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid)[1:-1]
-				if track.premissesGroup_uid == 0:
-					track_premissesGroup = '-'
-				else:
-					track_premissesGroup,tash = qh.get_text_for_premissesGroup_uid(track.premissesGroup_uid)
-
-				# text
-				track_dict['statement']                  = track_statement
-				track_dict['premissesGroup']             = track_premissesGroup
-				track_dict['argument']                   = track_argument
-				track_dict['attacked_by_relation']       = attacked_by_relation_str
-				track_dict['attacked_with_relation']     = attacked_with_relation_str
-
-				# ids
-				track_dict['uid']                        = str(track.uid)
-				track_dict['statement_uid']              = str(track.statement_uid)
-				track_dict['premissesGroup_uid']         = str(track.premissesGroup_uid)
-				track_dict['argument_uid']               = str(track.argument_uid)
-				track_dict['attacked_by_relation_uid']   = attacked_by_relation_id
-				track_dict['attacked_with_relation_uid'] = attacked_with_relation_id
-				track_dict['timestamp']                  = str(track.timestamp)
-
-				if not attacked_by_relation_str == '-':
-					track_dict['text'] = 'Others say: \'' + track_argument + \
-					                     '\' <i>' + attacked_by_relation_str + 's</i> \'' + \
-					                     track_premissesGroup + '\''
-				if not attacked_with_relation_str == '-':
-					if track_premissesGroup == '-':
-						track_dict['text'] = 'You will <i>' + attacked_with_relation_str + '</i> \'' + \
-					                         track_argument + '\''
-					else:
-						track_dict['text'] = 'You say: \'' + track_premissesGroup + \
-					                         '\' <i>' + attacked_with_relation_str + 's</i> \'' + \
-					                         track_argument + '\''
-
-				return_dict[track.uid] = str(index)
-
-			else:
-				logger('QueryHelper', 'get_track_of_user', 'no track')
-		else:
-			return_dict = dict()
+		if not db_user:
 			logger('QueryHelper', 'get_track_of_user', 'no user')
+			return dict()
+
+		db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).all()
+		qh = QueryHelper()
+
+		if not db_track:
+			logger('QueryHelper', 'get_track_of_user', 'no track')
+			return dict()
+
+		return_dict = collections.OrderedDict()
+
+		for index, track in enumerate(db_track):
+			logger('QueryHelper','get_track_of_user','track uid ' + str(track.uid))
+
+			track_dict = dict()
+
+			# get attacks
+			attacked_by_relation = DBSession.query(Relation).filter_by(uid=track.attacked_by_relation).first()
+			attacked_with_relation = DBSession.query(Relation).filter_by(uid=track.attacked_with_relation).first()
+			attacked_by_relation_id = qh.get_relation_uid_by_name(attacked_by_relation.name) if attacked_by_relation else 'None'
+			attacked_with_relation_id = qh.get_relation_uid_by_name(attacked_with_relation.name) if attacked_with_relation else 'None'
+
+			# get text
+			attacked_by_relation_str = attacked_by_relation.name if attacked_by_relation else '-'
+			attacked_with_relation_str = attacked_with_relation.name if attacked_with_relation else '-'
+			track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid)
+			track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid)[1:-1]
+			if track.premissesGroup_uid == 0:
+				track_premissesGroup = '-'
+			else:
+				track_premissesGroup,tash = qh.get_text_for_premissesGroup_uid(track.premissesGroup_uid)
+
+			# text
+			track_dict['statement']                  = track_statement
+			track_dict['premissesGroup']             = track_premissesGroup
+			track_dict['argument']                   = track_argument
+			track_dict['attacked_by_relation']       = attacked_by_relation_str
+			track_dict['attacked_with_relation']     = attacked_with_relation_str
+
+			# ids
+			track_dict['uid']                        = str(track.uid)
+			track_dict['statement_uid']              = str(track.statement_uid)
+			track_dict['premissesGroup_uid']         = str(track.premissesGroup_uid)
+			track_dict['argument_uid']               = str(track.argument_uid)
+			track_dict['attacked_by_relation_uid']   = attacked_by_relation_id
+			track_dict['attacked_with_relation_uid'] = attacked_with_relation_id
+			track_dict['timestamp']                  = str(track.timestamp)
+
+			if not attacked_by_relation_str == '-':
+				track_dict['text'] = 'Others say: \'' + track_argument + \
+				                     '\' <i>' + attacked_by_relation_str + 's</i> \'' + \
+				                     track_premissesGroup + '\''
+			if not attacked_with_relation_str == '-':
+				if track_premissesGroup == '-':
+					track_dict['text'] = 'You will <i>' + attacked_with_relation_str + '</i> \'' + \
+				                         track_argument + '\''
+				else:
+					track_dict['text'] = 'You say: \'' + track_premissesGroup + \
+				                         '\' <i>' + attacked_with_relation_str + 's</i> \'' + \
+				                         track_argument + '\''
+
+			return_dict[str(index)] = track_dict
 
 		return return_dict
 

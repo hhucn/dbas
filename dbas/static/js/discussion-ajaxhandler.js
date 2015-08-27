@@ -223,16 +223,17 @@ function AjaxHandler() {
 
 	/**
 	 * Sends a correcture of a statement
-	 * @param statement_uid current uid of the statement
+	 * @param uid
+	 * @param edit_dialog_td_id
 	 * @param corrected_text the corrected text
 	 */
-	this.sendCorrectureOfStatement = function (statement_uid, corrected_text) {
+	this.sendCorrectureOfStatement = function (uid, edit_dialog_td_id, corrected_text) {
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_correcture_of_statement',
 			type: 'POST',
 			data: {
-				uid: statement_uid,
+				uid: uid,
 				text: corrected_text
 			},
 			dataType: 'json',
@@ -241,7 +242,7 @@ function AjaxHandler() {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, statement_uid);
+			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, edit_dialog_td_id);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			$('#' + popupErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
 				' failed. Sorry!');

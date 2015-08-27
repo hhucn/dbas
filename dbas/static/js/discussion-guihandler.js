@@ -503,7 +503,7 @@ function GuiHandler() {
 	 * Opens the edit statements popup
 	 */
 	this.displayEditStatementsPopup = function () {
-		var table, tr, td_text, td_buttons, edit_button, log_button, statement, uid, type, is_start, is_premisse, tmp;
+		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premisse, tmp, text_count, statement_id, text, i, helper = new Helper();
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementSubmitButtonId).hide();
 
@@ -547,75 +547,22 @@ function GuiHandler() {
 
 			// do we have a child with input or just the label?
 			if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premisse || is_start) {
-				// create new items
-				tr = $('<tr>');
-				td_text = $('<td>').attr({
-					id: 'edit_statement_td_text_' + $(this).attr('id')
-				});
-				td_buttons = $('<td>').css('text-align', 'center');
-				edit_button = $('<input>');
-				log_button = $('<input>');
-				edit_button.css('margin', '2px');
-				log_button.css('margin', '2px');
 
-				// set attributes, text, ...
-				td_text.text(statement);
+				// is this a premisse group with more than one text?
+				if (typeof $(this).attr('text_count') !== typeof undefined && $(this).attr('text_count') !== false){
+					text_count = $(this).attr('text_count');
+					type = 'premissesgroup';
 
-				// some attributes and functions for the edit button
-				edit_button.attr({
-					id: 'edit-statement',
-					type: 'button',
-					value: 'edit',
-					class: 'btn-sm btn button-primary',
-					statement_type: type,
-					statement_text: statement,
-					statement_id: uid,
-					index: $(this).attr('id')
-				}).click(function edit_button_click() {
-					$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text'));
-					$('#' + popupEditStatementSubmitButtonId).attr({
-						statement_type: $(this).attr('statement_type'),
-						statement_text: $(this).attr('statement_text'),
-						statement_id: $(this).attr('statement_id')
-					});
-					$('#edit_statement_table td').removeClass('table-hover');
-					$('#edit_statement_td_index_' + $(this).attr('index')).addClass('table-hover');
-					$('#edit_statement_td_text_' + $(this).attr('index')).addClass('table-hover');
-					$('#' + popupErrorDescriptionId).text('');
-					$('#' + popupSuccessDescriptionId).text('');
-					new GuiHandler().showEditFieldsInEditPopup();
-					new GuiHandler().hideLogfileInEditPopup();
-				}).hover(function edit_button_hover() {
-					$(this).toggleClass('btn-primary', 400);
-				});
-
-				// show logfile
-				log_button.attr({
-					id: 'show_log_of_statement',
-					type: 'button',
-					value: 'changelog',
-					class: 'btn-sm btn button-primary',
-					statement_type: type,
-					statement_text: statement,
-					statement_id: uid,
-					index: $(this).attr('id')
-				}).click(function log_button_click() {
-					$('#' + popupEditStatementLogfileHeaderId).html('Logfile for: <b>' + $(this).attr('statement_text') + '</b>');
-					$('#' + popupErrorDescriptionId).text('');
-					$('#' + popupSuccessDescriptionId).text('');
-					$('#edit_statement_table td').removeClass('table-hover');
-					new AjaxHandler().getLogfileForStatement($(this).attr('statement_id'));
-					new GuiHandler().hideEditFieldsInEditPopup();
-				}).hover(function log_button_hover() {
-					$(this).toggleClass('btn-primary', 400);
-				});
-
-				// append everything
-				td_buttons.append(edit_button);
-				td_buttons.append(log_button);
-				tr.append(td_text);
-				tr.append(td_buttons);
-				table.append(tr);
+					for (i=1; i<=parseInt(text_count); i++) {
+						statement_id = $(this).attr('text_' + i + '_statement_id');
+						text = $(this).attr('text_' + i);
+						tr = helper.createRowInEditDialog(statement_id, text, type);
+						table.append(tr);
+					}
+				} else {
+					tr = helper.createRowInEditDialog(uid, statement, type);
+					table.append(tr);
+				}
 			}
 		});
 
@@ -625,7 +572,8 @@ function GuiHandler() {
 		$('#' + popupEditStatementSubmitButtonId).hide().click(function edit_statement_click() {
 			statement = $('#' + popupEditStatementTextareaId).val();
 			//$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
-			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), statement);
+			alert($(this).attr('statement_id') + "\n" + $(this).attr('callback_td'));
+			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement);
 		});
 
 		// on click: do ajax

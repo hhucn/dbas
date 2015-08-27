@@ -39,12 +39,16 @@ function JsonGuiHandler() {
 			guihandler = new GuiHandler(),
 			text,
 			firstOne = true,
-			helper = new Helper();
+			helper = new Helper(),
+			attributes,
+			index;
 		text = helper.startWithLowerCase(jsonData.currentStatement.text);
 		guihandler.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b> ?', text, {'text': text, 'conclusion_id': jsonData.conclusion_id});
 
 		$.each(jsonData.premisses, function setJsonDataToContentAsConclusionEach(key, val) {
 			text = '';
+			index = 0;
+			attributes = {};
 			$.each(val, function setJsonDataToContentAsConclusionEachVal(valkey, valval) {
 				if (text=='')
 					text = because + ' ';
@@ -53,10 +57,14 @@ function JsonGuiHandler() {
 
 				text += helper.startWithLowerCase(valval.text);
 				firstOne = false;
+				index += 1;
+				attributes['text_' + index + '_statement_id'] = valkey;
+				attributes['text_' + index] = valval.text + '.';
 			});
 			text += '.';
+			attributes['text_count'] = index;
 			// we are saving the group id ad key
-			listitems.push(helper.getKeyValAsInputInLiWithType(key, text, false, true, false, ''));
+			listitems.push(helper.getKeyValAsInputInLiWithType(key, text, false, true, false, text, attributes));
 		});
 
 		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? addPremisseRadioButtonText : newPremisseRadioButtonText, false, false, false, ''));

@@ -417,8 +417,7 @@ class DatabaseHelper(object):
 
 			# second, set the new statement as premisse
 			new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
-			logger('DatabaseHelper', 'set_premisses', dict[entry] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid))
-			logger('DatabaseHelper', 'set_premisses', 'argument from group ' + str(new_premissegroup_uid)
+			logger('DatabaseHelper', 'set_premisses', dict[entry] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
 			       + ' to statement ' + str(db_track.statement_uid) + ', supportive')
 
 			# third, insert the argument

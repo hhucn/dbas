@@ -105,9 +105,8 @@ function InteractionHandler() {
 	/**
 	 * Fetches all premisses out of the textares and send them
 	 * @param useIntro
-	 * @param conclusion
 	 */
-	this.getPremissesAndSendThem = function (useIntro, conclusion) {
+	this.getPremissesAndSendThem = function (useIntro) {
 		var i = 0, dict = {}, no, intro;
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
@@ -291,8 +290,9 @@ function InteractionHandler() {
 	/**
 	 * Callback, when a correcture could be send
 	 * @param data of the ajax request
+	 * @param edit_dialog_td_id
 	 */
-	this.callbackIfDoneForSendCorrectureOfStatement = function (data) {
+	this.callbackIfDoneForSendCorrectureOfStatement = function (data, edit_dialog_td_id) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1'){
 			$('#' + popupErrorDescriptionId).text(noCorrectionsSet);
@@ -300,7 +300,7 @@ function InteractionHandler() {
 			new GuiHandler().updateOfStatementInDiscussion(parsedData);
 			$('#' + popupErrorDescriptionId).text('');
 			$('#' + popupSuccessDescriptionId).text(correctionsSet);
-			$('#edit_statement_td_text_' + parsedData.uid).text(parsedData.text);
+			$('#' + edit_dialog_td_id).text(parsedData.text);
 		}
 	};
 }
