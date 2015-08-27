@@ -799,7 +799,8 @@ class Dbas(object):
 			statement = self.request.params['statement']
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
 			return_dict['success'] = '1'
-			return_dict['statement'] = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True)
+			new_statement = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True)
+			return_dict['statement'] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['success'] = '-1'
@@ -815,7 +816,8 @@ class Dbas(object):
 
 		:return:
 		"""
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		user_id = self.request.authenticated_userid
+		UserHandler().update_last_action(transaction, user_id)
 
 		logger('set_new_premisses', 'def', 'main')
 
@@ -824,18 +826,20 @@ class Dbas(object):
 			logger('set_new_premisses', 'def', 'main')
 			pro_dict = {}
 			con_dict = {}
-			for k in self.request.params:
-				if 'pro' in k:
-					logger('set_new_premisses', k, self.request.params[k])
-					pro_dict[k] = self.request.params[k]
-				if 'con' in k:
-					logger('set_new_premisses', k, self.request.params[k])
-					con_dict[k] = self.request.params[k]
-			return_dict = DatabaseHelper().set_premisses(transaction, pro_dict, con_dict, self.request.authenticated_userid)
+			for key in self.request.params:
+				if 'pro' in key:
+					logger('set_new_premisses', key, self.request.params[key])
+					pro_dict[key] = self.request.params[key]
+				if 'con' in key:
+					logger('set_new_premisses', key, self.request.params[key])
+					con_dict[key] = self.request.params[key]
+			dh = DatabaseHelper()
+			return_dict = dh.set_premisses_for_tracked_argument(transaction, user_id, pro_dict, 'pro', True)
+			return_dict.update(dh.set_premisses_for_tracked_argument(transaction, user_id, con_dict, 'con', False))
 			return_dict['success'] = '1'
 
 		except KeyError as e:
-			logger('set_new_start_statement', 'error', repr(e))
+			logger('set_new_premisses', 'error', repr(e))
 			return_dict['success'] = '-1'
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)

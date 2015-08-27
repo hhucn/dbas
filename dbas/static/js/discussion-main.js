@@ -34,6 +34,7 @@ restartDiscussion = function () {
 	guiHandler.setSuccessDescription('');
 	guiHandler.setDiscussionsAvoidanceDescription('');
 	guiHandler.resetChangeDisplayStyleBox();
+	guiHandler.resetEditButton();
 
 	startDiscussion();
 };

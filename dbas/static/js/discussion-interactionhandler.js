@@ -180,7 +180,7 @@ function InteractionHandler() {
 		} else {
 			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
 		}
-		gh.resetAndDisableEditButton();
+		gh.resetEditButton();
 	};
 
 	/**
@@ -196,7 +196,7 @@ function InteractionHandler() {
 		} else {
 			alert('error in callbackIfDoneReplyForPremissegroup');
 		}
-		gh.resetAndDisableEditButton();
+		gh.resetEditButton();
 	};
 
 	/**
@@ -220,7 +220,7 @@ function InteractionHandler() {
 		} else {
 			alert('callbackIfDoneHandleReplyForResponseOfConfrontation status -1');
 		}
-		gh.resetAndDisableEditButton();
+		gh.resetEditButton();
 	};
 
 	/**
@@ -231,7 +231,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '-1') {
 			gh.setDiscussionsDescription(firstPositionText);
-			gh.resetAndDisableEditButton();
+			gh.resetEditButton();
 			gh.setNewArgumentButtonOnly(firstConclusionRadioButtonText, false);
 		} else {
 			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData.statements);

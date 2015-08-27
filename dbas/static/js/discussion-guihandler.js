@@ -368,10 +368,10 @@ function GuiHandler() {
 	 * @param jsonData returned data
 	 */
 	this.setPremissesAsLastChild = function (jsonData) {
-		var newElement;
+		var newElement, helper = new Helper();
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == "pro") {
-				newElement = new Helper().getKeyValAsInputInLiWithType(val.uid, val.text, false, true, false, val.text);
+				newElement = helper.getKeyValAsInputInLiWithType(val.premissegroup_uid, val.text + '.', false, true, false, val.text);
 				newElement.children().hover(function () {
 					$(this).toggleClass('table-hover');
 				});
@@ -477,7 +477,7 @@ function GuiHandler() {
 	/**
 	 * Check whether the edit button should be visible or not
 	 */
-	this.resetAndDisableEditButton = function () {
+	this.resetEditButton = function () {
 		var is_editable = false, statement, uid, is_premisse, is_start;
 		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();

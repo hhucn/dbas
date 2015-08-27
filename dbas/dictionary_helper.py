@@ -1,7 +1,7 @@
 import random
 import json
 from .database import DBSession
-from .database.model import Statement, User, TextValue, TextVersion
+from .database.model import Statement, User, TextValue, TextVersion, Premisse
 from .logger import logger
 
 class DictionaryHelper(object):
@@ -55,16 +55,19 @@ class DictionaryHelper(object):
 		:return: dictionary
 		"""
 		db_statement    = DBSession.query(Statement).filter_by(uid=statement_row.uid).join(TextValue).first()
+		db_premisse     = DBSession.query(Premisse).filter_by(statement_uid=db_statement.uid).first()
 		db_textversion  = DBSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
 
-		uid     = str(db_statement.uid)
-		text    = db_textversion.content
-		date    = str(db_textversion.timestamp)
-		weight  = str(db_textversion.weight)
-		author  = db_textversion.users.nickname
+		uid    = str(db_statement.uid)
+		text   = db_textversion.content
+		date   = str(db_textversion.timestamp)
+		weight = str(db_textversion.weight)
+		author = db_textversion.users.nickname
+		pgroup = str( db_premisse.premissesGroup_uid) if db_premisse else '0'
 
-		if text.endswith('.'):
+		while text.endswith('.'):
 			text = text[:-1]
 
-		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + weight + ', ' + author)
-		return {'uid':uid, 'text':text, 'date':date, 'weight':weight, 'author':author}
+		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + weight + ', ' + author +
+		       ', ' + pgroup)
+		return {'uid':uid, 'text':text, 'date':date, 'weight':weight, 'author':author, 'premissegroup_uid':pgroup}

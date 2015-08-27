@@ -11,10 +11,9 @@ class QueryHelper(object):
 
 	"""
 
-	def set_statements_as_premisse(self, statement, user):
+	def set_statement_as_premisse(self, statement, user):
 		"""
 
-		:param transaction:
 		:param statement:
 		:param user:
 		:return: uid of the PremisseGroup
@@ -25,18 +24,19 @@ class QueryHelper(object):
 		DBSession.flush()
 
 		premisse_list = []
-		logger('DatabaseHelper', 'set_statements_as_premisse', 'premissesgroup=' + str(premisse_group.uid) + ', statement='
-				+ statement['uid'] + ', isnegated=' + ('0' if False else '1') + ', author=' + str(db_user.uid))
-		premisse = Premisse(premissesgroup=premisse_group.uid, statement=int(statement['uid']), isnegated=False, author=db_user.uid)
+		logger('DatabaseHelper', 'set_statement_as_premisse', 'premissesgroup=' + str(premisse_group.uid) + ', statement='
+				+ str(statement.uid) + ', isnegated=' + ('0' if False else '1') + ', author=' + str(db_user.uid))
+		premisse = Premisse(premissesgroup=premisse_group.uid, statement=statement.uid, isnegated=False, author=db_user.uid)
 		premisse_list.append(premisse)
 
 		DBSession.add_all(premisse_list)
 		DBSession.flush()
 
 		db_premissegroup = DBSession.query(PremisseGroup).filter_by(author_uid=db_user.uid).order_by(PremisseGroup.uid.desc()).first()
+
 		return db_premissegroup.uid
 
-	def set_argument(self, premissegroup_uid, is_supportive, user, conclusion_uid, argument_uid):
+	def set_argument(self, transaction, user, premissegroup_uid, conclusion_uid, argument_uid, is_supportive):
 		"""
 
 		:param premissegroup_uid:
@@ -46,16 +46,28 @@ class QueryHelper(object):
 		:param argument_uid:
 		:return:
 		"""
-		logger('QueryHelper', 'set_argument_with_premissegroup', 'main')
+		logger('QueryHelper', 'set_argument', 'main')
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		argument = Argument(premissegroup=premissegroup_uid, issupportive=is_supportive, author=db_user.uid, weight=0,
+		new_argument = Argument(premissegroup=premissegroup_uid, issupportive=is_supportive, author=db_user.uid, weight=0,
 							conclusion=conclusion_uid)
-		argument.conclusions_argument(argument_uid)
+		new_argument.conclusions_argument(argument_uid)
 
-		DBSession.add(argument)
+		DBSession.add(new_argument)
 		DBSession.flush()
 
-		return '1'
+		new_inserted_argument = DBSession.query(Argument).filter(and_(Argument.premissesGroup_uid==premissegroup_uid,
+		                                                              Argument.isSupportive==is_supportive,
+		                                                              Argument.author_uid==db_user.uid,
+		                                                              Argument.weight==0,
+		                                                              Argument.conclusion_uid==conclusion_uid,
+		                                                              Argument.argument_uid==argument_uid)).first()
+		transaction.commit()
+		if new_inserted_argument:
+			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
+			return new_inserted_argument.uid
+		else:
+			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
+			return 0
 
 	def set_premisses_related_to_argument(self, premissegroup_uid, user, relation, related_argument_uid, is_supportive):
 		"""
@@ -397,7 +409,6 @@ class QueryHelper(object):
 			rnd = (rnd+1)%3
 			if int(dict[key]) != 0 or startrnd == rnd:
 				break
-
 
 		return dict, key
 

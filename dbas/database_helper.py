@@ -167,7 +167,10 @@ class DatabaseHelper(object):
 		like the premisse as text, conclusion as text, attack as text, confrontation as text. Everything is in a dict.
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'main')
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', '___________________________');
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', '___________________________');
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', '___________________________');
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'main with last_premisses_group_uid ' + str(last_premisses_group_uid))
 
 		# get last statement out of the history
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last statement with user ' + str(db_user.uid) + ', and statement not zero')
@@ -359,6 +362,8 @@ class DatabaseHelper(object):
 		# check for dot at the end
 		if not statement.endswith("."):
 			statement += "."
+		if statement.lower().startswith('because '):
+			statement = statement[8:]
 
 		# check, if the statement already exists
 		db_duplicate = DBSession.query(TextVersion).filter_by(content=statement).first()
@@ -381,21 +386,20 @@ class DatabaseHelper(object):
 
 		# get the new statement
 		new_statement = DBSession.query(Statement).filter_by(text_uid=textvalue.uid).order_by(Statement.uid.desc()).first()
-		return_dict = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 
-		transaction.commit();
+		transaction.commit()
 
-		return return_dict
+		return new_statement
 
-	def set_premisses(self, transaction, pro_dict, con_dict, user):
+	def set_premisses_for_tracked_argument(self, transaction, user, dict, key, is_supportive):
 		"""
-		Inserts the given dictionaries as premisses for an statement or an argument
+		Inserts the given dictionarie with premisses for an statement or an argument
 		:param transaction: current transaction for the database
-		:param pro_dict: dictionary with all pro statements
-		:param con_dict: dictionaory with all contra statements
-		:param user: current users nickname
-		:param conclusion_uid:
-		:return:
+		:param user_id: current users nickname
+		:param dict: dictionary with all statements
+		:param key: pro or con
+		:param is_supportive: for the argument
+		:return: dict
 		"""
 
 		# user and last given statement
@@ -406,32 +410,22 @@ class DatabaseHelper(object):
 		return_dict = {}
 		qh = QueryHelper()
 
-		logger('DatabaseHelper', 'set_premisses', 'starts with pro_dict')
-		for index, pro in enumerate(pro_dict):
+		logger('DatabaseHelper', 'set_premisses_for_tracked_argument', 'main')
+		for index, entry in enumerate(dict):
 			# first, save the premisse as statement
-			statement_dict = self.set_statement(transaction, pro_dict[pro], user, False)
-			return_dict['pro_' + str(index)] = statement_dict
-			# second, set the new statement as premisse
-			new_premissegroup_uid = qh.set_statements_as_premisse(statement_dict, user)
-			logger('DatabaseHelper', 'set_premisses', pro_dict[pro] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid))
-			logger('DatabaseHelper', 'set_premisses', 'argument from group ' + str(new_premissegroup_uid) + ' to statement ' + str(db_track.statement_uid) + ', supportive')
-			# third, insert the argument
-			qh.set_argument(new_premissegroup_uid, True, user, db_track.statement_uid, 0)
+			new_statement = self.set_statement(transaction, dict[entry], user, False)
 
-		logger('DatabaseHelper', 'set_premisses', 'starts with con_dict')
-		for index, con in enumerate(con_dict):
-			# first, save the premisse as statement
-			statement_dict = self.set_statement(con_dict[con], user, False)
-			return_dict['con_' + str(index)] = statement_dict
 			# second, set the new statement as premisse
-			new_premissegroup_uid = qh.set_statements_as_premisse(transaction, statement_dict, user)
-			logger('DatabaseHelper', 'set_premisses', con_dict[con] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid))
-			logger('DatabaseHelper', 'set_premisses', 'argument from group ' + str(new_premissegroup_uid) + ' to statement ' + str(db_track.statement_uid) + ', not supportive')
+			new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
+			logger('DatabaseHelper', 'set_premisses', dict[entry] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid))
+			logger('DatabaseHelper', 'set_premisses', 'argument from group ' + str(new_premissegroup_uid)
+			       + ' to statement ' + str(db_track.statement_uid) + ', supportive')
+
 			# third, insert the argument
-			qh.set_argument(new_premissegroup_uid, False, user, db_track.statement_uid, 0)
+			qh.set_argument(transaction, user, new_premissegroup_uid, db_track.statement_uid, 0, is_supportive)
+
+			return_dict[key + '_' + str(index)] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 
 		transaction.commit()
 
 		return return_dict
-
-
