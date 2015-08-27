@@ -53,7 +53,7 @@ function JsonGuiHandler() {
 				if (text=='')
 					text = because + ' ';
 				else
-					text += ' <i>_AND_</i> ' + helper.startWithLowerCase(because) + ' ';
+					text += ' <i>and</i> ' + helper.startWithLowerCase(because) + ' ';
 
 				text += helper.startWithLowerCase(valval.text);
 				firstOne = false;
@@ -183,6 +183,7 @@ function JsonGuiHandler() {
 
 		for (i=0; i<parseInt(jsonData.reason); i++){
 			id = jsonData.relation + '_' + jsonData.type + '_' + jsonData['reason' + i + 'id'];
+			id = jsonData['reason' + i + '_statement_id'];
 			reason = because + ' ' + helper.startWithLowerCase(jsonData['reason' + i]) + '.';
 			listitems.push(helper.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason));
 		}

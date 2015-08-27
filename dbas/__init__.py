@@ -2,12 +2,12 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-from pyramid.threadlocal import get_current_registry
 
 from dbas.security import groupfinder
 
 from sqlalchemy import engine_from_config
 from .database import *
+
 import logging
 
 def main(global_config, **settings):

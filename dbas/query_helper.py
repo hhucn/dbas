@@ -216,9 +216,11 @@ class QueryHelper(object):
 			logger('QueryHelper', 'get_undermines_for_premisses', 'db_undermine against Argument.conclusion_uid=='+str(s_uid))
 			db_undermine = DBSession.query(Argument).filter(and_(Argument.isSupportive==False, Argument.conclusion_uid==s_uid)).all()
 			for undermine in db_undermine:
+				db_undermine_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=undermine.premissesGroup_uid).first()
 				logger('QueryHelper', 'get_undermines_for_premisses', 'found db_undermine ' + str(undermine.uid))
 				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(undermine.premissesGroup_uid)
 				return_dict[key + str(index) + 'id'] = undermine.premissesGroup_uid
+				return_dict[key + str(index) + '_statement_id'] = db_undermine_premisses.statement_uid
 				index += 1
 		return_dict[key] = str(index)
 		return return_dict
@@ -278,9 +280,11 @@ class QueryHelper(object):
 		db_rebut = DBSession.query(Argument).filter(Argument.isSupportive==(not is_current_argument_supportive),
 		                                            Argument.conclusion_uid==conclusion_statements_uid).all()
 		for index, rebut in enumerate(db_rebut):
+			db_rebut_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=rebut.premissesGroup_uid).first()
 			logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
 			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(rebut.premissesGroup_uid)
 			return_dict[key + str(index) + 'id'] = rebut.premissesGroup_uid
+			return_dict[key + str(index) + '_statement_id'] = db_rebut_premisses.statement_uid
 		return_dict[key] = str(len(db_rebut))
 		return return_dict
 
@@ -316,8 +320,10 @@ class QueryHelper(object):
 				continue
 
 			for support in db_supports:
+				db_support_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=support.premissesGroup_uid).first()
 				return_dict[key + str(index)], trash = self.get_text_for_premissesGroup_uid(support.premissesGroup_uid)
 				return_dict[key + str(index) + 'id'] = support.premissesGroup_uid
+				return_dict[key + str(index) + '_statement_id'] = db_support_premisses.statement_uid
 				index += 1
 
 		return_dict[key] = str(index)
@@ -339,10 +345,12 @@ class QueryHelper(object):
 		if not db_relation:
 			return None
 		for index, relation in enumerate(db_relation):
+			db_relation_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=relation.premissesGroup_uid).first()
 			logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 					'found relation, argument uid ' + str(relation.uid))
 			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(relation.premissesGroup_uid)
 			return_dict[key + str(index) + 'id'] = relation.premissesGroup_uid
+			return_dict[key + str(index) + '_statement_id'] = db_relation_premisses.statement_uid
 			#return_dict[key + str(index) + 'id'] = ','.join(uids)
 		return_dict[key] = str(len(db_relation))
 		return return_dict
