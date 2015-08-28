@@ -170,13 +170,15 @@ $(document).ready(function () {
 	setActiveLanguage($('#hidden_language').val());
 
 	// set current file to active
-	var path = document.location.pathname.match(/[^\/]+$/);
-	if (path == 'contact'){ 		setLinkActive('#contact-link');	$('#navbar-left').hide(); }
-	else if (path == 'login'){		setLinkActive('#login-link');	$('#navbar-left').hide(); }
-	else if (path == 'news'){ 		setLinkActive('#news-link');	$('#navbar-left').hide(); }
-	else if (path == 'content'){ 	setLinkActive('#content-link');	$('#navbar-left').hide(); }
-	else if (path == 'settings' || path == 'imprint' || path == 'logout'){ $('#navbar-left').hide(); }
-	else {							setLinkActive(''); 				$('#navbar-left').show(); }
+	var path = window.location.href;
+		 if (path.indexOf('contact') != -1){ 	setLinkActive('#contact-link');	$('#navbar-left').hide(); }
+	else if (path.indexOf('login') != -1){		setLinkActive('#login-link');	$('#navbar-left').hide(); }
+	else if (path.indexOf('news') != -1){ 		setLinkActive('#news-link');	$('#navbar-left').hide(); }
+	else if (path.indexOf('content') != -1){ 	setLinkActive('#content-link');	$('#navbar-left').hide(); }
+	else if (path.indexOf('settings') != -1 ||
+			 path.indexOf('imprint') != -1 ||
+			 path.indexOf('logout') != -1){										$('#navbar-left').hide(); }
+	else {										setLinkActive(''); 				$('#navbar-left').show(); }
 
 	// language switch
 	$('#' + translationLinkDe).click(function(){ language_switcher(path, 'de') });

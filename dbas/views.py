@@ -72,6 +72,7 @@ class Dbas(object):
 		logger('main_login', 'new token', str(token))
 
 		if self.request.authenticated_userid:
+			logger('main_login', 'def', 'user is registered, so redirect to /content')
 			return HTTPFound(location=self.request.route_url('main_content'))
 
 		login_url = self.request.route_url('main_login')
@@ -180,10 +181,10 @@ class Dbas(object):
 				reg_failed = True
 			else:
 				# getting the editors group
-				group = DBSession.query(Group).filter_by(name='editors').first()
+				db_group = DBSession.query(Group).filter_by(name="editors").first()
 
 				# does the group exists?
-				if not group:
+				if not db_group:
 					message = 'An error occured, please try again later or contact the author'
 					reg_failed = True
 					logger('main_login', 'form.registration.submitted', 'Error occured')
@@ -191,9 +192,13 @@ class Dbas(object):
 					# creating a new user with hased password
 					logger('main_login', 'form.registration.submitted', 'Adding user')
 					hashedPassword = password_handler.get_hashed_password(password)
-					newuser = User(firstname=firstname, surname=surname, email=email,
-					               nickname=nickname, password=hashedPassword, gender=gender)
-					newuser.group = group.uid
+					newuser = User(firstname=firstname,
+					               surname=surname,
+					               email=email,
+					               nickname=nickname,
+					               password=hashedPassword,
+					               gender=gender,
+					               group=db_group.uid)
 					DBSession.add(newuser)
 					transaction.commit()
 
