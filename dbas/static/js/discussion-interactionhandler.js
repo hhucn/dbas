@@ -140,6 +140,7 @@ function InteractionHandler() {
 			hasPremisse = radioButton.hasClass('premisse'),
 			hasStart = radioButton.hasClass('start'),
 			id = radioButton.attr('id'),
+			long_id = radioButton.attr('long_id'),
 			value = radioButton.val();
 
 		if (typeof id === 'undefined' || typeof value === 'undefined') {
@@ -155,7 +156,7 @@ function InteractionHandler() {
 			} else if (hasRelation && !hasPremisse && !hasStart) {
 				this.relationButtonWasClicked(id);
 			} else if (hasPremisse && hasRelation && !hasStart){
-				this.argumentButtonWasClicked(id);
+				this.argumentButtonWasClicked(long_id);
 			} else {
 				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +
 				'has start: ' + hasStart + '\n' +
@@ -230,11 +231,11 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '-1') {
 			gh.setDiscussionsDescription(firstPositionText);
-			gh.resetEditButton();
 			gh.setNewArgumentButtonOnly(firstConclusionRadioButtonText, false);
 		} else {
 			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData.statements);
 		}
+		gh.resetEditButton();
 	};
 
 	/**

@@ -399,7 +399,6 @@ class Dbas(object):
 		issue = 'none'
 		date = 'empty'
 		logger('main_content', 'def', 'check for an issue')
-		statement_inserted = False
 		msg = ''
 
 		# get the current issue
@@ -409,11 +408,6 @@ class Dbas(object):
 			date = db_issue.date
 		else:
 			logger('main_content', 'def', 'issue does not exists')
-
-		# adding a statement
-		# if 'form.contact.submitted' in self.request.params:
-		# msg = 'Statement could not be added (not implemented yet)!'
-		# statement_inserted = False
 
 		# checks whether the current user is admin
 		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
@@ -433,7 +427,6 @@ class Dbas(object):
 			'issue': issue,
 			'date': date,
 			'is_admin': is_admin,
-			'was_statement_inserted': statement_inserted,
 		}
 
 	# settings page, when logged in
@@ -645,7 +638,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_premisses_for_statement', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_get_premisses_for_statement', renderer='json', check_csrf=True)
 	def get_premisses_for_statement(self):
 		"""
 
@@ -846,7 +839,6 @@ class Dbas(object):
 
 		return return_json
 
-
 	# ajax - getting all arguments for the island view
 	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=True)
 	def get_logfile_for_statement(self):
@@ -919,4 +911,3 @@ class Dbas(object):
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 		return return_json
-

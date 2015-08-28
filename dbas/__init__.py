@@ -71,9 +71,9 @@ def main(global_config, **settings):
 	config.add_route('ajax_switch_language', '/ajax_switch_language')
 	config.add_route('ajax_all_users', '/ajax_all_users')
 
-	# main stuff
+	# main stuff for the discussion
 	config.add_route('ajax_get_start_statements', '/ajax_get_start_statements')
-	config.add_route('ajax_premisses_for_statement', '/ajax_premisses_for_statement')
+	config.add_route('ajax_get_premisses_for_statement', '/ajax_get_premisses_for_statement')
 	config.add_route('ajax_reply_for_premissegroup', '/ajax_reply_for_premissegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_reply_for_argument', 'ajax_reply_for_argument')

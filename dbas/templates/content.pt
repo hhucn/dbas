@@ -149,10 +149,6 @@
 								</div>
 							</a>
 						</div>
-						<div tal:condition="was_statement_inserted" class="alert alert-success" role="alert">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span tal:replace="message" />
-						</div>
 						<input id="send-new-statement" type="button" name="" value="Save it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 					</form>
 				</div>

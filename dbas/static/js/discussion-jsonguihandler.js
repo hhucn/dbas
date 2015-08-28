@@ -168,11 +168,11 @@ function JsonGuiHandler() {
 	 */
 	this.setJsonDataAsConfrontationReasoning = function (jsonData){
 		var premisse = jsonData.premissegroup.replace('.',''),
-			conclusion = new Helper().startWithLowerCase(jsonData.conclusion_text),
-			relationArray = new Helper().createRelationsText(premisse, conclusion, true, false),
-			text, listitems = [], i, reason, helper = new Helper(), id,
+			helper = new Helper(),
 			guihandler = new GuiHandler(),
-			dict;
+			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
+			relationArray = helper.createRelationsText(premisse, conclusion, true, false),
+			text, listitems = [], i, reason, id, long_id, dict;
 
 		if (jsonData.relation === 'undermine') {		text = relationArray[0] + '. ' + canYouGiveAReason + ' (You made an undermine)';
 		} else if (jsonData.relation === 'support') {	text = relationArray[1] + '. ' + canYouGiveAReason + ' (You made a support)';
@@ -182,10 +182,10 @@ function JsonGuiHandler() {
 		}
 
 		for (i=0; i<parseInt(jsonData.reason); i++){
-			id = jsonData.relation + '_' + jsonData.type + '_' + jsonData['reason' + i + 'id'];
+			long_id = jsonData.relation + '_' + jsonData.type + '_' + jsonData['reason' + i + 'id'];
 			id = jsonData['reason' + i + '_statement_id'];
 			reason = because + ' ' + helper.startWithLowerCase(jsonData['reason' + i]) + '.';
-			listitems.push(helper.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason));
+			listitems.push(helper.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason, {'long_id': long_id}));
 		}
 
 		dict = {'text': text, 'attack': jsonData.relation, 'related_argument': jsonData.argument_uid, 'premissegroup_uid': jsonData.premissegroup_uid};

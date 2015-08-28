@@ -35,9 +35,9 @@ function AjaxHandler() {
 	 * @param uid of clicked statement
 	 */
 	this.getPremisseForStatement = function (uid) {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#hidden_csrf_token').val(), url;
 		$.ajax({
-			url: 'ajax_premisses_for_statement',
+			url: 'ajax_get_premisses_for_statement',
 			method: 'POST',
 			data: {
 				uid: uid
@@ -46,9 +46,13 @@ function AjaxHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function (jqXHR, settings) {
+				url = settings.url + "?" + settings.data;
 			}
 		}).done(function ajaxGetPremisseForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForPremisseForStatement(data);
+			//alert("ajax 1: " + url);
 		}).fail(function ajaxGetPremisseForStatementFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
@@ -60,7 +64,7 @@ function AjaxHandler() {
 	 * @param uid of clicked statement
 	 */
 	this.getReplyForPremisseGroup = function (uid) {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#hidden_csrf_token').val(), url;
 		$.ajax({
 			url: 'ajax_reply_for_premissegroup',
 			method: 'POST',
@@ -71,9 +75,13 @@ function AjaxHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function (jqXHR, settings) {
+				url = settings.url + "?" + settings.data;
 			}
 		}).done(function ajaxGetReplyForPremisseDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForPremissegroup(data);
+			//alert("ajax 2: " + url);
 		}).fail(function ajaxGetReplyForPremisseFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
@@ -85,7 +93,7 @@ function AjaxHandler() {
 	 * @param uid of the clicked premisse group
 	 */
 	this.getReplyForArgument = function (uid) {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#hidden_csrf_token').val(), url;
 		$.ajax({
 			url: 'ajax_reply_for_argument',
 			method: 'POST',
@@ -96,9 +104,13 @@ function AjaxHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function (jqXHR, settings) {
+				url = settings.url + "?" + settings.data;
 			}
 		}).done(function ajaxGetReplyForArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForArgument(data);
+			//alert("ajax 3: " + url);
 		}).fail(function ajaxGetReplyForArgumentFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
@@ -110,7 +122,7 @@ function AjaxHandler() {
 	 * @param id of clicked relation and statement
 	 */
 	this.handleReplyForResponseOfConfrontation = function (id) {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#hidden_csrf_token').val(), url;
 		$.ajax({
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
@@ -121,9 +133,13 @@ function AjaxHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function (jqXHR, settings) {
+				url = settings.url + "?" + settings.data;
 			}
 		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
 			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data);
+			//alert("ajax 4: " + url);
 		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
