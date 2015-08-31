@@ -116,17 +116,30 @@ $(function () {
 
 	// open edit statement
 	$('#' + editStatementButtonId).click(function(){
-		guiHandler.displayEditStatementsPopup();
+		guiHandler.showEditStatementsPopup();
 	}).hover(function () {
 		$(this).toggleClass('btn-primary', 400);
 	});
 
-	// close edit statement
+	// close popups
 	$('#' + popupEditStatementCloseButtonXId).click(function(){
-		guiHandler.closeEditStatementsPopup();
+		guiHandler.hideEditStatementsPopup();
 	});
 	$('#' + popupEditStatementCloseButtonId).click(function(){
-		guiHandler.closeEditStatementsPopup();
+		guiHandler.hideEditStatementsPopup();
+	});
+	$('#' + popupUrlSharingCloseButtonXId).click(function(){
+		guiHandler.hideUrlSharingPopup();
+	});
+	$('#' + popupUrlSharingCloseButtonId).click(function(){
+		guiHandler.hideUrlSharingPopup();
+	});
+
+	// share url for argument blogging
+	// $('#' + argumentBloggingSidebarId).hide();
+	$('#' + shareUrlId).click(function(){
+		guiHandler.showUrlSharingPopup();
+		guiHandler.hideUrlSharingPopup();
 	});
 
 	// managed in the html file

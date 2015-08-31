@@ -57,34 +57,41 @@ def main(global_config, **settings):
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)
-	config.add_route('main_page', '/')
-	config.add_route('main_login', '/login')
-	config.add_route('main_logout', '/logout')
-	config.add_route('main_contact', '/contact')
-	config.add_route('main_content', '/content')
+	config.add_route('main_page',     '/')
+	config.add_route('main_login',    '/login')
+	config.add_route('main_logout',   '/logout')
+	config.add_route('main_contact',  '/contact')
+	config.add_route('main_content',  '/content')
 	config.add_route('main_settings', '/settings')
-	config.add_route('main_news', '/news')
-	config.add_route('main_imprint', '/imprint')
-	config.add_route('404', '/404')
+	config.add_route('main_news',     '/news')
+	config.add_route('main_imprint',  '/imprint')
+	config.add_route('404',           '/404')
 
 	# administration
 	config.add_route('ajax_switch_language', '/ajax_switch_language')
-	config.add_route('ajax_all_users', '/ajax_all_users')
+	config.add_route('ajax_all_users',       '/ajax_all_users')
 
-	# main stuff for the discussion
-	config.add_route('ajax_get_start_statements', '/ajax_get_start_statements')
-	config.add_route('ajax_get_premisses_for_statement', '/ajax_get_premisses_for_statement')
-	config.add_route('ajax_reply_for_premissegroup', '/ajax_reply_for_premissegroup')
+	# URL TRAVERSAL: main stuff for the discussion
+	config.add_route('ajax_get_start_statements',                '/ajax_get_start_statements')
+	config.add_route('ajax_get_premisses_for_statement',         '/ajax_get_premisses_for_statement')
+	config.add_route('ajax_reply_for_premissegroup',             '/ajax_reply_for_premissegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/ajax_reply_for_response_of_confrontation')
-	config.add_route('ajax_reply_for_argument', 'ajax_reply_for_argument')
-	config.add_route('ajax_set_new_start_statement', '/ajax_set_new_start_statement')
-	config.add_route('ajax_set_new_premisses', '/ajax_set_new_premisses')
+	config.add_route('ajax_reply_for_argument',                  '/ajax_reply_for_argument')
+	config.add_route('ajax_set_new_start_statement',             '/ajax_set_new_start_statement')
+	config.add_route('ajax_set_new_premisses',                   '/ajax_set_new_premisses')
+
+	# URL DISPATCH: main stuff for the discussion
+	config.add_route('idea', 'site/{id}')
+	# config.add_route('ajax_get_premisses_for_statement',         '/ajax_get_premisses_for_statement/{values}')
+	# config.add_route('ajax_reply_for_premissegroup',             '/ajax_reply_for_premissegroup/{values}')
+	# config.add_route('ajax_reply_for_response_of_confrontation', '/ajax_reply_for_response_of_confrontation/{values}')
+	# config.add_route('ajax_reply_for_argument',                  '/ajax_reply_for_argument/{values}')
 
 	# settings
 	config.add_route('ajax_manage_user_track', '/ajax_manage_user_track')
 
 	# editing / viewing log
-	config.add_route('ajax_get_logfile_for_statement', '/ajax_get_logfile_for_statement')
+	config.add_route('ajax_get_logfile_for_statement',   '/ajax_get_logfile_for_statement')
 	config.add_route('ajax_set_correcture_of_statement', '/ajax_set_correcture_of_statement')
 
 	# read the input and start

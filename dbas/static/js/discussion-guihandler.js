@@ -502,7 +502,7 @@ function GuiHandler() {
 	/**
 	 * Opens the edit statements popup
 	 */
-	this.displayEditStatementsPopup = function () {
+	this.showEditStatementsPopup = function () {
 		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premisse, tmp, text_count, statement_id, text, i, helper = new Helper();
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementSubmitButtonId).hide();
@@ -581,6 +581,13 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Display url sharing popup
+	 */
+	this.showUrlSharingPopup = function () {
+		$('#' + popupUrlSharingId).modal('show');
+	};
+
+	/**
 	 * Displays the edit text field
 	 */
 	this.showEditFieldsInEditPopup = function () {
@@ -590,7 +597,7 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Hides the edit text field
+	 * Hides the url sharing text field
 	 */
 	this.hideEditFieldsInEditPopup = function () {
 		$('#' + popupEditStatementSubmitButtonId).hide();
@@ -609,7 +616,7 @@ function GuiHandler() {
 	/**
 	 * Closes the popup and deletes all of its content
 	 */
-	this.closeEditStatementsPopup = function () {
+	this.hideEditStatementsPopup = function () {
 		$('#' + popupEditStatementId).modal('hide');
 		$('#' + popupEditStatementContentId).empty();
 		$('#' + popupEditStatementLogfileSpaceId).text('');
@@ -617,6 +624,14 @@ function GuiHandler() {
 		$('#' + popupEditStatementTextareaId).text('');
 		$('#' + popupErrorDescriptionId).text('');
 		$('#' + popupSuccessDescriptionId).text('');
+	};
+
+	/**
+	 * Closes the popup and deletes all of its content
+	 */
+	this.hideUrlSharingPopup = function () {
+		$('#' + popupUrlSharingId).modal('hide');
+		$('#' + popupUrlSharingTextareaId).text('');
 	};
 
 	/**

@@ -202,7 +202,8 @@
 	margin-top: 20px;
 }
 
-#popup-edit-statement-textarea {
+#popup-edit-statement-textarea,
+#popup-url-sharing-input {
 	outline: none;
 	font-size: 18px;
 	font-weight: 400;
@@ -218,6 +219,10 @@
 	width: 100%;
 	border-color: #bcbcbc;
 	resize: vertical;
+}
+
+.share-icon {
+	float: left;
 }
 
 @media (max-width: 767px) {

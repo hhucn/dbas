@@ -33,7 +33,11 @@
 		<div class="container" id="discussion-container">
 			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
-				<div class="col-md-2"></div>
+				<div class="col-md-2">
+					<div id="argument-blogging-sidebar">
+						<a class="share-icon share-def" id="share-url"></a>
+					</div>
+				</div>
 				<div class="col-md-8">
 					<h4><p id="discussion-error-description" class="error-description"></p></h4>
 					<h4><p id="discussion-success-description" class="success-description"></p></h4>

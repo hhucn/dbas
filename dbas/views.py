@@ -57,6 +57,22 @@ class Dbas(object):
 			'logged_in': self.request.authenticated_userid
 		}
 
+	@view_config(route_name='idea', renderer='templates/index.pt', permission='everybody')
+	def site_view(self):
+		logger('main_page', 'def', 'main page')
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(lang),
+			'title': 'Main ' + self.request.matchdict['id'],
+			'project': header,
+			'logged_in': self.request.authenticated_userid
+		}
+
 	# login page
 	@view_config(route_name='main_login', renderer='templates/login.pt', permission='everybody')
 	@forbidden_view_config(renderer='templates/login.pt')

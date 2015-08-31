@@ -167,9 +167,6 @@ class DatabaseHelper(object):
 		like the premisse as text, conclusion as text, attack as text, confrontation as text. Everything is in a dict.
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('DatabaseHelper', 'get_attack_for_premissegroup', '___________________________');
-		logger('DatabaseHelper', 'get_attack_for_premissegroup', '___________________________');
-		logger('DatabaseHelper', 'get_attack_for_premissegroup', '___________________________');
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'main with last_premisses_group_uid ' + str(last_premisses_group_uid))
 
 		# get last statement out of the history
