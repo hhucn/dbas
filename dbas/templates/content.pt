@@ -16,7 +16,8 @@
 					<p><span i18n:translate="current_discussion">The current discussion is about</span>
 						<br>
 						<span class="font-semi-bold">'<span tal:replace="issue"/>'</span>
-						<br> <span i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" tal:replace="date" />.
+						<br>
+						<span i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" tal:replace="date" />.
 					</p>
 					<!--
 						<p id='start-description'>You're free to join the discussion. When you want to join, just press the button:</p>
@@ -35,7 +36,7 @@
 			<div class="row">
 				<div class="col-md-2">
 					<div id="argument-blogging-sidebar">
-						<a class="share-icon share-def" id="share-url"></a>
+						<a class="share-icon share-def" id="share-url" title="Share your url"></a>
 					</div>
 				</div>
 				<div class="col-md-8">
@@ -160,7 +161,6 @@
 			</div>
 		</div>
 
-
 		<div tal:condition="is_admin" class="container">
 			<div class="row">
 				<div class="col-md-2"></div>
@@ -179,6 +179,12 @@
 		<div id="navigation-minimap-container">
 			<p i18n:translate="minimap">Minimap:</p>
 		</div>
+
+		<div class="hidden-information">
+			<p id="hidden-discussion-information-parameters" type="hidden" tal:content="parameters" class="hidden-discussion-information"></p>
+			<p id="hidden-discussion-information-service" type="hidden" tal:content="service" class="hidden-discussion-information"></p>
+		</div>
+
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
@@ -186,7 +192,6 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-strings.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
-
 
 	</tal:block>
 </tal:block>

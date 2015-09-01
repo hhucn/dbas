@@ -7,6 +7,10 @@
 function InteractionHandler() {
 	'use strict';
 
+	this.testAlert = function (id){
+		alert(id);
+	};
+
 	/**
 	 * Handler when an start statement was clicked
 	 * @param id of the button
@@ -14,7 +18,8 @@ function InteractionHandler() {
 	this.statementButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		new AjaxHandler().getPremisseForStatement(id);
+		// new AjaxHandler().getPremisseForStatement(id);
+		new AjaxHandler().callSiteForGetPremisseForStatement(id);
 	};
 
 	/**
@@ -24,7 +29,8 @@ function InteractionHandler() {
 	this.premisseButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		new AjaxHandler().getReplyForPremisseGroup(id);
+		// new AjaxHandler().getReplyForPremisseGroup(id);
+		new AjaxHandler().callSiteForGetReplyForPremisseGroup(id);
 	};
 
 	/**
@@ -35,7 +41,8 @@ function InteractionHandler() {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
-		new AjaxHandler().handleReplyForResponseOfConfrontation(id);
+		// new AjaxHandler().handleReplyForResponseOfConfrontation(id);
+		new AjaxHandler().callSiteForHandleReplyForResponseOfConfrontation(id);
 	};
 
 	/**
@@ -46,7 +53,8 @@ function InteractionHandler() {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
-		new AjaxHandler().getReplyForArgument(id);
+		// new AjaxHandler().getReplyForArgument(id);
+		new AjaxHandler().callSiteForGetReplyForArgument(id);
 	};
 
 	/**

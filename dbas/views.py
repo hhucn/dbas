@@ -18,7 +18,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.0'
+version = '0.3.1'
 header = name + ' ' + version
 
 class Dbas(object):
@@ -405,30 +405,37 @@ class Dbas(object):
 		}
 
 	# content page, after login
-	@view_config(route_name='main_content', renderer='templates/content.pt', permission='use')
-	def main_content(self):
+	@view_config(route_name='main_discussion', renderer='templates/content.pt', permission='use')
+	@view_config(route_name='main_discussion_start', renderer='templates/content.pt', permission='use')
+	def main_discussion(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
-		logger('main_content', 'def', 'main')
+		logger('main_discussion', 'def', 'main')
+
+		parameters = self.request.matchdict['parameters'] if 'parameters' in self.request.matchdict else '-'
+		service = 'ajax_' + self.request.matchdict['service'] if 'service' in self.request.matchdict else '-'
+		logger('main_discussion', 'def', 'self.request.matchdict[parameters]: ' + parameters)
+		logger('main_discussion', 'def', 'self.request.matchdict[service]: ' + service)
+
 
 		token = self.request.session.new_csrf_token()
-		logger('main_content', 'new token', str(token))
+		logger('main_discussion', 'new token', str(token))
 
 		db_issue = DBSession.query(Issue).filter_by(uid=1).first()
 		issue = 'none'
 		date = 'empty'
-		logger('main_content', 'def', 'check for an issue')
+		logger('main_discussion', 'def', 'check for an issue')
 		msg = ''
 
 		# get the current issue
 		if db_issue:
-			logger('main_content', 'def', 'issue exists')
+			logger('main_discussion', 'def', 'issue exists: ' + db_issue.text)
 			issue = db_issue.text
 			date = db_issue.date
 		else:
-			logger('main_content', 'def', 'issue does not exists')
+			logger('main_discussion', 'def', 'issue does not exists')
 
 		# checks whether the current user is admin
 		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
@@ -448,6 +455,8 @@ class Dbas(object):
 			'issue': issue,
 			'date': date,
 			'is_admin': is_admin,
+			'parameters': parameters,
+			'service': service
 		}
 
 	# settings page, when logged in
@@ -647,14 +656,15 @@ class Dbas(object):
 		Returns all positions as dictionary with uid <-> value
 		:return: list of all positions
 		"""
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
 		logger('get_start_statemens', 'def', 'main')
-		return_dict = DatabaseHelper().get_start_statements()
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 
 		# update timestamp
 		logger('get_start_statemens', 'def',  'update login timestamp')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		return_dict = DatabaseHelper().get_start_statements()
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+
 
 		return return_json
 
@@ -671,7 +681,7 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			logger('get_all_arguments_for_island', 'def', 'read params')
+			logger('get_premisses_for_statement', 'def', 'read params')
 			uid = self.request.params['uid']
 			return_dict = DatabaseHelper().get_premisses_for_statement(transaction, uid, True, self.request.authenticated_userid)
 			return_dict['status'] = '1'
@@ -723,10 +733,10 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			uid = self.request.params['uid']
-			logger('reply_for_argument', 'def', 'premissegroup ' + str(uid))
+			uid_text = self.request.params['uid']
+			logger('reply_for_argument', 'def', 'premissegroup ' + str(uid_text))
 			# track will be saved in the method
-			return_dict, status = DatabaseHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, uid)
+			return_dict, status = DatabaseHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, uid_text)
 			return_dict['status'] = str(status)
 		except KeyError as e:
 			logger('reply_for_argument', 'error', repr(e))

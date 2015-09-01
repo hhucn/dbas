@@ -9,13 +9,13 @@ class PasswordGenerator(object):
 	# http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
 	def get_rnd_passwd(self):
 		"""
-		Generates a password with the length of 8 out of [a-z][A-Z][+-*/#!*?]
+		Generates a password with the length of 10 out of ([a-z][A-Z][+-*/#!*?])+
 		:return: new secure password
 		"""
 		alphabet = 'abcdefghijklmnopqrstuvwxyz'
 		upperalphabet = alphabet.upper()
 		symbols = '+-*/#!*?'
-		pw_len = 8
+		pw_len = 10
 		pwlist = []
 
 		for i in range(pw_len//3):
@@ -49,6 +49,12 @@ class PasswordHandler(object):
 class UserHandler(object):
 
 	def update_last_action(self, transaction, nick):
+		"""
+
+		:param transaction:
+		:param nick:
+		:return:
+		"""
 		db_user = DBSession.query(User).filter_by(nickname=str(nick)).first()
 		db_user.update_last_action()
 		transaction.commit()

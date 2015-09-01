@@ -3,7 +3,7 @@ from sqlalchemy import and_
 import collections
 
 from .database import DBSession
-from .database.model import Argument, Statement, Track, User, TextValue, TextVersion, Premisse, PremisseGroup, Relation
+from .database.model import Argument, Statement, User, TextValue, TextVersion, Premisse, PremisseGroup, Relation, Track # TODO no track
 from .logger import logger
 
 class QueryHelper(object):
@@ -415,7 +415,7 @@ class QueryHelper(object):
 				key = 'undercut'
 
 			rnd = (rnd+1)%3
-			if int(dict[key]) != 0 or startrnd == rnd:
+			if dict != None and int(dict[key]) != 0 or startrnd == rnd:
 				break
 
 		return dict, key

@@ -6,6 +6,8 @@
  * @copyright Krauthoff 2015
  */
 
+var discussion_mainpage = 'http://localhost:4284/discussion/';
+
 startDiscussion = function () {
 	//$('#' + startDiscussionButtonId).hide(); // hides the start button
 	//$('#' + startDescriptionId).hide(); // hides the start description
@@ -17,6 +19,7 @@ startDiscussion = function () {
 
 restartDiscussion = function () {
 	// $('#' + startDiscussionButtonId).show(); // show the start description
+	/*
 	$('#' + restartDiscussionButtonId).hide(); // hide the restart button
 	$('#' + addStatementContainerId).hide(); // hide add statement container
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
@@ -37,6 +40,9 @@ restartDiscussion = function () {
 	guiHandler.resetEditButton();
 
 	startDiscussion();
+	*/
+
+	window.location.href = discussion_mainpage + "start";
 };
 
 
@@ -45,7 +51,10 @@ restartDiscussion = function () {
  */
 $(function () {
 	'use strict';
-	var guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), interactionHandler = new InteractionHandler();
+	var guiHandler = new GuiHandler(),
+		ajaxHandler = new AjaxHandler(),
+		interactionHandler = new InteractionHandler(),
+		hidden_service, hidden_params;
 
 	guiHandler.setHandler(interactionHandler);
 
@@ -122,59 +131,70 @@ $(function () {
 	});
 
 	// close popups
-	$('#' + popupEditStatementCloseButtonXId).click(function(){
-		guiHandler.hideEditStatementsPopup();
-	});
-	$('#' + popupEditStatementCloseButtonId).click(function(){
-		guiHandler.hideEditStatementsPopup();
-	});
-	$('#' + popupUrlSharingCloseButtonXId).click(function(){
-		guiHandler.hideUrlSharingPopup();
-	});
-	$('#' + popupUrlSharingCloseButtonId).click(function(){
-		guiHandler.hideUrlSharingPopup();
-	});
+	$('#' + popupEditStatementCloseButtonXId).click(function(){	guiHandler.hideEditStatementsPopup();	});
+	$('#' + popupEditStatementCloseButtonId).click(function(){	guiHandler.hideEditStatementsPopup();	});
+	$('#' + popupUrlSharingCloseButtonXId).click(function(){	guiHandler.hideUrlSharingPopup();	});
+	$('#' + popupUrlSharingCloseButtonId).click(function(){		guiHandler.hideUrlSharingPopup();	});
 
 	// share url for argument blogging
-	// $('#' + argumentBloggingSidebarId).hide();
 	$('#' + shareUrlId).click(function(){
 		guiHandler.showUrlSharingPopup();
-		guiHandler.hideUrlSharingPopup();
 	});
 
+
+	// focos text of input elements
+	$("input[type='text']").on("click", function () {
+		$(this).select();
+	});
+
+	/*
 	// managed in the html file
-	// $('#' + scSty$('#' + editStatementButtonId)le1Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	// $('#' + scStyle2Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	// $('#' + scStyle3Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	$('#' + scStyle1Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	$('#' + scStyle2Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	$('#' + scStyle3Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	*/
 
 	// ajax loading animation
 	$(document).on({
-		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a
-		// flickering screen
+		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
 	});
 
 	/*
 	// ask for refreshing
-	$(window).bind('beforeunload', function(){
-		return 'If you refresh this page, your progress will be lost.';
-	});
+	$(window).bind('beforeunload', function(){	return 'If you refresh this page, your progress will be lost.';	});
 
 	// asks for go back
-	$(window).bind('statechange', function(){
-		return 'If you refresh this page, your progress will be lost.';
-	});
+	$(window).bind('statechange', function(){	return 'If you refresh this page, your progress will be lost.';	});
 	*/
 
 	// logout user on unload
-	$(window).on('unload', function(){
+	$(window).on('unload', function windowUnload(){
 		// todo:
 		// set checkbox on login
 		// new db field for "stay_logged_in"
 		// send request on unload
 	});
 
+	$(window).load( function windowLoad () {
+    	if (window.location == discussion_mainpage + 'start') {
+			startDiscussion();
+		} else {
+			$('#' + discussionContainerId).fadeIn('fast');
+			$('#' + restartDiscussionButtonId).show(); // show the restart button
 
-	startDiscussion();
+			hidden_service = $('#' + hiddenDiscussionInformationServiceId).text();
+			hidden_params = $('#' + hiddenDiscussionInformationParametersId).text();
+			hidden_params = hidden_params.split('=');
+			hidden_params = hidden_params[1];
+			// alert("params: "	+ hidden_params + "\n\n" + "service: "	+ hidden_service);
+
+			if (hidden_service == 'ajax_get_start_statements'){						ajaxHandler.getStartStatements();	}
+			else if (hidden_service == 'ajax_get_premisses_for_statement'){			ajaxHandler.getPremisseForStatement(hidden_params);}
+			else if (hidden_service == 'ajax_reply_for_premissegroup'){				ajaxHandler.getReplyForPremisseGroup(hidden_params);	}
+			else if (hidden_service == 'ajax_reply_for_response_of_confrontation'){	ajaxHandler.handleReplyForResponseOfConfrontation(hidden_params);}
+			else if (hidden_service == 'ajax_reply_for_argument'){					ajaxHandler.getReplyForArgument(hidden_params);	}
+		}
+	});
 
 });

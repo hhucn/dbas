@@ -225,6 +225,11 @@
 	float: left;
 }
 
+.hidden-discussion-information,
+.hidden-information {
+	visibility: hidden;
+}
+
 @media (max-width: 767px) {
 	#discussions-space ul,
 	#discussions-avoidance-space ul {

@@ -8,12 +8,60 @@
 
 function AjaxHandler() {
 	'use strict';
+	var push=0,
+		loca=0,
+		hash=0,
+		aler=0;
+
+	/**
+	 * Redirection before an ajax call
+	 * @param uid current identifier
+	 */
+	this.callSiteForGetPremisseForStatement = function (uid) {
+		this.redirectBrowser('uid', uid, 'get_premisses_for_statement');
+	};
+
+	/**
+	 * Redirection before an ajax call
+	 * @param uid current identifier
+	 */
+	this.callSiteForGetReplyForPremisseGroup = function (uid) {
+		this.redirectBrowser('uid', uid, 'reply_for_premissegroup');
+	};
+
+	/**
+	 * Redirection before an ajax call
+	 * @param uid current identifier
+	 */
+	this.callSiteForGetReplyForArgument = function (uid) {
+		this.redirectBrowser('uid', uid, 'reply_for_argument');
+	};
+
+	/**
+	 * Redirection before an ajax call
+	 * @param id current identifier
+	 */
+	this.callSiteForHandleReplyForResponseOfConfrontation = function (id) {
+		this.redirectBrowser('id', id, 'reply_for_response_of_confrontation');
+	};
+
+	/**
+	 * Redirection before an ajax call
+	 * @param key current key
+	 * @param value current value
+	 * @param service current service
+	 */
+	this.redirectBrowser = function (key, value, service) {
+		//alert(discussion_mainpage + key + '=' + value + '/' + service + '/go'):
+		// window.location.replace(discussion_mainpage + key + '=' + value + '/' + service + '/go');
+		window.location.href = discussion_mainpage + key + '=' + value + '/' + service + '/go';
+	};
 
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
 	 */
 	this.getStartStatements = function () {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_start_statements',
 			type: 'GET',
@@ -21,11 +69,17 @@ function AjaxHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function(jqXHR, settings ){
+				settings_data = settings.data;
+				url = this.url;
 			}
 		}).done(function ajaxGetAllPositionsDone(data) {
-			// document.location.hash = '';
-			history.pushState(data, '', document.location);
 			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
+			if (hash==1) window.location = '/' + url + '?' + settings_data;
+			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
+			if (push==1) history.pushState(data, '', document.location);
+			if (aler==1) alert('AJAX\n' + url + '/' + settings_data);
 		}).fail(function ajaxGetAllPositionsFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
@@ -37,7 +91,7 @@ function AjaxHandler() {
 	 * @param uid of clicked statement
 	 */
 	this.getPremisseForStatement = function (uid) {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data;
+		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_premisses_for_statement',
 			method: 'POST',
@@ -51,10 +105,13 @@ function AjaxHandler() {
 			},
 			beforeSend: function(jqXHR, settings ){
 				settings_data = settings.data;
+				url = this.url;
 			}
 		}).done(function ajaxGetPremisseForStatementDone(data) {
-			// document.location.hash = settings_data;
-			history.pushState(data, '', document.location);
+			if (hash==1) window.location = '/' + url + '?' + settings_data;
+			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
+			if (push==1) history.pushState(data, '', document.location);
+			if (aler==1) alert('AJAX\n' + document.location + "/" + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneForPremisseForStatement(data);
 		}).fail(function ajaxGetPremisseForStatementFail() {
 			new GuiHandler().setErrorDescription(internal_error);
@@ -67,7 +124,7 @@ function AjaxHandler() {
 	 * @param uid of clicked statement
 	 */
 	this.getReplyForPremisseGroup = function (uid) {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data;
+		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_reply_for_premissegroup',
 			method: 'POST',
@@ -81,10 +138,13 @@ function AjaxHandler() {
 			},
 			beforeSend: function(jqXHR, settings ){
 				settings_data = settings.data;
+				url = this.url;
 			}
 		}).done(function ajaxGetReplyForPremisseDone(data) {
-			// document.location.hash = settings_data;
-			history.pushState(data, '', document.location);
+			if (hash==1) window.location = '/' + url + '?' + settings_data;
+			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
+			if (push==1) history.pushState(data, '', document.location);
+			if (aler==1) alert('AJAX\n' + document.location + "/" + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneReplyForPremissegroup(data);
 		}).fail(function ajaxGetReplyForPremisseFail() {
 			new GuiHandler().setErrorDescription(internal_error);
@@ -97,7 +157,7 @@ function AjaxHandler() {
 	 * @param uid of the clicked premisse group
 	 */
 	this.getReplyForArgument = function (uid) {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data;
+		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_reply_for_argument',
 			method: 'POST',
@@ -111,10 +171,13 @@ function AjaxHandler() {
 			},
 			beforeSend: function(jqXHR, settings ){
 				settings_data = settings.data;
+				url = this.url;
 			}
 		}).done(function ajaxGetReplyForArgumentDone(data) {
-			// document.location.hash = settings_data;
-			history.pushState(data, '', document.location);
+			if (hash==1) window.location = '/' + url + '?' + settings_data;
+			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
+			if (push==1) history.pushState(data, '', document.location);
+			if (aler==1) alert('AJAX\n' + document.location + "/" + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneReplyForArgument(data);
 		}).fail(function ajaxGetReplyForArgumentFail() {
 			new GuiHandler().setErrorDescription(internal_error);
@@ -127,7 +190,7 @@ function AjaxHandler() {
 	 * @param id of clicked relation and statement
 	 */
 	this.handleReplyForResponseOfConfrontation = function (id) {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data;
+		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
@@ -141,10 +204,13 @@ function AjaxHandler() {
 			},
 			beforeSend: function(jqXHR, settings ){
 				settings_data = settings.data;
+				url = this.url;
 			}
 		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
-			// document.location.hash = settings_data;
-			history.pushState(data, '', document.location);
+			if (hash==1) document.location.hash = settings_data;
+			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
+			if (push==1) history.pushState(data, '', document.location);
+			if (aler==1) alert('AJAX\n' + document.location + '/' + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data);
 		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
 			new GuiHandler().setErrorDescription(internal_error);

@@ -2,7 +2,7 @@ import random
 from sqlalchemy import and_, not_
 
 from .database import DBSession
-from .database.model import Argument, Statement, Track, User, Group, TextValue, TextVersion, Premisse, PremisseGroup
+from .database.model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse, PremisseGroup, Track # TODO no track
 from .dictionary_helper import DictionaryHelper
 from .query_helper import QueryHelper
 from .user_management import UserHandler
@@ -226,6 +226,8 @@ class DatabaseHelper(object):
 		splitted_id = uid_text.split('_')
 		relation = splitted_id[0]
 		premissesgroup_uid = splitted_id[2]
+
+		logger('DatabaseHelper', 'get_attack_for_argument', 'relation: ' + relation + ', premissesgroup_uid: ' + premissesgroup_uid)
 
 		# get last tracked conclusion
 		db_last_tracked_premissegroup = DBSession.query(Track).join(PremisseGroup).order_by(Track.uid.desc()).first()

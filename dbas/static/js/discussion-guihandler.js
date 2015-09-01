@@ -585,6 +585,7 @@ function GuiHandler() {
 	 */
 	this.showUrlSharingPopup = function () {
 		$('#' + popupUrlSharingId).modal('show');
+		$('#' + popupUrlSharingInputId).val(window.location);
 	};
 
 	/**
@@ -631,7 +632,7 @@ function GuiHandler() {
 	 */
 	this.hideUrlSharingPopup = function () {
 		$('#' + popupUrlSharingId).modal('hide');
-		$('#' + popupUrlSharingTextareaId).text('');
+		$('#' + popupUrlSharingInputId).val('');
 	};
 
 	/**

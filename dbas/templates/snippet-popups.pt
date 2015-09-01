@@ -457,11 +457,10 @@
 			<div id="popup-url-sharing-body">
 				<div id="popup-url-sharing-content">
 				</div>
-				<p id="popup-url-sharing-description-p" i18n:translate="url-sharing-description">Please feel free to share this url:</p>
+				<h4><p id="popup-url-sharing-description-p" i18n:translate="url-sharing-description">Please feel free to share this url:</p></h4>
 				<input id="popup-url-sharing-input" type="text" placeholder="URL">
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="popup-url-sharing-copy-to-clipboard-button" i18n:translate="copy-to-clipboard">Copy to clipboard</button>
 				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" i18n:translate="close">Close</button>
 			</div>
 		</div>
