@@ -103,7 +103,7 @@ function JsonGuiHandler() {
 			confrontationText = otherParticipantsAcceptBut + ' they have a stronger argument for rejecting <b>' + conclusion + ':</b> ';
 
 		} else if (jsonData.attack == 'undercut'){
-			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not justifies that <b>' + conclusion + '</b>, because ';
+			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not justify that <b>' + conclusion + '</b>, because ';
 
 		}
 		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';

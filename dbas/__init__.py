@@ -68,28 +68,19 @@ def main(global_config, **settings):
 	config.add_route('main_imprint',  '/imprint')
 	config.add_route('404',           '/404')
 
-	# ajax
+	# ajax for navigation logic, administraion, settigs and editing/viewing log
 	config.add_route('ajax_get_start_statements',                '/discussion/ajax_get_start_statements')
 	config.add_route('ajax_get_premisses_for_statement',         '/discussion/{url:.*}/ajax_get_premisses_for_statement')
 	config.add_route('ajax_reply_for_premissegroup',             '/discussion/{url:.*}/ajax_reply_for_premissegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}/ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}/ajax_reply_for_argument')
-	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}/ajax_set_new_start_statement')
-	config.add_route('ajax_set_new_premisses',                   '/discussion/{url:.*}/ajax_set_new_premisses')
-
-	# administration
-	config.add_route('ajax_switch_language', '/ajax_switch_language')
-	config.add_route('ajax_all_users',       '/ajax_all_users')
-
-	# URL DISPATCH: main stuff for the discussion
-	config.add_route('idea', 'site/{id}')
-
-	# settings
-	config.add_route('ajax_manage_user_track', '/ajax_manage_user_track')
-
-	# editing / viewing log
-	config.add_route('ajax_get_logfile_for_statement',   '/ajax_get_logfile_for_statement')
-	config.add_route('ajax_set_correcture_of_statement', '/ajax_set_correcture_of_statement')
+	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}ajax_set_new_start_statement{params:.*}')
+	config.add_route('ajax_set_new_premisses',                   '/discussion/{url:.*}ajax_set_new_premisses{params:.*}')
+	config.add_route('ajax_switch_language',                     '/discussion/{url:.*}ajax_switch_language{params:.*}')
+	config.add_route('ajax_all_users',                           '/discussion/{url:.*}ajax_all_users{params:.*}')
+	config.add_route('ajax_manage_user_track',                   '/discussion/{url:.*}ajax_manage_user_track{params:.*}')
+	config.add_route('ajax_get_logfile_for_statement',           '/discussion/{url:.*}ajax_get_logfile_for_statement{params:.*}')
+	config.add_route('ajax_set_correcture_of_statement',         '/discussion/{url:.*}ajax_set_correcture_of_statement{params:.*}')
 
 	# read the input and start
 	config.scan()

@@ -572,7 +572,6 @@ function GuiHandler() {
 		$('#' + popupEditStatementSubmitButtonId).hide().click(function edit_statement_click() {
 			statement = $('#' + popupEditStatementTextareaId).val();
 			//$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
-			alert($(this).attr('statement_id') + "\n" + $(this).attr('callback_td'));
 			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement);
 		});
 

@@ -289,7 +289,7 @@ function AjaxHandler() {
 	 * @param statement_uid current uid of the statement
 	 */
 	this.getLogfileForStatement = function (statement_uid) {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
 			type: 'POST',
@@ -300,8 +300,16 @@ function AjaxHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function(jqXHR, settings ){
+				settings_data = settings.data;
+				url = this.url;
 			}
 		}).done(function ajaxGetLogfileForStatementDone(data) {
+			if (hash==1) document.location.hash = settings_data;
+			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
+			if (push==1) history.pushState(data, '', document.location);
+			if (aler==1) alert('AJAX\n' + document.location + '/' + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneForGetLogfileForStatement(data);
 		}).fail(function ajaxGetLogfileForStatementFail() {
 			$('#' + popupErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
