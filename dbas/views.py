@@ -88,8 +88,8 @@ class Dbas(object):
 		logger('main_login', 'new token', str(token))
 
 		if self.request.authenticated_userid:
-			logger('main_login', 'def', 'user is registered, so redirect to /content')
-			return HTTPFound(location=self.request.route_url('main_content'))
+			logger('main_login', 'def', 'user is registered, so redirect to main_discussion_start')
+			return HTTPFound(location=self.request.route_url('main_discussion_start'))
 
 		login_url = self.request.route_url('main_login')
 		referrer = self.request.url
@@ -138,7 +138,7 @@ class Dbas(object):
 				transaction.commit()
 
 				return HTTPFound(
-					location=self.request.route_url('main_content'),
+					location=self.request.route_url('main_discussion_start'),
 					headers=headers
 				)
 			log_failed = True
