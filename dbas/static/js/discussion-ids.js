@@ -67,6 +67,7 @@ var popupUrlSharingId = 'popup-url-sharing';
 var popupUrlSharingCloseButtonXId = 'popup-url-sharing-close';
 var popupUrlSharingCloseButtonId = 'popup-url-sharing-close-button';
 var popupUrlSharingInputId = 'popup-url-sharing-input';
+var popupUrlSharingDescriptionPId = 'popup-url-sharing-description-p';
 var translationLink = 'link-trans-';
 var translationLinkDe = 'link-trans-de';
 var translationLinkEn = 'link-trans-en';

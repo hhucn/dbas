@@ -9,6 +9,7 @@
  * @type {string}
  */
 var addedEverything = "Everything was added.";
+var feelFreeToShareUrl = "Please feel free to share this url";
 var confirmation = "Confirmation";
 var confirmTranslation = "If you change the language, your process on this page will be lost and you have to restart the discussion!";
 var correctionsSet = "Your correction was set.";

@@ -185,6 +185,7 @@
 			<p id="hidden-discussion-information-service" type="hidden" tal:content="service" class="hidden-discussion-information"></p>
 		</div>
 
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery.urlshortener.min.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>

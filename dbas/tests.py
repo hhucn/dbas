@@ -81,7 +81,7 @@ class Setup:
 		config.add_route('main_login', '/login')
 		config.add_route('main_logout', '/logout')
 		config.add_route('main_contact', '/contact')
-		config.add_route('main_content', '/content')
+		config.add_route('main_discussion_start',  '/discussion/start')
 		config.add_route('main_news', '/news')
 		config.add_route('main_settings', '/settings')
 		config.add_route('main_impressum', '/impressum')
@@ -230,15 +230,16 @@ class ViewContactTests(UnitTestBase):
 
 
 # testing content page
-class ViewContentTests(UnitTestBase):
+class ViewDicussionTests(UnitTestBase):
 	def _callFUT(self, request):
 		print("ViewContentTests: _callFUT")
-		return Dbas.main_content(request)
+		return Dbas.main_discussion_start(request)
+
 
 	def test_content(self):
 		print("ViewContentTests: test_logout")
 		request = testing.DummyRequest()
-		response = Dbas(request).main_content()
+		response = Dbas(request).main_discussion_start()
 		self.assertEqual('Content', response['title'])
 
 
@@ -259,7 +260,7 @@ class ViewSettingsTests(UnitTestBase):
 class ViewNewsTests(UnitTestBase):
 	def _callFUT(self, request):
 		print("ViewNewsTests: _callFUT")
-		return Dbas.main_content(request)
+		return Dbas.main_news(request)
 
 	def test_news(self):
 		print("ViewNewsTests: test_news")

@@ -81,6 +81,8 @@ def main(global_config, **settings):
 	config.add_route('ajax_manage_user_track',                   '/discussion/{url:.*}ajax_manage_user_track{params:.*}')
 	config.add_route('ajax_get_logfile_for_statement',           '/discussion/{url:.*}ajax_get_logfile_for_statement{params:.*}')
 	config.add_route('ajax_set_correcture_of_statement',         '/discussion/{url:.*}ajax_set_correcture_of_statement{params:.*}')
+	config.add_route('ajax_get_shortened_url',         '/discussion/{url:.*}ajax_get_shortened_url{params:.*}')
+
 
 	# read the input and start
 	config.scan()

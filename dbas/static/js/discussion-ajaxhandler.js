@@ -84,9 +84,10 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetAllPositionsDone(data) {
 			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetAllPositionsFail() {
+		}).fail(function ajaxGetAllPositionsFail(err) {
 			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
+			// new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
+			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
 	};
 
@@ -114,9 +115,10 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetPremisseForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForPremisseForStatement(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetPremisseForStatementFail() {
+		}).fail(function ajaxGetPremisseForStatementFail(err) {
 			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
+			// new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
+			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
 	};
 
@@ -144,9 +146,10 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetReplyForPremisseDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForPremissegroup(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetReplyForPremisseFail() {
+		}).fail(function ajaxGetReplyForPremisseFail(err) {
 			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
+			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
+			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
 	};
 
@@ -174,9 +177,10 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetReplyForArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForArgument(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetReplyForArgumentFail() {
+		}).fail(function ajaxGetReplyForArgumentFail(err) {
 			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
+			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
+			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
 	};
 
@@ -204,9 +208,10 @@ function AjaxSiteHandler() {
 		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
 			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
+		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail(err) {
 			new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
+			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
+			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
 	};
 
@@ -225,8 +230,9 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneGetUsersAndSetInGui(data);
-		}).fail(function ajaxGetAllUsersFail() {
-			new GuiHandler().setErrorDescription(internal_error);
+		}).fail(function ajaxGetAllUsersFail(err) {
+			// new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
 	};
 
@@ -247,8 +253,9 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxSendNewPremissesDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewPremisses(data);
-		}).fail(function ajaxSendNewPremissesFail() {
-			new GuiHandler().setErrorDescription(internal_error);
+		}).fail(function ajaxSendNewPremissesFail(err) {
+			// new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
 	};
 
@@ -271,8 +278,9 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxSendStartStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
-		}).fail(function ajaxSendStartStatementFail() {
-			new GuiHandler().setErrorDescription(internal_error);
+		}).fail(function ajaxSendStartStatementFail(err) {
+			// new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
 	};
 
@@ -284,7 +292,7 @@ function AjaxSiteHandler() {
 		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
-			type: 'POST',
+			type: 'GET',
 			data: {
 				uid: statement_uid
 			},
@@ -300,9 +308,10 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetLogfileForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForGetLogfileForStatement(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetLogfileForStatementFail() {
-			$('#' + popupErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
-				' failed. Sorry!');
+		}).fail(function ajaxGetLogfileForStatementFail(err) {
+			// $('#' + popupErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
+			// 	' failed. Sorry!');
+			$('#' + popupErrorDescriptionId).text(JSON.stringify(err));
 		});
 	};
 
@@ -328,9 +337,32 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, edit_dialog_td_id);
-		}).fail(function ajaxSendCorrectureOfStatementFail() {
-			$('#' + popupErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
-				' failed. Sorry!');
+		}).fail(function ajaxSendCorrectureOfStatementFail(err) {
+			// $('#' + popupErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
+			// 	' failed. Sorry!');
+			$('#' + popupErrorDescriptionId).text(JSON.stringify(err));
+		});
+	};
+
+	/**
+	 *
+	 * @param long_url
+	 */
+	this.getShortenUrl = function (long_url) {
+		var encoded_url = encodeURI(long_url);
+		$.ajax({
+			url: 'ajax_get_shortened_url',
+			type: 'GET',
+			dataType: 'json',
+			data: {
+				url: encoded_url
+			},
+			async: true
+		}).done(function ajaxGetShortenUrlDone(data) {
+			new InteractionHandler().callbackIfDoneForShortenUrl(data);
+		}).fail(function ajaxGetShortenUrl(err) {
+			alert(JSON.stringify(err));
+			$('#' + popupUrlSharingInputId).val(long_url);
 		});
 	};
 }

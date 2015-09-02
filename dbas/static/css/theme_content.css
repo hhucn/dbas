@@ -221,6 +221,11 @@
 	resize: vertical;
 }
 
+#popup-url-sharing-body {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 .share-icon {
 	float: left;
 }

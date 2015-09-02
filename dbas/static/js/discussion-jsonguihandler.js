@@ -199,7 +199,7 @@ function JsonGuiHandler() {
 	 * @param jsonData data with json content
 	 */
 	this.addJsonDataToContentAsArguments = function (jsonData) {
-		var guihandler = new GuiHandler(), text, helper = new Helper();
+		var text, helper = new Helper();
 		$.each(jsonData, function addJsonDataToContentAsArgumentsEach(key, val) {
 			// we only want attacking arguments
 			if (val.is_supportive === '0') {

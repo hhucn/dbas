@@ -312,4 +312,21 @@ function InteractionHandler() {
 			$('#' + edit_dialog_td_id).text(parsedData.text);
 		}
 	};
+
+	/**
+	 * Callback, when a url was shortend
+	 * @param data of the ajax request
+	 * @param long_url url which should be shortend
+	 */
+	this.callbackIfDoneForShortenUrl = function (data, long_url) {
+		var parsedData = $.parseJSON(data), service;
+		if (parsedData.status == '1'){
+			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
+			$('#' + popupUrlSharingDescriptionPId).html(feelFreeToShareUrl + ", which was shortened with " + service + ":");
+			$('#' + popupUrlSharingInputId).val(parsedData.url);
+		} else {
+			$('#' + popupUrlSharingDescriptionPId).text(feelFreeToShareUrl + ":");
+			$('#' + popupUrlSharingInputId).val(long_url);
+		}
+	};
 }

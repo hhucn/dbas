@@ -584,7 +584,8 @@ function GuiHandler() {
 	 */
 	this.showUrlSharingPopup = function () {
 		$('#' + popupUrlSharingId).modal('show');
-		$('#' + popupUrlSharingInputId).val(window.location);
+		new AjaxSiteHandler().getShortenUrl(window.location);
+		//$('#' + popupUrlSharingInputId).val(window.location);
 	};
 
 	/**

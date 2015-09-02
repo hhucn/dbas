@@ -7,6 +7,7 @@ from pyramid.security import remember, forget
 from pyramid.session import check_csrf_token
 from pyramid.renderers import get_renderer
 from pyramid.threadlocal import get_current_registry
+from pyshorteners.shorteners import Shortener
 
 from .database import DBSession
 from .database.model import User, Group, Issue
@@ -926,3 +927,50 @@ class Dbas(object):
 
 		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
 		return return_json
+
+	# ajax - for shorten url
+	@view_config(route_name='ajax_get_shortened_url', renderer='json')
+	def get_shortened_url(self):
+		"""
+
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('get_shortened_url', 'def', 'main')
+
+		return_dict = {}
+		google_api_key = ' AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0'
+		# bitly_login = 'dbashhu'
+		# bitly_token = ''
+		# bitly_key = 'R_d8c4acf2fb554494b65529314d1e11d1'
+
+
+		try:
+			url = self.request.params['url']
+			# service = 'GoogleShortener'
+			# service = 'BitlyShortener'
+			service = 'TinyurlShortener'
+			# service_url = 'https://goo.gl/'
+			# service_url = 'https://bitly.com/'
+			service_url = 'http://tinyurl.com/'
+			logger('get_shortened_url', 'def', service + ' will shorten ' + str(url))
+			# shortener = Shortener(service, api_key=google_api_key) # TODO use google
+			# shortener = Shortener(service, bitly_login=bitly_login, bitly_api_key=bitly_key, bitly_token=bitly_token)
+			shortener = Shortener(service)
+
+			short_url = format(shortener.short(url))
+			return_dict['url'] = short_url
+			return_dict['service'] = service
+			return_dict['service_url'] = service_url
+			logger('get_shortened_url', 'def', 'short url ' + short_url)
+
+			return_dict['status'] = '1'
+		except KeyError as e:
+			logger('get_shortened_url', 'error', repr(e))
+			return_dict['status'] = '0'
+
+		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return return_json
+
+
