@@ -59,7 +59,7 @@ function Helper() {
 	 * @param conclusion current conclusion
 	 * @param startLowerCase, true, when each sentences should start as lowercase
 	 * @param endWithDot, true, when each sentences should end with a dot
-	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut]
+	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
 	this.createRelationsText = function(premisse, conclusion, startLowerCase, endWithDot){
 		if (premisse.substr(premisse.length-1) == ".")
@@ -77,8 +77,10 @@ function Helper() {
 			undercut  = '<b>' + r + ', ' + premisse + '</b>, but I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
 			overbid	  = '<b>' + r + ', ' + premisse + '</b>, and I do ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
 			rebut	  = '<b>' + r + ', ' + premisse + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
-				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot;
-		return [undermine, support, undercut, overbid, rebut];
+				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot,
+			dontknow   = r + ' I do not know whether <b>' + premisse + '</b> is right or wrong. Let me give another support for my opinion.',
+			irrelevant = r + ' I do not care about: <b>' + premisse + '</b>. Let me give another support for my opinion.';
+		return [undermine, support, undercut, overbid, rebut, dontknow, irrelevant];
 	};
 
 	/**
@@ -87,7 +89,7 @@ function Helper() {
 	 * @param conclusion current conclusion
 	 * @param startLowerCase, true, when each sentences should start as lowercase
 	 * @param endWithDot, true, when each sentences should end with a dot
-	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut]
+	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
 	this.createConfrontationsRelationsText = function(confrontation, conclusion, startLowerCase, endWithDot){
 
@@ -96,6 +98,7 @@ function Helper() {
 
 		var w = startLowerCase ? 'wrong' : 'Wrong',
 			r = startLowerCase ? 'right' : 'Right',
+			i = startLowerCase ? 'irrelevant' : 'Irrelevant',
 			enddot = endWithDot ? '.' : '',
 			belCounterJusti = 'believe that this is a good counter-argument for my justification',
 			undermine = w + ', it is not true that <b>' + confrontation + '</b>' + enddot,
@@ -103,8 +106,10 @@ function Helper() {
 			undercut  = r + ', <b>' + confrontation + '</b>, but				 I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
 			overbid	  = r + ', <b>' + confrontation + '</b>, and I do ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
 			rebut	  = r + ', <b>' + confrontation + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
-				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot;
-		return [undermine, support, undercut, overbid, rebut];
+				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot,
+			dontknow   = i + ', I do not know whether <b>' + confrontation + '</b> is right or wrong. Let me give another support for my opinion.',
+			irrelevant = i + ', I do not care about: <b>' + confrontation + '</b>.  Let me give another support for my opinion.';
+		return [undermine, support, undercut, overbid, rebut, dontknow, irrelevant];
 	};
 
 	/**

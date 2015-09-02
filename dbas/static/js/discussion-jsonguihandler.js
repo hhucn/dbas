@@ -98,13 +98,10 @@ function JsonGuiHandler() {
 		// build some confrontation text
 		if (jsonData.attack == 'undermine'){
 			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not hold, because ';
-
 		} else if (jsonData.attack == 'rebut'){
-			confrontationText = otherParticipantsAcceptBut + ' they have a stronger argument for rejecting <b>' + conclusion + ':</b> ';
-
+			confrontationText = otherParticipantsAcceptBut + ' they have a stronger statement for rejecting <b>' + conclusion + '</b>. They say: ';
 		} else if (jsonData.attack == 'undercut'){
 			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not justify that <b>' + conclusion + '</b>, because ';
-
 		}
 		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
 
@@ -119,6 +116,8 @@ function JsonGuiHandler() {
 		listitems.push(helper.getKeyValAsInputInLiWithType('undercut' + id, relationArray[2] + ' [<i>undercut</i>]', false, false, true, 'undercut'));
 		listitems.push(helper.getKeyValAsInputInLiWithType('overbid' + id, relationArray[3] + ' [<i>overbid</i>]', false, false, true, 'overbid'));
 		listitems.push(helper.getKeyValAsInputInLiWithType('rebut' + id, relationArray[4] + ' [<i>rebut</i>]', false, false, true, 'rebut'));
+		listitems.push(helper.getKeyValAsInputInLiWithType('dontknow' + id, relationArray[5] + ' [<i>dontknow</i>]', false, false, true, 'dontknow'));
+		listitems.push(helper.getKeyValAsInputInLiWithType('irrelevant' + id, relationArray[6] + ' [<i>irrelevant</i>]', false, false, true, 'irrelevant'));
 		// TODO HOW TO INSERT ATTACKING PREMISEGROUPS?
 
 		// set the buttons

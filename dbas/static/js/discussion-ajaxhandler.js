@@ -345,8 +345,8 @@ function AjaxSiteHandler() {
 	};
 
 	/**
-	 *
-	 * @param long_url
+	 * Shortens url
+	 * @param long_url for shortening
 	 */
 	this.getShortenUrl = function (long_url) {
 		var encoded_url = encodeURI(long_url);

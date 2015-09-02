@@ -119,6 +119,7 @@ class QueryHelper(object):
 								conclusion=db_related_argument.conclusion_uid)
 			arguments = []
 			arguments.append(argument)
+
 		else:
 			logger('QueryHelper', 'set_premisses_related_to_argument', 'error')
 			return '-1'

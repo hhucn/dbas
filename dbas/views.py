@@ -932,19 +932,18 @@ class Dbas(object):
 	@view_config(route_name='ajax_get_shortened_url', renderer='json')
 	def get_shortened_url(self):
 		"""
-
-		:return:
+		Shortens url with the help of a python lib
+		:return: dictionary with shortend url
 		"""
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('get_shortened_url', 'def', 'main')
 
 		return_dict = {}
-		google_api_key = ' AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0'
+		# google_api_key = ' AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0'
 		# bitly_login = 'dbashhu'
 		# bitly_token = ''
 		# bitly_key = 'R_d8c4acf2fb554494b65529314d1e11d1'
-
 
 		try:
 			url = self.request.params['url']
@@ -955,6 +954,7 @@ class Dbas(object):
 			# service_url = 'https://bitly.com/'
 			service_url = 'http://tinyurl.com/'
 			logger('get_shortened_url', 'def', service + ' will shorten ' + str(url))
+
 			# shortener = Shortener(service, api_key=google_api_key) # TODO use google
 			# shortener = Shortener(service, bitly_login=bitly_login, bitly_api_key=bitly_key, bitly_token=bitly_token)
 			shortener = Shortener(service)

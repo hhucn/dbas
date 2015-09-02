@@ -151,6 +151,11 @@ function InteractionHandler() {
 			long_id = radioButton.attr('long_id'),
 			value = radioButton.val();
 
+		if (id.indexOf('dontknow') != -1 || id.indexOf('irrelevant') != -1){
+			parent.history.back();
+			return;
+		}
+
 		if (typeof id === 'undefined' || typeof value === 'undefined') {
 			guiHandler.setErrorDescription(selectStatement);
 			
