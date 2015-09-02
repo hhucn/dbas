@@ -6,7 +6,7 @@
  * @copyright Krauthoff 2015
  */
 
-function AjaxHandler() {
+function AjaxSiteHandler() {
 	'use strict';
 	var push=0,
 		loca=0,
@@ -57,6 +57,13 @@ function AjaxHandler() {
 		window.location.href = discussion_mainpage + key + '=' + value + '/' + service + '/go';
 	};
 
+	this.debugger = function ( data, url, settings_data ) {
+		if (hash==1) window.location = '/' + url + '?' + settings_data;
+		if (loca==1) window.location = '/content/' + url + '?' + settings_data;
+		if (push==1) history.pushState(data, '', document.location);
+		if (aler==1) alert('AJAX\n' + url + '/' + settings_data);
+	};
+
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
 	 */
@@ -76,10 +83,7 @@ function AjaxHandler() {
 			}
 		}).done(function ajaxGetAllPositionsDone(data) {
 			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
-			if (hash==1) window.location = '/' + url + '?' + settings_data;
-			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
-			if (push==1) history.pushState(data, '', document.location);
-			if (aler==1) alert('AJAX\n' + url + '/' + settings_data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllPositionsFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
@@ -108,11 +112,8 @@ function AjaxHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetPremisseForStatementDone(data) {
-			if (hash==1) window.location = '/' + url + '?' + settings_data;
-			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
-			if (push==1) history.pushState(data, '', document.location);
-			if (aler==1) alert('AJAX\n' + document.location + "/" + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneForPremisseForStatement(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetPremisseForStatementFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
@@ -141,11 +142,8 @@ function AjaxHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetReplyForPremisseDone(data) {
-			if (hash==1) window.location = '/' + url + '?' + settings_data;
-			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
-			if (push==1) history.pushState(data, '', document.location);
-			if (aler==1) alert('AJAX\n' + document.location + "/" + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneReplyForPremissegroup(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetReplyForPremisseFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
@@ -174,11 +172,8 @@ function AjaxHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetReplyForArgumentDone(data) {
-			if (hash==1) window.location = '/' + url + '?' + settings_data;
-			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
-			if (push==1) history.pushState(data, '', document.location);
-			if (aler==1) alert('AJAX\n' + document.location + "/" + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneReplyForArgument(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetReplyForArgumentFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
@@ -207,11 +202,8 @@ function AjaxHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
-			if (hash==1) document.location.hash = settings_data;
-			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
-			if (push==1) history.pushState(data, '', document.location);
-			if (aler==1) alert('AJAX\n' + document.location + '/' + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
 			new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
@@ -306,11 +298,8 @@ function AjaxHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetLogfileForStatementDone(data) {
-			if (hash==1) document.location.hash = settings_data;
-			if (loca==1) window.location = '/content/' + url + '?' + settings_data;
-			if (push==1) history.pushState(data, '', document.location);
-			if (aler==1) alert('AJAX\n' + document.location + '/' + url + '/' + settings_data);
 			new InteractionHandler().callbackIfDoneForGetLogfileForStatement(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetLogfileForStatementFail() {
 			$('#' + popupErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
 				' failed. Sorry!');

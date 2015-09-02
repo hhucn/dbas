@@ -396,7 +396,7 @@ function GuiHandler() {
 	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
 		var statement, attack, argument, conclusion,
 			guihandler = new GuiHandler(),
-			ajaxhandler = new AjaxHandler(),
+			ajaxhandler = new AjaxSiteHandler(),
 			interactionhandler = new InteractionHandler();
 		if (!isVisible) {
 			$('#' + addStatementContainerId).fadeOut('slow');
@@ -572,7 +572,7 @@ function GuiHandler() {
 		$('#' + popupEditStatementSubmitButtonId).hide().click(function edit_statement_click() {
 			statement = $('#' + popupEditStatementTextareaId).val();
 			//$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
-			new AjaxHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement);
+			new AjaxSiteHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement);
 		});
 
 		// on click: do ajax
@@ -703,7 +703,7 @@ function GuiHandler() {
 	 */
 	this.setDisplayStyleAsProContraList = function () {
 		$('#' + islandViewContainerId).fadeIn('slow');
-		new AjaxHandler().getAllArgumentsForIslandView();
+		new AjaxSiteHandler().getAllArgumentsForIslandView();
 	};
 
 	/**

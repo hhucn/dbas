@@ -18,8 +18,8 @@ function InteractionHandler() {
 	this.statementButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		// new AjaxHandler().getPremisseForStatement(id);
-		new AjaxHandler().callSiteForGetPremisseForStatement(id);
+		// new AjaxSiteHandler().getPremisseForStatement(id);
+		new AjaxSiteHandler().callSiteForGetPremisseForStatement(id);
 	};
 
 	/**
@@ -29,8 +29,8 @@ function InteractionHandler() {
 	this.premisseButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		// new AjaxHandler().getReplyForPremisseGroup(id);
-		new AjaxHandler().callSiteForGetReplyForPremisseGroup(id);
+		// new AjaxSiteHandler().getReplyForPremisseGroup(id);
+		new AjaxSiteHandler().callSiteForGetReplyForPremisseGroup(id);
 	};
 
 	/**
@@ -41,8 +41,8 @@ function InteractionHandler() {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
-		// new AjaxHandler().handleReplyForResponseOfConfrontation(id);
-		new AjaxHandler().callSiteForHandleReplyForResponseOfConfrontation(id);
+		// new AjaxSiteHandler().handleReplyForResponseOfConfrontation(id);
+		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id);
 	};
 
 	/**
@@ -53,8 +53,8 @@ function InteractionHandler() {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
-		// new AjaxHandler().getReplyForArgument(id);
-		new AjaxHandler().callSiteForGetReplyForArgument(id);
+		// new AjaxSiteHandler().getReplyForArgument(id);
+		new AjaxSiteHandler().callSiteForGetReplyForArgument(id);
 	};
 
 	/**
@@ -135,7 +135,7 @@ function InteractionHandler() {
 				i = i + 1;
 			}
 		});
-		new AjaxHandler().sendNewPremissesForArgument(dict);
+		new AjaxSiteHandler().sendNewPremissesForArgument(dict);
 	};
 
 	/**

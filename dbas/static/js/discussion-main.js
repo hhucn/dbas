@@ -15,7 +15,7 @@ startDiscussion = function () {
 	$('#' + restartDiscussionButtonId).show(); // show the restart button
 	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
 
-	new AjaxHandler().getStartStatements();
+	new AjaxSiteHandler().getStartStatements();
 };
 
 restartDiscussion = function () {
@@ -53,7 +53,7 @@ restartDiscussion = function () {
 $(function () {
 	'use strict';
 	var guiHandler = new GuiHandler(),
-		ajaxHandler = new AjaxHandler(),
+		ajaxHandler = new AjaxSiteHandler(),
 		interactionHandler = new InteractionHandler(),
 		hidden_service, hidden_params;
 

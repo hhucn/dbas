@@ -164,7 +164,7 @@ function Helper() {
 	};
 
 	this.createRowInEditDialog = function(uid, statement, type){
-		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxHandler(), tr, td_text, td_buttons;
+		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxSiteHandler(), tr, td_text, td_buttons;
 
 		// create new items
 		tr = $('<tr>');
