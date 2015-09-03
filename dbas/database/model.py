@@ -263,7 +263,7 @@ class Argument(Base):
 	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
 	statements = relationship('Statement', foreign_keys=[conclusion_uid])
 	users = relationship('User', foreign_keys=[author_uid])
-	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)  # TODO
+	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
 
 	def __init__(self, premissegroup, issupportive, author, weight, conclusion=0):
 		"""

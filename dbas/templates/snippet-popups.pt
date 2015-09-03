@@ -461,6 +461,7 @@
 				<input id="popup-url-sharing-input" type="text" placeholder="URL">
 			</div>
 			<div class="modal-footer">
+				<button type="button" class="btn btn-default" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" short_url="0">Fetch long url!</button>
 				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" i18n:translate="close">Close</button>
 			</div>
 		</div>

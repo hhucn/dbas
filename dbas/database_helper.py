@@ -2,7 +2,7 @@ import random
 from sqlalchemy import and_, not_
 
 from .database import DBSession
-from .database.model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse, PremisseGroup, Track # TODO no track
+from .database.model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse, PremisseGroup # TODO no track
 from .dictionary_helper import DictionaryHelper
 from .query_helper import QueryHelper
 from .user_management import UserHandler
@@ -157,23 +157,18 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def get_attack_for_premissegroup(self, transaction, user, last_premisses_group_uid):
+	def get_attack_for_premissegroup(self, transaction, user, last_premisses_group_uid, last_statement_uid):
 		"""
 		Based on the last given premissesgroup and statement, an attack will be choosen and replied.
 		:param transaction: current transaction
 		:param user: current nick of the user
 		:param last_premisses_group_uid:
+		:param last_statement_uid:
 		:return: A random attack (undermine, rebut undercut) based on the last saved premissesgroup and statement as well as many texts
 		like the premisse as text, conclusion as text, attack as text, confrontation as text. Everything is in a dict.
 		"""
 		db_user = DBSession.query(User).filter_by(nickname=user).first()
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'main with last_premisses_group_uid ' + str(last_premisses_group_uid))
-
-		# get last statement out of the history
-		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last statement with user ' + str(db_user.uid) + ', and statement not zero')
-		db_track_last_statement = DBSession.query(Track).filter(and_(Track.author_uid==db_user.uid, not_(Track.statement_uid == 0)))\
-			.order_by(Track.uid.desc()).join(Statement).first()
-		last_statement_uid = db_track_last_statement.statement_uid
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last statement ' + str(last_statement_uid))
 
 		return_dict = {}
@@ -211,27 +206,27 @@ class DatabaseHelper(object):
 
 		return return_dict, status
 
-	def get_attack_for_argument(self, transaction, user, uid_text):
+	def get_attack_for_argument(self, transaction, user, id_text, pgroup_id):
 		"""
 
 		:param transaction:
 		:param user:
-		:param uid_text:
+		:param id_text:
+		:param pgroup_id:
 		:return:
 		"""
 
 		logger('DatabaseHelper', 'get_attack_for_argument', 'main')
 
 		qh = QueryHelper()
-		splitted_id = uid_text.split('_')
+		splitted_id = id_text.split('_')
 		relation = splitted_id[0]
 		premissesgroup_uid = splitted_id[2]
 
 		logger('DatabaseHelper', 'get_attack_for_argument', 'relation: ' + relation + ', premissesgroup_uid: ' + premissesgroup_uid)
 
 		# get last tracked conclusion
-		db_last_tracked_premissegroup = DBSession.query(Track).join(PremisseGroup).order_by(Track.uid.desc()).first()
-		db_last_conclusion = DBSession.query(Premisse).filter_by(premissesGroup_uid=db_last_tracked_premissegroup.premissesGroup_uid).first() # todo
+		db_last_conclusion = DBSession.query(Premisse).filter_by(premissesGroup_uid=pgroup_id).first()
 
 		db_argument = DBSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
 		                                                    Argument.premissesGroup_uid==int(premissesgroup_uid),
@@ -390,20 +385,19 @@ class DatabaseHelper(object):
 
 		return new_statement
 
-	def set_premisses_for_tracked_argument(self, transaction, user, dict, key, is_supportive):
+	def set_premisses_for_tracked_argument(self, transaction, user, dict, key, conclusion_id, is_supportive):
 		"""
 		Inserts the given dictionarie with premisses for an statement or an argument
 		:param transaction: current transaction for the database
 		:param user_id: current users nickname
 		:param dict: dictionary with all statements
 		:param key: pro or con
+		:param conclusion_id:
 		:param is_supportive: for the argument
 		:return: dict
 		"""
 
-		# user and last given statement
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		db_track = DBSession.query(Track).filter_by(author_uid=db_user.uid).order_by(Track.uid.desc()).first()
+		# user and last given statement is conclusion_id
 
 		# insert the premisses as statements
 		return_dict = {}
@@ -417,10 +411,10 @@ class DatabaseHelper(object):
 			# second, set the new statement as premisse
 			new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
 			logger('DatabaseHelper', 'set_premisses', dict[entry] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
-			       + ' to statement ' + str(db_track.statement_uid) + ', supportive')
+			       + ' to statement ' + str(conclusion_id) + ', supportive')
 
 			# third, insert the argument
-			qh.set_argument(transaction, user, new_premissegroup_uid, db_track.statement_uid, 0, is_supportive)
+			qh.set_argument(transaction, user, new_premissegroup_uid, conclusion_id, 0, is_supportive)
 
 			return_dict[key + '_' + str(index)] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 

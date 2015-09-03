@@ -6,8 +6,8 @@
  * @copyright Krauthoff 2015
  */
 
-// var discussion_mainpage = 'http://localhost:4284/discussion/';
-var discussion_mainpage = 'https://dbas.cs.uni-duesseldorf.de/discussion/';
+var discussion_mainpage = 'http://localhost:4284/discussion/';
+// var discussion_mainpage = 'https://dbas.cs.uni-duesseldorf.de/discussion/';
 
 startDiscussion = function () {
 	//$('#' + startDiscussionButtonId).hide(); // hides the start button
@@ -142,6 +142,15 @@ $(function () {
 		guiHandler.showUrlSharingPopup();
 	});
 
+	$('#' + popupUrlSharingLongUrlButtonID).click(function(){
+		if ($('#' + popupUrlSharingLongUrlButtonID).attr('short_url') == '0'){
+			$('#' + popupUrlSharingInputId).val(window.location);
+			$('#' + popupUrlSharingLongUrlButtonID).attr('short_url', '1').text(fetchLongUrl);
+		} else {
+			new AjaxSiteHandler().getShortenUrl(window.location);
+			$('#' + popupUrlSharingLongUrlButtonID).attr('short_url', '0').text(fetchShortUrl);
+		}
+	});
 
 	// focos text of input elements
 	$("input[type='text']").on("click", function () {
@@ -186,15 +195,18 @@ $(function () {
 
 			hidden_service = $('#' + hiddenDiscussionInformationServiceId).text();
 			hidden_params = $('#' + hiddenDiscussionInformationParametersId).text();
-			hidden_params = hidden_params.split('=');
-			hidden_params = hidden_params[1];
 			// alert("params: "	+ hidden_params + "\n\n" + "service: "	+ hidden_service);
 
-			if (hidden_service == 'ajax_get_start_statements'){						ajaxHandler.getStartStatements();	}
-			else if (hidden_service == 'ajax_get_premisses_for_statement'){			ajaxHandler.getPremisseForStatement(hidden_params);}
-			else if (hidden_service == 'ajax_reply_for_premissegroup'){				ajaxHandler.getReplyForPremisseGroup(hidden_params);	}
-			else if (hidden_service == 'ajax_reply_for_response_of_confrontation'){	ajaxHandler.handleReplyForResponseOfConfrontation(hidden_params);}
-			else if (hidden_service == 'ajax_reply_for_argument'){					ajaxHandler.getReplyForArgument(hidden_params);	}
+			if (hidden_service == 'ajax_get_start_statements'){
+				ajaxHandler.getStartStatements();
+			} else if (hidden_service == 'ajax_get_premisses_for_statement'){
+				ajaxHandler.getPremisseForStatement(hidden_params);
+			} else if (hidden_service == 'ajax_reply_for_premissegroup'){
+				ajaxHandler.getReplyForPremisseGroup(hidden_params);
+			} else if (hidden_service == 'ajax_reply_for_response_of_confrontation'){
+				ajaxHandler.handleReplyForResponseOfConfrontation(hidden_params);
+			} else if (hidden_service == 'ajax_reply_for_argument'){
+				ajaxHandler.getReplyForArgument(hidden_params);	}
 		}
 	});
 

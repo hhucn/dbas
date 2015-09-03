@@ -667,7 +667,8 @@ class Dbas(object):
 		return_dict = {}
 		try:
 			logger('get_premisses_for_statement', 'def', 'read params')
-			uid = self.request.params['uid']
+			uids = self.request.params['uid'].split('=')
+			uid = uids[1]
 			return_dict = DatabaseHelper().get_premisses_for_statement(transaction, uid, True, self.request.authenticated_userid)
 			return_dict['status'] = '1'
 		except KeyError as e:
@@ -691,11 +692,19 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			uid = self.request.params['uid']
-			logger('reply_for_premissegroup', 'def', 'premissegroup ' + str(uid))
-			# UserHandler().save_track_for_user(transaction, self.request.authenticated_userid, 0, uid, 0, 0, 0)
+			ids = self.request.params['ids']
+			logger('reply_for_premissegroup', 'def', 'ids ' + ids)
+			ids = ids.split('&')
+			if ids[0].startswith('pgroup'):
+				pgroup_id   = ids[0][ids[0].index('=')+1:]
+				statement_id = ids[1][ids[1].index('=')+1:]
+			else:
+				pgroup_id   = ids[1][ids[1].index('=')+1:]
+				statement_id = ids[0][ids[0].index('=')+1:]
+			logger('reply_for_premissegroup', 'def', 'premissegroup ' + str(id))
 			# track will be saved in the method
-			return_dict, status = DatabaseHelper().get_attack_for_premissegroup(transaction, self.request.authenticated_userid, uid)
+			return_dict, status = DatabaseHelper().get_attack_for_premissegroup(transaction, self.request.authenticated_userid,
+			                                                                    pgroup_id, statement_id)
 			return_dict['status'] = str(status)
 		except KeyError as e:
 			logger('reply_for_premissegroup', 'error', repr(e))
@@ -718,10 +727,17 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			uid_text = self.request.params['uid']
-			logger('reply_for_argument', 'def', 'premissegroup ' + str(uid_text))
+			ids = self.request.params['ids']
+			logger('reply_for_argument', 'def', 'ids ' + ids)
+			ids = ids.split('&')
+			if ids[0].startswith('id_text'):
+				id_text   = ids[0][ids[0].index('=')+1:]
+				pgroup_id = ids[1][ids[1].index('=')+1:]
+			else:
+				id_text   = ids[1][ids[1].index('=')+1:]
+				pgroup_id = ids[0][ids[0].index('=')+1:]
 			# track will be saved in the method
-			return_dict, status = DatabaseHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, uid_text)
+			return_dict, status = DatabaseHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, id_text, pgroup_id)
 			return_dict['status'] = str(status)
 		except KeyError as e:
 			logger('reply_for_argument', 'error', repr(e))
@@ -744,7 +760,8 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			uid = self.request.params['id']
+			uids = self.request.params['id'].split('=')
+			uid = uids[1]
 			# track will be saved in get_reply_confrontation_response
 			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid)
 			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid, self.request.authenticated_userid)
@@ -835,6 +852,7 @@ class Dbas(object):
 			logger('set_new_premisses', 'def', 'main')
 			pro_dict = {}
 			con_dict = {}
+			conclusion_id = self.request.params['conclusion_id'];
 			for key in self.request.params:
 				if 'pro' in key:
 					logger('set_new_premisses', key, self.request.params[key])
@@ -843,8 +861,8 @@ class Dbas(object):
 					logger('set_new_premisses', key, self.request.params[key])
 					con_dict[key] = self.request.params[key]
 			dh = DatabaseHelper()
-			return_dict = dh.set_premisses_for_tracked_argument(transaction, user_id, pro_dict, 'pro', True)
-			return_dict.update(dh.set_premisses_for_tracked_argument(transaction, user_id, con_dict, 'con', False))
+			return_dict = dh.set_premisses_for_tracked_argument(transaction, user_id, pro_dict, 'pro', conclusion_id, True)
+			return_dict.update(dh.set_premisses_for_tracked_argument(transaction, user_id, con_dict, 'con', conclusion_id, False))
 			return_dict['success'] = '1'
 
 		except KeyError as e:

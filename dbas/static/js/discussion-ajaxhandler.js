@@ -18,23 +18,25 @@ function AjaxSiteHandler() {
 	 * @param uid current identifier
 	 */
 	this.callSiteForGetPremisseForStatement = function (uid) {
-		this.redirectBrowser('uid', uid, 'get_premisses_for_statement');
+		this.redirectBrowser('uid=' + uid, 'get_premisses_for_statement');
 	};
 
 	/**
 	 * Redirection before an ajax call
-	 * @param uid current identifier
+	 * @param pgroup_id
+	 * @param conclusion_id
 	 */
-	this.callSiteForGetReplyForPremisseGroup = function (uid) {
-		this.redirectBrowser('uid', uid, 'reply_for_premissegroup');
+	this.callSiteForGetReplyForPremisseGroup = function (pgroup_id, conclusion_id) {
+		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id, 'reply_for_premissegroup');
 	};
 
 	/**
-	 * Redirection before an ajax call
-	 * @param uid current identifier
+	 * Redirection before an ajax callpgroup_id
+	 * @param id_text
+	 * @param pgroup_id
 	 */
-	this.callSiteForGetReplyForArgument = function (uid) {
-		this.redirectBrowser('uid', uid, 'reply_for_argument');
+	this.callSiteForGetReplyForArgument = function (id_text, pgroup_id) {
+		this.redirectBrowser('id_text=' + id_text + '&pgroup_id=' + pgroup_id, 'reply_for_argument');
 	};
 
 	/**
@@ -42,19 +44,18 @@ function AjaxSiteHandler() {
 	 * @param id current identifier
 	 */
 	this.callSiteForHandleReplyForResponseOfConfrontation = function (id) {
-		this.redirectBrowser('id', id, 'reply_for_response_of_confrontation');
+		this.redirectBrowser('id=' + id, 'reply_for_response_of_confrontation');
 	};
 
 	/**
 	 * Redirection before an ajax call
-	 * @param key current key
-	 * @param value current value
+	 * @param keyValuePair current key value pair
 	 * @param service current service
 	 */
-	this.redirectBrowser = function (key, value, service) {
+	this.redirectBrowser = function (keyValuePair, service) {
 		//alert(discussion_mainpage + key + '=' + value + '/' + service + '/go'):
 		// window.location.replace(discussion_mainpage + key + '=' + value + '/' + service + '/go');
-		window.location.href = discussion_mainpage + key + '=' + value + '/' + service + '/go';
+		window.location.href = discussion_mainpage + keyValuePair + '/' + service + '/go';
 	};
 
 	this.debugger = function ( data, url, settings_data ) {
@@ -124,15 +125,15 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends an ajax request for getting all premisses for a given statement
-	 * @param uid of clicked statement
+	 * @param ids of clicked statement
 	 */
-	this.getReplyForPremisseGroup = function (uid) {
+	this.getReplyForPremisseGroup = function (ids) {
 		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_reply_for_premissegroup',
 			method: 'POST',
 			data: {
-				uid: uid
+				ids: ids
 			},
 			dataType: 'json',
 			async: true,
@@ -155,15 +156,15 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends an ajax request for getting all confrotations for a given argument
-	 * @param uid of the clicked premisse group
+	 * @param ids of the clicked premisse group
 	 */
-	this.getReplyForArgument = function (uid) {
+	this.getReplyForArgument = function (ids) {
 		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_reply_for_argument',
 			method: 'POST',
 			data: {
-				uid: uid
+				ids: ids
 			},
 			dataType: 'json',
 			async: true,
@@ -361,7 +362,6 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetShortenUrlDone(data) {
 			new InteractionHandler().callbackIfDoneForShortenUrl(data);
 		}).fail(function ajaxGetShortenUrl(err) {
-			alert(JSON.stringify(err));
 			$('#' + popupUrlSharingInputId).val(long_url);
 		});
 	};

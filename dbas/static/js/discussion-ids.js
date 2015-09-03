@@ -61,6 +61,7 @@ var popupEditStatementLogfileHeaderId = 'popup-edit-statement-logfile-header';
 var popupEditStatementLogfileSpaceId = 'popup-edit-statement-logfile';
 var popupEditStatementSubmitButtonId = "popup-edit-statement-submit";
 var popupEditStatementDescriptionId = "popup-edit-statement-description-p";
+var popupUrlSharingLongUrlButtonID = "popup-url-sharing-long-url-button";
 var popupErrorDescriptionId = 'popup-edit-error-description';
 var popupSuccessDescriptionId = 'popup-edit-success-description';
 var popupUrlSharingId = 'popup-url-sharing';

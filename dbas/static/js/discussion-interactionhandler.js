@@ -24,13 +24,14 @@ function InteractionHandler() {
 
 	/**
 	 * Handler when an start premisse was clicked
-	 * @param id of the button
+	 * @param pgroup_id
+	 * @param conclusion_id
 	 */
-	this.premisseButtonWasClicked = function (id) {
+	this.premisseButtonWasClicked = function (pgroup_id, conclusion_id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		// new AjaxSiteHandler().getReplyForPremisseGroup(id);
-		new AjaxSiteHandler().callSiteForGetReplyForPremisseGroup(id);
+		new AjaxSiteHandler().callSiteForGetReplyForPremisseGroup(pgroup_id, conclusion_id);
 	};
 
 	/**
@@ -47,14 +48,15 @@ function InteractionHandler() {
 
 	/**
 	 * Handler when an argument button was clicked
-	 * @param id of the button
+	 * @param long_id
+	 * @param pgroup_id
 	 */
-	this.argumentButtonWasClicked = function (id) {
+	this.argumentButtonWasClicked = function (long_id, pgroup_id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
 		// new AjaxSiteHandler().getReplyForArgument(id);
-		new AjaxSiteHandler().callSiteForGetReplyForArgument(id);
+		new AjaxSiteHandler().callSiteForGetReplyForArgument(long_id, pgroup_id);
 	};
 
 	/**
@@ -135,6 +137,7 @@ function InteractionHandler() {
 				i = i + 1;
 			}
 		});
+		dict['conclusion_id'] = $('#' + discussionsDescriptionId).attr('conclusion_id');
 		new AjaxSiteHandler().sendNewPremissesForArgument(dict);
 	};
 
@@ -149,7 +152,8 @@ function InteractionHandler() {
 			hasStart = radioButton.hasClass('start'),
 			id = radioButton.attr('id'),
 			long_id = radioButton.attr('long_id'),
-			value = radioButton.val();
+			value = radioButton.val(),
+			pgroup_id, conclusion_id;
 
 		if (id.indexOf('dontknow') != -1 || id.indexOf('irrelevant') != -1){
 			parent.history.back();
@@ -165,11 +169,14 @@ function InteractionHandler() {
 			if (hasStart && !hasRelation && !hasPremisse) {
 				this.statementButtonWasClicked(id);
 			} else if (hasPremisse && !hasRelation && !hasStart) {
-				this.premisseButtonWasClicked(id);
+				pgroup_id = id;
+				conclusion_id = $('#' + discussionsDescriptionId).attr('conclusion_id');
+				this.premisseButtonWasClicked(pgroup_id, conclusion_id);
 			} else if (hasRelation && !hasPremisse && !hasStart) {
 				this.relationButtonWasClicked(id);
 			} else if (hasPremisse && hasRelation && !hasStart){
-				this.argumentButtonWasClicked(long_id);
+				pgroup_id = $('#' + discussionsDescriptionId).attr('premissegroup_uid');
+				this.argumentButtonWasClicked(long_id, pgroup_id);
 			} else {
 				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +
 				'has start: ' + hasStart + '\n' +

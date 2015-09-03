@@ -3,7 +3,7 @@ from sqlalchemy import and_
 import collections
 
 from .database import DBSession
-from .database.model import Argument, Statement, User, TextValue, TextVersion, Premisse, PremisseGroup, Relation, Track # TODO no track
+from .database.model import Argument, Statement, User, TextValue, TextVersion, Premisse, PremisseGroup, Relation, Track
 from .logger import logger
 
 class QueryHelper(object):
@@ -443,23 +443,24 @@ class QueryHelper(object):
 		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation))
 		transaction.commit()
 
-	def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):
-		"""
-		Saves track for user
-		:param transaction: current transaction
-		:param user: authentication nick id of the user
-		:param premissesgroup_uid: id of the clicked premisseGroup
-		:return: undefined
-		"""
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'save_premissegroup_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', premissesGroup_uid: '
-				+ str(premissesgroup_uid))
-		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid = premissesgroup_uid).all()
-		for premisse in db_premisses:
-			logger('QueryHelper', 'save_premissegroup_for_user', str(premissesgroup_uid) + " " + str(premisse.statement_uid))
-			new_track = Track(user=db_user.uid, statement=premisse.statement_uid, premissegroup=premissesgroup_uid)
-			DBSession.add(new_track)
-		transaction.commit()
+	# def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):
+	# 	"""
+	# 	Saves track for user
+	# 	:param transaction: current transaction
+	# 	:param user: authentication nick id of the user
+	# 	:param premissesgroup_uid: id of the clicked premisseGroup
+	# 	:return: undefined
+	# 	"""
+	# 	db_user = DBSession.query(User).filter_by(nickname=user).first()
+	# 	logger('QueryHelper', 'save_premissegroup_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', premissesGroup_uid: '
+	# 			+ str(premissesgroup_uid))
+	# 	db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid = premissesgroup_uid).all()
+	# 	for premisse in db_premisses:
+	# 		logger('QueryHelper', 'save_premissegroup_for_user', str(premissesgroup_uid) + " " + str(premisse.statement_uid))
+	#       # on use: eliminate this track
+	# 		new_track = Track(user=db_user.uid, statement=premisse.statement_uid, premissegroup=premissesgroup_uid)
+	# 		DBSession.add(new_track)
+	# 	transaction.commit()
 
 	def get_track_of_user(self, user):
 		"""
