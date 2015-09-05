@@ -630,7 +630,7 @@ class Dbas(object):
 		logger('get_all_users', 'check_csrf_token', str(check_csrf_token(self.request)))
 
 		return_dict = DatabaseHelper().get_all_users(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -648,7 +648,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		return_dict = DatabaseHelper().get_start_statements()
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 
 		return return_json
@@ -675,7 +675,7 @@ class Dbas(object):
 			logger('get_premisses_for_statement', 'error', repr(e))
 			return_dict['status'] = '-1'
 
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -710,7 +710,7 @@ class Dbas(object):
 			logger('reply_for_premissegroup', 'error', repr(e))
 			return_dict['status'] = '-1'
 
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -743,7 +743,7 @@ class Dbas(object):
 			logger('reply_for_argument', 'error', repr(e))
 			return_dict['status'] = '-1'
 
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -770,7 +770,7 @@ class Dbas(object):
 			logger('reply_for_response_of_confrontation', 'error', repr(e))
 			return_dict['status'] = '-1'
 
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -805,7 +805,7 @@ class Dbas(object):
 			QueryHelper().del_track_of_user(transaction, nickname)
 
 		dictionary_helper = DictionaryHelper()
-		return_json = dictionary_helper.dictionarty_to_json_array(return_dict, True)
+		return_json = dictionary_helper.dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -831,7 +831,7 @@ class Dbas(object):
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['success'] = '-1'
 
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -869,7 +869,7 @@ class Dbas(object):
 			logger('set_new_premisses', 'error', repr(e))
 			return_dict['success'] = '-1'
 
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -893,7 +893,7 @@ class Dbas(object):
 
 		return_dict = DatabaseHelper().get_logfile_for_statement(uid)
 		# return_dict = DatabaseHelper().get_logfile_for_premissegroup(uid)
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -918,7 +918,7 @@ class Dbas(object):
 			logger('set_correcture_of_statement', 'error', repr(e))
 
 		return_dict = DatabaseHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -943,7 +943,7 @@ class Dbas(object):
 			logger('swich_language', 'error', repr(e))
 			return_dict['status'] = '0'
 
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 		return return_json
 
 	# ajax - for shorten url
@@ -988,7 +988,21 @@ class Dbas(object):
 			logger('get_shortened_url', 'error', repr(e))
 			return_dict['status'] = '0'
 
-		return_json = DictionaryHelper().dictionarty_to_json_array(return_dict, True)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 		return return_json
 
 
+	# ajax - for attack overview
+	@view_config(route_name='ajax_get_attack_overview', renderer='json', check_csrf=True)
+	def get_attack_overview(self):
+		"""
+
+		:return:
+		"""
+
+		logger('get_attack_overview', 'def', 'main')
+		logger('get_attack_overview', 'check_csrf_token', str(check_csrf_token(self.request)))
+		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json

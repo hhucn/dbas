@@ -38,7 +38,7 @@ class DictionaryHelper(object):
 
 		return return_dict
 
-	def dictionarty_to_json_array(self, raw_dict, ensure_ascii):
+	def dictionary_to_json_array(self, raw_dict, ensure_ascii):
 		"""
 		Dumps given dictionary into json
 		:param raw_dict: dictionary for dumping

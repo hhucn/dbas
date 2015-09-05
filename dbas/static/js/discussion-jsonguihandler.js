@@ -283,7 +283,72 @@ function JsonGuiHandler() {
 			tableElement.append(trElement);
 		});
 
-		$('#' + adminsSpaceId).empty().append(tableElement);
+		$('#' + adminsSpaceForUsersId).empty().append(tableElement);
+	};
+
+	/**
+	 * Sets given json data to admins content
+	 * @param jsonData
+	 */
+	this.setJsonAttackDataToAdminContent = function (jsonData) {
+		var tableElement, trElement, tdElement, spanElement, i, attacks = [], counter;
+
+		tdElement = ['', '', '', '', '', '', ''];
+		spanElement = ['', '', '', '', '', '', ''];
+		tableElement = $('<table>');
+		tableElement.attr({class: 'table table-condensed',
+						border: '0',
+						style: 'border-collapse: separate; border-spacing: 0px;'});
+
+		trElement = $('<tr>');
+
+		for (i = 0; i < tdElement.length; i += 1) {
+			tdElement[i] = $('<td>');
+			spanElement[i] = $('<spand>');
+			spanElement[i].attr({class: 'font-semi-bold'});
+		}
+
+		// add header row
+		spanElement[0].text('uid');
+		spanElement[1].text('text');
+		counter = 2;
+		$.each(jsonData.attacks, function setJsonAttackDataToAdminContentEach(key, value) {
+			spanElement[counter].text(value);
+			attacks[(counter-2)] = value;
+			counter += 1;
+		});
+
+		for (i = 0; i < tdElement.length; i += 1) {
+			tdElement[i].append(spanElement[i]);
+			trElement.append(tdElement[i]);
+			tableElement.append(trElement);
+		}
+
+		// add each attack element
+		$.each(jsonData, function setJsonAttackDataToAdminContentEach(key, value) {
+			trElement = $('<tr>');
+			for (i = 0; i < tdElement.length; i += 1) {
+				tdElement[i] = $('<td>');
+			}
+
+			tdElement[0].text(value.id);
+			tdElement[1].text(value.text);
+			tdElement[2].text(value[attacks[0]]);
+			tdElement[3].text(value[attacks[1]]);
+			tdElement[4].text(value[attacks[2]]);
+			tdElement[5].text(value[attacks[3]]);
+			tdElement[6].text(value[attacks[4]]);
+
+			for (i = 0; i < tdElement.length; i += 1) {
+				trElement.append(tdElement[i]);
+			}
+			trElement.hover(function () {
+				$(this).toggleClass('table-hover');
+			});
+			tableElement.append(trElement);
+		});
+
+		$('#' + adminsSpaceForAttacksId).empty().append(tableElement);
 	};
 
 }

@@ -16,6 +16,8 @@ var confirmation = "Confirmation";
 var confirmTranslation = "If you change the language, your process on this page will be lost and you have to restart the discussion!";
 var correctionsSet = "Your correction was set.";
 var internalFailureWhileDeletingTrack = "Internal failure, please try again or did you have deleted your track recently?";
+var hideAllUsers = "Hide all users";
+var hideAllAttacks = "Hide all attacks";
 var noIslandView = "Could not fetch data for the island view. Sorry!";
 var noCorrections = "No corrections for the given statement.";
 var noCorrectionsSet = "Correction could not be set, because your user was not fount in the database. Are you currently logged in?";
@@ -23,6 +25,8 @@ var notInsertedErrorBecauseEmpty = "Your idea was not inserted, because your inp
 var notInsertedErrorBecauseDuplicate = "Your idea was not inserted, because your idea is a duplicate.";
 var notInsertedErrorBecauseUnknown = "Your idea was not inserted due to an unkown error.";
 var selectStatement = "Please select a statement!";
+var showAllUsers = "Show all users";
+var showAllAttacks = "Show all attacks";
 var internal_error = 'Internal Error: Maybe the server is offline or your session run out.';
 
 /**

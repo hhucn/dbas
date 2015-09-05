@@ -237,7 +237,9 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 .glyphicon-local {
-	width: 15px;
+	width: 25px;
+	height: 25px;
+	border: none;
 }
 
 .glyphicon-local:hover {
@@ -278,47 +280,47 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 #footer-impressum {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-158-show-thumbnails-with-lines.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-158-show-thumbnails-with-lines.png) no-repeat;
 }
 
 #footer-glyphicons {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-249-asterisk.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-249-asterisk.png) no-repeat;
 }
 
 #header_letsgo {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-551-erase.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-551-erase.png) no-repeat;
 }
 
 #header_news {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat;
 }
 
 #header_contact {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-310-comments.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-310-comments.png) no-repeat;
 }
 
 #header_login {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-387-log-in.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-387-log-in.png) no-repeat;
 }
 
 #header_settings {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-281-settings.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-281-settings.png) no-repeat;
 }
 
 #header_logout {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-388-log-out.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-388-log-out.png) no-repeat;
 }
 
 #header_author {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
 }
 
 #header_licence {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-444-floppy-disk.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-444-floppy-disk.png) no-repeat;
 }
 
 #header_privacy {
-	content: url(../images/glyphicons_free/glyphicons/glyphicons-499-sunglasses.png) no-repeat;
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-499-sunglasses.png) no-repeat;
 }
 
 .share-icon {

@@ -6,8 +6,8 @@
  * @copyright Krauthoff 2015
  */
 
-// var discussion_mainpage = 'http://localhost:4284/discussion/';
-var discussion_mainpage = 'https://dbas.cs.uni-duesseldorf.de/discussion/';
+var discussion_mainpage = 'http://localhost:4284/discussion/';
+// var discussion_mainpage = 'https://dbas.cs.uni-duesseldorf.de/discussion/';
 
 startDiscussion = function () {
 	//$('#' + startDiscussionButtonId).hide(); // hides the start button
@@ -83,12 +83,23 @@ $(function () {
 
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function () {
-		if ($(this).val() === 'List all users') {
-			ajaxHandler.getUsersAndSetInGui();
-			$(this).val('Hide all users'); // will be done in the ajaxhandler
+		if ($(this).val() === showAllUsers) {
+			ajaxHandler.getUsersOverview();
+			$(this).val(hideAllUsers);
 		} else {
-			$('#' + adminsSpaceId).empty();
-			$(this).val('List all users'); // will be done in the ajaxhandler
+			$('#' + adminsSpaceForUsersId).empty();
+			$(this).val(showAllUsers);
+		}
+	});
+
+	// admin list all attacks button
+	$('#' + listAllUsersAttacksId).click(function () {
+		if ($(this).val() === showAllAttacks) {
+			ajaxHandler.getAttackOverview();
+			$(this).val(hideAllAttacks);
+		} else {
+			$('#' + adminsSpaceForAttacksId).empty();
+			$(this).val(showAllAttacks);
 		}
 	});
 

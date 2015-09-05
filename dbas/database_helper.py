@@ -2,7 +2,7 @@ import random
 from sqlalchemy import and_, not_
 
 from .database import DBSession
-from .database.model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse, PremisseGroup # TODO no track
+from .database.model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse, PremisseGroup, Track, Relation
 from .dictionary_helper import DictionaryHelper
 from .query_helper import QueryHelper
 from .user_management import UserHandler
@@ -89,6 +89,44 @@ class DatabaseHelper(object):
 						+ ", gender: " + str(user.gender)
 					)
 					return_dict[user.uid] = return_user
+		return return_dict
+
+	def get_attack_overview(self, user):
+		"""
+
+		:param user:
+		:return:
+		"""
+		is_admin = UserHandler().is_user_admin(user)
+		logger('DatabaseHelper', 'get_attack_overview', 'is_admin ' + str(is_admin))
+		if not is_admin:
+			return_dict = dict()
+		else:
+			return_dict = {}
+			logger('DatabaseHelper', 'get_attack_overview', 'get all attacks for each argument')
+			db_arguments = DBSession.query(Argument).all()
+			db_relations = DBSession.query(Relation).all()
+
+			relations_dict = {}
+			for relation in db_relations:
+				relations_dict[str(relation.uid)] = relation.name
+			return_dict['attacks'] = relations_dict
+
+			for argument in db_arguments:
+				argument_dict = {}
+				argument_dict['id'] = str(argument.uid)
+				try:
+					argument_dict['text'] = QueryHelper().get_text_for_argument_uid(argument.uid) # TODO
+				except AttributeError:
+					argument_dict['text'] = str(argument.uid) # QueryHelper().get_text_for_argument_uid(argument.uid) # TODO
+
+				for relation in db_relations:
+					db_tracks = DBSession.query(Track).filter(and_(Track.argument_uid==argument.uid,
+					                                               Track.attacked_by_relation==relation.uid)).all()
+					argument_dict[relation.name] = str(len(db_tracks)) if len(db_tracks) != 0 else '-'
+
+				return_dict[str(argument.uid)] = argument_dict
+
 		return return_dict
 
 	def get_start_statements(self):

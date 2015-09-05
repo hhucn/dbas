@@ -165,13 +165,28 @@
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
-					<h4><span class="font-semi-bold" i18n:translate="special_rights">Special rights</span></h4>
+					<h4><span class="font-semi-bold" i18n:translate="users_list">List of users</span></h4>
 					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
-					<input id="list-all-users" type="button" name="" value="List all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
+					<input id="list-all-users" type="button" name="" value="Show all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
 				</div>
 				<div class="col-md-2"></div>
 				<div class="col-md-12">
-					<div id="admins-space"> </div>
+					<div id="admins-space-users" class="center"> </div>
+				</div>
+			</div>
+		</div>
+
+		<div tal:condition="is_admin" class="container">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8">
+					<h4><span class="font-semi-bold" i18n:translate="list_attacks">List of attacks</span></h4>
+					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
+					<input id="list-all-attacks" type="button" name="" value="Show all attacks" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
+				</div>
+				<div class="col-md-2"></div>
+				<div class="col-md-12">
+					<div id="admins-space-attacks" class="center"> </div>
 				</div>
 			</div>
 		</div>

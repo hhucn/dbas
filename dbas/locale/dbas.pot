@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-08-19 08:33+0200\n"
+"POT-Creation-Date: 2015-09-04 21:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -181,8 +181,8 @@ msgid "guided_view_content2"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/index.pt:90 ./dbas/templates/content.pt:62
-#: ./dbas/templates/content.pt:95
+#: ./dbas/templates/index.pt:90 ./dbas/templates/content.pt:67
+#: ./dbas/templates/content.pt:100
 msgid "island_view"
 msgstr ""
 
@@ -280,17 +280,18 @@ msgstr ""
 #. Default: Author
 #: ./dbas/templates/snippet-header.pt:87 ./dbas/templates/news.pt:45
 #: ./dbas/templates/news.pt:78 ./dbas/templates/news.pt:111
-#: ./dbas/templates/news.pt:144 ./dbas/templates/news.pt:171
-#: ./dbas/templates/news.pt:204 ./dbas/templates/news.pt:239
-#: ./dbas/templates/news.pt:272 ./dbas/templates/news.pt:305
-#: ./dbas/templates/news.pt:338 ./dbas/templates/news.pt:371
-#: ./dbas/templates/news.pt:404 ./dbas/templates/news.pt:437
-#: ./dbas/templates/news.pt:470 ./dbas/templates/news.pt:503
-#: ./dbas/templates/news.pt:536 ./dbas/templates/news.pt:569
-#: ./dbas/templates/news.pt:602 ./dbas/templates/news.pt:635
-#: ./dbas/templates/news.pt:678 ./dbas/templates/news.pt:711
-#: ./dbas/templates/news.pt:744 ./dbas/templates/news.pt:777
-#: ./dbas/templates/news.pt:810
+#: ./dbas/templates/news.pt:145 ./dbas/templates/news.pt:178
+#: ./dbas/templates/news.pt:211 ./dbas/templates/news.pt:238
+#: ./dbas/templates/news.pt:271 ./dbas/templates/news.pt:306
+#: ./dbas/templates/news.pt:339 ./dbas/templates/news.pt:372
+#: ./dbas/templates/news.pt:405 ./dbas/templates/news.pt:438
+#: ./dbas/templates/news.pt:471 ./dbas/templates/news.pt:504
+#: ./dbas/templates/news.pt:537 ./dbas/templates/news.pt:570
+#: ./dbas/templates/news.pt:603 ./dbas/templates/news.pt:636
+#: ./dbas/templates/news.pt:669 ./dbas/templates/news.pt:702
+#: ./dbas/templates/news.pt:745 ./dbas/templates/news.pt:778
+#: ./dbas/templates/news.pt:811 ./dbas/templates/news.pt:844
+#: ./dbas/templates/news.pt:877
 msgid "author"
 msgstr ""
 
@@ -336,7 +337,7 @@ msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/login.pt:47 ./dbas/templates/login.pt:57
-#: ./dbas/templates/settings.pt:77 ./dbas/templates/content.pt:79
+#: ./dbas/templates/settings.pt:77 ./dbas/templates/content.pt:84
 msgid "error"
 msgstr ""
 
@@ -427,6 +428,7 @@ msgstr ""
 #: ./dbas/templates/snippet-popups.pt:117
 #: ./dbas/templates/snippet-popups.pt:395
 #: ./dbas/templates/snippet-popups.pt:423
+#: ./dbas/templates/snippet-popups.pt:465
 msgid "close"
 msgstr ""
 
@@ -647,13 +649,28 @@ msgstr ""
 msgid "cancel"
 msgstr ""
 
+#. Default: Share your URL
+#: ./dbas/templates/snippet-popups.pt:455
+msgid "url-sharing"
+msgstr ""
+
+#. Default: Please feel free to share this url:
+#: ./dbas/templates/snippet-popups.pt:460
+msgid "url-sharing-description"
+msgstr ""
+
+#. Default: Fetch long url!
+#: ./dbas/templates/snippet-popups.pt:464
+msgid "fetchurl"
+msgstr ""
+
 #. Default: JavaScript is not enabled:
-#: ./dbas/templates/snippet-popups.pt:451
+#: ./dbas/templates/snippet-popups.pt:474
 msgid "js_disabled1"
 msgstr ""
 
 #. Default: Please enable JavaScript!
-#: ./dbas/templates/snippet-popups.pt:452
+#: ./dbas/templates/snippet-popups.pt:475
 msgid "js_disabled2"
 msgstr ""
 
@@ -780,61 +797,66 @@ msgid "current_discussion"
 msgstr ""
 
 #. Default: and was started at
-#: ./dbas/templates/content.pt:19
+#: ./dbas/templates/content.pt:20
 msgid "startet_at"
 msgstr ""
 
 #. Default: Change display style:
-#: ./dbas/templates/content.pt:53
+#: ./dbas/templates/content.pt:58
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ./dbas/templates/content.pt:57
+#: ./dbas/templates/content.pt:62
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Complete View
-#: ./dbas/templates/content.pt:67
+#: ./dbas/templates/content.pt:72
 msgid "complete_view"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/content.pt:94
+#: ./dbas/templates/content.pt:99
 msgid "istland_view"
 msgstr ""
 
 #. Default: Pro
-#: ./dbas/templates/content.pt:98 ./dbas/templates/content.pt:131
+#: ./dbas/templates/content.pt:103 ./dbas/templates/content.pt:136
 msgid "pro"
 msgstr ""
 
 #. Default: Contra
-#: ./dbas/templates/content.pt:104 ./dbas/templates/content.pt:143
+#: ./dbas/templates/content.pt:109 ./dbas/templates/content.pt:148
 msgid "contra"
 msgstr ""
 
 #. Default: Please insert a new Argument
-#: ./dbas/templates/content.pt:127
+#: ./dbas/templates/content.pt:132
 msgid "insert-argument"
 msgstr ""
 
 #. Default: Add a textfield
-#: ./dbas/templates/content.pt:137 ./dbas/templates/content.pt:148
+#: ./dbas/templates/content.pt:142 ./dbas/templates/content.pt:153
 msgid "add_textfield"
 msgstr ""
 
-#. Default: Special rights
+#. Default: List of users
 #: ./dbas/templates/content.pt:168
-msgid "special_rights"
+msgid "users_list"
 msgstr ""
 
 #. Default: Some additional options for the administrator.
-#: ./dbas/templates/content.pt:169
+#: ./dbas/templates/content.pt:169 ./dbas/templates/content.pt:184
 msgid "admin_only"
 msgstr ""
 
+#. Default: List of attacks
+#: ./dbas/templates/content.pt:183
+msgid "list_attacks"
+msgstr ""
+
 #. Default: Minimap:
-#: ./dbas/templates/content.pt:180
+#: ./dbas/templates/content.pt:195
 msgid "minimap"
 msgstr ""

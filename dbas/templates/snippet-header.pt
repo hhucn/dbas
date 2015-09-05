@@ -36,25 +36,25 @@
 
 					<li id="content-link" tal:condition="logged_in">
 						<a href="${request.application_url}/discussion/start" title="Get the party started">
-							<img id="header_letsgo" class="glyphicon-local">&thinsp;<span i18n:translate="lets_go">Let's go</span>
+							<img id="header_letsgo" class="glyphicon-local center">&thinsp;<span i18n:translate="lets_go">Let's go</span>
 						</a>
 					</li>
 
 					<li id="news-link">
 						<a href="${request.application_url}/news" title="News about D-BAS">
-							<img id="header_news" class="glyphicon-local">&thinsp;<span i18n:translate="news">News</span>
+							<img id="header_news" class="glyphicon-local center">&thinsp;<span i18n:translate="news">News</span>
 						</a>
 					</li>
 
 					<li id="contact-link">
 						<a href="${request.application_url}/contact" title="Get in touch with us">
-							<img id="header_contact" class="glyphicon-local">&thinsp;<span i18n:translate="contact">Contact</span>
+							<img id="header_contact" class="glyphicon-local center">&thinsp;<span i18n:translate="contact">Contact</span>
 						</a>
 					</li>
 
 					<li id="login-link" tal:condition="not:logged_in">
 						<a href="${request.application_url}/login" title="Login">
-							<img id="header_login" class="glyphicon-local">&thinsp;<span i18n:translate="login">Login</span>
+							<img id="header_login" class="glyphicon-local center">&thinsp;<span i18n:translate="login">Login</span>
 						</a>
 					</li>
 
@@ -66,12 +66,12 @@
 							<ul class="dropdown-menu">
 								<li>
 									<a href="${request.application_url}/settings" title="Settings">
-										<img id="header_settings" class="glyphicon-local">&thinsp;<span i18n:translate="settings">Settings</span>
+										<img id="header_settings" class="glyphicon-local center">&thinsp;<span i18n:translate="settings">Settings</span>
 									</a>
 								</li>
 								<li>
 									<a href="${request.application_url}/logout" title="Logout">
-										<img id="header_logout" class="glyphicon-local">&thinsp;<span i18n:translate="logout">Logout</span>
+										<img id="header_logout" class="glyphicon-local center">&thinsp;<span i18n:translate="logout">Logout</span>
 									</a>
 								</li>
 							</ul>
@@ -84,17 +84,17 @@
 						<ul class="dropdown-menu">
 							<li>
 								<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
-									<img id="header_author" class="glyphicon-local">&thinsp;<span i18n:translate="author">Author</span>
+									<img id="header_author" class="glyphicon-local center">&thinsp;<span i18n:translate="author">Author</span>
 								</a>
 							</li>
 							<li>
 								<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
-									<img id="header_licence" class="glyphicon-local">&thinsp;<span i18n:translate="licence">Licence</span>
+									<img id="header_licence" class="glyphicon-local center">&thinsp;<span i18n:translate="licence">Licence</span>
 								</a>
 							</li>
 							<li>
 								<a id="link_popup_privacy" href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
-									<img id="header_privacy" class="glyphicon-local">&thinsp;<span i18n:translate="privacy_policy">Privacy Policy</span>
+									<img id="header_privacy" class="glyphicon-local center">&thinsp;<span i18n:translate="privacy_policy">Privacy Policy</span>
 								</a>
 							</li>
 						</ul>

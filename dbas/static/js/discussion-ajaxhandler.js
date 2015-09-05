@@ -217,27 +217,6 @@ function AjaxSiteHandler() {
 	};
 
 	/**
-	 * Requests all users
-	 */
-	this.getUsersAndSetInGui = function () {
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_all_users',
-			type: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrfToken
-			}
-		}).done(function ajaxGetAllUsersDone(data) {
-			new InteractionHandler().callbackIfDoneGetUsersAndSetInGui(data);
-		}).fail(function ajaxGetAllUsersFail(err) {
-			// new GuiHandler().setErrorDescription(internal_error);
-			new GuiHandler().setErrorDescription(JSON.stringify(err));
-		});
-	};
-
-	/**
 	 * Sends new premisses to the server. Answer will be given to a callback
 	 * @param argument_dictionary for inserting
 	 */
@@ -363,6 +342,48 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForShortenUrl(data);
 		}).fail(function ajaxGetShortenUrl(err) {
 			$('#' + popupUrlSharingInputId).val(long_url);
+		});
+	};
+
+	/**
+	 * Requests all users
+	 */
+	this.getUsersOverview = function () {
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_all_users',
+			type: 'GET',
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
+		}).done(function ajaxGetAllUsersDone(data) {
+			new InteractionHandler().callbackIfDoneGetUsersOverview(data);
+		}).fail(function ajaxGetAllUsersFail(err) {
+			// new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(JSON.stringify(err));
+		});
+	};
+
+	/**
+	 * Requests all attacks
+	 */
+	this.getAttackOverview = function () {
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_get_attack_overview',
+			type: 'GET',
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
+		}).done(function ajaxGetAllUsersDone(data) {
+			new InteractionHandler().callbackIfDoneAttackOverview(data);
+		}).fail(function ajaxGetAllUsersFail(err) {
+			// new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
 	};
 }

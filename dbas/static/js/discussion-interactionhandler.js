@@ -303,9 +303,18 @@ function InteractionHandler() {
 	 *
 	 * @param data
 	 */
-	this.callbackIfDoneGetUsersAndSetInGui = function (data){
+	this.callbackIfDoneGetUsersOverview = function (data){
 		var parsedData = $.parseJSON(data);
 		new JsonGuiHandler().setJsonUserDataToAdminContent(parsedData);
+	};
+
+	/**
+	 *
+	 * @param data
+	 */
+	this.callbackIfDoneAttackOverview = function (data){
+		var parsedData = $.parseJSON(data);
+		new JsonGuiHandler().setJsonAttackDataToAdminContent(parsedData);
 	};
 
 	/**

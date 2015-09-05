@@ -78,10 +78,11 @@ def main(global_config, **settings):
 	config.add_route('ajax_set_new_premisses',                   '/discussion/{url:.*}ajax_set_new_premisses{params:.*}')
 	config.add_route('ajax_switch_language',                     '/discussion/{url:.*}ajax_switch_language{params:.*}')
 	config.add_route('ajax_all_users',                           '/discussion/{url:.*}ajax_all_users{params:.*}')
-	config.add_route('ajax_manage_user_track',                   '/discussion/{url:.*}ajax_manage_user_track{params:.*}')
 	config.add_route('ajax_get_logfile_for_statement',           '/discussion/{url:.*}ajax_get_logfile_for_statement{params:.*}')
 	config.add_route('ajax_set_correcture_of_statement',         '/discussion/{url:.*}ajax_set_correcture_of_statement{params:.*}')
 	config.add_route('ajax_get_shortened_url',                   '/discussion/{url:.*}ajax_get_shortened_url{params:.*}')
+	config.add_route('ajax_get_attack_overview',                 '/discussion/{url:.*}ajax_get_attack_overview{params:.*}')
+	config.add_route('ajax_manage_user_track',                   'ajax_manage_user_track')
 
 	# read the input and start
 	config.scan()
