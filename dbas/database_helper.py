@@ -115,10 +115,10 @@ class DatabaseHelper(object):
 			for argument in db_arguments:
 				argument_dict = {}
 				argument_dict['id'] = str(argument.uid)
-				try:
-					argument_dict['text'] = QueryHelper().get_text_for_argument_uid(argument.uid) # TODO
-				except AttributeError:
-					argument_dict['text'] = str(argument.uid) # QueryHelper().get_text_for_argument_uid(argument.uid) # TODO
+				# try:
+				argument_dict['text'] = QueryHelper().get_text_for_argument_uid(argument.uid) # TODO
+				# except AttributeError:
+				# 	argument_dict['text'] = str(argument.uid) # QueryHelper().get_text_for_argument_uid(argument.uid) # TODO
 
 				for relation in db_relations:
 					db_tracks = DBSession.query(Track).filter(and_(Track.argument_uid==argument.uid,

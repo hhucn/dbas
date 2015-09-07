@@ -153,14 +153,14 @@ class QueryHelper(object):
 			tmp = tmp[:-1]
 		return tmp
 
-	def get_text_for_argument_uid(self, uid):
+	def get_text_for_argument_uid(self, id):
 		"""
 
-		:param uid:
+		:param id:
 		:return:
 		"""
-		db_argument = DBSession.query(Argument).filter_by(uid=uid).join(Statement).first()
-		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid))
+		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(id))
+		db_argument = DBSession.query(Argument).filter_by(uid=id).first()
 		retValue = ''
 
 		# basecase
