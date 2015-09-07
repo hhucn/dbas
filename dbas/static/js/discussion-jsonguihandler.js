@@ -222,15 +222,17 @@ function JsonGuiHandler() {
 	 * @param jsonData
 	 */
 	this.setJsonUserDataToAdminContent = function (jsonData) {
-		var tableElement, trElement, tdElement, spanElement, i;
+		var tableElement, trElement, tbody, thead, tdElement, spanElement, i;
 		tdElement = ['', '', '', '', '', '', '', '', '', ''];
 		spanElement = ['', '', '', '', '', '', '', '', '', ''];
 		tableElement = $('<table>');
-		tableElement.attr({class: 'table table-condensed',
+		tableElement.attr({class: 'table table-condensed tablesorter',
 						border: '0',
 						style: 'border-collapse: separate; border-spacing: 0px;'});
 
 		trElement = $('<tr>');
+		tbody = $('<tbody>');
+		thead = $('<thead>');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i] = $('<td>');
@@ -253,8 +255,9 @@ function JsonGuiHandler() {
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
 			trElement.append(tdElement[i]);
-			tableElement.append(trElement);
+			thead.append(trElement);
 		}
+		tableElement.append(thead);
 
 		// add each user element
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
@@ -280,8 +283,9 @@ function JsonGuiHandler() {
 			trElement.hover(function () {
 				$(this).toggleClass('table-hover');
 			});
-			tableElement.append(trElement);
+			tbody.append(trElement);
 		});
+		tableElement.append(tbody);
 
 		$('#' + adminsSpaceForUsersId).empty().append(tableElement);
 	};
@@ -291,14 +295,16 @@ function JsonGuiHandler() {
 	 * @param jsonData
 	 */
 	this.setJsonAttackDataToAdminContent = function (jsonData) {
-		var tableElement, trElement, tdElement, spanElement, i, attacks = [], counter;
+		var tableElement, trElement, tdElement, tbody, thead, spanElement, i, attacks = [], counter;
 
 		tdElement = ['', '', '', '', '', '', ''];
 		spanElement = ['', '', '', '', '', '', ''];
 		tableElement = $('<table>');
-		tableElement.attr({class: 'table table-condensed',
+		tableElement.attr({class: 'table table-condensed tablesorter',
 						border: '0',
 						style: 'border-collapse: separate; border-spacing: 0px;'});
+		tbody = $('<tbody>');
+		thead = $('<thead>');
 
 		trElement = $('<tr>');
 
@@ -321,8 +327,9 @@ function JsonGuiHandler() {
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
 			trElement.append(tdElement[i]);
-			tableElement.append(trElement);
+			thead.append(trElement);
 		}
+		tableElement.append(thead);
 
 		// add each attack element
 		$.each(jsonData, function setJsonAttackDataToAdminContentEach(key, value) {
@@ -345,8 +352,9 @@ function JsonGuiHandler() {
 			trElement.hover(function () {
 				$(this).toggleClass('table-hover');
 			});
-			tableElement.append(trElement);
+			tbody.append(trElement);
 		});
+		tableElement.append(tbody);
 
 		$('#' + adminsSpaceForAttacksId).empty().append(tableElement);
 	};
