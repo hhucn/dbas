@@ -79,7 +79,7 @@ function Helper() {
 			overbid	  = '<b>' + r + ', ' + premisse + '</b>, and I do ' + belCounterJusti + enddot,
 			rebut	  = '<b>' + r + ', ' + premisse + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
 				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot,
-			noopinion  = i + 'I have no opinion regarding <b>' + confrontation + '</b>. Go one step back (TODO: show me another one).';
+			noopinion  = 'I have no opinion regarding <b>' + conclusion + '</b>. Go one step back (TODO: show me another one).';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 
@@ -87,11 +87,12 @@ function Helper() {
 	 * Returns all kinds of attacks for the given confrontation and conclusion
 	 * @param confrontation current confrontation
 	 * @param conclusion current conclusion
+	 * @param premisse current premisse
 	 * @param startLowerCase, true, when each sentences should start as lowercase
 	 * @param endWithDot, true, when each sentences should end with a dot
 	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createConfrontationsRelationsText = function(confrontation, conclusion, startLowerCase, endWithDot){
+	this.createConfrontationsRelationsText = function(confrontation, conclusion, premisse, startLowerCase, endWithDot){
 
 		if (conclusion.substr(conclusion.length-1) == ".")
 			conclusion = conclusion.substr(0, conclusion.length-1);
@@ -106,8 +107,8 @@ function Helper() {
 			support	  = r + ', it is true that <b>' + confrontation + '</b>' + enddot,
 			undercut  = r + ', <b>' + confrontation + '</b>, but				 I do not ' + belCounterJusti + enddot,
 			overbid	  = r + ', <b>' + confrontation + '</b>, and I do ' + belCounterJusti + enddot,
-			rebut	  = r + ', <b>' + confrontation + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
-				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot,
+			rebut	  = r + ', <b>' + confrontation + '</b> and I do accept that this is an counter-argument for <b>' + premisse
+				+ '</b>. However, I have a much stronger argument for accepting that <b>' + premisse + '</b>' + enddot,
 			noopinion  = 'I have no opinion regarding: <b>' + confrontation + '</b>. Go one step back (TODO: show me another one).';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};

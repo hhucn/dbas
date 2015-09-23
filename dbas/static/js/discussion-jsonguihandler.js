@@ -86,7 +86,7 @@ function JsonGuiHandler() {
 			listitems = [],
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
 			id = '_argument_' + jsonData.confrontation_id,
-			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, false, true),
+			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, false, true),
 			relation = jsonData.relation;
 
 		if (typeof relation == 'undefined'){
@@ -176,7 +176,7 @@ function JsonGuiHandler() {
 		} else if (jsonData.relation === attr_support) {	text = relationArray[1] + '. ' + canYouGiveAReason + ' (You made a ' + attr_support + ')';
 		} else if (jsonData.relation === attr_undercut) {	text = relationArray[2] + '. ' + canYouGiveAReason + ' (You made an ' + attr_undercut + ')';
 		} else if (jsonData.relation === attr_overbid) {	text = relationArray[3] + '. ' + canYouGiveAReason + ' (You made an ' + attr_overbid + ')';
-		} else if (jsonData.relation === attr_rebut) {		text = relationArray[4] + '. but which one? (You made a ' + attr_rebut + ')';
+		} else if (jsonData.relation === attr_rebut) {		text = relationArray[4] + ', but which one? (You made a ' + attr_rebut + ')';
 		}
 
 		for (i=0; i<parseInt(jsonData.reason); i++){

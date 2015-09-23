@@ -299,7 +299,8 @@ class QueryHelper(object):
 		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 		if not db_argument:
 			return None
-		return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid, db_argument.isSupportive)
+		return self.get_supports_for_argument_uid(key, argument_uid)
+		# return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid, db_argument.isSupportive)
 
 	def get_supports_for_argument_uid(self, key, argument_uid):
 		"""
