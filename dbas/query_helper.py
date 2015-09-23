@@ -299,8 +299,7 @@ class QueryHelper(object):
 		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 		if not db_argument:
 			return None
-		return self.get_supports_for_argument_uid(key, argument_uid)
-		# return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid, db_argument.isSupportive)
+		return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid, db_argument.isSupportive)
 
 	def get_supports_for_argument_uid(self, key, argument_uid):
 		"""
@@ -357,36 +356,6 @@ class QueryHelper(object):
 		return_dict[key] = str(len(db_relation))
 		return return_dict
 
-	def get_attack_for_argument_uid_by_relation(self, argument_uid, relation, key):
-		"""
-
-		:param argument_uid:
-		:param relation:
-		:param key:
-		:return:
-		"""
-		status = '1'
-		if 'undermine' in relation.lower():
-			return_dict = self.get_undermines_for_argument_uid(key, argument_uid)
-			type = 'premissesgroup'
-		elif 'support' in relation.lower():
-			return_dict = self.get_supports_for_argument_uid(key, argument_uid)
-			type = 'premissesgroup'
-		elif 'undercut' in relation.lower():
-			return_dict = self.get_undercuts_for_argument_uid(key, argument_uid)
-			type = 'statement'
-		elif 'overbid' in relation.lower():
-			return_dict = self.get_overbids_for_argument_uid(key, argument_uid)
-			type = 'statement'
-		elif 'rebut' in relation.lower():
-			return_dict = self.get_rebuts_for_argument_uid(key, argument_uid)
-			type = 'premissesgroup'
-		else:
-			return_dict = {}
-			type = 'none'
-			status = '-1'
-		return return_dict, type, status
-
 	def get_attack_for_argument_by_random(self, db_argument):
 		"""
 		Returns a dictionary with attacks. The attack itself is random.
@@ -402,7 +371,7 @@ class QueryHelper(object):
 		startrnd = rnd
 		dict = None
 		key = ''
-
+		rnd = 1
 		# randomize at least 1, maximal 3 times for getting an attack
 		while True:
 			logger('QueryHelper', 'get_attack_for_argument_by_random', 'random attack is ' + str(rnd))

@@ -316,7 +316,29 @@ class DatabaseHelper(object):
 
 		# get attack
 		key = 'reason'
-		return_dict, type, status = qh.get_attack_for_argument_uid_by_relation(db_argument.uid, relation, key)
+
+		status = '1'
+		if 'undermine' in relation.lower():
+			return_dict = qh.get_undermines_for_argument_uid(key, argument_uid)
+			type = 'premissesgroup'
+		elif 'support' in relation.lower():
+			return_dict = qh.get_supports_for_argument_uid(key, argument_uid)
+			type = 'premissesgroup'
+		elif 'undercut' in relation.lower():
+			return_dict = qh.get_undercuts_for_argument_uid(key, argument_uid)
+			type = 'statement'
+		elif 'overbid' in relation.lower():
+			return_dict = qh.get_overbids_for_argument_uid(key, argument_uid)
+			type = 'statement'
+		elif 'rebut' in relation.lower():
+			#return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid)
+			return_dict = qh.get_supports_for_argument_uid(key, argument_uid)
+			type = 'premissesgroup'
+		else:
+			return_dict = {}
+			type = 'none'
+			status = '-1'
+
 		logger('DatabaseHelper', 'get_reply_confrontations_response', 'attack (' + relation + ') was fetched for ' + str(argument_uid))
 
 		# check return value

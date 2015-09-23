@@ -85,7 +85,8 @@ function JsonGuiHandler() {
 			confrontationText,
 			listitems = [],
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
-			id = '_argument_' + jsonData.confrontation_id,
+			confronation_id = '_argument_' + jsonData.confrontation_id,
+			argument_id = '_argument_' + jsonData.argument_id,
 			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, false, true),
 			relation = jsonData.relation;
 
@@ -111,12 +112,12 @@ function JsonGuiHandler() {
 			'This confrontation is a ' + jsonData.attack, {title: '', text: ''});
 
 		// build the radio buttons
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine + id, relationArray[0] + ' [<i>undermine</i>]', false, false, true, attr_undermine));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_support + id, relationArray[1] + ' [<i>support</i>]', false, false, true, attr_support));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undercut + id, relationArray[2] + ' [<i>undercut</i>]', false, false, true, attr_undercut));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_overbid + id, relationArray[3] + ' [<i>overbid</i>]', false, false, true, attr_overbid));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_rebut + id, relationArray[4] + ' [<i>rebut</i>]', false, false, true, attr_rebut));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_no_opinion + id, relationArray[5] + ' [<i>noopinion</i>]', false, false, true, attr_no_opinion));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine + confronation_id, relationArray[0] + ' [<i>undermine</i>]', false, false, true, attr_undermine));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_support + confronation_id, relationArray[1] + ' [<i>support</i>]', false, false, true, attr_support));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undercut + confronation_id, relationArray[2] + ' [<i>undercut</i>]', false, false, true, attr_undercut));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_overbid + confronation_id, relationArray[3] + ' [<i>overbid</i>]', false, false, true, attr_overbid));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_rebut + argument_id, relationArray[4] + ' [<i>rebut</i>]', false, false, true, attr_rebut));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_no_opinion + argument_id, relationArray[5] + ' [<i>noopinion</i>]', false, false, true, attr_no_opinion));
 		// TODO HOW TO INSERT ATTACKING PREMISEGROUPS?
 
 		// set the buttons

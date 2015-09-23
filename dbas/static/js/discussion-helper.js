@@ -78,7 +78,7 @@ function Helper() {
 			undercut  = '<b>' + r + ', ' + premisse + '</b>, but I do not ' + belCounterJusti + enddot,
 			overbid	  = '<b>' + r + ', ' + premisse + '</b>, and I do ' + belCounterJusti + enddot,
 			rebut	  = '<b>' + r + ', ' + premisse + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
-				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot,
+				+ '</b>.<br><br>However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot,
 			noopinion  = 'I have no opinion regarding <b>' + conclusion + '</b>. Go one step back (TODO: show me another one).';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
