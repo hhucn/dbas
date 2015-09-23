@@ -71,16 +71,16 @@ function Helper() {
 		var w = startLowerCase ? 'wrong' : 'Wrong',
 			r = startLowerCase ? 'right' : 'Right',
 			enddot = endWithDot ? '.' : '',
-			belCounterJusti = 'believe that this is a good counter-argument for my justification',
+			// belCounterJusti = 'believe that this is a good counter-argument for my justification',
+			belCounterJusti = 'believe that this is a good counter-argument for <b>' + conclusion + '</b>',
 			undermine = '<b>' + w + ', it is not true that ' + premisse + '</b>' + enddot,
 			support	  = '<b>' + r + ', it is true that ' + premisse + '</b>' + enddot,
-			undercut  = '<b>' + r + ', ' + premisse + '</b>, but I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
-			overbid	  = '<b>' + r + ', ' + premisse + '</b>, and I do ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
+			undercut  = '<b>' + r + ', ' + premisse + '</b>, but I do not ' + belCounterJusti + enddot,
+			overbid	  = '<b>' + r + ', ' + premisse + '</b>, and I do ' + belCounterJusti + enddot,
 			rebut	  = '<b>' + r + ', ' + premisse + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
 				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot,
-			dontknow   = r + ' I do not know whether <b>' + premisse + '</b> is right or wrong. Let me give another support for my opinion.',
-			irrelevant = r + ' I do not care about: <b>' + premisse + '</b>. Let me give another support for my opinion.';
-		return [undermine, support, undercut, overbid, rebut, dontknow, irrelevant];
+			noopinion  = i + 'I have no opinion regarding <b>' + confrontation + '</b>. Go one step back (TODO: show me another one).';
+		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 
 	/**
@@ -100,16 +100,16 @@ function Helper() {
 			r = startLowerCase ? 'right' : 'Right',
 			i = startLowerCase ? 'irrelevant' : 'Irrelevant',
 			enddot = endWithDot ? '.' : '',
-			belCounterJusti = 'believe that this is a good counter-argument for my justification',
+			// belCounterJusti = 'believe that this is a good counter-argument for my justification',
+			belCounterJusti = 'believe that this is a good counter-argument for <b>' + conclusion + '</b>',
 			undermine = w + ', it is not true that <b>' + confrontation + '</b>' + enddot,
 			support	  = r + ', it is true that <b>' + confrontation + '</b>' + enddot,
-			undercut  = r + ', <b>' + confrontation + '</b>, but				 I do not ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
-			overbid	  = r + ', <b>' + confrontation + '</b>, and I do ' + belCounterJusti + enddot, // <b>' + conclusion + '</b>' + enddot,
+			undercut  = r + ', <b>' + confrontation + '</b>, but				 I do not ' + belCounterJusti + enddot,
+			overbid	  = r + ', <b>' + confrontation + '</b>, and I do ' + belCounterJusti + enddot,
 			rebut	  = r + ', <b>' + confrontation + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
 				+ '</b>. However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot,
-			dontknow   = i + ', I do not know whether <b>' + confrontation + '</b> is right or wrong. Let me give another support for my opinion.',
-			irrelevant = i + ', I do not care about: <b>' + confrontation + '</b>.  Let me give another support for my opinion.';
-		return [undermine, support, undercut, overbid, rebut, dontknow, irrelevant];
+			noopinion  = 'I have no opinion regarding: <b>' + confrontation + '</b>. Go one step back (TODO: show me another one).';
+		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 
 	/**

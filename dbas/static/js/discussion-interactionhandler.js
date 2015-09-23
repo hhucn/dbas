@@ -147,15 +147,16 @@ function InteractionHandler() {
 	this.radioButtonWasChoosen = function () {
 		var guiHandler = new GuiHandler(),
 			radioButton= $('input[name=' + radioButtonGroup + ']:checked'),
-			hasRelation = radioButton.hasClass('relation'),
-			hasPremisse = radioButton.hasClass('premisse'),
-			hasStart = radioButton.hasClass('start'),
-			id = radioButton.attr('id'),
-			long_id = radioButton.attr('long_id'),
+			hasRelation = radioButton.hasClass(attr_relation),
+			hasPremisse = radioButton.hasClass(attr_premisse),
+			hasStart = radioButton.hasClass(attr_start),
+			id = radioButton.attr(attr_id),
+			long_id = radioButton.attr(attr_long_id),
 			value = radioButton.val(),
-			pgroup_id, conclusion_id;
+			id_pgroup,
+			id_conclusion;
 
-		if (id.indexOf('dontknow') != -1 || id.indexOf('irrelevant') != -1){
+		if (id.indexOf(attr_no_opinion) != -1){
 			parent.history.back();
 			return;
 		}
@@ -169,14 +170,14 @@ function InteractionHandler() {
 			if (hasStart && !hasRelation && !hasPremisse) {
 				this.statementButtonWasClicked(id);
 			} else if (hasPremisse && !hasRelation && !hasStart) {
-				pgroup_id = id;
-				conclusion_id = $('#' + discussionsDescriptionId).attr('conclusion_id');
-				this.premisseButtonWasClicked(pgroup_id, conclusion_id);
+				id_pgroup = id;
+				id_conclusion = $('#' + discussionsDescriptionId).attr(attr_conclusion_id);
+				this.premisseButtonWasClicked(id_pgroup, id_conclusion);
 			} else if (hasRelation && !hasPremisse && !hasStart) {
 				this.relationButtonWasClicked(id);
 			} else if (hasPremisse && hasRelation && !hasStart){
-				pgroup_id = $('#' + discussionsDescriptionId).attr('premissegroup_uid');
-				this.argumentButtonWasClicked(long_id, pgroup_id);
+				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premissegroup_uid);
+				this.argumentButtonWasClicked(long_id, id_pgroup);
 			} else {
 				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +
 				'has start: ' + hasStart + '\n' +
