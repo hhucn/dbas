@@ -34,7 +34,7 @@
 
 				<ul id="navbar-right" class="nav navbar-nav navbar-right">
 
-					<li id="content-link" tal:condition="logged_in">
+					<li id="content-link">
 						<a href="${request.application_url}/discussion/start" title="Get the party started">
 							<img id="header_letsgo" class="glyphicon-local center">&thinsp;<span i18n:translate="lets_go">Let's go</span>
 						</a>
@@ -53,7 +53,10 @@
 					</li>
 
 					<li id="login-link" tal:condition="not:logged_in">
+						<!--
 						<a href="${request.application_url}/login" title="Login">
+						-->
+						<a id="link_popup_login" href="" data-toggle="modal" data-target="#popup_login" title="Login">
 							<img id="header_login" class="glyphicon-local center">&thinsp;<span i18n:translate="login">Login</span>
 						</a>
 					</li>

@@ -15,6 +15,8 @@ body {
 	padding: 0;
 	height: 100%;
 }
+
+
 /* new scale for bg for retina displays */
 
 @media screen and (min-width: 2560px),
@@ -66,27 +68,23 @@ body.loading .ajaxloader {
 
 ::-webkit-input-placeholder {
 	/* WebKit browsers */
-	
 	color: #bcbcbc;
 }
 
 :-moz-placeholder {
 	/* Mozilla Firefox 4 to 18 */
-	
 	color: #bcbcbc;
 	opacity: 1;
 }
 
 ::-moz-placeholder {
 	/* Mozilla Firefox 19+ */
-	
 	color: #bcbcbc;
 	opacity: 1;
 }
 
 :-ms-input-placeholder {
 	/* Internet Explorer 10+ */
-	
 	color: #bcbcbc;
 }
 
@@ -135,6 +133,8 @@ body.loading .ajaxloader {
 	background: #f4f4f4;
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
 }
+
+
 /**
 comment .container and wrap each container with <div class="coloured-div">
 #content .coloured-div:nth-child(odd) {}
@@ -393,6 +393,18 @@ comment .container and wrap each container with <div class="coloured-div">
 
 .share-mail:hover {
 	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail.png') no-repeat 10px 10px;
+}
+
+#popup-login-body {
+	padding: 10px;
+}
+
+#generate-password-body {
+	padding-bottom: 10px;
+}
+
+#popup-login-header-button-wrapper {
+	width: 100%;
 }
 
 @media (max-width: 768px) {

@@ -58,7 +58,6 @@ def main(global_config, **settings):
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)
 	config.add_route('main_page',     '/')
-	config.add_route('main_login',    '/login')
 	config.add_route('main_logout',   '/logout')
 	config.add_route('main_contact',  '/contact')
 	config.add_route('main_discussion_start',  '/discussion/start')
@@ -74,6 +73,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_reply_for_premissegroup',             '/discussion/{url:.*}/ajax_reply_for_premissegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}/ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}/ajax_reply_for_argument')
+
 	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}ajax_set_new_start_statement{params:.*}')
 	config.add_route('ajax_set_new_premisses',                   '/discussion/{url:.*}ajax_set_new_premisses{params:.*}')
 	config.add_route('ajax_switch_language',                     '/discussion/{url:.*}ajax_switch_language{params:.*}')
@@ -83,6 +83,9 @@ def main(global_config, **settings):
 	config.add_route('ajax_get_shortened_url',                   '/discussion/{url:.*}ajax_get_shortened_url{params:.*}')
 	config.add_route('ajax_get_attack_overview',                 '/discussion/{url:.*}ajax_get_attack_overview{params:.*}')
 	config.add_route('ajax_manage_user_track',                   'ajax_manage_user_track')
+	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')
+	config.add_route('ajax_user_registration',                   '{url:.*}ajax_user_registration')
+	config.add_route('ajax_user_password_request',               '{url:.*}ajax_user_password_request')
 
 	# read the input and start
 	config.scan()

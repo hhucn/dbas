@@ -59,227 +59,9 @@ class Dbas(object):
 		}
 
 	# login page
-	@view_config(route_name='main_login', renderer='templates/login.pt', permission='everybody')
-	@forbidden_view_config(renderer='templates/login.pt')
-	def main_login(self):
-		"""
-		View-configuration for the login template
-		:return:
-		"""
-		# check for already logged in users
-		logger('main_login', 'def', 'login page')
-
-		token = self.request.session.get_csrf_token()
-		logger('main_login', 'new token', str(token))
-
-		if self.request.authenticated_userid:
-			logger('main_login', 'def', 'user is registered, so redirect to main_discussion_start')
-			return HTTPFound(location=self.request.route_url('main_discussion_start'))
-
-		login_url = self.request.route_url('main_login')
-		referrer = self.request.url
-
-		if referrer == login_url:
-			referrer = self.request.route_url('main_page')  # never use the login form itself as came_from
-		came_from = self.request.params.get('came_from', referrer)
-
-		# some variables
-		message = ''
-		password = ''
-		passwordconfirm = ''
-		firstname = ''
-		surname = ''
-		nickname = ''
-		email = ''
-		reg_failed = False
-		log_failed = False
-		reg_success = False
-		password_handler = PasswordHandler()
-		password_generator = PasswordGenerator()
-
-		# case: user login
-		if 'form.login.submitted' in self.request.params:
-			logger('main_login', 'form.login.submitted', 'requesting params')
-
-			# requesting parameters
-			nickname = self.request.params['nickname']
-			password = self.request.params['password']
-			db_user = DBSession.query(User).filter_by(nickname=nickname).first()
-
-			# check for user and password validations
-			if not db_user:
-				logger('main_login', 'form.login.submitted', 'user \'' + nickname + '\' does not exists')
-				message = 'User does not exists'
-			elif not db_user.validate_password(password):  # dbUser.validate_password(password)
-				logger('main_login', 'form.login.submitted', 'wrong password')
-				message = 'Wrong password'
-			else:
-				logger('main_login', 'form.login.submitted', 'login successful')
-				headers = remember(self.request, nickname)
-
-				# update timestamp
-				logger('main_login', 'form.login.submitted', 'update login timestamp')
-				db_user.update_last_logged()
-				transaction.commit()
-
-				return HTTPFound(
-					location=self.request.route_url('main_discussion_start'),
-					headers=headers
-				)
-			log_failed = True
-
-		# case: user registration
-		if 'form.registration.submitted' in self.request.params:
-			logger('main_login', 'form.registration.submitted', 'Requesting params')
-
-			# getting parameter
-			firstname = self.request.params['firstname']
-			surname = self.request.params['surname']
-			nickname = self.request.params['nickname']
-			email = self.request.params['email']
-			password = self.request.params['password']
-			passwordconfirm = self.request.params['passwordconfirm']
-			request_token = self.request.params['csrf_token']
-			gender = self.request.params['inlineRadioGenderOptions']
-
-			# database queries mail verification
-			db_nick = DBSession.query(User).filter_by(nickname=nickname).first()
-			db_mail = DBSession.query(User).filter_by(email=email).first()
-			logger('main_login', 'form.registration.submitted', 'Validating email')
-			is_mail_valid = validate_email(email, check_mx=True)
-
-			# are the password equal?
-			if not password == passwordconfirm:
-				logger('main_login', 'form.registration.submitted', 'Passwords are not equal')
-				message = 'Passwords are not equal'
-				password = ''
-				passwordconfirm = ''
-				reg_failed = True
-			# is the nick already taken?
-			elif db_nick:
-				logger('main_login', 'form.registration.submitted', 'Nickname \'' + nickname + '\' is taken')
-				message = 'Nickname is taken'
-				nickname = ''
-				reg_failed = True
-			# is the email already taken?
-			elif db_mail:
-				logger('main_login', 'form.registration.submitted', 'E-Mail \'' + email + '\' is taken')
-				message = 'E-Mail is taken'
-				email = ''
-				reg_failed = True
-			# is the email valid?
-			elif not is_mail_valid:
-				logger('main_login', 'form.registration.submitted', 'E-Mail \'' + email + '\' is not valid')
-				message = 'E-Mail is not valid'
-				email = ''
-				reg_failed = True
-			# is the token valid?
-			elif request_token != token :
-				logger('main_login', 'form.registration.submitted', 'token is not valid')
-				logger('main_login', 'form.registration.submitted', 'request_token: ' + str(request_token))
-				logger('main_login', 'form.registration.submitted', 'token: ' + str(token))
-				message = 'CSRF-Token is not valid'
-				reg_failed = True
-			else:
-				# getting the editors group
-				db_group = DBSession.query(Group).filter_by(name="editors").first()
-
-				# does the group exists?
-				if not db_group:
-					message = 'An error occured, please try again later or contact the author'
-					reg_failed = True
-					logger('main_login', 'form.registration.submitted', 'Error occured')
-				else:
-					# creating a new user with hased password
-					logger('main_login', 'form.registration.submitted', 'Adding user')
-					hashedPassword = password_handler.get_hashed_password(password)
-					newuser = User(firstname=firstname,
-					               surname=surname,
-					               email=email,
-					               nickname=nickname,
-					               password=hashedPassword,
-					               gender=gender,
-					               group=db_group.uid)
-					DBSession.add(newuser)
-					transaction.commit()
-
-					# sanity check, whether the user exists
-					checknewuser = DBSession.query(User).filter_by(nickname=nickname).first()
-					if checknewuser:
-						logger('main_login', 'form.registration.submitted', 'New data was added with uid ' + str(checknewuser.uid))
-						message = 'Your account was added and you are able to login now'
-						reg_success = True
-
-						# sending an email
-						subject = 'D-BAS Account Registration'
-						body = 'Your account was successfully registered for this e-mail.'
-						EmailHelper().send_mail(self.request, subject, body, email)
-
-					else:
-						logger('main_login', 'form.registration.submitted', 'New data was not added')
-						message = 'Your account with the nick could not be added. Please try again or contact the author'
-						reg_failed = True
-
-		# case: user password request
-		if 'form.passwordrequest.submitted' in self.request.params:
-			logger('main_login', 'form.passwordrequest.submitted', 'requesting params')
-			email = self.request.params['email']
-			logger('main_login', 'form.passwordrequest.submitted', 'email is ' + email)
-			db_user = DBSession.query(User).filter_by(email=email).first()
-
-			# does the user exists?
-			if db_user:
-				# get password and hashed password
-				pwd = password_generator.get_rnd_passwd()
-				logger('main_login', 'form.passwordrequest.submitted', 'New password is ' + pwd)
-				hashedpwd = password_handler.get_hashed_password(pwd)
-				logger('main_login', 'form.passwordrequest.submitted', 'New hashed password is ' + hashedpwd)
-
-				# set the hased one
-				db_user.password = hashedpwd
-				DBSession.add(db_user)
-				transaction.commit()
-
-				body = 'Your nickname is: ' + db_user.nickname + '\n'
-				body += 'Your new password is: ' + pwd
-				subject = 'D-BAS Password Request'
-				reg_success, reg_failed, message= EmailHelper().send_mail(self.request, subject, body, email)
-
-				# logger
-				if reg_success:
-					logger('main_login', 'form.passwordrequest.submitted', 'New password was sent')
-				elif reg_failed:
-					logger('main_login', 'form.passwordrequest.submitted', 'Error occured')
-			else:
-				logger('main_login', 'form.passwordrequest.submitted', 'Mail unknown')
-				message = 'The given e-mail address is unkown'
-				reg_failed = True
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		return {
-			'layout': self.base_layout(),
-			'language': lang,
-			'title': 'Login',
-			'project': header,
-			'message': message,
-			'url': self.request.application_url + '/login',
-			'came_from': came_from,
-			'password': password,
-			'passwordconfirm': passwordconfirm,
-			'firstname': firstname,
-			'surname': surname,
-			'nickname': nickname,
-			'email': email,
-			'login_failed': log_failed,
-			'registration_failed': reg_failed,
-			'registration_success': reg_success,
-			'logged_in': self.request.authenticated_userid,
-			'csrf_token': token
-		}
+	# @view_config(route_name='main_login', renderer='templates/login.pt', permission='everybody')
+	# @forbidden_view_config(renderer='templates/login.pt')
+	# def main_login(self):
 
 	# logout page
 	@view_config(route_name='main_logout', permission='use')
@@ -390,8 +172,8 @@ class Dbas(object):
 		}
 
 	# content page, after login
-	@view_config(route_name='main_discussion', renderer='templates/content.pt', permission='use')
-	@view_config(route_name='main_discussion_start', renderer='templates/content.pt', permission='use')
+	@view_config(route_name='main_discussion', renderer='templates/content.pt', permission='everybody')
+	@view_config(route_name='main_discussion_start', renderer='templates/content.pt', permission='everybody')
 	def main_discussion(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
@@ -648,8 +430,8 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		return_dict = DatabaseHelper().get_start_statements()
+		return_dict['logged_in'] = self.request.authenticated_userid
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
 
 		return return_json
 
@@ -675,6 +457,7 @@ class Dbas(object):
 			logger('get_premisses_for_statement', 'error', repr(e))
 			return_dict['status'] = '-1'
 
+		return_dict['logged_in'] = self.request.authenticated_userid
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -710,6 +493,7 @@ class Dbas(object):
 			logger('reply_for_premissegroup', 'error', repr(e))
 			return_dict['status'] = '-1'
 
+		return_dict['logged_in'] = self.request.authenticated_userid
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -743,6 +527,7 @@ class Dbas(object):
 			logger('reply_for_argument', 'error', repr(e))
 			return_dict['status'] = '-1'
 
+		return_dict['logged_in'] = self.request.authenticated_userid
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -770,6 +555,7 @@ class Dbas(object):
 			logger('reply_for_response_of_confrontation', 'error', repr(e))
 			return_dict['status'] = '-1'
 
+		return_dict['logged_in'] = self.request.authenticated_userid
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -991,7 +777,6 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 		return return_json
 
-
 	# ajax - for attack overview
 	@view_config(route_name='ajax_get_attack_overview', renderer='json', check_csrf=True)
 	def get_attack_overview(self):
@@ -1003,6 +788,213 @@ class Dbas(object):
 		logger('get_attack_overview', 'def', 'main')
 		logger('get_attack_overview', 'check_csrf_token', str(check_csrf_token(self.request)))
 		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - user login
+	@view_config(route_name='ajax_user_login', renderer='json')
+	def user_login(self):
+		"""
+
+		:return:
+		"""
+		logger('user_login', 'def', 'main')
+
+		success = '0'
+		message = ''
+		return_dict = {}
+
+		try:
+			nickname = self.request.params['user']
+			password = self.request.params['password']
+			url = self.request.params['url']
+			logger('user_login', 'def', 'params nickname: ' + str(nickname) + ', password: ' + str(password) + ', url: ' + url)
+
+			db_user = DBSession.query(User).filter_by(nickname=nickname).first()
+
+			# check for user and password validations
+			if not db_user:
+				logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
+				message = 'User does not exists'
+			elif not db_user.validate_password(password):  # dbUser.validate_password(password)
+				logger('user_login', 'password not valid', 'wrong password')
+				message = 'Wrong password'
+			else:
+				logger('user_login', 'login', 'login successful')
+				headers = remember(self.request, nickname)
+
+				# update timestamp
+				logger('user_login', 'login', 'update login timestamp')
+				db_user.update_last_logged()
+				transaction.commit()
+
+				# TODO
+				return HTTPFound(
+					location=url,
+					headers=headers,
+				)
+		except KeyError as e:
+			logger('user_login', 'error', repr(e))
+
+		return_dict['success'] = str(success)
+		return_dict['message'] = str(message)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - registration of users
+	@view_config(route_name='ajax_user_registration', renderer='json')
+	def user_registration(self):
+		"""
+
+		:return:
+		"""
+		logger('user_registration', 'def', 'main')
+
+		success = '0'
+		message = ''
+		return_dict = {}
+
+		try:
+			firstname = self.request.params['firstname']
+			lastname = self.request.params['lastname']
+			nickname = self.request.params['nickname']
+			email = self.request.params['email']
+			gender = self.request.params['gender']
+			password = self.request.params['password']
+			passwordconfirm = self.request.params['passwordconfirm']
+			logger('user_registration', 'def', 'params firstname: ' + str(firstname) + ', lastname: ' + str(lastname) + ', nickname: ' + str(nickname) + ', email: ' + str(email) + ', password: ' + str(password) + ', passwordconfirm: ' + str(passwordconfirm))
+
+			# database queries mail verification
+			db_nick = DBSession.query(User).filter_by(nickname=nickname).first()
+			db_mail = DBSession.query(User).filter_by(email=email).first()
+			logger('main_login', 'form.registration.submitted', 'Validating email')
+			is_mail_valid = validate_email(email, check_mx=True)
+
+			# are the password equal?
+			if not password == passwordconfirm:
+				logger('user_registration', 'form.registration.submitted', 'Passwords are not equal')
+				message = 'Passwords are not equal'
+			# is the nick already taken?
+			elif db_nick:
+				logger('user_registration', 'form.registration.submitted', 'Nickname \'' + nickname + '\' is taken')
+				message = 'Nickname is taken'
+			# is the email already taken?
+			elif db_mail:
+				logger('user_registration', 'form.registration.submitted', 'E-Mail \'' + email + '\' is taken')
+				message = 'E-Mail is taken'
+			# is the email valid?
+			elif not is_mail_valid:
+				logger('user_registration', 'form.registration.submitted', 'E-Mail \'' + email + '\' is not valid')
+				message = 'E-Mail is not valid'
+			# is the token valid?
+			# elif request_token != token :
+			# 	logger('main_login', 'form.registration.submitted', 'token is not valid')
+			# 	logger('main_login', 'form.registration.submitted', 'request_token: ' + str(request_token))
+			# 	logger('main_login', 'form.registration.submitted', 'token: ' + str(token))
+			# 	message = 'CSRF-Token is not valid'
+			else:
+				# getting the editors group
+				db_group = DBSession.query(Group).filter_by(name="editors").first()
+
+				# does the group exists?
+				if not db_group:
+					message = 'An error occured, please try again later or contact the author'
+					logger('user_registration', 'form.registration.submitted', 'Error occured')
+				else:
+					# creating a new user with hased password
+					logger('user_registration', 'form.registration.submitted', 'Adding user')
+					hashedPassword = PasswordHandler().get_hashed_password(password)
+					newuser = User(firstname=firstname,
+					               surname=lastname,
+					               email=email,
+					               nickname=nickname,
+					               password=hashedPassword,
+					               gender=gender,
+					               group=db_group.uid)
+					DBSession.add(newuser)
+					transaction.commit()
+
+					# sanity check, whether the user exists
+					checknewuser = DBSession.query(User).filter_by(nickname=nickname).first()
+					if checknewuser:
+						logger('main_login', 'form.registration.submitted', 'New data was added with uid ' + str(checknewuser.uid))
+						message = 'Your account was added and you are now able to login.'
+						success = '1'
+
+						# sending an email
+						subject = 'D-BAS Account Registration'
+						body = 'Your account was successfully registered for this e-mail.'
+						EmailHelper().send_mail(self.request, subject, body, email)
+
+					else:
+						logger('main_login', 'form.registration.submitted', 'New data was not added')
+						message = 'Your account with the nick could not be added. Please try again or contact the author.'
+
+		except KeyError as e:
+			logger('user_registration', 'error', repr(e))
+
+		return_dict['success'] = str(success)
+		return_dict['message'] = str(message)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - password requests
+	@view_config(route_name='ajax_user_password_request', renderer='json')
+	def user_password_request(self):
+		"""
+
+		:return:
+		"""
+		logger('user_password_request', 'def', 'main')
+
+		success = '0'
+		message = ''
+		return_dict = {}
+
+		try:
+			email = self.request.params['email']
+			logger('user_password_request', 'def', 'params email: ' + str(email))
+			success = '1'
+
+			db_user = DBSession.query(User).filter_by(email=email).first()
+
+			# does the user exists?
+			if db_user:
+				# get password and hashed password
+				pwd = PasswordGenerator().get_rnd_passwd()
+				logger('user_password_request', 'form.passwordrequest.submitted', 'New password is ' + pwd)
+				hashedpwd = PasswordHandler().get_hashed_password(pwd)
+				logger('user_password_request', 'form.passwordrequest.submitted', 'New hashed password is ' + hashedpwd)
+
+				# set the hased one
+				db_user.password = hashedpwd
+				DBSession.add(db_user)
+				transaction.commit()
+
+				body = 'Your nickname is: ' + db_user.nickname + '\n'
+				body += 'Your new password is: ' + pwd
+				subject = 'D-BAS Password Request'
+				reg_success, reg_failed, message= EmailHelper().send_mail(self.request, subject, body, email)
+
+				# logger
+				if reg_success:
+					logger('user_password_request', 'form.passwordrequest.submitted', 'New password was sent')
+					success = '1'
+				elif reg_failed:
+					logger('user_password_request', 'form.passwordrequest.submitted', 'Error occured')
+			else:
+				logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
+				message = 'The given e-mail address is unkown'
+
+
+		except KeyError as e:
+			logger('user_password_request', 'error', repr(e))
+
+		return_dict['success'] = str(success)
+		return_dict['message'] = str(message)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json

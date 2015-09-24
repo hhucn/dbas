@@ -12,6 +12,8 @@
 	<!-- Bootstrap core CSS -->
 	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5.min.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_contact_login.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.css')}" rel="stylesheet">
 	<title>${project} - ${title}</title>
 </head>
@@ -47,6 +49,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.5.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ids.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/password-handler.js')}"></script>
 
 </body>
 

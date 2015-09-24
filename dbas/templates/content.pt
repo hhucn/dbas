@@ -52,7 +52,7 @@
 				</div>
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
-						<input id="edit-statement" type="button" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
+						<input tal:condition="logged_in" id="edit-statement" type="button" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
 						<br>
 						<div id="display-control-container">
 							<p i18n:translate="change_style">Change display style:</p>

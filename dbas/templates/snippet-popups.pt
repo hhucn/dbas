@@ -359,45 +359,6 @@
 	</div>
 </div>
 
-<!-- PASSWORD INFORMATION -->
-<div class="modal fade" id="popup_password_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-				</button>
-				<h4 class="modal-title" id="myModalLabel" i18n:translate="select_password">How to select a strong password</h4>
-			</div>
-			<div class="modal-body">
-				<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>
-				<ul>
-					<li i18n:translate="select_password_rule1">eight characters</li>
-					<li i18n:translate="select_password_rule2">one uppercase letter</li>
-					<li i18n:translate="select_password_rule3">one lowercase letter</li>
-					<li i18n:translate="select_password_rule4">one special sign</li>
-				</ul>
-				<span i18n:translate="popup_password_text">For example 'M2015_fiO' is a strong password. And it would take 275 days to crack this password with a desktop pc in 2015. Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 yearsIt should be noted:</span>
-				<ul>
-					<li i18n:translate="select_password_avoid1">Avoid using a password on several pages</li>
-					<li i18n:translate="select_password_avoid2">Avoid using patterns, which can be found in a dictionary</li>
-					<li i18n:translate="select_password_avoid3">Avoid using information that is or might become publicly associated with the user or the account</li>
-					<li i18n:translate="select_password_avoid4">Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user</li>
-				</ul>
-				<br><span i18n:translate="select_password_help">If you need some help with our password, you can get one here:</span>
-				<br>
-				<br>
-				<input type="text" id="password-generator-output">
-				<input type="button" id="password-generator-button" value="Generate Password" class="button button-block btn btn-primary">
-				<br>
-				<br>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="close">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 <!-- EDIT STATEMENTS-->
 <div class="modal fade" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -463,6 +424,202 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" short_url="1">Fetch long url!</button>
 				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" i18n:translate="close">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- LOGIN POPUP -->
+<div class="modal fade" id="popup_login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				</button>
+				<br>
+				<ul class="tab-group">
+					<li class="tab tab-login active"><a href="#login" i18n:translate="login">Log In</a>
+					</li>
+					<li class="tab tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a>
+					</li>
+				</ul>
+			</div>
+			<div id="popup-login-body">
+
+				<div class="tab-content">
+
+					<div id="login">
+						<h2 class="modal-title" i18n:translate="welcome_back">Welcome Back!</h2>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="your_nickname">Your Nickname</label>
+							<div class="col-sm-9">
+								<input id="login-user" type="text" class="nickname" name="nickname" autocomplete="off" placeholder="example: Democrator">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="your_password">Your Password</label>
+							<div class="col-sm-9">
+								<input id="login-pw" type="password" class="password" name="password" autocomplete="off"
+								       placeholder="example: ******">
+							</div>
+						</div>
+
+						<div id="forgot-password" class="form-group">
+							<a id="forgot-password-text">
+								Forgot Password?
+								<span i18n:translate="forgot_password">Forgot Password?</span>
+							</a>
+						</div>
+
+						<div id="forgot-password-body" class="form-group">
+							<h4 class="modal-title" id="exampleModalLabel" i18n:translate="password_request">Password-Request</h4>
+
+							<label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>
+							<input id="password-request-email-input" type="email" class="email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
+							<input id="popup-login-button-request" type="submit" name="form.passwordrequest.submitted" value="Request
+							Password" class="btn
+							btn-primary" />
+						</div>
+
+						<div id="popup-login-failed" class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-failed-message" />
+						</div>
+
+						<div id="popup-login-success" class="alert alert-success" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="error">Success:</span> <span id="popup-login-success-message" />
+						</div>
+					</div>
+
+					<div id="signup">
+						<h2 class="modal-title" i18n:translate="signup_free">Sign Up for Free</h2>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="first_name">Your First Name</label>
+							<div class="col-sm-9">
+								<input id="userfirstname-input" type="text" name="firstname" class="userfirstname active" autocomplete="on" placeholder="example: Tobias">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="last_name">Your Last Name</label>
+							<div class="col-sm-9">
+								<input id="userlastname-input" type="text" name="surname" class="userlastname" autocomplete="on" placeholder="example: Krauthoff">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="nickname">Your Nickname</label>
+							<div class="col-sm-9">
+								<input id="nick-input" type="text" class="nickname" name="nickname" autocomplete="on" placeholder="example: Democrator">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="gender">Your Gender</label>
+							<div class="col-sm-9">
+								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-"
+								       checked><label for="inlineRadioGender1"><b i18n:translate="none">none</b></label>
+								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2"
+								       value="f"><label for="inlineRadioGender2"><b
+									i18n:translate="female">female</b></label>
+								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3"
+								       value="m"><label for="inlineRadioGender3"><b
+									i18n:translate="male">male</b></label>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="email">Your Email Address</label>
+							<div class="col-sm-9">
+								<input id="email-input" type="email" class="email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="password">Your Password</label>
+							<div class="col-sm-9">
+								<input id="password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******">
+							</div>
+							<div id="password-extras">
+								<div id="password-meter" class="veryweak"></div>
+								<h4 id="password-strength" i18n:translate="password_strength">Strength</h4>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="password-confirm">Password (confirm)</label>
+							<div class="col-sm-9">
+								<input id="passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******">
+							</div>
+						</div>
+
+						<div id="generate-password" class="form-group">
+							<a>
+								<span i18n:translate="generate_password">Generate secure password</span>
+							</a>
+						</div>
+
+						<div id="popup-login-warning-message" class="alert alert-warning alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+							</button>
+							<strong i18n:translate="warning">Warning!</strong>
+
+							<div id="popup-login-warning-message-text"><span id="message-warning-text" />
+							</div>
+						</div>
+
+						<div id="popup-login-registration-success" class="alert alert-success" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="success">Success:</span> <span
+								id="popup-login-registration-success-message" />
+						</div>
+
+						<div id="popup-login-registration-failed" class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="error">Error:</span> <span
+								id="popup-login-registration-failed-message" />
+						</div>
+
+
+						<div id="generate-password-body">
+							<h4 class="modal-title" id="myModalLabel" i18n:translate="select_password">How to select a strong password</h4>
+
+							<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>
+							<ul>
+								<li i18n:translate="select_password_rule1">eight characters</li>
+								<li i18n:translate="select_password_rule2">one uppercase letter</li>
+								<li i18n:translate="select_password_rule3">one lowercase letter</li>
+								<li i18n:translate="select_password_rule4">one special sign</li>
+							</ul>
+							<span i18n:translate="popup_password_text">For example 'M2015_fiO' is a strong password. And it would take
+							                                           275 days to crack this password with a desktop pc in 2015.
+							                                           Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 years. It should be noted:</span>
+							<ul>
+								<li i18n:translate="select_password_avoid1">Avoid using a password on several pages</li>
+								<li i18n:translate="select_password_avoid2">Avoid using patterns, which can be found in a dictionary</li>
+								<li i18n:translate="select_password_avoid3">Avoid using information that is or might become publicly associated with the user or the account</li>
+								<li i18n:translate="select_password_avoid4">Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user</li>
+							</ul>
+							<br><span i18n:translate="select_password_help">If you need some help with our password, you can get one here:</span>
+							<br>
+							<br>
+							<input type="text" id="password-generator-output">
+							<input type="button" id="password-generator-button" value="Generate Password" class="button button-block btn btn-primary">
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="modal-footer">
+
+				<button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>
+				<button id="popup-login-button-register" type="button" class="btn btn-primary" i18n:translate="register">Register</button>
+
+				<button type="button" class="btn btn-default" id="popup-login-close-button" i18n:translate="close">Close</button>
 			</div>
 		</div>
 	</div>

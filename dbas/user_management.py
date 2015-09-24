@@ -55,9 +55,10 @@ class UserHandler(object):
 		:param nick:
 		:return:
 		"""
-		db_user = DBSession.query(User).filter_by(nickname=str(nick)).first()
-		db_user.update_last_action()
-		transaction.commit()
+		if nick != None: # todo: catch none user
+			db_user = DBSession.query(User).filter_by(nickname=str(nick)).first()
+			db_user.update_last_action()
+			transaction.commit()
 
 	def is_user_admin(self, user):
 		"""

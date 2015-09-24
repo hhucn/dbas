@@ -3,7 +3,6 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  * @copyright Krauthoff 2015
  */
-
 /**
  * ID's
  * @type {string}
@@ -22,6 +21,8 @@ var closeStatementContainerId 					= 'close-statement-container';
 var closeIslandViewContainerId 					= 'close-island-view-container';
 var confirmDialogAcceptBtn 						= 'confirm-dialog-accept-btn';
 var confirmDialogRefuseBtn 						= 'confirm-dialog-refuse-btn';
+var contactLink 								= 'contact-link';
+var contentLink 								= 'content-link';
 var discussionsDescriptionId 					= 'discussions-description';
 var discussionsAvoidanceDescriptionId 			= 'discussions-avoidance-description';
 var discussionContainerId 						= 'discussion-container';
@@ -42,6 +43,7 @@ var proPositionTextareaId 						= 'pro-textareas';
 var proIslandId 								= 'pro-island';
 var listAllUsersButtonId 						= 'list-all-users';
 var listAllUsersAttacksId 						= 'list-all-attacks';
+var loginLink 									= 'login-link';
 var goodPointTakeMeBackButtonId 				= 'good-point-of-the-others';
 var insertStatementForm 						= 'insert-statement-form';
 var islandViewContainerId 						= 'island-view-container';
@@ -53,6 +55,8 @@ var conPositionTextareaId 						= 'con-textareas';
 var conIslandId 								= 'con-island';
 var radioButtonGroup 							= 'radioButtonGroup';
 var minimapId 									= 'navigation-minimap-container';
+var navbarLeft									= 'navbar-left';
+var newsLink 									= 'news-link';
 var popupConfirmDialogId 						= 'confirm-dialog';
 var popupEditStatementId 						= 'popup-edit-statement';
 var popupEditStatementCloseButtonXId 			= 'popup-edit-statement-close';
@@ -61,9 +65,27 @@ var popupEditStatementTextareaId 				= 'popup-edit-statement-textarea';
 var popupEditStatementContentId 				= 'popup-edit-statement-content';
 var popupEditStatementLogfileHeaderId 			= 'popup-edit-statement-logfile-header';
 var popupEditStatementLogfileSpaceId 			= 'popup-edit-statement-logfile';
-var popupEditStatementSubmitButtonId 			= "popup-edit-statement-submit";
-var popupEditStatementDescriptionId 			= "popup-edit-statement-description-p";
-var popupUrlSharingLongUrlButtonID 				= "popup-url-sharing-long-url-button";
+var popupEditStatementSubmitButtonId 			= 'popup-edit-statement-submit';
+var popupEditStatementDescriptionId 			= 'popup-edit-statement-description-p';
+var popupLogin									= 'popup_login';
+var popupLoginFailed 							= 'popup-login-failed';
+var popupLoginSuccess 							= 'popup-login-success';
+var popupLoginForgotPasswordBody				= 'forgot-password-body';
+var popupLoginForgotPasswordText				= 'forgot-password-text';
+var popupLoginGeneratePassword					= 'generate-password';
+var popupLoginGeneratePasswordBody				= 'generate-password-body';
+var popupLoginCloseButton 						= 'popup-login-close-button';
+var popupLoginRegistrationSuccess 				= 'popup-login-registration-success';
+var popupLoginRegistrationFailed 				= 'popup-login-registration-failed';
+var popupLoginButtonRegister					= 'popup-login-button-register';
+var popupLoginButtonLogin						= 'popup-login-button-login';
+var popupLoginButtonRequest						= 'popup-login-button-request';
+var popupLoginWarningMessage					= 'popup-login-warning-message';
+var popupLoginWarningMessageText 				= 'popup-login-warning-message-text';
+var popupLoginInlineRadioGenderN 				= 'inlineRadioGender1';
+var popupLoginInlineRadioGenderF 				= 'inlineRadioGender2';
+var popupLoginInlineRadioGenderM 				= 'inlineRadioGender3';
+var popupUrlSharingLongUrlButtonID 				= 'popup-url-sharing-long-url-button';
 var popupErrorDescriptionId 					= 'popup-edit-error-description';
 var popupSuccessDescriptionId 					= 'popup-edit-success-description';
 var popupUrlSharingId 							= 'popup-url-sharing';
@@ -81,8 +103,8 @@ var scStyle3Id 									= 'sc-style-3';
 var shareUrlId 									= 'share-url';
 // var startDiscussionButtonId = 'start-discussion';
 // var startDescriptionId = 'start-description';
-var stepBackButtonId = 'step-back';
-var sendNewStatementId = 'send-new-statement';
+var stepBackButtonId 	= 'step-back';
+var sendNewStatementId 	= 'send-new-statement';
 
 // id's for identifiying
 var id_pro = 'pro';

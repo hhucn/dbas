@@ -402,16 +402,17 @@ class QueryHelper(object):
 		:param attacked_with_relation: id of attacked_w th relation
 		:return: undefined
 		"""
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
-														', statememt_id ' + str(statement_id) +
-														', premissesgroup_uid ' + str(premissesgroup_uid) +
-														', argument_uid ' + str(argument_uid) +
-														', attacked_by_relation ' + str(attacked_by_relation) +
-														', attacked_with_relation ' + str(attacked_with_relation))
-		DBSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
-		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation))
-		transaction.commit()
+		if user != None: # todo: catch none user
+			db_user = DBSession.query(User).filter_by(nickname=user).first()
+			logger('QueryHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
+															', statememt_id ' + str(statement_id) +
+															', premissesgroup_uid ' + str(premissesgroup_uid) +
+															', argument_uid ' + str(argument_uid) +
+															', attacked_by_relation ' + str(attacked_by_relation) +
+															', attacked_with_relation ' + str(attacked_with_relation))
+			DBSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
+			                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation))
+			transaction.commit()
 
 	# def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):
 	# 	"""

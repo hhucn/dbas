@@ -25,7 +25,9 @@ function JsonGuiHandler() {
 			guihandler.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>', '' , null);
 		}
 
-		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, newConclusionRadioButtonText, false, false, false, ''));
+		if (typeof jsonData.logged_in == "string") {
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, newConclusionRadioButtonText, false, false, false, ''));
+		}
 
 		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
@@ -67,7 +69,9 @@ function JsonGuiHandler() {
 			listitems.push(helper.getKeyValAsInputInLiWithType(key, text, false, true, false, text, attributes));
 		});
 
-		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? addPremisseRadioButtonText : newPremisseRadioButtonText, false, false, false, ''));
+		if (typeof jsonData.logged_in == "string") {
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? addPremisseRadioButtonText : newPremisseRadioButtonText, false, false, false, ''));
+		}
 
 		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
@@ -193,7 +197,9 @@ function JsonGuiHandler() {
 			'related_argument': jsonData.argument_uid,
 			'premissegroup_uid': jsonData.premissegroup_uid};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
-		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
+		if (typeof jsonData.logged_in == "string") {
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
+		}
 		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
 
