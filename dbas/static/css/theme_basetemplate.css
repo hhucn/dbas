@@ -406,6 +406,16 @@ comment .container and wrap each container with <div class="coloured-div">
 #popup-login-header-button-wrapper {
 	width: 100%;
 }
+#ppBody {
+	font-size: 11pt;
+	width: 100%;
+	margin: 0 auto;
+	text-align: justify;
+}
+
+.ppConsistencies {
+	display: none;
+}
 
 @media (max-width: 768px) {
 	.container {

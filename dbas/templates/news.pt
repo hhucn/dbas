@@ -36,6 +36,39 @@
 			</ul>
 			<div class="row">
 				<div class="col-md-6">
+					<h3><span class="font-semi-bold">Anonymous users after vaction</span></h3>
+				</div>
+				<div class="col-md-4">
+					<h4><p>24.09.2015</p></h4>
+				</div>
+			</div>
+			<h5><span i18n:translate="author">Author</span>: Tobias Krauthoff</h5>
+			<br> After two and a half week of vacation we have a new feature. The discussion is now available for anonymous users, therefore everyone can participate, but only registered users can make and edit statements.
+		</div>
+
+		<div class="container newscontainer">
+			<!--span_1_of_4-->
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="row">
+				<div class="col-md-6">
 					<h3><span class="font-semi-bold">New URL-Schemes</span></h3>
 				</div>
 				<div class="col-md-4">
@@ -44,6 +77,39 @@
 			</div>
 			<h5><span i18n:translate="author">Author</span>: Tobias Krauthoff</h5>
 			<br> Now D-BAS has unique urls for the discussion, therefore these urls can be shared.
+		</div>
+
+		<div class="container newscontainer">
+			<!--span_1_of_4-->
+			<ul class="share-table">
+				<li>
+					<a class="share-icon share-def"></a>
+					<ul>
+						<li>
+							<a class="share-icon share-mail"></a>
+						</li>
+						<li>
+							<a class="share-icon share-twitter"></a>
+						</li>
+						<li>
+							<a class="share-icon share-google"></a>
+						</li>
+						<li>
+							<a class="share-icon share-facebook"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="row">
+				<div class="col-md-6">
+					<h3><span class="font-semi-bold">Vacation done</span></h3>
+				</div>
+				<div class="col-md-4">
+					<h4><p>24.09.2015</p></h4>
+				</div>
+			</div>
+			<h5><span i18n:translate="author">Author</span>: Tobias Krauthoff</h5>
+			<br>After two and a half weeks of vacation a new feature was done. Hence anonymous users can participate, the discussion is open for all, but commiting end editing statements is for registeres users only.
 		</div>
 
 		<div class="container newscontainer">

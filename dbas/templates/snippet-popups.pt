@@ -16,13 +16,13 @@
 							<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 								<tr>
 									<td>
-										<spand class="font-semi-bold" i18n:translate="name">Name</spand>
+										<span class="font-semi-bold" i18n:translate="name">Name</span>
 									</td>
 									<td>Tobias Krauthoff, M.Sc.</td>
 								</tr>
 								<tr>
 									<td>
-										<spand class="font-semi-bold" i18n:translate="role">Role</spand>
+										<span class="font-semi-bold" i18n:translate="role">Role</span>
 									</td>
 									<td><span i18n:translate="role_value_1">Doctoral Student</span>
 										<br><a href="http://www.tsn.hhu.de/en.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
@@ -31,14 +31,14 @@
 								</tr>
 								<tr>
 									<td>
-										<spand class="font-semi-bold">E-Mail</spand>
+										<span class="font-semi-bold">E-Mail</span>
 									</td>
 									<td><a href="mailto:krauthoff@cs.uni-duesseldorf.de">krauthoff@cs.uni-duesseldorf.de</a>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<spand class="font-semi-bold" i18n:translate="office">Office</spand>
+										<span class="font-semi-bold" i18n:translate="office">Office</span>
 									</td>
 									<td i18n:translate="office_value_1">Heinrich-Heine University Duesseldorf
 										<br><span i18n:translate="office_value_2">Universitätsstraße 1</span>
@@ -49,13 +49,13 @@
 								</tr>
 								<tr>
 									<td>
-										<spand class="font-semi-bold" i18n:translate="telephone">Telephone</spand>
+										<span class="font-semi-bold" i18n:translate="telephone">Telephone</span>
 									</td>
 									<td>+49 211 81-13461</td>
 								</tr>
 								<tr>
 									<td>
-										<spand class="font-semi-bold">Fax</spand>
+										<span class="font-semi-bold">Fax</span>
 									</td>
 									<td>+49 211 81-11638</td>
 								</tr>
@@ -130,19 +130,6 @@
 				<h4 class="modal-title" id="myModalLabel" i18n:translate="privacy_policy">Privacy Policy</h4>
 			</div>
 			<div class="modal-body">
-
-				<style>
-					#ppBody {
-						font-size: 11pt;
-						width: 100%;
-						margin: 0 auto;
-						text-align: justify;
-					}
-					
-					.ppConsistencies {
-						display: none;
-					}
-				</style>
 				<div id='ppBody'>
 					<div class='ppConsistencies'>
 						<div class='col-2'>
@@ -369,8 +356,8 @@
 				<h4 class="modal-title" id="myModalLabel" i18n:translate="edit_statement_view_changelog">Edit Statements / View Changelog</h4>
 			</div>
 			<div id="popup-edit-statement-body">
-				<h4><p id="popup-edit-error-description" class="error-description"></p></h4>
-				<h4><p id="popup-edit-success-description" class="success-description"></p></h4>
+				<h4 id="popup-edit-error-description" class="error-description"></h4>
+				<h4 id="popup-edit-success-description" class="success-description"></h4>
 				<div id="popup-edit-statement-content">
 				</div>
 				<p id="popup-edit-statement-description-p" i18n:translate="edit_statement_here">Please, edit the selected statement here:</p>
@@ -418,7 +405,7 @@
 			<div id="popup-url-sharing-body">
 				<div id="popup-url-sharing-content">
 				</div>
-				<h4><p id="popup-url-sharing-description-p" i18n:translate="url-sharing-description">Please feel free to share this url:</p></h4>
+				<h4 id="popup-url-sharing-description-p" i18n:translate="url-sharing-description">Please feel free to share this url:</h4>
 				<input id="popup-url-sharing-input" type="text" placeholder="URL">
 			</div>
 			<div class="modal-footer">
@@ -485,12 +472,12 @@
 
 						<div id="popup-login-failed" class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-failed-message" />
+							<span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-failed-message"></span>
 						</div>
 
 						<div id="popup-login-success" class="alert alert-success" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="error">Success:</span> <span id="popup-login-success-message" />
+							<span class="sr-only" i18n:translate="error">Success:</span> <span id="popup-login-success-message"></span>
 						</div>
 					</div>
 
@@ -544,10 +531,6 @@
 							<div class="col-sm-9">
 								<input id="password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******">
 							</div>
-							<div id="password-extras">
-								<div id="password-meter" class="veryweak"></div>
-								<h4 id="password-strength" i18n:translate="password_strength">Strength</h4>
-							</div>
 						</div>
 
 						<div class="form-group">
@@ -557,10 +540,18 @@
 							</div>
 						</div>
 
-						<div id="generate-password" class="form-group">
-							<a>
-								<span i18n:translate="generate_password">Generate secure password</span>
-							</a>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" i18n:translate="password-strength">Password Strength</label>
+							<div class="col-sm-9">
+								<div class="col-sm-9 veryweak" id="password-meter"></div>
+								<h4 id="password-strength" i18n:translate="password_strength">very weak</h4>
+								<br>
+								<div id="generate-password" class="form-group">
+									<a>
+										<span i18n:translate="generate_password">Generate secure password</span>
+									</a>
+								</div>
+							</div>
 						</div>
 
 						<div id="popup-login-warning-message" class="alert alert-warning alert-dismissible" role="alert">
@@ -568,20 +559,20 @@
 							</button>
 							<strong i18n:translate="warning">Warning!</strong>
 
-							<div id="popup-login-warning-message-text"><span id="message-warning-text" />
+							<div id="popup-login-warning-message-text"><span id="message-warning-text"></span>
 							</div>
 						</div>
 
 						<div id="popup-login-registration-success" class="alert alert-success" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 							<span class="sr-only" i18n:translate="success">Success:</span> <span
-								id="popup-login-registration-success-message" />
+								id="popup-login-registration-success-message"></span>
 						</div>
 
 						<div id="popup-login-registration-failed" class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 							<span class="sr-only" i18n:translate="error">Error:</span> <span
-								id="popup-login-registration-failed-message" />
+								id="popup-login-registration-failed-message"></span>
 						</div>
 
 

@@ -16,8 +16,10 @@ var upperCase = new RegExp('[A-Z]'),
 function set_total(total, pwextras, pwstrength, pwmeter) {
 	'use strict';
 	pwmeter.removeClass();
+	pwmeter.addClass('col-sm-9');
 	pwstrength.text('Strength: very weak');
 	pwextras.fadeIn("slow");
+
 	if (total === 1) {
 		pwmeter.addClass('veryweak');
 		pwstrength.text('Strength: very weak');
@@ -60,7 +62,7 @@ function check_strength(pwextras, pwinput, pwstrength, pwmeter) {
 // password generator
 function generate_password(output) {
 	'use strict';
-	var keylist = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%&@#$^*?_~',
+	var keylist = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%&@#$?_~<>+-*/',
 		password = '',
 		i = 0;
 	while (!(upperCase.test(password) && lowerCase.test(password) && numbers.test(password) && specialchars.test(password))) {
@@ -83,20 +85,12 @@ $(document).ready(function () {
 		pwd_output = $('#password-generator-output'),
 		pwd_gen = $('#password-generator-button');
 
-	if (pwd_extras) {
-		pwd_extras.fadeOut('slow');
-	}
-
-	if (pwd_input) {
-		pwd_input.bind("change paste keyup", function () {
-			check_strength(pwd_extras, pwd_input, pwd_strength, pwd_meter);
-		});
-	}
-
-	if (pwd_gen) {
-		pwd_gen.click(function () {
-			generate_password(pwd_output);
-		});
-	}
+	// pwd_extras.hide();
+	pwd_input.bind("change paste keyup", function () {
+		check_strength(pwd_extras, pwd_input, pwd_strength, pwd_meter);
+	});
+	pwd_gen.click(function () {
+		generate_password(pwd_output);
+	});
 
 });
