@@ -254,7 +254,7 @@ function InteractionHandler() {
 			gh.setDiscussionsDescription(firstPositionText);
 			gh.setNewArgumentButtonOnly(firstConclusionRadioButtonText, false);
 		} else {
-			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData.statements);
+			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData);
 		}
 		gh.resetEditButton();
 	};

@@ -14,7 +14,7 @@ function JsonGuiHandler() {
 	this.setJsonDataToContentAsStartStatement = function (jsonData) {
 		var listitems = [], guihandler = new GuiHandler(), helper = new Helper();
 		guihandler.setDiscussionsDescription(startDiscussionText, '' , null);
-		$.each(jsonData, function setJsonDataToContentAsConclusionEach(key, val) {
+		$.each(jsonData.statements, function setJsonDataToContentAsConclusionEach(key, val) {
 			listitems.push(helper.getKeyValAsInputInLiWithType(val.uid, val.text + '.', true, false, false, ''));
 		});
 
@@ -22,7 +22,7 @@ function JsonGuiHandler() {
 		if (listitems.length === 0) {
 			// todo: is this even used?
 			alert('discussion-guihandler.: setJsonDataToContentAsStartStatement');
-			guihandler.setDiscussionsDescription(firstOneText + '<b>' + jsonData.currentStatementText + '</b>', '' , null);
+			guihandler.setDiscussionsDescription(firstOneText + '<b>' + jsonData.statements.currentStatementText + '</b>', '' , null);
 		}
 
 		if (typeof jsonData.logged_in == "string") {
