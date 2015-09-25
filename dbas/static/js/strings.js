@@ -16,6 +16,7 @@ var confirmation = "Confirmation";
 var confirmTranslation = "If you change the language, your process on this page will be lost and you have to restart the discussion!";
 var correctionsSet = "Your correction was set.";
 var internalFailureWhileDeletingTrack = "Internal failure, please try again or did you have deleted your track recently?";
+var internal_error = 'Internal Error: Maybe the server is offline or your session run out.';
 var hideAllUsers = "Hide all users";
 var hideAllAttacks = "Hide all attacks";
 var noIslandView = "Could not fetch data for the island view. Sorry!";
@@ -27,7 +28,12 @@ var notInsertedErrorBecauseUnknown = "Your idea was not inserted due to an unkow
 var selectStatement = "Please select a statement!";
 var showAllUsers = "Show all users";
 var showAllAttacks = "Show all attacks";
-var internal_error = 'Internal Error: Maybe the server is offline or your session run out.';
+
+var strength = "Strength";
+var veryweak = "very weak";
+var weak = "weak";
+var medium = "medium";
+var strong = "strong";
 
 /**
  * Text for the dialogue

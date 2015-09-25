@@ -409,6 +409,12 @@
 				<input id="popup-url-sharing-input" type="text" placeholder="URL">
 			</div>
 			<div class="modal-footer">
+
+				<a class="share-icon share-mail" id="share-url-mail"></a>
+				<a class="share-icon share-twitter" id="share-url-twitter"></a>
+				<a class="share-icon share-google" id="share-url-google"></a>
+				<a class="share-icon share-facebook" id="share-url-facebook"></a>
+
 				<button type="button" class="btn btn-default" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" short_url="1">Fetch long url!</button>
 				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" i18n:translate="close">Close</button>
 			</div>
@@ -448,8 +454,7 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label" i18n:translate="your_password">Your Password</label>
 							<div class="col-sm-9">
-								<input id="login-pw" type="password" class="password" name="password" autocomplete="off"
-								       placeholder="example: ******">
+								<input id="login-pw" type="password" class="password" name="password" autocomplete="off" placeholder="example: ******">
 							</div>
 						</div>
 
@@ -508,14 +513,12 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label" i18n:translate="gender">Your Gender</label>
 							<div class="col-sm-9">
-								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-"
-								       checked><label for="inlineRadioGender1"><b i18n:translate="none">none</b></label>
-								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2"
-								       value="f"><label for="inlineRadioGender2"><b
-									i18n:translate="female">female</b></label>
-								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3"
-								       value="m"><label for="inlineRadioGender3"><b
-									i18n:translate="male">male</b></label>
+								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked>
+								<label for="inlineRadioGender1"><b i18n:translate="none">none</b></label>
+								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f">
+								<label for="inlineRadioGender2"><b i18n:translate="female">female</b></label>
+								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m">
+								<label for="inlineRadioGender3"><b i18n:translate="male">male</b></label>
 							</div>
 						</div>
 
@@ -565,14 +568,12 @@
 
 						<div id="popup-login-registration-success" class="alert alert-success" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="success">Success:</span> <span
-								id="popup-login-registration-success-message"></span>
+							<span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-registration-success-message"></span>
 						</div>
 
 						<div id="popup-login-registration-failed" class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="error">Error:</span> <span
-								id="popup-login-registration-failed-message"></span>
+							<span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-registration-failed-message"></span>
 						</div>
 
 

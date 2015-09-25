@@ -105,7 +105,7 @@ function Helper() {
 			belCounterJusti = 'believe that this is a good counter-argument for <b>' + conclusion + '</b>',
 			undermine = w + ', it is not true that <b>' + confrontation + '</b>' + enddot,
 			support	  = r + ', it is true that <b>' + confrontation + '</b>' + enddot,
-			undercut  = r + ', <b>' + confrontation + '</b>, but				 I do not ' + belCounterJusti + enddot,
+			undercut  = r + ', <b>' + confrontation + '</b>, but I do not ' + belCounterJusti + enddot,
 			overbid	  = r + ', <b>' + confrontation + '</b>, and I do ' + belCounterJusti + enddot,
 			rebut	  = r + ', <b>' + confrontation + '</b> and I do accept that this is an counter-argument for <b>' + premisse
 				+ '</b>. However, I have a much stronger argument for accepting that <b>' + premisse + '</b>' + enddot,

@@ -19,7 +19,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.1'
+version = '0.3.2'
 header = name + ' ' + version
 
 class Dbas(object):

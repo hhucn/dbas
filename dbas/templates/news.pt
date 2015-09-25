@@ -944,7 +944,6 @@
 			<br>I've started with with my PhD.
 		</div>
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
 
 
 	</tal:block>

@@ -149,18 +149,50 @@ $(function () {
 	$('#' + popupUrlSharingCloseButtonId).click(function(){		guiHandler.hideUrlSharingPopup();	});
 
 	// share url for argument blogging
-	$('#' + shareUrlId).click(function(){
+	$('#' + shareUrlId).click(function shareurlClick (){
 		guiHandler.showUrlSharingPopup();
 	});
 
+	/**
+	 * Switch between shortened and long url
+	 */
 	$('#' + popupUrlSharingLongUrlButtonID).click(function(){
 		if ($('#' + popupUrlSharingLongUrlButtonID).attr('short_url') == '0'){
-			$('#' + popupUrlSharingInputId).val(window.location);
+			new AjaxSiteHandler().getShortenUrl(window.location);
 			$('#' + popupUrlSharingLongUrlButtonID).attr('short_url', '1').text(fetchLongUrl);
 		} else {
-			new AjaxSiteHandler().getShortenUrl(window.location);
+			$('#' + popupUrlSharingInputId).val(window.location);
 			$('#' + popupUrlSharingLongUrlButtonID).attr('short_url', '0').text(fetchShortUrl);
 		}
+	});
+
+	/**
+	 * Sharing shortened url with mail
+	 */
+	$('#' + shareUrlButtonMail).click(function(){
+		mailShare('user@example.com', "Interesting discussion on DBAS", "Hey, please have a look at " + $('#' + popupUrlSharingInputId).val());
+	});
+
+	/**
+	 * Sharing shortened url on twitter
+	 */
+	$('#' + shareUrlButtonTwitter).click(function(){
+		tweetShare($('#' + popupUrlSharingInputId).val());
+	});
+
+	/**
+	 * Sharing shortened url on google
+	 */
+	$('#' + shareUrlButtonGoogle).click(function(){
+		alert($('#' + popupUrlSharingInputId).val());
+		googleShare($('#' + popupUrlSharingInputId).val());
+	});
+
+	/**
+	 * Sharing shortened url on facebook
+	 */
+	$('#' + shareUrlButtonFacebook).click(function(){
+		fbShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", "Hey, please have a look at " + $('#' + popupUrlSharingInputId).val(), "https://dbas.cs.uni-duesseldorf.de/static/images/logo.png");
 	});
 
 	// focos text of input elements

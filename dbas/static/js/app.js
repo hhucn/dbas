@@ -428,6 +428,49 @@ function callbackIfDoneForPasswordRequest(data){
 }
 
 // *********************
+//	SHARING IS CARING
+// *********************
+
+function fbShare(url, title, descr, image) {
+	'use strict';
+	var winTop, winLeft, winWidth, winHeight;
+	winWidth = 520;
+	winHeight = 350;
+	winTop = (screen.height / 2) - (winHeight / 2);
+	winLeft = (screen.width / 2) - (winWidth / 2);
+	window.open('http://www.facebook.com/sharer.php?s=100&p[title]=' + title + '&p[summary]=' + descr + '&p[url]='
+		+ url + '&p[images][0]=' + image, 'sharer',
+		',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width='	+ winWidth + ',height=' + winHeight);
+}
+
+function tweetShare(text){
+	'use strict';
+	var winTop, winLeft, winWidth, winHeight;
+	winWidth = 550;
+	winHeight = 420;
+	winTop = (screen.height / 2) - (winHeight / 2);
+	winLeft = (screen.width / 2) - (winWidth / 2);
+	window.open('https://twitter.com/intent/tweet?text=' + text + '&hashtags=DBAS,nrwfkop', 'sharer',
+		',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width=' + winWidth + ',height=' + winHeight);
+}
+
+function mailShare(to, subject, body){
+	'use strict';
+	window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
+}
+
+function googleShare(url){
+	'use strict';
+	var winTop, winLeft, winWidth, winHeight;
+	winWidth = 600;
+	winHeight = 400;
+	winTop = (screen.height / 2) - (winHeight / 2);
+	winLeft = (screen.width / 2) - (winWidth / 2);
+	window.open('https://plus.google.com/share?url=' + url, 'sharer',
+		',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width=' + winWidth + ',height=' + winHeight);
+}
+
+// *********************
 //	MAIN
 // *********************
 
@@ -458,6 +501,71 @@ $(document).ready(function () {
 	$('#' + translationLinkEn + ' img').click(function(){ language_switcher(path, 'en') });
 
 	prepareLoginRegistrationPopup();
+
+
+
+	/**
+	 * Sharing shortened url with mail
+	 */
+	$('.' + shareButtonMail).click(function(){
+		if($(this).attr('id') === shareUrlButtonMail){
+			return;
+		}
+		var container, textarraydate, textarrayauthor, textarraysubject;
+		container = $(this).parents(".newscontainer");
+
+		textarraysubject = container.html().split('<span class="font-semi-bold">');
+		textarraydate 	 = container.html().split('<h4><p>');
+		textarrayauthor  = container.html().split('</span>: ');
+		textarraysubject = textarraysubject[1].split('</span>');
+		textarraydate 	 = textarraydate[1].split('</p>');
+		textarrayauthor  = textarrayauthor[1].split('</h5>');
+
+		mailShare('user@example.com', "DBAS: " + textarraysubject[0], "News from " + textarraydate[0] + ", by " + textarrayauthor[0]);
+	});
+
+	/**
+	 * Sharing shortened url on twitteer
+	 */
+	$('.' + shareButtonTwitter).click(function(){
+		if($(this).attr('id') === shareUrlButtonTwitter){
+			return;
+		}
+		var container = $(this).parents(".newscontainer"),
+			textarraysubject = container.html().split('<span class="font-semi-bold">');
+		tweetShare(textarraysubject[0]);
+	});
+
+	/**
+	 * Sharing shortened url on google
+	 */
+	$('.' + shareButtonGoogle).click(function(){
+		if($(this).attr('id') === shareUrlButtonGoogle){
+			return;
+		}
+		googleShare(window.location.href);
+	});
+
+	/**
+	 * Sharing shortened url on facebook
+	 */
+	$('.' + shareButtonFacebook).click(function(){
+		if($(this).attr('id') === shareUrlButtonFacebook){
+			return;
+		}
+		var container, textarraydate, textarrayauthor, textarraysubject;
+		container = $(this).parents(".newscontainer");
+
+		textarraysubject = container.html().split('<span class="font-semi-bold">');
+		textarraydate 	 = container.html().split('<h4><p>');
+		textarrayauthor  = container.html().split('</span>: ');
+		textarraysubject = textarraysubject[1].split('</span>');
+		textarraydate 	 = textarraydate[1].split('</p>');
+		textarrayauthor  = textarrayauthor[1].split('</h5>');
+
+		var message = "News '" + textarraysubject[0] + "', from " + textarraydate[0] + ", by " + textarrayauthor[0] + " on " + window.location.href;
+		fbShare(window.location.href, "FB Sharing", message, "https://dbas.cs.uni-duesseldorf.de/static/images/logo.png");
+	});
 
 	// ajax loading animation
 	$(document).on({

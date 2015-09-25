@@ -17,21 +17,21 @@ function set_total(total, pwextras, pwstrength, pwmeter) {
 	'use strict';
 	pwmeter.removeClass();
 	pwmeter.addClass('col-sm-9');
-	pwstrength.text('Strength: very weak');
+	pwstrength.text(strength + ': ' + veryweak);
 	pwextras.fadeIn("slow");
 
 	if (total === 1) {
 		pwmeter.addClass('veryweak');
-		pwstrength.text('Strength: very weak');
+		pwstrength.text(strength + ': ' + veryweak);
 	} else if (total === 2) {
 		pwmeter.addClass('weak');
-		pwstrength.text('Strength: weak');
+		pwstrength.text(strength + ': ' + weak);
 	} else if (total === 3) {
 		pwmeter.addClass('medium');
-		pwstrength.text('Strength: medium');
+		pwstrength.text(strength + ': ' + medium);
 	} else if (total > 3) {
 		pwmeter.addClass('strong');
-		pwstrength.text('Strength: strong');
+		pwstrength.text('strength + : ' + strong);
 	} else {
 		pwextras.fadeOut('slow');
 	}
