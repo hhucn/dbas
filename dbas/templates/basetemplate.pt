@@ -50,6 +50,8 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/password-handler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/google-analytics.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/eu-cookie-law-popup.js')}"></script>
 
 </body>
 

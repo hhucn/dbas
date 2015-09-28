@@ -6,8 +6,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var discussion_mainpage = 'http://localhost:4284/discussion/';
-var discussion_mainpage = 'https://dbas.cs.uni-duesseldorf.de/discussion/';
+var discussion_mainpage = 'http://localhost:4284/discussion/';
+//var discussion_mainpage = 'https://dbas.cs.uni-duesseldorf.de/discussion/';
 
 startDiscussion = function () {
 	//$('#' + startDiscussionButtonId).hide(); // hides the start button

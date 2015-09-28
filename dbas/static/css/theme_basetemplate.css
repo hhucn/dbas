@@ -134,6 +134,14 @@ body.loading .ajaxloader {
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
 }
 
+.imprint-container {
+	margin-left: 30px;
+	margin-right: 30px;
+}
+
+.invisible{
+	visibility: hidden
+}
 
 /**
 comment .container and wrap each container with <div class="coloured-div">
@@ -194,7 +202,6 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 .links ul {
-	display: inline;
 	padding: 0px;
 	margin: 0px;
 }
