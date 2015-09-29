@@ -6,9 +6,6 @@
  * @copyright Krauthoff 2015
  */
 
-//var discussion_mainpage = 'http://localhost:4284/discussion/';
-var discussion_mainpage = 'https://dbas.cs.uni-duesseldorf.de/discussion/';
-
 startDiscussion = function () {
 	//$('#' + startDiscussionButtonId).hide(); // hides the start button
 	//$('#' + startDescriptionId).hide(); // hides the start description
@@ -43,7 +40,7 @@ restartDiscussion = function () {
 	startDiscussion();
 	*/
 
-	window.location.href = discussion_mainpage + "start";
+	window.location.href = mainpage + "discussion/start";
 };
 
 
@@ -230,7 +227,7 @@ $(function () {
 	});
 
 	$(window).load( function windowLoad () {
-    	if (window.location == discussion_mainpage + 'start') {
+    	if (window.location == mainpage + 'discussion/' + 'start') {
 			startDiscussion();
 		} else {
 			$('#' + discussionContainerId).fadeIn('fast');

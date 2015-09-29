@@ -24,8 +24,10 @@ def main(global_config, **settings):
 		log.debug('__init__() '.upper() + 'main() <' + str(k) + ' : ' + str(v) + '>')
 
 	# load database
-	engine = engine_from_config(settings, 'sqlalchemy.')
-	load_database(engine)
+	engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+	load_discussion_database(engine)
+	engine = engine_from_config(settings, 'sqlalchemy-news.')
+	load_news_database(engine)
 
 	# session management and cache region support with pyramid_beaker
 	session_factory = session_factory_from_settings(settings)
@@ -86,6 +88,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')
 	config.add_route('ajax_user_registration',                   '{url:.*}ajax_user_registration')
 	config.add_route('ajax_user_password_request',               '{url:.*}ajax_user_password_request')
+	config.add_route('ajax_get_news',                            'ajax_get_news')
 
 	# read the input and start
 	config.scan()

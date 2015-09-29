@@ -1,8 +1,8 @@
 import random
 from sqlalchemy import and_, not_
 
-from .database import DBSession
-from .database.model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse, PremisseGroup, Track, Relation
+from .database import DBSession, DBNewsSession
+from .database.model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse,  Track, Relation, News
 from .dictionary_helper import DictionaryHelper
 from .query_helper import QueryHelper
 from .user_management import UserHandler
@@ -11,6 +11,19 @@ from .logger import logger
 # TODO: PEP 8
 
 class DatabaseHelper(object):
+
+	def get_news(self):
+		logger('DatabaseHelper', 'get_news', 'main')
+		db_news = DBNewsSession.query(News).all()
+		ret_dict = {}
+		for news in db_news:
+			news_dict = {}
+			news_dict['title'] = news.title
+			news_dict['author'] = news.author
+			news_dict['date'] = news.date
+			news_dict['news'] = news.news
+			ret_dict[str(news.uid)] = news_dict
+		return ret_dict
 
 	def correct_statement(self, transaction, user, uid, corrected_text):
 		"""

@@ -28,7 +28,7 @@ $.fn.euCookieLawPopup = (function() {
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// PARAMETERS (MODIFY THIS PART) //////////////////////////////////////////////////////////////
 	_self.params = {
-		cookiePolicyUrl : 'https://dbas.cs.uni-duesseldorf.de/imprint',
+		cookiePolicyUrl : mainpage + 'imprint',
 		popupPosition : 'top',
 		colorStyle : 'default',
 		compactStyle : false,

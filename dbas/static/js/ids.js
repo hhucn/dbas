@@ -57,6 +57,7 @@ var radioButtonGroup 							= 'radioButtonGroup';
 var minimapId 									= 'navigation-minimap-container';
 var navbarLeft									= 'navbar-left';
 var newsLink 									= 'news-link';
+var newsBodyId 									= 'news-body';
 var popupConfirmDialogId 						= 'confirm-dialog';
 var popupEditStatementId 						= 'popup-edit-statement';
 var popupEditStatementCloseButtonXId 			= 'popup-edit-statement-close';

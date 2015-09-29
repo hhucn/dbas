@@ -53,9 +53,9 @@ function AjaxSiteHandler() {
 	 * @param service current service
 	 */
 	this.redirectBrowser = function (keyValuePair, service) {
-		//alert(discussion_mainpage + key + '=' + value + '/' + service + '/go'):
-		// window.location.replace(discussion_mainpage + key + '=' + value + '/' + service + '/go');
-		window.location.href = discussion_mainpage + keyValuePair + '/' + service + '/go';
+		//alert(mainpage + key + '=' + value + '/' + service + '/go'):
+		// window.location.replace(mainpage + key + '=' + value + '/' + service + '/go');
+		window.location.href = mainpage + "discussion/" + keyValuePair + '/' + service + '/go';
 	};
 
 	this.debugger = function ( data, url, settings_data ) {

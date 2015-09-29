@@ -363,6 +363,23 @@ function ajaxPasswordRequest (){
 	});
 }
 
+/**
+ *
+ */
+function ajaxGetNews (){
+	$.ajax({
+		url: 'ajax_get_news',
+		type: 'POST',
+		dataType: 'json',
+		async: true
+	}).done(function ajaxGetNewsDone(data) {
+		callbackIfDoneForGettingNews(data);
+	}).fail(function ajaxGetNewsFail() {
+		$('#' + newsBodyId).append("<h4>internal error occured</h4>");
+		alert("fail)")
+	});
+}
+
 // *********************
 //	CALLBACKS
 // *********************
@@ -423,9 +440,33 @@ function callbackIfDoneForPasswordRequest(data){
 		$('#' + popupLoginSuccess).show();
 		$('#' + popupLoginSuccess + '-message').text(parsedData.message);
 	}
-
-
 }
+
+/**
+ *
+ * @param data
+ */
+function callbackIfDoneForGettingNews(data) {
+	var parsedData = $.parseJSON(data), news;
+	$.each(parsedData, function callbackIfDoneForGettingNewsEach(key, val) {
+
+		news = '<div class="container newscontainer"> <ul class="share-table"> <li> <a class="share-icon share-def"></a> <ul> <li> <a'
+			+ ' class="share-icon share-mail"></a> </li> <li> <a class="share-icon share-twitter"></a> </li> <li> <a class="share-icon'
+			+ ' share-google"></a></li><li>'
+			+ '<a class="share-icon share-facebook"></a> </li> </ul> </li> </ul> <div class="row"> <div class="col-md-6"> <h3><span'
+			+ 'class="font-semi-bold">'
+			+ val.title
+			+ '</span></h3></div><div class="col-md-4"><h4><p>'
+			+ val.date
+			+ '</p></h4></div></div><h5><span i18n:translate="author">Author</span>: '
+			+ val.author
+			+ '</h5><br>'
+			+ val.news
+			+ '</div>';
+		$('#' + newsBodyId).append(news)
+	});
+}
+
 
 // *********************
 //	SHARING IS CARING
@@ -487,7 +528,7 @@ $(document).ready(function () {
 	var path = window.location.href;
 		 if (path.indexOf('contact') != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf('login') != -1){		setLinkActive('#' + loginLink);		$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('news') != -1){ 		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
+	else if (path.indexOf('news') != -1){ 		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); ajaxGetNews(); }
 	else if (path.indexOf('content') != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf('settings') != -1 ||
 			 path.indexOf('imprint') != -1 ||

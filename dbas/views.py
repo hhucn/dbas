@@ -998,3 +998,17 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
+
+	# ajax - for attack overview
+	@view_config(route_name='ajax_get_news', renderer='json')
+	def get_news(self):
+		"""
+
+		:return:
+		"""
+
+		logger('get_news', 'def', 'main')
+		return_dict = DatabaseHelper().get_news()
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
