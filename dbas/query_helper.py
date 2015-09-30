@@ -391,7 +391,8 @@ class QueryHelper(object):
 
 		return dict, key
 
-	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation, attacked_with_relation): # TODO
+	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation,
+	                        attacked_with_relation, session_id):
 		"""
 		Saves track for user
 		:param transaction: current transaction
@@ -402,17 +403,20 @@ class QueryHelper(object):
 		:param attacked_with_relation: id of attacked_w th relation
 		:return: undefined
 		"""
-		if user != None: # todo: catch none user
-			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-			logger('QueryHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
-															', statememt_id ' + str(statement_id) +
-															', premissesgroup_uid ' + str(premissesgroup_uid) +
-															', argument_uid ' + str(argument_uid) +
-															', attacked_by_relation ' + str(attacked_by_relation) +
-															', attacked_with_relation ' + str(attacked_with_relation))
-			DBDiscussionSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
-			                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation))
-			transaction.commit()
+		if user == None:
+			user = 'anonymous'
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
+														', statememt_id ' + str(statement_id) +
+														', premissesgroup_uid ' + str(premissesgroup_uid) +
+														', argument_uid ' + str(argument_uid) +
+														', attacked_by_relation ' + str(attacked_by_relation) +
+														', attacked_with_relation ' + str(attacked_with_relation) +
+		                                                ', sesseion_id ' + str(session_id))
+		DBDiscussionSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
+		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation), session_id=session_id)
+		transaction.commit()
 
 	# def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):
 	# 	"""

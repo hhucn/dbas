@@ -31,7 +31,6 @@ class DatabaseHelper(object):
 			news_dict['date'] = news.date
 			news_dict['news'] = news.news
 			ret_dict[str(news.uid)] = news_dict
-			logger('DatabaseHelper', 'get_news', 'news ' + str(news.uid))
 
 		return ret_dict
 
@@ -214,17 +213,18 @@ class DatabaseHelper(object):
 		return_dict['statements'] = statements_dict
 		return return_dict
 
-	def get_premisses_for_statement(self, transaction, statement_uid, issupportive, user):
+	def get_premisses_for_statement(self, transaction, statement_uid, issupportive, user, session_id):
 		"""
 
 		:param transaction:
 		:param statement_uid:
 		:param issupportive:
 		:param user:
+		:param session_id:
 		:return:
 		"""
 
-		QueryHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0)
+		QueryHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0, session_id)
 
 		return_dict = dict()
 		premisses_dict = dict()
@@ -258,13 +258,14 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def get_attack_for_premissegroup(self, transaction, user, last_premisses_group_uid, last_statement_uid):
+	def get_attack_for_premissegroup(self, transaction, user, last_premisses_group_uid, last_statement_uid, session_id):
 		"""
 		Based on the last given premissesgroup and statement, an attack will be choosen and replied.
 		:param transaction: current transaction
 		:param user: current nick of the user
 		:param last_premisses_group_uid:
 		:param last_statement_uid:
+		:param session_id:
 		:return: A random attack (undermine, rebut undercut) based on the last saved premissesgroup and statement as well as many texts
 		like the premisse as text, conclusion as text, attack as text, confrontation as text. Everything is in a dict.
 		"""
@@ -302,17 +303,19 @@ class DatabaseHelper(object):
 			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
 
 			# save the attack
-			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid, qh.get_relation_uid_by_name(key), 0)
+			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
+			                                  qh.get_relation_uid_by_name(key), 0, session_id)
 
 		return return_dict, status
 
-	def get_attack_for_argument(self, transaction, user, id_text, pgroup_id):
+	def get_attack_for_argument(self, transaction, user, id_text, pgroup_id, session_id):
 		"""
 
 		:param transaction:
 		:param user:
 		:param id_text:
 		:param pgroup_id:
+		:param session_id:
 		:return:
 		"""
 
@@ -355,16 +358,18 @@ class DatabaseHelper(object):
 			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
 
 			# save the attack
-			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid, qh.get_relation_uid_by_name(key), 0)
+			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
+			                                  qh.get_relation_uid_by_name(key), 0, session_id)
 
 		return return_dict, status
 
-	def get_reply_confrontations_response(self, transaction, uid_text, user):
+	def get_reply_confrontations_response(self, transaction, uid_text, user, session_id):
 		"""
 
 		:param transaction:
 		:param uid:
 		:param user:
+		:param session_id:
 		:return:
 		"""
 		qh = QueryHelper()
@@ -422,7 +427,7 @@ class DatabaseHelper(object):
 		else:
 			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid)
 
-		QueryHelper().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()))
+		QueryHelper().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()), session_id)
 
 		return return_dict, status
 

@@ -295,6 +295,7 @@ class Track(DiscussionBase):
 	attacked_by_relation = sa.Column(sa.Integer, sa.ForeignKey('relation.uid'))
 	attacked_with_relation = sa.Column(sa.Integer, sa.ForeignKey('relation.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	session_id = sa.Column(sa.Integer)
 
 	users = relationship('User', foreign_keys=[author_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
@@ -303,7 +304,7 @@ class Track(DiscussionBase):
 	attacked_by = relationship('Relation', foreign_keys=[attacked_by_relation])
 	attacked_with = relationship('Relation', foreign_keys=[attacked_with_relation])
 
-	def __init__(self, user, statement, premissegroup=0, argument=0, attacked_by=0, attacked_with=0):
+	def __init__(self, user, statement, premissegroup=0, argument=0, attacked_by=0, attacked_with=0, session_id=0):
 		"""
 		Initializes a row in current track-table
 		"""
@@ -314,6 +315,7 @@ class Track(DiscussionBase):
 		self.attacked_by_relation = attacked_by
 		self.attacked_with_relation = attacked_with
 		self.timestamp = func.now()
+		self.session_id = session_id
 
 
 class Relation(DiscussionBase):
