@@ -38,6 +38,7 @@ var headingProPositionTextId 					= 'heading-pro-positions';
 var headingConPositionTextId 					= 'heading-contra-positions';
 var hiddenDiscussionInformationParametersId 	= 'hidden-discussion-information-parameters';
 var hiddenDiscussionInformationServiceId 		= 'hidden-discussion-information-service';
+var hiddenCSRFTokenId 							= 'hidden_csrf_token';
 var proPositionColumnId 						= 'pro-position-column';
 var proPositionTextareaId 						= 'pro-textareas';
 var proIslandId 								= 'pro-island';
@@ -110,17 +111,22 @@ var shareButtonMail 							= 'share-mail';
 var shareButtonTwitter 							= 'share-twitter';
 var shareButtonGoogle 							= 'share-google';
 var shareButtonFacebook 						= 'share-facebook';
-// var startDiscussionButtonId = 'start-discussion';
-// var startDescriptionId = 'start-description';
 var stepBackButtonId 							= 'step-back';
 var sendNewStatementId 							= 'send-new-statement';
 var sendNewsButtonId 							= 'send-news';
+var trackTableSuccessId = 'track-table-success';
+var trackTableFailureId = 'track-table-failure';
+var trackTableSpaceId = 'track-table-space';
 var writingNewsFailedId 						= 'writing-news-failed';
 var writingNewsSuccessId 						= 'writing-news-success';
 var writingNewsFailedMessageId 					= 'writing-news-failed-message';
 var writingNewsSuccessMessageId 				= 'writing-news-success-message';
 var writingNewNewsTitleId 						= 'writing-news-title';
 var writingNewNewsTextId 						= 'writing-news-text';
+
+var deleteTrackButtonId = 'delete-track';
+var trackFailureMessageId = 'track-failure-msg';
+var trackSuccessMessageId = 'track-success-msg';
 
 // id's for identifiying
 var id_pro = 'pro';

@@ -15,64 +15,6 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Sets an "add statement" button as content
-	 * @param val will be used as value
-	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
-	 *
-	this.setNewArgumentButtonOnly = function (val, isArgument) {
-		var listitem = [], gh = new GuiHandler();
-		listitem.push(gh.getKeyValAsInputInLiWithType(addReasonButtonId, val, isArgument, false, false, ''));
-		gh.addListItemsToDiscussionsSpace(listitem);
-	};
-	*/
-
-	/**
-	 * Sets an "add statement" button as content
-	 * @param val will be used as value
-	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
-	 *
-	this.setNewArgumentAndGoodPointButton = function (val, isArgument) {
-		var listitems = [], gh = new GuiHandler();
-		listitems.push(gh.getKeyValAsInputInLiWithType(goodPointTakeMeBackButtonId, goodPointTakeMeBackButtonText, true, false, false, ''));
-		listitems.push(gh.getKeyValAsInputInLiWithType(addReasonButtonId, val, isArgument, false, false, ''));
-		new GuiHandler().addListItemsToDiscussionsSpace(listitems);
-	};
-	*/
-
-	/**
-	 * Setting a description in some p-tag for confrontation
-	 * @param currentUserArgument
-	 * @param confrontationArgument
-	 *
-	this.setDiscussionsDescriptionForConfrontation = function (currentUserArgument, confrontationArgument) {
-		var pos = Math.floor(Math.random() * sentencesOpenersForArguments.length), text = sentencesOpenersForArguments[pos] + '<b>' + currentUserArgument + '</b>'
-			+ '<br>' + otherParticipantsThinkThat + ': ' + '<b>' + confrontationArgument + '</b>' + '<br><br>What do you think about that?';
-		new GuiHandler().setDiscussionsDescription(text);
-	};
-	*/
-
-	/**
-	 * Setting a description in some p-tag for confrontation
-	 * @param currentUserArgument
-	 *
-	this.setDiscussionsAvoidanceDescriptionForConfrontation = function (currentUserArgument) {
-		var text = 'Or do you have a better argument for: ' + '<b>' + currentUserArgument + '</b>';
-		new GuiHandler().setDiscussionsAvoidanceDescription(text);
-	};
-	*/
-
-	/**
-	 * Setting a description in some p-tag for confrontation, whereby we have no justifications
-	 * @param currentUserArgument
-	 *
-	this.setDiscussionsDescriptionWithoutConfrontation = function (currentUserArgument) {
-		var pos = Math.floor(Math.random() * sentencesOpenersForArguments.length), text = sentencesOpenersForArguments[pos] + '<b>' + currentUserArgument + '</b>'
-			+ ' However, other users argued nothing yet:';
-		new GuiHandler().setDiscussionsDescription(text);
-	};
-	*/
-
-	/**
 	 * Setting a description in some p-tag without mouse over
 	 * @param text to set
 	 */
@@ -238,7 +180,7 @@ function GuiHandler() {
 
 		// remove everything on click
 		button.attr({
-			onclick: "this.parentNode.parentNode.removeChild(parentNode);"
+			onclick: 'this.parentNode.parentNode.removeChild(parentNode);'
 		});
 
 		// add everything
@@ -370,13 +312,13 @@ function GuiHandler() {
 	this.setPremissesAsLastChild = function (jsonData) {
 		var newElement, helper = new Helper();
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
-			if (key.substr(0, 3) == "pro") {
+			if (key.substr(0, 3) == 'pro') {
 				newElement = helper.getKeyValAsInputInLiWithType(val.premissegroup_uid, val.text + '.', false, true, false, val.text);
 				newElement.children().hover(function () {
 					$(this).toggleClass('table-hover');
 				});
 				$('#li_' + addReasonButtonId).before(newElement);
-			} else if (key.substr(0, 3) == "con") {
+			} else if (key.substr(0, 3) == 'con') {
 				// todo setPremissesAsLastChild contra premisses
 			}
 		});
@@ -481,11 +423,11 @@ function GuiHandler() {
 		var is_editable = false, statement, uid, is_premisse, is_start;
 		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();
-			uid = $(this).attr("id");
+			uid = $(this).attr('id');
 			is_premisse = $(this).hasClass('premisse');
 			is_start = $(this).hasClass('start');
 			// do we have a child with input or just the label?
-			if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premisse || is_start) {
+			if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premisse || is_start) {
 				is_editable = true;
 				return false; // break
 			}
@@ -534,8 +476,8 @@ function GuiHandler() {
 			if (statement.toLocaleLowerCase().indexOf('because ') == 0){
 				statement = new Helper().startWithUpperCase(statement.substring(8));
 			}
-			uid = $(this).attr("id");
-			type = $(this).attr("class");
+			uid = $(this).attr('id');
+			type = $(this).attr('class');
 			is_premisse = $(this).hasClass('premisse');
 			is_start = $(this).hasClass('start');
 
@@ -546,7 +488,7 @@ function GuiHandler() {
 			}
 
 			// do we have a child with input or just the label?
-			if ($(this).prop("tagName").toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premisse || is_start) {
+			if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premisse || is_start) {
 
 				// is this a premisse group with more than one text?
 				if (typeof $(this).attr('text_count') !== typeof undefined && $(this).attr('text_count') !== false){

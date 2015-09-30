@@ -35,29 +35,29 @@ function TrackHandler() {
 	};
 
 	this.getUserTrackDataDone = function(data){
-		$('#delete-track').fadeIn('slow');
+		$('#' + deleteTrackButtonId).fadeIn('slow');
 		new TrackHandler().setDataInTrackTable(data);
 	};
 
 	this.getUserTrackDataFail = function(){
-		$('#track-table-success').hide();
-		$('#track-table-failure').fadeIn('slow');
-		$('#track-failure-msg').text("Internal Failure");
+		$('#' + trackTableSuccessId).hide();
+		$('#' + trackTableFailureId).fadeIn('slow');
+		$('#' + trackFailureMessageId).text(internal_error);
 	};
 
 	this.removeUserTrackDataDone = function(){
-		$('#track-table-space').empty();
-		$('#delete-track').hide();
-		$('#track-table-success').show();
-		$('#track-table-failure').hide();
-		$('#track-success-msg').text("Data was successfully removed.");
+		$('#' + trackTableSpaceId).empty();
+		$('#' + deleteTrackButtonId).hide();
+		$('#' + trackTableSuccessId).show();
+		$('#' + trackTableFailureId).hide();
+		$('#' + trackSuccessMessageId).text(dataRemoved);
 
 	};
 
 	this.removeUserTrackDataFail = function(){
-		$('#track-table-success').hide();
-		$('#track-table-failure').show();
-		$('#track-failure-msg').text("Internal Failure");
+		$('#' + trackTableSuccessId).hide();
+		$('#' + trackTableFailureId).show();
+		$('#' + trackFailureMessageId).text(internal_error);
 	};
 
 
@@ -143,13 +143,13 @@ function TrackHandler() {
 			tableElement.append(trElement);
 		});
 
-		$('#track-table-space').empty();
+		$('#' + trackTableSpaceId).empty();
 		if (has_data) {
-			$('#track-table-space').append(tableElement);
+			$('#' + trackTableSpaceId).append(tableElement);
 		} else {
-			$('#track-table-success').show();
-			$('#track-success-msg').text("No data was tracked.");
-			$('#delete-track').hide();
+			$('#' + trackTableSuccessId).show();
+			$('#' + trackSuccessMessageId).text(noTrackedData);
+			$('#' + deleteTrackButtonId).hide();
 			$('#request-track').hide();
 		}
 	};
@@ -160,22 +160,22 @@ $(function () {
 
 	$('#request-track').click(function requestTrack() {
 		new TrackHandler().manageUserTrackData(true);
-		$('#track-table-success').fadeOut('slow');
-		$('#track-table-failure').fadeOut('slow');
-		$('#track-table-space').empty();
+		$('#' + trackTableSuccessId).fadeOut('slow');
+		$('#' + trackTableFailureId).fadeOut('slow');
+		$('#' + trackTableSpaceId).empty();
 		$('#request-track').val('Refresh track');
 	});
 
-	$('#delete-track').click(function requestTrack() {
+	$('#' + deleteTrackButtonId).click(function requestTrack() {
 		new TrackHandler().manageUserTrackData(false);
-		$('#track-table-success').fadeOut('slow');
-		$('#track-table-failure').fadeOut('slow');
+		$('#' + trackTableSuccessId).fadeOut('slow');
+		$('#' + trackTableFailureId).fadeOut('slow');
 		$('#request-track').val('Request track');
 	});
 
-	$('#delete-track').hide();
-	$('#track-table-success').hide();
-	$('#track-table-failure').hide();
+	$('#' + deleteTrackButtonId).hide();
+	$('#' + trackTableSuccessId).hide();
+	$('#' + trackTableFailureId).hide();
 
 
 	// ajax loading animation

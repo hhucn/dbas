@@ -55,7 +55,7 @@ function AjaxSiteHandler() {
 	this.redirectBrowser = function (keyValuePair, service) {
 		//alert(mainpage + key + '=' + value + '/' + service + '/go'):
 		// window.location.replace(mainpage + key + '=' + value + '/' + service + '/go');
-		window.location.href = mainpage + "discussion/" + keyValuePair + '/' + service + '/go';
+		window.location.href = mainpage + 'discussion/' + keyValuePair + '/' + service + '/go';
 	};
 
 	this.debugger = function ( data, url, settings_data ) {
@@ -69,7 +69,7 @@ function AjaxSiteHandler() {
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
 	 */
 	this.getStartStatements = function () {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_start_statements',
 			type: 'GET',
@@ -97,7 +97,7 @@ function AjaxSiteHandler() {
 	 * @param uid of clicked statement
 	 */
 	this.getPremisseForStatement = function (uid) {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_premisses_for_statement',
 			method: 'POST',
@@ -128,7 +128,7 @@ function AjaxSiteHandler() {
 	 * @param ids of clicked statement
 	 */
 	this.getReplyForPremisseGroup = function (ids) {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_reply_for_premissegroup',
 			method: 'POST',
@@ -159,7 +159,7 @@ function AjaxSiteHandler() {
 	 * @param ids of the clicked premisse group
 	 */
 	this.getReplyForArgument = function (ids) {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_reply_for_argument',
 			method: 'POST',
@@ -190,7 +190,7 @@ function AjaxSiteHandler() {
 	 * @param id of clicked relation and statement
 	 */
 	this.handleReplyForResponseOfConfrontation = function (id) {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
@@ -221,7 +221,7 @@ function AjaxSiteHandler() {
 	 * @param argument_dictionary for inserting
 	 */
 	this.sendNewPremissesForArgument = function (argument_dictionary) {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_premisses',
 			type: 'POST',
@@ -244,7 +244,7 @@ function AjaxSiteHandler() {
 	 * @param statement for sending
 	 */
 	this.sendNewStartStatement = function (statement) {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_start_statement',
 			type: 'POST',
@@ -269,7 +269,7 @@ function AjaxSiteHandler() {
 	 * @param statement_uid current uid of the statement
 	 */
 	this.getLogfileForStatement = function (statement_uid) {
-		var csrfToken = $('#hidden_csrf_token').val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
 			type: 'GET',
@@ -302,7 +302,7 @@ function AjaxSiteHandler() {
 	 * @param corrected_text the corrected text
 	 */
 	this.sendCorrectureOfStatement = function (uid, edit_dialog_td_id, corrected_text) {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_correcture_of_statement',
 			type: 'POST',
@@ -349,7 +349,7 @@ function AjaxSiteHandler() {
 	 * Requests all users
 	 */
 	this.getUsersOverview = function () {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_all_users',
 			type: 'GET',
@@ -370,7 +370,7 @@ function AjaxSiteHandler() {
 	 * Requests all attacks
 	 */
 	this.getAttackOverview = function () {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_attack_overview',
 			type: 'GET',

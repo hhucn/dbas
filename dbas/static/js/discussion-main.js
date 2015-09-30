@@ -167,7 +167,7 @@ $(function () {
 	 * Sharing shortened url with mail
 	 */
 	$('#' + shareUrlButtonMail).click(function(){
-		mailShare('user@example.com', "Interesting discussion on DBAS", "Hey, please have a look at " + $('#' + popupUrlSharingInputId).val());
+		mailShare('user@example.com', interestingOnDBAS, haveALookAt + ' ' + $('#' + popupUrlSharingInputId).val());
 	});
 
 	/**
@@ -189,7 +189,7 @@ $(function () {
 	 * Sharing shortened url on facebook
 	 */
 	$('#' + shareUrlButtonFacebook).click(function(){
-		fbShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", "Hey, please have a look at " + $('#' + popupUrlSharingInputId).val(), "https://dbas.cs.uni-duesseldorf.de/static/images/logo.png");
+		fbShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", haveALookAt + ' ' + $('#' + popupUrlSharingInputId).val(), "https://dbas.cs.uni-duesseldorf.de/static/images/logo.png");
 	});
 
 	// focos text of input elements

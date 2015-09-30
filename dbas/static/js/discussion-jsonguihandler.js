@@ -102,11 +102,12 @@ function JsonGuiHandler() {
 
 		// build some confrontation text
 		if (jsonData.attack == 'undermine'){
-			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not hold, because ';
+			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> ' + doesNotHoldBecause + ' ';
 		} else if (jsonData.attack == 'rebut'){
-			confrontationText = otherParticipantsAcceptBut + ' they have a stronger statement for rejecting <b>' + conclusion + '</b>. They say: ';
+			confrontationText = otherParticipantsAcceptBut + ' ' + strongerStatementForRecjecting + ' <b>' + conclusion + '</b>. They say: ';
 		} else if (jsonData.attack == 'undercut'){
-			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> does not justify that <b>' + conclusion + '</b>, because ';
+			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> ' + doesNotJustify + ' <b>' + conclusion + '</b>,' +
+				' because ';
 		}
 		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
 
@@ -177,11 +178,16 @@ function JsonGuiHandler() {
 			relationArray = helper.createRelationsText(premisse, conclusion, true, false),
 			text, listitems = [], i, reason, id, long_id, dict;
 
-		if (jsonData.relation === attr_undermine) {		text = relationArray[0] + '. ' + canYouGiveAReason + ' (You made an ' + attr_undermine + ')';
-		} else if (jsonData.relation === attr_support) {	text = relationArray[1] + '. ' + canYouGiveAReason + ' (You made a ' + attr_support + ')';
-		} else if (jsonData.relation === attr_undercut) {	text = relationArray[2] + '. ' + canYouGiveAReason + ' (You made an ' + attr_undercut + ')';
-		} else if (jsonData.relation === attr_overbid) {	text = relationArray[3] + '. ' + canYouGiveAReason + ' (You made an ' + attr_overbid + ')';
-		} else if (jsonData.relation === attr_rebut) {		text = relationArray[4] + ', but which one? (You made a ' + attr_rebut + ')';
+		if (jsonData.relation === attr_undermine) {
+			text = relationArray[0] + '. ' + canYouGiveAReason + ' (' + youMadeAn + ' ' + attr_undermine + ')';
+		} else if (jsonData.relation === attr_support) {
+			text = relationArray[1] + '. ' + canYouGiveAReason + ' (' + youMadeA + ' ' + attr_support + ')';
+		} else if (jsonData.relation === attr_undercut) {
+			text = relationArray[2] + '. ' + canYouGiveAReason + ' (' + youMadeAn + ' ' + attr_undercut + ')';
+		} else if (jsonData.relation === attr_overbid) {
+			text = relationArray[3] + '. ' + canYouGiveAReason + ' (' + youMadeAn + ' ' + attr_overbid + ')';
+		} else if (jsonData.relation === attr_rebut) {
+			text = relationArray[4] + ', ' + butWhich +'? (' + youMadeA + ' ' + attr_rebut + ')';
 		}
 
 		for (i=0; i<parseInt(jsonData.reason); i++){

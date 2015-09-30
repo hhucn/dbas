@@ -62,24 +62,23 @@ function Helper() {
 	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
 	this.createRelationsText = function(premisse, conclusion, startLowerCase, endWithDot){
-		if (premisse.substr(premisse.length-1) == ".")
+		if (premisse.substr(premisse.length-1) == '.')
 			premisse = premisse.substr(0, premisse.length-1);
 
-		if (conclusion.substr(conclusion.length-1) == ".")
+		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var w = startLowerCase ? 'wrong' : 'Wrong',
-			r = startLowerCase ? 'right' : 'Right',
+		var w = startLowerCase ? this.startWithLowerCase(wrong) : this.startWithUpperCase(wrong),
+			r = startLowerCase ? this.startWithLowerCase(right) : this.startWithUpperCase(right),
 			enddot = endWithDot ? '.' : '',
-			// belCounterJusti = 'believe that this is a good counter-argument for my justification',
-			belCounterJusti = 'believe that this is a good counter-argument for <b>' + conclusion + '</b>',
-			undermine = '<b>' + w + ', it is not true that ' + premisse + '</b>' + enddot,
-			support	  = '<b>' + r + ', it is true that ' + premisse + '</b>' + enddot,
-			undercut  = '<b>' + r + ', ' + premisse + '</b>, but I do not ' + belCounterJusti + enddot,
-			overbid	  = '<b>' + r + ', ' + premisse + '</b>, and I do ' + belCounterJusti + enddot,
-			rebut	  = '<b>' + r + ', ' + premisse + '</b> and I do accept that this is an counter-argument for <b>' + conclusion
-				+ '</b>.<br><br>However, I have a much stronger argument for accepting that <b>' + conclusion + '</b>' + enddot,
-			noopinion  = 'I have no opinion regarding <b>' + conclusion + '</b>. Go one step back (TODO: show me another one).';
+			belCounterJusti = believeThatGoodCounter + ' <b>' + conclusion + '</b>',
+			undermine = '<b>' + w + ', ' + itIsFalse + premisse + '</b>' + enddot,
+			support	  = '<b>' + r + ', ' + itIsTrue + premisse + '</b>' + enddot,
+			undercut  = '<b>' + r + ', ' + premisse + '</b>, ' + butIDoNot + ' ' + belCounterJusti + enddot,
+			overbid	  = '<b>' + r + ', ' + premisse + '</b>, ' + butIDo + ' ' + belCounterJusti + enddot,
+			rebut	  = '<b>' + r + ', ' + premisse + '</b> ' + iAcceptCounter + ' <b>' + conclusion
+				+ '</b>.<br><br>' + iHaveStrongerArgument + ' <b>' + conclusion + '</b>' + enddot,
+			noopinion  = 'I have no opinion regarding <b>' + conclusion + '</b>. ' + goStepBack + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 
@@ -94,22 +93,21 @@ function Helper() {
 	 */
 	this.createConfrontationsRelationsText = function(confrontation, conclusion, premisse, startLowerCase, endWithDot){
 
-		if (conclusion.substr(conclusion.length-1) == ".")
+		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var w = startLowerCase ? 'wrong' : 'Wrong',
-			r = startLowerCase ? 'right' : 'Right',
-			i = startLowerCase ? 'irrelevant' : 'Irrelevant',
+		var w = startLowerCase ? this.startWithLowerCase(wrong) : this.startWithUpperCase(wrong),
+			r = startLowerCase ? this.startWithLowerCase(right) : this.startWithUpperCase(right),
+			i = startLowerCase ? this.startWithLowerCase(irrelevant) : this.startWithUpperCase(irrelevant),
 			enddot = endWithDot ? '.' : '',
-			// belCounterJusti = 'believe that this is a good counter-argument for my justification',
-			belCounterJusti = 'believe that this is a good counter-argument for <b>' + conclusion + '</b>',
-			undermine = w + ', it is not true that <b>' + confrontation + '</b>' + enddot,
-			support	  = r + ', it is true that <b>' + confrontation + '</b>' + enddot,
-			undercut  = r + ', <b>' + confrontation + '</b>, but I do not ' + belCounterJusti + enddot,
-			overbid	  = r + ', <b>' + confrontation + '</b>, and I do ' + belCounterJusti + enddot,
-			rebut	  = r + ', <b>' + confrontation + '</b> and I do accept that this is an counter-argument for <b>' + premisse
-				+ '</b>. However, I have a much stronger argument for accepting that <b>' + premisse + '</b>' + enddot,
-			noopinion  = 'I have no opinion regarding: <b>' + confrontation + '</b>. Go one step back (TODO: show me another one).';
+			belCounterJusti = believeThatGoodCounter + ' <b>' + conclusion + '</b>',
+			undermine = w + ', ' + itIsFalse + ' <b>' + confrontation + '</b>' + enddot,
+			support	  = r + ', ' + itIsTrue + ' <b>' + confrontation + '</b>' + enddot,
+			undercut  = r + ', <b>' + confrontation + '</b>, ' + butIDoNot + ' ' + belCounterJusti + enddot,
+			overbid	  = r + ', <b>' + confrontation + '</b>, ' + butIDo + ' ' + belCounterJusti + enddot,
+			rebut	  = r + ', <b>' + confrontation + '</b> ' + iAcceptCounter + ' <b>' + premisse
+				+ '</b>. ' + iHaveStrongerArgument + ' <b>' + premisse + '</b>' + enddot,
+			noopinion  = iNoOpinion + ': <b>' + confrontation + '</b>. ' + goStepBack + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 
@@ -156,14 +154,14 @@ function Helper() {
 		// adding label for the value
 		labelElement = '<label title="' + mouseover + '" for="' + key + '">' + val + '</label>';
 
-		inputElement.attr({onclick: "new InteractionHandler().radioButtonChanged(this.id);"});
+		inputElement.attr({onclick: 'new InteractionHandler().radioButtonChanged(this.id);'});
 		if (isStartStatement){ inputElement.addClass('start'); }
 		if (isPremisse){ inputElement.addClass('premisse'); }
 		if (isRelation){ inputElement.addClass('relation'); }
 		if (!isStartStatement && !isPremisse && !isRelation){ inputElement.addClass('add'); }
 
 		tmp = new Helper().getFullHtmlTextOf(inputElement);
-		tmp = tmp.substr(0,tmp.length-1) + extras + ">";
+		tmp = tmp.substr(0,tmp.length-1) + extras + '>';
 		liElement.html(tmp + labelElement);
 
 		return liElement;
