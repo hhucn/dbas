@@ -40,7 +40,7 @@ restartDiscussion = function () {
 	startDiscussion();
 	*/
 
-	window.location.href = mainpage + "discussion/start";
+	window.location.href = mainpage + 'discussion/start';
 };
 
 

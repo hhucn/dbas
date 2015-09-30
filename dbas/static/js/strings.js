@@ -5,7 +5,7 @@
  */
 	
 //var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/discussion/';
+var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Messages & Errors
