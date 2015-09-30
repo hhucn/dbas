@@ -276,8 +276,8 @@ function ajaxSwitchDisplayLanguage (new_lang){
 		data: { lang: new_lang},
 		dataType: 'json',
 		async: true
-	}).done(function ajaxSwitchDisplayLanguageDone(data) {
-		callbackIfDoneForSwitchDisplayLanguage(data, new_lang);
+	}).done(function ajaxSwitchDisplayLanguageDone() {
+		callbackIfDoneForSwitchDisplayLanguage(new_lang);
 	}).fail(function ajaxSwitchDisplayLanguageFail() {
 		alert('Unfortunately, the language could not be switched');
 	});
@@ -340,7 +340,7 @@ function ajaxRegistration (){
 		callbackIfDoneForRegistration(data);
 	}).fail(function ajaxRegistrationFail() {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text("Request failed");
+		$('#' + popupLoginRegistrationFailed + '-message').text(request_failed);
 	});
 }
 
@@ -359,24 +359,7 @@ function ajaxPasswordRequest (){
 		callbackIfDoneForPasswordRequest(data);
 	}).fail(function ajaxPasswordRequestFail() {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text("Request failed");
-	});
-}
-
-/**
- *
- */
-function ajaxGetNews (){
-	$.ajax({
-		url: 'ajax_get_news',
-		type: 'POST',
-		dataType: 'json',
-		async: true
-	}).done(function ajaxGetNewsDone(data) {
-		callbackIfDoneForGettingNews(data);
-	}).fail(function ajaxGetNewsFail() {
-		$('#' + newsBodyId).append("<h4>internal error occured</h4>");
-		alert("fail)")
+		$('#' + popupLoginRegistrationFailed + '-message').text(request_failed);
 	});
 }
 
@@ -387,7 +370,7 @@ function ajaxGetNews (){
 /**
  * Callback, when language is switched
  */
-function callbackIfDoneForSwitchDisplayLanguage (data, new_lang) {
+function callbackIfDoneForSwitchDisplayLanguage (new_lang) {
 	location.reload(true);
 	setActiveLanguage(new_lang);
 }
@@ -442,75 +425,6 @@ function callbackIfDoneForPasswordRequest(data){
 	}
 }
 
-/**
- *
- * @param data
- */
-function callbackIfDoneForGettingNews(data) {
-	var parsedData = $.parseJSON(data), news;
-	$.each(parsedData, function callbackIfDoneForGettingNewsEach(key, val) {
-
-		news = '<div class="container newscontainer"> <ul class="share-table"> <li> <a class="share-icon share-def"></a> <ul> <li> <a'
-			+ ' class="share-icon share-mail"></a> </li> <li> <a class="share-icon share-twitter"></a> </li> <li> <a class="share-icon'
-			+ ' share-google"></a></li><li>'
-			+ '<a class="share-icon share-facebook"></a> </li> </ul> </li> </ul> <div class="row"> <div class="col-md-6"> <h3><span'
-			+ 'class="font-semi-bold">'
-			+ val.title
-			+ '</span></h3></div><div class="col-md-4"><h4><p>'
-			+ val.date
-			+ '</p></h4></div></div><h5><span i18n:translate="author">Author</span>: '
-			+ val.author
-			+ '</h5><br>'
-			+ val.news
-			+ '</div>';
-		$('#' + newsBodyId).append(news)
-	});
-}
-
-
-// *********************
-//	SHARING IS CARING
-// *********************
-
-function fbShare(url, title, descr, image) {
-	'use strict';
-	var winTop, winLeft, winWidth, winHeight;
-	winWidth = 520;
-	winHeight = 350;
-	winTop = (screen.height / 2) - (winHeight / 2);
-	winLeft = (screen.width / 2) - (winWidth / 2);
-	window.open('http://www.facebook.com/sharer.php?s=100&p[title]=' + title + '&p[summary]=' + descr + '&p[url]='
-		+ url + '&p[images][0]=' + image, 'sharer',
-		',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width='	+ winWidth + ',height=' + winHeight);
-}
-
-function tweetShare(text){
-	'use strict';
-	var winTop, winLeft, winWidth, winHeight;
-	winWidth = 550;
-	winHeight = 420;
-	winTop = (screen.height / 2) - (winHeight / 2);
-	winLeft = (screen.width / 2) - (winWidth / 2);
-	window.open('https://twitter.com/intent/tweet?text=' + text + '&hashtags=DBAS,nrwfkop', 'sharer',
-		',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width=' + winWidth + ',height=' + winHeight);
-}
-
-function mailShare(to, subject, body){
-	'use strict';
-	window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
-}
-
-function googleShare(url){
-	'use strict';
-	var winTop, winLeft, winWidth, winHeight;
-	winWidth = 600;
-	winHeight = 400;
-	winTop = (screen.height / 2) - (winHeight / 2);
-	winLeft = (screen.width / 2) - (winWidth / 2);
-	window.open('https://plus.google.com/share?url=' + url, 'sharer',
-		',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width=' + winWidth + ',height=' + winHeight);
-}
-
 // *********************
 //	MAIN
 // *********************
@@ -528,7 +442,7 @@ $(document).ready(function () {
 	var path = window.location.href;
 		 if (path.indexOf('contact') != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf('login') != -1){		setLinkActive('#' + loginLink);		$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('news') != -1){ 		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); ajaxGetNews(); }
+	else if (path.indexOf('news') != -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
 	else if (path.indexOf('content') != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf('settings') != -1 ||
 			 path.indexOf('imprint') != -1 ||
@@ -542,71 +456,6 @@ $(document).ready(function () {
 	$('#' + translationLinkEn + ' img').click(function(){ language_switcher(path, 'en') });
 
 	prepareLoginRegistrationPopup();
-
-
-
-	/**
-	 * Sharing shortened url with mail
-	 */
-	$('.' + shareButtonMail).click(function(){
-		if($(this).attr('id') === shareUrlButtonMail){
-			return;
-		}
-		var container, textarraydate, textarrayauthor, textarraysubject;
-		container = $(this).parents(".newscontainer");
-
-		textarraysubject = container.html().split('<span class="font-semi-bold">');
-		textarraydate 	 = container.html().split('<h4><p>');
-		textarrayauthor  = container.html().split('</span>: ');
-		textarraysubject = textarraysubject[1].split('</span>');
-		textarraydate 	 = textarraydate[1].split('</p>');
-		textarrayauthor  = textarrayauthor[1].split('</h5>');
-
-		mailShare('user@example.com', "DBAS: " + textarraysubject[0], "News from " + textarraydate[0] + ", by " + textarrayauthor[0]);
-	});
-
-	/**
-	 * Sharing shortened url on twitteer
-	 */
-	$('.' + shareButtonTwitter).click(function(){
-		if($(this).attr('id') === shareUrlButtonTwitter){
-			return;
-		}
-		var container = $(this).parents(".newscontainer"),
-			textarraysubject = container.html().split('<span class="font-semi-bold">');
-		tweetShare(textarraysubject[0]);
-	});
-
-	/**
-	 * Sharing shortened url on google
-	 */
-	$('.' + shareButtonGoogle).click(function(){
-		if($(this).attr('id') === shareUrlButtonGoogle){
-			return;
-		}
-		googleShare(window.location.href);
-	});
-
-	/**
-	 * Sharing shortened url on facebook
-	 */
-	$('.' + shareButtonFacebook).click(function(){
-		if($(this).attr('id') === shareUrlButtonFacebook){
-			return;
-		}
-		var container, textarraydate, textarrayauthor, textarraysubject;
-		container = $(this).parents(".newscontainer");
-
-		textarraysubject = container.html().split('<span class="font-semi-bold">');
-		textarraydate 	 = container.html().split('<h4><p>');
-		textarrayauthor  = container.html().split('</span>: ');
-		textarraysubject = textarraysubject[1].split('</span>');
-		textarraydate 	 = textarraydate[1].split('</p>');
-		textarrayauthor  = textarrayauthor[1].split('</h5>');
-
-		var message = "News '" + textarraysubject[0] + "', from " + textarraydate[0] + ", by " + textarrayauthor[0] + " on " + window.location.href;
-		fbShare(window.location.href, "FB Sharing", message, "https://dbas.cs.uni-duesseldorf.de/static/images/logo.png");
-	});
 
 	// ajax loading animation
 	$(document).on({

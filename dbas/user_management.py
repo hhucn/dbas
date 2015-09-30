@@ -1,7 +1,7 @@
 import random
 from cryptacular.bcrypt import BCRYPTPasswordManager
-from .database import DBSession
-from .database.model import User, Group
+from .database import DBDiscussionSession
+from .database.discussion_model import User, Group
 from .logger import logger
 
 class PasswordGenerator(object):
@@ -56,7 +56,7 @@ class UserHandler(object):
 		:return:
 		"""
 		if nick != None: # todo: catch none user
-			db_user = DBSession.query(User).filter_by(nickname=str(nick)).first()
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
 			db_user.update_last_action()
 			transaction.commit()
 
@@ -66,13 +66,31 @@ class UserHandler(object):
 		:param user: current user name
 		:return: true, if user is admin, false otherwise
 		"""
-		db_user = DBSession.query(User).filter_by(nickname=str(user)).first()
-		db_group = DBSession.query(Group).filter_by(name='admins').first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
+		db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
 		logger('UserHandler', 'is_user_admin', 'check for current user')
 		if db_user:
 			logger('UserHandler', 'is_user_admin', 'user exists; check for admin')
-			if db_user.nickname == 'admin' or db_user.group_uid == db_group.uid:
+			if db_user.group_uid == db_admin_group.uid:
 				logger('UserHandler', 'is_user_admin', 'user is admin')
+				return True
+
+		return False
+
+	def is_user_author(self, user):
+		"""
+		Check, if the given uid has admin rights or is admin
+		:param user: current user name
+		:return: true, if user is admin, false otherwise
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
+		db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
+		db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
+		logger('UserHandler', 'is_user_author', 'check for current user')
+		if db_user:
+			logger('UserHandler', 'is_user_author', 'user exists; check for author (or admin)')
+			if db_author_group.uid == db_admin_group.uid or db_user.group_uid == db_admin_group.uid:
+				logger('UserHandler', 'is_user_author', 'user is author (or admin)')
 				return True
 
 		return False

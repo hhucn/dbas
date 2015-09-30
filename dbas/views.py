@@ -9,8 +9,8 @@ from pyramid.renderers import get_renderer
 from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
 
-from .database import DBSession
-from .database.model import User, Group, Issue
+from .database import DBDiscussionSession
+from .database.discussion_model import User, Group, Issue
 from .database_helper import DatabaseHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .query_helper import QueryHelper
@@ -190,7 +190,7 @@ class Dbas(object):
 		token = self.request.session.new_csrf_token()
 		logger('main_discussion', 'new token', str(token))
 
-		db_issue = DBSession.query(Issue).filter_by(uid=1).first()
+		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=1).first()
 		issue = 'none'
 		date = 'empty'
 		logger('main_discussion', 'def', 'check for an issue')
@@ -251,7 +251,7 @@ class Dbas(object):
 		db_user_mail = 'unknown'
 		db_user_group = 'unknown'
 
-		db_user = DBSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
 		if db_user:
 			db_user_firstname = db_user.firstname
 			db_user_surname = db_user.surname
@@ -304,7 +304,7 @@ class Dbas(object):
 
 					# set the hased one
 					db_user.password = hashed_pw
-					DBSession.add(db_user)
+					DBDiscussionSession.add(db_user)
 					transaction.commit()
 
 					logger('main_settings', 'form.changepassword.submitted', 'password was changed')
@@ -349,12 +349,15 @@ class Dbas(object):
 		except KeyError:
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
+		is_author = UserHandler().is_user_author(self.request.authenticated_userid)
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
 			'title': 'News',
 			'project': header,
-			'logged_in': self.request.authenticated_userid
+			'logged_in': self.request.authenticated_userid,
+			'is_author': is_author
 		}
 
 	# imprint
@@ -811,7 +814,7 @@ class Dbas(object):
 			url = self.request.params['url']
 			logger('user_login', 'def', 'params nickname: ' + str(nickname) + ', password: ' + str(password) + ', url: ' + url)
 
-			db_user = DBSession.query(User).filter_by(nickname=nickname).first()
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
 			# check for user and password validations
 			if not db_user:
@@ -867,8 +870,8 @@ class Dbas(object):
 			logger('user_registration', 'def', 'params firstname: ' + str(firstname) + ', lastname: ' + str(lastname) + ', nickname: ' + str(nickname) + ', email: ' + str(email) + ', password: ' + str(password) + ', passwordconfirm: ' + str(passwordconfirm))
 
 			# database queries mail verification
-			db_nick = DBSession.query(User).filter_by(nickname=nickname).first()
-			db_mail = DBSession.query(User).filter_by(email=email).first()
+			db_nick = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+			db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
 			logger('main_login', 'form.registration.submitted', 'Validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
 
@@ -896,7 +899,7 @@ class Dbas(object):
 			# 	message = 'CSRF-Token is not valid'
 			else:
 				# getting the editors group
-				db_group = DBSession.query(Group).filter_by(name="editors").first()
+				db_group = DBDiscussionSession.query(Group).filter_by(name="editors").first()
 
 				# does the group exists?
 				if not db_group:
@@ -913,11 +916,11 @@ class Dbas(object):
 					               password=hashedPassword,
 					               gender=gender,
 					               group=db_group.uid)
-					DBSession.add(newuser)
+					DBDiscussionSession.add(newuser)
 					transaction.commit()
 
 					# sanity check, whether the user exists
-					checknewuser = DBSession.query(User).filter_by(nickname=nickname).first()
+					checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 					if checknewuser:
 						logger('main_login', 'form.registration.submitted', 'New data was added with uid ' + str(checknewuser.uid))
 						message = 'Your account was added and you are now able to login.'
@@ -959,7 +962,7 @@ class Dbas(object):
 			logger('user_password_request', 'def', 'params email: ' + str(email))
 			success = '1'
 
-			db_user = DBSession.query(User).filter_by(email=email).first()
+			db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
 
 			# does the user exists?
 			if db_user:
@@ -971,7 +974,7 @@ class Dbas(object):
 
 				# set the hased one
 				db_user.password = hashedpwd
-				DBSession.add(db_user)
+				DBDiscussionSession.add(db_user)
 				transaction.commit()
 
 				body = 'Your nickname is: ' + db_user.nickname + '\n'
@@ -999,7 +1002,7 @@ class Dbas(object):
 
 		return return_json
 
-	# ajax - for attack overview
+	# ajax - for getting all news
 	@view_config(route_name='ajax_get_news', renderer='json')
 	def get_news(self):
 		"""
@@ -1009,6 +1012,27 @@ class Dbas(object):
 
 		logger('get_news', 'def', 'main')
 		return_dict = DatabaseHelper().get_news()
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - for sending news
+	@view_config(route_name='ajax_send_news', renderer='json')
+	def send_news(self):
+		"""
+
+		:return:
+		"""
+		try:
+			title = self.request.params['title']
+			text = self.request.params['text']
+			return_dict = DatabaseHelper().set_news(transaction, title, text, self.request.authenticated_userid)
+		except KeyError as e:
+			return_dict = dict()
+			logger('reply_for_response_of_confrontation', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		logger('send_news', 'def', 'main')
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json

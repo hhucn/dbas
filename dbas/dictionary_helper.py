@@ -1,7 +1,7 @@
 import random
 import json
-from .database import DBSession
-from .database.model import Statement, User, TextValue, TextVersion, Premisse
+from .database import DBDiscussionSession
+from .database.discussion_model import Statement, User, TextValue, TextVersion, Premisse
 from .logger import logger
 
 class DictionaryHelper(object):
@@ -54,9 +54,9 @@ class DictionaryHelper(object):
 		:param statement_row: for saving
 		:return: dictionary
 		"""
-		db_statement    = DBSession.query(Statement).filter_by(uid=statement_row.uid).join(TextValue).first()
-		db_premisse     = DBSession.query(Premisse).filter_by(statement_uid=db_statement.uid).first()
-		db_textversion  = DBSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
+		db_statement    = DBDiscussionSession.query(Statement).filter_by(uid=statement_row.uid).join(TextValue).first()
+		db_premisse     = DBDiscussionSession.query(Premisse).filter_by(statement_uid=db_statement.uid).first()
+		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
 
 		uid    = str(db_statement.uid)
 		text   = db_textversion.content

@@ -7,8 +7,8 @@ from webtest import TestApp
 from dbas.views import Dbas
 from dbas import main
 from dbas.user_management import PasswordHandler
-from dbas.database import Base as Entity
-from dbas.database.model import Group, User, Argument
+from dbas.database import DBDiscussionSession as Entity
+from dbas.database.discussion_model import Group, User, Argument
 from mock import Mock
 from paste.deploy.loadwsgi import appconfig
 from pyramid import testing
@@ -89,8 +89,8 @@ class Setup:
 		return config
 
 
-# setup the Base testing class what will manage our transactions
-class BaseTestCase(unittest.TestCase):
+# setup the DBDiscussionSession testing class what will manage our transactions
+class DBDiscussionSessionTestCase(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
 		cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
@@ -114,20 +114,20 @@ class BaseTestCase(unittest.TestCase):
 		self.session.close()
 
 
-# skip the routes, templates, etc. So let’s setup our Unit Test Base class
-class UnitTestBase(BaseTestCase):
+# skip the routes, templates, etc. So let’s setup our Unit Test DBDiscussionSession class
+class UnitTestDBDiscussionSession(DBDiscussionSessionTestCase):
 	def setUp(self):
-		print("UnitTestBase: setUp")
+		print("UnitTestDBDiscussionSession: setUp")
 		self.config = testing.setUp(request=testing.DummyRequest())
-		super(UnitTestBase, self).setUp()
+		super(UnitTestDBDiscussionSession, self).setUp()
 		self.config = Setup().add_routes(self.config)
 
 	def tearDown(self):
-		print("UnitTestBase: tearDown")
+		print("UnitTestDBDiscussionSession: tearDown")
 		testing.tearDown()
 
 	def get_csrf_request(self, post=None):
-		print("UnitTestBase: get_csrf_request")
+		print("UnitTestDBDiscussionSession: get_csrf_request")
 		csrf = 'abc'
 		if 'csrf_token' not in post.keys():
 			post.update({
@@ -144,16 +144,16 @@ class UnitTestBase(BaseTestCase):
 # and actually test the full stack of your application
 
 
-class IntegrationTestBase(BaseTestCase):
+class IntegrationTestDBDiscussionSession(DBDiscussionSessionTestCase):
 	@classmethod
 	def setUpClass(cls):
 		cls.app = main({}, **settings)
-		super(IntegrationTestBase, cls).setUpClass()
+		super(IntegrationTestDBDiscussionSession, cls).setUpClass()
 
 	def setUp(self):
 		self.testapp = TestApp(self.app)
 		self.config = testing.setUp()
-		super(IntegrationTestBase, self).setUp()
+		super(IntegrationTestDBDiscussionSession, self).setUp()
 		self.config = Setup().add_routes(self.config)
 
 
@@ -162,7 +162,7 @@ class IntegrationTestBase(BaseTestCase):
 ##########################################################################################################
 
 # testing main page
-class ViewMainTests(UnitTestBase):
+class ViewMainTests(UnitTestDBDiscussionSession):
 	def _callFUT(self, request):
 		print("ViewLoginTests: _callFUT")
 		return Dbas.main_page(request)
@@ -175,7 +175,7 @@ class ViewMainTests(UnitTestBase):
 
 
 # testing login page
-class ViewLoginTests(UnitTestBase):
+class ViewLoginTests(UnitTestDBDiscussionSession):
 	def _callFUT(self, request):
 		print("ViewMainTests: _callFUT")
 		return Dbas.main_login(request)
@@ -188,7 +188,7 @@ class ViewLoginTests(UnitTestBase):
 
 
 # testing logout page
-class ViewLogoutTests(UnitTestBase):
+class ViewLogoutTests(UnitTestDBDiscussionSession):
 	def _callFUT(self, request):
 		print("ViewLogoutTests: _callFUT")
 		return Dbas.main_logout(request)
@@ -202,7 +202,7 @@ class ViewLogoutTests(UnitTestBase):
 
 
 # testing logout redirection page
-# class ViewLogoutRedirectTests(UnitTestBase):
+# class ViewLogoutRedirectTests(UnitTestDBDiscussionSession):
 	# def _callFUT(self, request):
 		# print("ViewLogoutRedirectTests: tearDown")
 		# return Dbas.main_logout_redirect(request)
@@ -217,7 +217,7 @@ class ViewLogoutTests(UnitTestBase):
 
 
 # testing contact page
-class ViewContactTests(UnitTestBase):
+class ViewContactTests(UnitTestDBDiscussionSession):
 	def _callFUT(self, request):
 		print("ViewContactTests: _callFUT")
 		return Dbas.main_contact(request)
@@ -230,7 +230,7 @@ class ViewContactTests(UnitTestBase):
 
 
 # testing content page
-class ViewDicussionTests(UnitTestBase):
+class ViewDicussionTests(UnitTestDBDiscussionSession):
 	def _callFUT(self, request):
 		print("ViewContentTests: _callFUT")
 		return Dbas.main_discussion_start(request)
@@ -244,7 +244,7 @@ class ViewDicussionTests(UnitTestBase):
 
 
 # settings content page
-class ViewSettingsTests(UnitTestBase):
+class ViewSettingsTests(UnitTestDBDiscussionSession):
 	def _callFUT(self, request):
 		print("ViewSettingsTests: _callFUT")
 		return Dbas.main_settings(request)
@@ -257,7 +257,7 @@ class ViewSettingsTests(UnitTestBase):
 
 
 # testing content page
-class ViewNewsTests(UnitTestBase):
+class ViewNewsTests(UnitTestDBDiscussionSession):
 	def _callFUT(self, request):
 		print("ViewNewsTests: _callFUT")
 		return Dbas.main_news(request)
@@ -270,7 +270,7 @@ class ViewNewsTests(UnitTestBase):
 
 
 # testing impressum page
-class ViewImpressumTests(UnitTestBase):
+class ViewImpressumTests(UnitTestDBDiscussionSession):
 	def _callFUT(self, request):
 		print("ViewImpressumTests: tearDown")
 		return Dbas.main_impressum(request)
@@ -283,7 +283,7 @@ class ViewImpressumTests(UnitTestBase):
 
 
 # testing a unexisting page
-class ViewNotFoundTests(UnitTestBase):
+class ViewNotFoundTests(UnitTestDBDiscussionSession):
 	def _callFUT(self, request):
 		print("ViewNotFoundTests: tearDown")
 		return Dbas.notfound(request)
@@ -300,7 +300,7 @@ class ViewNotFoundTests(UnitTestBase):
 
 
 # check, if every site responds with 200 except the error page
-class FunctionalViewTests(IntegrationTestBase):
+class FunctionalViewTests(IntegrationTestDBDiscussionSession):
 	editor_login = '/login?nickname=editor&password=test&came_from=main_page&form.login.submitted=Login'
 	viewer_wrong_login = '/login?nickname=randomguest&password=incorrect&came_from=main_page&form.login.submitted=Login'
 
@@ -406,7 +406,7 @@ class FunctionalViewTests(IntegrationTestBase):
 ##########################################################################################################
 
 # checks for the email-connection
-class FunctionalEMailTests(IntegrationTestBase):
+class FunctionalEMailTests(IntegrationTestDBDiscussionSession):
 	# testing the email - send
 	def test_email_send(self):
 		print("FunctionalTests: test_email_send")
@@ -449,7 +449,7 @@ class FunctionalEMailTests(IntegrationTestBase):
 
 
 # checks for the database
-class FunctionalDatabaseTests(IntegrationTestBase):
+class FunctionalDatabaseTests(IntegrationTestDBDiscussionSession):
 
 	def setUp(self):
 		super(FunctionalDatabaseTests, self).setUp()

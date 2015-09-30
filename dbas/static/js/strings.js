@@ -11,36 +11,38 @@ var mainpage = 'http://localhost:4284/';
  * Messages & Errors
  * @type {string}
  */
-var addedEverything = "Everything was added.";
-var confirmation = "Confirmation";
-var confirmTranslation = "If you change the language, your process on this page will be lost and you have to restart the discussion!";
-var correctionsSet = "Your correction was set.";
-var euCookiePopupTitle = "This website is using cookies and Google Analytics.";
-var euCookiePopupText = "We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website.";
-var euCookiePopoupButton1 = "Continue";
-var euCookiePopoupButton2 = "Learn&nbsp;more";
-var feelFreeToShareUrl = "Please feel free to share this url";
-var fetchLongUrl = "Fetch long url!";
-var fetchShortUrl = "Fetch short url!";
-var internalFailureWhileDeletingTrack = "Internal failure, please try again or did you have deleted your track recently?";
-var internal_error = 'Internal Error: Maybe the server is offline or your session run out.';
-var hideAllUsers = "Hide all users";
-var hideAllAttacks = "Hide all attacks";
-var noIslandView = "Could not fetch data for the island view. Sorry!";
-var noCorrections = "No corrections for the given statement.";
-var noCorrectionsSet = "Correction could not be set, because your user was not fount in the database. Are you currently logged in?";
-var notInsertedErrorBecauseEmpty = "Your idea was not inserted, because your input text is empty.";
-var notInsertedErrorBecauseDuplicate = "Your idea was not inserted, because your idea is a duplicate.";
-var notInsertedErrorBecauseUnknown = "Your idea was not inserted due to an unkown error.";
-var selectStatement = "Please select a statement!";
-var showAllUsers = "Show all users";
-var showAllAttacks = "Show all attacks";
+var addedEverything 					= "Everything was added.";
+var confirmation 						= "Confirmation";
+var confirmTranslation 					= "If you change the language, your process on this page will be lost and you have to restart the discussion!";
+var correctionsSet 						= "Your correction was set.";
+var euCookiePopupTitle 					= "This website is using cookies and Google Analytics.";
+var euCookiePopupText 					= "We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website.";
+var euCookiePopoupButton1 				= "Continue";
+var euCookiePopoupButton2 				= "Learn&nbsp;more";
+var empty_news_input  					= "News title or text is empty or too short!";
+var feelFreeToShareUrl 					= "Please feel free to share this url";
+var fetchLongUrl 						= "Fetch long url!";
+var fetchShortUrl 						= "Fetch short url!";
+var internalFailureWhileDeletingTrack 	= "Internal failure, please try again or did you have deleted your track recently?";
+var internal_error 						= 'Internal Error: Maybe the server is offline or your session run out.';
+var hideAllUsers 						= "Hide all users";
+var hideAllAttacks 						= "Hide all attacks";
+var noIslandView 						= "Could not fetch data for the island view. Sorry!";
+var noCorrections 						= "No corrections for the given statement.";
+var noCorrectionsSet 					= "Correction could not be set, because your user was not fount in the database. Are you currently logged in?";
+var notInsertedErrorBecauseEmpty 		= "Your idea was not inserted, because your input text is empty.";
+var notInsertedErrorBecauseDuplicate 	= "Your idea was not inserted, because your idea is a duplicate.";
+var notInsertedErrorBecauseUnknown 		= "Your idea was not inserted due to an unkown error.";
+var request_failed 						= "Request failed";
+var selectStatement 					= "Please select a statement!";
+var showAllUsers 						= "Show all users";
+var showAllAttacks 						= "Show all attacks";
 
-var strength = "Strength";
-var veryweak = "very weak";
-var weak = "weak";
-var medium = "medium";
-var strong = "strong";
+var strength 							= "Strength";
+var veryweak 							= "very weak";
+var weak 								= "weak";
+var medium 								= "medium";
+var strong 								= "strong";
 
 /**
  * Text for the dialogue

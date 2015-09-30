@@ -3,7 +3,7 @@ import sqlalchemy as sa
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from dbas.database import DBSession, Base
+from dbas.database import DBDiscussionSession, DiscussionBase
 
 # ORM Relationships
 # Statement : Text              many-to-one     fk on the parent referencing the child, relationship() on the parent
@@ -22,7 +22,7 @@ from dbas.database import DBSession, Base
 # Argument : Argument           many-to-many    adjacency list relationship
 
 
-class Issue(Base):
+class Issue(DiscussionBase):
 	"""
 	issue-table with several column.
 	Each issue has text and a creation date
@@ -41,10 +41,10 @@ class Issue(Base):
 	@classmethod
 	def by_text(cls):
 		"""Return a query of positions sorted by text."""
-		return DBSession.query(Issue).order_by(Issue.text)
+		return DBDiscussionSession.query(Issue).order_by(Issue.text)
 
 
-class Group(Base):
+class Group(DiscussionBase):
 	"""
 	group-table with several column.
 	Each group has a name
@@ -62,13 +62,13 @@ class Group(Base):
 	@classmethod
 	def by_name(cls):
 		"""Return a query of positions sorted by text."""
-		return DBSession.query(Group).order_by(Group.name)
+		return DBDiscussionSession.query(Group).order_by(Group.name)
 
 	def group_by_id(group):
-		return DBSession.query(Group).filter(Group.name == group).first()
+		return DBDiscussionSession.query(Group).filter(Group.name == group).first()
 
 
-class User(Base):
+class User(DiscussionBase):
 	"""
 	User-table with several columns.
 	Each user has a firsstname, lastname, email, password, belongs to a group and has a last loggin date
@@ -106,7 +106,7 @@ class User(Base):
 	@classmethod
 	def by_surname(cls):
 		"""Return a query of users sorted by surname."""
-		return DBSession.query(User).order_by(User.surname)
+		return DBDiscussionSession.query(User).order_by(User.surname)
 
 	def validate_password(self, password):
 		manager = BCRYPTPasswordManager()
@@ -119,7 +119,7 @@ class User(Base):
 		self.last_action = func.now()
 
 
-class Statement(Base):
+class Statement(DiscussionBase):
 	"""
 	Statement-table with several columns.
 	Each statement has link to its text
@@ -139,7 +139,7 @@ class Statement(Base):
 		self.isStartpoint = isstartpoint
 
 
-class TextValue(Base):
+class TextValue(DiscussionBase):
 	"""
 	Text-Value-table with several columns.
 	Each text value has a link to its most recent text value and a weight
@@ -160,7 +160,7 @@ class TextValue(Base):
 		self.textVersion_uid = textVersion_uid
 
 
-class TextVersion(Base):
+class TextVersion(DiscussionBase):
 	"""
 	TextVersions-table with several columns.
 	Each text versions has link to the recent link and fields for content, author, timestamp and weight
@@ -191,15 +191,15 @@ class TextVersion(Base):
 	@classmethod
 	def by_timestamp(cls):
 		"""Return a query of text versions sorted by timestamp."""
-		return DBSession.query(TextVersion).order_by(TextVersion.timestamp)
+		return DBDiscussionSession.query(TextVersion).order_by(TextVersion.timestamp)
 
 	@classmethod
 	def by_weight(cls):
 		"""Return a query of text versions sorted by wight."""
-		return DBSession.query(TextVersion).order_by(TextVersion.weight)
+		return DBDiscussionSession.query(TextVersion).order_by(TextVersion.weight)
 
 
-class PremisseGroup(Base):
+class PremisseGroup(DiscussionBase):
 	"""
 	PremisseGroup-table with several columns.
 	Each premissesGroup has a id and an author
@@ -217,7 +217,7 @@ class PremisseGroup(Base):
 		self.author_uid = author
 
 
-class Premisse(Base):
+class Premisse(DiscussionBase):
 	"""
 	Premisses-table with several columns.
 	Each premisses has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
@@ -244,7 +244,7 @@ class Premisse(Base):
 		self.timestamp = func.now()
 
 
-class Argument(Base):
+class Argument(DiscussionBase):
 	"""
 	Argument-table with several columns.
 	Each argument has justifying statement(s) (premisses) and the the statement-to-be-justified (argument or statement).
@@ -281,7 +281,7 @@ class Argument(Base):
 		self.argument_uid = argument
 
 
-class Track(Base):
+class Track(DiscussionBase):
 	"""
 	Track-table with several columns.
 	Each user will be tracked
@@ -316,7 +316,7 @@ class Track(Base):
 		self.timestamp = func.now()
 
 
-class Relation(Base):
+class Relation(DiscussionBase):
 	"""
 	Relation-table with several columns.
 	Each user will be tracked
@@ -330,24 +330,3 @@ class Relation(Base):
 		Initializes a row in current relation-table
 		"""
 		self.name = name
-
-
-class News(Base):
-	"""
-	News-table with several columns.
-	"""
-	__tablename__ = 'news'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	title = sa.Column(sa.Text, nullable=False)
-	author = sa.Column(sa.Text, nullable=False)
-	date = sa.Column(sa.Text, nullable=False)
-	news = sa.Column(sa.Text, nullable=False)
-
-	def __init__(self, title, author, news, date):
-		"""
-		Initializes a row in current news-table
-		"""
-		self.title = title
-		self.author = author
-		self.news = news
-		self.date = date

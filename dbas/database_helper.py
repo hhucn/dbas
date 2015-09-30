@@ -1,8 +1,11 @@
 import random
+import datetime
+
 from sqlalchemy import and_, not_
 
-from .database import DBSession, DBNewsSession
-from .database.model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse,  Track, Relation, News
+from .database import DBDiscussionSession, DBNewsSession
+from .database.discussion_model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse,  Track, Relation
+from .database.news_model import News
 from .dictionary_helper import DictionaryHelper
 from .query_helper import QueryHelper
 from .user_management import UserHandler
@@ -13,9 +16,14 @@ from .logger import logger
 class DatabaseHelper(object):
 
 	def get_news(self):
+		"""
+
+		:return:
+		"""
 		logger('DatabaseHelper', 'get_news', 'main')
 		db_news = DBNewsSession.query(News).all()
-		ret_dict = {}
+		logger('DatabaseHelper', 'get_news', 'we have ' + str (len(db_news)) + ' news')
+		ret_dict = dict()
 		for news in db_news:
 			news_dict = {}
 			news_dict['title'] = news.title
@@ -23,7 +31,49 @@ class DatabaseHelper(object):
 			news_dict['date'] = news.date
 			news_dict['news'] = news.news
 			ret_dict[str(news.uid)] = news_dict
+			logger('DatabaseHelper', 'get_news', 'news ' + str(news.uid))
+
 		return ret_dict
+
+	def set_news(self, transaction, title, text, user):
+		"""
+		Sets a new news into the news table
+		:param title: news title
+		:param text: news text
+		:param user: self.request.authenticated_userid
+		:return: dictionary {title,date,author,news}
+		"""
+		logger('DatabaseHelper', 'set_news', 'def')
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		author = db_user.firstname if db_user.firstname == "admin" else db_user.firstname + " " + db_user.surname
+		now = datetime.datetime.now()
+		day = str(now.day) if now.day > 9 else ("0" + str(now.day))
+		month = str(now.month) if now.month > 9 else ("0" + str(now.month))
+		date = day + '.' + month + '.' + str(now.year)
+		news = News(title = title, author = author, date = date, news = text)
+
+		DBNewsSession.add(news)
+		DBNewsSession.flush()
+
+		db_news = DBNewsSession.query(News).filter_by(title=title).first()
+		return_dict = dict()
+
+		if db_news:
+			logger('DatabaseHelper', 'set_news', 'new news is in db')
+			return_dict['status'] = '1'
+		else:
+
+			logger('DatabaseHelper', 'set_news', 'new news is not in db')
+			return_dict['status'] = '-'
+
+		transaction.commit()
+
+		return_dict['title'] = title
+		return_dict['date'] = date
+		return_dict['author'] = author
+		return_dict['news'] = text
+
+		return return_dict
 
 	def correct_statement(self, transaction, user, uid, corrected_text):
 		"""
@@ -37,16 +87,16 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'correct_statement', 'def')
 
 		return_dict = dict()
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
-		db_statement = DBSession.query(Statement).filter_by(uid=uid).join(TextValue).first()
-		db_textvalue = DBSession.query(TextValue).filter_by(uid=db_statement.text_uid)\
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).join(TextValue).first()
+		db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=db_statement.text_uid)\
 			.join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
 		if db_user:
 			logger('DatabaseHelper', 'correct_statement', 'given user exists and correction will be set')
 			textversion = TextVersion(content=corrected_text, author=db_user.uid, weight=db_textvalue.textversions.weight)
 			textversion.set_textvalue(db_textvalue.uid)
-			DBSession.add(textversion)
-			DBSession.flush()
+			DBDiscussionSession.add(textversion)
+			DBDiscussionSession.flush()
 			db_textvalue.update_textversion(textversion.uid)
 			transaction.commit()
 			return_dict['status'] = '1'
@@ -70,7 +120,7 @@ class DatabaseHelper(object):
 			return_dict = dict()
 		else:
 			logger('DatabaseHelper', 'get_all_users', 'get all users')
-			db_users = DBSession.query(User).join(Group).all()
+			db_users = DBDiscussionSession.query(User).join(Group).all()
 			logger('DatabaseHelper', 'get_all_users', 'get all groups')
 
 			return_dict = dict()
@@ -117,8 +167,8 @@ class DatabaseHelper(object):
 		else:
 			return_dict = {}
 			logger('DatabaseHelper', 'get_attack_overview', 'get all attacks for each argument')
-			db_arguments = DBSession.query(Argument).all()
-			db_relations = DBSession.query(Relation).all()
+			db_arguments = DBDiscussionSession.query(Argument).all()
+			db_relations = DBDiscussionSession.query(Relation).all()
 
 			relations_dict = {}
 			for relation in db_relations:
@@ -134,7 +184,7 @@ class DatabaseHelper(object):
 				# 	argument_dict['text'] = str(argument.uid) # QueryHelper().get_text_for_argument_uid(argument.uid) # TODO
 
 				for relation in db_relations:
-					db_tracks = DBSession.query(Track).filter(and_(Track.argument_uid==argument.uid,
+					db_tracks = DBDiscussionSession.query(Track).filter(and_(Track.argument_uid==argument.uid,
 					                                               Track.attacked_by_relation==relation.uid)).all()
 					argument_dict[relation.name] = str(len(db_tracks)) if len(db_tracks) != 0 else '-'
 
@@ -149,7 +199,7 @@ class DatabaseHelper(object):
 		"""
 		return_dict = dict()
 		statements_dict = dict()
-		db_statements = DBSession.query(Statement).filter_by(isStartpoint=True).all()
+		db_statements = DBDiscussionSession.query(Statement).filter_by(isStartpoint=True).all()
 		logger('DatabaseHelper', 'get_start_statements', 'get all statements')
 		if db_statements:
 			return_dict['status'] = '1'
@@ -179,19 +229,19 @@ class DatabaseHelper(object):
 		return_dict = dict()
 		premisses_dict = dict()
 		logger('DatabaseHelper', 'get_premisses_for_statement', 'get all premisses')
-		db_arguments = DBSession.query(Argument).filter(and_(Argument.isSupportive==issupportive,
+		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==issupportive,
 																Argument.conclusion_uid==statement_uid)).all()
 
 		for argument in db_arguments:
 			logger('DatabaseHelper', 'get_premisses_for_statement', 'argument ' 
 					+ str(argument.uid) + ' (' + str(argument.premissesGroup_uid) + ')')
-			db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=argument.premissesGroup_uid).all()
+			db_premisses = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=argument.premissesGroup_uid).all()
 
 			# check out the group
 			premissesgroups_dict = dict()
 			for premisse in db_premisses:
 				logger('DatabaseHelper', 'get_premisses_for_statement', 'premisses group ' + str(premisse.premissesGroup_uid))
-				db_statements = DBSession.query(Statement).filter_by(uid=premisse.statement_uid).all()
+				db_statements = DBDiscussionSession.query(Statement).filter_by(uid=premisse.statement_uid).all()
 				for statement in db_statements:
 					logger('DatabaseHelper', 'get_premisses_for_statement', 'premisses group has statement ' + str(statement.uid))
 					premissesgroups_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement)
@@ -203,7 +253,7 @@ class DatabaseHelper(object):
 		return_dict['conclusion_id'] = statement_uid
 		return_dict['status'] = '1'
 
-		db_statements = DBSession.query(Statement).filter_by(uid=statement_uid).first()
+		db_statements = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
 		return_dict['currentStatement'] = DictionaryHelper().save_statement_row_in_dictionary(db_statements)
 
 		return return_dict
@@ -218,7 +268,6 @@ class DatabaseHelper(object):
 		:return: A random attack (undermine, rebut undercut) based on the last saved premissesgroup and statement as well as many texts
 		like the premisse as text, conclusion as text, attack as text, confrontation as text. Everything is in a dict.
 		"""
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'main with last_premisses_group_uid ' + str(last_premisses_group_uid))
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last statement ' + str(last_statement_uid))
 
@@ -231,7 +280,7 @@ class DatabaseHelper(object):
 		# getting the argument of the premisses and conclusion
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'find argument with group ' + str(last_premisses_group_uid)
 				+ ' conclusion statement ' + str(last_statement_uid))
-		db_argument = DBSession.query(Argument).filter(and_(Argument.premissesGroup_uid==last_premisses_group_uid,
+		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premissesGroup_uid==last_premisses_group_uid,
 				Argument.conclusion_uid==last_statement_uid, Argument.isSupportive==True)).order_by(Argument.uid.desc()).first()
 
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'argument uid ' + (str(db_argument.uid) if db_argument else 'none'))
@@ -277,9 +326,9 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'get_attack_for_argument', 'relation: ' + relation + ', premissesgroup_uid: ' + premissesgroup_uid)
 
 		# get last tracked conclusion
-		db_last_conclusion = DBSession.query(Premisse).filter_by(premissesGroup_uid=pgroup_id).first()
+		db_last_conclusion = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=pgroup_id).first()
 
-		db_argument = DBSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
+		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
 		                                                    Argument.premissesGroup_uid==int(premissesgroup_uid),
 		                                                    Argument.isSupportive==False)).first()
 		return_dict = {}
@@ -325,7 +374,7 @@ class DatabaseHelper(object):
 
 		# get argument
 		logger('DatabaseHelper', 'get_reply_confrontations_response', 'get reply confrontations for argument ' + argument_uid)
-		db_argument = DBSession.query(Argument).filter_by(uid=int(argument_uid)).first()
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 
 		# get attack
 		key = 'reason'
@@ -385,8 +434,8 @@ class DatabaseHelper(object):
 		"""
 		logger('DatabaseHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
 
-		db_statement = DBSession.query(Statement).filter_by(uid=uid).first()
-		db_textversions = DBSession.query(TextVersion).filter_by(textValue_uid=db_statement.text_uid).join(User).all()
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(textValue_uid=db_statement.text_uid).join(User).all()
 
 		return_dict = {}
 		content_dict = {}
@@ -411,7 +460,7 @@ class DatabaseHelper(object):
 		"""
 		logger('DatabaseHelper', 'get_logfile_for_premissegroup', 'def with uid: ' + str(uid))
 
-		db_premisses = DBSession.query(Premisse).filter_by(premissesGroup_uid=uid).first() # todo for premisse groups
+		db_premisses = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=uid).first() # todo for premisse groups
 		return self.get_logfile_for_statement(db_premisses.statement_uid)
 
 	def set_statement(self, transaction, statement, user, is_start):
@@ -423,7 +472,7 @@ class DatabaseHelper(object):
 		:param is_start: if it is a start statement
 		:return: '1'
 		"""
-		db_user = DBSession.query(User).filter_by(nickname=user).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		logger('DatabaseHelper', 'set_statement', 'user: ' + str(user) + 'user_id: ' + str(db_user.uid) + ', statement: ' + str(statement))
 
 		# check for dot at the end
@@ -433,26 +482,26 @@ class DatabaseHelper(object):
 			statement = statement[8:]
 
 		# check, if the statement already exists
-		db_duplicate = DBSession.query(TextVersion).filter_by(content=statement).first()
+		db_duplicate = DBDiscussionSession.query(TextVersion).filter_by(content=statement).first()
 
 		# add the version
 		textversion = db_duplicate if db_duplicate else TextVersion(content=statement, author=db_user.uid, weight=0)
-		DBSession.add(textversion)
-		DBSession.flush()
+		DBDiscussionSession.add(textversion)
+		DBDiscussionSession.flush()
 
 		# add a new cache
 		textvalue = TextValue(textversion=textversion.uid)
-		DBSession.add(textvalue)
-		DBSession.flush()
+		DBDiscussionSession.add(textvalue)
+		DBDiscussionSession.flush()
 		textversion.set_textvalue(textvalue.uid)
 
 		# add the statement
 		statement = Statement(text=textvalue.uid, isstartpoint=is_start)
-		DBSession.add(statement)
-		DBSession.flush()
+		DBDiscussionSession.add(statement)
+		DBDiscussionSession.flush()
 
 		# get the new statement
-		new_statement = DBSession.query(Statement).filter_by(text_uid=textvalue.uid).order_by(Statement.uid.desc()).first()
+		new_statement = DBDiscussionSession.query(Statement).filter_by(text_uid=textvalue.uid).order_by(Statement.uid.desc()).first()
 
 		transaction.commit()
 
