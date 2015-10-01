@@ -16,6 +16,7 @@ var confirmation 						= 'Confirmation';
 var confirmTranslation 					= 'If you change the language, your process on this page will be lost and you have to restart the discussion!';
 var correctionsSet 						= 'Your correction was set.';
 var dataRemoved 						= 'Data was successfully removed.';
+var didYouMean							= 'Did you mean:';
 var euCookiePopupTitle 					= 'This website is using cookies and Google Analytics.';
 var euCookiePopupText 					= 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website.';
 var euCookiePopoupButton1 				= 'Continue';

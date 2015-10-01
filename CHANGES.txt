@@ -30,12 +30,16 @@
 
 0.3.0 (23.07.2015)
 ---
-- new datastructure
+- New datastructure
 
 0.3.1 (01.09.2015)
 ---
-- unique url's
+- Unique url's
 
 0.3.2 (25.09.2015)
 ---
-- anonymous users
+- Anonymous users
+
+0.3.3 (01.10.2015)
+---
+- News interface for authors

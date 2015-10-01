@@ -42,7 +42,10 @@ function Countdown(options) {
  */
 function setLinkActive(linkname) {
 	'use strict';
-	var linkIds = ['#contact-link', '#login-link', '#news-link', '#content-link'],
+	var linkIds = ['#' + contactLink,
+					'#' + loginLink,
+					'#' + newsLink,
+					'#' + contentLink],
 		i;
 	for (i = 0; i < linkIds.length; i++) {
 		if (linkIds[i] === linkname) {
@@ -446,8 +449,8 @@ $(document).ready(function () {
 	else if (path.indexOf('content') != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf('settings') != -1 ||
 			 path.indexOf('imprint') != -1 ||
-			 path.indexOf('logout') != -1){										$('#' + navbarLeft).hide(); }
-	else {										setLinkActive(''); 				$('#' + navbarLeft).show(); }
+			 path.indexOf('logout') != -1){											$('#' + navbarLeft).hide(); }
+	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
 	// language switch
 	$('#' + translationLinkDe).click(function(){ language_switcher(path, 'de') });

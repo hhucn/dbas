@@ -8,22 +8,24 @@
  * @param date
  * @param author
  * @param news
+ * @param no
  * @returns {string}
  */
-function getNewsContainerAsHtml(title, date, author, news){
-	return '<div class="container newscontainer"> <ul class="share-table"> <li> <a class="share-icon share-def"></a> <ul> <li> <a'
-			+ ' class="share-icon share-mail"></a> </li> <li> <a class="share-icon share-twitter"></a> </li> <li> <a class="share-icon'
-			+ ' share-google"></a></li><li>'
-			+ '<a class="share-icon share-facebook"></a> </li> </ul> </li> </ul> <div class="row"> <div class="col-md-6"> <h3><span'
-			+ 'class="font-semi-bold">'
-			+ title
-			+ '</span></h3></div><div class="col-md-4"><h4><p>'
-			+ date
-			+ '</p></h4></div></div><h5><span i18n:translate="author">Author</span>: '
-			+ author
-			+ '</h5><br>'
-			+ news
-			+ '</div>';
+function getNewsContainerAsHtml(title, date, author, news, no){
+	return '<div class="container newscontainer" id="news_'
+		+ no
+		+ '"><ul class="share-table"><li><a class="share-icon share-def"></a><ul><li><a class="share-icon share-mail"></a></li>'
+		+ '<li><a class="share-icon share-twitter"></a></li><li><a class="share-icon share-google"></a></li>'
+		+ '<li><a class="share-icon share-facebook"></a></li></ul></li></ul><div class="row"><div class="col-md-6">'
+		+ '<h3><span class="font-semi-bold">'
+		+ title
+		+ '</span></h3></div><div class="col-md-4"><h4><p>'
+		+ date
+		+ '</p></h4></div></div><h5><span i18n:translate="author">Author</span>: '
+		+ author
+		+ '</h5><br>'
+		+ news
+		+ '</div>';
 }
 
 // *********************
@@ -87,7 +89,7 @@ function ajaxSendNews (){
 function callbackIfDoneForGettingNews(data) {
 	var parsedData = $.parseJSON(data);
 	$.each(parsedData, function callbackIfDoneForGettingNewsEach(key, val) {
-		$('#' + newsBodyId).prepend(getNewsContainerAsHtml(val.title, val.date, val.author, val.news))
+		$('#' + newsBodyId).prepend(getNewsContainerAsHtml(val.title, val.date, val.author, val.news, key))
 	});
 }
 
@@ -178,7 +180,7 @@ $(document).ready(function () {
 		textarraydate 	 = textarraydate[1].split('</p>');
 		textarrayauthor  = textarrayauthor[1].split('</h5>');
 
-		mailShare('user@example.com', "DBAS: " + textarraysubject[0], "News from " + textarraydate[0] + ", by " + textarrayauthor[0]);
+		mailShare('user@example.com', "DBAS: " + textarraysubject[0], "News from " + textarraydate[0] + ", by " + textarrayauthor[0] + "\n\nSource: " + window.location.href);
 	});
 
 	/**

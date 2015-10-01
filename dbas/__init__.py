@@ -87,6 +87,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')
 	config.add_route('ajax_user_registration',                   '{url:.*}ajax_user_registration')
 	config.add_route('ajax_user_password_request',               '{url:.*}ajax_user_password_request')
+	config.add_route('ajax_fuzzy_search',                        '{url:.*}ajax_fuzzy_search')
 	config.add_route('ajax_manage_user_track',                   'ajax_manage_user_track')
 	config.add_route('ajax_get_news',                            'ajax_get_news')
 	config.add_route('ajax_send_news',                           'ajax_send_news')

@@ -386,4 +386,47 @@ function AjaxSiteHandler() {
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
 	};
+
+	this.fuzzySearch = function (value, callbackid) {
+		if(value.len==0){
+			return;
+		}
+
+		$('#' + callbackid).focus();
+		$.ajax({
+			url: 'ajax_fuzzy_search',
+			type: 'GET',
+			dataType: 'json',
+			data: { value: value },
+			async: true,
+			global: false
+		}).done(function ajaxGetAllUsersDone(data) {
+			var parsedData = $.parseJSON(data), availableStrings = [], params, token, has_value=0;
+			$('#' + callbackid).focus();
+			$('#statement-list-group').empty();
+			$.each(parsedData, function (key, val) {
+				has_value = 1;
+				params = key.split('_'); // index = params[1], distance = params[2]
+				token = $('#' + callbackid).val();
+				val = val.replace(token, '<b>' + token + '</b>');
+				if (parseInt(params[2]) < 500) {
+					$('#statement-list-group').append('<button type="button" class="list-group-item" id="proposal_'
+						+ params[1] + '"><span class="badge">Distance '
+						+ params[2] + '</span><span id="proposal_'
+						+ params[1] + '_text">'+val+'</span></button>');
+					$('#proposal_' + params[1]).click(function(){
+						$('#' + callbackid).val($('#proposal_' + params[1] + '_text').text());
+						$('#statement-list-group').empty();
+
+					});
+					availableStrings.push(val);
+				}
+			});
+			if (has_value==1){
+				$('#statement-list-group').prepend('<h4>' + didYouMean + '</h4>');
+			}
+		}).fail(function ajaxGetAllUsersFail(err) {
+		});
+		$('#' + callbackid).focus();
+	};
 }

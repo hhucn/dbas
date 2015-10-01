@@ -56,14 +56,18 @@ $(function () {
 
 	guiHandler.setHandler(interactionHandler);
 
+	$('#' + addStatementContainerMainInputId).keyup(function() {
+		ajaxHandler.fuzzySearch($(this).val(), addStatementContainerMainInputId);
+	});
+
 	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
 	$('#' + stepBackButtonId).hide(); // hiding the step one round back button
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
 	$('#' + displayControlContainerId).hide(); // hidding the control container
-	$('#sc-style-3').hide();
-	$('#label-sc-style-3').hide();
+	$('#' + scStyle3Id).hide();
+	$('#label-' + scStyle3Id).hide();
 	$('#' + minimapId).hide();
 	// handler for the step back button
 	$('#' + stepBackButtonId).click(function () {

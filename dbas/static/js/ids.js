@@ -114,9 +114,9 @@ var shareButtonFacebook 						= 'share-facebook';
 var stepBackButtonId 							= 'step-back';
 var sendNewStatementId 							= 'send-new-statement';
 var sendNewsButtonId 							= 'send-news';
-var trackTableSuccessId = 'track-table-success';
-var trackTableFailureId = 'track-table-failure';
-var trackTableSpaceId = 'track-table-space';
+var trackTableSuccessId 						= 'track-table-success';
+var trackTableFailureId 						= 'track-table-failure';
+var trackTableSpaceId 							= 'track-table-space';
 var writingNewsFailedId 						= 'writing-news-failed';
 var writingNewsSuccessId 						= 'writing-news-success';
 var writingNewsFailedMessageId 					= 'writing-news-failed-message';
@@ -124,9 +124,9 @@ var writingNewsSuccessMessageId 				= 'writing-news-success-message';
 var writingNewNewsTitleId 						= 'writing-news-title';
 var writingNewNewsTextId 						= 'writing-news-text';
 
-var deleteTrackButtonId = 'delete-track';
-var trackFailureMessageId = 'track-failure-msg';
-var trackSuccessMessageId = 'track-success-msg';
+var deleteTrackButtonId 						= 'delete-track';
+var trackFailureMessageId 						= 'track-failure-msg';
+var trackSuccessMessageId 						= 'track-success-msg';
 
 // id's for identifiying
 var id_pro = 'pro';

@@ -19,7 +19,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.2'
+version = '0.3.3'
 header = name + ' ' + version
 
 class Dbas(object):
@@ -59,9 +59,9 @@ class Dbas(object):
 		}
 
 	# login page
-	# @view_config(route_name='main_login', renderer='templates/login.pt', permission='everybody')
+	# @view_config(route_name='user_registration', renderer='templates/login.pt', permission='everybody')
 	# @forbidden_view_config(renderer='templates/login.pt')
-	# def main_login(self):
+	# def user_registration(self):
 
 	# logout page
 	@view_config(route_name='main_logout', permission='use')
@@ -297,10 +297,10 @@ class Dbas(object):
 					message = 'Your old password is wrong.'
 					error = True
 				else:
-					logger('main_login', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
+					logger('main_settings', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
 					password_handler = PasswordHandler()
 					hashed_pw = password_handler.get_hashed_password(new_pw)
-					logger('main_login', 'form.passwordrequest.submitted', 'New hashed password is ' + hashed_pw)
+					logger('main_settings', 'form.passwordrequest.submitted', 'New hashed password is ' + hashed_pw)
 
 					# set the hased one
 					db_user.password = hashed_pw
@@ -821,7 +821,7 @@ class Dbas(object):
 			if not db_user:
 				logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
 				message = 'User does not exists'
-			elif not db_user.validate_password(password):  # dbUser.validate_password(password)
+			elif not db_user.validate_password(password):
 				logger('user_login', 'password not valid', 'wrong password')
 				message = 'Wrong password'
 			else:
@@ -833,11 +833,11 @@ class Dbas(object):
 				db_user.update_last_logged()
 				transaction.commit()
 
-				# TODO
 				return HTTPFound(
 					location=url,
 					headers=headers,
 				)
+
 		except KeyError as e:
 			logger('user_login', 'error', repr(e))
 
@@ -873,30 +873,30 @@ class Dbas(object):
 			# database queries mail verification
 			db_nick = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 			db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
-			logger('main_login', 'form.registration.submitted', 'Validating email')
+			logger('user_registration', 'main', 'Validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
 
 			# are the password equal?
 			if not password == passwordconfirm:
-				logger('user_registration', 'form.registration.submitted', 'Passwords are not equal')
+				logger('user_registration', 'main', 'Passwords are not equal')
 				message = 'Passwords are not equal'
 			# is the nick already taken?
 			elif db_nick:
-				logger('user_registration', 'form.registration.submitted', 'Nickname \'' + nickname + '\' is taken')
+				logger('user_registration', 'main', 'Nickname \'' + nickname + '\' is taken')
 				message = 'Nickname is taken'
 			# is the email already taken?
 			elif db_mail:
-				logger('user_registration', 'form.registration.submitted', 'E-Mail \'' + email + '\' is taken')
+				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is taken')
 				message = 'E-Mail is taken'
 			# is the email valid?
 			elif not is_mail_valid:
-				logger('user_registration', 'form.registration.submitted', 'E-Mail \'' + email + '\' is not valid')
+				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is not valid')
 				message = 'E-Mail is not valid'
 			# is the token valid?
 			# elif request_token != token :
-			# 	logger('main_login', 'form.registration.submitted', 'token is not valid')
-			# 	logger('main_login', 'form.registration.submitted', 'request_token: ' + str(request_token))
-			# 	logger('main_login', 'form.registration.submitted', 'token: ' + str(token))
+			# 	logger('user_registration', 'main', 'token is not valid')
+			# 	logger('user_registration', 'main', 'request_token: ' + str(request_token))
+			# 	logger('user_registration', 'main', 'token: ' + str(token))
 			# 	message = 'CSRF-Token is not valid'
 			else:
 				# getting the editors group
@@ -905,10 +905,10 @@ class Dbas(object):
 				# does the group exists?
 				if not db_group:
 					message = 'An error occured, please try again later or contact the author'
-					logger('user_registration', 'form.registration.submitted', 'Error occured')
+					logger('user_registration', 'main', 'Error occured')
 				else:
 					# creating a new user with hased password
-					logger('user_registration', 'form.registration.submitted', 'Adding user')
+					logger('user_registration', 'main', 'Adding user')
 					hashedPassword = PasswordHandler().get_hashed_password(password)
 					newuser = User(firstname=firstname,
 					               surname=lastname,
@@ -923,7 +923,7 @@ class Dbas(object):
 					# sanity check, whether the user exists
 					checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 					if checknewuser:
-						logger('main_login', 'form.registration.submitted', 'New data was added with uid ' + str(checknewuser.uid))
+						logger('user_registration', 'main', 'New data was added with uid ' + str(checknewuser.uid))
 						message = 'Your account was added and you are now able to login.'
 						success = '1'
 
@@ -933,7 +933,7 @@ class Dbas(object):
 						EmailHelper().send_mail(self.request, subject, body, email)
 
 					else:
-						logger('main_login', 'form.registration.submitted', 'New data was not added')
+						logger('user_registration', 'main', 'New data was not added')
 						message = 'Your account with the nick could not be added. Please try again or contact the author.'
 
 		except KeyError as e:
@@ -1034,6 +1034,25 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		logger('send_news', 'def', 'main')
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - for fuzzy search
+	@view_config(route_name='ajax_fuzzy_search', renderer='json')
+	def fuzzy_search(self):
+		"""
+
+		:return:
+		"""
+		logger('fuzzy_search', 'main', 'def')
+		try:
+			# TODO
+			value = self.request.params['value']
+			return_dict = DatabaseHelper().get_fuzzy_string_for_start(value)
+		except KeyError as e:
+			return_dict = dict()
+			logger('fuzzy_search', 'error', repr(e))
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json

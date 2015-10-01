@@ -130,7 +130,9 @@
 
 					<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
 						<h4 id="add-statement-container-h4" i18n:translate="insert-argument">Please insert a new Argument</h4>
-						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="">
+						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value=""/>
+						<div class="list-group" id="statement-list-group">
+						</div>
 
 						<div id="pro-position-column">
 							<h4 id="heading-pro-positions" class="font-semi-bold" i18n:translate="pro">Pro</h4>

@@ -415,7 +415,7 @@ class QueryHelper(object):
 														', attacked_with_relation ' + str(attacked_with_relation) +
 		                                                ', sesseion_id ' + str(session_id))
 		DBDiscussionSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
-		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation), session_id=session_id)
+		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation, session_id=session_id))
 		transaction.commit()
 
 	# def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):

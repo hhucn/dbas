@@ -548,3 +548,34 @@ class DatabaseHelper(object):
 		transaction.commit()
 
 		return return_dict
+
+	def get_fuzzy_string_for_start(self, value):
+		"""
+
+		:param value:
+		:return:
+		"""
+		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value);
+		db_statements = DBDiscussionSession.query(Statement).filter_by(isStartpoint=True).join(TextValue).all()
+		return_dict = dict()
+		for index, statement in enumerate(db_statements):
+			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
+			if value.lower() in db_textvalue.textversions.content.lower():
+				lev = self.levenshtein_distance(value, db_textvalue.textversions.content)
+				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev ' + str(lev) + ',value ' + db_textvalue.textversions.content)
+				return_dict['value_' + str(index) + '_' + str(lev)] = db_textvalue.textversions.content
+
+		return return_dict
+
+	def levenshtein_distance(self, string1, string2):
+		"""
+		Levenshtein_distance2
+		:param string1:
+		:param string2:
+		:return:
+		"""
+		if not string1: return len(string2)
+		if not string2: return len(string1)
+		return min(self.levenshtein_distance(string1[1:], string2[1:])+(string1[0] != string2[0]),
+		           self.levenshtein_distance(string1[1:], string2)+1,
+		           self.levenshtein_distance(string1, string2[1:])+1)
