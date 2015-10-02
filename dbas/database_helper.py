@@ -258,18 +258,23 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def get_attack_for_premissegroup(self, transaction, user, last_premisses_group_uid, last_statement_uid, session_id):
+	def get_attack_for_premissegroup(self, transaction, user, ids, session_id):
 		"""
 		Based on the last given premissesgroup and statement, an attack will be choosen and replied.
 		:param transaction: current transaction
 		:param user: current nick of the user
-		:param last_premisses_group_uid:
-		:param last_statement_uid:
+		:param ids:
 		:param session_id:
 		:return: A random attack (undermine, rebut undercut) based on the last saved premissesgroup and statement as well as many texts
 		like the premisse as text, conclusion as text, attack as text, confrontation as text. Everything is in a dict.
 		"""
-		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'main with last_premisses_group_uid ' + str(last_premisses_group_uid))
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'ids ' + str(ids))
+
+		ids = ids.split('&')
+		last_premisses_group_uid   = ids[0][ids[0].index('=')+1:] if ids[0].startswith('pgroup') else ids[1][ids[1].index('=')+1:]
+		last_statement_uid = ids[1][ids[1].index('=')+1:] if ids[0].startswith('pgroup') else ids[0][ids[0].index('=')+1:]
+
+		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last_premisses_group_uid ' + str(last_premisses_group_uid))
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last statement ' + str(last_statement_uid))
 
 		return_dict = {}
@@ -288,7 +293,7 @@ class DatabaseHelper(object):
 		return_dict['argument_id'] = str(db_argument.uid) if db_argument else '0'
 
 		# getting undermines or undercuts or rebuts
-		attacks, key = qh.get_attack_for_argument_by_random(db_argument)
+		attacks, key = qh.get_attack_for_argument_by_random(db_argument, user)
 		return_dict['attack'] = key
 
 		status = 1
@@ -343,7 +348,7 @@ class DatabaseHelper(object):
 		return_dict['relation'] = relation
 
 		# getting undermines or undercuts or rebuts
-		attacks, key = qh.get_attack_for_argument_by_random(db_argument)
+		attacks, key = qh.get_attack_for_argument_by_random(db_argument, user)
 		return_dict['attack'] = key
 
 		status = 1

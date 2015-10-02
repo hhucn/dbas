@@ -1,6 +1,6 @@
 import random
-from sqlalchemy import and_
 import collections
+from sqlalchemy import and_
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premisse, PremisseGroup, Relation, Track
@@ -356,40 +356,72 @@ class QueryHelper(object):
 		return_dict[key] = str(len(db_relation))
 		return return_dict
 
-	def get_attack_for_argument_by_random(self, db_argument):
+	def get_attack_for_argument_by_random(self, db_argument, user):
 		"""
-		Returns a dictionary with attacks. The attack itself is random.
-		if rnd is equal 0, get_undermines_for_argument_uid(...) is called
-		if rnd is equal 1, get_rebuts_for_argument_uid(...) is called
-		if rnd is equal 2, get_undercuts_for_argument_uid(...) is called
+		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
 		Additionally returns id's of premisses groups with [key + str(index) + 'id']
-		:param argument_uid:
-		:param key:
+		:param db_argument:
+		:param user:
 		:return: dict, key
 		"""
-		rnd = random.randrange(0, 3 if db_argument else 2)
-		startrnd = rnd
+
+		# 1 = undermine
+		# 2 = support
+		# 3 = undercut
+		# 4 = overbid
+		# 5 = rebut
+
+		logger('QueryHelper', '-----------------------', '-----------------------')
+		logger('QueryHelper', 'get_attack_for_argument_by_random', 'user ' + user + ', arg.uid ' + str(db_argument.uid))
+		# history of selected attacks
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		db_track = DBDiscussionSession.query(Track).filter(and_(Track.author_uid==db_user.uid, Track.argument_uid==db_argument.uid)).all()
+
+		# all possible attacks
+		attacks = [1,3,5]
+		for track in db_track:
+			if track.attacked_by_relation in attacks:
+				attacks.remove(track.attacked_by_relation)
+		# now attacks contains all attacks, which were not be done
+		logger('QueryHelper', 'get_attack_for_argument_by_random', 'attacks, which were not done yet ' + str(attacks))
+
+		dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, [1,3,5] if len(attacks) == 0 else attacks)
+		# sanity check if we could not found an attack for a left attack in out set
+		if dict == None and len(attacks) > 0:
+			dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, [1,3,5])
+		logger('QueryHelper', '-----------------------', '-----------------------')
+
+		return dict, key
+
+	def get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list):
+		"""
+
+		:param argument_uid:
+		:param max_rnd:
+		:return:
+		"""
 		dict = None
 		key = ''
-		rnd = 1
 		# randomize at least 1, maximal 3 times for getting an attack
-		while True:
-			logger('QueryHelper', 'get_attack_for_argument_by_random', 'random attack is ' + str(rnd))
-			if rnd == 0:
-				dict = self.get_undermines_for_argument_uid('undermine', db_argument.uid)
+		while len(attack_list) > 0:
+			attack = random.choice(attack_list)
+			attack_list.remove(attack)
+			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
+			if attack == 1:
+				dict = self.get_undermines_for_argument_uid('undermine', argument_uid)
 				key = 'undermine'
-			elif rnd == 1:
-				dict = self.get_rebuts_for_argument_uid('rebut', db_argument.uid)
+			elif attack == 5:
+				dict = self.get_rebuts_for_argument_uid('rebut', argument_uid)
 				key = 'rebut'
 			else:
-				dict = self.get_undercuts_for_argument_uid('undercut', db_argument.uid)
+				dict = self.get_undercuts_for_argument_uid('undercut', argument_uid)
 				key = 'undercut'
 
-			rnd = (rnd+1)%3
-			if dict != None and int(dict[key]) != 0 or startrnd == rnd:
+			if dict != None and int(dict[key]) != 0:
 				break
 
 		return dict, key
+
 
 	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation,
 	                        attacked_with_relation, session_id):

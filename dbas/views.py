@@ -2,7 +2,7 @@ import transaction
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
-from pyramid.view import view_config, notfound_view_config, forbidden_view_config
+from pyramid.view import view_config, notfound_view_config#
 from pyramid.security import remember, forget
 from pyramid.session import check_csrf_token
 from pyramid.renderers import get_renderer
@@ -83,7 +83,7 @@ class Dbas(object):
 	def main_contact(self):
 		"""
 		View configuration for the contact view.
-		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		:return: dictionary with title and project username as well as a value, weather the user is logged in
 		"""
 		logger('main_contact', 'def', 'contact page')
 
@@ -93,7 +93,7 @@ class Dbas(object):
 		contact_error = False
 		send_message = False
 		message = ''
-		name = ''
+		username = ''
 		email = ''
 		phone = ''
 		content = ''
@@ -101,7 +101,7 @@ class Dbas(object):
 
 		if 'form.contact.submitted' in self.request.params:
 			logger('main_contact', 'form.contact.submitted', 'requesting params')
-			name = self.request.params['name']
+			username = self.request.params['name']
 			email = self.request.params['mail']
 			phone = self.request.params['phone']
 			content = self.request.params['content']
@@ -112,9 +112,9 @@ class Dbas(object):
 			is_mail_valid = validate_email(email, check_mx=True)
 
 			## sanity checks
-			# check for empty name
-			if not name:
-				logger('main_contact', 'form.contact.submitted', 'name empty')
+			# check for empty username
+			if not username:
+				logger('main_contact', 'form.contact.submitted', 'username empty')
 				contact_error = True
 				message = "Your name is empty!"
 
@@ -130,7 +130,7 @@ class Dbas(object):
 				contact_error = True
 				message = "Your content is empty!"
 
-			# check for empty name
+			# check for empty username
 			elif (not spam) or (not spam.isdigit()) or (not int(spam) == 4):
 				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer')
 				contact_error = True
@@ -146,7 +146,7 @@ class Dbas(object):
 
 			else:
 				subject = 'Contact D-BAS'
-				body = 'Name: ' + name + '\n' + 'Mail: ' + email + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
+				body = 'Name: ' + username + '\n' + 'Mail: ' + email + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
 				send_message, contact_error, message = EmailHelper().send_mail(self.request, subject, body, email)
 
 		try:
@@ -163,7 +163,7 @@ class Dbas(object):
 			'was_message_send': send_message,
 			'contact_error': contact_error,
 			'message': message,
-			'name': name,
+			'name': username,
 			'mail': email,
 			'phone': phone,
 			'content': content,
@@ -480,17 +480,8 @@ class Dbas(object):
 		try:
 			ids = self.request.params['ids']
 			logger('reply_for_premissegroup', 'def', 'ids ' + ids)
-			ids = ids.split('&')
-			if ids[0].startswith('pgroup'):
-				pgroup_id   = ids[0][ids[0].index('=')+1:]
-				statement_id = ids[1][ids[1].index('=')+1:]
-			else:
-				pgroup_id   = ids[1][ids[1].index('=')+1:]
-				statement_id = ids[0][ids[0].index('=')+1:]
-			logger('reply_for_premissegroup', 'def', 'premissegroup ' + str(id))
 			# track will be saved in the method
-			return_dict, status = DatabaseHelper().get_attack_for_premissegroup(transaction, self.request.authenticated_userid,
-			                                                                    pgroup_id, statement_id, self.request.session.id)
+			return_dict, status = DatabaseHelper().get_attack_for_premissegroup(transaction, self.request.authenticated_userid, ids, self.request.session.id)
 			return_dict['status'] = str(status)
 		except KeyError as e:
 			logger('reply_for_premissegroup', 'error', repr(e))
@@ -645,7 +636,7 @@ class Dbas(object):
 			logger('set_new_premisses', 'def', 'main')
 			pro_dict = {}
 			con_dict = {}
-			conclusion_id = self.request.params['conclusion_id'];
+			conclusion_id = self.request.params['conclusion_id']
 			for key in self.request.params:
 				if 'pro' in key:
 					logger('set_new_premisses', key, self.request.params[key])
@@ -1050,7 +1041,6 @@ class Dbas(object):
 		"""
 		logger('fuzzy_search', 'main', 'def')
 		try:
-			# TODO
 			value = self.request.params['value']
 			return_dict = DatabaseHelper().get_fuzzy_string_for_start(value)
 		except KeyError as e:
