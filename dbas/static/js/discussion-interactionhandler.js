@@ -67,6 +67,8 @@ function InteractionHandler() {
 		if ($('#' + addReasonButtonId).is(':checked')) {
 			$('#' + stepBackButtonId).hide();
 
+			guiHandler.displayHowToWriteTextPopup();
+
 			// get the second child, which is the label
 			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
 			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {

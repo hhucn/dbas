@@ -184,8 +184,10 @@ function GuiHandler() {
 		});
 
 		// add everything
-		div_dropdown.attr('class', 'col-md-3');
-		div_content.attr('class', 'col-md-9');
+		// TODO insert dropdown menu
+		// div_dropdown.attr('class', 'col-md-3');
+		// div_content.attr('class', 'col-md-9');
+		div_content.attr('title', textAreaReasonHintText);
 		div.append(div_dropdown);
 		div.append(div_content);
 		parent.append(div);
@@ -662,6 +664,46 @@ function GuiHandler() {
 		});
 
 		$('#' + popupEditStatementLogfileSpaceId).empty().append(table);
+	};
+
+	/**
+	 *
+	 */
+	this.displayHowToWriteTextPopup = function(){
+		var cookie_name = 'HOW_TO_WRITE_TEXT',
+			userAcceptedCookies = false,
+			cookies = document.cookie.split(";");
+
+		// show popup, when the user does not accepted the cookie already
+		for (var i = 0; i < cookies.length; i++) {
+			var c = cookies[i].trim();
+			if (c.indexOf(cookie_name) == 0) {
+				userAcceptedCookies = c.substring(cookie_name.length + 1, c.length);
+			}
+		}
+		if (!userAcceptedCookies) {
+			$('#' + popupHowToWriteText).modal('show');
+		}
+
+		$('#' + popupHowToWriteTextCloseButton).click(function(){
+			$('#' + popupHowToWriteText).modal('hide');
+		});
+		$('#' + popupHowToWriteTextClose).click(function(){
+			$('#' + popupHowToWriteText).modal('hide');
+		});
+
+		// accept cookie
+		$('#' + popupHowToWriteTextOkayButton).click(function(){
+			$('#' + popupHowToWriteText).modal('hide');
+			var d = new Date();
+			var expiresInDays = _self.params.agreementExpiresInDays * 24 * 60 * 60 * 1000;
+			d.setTime( d.getTime() + expiresInDays );
+			var expires = "expires=" + d.toGMTString();
+			document.cookie = cookie_name + '=' + consent + "; " + expires + ";path=/";
+
+			$(document).trigger("user_cookie_consent_changed", {'consent' : consent});
+		});
+
 	};
 
 	/**

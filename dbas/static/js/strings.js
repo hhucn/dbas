@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 	
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Messages & Errors
@@ -42,6 +42,7 @@ var request_failed 						= 'Request failed';
 var selectStatement 					= 'Please select a statement!';
 var showAllUsers 						= 'Show all users';
 var showAllAttacks 						= 'Show all attacks';
+var textAreaReasonHintText 				= 'Please use a new textarea for every reason, write short and clear!';
 
 var strength 							= 'Strength';
 var veryweak 							= 'very weak';

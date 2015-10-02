@@ -66,7 +66,6 @@ h2 {
 
 h3,
 h4 {
-	color: #818181;
 	margin: 5px 0px 10px 0px;
 	text-align: center;
 }
@@ -247,12 +246,14 @@ input.active {
 
 #contact-submit {
 	margin-top: 25px;
+	display:inline-block;
+    width:100%;
 }
 
 @media(max-width:1440px) {
 	.login,
 	.contact {
-		width: 40%;
+		width: 60%;
 	}
 }
 
