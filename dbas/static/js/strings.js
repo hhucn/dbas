@@ -12,6 +12,7 @@ var mainpage = 'http://localhost:4284/';
  * @type {string}
  */
 var addedEverything 					= 'Everything was added.';
+var alreadyInserted						= 'This is a duplicate and already there.';
 var confirmation 						= 'Confirmation';
 var confirmTranslation 					= 'If you change the language, your process on this page will be lost and you have to restart the discussion!';
 var correctionsSet 						= 'Your correction was set.';
@@ -29,6 +30,7 @@ var internalFailureWhileDeletingTrack 	= 'Internal failure, please try again or 
 var internal_error 						= 'Internal Error: Maybe the server is offline or your session run out.';
 var hideAllUsers 						= 'Hide all users';
 var hideAllAttacks 						= 'Hide all attacks';
+var levenshteinDistance					= 'Levenshtein-Distance';
 var noIslandView 						= 'Could not fetch data for the island view. Sorry!';
 var noCorrections 						= 'No corrections for the given statement.';
 var noCorrectionsSet 					= 'Correction could not be set, because your user was not fount in the database. Are you currently logged in?';
@@ -58,7 +60,7 @@ var butIDo 								= 'but I do';
 var iAcceptCounter						= 'and I do accept that this is an counter-argument for';
 var iHaveStrongerArgument 				= 'However, I have a much stronger argument for accepting that';
 var goStepBack 							= 'Go one step back (TODO: show me another one)';
-var iNoOpinion 							= 'I have no opinion regarding'
+var iNoOpinion 							= 'I have no opinion regarding';
 
 var youMadeA 							= 'You made a';
 var youMadeAn 							= 'You made an';

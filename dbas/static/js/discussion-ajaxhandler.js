@@ -392,7 +392,6 @@ function AjaxSiteHandler() {
 			return;
 		}
 
-		$('#' + callbackid).focus();
 		$.ajax({
 			url: 'ajax_fuzzy_search',
 			type: 'GET',
@@ -401,39 +400,7 @@ function AjaxSiteHandler() {
 			async: true,
 			global: false
 		}).done(function ajaxGetAllUsersDone(data) {
-			var parsedData = $.parseJSON(data), availableStrings = [], params, token, button, span_dist, span_text;
-			$('#' + callbackid).focus();
-			$('#statement-list-group').empty();
-			$.each(parsedData, function (key, val) {
-				params = key.split('_'); // index = params[1], distance = params[2]
-				token = $('#' + callbackid).val();
-				val = val.replace(token, '<b>' + token + '</b>');
-				if (parseInt(params[2]) < 500) {
-
-					button = $('<button>').attr({type : 'button',
-						class : 'list-group-item',
-						id : 'proposal_' + params[1]});
-    				button.hover(function(){ $(this).addClass('table-hover');
-    				    	  }, function(){ $(this).removeClass('table-hover');
-    				});
-
-					span_dist = $('<span>').attr({class : 'badge'}).text('Levenshtein-Distance ' + params[2]);
-					span_text = $('<span>').attr({id : 'proposal_' + params[1] + '_text'}).html(val);
-					button.append(span_dist);
-					button.append(span_text);
-					$('#statement-list-group').append(button);
-
-					$('#proposal_' + params[1]).click(function(){
-						$('#' + callbackid).val($('#proposal_' + params[1] + '_text').text());
-						$('#statement-list-group').empty();
-
-					});
-					availableStrings.push(val);
-				}
-			});
-			if (Object.keys(parsedData).length>0){
-				$('#statement-list-group').prepend('<h4>' + didYouMean + '</h4>');
-			}
+			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid);
 		}).fail(function ajaxGetAllUsersFail(err) {
 		});
 		$('#' + callbackid).focus();

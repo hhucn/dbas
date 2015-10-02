@@ -351,6 +351,7 @@ function GuiHandler() {
 		$('#' + proPositionTextareaId).empty();
 		$('#' + conPositionTextareaId).empty();
 		$('#' + addStatementContainerId).fadeIn('slow');
+		$('#' + addStatementErrorContainer).hide();
 		$('#' + addReasonButtonId).disable = true;
 
 		if (isStatement) {
@@ -397,6 +398,45 @@ function GuiHandler() {
 
 		guihandler.addTextareaAsChildInParent(proPositionTextareaId, id_pro, isStatement);
 		guihandler.addTextareaAsChildInParent(conPositionTextareaId, id_con, isStatement);
+	};
+
+	/**
+	 *
+	 * @param parsedData
+	 * @param callbackid
+	 */
+	this.setStatementsAsProposal = function (parsedData, callbackid){
+		var availableStrings = [], params, token, button, span_dist, span_text;
+		$('#' + callbackid).focus();
+		$('#' + statementListGroupId).empty();
+
+		$.each(parsedData, function (key, val) {
+			params = key.split('_'); // index = params[1], distance = params[2]
+			token = $('#' + callbackid).val();
+			val = val.replace(token, '<b>' + token + '</b>');
+
+			if (parseInt(params[2]) < 500) {
+
+				button = $('<button>').attr({type : 'button',
+					class : 'list-group-item',
+					id : 'proposal_' + params[1]});
+   				button.hover(function(){ $(this).addClass('active');
+   				    	  }, function(){ $(this).removeClass('active');
+   				});
+				span_dist = $('<span>').attr({class : 'badge'}).text(levenshteinDistance + ' ' + params[2]);
+				span_text = $('<span>').attr({id : 'proposal_' + params[1] + '_text'}).html(val);
+				button.append(span_dist);
+				button.append(span_text);
+
+				$('#' + statementListGroupId).append(button);
+				$('#proposal_' + params[1]).click(function(){
+					$('#' + callbackid).val($('#proposal_' + params[1] + '_text').text());
+					$('#' + statementListGroupId).empty();
+				});
+				availableStrings.push(val);
+			}
+		});
+		$('#' + statementListGroupId).prepend('<h4>' + didYouMean + '</h4>');
 	};
 
 	/**

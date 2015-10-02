@@ -614,12 +614,15 @@ class Dbas(object):
 		try:
 			statement = self.request.params['statement']
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
-			return_dict['success'] = '1'
 			new_statement = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True)
-			return_dict['statement'] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+			if not new_statement:
+				return_dict['status'] = '0'
+			else:
+				return_dict['status'] = '1'
+				return_dict['statement'] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
-			return_dict['success'] = '-1'
+			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 

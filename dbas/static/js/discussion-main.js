@@ -125,6 +125,7 @@ $(function () {
 	// hiding the argument container, when the X button is clicked
 	$('#' + closeStatementContainerId).click(function () {
 		$('#' + addStatementContainerId).hide();
+		$('#' + addStatementErrorContainer).hide();
 		$('#' + addReasonButtonId).enable = true;
 		$('#' + addReasonButtonId).attr('checked', false);
 	});

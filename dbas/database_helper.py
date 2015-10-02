@@ -488,9 +488,12 @@ class DatabaseHelper(object):
 
 		# check, if the statement already exists
 		db_duplicate = DBDiscussionSession.query(TextVersion).filter_by(content=statement).first()
+		if db_duplicate:
+			logger('DatabaseHelper', 'set_statement', 'duplicate')
+			return None
 
 		# add the version
-		textversion = db_duplicate if db_duplicate else TextVersion(content=statement, author=db_user.uid, weight=0)
+		textversion = TextVersion(content=statement, author=db_user.uid, weight=0)
 		DBDiscussionSession.add(textversion)
 		DBDiscussionSession.flush()
 
