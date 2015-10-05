@@ -490,6 +490,7 @@ function GuiHandler() {
 		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premisse, tmp, text_count, statement_id, text, i, helper = new Helper();
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementSubmitButtonId).hide();
+		alert('TODO: Fuzzy Search');
 
 		// each statement will be in a table with row: index, text, button for editing
 		// more action will happen, if the button is pressed

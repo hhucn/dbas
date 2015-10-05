@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-09-07 10:46+0200\n"
+"POT-Creation-Date: 2015-10-05 08:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -252,193 +252,167 @@ msgid "news"
 msgstr ""
 
 #. Default: Contact
-#: ./dbas/templates/snippet-header.pt:51
+#. Default: Kontakt:
+#: ./dbas/templates/snippet-header.pt:51 ./dbas/templates/imprint.pt:19
 msgid "contact"
 msgstr ""
 
 #. Default: Login
 #. Default: Log In
-#: ./dbas/templates/snippet-header.pt:57 ./dbas/templates/login.pt:13
+#: ./dbas/templates/snippet-header.pt:60 ./dbas/templates/snippet-popups.pt:434
+#: ./dbas/templates/snippet-popups.pt:609
 msgid "login"
 msgstr ""
 
 #. Default: Settings
-#: ./dbas/templates/snippet-header.pt:69
+#: ./dbas/templates/snippet-header.pt:72
 msgid "settings"
 msgstr ""
 
 #. Default: Logout
-#: ./dbas/templates/snippet-header.pt:74
+#: ./dbas/templates/snippet-header.pt:77
 msgid "logout"
 msgstr ""
 
 #. Default: More
-#: ./dbas/templates/snippet-header.pt:82
+#: ./dbas/templates/snippet-header.pt:85
 msgid "more"
 msgstr ""
 
 #. Default: Author
-#: ./dbas/templates/snippet-header.pt:87 ./dbas/templates/news.pt:45
-#: ./dbas/templates/news.pt:78 ./dbas/templates/news.pt:111
-#: ./dbas/templates/news.pt:145 ./dbas/templates/news.pt:178
-#: ./dbas/templates/news.pt:211 ./dbas/templates/news.pt:238
-#: ./dbas/templates/news.pt:271 ./dbas/templates/news.pt:306
-#: ./dbas/templates/news.pt:339 ./dbas/templates/news.pt:372
-#: ./dbas/templates/news.pt:405 ./dbas/templates/news.pt:438
-#: ./dbas/templates/news.pt:471 ./dbas/templates/news.pt:504
-#: ./dbas/templates/news.pt:537 ./dbas/templates/news.pt:570
-#: ./dbas/templates/news.pt:603 ./dbas/templates/news.pt:636
-#: ./dbas/templates/news.pt:669 ./dbas/templates/news.pt:702
-#: ./dbas/templates/news.pt:745 ./dbas/templates/news.pt:778
-#: ./dbas/templates/news.pt:811 ./dbas/templates/news.pt:844
-#: ./dbas/templates/news.pt:877
+#: ./dbas/templates/snippet-header.pt:90
 msgid "author"
 msgstr ""
 
 #. Default: Licence
-#: ./dbas/templates/snippet-header.pt:92
+#: ./dbas/templates/snippet-header.pt:95
 msgid "licence"
 msgstr ""
 
 #. Default: Privacy Policy
-#: ./dbas/templates/snippet-header.pt:97 ./dbas/templates/snippet-popups.pt:130
+#: ./dbas/templates/snippet-header.pt:100
+#: ./dbas/templates/snippet-popups.pt:130
 msgid "privacy_policy"
 msgstr ""
 
 #. Default: Language
-#: ./dbas/templates/snippet-header.pt:105
+#: ./dbas/templates/snippet-header.pt:108
 msgid "language"
 msgstr ""
 
-#. Default: Sign Up
-#: ./dbas/templates/login.pt:15
-msgid "sign_up"
-msgstr ""
-
-#. Default: Welcome Back!
-#: ./dbas/templates/login.pt:21
-msgid "welcome_back"
-msgstr ""
-
-#. Default: Your Nickname
-#: ./dbas/templates/login.pt:29
-msgid "your_nickname"
-msgstr ""
-
-#. Default: Your Password
-#: ./dbas/templates/login.pt:36
-msgid "your_password"
-msgstr ""
-
-#. Default: Forgot Password?
-#: ./dbas/templates/login.pt:42
-msgid "forgot_password"
-msgstr ""
-
-#. Default: Error:
-#: ./dbas/templates/login.pt:47 ./dbas/templates/login.pt:57
-#: ./dbas/templates/settings.pt:77 ./dbas/templates/content.pt:84
-msgid "error"
-msgstr ""
-
-#. Default: Success:
-#: ./dbas/templates/login.pt:52 ./dbas/templates/settings.pt:72
-msgid "success"
-msgstr ""
-
-#. Default: Sign Up for Free
-#: ./dbas/templates/login.pt:66
-msgid "signup_free"
-msgstr ""
-
-#. Default: Your First Name
-#: ./dbas/templates/login.pt:72
-msgid "first_name"
-msgstr ""
-
-#. Default: Your Last Name
-#: ./dbas/templates/login.pt:79
-msgid "last_name"
-msgstr ""
-
-#. Default: Your Nickname
-#. Default: Nickname
-#: ./dbas/templates/login.pt:86 ./dbas/templates/settings.pt:38
-msgid "nickname"
-msgstr ""
-
-#. Default: Your Gender
-#: ./dbas/templates/login.pt:93
-msgid "gender"
-msgstr ""
-
-#. Default: none
-#: ./dbas/templates/login.pt:96
-msgid "none"
-msgstr ""
-
-#. Default: female
-#: ./dbas/templates/login.pt:99
-msgid "female"
-msgstr ""
-
-#. Default: male
-#: ./dbas/templates/login.pt:102
-msgid "male"
-msgstr ""
-
-#. Default: Your Email Address
-#: ./dbas/templates/login.pt:108
-msgid "email"
-msgstr ""
-
-#. Default: Your Password
-#: ./dbas/templates/login.pt:115
-msgid "password"
-msgstr ""
-
-#. Default: Strength
-#: ./dbas/templates/login.pt:121
-msgid "password_strength"
-msgstr ""
-
-#. Default: Password (confirm)
-#: ./dbas/templates/login.pt:126
-msgid "password-confirm"
-msgstr ""
-
-#. Default: Warning!
-#: ./dbas/templates/login.pt:139 ./dbas/templates/contact.pt:64
-msgid "warning"
-msgstr ""
-
-#. Default: Password-Request
-#: ./dbas/templates/login.pt:159
-msgid "password_request"
-msgstr ""
-
-#. Default: Please fill in your e-mail below. A new password will be send this
-#. address:
-#: ./dbas/templates/login.pt:163
-msgid "fill_in_mail_for_password"
-msgstr ""
-
-#. Default: Close
-#: ./dbas/templates/login.pt:170 ./dbas/templates/snippet-popups.pt:72
-#: ./dbas/templates/snippet-popups.pt:117
-#: ./dbas/templates/snippet-popups.pt:395
-#: ./dbas/templates/snippet-popups.pt:423
-#: ./dbas/templates/snippet-popups.pt:465
-msgid "close"
-msgstr ""
-
-#. Default: Imprint
-#: ./dbas/templates/snippet-footer.pt:11
+#. Default: Impressum
+#. Default: Imprint and Copyrights
+#: ./dbas/templates/imprint.pt:11 ./dbas/templates/snippet-footer.pt:11
 msgid "imprint"
 msgstr ""
 
+#. Default: Angaben gemäß § 5 TMG
+#: ./dbas/templates/imprint.pt:12
+msgid "data_tmg"
+msgstr ""
+
+#. Default: Haftungsausschluss:
+#: ./dbas/templates/imprint.pt:24
+msgid "disclaimer"
+msgstr ""
+
+#. Default: Haftung für Inhalte
+#: ./dbas/templates/imprint.pt:26
+msgid "disclaimer_content"
+msgstr ""
+
+#. Default: Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt.
+#. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir
+#. jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1
+#. TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
+#. verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch
+#. nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu
+#. überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige
+#. Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der
+#. Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon
+#. unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der
+#. Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von
+#. entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
+#. entfernen.
+#: ./dbas/templates/imprint.pt:28
+msgid "disclaimer_content_content"
+msgstr ""
+
+#. Default: Haftung für Links
+#: ./dbas/templates/imprint.pt:30
+msgid "disclaimer_links"
+msgstr ""
+
+#. Default: Unser Angebot enthält Links zu externen Webseiten Dritter, auf
+#. deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese
+#. fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten
+#. Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten
+#. verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung
+#. auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum
+#. Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche
+#. Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer
+#. Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen
+#. werden wir derartige Links umgehend entfernen.
+#: ./dbas/templates/imprint.pt:32
+msgid "disclaimer_links_content"
+msgstr ""
+
+#. Default: Urheberrecht
+#: ./dbas/templates/imprint.pt:34
+msgid "disclaimer_copyright"
+msgstr ""
+
+#. Default: Die durch die Seitenbetreiber erstellten Inhalte und Werke auf
+#. diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung,
+#. Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen
+#. des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen
+#. Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den
+#. privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf
+#. dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte
+#. Dritter beachtet. Insbesondere werden Inhalte Dritter als solche
+#. gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung
+#. aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei
+#. Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend
+#. entfernen.
+#: ./dbas/templates/imprint.pt:36
+msgid "disclaimer_copyright_content"
+msgstr ""
+
+#. Default: Datenschutz
+#: ./dbas/templates/imprint.pt:38
+msgid "disclaimer_dataprotection"
+msgstr ""
+
+#. Default: Die Nutzung unserer Webseite ist in der Regel ohne Angabe
+#. personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene
+#. Daten (beispielsweise Name, Anschrift oder eMail-Adressen) erhoben werden,
+#. erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten
+#. werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.
+#. <dynamic element> Wir weisen darauf hin, dass die Datenübertragung im
+#. Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen
+#. kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist
+#. nicht möglich. <dynamic element> Der Nutzung von im Rahmen der
+#. Impressumspflicht veröffentlichten Kontaktdaten durch Dritte zur Übersendung
+#. von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien
+#. wird hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten
+#. sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung
+#. von Werbeinformationen, etwa durch Spam-Mails, vor.
+#: ./dbas/templates/imprint.pt:40
+msgid "disclaimer_dataprotection_content"
+msgstr ""
+
+#. Default: Google Analytics
+#: ./dbas/templates/imprint.pt:45
+msgid "disclaimer_google_analytics"
+msgstr ""
+
+#. Default: Copyrights and used Software
+#: ./dbas/templates/imprint.pt:58
+msgid "copyright_and_used_software"
+msgstr ""
+
 #. Default: Icons by
-#: ./dbas/templates/snippet-footer.pt:16
+#: ./dbas/templates/imprint.pt:66
 msgid "icons_by"
 msgstr ""
 
@@ -526,6 +500,14 @@ msgstr ""
 msgid "telephone"
 msgstr ""
 
+#. Default: Close
+#: ./dbas/templates/snippet-popups.pt:72 ./dbas/templates/snippet-popups.pt:117
+#: ./dbas/templates/snippet-popups.pt:371
+#: ./dbas/templates/snippet-popups.pt:419
+#: ./dbas/templates/snippet-popups.pt:612
+msgid "close"
+msgstr ""
+
 #. Default: MIT License (MIT)
 #: ./dbas/templates/snippet-popups.pt:85
 msgid "mit_licencse"
@@ -559,124 +541,307 @@ msgstr ""
 msgid "mit_licence_part3"
 msgstr ""
 
+#. Default: Edit Statements / View Changelog
+#: ./dbas/templates/snippet-popups.pt:356
+msgid "edit_statement_view_changelog"
+msgstr ""
+
+#. Default: Please, edit the selected statement here:
+#: ./dbas/templates/snippet-popups.pt:363
+msgid "edit_statement_here"
+msgstr ""
+
+#. Default: Submit
+#: ./dbas/templates/snippet-popups.pt:370
+msgid "submit"
+msgstr ""
+
+#. Default: Okay
+#: ./dbas/templates/snippet-popups.pt:389
+msgid "okay"
+msgstr ""
+
+#. Default: Cancel
+#: ./dbas/templates/snippet-popups.pt:390
+msgid "cancel"
+msgstr ""
+
+#. Default: Share your URL
+#: ./dbas/templates/snippet-popups.pt:403
+msgid "url-sharing"
+msgstr ""
+
+#. Default: Please feel free to share this url:
+#: ./dbas/templates/snippet-popups.pt:408
+msgid "url-sharing-description"
+msgstr ""
+
+#. Default: Fetch long url!
+#: ./dbas/templates/snippet-popups.pt:418
+msgid "fetchurl"
+msgstr ""
+
+#. Default: Sign Up
+#: ./dbas/templates/snippet-popups.pt:436
+msgid "sign_up"
+msgstr ""
+
+#. Default: Welcome Back!
+#: ./dbas/templates/snippet-popups.pt:445
+msgid "welcome_back"
+msgstr ""
+
+#. Default: Your Nickname
+#: ./dbas/templates/snippet-popups.pt:448
+msgid "your_nickname"
+msgstr ""
+
+#. Default: Your Password
+#: ./dbas/templates/snippet-popups.pt:455
+msgid "your_password"
+msgstr ""
+
+#. Default: Forgot Password?
+#: ./dbas/templates/snippet-popups.pt:464
+msgid "forgot_password"
+msgstr ""
+
+#. Default: Password-Request
+#: ./dbas/templates/snippet-popups.pt:469
+msgid "password_request"
+msgstr ""
+
+#. Default: Please fill in your e-mail below. A new password will be send this
+#. address:
+#: ./dbas/templates/snippet-popups.pt:471
+msgid "fill_in_mail_for_password"
+msgstr ""
+
+#. Default: Error:
+#. Default: Success:
+#: ./dbas/templates/snippet-popups.pt:480
+#: ./dbas/templates/snippet-popups.pt:485
+#: ./dbas/templates/snippet-popups.pt:576 ./dbas/templates/news.pt:25
+#: ./dbas/templates/news.pt:30 ./dbas/templates/settings.pt:77
+#: ./dbas/templates/content.pt:84 ./dbas/templates/content.pt:136
+msgid "error"
+msgstr ""
+
+#. Default: Sign Up for Free
+#: ./dbas/templates/snippet-popups.pt:490
+msgid "signup_free"
+msgstr ""
+
+#. Default: Your First Name
+#: ./dbas/templates/snippet-popups.pt:493
+msgid "first_name"
+msgstr ""
+
+#. Default: Your Last Name
+#: ./dbas/templates/snippet-popups.pt:500
+msgid "last_name"
+msgstr ""
+
+#. Default: Your Nickname
+#. Default: Nickname
+#: ./dbas/templates/snippet-popups.pt:507 ./dbas/templates/settings.pt:38
+msgid "nickname"
+msgstr ""
+
+#. Default: Your Gender
+#: ./dbas/templates/snippet-popups.pt:514
+msgid "gender"
+msgstr ""
+
+#. Default: none
+#: ./dbas/templates/snippet-popups.pt:517
+msgid "none"
+msgstr ""
+
+#. Default: female
+#: ./dbas/templates/snippet-popups.pt:519
+msgid "female"
+msgstr ""
+
+#. Default: male
+#: ./dbas/templates/snippet-popups.pt:521
+msgid "male"
+msgstr ""
+
+#. Default: Your Email Address
+#: ./dbas/templates/snippet-popups.pt:526
+msgid "email"
+msgstr ""
+
+#. Default: Your Password
+#: ./dbas/templates/snippet-popups.pt:533
+msgid "password"
+msgstr ""
+
+#. Default: Password (confirm)
+#: ./dbas/templates/snippet-popups.pt:540
+msgid "password-confirm"
+msgstr ""
+
+#. Default: Password Strength
+#: ./dbas/templates/snippet-popups.pt:547
+msgid "password-strength"
+msgstr ""
+
+#. Default: very weak
+#: ./dbas/templates/snippet-popups.pt:550
+msgid "password_strength"
+msgstr ""
+
+#. Default: Generate secure password
+#: ./dbas/templates/snippet-popups.pt:554
+msgid "generate_password"
+msgstr ""
+
+#. Default: Warning!
+#: ./dbas/templates/snippet-popups.pt:563 ./dbas/templates/contact.pt:64
+msgid "warning"
+msgstr ""
+
+#. Default: Success:
+#: ./dbas/templates/snippet-popups.pt:571 ./dbas/templates/settings.pt:72
+msgid "success"
+msgstr ""
+
 #. Default: How to select a strong password
-#: ./dbas/templates/snippet-popups.pt:369
+#: ./dbas/templates/snippet-popups.pt:581
 msgid "select_password"
 msgstr ""
 
 #. Default: A Password is strong, when it contains at least:
-#: ./dbas/templates/snippet-popups.pt:372
+#: ./dbas/templates/snippet-popups.pt:583
 msgid "select_password_intro"
 msgstr ""
 
 #. Default: eight characters
-#: ./dbas/templates/snippet-popups.pt:374
+#: ./dbas/templates/snippet-popups.pt:585
 msgid "select_password_rule1"
 msgstr ""
 
 #. Default: one uppercase letter
-#: ./dbas/templates/snippet-popups.pt:375
+#: ./dbas/templates/snippet-popups.pt:586
 msgid "select_password_rule2"
 msgstr ""
 
 #. Default: one lowercase letter
-#: ./dbas/templates/snippet-popups.pt:376
+#: ./dbas/templates/snippet-popups.pt:587
 msgid "select_password_rule3"
 msgstr ""
 
 #. Default: one special sign
-#: ./dbas/templates/snippet-popups.pt:377
+#: ./dbas/templates/snippet-popups.pt:588
 msgid "select_password_rule4"
 msgstr ""
 
 #. Default: For example 'M2015_fiO' is a strong password. And it would take 275
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
-#. yearsIt should be noted:
-#: ./dbas/templates/snippet-popups.pt:379
+#. years. It should be noted:
+#: ./dbas/templates/snippet-popups.pt:590
 msgid "popup_password_text"
 msgstr ""
 
 #. Default: Avoid using a password on several pages
-#: ./dbas/templates/snippet-popups.pt:381
+#: ./dbas/templates/snippet-popups.pt:592
 msgid "select_password_avoid1"
 msgstr ""
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: ./dbas/templates/snippet-popups.pt:382
+#: ./dbas/templates/snippet-popups.pt:593
 msgid "select_password_avoid2"
 msgstr ""
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: ./dbas/templates/snippet-popups.pt:383
+#: ./dbas/templates/snippet-popups.pt:594
 msgid "select_password_avoid3"
 msgstr ""
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: ./dbas/templates/snippet-popups.pt:384
+#: ./dbas/templates/snippet-popups.pt:595
 msgid "select_password_avoid4"
 msgstr ""
 
 #. Default: If you need some help with our password, you can get one here:
-#: ./dbas/templates/snippet-popups.pt:386
+#: ./dbas/templates/snippet-popups.pt:597
 msgid "select_password_help"
 msgstr ""
 
-#. Default: Edit Statements / View Changelog
-#: ./dbas/templates/snippet-popups.pt:408
-msgid "edit_statement_view_changelog"
+#. Default: Register
+#: ./dbas/templates/snippet-popups.pt:610
+msgid "register"
 msgstr ""
 
-#. Default: Please, edit the selected statement here:
-#: ./dbas/templates/snippet-popups.pt:415
-msgid "edit_statement_here"
+#. Default: How to write text
+#: ./dbas/templates/snippet-popups.pt:625
+msgid "how-to-write-text-header"
 msgstr ""
 
-#. Default: Submit
-#: ./dbas/templates/snippet-popups.pt:422
-msgid "submit"
+#. Default: There are a few simple rules for writing good arguments:
+#: ./dbas/templates/snippet-popups.pt:628
+msgid "how-to-write-text-header-body-title"
+msgstr ""
+
+#. Default: Writing good is a necessary skill for using D-BAS, unless you do
+#. not want to persuade other participants. Hereafter a few rules are listed,
+#. what should be noted, and what should not.
+#: ./dbas/templates/snippet-popups.pt:630
+msgid "how-to-write-text-header-body"
+msgstr ""
+
+#. Default: Do's:
+#: ./dbas/templates/snippet-popups.pt:632
+msgid "dos"
+msgstr ""
+
+#. Default: Write short!
+#. Default: Complicated and nested sentences!
+#: ./dbas/templates/snippet-popups.pt:634
+#: ./dbas/templates/snippet-popups.pt:640
+msgid "how-to-write-text-short"
+msgstr ""
+
+#. Default: Only one statement/argument/point per textarea!
+#. Default: More than one statement/argument/point per textarea!
+#: ./dbas/templates/snippet-popups.pt:635
+#: ./dbas/templates/snippet-popups.pt:641
+msgid "how-to-write-text-one-point"
+msgstr ""
+
+#. Default: Don'ts:
+#: ./dbas/templates/snippet-popups.pt:638
+msgid "donts"
 msgstr ""
 
 #. Default: Okay
-#: ./dbas/templates/snippet-popups.pt:441
-msgid "okay"
+#: ./dbas/templates/snippet-popups.pt:645
+msgid "Okay"
 msgstr ""
 
-#. Default: Cancel
-#: ./dbas/templates/snippet-popups.pt:442
-msgid "cancel"
-msgstr ""
-
-#. Default: Share your URL
-#: ./dbas/templates/snippet-popups.pt:455
-msgid "url-sharing"
-msgstr ""
-
-#. Default: Please feel free to share this url:
-#: ./dbas/templates/snippet-popups.pt:460
-msgid "url-sharing-description"
-msgstr ""
-
-#. Default: Fetch long url!
-#: ./dbas/templates/snippet-popups.pt:464
-msgid "fetchurl"
+#. Default: Abort
+#: ./dbas/templates/snippet-popups.pt:646
+msgid "abort"
 msgstr ""
 
 #. Default: JavaScript is not enabled:
-#: ./dbas/templates/snippet-popups.pt:474
+#: ./dbas/templates/snippet-popups.pt:655
 msgid "js_disabled1"
 msgstr ""
 
 #. Default: Please enable JavaScript!
-#: ./dbas/templates/snippet-popups.pt:475
+#: ./dbas/templates/snippet-popups.pt:656
 msgid "js_disabled2"
 msgstr ""
 
 #. Default: This will be the news page and currently I think...this will be
 #. some kind of blog
-#: ./dbas/templates/news.pt:13
+#: ./dbas/templates/news.pt:14
 msgid "news_intro"
 msgstr ""
 
@@ -822,12 +987,12 @@ msgid "istland_view"
 msgstr ""
 
 #. Default: Pro
-#: ./dbas/templates/content.pt:103 ./dbas/templates/content.pt:136
+#: ./dbas/templates/content.pt:103 ./dbas/templates/content.pt:145
 msgid "pro"
 msgstr ""
 
 #. Default: Contra
-#: ./dbas/templates/content.pt:109 ./dbas/templates/content.pt:148
+#: ./dbas/templates/content.pt:109 ./dbas/templates/content.pt:157
 msgid "contra"
 msgstr ""
 
@@ -837,26 +1002,26 @@ msgid "insert-argument"
 msgstr ""
 
 #. Default: Add a textfield
-#: ./dbas/templates/content.pt:142 ./dbas/templates/content.pt:153
+#: ./dbas/templates/content.pt:151 ./dbas/templates/content.pt:162
 msgid "add_textfield"
 msgstr ""
 
-#. Default: List of users
-#: ./dbas/templates/content.pt:168
-msgid "users_list"
+#. Default: List of participants
+#: ./dbas/templates/content.pt:178
+msgid "participant_list"
 msgstr ""
 
 #. Default: Some additional options for the administrator.
-#: ./dbas/templates/content.pt:169 ./dbas/templates/content.pt:184
+#: ./dbas/templates/content.pt:179 ./dbas/templates/content.pt:194
 msgid "admin_only"
 msgstr ""
 
-#. Default: List of attacks
-#: ./dbas/templates/content.pt:183
+#. Default: List of attacks, clicked by the participants
+#: ./dbas/templates/content.pt:193
 msgid "list_attacks"
 msgstr ""
 
 #. Default: Minimap:
-#: ./dbas/templates/content.pt:195
+#: ./dbas/templates/content.pt:205
 msgid "minimap"
 msgstr ""

@@ -625,15 +625,25 @@
 				<h4 class="modal-title" id="myModalLabel" i18n:translate="how-to-write-text-header">How to write text</h4>
 			</div>
 			<div id="popup-write-text-body">
-				<h5><span i18n:translate="how-to-write-text-header-body">There are a few simple rules for writing effective for all users:</span><br></h5>
-				<ul>
+				<h4><span i18n:translate="how-to-write-text-header-body-title">There are a few simple rules for writing good arguments:</span></h4>
+				<br>
+				<span i18n:translate="how-to-write-text-header-body">Writing good is a necessary skill for using D-BAS, unless you do not want to persuade other participants. Hereafter a few rules are listed, what should be noted, and what should not.</span>
+				<br><br>
+				<b class="green-bg" i18n:translate="dos">Do's:</b>
+				<ul id="how-to-write-text-do-list">
 				<li i18n:translate="how-to-write-text-short">Write short!</li>
 				<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per textarea!</li>
+				</ul>
+				<br>
+				<b class="red-bg" i18n:translate="donts">Don'ts:</b>
+				<ul id="how-to-write-text-dont-list">
+				<li i18n:translate="how-to-write-text-short">Complicated and nested sentences!</li>
+				<li i18n:translate="how-to-write-text-one-point">More than one statement/argument/point per textarea!</li>
 				</ul>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default btn-primary" id="popup-write-text-okay-button" i18n:translate="Okay">Okay</button>
-				<button type="button" class="btn btn-default" id="popup-write-text-close-button" i18n:translate="close">Close</button>
+				<button type="button" class="btn btn-default" id="popup-write-text-close-button" i18n:translate="abort">Abort</button>
 			</div>
 		</div>
 	</div>

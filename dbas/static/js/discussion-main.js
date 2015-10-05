@@ -63,18 +63,11 @@ $(function () {
 	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
-	$('#' + stepBackButtonId).hide(); // hiding the step one round back button
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
 	$('#' + displayControlContainerId).hide(); // hidding the control container
 	$('#' + scStyle3Id).hide();
 	$('#label-' + scStyle3Id).hide();
 	$('#' + minimapId).hide();
-	// handler for the step back button
-	$('#' + stepBackButtonId).click(function () {
-		ajaxHandler.getOneStepBack();
-		guiHandler.resetChangeDisplayStyleBox();
-		$('#' + islandViewContainerId).fadeOut('slow');
-	});
 
 	// hide the restart button and add click function
 	$('#' + restartDiscussionButtonId).hide(); // hides the restart button

@@ -75,7 +75,7 @@ function Helper() {
 			undermine = '<b>' + w + ', ' + itIsFalse + premisse + '</b>' + enddot,
 			support	  = '<b>' + r + ', ' + itIsTrue + premisse + '</b>' + enddot,
 			undercut  = '<b>' + r + ', ' + premisse + '</b>, ' + butIDoNot + ' ' + belCounterJusti + enddot,
-			overbid	  = '<b>' + r + ', ' + premisse + '</b>, ' + butIDo + ' ' + belCounterJusti + enddot,
+			overbid	  = '<b>' + r + ', ' + premisse + '</b>, ' + andIDo + ' ' + belCounterJusti + enddot,
 			rebut	  = '<b>' + r + ', ' + premisse + '</b> ' + iAcceptCounter + ' <b>' + conclusion
 				+ '</b>.<br><br>' + iHaveStrongerArgument + ' <b>' + conclusion + '</b>' + enddot,
 			noopinion  = 'I have no opinion regarding <b>' + conclusion + '</b>. ' + goStepBack + '.';
@@ -104,7 +104,7 @@ function Helper() {
 			undermine = w + ', ' + itIsFalse + ' <b>' + confrontation + '</b>' + enddot,
 			support	  = r + ', ' + itIsTrue + ' <b>' + confrontation + '</b>' + enddot,
 			undercut  = r + ', <b>' + confrontation + '</b>, ' + butIDoNot + ' ' + belCounterJusti + enddot,
-			overbid	  = r + ', <b>' + confrontation + '</b>, ' + butIDo + ' ' + belCounterJusti + enddot,
+			overbid	  = r + ', <b>' + confrontation + '</b>, ' + andIDo + ' ' + belCounterJusti + enddot,
 			rebut	  = r + ', <b>' + confrontation + '</b> ' + iAcceptCounter + ' <b>' + premisse
 				+ '</b>. ' + iHaveStrongerArgument + ' <b>' + premisse + '</b>' + enddot,
 			noopinion  = iNoOpinion + ': <b>' + confrontation + '</b>. ' + goStepBack + '.';
@@ -154,7 +154,7 @@ function Helper() {
 		// adding label for the value
 		labelElement = '<label title="' + mouseover + '" for="' + key + '">' + val + '</label>';
 
-		inputElement.attr({onclick: 'new InteractionHandler().radioButtonChanged(this.id);'});
+		inputElement.attr({onclick: 'new InteractionHandler().radioButtonChanged();'});
 		if (isStartStatement){ inputElement.addClass('start'); }
 		if (isPremisse){ inputElement.addClass('premisse'); }
 		if (isRelation){ inputElement.addClass('relation'); }
