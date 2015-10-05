@@ -2,6 +2,7 @@ import random
 import datetime
 
 from sqlalchemy import and_, not_
+from Levenshtein import distance
 
 from .database import DBDiscussionSession, DBNewsSession
 from .database.discussion_model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse,  Track, Relation
@@ -74,22 +75,32 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def correct_statement(self, transaction, user, uid, corrected_text):
+	def correct_statement(self, transaction, user, uid, corrected_text, is_final):
 		"""
 		Corrects a statement
 		:param transaction: current transaction
 		:param user: requesting user
 		:param uid: requested statement uid
 		:param corrected_text: new text
+		:param is_final:
 		:return: True
 		"""
 		logger('DatabaseHelper', 'correct_statement', 'def')
+		is_final = is_final == 'true'
 
 		return_dict = dict()
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).join(TextValue).first()
 		db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=db_statement.text_uid)\
 			.join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
+
+		# duplicate check
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).all()
+		if len(db_textversions)>0 and (not is_final):
+			logger('DatabaseHelper', 'correct_statement', 'duplicate')
+			return_dict['status'] = '0'
+			return return_dict
+
 		if db_user:
 			logger('DatabaseHelper', 'correct_statement', 'given user exists and correction will be set')
 			textversion = TextVersion(content=corrected_text, author=db_user.uid, weight=db_textvalue.textversions.weight)
@@ -559,31 +570,41 @@ class DatabaseHelper(object):
 
 	def get_fuzzy_string_for_start(self, value):
 		"""
-
+		Levenshtein FTW
 		:param value:
 		:return:
 		"""
-		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value);
+		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value)
 		db_statements = DBDiscussionSession.query(Statement).filter_by(isStartpoint=True).join(TextValue).all()
 		return_dict = dict()
 		for index, statement in enumerate(db_statements):
 			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
+			logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'current db_textvalue ' + db_textvalue.textversions.content.lower())
 			if value.lower() in db_textvalue.textversions.content.lower():
-				lev = self.levenshtein_distance(value, db_textvalue.textversions.content)
+				lev = distance(value, db_textvalue.textversions.content)
 				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev ' + str(lev) + ',value ' + db_textvalue.textversions.content)
 				return_dict['value_' + str(index) + '_' + str(lev)] = db_textvalue.textversions.content
 
 		return return_dict
 
-	def levenshtein_distance(self, string1, string2):
+	def get_fuzzy_string_for_edits(self, value, statement_uid):
 		"""
-		Levenshtein_distance2
-		:param string1:
-		:param string2:
+		Levenshtein FTW
+		:param value:
 		:return:
 		"""
-		if not string1: return len(string2)
-		if not string2: return len(string1)
-		return min(self.levenshtein_distance(string1[1:], string2[1:])+(string1[0] != string2[0]),
-		           self.levenshtein_distance(string1[1:], string2)+1,
-		           self.levenshtein_distance(string1, string2[1:])+1)
+		logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'string: ' + value + ', statement uid: ' + str(statement_uid))
+
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(textValue_uid=db_statement.text_uid).join(User).all()
+
+		return_dict = dict()
+		for index, textversion in enumerate(db_textversions):
+			logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'current db_textvalue ' + textversion.content.lower())
+			if value.lower() in textversion.content.lower():
+				lev = distance(value, textversion.content)
+				logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'lev ' + str(lev) + ',value ' + textversion.content)
+				return_dict['value_' + str(index) + '_' + str(lev)] = textversion.content
+
+
+		return return_dict

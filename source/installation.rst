@@ -6,7 +6,7 @@ Installation everything for developing
 
 Requirements:
 
-1. python python-setuptools easy_install
+1. python python-setuptools easy_install python-levensthein
 2. easy_install nose webtest sqlalchemy pyramid_tm zope.sqlalchemy pyramid_mailer zope.i18n babel lingua mock
 3. pip3 install validate_email cryptacular pyramid_redis_sessions pyramid_beaker pyshorteners
 4. sudo apt-get install npm; npm install -g mocha; npm install chai sinon jasmine

@@ -356,13 +356,21 @@
 				<h4 class="modal-title" id="myModalLabel" i18n:translate="edit_statement_view_changelog">Edit Statements / View Changelog</h4>
 			</div>
 			<div id="popup-edit-statement-body">
-				<h4 id="popup-edit-error-description" class="error-description"></h4>
-				<h4 id="popup-edit-success-description" class="success-description"></h4>
+				<h4 id="popup-edit-statement-error-description" class="error-description"></h4>
+				<h4 id="popup-edit-statement-success-description" class="success-description"></h4>
 				<div id="popup-edit-statement-content">
 				</div>
 				<p id="popup-edit-statement-description-p" i18n:translate="edit_statement_here">Please, edit the selected statement here:</p>
 				<textarea id="popup-edit-statement-textarea" type="text" placeholder="some corrected statement"></textarea>
-				<h3 id="popup-edit-statement-logfile-header"></h3>
+				<div class="list-group">
+				</div>
+				
+				<div id="popup-edit-statement-warning" class="alert alert-warning" role="alert">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span class="sr-only" i18n:translate="warning">Warning:</span> <span id="popup-edit-statement-warning-message"></span>
+				</div>
+				
+				<h4 id="popup-edit-statement-logfile-header"></h4>
 				<div id="popup-edit-statement-logfile">
 				</div>
 			</div>

@@ -289,9 +289,9 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForGetLogfileForStatement(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetLogfileForStatementFail(err) {
-			// $('#' + popupErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
+			// $('#' + popupEditStatementErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupErrorDescriptionId).text(JSON.stringify(err));
+			$('#' + popupEditStatementErrorDescriptionId).text(JSON.stringify(err));
 		});
 	};
 
@@ -300,15 +300,17 @@ function AjaxSiteHandler() {
 	 * @param uid
 	 * @param edit_dialog_td_id
 	 * @param corrected_text the corrected text
+	 * @param final_insert
 	 */
-	this.sendCorrectureOfStatement = function (uid, edit_dialog_td_id, corrected_text) {
+	this.sendCorrectureOfStatement = function (uid, edit_dialog_td_id, corrected_text, final_insert) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_correcture_of_statement',
 			type: 'POST',
 			data: {
 				uid: uid,
-				text: corrected_text
+				text: corrected_text,
+				final: final_insert
 			},
 			dataType: 'json',
 			async: true,
@@ -318,9 +320,9 @@ function AjaxSiteHandler() {
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, edit_dialog_td_id);
 		}).fail(function ajaxSendCorrectureOfStatementFail(err) {
-			// $('#' + popupErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
+			// $('#' + popupEditStatementErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupErrorDescriptionId).text(JSON.stringify(err));
+			$('#' + popupEditStatementErrorDescriptionId).text(JSON.stringify(err));
 		});
 	};
 
@@ -387,7 +389,14 @@ function AjaxSiteHandler() {
 		});
 	};
 
-	this.fuzzySearch = function (value, callbackid) {
+	/***
+	 *
+	 * @param value
+	 * @param callbackid
+	 * @param type 0 for statements, 1 for edit-popup
+	 * @param extra optional
+	 */
+	this.fuzzySearch = function (value, callbackid, type, extra) {
 		if(value.len==0){
 			return;
 		}
@@ -396,7 +405,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_fuzzy_search',
 			type: 'GET',
 			dataType: 'json',
-			data: { value: value },
+			data: { value: value, type:type, extra: extra },
 			async: true,
 			global: false
 		}).done(function ajaxGetAllUsersDone(data) {

@@ -135,7 +135,7 @@
 						</div>
 						
 						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value=""/>
-						<div class="list-group" id="statement-list-group">
+						<div class="list-group">
 						</div>
 
 						<div id="pro-position-column">
