@@ -371,27 +371,27 @@ class QueryHelper(object):
 		# 4 = overbid
 		# 5 = rebut
 
-		logger('QueryHelper', '-----------------------', '-----------------------')
-		logger('QueryHelper', 'get_attack_for_argument_by_random', 'user ' + user + ', arg.uid ' + str(db_argument.uid))
-		# history of selected attacks
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-
+		logger('QueryHelper', 'get_attack_for_argument_by_random', 'user ' + (user if user else 'anonymous') + ', arg.uid ' + str(
+			db_argument.uid))
 
 		# all possible attacks
 		attacks = [1,3,5]
-		if db_user.uid != 1: # not equal anonymous
-			db_track = DBDiscussionSession.query(Track).filter(and_(Track.author_uid==db_user.uid, Track.argument_uid==db_argument.uid)).all()
-			for track in db_track:
-				if track.attacked_by_relation in attacks:
-					attacks.remove(track.attacked_by_relation)
-			# now attacks contains all attacks, which were not be done
-			logger('QueryHelper', 'get_attack_for_argument_by_random', 'attacks, which were not done yet ' + str(attacks))
+		# maybe we are anonymous
+		if user:
+			# history of selected attacks
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+			if db_user.uid != 1: # not equal anonymous
+				db_track = DBDiscussionSession.query(Track).filter(and_(Track.author_uid==db_user.uid, Track.argument_uid==db_argument.uid)).all()
+				for track in db_track:
+					if track.attacked_by_relation in attacks:
+						attacks.remove(track.attacked_by_relation)
+				# now attacks contains all attacks, which were not be done
+				logger('QueryHelper', 'get_attack_for_argument_by_random', 'attacks, which were not done yet ' + str(attacks))
 
 		dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, [1,3,5] if len(attacks) == 0 else attacks)
 		# sanity check if we could not found an attack for a left attack in out set
 		if dict == None and len(attacks) > 0:
 			dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, [1,3,5])
-		logger('QueryHelper', '-----------------------', '-----------------------')
 
 		return dict, key
 

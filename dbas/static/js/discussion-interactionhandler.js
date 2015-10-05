@@ -65,7 +65,6 @@ function InteractionHandler() {
 	this.radioButtonChanged = function () {
 		var guiHandler = new GuiHandler(), text, isStart = $('#' + discussionSpaceId + ' ul li input').hasClass('start');
 		if ($('#' + addReasonButtonId).is(':checked')) {
-			$('#' + stepBackButtonId).hide();
 
 			guiHandler.displayHowToWriteTextPopup();
 
@@ -81,12 +80,8 @@ function InteractionHandler() {
 				// premisse
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, true, false, false);
 			}
-		} else if ($('#' + goodPointTakeMeBackButtonId).is(':checked')) {
-			$('#' + stepBackButtonId).show();
-			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true, false);
 		} else {
 			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true, false);
-			$('#' + stepBackButtonId).hide();
 
 			this.radioButtonWasChoosen();
 			guiHandler.setVisibilityOfDisplayStyleContainer(false, '');

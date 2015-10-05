@@ -402,7 +402,8 @@ comment .container and wrap each container with <div class="coloured-div">
 	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail.png') no-repeat 10px 10px;
 }
 
-#popup-login-body {
+#popup-login-body,
+#popup-write-text-body {
 	padding: 10px;
 }
 
@@ -423,6 +424,26 @@ comment .container and wrap each container with <div class="coloured-div">
 .ppConsistencies {
 	display: none;
 }
+
+#how-to-write-text-do-list,
+#how-to-write-text-dont-list{
+	text-indent:2px;
+	list-style: none;
+	list-style-position:outside; 
+}
+#how-to-write-text-do-list li:before{
+	content: '✔';   
+	margin-left: -1em;
+	margin-right: .100em;
+}
+
+#how-to-write-text-dont-list li:before{
+	content: '✘';   
+	margin-left: -1em;
+	margin-right: .100em;
+}
+
+	
 
 @media (max-width: 768px) {
 	.container {
