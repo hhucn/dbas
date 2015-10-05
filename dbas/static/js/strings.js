@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 	
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Messages & Errors
@@ -18,6 +18,9 @@ var confirmTranslation 					= 'If you change the language, your process on this 
 var correctionsSet 						= 'Your correction was set.';
 var dataRemoved 						= 'Data was successfully removed.';
 var didYouMean							= 'Did you mean:';
+var duplicateDialog						= 'This textversion is deprecated, because it was already edited.\nDo you want to set this' +
+	' version as the current one once again?'; // Todo insert
+// into dict
 var euCookiePopupTitle 					= 'This website is using cookies and Google Analytics.';
 var euCookiePopupText 					= 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website.';
 var euCookiePopoupButton1 				= 'Continue';

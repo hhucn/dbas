@@ -72,8 +72,8 @@ function Helper() {
 			r = startLowerCase ? this.startWithLowerCase(right) : this.startWithUpperCase(right),
 			enddot = endWithDot ? '.' : '',
 			belCounterJusti = believeThatGoodCounter + ' <b>' + conclusion + '</b>',
-			undermine = '<b>' + w + ', ' + itIsFalse + premisse + '</b>' + enddot,
-			support	  = '<b>' + r + ', ' + itIsTrue + premisse + '</b>' + enddot,
+			undermine = '<b>' + w + ', ' + itIsFalse + " " + premisse + '</b>' + enddot,
+			support	  = '<b>' + r + ', ' + itIsTrue + " " + premisse + '</b>' + enddot,
 			undercut  = '<b>' + r + ', ' + premisse + '</b>, ' + butIDoNot + ' ' + belCounterJusti + enddot,
 			overbid	  = '<b>' + r + ', ' + premisse + '</b>, ' + andIDo + ' ' + belCounterJusti + enddot,
 			rebut	  = '<b>' + r + ', ' + premisse + '</b> ' + iAcceptCounter + ' <b>' + conclusion
@@ -192,7 +192,7 @@ function Helper() {
 			statement_text: statement,
 			statement_id: uid
 		}).click(function edit_button_click() {
-			$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text'));
+			$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text')).attr({'statement_id': uid});
 			$('#' + popupEditStatementSubmitButtonId).attr({
 				statement_type: $(this).attr('statement_type'),
 				statement_text: $(this).attr('statement_text'),
@@ -202,8 +202,8 @@ function Helper() {
 			$('#edit_statement_table td').removeClass('table-hover');
 			$('#edit_' + type + '_td_index_' + uid).addClass('table-hover');
 			$('#edit_' + type + '_td_text_' + uid).addClass('table-hover');
-			$('#' + popupErrorDescriptionId).text('');
-			$('#' + popupSuccessDescriptionId).text('');
+			$('#' + popupEditStatementErrorDescriptionId).text('');
+			$('#' + popupEditStatementSuccessDescriptionId).text('');
 			guiHandler.showEditFieldsInEditPopup();
 			guiHandler.hideLogfileInEditPopup();
 		}).hover(function edit_button_hover() {
@@ -221,8 +221,8 @@ function Helper() {
 			statement_id: uid
 		}).click(function log_button_click() {
 			$('#' + popupEditStatementLogfileHeaderId).html('Logfile for: <b>' + $(this).attr('statement_text') + '</b>');
-			$('#' + popupErrorDescriptionId).text('');
-			$('#' + popupSuccessDescriptionId).text('');
+			$('#' + popupEditStatementErrorDescriptionId).text('');
+			$('#' + popupEditStatementSuccessDescriptionId).text('');
 			$('#edit_statement_table td').removeClass('table-hover');
 			ajaxHandler.getLogfileForStatement($(this).attr('statement_id'));
 			guiHandler.hideEditFieldsInEditPopup();

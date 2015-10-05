@@ -408,17 +408,34 @@ function GuiHandler() {
 	 * @param callbackid
 	 */
 	this.setStatementsAsProposal = function (parsedData, callbackid){
-		var availableStrings = [], params, token, button, span_dist, span_text;
+		if (Object.keys(parsedData).length == 0){
+			$('#' + callbackid).next().empty();
+			return;
+		}
+
+		var availableStrings = [], params, token, button, span_dist, span_text, statementListGroup;
 		$('#' + callbackid).focus();
-		$('#' + statementListGroupId).empty();
+		statementListGroup = $('#' + callbackid).next();
+		statementListGroup.empty(); // list with elements should be after the callbacker
+		// $('#' + statementListGroupId).empty();
 
 		$.each(parsedData, function (key, val) {
 			params = key.split('_'); // index = params[1], distance = params[2]
 			token = $('#' + callbackid).val();
-			val = val.replace(token, '<b>' + token + '</b>');
+			var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0;
+			var start = 0;
 
-			if (parseInt(params[2]) < 500) {
+			// make all tokens bild
+			while (token.length>0 && newpos != -1){//val.length) {
+				val = val.substr(0, pos) + '<b>' + val.substr(pos, token.length) + '</b>' + val.substr(pos + token.length);
+				start = pos + token.length + 7;
+				newpos = val.toLocaleLowerCase().substr(start).indexOf(token.toLocaleLowerCase());
+				pos = start + (newpos > -1 ? val.toLocaleLowerCase().substr(start).indexOf(token.toLocaleLowerCase()) : 0);
 
+				// val = val.replace(token, '<b>' + token + '</b>');
+			}
+
+			if (parseInt(params[2]) < 500) { // TODO: Limit for Levenshtein
 				button = $('<button>').attr({type : 'button',
 					class : 'list-group-item',
 					id : 'proposal_' + params[1]});
@@ -430,15 +447,18 @@ function GuiHandler() {
 				button.append(span_dist);
 				button.append(span_text);
 
-				$('#' + statementListGroupId).append(button);
+				statementListGroup.append(button);
 				$('#proposal_' + params[1]).click(function(){
 					$('#' + callbackid).val($('#proposal_' + params[1] + '_text').text());
-					$('#' + statementListGroupId).empty();
+					statementListGroup.empty(); // list with elements should be after the callbacker
+					//$('#' + statementListGroupId).empty();
 				});
 				availableStrings.push(val);
 			}
 		});
-		$('#' + statementListGroupId).prepend('<h4>' + didYouMean + '</h4>');
+		 // list with elements should be after the callbacker
+		statementListGroup.prepend('<h4>' + didYouMean + '</h4>');
+		//$('#' + statementListGroupId).prepend('<h4>' + didYouMean + '</h4>');
 	};
 
 	/**
@@ -487,10 +507,10 @@ function GuiHandler() {
 	 * Opens the edit statements popup
 	 */
 	this.showEditStatementsPopup = function () {
-		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premisse, tmp, text_count, statement_id, text, i, helper = new Helper();
+		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premisse, tmp, text_count, statement_id, text, i, helper = new Helper(), is_final;
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementSubmitButtonId).hide();
-		alert('TODO: Fuzzy Search');
+		$('#' + popupEditStatementWarning).hide();
 
 		// each statement will be in a table with row: index, text, button for editing
 		// more action will happen, if the button is pressed
@@ -556,8 +576,9 @@ function GuiHandler() {
 		$('#' + popupEditStatementDescriptionId).hide();
 		$('#' + popupEditStatementSubmitButtonId).hide().click(function edit_statement_click() {
 			statement = $('#' + popupEditStatementTextareaId).val();
+			is_final = $('#' + popupEditStatementWarning).is(':visible');
 			//$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
-			new AjaxSiteHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement);
+			new AjaxSiteHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement, is_final);
 		});
 
 		// on click: do ajax
@@ -608,8 +629,8 @@ function GuiHandler() {
 		$('#' + popupEditStatementLogfileSpaceId).text('');
 		$('#' + popupEditStatementLogfileHeaderId).text('');
 		$('#' + popupEditStatementTextareaId).text('');
-		$('#' + popupErrorDescriptionId).text('');
-		$('#' + popupSuccessDescriptionId).text('');
+		$('#' + popupEditStatementErrorDescriptionId).text('');
+		$('#' + popupEditStatementSuccessDescriptionId).text('');
 	};
 
 	/**
@@ -696,13 +717,13 @@ function GuiHandler() {
 		// accept cookie
 		$('#' + popupHowToWriteTextOkayButton).click(function(){
 			$('#' + popupHowToWriteText).modal('hide');
-			var d = new Date();
-			var expiresInDays = _self.params.agreementExpiresInDays * 24 * 60 * 60 * 1000;
+			var d = new Date(), consent = true;
+			var expiresInDays = 1 * 24 * 60 * 60 * 1000; // Todo
 			d.setTime( d.getTime() + expiresInDays );
-			var expires = "expires=" + d.toGMTString();
-			document.cookie = cookie_name + '=' + consent + "; " + expires + ";path=/";
+			var expires = 'expires=' + d.toGMTString();
+			document.cookie = cookie_name + '=' + consent + '; ' + expires + ';path=/';
 
-			$(document).trigger("user_cookie_consent_changed", {'consent' : consent});
+			$(document).trigger('user_cookie_consent_changed', {'consent' : consent});
 		});
 
 	};

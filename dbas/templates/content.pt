@@ -46,9 +46,6 @@
 					<div id="discussions-space"> </div>
 					<h4><p id="discussions-avoidance-description"></p></h4>
 					<div id="discussions-avoidance-space"> </div>
-					<div class="center text-center">
-						<input id="step-back" type="button" value="Step back" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
-					</div>
 				</div>
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
@@ -138,7 +135,7 @@
 						</div>
 						
 						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value=""/>
-						<div class="list-group" id="statement-list-group">
+						<div class="list-group">
 						</div>
 
 						<div id="pro-position-column">

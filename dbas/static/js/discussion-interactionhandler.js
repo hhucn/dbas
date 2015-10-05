@@ -325,12 +325,17 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data, edit_dialog_td_id) {
 		var parsedData = $.parseJSON(data);
-		if (parsedData.status == '-1'){
-			$('#' + popupErrorDescriptionId).text(noCorrectionsSet);
+		if (parsedData.status == '-1') {
+			$('#' + popupEditStatementErrorDescriptionId).text(noCorrectionsSet);
+		} else if (parsedData.status == '0'){
+			$('#' + popupEditStatementErrorDescriptionId).text('');
+			$('#' + popupEditStatementSuccessDescriptionId).text('');
+			$('#' + popupEditStatementWarning).show();
+			$('#' + popupEditStatementWarningMessage).text(duplicateDialog);
 		} else {
 			new GuiHandler().updateOfStatementInDiscussion(parsedData);
-			$('#' + popupErrorDescriptionId).text('');
-			$('#' + popupSuccessDescriptionId).text(correctionsSet);
+			$('#' + popupEditStatementErrorDescriptionId).text('');
+			$('#' + popupEditStatementSuccessDescriptionId).text(correctionsSet);
 			$('#' + edit_dialog_td_id).text(parsedData.text);
 		}
 	};
@@ -359,9 +364,6 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneFuzzySearch = function (data, callbackid){
 		var parsedData = $.parseJSON(data);
-		if (Object.keys(parsedData).length>0){
-			new GuiHandler().setStatementsAsProposal(parsedData, callbackid);
-		}
-
+		new GuiHandler().setStatementsAsProposal(parsedData, callbackid);
 	}
 }

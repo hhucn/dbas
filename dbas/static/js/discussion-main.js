@@ -52,12 +52,30 @@ $(function () {
 	var guiHandler = new GuiHandler(),
 		ajaxHandler = new AjaxSiteHandler(),
 		interactionHandler = new InteractionHandler(),
-		hidden_service, hidden_params;
+		hidden_service, hidden_params,
+		delay = (function(){
+			var timer = 0;
+			return function(callback, ms){
+				clearTimeout (timer);
+				timer = setTimeout(callback, ms);
+			};
+		})();
 
 	guiHandler.setHandler(interactionHandler);
 
-	$('#' + addStatementContainerMainInputId).keyup(function() {
-		ajaxHandler.fuzzySearch($(this).val(), addStatementContainerMainInputId);
+	$('#' + addStatementContainerMainInputId).keyup(function () {
+		delay(function() {
+			ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
+		},200);
+	});
+
+	$('#' + popupEditStatementTextareaId).keyup(function () {
+		delay(function() {
+			ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, 1,
+			$('#' + popupEditStatementTextareaId).attr('statement_id'));
+			$('#' + popupEditStatementWarning).hide();
+			$('#' + popupEditStatementWarningMessage).text('');
+		},200);
 	});
 
 	$('#' + discussionContainerId).hide(); // hiding discussions container
@@ -71,12 +89,12 @@ $(function () {
 
 	// hide the restart button and add click function
 	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
-	$('#' + restartDiscussionButtonId).click(function () {
+	$('#' + restartDiscussionButtonId).click(function restartDiscussionButtonId() {
 		restartDiscussion();
 	});
 
 	// admin list all users button
-	$('#' + listAllUsersButtonId).click(function () {
+	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 		if ($(this).val() === showAllUsers) {
 			ajaxHandler.getUsersOverview();
 			$(this).val(hideAllUsers);
@@ -87,7 +105,7 @@ $(function () {
 	});
 
 	// admin list all attacks button
-	$('#' + listAllUsersAttacksId).click(function () {
+	$('#' + listAllUsersAttacksId).click(function listAllUsersAttacksId() {
 		if ($(this).val() === showAllAttacks) {
 			ajaxHandler.getAttackOverview();
 			$(this).val(hideAllAttacks);
@@ -98,7 +116,7 @@ $(function () {
 	});
 
 	// add argument button in the island view
-	$('#' + islandViewAddArgumentsBtnid).click(function () {
+	$('#' + islandViewAddArgumentsBtnid).click(function islandViewAddArgumentsBtnid() {
 		$('#' + scStyle2Id).attr('checked', true);
 		$('#' + scStyle1Id).attr('checked', false);
 		$('#' + scStyle3Id).attr('checked', false);
@@ -106,17 +124,17 @@ $(function () {
 	});
 
 	// adding a textarea in the right column
-	$('#' + addConTextareaId).click(function () {
+	$('#' + addConTextareaId).click(function addConTextareaId() {
 		guiHandler.addTextareaAsChildInParent(conPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'));
 	});
 
 	// adding a textarea in the left column
-	$('#' + addProTextareaId).click(function () {
+	$('#' + addProTextareaId).click(function addProTextareaId() {
 		guiHandler.addTextareaAsChildInParent(proPositionTextareaId, 'left', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'));
 	});
 
 	// hiding the argument container, when the X button is clicked
-	$('#' + closeStatementContainerId).click(function () {
+	$('#' + closeStatementContainerId).click(function closeStatementContainerId() {
 		$('#' + addStatementContainerId).hide();
 		$('#' + addStatementErrorContainer).hide();
 		$('#' + addReasonButtonId).enable = true;
@@ -138,10 +156,10 @@ $(function () {
 	});
 
 	// close popups
-	$('#' + popupEditStatementCloseButtonXId).click(function(){	guiHandler.hideEditStatementsPopup();	});
-	$('#' + popupEditStatementCloseButtonId).click(function(){	guiHandler.hideEditStatementsPopup();	});
-	$('#' + popupUrlSharingCloseButtonXId).click(function(){	guiHandler.hideUrlSharingPopup();	});
-	$('#' + popupUrlSharingCloseButtonId).click(function(){		guiHandler.hideUrlSharingPopup();	});
+	$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId(){	guiHandler.hideEditStatementsPopup();	});
+	$('#' + popupEditStatementCloseButtonId).click(function popupEditStatementCloseButtonId(){	guiHandler.hideEditStatementsPopup();	});
+	$('#' + popupUrlSharingCloseButtonXId).click(function popupUrlSharingCloseButtonXId(){	guiHandler.hideUrlSharingPopup();	});
+	$('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId(){		guiHandler.hideUrlSharingPopup();	});
 
 	// share url for argument blogging
 	$('#' + shareUrlId).click(function shareurlClick (){
@@ -151,7 +169,7 @@ $(function () {
 	/**
 	 * Switch between shortened and long url
 	 */
-	$('#' + popupUrlSharingLongUrlButtonID).click(function(){
+	$('#' + popupUrlSharingLongUrlButtonID).click(function popupUrlSharingLongUrlButtonID(){
 		if ($('#' + popupUrlSharingLongUrlButtonID).attr('short_url') == '0'){
 			new AjaxSiteHandler().getShortenUrl(window.location);
 			$('#' + popupUrlSharingLongUrlButtonID).attr('short_url', '1').text(fetchLongUrl);
@@ -164,21 +182,21 @@ $(function () {
 	/**
 	 * Sharing shortened url with mail
 	 */
-	$('#' + shareUrlButtonMail).click(function(){
+	$('#' + shareUrlButtonMail).click(function shareUrlButtonMail(){
 		mailShare('user@example.com', interestingOnDBAS, haveALookAt + ' ' + $('#' + popupUrlSharingInputId).val());
 	});
 
 	/**
 	 * Sharing shortened url on twitter
 	 */
-	$('#' + shareUrlButtonTwitter).click(function(){
+	$('#' + shareUrlButtonTwitter).click(function shareUrlButtonTwitter(){
 		tweetShare($('#' + popupUrlSharingInputId).val());
 	});
 
 	/**
 	 * Sharing shortened url on google
 	 */
-	$('#' + shareUrlButtonGoogle).click(function(){
+	$('#' + shareUrlButtonGoogle).click(function shareUrlButtonGoogle(){
 		alert($('#' + popupUrlSharingInputId).val());
 		googleShare($('#' + popupUrlSharingInputId).val());
 	});
@@ -186,7 +204,7 @@ $(function () {
 	/**
 	 * Sharing shortened url on facebook
 	 */
-	$('#' + shareUrlButtonFacebook).click(function(){
+	$('#' + shareUrlButtonFacebook).click(function shareUrlButtonFacebook(){
 		fbShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", haveALookAt + ' ' + $('#' + popupUrlSharingInputId).val(), "https://dbas.cs.uni-duesseldorf.de/static/images/logo.png");
 	});
 

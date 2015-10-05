@@ -692,16 +692,17 @@ class Dbas(object):
 
 		logger('set_correcture_of_statement', 'def', 'main')
 
-		uid = ''
-		corrected_text = ''
 		try:
 			uid = self.request.params['uid']
 			corrected_text = self.request.params['text']
-			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text))
+			is_final = self.request.params['final']
+			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text)
+			       + ', final ' + str(is_final))
+			return_dict = DatabaseHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, is_final)
 		except KeyError as e:
+			return_dict = dict()
 			logger('set_correcture_of_statement', 'error', repr(e))
 
-		return_dict = DatabaseHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -1042,7 +1043,17 @@ class Dbas(object):
 		logger('fuzzy_search', 'main', 'def')
 		try:
 			value = self.request.params['value']
-			return_dict = DatabaseHelper().get_fuzzy_string_for_start(value)
+			type = str(self.request.params['type'])
+			if type == '0':
+				logger('fuzzy_search', 'type', '0')
+				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value)
+			elif type == '1':
+				logger('fuzzy_search', 'type', '1')
+				statement_uid = self.request.params['extra']
+				return_dict = DatabaseHelper().get_fuzzy_string_for_edits(value, statement_uid)
+			else:
+				logger('fuzzy_search', 'type', 'nan')
+				return_dict = dict()
 		except KeyError as e:
 			return_dict = dict()
 			logger('fuzzy_search', 'error', repr(e))
