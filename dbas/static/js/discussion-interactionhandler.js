@@ -68,6 +68,11 @@ function InteractionHandler() {
 
 			guiHandler.displayHowToWriteTextPopup();
 
+			if (window.location.href.indexOf(getPremissesForStatement) != -1)			alert('only pos');
+			if (window.location.href.indexOf(replyForPremissegroup) != -1)				alert('only ?1');
+			if (window.location.href.indexOf(replyForArgument) != -1)					alert('only ?2');
+			if (window.location.href.indexOf(replyForResponseOfConfrontation) != -1)	alert('only pos');
+
 			// get the second child, which is the label
 			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
 			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
@@ -84,7 +89,7 @@ function InteractionHandler() {
 			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true, false);
 
 			this.radioButtonWasChoosen();
-			guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
+			guiHandler.setVisibilityOfDisplayStyleContainer(false, ''); // TODO setVisibilityOfDisplayStyleContainer
 			$('#' + islandViewContainerId).fadeOut('slow');
 		}
 	};

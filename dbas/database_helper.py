@@ -1,5 +1,6 @@
 import random
 import datetime
+import collections
 
 from sqlalchemy import and_, not_
 from Levenshtein import distance
@@ -341,15 +342,26 @@ class DatabaseHelper(object):
 		splitted_id = id_text.split('_')
 		relation = splitted_id[0]
 		premissesgroup_uid = splitted_id[2]
+		no_attacked_argument = False
 
 		logger('DatabaseHelper', 'get_attack_for_argument', 'relation: ' + relation + ', premissesgroup_uid: ' + premissesgroup_uid)
 
 		# get last tracked conclusion
 		db_last_conclusion = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=pgroup_id).first()
 
+		#TODO error on http://localhost:4284/discussion/id_text=rebut_premissesgroup_14&pgroup_id=1/reply_for_argument/go
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
 		                                                    Argument.premissesGroup_uid==int(premissesgroup_uid),
 		                                                    Argument.isSupportive==False)).first()
+
+		# maybe there is no argument, whoch is not-supportive
+		if not db_argument:
+			logger('DatabaseHelper', 'get_attack_for_argument', 'no suitable argument')
+			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
+		                                                    Argument.premissesGroup_uid==int(premissesgroup_uid))).first()
+			no_attacked_argument = True
+
+
 		return_dict = {}
 		return_dict['premisse_text'], trash = qh.get_text_for_premissesGroup_uid(int(premissesgroup_uid))
 		return_dict['premissesgroup_uid'] = premissesgroup_uid
@@ -357,6 +369,10 @@ class DatabaseHelper(object):
 		return_dict['argument_uid'] = db_argument.uid
 		return_dict['premissegroup_uid'] = db_argument.premissesGroup_uid
 		return_dict['relation'] = relation
+
+		# if there as no non-supportive argument, let's get back
+		if no_attacked_argument:
+			return return_dict, 0
 
 		# getting undermines or undercuts or rebuts
 		attacks, key = qh.get_attack_for_argument_by_random(db_argument, user)
@@ -576,14 +592,16 @@ class DatabaseHelper(object):
 		"""
 		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value)
 		db_statements = DBDiscussionSession.query(Statement).filter_by(isStartpoint=True).join(TextValue).all()
-		return_dict = dict()
+		tmp_dict = dict()
 		for index, statement in enumerate(db_statements):
 			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
 			logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'current db_textvalue ' + db_textvalue.textversions.content.lower())
 			if value.lower() in db_textvalue.textversions.content.lower():
 				lev = distance(value, db_textvalue.textversions.content)
 				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev ' + str(lev) + ',value ' + db_textvalue.textversions.content)
-				return_dict['value_' + str(index) + '_' + str(lev)] = db_textvalue.textversions.content
+				tmp_dict['value_' + str(lev) + '_' + str(index)] = db_textvalue.textversions.content
+
+		return_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 
 		return return_dict
 

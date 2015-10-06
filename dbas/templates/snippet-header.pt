@@ -95,11 +95,13 @@
 									<img id="header_licence" class="glyphicon-local center">&thinsp;<span i18n:translate="licence">Licence</span>
 								</a>
 							</li>
+							<!--
 							<li>
 								<a id="link_popup_privacy" href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
 									<img id="header_privacy" class="glyphicon-local center">&thinsp;<span i18n:translate="privacy_policy">Privacy Policy</span>
 								</a>
 							</li>
+-->
 						</ul>
 					</li>
 

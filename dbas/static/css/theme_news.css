@@ -22,6 +22,10 @@
 	transition: .5s ease;
 }
 
+#send-news{
+	float:right;
+}
+
 @media only screen and (max-width: 480px) {
 	/* Smartphone view: 1 tile */
 	

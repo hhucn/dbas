@@ -420,7 +420,7 @@ function GuiHandler() {
 		// $('#' + statementListGroupId).empty();
 
 		$.each(parsedData, function (key, val) {
-			params = key.split('_'); // index = params[1], distance = params[2]
+			params = key.split('_'); // distance = params[1], index = params[2]
 			token = $('#' + callbackid).val();
 			var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0;
 			var start = 0;
@@ -435,21 +435,21 @@ function GuiHandler() {
 				// val = val.replace(token, '<b>' + token + '</b>');
 			}
 
-			if (parseInt(params[2]) < 500) { // TODO: Limit for Levenshtein
+			if (parseInt(params[1]) < 500) { // TODO: Limit for Levenshtein
 				button = $('<button>').attr({type : 'button',
 					class : 'list-group-item',
-					id : 'proposal_' + params[1]});
+					id : 'proposal_' + params[2]});
    				button.hover(function(){ $(this).addClass('active');
    				    	  }, function(){ $(this).removeClass('active');
    				});
-				span_dist = $('<span>').attr({class : 'badge'}).text(levenshteinDistance + ' ' + params[2]);
-				span_text = $('<span>').attr({id : 'proposal_' + params[1] + '_text'}).html(val);
+				span_dist = $('<span>').attr({class : 'badge'}).text(levenshteinDistance + ' ' + params[1]);
+				span_text = $('<span>').attr({id : 'proposal_' + params[2] + '_text'}).html(val);
 				button.append(span_dist);
 				button.append(span_text);
 
 				statementListGroup.append(button);
-				$('#proposal_' + params[1]).click(function(){
-					$('#' + callbackid).val($('#proposal_' + params[1] + '_text').text());
+				$('#proposal_' + params[2]).click(function(){
+					$('#' + callbackid).val($('#proposal_' + params[2] + '_text').text());
 					statementListGroup.empty(); // list with elements should be after the callbacker
 					//$('#' + statementListGroupId).empty();
 				});

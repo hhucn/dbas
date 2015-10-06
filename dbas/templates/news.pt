@@ -2,7 +2,6 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
 <tal:block metal:use-macro="layout">
 	<tal:block metal:fill-slot="content_page">
-		<!-- todo move news into second database -->
 
 		<head>
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.css')}" rel="stylesheet">
@@ -14,32 +13,34 @@
 			<p class="lead" i18n:translate="news_intro">This will be the news page and currently I think...this will be some kind of blog</p>
 		</div>
 
-		<div id="news-body"></div>
-
 		<div id="write-news-body" tal:condition="is_author" class="container">
-			
-			<h4>Writing a new message</h4>
-			
-						<div id="writing-news-failed" class="alert alert-danger" role="alert">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="error">Error:</span> <span id="writing-news-failed-message"></span>
-						</div>
 
-						<div id="writing-news-success" class="alert alert-success" role="alert">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="error">Success:</span> <span id="writing-news-success-message"></span>
-						</div>
+			<h3>Writing a new message</h3>
+
+			<div id="writing-news-failed" class="alert alert-danger" role="alert">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<span class="sr-only" i18n:translate="error">Error:</span> <span id="writing-news-failed-message"></span>
+			</div>
+
+			<div id="writing-news-success" class="alert alert-success" role="alert">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<span class="sr-only" i18n:translate="error">Success:</span> <span id="writing-news-success-message"></span>
+			</div>
 
 			<input id="writing-news-title" name="newstitle" type="text" class="news-title" placeholder="Today is a wonderful day!" autocomplete="on" placeholder="..." tabindex="1">
-			
+
 			<textarea id="writing-news-text" type="text" class="news-text" name="newstext" autocomplete="on" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="2"></textarea>
 
 			<input id="send-news" type="button" value="Send News" class="button button-block btn btn-primary" data-dismiss="modal" />
+			<h5><span>Author: </span><span tal:replace="logged_in"></span></h5>
+			<h5><span>Date: </span><span tal:replace="date"></span></h5>
 
 		</div>
 
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
-		
+		<div id="news-body"></div>
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
+
 	</tal:block>
 </tal:block>
 

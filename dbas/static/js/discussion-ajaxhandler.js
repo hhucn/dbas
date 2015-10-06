@@ -18,7 +18,7 @@ function AjaxSiteHandler() {
 	 * @param uid current identifier
 	 */
 	this.callSiteForGetPremisseForStatement = function (uid) {
-		this.redirectBrowser('uid=' + uid, 'get_premisses_for_statement');
+		this.redirectBrowser('uid=' + uid, getPremissesForStatement);
 	};
 
 	/**
@@ -27,7 +27,7 @@ function AjaxSiteHandler() {
 	 * @param conclusion_id
 	 */
 	this.callSiteForGetReplyForPremisseGroup = function (pgroup_id, conclusion_id) {
-		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id, 'reply_for_premissegroup');
+		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id, replyForPremissegroup);
 	};
 
 	/**
@@ -36,7 +36,7 @@ function AjaxSiteHandler() {
 	 * @param pgroup_id
 	 */
 	this.callSiteForGetReplyForArgument = function (id_text, pgroup_id) {
-		this.redirectBrowser('id_text=' + id_text + '&pgroup_id=' + pgroup_id, 'reply_for_argument');
+		this.redirectBrowser('id_text=' + id_text + '&pgroup_id=' + pgroup_id, replyForArgument);
 	};
 
 	/**
@@ -44,7 +44,7 @@ function AjaxSiteHandler() {
 	 * @param id current identifier
 	 */
 	this.callSiteForHandleReplyForResponseOfConfrontation = function (id) {
-		this.redirectBrowser('id=' + id, 'reply_for_response_of_confrontation');
+		this.redirectBrowser('id=' + id, replyForResponseOfConfrontation);
 	};
 
 	/**
@@ -55,7 +55,7 @@ function AjaxSiteHandler() {
 	this.redirectBrowser = function (keyValuePair, service) {
 		//alert(mainpage + key + '=' + value + '/' + service + '/go'):
 		// window.location.replace(mainpage + key + '=' + value + '/' + service + '/go');
-		window.location.href = mainpage + 'discussion/' + keyValuePair + '/' + service + '/go';
+		window.location.href = mainpage + 'discussion/' + keyValuePair + '/' + service + '/' + go;
 	};
 
 	this.debugger = function ( data, url, settings_data ) {

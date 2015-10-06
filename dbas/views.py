@@ -1,4 +1,5 @@
 import transaction
+import datetime
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
@@ -351,12 +352,20 @@ class Dbas(object):
 
 		is_author = UserHandler().is_user_author(self.request.authenticated_userid)
 
+		# get date
+		now = datetime.datetime.now()
+		yyyy = str(now.year)
+		mm = str(now.month) if now.month > 9 else '0' + str(now.month)
+		dd = str(now.day) if now.day > 9 else '0' + str(now.day)
+		date = dd + "." + mm + "." + yyyy
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
 			'title': 'News',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
+			'date':date,
 			'is_author': is_author
 		}
 

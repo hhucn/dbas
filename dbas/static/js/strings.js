@@ -121,3 +121,14 @@ var argumentContainerH4TextIfArgument = 'You want to state your own argument(s)?
 var argumentContainerH4TextIfConclusion = 'What is your idea? What should we do?';
 var startDiscussionText = 'What is your initial position?'; //'OK. Let\'s move on. Wich point do you want to discuss?';
 var whatDoYouThink = 'What do you think about that?';
+
+
+/**
+ * URL's
+ * @type {string}
+ */
+var getPremissesForStatement = 'get_premisses_for_statement';
+var replyForPremissegroup = 'reply_for_premissegroup';
+var replyForArgument = 'reply_for_argument';
+var replyForResponseOfConfrontation = 'reply_for_response_of_confrontation';
+var go = 'go';
