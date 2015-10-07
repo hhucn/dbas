@@ -40,6 +40,7 @@ var noCorrectionsSet 					= 'Correction could not be set, because your user was 
 var notInsertedErrorBecauseEmpty 		= 'Your idea was not inserted, because your input text is empty.';
 var notInsertedErrorBecauseDuplicate 	= 'Your idea was not inserted, because your idea is a duplicate.';
 var notInsertedErrorBecauseUnknown 		= 'Your idea was not inserted due to an unkown error.';
+var notInsertedErrorBecauseInternal		= 'Your idea was not inserted due to an internal error.';
 var noTrackedData 						= 'No data was tracked.';
 var request_failed 						= 'Request failed';
 var selectStatement 					= 'Please select a statement!';
@@ -63,7 +64,7 @@ var butIDoNot 							= 'but I do not';
 var andIDo 								= 'and I do';
 var iAcceptCounter						= 'and I do accept that this is an counter-argument for';
 var iHaveStrongerArgument 				= 'However, I have a much stronger argument for accepting that';
-var goStepBack 							= 'Go one step back (TODO: show me another one)';
+var goStepBack 							= 'Go one step back'; // TODO: show me another one
 var iNoOpinion 							= 'I have no opinion regarding';
 
 var youMadeA 							= 'You made a';
@@ -106,7 +107,7 @@ var firstOneText = 'You are the first one, who said: ';
 var firstPositionText = 'You are the first one in this discussion!';
 var goodPointTakeMeBackButtonText = 'I agree, that is a good argument! Take me one step back.';
 var otherParticipantsThinkThat = 'Other users think that';
-var otherParticipantsDontThink = 'Other users do not have any counter-argument for ';
+var otherParticipantsDontHave = 'Other users do not have any counter-argument for ';
 var otherParticipantsAcceptBut = 'Other users accept your argument, but';
 var otherParticipantAgree = 'Other partcipants agree, that ';
 var otherParticipantDisagree = 'Other partcipants disagree, that ';
@@ -127,8 +128,8 @@ var whatDoYouThink = 'What do you think about that?';
  * URL's
  * @type {string}
  */
-var getPremissesForStatement = 'get_premisses_for_statement';
-var replyForPremissegroup = 'reply_for_premissegroup';
-var replyForArgument = 'reply_for_argument';
-var replyForResponseOfConfrontation = 'reply_for_response_of_confrontation';
-var go = 'go';
+var attrGetPremissesForStatement = 'get_premisses_for_statement';
+var attrReplyForPremissegroup = 'reply_for_premissegroup';
+var attrReplyForArgument = 'reply_for_argument';
+var attrReplyForResponseOfConfrontation = 'reply_for_response_of_confrontation';
+var attrGo = 'go';

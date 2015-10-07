@@ -20,7 +20,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.3'
+version = '0.3.4'
 header = name + ' ' + version
 
 class Dbas(object):
@@ -516,6 +516,15 @@ class Dbas(object):
 		try:
 			ids = self.request.params['ids']
 			logger('reply_for_argument', 'def', 'ids ' + ids)
+			logger('reply_for_argument', 'def', 'ids ' + ids)
+			logger('reply_for_argument', 'def', 'ids ' + ids)
+			logger('reply_for_argument', 'def', 'ids ' + ids)
+			logger('reply_for_argument', 'def', 'ids ' + ids)
+			logger('reply_for_argument', 'def', 'ids ' + ids)
+			logger('reply_for_argument', 'def', 'ids ' + ids)
+			logger('reply_for_argument', 'def', 'ids ' + ids)
+			logger('reply_for_argument', 'def', 'ids ' + ids)
+			logger('reply_for_argument', 'def', 'ids ' + ids)
 			ids = ids.split('&')
 			if ids[0].startswith('id_text'):
 				id_text   = ids[0][ids[0].index('=')+1:]
@@ -645,22 +654,27 @@ class Dbas(object):
 			logger('set_new_premisses', 'def', 'main')
 			pro_dict = {}
 			con_dict = {}
-			conclusion_id = self.request.params['conclusion_id']
-			for key in self.request.params:
-				if 'pro' in key:
-					logger('set_new_premisses', key, self.request.params[key])
-					pro_dict[key] = self.request.params[key]
-				if 'con' in key:
-					logger('set_new_premisses', key, self.request.params[key])
-					con_dict[key] = self.request.params[key]
+			# conclusion_id = self.request.params['conclusion_id']
+			# argument_id = self.request.params['argument_id']
+			premissegroup_id = self.request.params['premissegroup_id']
+			text, premisses = QueryHelper().get_text_for_premissesGroup_uid(premissegroup_id)
 			dh = DatabaseHelper()
-			return_dict = dh.set_premisses_for_tracked_argument(transaction, user_id, pro_dict, 'pro', conclusion_id, True)
-			return_dict.update(dh.set_premisses_for_tracked_argument(transaction, user_id, con_dict, 'con', conclusion_id, False))
-			return_dict['success'] = '1'
 
+			for premisse_uid in premisses:
+				logger('set_new_premisses', 'def', 'premisse ' + str(premisse_uid))
+				for key in self.request.params:
+					if 'pro_' in key:
+						logger('set_new_premisses', key, self.request.params[key])
+						pro_dict[key] = self.request.params[key]
+					if 'con_' in key:
+						logger('set_new_premisses', key, self.request.params[key])
+						con_dict[key] = self.request.params[key]
+				return_dict.update(dh.set_premisses_for_argument(transaction, user_id, pro_dict, 'pro', premisse_uid, True))
+				return_dict.update(dh.set_premisses_for_argument(transaction, user_id, con_dict, 'con', premisse_uid, False))
+			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('set_new_premisses', 'error', repr(e))
-			return_dict['success'] = '-1'
+			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 

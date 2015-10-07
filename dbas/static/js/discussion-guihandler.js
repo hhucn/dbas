@@ -312,10 +312,14 @@ function GuiHandler() {
 	 * @param jsonData returned data
 	 */
 	this.setPremissesAsLastChild = function (jsonData) {
-		var newElement, helper = new Helper();
+		var newElement, helper = new Helper(), text, l;
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == 'pro') {
-				newElement = helper.getKeyValAsInputInLiWithType(val.premissegroup_uid, val.text + '.', false, true, false, val.text);
+				text = 'Because ' + val.text;
+				l = text.length-1;
+				if (text.substr(l) != '.' && text.substr(l) != '?' && text.substr(l) != '!')
+						text += '.';
+				newElement = helper.getKeyValAsInputInLiWithType(val.premissegroup_uid, text + '.', false, true, false, val.text);
 				newElement.children().hover(function () {
 					$(this).toggleClass('table-hover');
 				});
@@ -376,24 +380,40 @@ function GuiHandler() {
 			$('#' + addStatementContainerH4Id).text(isPremisse ? argumentContainerH4TextIfPremisse : argumentContainerH4TextIfArgument);
 			// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
 			$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with: <b>' + statement + '</b>, because ...');
-			$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with: <b>' + statement + '</b>, because ...');
 			$('#' + addStatementContainerMainInputId).hide().focus();
 			$('#' + proPositionColumnId).show();
-			$('#' + conPositionColumnId).show();
-			if (isPremisse)
-				$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenPremisse() {
-					// conclusion = $('#' + discussionsDescriptionId).attr('conclusion_id');
-					// attack = $('#' + discussionsDescriptionId).attr('attack');
-					// argument = $('#' + discussionsDescriptionId).attr('related_argument');
-					// conclusion = typeof conclusion === 'undefined' ? '' : conclusion;
-					// attack = typeof attack === 'undefined' ? '' : attack;
-					// argument = typeof argument === 'undefined' ? '' : argument;
-					interactionhandler.getPremissesAndSendThem(false);
-					guihandler.setErrorDescription('');
-					guihandler.setSuccessDescription('');
-				});
-			else
-				alert('Todo: How to insert something at this place?');
+			$('#' + conPositionColumnId).hide();
+			$('#' + headingConPositionTextId).html('');
+			// $('#' + conPositionColumnId).show();
+			// $('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with: <b>' + statement + '</b>, because...');
+			//if (isPremisse) {
+			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenPremisse() {
+				interactionhandler.getPremissesAndSendThem(false);
+				guihandler.setErrorDescription('');
+				guihandler.setSuccessDescription('');
+				$('#' + addStatementErrorContainer).hide();
+				$('#' + addStatementErrorMsg).text('');
+			});
+			//} else {
+			// does other users have an opinion?
+			if (isArgument) {
+				if ($('#' + discussionsDescriptionId).text().indexOf(otherParticipantsDontHave) == -1) {
+					alert('Todo: How to insert something at this place?');
+				} else {
+					// other users have no opinion, so the participant can give pro and con
+					$('#' + conPositionColumnId).show();
+					$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with: <b>' + statement + '</b>, because...');
+				}
+			}
+
+			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenArgument() {
+				interactionhandler.getPremissesAndSendThem(false);
+				guihandler.setErrorDescription('');
+				guihandler.setSuccessDescription('');
+				$('#' + addStatementErrorContainer).hide();
+				$('#' + addStatementErrorMsg).text('');
+			});
+			//}
 		} else {
 			alert('What now (II)? GuiHandler: setDisplayStylesOfAddStatementContainer');
 		}

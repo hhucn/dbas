@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-05 08:36+0200\n"
+"POT-Creation-Date: 2015-10-06 13:52+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -200,8 +200,8 @@ msgid "guided_view_content2"
 msgstr "für dich."
 
 #. Default: Island View
-#: dbas/templates/index.pt:90 dbas/templates/content.pt:67
-#: dbas/templates/content.pt:100
+#: dbas/templates/index.pt:90 dbas/templates/content.pt:64
+#: dbas/templates/content.pt:97
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
@@ -277,14 +277,14 @@ msgstr "Nachrichten"
 
 #. Default: Contact
 #. Default: Kontakt:
-#: dbas/templates/snippet-header.pt:51 dbas/templates/imprint.pt:19
+#: dbas/templates/snippet-header.pt:51 dbas/templates/imprint.pt:20
 msgid "contact"
 msgstr "Kontakt"
 
 #. Default: Login
 #. Default: Log In
-#: dbas/templates/snippet-header.pt:60 dbas/templates/snippet-popups.pt:434
-#: dbas/templates/snippet-popups.pt:609
+#: dbas/templates/snippet-header.pt:60 dbas/templates/snippet-popups.pt:216
+#: dbas/templates/snippet-popups.pt:391
 msgid "login"
 msgstr "Login"
 
@@ -313,19 +313,14 @@ msgstr "Autor"
 msgid "licence"
 msgstr "MIT Lizenz"
 
-#. Default: Privacy Policy
-#: dbas/templates/snippet-header.pt:100 dbas/templates/snippet-popups.pt:130
-msgid "privacy_policy"
-msgstr "Datenschutzrichtlinien"
-
 #. Default: Language
-#: dbas/templates/snippet-header.pt:108
+#: dbas/templates/snippet-header.pt:110
 msgid "language"
 msgstr "Sprache"
 
 #. Default: Impressum
-#. Default: Imprint and Copyrights
-#: dbas/templates/imprint.pt:11 dbas/templates/snippet-footer.pt:11
+#. Default: <dynamic element>&#160;&#160;Imprint and Copyrights
+#: dbas/templates/imprint.pt:11 dbas/templates/snippet-footer.pt:10
 msgid "imprint"
 msgstr "Impressum"
 
@@ -334,13 +329,24 @@ msgstr "Impressum"
 msgid "data_tmg"
 msgstr ""
 
+#. Default: Institut für Informatik
+#: dbas/templates/imprint.pt:14
+msgid "department"
+msgstr ""
+
+#. Default: Telefon: 0211-8113461
+#: dbas/templates/imprint.pt:21
+#, fuzzy
+msgid "phone"
+msgstr "Deine Telefonnr."
+
 #. Default: Haftungsausschluss:
-#: dbas/templates/imprint.pt:24
+#: dbas/templates/imprint.pt:27
 msgid "disclaimer"
 msgstr ""
 
 #. Default: Haftung für Inhalte
-#: dbas/templates/imprint.pt:26
+#: dbas/templates/imprint.pt:29
 #, fuzzy
 msgid "disclaimer_content"
 msgstr "Insel Ansicht"
@@ -358,13 +364,13 @@ msgstr "Insel Ansicht"
 #. Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von
 #. entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
 #. entfernen.
-#: dbas/templates/imprint.pt:28
+#: dbas/templates/imprint.pt:30
 #, fuzzy
 msgid "disclaimer_content_content"
 msgstr "Insel Ansicht"
 
 #. Default: Haftung für Links
-#: dbas/templates/imprint.pt:30
+#: dbas/templates/imprint.pt:33
 msgid "disclaimer_links"
 msgstr ""
 
@@ -378,7 +384,7 @@ msgstr ""
 #. Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer
 #. Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen
 #. werden wir derartige Links umgehend entfernen.
-#: dbas/templates/imprint.pt:32
+#: dbas/templates/imprint.pt:34
 #, fuzzy
 msgid "disclaimer_links_content"
 msgstr ""
@@ -386,7 +392,7 @@ msgstr ""
 "sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
 
 #. Default: Urheberrecht
-#: dbas/templates/imprint.pt:34
+#: dbas/templates/imprint.pt:37
 msgid "disclaimer_copyright"
 msgstr ""
 
@@ -402,7 +408,7 @@ msgstr ""
 #. aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei
 #. Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend
 #. entfernen.
-#: dbas/templates/imprint.pt:36
+#: dbas/templates/imprint.pt:38
 #, fuzzy
 msgid "disclaimer_copyright_content"
 msgstr ""
@@ -410,40 +416,69 @@ msgstr ""
 "sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
 
 #. Default: Datenschutz
-#: dbas/templates/imprint.pt:38
+#: dbas/templates/imprint.pt:41
 msgid "disclaimer_dataprotection"
 msgstr ""
 
 #. Default: Die Nutzung unserer Webseite ist in der Regel ohne Angabe
 #. personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene
-#. Daten (beispielsweise Name, Anschrift oder eMail-Adressen) erhoben werden,
-#. erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten
-#. werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.
-#. <dynamic element> Wir weisen darauf hin, dass die Datenübertragung im
-#. Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen
-#. kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist
-#. nicht möglich. <dynamic element> Der Nutzung von im Rahmen der
-#. Impressumspflicht veröffentlichten Kontaktdaten durch Dritte zur Übersendung
-#. von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien
-#. wird hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten
-#. sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung
-#. von Werbeinformationen, etwa durch Spam-Mails, vor.
-#: dbas/templates/imprint.pt:40
+#. Daten (beispielsweise Name, oder eMail-Adressen) erhoben werden, erfolgt
+#. dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne
+#. Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben. <dynamic
+#. element> Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B.
+#. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein
+#. lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.
+#. <dynamic element> Der Nutzung von im Rahmen der Impressumspflicht
+#. veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht
+#. ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit
+#. ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich
+#. ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von
+#. Werbeinformationen, etwa durch Spam-Mails, vor.
+#: dbas/templates/imprint.pt:42
 msgid "disclaimer_dataprotection_content"
 msgstr ""
 
+#. Default: Session-Cookies
+#: dbas/templates/imprint.pt:47
+#, fuzzy
+msgid "disclaimer_session_cookie"
+msgstr ""
+"Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
+"sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
+
+#. Default: Tracking-Cookies
+#: dbas/templates/imprint.pt:50
+#, fuzzy
+msgid "disclaimer_tracking_cookie"
+msgstr ""
+"Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
+"sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
+
+#. Default: Diese erlauben uns Ihre wiederholten Besuche unserer Website
+#. wahrzunehmen. Durch die Übereinstimmung von anononymen, willkürlichen
+#. Identifizierungszeichen, sind wir dazu in der Lage spezielle Browsing-
+#. Informationen festzuhalten, z.B. von Ihnen ausgewählte Seiten und Optionen
+#. und den Weg, den Sie durch unsere Website gewählt haben. Durch das
+#. Überwachen dieser Informationen können wir unsere Websites verbessern.
+#: dbas/templates/imprint.pt:51
+#, fuzzy
+msgid "disclaimer_tracking_cookie_content"
+msgstr ""
+"Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
+"sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
+
 #. Default: Google Analytics
-#: dbas/templates/imprint.pt:45
+#: dbas/templates/imprint.pt:56
 msgid "disclaimer_google_analytics"
 msgstr ""
 
 #. Default: Copyrights and used Software
-#: dbas/templates/imprint.pt:58
+#: dbas/templates/imprint.pt:67
 msgid "copyright_and_used_software"
 msgstr ""
 
 #. Default: Icons by
-#: dbas/templates/imprint.pt:66
+#: dbas/templates/imprint.pt:78
 msgid "icons_by"
 msgstr "Icons von"
 
@@ -533,8 +568,8 @@ msgstr "Telefon"
 
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:72 dbas/templates/snippet-popups.pt:117
-#: dbas/templates/snippet-popups.pt:371 dbas/templates/snippet-popups.pt:419
-#: dbas/templates/snippet-popups.pt:612
+#: dbas/templates/snippet-popups.pt:153 dbas/templates/snippet-popups.pt:201
+#: dbas/templates/snippet-popups.pt:394
 msgid "close"
 msgstr "Schließen"
 
@@ -588,79 +623,86 @@ msgstr ""
 "ENTSTANDEN."
 
 #. Default: Edit Statements / View Changelog
-#: dbas/templates/snippet-popups.pt:356
+#: dbas/templates/snippet-popups.pt:130
 msgid "edit_statement_view_changelog"
 msgstr "Bearbeite die Aussage / Schau ins Changelog"
 
 #. Default: Please, edit the selected statement here:
-#: dbas/templates/snippet-popups.pt:363
+#: dbas/templates/snippet-popups.pt:137
 msgid "edit_statement_here"
 msgstr "Bitte hier bearbeiten"
 
+#. Default: Warning:
+#. Default: Warning!
+#: dbas/templates/snippet-popups.pt:144 dbas/templates/snippet-popups.pt:345
+#: dbas/templates/contact.pt:64
+msgid "warning"
+msgstr "Warnung!"
+
 #. Default: Submit
-#: dbas/templates/snippet-popups.pt:370
+#: dbas/templates/snippet-popups.pt:152
 msgid "submit"
 msgstr "Senden"
 
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:389
+#: dbas/templates/snippet-popups.pt:171
 msgid "okay"
 msgstr "Okay"
 
 #. Default: Cancel
-#: dbas/templates/snippet-popups.pt:390
+#: dbas/templates/snippet-popups.pt:172
 msgid "cancel"
 msgstr "Abbrechen"
 
 #. Default: Share your URL
-#: dbas/templates/snippet-popups.pt:403
+#: dbas/templates/snippet-popups.pt:185
 msgid "url-sharing"
 msgstr ""
 
 #. Default: Please feel free to share this url:
-#: dbas/templates/snippet-popups.pt:408
+#: dbas/templates/snippet-popups.pt:190
 #, fuzzy
 msgid "url-sharing-description"
 msgstr "Beschreibung"
 
 #. Default: Fetch long url!
-#: dbas/templates/snippet-popups.pt:418
+#: dbas/templates/snippet-popups.pt:200
 msgid "fetchurl"
 msgstr ""
 
 #. Default: Sign Up
-#: dbas/templates/snippet-popups.pt:436
+#: dbas/templates/snippet-popups.pt:218
 msgid "sign_up"
 msgstr "Melde dich an"
 
 #. Default: Welcome Back!
-#: dbas/templates/snippet-popups.pt:445
+#: dbas/templates/snippet-popups.pt:227
 msgid "welcome_back"
 msgstr "Willkommen zurück!"
 
 #. Default: Your Nickname
-#: dbas/templates/snippet-popups.pt:448
+#: dbas/templates/snippet-popups.pt:230
 msgid "your_nickname"
 msgstr "Dein Nickname"
 
 #. Default: Your Password
-#: dbas/templates/snippet-popups.pt:455
+#: dbas/templates/snippet-popups.pt:237
 msgid "your_password"
 msgstr "Dein Passwort"
 
 #. Default: Forgot Password?
-#: dbas/templates/snippet-popups.pt:464
+#: dbas/templates/snippet-popups.pt:246
 msgid "forgot_password"
 msgstr "Passwort vergessen"
 
 #. Default: Password-Request
-#: dbas/templates/snippet-popups.pt:469
+#: dbas/templates/snippet-popups.pt:251
 msgid "password_request"
 msgstr "Passwort-Nachfrage"
 
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
-#: dbas/templates/snippet-popups.pt:471
+#: dbas/templates/snippet-popups.pt:253
 msgid "fill_in_mail_for_password"
 msgstr ""
 "Bitte trage unten deine E-Mail-Adresse ein. Ein neues Passwort wird an diese "
@@ -668,123 +710,118 @@ msgstr ""
 
 #. Default: Error:
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:480 dbas/templates/snippet-popups.pt:485
-#: dbas/templates/snippet-popups.pt:576 dbas/templates/news.pt:25
-#: dbas/templates/news.pt:30 dbas/templates/settings.pt:77
-#: dbas/templates/content.pt:84 dbas/templates/content.pt:136
+#: dbas/templates/snippet-popups.pt:262 dbas/templates/snippet-popups.pt:267
+#: dbas/templates/snippet-popups.pt:358 dbas/templates/news.pt:22
+#: dbas/templates/news.pt:27 dbas/templates/settings.pt:77
+#: dbas/templates/content.pt:81 dbas/templates/content.pt:133
 msgid "error"
 msgstr "Fehler:"
 
 #. Default: Sign Up for Free
-#: dbas/templates/snippet-popups.pt:490
+#: dbas/templates/snippet-popups.pt:272
 msgid "signup_free"
 msgstr "Registriere dich kostenfrei"
 
 #. Default: Your First Name
-#: dbas/templates/snippet-popups.pt:493
+#: dbas/templates/snippet-popups.pt:275
 msgid "first_name"
 msgstr "Vorname"
 
 #. Default: Your Last Name
-#: dbas/templates/snippet-popups.pt:500
+#: dbas/templates/snippet-popups.pt:282
 msgid "last_name"
 msgstr "Nachname"
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: dbas/templates/snippet-popups.pt:507 dbas/templates/settings.pt:38
+#: dbas/templates/snippet-popups.pt:289 dbas/templates/settings.pt:38
 msgid "nickname"
 msgstr "Nickname"
 
 #. Default: Your Gender
-#: dbas/templates/snippet-popups.pt:514
+#: dbas/templates/snippet-popups.pt:296
 msgid "gender"
 msgstr "Dein Geschlecht"
 
 #. Default: none
-#: dbas/templates/snippet-popups.pt:517
+#: dbas/templates/snippet-popups.pt:299
 msgid "none"
 msgstr "keine Angabe"
 
 #. Default: female
-#: dbas/templates/snippet-popups.pt:519
+#: dbas/templates/snippet-popups.pt:301
 msgid "female"
 msgstr "weiblich"
 
 #. Default: male
-#: dbas/templates/snippet-popups.pt:521
+#: dbas/templates/snippet-popups.pt:303
 msgid "male"
 msgstr "männlich"
 
 #. Default: Your Email Address
-#: dbas/templates/snippet-popups.pt:526
+#: dbas/templates/snippet-popups.pt:308
 msgid "email"
 msgstr "Deine E-Mail"
 
 #. Default: Your Password
-#: dbas/templates/snippet-popups.pt:533
+#: dbas/templates/snippet-popups.pt:315
 msgid "password"
 msgstr "Passwort"
 
 #. Default: Password (confirm)
-#: dbas/templates/snippet-popups.pt:540
+#: dbas/templates/snippet-popups.pt:322
 msgid "password-confirm"
 msgstr "Passwort (Bestätigung)"
 
 #. Default: Password Strength
-#: dbas/templates/snippet-popups.pt:547
+#: dbas/templates/snippet-popups.pt:329
 #, fuzzy
 msgid "password-strength"
 msgstr "Stärke"
 
 #. Default: very weak
-#: dbas/templates/snippet-popups.pt:550
+#: dbas/templates/snippet-popups.pt:332
 msgid "password_strength"
 msgstr "Stärke"
 
 #. Default: Generate secure password
-#: dbas/templates/snippet-popups.pt:554
+#: dbas/templates/snippet-popups.pt:336
 #, fuzzy
 msgid "generate_password"
 msgstr "Neues Password"
 
-#. Default: Warning!
-#: dbas/templates/snippet-popups.pt:563 dbas/templates/contact.pt:64
-msgid "warning"
-msgstr "Warnung!"
-
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:571 dbas/templates/settings.pt:72
+#: dbas/templates/snippet-popups.pt:353 dbas/templates/settings.pt:72
 msgid "success"
 msgstr "Erfolg"
 
 #. Default: How to select a strong password
-#: dbas/templates/snippet-popups.pt:581
+#: dbas/templates/snippet-popups.pt:363
 msgid "select_password"
 msgstr "Wie wählt man ein sicheres Password"
 
 #. Default: A Password is strong, when it contains at least:
-#: dbas/templates/snippet-popups.pt:583
+#: dbas/templates/snippet-popups.pt:365
 msgid "select_password_intro"
 msgstr "Ein Passwort ist stark, wenn es mindestens folgende Sachen enthält:"
 
 #. Default: eight characters
-#: dbas/templates/snippet-popups.pt:585
+#: dbas/templates/snippet-popups.pt:367
 msgid "select_password_rule1"
 msgstr "acht Zeichen"
 
 #. Default: one uppercase letter
-#: dbas/templates/snippet-popups.pt:586
+#: dbas/templates/snippet-popups.pt:368
 msgid "select_password_rule2"
 msgstr "ein Großbuchstaben"
 
 #. Default: one lowercase letter
-#: dbas/templates/snippet-popups.pt:587
+#: dbas/templates/snippet-popups.pt:369
 msgid "select_password_rule3"
 msgstr "ein Kleinbuchstaben"
 
 #. Default: one special sign
-#: dbas/templates/snippet-popups.pt:588
+#: dbas/templates/snippet-popups.pt:370
 msgid "select_password_rule4"
 msgstr "ein Sonderzeichen"
 
@@ -792,7 +829,7 @@ msgstr "ein Sonderzeichen"
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: dbas/templates/snippet-popups.pt:590
+#: dbas/templates/snippet-popups.pt:372
 msgid "popup_password_text"
 msgstr ""
 "Als Beispiel ist 'M2015_fiO' ein starkes Passwort, dass erst nach ca. 275 "
@@ -801,104 +838,104 @@ msgstr ""
 "Foldenges sollte beachtet werden."
 
 #. Default: Avoid using a password on several pages
-#: dbas/templates/snippet-popups.pt:592
+#: dbas/templates/snippet-popups.pt:374
 msgid "select_password_avoid1"
 msgstr "Niemals Passwörter für mehrere Seiten nutzen"
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: dbas/templates/snippet-popups.pt:593
+#: dbas/templates/snippet-popups.pt:375
 msgid "select_password_avoid2"
 msgstr "Phrasen vermeiden, die in Büchern gefunden werden können"
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: dbas/templates/snippet-popups.pt:594
+#: dbas/templates/snippet-popups.pt:376
 msgid "select_password_avoid3"
 msgstr ""
 "Verwendung von Informationen, die eventuell in Verbindung zur Person stehen"
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: dbas/templates/snippet-popups.pt:595
+#: dbas/templates/snippet-popups.pt:377
 msgid "select_password_avoid4"
 msgstr ""
 "Verwendung von Informationen, die eventuell Freund/Bekannte der Person  "
 "kennen"
 
 #. Default: If you need some help with our password, you can get one here:
-#: dbas/templates/snippet-popups.pt:597
+#: dbas/templates/snippet-popups.pt:379
 msgid "select_password_help"
 msgstr ""
 "Wenn Sie Hilfe bei der Erstellung brauchen, können Sie sich hier eins "
 "generieren lassen:"
 
 #. Default: Register
-#: dbas/templates/snippet-popups.pt:610
+#: dbas/templates/snippet-popups.pt:392
 msgid "register"
 msgstr ""
 
 #. Default: How to write text
-#: dbas/templates/snippet-popups.pt:625
+#: dbas/templates/snippet-popups.pt:407
 msgid "how-to-write-text-header"
 msgstr ""
 
 #. Default: There are a few simple rules for writing good arguments:
-#: dbas/templates/snippet-popups.pt:628
+#: dbas/templates/snippet-popups.pt:410
 msgid "how-to-write-text-header-body-title"
 msgstr ""
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: dbas/templates/snippet-popups.pt:630
+#: dbas/templates/snippet-popups.pt:412
 msgid "how-to-write-text-header-body"
 msgstr ""
 
 #. Default: Do's:
-#: dbas/templates/snippet-popups.pt:632
+#: dbas/templates/snippet-popups.pt:414
 msgid "dos"
 msgstr ""
 
 #. Default: Write short!
 #. Default: Complicated and nested sentences!
-#: dbas/templates/snippet-popups.pt:634 dbas/templates/snippet-popups.pt:640
+#: dbas/templates/snippet-popups.pt:416 dbas/templates/snippet-popups.pt:422
 msgid "how-to-write-text-short"
 msgstr ""
 
 #. Default: Only one statement/argument/point per textarea!
 #. Default: More than one statement/argument/point per textarea!
-#: dbas/templates/snippet-popups.pt:635 dbas/templates/snippet-popups.pt:641
+#: dbas/templates/snippet-popups.pt:417 dbas/templates/snippet-popups.pt:423
 msgid "how-to-write-text-one-point"
 msgstr ""
 
 #. Default: Don'ts:
-#: dbas/templates/snippet-popups.pt:638
+#: dbas/templates/snippet-popups.pt:420
 msgid "donts"
 msgstr ""
 
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:645
+#: dbas/templates/snippet-popups.pt:427
 msgid "Okay"
 msgstr ""
 
 #. Default: Abort
-#: dbas/templates/snippet-popups.pt:646
+#: dbas/templates/snippet-popups.pt:428
 msgid "abort"
 msgstr ""
 
 #. Default: JavaScript is not enabled:
-#: dbas/templates/snippet-popups.pt:655
+#: dbas/templates/snippet-popups.pt:437
 msgid "js_disabled1"
 msgstr "JavaScript ist nicht aktiviert:"
 
 #. Default: Please enable JavaScript!
-#: dbas/templates/snippet-popups.pt:656
+#: dbas/templates/snippet-popups.pt:438
 msgid "js_disabled2"
 msgstr "Bitte JavaScript aktivieren!"
 
 #. Default: This will be the news page and currently I think...this will be
 #. some kind of blog
-#: dbas/templates/news.pt:14
+#: dbas/templates/news.pt:13
 msgid "news_intro"
 msgstr "Dies, wird so etwas wie die Nachrichten-Seite"
 
@@ -1026,64 +1063,67 @@ msgid "startet_at"
 msgstr "und wurde gestartet am"
 
 #. Default: Change display style:
-#: dbas/templates/content.pt:58
+#: dbas/templates/content.pt:55
 msgid "change_style"
 msgstr "Wechsel die Darstellung:"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:62
+#: dbas/templates/content.pt:59
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:72
+#: dbas/templates/content.pt:69
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:99
+#: dbas/templates/content.pt:96
 msgid "istland_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Pro
-#: dbas/templates/content.pt:103 dbas/templates/content.pt:145
+#: dbas/templates/content.pt:100 dbas/templates/content.pt:142
 msgid "pro"
 msgstr "Pro"
 
 #. Default: Contra
-#: dbas/templates/content.pt:109 dbas/templates/content.pt:157
+#: dbas/templates/content.pt:106 dbas/templates/content.pt:154
 msgid "contra"
 msgstr "Kontra"
 
 #. Default: Please insert a new Argument
-#: dbas/templates/content.pt:132
+#: dbas/templates/content.pt:129
 msgid "insert-argument"
 msgstr "Bitte füge ein neues Argument hinzu"
 
 #. Default: Add a textfield
-#: dbas/templates/content.pt:151 dbas/templates/content.pt:162
+#: dbas/templates/content.pt:148 dbas/templates/content.pt:159
 msgid "add_textfield"
 msgstr "weiteres Textfeld"
 
 #. Default: List of participants
-#: dbas/templates/content.pt:178
+#: dbas/templates/content.pt:175
 msgid "participant_list"
 msgstr ""
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/content.pt:179 dbas/templates/content.pt:194
+#: dbas/templates/content.pt:176 dbas/templates/content.pt:191
 msgid "admin_only"
 msgstr "Manche Sachen sind nur für den Admin."
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/content.pt:193
+#: dbas/templates/content.pt:190
 msgid "list_attacks"
 msgstr ""
 
 #. Default: Minimap:
-#: dbas/templates/content.pt:205
+#: dbas/templates/content.pt:202
 msgid "minimap"
 msgstr "Minimap:"
+
+#~ msgid "privacy_policy"
+#~ msgstr "Datenschutzrichtlinien"
 
 #~ msgid "special_rights"
 #~ msgstr "Besondere Recht"

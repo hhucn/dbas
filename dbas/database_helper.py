@@ -215,9 +215,9 @@ class DatabaseHelper(object):
 		if db_statements:
 			return_dict['status'] = '1'
 			logger('DatabaseHelper', 'get_start_statements', 'there are start statements')
-			for stat in db_statements:
-				logger('DatabaseHelper', 'get_start_statements', 'stat ' + str(stat.uid) + ': ' + stat.textvalues.textversions.content)
-				statements_dict[str(stat.uid)] = DictionaryHelper().save_statement_row_in_dictionary(stat)
+			for statement in db_statements:
+				logger('DatabaseHelper', 'get_start_statements', 'statement ' + str(statement.uid) + ': ' + statement.textvalues.textversions.content)
+				statements_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement)
 		else:
 			logger('DatabaseHelper', 'get_start_statements', 'there are no statements')
 			return_dict['status'] = '-1'
@@ -346,10 +346,10 @@ class DatabaseHelper(object):
 
 		logger('DatabaseHelper', 'get_attack_for_argument', 'relation: ' + relation + ', premissesgroup_uid: ' + premissesgroup_uid)
 
-		# get last tracked conclusion
+		# get last conclusion
 		db_last_conclusion = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=pgroup_id).first()
 
-		#TODO error on http://localhost:4284/discussion/id_text=rebut_premissesgroup_14&pgroup_id=1/reply_for_argument/go
+		# get the non supportive argument
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
 		                                                    Argument.premissesGroup_uid==int(premissesgroup_uid),
 		                                                    Argument.isSupportive==False)).first()
@@ -366,6 +366,7 @@ class DatabaseHelper(object):
 		return_dict['premisse_text'], trash = qh.get_text_for_premissesGroup_uid(int(premissesgroup_uid))
 		return_dict['premissesgroup_uid'] = premissesgroup_uid
 		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_last_conclusion.statement_uid)
+		return_dict['conclusion_uid'] = db_last_conclusion.statement_uid
 		return_dict['argument_uid'] = db_argument.uid
 		return_dict['premissegroup_uid'] = db_argument.premissesGroup_uid
 		return_dict['relation'] = relation
@@ -510,19 +511,23 @@ class DatabaseHelper(object):
 		:return: '1'
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		logger('DatabaseHelper', 'set_statement', 'user: ' + str(user) + 'user_id: ' + str(db_user.uid) + ', statement: ' + str(statement))
+		logger('DatabaseHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) + ', statement: ' + str(
+			statement))
 
 		# check for dot at the end
-		if not statement.endswith("."):
+		if not statement.endswith(('.','?','!')):
 			statement += "."
 		if statement.lower().startswith('because '):
 			statement = statement[8:]
 
 		# check, if the statement already exists
+		logger('DatabaseHelper', 'set_statement', 'check for duplicate with: ' + statement)
 		db_duplicate = DBDiscussionSession.query(TextVersion).filter_by(content=statement).first()
 		if db_duplicate:
-			logger('DatabaseHelper', 'set_statement', 'duplicate')
-			return None
+			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(textVersion_uid=db_duplicate.uid).first()
+			db_statement = DBDiscussionSession.query(Statement).filter_by(text_uid=db_textvalue.uid).first()
+			logger('DatabaseHelper', 'set_statement', 'duplicate, returning old statement with uid ' + str(db_statement.uid))
+			return db_statement
 
 		# add the version
 		textversion = TextVersion(content=statement, author=db_user.uid, weight=0)
@@ -545,9 +550,10 @@ class DatabaseHelper(object):
 
 		transaction.commit()
 
+		logger('DatabaseHelper', 'set_statement', 'returning new statement with uid ' + str(new_statement.uid))
 		return new_statement
 
-	def set_premisses_for_tracked_argument(self, transaction, user, dict, key, conclusion_id, is_supportive):
+	def set_premisses_for_argument(self, transaction, user, dict, key, premisse_uid, is_supportive):
 		"""
 		Inserts the given dictionarie with premisses for an statement or an argument
 		:param transaction: current transaction for the database
@@ -559,13 +565,13 @@ class DatabaseHelper(object):
 		:return: dict
 		"""
 
-		# user and last given statement is conclusion_id
-
 		# insert the premisses as statements
 		return_dict = {}
 		qh = QueryHelper()
 
-		logger('DatabaseHelper', 'set_premisses_for_tracked_argument', 'main')
+		db_premisse = DBDiscussionSession.query(Premisse).filter_by(statement_uid=premisse_uid).first()
+
+		logger('DatabaseHelper', 'set_premisses_for_argument', 'main')
 		for index, entry in enumerate(dict):
 			# first, save the premisse as statement
 			new_statement = self.set_statement(transaction, dict[entry], user, False)
@@ -573,10 +579,10 @@ class DatabaseHelper(object):
 			# second, set the new statement as premisse
 			new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
 			logger('DatabaseHelper', 'set_premisses', dict[entry] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
-			       + ' to statement ' + str(conclusion_id) + ', supportive')
+			       + ' to statement ' + str(db_premisse.statement_uid) + ', supportive')
 
 			# third, insert the argument
-			qh.set_argument(transaction, user, new_premissegroup_uid, conclusion_id, 0, is_supportive)
+			qh.set_argument(transaction, user, new_premissegroup_uid, db_premisse.statement_uid, 0, is_supportive)
 
 			return_dict[key + '_' + str(index)] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 

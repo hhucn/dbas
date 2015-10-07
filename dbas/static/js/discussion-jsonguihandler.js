@@ -114,7 +114,7 @@ function JsonGuiHandler() {
 		// set discussions text
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + whatDoYouThink,
-			'This confrontation is a ' + jsonData.attack, {title: '', text: ''});
+			'This confrontation is a ' + jsonData.attack, {title: '', text: '', conclusion_id: jsonData.conclusion_uid});
 
 		// build the radio buttons
 		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine + confronation_id, relationArray[0] + ' [<i>undermine</i>]', false, false, true, attr_undermine));
@@ -141,7 +141,11 @@ function JsonGuiHandler() {
 			opinion,
 			confrontationText,
 			listitems = [],
-			relation = jsonData.relation;
+			dict,
+			relation = jsonData.relation,
+			conclusion_uid = jsonData.conclusion_uid,
+			argument_uid = jsonData.argument_uid,
+			premissegroup_uid = jsonData.premissegroup_uid;
 
 		if (typeof relation == 'undefined'){
 			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(because) + ' ' + premisse + '</b>';
@@ -150,12 +154,17 @@ function JsonGuiHandler() {
 		}
 
 		// build some confrontation text
-		confrontationText = otherParticipantsDontThink + ' <b>' + premisse + '</b>';
+		confrontationText = otherParticipantsDontHave + ' <b>' + premisse + '</b>';
 
 		// set discussions text
+
+		dict = {title: premisse, text: premisse,
+			conclusion_id: conclusion_uid,
+			argument_id: argument_uid,
+			premissegroup_id: premissegroup_uid};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + whatDoYouThink,
-			'This confrontation is a ' + jsonData.attack, {title: premisse, text: premisse});
+			'This confrontation is a ' + jsonData.attack, dict);
 
 		// build the radio buttons
 		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>
@@ -201,7 +210,8 @@ function JsonGuiHandler() {
 			'text': text,
 			'attack': jsonData.relation,
 			'related_argument': jsonData.argument_uid,
-			'premissegroup_uid': jsonData.premissegroup_uid};
+			'premissegroup_id': jsonData.premissegroup_uid,
+			'conclusion_id': jsonData.conclusion_uid};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));

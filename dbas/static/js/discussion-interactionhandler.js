@@ -67,11 +67,15 @@ function InteractionHandler() {
 		if ($('#' + addReasonButtonId).is(':checked')) {
 
 			guiHandler.displayHowToWriteTextPopup();
+			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
+			var sta = text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0;
+			var arg = text.indexOf(addArgumentRadioButtonText) >= 0;
+			var pre = !sta && ! arg;
 
-			if (window.location.href.indexOf(getPremissesForStatement) != -1)			alert('only pos');
-			if (window.location.href.indexOf(replyForPremissegroup) != -1)				alert('only ?1');
-			if (window.location.href.indexOf(replyForArgument) != -1)					alert('only ?2');
-			if (window.location.href.indexOf(replyForResponseOfConfrontation) != -1)	alert('only pos');
+			if (window.location.href.indexOf(attrGetPremissesForStatement) != -1)		 alert('only pos\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\nTODO: pgroups');
+			if (window.location.href.indexOf(attrReplyForPremissegroup) != -1)			 alert('only  ?1\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n');
+			if (window.location.href.indexOf(attrReplyForArgument) != -1)				 alert('only  ?2\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n'); // maybe with Other users do not have any counter-argument for
+			if (window.location.href.indexOf(attrReplyForResponseOfConfrontation) != -1) alert('only pos\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n');
 
 			// get the second child, which is the label
 			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
@@ -120,6 +124,7 @@ function InteractionHandler() {
 	 */
 	this.getPremissesAndSendThem = function (useIntro) {
 		var i = 0, dict = {}, no, intro;
+		// all pro statements
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
@@ -130,6 +135,7 @@ function InteractionHandler() {
 			}
 		});
 		i = 0;
+		// all con statements
 		$('#' + conPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
@@ -140,6 +146,8 @@ function InteractionHandler() {
 			}
 		});
 		dict['conclusion_id'] = $('#' + discussionsDescriptionId).attr('conclusion_id');
+		dict['argument_id'] = $('#' + discussionsDescriptionId).attr('argument_id');
+		dict['premissegroup_id'] = $('#' + discussionsDescriptionId).attr('premissegroup_id');
 		new AjaxSiteHandler().sendNewPremissesForArgument(dict);
 	};
 
@@ -237,6 +245,7 @@ function InteractionHandler() {
 	this.callbackIfDoneHandleReplyForResponseOfConfrontation = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
+			alert("Adding missing id's (conclusion id?)");
 			new JsonGuiHandler().setJsonDataAsConfrontationReasoning(parsedData);
 		} else if (parsedData.status == '0') {
 			alert('callbackIfDoneHandleReplyForResponseOfConfrontation status 0');
@@ -284,7 +293,8 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendNewPremisses = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
-			alert('callbackIfDoneForSendNewPremisses status .1');
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(notInsertedErrorBecauseInternal);
 		} else {
 			new GuiHandler().setPremissesAsLastChild(parsedData);
 		}

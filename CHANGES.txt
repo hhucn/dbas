@@ -43,3 +43,8 @@
 0.3.3 (01.10.2015)
 ---
 - News interface for authors
+
+0.3.4 (06.10.2015)
+---
+- Fuzzy string search for input fields
+- Logic for inserting statements

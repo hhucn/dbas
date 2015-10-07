@@ -18,7 +18,7 @@ function AjaxSiteHandler() {
 	 * @param uid current identifier
 	 */
 	this.callSiteForGetPremisseForStatement = function (uid) {
-		this.redirectBrowser('uid=' + uid, getPremissesForStatement);
+		this.redirectBrowser('uid=' + uid, attrGetPremissesForStatement);
 	};
 
 	/**
@@ -27,7 +27,7 @@ function AjaxSiteHandler() {
 	 * @param conclusion_id
 	 */
 	this.callSiteForGetReplyForPremisseGroup = function (pgroup_id, conclusion_id) {
-		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id, replyForPremissegroup);
+		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id, attrReplyForPremissegroup);
 	};
 
 	/**
@@ -36,7 +36,7 @@ function AjaxSiteHandler() {
 	 * @param pgroup_id
 	 */
 	this.callSiteForGetReplyForArgument = function (id_text, pgroup_id) {
-		this.redirectBrowser('id_text=' + id_text + '&pgroup_id=' + pgroup_id, replyForArgument);
+		this.redirectBrowser('id_text=' + id_text + '&pgroup_id=' + pgroup_id, attrReplyForArgument);
 	};
 
 	/**
@@ -44,7 +44,7 @@ function AjaxSiteHandler() {
 	 * @param id current identifier
 	 */
 	this.callSiteForHandleReplyForResponseOfConfrontation = function (id) {
-		this.redirectBrowser('id=' + id, replyForResponseOfConfrontation);
+		this.redirectBrowser('id=' + id, attrReplyForResponseOfConfrontation);
 	};
 
 	/**
@@ -55,9 +55,15 @@ function AjaxSiteHandler() {
 	this.redirectBrowser = function (keyValuePair, service) {
 		//alert(mainpage + key + '=' + value + '/' + service + '/go'):
 		// window.location.replace(mainpage + key + '=' + value + '/' + service + '/go');
-		window.location.href = mainpage + 'discussion/' + keyValuePair + '/' + service + '/' + go;
+		window.location.href = mainpage + 'discussion/' + keyValuePair + '/' + service + '/' + attrGo;
 	};
 
+	/**
+	 *
+	 * @param data
+	 * @param url
+	 * @param settings_data
+	 */
 	this.debugger = function ( data, url, settings_data ) {
 		if (hash==1) window.location = '/' + url + '?' + settings_data;
 		if (loca==1) window.location = '/content/' + url + '?' + settings_data;
@@ -160,6 +166,8 @@ function AjaxSiteHandler() {
 	 */
 	this.getReplyForArgument = function (ids) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+
+		alert("START FROM HERE");
 		$.ajax({
 			url: 'ajax_reply_for_argument',
 			method: 'POST',
@@ -221,6 +229,7 @@ function AjaxSiteHandler() {
 	 * @param argument_dictionary for inserting
 	 */
 	this.sendNewPremissesForArgument = function (argument_dictionary) {
+		alert('check ob es alles richtig eingefügt wird: sendNewPremissesForArgument');
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_premisses',

@@ -54,8 +54,11 @@ class DictionaryHelper(object):
 		:param statement_row: for saving
 		:return: dictionary
 		"""
+		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'statement uid ' + str(statement_row.uid))
 		db_statement    = DBDiscussionSession.query(Statement).filter_by(uid=statement_row.uid).join(TextValue).first()
 		db_premisse     = DBDiscussionSession.query(Premisse).filter_by(statement_uid=db_statement.uid).first()
+		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'premisse uid ' +
+			       ((str(db_premisse.premissesGroup_uid) + '.' + str(db_premisse.statement_uid)) if db_premisse else 'null'))
 		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
 
 		uid    = str(db_statement.uid)

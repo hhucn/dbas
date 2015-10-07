@@ -18,14 +18,16 @@ class QueryHelper(object):
 		:param user:
 		:return: uid of the PremisseGroup
 		"""
+		logger('DatabaseHelper', 'set_statement_as_premisse', 'statement: ' + str(statement) + ', user: ' + str(user))
+
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		premisse_group = PremisseGroup(author=db_user.uid)
 		DBDiscussionSession.add(premisse_group)
 		DBDiscussionSession.flush()
 
 		premisse_list = []
-		logger('DatabaseHelper', 'set_statement_as_premisse', 'premissesgroup=' + str(premisse_group.uid) + ', statement='
-				+ str(statement.uid) + ', isnegated=' + ('0' if False else '1') + ', author=' + str(db_user.uid))
+		logger('DatabaseHelper', 'set_statement_as_premisse', 'premissesgroup: ' + str(premisse_group.uid) + ', statement: '
+				+ str(statement.uid) + ', isnegated: ' + ('0' if False else '1') + ', author: ' + str(db_user.uid))
 		premisse = Premisse(premissesgroup=premisse_group.uid, statement=statement.uid, isnegated=False, author=db_user.uid)
 		premisse_list.append(premisse)
 
