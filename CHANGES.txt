@@ -22,7 +22,7 @@
 
 0.2.2 (07.07.2015)
 ---
-- smaller changes of design aspects
+- Smaller changes of design aspects
 
 0.2.3 (23.07.2015)
 ---
