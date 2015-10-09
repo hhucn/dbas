@@ -42,9 +42,10 @@ function AjaxSiteHandler() {
 	/**
 	 * Redirection before an ajax call
 	 * @param id current identifier
+	 * @param relation
 	 */
-	this.callSiteForHandleReplyForResponseOfConfrontation = function (id) {
-		this.redirectBrowser('id=' + id, attrReplyForResponseOfConfrontation);
+	this.callSiteForHandleReplyForResponseOfConfrontation = function (id, relation) {
+		this.redirectBrowser('id=' + id + '&relation=' + relation, attrReplyForResponseOfConfrontation);
 	};
 
 	/**
@@ -53,8 +54,6 @@ function AjaxSiteHandler() {
 	 * @param service current service
 	 */
 	this.redirectBrowser = function (keyValuePair, service) {
-		//alert(mainpage + key + '=' + value + '/' + service + '/go'):
-		// window.location.replace(mainpage + key + '=' + value + '/' + service + '/go');
 		window.location.href = mainpage + 'discussion/' + keyValuePair + '/' + service + '/' + attrGo;
 	};
 
@@ -198,12 +197,13 @@ function AjaxSiteHandler() {
 	 * @param id of clicked relation and statement
 	 */
 	this.handleReplyForResponseOfConfrontation = function (id) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, params;
+		params = id.split('&');
 		$.ajax({
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
 			data: {
-				id: id
+				id: params[0], relation: params[1]
 			},
 			dataType: 'json',
 			async: true,
@@ -228,11 +228,10 @@ function AjaxSiteHandler() {
 	 * Sends new premisses to the server. Answer will be given to a callback
 	 * @param argument_dictionary for inserting
 	 */
-	this.sendNewPremissesForArgument = function (argument_dictionary) {
-		alert('check ob es alles richtig eingefügt wird: sendNewPremissesForArgument');
+	this.sendNewPremissesForConclusion = function (argument_dictionary) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_new_premisses',
+			url: 'ajax_set_new_premisses_for_conclusion',
 			type: 'POST',
 			data: argument_dictionary,
 			dataType: 'json',
@@ -241,7 +240,7 @@ function AjaxSiteHandler() {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxSendNewPremissesDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewPremisses(data);
+			new InteractionHandler().callbackIfDoneForSendNewPremissesForConclusion(data);
 		}).fail(function ajaxSendNewPremissesFail(err) {
 			// new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().setErrorDescription(JSON.stringify(err));

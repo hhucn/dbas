@@ -312,14 +312,22 @@ function GuiHandler() {
 	 * @param jsonData returned data
 	 */
 	this.setPremissesAsLastChild = function (jsonData) {
-		var newElement, helper = new Helper(), text, l;
+		var newElement, helper = new Helper(), text, l, keyword;
+
+		// are we positive or negateive?
+		keyword = $('#' + discussionsDescriptionId).attr('attack').indexOf(attr_undermine) != -1
+			|| $('#' + discussionsDescriptionId).attr('attack').indexOf(attr_undercut) != -1
+			||$('#' + discussionsDescriptionId).attr('attack').indexOf(attr_rebut) != -1 ? 'con' : 'pro';
+
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
-			if (key.substr(0, 3) == 'pro') {
+
+			if (key.substr(0, 3) == keyword) {
 				text = 'Because ' + val.text;
 				l = text.length-1;
-				if (text.substr(l) != '.' && text.substr(l) != '?' && text.substr(l) != '!')
-						text += '.';
-				newElement = helper.getKeyValAsInputInLiWithType(val.premissegroup_uid, text + '.', false, true, false, val.text);
+				if (text.substr(l) != '.' && text.substr(l) != '?' && text.substr(l) != '!') {
+					text += '.';
+				}
+				newElement = helper.getKeyValAsInputInLiWithType(val.premissegroup_uid, text, false, true, false, val.text);
 				newElement.children().hover(function () {
 					$(this).toggleClass('table-hover');
 				});
@@ -342,7 +350,7 @@ function GuiHandler() {
 	 * @param isArgument
 	 */
 	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
-		var statement, attack, argument, conclusion,
+		var statement, attack, argument, conclusion, relation,
 			guihandler = new GuiHandler(),
 			ajaxhandler = new AjaxSiteHandler(),
 			interactionhandler = new InteractionHandler();
@@ -380,21 +388,21 @@ function GuiHandler() {
 			$('#' + addStatementContainerH4Id).text(isPremisse ? argumentContainerH4TextIfPremisse : argumentContainerH4TextIfArgument);
 			// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
 			$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with: <b>' + statement + '</b>, because ...');
+			$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with: <b>' + statement + '</b>, because...');
 			$('#' + addStatementContainerMainInputId).hide().focus();
-			$('#' + proPositionColumnId).show();
-			$('#' + conPositionColumnId).hide();
-			$('#' + headingConPositionTextId).html('');
-			// $('#' + conPositionColumnId).show();
-			// $('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with: <b>' + statement + '</b>, because...');
-			//if (isPremisse) {
-			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenPremisse() {
-				interactionhandler.getPremissesAndSendThem(false);
-				guihandler.setErrorDescription('');
-				guihandler.setSuccessDescription('');
-				$('#' + addStatementErrorContainer).hide();
-				$('#' + addStatementErrorMsg).text('');
-			});
-			//} else {
+
+			// take a look, if we agree or disagree
+			relation = $('#' + discussionsDescriptionId).attr('attack');
+			if (relation.indexOf(attr_undermine) != -1 || relation.indexOf(attr_undercut) != -1 || relation.indexOf(attr_rebut) != -1){
+				$('#' + proPositionColumnId).hide();
+				$('#' + conPositionColumnId).show();
+				$('#' + headingProPositionTextId).html('');
+			} else {
+				$('#' + proPositionColumnId).show();
+				$('#' + conPositionColumnId).hide();
+				$('#' + headingConPositionTextId).html('');
+			}
+
 			// does other users have an opinion?
 			if (isArgument) {
 				if ($('#' + discussionsDescriptionId).text().indexOf(otherParticipantsDontHave) == -1) {
@@ -407,13 +415,16 @@ function GuiHandler() {
 			}
 
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenArgument() {
-				interactionhandler.getPremissesAndSendThem(false);
+				if (isPremisse) {
+					interactionhandler.getPremissesAndSendThem(false, true);
+				} else {
+					alert("todo 394 in guihandler");
+				}
 				guihandler.setErrorDescription('');
 				guihandler.setSuccessDescription('');
 				$('#' + addStatementErrorContainer).hide();
 				$('#' + addStatementErrorMsg).text('');
 			});
-			//}
 		} else {
 			alert('What now (II)? GuiHandler: setDisplayStylesOfAddStatementContainer');
 		}

@@ -578,7 +578,7 @@ class DatabaseHelper(object):
 
 			# second, set the new statement as premisse
 			new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
-			logger('DatabaseHelper', 'set_premisses', dict[entry] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
+			logger('DatabaseHelper', 'set_premisses_for_argument', dict[entry] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
 			       + ' to statement ' + str(db_premisse.statement_uid) + ', supportive')
 
 			# third, insert the argument
@@ -587,6 +587,65 @@ class DatabaseHelper(object):
 			return_dict[key + '_' + str(index)] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 
 		transaction.commit()
+
+		return return_dict
+
+	def set_premisses_for_conclusion(self, transaction, user, dict, key, conclusion_id, is_supportive):
+		"""
+		Inserts the given dictionary with premisses for an statement or an argument
+		:param transaction: current transaction for the database
+		:param user_id: current users nickname
+		:param dict: dictionary with all statements
+		:param key: pro or con
+		:param conclusion_id:
+		:param is_supportive: for the argument
+		:return: dict
+		"""
+
+		# insert the premisses as statements
+		return_dict = {}
+		qh = QueryHelper()
+
+		db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id).first()
+
+		logger('DatabaseHelper', 'set_premisses_for_conclusion', 'main')
+		for index, entry in enumerate(dict):
+			# first, save the premisse as statement
+			new_statement = self.set_statement(transaction, dict[entry], user, False)
+
+			# second, set the new statement as premisse
+			new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
+			logger('DatabaseHelper', 'set_premisses_for_conclusion', dict[entry] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
+			       + ' to statement ' + str(db_conclusion.uid) + ', ' + ('' if is_supportive else '' ) + 'supportive')
+
+			# third, insert the argument
+			qh.set_argument(transaction, user, new_premissegroup_uid, db_conclusion.uid, 0, is_supportive)
+			return_dict[key + '_' + str(index)] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+
+		transaction.commit()
+		return return_dict
+
+	def set_premisses_for_premissegroups(self, transaction, user, dict, key, premissegroup_id, is_supportive):
+		"""
+		Inserts the given dictionary with premisses for an statement or an argument
+		:param transaction: current transaction for the database
+		:param user_id: current users nickname
+		:param dict: dictionary with all statements
+		:param key: pro or con
+		:param premissegroup_id:
+		:param is_supportive: for the argument
+		:return: dict
+		"""
+
+		# insert the premisses as statements
+		return_dict = {}
+
+		db_premisses = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=premissegroup_id).all()
+
+		logger('DatabaseHelper', 'set_premisses_for_premissegroups', 'main')
+		for premisse in db_premisses:
+			logger('DatabaseHelper', 'set_premisses_for_premissegroups', 'calling set_premisses_for_conclusion with ' + str(premisse.statement_uid))
+			return_dict.update(self.set_premisses_for_conclusion(transaction, user, dict, key, premisse.statement_uid, is_supportive))
 
 		return return_dict
 

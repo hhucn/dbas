@@ -37,13 +37,14 @@ function InteractionHandler() {
 	/**
 	 * Handler when an relation button was clicked
 	 * @param id of the button
+	 * @param relation of the button
 	 */
-	this.relationButtonWasClicked = function (id) {
+	this.relationButtonWasClicked = function (id, relation) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
-		// new AjaxSiteHandler().handleReplyForResponseOfConfrontation(id);
-		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id);
+
+		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id, relation);
 	};
 
 	/**
@@ -64,6 +65,7 @@ function InteractionHandler() {
 	 */
 	this.radioButtonChanged = function () {
 		var guiHandler = new GuiHandler(), text, isStart = $('#' + discussionSpaceId + ' ul li input').hasClass('start');
+		// did we have an "add statement" action or just "argumentation" ?
 		if ($('#' + addReasonButtonId).is(':checked')) {
 
 			guiHandler.displayHowToWriteTextPopup();
@@ -72,10 +74,10 @@ function InteractionHandler() {
 			var arg = text.indexOf(addArgumentRadioButtonText) >= 0;
 			var pre = !sta && ! arg;
 
-			if (window.location.href.indexOf(attrGetPremissesForStatement) != -1)		 alert('only pos\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\nTODO: pgroups');
+			if (window.location.href.indexOf(attrGetPremissesForStatement) != -1)			alert('done 1'); // TODO inserting pgroups
 			if (window.location.href.indexOf(attrReplyForPremissegroup) != -1)			 alert('only  ?1\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n');
 			if (window.location.href.indexOf(attrReplyForArgument) != -1)				 alert('only  ?2\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n'); // maybe with Other users do not have any counter-argument for
-			if (window.location.href.indexOf(attrReplyForResponseOfConfrontation) != -1) alert('only pos\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n');
+			if (window.location.href.indexOf(attrReplyForResponseOfConfrontation) != -1)	alert('done 2');
 
 			// get the second child, which is the label
 			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
@@ -121,8 +123,9 @@ function InteractionHandler() {
 	/**
 	 * Fetches all premisses out of the textares and send them
 	 * @param useIntro
+	 * @param isForConclusion
 	 */
-	this.getPremissesAndSendThem = function (useIntro) {
+	this.getPremissesAndSendThem = function (useIntro, isForConclusion) {
 		var i = 0, dict = {}, no, intro;
 		// all pro statements
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
@@ -148,7 +151,12 @@ function InteractionHandler() {
 		dict['conclusion_id'] = $('#' + discussionsDescriptionId).attr('conclusion_id');
 		dict['argument_id'] = $('#' + discussionsDescriptionId).attr('argument_id');
 		dict['premissegroup_id'] = $('#' + discussionsDescriptionId).attr('premissegroup_id');
-		new AjaxSiteHandler().sendNewPremissesForArgument(dict);
+
+		if (isForConclusion) {
+			new AjaxSiteHandler().sendNewPremissesForConclusion(dict);
+		} else {
+			alert('todo 157 in interactionhandler');
+		}
 	};
 
 	/**
@@ -163,8 +171,7 @@ function InteractionHandler() {
 			id = radioButton.attr(attr_id),
 			long_id = radioButton.attr(attr_long_id),
 			value = radioButton.val(),
-			id_pgroup,
-			id_conclusion;
+			id_pgroup, id_conclusion, relation;
 
 		if (id.indexOf(attr_no_opinion) != -1){
 			parent.history.back();
@@ -184,7 +191,8 @@ function InteractionHandler() {
 				id_conclusion = $('#' + discussionsDescriptionId).attr(attr_conclusion_id);
 				this.premisseButtonWasClicked(id_pgroup, id_conclusion);
 			} else if (hasRelation && !hasPremisse && !hasStart) {
-				this.relationButtonWasClicked(id);
+				relation = $('#' + discussionsDescriptionId).attr('current_attack');
+				this.relationButtonWasClicked(id, relation);
 			} else if (hasPremisse && hasRelation && !hasStart){
 				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premissegroup_uid);
 				this.argumentButtonWasClicked(long_id, id_pgroup);
@@ -245,7 +253,6 @@ function InteractionHandler() {
 	this.callbackIfDoneHandleReplyForResponseOfConfrontation = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			alert("Adding missing id's (conclusion id?)");
 			new JsonGuiHandler().setJsonDataAsConfrontationReasoning(parsedData);
 		} else if (parsedData.status == '0') {
 			alert('callbackIfDoneHandleReplyForResponseOfConfrontation status 0');
@@ -283,6 +290,8 @@ function InteractionHandler() {
 			$('#' + addStatementErrorMsg).text(alreadyInserted)
 		} else {
 			new GuiHandler().setNewStatementAsLastChild(parsedData);
+			$('#' + addStatementContainerId).hide();
+			$('#' + addStatementContainerMainInputId).text('');
 		}
 	};
 
@@ -290,7 +299,7 @@ function InteractionHandler() {
 	 * Callback, when new premisses were send
 	 * @param data returned data
 	 */
-	this.callbackIfDoneForSendNewPremisses = function (data) {
+	this.callbackIfDoneForSendNewPremissesForConclusion = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
 			$('#' + addStatementErrorContainer).show();

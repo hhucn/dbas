@@ -516,15 +516,6 @@ class Dbas(object):
 		try:
 			ids = self.request.params['ids']
 			logger('reply_for_argument', 'def', 'ids ' + ids)
-			logger('reply_for_argument', 'def', 'ids ' + ids)
-			logger('reply_for_argument', 'def', 'ids ' + ids)
-			logger('reply_for_argument', 'def', 'ids ' + ids)
-			logger('reply_for_argument', 'def', 'ids ' + ids)
-			logger('reply_for_argument', 'def', 'ids ' + ids)
-			logger('reply_for_argument', 'def', 'ids ' + ids)
-			logger('reply_for_argument', 'def', 'ids ' + ids)
-			logger('reply_for_argument', 'def', 'ids ' + ids)
-			logger('reply_for_argument', 'def', 'ids ' + ids)
 			ids = ids.split('&')
 			if ids[0].startswith('id_text'):
 				id_text   = ids[0][ids[0].index('=')+1:]
@@ -558,12 +549,13 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			uids = self.request.params['id'].split('=')
-			uid = uids[1]
+			uid = self.request.params['id'].split('=')[1]
+			relation = self.request.params['relation'].split('=')[1]
 			# track will be saved in get_reply_confrontation_response
-			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid)
+			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid + ', last relation ' + relation)
 			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid, self.request.authenticated_userid, self.request.session.id)
 			return_dict['status'] = status
+			return_dict['last_relation'] = relation
 		except KeyError as e:
 			logger('reply_for_response_of_confrontation', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -638,8 +630,8 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new premisses
-	@view_config(route_name='ajax_set_new_premisses', renderer='json', check_csrf=True)
-	def set_new_premisses(self):
+	@view_config(route_name='ajax_set_new_premisses_for_conclusion', renderer='json', check_csrf=True)
+	def set_new_premisses_for_conclusion(self):
 		"""
 
 		:return:
@@ -654,23 +646,36 @@ class Dbas(object):
 			logger('set_new_premisses', 'def', 'main')
 			pro_dict = {}
 			con_dict = {}
-			# conclusion_id = self.request.params['conclusion_id']
+			conclusion_id = self.request.params['conclusion_id'] if 'conclusion_id' in self.request.params else -1
+			premissegroup_id = self.request.params['premissegroup_id'] if 'premissegroup_id' in self.request.params else -1
+			logger('set_new_premisses', 'def', 'conclusion_id ' + str(conclusion_id))
+			logger('set_new_premisses', 'def', 'premissegroup_id ' + str(premissegroup_id))
 			# argument_id = self.request.params['argument_id']
-			premissegroup_id = self.request.params['premissegroup_id']
-			text, premisses = QueryHelper().get_text_for_premissesGroup_uid(premissegroup_id)
+			# premissegroup_id = self.request.params['premissegroup_id']
+			# text, premisses = QueryHelper().get_text_for_premissesGroup_uid(premissegroup_id)
 			dh = DatabaseHelper()
 
-			for premisse_uid in premisses:
-				logger('set_new_premisses', 'def', 'premisse ' + str(premisse_uid))
-				for key in self.request.params:
-					if 'pro_' in key:
-						logger('set_new_premisses', key, self.request.params[key])
-						pro_dict[key] = self.request.params[key]
-					if 'con_' in key:
-						logger('set_new_premisses', key, self.request.params[key])
-						con_dict[key] = self.request.params[key]
-				return_dict.update(dh.set_premisses_for_argument(transaction, user_id, pro_dict, 'pro', premisse_uid, True))
-				return_dict.update(dh.set_premisses_for_argument(transaction, user_id, con_dict, 'con', premisse_uid, False))
+			#for premisse_uid in premisses:
+			#logger('set_new_premisses', 'def', 'premisse ' + str(conclusion_id))
+			#logger('set_new_premisses', 'def', 'premisse ' + str(conclusion_id))
+			for key in self.request.params:
+				if 'pro_' in key:
+					logger('set_new_premisses', key, self.request.params[key])
+					pro_dict[key] = self.request.params[key]
+				if 'con_' in key:
+					logger('set_new_premisses', key, self.request.params[key])
+					con_dict[key] = self.request.params[key]
+			#return_dict.update(dh.set_premisses_for_argument(transaction, user_id, pro_dict, 'pro', premisse_uid, True))
+			#return_dict.update(dh.set_premisses_for_argument(transaction, user_id, con_dict, 'con', premisse_uid, False))
+			if conclusion_id != -1:
+				logger('set_new_premisses', 'def', 'branch conclusion_id')
+				return_dict.update(dh.set_premisses_for_conclusion(transaction, user_id, pro_dict, 'pro', conclusion_id, True))
+				return_dict.update(dh.set_premisses_for_conclusion(transaction, user_id, con_dict, 'con', conclusion_id, False))
+			else:
+				logger('set_new_premisses', 'def', 'branch premissegroup_id')
+				return_dict.update(dh.set_premisses_for_premissegroups(transaction, user_id, pro_dict, 'pro', premissegroup_id, True))
+				return_dict.update(dh.set_premisses_for_premissegroups(transaction, user_id, con_dict, 'con', premissegroup_id, False))
+
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('set_new_premisses', 'error', repr(e))

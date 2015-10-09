@@ -33,7 +33,7 @@ coverage.xml
 
 # Misc
 .python-version
-*.sh
+#*.sh
 *.bak
 
 # Pycharm

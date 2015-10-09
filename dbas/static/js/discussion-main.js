@@ -243,7 +243,7 @@ $(function () {
 	});
 
 	$(window).load( function windowLoad () {
-    	if (window.location == mainpage + 'discussion/' + 'start') {
+    	if (window.location == mainpage + 'discussion/start') {
 			startDiscussion();
 		} else {
 			$('#' + discussionContainerId).fadeIn('fast');
@@ -251,7 +251,6 @@ $(function () {
 
 			hidden_service = $('#' + hiddenDiscussionInformationServiceId).text();
 			hidden_params = $('#' + hiddenDiscussionInformationParametersId).text();
-			// alert("params: "	+ hidden_params + "\n\n" + "service: "	+ hidden_service);
 
 			if (hidden_service == 'ajax_get_start_statements'){
 				ajaxHandler.getStartStatements();
