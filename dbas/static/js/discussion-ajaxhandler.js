@@ -227,14 +227,14 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends new premisses to the server. Answer will be given to a callback
-	 * @param argument_dictionary for inserting
+	 * @param dictionary for inserting
 	 */
-	this.sendNewPremissesForConclusion = function (argument_dictionary) {
+	this.sendNewPremissesForStatement = function (dictionary) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_new_premisses_for_conclusion',
+			url: 'ajax_set_new_premisses_for_statement',
 			type: 'POST',
-			data: argument_dictionary,
+			data: dictionary,
 			dataType: 'json',
 			async: true,
 			headers: {

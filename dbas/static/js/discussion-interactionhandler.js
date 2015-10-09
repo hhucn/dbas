@@ -126,7 +126,7 @@ function InteractionHandler() {
 	 * @param useIntro
 	 * @param isForConclusion
 	 */
-	this.getPremissesAndSendThem = function (useIntro, isForConclusion) {
+	this.getPremissesAndSendThem = function (useIntro, isForConclusion, current_attack, last_attack) {
 		var i = 0, dict = {}, no, intro;
 		// all pro statements
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
@@ -149,15 +149,17 @@ function InteractionHandler() {
 				i = i + 1;
 			}
 		});
-		dict['conclusion_id'] = $('#' + discussionsDescriptionId).attr('conclusion_id');
-		dict['argument_id'] = $('#' + discussionsDescriptionId).attr('argument_id');
+		dict['conclusion_id'] 	 = $('#' + discussionsDescriptionId).attr('conclusion_id');
+		dict['argument_id'] 	 = $('#' + discussionsDescriptionId).attr('argument_id');
 		dict['premissegroup_id'] = $('#' + discussionsDescriptionId).attr('premissegroup_id');
+		dict['current_attack'] 	 = $('#' + discussionsDescriptionId).attr('attack');
+		dict['last_attack'] 	 = $('#' + discussionsDescriptionId).attr('last_relation');
 
 		alert('get the right meta data for inserting !');
 		return;
 
 		if (isForConclusion) {
-			new AjaxSiteHandler().sendNewPremissesForConclusion(dict);
+			new AjaxSiteHandler().sendNewPremissesForStatement(dict);
 		} else {
 			alert('todo 157 in interactionhandler');
 		}

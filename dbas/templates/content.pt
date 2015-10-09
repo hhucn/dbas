@@ -10,8 +10,7 @@
 
 		<div class="container first-container">
 			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-10 center text-center">
+				<div class="col-md-8 center text-center">
 					<h2><span class="font-semi-bold" i18n:translate="dbas_long">Dialogue-Based Argumentation System</span></h2>
 					<p><span i18n:translate="current_discussion">The current discussion is about</span>
 						<br>
@@ -27,6 +26,7 @@
 					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
 				</div>
 				<div class="col-md-1"></div>
+				<div class="col-md-3 center text-center"><b>Placeholder Minimap</b><br><img id="placeholder_minimap"></div>
 			</div>
 		</div>
 

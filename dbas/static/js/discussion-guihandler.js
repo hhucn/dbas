@@ -353,7 +353,6 @@ function GuiHandler() {
 		var statement, attack, argument, conclusion,
 			relation = $('#' + discussionsDescriptionId).attr('attack'),
 			last_relation = $('#' + discussionsDescriptionId).attr('last_relation'),
-			confrontation = $('#' + discussionsDescriptionId).attr('confrontation_text'),
 			guihandler = new GuiHandler(),
 			ajaxhandler = new AjaxSiteHandler(),
 			interactionhandler = new InteractionHandler();

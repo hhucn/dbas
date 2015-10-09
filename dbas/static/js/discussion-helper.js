@@ -200,7 +200,7 @@ function Helper() {
 				statement_id: $(this).attr('statement_id'),
 				callback_td: 'edit_' + type + '_td_text_' + uid
 			});
-			$('#edit_statement_table td').removeClass('table-hover');
+			$('#' + popupEditStatementTableId + ' td').removeClass('table-hover');
 			$('#edit_' + type + '_td_index_' + uid).addClass('table-hover');
 			$('#edit_' + type + '_td_text_' + uid).addClass('table-hover');
 			$('#' + popupEditStatementErrorDescriptionId).text('');
@@ -213,7 +213,7 @@ function Helper() {
 
 		// show logfile
 		log_button.attr({
-			id: 'show_log_of_statement',
+			id: popupEditStatementShowLogButtonId,
 			type: 'button',
 			value: 'changelog',
 			class: 'btn-sm btn button-primary',

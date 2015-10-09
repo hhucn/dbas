@@ -633,8 +633,8 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new premisses
-	@view_config(route_name='ajax_set_new_premisses_for_conclusion', renderer='json', check_csrf=True)
-	def set_new_premisses_for_conclusion(self):
+	@view_config(route_name='ajax_set_new_premisses_for_statement', renderer='json', check_csrf=True)
+	def set_new_premisses_for_statement(self):
 		"""
 
 		:return:
@@ -649,37 +649,23 @@ class Dbas(object):
 			logger('set_new_premisses', 'def', 'main')
 			pro_dict = {}
 			con_dict = {}
-			conclusion_id = self.request.params['conclusion_id'] if 'conclusion_id' in self.request.params else -1
-			premissegroup_id = self.request.params['premissegroup_id'] if 'premissegroup_id' in self.request.params else -1
-			logger('set_new_premisses', 'def', 'conclusion_id ' + str(conclusion_id))
-			logger('set_new_premisses', 'def', 'premissegroup_id ' + str(premissegroup_id))
-			# argument_id = self.request.params['argument_id']
-			# premissegroup_id = self.request.params['premissegroup_id']
-			# text, premisses = QueryHelper().get_text_for_premissesGroup_uid(premissegroup_id)
-			dh = DatabaseHelper()
+			conclusion_id     = self.request.params['conclusion_id'] if 'conclusion_id' in self.request.params else -1
+			argument_id       = self.request.params['argument_id'] if 'argument_id' in self.request.params else -1
+			premissegroup_id  = self.request.params['premissegroup_id'] if 'premissegroup_id' in self.request.params else -1
+			current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
+			last_attack       = self.request.params['last_attack'] if 'last_attack' in self.request.params else -1
 
-			#for premisse_uid in premisses:
-			#logger('set_new_premisses', 'def', 'premisse ' + str(conclusion_id))
-			#logger('set_new_premisses', 'def', 'premisse ' + str(conclusion_id))
 			for key in self.request.params:
 				if 'pro_' in key:
-					logger('set_new_premisses', key, self.request.params[key])
+					logger('set_new_premisses_for_conclusion', key, self.request.params[key])
 					pro_dict[key] = self.request.params[key]
 				if 'con_' in key:
-					logger('set_new_premisses', key, self.request.params[key])
+					logger('set_new_premisses_for_conclusion', key, self.request.params[key])
 					con_dict[key] = self.request.params[key]
-			#return_dict.update(dh.set_premisses_for_argument(transaction, user_id, pro_dict, 'pro', premisse_uid, True))
-			#return_dict.update(dh.set_premisses_for_argument(transaction, user_id, con_dict, 'con', premisse_uid, False))
-			if conclusion_id != -1:
-				logger('set_new_premisses', 'def', 'branch conclusion_id')
-				return_dict.update(dh.set_premisses_for_conclusion(transaction, user_id, pro_dict, 'pro', conclusion_id, True))
-				return_dict.update(dh.set_premisses_for_conclusion(transaction, user_id, con_dict, 'con', conclusion_id, False))
-			else:
-				logger('set_new_premisses', 'def', 'branch premissegroup_id')
-				return_dict.update(dh.set_premisses_for_premissegroups(transaction, user_id, pro_dict, 'pro', premissegroup_id, True))
-				return_dict.update(dh.set_premisses_for_premissegroups(transaction, user_id, con_dict, 'con', premissegroup_id, False))
 
 			return_dict['status'] = '1'
+			# return_dict = DatabaseHelper().handle_inserting_new_statemens(transaction, user_id, pro_dict, con_dict, conclusion_id,
+			#                                                               argument_id, premissegroup_id, current_attack, last_attack)
 		except KeyError as e:
 			logger('set_new_premisses', 'error', repr(e))
 			return_dict['status'] = '-1'

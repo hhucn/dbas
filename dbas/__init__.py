@@ -77,7 +77,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}/ajax_reply_for_argument')
 
 	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}ajax_set_new_start_statement{params:.*}')
-	config.add_route('ajax_set_new_premisses_for_conclusion',    '/discussion/{url:.*}ajax_set_new_premisses_for_conclusion{params:.*}')
+	config.add_route('ajax_set_new_premisses_for_statement',     '/discussion/{url:.*}ajax_set_new_premisses_for_statement{params:.*}')
 	config.add_route('ajax_set_correcture_of_statement',         '/discussion/{url:.*}ajax_set_correcture_of_statement{params:.*}')
 	config.add_route('ajax_switch_language',                     '/discussion/{url:.*}ajax_switch_language{params:.*}')
 	config.add_route('ajax_all_users',                           '/discussion/{url:.*}ajax_all_users{params:.*}')

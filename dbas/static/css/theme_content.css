@@ -1,3 +1,9 @@
+#placeholder_minimap{
+	background: url(../images/diablo3-minimap.jpg);
+	height: 150px;
+	width: 126px;
+}
+
 #navbar-left {
 	visibility: hidden;
 }
