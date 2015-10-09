@@ -43,9 +43,10 @@ function AjaxSiteHandler() {
 	 * Redirection before an ajax call
 	 * @param id current identifier
 	 * @param relation
+	 * @param confrontation_uid
 	 */
-	this.callSiteForHandleReplyForResponseOfConfrontation = function (id, relation) {
-		this.redirectBrowser('id=' + id + '&relation=' + relation, attrReplyForResponseOfConfrontation);
+	this.callSiteForHandleReplyForResponseOfConfrontation = function (id, relation, confrontation_uid) {
+		this.redirectBrowser('id=' + id + '&relation=' + relation + '&confrontation=' + confrontation_uid, attrReplyForResponseOfConfrontation);
 	};
 
 	/**
@@ -203,7 +204,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
 			data: {
-				id: params[0], relation: params[1]
+				id: params[0], relation: params[1], confrontation_uid: params[2]
 			},
 			dataType: 'json',
 			async: true,

@@ -92,7 +92,7 @@ function JsonGuiHandler() {
 			listitems = [],
 			dict,
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
-			confronation_id = '_argument_' + jsonData.confrontation_id,
+			confronation_id = '_argument_' + jsonData.confrontation_uid,
 			argument_id = '_argument_' + jsonData.argument_id,
 			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, false, true);
 
@@ -114,7 +114,7 @@ function JsonGuiHandler() {
 		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
 
 		// set discussions text
-		dict = {conclusion_id: jsonData.conclusion_uid, current_attack: jsonData.attack};
+		dict = {confrontation_uid: jsonData.confrontation_uid, current_attack: jsonData.attack};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + whatDoYouThink,
 			'This confrontation is a ' + jsonData.attack, dict);
@@ -187,7 +187,7 @@ function JsonGuiHandler() {
 			helper = new Helper(),
 			guihandler = new GuiHandler(),
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
-			relationArray = helper.createRelationsText(premisse, conclusion, true, false),
+			relationArray = helper.createRelationsText(jsonData.confrontation_text, premisse, conclusion, true, false),
 			text, listitems = [], i, reason, id, long_id, dict;
 
 		if (jsonData.relation === attr_undermine) {			text = relationArray[0] + '. ' + canYouGiveAReason + ' (' + youMadeAn + ' ' + attr_undermine + ')';
@@ -204,15 +204,15 @@ function JsonGuiHandler() {
 			listitems.push(helper.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason, {'long_id': long_id}));
 		}
 
-		alert(jsonData.last_relation);
-
 		dict = {
 			'text': premisse,
 			'attack': jsonData.relation,
 			'related_argument': jsonData.argument_uid,
 			'premissegroup_id': jsonData.premissegroup_uid,
 			'conclusion_id': jsonData.conclusion_uid,
-			'last_relation': jsonData.last_relation};
+			'last_relation': jsonData.last_relation,
+			'confrontation_text': jsonData.confrontation_text,
+			'confrontation_uid': jsonData.confrontation_uid};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));

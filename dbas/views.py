@@ -551,11 +551,14 @@ class Dbas(object):
 		try:
 			uid = self.request.params['id'].split('=')[1]
 			relation = self.request.params['relation'].split('=')[1]
+			confrontation = self.request.params['confrontation_uid'].split('=')[1]
 			# track will be saved in get_reply_confrontation_response
-			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid + ', last relation ' + relation)
+			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid + ', last relation ' + relation + ', confrontation ' + confrontation)
 			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid, self.request.authenticated_userid, self.request.session.id)
 			return_dict['status'] = status
 			return_dict['last_relation'] = relation
+			return_dict['confrontation_uid'] = confrontation
+			return_dict['confrontation_text'] = QueryHelper().get_text_for_arguments_premissesGroup_uid(confrontation)
 		except KeyError as e:
 			logger('reply_for_response_of_confrontation', 'error', repr(e))
 			return_dict['status'] = '-1'

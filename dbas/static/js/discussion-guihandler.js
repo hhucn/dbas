@@ -316,14 +316,14 @@ function GuiHandler() {
 
 		// are we positive or negateive?
 		keyword = $('#' + discussionsDescriptionId).attr('attack').indexOf(attr_undermine) != -1
-			|| $('#' + discussionsDescriptionId).attr('attack').indexOf(attr_undercut) != -1
-			||$('#' + discussionsDescriptionId).attr('attack').indexOf(attr_rebut) != -1 ? 'con' : 'pro';
+		|| $('#' + discussionsDescriptionId).attr('attack').indexOf(attr_undercut) != -1
+		|| $('#' + discussionsDescriptionId).attr('attack').indexOf(attr_rebut) != -1 ? 'con' : 'pro';
 
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 
 			if (key.substr(0, 3) == keyword) {
 				text = 'Because ' + val.text;
-				l = text.length-1;
+				l = text.length - 1;
 				if (text.substr(l) != '.' && text.substr(l) != '?' && text.substr(l) != '!') {
 					text += '.';
 				}
@@ -350,7 +350,10 @@ function GuiHandler() {
 	 * @param isArgument
 	 */
 	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
-		var statement, attack, argument, conclusion, relation,
+		var statement, attack, argument, conclusion,
+			relation = $('#' + discussionsDescriptionId).attr('attack'),
+			last_relation = $('#' + discussionsDescriptionId).attr('last_relation'),
+			confrontation = $('#' + discussionsDescriptionId).attr('confrontation_text'),
 			guihandler = new GuiHandler(),
 			ajaxhandler = new AjaxSiteHandler(),
 			interactionhandler = new InteractionHandler();
@@ -386,21 +389,17 @@ function GuiHandler() {
 		} else if (isPremisse || isArgument) {
 			statement = $('#' + discussionsDescriptionId).attr('text');
 			$('#' + addStatementContainerH4Id).text(isPremisse ? argumentContainerH4TextIfPremisse : argumentContainerH4TextIfArgument);
-			// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
-			$('#' + headingProPositionTextId).html(' I <span class=\'green-bg\'>agree</span> with: <b>' + statement + '</b>, because ...');
-			$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with: <b>' + statement + '</b>, because...');
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
-			// take a look, if we agree or disagree
-			relation = $('#' + discussionsDescriptionId).attr('attack');
-			if (relation.indexOf(attr_undermine) != -1 || relation.indexOf(attr_undercut) != -1 || relation.indexOf(attr_rebut) != -1){
-				$('#' + proPositionColumnId).hide();
-				$('#' + conPositionColumnId).show();
-				$('#' + headingProPositionTextId).html('');
+			// take a look, if we agree or disagree, and where we are
+			alert('now: ' + relation + '\nlast: ' + last_relation);
+			if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, false, statement);
+			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, false, statement);
+			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, true, statement);
+			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, true, statement);
+			} else if (relation.indexOf(attr_rebut) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, false, statement);
 			} else {
-				$('#' + proPositionColumnId).show();
-				$('#' + conPositionColumnId).hide();
-				$('#' + headingConPositionTextId).html('');
+				alert("Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
 			}
 
 			// does other users have an opinion?
@@ -409,8 +408,7 @@ function GuiHandler() {
 					alert('Todo: How to insert something at this place?');
 				} else {
 					// other users have no opinion, so the participant can give pro and con
-					$('#' + conPositionColumnId).show();
-					$('#' + headingConPositionTextId).html(' I <span class=\'red-bg\'>disagree</span> with: <b>' + statement + '</b>, because...');
+					this.showAddStatementsTextareasWithTitle(true, true, statement);
 				}
 			}
 
@@ -418,7 +416,7 @@ function GuiHandler() {
 				if (isPremisse) {
 					interactionhandler.getPremissesAndSendThem(false, true);
 				} else {
-					alert("todo 394 in guihandler");
+					alert("todo 424 in guihandler");
 				}
 				guihandler.setErrorDescription('');
 				guihandler.setSuccessDescription('');
@@ -432,6 +430,35 @@ function GuiHandler() {
 		guihandler.addTextareaAsChildInParent(proPositionTextareaId, id_pro, isStatement);
 		guihandler.addTextareaAsChildInParent(conPositionTextareaId, id_con, isStatement);
 	};
+
+	/**
+	 *
+	 * @param isAgreeing
+	 * @param isDisagreeing
+	 * @param isAttackingRelation
+	 * @param title
+	 */
+	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, isAttackingRelation, title) {
+		var extra = isAttackingRelation ? (' ' + theCounterArgument) : '';
+		if (isAgreeing) {
+			$('#' + proPositionColumnId).show();
+		} else {
+			$('#' + proPositionColumnId).hide();
+		}
+
+		if (isDisagreeing) {
+			$('#' + conPositionColumnId).show();
+		} else {
+			$('#' + conPositionColumnId).hide();
+		}
+
+		// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
+		$('#' + headingProPositionTextId).html(isAgreeing ? ' I <span class=\'green-bg\'>agree</span> with' + extra +
+			': <b>' + title + '</b>, because...' : '');
+		$('#' + headingConPositionTextId).html(isDisagreeing ? ' I <span class=\'red-bg\'>disagree</span> with' + extra +
+			': <b>' + title + '</b>, because...' : '');
+	};
+
 
 	/**
 	 *

@@ -47,6 +47,7 @@ var selectStatement 					= 'Please select a statement!';
 var showAllUsers 						= 'Show all users';
 var showAllAttacks 						= 'Show all attacks';
 var textAreaReasonHintText 				= 'Please use a new textarea for every reason, write short and clear!';
+var theCounterArgument 					= 'the counter-argument'; // todo insert
 
 var strength 							= 'Strength';
 var veryweak 							= 'very weak';

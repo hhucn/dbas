@@ -55,13 +55,14 @@ function Helper() {
 
 	/**
 	 * Returns all kinds of attacks for the given premisse and conclusion
+	 * @param confrontation current confrontation
 	 * @param premisse current premisses
 	 * @param conclusion current conclusion
 	 * @param startLowerCase, true, when each sentences should start as lowercase
 	 * @param endWithDot, true, when each sentences should end with a dot
 	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createRelationsText = function(premisse, conclusion, startLowerCase, endWithDot){
+	this.createRelationsText = function(confrontation, premisse, conclusion, startLowerCase, endWithDot){
 		if (premisse.substr(premisse.length-1) == '.')
 			premisse = premisse.substr(0, premisse.length-1);
 
@@ -76,8 +77,8 @@ function Helper() {
 			support	  = '<b>' + r + ', ' + itIsTrue + " " + premisse + '</b>' + enddot,
 			undercut  = '<b>' + r + ', ' + premisse + '</b>, ' + butIDoNot + ' ' + belCounterJusti + enddot,
 			overbid	  = '<b>' + r + ', ' + premisse + '</b>, ' + andIDo + ' ' + belCounterJusti + enddot,
-			rebut	  = '<b>' + r + ', ' + premisse + '</b> ' + iAcceptCounter + ' <b>' + conclusion
-				+ '</b>.<br><br>' + iHaveStrongerArgument + ' <b>' + conclusion + '</b>' + enddot,
+			rebut	  = '<b>' + r + ', ' + confrontation + '</b> ' + iAcceptCounter + ' <b>' + conclusion
+				+ '</b>.<br><br>' + iHaveStrongerArgument + ' <b>' + premisse + '</b>' + enddot,
 			noopinion  = 'I have no opinion regarding <b>' + conclusion + '</b>. ' + goStepBack + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};

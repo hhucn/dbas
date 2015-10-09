@@ -205,6 +205,16 @@ class QueryHelper(object):
 
 		return text[5:], uids
 
+	def get_text_for_arguments_premissesGroup_uid(self, uid):
+		"""
+
+		:param uid:
+		:return:
+		"""
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+		text, tmp = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid)
+		return text
+
 	def get_undermines_for_premisses(self, key, premisses_as_statements_uid):
 		"""
 
@@ -410,6 +420,7 @@ class QueryHelper(object):
 		while len(attack_list) > 0:
 			attack = random.choice(attack_list)
 			attack_list.remove(attack)
+			attack = 3
 			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
 			if attack == 1:
 				dict = self.get_undermines_for_argument_uid('undermine', argument_uid)

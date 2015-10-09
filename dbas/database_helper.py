@@ -317,7 +317,7 @@ class DatabaseHelper(object):
 			logger('DatabaseHelper', 'get_attack_for_premissegroup', 'attack with ' + attacks[key + str(attack_no)])
 			logger('DatabaseHelper', 'get_attack_for_premissegroup', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
 			return_dict['confrontation'] = attacks[key + str(attack_no)]
-			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
+			return_dict['confrontation_uid'] = attacks[key + str(attack_no) + 'id']
 
 			# save the attack
 			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
@@ -432,6 +432,10 @@ class DatabaseHelper(object):
 			type = 'statement'
 		elif 'rebut' in relation.lower():
 			#return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid)
+			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid))
+			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid))
+			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid))
+			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid))
 			return_dict = qh.get_supports_for_argument_uid(key, argument_uid)
 			type = 'premissesgroup'
 		else:

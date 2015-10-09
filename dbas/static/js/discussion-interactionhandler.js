@@ -38,13 +38,14 @@ function InteractionHandler() {
 	 * Handler when an relation button was clicked
 	 * @param id of the button
 	 * @param relation of the button
+	 * @param confrontation_uid
 	 */
-	this.relationButtonWasClicked = function (id, relation) {
+	this.relationButtonWasClicked = function (id, relation, confrontation_uid) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
 
-		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id, relation);
+		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id, relation, confrontation_uid);
 	};
 
 	/**
@@ -152,6 +153,9 @@ function InteractionHandler() {
 		dict['argument_id'] = $('#' + discussionsDescriptionId).attr('argument_id');
 		dict['premissegroup_id'] = $('#' + discussionsDescriptionId).attr('premissegroup_id');
 
+		alert('get the right meta data for inserting !');
+		return;
+
 		if (isForConclusion) {
 			new AjaxSiteHandler().sendNewPremissesForConclusion(dict);
 		} else {
@@ -171,7 +175,7 @@ function InteractionHandler() {
 			id = radioButton.attr(attr_id),
 			long_id = radioButton.attr(attr_long_id),
 			value = radioButton.val(),
-			id_pgroup, id_conclusion, relation;
+			id_pgroup, id_conclusion, relation, confrontation_uid;
 
 		if (id.indexOf(attr_no_opinion) != -1){
 			parent.history.back();
@@ -192,7 +196,8 @@ function InteractionHandler() {
 				this.premisseButtonWasClicked(id_pgroup, id_conclusion);
 			} else if (hasRelation && !hasPremisse && !hasStart) {
 				relation = $('#' + discussionsDescriptionId).attr('current_attack');
-				this.relationButtonWasClicked(id, relation);
+				confrontation_uid = $('#' + discussionsDescriptionId).attr('confrontation_uid');
+				this.relationButtonWasClicked(id, relation, confrontation_uid);
 			} else if (hasPremisse && hasRelation && !hasStart){
 				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premissegroup_uid);
 				this.argumentButtonWasClicked(long_id, id_pgroup);

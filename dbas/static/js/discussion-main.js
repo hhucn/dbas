@@ -169,13 +169,14 @@ $(function () {
 	/**
 	 * Switch between shortened and long url
 	 */
-	$('#' + popupUrlSharingLongUrlButtonID).click(function popupUrlSharingLongUrlButtonID(){
-		if ($('#' + popupUrlSharingLongUrlButtonID).attr('short_url') == '0'){
+	$('#' + popupUrlSharingLongUrlButtonID).click(function (){
+
+		if ($(this).attr('short_url') == '0'){
 			new AjaxSiteHandler().getShortenUrl(window.location);
-			$('#' + popupUrlSharingLongUrlButtonID).attr('short_url', '1').text(fetchLongUrl);
+			$(this).attr('short_url', '1').text(fetchLongUrl);
 		} else {
 			$('#' + popupUrlSharingInputId).val(window.location);
-			$('#' + popupUrlSharingLongUrlButtonID).attr('short_url', '0').text(fetchShortUrl);
+			$(this).attr('short_url', '0').text(fetchShortUrl);
 		}
 	});
 
