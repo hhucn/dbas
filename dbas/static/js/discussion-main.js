@@ -63,12 +63,16 @@ $(function () {
 
 	guiHandler.setHandler(interactionHandler);
 
+	ajaxHandler.getIssueList();
+
+	// gui for the fuzzy search
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		delay(function() {
 			ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
 		},200);
 	});
 
+	// gui for editing statements
 	$('#' + popupEditStatementTextareaId).keyup(function () {
 		delay(function() {
 			ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, 1,

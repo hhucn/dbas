@@ -438,8 +438,7 @@ class QueryHelper(object):
 		return dict, key
 
 
-	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation,
-	                        attacked_with_relation, session_id):
+	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation, attacked_with_relation, session_id):
 		"""
 		Saves track for user
 		:param transaction: current transaction
@@ -464,25 +463,6 @@ class QueryHelper(object):
 		DBDiscussionSession.add(Track(user=db_user.uid, statement=statement_id, premissegroup=premissesgroup_uid, argument = argument_uid,
 		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation, session_id=session_id))
 		transaction.commit()
-
-	# def save_premissegroup_for_user(self, transaction, user, premissesgroup_uid):
-	# 	"""
-	# 	Saves track for user
-	# 	:param transaction: current transaction
-	# 	:param user: authentication nick id of the user
-	# 	:param premissesgroup_uid: id of the clicked premisseGroup
-	# 	:return: undefined
-	# 	"""
-	# 	db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-	# 	logger('QueryHelper', 'save_premissegroup_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid)+ ', premissesGroup_uid: '
-	# 			+ str(premissesgroup_uid))
-	# 	db_premisses = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid = premissesgroup_uid).all()
-	# 	for premisse in db_premisses:
-	# 		logger('QueryHelper', 'save_premissegroup_for_user', str(premissesgroup_uid) + " " + str(premisse.statement_uid))
-	#       # on use: eliminate this track
-	# 		new_track = Track(user=db_user.uid, statement=premisse.statement_uid, premissegroup=premissesgroup_uid)
-	# 		DBDiscussionSession.add(new_track)
-	# 	transaction.commit()
 
 	def get_track_of_user(self, user):
 		"""

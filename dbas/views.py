@@ -191,20 +191,6 @@ class Dbas(object):
 		token = self.request.session.new_csrf_token()
 		logger('main_discussion', 'new token', str(token))
 
-		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=1).first()
-		issue = 'none'
-		date = 'empty'
-		logger('main_discussion', 'def', 'check for an issue')
-		msg = ''
-
-		# get the current issue
-		if db_issue:
-			logger('main_discussion', 'def', 'issue exists: ' + db_issue.text)
-			issue = db_issue.text
-			date = db_issue.date
-		else:
-			logger('main_discussion', 'def', 'issue does not exists')
-
 		# checks whether the current user is admin
 		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
 
@@ -219,9 +205,6 @@ class Dbas(object):
 			'title': 'Content',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
-			'message': msg,
-			'issue': issue,
-			'date': date,
 			'is_admin': is_admin,
 			'parameters': parameters,
 			'service': service
@@ -633,8 +616,8 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new premisses
-	@view_config(route_name='ajax_set_new_premisses_for_statement', renderer='json', check_csrf=True)
-	def set_new_premisses_for_statement(self):
+	@view_config(route_name='ajax_set_new_premisses_for_X', renderer='json', check_csrf=True)
+	def set_new_premisses_for_X(self):
 		"""
 
 		:return:
@@ -642,32 +625,49 @@ class Dbas(object):
 		user_id = self.request.authenticated_userid
 		UserHandler().update_last_action(transaction, user_id)
 
-		logger('set_new_premisses', 'def', 'main')
+		logger('set_new_premisses_for_X', 'def', 'main')
 
-		return_dict = {}
+		return_dict = dict()
 		try:
-			logger('set_new_premisses', 'def', 'main')
-			pro_dict = {}
-			con_dict = {}
+			logger('set_new_premisses_for_X', 'def', 'main')
+			pro_dict = dict()
+			con_dict = dict()
 			conclusion_id     = self.request.params['conclusion_id'] if 'conclusion_id' in self.request.params else -1
 			argument_id       = self.request.params['argument_id'] if 'argument_id' in self.request.params else -1
 			premissegroup_id  = self.request.params['premissegroup_id'] if 'premissegroup_id' in self.request.params else -1
 			current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
 			last_attack       = self.request.params['last_attack'] if 'last_attack' in self.request.params else -1
+			# todo kill last_attack !
+
+			# Interpretation of the parameters
+			# User says: E => A
+			# System says:
+			#   undermine:  F => !E
+			#   undercut:   D => !(E=>A)
+			#   rebut:      B => !A
+
 
 			for key in self.request.params:
+				logger('set_new_premisses_for_X', key, self.request.params[key])
 				if 'pro_' in key:
-					logger('set_new_premisses_for_conclusion', key, self.request.params[key])
 					pro_dict[key] = self.request.params[key]
 				if 'con_' in key:
-					logger('set_new_premisses_for_conclusion', key, self.request.params[key])
 					con_dict[key] = self.request.params[key]
 
 			return_dict['status'] = '1'
-			# return_dict = DatabaseHelper().handle_inserting_new_statemens(transaction, user_id, pro_dict, con_dict, conclusion_id,
-			#                                                               argument_id, premissegroup_id, current_attack, last_attack)
+			return_dict.update(DatabaseHelper().handle_inserting_new_statements(
+				user_id = user_id,
+				pro_dict = pro_dict,
+				con_dict = con_dict,
+				transaction = transaction,
+				conclusion_id = conclusion_id,
+				argument_id = argument_id,
+				premissegroup_id = premissegroup_id,
+				current_attack = current_attack,
+				last_attack = last_attack))
+
 		except KeyError as e:
-			logger('set_new_premisses', 'error', repr(e))
+			logger('set_new_premisses_for_X', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -807,6 +807,22 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
+
+	# ajax - for attack overview
+	@view_config(route_name='ajax_get_issue_list', renderer='json')
+	def get_issue_list(self):
+		"""
+
+		:return:
+		"""
+
+		logger('get_issue_list', 'def', 'main')
+		return_dict = DatabaseHelper().get_issue_list()
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+
 
 	# ajax - user login
 	@view_config(route_name='ajax_user_login', renderer='json')

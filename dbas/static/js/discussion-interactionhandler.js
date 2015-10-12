@@ -155,11 +155,11 @@ function InteractionHandler() {
 		dict['current_attack'] 	 = $('#' + discussionsDescriptionId).attr('attack');
 		dict['last_attack'] 	 = $('#' + discussionsDescriptionId).attr('last_relation');
 
-		alert('get the right meta data for inserting !');
-		return;
+		//alert('get the right meta data for inserting !');
+		//return;
 
 		if (isForConclusion) {
-			new AjaxSiteHandler().sendNewPremissesForStatement(dict);
+			new AjaxSiteHandler().sendNewPremisseForX(dict);
 		} else {
 			alert('todo 157 in interactionhandler');
 		}
@@ -306,7 +306,7 @@ function InteractionHandler() {
 	 * Callback, when new premisses were send
 	 * @param data returned data
 	 */
-	this.callbackIfDoneForSendNewPremissesForConclusion = function (data) {
+	this.callbackIfDoneForSendNewPremissesX = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
 			$('#' + addStatementErrorContainer).show();
@@ -396,5 +396,10 @@ function InteractionHandler() {
 	this.callbackIfDoneFuzzySearch = function (data, callbackid){
 		var parsedData = $.parseJSON(data);
 		new GuiHandler().setStatementsAsProposal(parsedData, callbackid);
+	}
+
+	this.callbackIfDoneForGetIssueList = function(data){
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		gh.setIssueList(parsedData);
 	}
 }

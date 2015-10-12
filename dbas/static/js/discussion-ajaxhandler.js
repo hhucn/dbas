@@ -6,6 +6,8 @@
  * @copyright Krauthoff 2015
  */
 
+// Todo: replace JSON.stringify(err)
+
 function AjaxSiteHandler() {
 	'use strict';
 	var push=0,
@@ -229,10 +231,10 @@ function AjaxSiteHandler() {
 	 * Sends new premisses to the server. Answer will be given to a callback
 	 * @param dictionary for inserting
 	 */
-	this.sendNewPremissesForStatement = function (dictionary) {
+	this.sendNewPremisseForX = function (dictionary) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_new_premisses_for_statement',
+			url: 'ajax_set_new_premisses_for_X',
 			type: 'POST',
 			data: dictionary,
 			dataType: 'json',
@@ -240,9 +242,9 @@ function AjaxSiteHandler() {
 			headers: {
 				'X-CSRF-Token': csrfToken
 			}
-		}).done(function ajaxSendNewPremissesDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewPremissesForConclusion(data);
-		}).fail(function ajaxSendNewPremissesFail(err) {
+		}).done(function ajaxSendNewPremissesForXDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewPremissesX(data);
+		}).fail(function ajaxSendNewPremissesForXFail(err) {
 			// new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
@@ -422,5 +424,22 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetAllUsersFail(err) {
 		});
 		$('#' + callbackid).focus();
+	};
+
+	/**
+	 *
+	 */
+	this.getIssueList = function() {
+		$.ajax({
+			url: 'ajax_get_issue_list',
+			type: 'GET',
+			dataType: 'json',
+			async: true
+		}).done(function ajaxGetIssueListDone(data) {
+			new InteractionHandler().callbackIfDoneForGetIssueList(data);
+		}).fail(function ajaxGetIssueListFail(err) {
+			// new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(JSON.stringify(err));
+		});
 	};
 }

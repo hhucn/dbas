@@ -77,7 +77,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}/ajax_reply_for_argument')
 
 	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}ajax_set_new_start_statement{params:.*}')
-	config.add_route('ajax_set_new_premisses_for_statement',     '/discussion/{url:.*}ajax_set_new_premisses_for_statement{params:.*}')
+	config.add_route('ajax_set_new_premisses_for_X',             '/discussion/{url:.*}ajax_set_new_premisses_for_X{params:.*}')
 	config.add_route('ajax_set_correcture_of_statement',         '/discussion/{url:.*}ajax_set_correcture_of_statement{params:.*}')
 	config.add_route('ajax_switch_language',                     '/discussion/{url:.*}ajax_switch_language{params:.*}')
 	config.add_route('ajax_all_users',                           '/discussion/{url:.*}ajax_all_users{params:.*}')
@@ -88,6 +88,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_user_registration',                   '{url:.*}ajax_user_registration')
 	config.add_route('ajax_user_password_request',               '{url:.*}ajax_user_password_request')
 	config.add_route('ajax_fuzzy_search',                        '{url:.*}ajax_fuzzy_search')
+	config.add_route('ajax_get_issue_list',                      '{url:.*}ajax_get_issue_list')
 	config.add_route('ajax_manage_user_track',                   'ajax_manage_user_track')
 	config.add_route('ajax_get_news',                            'ajax_get_news')
 	config.add_route('ajax_send_news',                           'ajax_send_news')

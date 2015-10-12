@@ -12,12 +12,19 @@
 			<div class="row">
 				<div class="col-md-8 center text-center">
 					<h2><span class="font-semi-bold" i18n:translate="dbas_long">Dialogue-Based Argumentation System</span></h2>
-					<p><span i18n:translate="current_discussion">The current discussion is about</span>
-						<br>
-						<span class="font-semi-bold">'<span tal:replace="issue"/>'</span>
-						<br>
-						<span i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" tal:replace="date" />.
-					</p>
+					<p><span i18n:translate="current_discussion">The current discussion is about</span></p>
+					<br>
+					<div class="dropdown">
+						<button class="btn btn-default dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><span class="caret"></span></button>
+						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
+							<li><a href="#">Action</a></li>
+						</ul>
+					</div>
+					<br>
+					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
+					<br>
+					<span  i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" id="issue-date" />.
+
 					<!--
 						<p id='start-description'>You're free to join the discussion. When you want to join, just press the button:</p>
 						<input id="start-discussion" type="button" value="Start Discussion" class="button button-block btn-lg
@@ -26,7 +33,8 @@
 					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
 				</div>
 				<div class="col-md-1"></div>
-				<div class="col-md-3 center text-center"><b>Placeholder Minimap</b><br><img id="placeholder_minimap"></div>
+				<div class="col-md-3 center text-center"><b>Placeholder Minimap</b>
+					<br><img id="placeholder_minimap"></div>
 			</div>
 		</div>
 
@@ -127,14 +135,14 @@
 
 					<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
 						<h4 id="add-statement-container-h4" i18n:translate="insert-argument">Please insert a new Argument</h4>
-						
+
 						<div id="add-statement-error-container" class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 							<span class="font-semi-bold" i18n:translate="error">Error:</span>
 							<span id="add-statement-error-msg"></span>
 						</div>
-						
-						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value=""/>
+
+						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="" />
 						<div class="list-group">
 						</div>
 
@@ -160,7 +168,7 @@
 								</div>
 							</a>
 						</div>
-						
+
 						<input id="send-new-statement" type="button" name="" value="Save it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 					</form>
 				</div>

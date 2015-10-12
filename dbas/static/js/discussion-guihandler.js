@@ -458,7 +458,6 @@ function GuiHandler() {
 			': <b>' + title + '</b>, because...' : '');
 	};
 
-
 	/**
 	 *
 	 * @param parsedData
@@ -824,5 +823,43 @@ function GuiHandler() {
 		$('#' + scStyle1Id).attr('checked', true);
 		$('#' + scStyle2Id).attr('checked', false);
 		$('#' + scStyle3Id).attr('checked', false);
+	};
+
+	/**
+	 *
+	 */
+	this.setIssueList = function (jsonData){
+		var li, a, firstText='', firstDate='';
+
+		$('#' + dropdownIssueListID).empty();
+
+		$.each(jsonData, function setIssueListEach(key, val) {
+			li = $('<li>');
+			a = $('<a>');
+			a.attr({href: '#', id: 'issue_' + val.uid, title: val.date});
+			a.text(val.text);
+			li.append(a);
+			a.click(function (){
+				alert('Todo handle ' + $(this).attr('id'));
+				// set new title and text
+				$('#' + issueDropdownID).text($(this).text());
+				$('#' + issueDateId).text($(this).attr('title'));
+				// set inactive class
+				$(this).parent().parent().children('li').each(function () {
+					$(this).removeClass('disabled');
+				});
+				$(this).parent().addClass('disabled');
+			});
+			$('#' + dropdownIssueListID).append(li);
+			if (firstText == ''){
+				firstText = val.text;
+				firstDate = val.date;
+			}
+		});
+
+		if ($('#' + issueDropdownID).text().length == 0) {
+			$('#' + issueDateId).text(firstDate);
+			$('#' + issueDropdownID).text(firstText);
+		};
 	};
 }
