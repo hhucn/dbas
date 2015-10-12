@@ -420,7 +420,6 @@ class QueryHelper(object):
 		while len(attack_list) > 0:
 			attack = random.choice(attack_list)
 			attack_list.remove(attack)
-			attack = 3
 			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
 			if attack == 1:
 				dict = self.get_undermines_for_argument_uid('undermine', argument_uid)
@@ -436,7 +435,6 @@ class QueryHelper(object):
 				break
 
 		return dict, key
-
 
 	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation, attacked_with_relation, session_id):
 		"""

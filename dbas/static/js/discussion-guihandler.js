@@ -826,21 +826,23 @@ function GuiHandler() {
 	};
 
 	/**
-	 *
+	 * Sets given data as list to the issue dropdown.
+	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, firstText='', firstDate='';
+		var li, a, firstText='', firstDate='', func;
 
 		$('#' + dropdownIssueListID).empty();
 
 		$.each(jsonData, function setIssueListEach(key, val) {
 			li = $('<li>');
+			li.attr({id: 'issue_' + val.uid});
 			a = $('<a>');
-			a.attr({href: '#', id: 'issue_' + val.uid, title: val.date});
 			a.text(val.text);
 			li.append(a);
 			a.click(function (){
-				alert('Todo handle ' + $(this).attr('id'));
+				var func = new function() {alert('Todo: handle this');};
+				displayConfirmationDialog(switchDiscussion, switchDiscussionText, func);
 				// set new title and text
 				$('#' + issueDropdownID).text($(this).text());
 				$('#' + issueDateId).text($(this).attr('title'));
@@ -859,7 +861,7 @@ function GuiHandler() {
 
 		if ($('#' + issueDropdownID).text().length == 0) {
 			$('#' + issueDateId).text(firstDate);
-			$('#' + issueDropdownID).text(firstText);
+			$('#' + issueDropdownID).html(firstText + '   <span class="caret"></span>');
 		};
 	};
 }

@@ -46,8 +46,10 @@ var request_failed 						= 'Request failed';
 var selectStatement 					= 'Please select a statement!';
 var showAllUsers 						= 'Show all users';
 var showAllAttacks 						= 'Show all attacks';
+var switchDiscussion					= 'Switch of the discussion';
+var switchDiscussionText 				= 'If you accept, you will change the topic of the discussion and the discussion will be restarted.'; // todo insert
 var textAreaReasonHintText 				= 'Please use a new textarea for every reason, write short and clear!';
-var theCounterArgument 					= 'the counter-argument'; // todo insert
+var theCounterArgument 					= 'the counter-argument';
 
 var strength 							= 'Strength';
 var veryweak 							= 'very weak';

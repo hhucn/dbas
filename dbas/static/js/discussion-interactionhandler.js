@@ -149,11 +149,12 @@ function InteractionHandler() {
 				i = i + 1;
 			}
 		});
-		dict['conclusion_id'] 	 = $('#' + discussionsDescriptionId).attr('conclusion_id');
-		dict['argument_id'] 	 = $('#' + discussionsDescriptionId).attr('argument_id');
-		dict['premissegroup_id'] = $('#' + discussionsDescriptionId).attr('premissegroup_id');
-		dict['current_attack'] 	 = $('#' + discussionsDescriptionId).attr('attack');
-		dict['last_attack'] 	 = $('#' + discussionsDescriptionId).attr('last_relation');
+		dict['conclusion_id'] 	  = $('#' + discussionsDescriptionId).attr('conclusion_id');
+		dict['argument_id'] 	  = $('#' + discussionsDescriptionId).attr('argument_id');
+		dict['premissegroup_id']  = $('#' + discussionsDescriptionId).attr('premissegroup_id');
+		dict['current_attack'] 	  = $('#' + discussionsDescriptionId).attr('attack');
+		dict['last_attack'] 	  = $('#' + discussionsDescriptionId).attr('last_relation');
+		dict['confrontation_uid'] = $('#' + discussionsDescriptionId).attr('confrontation_uid');
 
 		//alert('get the right meta data for inserting !');
 		//return;

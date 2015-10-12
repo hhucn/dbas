@@ -317,6 +317,7 @@ class DatabaseHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premissesGroup_uid==last_premisses_group_uid,
 				Argument.conclusion_uid==last_statement_uid, Argument.isSupportive==True)).order_by(Argument.uid.desc()).first()
 
+		# logging and ...
 		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'argument uid ' + (str(db_argument.uid) if db_argument else 'none'))
 		return_dict['argument_id'] = str(db_argument.uid) if db_argument else '0'
 
@@ -661,7 +662,8 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def handle_inserting_new_statements(self, user_id, pro_dict, con_dict, transaction, conclusion_id, argument_id, premissegroup_id, current_attack,):
+	def handle_inserting_new_statements(self, user_id, pro_dict, con_dict, transaction, argument_id, premissegroup_id, confrontation_uid,
+	                                    current_attack, last_attack):
 		"""
 
 		:param user_id:
@@ -670,10 +672,20 @@ class DatabaseHelper(object):
 		:param transaction:
 		:param conclusion_id:
 		:param argument_id:
+		:param confrontation_uid:
 		:param premissegroup_id:
 		:param current_attack:
 		:return:
 		"""
+
+		# Interpretation of the parameters
+		# User says: E => A             | #argument_id
+		# System says:
+		#   undermine:  F => !E         | #premissegroup_id => (part of argument_id)
+		#   undercut:   D => !(E=>A)    | #premissegroup_id => (part of argument_id)
+		#   rebut:      B => !A         | #premissegroup_id => (part of argument_id)
+		# Handle it, based on current and last attack
+
 		return_dict = {}
 		dh = DictionaryHelper()
 		logger('DatabaseHelper', 'handle_inserting_new_statemens', 'length of pro dict: ' + str(len(pro_dict)))
@@ -681,83 +693,106 @@ class DatabaseHelper(object):
 
 		# TODO: add argument method with (# todo new premisse group)
 
+		# nick of user
+		db_user = DBDiscussionSession.query(User).filter(uid=user_id).first();
+		user = db_user.nickname
+
+		db_premisses_of_current_attack = DBDiscussionSession.query(Premisse).filter(premissesGroup_uid=confrontation_uid).all()
+		db_argument_of_current_attack = DBDiscussionSession.query(Argument).filter_by(and_(Argument.premissesGroup_uid==premissegroup_id,
+			                                                                          Argument.argument_uid==argument_id)).first()
+
+		qh = QueryHelper()
+
 		if current_attack == 'undermine':
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine')
-			db_old_premisse = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=premissegroup_id).first()
+			# TODO return_dict = qh.handle_undermine_for_inserting_new_statements()
 			argument_list = []
 			for con in con_dict:
-				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine: ' + con_dict[con])
-		#		new_statement = self.set_statement(transaction, con_dict[con], user_id, False)
-		#		# todo new premisse group
-		#		db_premisse = DBDiscussionSession.query(Premisse).filter_by(statement_uid=new_statement.uid).first()
-		#		new_argument = Argument(premissegroup=db_premisse.premissesGroup_uid, issupportive=False, author=user_id, weight=0,
-		#		                        conclusion=db_old_premisse.statement_uid)
-		#		argument_list.append(new_argument)
-		#		return_dict.update(dh.save_statement_row_in_dictionary(new_statement))
+				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine: ' + con)
+				# every entry of the dict will be a new statement with a new premissegroup
+				new_statement = self.set_statement(transaction, con, user_id, False)
+				new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
+				# now, every new statement will attack the attack of the system, which is as confrontation_uid
+				for premisse in db_premisses_of_current_attack:
+					new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=False, author=user_id, weight=0, conclusion=premisse.statement_uid)
+					argument_list.append(new_argument)
+				return_dict.update(dh.save_statement_row_in_dictionary(new_statement))
 			DBDiscussionSession.add_all(argument_list)
 			DBDiscussionSession.flush()
+			transaction.commit()
 
 		elif current_attack == 'support':
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch support')
-			db_old_premisse = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=premissegroup_id).first()
+			# TODO return_dict = qh.handle_support_for_inserting_new_statements()
 			argument_list = []
 			for pro in pro_dict:
-				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch support: ' + pro_dict[pro])
-		#		new_statement = self.set_statement(transaction, pro_dict[pro], user_id, True)
-		#		# todo new premisse group
-		#		db_premisse = DBDiscussionSession.query(Premisse).filter_by(statement_uid=new_statement.uid).first()
-		#		new_argument = Argument(premissegroup=db_premisse.premissesGroup_uid, issupportive=True, author=user_id, weight=0,
-		#		                        conclusion=db_old_premisse.statement_uid)
-		#		argument_list.append(new_argument)
-		#		return_dict.update(dh.save_statement_row_in_dictionary(new_statement))
+				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch support: ' + pro)
+				# every entry of the dict will be a new statement with a new premissegroup
+				new_statement = self.set_statement(transaction, pro, user_id, False)
+				new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
+				# now, every new statement will ...
+				for premisse in db_premisses_of_current_attack:
+					new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=True, author=user_id, weight=0, conclusion=premisse.statement_uid)
+					argument_list.append(new_argument)
+				return_dict.update(dh.save_statement_row_in_dictionary(new_statement))
 			DBDiscussionSession.add_all(argument_list)
 			DBDiscussionSession.flush()
+			transaction.commit()
 
 		elif current_attack == 'undercut':
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undercut')
+			# TODO return_dict = qh.handle_undercut_for_inserting_new_statements()
 			argument_list = []
 			for con in con_dict:
-				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undercut: ' + con_dict[con])
-		#		new_statement = self.set_statement(transaction, con_dict[con], user_id, False)
-		#		# todo new premisse group
-		#		db_premissegroup = DBDiscussionSession.query(Premisse).filter_by(statement_uid=new_statement.uid).first()
-		#		new_argument = Argument(premissegroup=db_premissegroup.premissesGroup_uid, issupportive=False, author=user_id, weight=0,  conclusion=0)
-		#		new_argument.conclusions_argument(argument_id)
-		#		argument_list.append(new_argument)
-		#		return_dict.update(dh.save_statement_row_in_dictionary(new_statement))
+				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine: ' + con)
+				new_statement = self.set_statement(transaction, con, user_id, False)
+				new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
+				# now, every new statement will ...
+				new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=False, author=user_id, weight=0,
+				                        conclusion=0)
+				new_argument.conclusions_argument(db_argument_of_current_attack.uid)
+				argument_list.append(new_argument)
+
+				return
 			DBDiscussionSession.add_all(argument_list)
 			DBDiscussionSession.flush()
 			transaction.commit()
 
 		elif current_attack == 'overbid':
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid')
+			# TODO return_dict = qh.handle_overbid_for_inserting_new_statements()
 			argument_list = []
 			for pro in pro_dict:
-				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid: ' + pro_dict[pro])
-		#		new_statement = self.set_statement(transaction, pro_dict[pro], user_id, True)
-		#		# todo new premisse group
-		#		db_premisse = DBDiscussionSession.query(Premisse).filter_by(statement_uid=new_statement.uid).first()
-		#		new_argument = Argument(premissegroup=db_premisse.premissesGroup_uid, issupportive=True, author=user_id, weight=0,  conclusion=0)
-		#		new_argument.conclusions_argument(argument_id)
-		#		argument_list.append(new_argument)
-		#		return_dict.update(dh.save_statement_row_in_dictionary(new_statement))
+				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid: ' + pro)
+				new_statement = self.set_statement(transaction, pro, user_id, False)
+				new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
+				# now, every new statement will ...
+				# now, every new statement will ...
+				new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=True, author=user_id, weight=0,
+				                        conclusion=0)
+				new_argument.conclusions_argument(db_argument_of_current_attack.uid)
+				argument_list.append(new_argument)
+				return
 			DBDiscussionSession.add_all(argument_list)
 			DBDiscussionSession.flush()
 			transaction.commit()
 
 		elif current_attack == 'rebut':
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch rebut')
-			db_old_premisse = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=premissegroup_id).first()
+			# TODO return_dict = qh.handle_rebut_for_inserting_new_statements()
+			db_argument = DBDiscussionSession.query(Argument).filter(uid=argument_id).first()
+			db_premisses = DBDiscussionSession.query(Premisse).filter(premissesGroup_uid=db_argument.premissesGroup_uid).all()
 			argument_list = []
 			for pro in pro_dict:
-				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch rebut: ' + pro_dict[pro])
-		#		new_statement = self.set_statement(transaction, pro_dict[pro], user_id, True)
-		#		# todo new premisse group
-		#		db_premisse = DBDiscussionSession.query(Premisse).filter_by(statement_uid=new_statement.uid).first()
-		#		new_argument = Argument(premissegroup=db_premisse.premissesGroup_uid, issupportive=True, author=user_id, weight=0,
-		#		                        conclusion=db_old_premisse.statement_uid)
-		#		argument_list.append(new_argument)
-		#		return_dict.update(dh.save_statement_row_in_dictionary(new_statement))
+				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch rebut: ' + pro)
+				# every entry of the dict will be a new statement with a new premissegroup
+				new_statement = self.set_statement(transaction, pro, user_id, False)
+				new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user)
+				# now, every new statement will ...
+				for premisse in db_premisses:
+					new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=True, author=user_id, weight=0, conclusion=premisse.statement_uid)
+					argument_list.append(new_argument)
+				return_dict.update(dh.save_statement_row_in_dictionary(new_statement))
 			DBDiscussionSession.add_all(argument_list)
 			DBDiscussionSession.flush()
 			transaction.commit()
@@ -766,16 +801,6 @@ class DatabaseHelper(object):
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch error')
 			return_dict['status'] = '-1'
 			return return_dict
-
-
-		# if conclusion_id != -1:
-		# 	logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch conclusion_id')
-		# 	return_dict.update(self.set_premisses_for_conclusion(transaction, user_id, pro_dict, 'pro', conclusion_id, True))
-		# 	return_dict.update(self.set_premisses_for_conclusion(transaction, user_id, con_dict, 'con', conclusion_id, False))
-		# else:
-		# 	logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch premissegroup_id')
-		# 	return_dict.update(self.set_premisses_for_premissegroups(transaction, user_id, pro_dict, 'pro', premissegroup_id, True))
-		# 	return_dict.update(self.set_premisses_for_premissegroups(transaction, user_id, con_dict, 'con', premissegroup_id, False))
 
 		return return_dict
 

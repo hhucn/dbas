@@ -98,17 +98,19 @@ function goBackToTop() {
 
 /**
  * Displays dialog for language translation and send ajax requests
- * @param functionForAcceptAsText
+ * @param functionForAccept
  * @param titleText
  * @param bodyText
  */
-function displayConfirmationDialog(titleText, bodyText, functionForAcceptAsText) {
+function displayConfirmationDialog(titleText, bodyText, functionForAccept) {
 	// display dialog
 	$('#' + popupConfirmDialogId).modal('show');
 	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
 	$('#' + popupConfirmDialogId + ' div.modal-body').text(bodyText);
-	// ask for display switch
-	$('#' + confirmDialogAcceptBtn).attr('onclick', functionForAcceptAsText + ' $(# + popupConfirmDialogId).modal(hide)');
+	$('#' + confirmDialogAcceptBtn).click( function () {
+		$('#' + popupConfirmDialogId).modal('hide');
+		functionForAccept;
+	});
 	$('#' + confirmDialogRefuseBtn).click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
 	});
@@ -121,8 +123,9 @@ function displayConfirmationDialog(titleText, bodyText, functionForAcceptAsText)
  */
 function language_switcher (path, lang){
 	// preserve reload, when the user is arguing
+	var func = new function() {switchDisplayLanguage(lang);};
 	if (path == 'content')
-		displayConfirmationDialog(confirmation, confirmTranslation, 'switchDisplayLanguage(id');
+		displayConfirmationDialog(confirmation, confirmTranslation, func);
 	else
 		ajaxSwitchDisplayLanguage(lang);
 }

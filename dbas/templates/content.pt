@@ -15,7 +15,7 @@
 					<p><span i18n:translate="current_discussion">The current discussion is about</span></p>
 					<br>
 					<div class="dropdown">
-						<button class="btn btn-default dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><span class="caret"></span></button>
+						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><span class="caret"></span></button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
 							<li><a href="#">Action</a></li>
 						</ul>

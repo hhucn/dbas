@@ -632,21 +632,24 @@ class Dbas(object):
 			logger('set_new_premisses_for_X', 'def', 'main')
 			pro_dict = dict()
 			con_dict = dict()
-			conclusion_id     = self.request.params['conclusion_id'] if 'conclusion_id' in self.request.params else -1
 			argument_id       = self.request.params['argument_id'] if 'argument_id' in self.request.params else -1
 			premissegroup_id  = self.request.params['premissegroup_id'] if 'premissegroup_id' in self.request.params else -1
 			current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
 			last_attack       = self.request.params['last_attack'] if 'last_attack' in self.request.params else -1
+			confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
+			# confrontation_uid is a premisse group
 			# todo kill last_attack !
 
 			# Interpretation of the parameters
-			# User says: E => A
+			# User says: E => A             | #argument_id
 			# System says:
-			#   undermine:  F => !E
-			#   undercut:   D => !(E=>A)
-			#   rebut:      B => !A
+			#   undermine:  F => !E         | #premissegroup_id  =>  !premissegroup of #argument_id
+			#   undercut:   D => !(E=>A)    | #premissegroup_id  =>  !#argument_id
+			#   rebut:      B => !A         | #premissegroup_id  =>  !conclusion of #argument_id
+			# Handle it, based on current and last attack
 
 
+			# getting all arguments
 			for key in self.request.params:
 				logger('set_new_premisses_for_X', key, self.request.params[key])
 				if 'pro_' in key:
@@ -660,11 +663,12 @@ class Dbas(object):
 				pro_dict = pro_dict,
 				con_dict = con_dict,
 				transaction = transaction,
-				conclusion_id = conclusion_id,
 				argument_id = argument_id,
 				premissegroup_id = premissegroup_id,
+				confrontation_uid = confrontation_uid,
 				current_attack = current_attack,
-				last_attack = last_attack))
+				last_attack = last_attack
+			))
 
 		except KeyError as e:
 			logger('set_new_premisses_for_X', 'error', repr(e))
