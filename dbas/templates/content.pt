@@ -23,13 +23,14 @@
 					<br>
 					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
 					<br>
-					<span  i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" id="issue-date" />.
+					<span  i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" id="issue-date"></span>.
 
 					<!--
 						<p id='start-description'>You're free to join the discussion. When you want to join, just press the button:</p>
 						<input id="start-discussion" type="button" value="Start Discussion" class="button button-block btn-lg
 						btn-primary" data-dismiss="modal" />
 						!-->
+					<br>
 					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn-lg btn-primary" data-dismiss="modal" />
 				</div>
 				<div class="col-md-1"></div>

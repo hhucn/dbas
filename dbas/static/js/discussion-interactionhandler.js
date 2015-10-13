@@ -75,10 +75,12 @@ function InteractionHandler() {
 			var arg = text.indexOf(addArgumentRadioButtonText) >= 0;
 			var pre = !sta && ! arg;
 
-			if (window.location.href.indexOf(attrGetPremissesForStatement) != -1)			alert('done 1'); // TODO inserting pgroups
-			if (window.location.href.indexOf(attrReplyForPremissegroup) != -1)			 alert('only  ?1\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n');
-			if (window.location.href.indexOf(attrReplyForArgument) != -1)				 alert('only  ?2\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n'); // maybe with Other users do not have any counter-argument for
-			if (window.location.href.indexOf(attrReplyForResponseOfConfrontation) != -1)	alert('done 2');
+			/*
+			if (window.location.href.indexOf(attrGetPremissesForStatement) != -1)		 alert('done 1'); // TODO inserting pgroups
+			if (window.location.href.indexOf(attrReplyForPremissegroup) != -1)			 alert('only?1\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n');
+			if (window.location.href.indexOf(attrReplyForArgument) != -1)				 alert('only?2\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n'); // maybe with Other users do not have any counter-argument for
+			if (window.location.href.indexOf(attrReplyForResponseOfConfrontation) != -1) alert('done 2');
+			*/
 
 			// get the second child, which is the label
 			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
@@ -150,10 +152,9 @@ function InteractionHandler() {
 			}
 		});
 		dict['conclusion_id'] 	  = $('#' + discussionsDescriptionId).attr('conclusion_id');
-		dict['argument_id'] 	  = $('#' + discussionsDescriptionId).attr('argument_id');
+		dict['related_argument']  = $('#' + discussionsDescriptionId).attr('related_argument');
 		dict['premissegroup_id']  = $('#' + discussionsDescriptionId).attr('premissegroup_id');
 		dict['current_attack'] 	  = $('#' + discussionsDescriptionId).attr('attack');
-		dict['last_attack'] 	  = $('#' + discussionsDescriptionId).attr('last_relation');
 		dict['confrontation_uid'] = $('#' + discussionsDescriptionId).attr('confrontation_uid');
 
 		//alert('get the right meta data for inserting !');

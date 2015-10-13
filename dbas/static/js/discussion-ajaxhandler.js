@@ -169,7 +169,7 @@ function AjaxSiteHandler() {
 	this.getReplyForArgument = function (ids) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 
-		alert("START FROM HERE");
+		// alert("START FROM HERE");
 		$.ajax({
 			url: 'ajax_reply_for_argument',
 			method: 'POST',

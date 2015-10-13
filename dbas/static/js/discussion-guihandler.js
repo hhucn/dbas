@@ -312,15 +312,13 @@ function GuiHandler() {
 	 * @param jsonData returned data
 	 */
 	this.setPremissesAsLastChild = function (jsonData) {
-		var newElement, helper = new Helper(), text, l, keyword;
+		var newElement, helper = new Helper(), text, l, keyword, attack;
 
-		// are we positive or negateive?
-		keyword = $('#' + discussionsDescriptionId).attr('attack').indexOf(attr_undermine) != -1
-		|| $('#' + discussionsDescriptionId).attr('attack').indexOf(attr_undercut) != -1
-		|| $('#' + discussionsDescriptionId).attr('attack').indexOf(attr_rebut) != -1 ? 'con' : 'pro';
+		attack = $('#' + discussionsDescriptionId).attr('attack');
 
+		// are we positive or negative?
+		keyword = attack.indexOf(attr_undermine) != -1 || attack.indexOf(attr_undercut) != -1 ? 'con' : 'pro';
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
-
 			if (key.substr(0, 3) == keyword) {
 				text = 'Because ' + val.text;
 				l = text.length - 1;
@@ -391,7 +389,6 @@ function GuiHandler() {
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
 			// take a look, if we agree or disagree, and where we are
-			alert('now: ' + relation + '\nlast: ' + last_relation);
 			if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, false, statement);
 			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, false, statement);
 			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, true, statement);
@@ -841,7 +838,7 @@ function GuiHandler() {
 			a.text(val.text);
 			li.append(a);
 			a.click(function (){
-				var func = new function() {alert('Todo: handle this');};
+				func = new function() {alert('Todo: handle this');};
 				displayConfirmationDialog(switchDiscussion, switchDiscussionText, func);
 				// set new title and text
 				$('#' + issueDropdownID).text($(this).text());

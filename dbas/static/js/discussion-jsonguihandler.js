@@ -204,11 +204,11 @@ function JsonGuiHandler() {
 			listitems.push(helper.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason, {'long_id': long_id}));
 		}
 
-		dict = {
+		dict = { // todo params in id.js!
 			'text': premisse,
 			'attack': jsonData.relation,
 			'related_argument': jsonData.argument_uid,
-			'premissegroup_id': jsonData.premissegroup_uid,
+			'premissegroup_uid': jsonData.premissegroup_uid,
 			'conclusion_id': jsonData.conclusion_uid,
 			'last_relation': jsonData.last_relation,
 			'confrontation_text': jsonData.confrontation_text,

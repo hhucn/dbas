@@ -632,20 +632,19 @@ class Dbas(object):
 			logger('set_new_premisses_for_X', 'def', 'main')
 			pro_dict = dict()
 			con_dict = dict()
-			argument_id       = self.request.params['argument_id'] if 'argument_id' in self.request.params else -1
+			related_argument  = self.request.params['related_argument'] if 'related_argument' in self.request.params else -1
 			premissegroup_id  = self.request.params['premissegroup_id'] if 'premissegroup_id' in self.request.params else -1
 			current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
-			last_attack       = self.request.params['last_attack'] if 'last_attack' in self.request.params else -1
 			confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
 			# confrontation_uid is a premisse group
 			# todo kill last_attack !
 
 			# Interpretation of the parameters
-			# User says: E => A             | #argument_id
+			# User says: E => A             | #related_argument
 			# System says:
-			#   undermine:  F => !E         | #premissegroup_id  =>  !premissegroup of #argument_id
-			#   undercut:   D => !(E=>A)    | #premissegroup_id  =>  !#argument_id
-			#   rebut:      B => !A         | #premissegroup_id  =>  !conclusion of #argument_id
+			#   undermine:  F => !E         | #premissegroup_id  =>  !premissegroup of #related_argument
+			#   undercut:   D => !(E=>A)    | #premissegroup_id  =>  !#related_argument
+			#   rebut:      B => !A         | #premissegroup_id  =>  !conclusion of #related_argument
 			# Handle it, based on current and last attack
 
 
@@ -659,15 +658,14 @@ class Dbas(object):
 
 			return_dict['status'] = '1'
 			return_dict.update(DatabaseHelper().handle_inserting_new_statements(
-				user_id = user_id,
+				user = user_id,
 				pro_dict = pro_dict,
 				con_dict = con_dict,
 				transaction = transaction,
-				argument_id = argument_id,
+				argument_id = related_argument,
 				premissegroup_id = premissegroup_id,
 				confrontation_uid = confrontation_uid,
-				current_attack = current_attack,
-				last_attack = last_attack
+				current_attack = current_attack
 			))
 
 		except KeyError as e:
