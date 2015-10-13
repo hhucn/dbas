@@ -18,6 +18,7 @@ var confirmTranslation 					= 'If you change the language, your process on this 
 var correctionsSet 						= 'Your correction was set.';
 var dataRemoved 						= 'Data was successfully removed.';
 var didYouMean							= 'Did you mean:';
+var discussionEnd						= 'The discussion ends here. If you want to proceed, please feel free to login yourself:)';
 var duplicateDialog						= 'This textversion is deprecated, because it was already edited.\nDo you want to set this' +
 	' version as the current one once again?'; // Todo insert
 // into dict

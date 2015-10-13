@@ -172,7 +172,14 @@ function JsonGuiHandler() {
 		// build the radio buttons
 		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>
 		// TODO BUTTONS ARE DEPENDING ON THE ATTACK?</u></i></b>
-		listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addArgumentRadioButtonText, false, false, false, addArgumentRadioButtonText));
+		if (typeof jsonData.logged_in == "string") {
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addArgumentRadioButtonText, false, false, false, addArgumentRadioButtonText));
+		} else {
+			guihandler.setErrorDescription(discussionEnd);
+		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
+			+ confrontationText + '.',
+			'This confrontation is a ' + jsonData.attack, dict);
+		}
 
 		// set the buttons
 		guihandler.addListItemsToDiscussionsSpace(listitems);
