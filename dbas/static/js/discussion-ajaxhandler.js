@@ -75,12 +75,16 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Send an ajax request for getting all positions as dicitonary uid <-> value
+	 * @param issue_id
 	 */
-	this.getStartStatements = function () {
+	this.getStartStatements = function (issue_id) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_start_statements',
 			type: 'GET',
+			data: {
+				issue: issue_id
+			},
 			dataType: 'json',
 			async: true,
 			headers: {
@@ -314,7 +318,7 @@ function AjaxSiteHandler() {
 	 * @param final_insert
 	 */
 	this.sendCorrectureOfStatement = function (uid, edit_dialog_td_id, corrected_text, final_insert) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(),settings_data, url;
 		$.ajax({
 			url: 'ajax_set_correcture_of_statement',
 			type: 'POST',
@@ -327,9 +331,14 @@ function AjaxSiteHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function(jqXHR, settings ){
+				settings_data = settings.data;
+				url = this.url;
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, edit_dialog_td_id);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxSendCorrectureOfStatementFail(err) {
 			// $('#' + popupEditStatementErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
@@ -342,7 +351,7 @@ function AjaxSiteHandler() {
 	 * @param long_url for shortening
 	 */
 	this.getShortenUrl = function (long_url) {
-		var encoded_url = encodeURI(long_url);
+		var encoded_url = encodeURI(long_url), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_shortened_url',
 			type: 'GET',
@@ -350,9 +359,14 @@ function AjaxSiteHandler() {
 			data: {
 				url: encoded_url
 			},
-			async: true
+			async: true,
+			beforeSend: function(jqXHR, settings ){
+				settings_data = settings.data;
+				url = this.url;
+			}
 		}).done(function ajaxGetShortenUrlDone(data) {
 			new InteractionHandler().callbackIfDoneForShortenUrl(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetShortenUrl(err) {
 			$('#' + popupUrlSharingInputId).val(long_url);
 		});
@@ -362,7 +376,7 @@ function AjaxSiteHandler() {
 	 * Requests all users
 	 */
 	this.getUsersOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_all_users',
 			type: 'GET',
@@ -370,9 +384,14 @@ function AjaxSiteHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function(jqXHR, settings ){
+				settings_data = settings.data;
+				url = this.url;
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneGetUsersOverview(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail(err) {
 			// new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
@@ -383,7 +402,7 @@ function AjaxSiteHandler() {
 	 * Requests all attacks
 	 */
 	this.getAttackOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_attack_overview',
 			type: 'GET',
@@ -391,9 +410,14 @@ function AjaxSiteHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function(jqXHR, settings ){
+				settings_data = settings.data;
+				url = this.url;
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneAttackOverview(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail(err) {
 			// new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
@@ -408,6 +432,7 @@ function AjaxSiteHandler() {
 	 * @param extra optional
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
+		var settings_data, url;
 		if(value.len==0){
 			return;
 		}
@@ -418,9 +443,14 @@ function AjaxSiteHandler() {
 			dataType: 'json',
 			data: { value: value, type:type, extra: extra },
 			async: true,
-			global: false
+			global: false,
+			beforeSend: function(jqXHR, settings ){
+				settings_data = settings.data;
+				url = this.url;
+			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail(err) {
 		});
 		$('#' + callbackid).focus();
@@ -430,13 +460,19 @@ function AjaxSiteHandler() {
 	 *
 	 */
 	this.getIssueList = function() {
+		var settings_data, url;
 		$.ajax({
 			url: 'ajax_get_issue_list',
 			type: 'GET',
 			dataType: 'json',
-			async: true
+			async: true,
+			beforeSend: function(jqXHR, settings ){
+				settings_data = settings.data;
+				url = this.url;
+			}
 		}).done(function ajaxGetIssueListDone(data) {
 			new InteractionHandler().callbackIfDoneForGetIssueList(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetIssueListFail(err) {
 			// new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().setErrorDescription(JSON.stringify(err));

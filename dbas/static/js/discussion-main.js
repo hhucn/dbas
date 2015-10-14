@@ -6,41 +6,25 @@
  * @copyright Krauthoff 2015
  */
 
+/**
+ *
+ */
 startDiscussion = function () {
 	//$('#' + startDiscussionButtonId).hide(); // hides the start button
 	//$('#' + startDescriptionId).hide(); // hides the start description
 	$('#' + restartDiscussionButtonId).show(); // show the restart button
 	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
 
-	new AjaxSiteHandler().getStartStatements();
+	// on success we will get the start statements
+	new AjaxSiteHandler().getIssueList();
 };
 
+/**
+ *
+ */
 restartDiscussion = function () {
-	// $('#' + startDiscussionButtonId).show(); // show the start description
-	/*
-	$('#' + restartDiscussionButtonId).hide(); // hide the restart button
-	$('#' + addStatementContainerId).hide(); // hide add statement container
-	$('#' + islandViewContainerId).hide(); // hidding the islandView
-	$('#' + displayControlContainerId).hide(); // hidding the control container
-
-	// clear the discussions spaces
-	$('#' + discussionSpaceId).empty();
-	$('#' + discussionAvoidanceSpaceId).empty();
-	$('#' + discussionContainerId).hide();
-	$('#' + discussionFailureRowId).hide();
-	$('#' + stepBackButtonId).hide();
-
-	var guiHandler = new GuiHandler();
-	guiHandler.setErrorDescription('');
-	guiHandler.setSuccessDescription('');
-	guiHandler.setDiscussionsAvoidanceDescription('');
-	guiHandler.resetChangeDisplayStyleBox();
-	guiHandler.resetEditButton();
-
-	startDiscussion();
-	*/
-
-	window.location.href = mainpage + 'discussion/start';
+	var issue_id = new Helper().getCurrentIssueId();
+	window.location.href = mainpage + 'discussion/start/issue=' + issue_id;
 };
 
 
@@ -62,8 +46,6 @@ $(function () {
 		})();
 
 	guiHandler.setHandler(interactionHandler);
-
-	ajaxHandler.getIssueList();
 
 	// gui for the fuzzy search
 	$('#' + addStatementContainerMainInputId).keyup(function () {
@@ -248,7 +230,11 @@ $(function () {
 	});
 
 	$(window).load( function windowLoad () {
-    	if (window.location == mainpage + 'discussion/start') {
+		var url = window.location.href;
+    	if (url.indexOf(mainpage + 'discussion/start') != -1) {
+			if (url.indexOf(mainpage + 'discussion/start/issue=') != -1){
+				var id = url.substr((mainpage + 'discussion/start/issue=').length);
+			}
 			startDiscussion();
 		} else {
 			$('#' + discussionContainerId).fadeIn('fast');

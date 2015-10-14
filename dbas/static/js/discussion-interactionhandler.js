@@ -7,10 +7,6 @@
 function InteractionHandler() {
 	'use strict';
 
-	this.testAlert = function (id){
-		alert(id);
-	};
-
 	/**
 	 * Handler when an start statement was clicked
 	 * @param id of the button
@@ -151,6 +147,7 @@ function InteractionHandler() {
 				i = i + 1;
 			}
 		});
+
 		dict['conclusion_id'] 	  = $('#' + discussionsDescriptionId).attr('conclusion_id');
 		dict['related_argument']  = $('#' + discussionsDescriptionId).attr('related_argument');
 		dict['premissegroup_id']  = $('#' + discussionsDescriptionId).attr('premissegroup_id');
@@ -398,10 +395,27 @@ function InteractionHandler() {
 	this.callbackIfDoneFuzzySearch = function (data, callbackid){
 		var parsedData = $.parseJSON(data);
 		new GuiHandler().setStatementsAsProposal(parsedData, callbackid);
-	}
+	};
 
 	this.callbackIfDoneForGetIssueList = function(data){
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		gh.setIssueList(parsedData);
-	}
+
+		// do we have a link with issue id?
+		var url = window.location.href, issue_id;
+		if (url.indexOf(mainpage + 'discussion/start/issue=') != -1){
+			// get issue id out of the url
+			issue_id = url.substr((mainpage + 'discussion/start/issue=').length);
+			// set inactive class
+			$('#' + issueDropdownListID).children('li').each(function () {
+				$(this).removeClass('disabled');
+			});
+			$('#issue_' + issue_id).addClass('disabled');
+			// set button text
+			$('#' + issueDropdownButtonID).text($('#issue_' + issue_id).text());
+		} else {
+			issue_id = new Helper().getCurrentIssueId();
+		}
+		new AjaxSiteHandler().getStartStatements(issue_id);
+	};
 }

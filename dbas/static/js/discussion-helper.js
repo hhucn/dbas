@@ -238,5 +238,15 @@ function Helper() {
 		tr.append(td_buttons);
 
 		return tr;
+	};
+
+	this.getCurrentIssueId = function(){
+		var issue_id = -1;
+		$('#' + issueDropdownListID).children('li').each(function () {
+			if ($(this).hasClass('disabled')){
+				issue_id = $(this).attr('id').substr('issue_'.length);
+			}
+		});
+		return issue_id;
 	}
 }

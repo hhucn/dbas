@@ -175,6 +175,7 @@ class Dbas(object):
 	# content page, after login
 	@view_config(route_name='main_discussion', renderer='templates/content.pt', permission='everybody')
 	@view_config(route_name='main_discussion_start', renderer='templates/content.pt', permission='everybody')
+	@view_config(route_name='main_discussion_issue', renderer='templates/content.pt', permission='everybody')
 	def main_discussion(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
@@ -184,8 +185,10 @@ class Dbas(object):
 
 		parameters = self.request.matchdict['parameters'] if 'parameters' in self.request.matchdict else '-'
 		service = 'ajax_' + self.request.matchdict['service'] if 'service' in self.request.matchdict else '-'
+		issue = self.request.matchdict['issue'] if 'issue' in self.request.matchdict else '-'
 		logger('main_discussion', 'def', 'self.request.matchdict[parameters]: ' + parameters)
 		logger('main_discussion', 'def', 'self.request.matchdict[service]: ' + service)
+		logger('main_discussion', 'def', 'self.request.matchdict[issue]: ' + issue)
 
 
 		token = self.request.session.new_csrf_token()
@@ -199,6 +202,7 @@ class Dbas(object):
 		except KeyError:
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
+		logger('main_discussion', 'def', 'return')
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
@@ -424,7 +428,14 @@ class Dbas(object):
 		logger('get_start_statemens', 'def',  'update login timestamp')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		return_dict = DatabaseHelper().get_start_statements()
+		return_dict = dict()
+		try:
+			logger('get_start_statemens', 'def', 'read params')
+			issue = self.request.params['issue']
+			return_dict = DatabaseHelper().get_start_statements(issue)
+		except KeyError as e:
+			logger('get_start_statemens', 'error', repr(e))
+
 		return_dict['logged_in'] = self.request.authenticated_userid
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -823,8 +834,6 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
-
-
 
 	# ajax - user login
 	@view_config(route_name='ajax_user_login', renderer='json')

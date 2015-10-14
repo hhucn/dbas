@@ -63,6 +63,7 @@ def main(global_config, **settings):
 	config.add_route('main_logout',             '/logout')
 	config.add_route('main_contact',            '/contact')
 	config.add_route('main_discussion_start',   '/discussion/start')
+	config.add_route('main_discussion_issue',   '/discussion/start/issue={issue}')
 	config.add_route('main_discussion',         '/discussion/{parameters}/{service}/go')
 	config.add_route('main_settings',           '/settings')
 	config.add_route('main_news',               '/news')
@@ -70,7 +71,7 @@ def main(global_config, **settings):
 	config.add_route('404',                     '/404')
 
 	# ajax for navigation logic, administraion, settigs and editing/viewing log
-	config.add_route('ajax_get_start_statements',                '/discussion/ajax_get_start_statements')
+	config.add_route('ajax_get_start_statements',                '/discussion/{url:.*}ajax_get_start_statements')
 	config.add_route('ajax_get_premisses_for_statement',         '/discussion/{url:.*}/ajax_get_premisses_for_statement')
 	config.add_route('ajax_reply_for_premissegroup',             '/discussion/{url:.*}/ajax_reply_for_premissegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}/ajax_reply_for_response_of_confrontation')

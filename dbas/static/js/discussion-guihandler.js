@@ -827,21 +827,22 @@ function GuiHandler() {
 	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, firstText='', firstDate='', func;
+		var li, a, firstText='', firstDate='', firstId = '', func, topic;
 
-		$('#' + dropdownIssueListID).empty();
+		$('#' + issueDropdownListID).empty();
 
 		$.each(jsonData, function setIssueListEach(key, val) {
 			li = $('<li>');
-			li.attr({id: 'issue_' + val.uid});
+			li.attr({id: 'issue_' + val.uid, 'issue': val.uid});
 			a = $('<a>');
 			a.text(val.text);
 			li.append(a);
 			a.click(function (){
-				func = new function() {alert('Todo: handle this');};
-				displayConfirmationDialog(switchDiscussion, switchDiscussionText, func);
+				func = $(this).parent().attr('issue');
+				topic = $('#issue_' + func + ' a').text();
+				displayConfirmationDialog(switchDiscussion, switchDiscussionText1 + ' <i>' +  topic +  '</i> ' + switchDiscussionText2, func, true);
 				// set new title and text
-				$('#' + issueDropdownID).text($(this).text());
+				$('#' + issueDropdownButtonID).text($(this).text());
 				$('#' + issueDateId).text($(this).attr('title'));
 				// set inactive class
 				$(this).parent().parent().children('li').each(function () {
@@ -849,16 +850,18 @@ function GuiHandler() {
 				});
 				$(this).parent().addClass('disabled');
 			});
-			$('#' + dropdownIssueListID).append(li);
+			$('#' + issueDropdownListID).append(li);
 			if (firstText == ''){
 				firstText = val.text;
 				firstDate = val.date;
+				firstId = 'issue_' + val.uid;
 			}
 		});
 
-		if ($('#' + issueDropdownID).text().length == 0) {
+		if ($('#' + issueDropdownButtonID).text().length == 0) {
 			$('#' + issueDateId).text(firstDate);
-			$('#' + issueDropdownID).html(firstText + '   <span class="caret"></span>');
+			$('#' + issueDropdownButtonID).html(firstText + '   <span class="caret"></span>');
+			$('#' + firstId).addClass('disabled');
 		};
 	};
 }

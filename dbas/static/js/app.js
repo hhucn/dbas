@@ -101,15 +101,19 @@ function goBackToTop() {
  * @param functionForAccept
  * @param titleText
  * @param bodyText
+ * @param isRestartingDiscussion
  */
-function displayConfirmationDialog(titleText, bodyText, functionForAccept) {
+function displayConfirmationDialog(titleText, bodyText, functionForAccept, isRestartingDiscussion) {
 	// display dialog
 	$('#' + popupConfirmDialogId).modal('show');
 	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
-	$('#' + popupConfirmDialogId + ' div.modal-body').text(bodyText);
+	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
 	$('#' + confirmDialogAcceptBtn).click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
-		functionForAccept;
+		if (isRestartingDiscussion)
+			window.location.href = mainpage + 'discussion/start/issue=' + functionForAccept;
+		else
+			functionForAccept;
 	});
 	$('#' + confirmDialogRefuseBtn).click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
@@ -125,7 +129,7 @@ function language_switcher (path, lang){
 	// preserve reload, when the user is arguing
 	var func = new function() {switchDisplayLanguage(lang);};
 	if (path == 'content')
-		displayConfirmationDialog(confirmation, confirmTranslation, func);
+		displayConfirmationDialog(confirmation, confirmTranslation, func, false);
 	else
 		ajaxSwitchDisplayLanguage(lang);
 }

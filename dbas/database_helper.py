@@ -178,6 +178,10 @@ class DatabaseHelper(object):
 		for issue in db_issues:
 			logger('DatabaseHelper', 'get_issue_list', 'issue no ' + str(issue.uid) + ': ' + issue.text)
 			return_dict['issue_' + str(issue.uid)] = {'uid': str(issue.uid), 'text': issue.text, 'date': str(issue.date)}
+
+		if not db_issues:
+			logger('DatabaseHelper', 'get_issue_list', 'no issues')
+
 		return_dict = collections.OrderedDict(sorted(return_dict.items()))
 		return return_dict
 
@@ -219,15 +223,16 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def get_start_statements(self):
+	def get_start_statements(self, issue):
 		"""
 		Returns start statements
-		:return: dictionary
+		:param issue:
+		:return:
 		"""
 		return_dict = dict()
 		statements_dict = dict()
-		db_statements = DBDiscussionSession.query(Statement).filter_by(isStartpoint=True).all()
-		logger('DatabaseHelper', 'get_start_statements', 'get all statements')
+		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==True, Statement.issue_uid==issue)).all()
+		logger('DatabaseHelper', 'get_start_statements', 'get all statements for issue ' + str(issue))
 		if db_statements:
 			return_dict['status'] = '1'
 			logger('DatabaseHelper', 'get_start_statements', 'there are start statements')

@@ -27,7 +27,7 @@ class Issue(DiscussionBase):
 	issue-table with several column.
 	Each issue has text and a creation date
 	"""
-	__tablename__ = 'issue'
+	__tablename__ = 'issues'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	text = sa.Column(sa.Text, nullable=False)
 	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
@@ -128,15 +128,18 @@ class Statement(DiscussionBase):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	text_uid = sa.Column(sa.Integer, sa.ForeignKey('textvalues.uid'))
 	isStartpoint = sa.Column(sa.Boolean, nullable=False)
+	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
 	textvalues = relationship('TextValue', foreign_keys=[text_uid])
+	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, text, isstartpoint):
+	def __init__(self, text, isstartpoint, issue=0):
 		"""
 		Initializes a row in current statement-table
 		"""
 		self.text_uid = text
 		self.isStartpoint = isstartpoint
+		self.issue_uid = issue
 
 
 class TextValue(DiscussionBase):
@@ -228,12 +231,14 @@ class Premisse(DiscussionBase):
 	isNegated = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
 	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
+	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, premissesgroup, statement, isnegated, author):
+	def __init__(self, premissesgroup, statement, isnegated, author, issue):
 		"""
 		Initializes a row in current premisses-table
 		"""
@@ -242,6 +247,7 @@ class Premisse(DiscussionBase):
 		self.isNegated = isnegated
 		self.author_uid = author
 		self.timestamp = func.now()
+		self.issue_uid = issue
 
 
 class Argument(DiscussionBase):
@@ -259,13 +265,15 @@ class Argument(DiscussionBase):
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	weight = sa.Column(sa.Integer, nullable=False)
+	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
 	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
 	statements = relationship('Statement', foreign_keys=[conclusion_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
+	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, premissegroup, issupportive, author, weight, conclusion=0):
+	def __init__(self, premissegroup, issupportive, author, weight, issue, conclusion=0):
 		"""
 		Initializes a row in current argument-table
 		"""
@@ -276,6 +284,7 @@ class Argument(DiscussionBase):
 		self.author_uid = author
 		self.weight = weight
 		self.argument_uid = 0
+		self.issue_uid = issue
 
 	def conclusions_argument(self, argument):
 		self.argument_uid = argument
