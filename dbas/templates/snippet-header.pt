@@ -82,30 +82,6 @@
 					</li>
 
 					<li class="dropdown">
-						<a class="dropdown-toggle" name="show-more-toggle" data-toggle="dropdown" href="#more" title="Show more"><span i18n:translate="more">More</span>
-								<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li>
-								<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
-									<img id="header_author" class="glyphicon-local center">&thinsp;<span i18n:translate="author">Author</span>
-								</a>
-							</li>
-							<li>
-								<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
-									<img id="header_licence" class="glyphicon-local center">&thinsp;<span i18n:translate="licence">Licence</span>
-								</a>
-							</li>
-							<!--
-							<li>
-								<a id="link_popup_privacy" href="" data-toggle="modal" data-target="#popup_privacy" title="Show Privacy Policy">
-									<img id="header_privacy" class="glyphicon-local center">&thinsp;<span i18n:translate="privacy_policy">Privacy Policy</span>
-								</a>
-							</li>
--->
-						</ul>
-					</li>
-
-					<li class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#language" title="Switch
 																																											language"><span i18n:translate="language">Language</span>
 							<span class="caret"></span>

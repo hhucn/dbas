@@ -9,6 +9,16 @@
 					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;&#160;
 					<a href="${request.application_url}/imprint" i18n:translate="imprint"><img id="footer-impressum" class="glyphicon-local">&#160;&#160;Imprint and Copyrights</a>
 				</li>
+				<li>
+					<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
+						<img id="header_author" class="glyphicon-local center">&thinsp;<span i18n:translate="author">Author</span>
+					</a>
+				</li>
+				<li>
+					<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
+						<img id="header_licence" class="glyphicon-local center">&thinsp;<span i18n:translate="licence">Licence</span>
+					</a>
+				</li>
 			</ul>
 		</div>
 	</div>
