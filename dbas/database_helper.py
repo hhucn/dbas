@@ -4,7 +4,7 @@ import collections
 
 from sqlalchemy import and_, not_
 from Levenshtein import distance
-from itertools import islice
+from datetime import datetime
 
 from .database import DBDiscussionSession, DBNewsSession
 from .database.discussion_model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse, PremisseGroup,  Track, \
@@ -26,15 +26,23 @@ class DatabaseHelper(object):
 		"""
 		logger('DatabaseHelper', 'get_news', 'main')
 		db_news = DBNewsSession.query(News).all()
-		logger('DatabaseHelper', 'get_news', 'we have ' + str (len(db_news)) + ' news')
+		logger('DatabaseHelper', 'get_news', 'we have ' + str(len(db_news)) + ' news')
 		ret_dict = dict()
-		for news in db_news:
+		for index, news in enumerate(db_news):
 			news_dict = {}
 			news_dict['title'] = news.title
 			news_dict['author'] = news.author
 			news_dict['date'] = news.date
 			news_dict['news'] = news.news
-			ret_dict[str(news.uid)] = news_dict
+			news_dict['uid'] = str(news.uid)
+			# string date into date
+			date_object = datetime.strptime(str(news.date), '%d.%m.%Y')
+			# add index on the seconds for unique id's
+			sec = (date_object - datetime(1970,1,1)).total_seconds() + index
+			logger('DatabaseHelper', 'get_news', 'news from  ' + str(news.date) + ', ' + str(sec))
+			ret_dict[str(sec)] = news_dict
+
+		ret_dict = collections.OrderedDict(sorted(ret_dict.items()))
 
 		return ret_dict
 

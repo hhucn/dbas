@@ -114,7 +114,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_premisses_for_statement',
 			method: 'POST',
 			data: {
-				uid: uid
+				uid: uid, issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
@@ -145,7 +145,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_reply_for_premissegroup',
 			method: 'POST',
 			data: {
-				ids: ids
+				ids: ids, issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
@@ -178,7 +178,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_reply_for_argument',
 			method: 'POST',
 			data: {
-				ids: ids
+				ids: ids, issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
@@ -210,7 +210,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
 			data: {
-				id: params[0], relation: params[1], confrontation_uid: params[2]
+				id: params[0], relation: params[1], confrontation_uid: params[2], issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
@@ -236,6 +236,7 @@ function AjaxSiteHandler() {
 	 * @param dictionary for inserting
 	 */
 	this.sendNewPremisseForX = function (dictionary) {
+		dictionary['issue'] = new Helper().getCurrentIssueId();
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_premisses_for_X',
@@ -264,7 +265,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_set_new_start_statement',
 			type: 'POST',
 			data: {
-				statement: statement
+				statement: statement, issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
@@ -289,7 +290,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_logfile_for_statement',
 			type: 'GET',
 			data: {
-				uid: statement_uid
+				uid: statement_uid, issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
@@ -325,7 +326,8 @@ function AjaxSiteHandler() {
 			data: {
 				uid: uid,
 				text: corrected_text,
-				final: final_insert
+				final: final_insert,
+				issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
@@ -357,7 +359,7 @@ function AjaxSiteHandler() {
 			type: 'GET',
 			dataType: 'json',
 			data: {
-				url: encoded_url
+				url: encoded_url, issue: new Helper().getCurrentIssueId()
 			},
 			async: true,
 			beforeSend: function(jqXHR, settings ){
@@ -441,7 +443,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_fuzzy_search',
 			type: 'GET',
 			dataType: 'json',
-			data: { value: value, type:type, extra: extra },
+			data: { value: value, type:type, extra: extra, issue: new Helper().getCurrentIssueId() },
 			async: true,
 			global: false,
 			beforeSend: function(jqXHR, settings ){

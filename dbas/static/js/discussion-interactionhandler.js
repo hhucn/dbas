@@ -275,7 +275,7 @@ function InteractionHandler() {
 	this.callbackIfDoneForGetStartStatements = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '-1') {
-			gh.setDiscussionsDescription(firstPositionText);
+			gh.setDiscussionsDescription(firstPositionText, firstPositionText, null);
 			gh.setNewArgumentButtonOnly(firstConclusionRadioButtonText, false);
 		} else {
 			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData);

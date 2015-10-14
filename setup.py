@@ -28,7 +28,7 @@ requires = [
 ]
 
 setup(name='D-BAS',
-	version='0.23',
+	version='0.3.6',
 	description='Novel prototype for a dialogue based argumentation software',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[

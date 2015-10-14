@@ -141,10 +141,10 @@ def setupNewsDatabase():
 				  news='The workshop was very interesting. We have had very interesting talks and got much great feedback vom Jun.-Prof. ' +
 				       'Dr. Betz and Mr. Voigt. A repetition will be planed for the middle of july.')
 	news22 = News(title='Workshop in Karlsruhe',
-				  date='07.05.2015 - 08.05.2015',
+				  date='07.05.2015',
 				  author='Tobias Krauthoff',
 				  news='The working group \'functionality\' will drive to Karlsruhe for a workshop with Jun.-Prof. Dr. Betz as well as ' +
-				       'with C. Voigt. Our main topics will be the measurement of quality of discussions and the design of ' +
+				       'with C. Voigt until 08.05.2015. Our main topics will be the measurement of quality of discussions and the design of ' +
 				       'online-participation. I think, this will be very interesting!')
 	news23 = News(title='System will be build up',
 				  date='01.05.2015',
@@ -174,9 +174,15 @@ def setupNewsDatabase():
 				  date='01.12.2014',
 				  author='Tobias Krauthoff',
 				  news='I\'ve started with with my PhD.')
+	news29 = News(title='New logic for inserting',
+				  date='14.10.2015',
+				  author='Tobias Krauthoff',
+				  news='Logic for inserting statements was redone. Everytime, where the user can add information via a textarea, '
+				       'only the area is visible, which is logically correct. Therefore the decisions are based on argumentations theory.')
 
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12, news13, news14,
-	              news15, news16, news17, news18, news19, news20, news21, news22, news23, news24, news25, news26, news27, news28]
+	              news15, news16, news17, news18, news19, news20, news21, news22, news23, news24, news25, news26, news27, news28,
+	              news29]
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 

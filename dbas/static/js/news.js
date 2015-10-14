@@ -89,7 +89,7 @@ function ajaxSendNews (){
 function callbackIfDoneForGettingNews(data) {
 	var parsedData = $.parseJSON(data);
 	$.each(parsedData, function callbackIfDoneForGettingNewsEach(key, val) {
-		$('#' + newsBodyId).prepend(getNewsContainerAsHtml(val.title, val.date, val.author, val.news, key))
+		$('#' + newsBodyId).prepend(getNewsContainerAsHtml(val.title, val.date, val.author, val.news, val.uid))
 	});
 }
 

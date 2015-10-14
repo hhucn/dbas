@@ -47,4 +47,11 @@
 0.3.4 (06.10.2015)
 ---
 - Fuzzy string search for input fields
+
+0.3.5 (14.10.2015)
+---
 - Logic for inserting statements
+
+0.3.6 (15.10.2015)
+---
+- Switching topic

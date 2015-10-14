@@ -19,7 +19,7 @@ function GuiHandler() {
 	 * @param text to set
 	 */
 	this.setDiscussionsDescription = function (text) {
-		this.setDiscussionsDescription(text, text, {title: '', text: ''});
+		$('#' + discussionsDescriptionId).html(text).attr('title', text);
 	};
 
 	/**
@@ -72,6 +72,17 @@ function GuiHandler() {
 		} else {
 			$('#' + displayControlContainerId).hide();
 		}
+	};
+
+	/**
+	 * Sets an "add statement" button as content
+	 * @param val will be used as value
+	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
+	 */
+	this.setNewArgumentButtonOnly = function (val, isArgument) {
+		var listitem = [];
+		listitem.push(new Helper().getKeyValAsInputInLiWithType(addReasonButtonId, val, isArgument, false, false, ''));
+		new GuiHandler().addListItemsToDiscussionsSpace(listitem);
 	};
 
 	/**
