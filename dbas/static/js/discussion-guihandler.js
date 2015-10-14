@@ -49,7 +49,7 @@ function GuiHandler() {
 	 * @param text to set
 	 */
 	this.setErrorDescription = function (text) {
-		$('#' + discussionErrorDescriptionId).text(text);
+		$('#' + discussionErrorDescriptionId).html(text);
 	};
 
 	/**

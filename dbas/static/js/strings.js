@@ -13,12 +13,13 @@ var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
  */
 var addedEverything 					= 'Everything was added.';
 var alreadyInserted						= 'This is a duplicate and already there.';
+var clickHereForRegistration 			= 'Click <a href="" data-toggle="modal" data-target="#popup_login" title="Login">here</a> for a login or registration!'; // Todo insert
 var confirmation 						= 'Confirmation';
 var confirmTranslation 					= 'If you change the language, your process on this page will be lost and you have to restart the discussion!';
 var correctionsSet 						= 'Your correction was set.';
 var dataRemoved 						= 'Data was successfully removed.';
 var didYouMean							= 'Did you mean:';
-var discussionEnd						= 'The discussion ends here. If you want to proceed, please feel free to login yourself:)';
+var discussionEnd						= 'The discussion ends here. If you want to proceed, please feel free to login yourself :)';
 var duplicateDialog						= 'This textversion is deprecated, because it was already edited.\nDo you want to set this' +
 	' version as the current one once again?'; // Todo insert
 // into dict
@@ -79,6 +80,21 @@ var doesNotJustify 						= 'does not justify that';
 var butWhich 							= 'but which one';
 var interestingOnDBAS 					= 'Interesting discussion on DBAS';
 var haveALookAt 						= 'Hey, please have a look at ';
+
+var forgotPassword 						= 'Forgot Password'; // todo insert
+var hidePasswordRequest 				= 'Hide Password Request'; // todo insert
+var generateSecurePassword 				= 'Generate secure password'; // todo insert
+var hideGenerator 						= 'Hide Generator'; // todo insert
+var checkFirstname						= 'Better check your first name, because the input is empty!'; // todo insert
+var checkLastname						= 'Better check your last name, because the input is empty!'; // todo insert
+var checkNickname						= 'Better check your nickname, because the input is empty!'; // todo insert
+var checkEmail							= 'Better check your email, because the input is empty!'; // todo insert
+var checkPassword						= 'Better check your password, because the input is empty!'; // todo insert
+var checkConfirmation 					= 'Better check the confirmation of your password, because the input is empty!'; // todo insert
+var checkPasswordEqual 					= 'Better check your passwords, because they are not  equal!'; // todo insert
+var languageCouldNotBeSwitched 			= 'Unfortunately, the language could not be switched'; // todo insert
+var requestFailed 						= 'Request failed'; // todo insert
+
 
 /**
  * Text for the dialogue

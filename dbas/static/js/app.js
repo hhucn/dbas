@@ -155,7 +155,7 @@ function hideExtraViewsOfLoginPopup(){
 	$('#' + popupLoginButtonRegister).hide();
 	$('#' + popupLoginButtonLogin).hide();
 	$('#' + popupLoginForgotPasswordBody).hide();
-	$('#generate-password-body').hide();
+	$('#' + generatePasswordBodyId).hide();
 }
 
 function prepareLoginRegistrationPopup(){
@@ -182,23 +182,23 @@ function prepareLoginRegistrationPopup(){
 		}
 	});
 
-	$('#forgot-password-text').click(function(){
+	$('#' + forgotPasswordText).click(function(){
 		if ($('#' + popupLoginForgotPasswordBody).is(':visible')){
 			$('#' + popupLoginForgotPasswordBody).hide();
-			$('#' + popupLoginForgotPasswordText).text('Forgot Password?');
+			$('#' + popupLoginForgotPasswordText).text(forgotPassword + '?');
 		} else {
 			$('#' + popupLoginForgotPasswordBody).show();
-			$('#' + popupLoginForgotPasswordText).text('Hide Password Request');
+			$('#' + popupLoginForgotPasswordText).text(hidePasswordRequest);
 		}
 	});
 
 	$('#' + popupLoginGeneratePassword + ' > a').click(function(){
 		if ($('#' + popupLoginGeneratePasswordBody).is(':visible')){
 			$('#' + popupLoginGeneratePasswordBody).hide();
-			$('#' + popupLoginGeneratePassword + ' > a span').text('Generate secure password');
+			$('#' + popupLoginGeneratePassword + ' > a span').text(generateSecurePassword);
 		} else {
 			$('#' + popupLoginGeneratePasswordBody).show();
-			$('#' + popupLoginGeneratePassword + ' > a span').text('Hide Generator');
+			$('#' + popupLoginGeneratePassword + ' > a span').text(hideGenerator);
 		}
 	});
 
@@ -209,41 +209,41 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonRegister).click(function(){
-		var userfirstname = $('#userfirstname-input').val(),
-			userlastname = $('#userlastname-input').val(),
-			nick = $('#nick-input').val(),
-			email = $('#email-input').val(),
-			password = $('#password-input').val(),
-			passwordconfirm = $('#passwordconfirm-input').val();
+		var userfirstname = $('#' + userfirstnameInputId).val(),
+			userlastname = $('#' + userlastnameInputId).val(),
+			nick = $('#' + nickInputId).val(),
+			email = $('#' + emailInputId).val(),
+			password = $('#' + passwordInputId).val(),
+			passwordconfirm = $('#' + passwordconfirmInputId).val();
 			ajaxRegistration();
 
 		if (!userfirstname || /^\s*$/.test(userfirstname) || 0 === userfirstname.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text('Better check your first name, because the input is empty!');
+			$('#' + popupLoginWarningMessageText).text(checkFirstname);
 
 		} else if (!userlastname || /^\s*$/.test(userlastname) || 0 === userlastname.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text('Better check your last name, because the input is empty!');
+			$('#' + popupLoginWarningMessageText).text(checkLastname);
 
 		} else if (!nick || /^\s*$/.test(nick) || 0 === nick.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text('Better check your nickname, because the input is empty!');
+			$('#' + popupLoginWarningMessageText).text(checkNickname);
 
 		} else if (!email || /^\s*$/.test(email) || 0 === email.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text('Better check email, because the input is empty!');
+			$('#' + popupLoginWarningMessageText).text(checkEmail);
 
 		} else if (!password || /^\s*$/.test(password) || 0 === password.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text('Better check password, because the input is empty!');
+			$('#' + popupLoginWarningMessageText).text(checkPassword);
 
 		} else if (!passwordconfirm || /^\s*$/.test(passwordconfirm) || 0 === passwordconfirm.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text('Better check the confirmation of your password, because the input is empty!');
+			$('#' + popupLoginWarningMessageText).text(checkConfirmation);
 
 		} else if (password !== passwordconfirm) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text('Better check your passwords, because they are not equal!');
+			$('#' + popupLoginWarningMessageText).text(checkPasswordEqual);
 
 		} else {
 			$('#' + popupLoginWarningMessage);
@@ -279,7 +279,7 @@ function ajaxSwitchDisplayLanguage (new_lang){
 	}).done(function ajaxSwitchDisplayLanguageDone() {
 		callbackIfDoneForSwitchDisplayLanguage(new_lang);
 	}).fail(function ajaxSwitchDisplayLanguageFail() {
-		alert('Unfortunately, the language could not be switched');
+		alert(languageCouldNotBeSwitched);
 	});
 }
 
@@ -303,7 +303,7 @@ function ajaxLogin (){
 			location.reload(true);
 		} else {
 			$('#' + popupLoginFailed).show();
-			$('#' + popupLoginFailed + '-message').text("Request failed");
+			$('#' + popupLoginFailed + '-message').text('Request failed');
 		}
 	});
 }
