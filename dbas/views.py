@@ -207,11 +207,11 @@ class Dbas(object):
 
 		logger('main_discussion', 'def', 'self.request.matchdict[parameters]: ' + parameters)
 		logger('main_discussion', 'def', 'self.request.matchdict[service]: ' + service)
-		logger('main_discussion', 'def', where + ': ' + issue)
+		logger('main_discussion', 'def', where + ': ' + str(issue))
 
 		# save issue in session
 		self.request.session['issue'] = issue
-		logger('main_discussion', 'def', 'set session[issue] to ' + issue)
+		logger('main_discussion', 'def', 'set session[issue] to ' + str(issue))
 
 		token = self.request.session.new_csrf_token()
 		logger('main_discussion', 'new token', str(token))
