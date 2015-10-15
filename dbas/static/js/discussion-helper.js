@@ -101,12 +101,12 @@ function Helper() {
 			r = startLowerCase ? this.startWithLowerCase(right) : this.startWithUpperCase(right),
 			i = startLowerCase ? this.startWithLowerCase(irrelevant) : this.startWithUpperCase(irrelevant),
 			enddot = endWithDot ? '.' : '',
-			belCounterJusti = believeThatGoodCounter + ' <b>' + conclusion + '</b>',
+			belCounterJusti = believeThatGoodCounter + ' <b>' + conclusion + ' ' + because.toLocaleLowerCase() + ' ' + premisse + '</b>',
 			undermine = w + ', ' + itIsFalse + ' <b>' + confrontation + '</b>' + enddot,
 			support	  = r + ', ' + itIsTrue + ' <b>' + confrontation + '</b>' + enddot,
 			undercut  = r + ', <b>' + confrontation + '</b>, ' + butIDoNot + ' ' + belCounterJusti + enddot,
 			overbid	  = r + ', <b>' + confrontation + '</b>, ' + andIDo + ' ' + belCounterJusti + enddot,
-			rebut	  = r + ', <b>' + confrontation + '</b> ' + iAcceptCounter + ' <b>' + premisse
+			rebut	  = r + ', <b>' + confrontation + '</b> ' + iAcceptCounter + ' <b>' + conclusion + ' ' + because.toLocaleLowerCase() + ' ' + premisse
 				+ '</b>. ' + iHaveStrongerArgument + ' <b>' + premisse + '</b>' + enddot,
 			noopinion  = iNoOpinion + ': <b>' + confrontation + '</b>. ' + goStepBack + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
