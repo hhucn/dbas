@@ -650,12 +650,12 @@ class Dbas(object):
 			statement = self.request.params['statement']
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
-			new_statement = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
+			new_statement, is_duplicate = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
 			if not new_statement:
 				return_dict['status'] = '0'
 			else:
-				return_dict['status'] = '1'
-				return_dict['statement'] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+				return_dict['status'] = '0' if is_duplicate else '1'
+				return_dict['statement'] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -738,15 +738,15 @@ class Dbas(object):
 
 		logger('get_logfile_for_statement', 'def', 'main')
 
-		uid = ''
+		return_dict = dict()
 		try:
 			uid = self.request.params['uid']
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
 			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
+			return_dict = DatabaseHelper().get_logfile_for_statement(uid, issue)
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
 
-		return_dict = DatabaseHelper().get_logfile_for_statement(uid, issue)
 		# return_dict = DatabaseHelper().get_logfile_for_premissegroup(uid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -1133,12 +1133,12 @@ class Dbas(object):
 		logger('fuzzy_search', 'main', 'def')
 		try:
 			value = self.request.params['value']
-			type = str(self.request.params['type'])
+			mode = str(self.request.params['type'])
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
-			if type == '0':
+			if mode == '0': # start statement
 				logger('fuzzy_search', 'type', '0')
 				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value, issue)
-			elif type == '1':
+			elif mode == '1': # edit statememt popup
 				logger('fuzzy_search', 'type', '1')
 				statement_uid = self.request.params['extra']
 				return_dict = DatabaseHelper().get_fuzzy_string_for_edits(value, statement_uid, issue)
