@@ -14,7 +14,7 @@
 						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
 						<h2><span class="font-semi-bold" i18n:translate="welcome">Welcome</span>
 								<span class="smaller"><span i18n:translate="to_the_dbas">to the</span>
-									<span class="font-semi-bold">D</span><span i18n:translate="ialogue">ialogue</span>-<span class="font-semi-bold">B</span><span i18n:translate="ased">ased</span> <span class="font-semi-bold">A</span><span i18n:translate="rgumentation">rgumentation</span> <span class="font-semi-bold">S</span><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span> 
+									<span class="font-semi-bold">D</span><span i18n:translate="ialog">ialog</span>-<span class="font-semi-bold">B</span><span i18n:translate="ased">ased</span> <span class="font-semi-bold">A</span><span i18n:translate="rgumentation">rgumentation</span> <span class="font-semi-bold">S</span><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span> 
 									<span class="font-semi-bold">D-BAS</span>
 								</span></h2>
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
@@ -68,9 +68,9 @@
 					<p i18n:translate="argu_maps_content">A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense.</p>
 				</div>
 				<div class="col-md-4 col-badge">
-					<img id="icon-dialogue" class="icon-badge" alt="icon-dialogue" src="${request.static_url('dbas:static/images/icon_dialogue.png')}" />
-					<h3 i18n:translate="dialogue_based">Dialogue-based</h3>
-					<p i18n:translate="dialogue_based_content">Yeah, this is a novel and it is a kind of dialogue-based approach. This means that the system will represent argumentations of panelist and claims will be given through the other participants.</p>
+					<img id="icon-dialog" class="icon-badge" alt="icon-dialog" src="${request.static_url('dbas:static/images/icon_dialog.png')}" />
+					<h3 i18n:translate="dialog_based">Dialog-based</h3>
+					<p i18n:translate="dialog_based_content">Yeah, this is a novel and it is a kind of dialog-based approach. This means that the system will represent argumentations of panelist and claims will be given through the other participants.</p>
 				</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-simple" class="icon-badge" alt="icon-simple" src="${request.static_url('dbas:static/images/icon_simple.png')}" />
@@ -204,9 +204,6 @@
 				</div>
 			</div>
 		</div>
-		
-		
-	<div class="eupopup eupopup-top"></div>
 
 	</tal:block>
 </tal:block>

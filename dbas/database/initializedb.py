@@ -117,11 +117,7 @@ def setupNewsDatabase():
 	news16 = News(title='JS Starts',
 				  date='18.05.2015',
 				  author='Tobias Krauthoff',
-				  news='Today started the funny part about the dialogue based part, embedded in the content page.')
-	news17 = News(title='Fun Part Starts',
-				  date='18.05.2015',
-				  author='Tobias Krauthoff',
-				  news='Today started the funny part about the dialogue based part, embedded in the content page.')
+				  news='Today started the funny part about the dialog based part, embedded in the content page.')
 	news18 = News(title='No I18N + L10N',
 				  date='18.05.2015',
 				  author='Tobias Krauthoff',
@@ -181,8 +177,7 @@ def setupNewsDatabase():
 				       'only the area is visible, which is logically correct. Therefore the decisions are based on argumentations theory.')
 
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12, news13, news14,
-	              news15, news16, news17, news18, news19, news20, news21, news22, news23, news24, news25, news26, news27, news28,
-	              news29]
+	              news15, news16, news29, news18, news19, news20, news21, news22, news23, news24, news25, news26, news27, news28]
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 

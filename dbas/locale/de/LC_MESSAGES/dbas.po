@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-07 16:19+0200\n"
+"POT-Creation-Date: 2015-10-15 10:40+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -41,9 +41,10 @@ msgstr "Willkommen"
 msgid "to_the_dbas"
 msgstr "zu dem"
 
-#. Default: ialogue
+#. Default: ialog
 #: dbas/templates/index.pt:17
-msgid "ialogue"
+#, fuzzy
+msgid "ialog"
 msgstr "ialog"
 
 #. Default: ased
@@ -152,16 +153,18 @@ msgstr ""
 "Blasen eine andere Bedeutung. Daher eignet sich die Struktur sehr gut für "
 "logische Aussagen."
 
-#. Default: Dialogue-based
+#. Default: Dialog-based
 #: dbas/templates/index.pt:72
-msgid "dialogue_based"
+#, fuzzy
+msgid "dialog_based"
 msgstr "Dialog-basiert"
 
-#. Default: Yeah, this is a novel and it is a kind of dialogue-based approach.
+#. Default: Yeah, this is a novel and it is a kind of dialog-based approach.
 #. This means that the system will represent argumentations of panelist and
 #. claims will be given through the other participants.
 #: dbas/templates/index.pt:73
-msgid "dialogue_based_content"
+#, fuzzy
+msgid "dialog_based_content"
 msgstr ""
 "Yeah, das ist neu und verwirklicht eine Art dialog-basierten Ansatz. Demnach "
 "wird das System Antworten für den Benutzer vorbereiten, welche auf Aussagen "
@@ -200,8 +203,8 @@ msgid "guided_view_content2"
 msgstr "für dich."
 
 #. Default: Island View
-#: dbas/templates/index.pt:90 dbas/templates/content.pt:64
-#: dbas/templates/content.pt:97
+#: dbas/templates/index.pt:90 dbas/templates/content.pt:66
+#: dbas/templates/content.pt:99
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
@@ -298,23 +301,8 @@ msgstr "Einstellungen"
 msgid "logout"
 msgstr "Abmelden"
 
-#. Default: More
-#: dbas/templates/snippet-header.pt:85
-msgid "more"
-msgstr "Mehr"
-
-#. Default: Author
-#: dbas/templates/snippet-header.pt:90
-msgid "author"
-msgstr "Autor"
-
-#. Default: Licence
-#: dbas/templates/snippet-header.pt:95
-msgid "licence"
-msgstr "MIT Lizenz"
-
 #. Default: Language
-#: dbas/templates/snippet-header.pt:110
+#: dbas/templates/snippet-header.pt:86
 msgid "language"
 msgstr "Sprache"
 
@@ -481,6 +469,16 @@ msgstr ""
 #: dbas/templates/imprint.pt:78
 msgid "icons_by"
 msgstr "Icons von"
+
+#. Default: Author
+#: dbas/templates/snippet-footer.pt:14
+msgid "author"
+msgstr "Autor"
+
+#. Default: Licence
+#: dbas/templates/snippet-footer.pt:19
+msgid "licence"
+msgstr "MIT Lizenz"
 
 #. Default: About me
 #: dbas/templates/snippet-popups.pt:10
@@ -712,8 +710,8 @@ msgstr ""
 #. Default: Success:
 #: dbas/templates/snippet-popups.pt:262 dbas/templates/snippet-popups.pt:267
 #: dbas/templates/snippet-popups.pt:358 dbas/templates/news.pt:22
-#: dbas/templates/news.pt:27 dbas/templates/settings.pt:77
-#: dbas/templates/content.pt:81 dbas/templates/content.pt:133
+#: dbas/templates/news.pt:27 dbas/templates/settings.pt:71
+#: dbas/templates/content.pt:83 dbas/templates/content.pt:135
 msgid "error"
 msgstr "Fehler:"
 
@@ -734,7 +732,7 @@ msgstr "Nachname"
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: dbas/templates/snippet-popups.pt:289 dbas/templates/settings.pt:38
+#: dbas/templates/snippet-popups.pt:289 dbas/templates/settings.pt:32
 msgid "nickname"
 msgstr "Nickname"
 
@@ -791,7 +789,7 @@ msgid "generate_password"
 msgstr "Neues Password"
 
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:353 dbas/templates/settings.pt:72
+#: dbas/templates/snippet-popups.pt:353 dbas/templates/settings.pt:66
 msgid "success"
 msgstr "Erfolg"
 
@@ -939,68 +937,63 @@ msgstr "Bitte JavaScript aktivieren!"
 msgid "news_intro"
 msgstr "Dies, wird so etwas wie die Nachrichten-Seite"
 
-#. Default: Settings of
-#: dbas/templates/settings.pt:15
-msgid "settings_of"
-msgstr "Einstellungen von:"
-
 #. Default: Information about yourself
-#: dbas/templates/settings.pt:20
+#: dbas/templates/settings.pt:14
 msgid "info_about_yourself"
 msgstr "Informationen über dich"
 
 #. Default: Firstname
-#: dbas/templates/settings.pt:24
+#: dbas/templates/settings.pt:18
 msgid "firstname"
 msgstr "Vorname"
 
 #. Default: Surname
-#: dbas/templates/settings.pt:31
+#: dbas/templates/settings.pt:25
 msgid "surname"
 msgstr "Nachname"
 
 #. Default: Group
-#: dbas/templates/settings.pt:52
+#: dbas/templates/settings.pt:46
 msgid "group"
 msgstr "Gruppe"
 
 #. Default: Your decisions
-#: dbas/templates/settings.pt:61
+#: dbas/templates/settings.pt:55
 msgid "decisions"
 msgstr "Deine Entscheidungen"
 
 #. Default: Change your password
-#: dbas/templates/settings.pt:83
+#: dbas/templates/settings.pt:77
 msgid "change_password"
 msgstr "Ändere dein Passwort"
 
 #. Default: Old password
-#: dbas/templates/settings.pt:86
+#: dbas/templates/settings.pt:80
 msgid "old_password"
 msgstr "Altes Password"
 
 #. Default: New Password
-#: dbas/templates/settings.pt:90
+#: dbas/templates/settings.pt:84
 msgid "new_password"
 msgstr "Neues Password"
 
 #. Default: Strength
-#: dbas/templates/settings.pt:94
+#: dbas/templates/settings.pt:88
 msgid "strength"
 msgstr "Stärke"
 
 #. Default: New Password (confirm)
-#: dbas/templates/settings.pt:100
+#: dbas/templates/settings.pt:94
 msgid "new_password_confirm"
 msgstr "Neues Password (Bestätigung)"
 
 #. Default: Great:
-#: dbas/templates/settings.pt:114 dbas/templates/contact.pt:72
+#: dbas/templates/settings.pt:108 dbas/templates/contact.pt:72
 msgid "great"
 msgstr "Großartig:"
 
 #. Default: Your password was changed
-#: dbas/templates/settings.pt:114
+#: dbas/templates/settings.pt:108
 msgid "password_changed"
 msgstr "Dein Passwurd wurde geändert"
 
@@ -1047,80 +1040,92 @@ msgstr "Anti-Spam (notwendig)"
 msgid "message_sent"
 msgstr "Deine Nachricht wurde gesendet"
 
-#. Default: Dialogue-Based Argumentation System
-#: dbas/templates/content.pt:15
+#. Default: Dialog-Based Argumentation System
+#: dbas/templates/content.pt:14
 msgid "dbas_long"
 msgstr "Dialog-basiertes Argumentations System"
 
-#. Default: The current discussion is about
-#: dbas/templates/content.pt:16
+#. Default: Current discussion is about
+#: dbas/templates/content.pt:15
 msgid "current_discussion"
 msgstr "Die aktuelle Diskussion handelt von"
 
+#. Default: Now your opinion matters!
+#: dbas/templates/content.pt:23
+#, fuzzy
+msgid "your_opinion_matters"
+msgstr "Dein Nickname"
+
 #. Default: and was started at
-#: dbas/templates/content.pt:20
+#: dbas/templates/content.pt:25
 msgid "startet_at"
 msgstr "und wurde gestartet am"
 
 #. Default: Change display style:
-#: dbas/templates/content.pt:55
+#: dbas/templates/content.pt:57
 msgid "change_style"
 msgstr "Wechsel die Darstellung:"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:59
+#: dbas/templates/content.pt:61
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:69
+#: dbas/templates/content.pt:71
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:96
+#: dbas/templates/content.pt:98
 msgid "istland_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Pro
-#: dbas/templates/content.pt:100 dbas/templates/content.pt:142
+#: dbas/templates/content.pt:102 dbas/templates/content.pt:144
 msgid "pro"
 msgstr "Pro"
 
 #. Default: Contra
-#: dbas/templates/content.pt:106 dbas/templates/content.pt:154
+#: dbas/templates/content.pt:108 dbas/templates/content.pt:156
 msgid "contra"
 msgstr "Kontra"
 
 #. Default: Please insert a new Argument
-#: dbas/templates/content.pt:129
+#: dbas/templates/content.pt:131
 msgid "insert-argument"
 msgstr "Bitte füge ein neues Argument hinzu"
 
 #. Default: Add a textfield
-#: dbas/templates/content.pt:148 dbas/templates/content.pt:159
+#: dbas/templates/content.pt:150 dbas/templates/content.pt:161
 msgid "add_textfield"
 msgstr "weiteres Textfeld"
 
 #. Default: List of participants
-#: dbas/templates/content.pt:175
+#: dbas/templates/content.pt:177
 msgid "participant_list"
 msgstr ""
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/content.pt:176 dbas/templates/content.pt:191
+#: dbas/templates/content.pt:178 dbas/templates/content.pt:193
 msgid "admin_only"
 msgstr "Manche Sachen sind nur für den Admin."
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/content.pt:190
+#: dbas/templates/content.pt:192
 msgid "list_attacks"
 msgstr ""
 
 #. Default: Minimap:
-#: dbas/templates/content.pt:202
+#: dbas/templates/content.pt:204
 msgid "minimap"
 msgstr "Minimap:"
+
+#~ msgid "more"
+#~ msgstr "Mehr"
+
+#~ msgid "settings_of"
+#~ msgstr "Einstellungen von:"
 
 #~ msgid "privacy_policy"
 #~ msgstr "Datenschutzrichtlinien"

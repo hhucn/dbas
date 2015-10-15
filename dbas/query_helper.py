@@ -250,7 +250,7 @@ class QueryHelper(object):
 				db_undermine_premisses = DBDiscussionSession.query(Premisse).filter(
 					and_(Premisse.premissesGroup_uid==undermine.premissesGroup_uid, Premisse.issue_uid==issue)).first()
 				logger('QueryHelper', 'get_undermines_for_premisses', 'found db_undermine ' + str(undermine.uid))
-				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(undermine.premissesGroup_uid)
+				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(undermine.premissesGroup_uid, issue)
 				return_dict[key + str(index) + 'id'] = undermine.premissesGroup_uid
 				return_dict[key + str(index) + '_statement_id'] = db_undermine_premisses.statement_uid
 				index += 1

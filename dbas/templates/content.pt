@@ -11,7 +11,7 @@
 		<div class="container first-container">
 			<div class="row">
 				<div class="col-md-8 center text-center">
-					<h2><span class="font-semi-bold" i18n:translate="dbas_long">Dialogue-Based Argumentation System</span></h2>
+					<h2><span class="font-semi-bold" i18n:translate="dbas_long">Dialog-Based Argumentation System</span></h2>
 					<p><span i18n:translate="current_discussion">Current discussion is about</span></p>
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><span class="caret"></span></button>

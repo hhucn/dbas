@@ -837,7 +837,8 @@ class Dbas(object):
 
 		logger('get_attack_overview', 'def', 'main')
 		logger('get_attack_overview', 'check_csrf_token', str(check_csrf_token(self.request)))
-		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid)
+		issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid, issue)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
