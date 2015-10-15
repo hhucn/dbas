@@ -563,7 +563,7 @@ class DatabaseHelper(object):
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		logger('DatabaseHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) + ', statement: ' + str(
-			statement))
+			statement) + ', issue: ' + str(issue))
 
 		# check for dot at the end
 		if not statement.endswith(('.','?','!')):
@@ -579,7 +579,7 @@ class DatabaseHelper(object):
 			db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.text_uid==db_textvalue.uid,
 			                                                                Statement.issue_uid==issue)).first()
 			logger('DatabaseHelper', 'set_statement', 'duplicate, returning old statement with uid ' + str(db_statement.uid))
-			return db_statement
+			return db_statement, True
 
 		# add the version
 		textversion = TextVersion(content=statement, author=db_user.uid, weight=0)
@@ -599,14 +599,12 @@ class DatabaseHelper(object):
 
 		# get the new statement
 		new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.text_uid==textvalue.uid,
-		                                                                 Statement.issue_uid==issue)).order_by(Statement.uid.desc(
-
-		)).first()
+		                                                                 Statement.issue_uid==issue)).order_by(Statement.uid.desc()).first()
 
 		transaction.commit()
 
 		logger('DatabaseHelper', 'set_statement', 'returning new statement with uid ' + str(new_statement.uid))
-		return new_statement
+		return new_statement, False
 
 	def set_argument(self, transaction, text, user_id, is_supportive, related_to_arg_uid, issue):
 		"""
@@ -619,7 +617,7 @@ class DatabaseHelper(object):
 		:param issue:
 		:return:
 		"""
-		new_statement = self.set_statement(transaction, text, user_id, False, issue)
+		new_statement, is_duplicate = self.set_statement(transaction, text, user_id, False, issue)
 
 		new_premissegroup = PremisseGroup(author=user_id)
 		DBDiscussionSession.add(new_premissegroup)
@@ -660,7 +658,7 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'set_premisses_for_conclusion', 'main')
 		for index, entry in enumerate(pdict):
 			# first, save the premisse as statement
-			new_statement = self.set_statement(transaction, pdict[entry], user, False, issue)
+			new_statement, is_duplicate = self.set_statement(transaction, pdict[entry], user, False, issue)
 
 			# second, set the new statement as premisse
 			new_premissegroup_uid = qh.set_statement_as_premisse(new_statement, user, issue)
@@ -750,7 +748,7 @@ class DatabaseHelper(object):
 			for con in con_dict:
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine: ' + con_dict[con])
 				# every entry of the dict will be a new statement with a new premissegroup
-				new_statement = self.set_statement(transaction, con_dict[con], user, False, issue)
+				new_statement, is_duplicate = self.set_statement(transaction, con_dict[con], user, False, issue)
 				new_premissegroup_uid = QueryHelper().set_statement_as_premisse(new_statement, user, issue)
 				# now, every new statement will attack the attack of the system, which is as confrontation_uid
 				for premisse in db_premisses_of_current_attack:
@@ -768,7 +766,7 @@ class DatabaseHelper(object):
 			for pro in pro_dict:
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch support: ' + pro_dict[pro])
 				# every entry of the dict will be a new statement with a new premissegroup
-				new_statement = self.set_statement(transaction, pro_dict[pro], user, False, issue)
+				new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
 				new_premissegroup_uid = QueryHelper().set_statement_as_premisse(new_statement, user, issue)
 				# now, every new statement will ...
 				for premisse in db_premisses_of_current_attack:
@@ -785,7 +783,7 @@ class DatabaseHelper(object):
 			argument_list = []
 			for con in con_dict:
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine: ' + con_dict[con])
-				new_statement = self.set_statement(transaction, con_dict[con], user, False, issue)
+				new_statement, is_duplicate = self.set_statement(transaction, con_dict[con], user, False, issue)
 				new_premissegroup_uid = QueryHelper().set_statement_as_premisse(new_statement, user, issue)
 				# now, every new statement will ...
 				new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=0, issue=issue)
@@ -804,7 +802,7 @@ class DatabaseHelper(object):
 			argument_list = []
 			for pro in pro_dict:
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid: ' + pro_dict[pro])
-				new_statement = self.set_statement(transaction, pro_dict[pro], user, False, issue)
+				new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
 				new_premissegroup_uid = QueryHelper().set_statement_as_premisse(new_statement, user, issue)
 				# now, every new statement will ...
 				new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=0, issue=issue)
@@ -825,7 +823,7 @@ class DatabaseHelper(object):
 			for pro in pro_dict:
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch rebut: ' + pro_dict[pro])
 				# every entry of the dict will be a new statement with a new premissegroup
-				new_statement = self.set_statement(transaction, pro_dict[pro], user, False, issue)
+				new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
 				new_premissegroup_uid = QueryHelper().set_statement_as_premisse(new_statement, user, issue)
 				# now, every new statement will ...
 				for premisse in db_premisses:
