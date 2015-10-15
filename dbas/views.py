@@ -186,14 +186,32 @@ class Dbas(object):
 
 		parameters = self.request.matchdict['parameters'] if 'parameters' in self.request.matchdict else '-'
 		service = 'ajax_' + self.request.matchdict['service'] if 'service' in self.request.matchdict else '-'
-		issue = self.request.matchdict['issue'] if 'issue' in self.request.matchdict else '1'
+
+		logger('main_discussion', 'def', 'is issue in params ' + str('issue' in self.request.params))
+		logger('main_discussion', 'def', 'is issue in session ' + str('issue' in self.request.session))
+		logger('main_discussion', 'def', 'is issue in matchdict ' + str('issue' in self.request.matchdict))
+
+		# first matchdict, then params, then session, afterwards fallback
+		if 'issue' in self.request.matchdict:
+			issue = self.request.matchdict['issue']
+			where = 'self.request.matchdict[issue]'
+		elif 'issue' in self.request.params:
+			issue = self.request.params['issue']
+			where = 'self.request.params[issue]'
+		elif 'issue' in self.request.session:
+			issue = self.request.session['issue']
+			where = 'self.request.session[issue]'
+		else:
+			where = 'fallback'
+			issue = issue_fallback
+
 		logger('main_discussion', 'def', 'self.request.matchdict[parameters]: ' + parameters)
 		logger('main_discussion', 'def', 'self.request.matchdict[service]: ' + service)
-		logger('main_discussion', 'def', 'self.request.matchdict[issue]: ' + issue)
+		logger('main_discussion', 'def', where + ': ' + issue)
 
-		session = self.request.session
 		# save issue in session
-		session['issue'] = issue
+		self.request.session['issue'] = issue
+		logger('main_discussion', 'def', 'set session[issue] to ' + issue)
 
 		token = self.request.session.new_csrf_token()
 		logger('main_discussion', 'new token', str(token))
@@ -462,10 +480,14 @@ class Dbas(object):
 			logger('get_premisses_for_statement', 'def', 'read params')
 			uids = self.request.params['uid'].split('=')
 			uid = uids[1]
-			logger('get_premisses_for_statement', 'def', 'issue in params' + str('issue' in self.request.params))
-			logger('get_premisses_for_statement', 'def', 'issue in session' + str('issue' in self.request.session))
+			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
+			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
+			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
+			logger('get_premisses_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
+			logger('get_premisses_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
+			logger('get_premisses_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
-			logger('get_premisses_for_statement', 'def', 'uids: '  + ', issue ' + issue)
+			logger('get_premisses_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
 			return_dict = DatabaseHelper().get_premisses_for_statement(transaction, uid, True, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
 			return_dict['status'] = '1'

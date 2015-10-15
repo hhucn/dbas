@@ -77,5 +77,5 @@ class DictionaryHelper(object):
 			text = text[:-1]
 
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + weight + ', ' + author +
-		       ', ' + pgroup + ', ' + issue)
+		       ', ' + pgroup + ', ' + str(issue))
 		return {'uid':uid, 'text':text, 'date':date, 'weight':weight, 'author':author, 'premissegroup_uid':pgroup, 'issue':issue}

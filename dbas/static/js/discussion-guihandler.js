@@ -840,7 +840,9 @@ function GuiHandler() {
 	this.setIssueList = function (jsonData){
 		var li, a, current_id = '', func, topic;
 
-		$('#' + issueDropdownListID).empty();
+		li = $('<li>');
+		li.addClass('dropdown-header').text(issueList);
+		$('#' + issueDropdownListID).empty().append(li);
 
 		// create an issue for each entry
 		$.each(jsonData, function setIssueListEach(key, val) {
@@ -855,7 +857,8 @@ function GuiHandler() {
 				a.click(function () {
 					func = $(this).parent().attr('issue');
 					topic = $('#issue_' + func + ' a').text();
-					displayConfirmationDialog(switchDiscussion, switchDiscussionText1 + ' <i>' + topic + '</i> ' + switchDiscussionText2, func, true);
+
+					displayConfirmationDialog(switchDiscussion, switchDiscussionText1 + ': <i>\'' + topic + '\'</i> ' + switchDiscussionText2, func, true);
 					// set new title and text
 					$('#' + issueDropdownButtonID).text($(this).text());
 					$('#' + issueDateId).text($(this).attr('title'));
@@ -875,6 +878,7 @@ function GuiHandler() {
 			$('#issue_' + current_id).addClass('disabled');
 		}
 
+		// some helper
 		$('#' + issueDropdownButtonID).attr('issue', current_id);
 	};
 }

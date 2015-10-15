@@ -421,6 +421,7 @@ class QueryHelper(object):
 			db_argument.uid))
 
 		# all possible attacks
+		complete_list_of_attacks = [1,3,5]
 		attacks = [1,3,5]
 		# maybe we are anonymous
 		if user:
@@ -434,42 +435,62 @@ class QueryHelper(object):
 				# now attacks contains all attacks, which were not be done
 				logger('QueryHelper', 'get_attack_for_argument_by_random', 'attacks, which were not done yet ' + str(attacks))
 
-		dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, [1,3,5] if len(attacks) == 0 else attacks, issue)
+		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
+		dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, attack_list, issue, complete_list_of_attacks)
 		# sanity check if we could not found an attack for a left attack in out set
-		if dict == None and len(attacks) > 0:
-			dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, [1,3,5], issue)
+		if not dict and len(attacks) > 0:
+			dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, complete_list_of_attacks, issue, complete_list_of_attacks)
 
 		return dict, key
 
-	def get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue):
+	def get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks):
 		"""
 
 		:param argument_uid:
-		:param max_rnd:
+		:param attack_list:
 		:param issue:
+		:param complete_list_of_attacks:
 		:return:
 		"""
-		dict = None
+		return_dict = None
 		key = ''
+		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
+		attack_found = False
+
+		logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'attack_list : ' + str(attack_list))
+		logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'complete_list_of_attacks : ' + str(complete_list_of_attacks))
+		logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'left_attacks : ' + str(left_attacks))
+
 		# randomize at least 1, maximal 3 times for getting an attack
 		while len(attack_list) > 0:
 			attack = random.choice(attack_list)
 			attack_list.remove(attack)
 			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
 			if attack == 1:
-				dict = self.get_undermines_for_argument_uid('undermine', argument_uid, issue)
+				return_dict = self.get_undermines_for_argument_uid('undermine', argument_uid, issue)
 				key = 'undermine'
 			elif attack == 5:
-				dict = self.get_rebuts_for_argument_uid('rebut', argument_uid, issue)
+				return_dict = self.get_rebuts_for_argument_uid('rebut', argument_uid, issue)
 				key = 'rebut'
 			else:
-				dict = self.get_undercuts_for_argument_uid('undercut', argument_uid, issue)
+				return_dict = self.get_undercuts_for_argument_uid('undercut', argument_uid, issue)
 				key = 'undercut'
 
-			if dict != None and int(dict[key]) != 0:
+			if return_dict and int(return_dict[key]) != 0:
+				logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'attack found')
+				attack_found = True
 				break
+			else:
+				logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'no attack found')
 
-		return dict, key
+		if len(left_attacks) > 0 and not attack_found:
+			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
+			return_dict, key = self.get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks)
+		else:
+			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
+
+
+		return return_dict, key
 
 	def save_track_for_user(self, transaction, user, statement_id, premissesgroup_uid, argument_uid, attacked_by_relation, attacked_with_relation, session_id):
 		"""

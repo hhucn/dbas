@@ -267,14 +267,15 @@ class DatabaseHelper(object):
 
 		return_dict = dict()
 		premisses_dict = dict()
-		logger('DatabaseHelper', 'get_premisses_for_statement', 'get all premisses')
+		logger('DatabaseHelper', 'get_premisses_for_statement', 'get all premisses: isSupportive: ' + str(issupportive)
+		       + ', conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' + str(issue))
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==issupportive,
 																Argument.conclusion_uid==statement_uid,
 		                                                        Argument.issue_uid==issue)).all()
 
 		for argument in db_arguments:
 			logger('DatabaseHelper', 'get_premisses_for_statement', 'argument ' + str(argument.uid) + ' (' + str(argument.premissesGroup_uid)
-			       + '), issue ' + issue)
+			       + '), issue ' + str(issue))
 			db_premisses = DBDiscussionSession.query(Premisse).filter(and_(Premisse.premissesGroup_uid==argument.premissesGroup_uid, 
 			                                                               Premisse.issue_uid==issue)).all()
 
