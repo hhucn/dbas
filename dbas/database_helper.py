@@ -474,10 +474,6 @@ class DatabaseHelper(object):
 			identifier = 'statement'
 		elif 'rebut' in relation.lower():
 			#return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid)
-			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid, issue))
-			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid, issue))
-			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid, issue))
-			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid, issue))
 			return_dict = qh.get_supports_for_argument_uid(key, argument_uid, issue)
 			identifier = 'premissesgroup'
 		else:
