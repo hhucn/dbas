@@ -232,9 +232,6 @@ $(function () {
 	$(window).load( function windowLoad () {
 		var url = window.location.href;
     	if (url.indexOf(mainpage + 'discussion/start') != -1) {
-			if (url.indexOf(mainpage + 'discussion/start/issue=') != -1){
-				var id = url.substr((mainpage + 'discussion/start/issue=').length);
-			}
 			startDiscussion();
 		} else {
 			$('#' + discussionContainerId).fadeIn('fast');
@@ -242,6 +239,9 @@ $(function () {
 
 			hidden_service = $('#' + hiddenDiscussionInformationServiceId).text();
 			hidden_params = $('#' + hiddenDiscussionInformationParametersId).text();
+
+			// get issue list
+			ajaxHandler.getIssueList();
 
 			if (hidden_service == 'ajax_get_start_statements'){
 				ajaxHandler.getStartStatements();

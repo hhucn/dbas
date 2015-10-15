@@ -223,6 +223,7 @@ function InteractionHandler() {
 		if (parsedData.status == '1') {
 			new JsonGuiHandler().setJsonDataToContentAsStartPremisses(parsedData);
 		} else {
+			gh.setDiscussionsDescription(firstPositionText, '' , null);
 			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
 		}
 		gh.resetEditButton();
@@ -401,21 +402,24 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		gh.setIssueList(parsedData);
 
-		// do we have a link with issue id?
-		var url = window.location.href, issue_id;
-		if (url.indexOf(mainpage + 'discussion/start/issue=') != -1){
-			// get issue id out of the url
-			issue_id = url.substr((mainpage + 'discussion/start/issue=').length);
-			// set inactive class
-			$('#' + issueDropdownListID).children('li').each(function () {
-				$(this).removeClass('disabled');
-			});
-			$('#issue_' + issue_id).addClass('disabled');
-			// set button text
-			$('#' + issueDropdownButtonID).text($('#issue_' + issue_id).text());
-		} else {
-			issue_id = new Helper().getCurrentIssueId();
+		// are we starting ?
+			var url = window.location.href, issue_id;
+		if (url.indexOf(mainpage + 'discussion/start') != -1) {
+			// do we have a link with issue id?
+			if (url.indexOf(mainpage + 'discussion/start/issue=') != -1) {
+				// get issue id out of the url
+				issue_id = url.substr((mainpage + 'discussion/start/issue=').length);
+				// set inactive class
+				$('#' + issueDropdownListID).children('li').each(function () {
+					$(this).removeClass('disabled');
+				});
+				$('#issue_' + issue_id).addClass('disabled');
+				// set button text
+				$('#' + issueDropdownButtonID).text($('#issue_' + issue_id).text());
+			} else {
+				issue_id = new Helper().getCurrentIssueId();
+			}
+			new AjaxSiteHandler().getStartStatements(issue_id);
 		}
-		new AjaxSiteHandler().getStartStatements(issue_id);
 	};
 }

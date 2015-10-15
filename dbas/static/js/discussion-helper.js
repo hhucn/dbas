@@ -240,13 +240,11 @@ function Helper() {
 		return tr;
 	};
 
+	/**
+	 *
+	 * @returns {number}
+	 */
 	this.getCurrentIssueId = function(){
-		var issue_id = -1;
-		$('#' + issueDropdownListID).children('li').each(function () {
-			if ($(this).hasClass('disabled')){
-				issue_id = $(this).attr('id').substr('issue_'.length);
-			}
-		});
-		return issue_id;
+		return $('#' + issueDropdownButtonID).attr('issue');
 	}
 }

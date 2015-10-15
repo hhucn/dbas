@@ -66,7 +66,7 @@ function AjaxSiteHandler() {
 	 * @param url
 	 * @param settings_data
 	 */
-	this.debugger = function ( data, url, settings_data ) {
+	this.debugger = function (data, url, settings_data) {
 		if (hash==1) window.location = '/' + url + '?' + settings_data;
 		if (loca==1) window.location = '/content/' + url + '?' + settings_data;
 		if (push==1) history.pushState(data, '', document.location);

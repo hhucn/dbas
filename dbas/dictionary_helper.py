@@ -3,6 +3,7 @@ import json
 from .database import DBDiscussionSession
 from .database.discussion_model import Statement, User, TextValue, TextVersion, Premisse
 from .logger import logger
+from sqlalchemy import and_
 
 class DictionaryHelper(object):
 
@@ -48,15 +49,19 @@ class DictionaryHelper(object):
 		return_dict = json.dumps(raw_dict, ensure_ascii)
 		return return_dict
 
-	def save_statement_row_in_dictionary(self, statement_row):
+	def save_statement_row_in_dictionary(self, statement_row, issue):
 		"""
 		Saved a row in dictionary
 		:param statement_row: for saving
+		:param issue:
 		:return: dictionary
 		"""
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'statement uid ' + str(statement_row.uid))
-		db_statement    = DBDiscussionSession.query(Statement).filter_by(uid=statement_row.uid).join(TextValue).first()
-		db_premisse     = DBDiscussionSession.query(Premisse).filter_by(statement_uid=db_statement.uid).first()
+		db_statement    = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_row.uid,
+		                                                                   Statement.issue_uid==issue)).join(
+			TextValue).first()
+		db_premisse     = DBDiscussionSession.query(Premisse).filter(and_(Premisse.statement_uid==db_statement.uid,
+		                                                                  Premisse.issue_uid==issue)).first()
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'premisse uid ' +
 			       ((str(db_premisse.premissesGroup_uid) + '.' + str(db_premisse.statement_uid)) if db_premisse else 'null'))
 		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
@@ -72,5 +77,5 @@ class DictionaryHelper(object):
 			text = text[:-1]
 
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + weight + ', ' + author +
-		       ', ' + pgroup)
-		return {'uid':uid, 'text':text, 'date':date, 'weight':weight, 'author':author, 'premissegroup_uid':pgroup}
+		       ', ' + pgroup + ', ' + issue)
+		return {'uid':uid, 'text':text, 'date':date, 'weight':weight, 'author':author, 'premissegroup_uid':pgroup, 'issue':issue}

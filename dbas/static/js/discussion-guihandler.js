@@ -838,41 +838,43 @@ function GuiHandler() {
 	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, firstText='', firstDate='', firstId = '', func, topic;
+		var li, a, current_id = '', func, topic;
 
 		$('#' + issueDropdownListID).empty();
 
+		// create an issue for each entry
 		$.each(jsonData, function setIssueListEach(key, val) {
-			li = $('<li>');
-			li.attr({id: 'issue_' + val.uid, 'issue': val.uid});
-			a = $('<a>');
-			a.text(val.text);
-			li.append(a);
-			a.click(function (){
-				func = $(this).parent().attr('issue');
-				topic = $('#issue_' + func + ' a').text();
-				displayConfirmationDialog(switchDiscussion, switchDiscussionText1 + ' <i>' +  topic +  '</i> ' + switchDiscussionText2, func, true);
-				// set new title and text
-				$('#' + issueDropdownButtonID).text($(this).text());
-				$('#' + issueDateId).text($(this).attr('title'));
-				// set inactive class
-				$(this).parent().parent().children('li').each(function () {
-					$(this).removeClass('disabled');
+			if (key == 'current_issue') {
+				current_id = val;
+			} else {
+				li = $('<li>');
+				li.attr({id: 'issue_' + val.uid, 'issue': val.uid, 'date': val.date});
+				a = $('<a>');
+				a.text(val.text);
+				li.append(a);
+				a.click(function () {
+					func = $(this).parent().attr('issue');
+					topic = $('#issue_' + func + ' a').text();
+					displayConfirmationDialog(switchDiscussion, switchDiscussionText1 + ' <i>' + topic + '</i> ' + switchDiscussionText2, func, true);
+					// set new title and text
+					$('#' + issueDropdownButtonID).text($(this).text());
+					$('#' + issueDateId).text($(this).attr('title'));
+					// set inactive class
+					$(this).parent().parent().children('li').each(function () {
+						$(this).removeClass('disabled');
+					});
+					$(this).parent().addClass('disabled');
 				});
-				$(this).parent().addClass('disabled');
-			});
-			$('#' + issueDropdownListID).append(li);
-			if (firstText == ''){
-				firstText = val.text;
-				firstDate = val.date;
-				firstId = 'issue_' + val.uid;
+				$('#' + issueDropdownListID).append(li);
 			}
 		});
 
 		if ($('#' + issueDropdownButtonID).text().length == 0) {
-			$('#' + issueDateId).text(firstDate);
-			$('#' + issueDropdownButtonID).html(firstText + '   <span class="caret"></span>');
-			$('#' + firstId).addClass('disabled');
-		};
+			$('#' + issueDateId).text($('#issue_' + current_id).attr('date'));
+			$('#' + issueDropdownButtonID).html($('#issue_' + current_id + ' a').text() + '   <span class="caret"></span>');
+			$('#issue_' + current_id).addClass('disabled');
+		}
+
+		$('#' + issueDropdownButtonID).attr('issue', current_id);
 	};
 }

@@ -67,9 +67,9 @@ function TrackHandler() {
 	 */
 	this.setDataInTrackTable = function (jsonData) {
 		'use strict';
-		var tableElement, trElement, tdElement, spanElement, i, is_argument;
-		tdElement = ['', '', '', '', '', '', '', '', ''];
-		spanElement = ['', '', '', '', '', '', '', '', ''];
+		var tableElement, trElement, tdElement, spanElement, i, is_argument, parsedData, topic, date;
+		tdElement = ['', '', '', '', '', '', '', '', '', ''];
+		spanElement = ['', '', '', '', '', '', '', '', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr({
 			class: 'table table-condensed',
@@ -91,14 +91,15 @@ function TrackHandler() {
 
 		// add header row
 		spanElement[0].text('No');
-		spanElement[1].text('Track ID');
-		spanElement[2].text('Statement ID');
-		spanElement[3].text('PremisseGroup ID');
-		spanElement[4].text('Argument ID');
-		spanElement[5].text('You were attacked by');
-		spanElement[6].text('You\'ve attacked with');
-		spanElement[7].text('Text');
-		spanElement[8].text('Date');
+		spanElement[1].text('Track');
+		spanElement[2].text('Topic');
+		spanElement[3].text('Statement');
+		spanElement[4].text('PremisseGroup');
+		spanElement[5].text('Argument');
+		spanElement[6].text('You were attacked by');
+		spanElement[7].text('You\'ve attacked with');
+		spanElement[8].text('Text');
+		spanElement[9].text('Date');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -108,39 +109,39 @@ function TrackHandler() {
 
 		// adding the tracks
 		var has_data = false;
-		$.each($.parseJSON(jsonData), function setDataInTrackTableEach(key, value) {
-			has_data = true;
-			for (i = 0; i < tdElement.length; i += 1) {
-				tdElement[i] = $('<td>');
-			}
-			is_argument = value.is_argument;
-			tdElement[0].text(key);
-			tdElement[1].text(value.uid);
-			tdElement[2].text(value.statement);
-			tdElement[3].text(value.premissesGroup);
-			tdElement[4].text(value.argument);
-			tdElement[5].text(value.attacked_by_relation);
-			tdElement[6].text(value.attacked_with_relation);
-			tdElement[7].html(value.text);
-			tdElement[8].text(value.timestamp);
-			tdElement[0].attr('title', 'No: ' + key);
-			tdElement[1].attr('title', 'Track ID: ' + value.uid);
-			tdElement[2].attr('title', 'Statement ID: ' + value.statement_uid);
-			tdElement[3].attr('title', 'Premisses Groups ID: ' + value.premissesGroup_uid);
-			tdElement[4].attr('title', 'Argument ID: ' + value.argument_uid);
-			tdElement[5].attr('title', 'Relation ID: ' + value.attacked_by_relation_uid);
-			tdElement[6].attr('title', 'Relation ID: ' + value.attacked_with_relation_uid);
-			tdElement[7].attr('title', 'Text: ' + value.text);
-			tdElement[8].attr('title', 'Timestamp: ' + value.timestamp);
+		parsedData = $.parseJSON(jsonData);
+		$.each(parsedData, function setDataInTrackTableEach(issue_key, issue_value) {
+			date = issue_value.date;
+			topic = issue_value.text;
 
-			trElement = $('<tr>');
-			for (i = 0; i < tdElement.length; i += 1) {
-				trElement.append(tdElement[i]);
-			}
-			trElement.hover(function () {
-				$(this).toggleClass('table-hover');
+			$.each(issue_value, function setDataInTrackTableEach(key, value) {
+				if (key != 'uid' && key != 'date' && key != 'text' ) {
+					has_data = true;
+					for (i = 0; i < tdElement.length; i += 1) {
+						tdElement[i] = $('<td>');
+					}
+					is_argument = value.is_argument;
+					tdElement[0].text(key).attr('title', 'No: ' + key);
+					tdElement[1].text(value.uid).attr('title', 'Track ID: ' + value.uid);
+					tdElement[2].text(topic).attr('title', 'Date: ' + date);
+					tdElement[3].text(value.statement).attr('title', 'Statement ID: ' + value.statement_uid);
+					tdElement[4].text(value.premissesGroup).attr('title', 'Premisses Groups ID: ' + value.premissesGroup_uid);
+					tdElement[5].text(value.argument).attr('title', 'Argument ID: ' + value.argument_uid);
+					tdElement[6].text(value.attacked_by_relation).attr('title', 'Relation ID: ' + value.attacked_by_relation_uid);
+					tdElement[7].text(value.attacked_with_relation).attr('title', 'Relation ID: ' + value.attacked_with_relation_uid);
+					tdElement[8].html(value.text).attr('title', 'Text: ' + value.text);
+					tdElement[9].text(value.timestamp).attr('title', 'Timestamp: ' + value.timestamp);
+
+					trElement = $('<tr>');
+					for (i = 0; i < tdElement.length; i += 1) {
+						trElement.append(tdElement[i]);
+					}
+					trElement.hover(function () {
+						$(this).toggleClass('table-hover');
+					});
+					tableElement.append(trElement);
+				}
 			});
-			tableElement.append(trElement);
 		});
 
 		$('#' + trackTableSpaceId).empty();

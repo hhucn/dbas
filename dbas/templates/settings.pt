@@ -10,12 +10,6 @@
 
 		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
-		<div class="form first-form">
-			<div class="row">
-				<h1><span class="font-semi-bold" i18n:translate="settings_of">Settings of</span>: <span tal:replace="logged_in"/></h1>
-			</div>
-		</div>
-
 		<div class="container settings-container">
 			<h2 i18n:translate="info_about_yourself">Information about yourself</h2>
 			<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
