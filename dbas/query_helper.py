@@ -185,7 +185,7 @@ class QueryHelper(object):
 			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid, issue)
 			premisses = premisses[:-1] if premisses.endswith('.') else premisses # pretty print
 			conclusion = conclusion[0:1].lower() + conclusion[1:] # pretty print
-			argument = '\'' + premisses + (' supports ' if db_argument.isSupportive else ' attacks ') + conclusion + '\''
+			argument = '\'' + premisses + ('\' supports \'' if db_argument.isSupportive else '\' attacks \'') + conclusion + '\''
 			return argument
 
 		# recursion

@@ -13,7 +13,7 @@ var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
  */
 var addedEverything 					= 'Everything was added.';
 var alreadyInserted						= 'This is a duplicate and already there.';
-var clickHereForRegistration 			= 'Click <a href="" data-toggle="modal" data-target="#popup_login" title="Login">here</a> for a login or registration!'; // Todo insert
+var clickHereForRegistration 			= 'Click <a href="" data-toggle="modal" data-target="#popup_login" title="Login">here</a> for login or registration!'; // Todo insert
 var confirmation 						= 'Confirmation';
 var confirmTranslation 					= 'If you change the language, your process on this page will be lost and you have to restart the discussion!';
 var correctionsSet 						= 'Your correction was set.';

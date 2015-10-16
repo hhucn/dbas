@@ -163,8 +163,6 @@ function JsonGuiHandler() {
 		confrontationText = otherParticipantsDontHave + ' <b>' + premisse + '</b>';
 
 		// set discussions text
-alert(argument_uid);
-
 		dict = { // todo params in id.js!
 			'text': premisse,
 			'attack': relation,
@@ -183,7 +181,7 @@ alert(argument_uid);
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addArgumentRadioButtonText, false, false, false, addArgumentRadioButtonText));
 		} else {
 			guihandler.setErrorDescription(discussionEnd + '<br>' + clickHereForRegistration);
-		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
+			guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.',
 			'This confrontation is a ' + jsonData.attack, dict);
 		}
@@ -228,8 +226,12 @@ alert(argument_uid);
 			'confrontation_text': jsonData.confrontation_text,
 			'confrontation_uid': jsonData.confrontation_uid};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
+
+			alert(parseInt(jsonData.reason));
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
+		} else if (parseInt(jsonData.reason) == 0){
+			guihandler.setErrorDescription(discussionEnd + '<br>' + clickHereForRegistration);
 		}
 		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
