@@ -163,7 +163,7 @@
 							</a>
 						</div>
 
-						<input id="send-new-statement" type="button" name="" value="Save it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+						<input id="send-new-statement" type="button" name="" value="Accept it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 					</form>
 				</div>
 				<div class="col-md-1"></div>

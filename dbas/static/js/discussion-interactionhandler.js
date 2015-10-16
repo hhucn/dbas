@@ -88,6 +88,7 @@ function InteractionHandler() {
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, false, true);
 			} else {
 				// premisse
+				alert("TODO, isStart: " + isStart);
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, true, false, false);
 			}
 		} else {
@@ -290,8 +291,9 @@ function InteractionHandler() {
 		if (parsedData.status == '-1') {
 			alert('success -1 in callbackIfDoneForSendNewStartStatement');
 		} else if (parsedData.status == '0') {
-			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(alreadyInserted)
+			// $('#' + addStatementErrorContainer).show();
+			// $('#' + addStatementErrorMsg).text(alreadyInserted);
+			new InteractionHandler().statementButtonWasClicked('li_' + parsedData.statement.uid);
 		} else {
 			new GuiHandler().setNewStatementAsLastChild(parsedData);
 			$('#' + addStatementContainerId).hide();

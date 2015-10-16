@@ -240,7 +240,6 @@ function AjaxSiteHandler() {
 	this.sendNewPremisseForX = function (dictionary) {
 		var url = window.location.href;
 		url = url.substr(url.indexOf('issue=') + 'issue='.length);
-		alert(url.substr(0,url.indexOf('/')));
 		dictionary['issue'] = url.substr(0,url.indexOf('/'));
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({

@@ -228,6 +228,10 @@ alert(argument_uid);
 			'confrontation_text': jsonData.confrontation_text,
 			'confrontation_uid': jsonData.confrontation_uid};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
 		}

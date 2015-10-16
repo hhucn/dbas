@@ -463,7 +463,7 @@ function GuiHandler() {
 			return;
 		}
 
-		var availableStrings = [], params, token, button, span_dist, span_text, statementListGroup;
+		var params, token, button, span_dist, span_text, statementListGroup;
 		$('#' + callbackid).focus();
 		statementListGroup = $('#' + callbackid).next();
 		statementListGroup.empty(); // list with elements should be after the callbacker
@@ -494,16 +494,11 @@ function GuiHandler() {
    				});
 				span_dist = $('<span>').attr({class : 'badge'}).text(levenshteinDistance + ' ' + params[1]);
 				span_text = $('<span>').attr({id : 'proposal_' + params[2] + '_text'}).html(val);
-				button.append(span_dist);
-				button.append(span_text);
-
-				statementListGroup.append(button);
-				$('#proposal_' + params[2]).click(function(){
-					$('#' + callbackid).val($('#proposal_' + params[2] + '_text').text());
+				button.append(span_dist).append(span_text).click(function(){
+					$('#' + callbackid).val(val.replace('<b>','').replace('</b>',''));
 					statementListGroup.empty(); // list with elements should be after the callbacker
-					//$('#' + statementListGroupId).empty();
 				});
-				availableStrings.push(val);
+				statementListGroup.append(button);
 			}
 		});
 		 // list with elements should be after the callbacker
