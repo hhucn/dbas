@@ -61,25 +61,14 @@ function InteractionHandler() {
 	 * Method for some style attributes, when the radio buttons are chaning
 	 */
 	this.radioButtonChanged = function () {
-		var guiHandler = new GuiHandler(), text, isStart = $('#' + discussionSpaceId + ' ul li input').hasClass('start');
+		var guiHandler = new GuiHandler(), text, isStart = $('#' + discussionSpaceId + ' ul li input').hasClass('start'), addReasonButton = $('#' + addReasonButtonId);
 		// did we have an "add statement" action or just "argumentation" ?
-		if ($('#' + addReasonButtonId).is(':checked')) {
+		if (addReasonButton.is(':checked')) {
 
 			guiHandler.displayHowToWriteTextPopup();
-			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
-			var sta = text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0;
-			var arg = text.indexOf(addArgumentRadioButtonText) >= 0;
-			var pre = !sta && ! arg;
-
-			/*
-			if (window.location.href.indexOf(attrGetPremissesForStatement) != -1)		 alert('done 1'); // TODO inserting pgroups
-			if (window.location.href.indexOf(attrReplyForPremissegroup) != -1)			 alert('only?1\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n');
-			if (window.location.href.indexOf(attrReplyForArgument) != -1)				 alert('only?2\nsta: '+sta+'\narg: '+arg+'\npre: '+pre+'\n'); // maybe with Other users do not have any counter-argument for
-			if (window.location.href.indexOf(attrReplyForResponseOfConfrontation) != -1) alert('done 2');
-			*/
 
 			// get the second child, which is the label
-			text = $('#' + addReasonButtonId).parent().children().eq(1).text();
+			text = addReasonButton.parent().children().eq(1).text();
 			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
 				// statement
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, true, false);
@@ -88,7 +77,6 @@ function InteractionHandler() {
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, false, true);
 			} else {
 				// premisse
-				alert("TODO, isStart: " + isStart);
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, true, false, false);
 			}
 		} else {
@@ -293,7 +281,7 @@ function InteractionHandler() {
 		} else if (parsedData.status == '0') {
 			// $('#' + addStatementErrorContainer).show();
 			// $('#' + addStatementErrorMsg).text(alreadyInserted);
-			new InteractionHandler().statementButtonWasClicked('li_' + parsedData.statement.uid);
+			new InteractionHandler().statementButtonWasClicked(parsedData.statement.uid);
 		} else {
 			new GuiHandler().setNewStatementAsLastChild(parsedData);
 			$('#' + addStatementContainerId).hide();

@@ -837,15 +837,16 @@ class DatabaseHelper(object):
 		return return_dict
 
 
-	def get_fuzzy_string_for_start(self, value, issue):
+	def get_fuzzy_string_for_start(self, value, issue, isStatement):
 		"""
 		Levenshtein FTW
 		:param value:
 		:param issue:
+		:param isStatement:
 		:return:
 		"""
-		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value)
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==True, Statement.issue_uid==issue)).join(
+		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value + ', isStatement: ' + str(isStatement))
+		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==isStatement, Statement.issue_uid==issue)).join(
 			TextValue).all()
 		tmp_dict = dict()
 		for index, statement in enumerate(db_statements):

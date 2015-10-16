@@ -359,27 +359,35 @@ function GuiHandler() {
 	 * @param isArgument
 	 */
 	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
-		var statement, attack, argument, conclusion,
-			relation = $('#' + discussionsDescriptionId).attr('attack'),
+		var statement, attack,
+			discussionsDescription = $('#' + discussionsDescriptionId),
+			addStatementContainer = $('#' + addStatementContainerId),
+			addReasonButton = $('#' + addReasonButtonId),
+			relation = discussionsDescription.attr('attack'),
 			guihandler = new GuiHandler(),
 			ajaxhandler = new AjaxSiteHandler(),
 			interactionhandler = new InteractionHandler();
 		if (!isVisible) {
-			$('#' + addStatementContainerId).fadeOut('slow');
+			addStatementContainer.fadeOut('slow');
 			$('#' + addStatementContainerMainInputId).val('');
-			$('#' + addReasonButtonId).disable = false;
+			addReasonButton.disable = false;
 			return;
 		}
 
 		// isVisible == true:
 		$('#' + proPositionTextareaId).empty();
 		$('#' + conPositionTextareaId).empty();
-		$('#' + addStatementContainerId).fadeIn('slow');
+		addStatementContainer.fadeIn('slow');
 		$('#' + addStatementErrorContainer).hide();
-		$('#' + addReasonButtonId).disable = true;
+		addReasonButton.disable = true;
 
-		if (isStatement) {
-			$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
+		if (isStatement || typeof relation == 'undefined') {
+			if (isStart) {
+				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
+			}else {
+				$('#' + addStatementContainerH4Id).html(argumentContainerH4TextIfPremisse + '<br><br>'
+					+ $('#' + discussionsDescriptionId).html() + ' ' + because + '...');
+			}
 			$('#' + addStatementContainerMainInputId).show();
 			$('#' + proPositionColumnId).hide();
 			$('#' + conPositionColumnId).hide();
@@ -394,23 +402,23 @@ function GuiHandler() {
 			});
 
 		} else if (isPremisse || isArgument) {
-			statement = $('#' + discussionsDescriptionId).attr('text');
+			statement = discussionsDescription.attr('text');
 			$('#' + addStatementContainerH4Id).text(isPremisse ? argumentContainerH4TextIfPremisse : argumentContainerH4TextIfArgument);
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
 			// take a look, if we agree or disagree, and where we are
-			if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, false, statement);
+			if (relation.indexOf(attr_undermine) != -1) {this.showAddStatementsTextareasWithTitle(false, true, false, statement);
 			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, false, statement);
 			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, true, statement);
 			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, true, statement);
 			} else if (relation.indexOf(attr_rebut) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, false, statement);
 			} else {
-				alert("Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
+				alert("2 Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
 			}
 
 			// does other users have an opinion?
 			if (isArgument) {
-				if ($('#' + discussionsDescriptionId).text().indexOf(otherParticipantsDontHave) == -1) {
+				if (discussionsDescription.text().indexOf(otherParticipantsDontHave) == -1) {
 					alert('Todo: How to insert something at this place?');
 				} else {
 					// other users have no opinion, so the participant can give pro and con

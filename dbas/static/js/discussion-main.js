@@ -50,7 +50,13 @@ $(function () {
 	// gui for the fuzzy search
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		delay(function() {
-			ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
+			if ($('#' + discussionsDescriptionId).text() != startDiscussionText) {
+				// some trick: here we have a premisse for our start statement
+				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 2, '');
+			} else {
+				// here we have our start statement
+				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
+			}
 		},200);
 	});
 

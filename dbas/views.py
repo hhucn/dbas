@@ -1135,15 +1135,16 @@ class Dbas(object):
 			value = self.request.params['value']
 			mode = str(self.request.params['type'])
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+
+			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			if mode == '0': # start statement
-				logger('fuzzy_search', 'type', '0')
-				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value, issue)
+				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value, issue, True)
 			elif mode == '1': # edit statememt popup
-				logger('fuzzy_search', 'type', '1')
 				statement_uid = self.request.params['extra']
 				return_dict = DatabaseHelper().get_fuzzy_string_for_edits(value, statement_uid, issue)
+			elif mode == '2':  # start premisse
+				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value, issue, False)
 			else:
-				logger('fuzzy_search', 'type', 'nan')
 				return_dict = dict()
 		except KeyError as e:
 			return_dict = dict()

@@ -136,7 +136,7 @@
 							<span id="add-statement-error-msg"></span>
 						</div>
 
-						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="" />
+						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 						<div class="list-group">
 						</div>
 
