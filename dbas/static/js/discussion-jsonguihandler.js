@@ -96,7 +96,7 @@ function JsonGuiHandler() {
 			argument_id = '_argument_' + jsonData.argument_id,
 			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, false, true);
 
-		alert(jsonData.confrontation_uid + "\n" + jsonData.confrontation_argument_id);
+		//alert(jsonData.confrontation_uid + "\n" + jsonData.confrontation_argument_id);
 
 		if (typeof jsonData.relation == 'undefined'){
 			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(because) + ' ' + premisse + '</b>';
