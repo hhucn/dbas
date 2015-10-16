@@ -72,7 +72,7 @@ function Helper() {
 		var w = startLowerCase ? this.startWithLowerCase(wrong) : this.startWithUpperCase(wrong),
 			r = startLowerCase ? this.startWithLowerCase(right) : this.startWithUpperCase(right),
 			enddot = endWithDot ? '.' : '',
-			belCounterJusti = believeThatGoodCounter + ' <b>' + conclusion + ' ' + because.toLocaleLowerCase() + ' ' + premisse + '</b>', // todo with or without premisse ?
+			belCounterJusti = believeThatGoodCounter + ' <b>' + conclusion + ', </b>' + because.toLocaleLowerCase() + '<b> ' + premisse + '</b>', // todo with or without premisse ?
 			undermine = '<b>' + w + ', ' + itIsFalse + " " + premisse + '</b>' + enddot,
 			support	  = '<b>' + r + ', ' + itIsTrue + " " + premisse + '</b>' + enddot,
 			undercut  = '<b>' + r + ', ' + confrontation + '</b>, ' + butIDoNot + ' ' + belCounterJusti + enddot,
@@ -101,7 +101,7 @@ function Helper() {
 			r = startLowerCase ? this.startWithLowerCase(right) : this.startWithUpperCase(right),
 			i = startLowerCase ? this.startWithLowerCase(irrelevant) : this.startWithUpperCase(irrelevant),
 			enddot = endWithDot ? '.' : '',
-			belCounterJusti = believeThatGoodCounter + ' <b>' + conclusion + ' ' + because.toLocaleLowerCase() + ' ' + premisse + '</b>', // todo with or without premisse ?
+			belCounterJusti = believeThatGoodCounter + ' <b>' + conclusion + ', </b>' + because.toLocaleLowerCase() + '<b> ' + premisse + '</b>', // todo with or without premisse ?
 			undermine = w + ', ' + itIsFalse + ' <b>' + confrontation + '</b>' + enddot,
 			support	  = r + ', ' + itIsTrue + ' <b>' + confrontation + '</b>' + enddot,
 			undercut  = r + ', <b>' + confrontation + '</b>, ' + butIDoNot + ' ' + belCounterJusti + enddot,
