@@ -252,6 +252,7 @@ $(function () {
 			} else if (hidden_service == 'ajax_reply_for_response_of_confrontation'){
 				ajaxHandler.handleReplyForResponseOfConfrontation(hidden_params);
 			} else if (hidden_service == 'ajax_reply_for_argument'){
+				alert(hidden_params);
 				ajaxHandler.getReplyForArgument(hidden_params);	}
 		}
 	});

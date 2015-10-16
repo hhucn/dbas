@@ -253,6 +253,7 @@ class QueryHelper(object):
 				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(undermine.premissesGroup_uid, issue)
 				return_dict[key + str(index) + 'id'] = undermine.premissesGroup_uid
 				return_dict[key + str(index) + '_statement_id'] = db_undermine_premisses.statement_uid
+				return_dict[key + str(index) + '_argument_id'] = undermine.uid
 				index += 1
 		return_dict[key] = str(index)
 		return return_dict
@@ -324,6 +325,7 @@ class QueryHelper(object):
 			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(rebut.premissesGroup_uid, issue)
 			return_dict[key + str(index) + 'id'] = rebut.premissesGroup_uid
 			return_dict[key + str(index) + '_statement_id'] = db_rebut_premisses.statement_uid
+			return_dict[key + str(index) + '_argument_id'] = rebut.uid
 		return_dict[key] = str(len(db_rebut))
 		return return_dict
 
@@ -397,6 +399,7 @@ class QueryHelper(object):
 			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premissesGroup_uid(relation.premissesGroup_uid, issue)
 			return_dict[key + str(index) + 'id'] = relation.premissesGroup_uid
 			return_dict[key + str(index) + '_statement_id'] = db_relation_premisses.statement_uid
+			return_dict[key + str(index) + '_argument_id'] = relation.uid
 			#return_dict[key + str(index) + 'id'] = ','.join(uids)
 		return_dict[key] = str(len(db_relation))
 		return return_dict

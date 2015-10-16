@@ -301,25 +301,18 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def get_attack_for_premissegroup(self, transaction, user, ids, session_id, issue):
+	def get_attack_for_premissegroup(self, transaction, user, last_premisses_group_uid, last_statement_uid, session_id, issue):
 		"""
 		Based on the last given premissesgroup and statement, an attack will be choosen and replied.
 		:param transaction: current transaction
 		:param user: current nick of the user
-		:param ids:
+		:param last_premisses_group_uid:
+		:param last_statement_uid:
 		:param session_id:
 		:param issue:
 		:return: A random attack (undermine, rebut undercut) based on the last saved premissesgroup and statement as well as many texts
 		like the premisse as text, conclusion as text, attack as text, confrontation as text. Everything is in a dict.
 		"""
-		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'ids ' + str(ids))
-
-		ids = ids.split('&')
-		last_premisses_group_uid   = ids[0][ids[0].index('=')+1:] if ids[0].startswith('pgroup') else ids[1][ids[1].index('=')+1:]
-		last_statement_uid = ids[1][ids[1].index('=')+1:] if ids[0].startswith('pgroup') else ids[0][ids[0].index('=')+1:]
-
-		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last_premisses_group_uid ' + str(last_premisses_group_uid))
-		logger('DatabaseHelper', 'get_attack_for_premissegroup', 'last statement ' + str(last_statement_uid))
 
 		return_dict = {}
 		qh = QueryHelper()
@@ -351,6 +344,7 @@ class DatabaseHelper(object):
 			logger('DatabaseHelper', 'get_attack_for_premissegroup', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
 			return_dict['confrontation'] = attacks[key + str(attack_no)]
 			return_dict['confrontation_uid'] = attacks[key + str(attack_no) + 'id']
+			return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
 
 			# save the attack
 			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
@@ -382,13 +376,13 @@ class DatabaseHelper(object):
 		       + ', issue: ' + issue)
 
 		# get latest conclusion
-		logger('DatabaseHelper', 'get_attack_for_argument', 'get last conclusion: ' + str(pgroup_id))
+		logger('DatabaseHelper', 'get_attack_for_argument', 'get last conclusion: ' + str(pgroup_id) + ', issue: ' + str(issue))
 		db_last_conclusion = DBDiscussionSession.query(Premisse).filter(and_(Premisse.premissesGroup_uid==pgroup_id,
 		                                                                     Premisse.issue_uid==issue)).first()
 
 		# get the non supportive argument
-		logger('DatabaseHelper', 'get_attack_for_argument', 'get the non supportive argument: conclusion_uid=' + str(
-			db_last_conclusion.statement_uid) + ', premissesGroup_uid=' + premissesgroup_uid + ', isSupportive==False')
+		logger('DatabaseHelper', 'get_attack_for_argument', 'get the non supportive argument: conclusion_uid=' +
+		       str(db_last_conclusion.statement_uid) + ', premissesGroup_uid=' + premissesgroup_uid + ', isSupportive==False')
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
 		                                                    Argument.premissesGroup_uid==int(premissesgroup_uid),
 		                                                    Argument.isSupportive==False,
@@ -396,10 +390,12 @@ class DatabaseHelper(object):
 
 		# maybe there is no argument, whoch is not-supportive
 		if not db_argument:
-			logger('DatabaseHelper', 'get_attack_for_argument', 'no suitable argument')
+			logger('DatabaseHelper', 'get_attack_for_argument', 'no suitable non supportive argument')
+			logger('DatabaseHelper', 'get_attack_for_argument', 'new try: conclusion_uid: ' +  str(db_last_conclusion.statement_uid)
+			       + ', premissesGroup_uid: ' +  str(premissesgroup_uid) + ', issue_uid: ' +  str(issue))
 			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
-		                                                    Argument.premissesGroup_uid==int(premissesgroup_uid,
-		                                                    Argument.issue_uid==issue))).first()
+		                                                    Argument.premissesGroup_uid==int(premissesgroup_uid),
+		                                                    Argument.issue_uid==issue)).first()
 			no_attacked_argument = True
 
 
@@ -408,9 +404,9 @@ class DatabaseHelper(object):
 		return_dict['premissesgroup_uid'] = premissesgroup_uid
 		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_last_conclusion.statement_uid, issue)
 		return_dict['conclusion_uid'] = db_last_conclusion.statement_uid
+		return_dict['relation'] = relation
 		return_dict['argument_uid'] = db_argument.uid
 		return_dict['premissegroup_uid'] = db_argument.premissesGroup_uid
-		return_dict['relation'] = relation
 
 		# if there as no non-supportive argument, let's get back
 		if no_attacked_argument:
@@ -453,7 +449,8 @@ class DatabaseHelper(object):
 		argument_uid = splitted_id[2]
 
 		# get argument
-		logger('DatabaseHelper', 'get_reply_confrontations_response', 'get reply confrontations for argument ' + argument_uid)
+		logger('DatabaseHelper', 'get_reply_confrontations_response', 'get reply confrontations for argument ' + argument_uid
+		       + ', issue ' + (issue))
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==int(argument_uid), Argument.issue_uid==issue)).first()
 
 		# get attack
@@ -474,10 +471,6 @@ class DatabaseHelper(object):
 			identifier = 'statement'
 		elif 'rebut' in relation.lower():
 			#return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid)
-			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid, issue))
-			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid, issue))
-			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid, issue))
-			logger('DatabaseHelper', 'xxxx', qh.get_text_for_argument_uid(argument_uid, issue))
 			return_dict = qh.get_supports_for_argument_uid(key, argument_uid, issue)
 			identifier = 'premissesgroup'
 		else:

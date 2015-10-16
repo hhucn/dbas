@@ -92,9 +92,11 @@ function JsonGuiHandler() {
 			listitems = [],
 			dict,
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
-			confronation_id = '_argument_' + jsonData.confrontation_uid,
+			confronation_id = '_argument_' + jsonData.confrontation_argument_id,
 			argument_id = '_argument_' + jsonData.argument_id,
 			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, false, true);
+
+		alert(jsonData.confrontation_uid + "\n" + jsonData.confrontation_argument_id);
 
 		if (typeof jsonData.relation == 'undefined'){
 			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(because) + ' ' + premisse + '</b>';
@@ -114,7 +116,8 @@ function JsonGuiHandler() {
 		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
 
 		// set discussions text
-		dict = {confrontation_uid: jsonData.confrontation_uid, current_attack: jsonData.attack};
+		dict = {confrontation_uid: jsonData.confrontation_uid,
+				current_attack: jsonData.attack};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + whatDoYouThink,
 			'This confrontation is a ' + jsonData.attack, dict);
@@ -160,11 +163,15 @@ function JsonGuiHandler() {
 		confrontationText = otherParticipantsDontHave + ' <b>' + premisse + '</b>';
 
 		// set discussions text
+alert(argument_uid);
 
-		dict = {title: premisse, text: premisse,
-			conclusion_id: conclusion_uid,
-			argument_id: argument_uid,
-			premissegroup_id: premissegroup_uid};
+		dict = { // todo params in id.js!
+			'text': premisse,
+			'attack': relation,
+			'related_argument': argument_uid,
+			'premissegroup_uid': premissegroup_uid,
+			'conclusion_id': conclusion_uid};
+
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + whatDoYouThink,
 			'This confrontation is a ' + jsonData.attack, dict);

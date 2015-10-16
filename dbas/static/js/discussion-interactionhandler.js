@@ -124,8 +124,8 @@ function InteractionHandler() {
 	 * @param useIntro
 	 * @param isForConclusion
 	 */
-	this.getPremissesAndSendThem = function (useIntro, isForConclusion, current_attack, last_attack) {
-		var i = 0, dict = {}, no, intro;
+	this.getPremissesAndSendThem = function (useIntro, isForConclusion) {
+		var i = 0, dict = {}, no, intro, disc_desc = $('#' + discussionsDescriptionId);
 		// all pro statements
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
@@ -148,16 +148,13 @@ function InteractionHandler() {
 			}
 		});
 
-		dict['conclusion_id'] 	  = $('#' + discussionsDescriptionId).attr('conclusion_id');
-		dict['related_argument']  = $('#' + discussionsDescriptionId).attr('related_argument');
-		dict['premissegroup_id']  = $('#' + discussionsDescriptionId).attr('premissegroup_id');
-		dict['current_attack'] 	  = $('#' + discussionsDescriptionId).attr('attack');
-		dict['confrontation_uid'] = $('#' + discussionsDescriptionId).attr('confrontation_uid');
-
-		//alert('get the right meta data for inserting !');
-		//return;
+		dict['conclusion_id'] 	  = disc_desc.attr('conclusion_id');
+		dict['related_argument']  = disc_desc.attr('related_argument');
+		dict['premissegroup_id']  = disc_desc.attr('premissegroup_id');
+		dict['current_attack'] 	  = disc_desc.attr('attack');
 
 		if (isForConclusion) {
+			dict['confrontation_uid'] = disc_desc.attr('confrontation_uid');
 			new AjaxSiteHandler().sendNewPremisseForX(dict);
 		} else {
 			alert('todo 157 in interactionhandler');
@@ -196,8 +193,8 @@ function InteractionHandler() {
 				id_conclusion = $('#' + discussionsDescriptionId).attr(attr_conclusion_id);
 				this.premisseButtonWasClicked(id_pgroup, id_conclusion);
 			} else if (hasRelation && !hasPremisse && !hasStart) {
-				relation = $('#' + discussionsDescriptionId).attr('current_attack');
-				confrontation_uid = $('#' + discussionsDescriptionId).attr('confrontation_uid');
+				relation = $('#' + discussionsDescriptionId).attr(attr_current_attack);
+				confrontation_uid = $('#' + discussionsDescriptionId).attr(attr_confrontation_uid);
 				this.relationButtonWasClicked(id, relation, confrontation_uid);
 			} else if (hasPremisse && hasRelation && !hasStart){
 				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premissegroup_uid);
