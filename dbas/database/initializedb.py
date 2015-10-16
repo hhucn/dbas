@@ -1063,6 +1063,7 @@ def setupDiscussionDatabase():
 	argument97 = Argument(premissegroup=premissegroup95.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement32.uid, issue=issue1.uid)
 	argument98 = Argument(premissegroup=premissegroup96.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement33.uid, issue=issue1.uid)
 
+# todo
 	argument99 = Argument(premissegroup=premissegroup98.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement102.uid, issue=issue2.uid)
 	argument100 = Argument(premissegroup=premissegroup99.uid, issupportive=True, author=user2.uid, weight=0, conclusion=statement102.uid, issue=issue2.uid)
 	argument101 = Argument(premissegroup=premissegroup100.uid, issupportive=False, author=user2.uid, weight=0, issue=issue2.uid)

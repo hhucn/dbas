@@ -361,7 +361,6 @@ function GuiHandler() {
 	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
 		var statement, attack, argument, conclusion,
 			relation = $('#' + discussionsDescriptionId).attr('attack'),
-			last_relation = $('#' + discussionsDescriptionId).attr('last_relation'),
 			guihandler = new GuiHandler(),
 			ajaxhandler = new AjaxSiteHandler(),
 			interactionhandler = new InteractionHandler();
@@ -415,16 +414,12 @@ function GuiHandler() {
 					alert('Todo: How to insert something at this place?');
 				} else {
 					// other users have no opinion, so the participant can give pro and con
-					this.showAddStatementsTextareasWithTitle(true, true, statement);
+					this.showAddStatementsTextareasWithTitle(true, true, false, statement);
 				}
 			}
 
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenArgument() {
-				if (isPremisse) {
-					interactionhandler.getPremissesAndSendThem(false, true);
-				} else {
-					alert("todo 424 in guihandler");
-				}
+				interactionhandler.getPremissesAndSendThem(false, isPremisse);
 				guihandler.setErrorDescription('');
 				guihandler.setSuccessDescription('');
 				$('#' + addStatementErrorContainer).hide();
@@ -447,17 +442,8 @@ function GuiHandler() {
 	 */
 	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, isAttackingRelation, title) {
 		var extra = isAttackingRelation ? (' ' + theCounterArgument) : '';
-		if (isAgreeing) {
-			$('#' + proPositionColumnId).show();
-		} else {
-			$('#' + proPositionColumnId).hide();
-		}
-
-		if (isDisagreeing) {
-			$('#' + conPositionColumnId).show();
-		} else {
-			$('#' + conPositionColumnId).hide();
-		}
+		if (isAgreeing) {	 $('#' + proPositionColumnId).show(); } else { $('#' + proPositionColumnId).hide(); }
+		if (isDisagreeing) { $('#' + conPositionColumnId).show(); } else { $('#' + conPositionColumnId).hide(); }
 
 		// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
 		$('#' + headingProPositionTextId).html(isAgreeing ? ' I <span class=\'green-bg\'>agree</span> with' + extra +

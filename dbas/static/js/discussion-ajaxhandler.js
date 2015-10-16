@@ -57,7 +57,8 @@ function AjaxSiteHandler() {
 	 * @param service current service
 	 */
 	this.redirectBrowser = function (keyValuePair, service) {
-		window.location.href = mainpage + 'discussion/' + keyValuePair + '/' + service + '/' + attrGo;
+		var issue = new Helper().getCurrentIssueId();
+		window.location.href = mainpage + 'discussion/' + keyValuePair + '&issue=' + issue + '/' + service + '/' + attrGo;
 	};
 
 	/**
@@ -106,15 +107,16 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Send an ajax request for getting all premisses for a givens tatement
-	 * @param uid of clicked statement
+	 * @param params of clicked statement
 	 */
-	this.getPremisseForStatement = function (uid) {
+	this.getPremisseForStatement = function (params) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		params = params.split('&');
 		$.ajax({
 			url: 'ajax_get_premisses_for_statement',
 			method: 'POST',
 			data: {
-				uid: uid, issue: new Helper().getCurrentIssueId()
+				uid: params[0], issue: params[1]
 			},
 			dataType: 'json',
 			async: true,
@@ -137,15 +139,16 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends an ajax request for getting all premisses for a given statement
-	 * @param ids of clicked statement
+	 * @param params of clicked statement
 	 */
-	this.getReplyForPremisseGroup = function (ids) {
+	this.getReplyForPremisseGroup = function (params) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		params = params.split('&');
 		$.ajax({
 			url: 'ajax_reply_for_premissegroup',
 			method: 'POST',
 			data: {
-				ids: ids, issue: new Helper().getCurrentIssueId()
+				pgroup: params[0], conclusion: params[1], issue: params[2]
 			},
 			dataType: 'json',
 			async: true,
@@ -168,17 +171,16 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends an ajax request for getting all confrotations for a given argument
-	 * @param ids of the clicked premisse group
+	 * @param params of the clicked premisse group
 	 */
-	this.getReplyForArgument = function (ids) {
+	this.getReplyForArgument = function (params) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
-
-		// alert("START FROM HERE");
+		params = params.split('&');
 		$.ajax({
 			url: 'ajax_reply_for_argument',
 			method: 'POST',
 			data: {
-				ids: ids, issue: new Helper().getCurrentIssueId()
+				id_text: params[0], pgroup: params[1], issue: params[2]
 			},
 			dataType: 'json',
 			async: true,
@@ -201,16 +203,16 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends an ajax request for handle the reaction of a confrontation
-	 * @param id of clicked relation and statement
+	 * @param params of clicked relation and statement
 	 */
-	this.handleReplyForResponseOfConfrontation = function (id) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, params;
-		params = id.split('&');
+	this.handleReplyForResponseOfConfrontation = function (params) {
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		params = params.split('&');
 		$.ajax({
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
 			data: {
-				id: params[0], relation: params[1], confrontation_uid: params[2], issue: new Helper().getCurrentIssueId()
+				id: params[0], relation: params[1], confrontation: params[2], issue: params[3]
 			},
 			dataType: 'json',
 			async: true,
@@ -236,7 +238,10 @@ function AjaxSiteHandler() {
 	 * @param dictionary for inserting
 	 */
 	this.sendNewPremisseForX = function (dictionary) {
-		dictionary['issue'] = new Helper().getCurrentIssueId();
+		var url = window.location.href;
+		url = url.substr(url.indexOf('issue=') + 'issue='.length);
+		alert(url.substr(0,url.indexOf('/')));
+		dictionary['issue'] = url.substr(0,url.indexOf('/'));
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_premisses_for_X',

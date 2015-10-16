@@ -477,16 +477,15 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			logger('get_premisses_for_statement', 'def', 'read params')
+			logger('get_premisses_for_statement', 'def', 'read params: ' + str(self.request.params))
 			uids = self.request.params['uid'].split('=')
 			uid = uids[1]
 			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
+			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('get_premisses_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
-			logger('get_premisses_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
-			logger('get_premisses_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
 			logger('get_premisses_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
 			return_dict = DatabaseHelper().get_premisses_for_statement(transaction, uid, True, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
@@ -513,12 +512,15 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			ids = self.request.params['ids']
-			logger('reply_for_premissegroup', 'def', 'ids ' + ids)
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			pgroup = self.request.params['pgroup'].split('=')[1]
+			conclusion = self.request.params['conclusion'].split('=')[1]
+			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			logger('reply_for_argument', 'def', 'issue ' + str(issue))
+			logger('reply_for_argument', 'def', 'pgroup ' + str(pgroup))
+			logger('reply_for_argument', 'def', 'conclusion ' + str(conclusion))
 			# track will be saved in the method
-			return_dict, status = DatabaseHelper().get_attack_for_premissegroup(transaction, self.request.authenticated_userid, ids,
-			                                                                    self.request.session.id, issue)
+			return_dict, status = DatabaseHelper().get_attack_for_premissegroup(transaction, self.request.authenticated_userid, pgroup,
+			                                                                    conclusion, self.request.session.id, issue)
 			return_dict['status'] = str(status)
 		except KeyError as e:
 			logger('reply_for_premissegroup', 'error', repr(e))
@@ -542,16 +544,12 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			ids = self.request.params['ids']
-			logger('reply_for_argument', 'def', 'ids ' + ids)
-			ids = ids.split('&')
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
-			if ids[0].startswith('id_text'):
-				id_text   = ids[0][ids[0].index('=')+1:]
-				pgroup_id = ids[1][ids[1].index('=')+1:]
-			else:
-				id_text   = ids[1][ids[1].index('=')+1:]
-				pgroup_id = ids[0][ids[0].index('=')+1:]
+			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			id_text = self.request.params['id_text'].split('=')[1]
+			pgroup_id = self.request.params['pgroup'].split('=')[1]
+			logger('reply_for_argument', 'def', 'issue ' + str(issue))
+			logger('reply_for_argument', 'def', 'id_text ' + str(id_text))
+			logger('reply_for_argument', 'def', 'pgroup_id ' + str(pgroup_id))
 			# track will be saved in the method
 			return_dict, status = DatabaseHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, id_text,
 			                                                               pgroup_id, self.request.session.id, issue)
@@ -578,18 +576,20 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			uid = self.request.params['id'].split('=')[1]
+			uid_text = self.request.params['id'].split('=')[1]
 			relation = self.request.params['relation'].split('=')[1]
-			confrontation = self.request.params['confrontation_uid'].split('=')[1]
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			confrontation = self.request.params['confrontation'].split('=')[1]
+			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+
 			# track will be saved in get_reply_confrontation_response
-			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid + ', last relation ' + relation + ', confrontation ' + confrontation)
-			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid, self.request.authenticated_userid,
+			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text + ', last relation ' + relation + ', confrontation ' + confrontation)
+			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid_text, self.request.authenticated_userid,
 			                                                                         self.request.session.id, issue)
 			return_dict['status'] = status
 			return_dict['last_relation'] = relation
 			return_dict['confrontation_uid'] = confrontation
-			return_dict['confrontation_text'] = QueryHelper().get_text_for_arguments_premissesGroup_uid(confrontation, issue)
+			# return_dict['confrontation_text'] = QueryHelper().get_text_for_arguments_premissesGroup_uid(confrontation, issue)
+			return_dict['confrontation_text'], uids = QueryHelper().get_text_for_premissesGroup_uid(confrontation, issue)
 		except KeyError as e:
 			logger('reply_for_response_of_confrontation', 'error', repr(e))
 			return_dict['status'] = '-1'
