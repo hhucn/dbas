@@ -232,6 +232,9 @@ $(function () {
 		// send request on unload
 	});
 
+	// some hack
+	$('#navbar-left').empty();
+
 	$(window).load( function windowLoad () {
 		var url = window.location.href;
     	if (url.indexOf(mainpage + 'discussion/start') != -1) {

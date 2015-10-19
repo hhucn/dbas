@@ -46,12 +46,6 @@
 						</a>
 					</li>
 
-					<li id="contact-link">
-						<a href="${request.application_url}/contact" title="Get in touch with us">
-							<img id="header_contact" class="glyphicon-local center">&thinsp;<span i18n:translate="contact">Contact</span>
-						</a>
-					</li>
-
 					<li id="login-link" tal:condition="not:logged_in">
 						<!--
 						<a href="${request.application_url}/login" title="Login">

@@ -19,6 +19,12 @@
 						<img id="header_licence" class="glyphicon-local center">&thinsp;<span i18n:translate="licence">Licence</span>
 					</a>
 				</li>
+
+					<li id="contact-link">
+						<a href="${request.application_url}/contact" title="Get in touch with us">
+							<img id="header_contact" class="glyphicon-local center">&thinsp;<span i18n:translate="contact">Contact</span>
+						</a>
+					</li>
 			</ul>
 		</div>
 	</div>

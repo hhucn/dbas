@@ -283,9 +283,9 @@ function InteractionHandler() {
 			// $('#' + addStatementErrorMsg).text(alreadyInserted);
 			new InteractionHandler().statementButtonWasClicked(parsedData.statement.uid);
 		} else {
-			new GuiHandler().setNewStatementAsLastChild(parsedData);
 			$('#' + addStatementContainerId).hide();
 			$('#' + addStatementContainerMainInputId).text('');
+			new GuiHandler().setNewStatementAsLastChild(parsedData);
 		}
 	};
 

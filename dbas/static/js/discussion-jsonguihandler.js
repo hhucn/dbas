@@ -206,7 +206,7 @@ function JsonGuiHandler() {
 		} else if (jsonData.relation === attr_support) {	text = relationArray[1] + '. ' + canYouGiveAReason + ' (' + youMadeA + ' ' + attr_support + ')';
 		} else if (jsonData.relation === attr_undercut) {	text = relationArray[2] + '. ' + canYouGiveAReason + ' (' + youMadeAn + ' ' + attr_undercut + ')';
 		} else if (jsonData.relation === attr_overbid) {	text = relationArray[3] + '. ' + canYouGiveAReason + ' (' + youMadeAn + ' ' + attr_overbid + ')';
-		} else if (jsonData.relation === attr_rebut) {		text = relationArray[4] + ', ' + butWhich +'? (' + youMadeA + ' ' + attr_rebut + ')';
+		} else if (jsonData.relation === attr_rebut) {		text = relationArray[4] + ', ' + butWhich + '?'	   + ' (' + youMadeA + ' ' + attr_rebut + ')';
 		}
 
 		for (i=0; i<parseInt(jsonData.reason); i++){

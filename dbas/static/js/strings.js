@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 	
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Messages & Errors
@@ -64,12 +64,11 @@ var strong 								= 'strong';
 var right 								= 'Right';
 var wrong 								= 'Wrong';
 var irrelevant 							= 'Irrelevant';
-var believeThatGoodCounter 				= 'believe that this is a good counter-argument for';
 var itIsTrue 							= 'it is true that';
 var itIsFalse 							= 'it is false that';
-var butIDoNot 							= 'but I do not';
-var andIDo 								= 'and I do';
-var iAcceptCounter						= 'and I do accept that this is an counter-argument for';
+var butIDoNotBelieve					= 'but <u>I do not believe</u> that this is a good counter-argument for';
+var andIDoBelieve						= 'and <u>I do believe</u> that this is a good counter-argument for';
+var iAcceptCounter						= 'and <u>I do accept</u> that this is an counter-argument for';
 var iHaveStrongerArgument 				= 'However, I have a much stronger argument for accepting that';
 var goStepBack 							= 'Go one step back'; // TODO: show me another one
 var iNoOpinion 							= 'I have no opinion regarding';

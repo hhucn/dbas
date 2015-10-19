@@ -313,8 +313,9 @@ function GuiHandler() {
 			newElement.children().hover(function () {
 				$(this).toggleClass('table-hover');
 			});
-			$('#li_' + addReasonButtonId).before(newElement);
+			$('#li_' + addReasonButtonId).before(newElement); // TODO.slideDown('slow').attr('checked', false);
 			new GuiHandler().setSuccessDescription(addedEverything);
+
 		}
 	};
 
