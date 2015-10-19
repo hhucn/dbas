@@ -710,7 +710,7 @@ def setupDiscussionDatabase():
 	statement105 = Statement(text=textvalue105.uid, isstartpoint=False, issue=issue2.uid)
 	statement106 = Statement(text=textvalue106.uid, isstartpoint=True, issue=issue2.uid)
 	statement107 = Statement(text=textvalue107.uid, isstartpoint=True, issue=issue2.uid)
-	statement108 = Statement(text=textvalue108.uid, isstartpoint=True, issue=issue2.uid)
+	statement108 = Statement(text=textvalue108.uid, isstartpoint=False, issue=issue2.uid)
 
 	DBDiscussionSession.add_all([statement1, statement2, statement3, statement4, statement5, statement6, statement7, statement8,
 	                             statement9, statement10, statement11, statement12, statement13, statement14, statement15, statement16,
