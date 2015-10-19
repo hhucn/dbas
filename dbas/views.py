@@ -22,7 +22,7 @@ from .logger import logger
 name = 'D-BAS'
 version = '0.3.6'
 header = name + ' ' + version
-issue_fallback = 1
+issue_fallback = DBDiscussionSession.query(Issue).first().uid
 
 class Dbas(object):
 	def __init__(self, request):
