@@ -154,7 +154,7 @@ class QueryHelper(object):
 		:param uid: id of a statement
 		:return: text of the mapped textvalue for this statement
 		"""
-		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid))
+		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid) + ', issue ' + str(issue))
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).join(
 			TextValue).first()
 		if not db_statement:
@@ -174,13 +174,19 @@ class QueryHelper(object):
 		:param issue:
 		:return:
 		"""
-		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(id))
+		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(id) + ', issue ' + str(issue))
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==id, Argument.issue_uid==issue)).first()
 		retValue = ''
 
+		# catch error
+		if not db_argument:
+			logger('QueryHelper', 'get_text_for_argument_uid', 'Error: no argument for id: ' + str(id) + ', issue: ' + str(issue))
+			return None
+
 		# basecase
 		if db_argument.argument_uid == 0:
-			logger('QueryHelper', 'get_text_for_argument_uid', 'basecase')
+			logger('QueryHelper', 'get_text_for_argument_uid', 'basecase with argument_uid: ' + str(db_argument.argument_uid)
+			       + ', in argument: ' + str(db_argument.uid))
 			premisses, uids = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid, issue)
 			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid, issue)
 			premisses = premisses[:-1] if premisses.endswith('.') else premisses # pretty print
@@ -190,7 +196,8 @@ class QueryHelper(object):
 
 		# recursion
 		if db_argument.conclusion_uid == 0:
-			logger('QueryHelper', 'get_text_for_argument_uid', 'recursion')
+			logger('QueryHelper', 'get_text_for_argument_uid', 'recursion with conclusion_uid: ' + str(db_argument.conclusion_uid)
+			       + ', in argument: ' + str(db_argument.uid))
 			argument = self.get_text_for_argument_uid(db_argument.argument_uid, issue)
 			premisses, uids = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid, issue)
 			retValue = premisses + (' supports ' if db_argument.isSupportive else ' attacks ') + argument

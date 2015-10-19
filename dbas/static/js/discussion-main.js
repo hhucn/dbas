@@ -50,7 +50,13 @@ $(function () {
 	// gui for the fuzzy search
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		delay(function() {
-			ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
+			if ($('#' + discussionsDescriptionId).text() != startDiscussionText) {
+				// some trick: here we have a premisse for our start statement
+				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 2, '');
+			} else {
+				// here we have our start statement
+				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
+			}
 		},200);
 	});
 
@@ -94,10 +100,8 @@ $(function () {
 	$('#' + listAllUsersAttacksId).click(function listAllUsersAttacksId() {
 		if ($(this).val() === showAllAttacks) {
 			ajaxHandler.getAttackOverview();
-			$(this).val(hideAllAttacks);
 		} else {
 			$('#' + adminsSpaceForAttacksId).empty();
-			$(this).val(showAllAttacks);
 		}
 	});
 
@@ -184,7 +188,6 @@ $(function () {
 	 * Sharing shortened url on google
 	 */
 	$('#' + shareUrlButtonGoogle).click(function shareUrlButtonGoogle(){
-		alert($('#' + popupUrlSharingInputId).val());
 		googleShare($('#' + popupUrlSharingInputId).val());
 	});
 
@@ -252,7 +255,6 @@ $(function () {
 			} else if (hidden_service == 'ajax_reply_for_response_of_confrontation'){
 				ajaxHandler.handleReplyForResponseOfConfrontation(hidden_params);
 			} else if (hidden_service == 'ajax_reply_for_argument'){
-				alert(hidden_params);
 				ajaxHandler.getReplyForArgument(hidden_params);	}
 		}
 	});

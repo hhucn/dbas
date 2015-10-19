@@ -240,7 +240,6 @@ function AjaxSiteHandler() {
 	this.sendNewPremisseForX = function (dictionary) {
 		var url = window.location.href;
 		url = url.substr(url.indexOf('issue=') + 'issue='.length);
-		alert(url.substr(0,url.indexOf('/')));
 		dictionary['issue'] = url.substr(0,url.indexOf('/'));
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
@@ -426,9 +425,12 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneAttackOverview(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
+			$('#' + listAllUsersAttacksId).val(hideAllAttacks);
+			new GuiHandler().setErrorDescription('');
 		}).fail(function ajaxGetAllUsersFail(err) {
 			// new GuiHandler().setErrorDescription(internal_error);
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
+			$('#' + listAllUsersAttacksId).val(showAllAttacks);
 		});
 	};
 

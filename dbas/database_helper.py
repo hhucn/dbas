@@ -202,13 +202,13 @@ class DatabaseHelper(object):
 		:return:
 		"""
 		is_admin = UserHandler().is_user_admin(user)
-		logger('DatabaseHelper', 'get_attack_overview', 'is_admin ' + str(is_admin))
+		logger('DatabaseHelper', 'get_attack_overview', 'is_admin ' + str(is_admin) + ', issue ' + str(issue))
 		if not is_admin:
 			return_dict = dict()
 		else:
 			return_dict = {}
 			logger('DatabaseHelper', 'get_attack_overview', 'get all attacks for each argument')
-			db_arguments = DBDiscussionSession.query(Argument).all()
+			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
 			db_relations = DBDiscussionSession.query(Relation).all()
 
 			relations_dict = {}
@@ -217,7 +217,10 @@ class DatabaseHelper(object):
 			return_dict['attacks'] = relations_dict
 
 			for argument in db_arguments:
-				argument_dict = {'id': str(argument.uid), 'text': QueryHelper().get_text_for_argument_uid(argument.uid, issue)} # TODO
+				logger('DatabaseHelper', 'get_attack_overview', 'argument with uid ' + str(argument.uid) + ', issue ' + str(issue))
+				text = QueryHelper().get_text_for_argument_uid(argument.uid, issue)
+				if text:
+					argument_dict = {'id': str(argument.uid), 'text': text}
 
 				for relation in db_relations:
 					db_tracks = DBDiscussionSession.query(Track).filter(and_(Track.argument_uid==argument.uid,
@@ -837,15 +840,16 @@ class DatabaseHelper(object):
 		return return_dict
 
 
-	def get_fuzzy_string_for_start(self, value, issue):
+	def get_fuzzy_string_for_start(self, value, issue, isStatement):
 		"""
 		Levenshtein FTW
 		:param value:
 		:param issue:
+		:param isStatement:
 		:return:
 		"""
-		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value)
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==True, Statement.issue_uid==issue)).join(
+		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value + ', isStatement: ' + str(isStatement))
+		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==isStatement, Statement.issue_uid==issue)).join(
 			TextValue).all()
 		tmp_dict = dict()
 		for index, statement in enumerate(db_statements):

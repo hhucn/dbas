@@ -136,7 +136,7 @@
 							<span id="add-statement-error-msg"></span>
 						</div>
 
-						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: Build a new opera house" value="" />
+						<h4><span id="add-statement-container-main-input-intro"></span></h4><input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 						<div class="list-group">
 						</div>
 
@@ -163,7 +163,7 @@
 							</a>
 						</div>
 
-						<input id="send-new-statement" type="button" name="" value="Save it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+						<input id="send-new-statement" type="button" name="" value="Accept it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 					</form>
 				</div>
 				<div class="col-md-1"></div>

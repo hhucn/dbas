@@ -227,7 +227,6 @@ function JsonGuiHandler() {
 			'confrontation_uid': jsonData.confrontation_uid};
 		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
 
-			alert(parseInt(jsonData.reason));
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
 		} else if (parseInt(jsonData.reason) == 0){
