@@ -100,10 +100,8 @@ $(function () {
 	$('#' + listAllUsersAttacksId).click(function listAllUsersAttacksId() {
 		if ($(this).val() === showAllAttacks) {
 			ajaxHandler.getAttackOverview();
-			$(this).val(hideAllAttacks);
 		} else {
 			$('#' + adminsSpaceForAttacksId).empty();
-			$(this).val(showAllAttacks);
 		}
 	});
 

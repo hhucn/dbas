@@ -22,7 +22,7 @@ from .logger import logger
 name = 'D-BAS'
 version = '0.3.6'
 header = name + ' ' + version
-issue_fallback = DBDiscussionSession.query(Issue).first().uid
+issue_fallback = 1#DBDiscussionSession.query(Issue).first().uid
 
 class Dbas(object):
 	def __init__(self, request):
@@ -32,6 +32,7 @@ class Dbas(object):
 		:return:
 		"""
 		self.request = request
+		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
 
 
 	def base_layout(self):

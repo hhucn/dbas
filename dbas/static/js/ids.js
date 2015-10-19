@@ -12,6 +12,7 @@ var addPositionButtonId 						= 'add-position';
 var addStatementContainerId 					= 'add-statement-container';
 var addStatementContainerH4Id 					= 'add-statement-container-h4';
 var addStatementContainerMainInputId 			= 'add-statement-container-main-input';
+var addStatementContainerMainInputIntroId		= 'add-statement-container-main-input-intro';
 var addProTextareaId 							= 'add-pro-textarea';
 var addConTextareaId 							= 'add-con-textarea';
 var adminsSpaceForUsersId 						= 'admins-space-users';

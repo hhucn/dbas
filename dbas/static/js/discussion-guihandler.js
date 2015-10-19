@@ -377,6 +377,7 @@ function GuiHandler() {
 		// isVisible == true:
 		$('#' + proPositionTextareaId).empty();
 		$('#' + conPositionTextareaId).empty();
+		$('#' + addStatementContainerMainInputIntroId).text('');
 		addStatementContainer.fadeIn('slow');
 		$('#' + addStatementErrorContainer).hide();
 		addReasonButton.disable = true;
@@ -385,8 +386,9 @@ function GuiHandler() {
 			if (isStart) {
 				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
 			}else {
-				$('#' + addStatementContainerH4Id).html(argumentContainerH4TextIfPremisse + '<br><br>'
-					+ $('#' + discussionsDescriptionId).html() + ' ' + because + '...');
+				$('#' + addStatementContainerH4Id).html(argumentContainerH4TextIfPremisse + '<br><br>' + discussionsDescription.html());
+				$('#' + addStatementContainerMainInputIntroId).text(because + '...');
+				$('#')
 			}
 			$('#' + addStatementContainerMainInputId).show();
 			$('#' + proPositionColumnId).hide();

@@ -92,8 +92,14 @@
 	margin: 0px 0px 10px 0px;
 	-webkit-appearance: none;
 	border: 1px solid;
-	width: 100%;
+	width: 80%;
 	border-color: #bcbcbc;
+}
+
+#add-statement-container-main-input-intro{
+	float:left;
+	line-height: 50px;
+	text-align: center;
 }
 
 #insert_statement_form div a {
