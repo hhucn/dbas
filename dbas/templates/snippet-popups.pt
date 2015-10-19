@@ -55,7 +55,7 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="font-semi-bold">Fax</span>
+										<span class="font-semi-bold" i18n:translate="fax">Fax</span>
 									</td>
 									<td>+49 211 81-11638</td>
 								</tr>

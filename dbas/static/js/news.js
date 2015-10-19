@@ -223,7 +223,7 @@ $(document).ready(function () {
 		textarrayauthor  = textarrayauthor[1].split('</h5>');
 
 		var message = "News '" + textarraysubject[0] + "', from " + textarraydate[0] + ", by " + textarrayauthor[0] + " on " + window.location.href;
-		fbShare(window.location.href, "FB Sharing", message, "https://dbas.cs.uni-duesseldorf.de/static/images/logo.png");
+		fbShare(window.location.href, "FB Sharing", message, mainpage + "static/images/logo.png");
 	});
 
 	/**

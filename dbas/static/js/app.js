@@ -113,25 +113,11 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, isRes
 		if (isRestartingDiscussion)
 			window.location.href = mainpage + 'discussion/start/issue=' + functionForAccept;
 		else
-			functionForAccept;
+			functionForAccept();
 	});
 	$('#' + confirmDialogRefuseBtn).click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
 	});
-}
-
-/**
- * Will display a dialog, when we are on the content page, otherwise it will change de language
- * @param path current path
- * @param lang current language code
- */
-function language_switcher (path, lang){
-	// preserve reload, when the user is arguing
-	var func = new function() {switchDisplayLanguage(lang);};
-	if (path == 'content')
-		displayConfirmationDialog(confirmation, confirmTranslation, func, false);
-	else
-		ajaxSwitchDisplayLanguage(lang);
 }
 
 /**
@@ -143,10 +129,15 @@ function setActiveLanguage(lang){
 		$('#' + translationLinkDe).parent().removeClass('active');
 		$('#' + translationLinkEn).parent().addClass('active');
 		$('.logo').attr('src','../static/images/logo.png');
+		$('#' + switchLangIndicatorEnId).show();
+		$('#' + switchLangIndicatorDeId).hide();
 	} else {
 		$('#' + translationLinkEn).parent().removeClass('active');
 		$('#' + translationLinkDe).parent().addClass('active');
 		$('.logo').attr('src','../static/images/logo_de.png');
+		$('#' + switchLangIndicatorEnId).hide();
+		$('#' + switchLangIndicatorDeId).show();
+
 	}
 }
 
@@ -453,11 +444,11 @@ $(document).ready(function () {
 			 path.indexOf('logout') != -1){											$('#' + navbarLeft).hide(); }
 	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
-	// language switch // unnecessary, because the page is not reloaded
-	// $('#' + translationLinkDe).click(function(){ language_switcher(path, 'de') });
-	// $('#' + translationLinkEn).click(function(){ language_switcher(path, 'en') });
-	// $('#' + translationLinkDe + ' img').click(function(){ language_switcher(path, 'de') });
-	// $('#' + translationLinkEn + ' img').click(function(){ language_switcher(path, 'en') });
+	// language switch
+	$('#' + translationLinkDe).click(function(){ ajaxSwitchDisplayLanguage('de') });
+	$('#' + translationLinkEn).click(function(){ ajaxSwitchDisplayLanguage('en') });
+	$('#' + translationLinkDe + ' img').click(function(){ ajaxSwitchDisplayLanguage('de') });
+	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
 
 	prepareLoginRegistrationPopup();
 

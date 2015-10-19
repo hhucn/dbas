@@ -367,7 +367,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), service;
 		if (parsedData.status == '1'){
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
-			$('#' + popupUrlSharingDescriptionPId).html(feelFreeToShareUrl + ", which was shortened with " + service + ":");
+			$('#' + popupUrlSharingDescriptionPId).html(feelFreeToShareUrl + ',' + shortenedWith + ' ' + service + ':');
 			$('#' + popupUrlSharingInputId).val(parsedData.url);
 		} else {
 			$('#' + popupUrlSharingDescriptionPId).text(feelFreeToShareUrl + ":");

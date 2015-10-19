@@ -195,7 +195,8 @@ $(function () {
 	 * Sharing shortened url on facebook
 	 */
 	$('#' + shareUrlButtonFacebook).click(function shareUrlButtonFacebook(){
-		fbShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", haveALookAt + ' ' + $('#' + popupUrlSharingInputId).val(), "https://dbas.cs.uni-duesseldorf.de/static/images/logo.png");
+		fbShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", haveALookAt + ' ' + $('#' + popupUrlSharingInputId).val(),
+			mainpage + "static/images/logo.png");
 	});
 
 	// focos text of input elements

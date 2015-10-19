@@ -90,16 +90,16 @@ function TrackHandler() {
 		}
 
 		// add header row
-		spanElement[0].text('No');
-		spanElement[1].text('Track');
-		spanElement[2].text('Topic');
-		spanElement[3].text('Statement');
-		spanElement[4].text('PremisseGroup');
-		spanElement[5].text('Argument');
-		spanElement[6].text('You were attacked by');
-		spanElement[7].text('You\'ve attacked with');
-		spanElement[8].text('Text');
-		spanElement[9].text('Date');
+		spanElement[0].text(number);
+		spanElement[1].text(track);
+		spanElement[2].text(topicString);
+		spanElement[3].text(statement);
+		spanElement[4].text(premisseGroup);
+		spanElement[5].text(argument);
+		spanElement[6].text(attackedBy);
+		spanElement[7].text(attackedWith);
+		spanElement[8].text(text);
+		spanElement[9].text(dateString);
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -164,14 +164,14 @@ $(function () {
 		$('#' + trackTableSuccessId).fadeOut('slow');
 		$('#' + trackTableFailureId).fadeOut('slow');
 		$('#' + trackTableSpaceId).empty();
-		$('#request-track').val('Refresh track');
+		$('#request-track').val(refreshTrack);
 	});
 
 	$('#' + deleteTrackButtonId).click(function requestTrack() {
 		new TrackHandler().manageUserTrackData(false);
 		$('#' + trackTableSuccessId).fadeOut('slow');
 		$('#' + trackTableFailureId).fadeOut('slow');
-		$('#request-track').val('Request track');
+		$('#request-track').val(requestTrack);
 	});
 
 	$('#' + deleteTrackButtonId).hide();

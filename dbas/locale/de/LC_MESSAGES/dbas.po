@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-15 10:40+0200\n"
+"POT-Creation-Date: 2015-10-19 15:32+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -274,40 +274,34 @@ msgid "lets_go"
 msgstr "Los geht's"
 
 #. Default: News
-#: dbas/templates/snippet-header.pt:45
+#: dbas/templates/snippet-header.pt:45 dbas/templates/news.pt:12
 msgid "news"
 msgstr "Nachrichten"
 
-#. Default: Contact
-#. Default: Kontakt:
-#: dbas/templates/snippet-header.pt:51 dbas/templates/imprint.pt:20
-msgid "contact"
-msgstr "Kontakt"
-
 #. Default: Login
 #. Default: Log In
-#: dbas/templates/snippet-header.pt:60 dbas/templates/snippet-popups.pt:216
+#: dbas/templates/snippet-header.pt:54 dbas/templates/snippet-popups.pt:216
 #: dbas/templates/snippet-popups.pt:391
 msgid "login"
 msgstr "Login"
 
 #. Default: Settings
-#: dbas/templates/snippet-header.pt:72
+#: dbas/templates/snippet-header.pt:66
 msgid "settings"
 msgstr "Einstellungen"
 
 #. Default: Logout
-#: dbas/templates/snippet-header.pt:77
+#: dbas/templates/snippet-header.pt:71
 msgid "logout"
 msgstr "Abmelden"
 
 #. Default: Language
-#: dbas/templates/snippet-header.pt:86
+#: dbas/templates/snippet-header.pt:80
 msgid "language"
 msgstr "Sprache"
 
 #. Default: Impressum
-#. Default: <dynamic element>&#160;&#160;Imprint and Copyrights
+#. Default: <dynamic element>&#160;&#160;<dynamic element>
 #: dbas/templates/imprint.pt:11 dbas/templates/snippet-footer.pt:10
 msgid "imprint"
 msgstr "Impressum"
@@ -321,6 +315,12 @@ msgstr ""
 #: dbas/templates/imprint.pt:14
 msgid "department"
 msgstr ""
+
+#. Default: Kontakt:
+#. Default: Contact
+#: dbas/templates/imprint.pt:20 dbas/templates/snippet-footer.pt:25
+msgid "contact"
+msgstr "Kontakt"
 
 #. Default: Telefon: 0211-8113461
 #: dbas/templates/imprint.pt:21
@@ -413,10 +413,10 @@ msgstr ""
 #. Daten (beispielsweise Name, oder eMail-Adressen) erhoben werden, erfolgt
 #. dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne
 #. Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben. <dynamic
-#. element> Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B.
+#. element>Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B.
 #. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein
 #. lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.
-#. <dynamic element> Der Nutzung von im Rahmen der Impressumspflicht
+#. <dynamic element>Der Nutzung von im Rahmen der Impressumspflicht
 #. veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht
 #. ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit
 #. ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich
@@ -460,18 +460,54 @@ msgstr ""
 msgid "disclaimer_google_analytics"
 msgstr ""
 
+#. Default: Diese Website benutzt Google Analytics, einen Webanalysedienst der
+#. Google Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'',
+#. Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse
+#. der Benutzung der Website durch Sie ermöglicht. Die durch den Cookie
+#. erzeugten Informationen über Ihre Benutzung diese Website (einschließlich
+#. Ihrer IP-Adresse) wird an einen Server von Google in den USA übertragen und
+#. dort gespeichert. Google wird diese Informationen benutzen, um Ihre Nutzung
+#. der Website auszuwerten, um Reports über die Websiteaktivitäten für die
+#. Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und
+#. der Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird
+#. Google diese Informationen gegebenenfalls an Dritte übertragen, sofern dies
+#. gesetzlich vorgeschrieben oder soweit Dritte diese Daten im Auftrag von
+#. Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen
+#. Daten der Google in Verbindung bringen. Sie können die Installation der
+#. Cookies durch eine entsprechende Einstellung Ihrer Browser Software
+#. verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall
+#. gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich
+#. nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der
+#. Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor
+#. beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden.
+#: dbas/templates/imprint.pt:57
+msgid "google_analytics"
+msgstr ""
+
 #. Default: Copyrights and used Software
-#: dbas/templates/imprint.pt:67
+#: dbas/templates/imprint.pt:68
 msgid "copyright_and_used_software"
 msgstr ""
 
 #. Default: Icons by
-#: dbas/templates/imprint.pt:78
+#: dbas/templates/imprint.pt:79
 msgid "icons_by"
 msgstr "Icons von"
 
+#. Default: is generated with Pyramid Web Framework 1.5.4
+#: dbas/templates/imprint.pt:92
+#, fuzzy
+msgid "generated_with"
+msgstr "erstellt mit dem Pyramid Web Framework 1.54"
+
+#. Default: Imprint and Copyrights
+#. Used in sentence: "<dynamic element>&#160;&#160;<dynamic element>"
+#: dbas/templates/snippet-footer.pt:10
+msgid "imprint_copyright"
+msgstr ""
+
 #. Default: Author
-#: dbas/templates/snippet-footer.pt:14
+#: dbas/templates/snippet-footer.pt:14 dbas/templates/news.pt:35
 msgid "author"
 msgstr "Autor"
 
@@ -563,6 +599,11 @@ msgstr "Heinrich-Heine-Universität Düsseldorf"
 #: dbas/templates/snippet-popups.pt:52
 msgid "telephone"
 msgstr "Telefon"
+
+#. Default: Fax
+#: dbas/templates/snippet-popups.pt:58
+msgid "fax"
+msgstr ""
 
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:72 dbas/templates/snippet-popups.pt:117
@@ -709,9 +750,7 @@ msgstr ""
 #. Default: Error:
 #. Default: Success:
 #: dbas/templates/snippet-popups.pt:262 dbas/templates/snippet-popups.pt:267
-#: dbas/templates/snippet-popups.pt:358 dbas/templates/news.pt:22
-#: dbas/templates/news.pt:27 dbas/templates/settings.pt:71
-#: dbas/templates/content.pt:83 dbas/templates/content.pt:135
+#: dbas/templates/snippet-popups.pt:358 dbas/templates/content.pt:83
 msgid "error"
 msgstr "Fehler:"
 
@@ -789,7 +828,7 @@ msgid "generate_password"
 msgstr "Neues Password"
 
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:353 dbas/templates/settings.pt:66
+#: dbas/templates/snippet-popups.pt:353
 msgid "success"
 msgstr "Erfolg"
 
@@ -937,6 +976,29 @@ msgstr "Bitte JavaScript aktivieren!"
 msgid "news_intro"
 msgstr "Dies, wird so etwas wie die Nachrichten-Seite"
 
+#. Default: Writing a new message
+#: dbas/templates/news.pt:18
+msgid "writing_message"
+msgstr ""
+
+#. Default: Error:
+#: dbas/templates/news.pt:22 dbas/templates/settings.pt:71
+#: dbas/templates/content.pt:135
+#, fuzzy
+msgid "error:"
+msgstr "Fehler:"
+
+#. Default: Success:
+#: dbas/templates/news.pt:27 dbas/templates/settings.pt:66
+#, fuzzy
+msgid "success:"
+msgstr "Erfolg"
+
+#. Default: Date
+#: dbas/templates/news.pt:36
+msgid "date"
+msgstr ""
+
 #. Default: Information about yourself
 #: dbas/templates/settings.pt:14
 msgid "info_about_yourself"
@@ -988,8 +1050,9 @@ msgid "new_password_confirm"
 msgstr "Neues Password (Bestätigung)"
 
 #. Default: Great:
-#: dbas/templates/settings.pt:108 dbas/templates/contact.pt:72
-msgid "great"
+#: dbas/templates/settings.pt:108
+#, fuzzy
+msgid "great:"
 msgstr "Großartig:"
 
 #. Default: Your password was changed
@@ -1035,6 +1098,11 @@ msgstr "Deine Nachricht (notwendig)"
 msgid "spam_req"
 msgstr "Anti-Spam (notwendig)"
 
+#. Default: Great:
+#: dbas/templates/contact.pt:72
+msgid "great"
+msgstr "Großartig:"
+
 #. Default: Your message was sent.
 #: dbas/templates/contact.pt:72
 msgid "message_sent"
@@ -1052,9 +1120,8 @@ msgstr "Die aktuelle Diskussion handelt von"
 
 #. Default: Now your opinion matters!
 #: dbas/templates/content.pt:23
-#, fuzzy
 msgid "your_opinion_matters"
-msgstr "Dein Nickname"
+msgstr "Nun zählt Ihre Meinung!"
 
 #. Default: and was started at
 #: dbas/templates/content.pt:25
@@ -1138,6 +1205,3 @@ msgstr "Minimap:"
 
 #~ msgid "impressum_done_with"
 #~ msgstr "Impressum erstellt mit"
-
-#~ msgid "impressum_generated_with"
-#~ msgstr "erstellt mit dem Pyramid Web Framework 1.54"

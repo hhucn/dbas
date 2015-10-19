@@ -58,33 +58,15 @@ $.fn.euCookieLawPopup = (function() {
 
 		if (object) {
 			var className = $(object).attr('class') ? $(object).attr('class') : '';
-			if (className.indexOf('eupopup-top') > -1) {
-				_self.params.popupPosition = 'top';
-			}
-			else if (className.indexOf('eupopup-fixedtop') > -1) {
-				_self.params.popupPosition = 'fixedtop';
-			}
-			else if (className.indexOf('eupopup-bottomright') > -1) {
-				_self.params.popupPosition = 'bottomright';
-			}
-			else if (className.indexOf('eupopup-bottomleft') > -1) {
-				_self.params.popupPosition = 'bottomleft';
-			}
-			else if (className.indexOf('eupopup-bottom') > -1) {
-				_self.params.popupPosition = 'bottom';
-			}
-			else if (className.indexOf('eupopup-block') > -1) {
-				_self.params.popupPosition = 'block';
-			}
-			if (className.indexOf('eupopup-color-default') > -1) {
-				_self.params.colorStyle = 'default';
-			}
-			else if (className.indexOf('eupopup-color-inverse') > -1) {
-				_self.params.colorStyle = 'inverse';
-			}
-			if (className.indexOf('eupopup-style-compact') > -1) {
-				_self.params.compactStyle = true;
-			}
+			if (className.indexOf('eupopup-top') > -1) {				_self.params.popupPosition = 'top';			}
+			else if (className.indexOf('eupopup-fixedtop') > -1) {		_self.params.popupPosition = 'fixedtop';	}
+			else if (className.indexOf('eupopup-bottomright') > -1) {	_self.params.popupPosition = 'bottomright';	}
+			else if (className.indexOf('eupopup-bottomleft') > -1) {	_self.params.popupPosition = 'bottomleft';	}
+			else if (className.indexOf('eupopup-bottom') > -1) {		_self.params.popupPosition = 'bottom';		}
+			else if (className.indexOf('eupopup-block') > -1) {			_self.params.popupPosition = 'block';		}
+			if (className.indexOf('eupopup-color-default') > -1) {		_self.params.colorStyle = 'default';		}
+			else if (className.indexOf('eupopup-color-inverse') > -1) {	_self.params.colorStyle = 'inverse';		}
+			if (className.indexOf('eupopup-style-compact') > -1) {		_self.params.compactStyle = true;			}
 		}
 
 		if (markup) {
@@ -92,39 +74,17 @@ $.fn.euCookieLawPopup = (function() {
 		}
 
 		if (settings) {
-			if (typeof settings.cookiePolicyUrl !== 'undefined') {
-				_self.params.cookiePolicyUrl = settings.cookiePolicyUrl;
-			}
-			if (typeof settings.popupPosition !== 'undefined') {
-				_self.params.popupPosition = settings.popupPosition;
-			}
-			if (typeof settings.colorStyle !== 'undefined') {
-				_self.params.colorStyle = settings.colorStyle;
-			}
-			if (typeof settings.popupTitle !== 'undefined') {
-				_self.params.popupTitle = settings.popupTitle;
-			}
-			if (typeof settings.popupText !== 'undefined') {
-				_self.params.popupText = settings.popupText;
-			}
-			if (typeof settings.buttonContinueTitle !== 'undefined') {
-				_self.params.buttonContinueTitle = settings.buttonContinueTitle;
-			}
-			if (typeof settings.buttonLearnmoreTitle !== 'undefined') {
-				_self.params.buttonLearnmoreTitle = settings.buttonLearnmoreTitle;
-			}
-			if (typeof settings.buttonLearnmoreOpenInNewWindow !== 'undefined') {
-				_self.params.buttonLearnmoreOpenInNewWindow = settings.buttonLearnmoreOpenInNewWindow;
-			}
-			if (typeof settings.agreementExpiresInDays !== 'undefined') {
-				_self.params.agreementExpiresInDays = settings.agreementExpiresInDays;
-			}
-			if (typeof settings.autoAcceptCookiePolicy !== 'undefined') {
-				_self.params.autoAcceptCookiePolicy = settings.autoAcceptCookiePolicy;
-			}
-			if (typeof settings.htmlMarkup !== 'undefined') {
-				_self.params.htmlMarkup = settings.htmlMarkup;
-			}
+			if (typeof settings.cookiePolicyUrl !== 'undefined') {					_self.params.cookiePolicyUrl = settings.cookiePolicyUrl;}
+			if (typeof settings.popupPosition !== 'undefined') {					_self.params.popupPosition = settings.popupPosition;	}
+			if (typeof settings.colorStyle !== 'undefined') {						_self.params.colorStyle = settings.colorStyle;			}
+			if (typeof settings.popupTitle !== 'undefined') {						_self.params.popupTitle = settings.popupTitle;			}
+			if (typeof settings.popupText !== 'undefined') {						_self.params.popupText = settings.popupText;			}
+			if (typeof settings.buttonContinueTitle !== 'undefined') {				_self.params.buttonContinueTitle = settings.buttonContinueTitle;	}
+			if (typeof settings.buttonLearnmoreTitle !== 'undefined') {				_self.params.buttonLearnmoreTitle = settings.buttonLearnmoreTitle;	}
+			if (typeof settings.buttonLearnmoreOpenInNewWindow !== 'undefined') {	_self.params.buttonLearnmoreOpenInNewWindow = settings.buttonLearnmoreOpenInNewWindow;	}
+			if (typeof settings.agreementExpiresInDays !== 'undefined') {			_self.params.agreementExpiresInDays = settings.agreementExpiresInDays;	}
+			if (typeof settings.autoAcceptCookiePolicy !== 'undefined') {			_self.params.autoAcceptCookiePolicy = settings.autoAcceptCookiePolicy;	}
+			if (typeof settings.htmlMarkup !== 'undefined') {						_self.params.htmlMarkup = settings.htmlMarkup;		}
 		}
 
 	};

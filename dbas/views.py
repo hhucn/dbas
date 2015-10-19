@@ -20,7 +20,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.6'
+version = '0.3.7'
 header = name + ' ' + version
 issue_fallback = 1#DBDiscussionSession.query(Issue).first().uid
 

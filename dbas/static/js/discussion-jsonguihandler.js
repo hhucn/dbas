@@ -13,7 +13,7 @@ function JsonGuiHandler() {
 	 */
 	this.setJsonDataToContentAsStartStatement = function (jsonData) {
 		var listitems = [], guihandler = new GuiHandler(), helper = new Helper();
-		guihandler.setDiscussionsDescription(startDiscussionText, '' , null);
+		guihandler.setDiscussionsDescription(_t('startDiscussionText'), '' , null);
 		$.each(jsonData.statements, function setJsonDataToContentAsConclusionEach(key, val) {
 			listitems.push(helper.getKeyValAsInputInLiWithType(val.uid, val.text + '.', true, false, false, ''));
 		});
@@ -284,15 +284,15 @@ function JsonGuiHandler() {
 
 		// add header row
 		spanElement[0].text('uid');
-		spanElement[1].text('Firstname');
-		spanElement[2].text('Surname');
-		spanElement[3].text('Nickname');
-		spanElement[4].text('E-Mail');
-		spanElement[5].text('Group');
-		spanElement[6].text('Last Action');
-		spanElement[7].text('Last Login');
-		spanElement[8].text('Registered');
-		spanElement[9].text('Gender');
+		spanElement[1].text(firstname);
+		spanElement[2].text(surname);
+		spanElement[3].text(nickname);
+		spanElement[4].text(email);
+		spanElement[5].text(group_uid);
+		spanElement[6].text(last_action);
+		spanElement[7].text(last_login);
+		spanElement[8].text(registered);
+		spanElement[9].text(gender);
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);

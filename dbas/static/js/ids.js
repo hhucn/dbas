@@ -3,6 +3,7 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  * @copyright Krauthoff 2015
  */
+
 /**
  * ID's
  * @type {string}
@@ -59,6 +60,7 @@ var issueDateId									= 'issue-date';
 var listAllUsersButtonId 						= 'list-all-users';
 var listAllUsersAttacksId 						= 'list-all-attacks';
 var loginLink 									= 'login-link';
+var languageDropdownId 							= 'language-dropdown';
 var minimapId 									= 'navigation-minimap-container';
 var navbarLeft									= 'navbar-left';
 var newsLink 									= 'news-link';
@@ -135,6 +137,8 @@ var shareButtonGoogle 							= 'share-google';
 var shareButtonFacebook 						= 'share-facebook';
 var sendNewStatementId 							= 'send-new-statement';
 var sendNewsButtonId 							= 'send-news';
+var switchLangIndicatorEnId						= 'switch-lang-indicator-en';
+var switchLangIndicatorDeId						= 'switch-lang-indicator-de';
 var trackTableSuccessId 						= 'track-table-success';
 var trackTableFailureId 						= 'track-table-failure';
 var trackTableSpaceId 							= 'track-table-space';

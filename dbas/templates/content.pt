@@ -22,7 +22,7 @@
 					<br>
 					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
 					<br>
-					<span  i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" id="issue-date"></span>.
+					<span i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" id="issue-date"></span>.
 				</div>
 				<div class="col-md-1"></div>
 				<div class="col-md-3 center text-center"><b>Placeholder Minimap</b>
@@ -51,7 +51,7 @@
 				</div>
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
-						<input tal:condition="logged_in" id="edit-statement" type="button" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
+						<input tal:condition="logged_in" id="edit-statement" type="button" i18n:translate="edit" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
 						<br>
 						<div id="display-control-container">
 							<p i18n:translate="change_style">Change display style:</p>
@@ -132,7 +132,7 @@
 
 						<div id="add-statement-error-container" class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="font-semi-bold" i18n:translate="error">Error:</span>
+							<span class="font-semi-bold" i18n:translate="error:">Error:</span>
 							<span id="add-statement-error-msg"></span>
 						</div>
 
@@ -163,7 +163,7 @@
 							</a>
 						</div>
 
-						<input id="send-new-statement" type="button" name="" value="Accept it..." class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+						<input id="send-new-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 					</form>
 				</div>
 				<div class="col-md-1"></div>
