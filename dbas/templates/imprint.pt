@@ -18,7 +18,7 @@
 				</p>
 				<p>
 					<h5><strong i18n:translate="contact">Kontakt:</strong></h5>
-					<br><span i18n:translate="phone">Telefon: 0211-8113461</span>
+					<br><span i18n:translate="phone">Telefon:</span> 0211-8113461
 					<br>E-Mail: <a href='mailto:krauthoff@cs.uni-duesseldorf.de'>krauthoff@cs.uni-duesseldorf.de</a>
 				</p>
 				<br>

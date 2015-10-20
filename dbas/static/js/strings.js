@@ -130,7 +130,6 @@ var right 								= 'Right';
 var requestTrack 						= 'Request track';
 var refreshTrack 						= 'Refresh track';
 var requestFailed 						= 'Request failed';
-var request_failed 						= 'Request failed';
 var selectStatement 					= 'Please select a statement!';
 var showAllUsers 						= 'Show all users';
 var showAllAttacks 						= 'Show all attacks';
@@ -142,7 +141,7 @@ var shortenedWith 						= 'which was shortened with';
 var switchDiscussion					= 'Change the discussion\'s topic';
 var switchDiscussionText1 				= 'If you accept, you will change the topic of the discussion to';
 var switchDiscussionText2 				= 'and the discussion will be restarted.';
-var startDiscussionText 				= 'What is your initial position?'; //'OK. Let\'s move on. Wich point do you want to discuss?';
+var startDiscussionText 				= 'startDiscussionText'; //'OK. Let\'s move on. Wich point do you want to discuss?';
 var statement 							= 'Statement';
 var sureThat 							= 'I\'m reasonably sure that ';
 var surname 							= 'Surname';
@@ -160,6 +159,16 @@ var whatDoYouThink 						= 'What do you think about that?';
 var whyDoYouThinkThat 					= 'Why do you think that';
 var youMadeA 							= 'You made a';
 var youMadeAn 							= 'You made an';
+
+var restartDiscussion 					= 'restartDiscussion';
+var edit 								= 'edit';
+var dialogView 							= 'dialogView';
+var islandView 							= 'islandView';
+var completeView 						= 'completeView';
+var addArguments 						= 'addArguments';
+var acceptIt 							= 'acceptIt';
+//var showAllAttacks 						= 'showAllAttacks';
+//var showAllUsers 						= 'showAllUsers';
 
 
 /**

@@ -264,7 +264,7 @@
 
 						<div id="popup-login-success" class="alert alert-success" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="error">Success:</span> <span id="popup-login-success-message"></span>
+							<span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
 						</div>
 					</div>
 

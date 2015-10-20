@@ -13,7 +13,7 @@ function JsonGuiHandler() {
 	 */
 	this.setJsonDataToContentAsStartStatement = function (jsonData) {
 		var listitems = [], guihandler = new GuiHandler(), helper = new Helper();
-		guihandler.setDiscussionsDescription(_t('startDiscussionText'), '' , null);
+		guihandler.setDiscussionsDescription(_t(startDiscussionText), '' , null);
 		$.each(jsonData.statements, function setJsonDataToContentAsConclusionEach(key, val) {
 			listitems.push(helper.getKeyValAsInputInLiWithType(val.uid, val.text + '.', true, false, false, ''));
 		});

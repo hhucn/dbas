@@ -309,29 +309,29 @@ msgstr "Impressum"
 #. Default: Angaben gemäß § 5 TMG
 #: dbas/templates/imprint.pt:12
 msgid "data_tmg"
-msgstr ""
+msgstr "Angaben gemäß § 5 TMG"
 
 #. Default: Institut für Informatik
 #: dbas/templates/imprint.pt:14
 msgid "department"
-msgstr ""
+msgstr "Institut für Informatik"
 
 #. Default: Kontakt:
 #. Default: Contact
 #: dbas/templates/imprint.pt:20 dbas/templates/snippet-footer.pt:25
 msgid "contact"
-msgstr "Kontakt"
+msgstr "Kontakt:"
 
 #. Default: Telefon: 0211-8113461
 #: dbas/templates/imprint.pt:21
 #, fuzzy
 msgid "phone"
-msgstr "Deine Telefonnr."
+msgstr "Telefonnr.:"
 
 #. Default: Haftungsausschluss:
 #: dbas/templates/imprint.pt:27
 msgid "disclaimer"
-msgstr ""
+msgstr "Haftungsausschluss:"
 
 #. Default: Haftung für Inhalte
 #: dbas/templates/imprint.pt:29
@@ -355,12 +355,12 @@ msgstr "Insel Ansicht"
 #: dbas/templates/imprint.pt:30
 #, fuzzy
 msgid "disclaimer_content_content"
-msgstr "Insel Ansicht"
+msgstr "Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen."
 
 #. Default: Haftung für Links
 #: dbas/templates/imprint.pt:33
 msgid "disclaimer_links"
-msgstr ""
+msgstr "Haftung für Links"
 
 #. Default: Unser Angebot enthält Links zu externen Webseiten Dritter, auf
 #. deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese
@@ -375,14 +375,14 @@ msgstr ""
 #: dbas/templates/imprint.pt:34
 #, fuzzy
 msgid "disclaimer_links_content"
-msgstr ""
+msgstr "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen."
 "Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
 "sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
 
 #. Default: Urheberrecht
 #: dbas/templates/imprint.pt:37
 msgid "disclaimer_copyright"
-msgstr ""
+msgstr "Urheberrecht"
 
 #. Default: Die durch die Seitenbetreiber erstellten Inhalte und Werke auf
 #. diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung,
@@ -399,14 +399,12 @@ msgstr ""
 #: dbas/templates/imprint.pt:38
 #, fuzzy
 msgid "disclaimer_copyright_content"
-msgstr ""
-"Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
-"sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
+msgstr "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen."
 
 #. Default: Datenschutz
 #: dbas/templates/imprint.pt:41
 msgid "disclaimer_dataprotection"
-msgstr ""
+msgstr "Datenschutz"
 
 #. Default: Die Nutzung unserer Webseite ist in der Regel ohne Angabe
 #. personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene
@@ -424,23 +422,19 @@ msgstr ""
 #. Werbeinformationen, etwa durch Spam-Mails, vor.
 #: dbas/templates/imprint.pt:42
 msgid "disclaimer_dataprotection_content"
-msgstr ""
+msgstr "Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, oder eMail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.<br>Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.<br>Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-Mails, vor."
 
 #. Default: Session-Cookies
 #: dbas/templates/imprint.pt:47
 #, fuzzy
 msgid "disclaimer_session_cookie"
-msgstr ""
-"Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
-"sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
+msgstr "Session-Cookies"
 
 #. Default: Tracking-Cookies
 #: dbas/templates/imprint.pt:50
 #, fuzzy
 msgid "disclaimer_tracking_cookie"
-msgstr ""
-"Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
-"sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
+msgstr "Tracking-Cookies"
 
 #. Default: Diese erlauben uns Ihre wiederholten Besuche unserer Website
 #. wahrzunehmen. Durch die Übereinstimmung von anononymen, willkürlichen
@@ -451,14 +445,12 @@ msgstr ""
 #: dbas/templates/imprint.pt:51
 #, fuzzy
 msgid "disclaimer_tracking_cookie_content"
-msgstr ""
-"Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
-"sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
+msgstr "Diese erlauben uns Ihre wiederholten Besuche unserer Website wahrzunehmen. Durch die Übereinstimmung von anononymen, willkürlichen Identifizierungszeichen, sind wir dazu in der Lage spezielle Browsing-Informationen festzuhalten, z.B.  von Ihnen ausgewählte Seiten und Optionen und den Weg, den Sie durch unsere Website gewählt haben. Durch das Überwachen dieser Informationen können wir unsere Websites verbessern. "
 
 #. Default: Google Analytics
 #: dbas/templates/imprint.pt:56
 msgid "disclaimer_google_analytics"
-msgstr ""
+msgstr "Google Analytics"
 
 #. Default: Diese Website benutzt Google Analytics, einen Webanalysedienst der
 #. Google Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'',
@@ -482,12 +474,12 @@ msgstr ""
 #. beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden.
 #: dbas/templates/imprint.pt:57
 msgid "google_analytics"
-msgstr ""
+msgstr "Diese Website benutzt Google Analytics, einen Webanalysedienst der Google Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'', Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglicht. Die durch den Cookie erzeugten Informationen über Ihre Benutzung diese Website (einschließlich Ihrer IP-Adresse) wird an einen Server von Google in den USA übertragen und dort gespeichert. Google wird diese Informationen benutzen, um Ihre Nutzung der Website auszuwerten, um Reports über die Websiteaktivitäten für die Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und der Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird Google diese Informationen gegebenenfalls an Dritte übertragen, sofern dies gesetzlich vorgeschrieben oder soweit Dritte diese Daten im Auftrag von Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen Daten der Google in Verbindung bringen. Sie können die Installation der Cookies durch eine entsprechende Einstellung Ihrer Browser Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden."
 
 #. Default: Copyrights and used Software
 #: dbas/templates/imprint.pt:68
 msgid "copyright_and_used_software"
-msgstr ""
+msgstr "Copyrights und benutze Software"
 
 #. Default: Icons by
 #: dbas/templates/imprint.pt:79
@@ -504,7 +496,7 @@ msgstr "erstellt mit dem Pyramid Web Framework 1.54"
 #. Used in sentence: "<dynamic element>&#160;&#160;<dynamic element>"
 #: dbas/templates/snippet-footer.pt:10
 msgid "imprint_copyright"
-msgstr ""
+msgstr "Impressum und Copyrights"
 
 #. Default: Author
 #: dbas/templates/snippet-footer.pt:14 dbas/templates/news.pt:35
@@ -603,7 +595,7 @@ msgstr "Telefon"
 #. Default: Fax
 #: dbas/templates/snippet-popups.pt:58
 msgid "fax"
-msgstr ""
+msgstr "Fax"
 
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:72 dbas/templates/snippet-popups.pt:117
@@ -696,7 +688,7 @@ msgstr "Abbrechen"
 #. Default: Share your URL
 #: dbas/templates/snippet-popups.pt:185
 msgid "url-sharing"
-msgstr ""
+msgstr "Teil' die URL"
 
 #. Default: Please feel free to share this url:
 #: dbas/templates/snippet-popups.pt:190
@@ -707,12 +699,12 @@ msgstr "Beschreibung"
 #. Default: Fetch long url!
 #: dbas/templates/snippet-popups.pt:200
 msgid "fetchurl"
-msgstr ""
+msgstr "Hol die lange URL"
 
 #. Default: Sign Up
 #: dbas/templates/snippet-popups.pt:218
 msgid "sign_up"
-msgstr "Melde dich an"
+msgstr "Melde Dich an"
 
 #. Default: Welcome Back!
 #: dbas/templates/snippet-popups.pt:227
@@ -748,8 +740,6 @@ msgstr ""
 "Adresse gesendet."
 
 #. Default: Error:
-#. Default: Success:
-#: dbas/templates/snippet-popups.pt:262 dbas/templates/snippet-popups.pt:267
 #: dbas/templates/snippet-popups.pt:358 dbas/templates/content.pt:83
 msgid "error"
 msgstr "Fehler:"
@@ -757,7 +747,7 @@ msgstr "Fehler:"
 #. Default: Sign Up for Free
 #: dbas/templates/snippet-popups.pt:272
 msgid "signup_free"
-msgstr "Registriere dich kostenfrei"
+msgstr "Registrieren Sie sich kostenlos"
 
 #. Default: Your First Name
 #: dbas/templates/snippet-popups.pt:275
@@ -778,7 +768,7 @@ msgstr "Nickname"
 #. Default: Your Gender
 #: dbas/templates/snippet-popups.pt:296
 msgid "gender"
-msgstr "Dein Geschlecht"
+msgstr "Ihr Geschlecht"
 
 #. Default: none
 #: dbas/templates/snippet-popups.pt:299
@@ -798,7 +788,7 @@ msgstr "männlich"
 #. Default: Your Email Address
 #: dbas/templates/snippet-popups.pt:308
 msgid "email"
-msgstr "Deine E-Mail"
+msgstr "Ihre E-Mail"
 
 #. Default: Your Password
 #: dbas/templates/snippet-popups.pt:315
@@ -830,7 +820,7 @@ msgstr "Neues Password"
 #. Default: Success:
 #: dbas/templates/snippet-popups.pt:353
 msgid "success"
-msgstr "Erfolg"
+msgstr "Erfolg:"
 
 #. Default: How to select a strong password
 #: dbas/templates/snippet-popups.pt:363
@@ -909,56 +899,55 @@ msgstr ""
 #. Default: Register
 #: dbas/templates/snippet-popups.pt:392
 msgid "register"
-msgstr ""
+msgstr "Registierung"
 
 #. Default: How to write text
 #: dbas/templates/snippet-popups.pt:407
 msgid "how-to-write-text-header"
-msgstr ""
+msgstr "Wie schreibe ich Texte"
 
 #. Default: There are a few simple rules for writing good arguments:
 #: dbas/templates/snippet-popups.pt:410
 msgid "how-to-write-text-header-body-title"
-msgstr ""
+msgstr "Es gibt ein paar einfache Regeln um gute Argumente zu schreiben:"
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
 #: dbas/templates/snippet-popups.pt:412
 msgid "how-to-write-text-header-body"
-msgstr ""
+msgstr "Gut zu schreiben ist ein Herausforderung und notwendig für die Benutzung von D-BAS, außer Sie möchten keine neuen Aussagen formulieren. Hiernach sind ein paar Regeln gelistet, was gut und was schlecht ist."
 
 #. Default: Do's:
 #: dbas/templates/snippet-popups.pt:414
 msgid "dos"
-msgstr ""
+msgstr "Gut:"
 
-#. Default: Write short!
 #. Default: Complicated and nested sentences!
 #: dbas/templates/snippet-popups.pt:416 dbas/templates/snippet-popups.pt:422
 msgid "how-to-write-text-short"
-msgstr ""
+msgstr "Komplizierte und geschachtelte Sätze!"
 
 #. Default: Only one statement/argument/point per textarea!
 #. Default: More than one statement/argument/point per textarea!
 #: dbas/templates/snippet-popups.pt:417 dbas/templates/snippet-popups.pt:423
 msgid "how-to-write-text-one-point"
-msgstr ""
+msgstr "Immer nur eine Aussage/Argumete/Punkt pro Feld!"
 
 #. Default: Don'ts:
 #: dbas/templates/snippet-popups.pt:420
 msgid "donts"
-msgstr ""
+msgstr "Schlecht:"
 
 #. Default: Okay
 #: dbas/templates/snippet-popups.pt:427
 msgid "Okay"
-msgstr ""
+msgstr "Okay"
 
 #. Default: Abort
 #: dbas/templates/snippet-popups.pt:428
 msgid "abort"
-msgstr ""
+msgstr "Abbrechen"
 
 #. Default: JavaScript is not enabled:
 #: dbas/templates/snippet-popups.pt:437
@@ -979,7 +968,7 @@ msgstr "Dies, wird so etwas wie die Nachrichten-Seite"
 #. Default: Writing a new message
 #: dbas/templates/news.pt:18
 msgid "writing_message"
-msgstr ""
+msgstr "Neue Nachricht schreiben"
 
 #. Default: Error:
 #: dbas/templates/news.pt:22 dbas/templates/settings.pt:71
@@ -988,16 +977,10 @@ msgstr ""
 msgid "error:"
 msgstr "Fehler:"
 
-#. Default: Success:
-#: dbas/templates/news.pt:27 dbas/templates/settings.pt:66
-#, fuzzy
-msgid "success:"
-msgstr "Erfolg"
-
 #. Default: Date
 #: dbas/templates/news.pt:36
 msgid "date"
-msgstr ""
+msgstr "Datum"
 
 #. Default: Information about yourself
 #: dbas/templates/settings.pt:14
@@ -1171,7 +1154,7 @@ msgstr "weiteres Textfeld"
 #. Default: List of participants
 #: dbas/templates/content.pt:177
 msgid "participant_list"
-msgstr ""
+msgstr "Liste der Teilnehmer"
 
 #. Default: Some additional options for the administrator.
 #: dbas/templates/content.pt:178 dbas/templates/content.pt:193
@@ -1181,7 +1164,7 @@ msgstr "Manche Sachen sind nur für den Admin."
 #. Default: List of attacks, clicked by the participants
 #: dbas/templates/content.pt:192
 msgid "list_attacks"
-msgstr ""
+msgstr "Attacken aufführen"
 
 #. Default: Minimap:
 #: dbas/templates/content.pt:204

@@ -53,17 +53,17 @@ msgstr "Dialog-based"
 #. Default: ased
 #: dbas/templates/index.pt:17
 msgid "ased"
-msgstr ""
+msgstr "ased"
 
 #. Default: rgumentation
 #: dbas/templates/index.pt:17
 msgid "rgumentation"
-msgstr ""
+msgstr "rgumentation"
 
 #. Default: oftware
 #: dbas/templates/index.pt:17
 msgid "oftware"
-msgstr ""
+msgstr "oftware"
 
 #. Default: or short
 #: dbas/templates/index.pt:17
@@ -74,7 +74,7 @@ msgstr "or short"
 #. or statement in a structured manner.
 #: dbas/templates/index.pt:20
 msgid "novel_software"
-msgstr ""
+msgstr "This novel discussions software will help you to discuss a problem or statement in a structured manner."
 
 #. Default: D-Bas offers a lot of advantages, here are a few of them:
 #: dbas/templates/index.pt:22
@@ -104,23 +104,23 @@ msgstr "Every argument and position will be connected logically to each other"
 #. Participation, subsidised governmentally by
 #: dbas/templates/index.pt:29
 msgid "projec_based_on"
-msgstr ""
+msgstr "This project is based on research of the graduation school Online-Participation, subsidised governmentally by"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
 #: dbas/templates/index.pt:29
 msgid "ministry_of_innovation"
-msgstr ""
+msgstr "Ministry of Innovation, Science and Research in North Rhine- Westphalia"
 
 #. Default: And don't forget to check reguarly the
 #: dbas/templates/index.pt:48
 msgid "dont_forget"
-msgstr ""
+msgstr "And don't forget to check reguarly the"
 
 #. Default: news-page
 #: dbas/templates/index.pt:48
 msgid "news_page"
-msgstr ""
+msgstr "news-page"
 
 #. Default: Features
 #: dbas/templates/index.pt:59 dbas/templates/snippet-header.pt:26
@@ -261,27 +261,27 @@ msgstr "Expert View: Participants are able to see and do everything."
 #. Default: About
 #: dbas/templates/index.pt:147 dbas/templates/snippet-header.pt:28
 msgid "about"
-msgstr ""
+msgstr "About"
 
 #. Default: Research
 #: dbas/templates/index.pt:177 dbas/templates/snippet-header.pt:31
 msgid "research"
-msgstr ""
+msgstr "Research"
 
 #. Default: Toggle navigation
 #: dbas/templates/snippet-header.pt:10
 msgid "Toggle Navigation"
-msgstr ""
+msgstr "Toggle navigation"
 
 #. Default: Let's go
 #: dbas/templates/snippet-header.pt:39
 msgid "lets_go"
-msgstr ""
+msgstr "Let's go"
 
 #. Default: News
 #: dbas/templates/snippet-header.pt:45 dbas/templates/news.pt:12
 msgid "news"
-msgstr ""
+msgstr "News"
 
 #. Default: Login
 #. Default: Log In
@@ -298,12 +298,12 @@ msgstr "Settings of"
 #. Default: Logout
 #: dbas/templates/snippet-header.pt:71
 msgid "logout"
-msgstr ""
+msgstr "Logout"
 
 #. Default: Language
 #: dbas/templates/snippet-header.pt:80
 msgid "language"
-msgstr ""
+msgstr "Language"
 
 #. Default: Impressum
 #. Default: <dynamic element>&#160;&#160;<dynamic element>
@@ -315,39 +315,36 @@ msgstr "Information required according to § 5 TMG"
 #. Default: Angaben gemäß § 5 TMG
 #: dbas/templates/imprint.pt:12
 msgid "data_tmg"
-msgstr ""
+msgstr "Information according to § 5 TMG "
 
 #. Default: Institut für Informatik
 #: dbas/templates/imprint.pt:14
 msgid "department"
-msgstr ""
+msgstr "Department"
 
 #. Default: Kontakt:
 #. Default: Contact
 #: dbas/templates/imprint.pt:20 dbas/templates/snippet-footer.pt:25
 #, fuzzy
 msgid "contact"
-msgstr "Contra"
+msgstr "Contact:"
 
 #. Default: Telefon: 0211-8113461
 #: dbas/templates/imprint.pt:21
 #, fuzzy
 msgid "phone"
-msgstr "Your Phone Number"
+msgstr "Phone Number:"
 
 #. Default: Haftungsausschluss:
 #: dbas/templates/imprint.pt:27
 msgid "disclaimer"
-msgstr ""
+msgstr "Disclaimer:"
 
 #. Default: Haftung für Inhalte
 #: dbas/templates/imprint.pt:29
 #, fuzzy
 msgid "disclaimer_content"
-msgstr ""
-"Okay, you want to see more as, but not everything. Therefore the island view "
-"will present you a list of every connected statement for an specific "
-"statement."
+msgstr "Liability for content"
 
 #. Default: Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt.
 #. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir
@@ -366,14 +363,11 @@ msgstr ""
 #, fuzzy
 msgid "disclaimer_content_content"
 msgstr ""
-"Okay, you want to see more as, but not everything. Therefore the island view "
-"will present you a list of every connected statement for an specific "
-"statement."
 
 #. Default: Haftung für Links
 #: dbas/templates/imprint.pt:33
 msgid "disclaimer_links"
-msgstr ""
+msgstr "Liability for links"
 
 #. Default: Unser Angebot enthält Links zu externen Webseiten Dritter, auf
 #. deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese
@@ -389,14 +383,11 @@ msgstr ""
 #, fuzzy
 msgid "disclaimer_links_content"
 msgstr ""
-"The user interface of D-BAS is simple, clear and easy. At any point during "
-"the discussion the choices for the participant are bounded, but not "
-"isolating him/her."
 
 #. Default: Urheberrecht
 #: dbas/templates/imprint.pt:37
 msgid "disclaimer_copyright"
-msgstr ""
+msgstr "Copyright"
 
 #. Default: Die durch die Seitenbetreiber erstellten Inhalte und Werke auf
 #. diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung,
@@ -414,14 +405,11 @@ msgstr ""
 #, fuzzy
 msgid "disclaimer_copyright_content"
 msgstr ""
-"The user interface of D-BAS is simple, clear and easy. At any point during "
-"the discussion the choices for the participant are bounded, but not "
-"isolating him/her."
 
 #. Default: Datenschutz
 #: dbas/templates/imprint.pt:41
 msgid "disclaimer_dataprotection"
-msgstr ""
+msgstr "Data protection"
 
 #. Default: Die Nutzung unserer Webseite ist in der Regel ohne Angabe
 #. personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene
@@ -445,19 +433,13 @@ msgstr ""
 #: dbas/templates/imprint.pt:47
 #, fuzzy
 msgid "disclaimer_session_cookie"
-msgstr ""
-"The user interface of D-BAS is simple, clear and easy. At any point during "
-"the discussion the choices for the participant are bounded, but not "
-"isolating him/her."
+msgstr "Session-Cookies"
 
 #. Default: Tracking-Cookies
 #: dbas/templates/imprint.pt:50
 #, fuzzy
 msgid "disclaimer_tracking_cookie"
-msgstr ""
-"The user interface of D-BAS is simple, clear and easy. At any point during "
-"the discussion the choices for the participant are bounded, but not "
-"isolating him/her."
+msgstr "Tracking-Cookies"
 
 #. Default: Diese erlauben uns Ihre wiederholten Besuche unserer Website
 #. wahrzunehmen. Durch die Übereinstimmung von anononymen, willkürlichen
@@ -469,14 +451,11 @@ msgstr ""
 #, fuzzy
 msgid "disclaimer_tracking_cookie_content"
 msgstr ""
-"The user interface of D-BAS is simple, clear and easy. At any point during "
-"the discussion the choices for the participant are bounded, but not "
-"isolating him/her."
 
 #. Default: Google Analytics
 #: dbas/templates/imprint.pt:56
 msgid "disclaimer_google_analytics"
-msgstr ""
+msgstr "Google Analytics"
 
 #. Default: Diese Website benutzt Google Analytics, einen Webanalysedienst der
 #. Google Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'',
@@ -505,12 +484,12 @@ msgstr ""
 #. Default: Copyrights and used Software
 #: dbas/templates/imprint.pt:68
 msgid "copyright_and_used_software"
-msgstr ""
+msgstr "Copyrights and used Software"
 
 #. Default: Icons by
 #: dbas/templates/imprint.pt:79
 msgid "icons_by"
-msgstr ""
+msgstr "Icons by"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
 #: dbas/templates/imprint.pt:92
@@ -522,22 +501,22 @@ msgstr "Information required according to § 5 TMG"
 #. Used in sentence: "<dynamic element>&#160;&#160;<dynamic element>"
 #: dbas/templates/snippet-footer.pt:10
 msgid "imprint_copyright"
-msgstr ""
+msgstr "Imprint and Copyrights"
 
 #. Default: Author
 #: dbas/templates/snippet-footer.pt:14 dbas/templates/news.pt:35
 msgid "author"
-msgstr ""
+msgstr "Author"
 
 #. Default: Licence
 #: dbas/templates/snippet-footer.pt:19
 msgid "licence"
-msgstr ""
+msgstr "Licence"
 
 #. Default: About me
 #: dbas/templates/snippet-popups.pt:10
 msgid "about_me"
-msgstr ""
+msgstr "About me"
 
 #. Default: Name
 #: dbas/templates/snippet-popups.pt:19
@@ -548,32 +527,32 @@ msgstr "Surname"
 #. Default: Role
 #: dbas/templates/snippet-popups.pt:25
 msgid "role"
-msgstr ""
+msgstr "Role"
 
 #. Default: Doctoral Student
 #: dbas/templates/snippet-popups.pt:27
 msgid "role_value_1"
-msgstr ""
+msgstr "Doctoral Student"
 
 #. Default: Lab for Technology of Social Networks
 #: dbas/templates/snippet-popups.pt:28
 msgid "lab_tsn"
-msgstr ""
+msgstr "Lab for Technology of Social Networks"
 
 #. Default: Member of the graduation school
 #: dbas/templates/snippet-popups.pt:29
 msgid "role_value_2"
-msgstr ""
+msgstr "Member of the graduation school"
 
 #. Default: Online Participation
 #: dbas/templates/snippet-popups.pt:29
 msgid "role_value_3"
-msgstr ""
+msgstr "Online Participation"
 
 #. Default: Office
 #: dbas/templates/snippet-popups.pt:41
 msgid "office"
-msgstr ""
+msgstr "Office"
 
 #. Default: Universitätsstraße 1
 #. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
@@ -581,7 +560,7 @@ msgstr ""
 #. element><dynamic element> <dynamic element><dynamic element>"
 #: dbas/templates/snippet-popups.pt:44
 msgid "office_value_2"
-msgstr ""
+msgstr "Universitätsstraße 1"
 
 #. Default: 40225 Duesseldorf
 #. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
@@ -589,7 +568,7 @@ msgstr ""
 #. element><dynamic element> <dynamic element><dynamic element>"
 #: dbas/templates/snippet-popups.pt:45
 msgid "office_value_3"
-msgstr ""
+msgstr "40225 Duesseldorf"
 
 #. Default: Department of Computer Science
 #. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
@@ -597,7 +576,7 @@ msgstr ""
 #. element><dynamic element> <dynamic element><dynamic element>"
 #: dbas/templates/snippet-popups.pt:46
 msgid "office_value_4"
-msgstr ""
+msgstr "Department of Computer Science"
 
 #. Default: Building 25.12, Room 02.45
 #. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
@@ -605,24 +584,24 @@ msgstr ""
 #. element><dynamic element> <dynamic element><dynamic element>"
 #: dbas/templates/snippet-popups.pt:47
 msgid "office_value_5"
-msgstr ""
+msgstr "Building 25.12, Room 02.45"
 
 #. Default: Heinrich-Heine University Duesseldorf <dynamic element><dynamic
 #. element> <dynamic element><dynamic element> <dynamic element><dynamic
 #. element> <dynamic element><dynamic element>
 #: dbas/templates/snippet-popups.pt:43
 msgid "office_value_1"
-msgstr ""
+msgstr "Heinrich-Heine University Duesseldorf"
 
 #. Default: Telephone
 #: dbas/templates/snippet-popups.pt:52
 msgid "telephone"
-msgstr ""
+msgstr "Telephone"
 
 #. Default: Fax
 #: dbas/templates/snippet-popups.pt:58
 msgid "fax"
-msgstr ""
+msgstr "Fax"
 
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:72 dbas/templates/snippet-popups.pt:117
@@ -634,7 +613,7 @@ msgstr "Close"
 #. Default: MIT License (MIT)
 #: dbas/templates/snippet-popups.pt:85
 msgid "mit_licencse"
-msgstr ""
+msgstr "MIT License (MIT)"
 
 #. Default: Permission is hereby granted, free of charge, to any person
 #. obtaining a copy of this software and associated documentation files (the
@@ -645,13 +624,13 @@ msgstr ""
 #. conditions:
 #: dbas/templates/snippet-popups.pt:94
 msgid "mit_licence_part1"
-msgstr ""
+msgstr "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,  publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,  subject to the following conditions:"
 
 #. Default: The above copyright notice and this permission notice shall be
 #. included in all copies or substantial portions of the Software.
 #: dbas/templates/snippet-popups.pt:103
 msgid "mit_licence_part2"
-msgstr ""
+msgstr "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software."
 
 #. Default: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 #. EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
@@ -662,17 +641,17 @@ msgstr ""
 #. USE OR OTHER DEALINGS IN THE SOFTWARE.
 #: dbas/templates/snippet-popups.pt:108
 msgid "mit_licence_part3"
-msgstr ""
+msgstr "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
 #. Default: Edit Statements / View Changelog
 #: dbas/templates/snippet-popups.pt:130
 msgid "edit_statement_view_changelog"
-msgstr ""
+msgstr "Edit Statements / View Changelog"
 
 #. Default: Please, edit the selected statement here:
 #: dbas/templates/snippet-popups.pt:137
 msgid "edit_statement_here"
-msgstr ""
+msgstr "Please, edit the selected statement here:"
 
 #. Default: Warning:
 #. Default: Warning!
@@ -684,33 +663,33 @@ msgstr "Warning!"
 #. Default: Submit
 #: dbas/templates/snippet-popups.pt:152
 msgid "submit"
-msgstr ""
+msgstr "Submit"
 
 #. Default: Okay
 #: dbas/templates/snippet-popups.pt:171
 msgid "okay"
-msgstr ""
+msgstr "Okay"
 
 #. Default: Cancel
 #: dbas/templates/snippet-popups.pt:172
 msgid "cancel"
-msgstr ""
+msgstr "Cancel"
 
 #. Default: Share your URL
 #: dbas/templates/snippet-popups.pt:185
 msgid "url-sharing"
-msgstr ""
+msgstr "Share your URL"
 
 #. Default: Please feel free to share this url:
 #: dbas/templates/snippet-popups.pt:190
 #, fuzzy
 msgid "url-sharing-description"
-msgstr "Guided View: The participants will be lead through the discussion ."
+msgstr "Please feel free to share this url:"
 
 #. Default: Fetch long url!
 #: dbas/templates/snippet-popups.pt:200
 msgid "fetchurl"
-msgstr ""
+msgstr "Fetch long url!"
 
 #. Default: Sign Up
 #: dbas/templates/snippet-popups.pt:218
@@ -914,66 +893,66 @@ msgstr "Old password"
 #. Default: Register
 #: dbas/templates/snippet-popups.pt:392
 msgid "register"
-msgstr ""
+msgstr "Register"
 
 #. Default: How to write text
 #: dbas/templates/snippet-popups.pt:407
 msgid "how-to-write-text-header"
-msgstr ""
+msgstr "How to write text"
 
 #. Default: There are a few simple rules for writing good arguments:
 #: dbas/templates/snippet-popups.pt:410
 msgid "how-to-write-text-header-body-title"
-msgstr ""
+msgstr "There are a few simple rules for writing good arguments:"
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
 #: dbas/templates/snippet-popups.pt:412
 msgid "how-to-write-text-header-body"
-msgstr ""
+msgstr "Writing good is a necessary skill for using D-BAS, unless you do not want to persuade other participants. Hereafter a few rules are listed, what should be noted, and what should not."
 
 #. Default: Do's:
 #: dbas/templates/snippet-popups.pt:414
 msgid "dos"
-msgstr ""
+msgstr "Do's:"
 
 #. Default: Write short!
 #. Default: Complicated and nested sentences!
 #: dbas/templates/snippet-popups.pt:416 dbas/templates/snippet-popups.pt:422
 msgid "how-to-write-text-short"
-msgstr ""
+msgstr "Write short!"
 
 #. Default: Only one statement/argument/point per textarea!
 #. Default: More than one statement/argument/point per textarea!
 #: dbas/templates/snippet-popups.pt:417 dbas/templates/snippet-popups.pt:423
 msgid "how-to-write-text-one-point"
-msgstr ""
+msgstr "More than one statement/argument/point per textarea!"
 
 #. Default: Don'ts:
 #: dbas/templates/snippet-popups.pt:420
 msgid "donts"
-msgstr ""
+msgstr "Don'ts:"
 
 #. Default: Okay
 #: dbas/templates/snippet-popups.pt:427
 msgid "Okay"
-msgstr ""
+msgstr "Okay"
 
 #. Default: Abort
 #: dbas/templates/snippet-popups.pt:428
 msgid "abort"
-msgstr ""
+msgstr "Abort"
 
 #. Default: JavaScript is not enabled:
 #: dbas/templates/snippet-popups.pt:437
 msgid "js_disabled1"
-msgstr ""
+msgstr "JavaScript is not enabled:"
 
 #. Default: Please enable JavaScript!
 #: dbas/templates/snippet-popups.pt:438
 msgid "js_disabled2"
-msgstr ""
+msgstr "Please enable JavaScript!"
 
 #. Default: This will be the news page and currently I think...this will be
 #. some kind of blog
@@ -986,7 +965,7 @@ msgstr ""
 #. Default: Writing a new message
 #: dbas/templates/news.pt:18
 msgid "writing_message"
-msgstr ""
+msgstr "Writing a new message"
 
 #. Default: Error:
 #: dbas/templates/news.pt:22 dbas/templates/settings.pt:71
@@ -1004,7 +983,7 @@ msgstr "Success:"
 #. Default: Date
 #: dbas/templates/news.pt:36
 msgid "date"
-msgstr ""
+msgstr "Date"
 
 #. Default: Information about yourself
 #: dbas/templates/settings.pt:14
@@ -1180,7 +1159,7 @@ msgstr "Add a textfield"
 #. Default: List of participants
 #: dbas/templates/content.pt:177
 msgid "participant_list"
-msgstr ""
+msgstr "List of participants"
 
 #. Default: Some additional options for the administrator.
 #: dbas/templates/content.pt:178 dbas/templates/content.pt:193
@@ -1190,7 +1169,7 @@ msgstr "Some additional options for the administrator."
 #. Default: List of attacks, clicked by the participants
 #: dbas/templates/content.pt:192
 msgid "list_attacks"
-msgstr ""
+msgstr "List of attacks, clicked by the participants"
 
 #. Default: Minimap:
 #: dbas/templates/content.pt:204

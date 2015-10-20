@@ -131,14 +131,25 @@ function setActiveLanguage(lang){
 		$('.logo').attr('src','../static/images/logo.png');
 		$('#' + switchLangIndicatorEnId).show();
 		$('#' + switchLangIndicatorDeId).hide();
+		// Buttons
 	} else {
 		$('#' + translationLinkEn).parent().removeClass('active');
 		$('#' + translationLinkDe).parent().addClass('active');
 		$('.logo').attr('src','../static/images/logo_de.png');
 		$('#' + switchLangIndicatorEnId).hide();
 		$('#' + switchLangIndicatorDeId).show();
-
 	}
+
+	// Buttons
+	$('#' + restartDiscussionButtonId).text(_t(restartDiscussion));
+	$('#' + editStatementButtonId).text(_t(edit));
+	$('#' + scStyle1Id).text(_t(dialogView));
+	$('#' + scStyle2Id).text(_t(islandView));
+	$('#' + scStyle3Id).text(_t(completeView));
+	$('#' + islandViewAddArgumentsBtnid).text(_t(addArguments));
+	$('#' + sendNewStatementId).text(_t(acceptIt));
+	$('#' + listAllUsersButtonId).text(_t(showAllAttacks));
+	$('#' + listAllUsersAttacksId).text(_t(showAllUsers));
 }
 
 function hideExtraViewsOfLoginPopup(){
@@ -335,7 +346,7 @@ function ajaxRegistration (){
 		callbackIfDoneForRegistration(data);
 	}).fail(function ajaxRegistrationFail() {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(request_failed);
+		$('#' + popupLoginRegistrationFailed + '-message').text(requestFailed);
 	});
 }
 
@@ -354,7 +365,7 @@ function ajaxPasswordRequest (){
 		callbackIfDoneForPasswordRequest(data);
 	}).fail(function ajaxPasswordRequestFail() {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(request_failed);
+		$('#' + popupLoginRegistrationFailed + '-message').text(requestFailed);
 	});
 }
 

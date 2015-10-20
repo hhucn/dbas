@@ -63,7 +63,7 @@
 			<input id="delete-track" type="button" value="Delete track" class="button button-block btn btn-primary" data-dismiss="modal" />
 			<div id="track-table-success" class="alert alert-success" role="alert">
 				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-				<span class="font-semi-bold" i18n:translate="success:">Success:</span>
+				<span class="font-semi-bold" i18n:translate="success">Success:</span>
 				<span id="track-success-msg"></span>
 			</div>
 			<div id="track-table-failure" class="alert alert-danger" role="alert">
