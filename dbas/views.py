@@ -61,26 +61,6 @@ class Dbas(object):
 			'logged_in': self.request.authenticated_userid
 		}
 
-	# login page
-	# @view_config(route_name='user_registration', renderer='templates/login.pt', permission='everybody')
-	# @forbidden_view_config(renderer='templates/login.pt')
-	# def user_registration(self):
-
-	# logout page
-	@view_config(route_name='main_logout', permission='use')
-	def main_logout(self):
-		"""
-		View configuration for the redirect logout view. This method will forget the headers of self.request
-		:return: HTTPFound with location for the main page
-		"""
-		logger('main_logout', 'def', 'headers are now forgotten')
-		logger('main_logout', 'def', 'redirecting to the main_page')
-		headers = forget(self.request)
-		return HTTPFound(
-			location=self.request.route_url('main_page'),
-			headers=headers
-		)
-
 	# contact page
 	@view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody')
 	def main_contact(self):
@@ -481,9 +461,6 @@ class Dbas(object):
 			logger('get_premisses_for_statement', 'def', 'read params: ' + str(self.request.params))
 			uids = self.request.params['uid'].split('=')
 			uid = uids[1]
-			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
-			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
-			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('get_premisses_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
@@ -932,6 +909,32 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
+
+	# ajax - user login
+	@view_config(route_name='ajax_user_logout', renderer='json')
+	def user_logout(self):
+		"""
+
+		:return:
+		"""
+		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main')
+
+		url = self.request.params['url']
+		logger('user_logout', 'def', 'url: ' + url)
+		headers = forget(self.request)
+		return HTTPFound(
+			location=url,
+			headers=headers,
+		)
 
 	# ajax - registration of users
 	@view_config(route_name='ajax_user_registration', renderer='json')

@@ -32,7 +32,6 @@
 			</div>
 		</div>
 
-
 		<div class="container" id="discussion-container">
 			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
@@ -75,7 +74,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row" id="discussion-failure-row">
+			<div class="row" id="discussion-failure-row" style="display:none">
 				<div class="col-md-3"></div>
 				<div class="col-md-6">
 					<div class="alert alert-danger" role="alert">
@@ -88,8 +87,7 @@
 			</div>
 		</div>
 
-
-		<div class="container" id="island-view-container">
+		<div class="container" id="island-view-container" style="display:none">
 			<button id="close-island-view-ontainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row">
@@ -119,8 +117,7 @@
 			</div>
 		</div>
 
-
-		<div class="container" id="add-statement-container">
+		<div class="container" id="add-statement-container" style="display:none">
 			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row">
@@ -170,7 +167,7 @@
 			</div>
 		</div>
 
-		<div tal:condition="is_admin" class="container">
+		<div tal:condition="is_admin" class="container" style="display:none">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
@@ -185,7 +182,7 @@
 			</div>
 		</div>
 
-		<div tal:condition="is_admin" class="container">
+		<div tal:condition="is_admin" class="container" style="display:none">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">

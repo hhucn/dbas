@@ -67,7 +67,7 @@
 									</a>
 								</li>
 								<li>
-									<a href="${request.application_url}/logout" title="Logout">
+									<a id="logout-link" href="#" title="Logout the user">
 										<img id="header_logout" class="glyphicon-local center">&thinsp;<span i18n:translate="logout">Logout</span>
 									</a>
 								</li>

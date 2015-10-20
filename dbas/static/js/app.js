@@ -43,7 +43,7 @@ function Countdown(options) {
 function setLinkActive(linkname) {
 	'use strict';
 	var linkIds = ['#' + contactLink,
-					'#' + loginLink,
+					'#' + loginLinkId,
 					'#' + newsLink,
 					'#' + contentLink],
 		i;
@@ -313,7 +313,28 @@ function ajaxLogin (){
 			location.reload(true);
 		} else {
 			$('#' + popupLoginFailed).show();
-			$('#' + popupLoginFailed + '-message').text('Request failed');
+			$('#' + popupLoginFailed + '-message').text(_t(requestFailed));
+		}
+	});
+}
+
+/**
+ *
+ */
+function ajaxLogout (){
+	var url = window.location.href;
+	$.ajax({
+		url: 'ajax_user_logout',
+		type: 'POST',
+		data: { url: url},
+		dataType: 'json',
+		async: true
+	}).done(function ajaxLogoutDone(data) {
+	}).fail(function ajaxLogoutFail(xhr) {
+		if (xhr.status == 200) {
+			location.reload(true);
+		} else {
+			alert(_t(internal_error));
 		}
 	});
 }
@@ -453,7 +474,7 @@ $(document).ready(function () {
 	// set current file to active
 	var path = window.location.href;
 		 if (path.indexOf('contact') != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('login') != -1){		setLinkActive('#' + loginLink);		$('#' + navbarLeft).hide(); }
+	else if (path.indexOf('login') != -1){		setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf('news') != -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
 	else if (path.indexOf('content') != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf('settings') != -1 ||
@@ -468,6 +489,9 @@ $(document).ready(function () {
 	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
 
 	prepareLoginRegistrationPopup();
+
+	// logout
+	$('#' + logoutLinkId).click(function(){ ajaxLogout()});
 
 	// ajax loading animation
 	$(document).on({

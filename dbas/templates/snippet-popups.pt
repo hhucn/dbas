@@ -229,7 +229,7 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label" i18n:translate="your_nickname">Your Nickname</label>
 							<div class="col-sm-9">
-								<input id="login-user" type="text" class="nickname" name="nickname" autocomplete="off" placeholder="example: Democrator">
+								<input id="login-user" type="text" class="nickname" name="nickname" autocomplete="off" placeholder="example: Democrator" autofocus>
 							</div>
 						</div>
 

@@ -60,7 +60,6 @@ def main(global_config, **settings):
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)
 	config.add_route('main_page',               '/')
-	config.add_route('main_logout',             '/logout')
 	config.add_route('main_contact',            '/contact')
 	config.add_route('main_discussion_start',   '/discussion/start')
 	config.add_route('main_discussion_issue',   '/discussion/start/issue={issue}')
@@ -77,6 +76,9 @@ def main(global_config, **settings):
 	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}/ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}/ajax_reply_for_argument')
 
+	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')
+	config.add_route('ajax_user_logout',                         '{url:.*}ajax_user_logout')
+
 	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}ajax_set_new_start_statement{params:.*}')
 	config.add_route('ajax_set_new_premisses_for_X',             '/discussion/{url:.*}ajax_set_new_premisses_for_X{params:.*}')
 	config.add_route('ajax_set_correcture_of_statement',         '/discussion/{url:.*}ajax_set_correcture_of_statement{params:.*}')
@@ -84,7 +86,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_get_logfile_for_statement',           '/discussion/{url:.*}ajax_get_logfile_for_statement{params:.*}')
 	config.add_route('ajax_get_shortened_url',                   '/discussion/{url:.*}ajax_get_shortened_url{params:.*}')
 	config.add_route('ajax_get_attack_overview',                 '/discussion/{url:.*}ajax_get_attack_overview{params:.*}')
-	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')
+
 	config.add_route('ajax_user_registration',                   '{url:.*}ajax_user_registration')
 	config.add_route('ajax_user_password_request',               '{url:.*}ajax_user_password_request')
 	config.add_route('ajax_fuzzy_search',                        '{url:.*}ajax_fuzzy_search')
