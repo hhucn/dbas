@@ -431,12 +431,4 @@
 	</div>
 </div>
 
-<!-- JS DISABLED -->
-<noscript>
-	<div class="jsdiabled">
-		<span class="font-semi-bold" i18n:translate="js_disabled1">JavaScript is not enabled:</span>
-		<span class="font-normal" i18n:translate="js_disabled2">Please enable JavaScript!</span>
-	</div>
-</noscript>
-
 </html>

@@ -52,7 +52,7 @@
 					<div id="discussion-sidebar">
 						<input tal:condition="logged_in" id="edit-statement" type="button" i18n:translate="edit" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
 						<br>
-						<div id="display-control-container">
+						<div id="display-control-container" style="display:none">
 							<p i18n:translate="change_style">Change display style:</p>
 							<div class="segmented-control">
 								<input type="radio" name="sc-display-style" id="sc-style-1" checked value="Dialog View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
@@ -197,7 +197,7 @@
 			</div>
 		</div>
 
-		<div id="navigation-minimap-container">
+		<div id="navigation-minimap-container" style="display:none">
 			<p i18n:translate="minimap">Minimap:</p>
 		</div>
 

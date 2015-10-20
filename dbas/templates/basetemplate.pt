@@ -24,6 +24,14 @@
 	<!-- Inlcuding this at top for references -->
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.1.3.min.js')}"></script>
 
+	<!-- JS DISABLED -->
+	<noscript>
+		<div class="jsdiabled">
+			<span class="font-semi-bold" i18n:translate="js_disabled1">JavaScript is not enabled:</span><br>
+			<span class="font-semi-bold" i18n:translate="js_disabled2">Please enable JavaScript!</span>
+		</div>
+	</noscript>
+
 	<div id="additional-wrapper">
 		<div id="wrapper-header">
 			<div metal:use-macro="load: snippet-header.pt" />
