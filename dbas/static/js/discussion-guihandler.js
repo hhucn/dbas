@@ -266,7 +266,7 @@ function GuiHandler() {
 		for (i = 0; i < sentencesOpenersInforming.length; i++) {
 			li_content = $('<li>');
 			a_id = identifier + '-sentence-opener-' + (sentencesOpeners.length + i);
-			a = h.getATagForDropDown(a_id, _t(clickToChoose) + ': ' + _t(sentencesOpenersInforming[i]), _t(sentencesOpenersInforming[i]));
+			a = h.getATagForDropDown(a_id, _t(clickToChoose) + ': ' + sentencesOpenersInforming[i], sentencesOpenersInforming[i]);
 			li_content.append(a);
 			ul.append(li_content);
 		}

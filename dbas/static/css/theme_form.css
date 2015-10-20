@@ -137,6 +137,31 @@ textarea.content {
 	resize: vertical;
 }
 
+#inlineRadioGender1{
+	margin-right: 10px;
+}
+#inlineRadioGender1img{
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-200-ban.png) no-repeat;
+	width: 26px;
+	height: 26px;
+}
+#inlineRadioGender2{
+	margin-right: 10px;
+	}
+#inlineRadioGender2img{
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-248-female.png) no-repeat;
+	width: 17px;
+	height: 29px;
+}
+#inlineRadioGender3{
+	margin-right: 10px;
+	}
+#inlineRadioGender3img{
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-247-male.png) no-repeat;
+	width: 23px;
+	height: 23px;
+}
+
 #writing-news-title{
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-605-text-size.png) no-repeat 12px 10px;
 }

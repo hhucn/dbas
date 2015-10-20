@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 _t = function(id){
 	var this_id, value = 'unknown identifier';
@@ -184,7 +184,7 @@ var youMadeAn 							= 'youMadeAn';
  * @type {string[]}
  */
 var sentencesOpenersForArguments = [
-	soYourOpinionIsThat
+	_t(soYourOpinionIsThat)
 	//'Okay, you have got the opinion: ',
 	//'Interesting, your opinion is: ',
 	//'You have said, that: ',
@@ -196,11 +196,11 @@ var sentencesOpenersArguingWithDisagreeing = [
 	_t(disagreeBecause),
 	_t(alternatively)];
 var sentencesOpenersInforming = [
-	thinkWeShould,
-	letMeExplain,
-	sureThat];
+	_t(thinkWeShould),
+	_t(letMeExplain),
+	_t(sureThat)];
 var sentencesOpenersRequesting = [
-	whyDoYouThinkThat
+	_t(whyDoYouThinkThat)
 	//'Can you explain why '
 	];
 

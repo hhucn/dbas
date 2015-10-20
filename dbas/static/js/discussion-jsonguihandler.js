@@ -47,7 +47,7 @@ function JsonGuiHandler() {
 
 		text = helper.startWithLowerCase(jsonData.currentStatement.text);
 		dict =  {'text': text, 'conclusion_id': jsonData.conclusion_id};
-		guihandler.setDiscussionsDescription(_t(sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> ?', text, dict);
+		guihandler.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b> ?', text, dict);
 
 		$.each(jsonData.premisses, function setJsonDataToContentAsConclusionEach(key, val) {
 			text = '';
@@ -119,7 +119,7 @@ function JsonGuiHandler() {
 		// set discussions text
 		dict = {confrontation_uid: jsonData.confrontation_uid,
 				current_attack: jsonData.attack};
-		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
+		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + _t(whatDoYouThink),
 			'This confrontation is a ' + jsonData.attack, dict);
 
@@ -171,7 +171,7 @@ function JsonGuiHandler() {
 			'premissegroup_uid': premissegroup_uid,
 			'conclusion_id': conclusion_uid};
 
-		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
+		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + _t(whatDoYouThink),
 			'This confrontation is a ' + jsonData.attack, dict);
 
@@ -182,7 +182,7 @@ function JsonGuiHandler() {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addArgumentRadioButtonText), false, false, false, _t(addArgumentRadioButtonText)));
 		} else {
 			guihandler.setErrorDescription(_t(discussionEnd) + '<br>' + _t(clickHereForRegistration));
-			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
+			guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.',
 			'This confrontation is a ' + jsonData.attack, dict);
 		}
@@ -226,7 +226,7 @@ function JsonGuiHandler() {
 			'last_relation': jsonData.last_relation,
 			'confrontation_text': jsonData.confrontation_text,
 			'confrontation_uid': jsonData.confrontation_uid};
-		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + text, '', dict);
+		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
 
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));

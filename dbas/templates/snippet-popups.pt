@@ -296,11 +296,20 @@
 							<label class="col-sm-3 control-label" i18n:translate="gender">Your Gender</label>
 							<div class="col-sm-9">
 								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked>
-								<label for="inlineRadioGender1"><b i18n:translate="none">none</b></label>
+								<label for="inlineRadioGender1">
+									<img id="inlineRadioGender1img" src="${request.static_url('dbas:static/images/transparent.gif')}">
+									<b i18n:translate="none">none</b>
+								</label>
 								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f">
-								<label for="inlineRadioGender2"><b i18n:translate="female">female</b></label>
+								<label for="inlineRadioGender2">
+									<img id="inlineRadioGender2img" src="${request.static_url('dbas:static/images/transparent.gif')}">
+									<b i18n:translate="female">female</b>
+								</label>
 								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m">
-								<label for="inlineRadioGender3"><b i18n:translate="male">male</b></label>
+								<label for="inlineRadioGender3">
+									<img id="inlineRadioGender3img" src="${request.static_url('dbas:static/images/transparent.gif')}">
+									<b i18n:translate="male">male</b>
+								</label>
 							</div>
 						</div>
 

@@ -36,13 +36,13 @@
 
 					<li id="content-link">
 						<a href="${request.application_url}/discussion/start" title="Get the party started">
-							<img id="header_letsgo" class="glyphicon-local center">&thinsp;<span i18n:translate="lets_go">Let's go</span>
+							<img id="header_letsgo" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="lets_go">Let's go</span>
 						</a>
 					</li>
 
 					<li id="news-link">
 						<a href="${request.application_url}/news" title="News about D-BAS">
-							<img id="header_news" class="glyphicon-local center">&thinsp;<span i18n:translate="news">News</span>
+							<img id="header_news" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="news">News</span>
 						</a>
 					</li>
 
@@ -51,7 +51,7 @@
 						<a href="${request.application_url}/login" title="Login">
 						-->
 						<a id="link_popup_login" href="" data-toggle="modal" data-target="#popup_login" title="Login">
-							<img id="header_login" class="glyphicon-local center">&thinsp;<span i18n:translate="login">Login</span>
+							<img id="header_login" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="login">Login</span>
 						</a>
 					</li>
 
@@ -63,12 +63,12 @@
 							<ul class="dropdown-menu">
 								<li>
 									<a href="${request.application_url}/settings" title="Settings">
-										<img id="header_settings" class="glyphicon-local center">&thinsp;<span i18n:translate="settings">Settings</span>
+										<img id="header_settings" class="glyphicon-local center"src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="settings">Settings</span>
 									</a>
 								</li>
 								<li>
 									<a id="logout-link" href="#" title="Logout the user">
-										<img id="header_logout" class="glyphicon-local center">&thinsp;<span i18n:translate="logout">Logout</span>
+										<img id="header_logout" class="glyphicon-local center"src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="logout">Logout</span>
 									</a>
 								</li>
 							</ul>
