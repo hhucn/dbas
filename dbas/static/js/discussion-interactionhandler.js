@@ -69,10 +69,10 @@ function InteractionHandler() {
 
 			// get the second child, which is the label
 			text = addReasonButton.parent().children().eq(1).text();
-			if (text.indexOf(newConclusionRadioButtonText) >= 0 || text.indexOf(firstConclusionRadioButtonText) >= 0) {
+			if (text.indexOf(_t(newConclusionRadioButtonText)) >= 0 || text.indexOf(_t(firstConclusionRadioButtonText)) >= 0) {
 				// statement
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, true, false);
-			} else if (text.indexOf(addArgumentRadioButtonText) >= 0) {
+			} else if (text.indexOf(_t(addArgumentRadioButtonText)) >= 0) {
 				// argument
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, false, true);
 			} else {
@@ -170,7 +170,7 @@ function InteractionHandler() {
 		}
 
 		if (typeof id === 'undefined' || typeof value === 'undefined') {
-			guiHandler.setErrorDescription(selectStatement);
+			guiHandler.setErrorDescription(_t(selectStatement));
 			
 		} else {
 			guiHandler.setErrorDescription('');
@@ -209,8 +209,8 @@ function InteractionHandler() {
 		if (parsedData.status == '1') {
 			new JsonGuiHandler().setJsonDataToContentAsStartPremisses(parsedData);
 		} else {
-			gh.setDiscussionsDescription(firstPositionText, '' , null);
-			gh.setNewArgumentButtonOnly(addPremisseRadioButtonText, true);
+			gh.setDiscussionsDescription(_t(firstPositionText), '' , null);
+			gh.setNewArgumentButtonOnly(_t(addPremisseRadioButtonText), true);
 		}
 		gh.resetEditButton();
 	};
@@ -262,8 +262,8 @@ function InteractionHandler() {
 	this.callbackIfDoneForGetStartStatements = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '-1') {
-			gh.setDiscussionsDescription(firstPositionText, firstPositionText, null);
-			gh.setNewArgumentButtonOnly(firstConclusionRadioButtonText, false);
+			gh.setDiscussionsDescription(_t(firstPositionText), _t(firstPositionText), null);
+			gh.setNewArgumentButtonOnly(_t(firstConclusionRadioButtonText), false);
 		} else {
 			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData);
 		}
@@ -297,7 +297,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
 			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(notInsertedErrorBecauseInternal);
+			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
 		} else {
 			new GuiHandler().setPremissesAsLastChild(parsedData);
 		}
@@ -311,7 +311,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		// status is the length of the content
 		if (parsedData.status == '0'){
-			$('#' + popupEditStatementLogfileSpaceId).text(noCorrections);
+			$('#' + popupEditStatementLogfileSpaceId).text(_t(noCorrections));
 		} else {
 			$('#' + popupEditStatementLogfileSpaceId).text('');
 			new GuiHandler().displayStatementCorrectionsInPopup(parsedData.content);
@@ -344,16 +344,16 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data, edit_dialog_td_id) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
-			$('#' + popupEditStatementErrorDescriptionId).text(noCorrectionsSet);
+			$('#' + popupEditStatementErrorDescriptionId).text(_t(noCorrectionsSet));
 		} else if (parsedData.status == '0'){
 			$('#' + popupEditStatementErrorDescriptionId).text('');
 			$('#' + popupEditStatementSuccessDescriptionId).text('');
 			$('#' + popupEditStatementWarning).show();
-			$('#' + popupEditStatementWarningMessage).text(duplicateDialog);
+			$('#' + popupEditStatementWarningMessage).text(_t(duplicateDialog));
 		} else {
 			new GuiHandler().updateOfStatementInDiscussion(parsedData);
 			$('#' + popupEditStatementErrorDescriptionId).text('');
-			$('#' + popupEditStatementSuccessDescriptionId).text(correctionsSet);
+			$('#' + popupEditStatementSuccessDescriptionId).text(_t(correctionsSet));
 			$('#' + edit_dialog_td_id).text(parsedData.text);
 		}
 	};
@@ -367,10 +367,10 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), service;
 		if (parsedData.status == '1'){
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
-			$('#' + popupUrlSharingDescriptionPId).html(feelFreeToShareUrl + ',' + shortenedWith + ' ' + service + ':');
+			$('#' + popupUrlSharingDescriptionPId).html(_t(feelFreeToShareUrl) + ',' + _t(shortenedWith) + ' ' + service + ':');
 			$('#' + popupUrlSharingInputId).val(parsedData.url);
 		} else {
-			$('#' + popupUrlSharingDescriptionPId).text(feelFreeToShareUrl + ":");
+			$('#' + popupUrlSharingDescriptionPId).text(_t(feelFreeToShareUrl) + ":");
 			$('#' + popupUrlSharingInputId).val(long_url);
 		}
 	};

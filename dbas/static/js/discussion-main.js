@@ -87,18 +87,18 @@ $(function () {
 
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
-		if ($(this).val() === showAllUsers) {
+		if ($(this).val() === _t(showAllUsers)) {
 			ajaxHandler.getUsersOverview();
-			$(this).val(hideAllUsers);
+			$(this).val(_t(hideAllUsers));
 		} else {
 			$('#' + adminsSpaceForUsersId).empty();
-			$(this).val(showAllUsers);
+			$(this).val(_t(showAllUsers));
 		}
 	});
 
 	// admin list all attacks button
 	$('#' + listAllUsersAttacksId).click(function listAllUsersAttacksId() {
-		if ($(this).val() === showAllAttacks) {
+		if ($(this).val() === _t(showAllAttacks)) {
 			ajaxHandler.getAttackOverview();
 		} else {
 			$('#' + adminsSpaceForAttacksId).empty();
@@ -163,10 +163,10 @@ $(function () {
 
 		if ($(this).attr('short_url') == '0'){
 			new AjaxSiteHandler().getShortenUrl(window.location);
-			$(this).attr('short_url', '1').text(fetchLongUrl);
+			$(this).attr('short_url', '1').text(_t(fetchLongUrl));
 		} else {
 			$('#' + popupUrlSharingInputId).val(window.location);
-			$(this).attr('short_url', '0').text(fetchShortUrl);
+			$(this).attr('short_url', '0').text(_t(fetchShortUrl));
 		}
 	});
 
@@ -174,7 +174,7 @@ $(function () {
 	 * Sharing shortened url with mail
 	 */
 	$('#' + shareUrlButtonMail).click(function shareUrlButtonMail(){
-		mailShare('user@example.com', interestingOnDBAS, haveALookAt + ' ' + $('#' + popupUrlSharingInputId).val());
+		mailShare('user@example.com', _t(interestingOnDBAS), _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val());
 	});
 
 	/**
@@ -195,7 +195,7 @@ $(function () {
 	 * Sharing shortened url on facebook
 	 */
 	$('#' + shareUrlButtonFacebook).click(function shareUrlButtonFacebook(){
-		fbShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", haveALookAt + ' ' + $('#' + popupUrlSharingInputId).val(),
+		fbShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val(),
 			mainpage + "static/images/logo.png");
 	});
 

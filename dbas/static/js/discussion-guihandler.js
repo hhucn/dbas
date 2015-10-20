@@ -68,7 +68,7 @@ function GuiHandler() {
 	this.setVisibilityOfDisplayStyleContainer = function (shouldBeVisibile, currentStatementText) {
 		if (shouldBeVisibile) {
 			$('#' + displayControlContainerId).fadeIn('slow');
-			$('#' + islandViewContainerH4Id).html(islandViewHeaderText + ' <b>' + currentStatementText + '</b>');
+			$('#' + islandViewContainerH4Id).html(_t(islandViewHeaderText) + ' <b>' + currentStatementText + '</b>');
 		} else {
 			$('#' + displayControlContainerId).hide();
 		}
@@ -198,7 +198,7 @@ function GuiHandler() {
 		// TODO insert dropdown menu
 		// div_dropdown.attr('class', 'col-md-3');
 		// div_content.attr('class', 'col-md-9');
-		div_content.attr('title', textAreaReasonHintText);
+		div_content.attr('title', _t(textAreaReasonHintText));
 		div.append(div_dropdown);
 		div.append(div_content);
 		parent.append(div);
@@ -237,7 +237,7 @@ function GuiHandler() {
 		btn_id = identifier + '-dropdown-sentences-openers-' + number;
 		button.attr('id', btn_id);
 		button.attr('data-toggle', 'dropdown');
-		button.text(identifier.toLowerCase() == 'left' ? agreeBecause : disagreeBecause);
+		button.text(identifier.toLowerCase() == 'left' ? _t(agreeBecause) : _t(disagreeBecause));
 		button.append(span);
 		dropdown.append(button);
 
@@ -253,7 +253,7 @@ function GuiHandler() {
 		for (i = 0; i < sentencesOpeners.length; i++) {
 			li_content = $('<li>');
 			a_id = identifier + '-sentence-opener-' + i;
-			a = h.getATagForDropDown(a_id, clickToChoose + ': ' + sentencesOpeners[i], sentencesOpeners[i]);
+			a = h.getATagForDropDown(a_id, _t(clickToChoose) + ': ' + _t(sentencesOpeners[i]), _t(sentencesOpeners[i]));
 			li_content.append(a);
 			ul.append(li_content);
 		}
@@ -266,7 +266,7 @@ function GuiHandler() {
 		for (i = 0; i < sentencesOpenersInforming.length; i++) {
 			li_content = $('<li>');
 			a_id = identifier + '-sentence-opener-' + (sentencesOpeners.length + i);
-			a = h.getATagForDropDown(a_id, clickToChoose + ': ' + sentencesOpenersInforming[i], sentencesOpenersInforming[i]);
+			a = h.getATagForDropDown(a_id, _t(clickToChoose) + ': ' + _t(sentencesOpenersInforming[i]), _t(sentencesOpenersInforming[i]));
 			li_content.append(a);
 			ul.append(li_content);
 		}
@@ -302,11 +302,11 @@ function GuiHandler() {
 	this.setNewStatementAsLastChild = function (jsonData) {
 		if (jsonData.result === 'failed') {
 			if (jsonData.reason === 'empty text') {
-				this.setErrorDescription(notInsertedErrorBecauseEmpty);
+				this.setErrorDescription(_t(notInsertedErrorBecauseEmpty));
 			} else if (jsonData.reason === 'duplicate') {
-				this.setErrorDescription(notInsertedErrorBecauseDuplicate);
+				this.setErrorDescription(_t(notInsertedErrorBecauseDuplicate));
 			} else {
-				this.setErrorDescription(notInsertedErrorBecauseUnknown);
+				this.setErrorDescription(_t(notInsertedErrorBecauseUnknown));
 			}
 		} else {
 			var newElement = new Helper().getKeyValAsInputInLiWithType(jsonData.statement.uid, jsonData.statement.text, true, false, false, '');
@@ -314,7 +314,7 @@ function GuiHandler() {
 				$(this).toggleClass('table-hover');
 			});
 			$('#li_' + addReasonButtonId).before(newElement); // TODO.slideDown('slow').attr('checked', false);
-			new GuiHandler().setSuccessDescription(addedEverything);
+			new GuiHandler().setSuccessDescription(_t(addedEverything));
 
 		}
 	};
@@ -385,10 +385,10 @@ function GuiHandler() {
 
 		if (isStatement || typeof relation == 'undefined') {
 			if (isStart) {
-				$('#' + addStatementContainerH4Id).text(argumentContainerH4TextIfConclusion);
+				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
 			}else {
-				$('#' + addStatementContainerH4Id).html(argumentContainerH4TextIfPremisse + '<br><br>' + discussionsDescription.html());
-				$('#' + addStatementContainerMainInputIntroId).text(because + '...');
+				$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremisse) + '<br><br>' + discussionsDescription.html());
+				$('#' + addStatementContainerMainInputIntroId).text(_t(because) + '...');
 				$('#')
 			}
 			$('#' + addStatementContainerMainInputId).show();
@@ -406,7 +406,7 @@ function GuiHandler() {
 
 		} else if (isPremisse || isArgument) {
 			statement = discussionsDescription.attr('text');
-			$('#' + addStatementContainerH4Id).text(isPremisse ? argumentContainerH4TextIfPremisse : argumentContainerH4TextIfArgument);
+			$('#' + addStatementContainerH4Id).text(isPremisse ? _t(argumentContainerH4TextIfPremisse) : _t(argumentContainerH4TextIfArgument));
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
 			// take a look, if we agree or disagree, and where we are
@@ -421,7 +421,7 @@ function GuiHandler() {
 
 			// does other users have an opinion?
 			if (isArgument) {
-				if (discussionsDescription.text().indexOf(otherParticipantsDontHave) == -1) {
+				if (discussionsDescription.text().indexOf(_t(otherParticipantsDontHave)) == -1) {
 					alert('Todo: How to insert something at this place?');
 				} else {
 					// other users have no opinion, so the participant can give pro and con
@@ -452,7 +452,7 @@ function GuiHandler() {
 	 * @param title
 	 */
 	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, isAttackingRelation, title) {
-		var extra = isAttackingRelation ? (' ' + theCounterArgument) : '';
+		var extra = isAttackingRelation ? (' ' + _t(theCounterArgument)) : '';
 		if (isAgreeing) {	 $('#' + proPositionColumnId).show(); } else { $('#' + proPositionColumnId).hide(); }
 		if (isDisagreeing) { $('#' + conPositionColumnId).show(); } else { $('#' + conPositionColumnId).hide(); }
 
@@ -503,7 +503,7 @@ function GuiHandler() {
    				button.hover(function(){ $(this).addClass('active');
    				    	  }, function(){ $(this).removeClass('active');
    				});
-				span_dist = $('<span>').attr({class : 'badge'}).text(levenshteinDistance + ' ' + params[1]);
+				span_dist = $('<span>').attr({class : 'badge'}).text(_t(levenshteinDistance) + ' ' + params[1]);
 				span_text = $('<span>').attr({id : 'proposal_' + params[2] + '_text'}).html(val);
 				button.append(span_dist).append(span_text).click(function(){
 					$('#' + callbackid).val(val.replace('<b>','').replace('</b>',''));
@@ -513,7 +513,7 @@ function GuiHandler() {
 			}
 		});
 		 // list with elements should be after the callbacker
-		statementListGroup.prepend('<h4>' + didYouMean + '</h4>');
+		statementListGroup.prepend('<h4>' + _t(didYouMean) + '</h4>');
 		//$('#' + statementListGroupId).prepend('<h4>' + didYouMean + '</h4>');
 	};
 
@@ -592,7 +592,7 @@ function GuiHandler() {
 		// append a row for each statement
 		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();
-			if (statement.toLocaleLowerCase().indexOf('because ') == 0){
+			if (statement.toLocaleLowerCase().indexOf(_t(because)) == 0){
 				statement = new Helper().startWithUpperCase(statement.substring(8));
 			}
 			uid = $(this).attr('id');
@@ -833,7 +833,7 @@ function GuiHandler() {
 		var li, a, current_id = '', func, topic;
 
 		li = $('<li>');
-		li.addClass('dropdown-header').text(issueList);
+		li.addClass('dropdown-header').text(_t(issueList));
 		$('#' + issueDropdownListID).empty().append(li);
 
 		// create an issue for each entry
@@ -850,7 +850,7 @@ function GuiHandler() {
 					func = $(this).parent().attr('issue');
 					topic = $('#issue_' + func + ' a').text();
 
-					displayConfirmationDialog(switchDiscussion, switchDiscussionText1 + ': <i>\'' + topic + '\'</i> ' + switchDiscussionText2, func, true);
+					displayConfirmationDialog(_t(switchDiscussion), _t(switchDiscussionText1) + ': <i>\'' + topic + '\'</i> ' + _t(switchDiscussionText2), func, true);
 					// set new title and text
 					$('#' + issueDropdownButtonID).text($(this).text());
 					$('#' + issueDateId).text($(this).attr('title'));

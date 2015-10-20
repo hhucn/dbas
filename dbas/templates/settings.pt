@@ -108,7 +108,7 @@
 					<span class="font-semi-bold" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
 				</div>
 
-				<input id="password-submit" type="submit" name="form.passwordchange.submitted" value="Change password" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" />
+				<input id="password-submit" type="submit" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" />
 			</form>
 
 

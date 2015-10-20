@@ -22,11 +22,11 @@ function JsonGuiHandler() {
 		if (listitems.length === 0) {
 			// todo: is this even used?
 			alert('discussion-guihandler.: setJsonDataToContentAsStartStatement');
-			guihandler.setDiscussionsDescription(firstOneText + '<b>' + jsonData.statements.currentStatementText + '</b>', '' , null);
+			guihandler.setDiscussionsDescription(_t(firstOneText) + '<b>' + jsonData.statements.currentStatementText + '</b>', '' , null);
 		}
 
 		if (typeof jsonData.logged_in == "string") {
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, newConclusionRadioButtonText, false, false, false, ''));
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newConclusionRadioButtonText), false, false, false, ''));
 		}
 
 		guihandler.addListItemsToDiscussionsSpace(listitems);
@@ -47,7 +47,7 @@ function JsonGuiHandler() {
 
 		text = helper.startWithLowerCase(jsonData.currentStatement.text);
 		dict =  {'text': text, 'conclusion_id': jsonData.conclusion_id};
-		guihandler.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b> ?', text, dict);
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> ?', text, dict);
 
 		$.each(jsonData.premisses, function setJsonDataToContentAsConclusionEach(key, val) {
 			text = '';
@@ -55,9 +55,9 @@ function JsonGuiHandler() {
 			attributes = {};
 			$.each(val, function setJsonDataToContentAsConclusionEachVal(valkey, valval) {
 				if (text=='')
-					text = because + ' ';
+					text = _t(because) + ' ';
 				else
-					text += ' <i>and</i> ' + helper.startWithLowerCase(because) + ' ';
+					text += ' <i>and</i> ' + helper.startWithLowerCase(_t(because)) + ' ';
 
 				text += helper.startWithLowerCase(valval.text);
 				firstOne = false;
@@ -72,7 +72,7 @@ function JsonGuiHandler() {
 		});
 
 		if (typeof jsonData.logged_in == "string") {
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? addPremisseRadioButtonText : newPremisseRadioButtonText, false, false, false, ''));
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? _t(addPremisseRadioButtonText) : _t(newPremisseRadioButtonText), false, false, false, ''));
 		}
 
 		guihandler.addListItemsToDiscussionsSpace(listitems);
@@ -99,27 +99,28 @@ function JsonGuiHandler() {
 		//alert(jsonData.confrontation_uid + "\n" + jsonData.confrontation_argument_id);
 
 		if (typeof jsonData.relation == 'undefined'){
-			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(because) + ' ' + premisse + '</b>';
+			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(_t(because)) + ' ' + premisse + '</b>';
 		} else {
 			opinion = '<b>' + conclusion + '</b> ' + jsonData.relation + 's ' + '<b>' + premisse + '</b>';
 		}
 
 		// build some confrontation text
 		if (jsonData.attack == 'undermine'){
-			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> ' + doesNotHoldBecause + ' ';
+			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotHoldBecause) + ' ';
 		} else if (jsonData.attack == 'rebut'){
-			confrontationText = otherParticipantsAcceptBut + ' ' + strongerStatementForRecjecting + ' <b>' + conclusion + '</b>. They say: ';
+			confrontationText = _t(otherParticipantsAcceptBut) + ' ' + _t(strongerStatementForRecjecting) + ' <b>' + conclusion + '</b>.' +
+				' They say: ';
 		} else if (jsonData.attack == 'undercut'){
-			confrontationText = otherParticipantsThinkThat + ' <b>' + premisse + '</b> ' + doesNotJustify + ' <b>' + conclusion + '</b>,' +
-				' because ';
+			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotJustify) + ' <b>' + conclusion + '</b>,' +
+				' ' + _t(because) + ' ';
 		}
 		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
 
 		// set discussions text
 		dict = {confrontation_uid: jsonData.confrontation_uid,
 				current_attack: jsonData.attack};
-		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
-			+ confrontationText + '.<br><br>' + whatDoYouThink,
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
+			+ confrontationText + '.<br><br>' + _t(whatDoYouThink),
 			'This confrontation is a ' + jsonData.attack, dict);
 
 		// build the radio buttons
@@ -154,13 +155,13 @@ function JsonGuiHandler() {
 			premissegroup_uid = jsonData.premissegroup_uid;
 
 		if (typeof relation == 'undefined'){
-			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(because) + ' ' + premisse + '</b>';
+			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(_t(because)) + ' ' + premisse + '</b>';
 		} else {
 			opinion = '<b>' + premisse + '</b> ' + relation + 's ' + '<b>' + conclusion + '</b>';
 		}
 
 		// build some confrontation text
-		confrontationText = otherParticipantsDontHave + ' <b>' + premisse + '</b>';
+		confrontationText = _t(otherParticipantsDontHave) + ' <b>' + premisse + '</b>';
 
 		// set discussions text
 		dict = { // todo params in id.js!
@@ -170,18 +171,18 @@ function JsonGuiHandler() {
 			'premissegroup_uid': premissegroup_uid,
 			'conclusion_id': conclusion_uid};
 
-		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
-			+ confrontationText + '.<br><br>' + whatDoYouThink,
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
+			+ confrontationText + '.<br><br>' + _t(whatDoYouThink),
 			'This confrontation is a ' + jsonData.attack, dict);
 
 		// build the radio buttons
 		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>
 		// TODO BUTTONS ARE DEPENDING ON THE ATTACK?</u></i></b>
 		if (typeof jsonData.logged_in == "string") {
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addArgumentRadioButtonText, false, false, false, addArgumentRadioButtonText));
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addArgumentRadioButtonText), false, false, false, _t(addArgumentRadioButtonText)));
 		} else {
-			guihandler.setErrorDescription(discussionEnd + '<br>' + clickHereForRegistration);
-			guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
+			guihandler.setErrorDescription(_t(discussionEnd) + '<br>' + _t(clickHereForRegistration));
+			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.',
 			'This confrontation is a ' + jsonData.attack, dict);
 		}
@@ -202,17 +203,17 @@ function JsonGuiHandler() {
 			relationArray = helper.createRelationsText(jsonData.confrontation_text, premisse, conclusion, true, false),
 			text, listitems = [], i, reason, id, long_id, dict;
 
-		if (jsonData.relation === attr_undermine) {			text = relationArray[0] + '. ' + canYouGiveAReason + ' (' + youMadeAn + ' ' + attr_undermine + ')';
-		} else if (jsonData.relation === attr_support) {	text = relationArray[1] + '. ' + canYouGiveAReason + ' (' + youMadeA + ' ' + attr_support + ')';
-		} else if (jsonData.relation === attr_undercut) {	text = relationArray[2] + '. ' + canYouGiveAReason + ' (' + youMadeAn + ' ' + attr_undercut + ')';
-		} else if (jsonData.relation === attr_overbid) {	text = relationArray[3] + '. ' + canYouGiveAReason + ' (' + youMadeAn + ' ' + attr_overbid + ')';
-		} else if (jsonData.relation === attr_rebut) {		text = relationArray[4] + ', ' + butWhich + '?'	   + ' (' + youMadeA + ' ' + attr_rebut + ')';
+		if (jsonData.relation === attr_undermine) {			text = relationArray[0] + '. ' + _t(canYouGiveAReason) + ' (' + _t(youMadeAn) + ' ' + attr_undermine + ')';
+		} else if (jsonData.relation === attr_support) {	text = relationArray[1] + '. ' + _t(canYouGiveAReason) + ' (' + _t(youMadeA) + ' ' + attr_support + ')';
+		} else if (jsonData.relation === attr_undercut) {	text = relationArray[2] + '. ' + _t(canYouGiveAReason) + ' (' + _t(youMadeAn) + ' ' + attr_undercut + ')';
+		} else if (jsonData.relation === attr_overbid) {	text = relationArray[3] + '. ' + _t(canYouGiveAReason) + ' (' + _t(youMadeAn) + ' ' + attr_overbid + ')';
+		} else if (jsonData.relation === attr_rebut) {		text = relationArray[4] + ', ' + _t(butWhich) + '?'	   + ' (' + _t(youMadeA) + ' ' + attr_rebut + ')';
 		}
 
 		for (i=0; i<parseInt(jsonData.reason); i++){
 			long_id = jsonData.relation + '_' + jsonData.type + '_' + jsonData['reason' + i + 'id'];
 			id = jsonData['reason' + i + '_statement_id'];
-			reason = because + ' ' + helper.startWithLowerCase(jsonData['reason' + i]) + '.';
+			reason = _t(because) + ' ' + helper.startWithLowerCase(jsonData['reason' + i]) + '.';
 			listitems.push(helper.getKeyValAsInputInLiWithType(id, reason, false, true, true, reason, {'long_id': long_id}));
 		}
 
@@ -225,12 +226,12 @@ function JsonGuiHandler() {
 			'last_relation': jsonData.last_relation,
 			'confrontation_text': jsonData.confrontation_text,
 			'confrontation_uid': jsonData.confrontation_uid};
-		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + text, '', dict);
 
 		if (typeof jsonData.logged_in == "string") {
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, addPremisseRadioButtonText, false, false, false, addPremisseRadioButtonText));
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));
 		} else if (parseInt(jsonData.reason) == 0){
-			guihandler.setErrorDescription(discussionEnd + '<br>' + clickHereForRegistration);
+			guihandler.setErrorDescription(_t(discussionEnd) + '<br>' + _t(clickHereForRegistration));
 		}
 		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
@@ -244,8 +245,8 @@ function JsonGuiHandler() {
 		$.each(jsonData, function addJsonDataToContentAsArgumentsEach(key, val) {
 			// we only want attacking arguments
 			if (val.is_supportive === '0') {
-				if (val.text.toLowerCase() !== helper.startWithLowerCase(because)) {
-					text = bcease + ' ' + helper.start(val.text);
+				if (val.text.toLowerCase() !== helper.startWithLowerCase(_t(because))) {
+					text = _t(because) + ' ' + helper.start(val.text);
 				} else {
 					text = val.text;
 				}
@@ -284,15 +285,15 @@ function JsonGuiHandler() {
 
 		// add header row
 		spanElement[0].text('uid');
-		spanElement[1].text(firstname);
-		spanElement[2].text(surname);
-		spanElement[3].text(nickname);
-		spanElement[4].text(email);
-		spanElement[5].text(group_uid);
-		spanElement[6].text(last_action);
-		spanElement[7].text(last_login);
-		spanElement[8].text(registered);
-		spanElement[9].text(gender);
+		spanElement[1].text(_t(firstname));
+		spanElement[2].text(_t(surname));
+		spanElement[3].text(_t(nickname));
+		spanElement[4].text(_t(email));
+		spanElement[5].text(_t(group_uid));
+		spanElement[6].text(_t(last_action));
+		spanElement[7].text(_t(last_login));
+		spanElement[8].text(_t(registered));
+		spanElement[9].text(_t(gender));
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -357,8 +358,8 @@ function JsonGuiHandler() {
 		}
 
 		// add header row
-		spanElement[0].text('uid');
-		spanElement[1].text('text');
+		spanElement[0].text(_t(uid));
+		spanElement[1].text(_t(text));
 		counter = 2;
 		$.each(jsonData.attacks, function setJsonAttackDataToAdminContentEach(key, value) {
 			spanElement[counter].text(value);

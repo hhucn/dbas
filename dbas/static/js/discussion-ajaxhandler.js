@@ -99,7 +99,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllPositionsFail(err) {
-			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
 			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
@@ -131,7 +131,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForPremisseForStatement(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetPremisseForStatementFail(err) {
-			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
 			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
@@ -163,7 +163,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneReplyForPremissegroup(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetReplyForPremisseFail(err) {
-			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
 			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
@@ -195,7 +195,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneReplyForArgument(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetReplyForArgumentFail(err) {
-			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
 			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
@@ -227,7 +227,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail(err) {
-			new GuiHandler().setErrorDescription(internal_error);
+			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
 			new GuiHandler().showDiscussionError(JSON.stringify(err));
 		});
@@ -254,7 +254,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxSendNewPremissesForXDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewPremissesX(data);
 		}).fail(function ajaxSendNewPremissesForXFail(err) {
-			// new GuiHandler().setErrorDescription(internal_error);
+			// new GuiHandler().setErrorDescription(_t(internal_error));
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
 	};
@@ -279,7 +279,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxSendStartStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
 		}).fail(function ajaxSendStartStatementFail(err) {
-			// new GuiHandler().setErrorDescription(internal_error);
+			// new GuiHandler().setErrorDescription(_t(internal_error));
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
 	};
@@ -399,7 +399,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneGetUsersOverview(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail(err) {
-			// new GuiHandler().setErrorDescription(internal_error);
+			// new GuiHandler().setErrorDescription(_t(internal_error));
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
 	};
@@ -425,12 +425,12 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneAttackOverview(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-			$('#' + listAllUsersAttacksId).val(hideAllAttacks);
+			$('#' + listAllUsersAttacksId).val(_t(hideAllAttacks));
 			new GuiHandler().setErrorDescription('');
 		}).fail(function ajaxGetAllUsersFail(err) {
-			// new GuiHandler().setErrorDescription(internal_error);
+			// new GuiHandler().setErrorDescription(_t(internal_error));
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
-			$('#' + listAllUsersAttacksId).val(showAllAttacks);
+			$('#' + listAllUsersAttacksId).val(_t(showAllAttacks));
 		});
 	};
 
@@ -484,7 +484,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForGetIssueList(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetIssueListFail(err) {
-			// new GuiHandler().setErrorDescription(internal_error);
+			// new GuiHandler().setErrorDescription(_t(internal_error));
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
 	};

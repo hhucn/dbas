@@ -69,17 +69,17 @@ function Helper() {
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var w = startLowerCase ? this.startWithLowerCase(wrong) : this.startWithUpperCase(wrong),
-			r = startLowerCase ? this.startWithLowerCase(right) : this.startWithUpperCase(right),
+		var w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong)),
+			r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right)),
 			enddot = endWithDot ? '.' : '',
-			counterJusti = ' <b>' + conclusion + ', </b>' + because.toLocaleLowerCase() + '<b> ' + premisse + '</b>', // todo with or without premisse ?
-			undermine = '<b>' + w + ', ' + itIsFalse + " " + premisse + '</b>' + enddot,
-			support	  = '<b>' + r + ', ' + itIsTrue + " " + premisse + '</b>' + enddot,
-			undercut  = '<b>' + r + ', ' + confrontation + '</b>, ' + butIDoNotBelieve + ' ' + counterJusti + enddot,
-			overbid	  = '<b>' + r + ', ' + confrontation + '</b>, ' + andIDoBelieve + ' ' + counterJusti + enddot,
-			rebut	  = '<b>' + r + ', ' + confrontation + '</b> ' + iAcceptCounter + ' <b>' + conclusion
-				+ '</b>.<br><br>' + iHaveStrongerArgument + ' <b>' + premisse + '</b>' + enddot,
-			noopinion  = 'I have no opinion regarding <b>' + conclusion + '</b>. ' + goStepBack + '.';
+			counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premisse + '</b>', // todo with or without premisse ?
+			undermine = '<b>' + w + ', ' + _t(itIsFalse) + " " + premisse + '</b>' + enddot,
+			support	  = '<b>' + r + ', ' + _t(itIsTrue) + " " + premisse + '</b>' + enddot,
+			undercut  = '<b>' + r + ', ' + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + enddot,
+			overbid	  = '<b>' + r + ', ' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + enddot,
+			rebut	  = '<b>' + r + ', ' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion
+				+ '</b>.<br><br>' + _t(iHaveStrongerArgument) + ' <b>' + premisse + '</b>' + enddot,
+			noopinion  = _t(iNoOpinion) + ' <b>' + conclusion + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 
@@ -97,18 +97,18 @@ function Helper() {
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var w = startLowerCase ? this.startWithLowerCase(wrong) : this.startWithUpperCase(wrong),
-			r = startLowerCase ? this.startWithLowerCase(right) : this.startWithUpperCase(right),
-			i = startLowerCase ? this.startWithLowerCase(irrelevant) : this.startWithUpperCase(irrelevant),
+		var w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong)),
+			r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right)),
+			i = startLowerCase ? this.startWithLowerCase(_t(irrelevant)) : this.startWithUpperCase(_t(irrelevant)),
 			enddot = endWithDot ? '.' : '',
-			counterJusti = ' <b>' + conclusion + ', </b>' + because.toLocaleLowerCase() + '<b> ' + premisse + '</b>', // todo with or without premisse ?
-			undermine = w + ', ' + itIsFalse + ' <b>' + confrontation + '</b>' + enddot,
-			support	  = r + ', ' + itIsTrue + ' <b>' + confrontation + '</b>' + enddot,
-			undercut  = r + ', <b>' + confrontation + '</b>, ' + butIDoNotBelieve + ' ' + counterJusti + enddot,
-			overbid	  = r + ', <b>' + confrontation + '</b>, ' + andIDoBelieve + ' ' + counterJusti + enddot,
-			rebut	  = r + ', <b>' + confrontation + '</b> ' + iAcceptCounter + ' <b>' + conclusion + ' ' + because.toLocaleLowerCase() + ' ' + premisse
-				+ '</b>. ' + iHaveStrongerArgument + ' <b>' + premisse + '</b>' + enddot,
-			noopinion  = iNoOpinion + ': <b>' + confrontation + '</b>. ' + goStepBack + '.';
+			counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premisse + '</b>', // todo with or without premisse ?
+			undermine = w + ', ' + _t(itIsFalse) + ' <b>' + confrontation + '</b>' + enddot,
+			support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>' + enddot,
+			undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + enddot,
+			overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + enddot,
+			rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + ' ' + _t(because).toLocaleLowerCase() + ' ' + premisse
+				+ '</b>. ' + _t(iHaveStrongerArgument) + ' <b>' + premisse + '</b>' + enddot,
+			noopinion  = _t(iNoOpinion) + ': <b>' + confrontation + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 

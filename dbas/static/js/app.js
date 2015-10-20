@@ -139,17 +139,21 @@ function setActiveLanguage(lang){
 		$('#' + switchLangIndicatorEnId).hide();
 		$('#' + switchLangIndicatorDeId).show();
 	}
+}
 
-	// Buttons
-	$('#' + restartDiscussionButtonId).text(_t(restartDiscussion));
-	$('#' + editStatementButtonId).text(_t(edit));
-	$('#' + scStyle1Id).text(_t(dialogView));
-	$('#' + scStyle2Id).text(_t(islandView));
-	$('#' + scStyle3Id).text(_t(completeView));
-	$('#' + islandViewAddArgumentsBtnid).text(_t(addArguments));
-	$('#' + sendNewStatementId).text(_t(acceptIt));
-	$('#' + listAllUsersButtonId).text(_t(showAllAttacks));
-	$('#' + listAllUsersAttacksId).text(_t(showAllUsers));
+function setButtonLanguage(){
+	$('#' + restartDiscussionButtonId).prop('value', _t(restartDiscussion)).prop('title', _t(restartDiscussionTitle));
+	$('#' + editStatementButtonId).prop('value', _t(edit)).prop('title', _t(editTitle));
+	$('#' + scStyle1Id).prop('value', _t(dialogView)).prop('title', _t(dialogViewTitle));
+	$('#' + scStyle2Id).prop('value', _t(islandView)).prop('title', _t(islandViewTitle));
+	$('#' + scStyle3Id).prop('value', _t(completeView)).prop('title', _t(completeViewTitle));
+	$('#' + islandViewAddArgumentsBtnid).prop('value', _t(addArguments)).prop('title', _t(addArguments));
+	$('#' + sendNewStatementId).prop('value', _t(acceptIt)).prop('title', _t(acceptItTitle));
+	$('#' + listAllUsersButtonId).prop('value', _t(showAllAttacks)).prop('title', _t(showAllAttacks));
+	$('#' + listAllUsersAttacksId).prop('value', _t(showAllUsers)).prop('title', _t(showAllUsers));
+	$('#' + deleteTrackButtonId).prop('value', _t(deleteTrack)).prop('title', _t(deleteTrack));
+	$('#' + requestTrackButtonId).prop('value', _t(requestTrack)).prop('title', _t(requestTrack));
+	$('#' + passwordSubmitButtonId).prop('value', _t(passwordSubmit)).prop('title', _t(passwordSubmit));
 }
 
 function hideExtraViewsOfLoginPopup(){
@@ -191,20 +195,20 @@ function prepareLoginRegistrationPopup(){
 	$('#' + forgotPasswordText).click(function(){
 		if ($('#' + popupLoginForgotPasswordBody).is(':visible')){
 			$('#' + popupLoginForgotPasswordBody).hide();
-			$('#' + popupLoginForgotPasswordText).text(forgotPassword + '?');
+			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 		} else {
 			$('#' + popupLoginForgotPasswordBody).show();
-			$('#' + popupLoginForgotPasswordText).text(hidePasswordRequest);
+			$('#' + popupLoginForgotPasswordText).text(_t(hidePasswordRequest));
 		}
 	});
 
 	$('#' + popupLoginGeneratePassword + ' > a').click(function(){
 		if ($('#' + popupLoginGeneratePasswordBody).is(':visible')){
 			$('#' + popupLoginGeneratePasswordBody).hide();
-			$('#' + popupLoginGeneratePassword + ' > a span').text(generateSecurePassword);
+			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(generateSecurePassword));
 		} else {
 			$('#' + popupLoginGeneratePasswordBody).show();
-			$('#' + popupLoginGeneratePassword + ' > a span').text(hideGenerator);
+			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(hideGenerator));
 		}
 	});
 
@@ -225,31 +229,31 @@ function prepareLoginRegistrationPopup(){
 
 		if (!userfirstname || /^\s*$/.test(userfirstname) || 0 === userfirstname.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(checkFirstname);
+			$('#' + popupLoginWarningMessageText).text(_t(checkFirstname));
 
 		} else if (!userlastname || /^\s*$/.test(userlastname) || 0 === userlastname.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(checkLastname);
+			$('#' + popupLoginWarningMessageText).text(_t(checkLastname));
 
 		} else if (!nick || /^\s*$/.test(nick) || 0 === nick.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(checkNickname);
+			$('#' + popupLoginWarningMessageText).text(_t(checkNickname));
 
 		} else if (!email || /^\s*$/.test(email) || 0 === email.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(checkEmail);
+			$('#' + popupLoginWarningMessageText).text(_t(checkEmail));
 
 		} else if (!password || /^\s*$/.test(password) || 0 === password.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(checkPassword);
+			$('#' + popupLoginWarningMessageText).text(_t(checkPassword));
 
 		} else if (!passwordconfirm || /^\s*$/.test(passwordconfirm) || 0 === passwordconfirm.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(checkConfirmation);
+			$('#' + popupLoginWarningMessageText).text(_t(checkConfirmation));
 
 		} else if (password !== passwordconfirm) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(checkPasswordEqual);
+			$('#' + popupLoginWarningMessageText).text(_t(checkPasswordEqual));
 
 		} else {
 			$('#' + popupLoginWarningMessage);
@@ -285,7 +289,7 @@ function ajaxSwitchDisplayLanguage (new_lang){
 	}).done(function ajaxSwitchDisplayLanguageDone() {
 		callbackIfDoneForSwitchDisplayLanguage(new_lang);
 	}).fail(function ajaxSwitchDisplayLanguageFail() {
-		alert(languageCouldNotBeSwitched);
+		alert(_t(languageCouldNotBeSwitched));
 	});
 }
 
@@ -346,7 +350,7 @@ function ajaxRegistration (){
 		callbackIfDoneForRegistration(data);
 	}).fail(function ajaxRegistrationFail() {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(requestFailed);
+		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
 	});
 }
 
@@ -365,7 +369,7 @@ function ajaxPasswordRequest (){
 		callbackIfDoneForPasswordRequest(data);
 	}).fail(function ajaxPasswordRequestFail() {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(requestFailed);
+		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
 	});
 }
 
@@ -379,6 +383,7 @@ function ajaxPasswordRequest (){
 function callbackIfDoneForSwitchDisplayLanguage (new_lang) {
 	location.reload(true);
 	setActiveLanguage(new_lang);
+	setButtonLanguage();
 }
 
 /**
@@ -443,6 +448,7 @@ $(document).ready(function () {
 	goBackToTop();
 
 	setActiveLanguage($('#hidden_language').val());
+	setButtonLanguage();
 
 	// set current file to active
 	var path = window.location.href;

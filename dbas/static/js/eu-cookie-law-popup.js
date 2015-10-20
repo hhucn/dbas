@@ -32,10 +32,10 @@ $.fn.euCookieLawPopup = (function() {
 		popupPosition : 'top',
 		colorStyle : 'default',
 		compactStyle : false,
-		popupTitle : euCookiePopupTitle,
-		popupText : euCookiePopupText,
-		buttonContinueTitle : euCookiePopoupButton1,
-		buttonLearnmoreTitle : euCookiePopoupButton2,
+		popupTitle : _t(euCookiePopupTitle),
+		popupText : _t(euCookiePopupText),
+		buttonContinueTitle : _t(euCookiePopoupButton1),
+		buttonLearnmoreTitle : _t(euCookiePopoupButton2),
 		buttonLearnmoreOpenInNewWindow : true,
 		agreementExpiresInDays : 1,
 		autoAcceptCookiePolicy : false,
@@ -213,8 +213,8 @@ $(document).ready( function() {
 	if ($(".eupopup").length > 0) {
 		$(document).euCookieLawPopup().init({
 			'info' : 'YOU_CAN_ADD_MORE_SETTINGS_HERE',
-			'popupTitle' : euCookiePopupTitle,
-			'popupText' : euCookiePopupText
+			'popupTitle' : _t(euCookiePopupTitle),
+			'popupText' : _t(euCookiePopupText)
 		});
 	}
 });

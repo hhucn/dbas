@@ -42,7 +42,7 @@ function TrackHandler() {
 	this.getUserTrackDataFail = function(){
 		$('#' + trackTableSuccessId).hide();
 		$('#' + trackTableFailureId).fadeIn('slow');
-		$('#' + trackFailureMessageId).text(internal_error);
+		$('#' + trackFailureMessageId).text(_t(internal_error));
 	};
 
 	this.removeUserTrackDataDone = function(){
@@ -50,14 +50,14 @@ function TrackHandler() {
 		$('#' + deleteTrackButtonId).hide();
 		$('#' + trackTableSuccessId).show();
 		$('#' + trackTableFailureId).hide();
-		$('#' + trackSuccessMessageId).text(dataRemoved);
+		$('#' + trackSuccessMessageId).text(_t(dataRemoved));
 
 	};
 
 	this.removeUserTrackDataFail = function(){
 		$('#' + trackTableSuccessId).hide();
 		$('#' + trackTableFailureId).show();
-		$('#' + trackFailureMessageId).text(internal_error);
+		$('#' + trackFailureMessageId).text(_t(internal_error));
 	};
 
 
@@ -90,16 +90,16 @@ function TrackHandler() {
 		}
 
 		// add header row
-		spanElement[0].text(number);
-		spanElement[1].text(track);
-		spanElement[2].text(topicString);
-		spanElement[3].text(statement);
-		spanElement[4].text(premisseGroup);
-		spanElement[5].text(argument);
-		spanElement[6].text(attackedBy);
-		spanElement[7].text(attackedWith);
-		spanElement[8].text(text);
-		spanElement[9].text(dateString);
+		spanElement[0].text(_t(number));
+		spanElement[1].text(_t(track));
+		spanElement[2].text(_t(topicString));
+		spanElement[3].text(_t(statement));
+		spanElement[4].text(_t(premisseGroup));
+		spanElement[5].text(_t(argument));
+		spanElement[6].text(_t(attackedBy));
+		spanElement[7].text(_t(attackedWith));
+		spanElement[8].text(_t(text));
+		spanElement[9].text(_t(dateString));
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -149,7 +149,7 @@ function TrackHandler() {
 			$('#' + trackTableSpaceId).append(tableElement);
 		} else {
 			$('#' + trackTableSuccessId).show();
-			$('#' + trackSuccessMessageId).text(noTrackedData);
+			$('#' + trackSuccessMessageId).text(_t(noTrackedData));
 			$('#' + deleteTrackButtonId).hide();
 			$('#request-track').hide();
 		}
@@ -164,7 +164,7 @@ $(function () {
 		$('#' + trackTableSuccessId).fadeOut('slow');
 		$('#' + trackTableFailureId).fadeOut('slow');
 		$('#' + trackTableSpaceId).empty();
-		$('#request-track').val(refreshTrack);
+		$('#request-track').val(_t(refreshTrack));
 	});
 
 	$('#' + deleteTrackButtonId).click(function requestTrack() {
@@ -177,7 +177,6 @@ $(function () {
 	$('#' + deleteTrackButtonId).hide();
 	$('#' + trackTableSuccessId).hide();
 	$('#' + trackTableFailureId).hide();
-
 
 	// ajax loading animation
 	$(document).on({
