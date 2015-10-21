@@ -77,24 +77,28 @@
 
 					<li class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#language" title="Switch language">
-							<img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}">
-							<img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/germany-flag-16.png')}">
+							<img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}">
+							<img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
+							<!--
+							<img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
+							<img id="switch-lang-indicator-sp" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
+							-->
 							<span i18n:translate="language">Language</span>
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu" id="language-dropdown">
 							<li>
-								<a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/germany-flag-16.png')}" alt="flag_ge">Deutsch</a>
+								<a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">Deutsch</a>
 							</li>
 							<li>
-								<a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/united-kingdom-flag-16.png')}" alt="flag_en">English</a>
+								<a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">English</a>
 							</li>
 							<!--
 							<li>
-								<a class="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/spain-flag-16.png')}" alt="flag_es">Espa&ntilde;ol</a>
+								<a class="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">Espa&ntilde;ol</a>
 							</li>
 							<li>
-								<a class="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/sweden-flag-16.png')}" alt="flag_sw">Svensk</a>
+								<a class="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-32.png')}" alt="flag_sw">Svensk</a>
 							</li>
 							-->
 						</ul>
