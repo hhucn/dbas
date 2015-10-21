@@ -47,7 +47,7 @@ function JsonGuiHandler() {
 
 		text = helper.startWithLowerCase(jsonData.currentStatement.text);
 		dict =  {'text': text, 'conclusion_id': jsonData.conclusion_id};
-		guihandler.setDiscussionsDescription(sentencesOpenersRequesting[0] + ' <b>' + text + '</b> ?', text, dict);
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> ?', text, dict);
 
 		$.each(jsonData.premisses, function setJsonDataToContentAsConclusionEach(key, val) {
 			text = '';
@@ -99,7 +99,7 @@ function JsonGuiHandler() {
 		//alert(jsonData.confrontation_uid + "\n" + jsonData.confrontation_argument_id);
 
 		if (typeof jsonData.relation == 'undefined'){
-			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(_t(because)) + ' ' + premisse + '</b>';
+			opinion = '<b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse + '</b>';
 		} else {
 			opinion = '<b>' + conclusion + '</b> ' + jsonData.relation + 's ' + '<b>' + premisse + '</b>';
 		}
@@ -109,19 +109,17 @@ function JsonGuiHandler() {
 			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotHoldBecause) + ' ';
 		} else if (jsonData.attack == 'rebut'){
 			confrontationText = _t(otherParticipantsAcceptBut) + ' ' + _t(strongerStatementForRecjecting) + ' <b>' + conclusion + '</b>.' +
-				' They say: ';
+				' ' + _t(theySay) + ': ';
 		} else if (jsonData.attack == 'undercut'){
 			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotJustify) + ' <b>' + conclusion + '</b>,' +
-				' ' + _t(because) + ' ';
+				' ' + _t(because).toLocaleLowerCase() + ' ';
 		}
 		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
 
 		// set discussions text
-		dict = {confrontation_uid: jsonData.confrontation_uid,
-				current_attack: jsonData.attack};
-		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
-			+ confrontationText + '.<br><br>' + _t(whatDoYouThink),
-			'This confrontation is a ' + jsonData.attack, dict);
+		dict = {confrontation_uid: jsonData.confrontation_uid, current_attack: jsonData.attack};
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
+			+ confrontationText + '.<br><br>' + _t(whatDoYouThink), 'This confrontation is a ' + jsonData.attack, dict);
 
 		// build the radio buttons
 		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine + confronation_id, relationArray[0] + ' [<i>undermine</i>]', false, false, true, attr_undermine));
@@ -171,8 +169,8 @@ function JsonGuiHandler() {
 			'premissegroup_uid': premissegroup_uid,
 			'conclusion_id': conclusion_uid};
 
-		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
-			+ confrontationText + '.<br><br>' + _t(whatDoYouThink),
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
+			+ confrontationText + '.<br><br>' + _t(doYouWantToEnterYourStatements),
 			'This confrontation is a ' + jsonData.attack, dict);
 
 		// build the radio buttons
@@ -182,7 +180,7 @@ function JsonGuiHandler() {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addArgumentRadioButtonText), false, false, false, _t(addArgumentRadioButtonText)));
 		} else {
 			guihandler.setErrorDescription(_t(discussionEnd) + '<br>' + _t(clickHereForRegistration));
-			guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + opinion + '.<br><br>'
+			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.',
 			'This confrontation is a ' + jsonData.attack, dict);
 		}
@@ -226,7 +224,7 @@ function JsonGuiHandler() {
 			'last_relation': jsonData.last_relation,
 			'confrontation_text': jsonData.confrontation_text,
 			'confrontation_uid': jsonData.confrontation_uid};
-		guihandler.setDiscussionsDescription(sentencesOpenersForArguments[0] + ' ' + text, '', dict);
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + text, '', dict);
 
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));

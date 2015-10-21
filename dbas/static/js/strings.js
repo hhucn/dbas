@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 _t = function(id){
 	var this_id, value = 'unknown identifier';
@@ -74,6 +74,7 @@ var discussionEnd						= 'discussionEnd';
 var duplicateDialog						= 'duplicateDialog';
 var doesNotHoldBecause 					= 'doesNotHoldBecause';
 var doesNotJustify 						= 'doesNotJustify';
+var doYouWantToEnterYourStatements 		= 'doYouWantToEnterYourStatements';
 var deleteTrack 						= 'deleteTrack';
 var euCookiePopupTitle 					= 'euCookiePopupTitle';
 var euCookiePopupText 					= 'euCookiePopupText';
@@ -170,6 +171,7 @@ var thinkWeShould 						= 'thinkWeShould';
 var track 								= 'track';
 var topicString							= 'topicString';
 var text 								= 'text';
+var theySay 							= 'theySay';
 var veryweak 							= 'veryweak';
 var weak 								= 'weak';
 var wrong 								= 'wrong';
@@ -184,23 +186,23 @@ var youMadeAn 							= 'youMadeAn';
  * @type {string[]}
  */
 var sentencesOpenersForArguments = [
-	_t(soYourOpinionIsThat)
+	soYourOpinionIsThat
 	//'Okay, you have got the opinion: ',
 	//'Interesting, your opinion is: ',
 	//'You have said, that: ',
 	];
 var sentencesOpenersArguingWithAgreeing = [
-	_t(agreeBecause),
-	_t(therefore)];
+	agreeBecause,
+	therefore];
 var sentencesOpenersArguingWithDisagreeing = [
-	_t(disagreeBecause),
-	_t(alternatively)];
+	disagreeBecause,
+	alternatively];
 var sentencesOpenersInforming = [
-	_t(thinkWeShould),
-	_t(letMeExplain),
-	_t(sureThat)];
+	thinkWeShould,
+	letMeExplain,
+	sureThat];
 var sentencesOpenersRequesting = [
-	_t(whyDoYouThinkThat)
+	whyDoYouThinkThat
 	//'Can you explain why '
 	];
 

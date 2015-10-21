@@ -20,15 +20,20 @@
 						</ul>
 					</div>
 					<br>
-					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
-					<br>
-					<span i18n:translate="startet_at">and was started at</span> <span class="font-semi-bold" id="issue-date"></span>.
 				</div>
+				<!--
 				<div class="col-md-1"></div>
-				<div class="col-md-3 center text-center"><b>Placeholder Minimap</b>
+				-->
+				<div class="col-md-4 center text-center"><b style="display:none">Placeholder Minimap</b>
+					<!--
 					<br><img id="placeholder_minimap">
+					<br>
+					--><br>
+					<span i18n:translate="startet_at">The discussion was started at</span> <span class="font-semi-bold" id="issue-date"></span>.
 					<br><br>
-					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" /></div>
+					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
+					<br><br>
+					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn btn-primary" data-dismiss="modal" /></div>
 			</div>
 		</div>
 

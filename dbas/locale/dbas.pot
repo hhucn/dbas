@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-19 15:32+0200\n"
+"POT-Creation-Date: 2015-10-20 22:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -181,8 +181,8 @@ msgid "guided_view_content2"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/index.pt:90 ./dbas/templates/content.pt:66
-#: ./dbas/templates/content.pt:99
+#: ./dbas/templates/index.pt:90 ./dbas/templates/content.pt:68
+#: ./dbas/templates/content.pt:100
 msgid "island_view"
 msgstr ""
 
@@ -254,7 +254,7 @@ msgstr ""
 #. Default: Login
 #. Default: Log In
 #: ./dbas/templates/snippet-header.pt:54 ./dbas/templates/snippet-popups.pt:216
-#: ./dbas/templates/snippet-popups.pt:391
+#: ./dbas/templates/snippet-popups.pt:400
 msgid "login"
 msgstr ""
 
@@ -269,7 +269,7 @@ msgid "logout"
 msgstr ""
 
 #. Default: Language
-#: ./dbas/templates/snippet-header.pt:80
+#: ./dbas/templates/snippet-header.pt:82
 msgid "language"
 msgstr ""
 
@@ -295,7 +295,7 @@ msgstr ""
 msgid "contact"
 msgstr ""
 
-#. Default: Telefon: 0211-8113461
+#. Default: Telefon:
 #: ./dbas/templates/imprint.pt:21
 msgid "phone"
 msgstr ""
@@ -445,12 +445,12 @@ msgid "copyright_and_used_software"
 msgstr ""
 
 #. Default: Icons by
-#: ./dbas/templates/imprint.pt:79
+#: ./dbas/templates/imprint.pt:76
 msgid "icons_by"
 msgstr ""
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: ./dbas/templates/imprint.pt:92
+#: ./dbas/templates/imprint.pt:89
 msgid "generated_with"
 msgstr ""
 
@@ -510,43 +510,29 @@ msgstr ""
 msgid "office"
 msgstr ""
 
+#. Default: Heinrich-Heine University Duesseldorf
+#: ./dbas/templates/snippet-popups.pt:43
+msgid "office_value_1"
+msgstr ""
+
 #. Default: Universitätsstraße 1
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
 #: ./dbas/templates/snippet-popups.pt:44
 msgid "office_value_2"
 msgstr ""
 
 #. Default: 40225 Duesseldorf
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
 #: ./dbas/templates/snippet-popups.pt:45
 msgid "office_value_3"
 msgstr ""
 
 #. Default: Department of Computer Science
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
 #: ./dbas/templates/snippet-popups.pt:46
 msgid "office_value_4"
 msgstr ""
 
 #. Default: Building 25.12, Room 02.45
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
 #: ./dbas/templates/snippet-popups.pt:47
 msgid "office_value_5"
-msgstr ""
-
-#. Default: Heinrich-Heine University Duesseldorf <dynamic element><dynamic
-#. element> <dynamic element><dynamic element> <dynamic element><dynamic
-#. element> <dynamic element><dynamic element>
-#: ./dbas/templates/snippet-popups.pt:43
-msgid "office_value_1"
 msgstr ""
 
 #. Default: Telephone
@@ -563,7 +549,7 @@ msgstr ""
 #: ./dbas/templates/snippet-popups.pt:72 ./dbas/templates/snippet-popups.pt:117
 #: ./dbas/templates/snippet-popups.pt:153
 #: ./dbas/templates/snippet-popups.pt:201
-#: ./dbas/templates/snippet-popups.pt:394
+#: ./dbas/templates/snippet-popups.pt:403
 msgid "close"
 msgstr ""
 
@@ -613,7 +599,7 @@ msgstr ""
 #. Default: Warning:
 #. Default: Warning!
 #: ./dbas/templates/snippet-popups.pt:144
-#: ./dbas/templates/snippet-popups.pt:345 ./dbas/templates/contact.pt:64
+#: ./dbas/templates/snippet-popups.pt:354 ./dbas/templates/contact.pt:64
 msgid "warning"
 msgstr ""
 
@@ -684,11 +670,15 @@ msgid "fill_in_mail_for_password"
 msgstr ""
 
 #. Default: Error:
-#. Default: Success:
 #: ./dbas/templates/snippet-popups.pt:262
-#: ./dbas/templates/snippet-popups.pt:267
-#: ./dbas/templates/snippet-popups.pt:358 ./dbas/templates/content.pt:83
+#: ./dbas/templates/snippet-popups.pt:367 ./dbas/templates/content.pt:85
 msgid "error"
+msgstr ""
+
+#. Default: Success:
+#: ./dbas/templates/snippet-popups.pt:267
+#: ./dbas/templates/snippet-popups.pt:362 ./dbas/templates/settings.pt:66
+msgid "success"
 msgstr ""
 
 #. Default: Sign Up for Free
@@ -718,82 +708,77 @@ msgid "gender"
 msgstr ""
 
 #. Default: none
-#: ./dbas/templates/snippet-popups.pt:299
+#: ./dbas/templates/snippet-popups.pt:301
 msgid "none"
 msgstr ""
 
 #. Default: female
-#: ./dbas/templates/snippet-popups.pt:301
+#: ./dbas/templates/snippet-popups.pt:306
 msgid "female"
 msgstr ""
 
 #. Default: male
-#: ./dbas/templates/snippet-popups.pt:303
+#: ./dbas/templates/snippet-popups.pt:311
 msgid "male"
 msgstr ""
 
 #. Default: Your Email Address
-#: ./dbas/templates/snippet-popups.pt:308
+#: ./dbas/templates/snippet-popups.pt:317
 msgid "email"
 msgstr ""
 
 #. Default: Your Password
-#: ./dbas/templates/snippet-popups.pt:315
+#: ./dbas/templates/snippet-popups.pt:324
 msgid "password"
 msgstr ""
 
 #. Default: Password (confirm)
-#: ./dbas/templates/snippet-popups.pt:322
+#: ./dbas/templates/snippet-popups.pt:331
 msgid "password-confirm"
 msgstr ""
 
 #. Default: Password Strength
-#: ./dbas/templates/snippet-popups.pt:329
+#: ./dbas/templates/snippet-popups.pt:338
 msgid "password-strength"
 msgstr ""
 
 #. Default: very weak
-#: ./dbas/templates/snippet-popups.pt:332
+#: ./dbas/templates/snippet-popups.pt:341
 msgid "password_strength"
 msgstr ""
 
 #. Default: Generate secure password
-#: ./dbas/templates/snippet-popups.pt:336
+#: ./dbas/templates/snippet-popups.pt:345
 msgid "generate_password"
 msgstr ""
 
-#. Default: Success:
-#: ./dbas/templates/snippet-popups.pt:353
-msgid "success"
-msgstr ""
-
 #. Default: How to select a strong password
-#: ./dbas/templates/snippet-popups.pt:363
+#: ./dbas/templates/snippet-popups.pt:372
 msgid "select_password"
 msgstr ""
 
 #. Default: A Password is strong, when it contains at least:
-#: ./dbas/templates/snippet-popups.pt:365
+#: ./dbas/templates/snippet-popups.pt:374
 msgid "select_password_intro"
 msgstr ""
 
 #. Default: eight characters
-#: ./dbas/templates/snippet-popups.pt:367
+#: ./dbas/templates/snippet-popups.pt:376
 msgid "select_password_rule1"
 msgstr ""
 
 #. Default: one uppercase letter
-#: ./dbas/templates/snippet-popups.pt:368
+#: ./dbas/templates/snippet-popups.pt:377
 msgid "select_password_rule2"
 msgstr ""
 
 #. Default: one lowercase letter
-#: ./dbas/templates/snippet-popups.pt:369
+#: ./dbas/templates/snippet-popups.pt:378
 msgid "select_password_rule3"
 msgstr ""
 
 #. Default: one special sign
-#: ./dbas/templates/snippet-popups.pt:370
+#: ./dbas/templates/snippet-popups.pt:379
 msgid "select_password_rule4"
 msgstr ""
 
@@ -801,101 +786,97 @@ msgstr ""
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: ./dbas/templates/snippet-popups.pt:372
+#: ./dbas/templates/snippet-popups.pt:381
 msgid "popup_password_text"
 msgstr ""
 
 #. Default: Avoid using a password on several pages
-#: ./dbas/templates/snippet-popups.pt:374
+#: ./dbas/templates/snippet-popups.pt:383
 msgid "select_password_avoid1"
 msgstr ""
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: ./dbas/templates/snippet-popups.pt:375
+#: ./dbas/templates/snippet-popups.pt:384
 msgid "select_password_avoid2"
 msgstr ""
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: ./dbas/templates/snippet-popups.pt:376
+#: ./dbas/templates/snippet-popups.pt:385
 msgid "select_password_avoid3"
 msgstr ""
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: ./dbas/templates/snippet-popups.pt:377
+#: ./dbas/templates/snippet-popups.pt:386
 msgid "select_password_avoid4"
 msgstr ""
 
 #. Default: If you need some help with our password, you can get one here:
-#: ./dbas/templates/snippet-popups.pt:379
+#: ./dbas/templates/snippet-popups.pt:388
 msgid "select_password_help"
 msgstr ""
 
 #. Default: Register
-#: ./dbas/templates/snippet-popups.pt:392
+#: ./dbas/templates/snippet-popups.pt:401
 msgid "register"
 msgstr ""
 
 #. Default: How to write text
-#: ./dbas/templates/snippet-popups.pt:407
+#: ./dbas/templates/snippet-popups.pt:416
 msgid "how-to-write-text-header"
 msgstr ""
 
 #. Default: There are a few simple rules for writing good arguments:
-#: ./dbas/templates/snippet-popups.pt:410
+#: ./dbas/templates/snippet-popups.pt:419
 msgid "how-to-write-text-header-body-title"
 msgstr ""
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: ./dbas/templates/snippet-popups.pt:412
+#: ./dbas/templates/snippet-popups.pt:421
 msgid "how-to-write-text-header-body"
 msgstr ""
 
 #. Default: Do's:
-#: ./dbas/templates/snippet-popups.pt:414
+#: ./dbas/templates/snippet-popups.pt:423
 msgid "dos"
 msgstr ""
 
 #. Default: Write short!
-#. Default: Complicated and nested sentences!
-#: ./dbas/templates/snippet-popups.pt:416
-#: ./dbas/templates/snippet-popups.pt:422
+#: ./dbas/templates/snippet-popups.pt:425
 msgid "how-to-write-text-short"
 msgstr ""
 
 #. Default: Only one statement/argument/point per textarea!
-#. Default: More than one statement/argument/point per textarea!
-#: ./dbas/templates/snippet-popups.pt:417
-#: ./dbas/templates/snippet-popups.pt:423
+#: ./dbas/templates/snippet-popups.pt:426
 msgid "how-to-write-text-one-point"
 msgstr ""
 
 #. Default: Don'ts:
-#: ./dbas/templates/snippet-popups.pt:420
+#: ./dbas/templates/snippet-popups.pt:429
 msgid "donts"
 msgstr ""
 
+#. Default: Complicated and nested sentences!
+#: ./dbas/templates/snippet-popups.pt:431
+msgid "how-to-write-text-complicated"
+msgstr ""
+
+#. Default: More than one statement/argument/point per textarea!
+#: ./dbas/templates/snippet-popups.pt:432
+msgid "how-to-write-text-multiple-points"
+msgstr ""
+
 #. Default: Okay
-#: ./dbas/templates/snippet-popups.pt:427
+#: ./dbas/templates/snippet-popups.pt:436
 msgid "Okay"
 msgstr ""
 
 #. Default: Abort
-#: ./dbas/templates/snippet-popups.pt:428
-msgid "abort"
-msgstr ""
-
-#. Default: JavaScript is not enabled:
 #: ./dbas/templates/snippet-popups.pt:437
-msgid "js_disabled1"
-msgstr ""
-
-#. Default: Please enable JavaScript!
-#: ./dbas/templates/snippet-popups.pt:438
-msgid "js_disabled2"
+msgid "abort"
 msgstr ""
 
 #. Default: This will be the news page and currently I think...this will be
@@ -916,7 +897,7 @@ msgid "error:"
 msgstr ""
 
 #. Default: Success:
-#: ./dbas/templates/news.pt:27 ./dbas/templates/settings.pt:66
+#: ./dbas/templates/news.pt:27
 msgid "success:"
 msgstr ""
 
@@ -1031,6 +1012,16 @@ msgstr ""
 msgid "message_sent"
 msgstr ""
 
+#. Default: JavaScript is not enabled:
+#: ./dbas/templates/basetemplate.pt:30
+msgid "js_disabled1"
+msgstr ""
+
+#. Default: Please enable JavaScript!
+#: ./dbas/templates/basetemplate.pt:31
+msgid "js_disabled2"
+msgstr ""
+
 #. Default: Dialog-Based Argumentation System
 #: ./dbas/templates/content.pt:14
 msgid "dbas_long"
@@ -1041,43 +1032,43 @@ msgstr ""
 msgid "current_discussion"
 msgstr ""
 
-#. Default: Now your opinion matters!
-#: ./dbas/templates/content.pt:23
-msgid "your_opinion_matters"
-msgstr ""
-
-#. Default: and was started at
-#: ./dbas/templates/content.pt:25
+#. Default: The discussion was started at
+#: ./dbas/templates/content.pt:30
 msgid "startet_at"
 msgstr ""
 
+#. Default: Now your opinion matters!
+#: ./dbas/templates/content.pt:32
+msgid "your_opinion_matters"
+msgstr ""
+
 #. Default: Change display style:
-#: ./dbas/templates/content.pt:57
+#: ./dbas/templates/content.pt:59
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ./dbas/templates/content.pt:61
+#: ./dbas/templates/content.pt:63
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Complete View
-#: ./dbas/templates/content.pt:71
+#: ./dbas/templates/content.pt:73
 msgid "complete_view"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/content.pt:98
+#: ./dbas/templates/content.pt:99
 msgid "istland_view"
 msgstr ""
 
 #. Default: Pro
-#: ./dbas/templates/content.pt:102 ./dbas/templates/content.pt:144
+#: ./dbas/templates/content.pt:103 ./dbas/templates/content.pt:144
 msgid "pro"
 msgstr ""
 
 #. Default: Contra
-#: ./dbas/templates/content.pt:108 ./dbas/templates/content.pt:156
+#: ./dbas/templates/content.pt:109 ./dbas/templates/content.pt:156
 msgid "contra"
 msgstr ""
 

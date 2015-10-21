@@ -1,5 +1,7 @@
 import random
 import collections
+import datetime
+import locale
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
@@ -628,3 +630,32 @@ class QueryHelper(object):
 		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
 		DBDiscussionSession.query(Track).filter_by(author_uid=db_user.uid).delete()
 		transaction.commit()
+
+	def sql_timestamp_pretty_print(self, ts, lang):
+		"""
+
+		:param ts:
+		:param lang:
+		:return:
+		"""
+
+		logger('QueryHelper', 'sql_timestamp_pretty_print', 'with locale ' + str(lang))
+		format = '%H:%M, %d. %b. %Y'
+
+		if lang == 'de':
+			try:
+				locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
+				format = '%-H:%M Uhr, %d. %b. %Y'
+			except:
+				logger('QueryHelper', 'sql_timestamp_pretty_print', 'locale ' + str(lang) + ' is not supported')
+				locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
+		else:
+			try:
+				locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
+				format = '%-I:%M %p, %d. %b. %Y'
+			except:
+				logger('QueryHelper', 'sql_timestamp_pretty_print', 'locale en_US.UTF8 is not supported')
+
+		time = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
+
+		return time.strftime(format)

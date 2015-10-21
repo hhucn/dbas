@@ -63,12 +63,12 @@
 							<ul class="dropdown-menu">
 								<li>
 									<a href="${request.application_url}/settings" title="Settings">
-										<img id="header_settings" class="glyphicon-local center"src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="settings">Settings</span>
+										<img id="header_settings" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="settings">Settings</span>
 									</a>
 								</li>
 								<li>
 									<a id="logout-link" href="#" title="Logout the user">
-										<img id="header_logout" class="glyphicon-local center"src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="logout">Logout</span>
+										<img id="header_logout" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="logout">Logout</span>
 									</a>
 								</li>
 							</ul>

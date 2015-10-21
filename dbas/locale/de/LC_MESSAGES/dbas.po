@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-19 15:32+0200\n"
+"POT-Creation-Date: 2015-10-20 22:34+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -43,7 +43,6 @@ msgstr "zu dem"
 
 #. Default: ialog
 #: dbas/templates/index.pt:17
-#, fuzzy
 msgid "ialog"
 msgstr "ialog"
 
@@ -155,7 +154,6 @@ msgstr ""
 
 #. Default: Dialog-based
 #: dbas/templates/index.pt:72
-#, fuzzy
 msgid "dialog_based"
 msgstr "Dialog-basiert"
 
@@ -163,7 +161,6 @@ msgstr "Dialog-basiert"
 #. This means that the system will represent argumentations of panelist and
 #. claims will be given through the other participants.
 #: dbas/templates/index.pt:73
-#, fuzzy
 msgid "dialog_based_content"
 msgstr ""
 "Yeah, das ist neu und verwirklicht eine Art dialog-basierten Ansatz. Demnach "
@@ -203,8 +200,8 @@ msgid "guided_view_content2"
 msgstr "für dich."
 
 #. Default: Island View
-#: dbas/templates/index.pt:90 dbas/templates/content.pt:66
-#: dbas/templates/content.pt:99
+#: dbas/templates/index.pt:90 dbas/templates/content.pt:68
+#: dbas/templates/content.pt:100
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
@@ -281,7 +278,7 @@ msgstr "Nachrichten"
 #. Default: Login
 #. Default: Log In
 #: dbas/templates/snippet-header.pt:54 dbas/templates/snippet-popups.pt:216
-#: dbas/templates/snippet-popups.pt:391
+#: dbas/templates/snippet-popups.pt:400
 msgid "login"
 msgstr "Login"
 
@@ -296,7 +293,7 @@ msgid "logout"
 msgstr "Abmelden"
 
 #. Default: Language
-#: dbas/templates/snippet-header.pt:80
+#: dbas/templates/snippet-header.pt:82
 msgid "language"
 msgstr "Sprache"
 
@@ -322,9 +319,8 @@ msgstr "Institut für Informatik"
 msgid "contact"
 msgstr "Kontakt:"
 
-#. Default: Telefon: 0211-8113461
+#. Default: Telefon:
 #: dbas/templates/imprint.pt:21
-#, fuzzy
 msgid "phone"
 msgstr "Telefonnr.:"
 
@@ -335,7 +331,6 @@ msgstr "Haftungsausschluss:"
 
 #. Default: Haftung für Inhalte
 #: dbas/templates/imprint.pt:29
-#, fuzzy
 msgid "disclaimer_content"
 msgstr "Insel Ansicht"
 
@@ -353,9 +348,21 @@ msgstr "Insel Ansicht"
 #. entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
 #. entfernen.
 #: dbas/templates/imprint.pt:30
-#, fuzzy
 msgid "disclaimer_content_content"
-msgstr "Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen."
+msgstr ""
+"Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die "
+"Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch "
+"keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG "
+"für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen "
+"verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch "
+"nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu "
+"überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige "
+"Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der "
+"Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon "
+"unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der "
+"Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von "
+"entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend "
+"entfernen."
 
 #. Default: Haftung für Links
 #: dbas/templates/imprint.pt:33
@@ -373,11 +380,20 @@ msgstr "Haftung für Links"
 #. Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen
 #. werden wir derartige Links umgehend entfernen.
 #: dbas/templates/imprint.pt:34
-#, fuzzy
 msgid "disclaimer_links_content"
-msgstr "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen."
-"Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
-"sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
+msgstr ""
+"Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte "
+"wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch "
+"keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der "
+"jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten "
+"Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße "
+"überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht "
+"erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist "
+"jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. "
+"Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend "
+"entfernen.Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder "
+"Stelle sind die Auswahlen für den Benutzer begrenz, aber niemals "
+"einschränkend"
 
 #. Default: Urheberrecht
 #: dbas/templates/imprint.pt:37
@@ -397,9 +413,20 @@ msgstr "Urheberrecht"
 #. Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend
 #. entfernen.
 #: dbas/templates/imprint.pt:38
-#, fuzzy
 msgid "disclaimer_copyright_content"
-msgstr "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen."
+msgstr ""
+"Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten "
+"unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, "
+"Verbreitung und jede Art der Verwertung außerhalb der Grenzen des "
+"Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors "
+"bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den "
+"privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf "
+"dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte "
+"Dritter beachtet. Insbesondere werden Inhalte Dritter als solche "
+"gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung "
+"aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei "
+"Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend "
+"entfernen."
 
 #. Default: Datenschutz
 #: dbas/templates/imprint.pt:41
@@ -422,17 +449,28 @@ msgstr "Datenschutz"
 #. Werbeinformationen, etwa durch Spam-Mails, vor.
 #: dbas/templates/imprint.pt:42
 msgid "disclaimer_dataprotection_content"
-msgstr "Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, oder eMail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.<br>Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.<br>Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-Mails, vor."
+msgstr ""
+"Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener "
+"Daten möglich. Soweit auf unseren Seiten personenbezogene Daten "
+"(beispielsweise Name, oder eMail-Adressen) erhoben werden, erfolgt dies, "
+"soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre "
+"ausdrückliche Zustimmung nicht an Dritte weitergegeben.<br>Wir weisen darauf "
+"hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-"
+"Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor "
+"dem Zugriff durch Dritte ist nicht möglich.<br>Der Nutzung von im Rahmen der "
+"Impressumspflicht veröffentlichten Kontaktdaten durch Dritte zur Übersendung "
+"von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien "
+"wird hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten "
+"sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung "
+"von Werbeinformationen, etwa durch Spam-Mails, vor."
 
 #. Default: Session-Cookies
 #: dbas/templates/imprint.pt:47
-#, fuzzy
 msgid "disclaimer_session_cookie"
 msgstr "Session-Cookies"
 
 #. Default: Tracking-Cookies
 #: dbas/templates/imprint.pt:50
-#, fuzzy
 msgid "disclaimer_tracking_cookie"
 msgstr "Tracking-Cookies"
 
@@ -443,9 +481,14 @@ msgstr "Tracking-Cookies"
 #. und den Weg, den Sie durch unsere Website gewählt haben. Durch das
 #. Überwachen dieser Informationen können wir unsere Websites verbessern.
 #: dbas/templates/imprint.pt:51
-#, fuzzy
 msgid "disclaimer_tracking_cookie_content"
-msgstr "Diese erlauben uns Ihre wiederholten Besuche unserer Website wahrzunehmen. Durch die Übereinstimmung von anononymen, willkürlichen Identifizierungszeichen, sind wir dazu in der Lage spezielle Browsing-Informationen festzuhalten, z.B.  von Ihnen ausgewählte Seiten und Optionen und den Weg, den Sie durch unsere Website gewählt haben. Durch das Überwachen dieser Informationen können wir unsere Websites verbessern. "
+msgstr ""
+"Diese erlauben uns Ihre wiederholten Besuche unserer Website wahrzunehmen. "
+"Durch die Übereinstimmung von anononymen, willkürlichen "
+"Identifizierungszeichen, sind wir dazu in der Lage spezielle Browsing-"
+"Informationen festzuhalten, z.B.  von Ihnen ausgewählte Seiten und Optionen "
+"und den Weg, den Sie durch unsere Website gewählt haben. Durch das "
+"Überwachen dieser Informationen können wir unsere Websites verbessern. "
 
 #. Default: Google Analytics
 #: dbas/templates/imprint.pt:56
@@ -474,7 +517,27 @@ msgstr "Google Analytics"
 #. beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden.
 #: dbas/templates/imprint.pt:57
 msgid "google_analytics"
-msgstr "Diese Website benutzt Google Analytics, einen Webanalysedienst der Google Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'', Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglicht. Die durch den Cookie erzeugten Informationen über Ihre Benutzung diese Website (einschließlich Ihrer IP-Adresse) wird an einen Server von Google in den USA übertragen und dort gespeichert. Google wird diese Informationen benutzen, um Ihre Nutzung der Website auszuwerten, um Reports über die Websiteaktivitäten für die Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und der Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird Google diese Informationen gegebenenfalls an Dritte übertragen, sofern dies gesetzlich vorgeschrieben oder soweit Dritte diese Daten im Auftrag von Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen Daten der Google in Verbindung bringen. Sie können die Installation der Cookies durch eine entsprechende Einstellung Ihrer Browser Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden."
+msgstr ""
+"Diese Website benutzt Google Analytics, einen Webanalysedienst der Google "
+"Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'', Textdateien, "
+"die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung "
+"der Website durch Sie ermöglicht. Die durch den Cookie erzeugten "
+"Informationen über Ihre Benutzung diese Website (einschließlich Ihrer IP-"
+"Adresse) wird an einen Server von Google in den USA übertragen und dort "
+"gespeichert. Google wird diese Informationen benutzen, um Ihre Nutzung der "
+"Website auszuwerten, um Reports über die Websiteaktivitäten für die "
+"Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und "
+"der Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird "
+"Google diese Informationen gegebenenfalls an Dritte übertragen, sofern dies "
+"gesetzlich vorgeschrieben oder soweit Dritte diese Daten im Auftrag von "
+"Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen "
+"Daten der Google in Verbindung bringen. Sie können die Installation der "
+"Cookies durch eine entsprechende Einstellung Ihrer Browser Software "
+"verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall "
+"gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich "
+"nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der "
+"Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor "
+"beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden."
 
 #. Default: Copyrights and used Software
 #: dbas/templates/imprint.pt:68
@@ -482,13 +545,12 @@ msgid "copyright_and_used_software"
 msgstr "Copyrights und benutze Software"
 
 #. Default: Icons by
-#: dbas/templates/imprint.pt:79
+#: dbas/templates/imprint.pt:76
 msgid "icons_by"
 msgstr "Icons von"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:92
-#, fuzzy
+#: dbas/templates/imprint.pt:89
 msgid "generated_with"
 msgstr "erstellt mit dem Pyramid Web Framework 1.54"
 
@@ -548,44 +610,30 @@ msgstr "Online-Partizipation"
 msgid "office"
 msgstr "Büro"
 
+#. Default: Heinrich-Heine University Duesseldorf
+#: dbas/templates/snippet-popups.pt:43
+msgid "office_value_1"
+msgstr "Heinrich-Heine-Universität Düsseldorf"
+
 #. Default: Universitätsstraße 1
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
 #: dbas/templates/snippet-popups.pt:44
 msgid "office_value_2"
 msgstr "Universitätsstraße 1"
 
 #. Default: 40225 Duesseldorf
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
 #: dbas/templates/snippet-popups.pt:45
 msgid "office_value_3"
 msgstr "40225 Düsseldorf"
 
 #. Default: Department of Computer Science
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
 #: dbas/templates/snippet-popups.pt:46
 msgid "office_value_4"
 msgstr "Institut für Informatik"
 
 #. Default: Building 25.12, Room 02.45
-#. Used in sentence: "Heinrich-Heine University Duesseldorf <dynamic
-#. element><dynamic element> <dynamic element><dynamic element> <dynamic
-#. element><dynamic element> <dynamic element><dynamic element>"
 #: dbas/templates/snippet-popups.pt:47
 msgid "office_value_5"
 msgstr "Gebäude 25.12, Raum 02.45"
-
-#. Default: Heinrich-Heine University Duesseldorf <dynamic element><dynamic
-#. element> <dynamic element><dynamic element> <dynamic element><dynamic
-#. element> <dynamic element><dynamic element>
-#: dbas/templates/snippet-popups.pt:43
-msgid "office_value_1"
-msgstr "Heinrich-Heine-Universität Düsseldorf"
 
 #. Default: Telephone
 #: dbas/templates/snippet-popups.pt:52
@@ -600,7 +648,7 @@ msgstr "Fax"
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:72 dbas/templates/snippet-popups.pt:117
 #: dbas/templates/snippet-popups.pt:153 dbas/templates/snippet-popups.pt:201
-#: dbas/templates/snippet-popups.pt:394
+#: dbas/templates/snippet-popups.pt:403
 msgid "close"
 msgstr "Schließen"
 
@@ -665,7 +713,7 @@ msgstr "Bitte hier bearbeiten"
 
 #. Default: Warning:
 #. Default: Warning!
-#: dbas/templates/snippet-popups.pt:144 dbas/templates/snippet-popups.pt:345
+#: dbas/templates/snippet-popups.pt:144 dbas/templates/snippet-popups.pt:354
 #: dbas/templates/contact.pt:64
 msgid "warning"
 msgstr "Warnung!"
@@ -692,7 +740,6 @@ msgstr "Teil' die URL"
 
 #. Default: Please feel free to share this url:
 #: dbas/templates/snippet-popups.pt:190
-#, fuzzy
 msgid "url-sharing-description"
 msgstr "Beschreibung"
 
@@ -740,9 +787,16 @@ msgstr ""
 "Adresse gesendet."
 
 #. Default: Error:
-#: dbas/templates/snippet-popups.pt:358 dbas/templates/content.pt:83
+#: dbas/templates/snippet-popups.pt:262 dbas/templates/snippet-popups.pt:367
+#: dbas/templates/content.pt:85
 msgid "error"
 msgstr "Fehler:"
+
+#. Default: Success:
+#: dbas/templates/snippet-popups.pt:267 dbas/templates/snippet-popups.pt:362
+#: dbas/templates/settings.pt:66
+msgid "success"
+msgstr "Erfolg:"
 
 #. Default: Sign Up for Free
 #: dbas/templates/snippet-popups.pt:272
@@ -771,84 +825,77 @@ msgid "gender"
 msgstr "Ihr Geschlecht"
 
 #. Default: none
-#: dbas/templates/snippet-popups.pt:299
+#: dbas/templates/snippet-popups.pt:301
 msgid "none"
 msgstr "keine Angabe"
 
 #. Default: female
-#: dbas/templates/snippet-popups.pt:301
+#: dbas/templates/snippet-popups.pt:306
 msgid "female"
 msgstr "weiblich"
 
 #. Default: male
-#: dbas/templates/snippet-popups.pt:303
+#: dbas/templates/snippet-popups.pt:311
 msgid "male"
 msgstr "männlich"
 
 #. Default: Your Email Address
-#: dbas/templates/snippet-popups.pt:308
+#: dbas/templates/snippet-popups.pt:317
 msgid "email"
 msgstr "Ihre E-Mail"
 
 #. Default: Your Password
-#: dbas/templates/snippet-popups.pt:315
+#: dbas/templates/snippet-popups.pt:324
 msgid "password"
 msgstr "Passwort"
 
 #. Default: Password (confirm)
-#: dbas/templates/snippet-popups.pt:322
+#: dbas/templates/snippet-popups.pt:331
 msgid "password-confirm"
 msgstr "Passwort (Bestätigung)"
 
 #. Default: Password Strength
-#: dbas/templates/snippet-popups.pt:329
-#, fuzzy
+#: dbas/templates/snippet-popups.pt:338
 msgid "password-strength"
 msgstr "Stärke"
 
 #. Default: very weak
-#: dbas/templates/snippet-popups.pt:332
+#: dbas/templates/snippet-popups.pt:341
 msgid "password_strength"
 msgstr "Stärke"
 
 #. Default: Generate secure password
-#: dbas/templates/snippet-popups.pt:336
-#, fuzzy
+#: dbas/templates/snippet-popups.pt:345
 msgid "generate_password"
 msgstr "Neues Password"
 
-#. Default: Success:
-#: dbas/templates/snippet-popups.pt:353
-msgid "success"
-msgstr "Erfolg:"
-
 #. Default: How to select a strong password
-#: dbas/templates/snippet-popups.pt:363
+#: dbas/templates/snippet-popups.pt:372
 msgid "select_password"
 msgstr "Wie wählt man ein sicheres Password"
 
 #. Default: A Password is strong, when it contains at least:
-#: dbas/templates/snippet-popups.pt:365
+#: dbas/templates/snippet-popups.pt:374
 msgid "select_password_intro"
 msgstr "Ein Passwort ist stark, wenn es mindestens folgende Sachen enthält:"
 
 #. Default: eight characters
-#: dbas/templates/snippet-popups.pt:367
+#: dbas/templates/snippet-popups.pt:376
 msgid "select_password_rule1"
 msgstr "acht Zeichen"
 
 #. Default: one uppercase letter
-#: dbas/templates/snippet-popups.pt:368
+#: dbas/templates/snippet-popups.pt:377
 msgid "select_password_rule2"
 msgstr "ein Großbuchstaben"
 
 #. Default: one lowercase letter
-#: dbas/templates/snippet-popups.pt:369
+#: dbas/templates/snippet-popups.pt:378
 msgid "select_password_rule3"
 msgstr "ein Kleinbuchstaben"
 
 #. Default: one special sign
-#: dbas/templates/snippet-popups.pt:370
+#: dbas/templates/snippet-popups.pt:379
 msgid "select_password_rule4"
 msgstr "ein Sonderzeichen"
 
@@ -856,7 +903,7 @@ msgstr "ein Sonderzeichen"
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: dbas/templates/snippet-popups.pt:372
+#: dbas/templates/snippet-popups.pt:381
 msgid "popup_password_text"
 msgstr ""
 "Als Beispiel ist 'M2015_fiO' ein starkes Passwort, dass erst nach ca. 275 "
@@ -865,99 +912,101 @@ msgstr ""
 "Foldenges sollte beachtet werden."
 
 #. Default: Avoid using a password on several pages
-#: dbas/templates/snippet-popups.pt:374
+#: dbas/templates/snippet-popups.pt:383
 msgid "select_password_avoid1"
 msgstr "Niemals Passwörter für mehrere Seiten nutzen"
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: dbas/templates/snippet-popups.pt:375
+#: dbas/templates/snippet-popups.pt:384
 msgid "select_password_avoid2"
 msgstr "Phrasen vermeiden, die in Büchern gefunden werden können"
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: dbas/templates/snippet-popups.pt:376
+#: dbas/templates/snippet-popups.pt:385
 msgid "select_password_avoid3"
 msgstr ""
 "Verwendung von Informationen, die eventuell in Verbindung zur Person stehen"
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: dbas/templates/snippet-popups.pt:377
+#: dbas/templates/snippet-popups.pt:386
 msgid "select_password_avoid4"
 msgstr ""
 "Verwendung von Informationen, die eventuell Freund/Bekannte der Person  "
 "kennen"
 
 #. Default: If you need some help with our password, you can get one here:
-#: dbas/templates/snippet-popups.pt:379
+#: dbas/templates/snippet-popups.pt:388
 msgid "select_password_help"
 msgstr ""
 "Wenn Sie Hilfe bei der Erstellung brauchen, können Sie sich hier eins "
 "generieren lassen:"
 
 #. Default: Register
-#: dbas/templates/snippet-popups.pt:392
+#: dbas/templates/snippet-popups.pt:401
 msgid "register"
 msgstr "Registierung"
 
 #. Default: How to write text
-#: dbas/templates/snippet-popups.pt:407
+#: dbas/templates/snippet-popups.pt:416
 msgid "how-to-write-text-header"
 msgstr "Wie schreibe ich Texte"
 
 #. Default: There are a few simple rules for writing good arguments:
-#: dbas/templates/snippet-popups.pt:410
+#: dbas/templates/snippet-popups.pt:419
 msgid "how-to-write-text-header-body-title"
 msgstr "Es gibt ein paar einfache Regeln um gute Argumente zu schreiben:"
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: dbas/templates/snippet-popups.pt:412
+#: dbas/templates/snippet-popups.pt:421
 msgid "how-to-write-text-header-body"
-msgstr "Gut zu schreiben ist ein Herausforderung und notwendig für die Benutzung von D-BAS, außer Sie möchten keine neuen Aussagen formulieren. Hiernach sind ein paar Regeln gelistet, was gut und was schlecht ist."
+msgstr ""
+"Gut zu schreiben ist ein Herausforderung und notwendig für die Benutzung von "
+"D-BAS, außer Sie möchten keine neuen Aussagen formulieren. Hiernach sind ein "
+"paar Regeln gelistet, was gut und was schlecht ist."
 
 #. Default: Do's:
-#: dbas/templates/snippet-popups.pt:414
+#: dbas/templates/snippet-popups.pt:423
 msgid "dos"
 msgstr "Gut:"
 
-#. Default: Complicated and nested sentences!
-#: dbas/templates/snippet-popups.pt:416 dbas/templates/snippet-popups.pt:422
+#. Default: Write short!
+#: dbas/templates/snippet-popups.pt:425
 msgid "how-to-write-text-short"
-msgstr "Komplizierte und geschachtelte Sätze!"
+msgstr "Schreiben Sie kurz!"
 
 #. Default: Only one statement/argument/point per textarea!
-#. Default: More than one statement/argument/point per textarea!
-#: dbas/templates/snippet-popups.pt:417 dbas/templates/snippet-popups.pt:423
+#: dbas/templates/snippet-popups.pt:426
 msgid "how-to-write-text-one-point"
 msgstr "Immer nur eine Aussage/Argumete/Punkt pro Feld!"
 
 #. Default: Don'ts:
-#: dbas/templates/snippet-popups.pt:420
+#: dbas/templates/snippet-popups.pt:429
 msgid "donts"
 msgstr "Schlecht:"
 
+#. Default: Complicated and nested sentences!
+#: dbas/templates/snippet-popups.pt:431
+msgid "how-to-write-text-complicated"
+msgstr "Komplizierte und verschachtelte Sätze!"
+
+#. Default: More than one statement/argument/point per textarea!
+#: dbas/templates/snippet-popups.pt:432
+msgid "how-to-write-text-multiple-points"
+msgstr "Mehr als eine Aussage/Argumete/Punkt pro Feld!"
+
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:427
+#: dbas/templates/snippet-popups.pt:436
 msgid "Okay"
 msgstr "Okay"
 
 #. Default: Abort
-#: dbas/templates/snippet-popups.pt:428
+#: dbas/templates/snippet-popups.pt:437
 msgid "abort"
 msgstr "Abbrechen"
-
-#. Default: JavaScript is not enabled:
-#: dbas/templates/snippet-popups.pt:437
-msgid "js_disabled1"
-msgstr "JavaScript ist nicht aktiviert:"
-
-#. Default: Please enable JavaScript!
-#: dbas/templates/snippet-popups.pt:438
-msgid "js_disabled2"
-msgstr "Bitte JavaScript aktivieren!"
 
 #. Default: This will be the news page and currently I think...this will be
 #. some kind of blog
@@ -973,9 +1022,13 @@ msgstr "Neue Nachricht schreiben"
 #. Default: Error:
 #: dbas/templates/news.pt:22 dbas/templates/settings.pt:71
 #: dbas/templates/content.pt:135
-#, fuzzy
 msgid "error:"
 msgstr "Fehler:"
+
+#. Default: Success:
+#: dbas/templates/news.pt:27
+msgid "success:"
+msgstr "Erfolg:"
 
 #. Default: Date
 #: dbas/templates/news.pt:36
@@ -1034,7 +1087,6 @@ msgstr "Neues Password (Bestätigung)"
 
 #. Default: Great:
 #: dbas/templates/settings.pt:108
-#, fuzzy
 msgid "great:"
 msgstr "Großartig:"
 
@@ -1091,6 +1143,16 @@ msgstr "Großartig:"
 msgid "message_sent"
 msgstr "Deine Nachricht wurde gesendet"
 
+#. Default: JavaScript is not enabled:
+#: dbas/templates/basetemplate.pt:30
+msgid "js_disabled1"
+msgstr "JavaScript ist nicht aktiviert:"
+
+#. Default: Please enable JavaScript!
+#: dbas/templates/basetemplate.pt:31
+msgid "js_disabled2"
+msgstr "Bitte JavaScript aktivieren!"
+
 #. Default: Dialog-Based Argumentation System
 #: dbas/templates/content.pt:14
 msgid "dbas_long"
@@ -1101,43 +1163,43 @@ msgstr "Dialog-basiertes Argumentations System"
 msgid "current_discussion"
 msgstr "Die aktuelle Diskussion handelt von"
 
+#. Default: The discussion was started at
+#: dbas/templates/content.pt:30
+msgid "startet_at"
+msgstr "Die Diskussion wurde gestartet: "
+
 #. Default: Now your opinion matters!
-#: dbas/templates/content.pt:23
+#: dbas/templates/content.pt:32
 msgid "your_opinion_matters"
 msgstr "Nun zählt Ihre Meinung!"
 
-#. Default: and was started at
-#: dbas/templates/content.pt:25
-msgid "startet_at"
-msgstr "und wurde gestartet am"
-
 #. Default: Change display style:
-#: dbas/templates/content.pt:57
+#: dbas/templates/content.pt:59
 msgid "change_style"
 msgstr "Wechsel die Darstellung:"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:61
+#: dbas/templates/content.pt:63
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:71
+#: dbas/templates/content.pt:73
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:98
+#: dbas/templates/content.pt:99
 msgid "istland_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Pro
-#: dbas/templates/content.pt:102 dbas/templates/content.pt:144
+#: dbas/templates/content.pt:103 dbas/templates/content.pt:144
 msgid "pro"
 msgstr "Pro"
 
 #. Default: Contra
-#: dbas/templates/content.pt:108 dbas/templates/content.pt:156
+#: dbas/templates/content.pt:109 dbas/templates/content.pt:156
 msgid "contra"
 msgstr "Kontra"
 

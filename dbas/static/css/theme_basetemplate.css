@@ -285,8 +285,8 @@ comment .container and wrap each container with <div class="coloured-div">
 	left: 0;
 }
 
-#footer-impressum {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-158-show-thumbnails-with-lines.png) no-repeat;
+#footer_imprint {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-115-list.png) no-repeat;
 }
 
 #footer-glyphicons {
@@ -301,7 +301,7 @@ comment .container and wrap each container with <div class="coloured-div">
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat;
 }
 
-#header_contact {
+#footer_contact {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-310-comments.png) no-repeat;
 }
 
@@ -317,11 +317,11 @@ comment .container and wrap each container with <div class="coloured-div">
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-388-log-out.png) no-repeat;
 }
 
-#header_author {
+#footer_author {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
 }
 
-#header_licence {
+#footer_licence {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-444-floppy-disk.png) no-repeat;
 }
 

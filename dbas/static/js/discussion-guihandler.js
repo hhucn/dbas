@@ -221,7 +221,7 @@ function GuiHandler() {
 	this.getDropdownWithSentencesOpeners = function (identifier, number) {
 		var dropdown, button, span, ul, li_content, li_header, i, a, btn_id, a_id, h = new Helper(),
 			sentencesOpeners;
-		sentencesOpeners = identifier == id_pro ? sentencesOpenersArguingWithAgreeing : sentencesOpenersArguingWithDisagreeing;
+		sentencesOpeners = identifier == id_pro ? _t(sentencesOpenersArguingWithAgreeing) : _t(sentencesOpenersArguingWithDisagreeing);
 
 		// div tag for the dropdown
 		dropdown = $('<div>');
@@ -266,7 +266,7 @@ function GuiHandler() {
 		for (i = 0; i < sentencesOpenersInforming.length; i++) {
 			li_content = $('<li>');
 			a_id = identifier + '-sentence-opener-' + (sentencesOpeners.length + i);
-			a = h.getATagForDropDown(a_id, _t(clickToChoose) + ': ' + sentencesOpenersInforming[i], sentencesOpenersInforming[i]);
+			a = h.getATagForDropDown(a_id, _t(clickToChoose) + ': ' + _t(sentencesOpenersInforming[i]), _t(sentencesOpenersInforming[i]));
 			li_content.append(a);
 			ul.append(li_content);
 		}
@@ -284,7 +284,7 @@ function GuiHandler() {
 	 */
 	this.setDropdownClickListener = function (identifier, number) {
 		var a_id, i, sentencesOpeners;
-		sentencesOpeners = identifier == id_pro ? sentencesOpenersArguingWithAgreeing : sentencesOpenersArguingWithDisagreeing;
+		sentencesOpeners = identifier == id_pro ? _t(sentencesOpenersArguingWithAgreeing) : _t(sentencesOpenersArguingWithDisagreeing);
 
 		// add clicks
 		for (i = 0; i < sentencesOpenersInforming.length + sentencesOpeners.length; i++) {

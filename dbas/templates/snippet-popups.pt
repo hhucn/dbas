@@ -40,7 +40,7 @@
 									<td>
 										<span class="font-semi-bold" i18n:translate="office">Office</span>
 									</td>
-									<td i18n:translate="office_value_1">Heinrich-Heine University Duesseldorf
+									<td><span i18n:translate="office_value_1">Heinrich-Heine University Duesseldorf</span>
 										<br><span i18n:translate="office_value_2">Universitätsstraße 1</span>
 										<br><span i18n:translate="office_value_3">40225 Duesseldorf</span>
 										<br><span i18n:translate="office_value_4">Department of Computer Science</span>
@@ -428,8 +428,8 @@
 				<br>
 				<b class="red-bg" i18n:translate="donts">Don'ts:</b>
 				<ul id="how-to-write-text-dont-list">
-				<li i18n:translate="how-to-write-text-short">Complicated and nested sentences!</li>
-				<li i18n:translate="how-to-write-text-one-point">More than one statement/argument/point per textarea!</li>
+				<li i18n:translate="how-to-write-text-complicated">Complicated and nested sentences!</li>
+				<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per textarea!</li>
 				</ul>
 			</div>
 			<div class="modal-footer">

@@ -7,24 +7,32 @@
 			<ul>
 				<li>
 					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;&#160;
-					<a href="${request.application_url}/imprint" i18n:translate="imprint"><img id="footer-impressum" class="glyphicon-local">&#160;&#160;<span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a>
+				</li>
+				<li>
+					<a href="${request.application_url}/imprint">
+						<img id="footer_imprint" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
+						<span i18n:translate="imprint_copyright">Imprint and Copyrights</span>
+					</a>
 				</li>
 				<li>
 					<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author" title="Show Author">
-						<img id="header_author" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="author">Author</span>
+						<img id="footer_author" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
+						<span i18n:translate="author">Author</span>
 					</a>
 				</li>
 				<li>
 					<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">
-						<img id="header_licence" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="licence">Licence</span>
+						<img id="footer_licence" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
+						<span i18n:translate="licence">Licence</span>
 					</a>
 				</li>
 
-					<li id="contact-link">
-						<a href="${request.application_url}/contact" title="Get in touch with us">
-							<img id="header_contact" class="glyphicon-local center">&thinsp;<span i18n:translate="contact" src="${request.static_url('dbas:static/images/transparent.gif')}">Contact</span>
-						</a>
-					</li>
+				<li id="contact-link">
+					<a href="${request.application_url}/contact" title="Get in touch with us">
+						<img id="footer_contact" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
+						<span i18n:translate="contact">Contact</span>
+					</a>
+				</li>
 			</ul>
 		</div>
 	</div>

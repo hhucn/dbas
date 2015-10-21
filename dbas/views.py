@@ -20,7 +20,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.7'
+version = '0.3.8'
 header = name + ' ' + version
 issue_fallback = 1#DBDiscussionSession.query(Issue).first().uid
 
@@ -852,7 +852,13 @@ class Dbas(object):
 		"""
 
 		logger('get_issue_list', 'def', 'main')
-		return_dict = DatabaseHelper().get_issue_list()
+
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
+		return_dict = DatabaseHelper().get_issue_list(lang)
 		issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
 		return_dict['current_issue'] = issue
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)

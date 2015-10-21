@@ -73,9 +73,6 @@
 							</a>
 						</li>
 						<li>
-							<a href="https://github.com/recurser/jquery-i18n">jQuery i18n</a>
-						</li>
-						<li>
 							<span i18n:translate="icons_by">Icons by</span>
 							<a href="http://glyphicons.com/">glyphicons</a>,&thinsp;
 							<a href="https://www.iconfinder.com/iconsets/ballicons-free">ballicons</a>,&thinsp;
@@ -88,8 +85,8 @@
 				<br>
 
 				<div class="first-container imprint-container row links">
-					<h4><span class="font-semi-bold">Pyramid</span></h4>
-					<span class="current-version project font-semi-bold">${project}</span><span i18n:translate="generated_with">is generated with Pyramid Web Framework 1.5.4</span>
+					<h4><span class="font-semi-bold">Pylons Pyramid</span></h4>
+					<span class="current-version project font-semi-bold">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework 1.5.4</span>
 					<br>
 					<ul>
 						<li>

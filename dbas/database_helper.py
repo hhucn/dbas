@@ -176,9 +176,10 @@ class DatabaseHelper(object):
 					return_dict[user.uid] = return_user
 		return return_dict
 
-	def get_issue_list(self):
+	def get_issue_list(self, lang):
 		"""
 
+		:param lang:
 		:return:
 		"""
 		logger('DatabaseHelper', 'get_issue_list', 'main')
@@ -186,7 +187,8 @@ class DatabaseHelper(object):
 		return_dict = dict()
 		for issue in db_issues:
 			logger('DatabaseHelper', 'get_issue_list', 'issue no ' + str(issue.uid) + ': ' + issue.text)
-			return_dict[str(issue.uid)] = {'uid': str(issue.uid), 'text': issue.text, 'date': str(issue.date)}
+			return_dict[str(issue.uid)] = {'uid': str(issue.uid), 'text': issue.text, 'date': QueryHelper().sql_timestamp_pretty_print(
+				str(issue.date), lang)}
 
 		if not db_issues:
 			logger('DatabaseHelper', 'get_issue_list', 'no issues')
@@ -408,12 +410,14 @@ class DatabaseHelper(object):
 		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_last_conclusion.statement_uid, issue)
 		return_dict['conclusion_uid'] = db_last_conclusion.statement_uid
 		return_dict['relation'] = relation
-		return_dict['argument_uid'] = db_argument.uid
-		return_dict['premissegroup_uid'] = db_argument.premissesGroup_uid
 
 		# if there as no non-supportive argument, let's get back
 		if no_attacked_argument:
 			return return_dict, 0
+
+		return_dict['argument_uid'] = db_argument.uid
+		return_dict['premissegroup_uid'] = db_argument.premissesGroup_uid
+
 
 		# getting undermines or undercuts or rebuts
 		attacks, key = qh.get_attack_for_argument_by_random(db_argument, user, issue)
