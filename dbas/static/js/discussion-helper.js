@@ -169,7 +169,7 @@ function Helper() {
 	};
 
 	this.createRowInEditDialog = function(uid, statement, type){
-		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxSiteHandler(), tr, td_text, td_buttons;
+		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxSiteHandler(), tr, td_text, td_buttons, tmp;
 
 		// create new items
 		tr = $('<tr>');
@@ -193,7 +193,11 @@ function Helper() {
 			statement_text: statement,
 			statement_id: uid
 		}).click(function edit_button_click() {
-			$('#' + popupEditStatementTextareaId).text($(this).attr('statement_text')).attr({'statement_id': uid});
+			tmp = $(this).attr('statement_text');
+			if (tmp.indexOf(_t(because)) == 0){
+				tmp = new Helper().startWithUpperCase(tmp.substr(_t(because).length+1));
+			}
+			$('#' + popupEditStatementTextareaId).text(tmp).attr({'statement_id': uid});
 			$('#' + popupEditStatementSubmitButtonId).attr({
 				statement_type: $(this).attr('statement_type'),
 				statement_text: $(this).attr('statement_text'),

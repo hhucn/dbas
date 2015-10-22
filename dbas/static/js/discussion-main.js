@@ -67,7 +67,6 @@ $(function () {
 	// gui for editing statements
 	$('#' + popupEditStatementTextareaId).keyup(function () {
 		delay(function() {
-			alert($('#' + popupEditStatementTextareaId).val().length==0);
 			if($('#' + popupEditStatementTextareaId).val().length==0){
 				$('#' + popupEditStatementTextareaId).next().empty();
 			} else {

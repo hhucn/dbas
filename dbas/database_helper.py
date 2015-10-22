@@ -907,7 +907,7 @@ class DatabaseHelper(object):
 					lev = '00' + str(lev)
 				elif lev < 10000:
 					lev = '0' + str(lev)
-				tmp_dict[str(index) + '_' + str(lev)] = textversion.content
+				tmp_dict[str(lev) + '_' + str(index)] = textversion.content
 
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 

@@ -502,7 +502,6 @@ function GuiHandler() {
 			params = key.split('_');
 			distance = parseInt(params[0]);
 			index = params[1];
-			alert(params+"\n"+distance+"\n"+index);
 
 			token = callback.val();
 			var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0;
