@@ -326,10 +326,15 @@ function GuiHandler() {
 	this.setPremissesAsLastChild = function (jsonData) {
 		var newElement, helper = new Helper(), text, l, keyword, attack;
 
-		attack = $('#' + discussionsDescriptionId).attr('attack');
 
 		// are we positive or negative?
-		keyword = attack.indexOf(attr_undermine) != -1 || attack.indexOf(attr_undercut) != -1 ? 'con' : 'pro';
+		attack = $('#' + discussionsDescriptionId).attr('attack');
+		if (typeof attack !== typeof undefined && attack !== false){
+			keyword = attack.indexOf(attr_undermine) != -1 || attack.indexOf(attr_undercut) != -1 ? 'con' : 'pro';
+		} else {
+			keyword = 'pro';
+		}
+
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == keyword) {
 				text = 'Because ' + val.text;
@@ -360,7 +365,7 @@ function GuiHandler() {
 	 * @param isArgument
 	 */
 	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
-		var statement, attack,
+		var statement, attack, header,
 			discussionsDescription = $('#' + discussionsDescriptionId),
 			addStatementContainer = $('#' + addStatementContainerId),
 			addReasonButton = $('#' + addReasonButtonId),
@@ -387,7 +392,17 @@ function GuiHandler() {
 			if (isStart) {
 				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
 			}else {
-				$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremisse) + '<br><br>' + discussionsDescription.html());
+				// pretty print
+				if (discussionsDescription.html().indexOf(_t(firstPremisseText1)) != -1){
+					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>');
+				} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHave)) != -1) {
+					var index1 = discussionsDescription.html().indexOf('<b>');
+					var index2 = discussionsDescription.html().indexOf('</b>');
+					header = discussionsDescription.html().substr(index1, index2-index1+5);
+					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + header + '</b>');
+				} else {
+					$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremisse) + '<br><br>' + discussionsDescription.html());
+				}
 				$('#' + addStatementContainerMainInputIntroId).text(_t(because) + '...');
 				$('#')
 			}
@@ -399,6 +414,7 @@ function GuiHandler() {
 					ajaxhandler.sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
 				} else {
 					alert('What now (I)? GuiHandler: setDisplayStylesOfAddStatementContainer');
+					ajaxhandler.sendNewStartPremisse($('#' + addStatementContainerMainInputId).val(), discussionsDescription.attr('conclusion_id'));
 				}
 				guihandler.setErrorDescription('');
 				guihandler.setSuccessDescription('');
@@ -469,20 +485,26 @@ function GuiHandler() {
 	 * @param callbackid
 	 */
 	this.setStatementsAsProposal = function (parsedData, callbackid){
+		var callback = $('#' + callbackid);
+		// is there any value ?
 		if (Object.keys(parsedData).length == 0){
-			$('#' + callbackid).next().empty();
+			callback.next().empty();
 			return;
 		}
 
-		var params, token, button, span_dist, span_text, statementListGroup;
-		$('#' + callbackid).focus();
-		statementListGroup = $('#' + callbackid).next();
+		var params, token, button, span_dist, span_text, statementListGroup, distance, index;
+		callback.focus();
+		statementListGroup = callback.next();
 		statementListGroup.empty(); // list with elements should be after the callbacker
 		// $('#' + statementListGroupId).empty();
 
 		$.each(parsedData, function (key, val) {
-			params = key.split('_'); // distance = params[1], index = params[2]
-			token = $('#' + callbackid).val();
+			params = key.split('_');
+			distance = parseInt(params[0]);
+			index = params[1];
+			alert(params+"\n"+distance+"\n"+index);
+
+			token = callback.val();
 			var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0;
 			var start = 0;
 
@@ -496,21 +518,19 @@ function GuiHandler() {
 				// val = val.replace(token, '<b>' + token + '</b>');
 			}
 
-			if (parseInt(params[1]) < 500) { // TODO: Limit for Levenshtein
-				button = $('<button>').attr({type : 'button',
-					class : 'list-group-item',
-					id : 'proposal_' + params[2]});
-   				button.hover(function(){ $(this).addClass('active');
-   				    	  }, function(){ $(this).removeClass('active');
-   				});
-				span_dist = $('<span>').attr({class : 'badge'}).text(_t(levenshteinDistance) + ' ' + params[1]);
-				span_text = $('<span>').attr({id : 'proposal_' + params[2] + '_text'}).html(val);
-				button.append(span_dist).append(span_text).click(function(){
-					$('#' + callbackid).val(val.replace('<b>','').replace('</b>',''));
-					statementListGroup.empty(); // list with elements should be after the callbacker
-				});
-				statementListGroup.append(button);
-			}
+			button = $('<button>').attr({type : 'button',
+				class : 'list-group-item',
+				id : 'proposal_' + index});
+   			button.hover(function(){ $(this).addClass('active');
+   			    	  }, function(){ $(this).removeClass('active');
+   			});
+			span_dist = $('<span>').attr({class : 'badge'}).text(_t(levenshteinDistance) + ' ' + distance);
+			span_text = $('<span>').attr({id : 'proposal_' + index + '_text'}).html(val);
+			button.append(span_dist).append(span_text).click(function(){
+				callback.val(val.replace('<b>','').replace('</b>',''));
+				statementListGroup.empty(); // list with elements should be after the callbacker
+			});
+			statementListGroup.append(button);
 		});
 		 // list with elements should be after the callbacker
 		statementListGroup.prepend('<h4>' + _t(didYouMean) + '</h4>');

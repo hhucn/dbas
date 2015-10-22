@@ -57,7 +57,9 @@
 
 					<li tal:condition="logged_in">
 						<li class="dropdown">
-							<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" title="User options"><span tal:replace="logged_in" />
+							<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" title="User options">
+										<img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
+								<span tal:replace="logged_in" />
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">

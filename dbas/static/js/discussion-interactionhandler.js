@@ -290,7 +290,7 @@ function InteractionHandler() {
 	};
 
 	/**
-	 * Callback, when new premisses were send
+	 * Callback, when new statements were send
 	 * @param data returned data
 	 */
 	this.callbackIfDoneForSendNewPremissesX = function (data) {
@@ -303,11 +303,21 @@ function InteractionHandler() {
 		}
 	};
 
+
+
+	/**
+	 * Callback, when new premisses were send
+	 * @param data returned data
+	 */
+	this.callbackIfDoneForSendNewStartPremisse= function (data) {
+		this.callbackIfDoneForSendNewPremissesX(data);
+	};
+
 	/**
 	 * Callback, when the logfile was fetched
 	 * @param data of the ajax request
 	 */
-	this.callbackIfDoneForGetLogfileForStatement = function (data) {
+	this.callbackIfDoneForGettingLogfile = function (data) {
 		var parsedData = $.parseJSON(data);
 		// status is the length of the content
 		if (parsedData.status == '0'){
@@ -385,6 +395,10 @@ function InteractionHandler() {
 		new GuiHandler().setStatementsAsProposal(parsedData, callbackid);
 	};
 
+	/**
+	 *
+	 * @param data
+	 */
 	this.callbackIfDoneForGetIssueList = function(data){
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		gh.setIssueList(parsedData);

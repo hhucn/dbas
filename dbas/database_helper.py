@@ -4,6 +4,7 @@ import collections
 from sqlalchemy import and_
 from Levenshtein import distance
 from datetime import datetime
+from itertools import islice
 
 from .database import DBDiscussionSession, DBNewsSession
 from .database.discussion_model import Argument, Statement, User, Group, TextValue, TextVersion, Premisse, PremisseGroup,  Track, \
@@ -519,7 +520,7 @@ class DatabaseHelper(object):
 		"""
 		logger('DatabaseHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
 
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Premisse.uid==uid, Statement.issue_uid==issue)).first()
+		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).first()
 		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(textValue_uid=db_statement.text_uid).join(User).all()
 
 		return_dict = {}
@@ -853,19 +854,31 @@ class DatabaseHelper(object):
 		:return:
 		"""
 		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value + ', isStatement: ' + str(isStatement))
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==isStatement, Statement.issue_uid==issue)).join(
-			TextValue).all()
+		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==isStatement, Statement.issue_uid==issue)).join(TextValue).all()
 		tmp_dict = dict()
 		for index, statement in enumerate(db_statements):
 			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
-			logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'current db_textvalue ' + db_textvalue.textversions.content.lower())
+			# logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'current db_textvalue ' + db_textvalue.textversions.content.lower())
 			if value.lower() in db_textvalue.textversions.content.lower():
 				lev = distance(value, db_textvalue.textversions.content)
-				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev ' + str(lev) + ',value ' + db_textvalue.textversions.content)
-				tmp_dict['value_' + str(lev) + '_' + str(index)] = db_textvalue.textversions.content
+				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + db_textvalue.textversions.content)
+				if lev < 10:
+					lev = '0000' + str(lev)
+				elif lev < 100:
+					lev = '000' + str(lev)
+				elif lev < 1000:
+					lev = '00' + str(lev)
+				elif lev < 10000:
+					lev = '0' + str(lev)
+				tmp_dict[str(lev) + '_' + str(index)] = db_textvalue.textversions.content
 
-		return_dict = collections.OrderedDict(sorted(tmp_dict.items()))
-		# return_dict = islice(return_dict.items(), 5) # TODO RETURN COUNT
+		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
+
+		return_dict = collections.OrderedDict()
+		for i in list(tmp_dict.keys())[0:10]: # TODO RETURN COUNT
+			return_dict[i] = tmp_dict[i]
+
+		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'dictionary length: ' + str(len(return_dict.keys())))
 
 		return return_dict
 
@@ -883,13 +896,25 @@ class DatabaseHelper(object):
 
 		tmp_dict = dict()
 		for index, textversion in enumerate(db_textversions):
-			logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'current db_textvalue ' + textversion.content.lower())
 			if value.lower() in textversion.content.lower():
 				lev = distance(value, textversion.content)
-				logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'lev ' + str(lev) + ',value ' + textversion.content)
-				tmp_dict['value_' + str(index) + '_' + str(lev)] = textversion.content
+				logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'lev: ' + str(lev) + ', value: ' + textversion.content)
+				if lev < 10:
+					lev = '0000' + str(lev)
+				elif lev < 100:
+					lev = '000' + str(lev)
+				elif lev < 1000:
+					lev = '00' + str(lev)
+				elif lev < 10000:
+					lev = '0' + str(lev)
+				tmp_dict[str(index) + '_' + str(lev)] = textversion.content
 
-		return_dict = collections.OrderedDict(sorted(tmp_dict.items()))
-		# return_dict = islice(return_dict.items(), 5) # TODO RETURN COUNT
+		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
+
+		return_dict = collections.OrderedDict()
+		for i in list(tmp_dict.keys())[0:10]: # TODO RETURN COUNT
+			return_dict[i] = tmp_dict[i]
+
+		logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'dictionary length: ' + str(len(return_dict.keys())))
 
 		return return_dict

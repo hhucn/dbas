@@ -640,7 +640,7 @@ class QueryHelper(object):
 		"""
 
 		logger('QueryHelper', 'sql_timestamp_pretty_print', 'with locale ' + str(lang))
-		format = '%H:%M, %d. %b. %Y'
+		format = '%-I:%M %p, %d. %b. %Y'
 
 		if lang == 'de':
 			try:
@@ -649,12 +649,6 @@ class QueryHelper(object):
 			except:
 				logger('QueryHelper', 'sql_timestamp_pretty_print', 'locale ' + str(lang) + ' is not supported')
 				locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
-		else:
-			try:
-				locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
-				format = '%-I:%M %p, %d. %b. %Y'
-			except:
-				logger('QueryHelper', 'sql_timestamp_pretty_print', 'locale en_US.UTF8 is not supported')
 
 		time = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
 

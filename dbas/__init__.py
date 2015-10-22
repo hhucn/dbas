@@ -80,6 +80,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_user_logout',                         '{url:.*}ajax_user_logout')
 
 	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}ajax_set_new_start_statement{params:.*}')
+	config.add_route('ajax_set_new_start_premisse',              '/discussion/{url:.*}ajax_set_new_start_premisse{params:.*}')
 	config.add_route('ajax_set_new_premisses_for_X',             '/discussion/{url:.*}ajax_set_new_premisses_for_X{params:.*}')
 	config.add_route('ajax_set_correcture_of_statement',         '/discussion/{url:.*}ajax_set_correcture_of_statement{params:.*}')
 	config.add_route('ajax_all_users',                           '/discussion/{url:.*}ajax_all_users{params:.*}')

@@ -235,7 +235,8 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends new premisses to the server. Answer will be given to a callback
-	 * @param dictionary for inserting
+	 * @param dictionary for inserting; can have the keys {related_argument, premissegroup_id, current_attack, confrontation_uid}; must
+	 * have keys with pro_i and con_i
 	 */
 	this.sendNewPremisseForX = function (dictionary) {
 		var url = window.location.href;
@@ -254,6 +255,30 @@ function AjaxSiteHandler() {
 		}).done(function ajaxSendNewPremissesForXDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewPremissesX(data);
 		}).fail(function ajaxSendNewPremissesForXFail(err) {
+			// new GuiHandler().setErrorDescription(_t(internal_error));
+			new GuiHandler().setErrorDescription(JSON.stringify(err));
+		});
+	};
+
+	/**
+	 * Sends new premisses to the server. Answer will be given to a callback
+	 */
+	this.sendNewStartPremisse = function (text, conclusion_id) {
+		var url = window.location.href;
+		url = url.substr(url.indexOf('issue=') + 'issue='.length);
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_set_new_start_premisse',
+			type: 'POST',
+			data: {'issue': url.substr(0,url.indexOf('/')), 'text':text, 'conclusion_id': conclusion_id},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
+		}).done(function ajaxSendNewStartPremisseDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewStartPremisse(data);
+		}).fail(function ajaxSendNewStartPremisseFail(err) {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
 			new GuiHandler().setErrorDescription(JSON.stringify(err));
 		});
@@ -306,12 +331,12 @@ function AjaxSiteHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetLogfileForStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForGetLogfileForStatement(data);
+			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetLogfileForStatementFail(err) {
 			// $('#' + popupEditStatementErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).text(JSON.stringify(err));
+			$('#' + popupEditStatementErrorDescriptionId).text(internal_error);
 		});
 	};
 
@@ -443,9 +468,6 @@ function AjaxSiteHandler() {
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
 		var settings_data, url;
-		if(value.len==0){
-			return;
-		}
 
 		$.ajax({
 			url: 'ajax_fuzzy_search',
@@ -462,6 +484,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail(err) {
+			alert('fail in fuzzy search');
 		});
 		$('#' + callbackid).focus();
 	};

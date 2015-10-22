@@ -250,6 +250,11 @@
 	visibility: hidden;
 }
 
+#report-statement{
+	background:url(../images/glyphicons_free/glyphicons/glyphicons-197-circle-exclamation-mark.png) no-repeat;
+	background-repeat: no-repeat;
+}
+
 @media (max-width: 767px) {
 	#discussions-space ul,
 	#discussions-avoidance-space ul {

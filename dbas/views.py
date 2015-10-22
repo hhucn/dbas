@@ -642,6 +642,31 @@ class Dbas(object):
 
 		return return_json
 
+	# ajax - send new start premisse
+	@view_config(route_name='ajax_set_new_start_premisse', renderer='json', check_csrf=True)
+	def set_new_start_premisse(self):
+		user_id = self.request.authenticated_userid
+		UserHandler().update_last_action(transaction, user_id)
+
+		logger('set_new_start_premisse', 'def', 'main')
+
+		return_dict = dict()
+		try:
+			logger('set_new_start_premisse', 'def', 'getting params')
+			text = self.request.params['text']
+			conclusion_id = self.request.params['conclusion_id']
+			logger('set_new_start_premisse', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text)
+			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			return_dict = DatabaseHelper().set_premisses_for_conclusion(transaction, user_id, {'premisse': text}, 'pro',
+			                                                            conclusion_id, True, issue)
+		except KeyError as e:
+			logger('set_new_premisses_for_X', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
 	# ajax - send new premisses
 	@view_config(route_name='ajax_set_new_premisses_for_X', renderer='json', check_csrf=True)
 	def set_new_premisses_for_X(self):
@@ -656,7 +681,7 @@ class Dbas(object):
 
 		return_dict = dict()
 		try:
-			logger('set_new_premisses_for_X', 'def', 'main')
+			logger('set_new_premisses_for_X', 'def', 'getting params')
 			pro_dict = dict()
 			con_dict = dict()
 			related_argument  = self.request.params['related_argument'] if 'related_argument' in self.request.params else -1
@@ -665,7 +690,6 @@ class Dbas(object):
 			confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
 			# confrontation_uid is a premisse group
-			# todo kill last_attack !
 
 			# Interpretation of the parameters
 			# User says: E => A             | #related_argument

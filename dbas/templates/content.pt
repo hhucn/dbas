@@ -28,12 +28,16 @@
 					<!--
 					<br><img id="placeholder_minimap">
 					<br>
-					--><br>
+					-->
+					<br>
 					<span i18n:translate="startet_at">The discussion was started at</span> <span class="font-semi-bold" id="issue-date"></span>.
-					<br><br>
+					<br>
+					<br>
 					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
-					<br><br>
-					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn btn-primary" data-dismiss="modal" /></div>
+					<br>
+					<br>
+					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn btn-primary" data-dismiss="modal" />
+				</div>
 			</div>
 		</div>
 
@@ -56,6 +60,12 @@
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
 						<input tal:condition="logged_in" id="edit-statement" type="button" i18n:translate="edit" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
+						<br>
+
+						<button type="button" class="button button-block btn-sm btn" aria-label="Left Align" style="display:none">
+							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign" aria-hidden="true" i18n:translate="report">&thinsp;Report</span>
+						</button>
+
 						<br>
 						<div id="display-control-container" style="display:none">
 							<p i18n:translate="change_style">Change display style:</p>
@@ -138,7 +148,8 @@
 							<span id="add-statement-error-msg"></span>
 						</div>
 
-						<h4><span id="add-statement-container-main-input-intro"></span></h4><input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+						<h4><span id="add-statement-container-main-input-intro"></span></h4>
+						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 						<div class="list-group">
 						</div>
 

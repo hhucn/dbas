@@ -22,7 +22,7 @@ startDiscussion = function () {
 /**
  *
  */
-restartDiscussion = function () {
+resetDiscussion = function () {
 	var issue_id = new Helper().getCurrentIssueId();
 	window.location.href = mainpage + 'discussion/start/issue=' + issue_id;
 };
@@ -50,12 +50,16 @@ $(function () {
 	// gui for the fuzzy search
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		delay(function() {
-			if ($('#' + discussionsDescriptionId).text() != startDiscussionText) {
-				// some trick: here we have a premisse for our start statement
-				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 2, '');
+			if($('#' + addStatementContainerMainInputId).val().length==0){
+				$('#' + addStatementContainerMainInputId).next().empty();
 			} else {
-				// here we have our start statement
-				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
+				if ($('#' + discussionsDescriptionId).text() == startDiscussionText) {
+					// here we have our start statement
+					ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
+				} else {
+					// some trick: here we have a premisse for our start statement
+					ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 2, '');
+				}
 			}
 		},200);
 	});
@@ -63,10 +67,15 @@ $(function () {
 	// gui for editing statements
 	$('#' + popupEditStatementTextareaId).keyup(function () {
 		delay(function() {
-			ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, 1,
-			$('#' + popupEditStatementTextareaId).attr('statement_id'));
-			$('#' + popupEditStatementWarning).hide();
-			$('#' + popupEditStatementWarningMessage).text('');
+			alert($('#' + popupEditStatementTextareaId).val().length==0);
+			if($('#' + popupEditStatementTextareaId).val().length==0){
+				$('#' + popupEditStatementTextareaId).next().empty();
+			} else {
+				ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, 1,
+					$('#' + popupEditStatementTextareaId).attr('statement_id'));
+				$('#' + popupEditStatementWarning).hide();
+				$('#' + popupEditStatementWarningMessage).text('');
+			}
 		},200);
 	});
 
@@ -82,7 +91,7 @@ $(function () {
 	// hide the restart button and add click function
 	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
 	$('#' + restartDiscussionButtonId).click(function restartDiscussionButtonId() {
-		restartDiscussion();
+		resetDiscussion();
 	});
 
 	// admin list all users button

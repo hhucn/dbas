@@ -40,15 +40,21 @@ function JsonGuiHandler() {
 		var listitems = [],
 			guihandler = new GuiHandler(),
 			text,
-			firstOne = true,
 			helper = new Helper(),
 			attributes,
 			index, dict;
 
 		text = helper.startWithLowerCase(jsonData.currentStatement.text);
 		dict =  {'text': text, 'conclusion_id': jsonData.conclusion_id};
-		guihandler.setDiscussionsDescription(_t(sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> ?', text, dict);
 
+		// check length of premisses-dict
+		if (Object.keys(jsonData.premisses).length == 0) {
+			guihandler.setDiscussionsDescription(_t(firstPremisseText1) + ' <b>' + text + '</b>.<br><br>' + _t(firstPremisseText2), text, dict);
+		} else {
+			guihandler.setDiscussionsDescription(_t(sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> ?', text, dict);
+		}
+
+		// adding every premisse as radio button
 		$.each(jsonData.premisses, function setJsonDataToContentAsConclusionEach(key, val) {
 			text = '';
 			index = 0;
@@ -60,7 +66,6 @@ function JsonGuiHandler() {
 					text += ' <i>and</i> ' + helper.startWithLowerCase(_t(because)) + ' ';
 
 				text += helper.startWithLowerCase(valval.text);
-				firstOne = false;
 				index += 1;
 				attributes['text_' + index + '_statement_id'] = valkey;
 				attributes['text_' + index] = valval.text + '.';
@@ -71,8 +76,14 @@ function JsonGuiHandler() {
 			listitems.push(helper.getKeyValAsInputInLiWithType(key, text, false, true, false, text, attributes));
 		});
 
+		// adding new premisses will be available, if the user is logged in
 		if (typeof jsonData.logged_in == "string") {
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, firstOne ? _t(addPremisseRadioButtonText) : _t(newPremisseRadioButtonText), false, false, false, ''));
+			// would be this premisse the first premisse for the statement?
+			if (Object.keys(jsonData.premisses).length == 0) {
+				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newPremisseRadioButtonTextAsFirstOne), false, false, false, ''));
+			} else {
+				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newPremisseRadioButtonText), false, false, false, ''));
+			}
 		}
 
 		guihandler.addListItemsToDiscussionsSpace(listitems);
@@ -95,8 +106,6 @@ function JsonGuiHandler() {
 			confronation_id = '_argument_' + jsonData.confrontation_argument_id,
 			argument_id = '_argument_' + jsonData.argument_id,
 			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, false, true);
-
-		//alert(jsonData.confrontation_uid + "\n" + jsonData.confrontation_argument_id);
 
 		if (typeof jsonData.relation == 'undefined'){
 			opinion = '<b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse + '</b>';
@@ -177,7 +186,7 @@ function JsonGuiHandler() {
 		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>
 		// TODO BUTTONS ARE DEPENDING ON THE ATTACK?</u></i></b>
 		if (typeof jsonData.logged_in == "string") {
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addArgumentRadioButtonText), false, false, false, _t(addArgumentRadioButtonText)));
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newStatementRadioButtonTextAsFirstOne), false, false, false, _t(newStatementRadioButtonTextAsFirstOne)));
 		} else {
 			guihandler.setErrorDescription(_t(discussionEnd) + '<br>' + _t(clickHereForRegistration));
 			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'

@@ -221,7 +221,7 @@ function Helper() {
 			statement_text: statement,
 			statement_id: uid
 		}).click(function log_button_click() {
-			$('#' + popupEditStatementLogfileHeaderId).html('Logfile for: <b>' + $(this).attr('statement_text') + '</b>');
+			$('#' + popupEditStatementLogfileHeaderId).html(_t(logfile) + ': <b>' + $(this).attr('statement_text') + '</b>');
 			$('#' + popupEditStatementErrorDescriptionId).text('');
 			$('#' + popupEditStatementSuccessDescriptionId).text('');
 			$('#edit_statement_table td').removeClass('table-hover');

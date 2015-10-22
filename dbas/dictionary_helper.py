@@ -58,8 +58,7 @@ class DictionaryHelper(object):
 		"""
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'statement uid ' + str(statement_row.uid))
 		db_statement    = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_row.uid,
-		                                                                   Statement.issue_uid==issue)).join(
-			TextValue).first()
+		                                                                   Statement.issue_uid==issue)).join(TextValue).first()
 		db_premisse     = DBDiscussionSession.query(Premisse).filter(and_(Premisse.statement_uid==db_statement.uid,
 		                                                                  Premisse.issue_uid==issue)).first()
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'premisse uid ' +

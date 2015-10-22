@@ -313,6 +313,10 @@ comment .container and wrap each container with <div class="coloured-div">
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-281-settings.png) no-repeat;
 }
 
+#header_user {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
+}
+
 #header_logout {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-388-log-out.png) no-repeat;
 }
