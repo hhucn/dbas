@@ -324,9 +324,10 @@ function GuiHandler() {
 	 * @param jsonData returned data
 	 */
 	this.setPremissesAsLastChild = function (jsonData) {
-		var newElement, helper = new Helper(), text, l, keyword, attack;
+		var newElement = '', helper = new Helper(), text, tmp='', l, keyword, attack, same_group, premissegroup_uid = '0';
 
-
+		// premisse group?
+		same_group = jsonData.same_group == '1';
 		// are we positive or negative?
 		attack = $('#' + discussionsDescriptionId).attr('attack');
 		if (typeof attack !== typeof undefined && attack !== false){
@@ -337,20 +338,48 @@ function GuiHandler() {
 
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == keyword) {
-				text = 'Because ' + val.text;
-				l = text.length - 1;
-				if (text.substr(l) != '.' && text.substr(l) != '?' && text.substr(l) != '!') {
-					text += '.';
+				if (!same_group) {
+					text = _t(because) + ' ' + + val.text;
+					l = text.length - 1;
+					if (text.substr(l) != '.' && text.substr(l) != '?' && text.substr(l) != '!') {
+						text += '.';
+					}
+
+					newElement = helper.getKeyValAsInputInLiWithType(val.premissegroup_uid, text, false, true, false, val.text);
+					newElement.children().hover(function () {
+						$(this).toggleClass('table-hover');
+					});
+					$('#li_' + addReasonButtonId).before(newElement);
+				} else {
+					alert("How to handle pgroups? Look at 'changelog and edit'");
+					// TODO how to handle inserting pgroups? Look at 'changelog and edit'
+					text = val.text;
+					l = text.length - 1;
+					if (text.substr(l) == '.' || text.substr(l) == '?' || text.substr(l) == '!') {
+						text = text.substr(0,l);
+					}
+
+					if (tmp == ''){
+						tmp = _t(because) + ' ' + text;
+						premissegroup_uid = val.premissegroup_uid;
+					} else {
+						tmp += ' ' + _t(and) + ' ' + text
+					}
 				}
-				newElement = helper.getKeyValAsInputInLiWithType(val.premissegroup_uid, text, false, true, false, val.text);
-				newElement.children().hover(function () {
-					$(this).toggleClass('table-hover');
-				});
-				$('#li_' + addReasonButtonId).before(newElement);
 			} else if (key.substr(0, 3) == 'con') {
 				// todo setPremissesAsLastChild contra premisses
 			}
 		});
+		// add the group element, because we have not done this
+		if (same_group){
+			tmp += '.';
+			newElement = helper.getKeyValAsInputInLiWithType(premissegroup_uid, tmp, false, true, false, tmp);
+			newElement.children().hover(function () {
+				$(this).toggleClass('table-hover');
+			});
+			$('#li_' + addReasonButtonId).before(newElement);
+		}
+
 		this.setDisplayStylesOfAddStatementContainer(false, false, false, false, false);
 		$('#' + addReasonButtonId).attr('checked', false);
 
@@ -764,43 +793,51 @@ function GuiHandler() {
 	};
 
 	/**
-	 *
+	 * Dispalys the 'how to write text '-popup, when the setting is not in the cookies
 	 */
 	this.displayHowToWriteTextPopup = function(){
 		var cookie_name = 'HOW_TO_WRITE_TEXT',
-			userAcceptedCookies = false,
-			cookies = document.cookie.split(";");
+			// show popup, when the user does not accepted the cookie already
+			userAcceptedCookies = new Helper().isCookieSet(cookie_name);
 
-		// show popup, when the user does not accepted the cookie already
-		for (var i = 0; i < cookies.length; i++) {
-			var c = cookies[i].trim();
-			if (c.indexOf(cookie_name) == 0) {
-				userAcceptedCookies = c.substring(cookie_name.length + 1, c.length);
-			}
-		}
 		if (!userAcceptedCookies) {
 			$('#' + popupHowToWriteText).modal('show');
 		}
 
-		$('#' + popupHowToWriteTextCloseButton).click(function(){
-			$('#' + popupHowToWriteText).modal('hide');
-		});
-		$('#' + popupHowToWriteTextClose).click(function(){
-			$('#' + popupHowToWriteText).modal('hide');
-		});
-
 		// accept cookie
 		$('#' + popupHowToWriteTextOkayButton).click(function(){
 			$('#' + popupHowToWriteText).modal('hide');
-			var d = new Date(), consent = true;
-			var expiresInDays = 1 * 24 * 60 * 60 * 1000; // Todo
-			d.setTime( d.getTime() + expiresInDays );
-			var expires = 'expires=' + d.toGMTString();
-			document.cookie = cookie_name + '=' + consent + '; ' + expires + ';path=/';
+			new Helper().setCookie(cookie_name);
+		});
+	};
 
-			$(document).trigger('user_cookie_consent_changed', {'consent' : consent});
+	/**
+	 * Dispalys the 'how to write text '-popup, when the setting is not in the cookies
+	 */
+	this.displayPremisseGroupPopup = function(){
+		var cookie_name = 'HOW_TO_SET_PREMISSEGROUPS',
+			// show popup, when the user does not accepted the cookie already
+			userAcceptedCookies = new Helper().isCookieSet(cookie_name);
+
+		if (!userAcceptedCookies) {
+			$('#' + popupHowToSetPremisseGroups).modal('show');
+		}
+
+		$('#' + popupHowToSetPremisseGroupsCloseButton).click(function(){
+			$('#' + proTextareaPremissegroupCheckboxId).attr('checked', false);
+			$('#' + conTextareaPremissegroupCheckboxId).attr('checked', false);
 		});
 
+		$('#' + popupHowToSetPremisseGroupsClose).click(function(){
+			$('#' + proTextareaPremissegroupCheckboxId).attr('checked', false);
+			$('#' + conTextareaPremissegroupCheckboxId).attr('checked', false);
+		});
+
+		// accept cookie
+		$('#' + popupHowToSetPremisseGroupsOkayButton).click(function(){
+			$('#' + popupHowToSetPremisseGroups).modal('hide');
+			new Helper().setCookie(cookie_name);
+		});
 	};
 
 	/**

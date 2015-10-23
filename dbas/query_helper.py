@@ -13,7 +13,7 @@ class QueryHelper(object):
 
 	"""
 
-	def set_statement_as_premisse(self, statement, user, issue):
+	def set_statement_as_new_premisse(self, statement, user, issue):
 		"""
 
 		:param statement:
@@ -21,7 +21,7 @@ class QueryHelper(object):
 		:param issue:
 		:return: uid of the PremisseGroup
 		"""
-		logger('DatabaseHelper', 'set_statement_as_premisse', 'statement: ' + str(statement) + ', user: ' + str(user))
+		logger('DatabaseHelper', 'set_statement_as_new_premisse', 'statement: ' + str(statement) + ', user: ' + str(user))
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		premisse_group = PremisseGroup(author=db_user.uid)
@@ -29,9 +29,35 @@ class QueryHelper(object):
 		DBDiscussionSession.flush()
 
 		premisse_list = []
-		logger('DatabaseHelper', 'set_statement_as_premisse', 'premissesgroup: ' + str(premisse_group.uid) + ', statement: '
+		logger('DatabaseHelper', 'set_statement_as_new_premisse', 'premissesgroup: ' + str(premisse_group.uid) + ', statement: '
 				+ str(statement.uid) + ', isnegated: ' + ('0' if False else '1') + ', author: ' + str(db_user.uid))
 		premisse = Premisse(premissesgroup=premisse_group.uid, statement=statement.uid, isnegated=False, author=db_user.uid, issue=issue)
+		premisse_list.append(premisse)
+
+		DBDiscussionSession.add_all(premisse_list)
+		DBDiscussionSession.flush()
+
+		db_premissegroup = DBDiscussionSession.query(PremisseGroup).filter_by(author_uid=db_user.uid).order_by(PremisseGroup.uid.desc()).first()
+
+		return db_premissegroup.uid
+
+	def set_statement_as_premisse(self, statement, user, premisse_group_uid, issue):
+		"""
+
+		:param statement:
+		:param user:
+		:param premisse_group_uid:
+		:param issue:
+		:return:
+		"""
+		logger('DatabaseHelper', 'set_statement_as_premisse', 'statement: ' + str(statement) + ', user: ' + str(user))
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+		premisse_list = []
+		logger('DatabaseHelper', 'set_statement_as_premisse', 'premissesgroup: ' + str(premisse_group_uid) + ', statement: '
+				+ str(statement.uid) + ', isnegated: ' + ('0' if False else '1') + ', author: ' + str(db_user.uid))
+		premisse = Premisse(premissesgroup=premisse_group_uid, statement=statement.uid, isnegated=False, author=db_user.uid, issue=issue)
 		premisse_list.append(premisse)
 
 		DBDiscussionSession.add_all(premisse_list)

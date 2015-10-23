@@ -250,5 +250,35 @@ function Helper() {
 	 */
 	this.getCurrentIssueId = function(){
 		return $('#' + issueDropdownButtonID).attr('issue');
-	}
+	};
+
+	/**
+	 *
+	 * @param cookie_name
+	 */
+	this.setCookie = function(cookie_name){
+		var d = new Date(), consent = true;
+		var expiresInDays = 7 * 24 * 60 * 60 * 1000; // Todo expiresInDays for how to write cookie
+		d.setTime( d.getTime() + expiresInDays );
+		var expires = 'expires=' + d.toGMTString();
+		document.cookie = cookie_name + '=' + consent + '; ' + expires + ';path=/';
+
+		$(document).trigger('user_cookie_consent_changed', {'consent' : consent});
+	};
+
+	/**
+	 *
+	 * @param cookie_name
+	 * @returns {boolean}
+	 */
+	this.isCookieSet = function(cookie_name){
+		var cookies = document.cookie.split(";"), userAcceptedCookies = false;
+		for (var i = 0; i < cookies.length; i++) {
+			var c = cookies[i].trim();
+			if (c.indexOf(cookie_name) == 0) {
+				userAcceptedCookies = c.substring(cookie_name.length + 1, c.length);
+			}
+		}
+		return userAcceptedCookies;
+	};
 }

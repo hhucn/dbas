@@ -63,7 +63,7 @@
 						<br>
 
 						<button type="button" class="button button-block btn-sm btn" aria-label="Left Align" style="display:none">
-							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign" aria-hidden="true" i18n:translate="report">&thinsp;Report</span>
+							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign" aria-hidden="true" i18n:translate="report">Report</span>
 						</button>
 
 						<br>
@@ -158,22 +158,36 @@
 							<div id="pro-textareas">
 
 							</div>
-							<a>
-								<div id="add-pro-textarea">
+							<div id="add-pro-textarea">
+								<a>
 									<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> <span i18n:translate="add_textfield">Add a textfield</span>
-								</div>
-							</a>
+								</a>
+							</div>
+
+							<div id="pro-textarea-premissegroup" class="checkbox" style="display:none">
+								<label>
+									<a>
+										<input id="pro-textarea-premissegroup-checkbox" type="checkbox"><span i18n:translate="statements_connected">Statements are connected</span></a>
+								</label>
+							</div>
 						</div>
 
 						<div id="con-position-column">
 							<h4 id="heading-contra-positions" class="font-semi-bold" i18n:translate="contra">Contra</h4>
 							<div id="con-textareas">
 							</div>
-							<a>
-								<div id="add-con-textarea">
+							<div id="add-con-textarea">
+								<a>
 									<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> <span i18n:translate="add_textfield">Add a textfield</span>
-								</div>
-							</a>
+								</a>
+							</div>
+
+							<div id="con-textarea-premissegroup" class="checkbox" style="display:none">
+								<label>
+									<a>
+										<input id="con-textarea-premissegroup-checkbox" type="checkbox"><span i18n:translate="statements_connected">Statements are connected</span></a>
+								</label>
+							</div>
 						</div>
 
 						<input id="send-new-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />

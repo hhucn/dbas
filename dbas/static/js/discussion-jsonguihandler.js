@@ -63,8 +63,7 @@ function JsonGuiHandler() {
 				if (text=='')
 					text = _t(because) + ' ';
 				else
-					text += ' <i>and</i> ' + helper.startWithLowerCase(_t(because)) + ' ';
-
+					text += ' <i>' + _t(and) + '</i> ' + helper.startWithLowerCase(_t(because)) + ' ';
 				text += helper.startWithLowerCase(valval.text);
 				index += 1;
 				attributes['text_' + index + '_statement_id'] = valkey;
@@ -79,11 +78,9 @@ function JsonGuiHandler() {
 		// adding new premisses will be available, if the user is logged in
 		if (typeof jsonData.logged_in == "string") {
 			// would be this premisse the first premisse for the statement?
-			if (Object.keys(jsonData.premisses).length == 0) {
-				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newPremisseRadioButtonTextAsFirstOne), false, false, false, ''));
-			} else {
-				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newPremisseRadioButtonText), false, false, false, ''));
-			}
+			text = parseInt(jsonData.premisses) == 0 ? _t(newPremisseRadioButtonTextAsFirstOne) : _t(newPremissesRadioButtonText);
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, text, false, false, false, ''));
+
 		}
 
 		guihandler.addListItemsToDiscussionsSpace(listitems);
@@ -236,7 +233,8 @@ function JsonGuiHandler() {
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + text, '', dict);
 
 		if (typeof jsonData.logged_in == "string") {
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));
+			text = parseInt(jsonData.reason) == 0 ? _t(addPremisseRadioButtonText) : _t(addPremissesRadioButtonText);
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, text, false, false, false, text));
 		} else if (parseInt(jsonData.reason) == 0){
 			guihandler.setErrorDescription(_t(discussionEnd) + '<br>' + _t(clickHereForRegistration));
 		}

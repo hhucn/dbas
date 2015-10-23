@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-var mainpage = 'http://localhost:4284/';
-//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+//var mainpage = 'http://localhost:4284/';
+var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 _t = function(id){
 	var this_id, value = 'unknown identifier';
@@ -29,8 +29,13 @@ _t = function(id){
  * Messages & Errors
  * @type {string}
  */
+var and 									= 'and';
 var addedEverything 						= 'addedEverything';
 var alreadyInserted							= 'alreadyInserted';
+var addPremissesRadioButtonText 			= 'addPremissesRadioButtonText';
+var addArgumentsRadioButtonText 			= 'addArgumentsRadioButtonText';
+var argumentContainerH4TextIfPremisses 		= 'argumentContainerH4TextIfPremisses';
+var argumentContainerH4TextIfArguments 		= 'argumentContainerH4TextIfArguments';
 var addPremisseRadioButtonText 				= 'addPremisseRadioButtonText';
 var addArgumentRadioButtonText 				= 'addArgumentRadioButtonText';
 var argumentContainerH4TextIfPremisse 		= 'argumentContainerH4TextIfPremisse';
@@ -125,6 +130,9 @@ var last_action 							= 'last_action';
 var last_login 								= 'last_login';
 var logfile									= 'logfile';
 var medium 									= 'medium';
+var newPremissesRadioButtonText 			= 'newPremisseRadioButtonText';
+var newPremissesRadioButtonTextAsFirstOne	= 'newPremisseRadioButtonTextAsFirstOne';
+var newStatementsRadioButtonTextAsFirstOne 	= 'newStatementRadioButtonTextAsFirstOne';
 var newPremisseRadioButtonText 				= 'newPremisseRadioButtonText';
 var newPremisseRadioButtonTextAsFirstOne	= 'newPremisseRadioButtonTextAsFirstOne';
 var newStatementRadioButtonTextAsFirstOne 	= 'newStatementRadioButtonTextAsFirstOne';

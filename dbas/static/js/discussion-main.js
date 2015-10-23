@@ -207,9 +207,23 @@ $(function () {
 			mainpage + "static/images/logo.png");
 	});
 
-	// focos text of input elements
+	// focus text of input elements
 	$("input[type='text']").on("click", function () {
 		$(this).select();
+	});
+
+	/*
+	 * Display message on premisse group checkbox
+	 */
+	$('#' + proTextareaPremissegroupCheckboxId).click(function (){
+		if ($('#' + proTextareaPremissegroupCheckboxId).prop('checked')){
+			guiHandler.displayPremisseGroupPopup();
+		}
+	});
+	$('#' + conTextareaPremissegroupCheckboxId).click(function (){
+		if ($('#' + conTextareaPremissegroupCheckboxId).prop('checked')){
+			guiHandler.displayPremisseGroupPopup();
+		}
 	});
 
 	/*

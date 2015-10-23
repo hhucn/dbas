@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-22 10:07+0200\n"
+"POT-Creation-Date: 2015-10-23 12:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -869,12 +869,78 @@ msgstr ""
 
 #. Default: Okay
 #: ./dbas/templates/snippet-popups.pt:436
+#: ./dbas/templates/snippet-popups.pt:473
 msgid "Okay"
 msgstr ""
 
 #. Default: Abort
 #: ./dbas/templates/snippet-popups.pt:437
+#: ./dbas/templates/snippet-popups.pt:474
 msgid "abort"
+msgstr ""
+
+#. Default: How to set premisse groups
+#: ./dbas/templates/snippet-popups.pt:450
+msgid "how-to-set-premissegroups-header"
+msgstr ""
+
+#. Default: There are a few simple tricks for setting premisse groups:
+#: ./dbas/templates/snippet-popups.pt:453
+msgid "how-to-set-premissegroups-header-body-title"
+msgstr ""
+
+#. Default: Sometimes you want to state more than one statement, but they are
+#. connected...in some way. These statements can be connected in one premisse
+#. group
+#: ./dbas/templates/snippet-popups.pt:455
+msgid "how-to-set-premissegroups-header-body"
+msgstr ""
+
+#. Default: Normally, each statement of you is independent of the others.
+#: ./dbas/templates/snippet-popups.pt:458
+msgid "set-premissegroups1"
+msgstr ""
+
+#. Default: If you want to add an 'and' in your statement, please do not do it!
+#: ./dbas/templates/snippet-popups.pt:459
+msgid "set-premissegroups2"
+msgstr ""
+
+#. Default: Sometimes you have dependent statemens, like:
+#: ./dbas/templates/snippet-popups.pt:460
+msgid "set-premissegroups3"
+msgstr ""
+
+#. Default: Let's say, you argument, that you want to have a cat, but if and
+#. only iff she is small and fluffy. Then you have two statements for your
+#. position:
+#: ./dbas/templates/snippet-popups.pt:462
+msgid "set-premissegroups4"
+msgstr ""
+
+#. Default: I want a cat, because:
+#: ./dbas/templates/snippet-popups.pt:463
+msgid "set-premissegroups5"
+msgstr ""
+
+#. Default: She is fluffy
+#: ./dbas/templates/snippet-popups.pt:464
+msgid "set-premissegroups6"
+msgstr ""
+
+#. Default: She is small
+#: ./dbas/templates/snippet-popups.pt:465
+msgid "set-premissegroups7"
+msgstr ""
+
+#. Default: Then you have to check the box!
+#: ./dbas/templates/snippet-popups.pt:466
+msgid "set-premissegroups8"
+msgstr ""
+
+#. Default: Otherwise you do not need this checkbox.
+#: ./dbas/templates/snippet-popups.pt:469
+msgid "set-premissegroups9"
 msgstr ""
 
 #. Default: This will be the news page and currently I think...this will be
@@ -1040,7 +1106,7 @@ msgstr ""
 msgid "your_opinion_matters"
 msgstr ""
 
-#. Default: &thinsp;Report
+#. Default: Report
 #: ./dbas/templates/content.pt:66
 msgid "report"
 msgstr ""
@@ -1071,7 +1137,7 @@ msgid "pro"
 msgstr ""
 
 #. Default: Contra
-#: ./dbas/templates/content.pt:121 ./dbas/templates/content.pt:169
+#: ./dbas/templates/content.pt:121 ./dbas/templates/content.pt:176
 msgid "contra"
 msgstr ""
 
@@ -1081,26 +1147,31 @@ msgid "insert-argument"
 msgstr ""
 
 #. Default: Add a textfield
-#: ./dbas/templates/content.pt:163 ./dbas/templates/content.pt:174
+#: ./dbas/templates/content.pt:163 ./dbas/templates/content.pt:181
 msgid "add_textfield"
 msgstr ""
 
+#. Default: Statements are connected
+#: ./dbas/templates/content.pt:170 ./dbas/templates/content.pt:188
+msgid "statements_connected"
+msgstr ""
+
 #. Default: List of participants
-#: ./dbas/templates/content.pt:190
+#: ./dbas/templates/content.pt:204
 msgid "participant_list"
 msgstr ""
 
 #. Default: Some additional options for the administrator.
-#: ./dbas/templates/content.pt:191 ./dbas/templates/content.pt:206
+#: ./dbas/templates/content.pt:205 ./dbas/templates/content.pt:220
 msgid "admin_only"
 msgstr ""
 
 #. Default: List of attacks, clicked by the participants
-#: ./dbas/templates/content.pt:205
+#: ./dbas/templates/content.pt:219
 msgid "list_attacks"
 msgstr ""
 
 #. Default: Minimap:
-#: ./dbas/templates/content.pt:217
+#: ./dbas/templates/content.pt:231
 msgid "minimap"
 msgstr ""

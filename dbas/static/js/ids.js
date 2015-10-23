@@ -8,6 +8,8 @@
  * ID's
  * @type {string}
  */
+
+
 var addReasonButtonId 							= 'add-reason';
 var addPositionButtonId 						= 'add-position';
 var addStatementContainerId 					= 'add-statement-container';
@@ -30,6 +32,7 @@ var contentLink 								= 'content-link';
 var conPositionColumnId 						= 'con-position-column';
 var conPositionTextareaId 						= 'con-textareas';
 var conIslandId 								= 'con-island';
+var conTextareaPremissegroupCheckboxId 			= 'con-textarea-premissegroup-checkbox';
 var deleteTrackButtonId 						= 'delete-track';
 var discussionsDescriptionId 					= 'discussions-description';
 var discussionsAvoidanceDescriptionId 			= 'discussions-avoidance-description';
@@ -73,6 +76,7 @@ var proPositionColumnId 						= 'pro-position-column';
 var proPositionTextareaId 						= 'pro-textareas';
 var proIslandId 								= 'pro-island';
 var passwordSubmitButtonId 						= 'password-submit';
+var proTextareaPremissegroupCheckboxId 			= 'pro-textarea-premissegroup-checkbox';
 var popupConfirmDialogId 						= 'confirm-dialog';
 var popupEditStatementId 						= 'popup-edit-statement';
 var popupEditStatementTableId					= 'edit_statement_table';
@@ -93,6 +97,10 @@ var popupHowToWriteText 						= 'popup-write-text';
 var popupHowToWriteTextCloseButton 				= 'popup-write-text-close-button';
 var popupHowToWriteTextClose 					= 'popup-write-text-close';
 var popupHowToWriteTextOkayButton 				= 'popup-write-text-okay-button';
+var popupHowToSetPremisseGroups 				= 'popup-set-premissegroups';
+var popupHowToSetPremisseGroupsCloseButton 		= 'popup-set-premissegroups-close-button';
+var popupHowToSetPremisseGroupsClose 			= 'popup-set-premissegroups-close';
+var popupHowToSetPremisseGroupsOkayButton 		= 'popup-set-premissegroups-okay-button';
 var popupLogin									= 'popup_login';
 var popupLoginFailed 							= 'popup-login-failed';
 var popupLoginSuccess 							= 'popup-login-success';

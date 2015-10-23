@@ -688,7 +688,20 @@ class Dbas(object):
 			premissegroup_id  = self.request.params['premissegroup_id'] if 'premissegroup_id' in self.request.params else -1
 			current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
 			confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
+			premissegroup_con = self.request.params['premissegroup_con'] if 'premissegroup_con' in self.request.params else '0'
+			premissegroup_pro = self.request.params['premissegroup_pro'] if 'premissegroup_pro' in self.request.params else '0'
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+
+			premissegroup_con = True if premissegroup_con.lower() == 'true' else False
+			premissegroup_pro = True if premissegroup_pro.lower() == 'true' else False
+
+			logger('set_new_premisses_for_X', 'def', 'param related_argument: ' + str(related_argument))
+			logger('set_new_premisses_for_X', 'def', 'param premissegroup_id: ' + str(premissegroup_id))
+			logger('set_new_premisses_for_X', 'def', 'param current_attack: ' + str(current_attack))
+			logger('set_new_premisses_for_X', 'def', 'param confrontation_uid: ' + str(confrontation_uid))
+			logger('set_new_premisses_for_X', 'def', 'param premissegroup_con: ' + str(premissegroup_con))
+			logger('set_new_premisses_for_X', 'def', 'param premissegroup_pro: ' + str(premissegroup_pro))
+
 			# confrontation_uid is a premisse group
 
 			# Interpretation of the parameters
@@ -718,6 +731,8 @@ class Dbas(object):
 				premissegroup_id = premissegroup_id,
 				confrontation_uid = confrontation_uid,
 				current_attack = current_attack,
+				premissegroup_con = premissegroup_con,
+				premissegroup_pro = premissegroup_pro,
 				issue = issue
 			))
 

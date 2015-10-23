@@ -141,6 +141,11 @@ function InteractionHandler() {
 		dict['related_argument']  = disc_desc.attr('related_argument');
 		dict['premissegroup_id']  = disc_desc.attr('premissegroup_id');
 		dict['current_attack'] 	  = disc_desc.attr('attack');
+		dict['premissegroup_con'] = $('#' + conTextareaPremissegroupCheckboxId).prop('checked');
+		dict['premissegroup_pro'] = $('#' + proTextareaPremissegroupCheckboxId).prop('checked');
+
+		$('#' + conTextareaPremissegroupCheckboxId).prop('checked', false);
+		$('#' + proTextareaPremissegroupCheckboxId).prop('checked', false);
 
 		if (isForConclusion) {
 			dict['confrontation_uid'] = disc_desc.attr('confrontation_uid');

@@ -107,6 +107,15 @@
 	color: #000;
 }
 
+#add-pro-textarea,
+#add-con-textarea,
+#pro-textarea-premissegroup,
+#con-textarea-premissegroup{
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
 #add-pro-textarea:hover,
 #add-con-textarea:hover {
 	text-decoration: underline;

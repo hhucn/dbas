@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-22 10:07+0200\n"
+"POT-Creation-Date: 2015-10-23 12:58+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -24,12 +24,12 @@ msgstr "404 Error"
 #. Default: The page
 #: dbas/templates/404.pt:14
 msgid "404_text_part1"
-msgstr "The page &quot;<dynamic element>&quot; for could not be found."
+msgstr "The page"
 
 #. Default: for could not be found.
 #: dbas/templates/404.pt:14
 msgid "404_text_part2"
-msgstr "The page &quot;<dynamic element>&quot; for could not be found."
+msgstr "for could not be found."
 
 #. Default: Welcome
 #: dbas/templates/index.pt:15
@@ -192,14 +192,12 @@ msgstr "Guided View"
 msgid "guided_view_content1"
 msgstr ""
 "You will never see something like an argumentation map, because the systems "
-"seems to be like a dynamic and generic <dynamic element> for you."
+"seems to be like a dynamic and generic"
 
 #. Default: for you
 #: dbas/templates/index.pt:86
 msgid "guided_view_content2"
-msgstr ""
-"You will never see something like an argumentation map, because the systems "
-"seems to be like a dynamic and generic <dynamic element> for you."
+msgstr "for you."
 
 #. Default: Island View
 #: dbas/templates/index.pt:90 dbas/templates/content.pt:80
@@ -758,7 +756,7 @@ msgstr "Your Password"
 #. Default: Forgot Password?
 #: dbas/templates/snippet-popups.pt:246
 msgid "forgot_password"
-msgstr "<dynamic element>"
+msgstr "Forgot Password?"
 
 #. Default: Password-Request
 #: dbas/templates/snippet-popups.pt:251
@@ -976,14 +974,82 @@ msgid "how-to-write-text-multiple-points"
 msgstr "More than one statement/argument/point per textarea!"
 
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:436
+#: dbas/templates/snippet-popups.pt:436 dbas/templates/snippet-popups.pt:473
 msgid "Okay"
 msgstr "Okay"
 
 #. Default: Abort
-#: dbas/templates/snippet-popups.pt:437
+#: dbas/templates/snippet-popups.pt:437 dbas/templates/snippet-popups.pt:474
 msgid "abort"
 msgstr "Abort"
+
+#. Default: How to set premisse groups
+#: dbas/templates/snippet-popups.pt:450
+msgid "how-to-set-premissegroups-header"
+msgstr "How to set premisse groups"
+
+#. Default: There are a few simple tricks for setting premisse groups:
+#: dbas/templates/snippet-popups.pt:453
+msgid "how-to-set-premissegroups-header-body-title"
+msgstr "There are a few simple rules for writing good arguments:"
+
+#. Default: Sometimes you want to state more than one statement, but they are
+#. connected...in some way. These statements can be connected in one premisse
+#. group
+#: dbas/templates/snippet-popups.pt:455
+msgid "how-to-set-premissegroups-header-body"
+msgstr ""
+"Sometimes you want to state more than one statement, but they are "
+"connected...in some way. These statements can be connected in one premisse"
+
+#. Default: Normally, each statement of you is independent of the others.
+#: dbas/templates/snippet-popups.pt:458
+msgid "set-premissegroups1"
+msgstr "Normally, each statement of you is independent of the others."
+
+#. Default: If you want to add an 'and' in your statement, please do not do it!
+#: dbas/templates/snippet-popups.pt:459
+msgid "set-premissegroups2"
+msgstr "If you want to add an 'and' in your statement, please do not do it!"
+
+#. Default: Sometimes you have dependent statemens, like:
+#: dbas/templates/snippet-popups.pt:460
+msgid "set-premissegroups3"
+msgstr "Sometimes you have dependent statemens, like:"
+
+#. Default: Let's say, you argument, that you want to have a cat, but if and
+#. only iff she is small and fluffy. Then you have two statements for your
+#. position:
+#: dbas/templates/snippet-popups.pt:462
+msgid "set-premissegroups4"
+msgstr ""
+"Let's say, you argument, that you want to have a cat, but if and only iff "
+"she is small and fluffy. Then you have two statements for your position:"
+
+#. Default: I want a cat, because:
+#: dbas/templates/snippet-popups.pt:463
+msgid "set-premissegroups5"
+msgstr "I want a cat, because:"
+
+#. Default: She is fluffy
+#: dbas/templates/snippet-popups.pt:464
+msgid "set-premissegroups6"
+msgstr "She is fluffy."
+
+#. Default: She is small
+#: dbas/templates/snippet-popups.pt:465
+msgid "set-premissegroups7"
+msgstr "She is small."
+
+#. Default: Then you have to check the box!
+#: dbas/templates/snippet-popups.pt:466
+msgid "set-premissegroups8"
+msgstr "Then you have to check the box!"
+
+#. Default: Otherwise you do not need this checkbox.
+#: dbas/templates/snippet-popups.pt:469
+msgid "set-premissegroups9"
+msgstr "Otherwise you do not need this checkbox."
 
 #. Default: This will be the news page and currently I think...this will be
 #. some kind of blog
@@ -1152,10 +1218,10 @@ msgstr "The discussion was started at"
 msgid "your_opinion_matters"
 msgstr "Now your opinion matters!"
 
-#. Default: &thinsp;Report
+#. Default: Report
 #: dbas/templates/content.pt:66
 msgid "report"
-msgstr ""
+msgstr "Report"
 
 #. Default: Change display style:
 #: dbas/templates/content.pt:71
@@ -1183,7 +1249,7 @@ msgid "pro"
 msgstr "Pro"
 
 #. Default: Contra
-#: dbas/templates/content.pt:121 dbas/templates/content.pt:169
+#: dbas/templates/content.pt:121 dbas/templates/content.pt:176
 msgid "contra"
 msgstr "Contra"
 
@@ -1193,27 +1259,32 @@ msgid "insert-argument"
 msgstr "Please insert a new Argument"
 
 #. Default: Add a textfield
-#: dbas/templates/content.pt:163 dbas/templates/content.pt:174
+#: dbas/templates/content.pt:163 dbas/templates/content.pt:181
 msgid "add_textfield"
 msgstr "Add a textfield"
 
+#. Default: Statements are connected
+#: dbas/templates/content.pt:170 dbas/templates/content.pt:188
+msgid "statements_connected"
+msgstr "Statements are connected"
+
 #. Default: List of participants
-#: dbas/templates/content.pt:190
+#: dbas/templates/content.pt:204
 msgid "participant_list"
 msgstr "List of participants"
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/content.pt:191 dbas/templates/content.pt:206
+#: dbas/templates/content.pt:205 dbas/templates/content.pt:220
 msgid "admin_only"
 msgstr "Some additional options for the administrator."
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/content.pt:205
+#: dbas/templates/content.pt:219
 msgid "list_attacks"
 msgstr "List of attacks, clicked by the participants"
 
 #. Default: Minimap:
-#: dbas/templates/content.pt:217
+#: dbas/templates/content.pt:231
 msgid "minimap"
 msgstr "Minimap:"
 
