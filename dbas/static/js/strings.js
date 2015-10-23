@@ -4,9 +4,16 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+
+/**
+ * Returns a translatet string with the given id in the right suitable.
+ * @param id of the string
+ * @returns {string} which is translated or unknown value
+ * @private
+ */
 _t = function(id){
 	var this_id, value = 'unknown identifier';
 	$('#' + languageDropdownId).children().each(function(){

@@ -105,35 +105,20 @@
 					<div class="content">
 						<h2><span class="font-semi-bold" i18n:translate="description">Description</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
 
-						<p class="lead">In the following a <span class="font-normal">short description</span> of D-BAS will be given with the help of bulletpoints:
+						<p class="lead"><span i18n:translate="description_intro">In the following a short description of D-BAS will be given with the help of bulletpoints:</span>
 							<ul class="lead list">
-								<li> Participants are able to add and modify positions and arguments in every discussion.
-									<li> Positions and arguments are connected logically by participants</li>
-									<li> The system is very easy to use.</li>
-									<li> It offers a time-shifted discussion in three modes:</li>
-									<li>
-										<ul class="lead list">
-											<li i18n:translate="guided_view_description"> Guided View: The participants will be lead through the discussion .</li>
-											<li i18n:translate="island_view_description"> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
-											<li i18n:translate="expert_view_description"> Expert View: Participants are able to see and do everything.</li>
-										</ul>
-									</li>
-									<li> Contributions can be rated by the participants.</li>
-									<li> You have the huge power of the crowd!.</li>
-							</ul>
-							<br>
-							<p class="lead">This sounds amazing, but every egg-laying, milk-bearing woolly sow has its beginning. Due to this the <span class="font-normal">first milesstone</span> contains:
-							</p>
-							<ul class="lead list">
-								<li> System is based on a finished argumentation map.</li>
-								<li> A base form of the guided view will be avbailable:</li>
-								<ul class="lead list">
-									<li> The participant will be confronted with an argument out of the finished argumentation map.</li>
-									<li> He has several options to choose, so this will be a kind of led <a href="http://www.bpb.de/politik/wahlen/wahl-o-mat/" target="_blank" alt="Wahl-O-Mat">Wahl-O-Mat</a>.</li>
-									<li> We will have no KI, recommender systems or predictions of the next post. Everything will be statically.</li>
-								</ul>
-								<li> Participants will be tracked, but every data is accessible.</li>
-								<li> Everything will be done with unit and integration tests.</li>
+								<li i18n:translate="description_list_1"> Participants are able to add and modify positions and arguments in every discussion.</li>
+								<li i18n:translate="description_list_2"> Positions and arguments are connected logically by participants</li>
+								<li i18n:translate="description_list_3"> The system is very easy to use.</li>
+								<li><span i18n:translate="description_list_3"> It offers a time-shifted discussion in three modes:</span>
+									<ul class="lead list">
+										<li i18n:translate="guided_view_description"> Guided View: The participants will be lead through the discussion .</li>
+										<li i18n:translate="island_view_description"> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
+										<li i18n:translate="expert_view_description"> Expert View: Participants are able to see and do everything.</li>
+									</ul>
+								</li>
+								<li i18n:translate="description_list_5"> Contributions can be rated by the participants.</li>
+								<li i18n:translate="description_list_6"> You have the huge power of the crowd!.</li>
 							</ul>
 					</div>
 				</div>
@@ -145,24 +130,24 @@
 				<div class="col-md-12">
 					<div class="content">
 						<h2><span class="font-semi-bold" i18n:translate="about">About</span> <span class="smaller">D-BAS</span></h2>
-						<p class="lead">D-BAS is a <span class="font-normal">novel approach</span> of discussions in the field of online participation and developed by <a href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html">Tobias Krauthoff</a>.
+						<p class="lead"><span i18n:translate="about_description">D-BAS is a of discussions in the field of online participation and developed by</span> <a href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html">Tobias Krauthoff</a>.
 						</p>
 
 						<div class="row">
 							<div class="col-md-4 col-badge">
 								<img id="icon-liqd" class="icon-badge" alt="icon-liqd" src="${request.static_url('dbas:static/images/icon_liqd.png')}" />
-								<h3>Cooperation with <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a></h3>
-								<p>A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid Democracy e.V.</p>
+								<h3><span i18n:translate="cooperation_with">Cooperation with</span> <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a></h3>
+								<p i18n:translate="liquid_democracy_description">A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid Democracy e.V.</p>
 							</div>
 							<div class="col-md-4 col-badge">
 								<img id="icon-kolleg" class="icon-badge" alt="icon-kolleg" src="${request.static_url('dbas:static/images/icon_kolleg.png')}" />
-								<h3>Graduation School <a href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">Online-Participation</a></h3>
-								<p>The NRW Graduation School Online-Participation is subsidised governmentally by Ministry of Innovation, Science and Research in North Rhine-Westphalia. The Graduation School is a network of business economics, computer scientiests, communication scientists, political scientists, jurists and sociologist, which are wokring together with partners from practice. The objective is the examination of opportunities of the internet, where affected persons are able to participate in decisions, where they are affected.</p>
+								<h3><span i18n:translate="graduation_scool">Graduation School</span> <a href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank" i18n:translate="fk_op">Online-Participation</a></h3>
+								<p i18n:translate="fk_op_description">The NRW Graduation School Online-Participation is subsidised governmentally by Ministry of Innovation, Science and Research in North Rhine-Westphalia. The Graduation School is a network of business economics, computer scientiests, communication scientists, political scientists, jurists and sociologist, which are wokring together with partners from practice. The objective is the examination of opportunities of the internet, where affected persons are able to participate in decisions, where they are affected.</p>
 							</div>
 							<div class="col-md-4 col-badge">
 								<img id="icon-kit" class="icon-badge" alt="icon-kit" src="${request.static_url('dbas:static/images/icon_kit.png')}" />
-								<h3>Cooperation with the <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php">Karlsruhe Institut of Technology</a></h3>
-								<p>The workging group of functionality of the graduation school has a close-knit connection with the Institute for Technology Assessment and Systems Analysis (ITAS) of the Karlsruhe Institut of Technology.</p>
+								<h3><span i18n:translate="cooperation_with">Cooperation with</span> <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" i18n:translate="kit">Karlsruhe Institut of Technology</a></h3>
+								<p i18n:translate="kit_description">The workging group of functionality of the graduation school has a close-knit connection with the Institute for Technology Assessment and Systems Analysis (ITAS) of the Karlsruhe Institut of Technology.</p>
 							</div>
 						</div>
 					</div>
@@ -178,7 +163,7 @@
 						<ul class="lead list">
 							<li>
 								<span class="font-normal">Our data structure:</span>
-								<br>We are using a modified argumentation map as data structure. More information can be afforded via the <a href="${request.application_url}/contact" title="Contact">contact</a>-formular.
+								<br><span i18n:translate="data_structure_description">We are using a modified argumentation map as data structure. More information can be afforded via the</span> <a href="${request.application_url}/contact" title="Contact" i18n:translate="contact">contact</a>-<span i18n:translate="formular">formular</span>.
 							</li>
 						</ul>
 						<p class="lead">In addition, we have studied several tools:</p>
@@ -186,18 +171,18 @@
 						<div class="row">
 							<div class="col-md-4 col-badge">
 								<img id="icon-pro-con" class="icon-badge" alt="icon-pro-con" src="${request.static_url('dbas:static/images/icon_procon.png')}" />
-								<h3>Pro-Contra Lists</h3>
-								<p>These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.</p>
+								<h3 i18n:translate="pro-contra_lists">Pro-Contra Lists</h3>
+								<p i18n:translate="pro-contra_lists_description">These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.</p>
 							</div>
 							<div class="col-md-4 col-badge">
 								<img id="icon-forum" class="icon-badge" alt="icon-forum" src="${request.static_url('dbas:static/images/icon_forum.png')}" />
-								<h3>Forum</h3>
-								<p>Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.</p>
+								<h3 i18n:translate="forum">Forum</h3>
+								<p i18n:translate="forum_description">Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.</p>
 							</div>
 							<div class="col-md-4 col-badge">
 								<img id="icon-argapproach" class="icon-badge" alt="icon-argapproach" src="${request.static_url('dbas:static/images/icon_argu.png')}" />
-								<h3>Argumentation-based Approaches</h3>
-								<p>This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.</p>
+								<h3 i18n:translate="argu_approaches">Argumentation-based Approaches</h3>
+								<p i18n:translate="argu_approaches_description">This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.</p>
 							</div>
 						</div>
 					</div>

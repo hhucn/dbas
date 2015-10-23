@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-23 12:58+0200\n"
+"POT-Creation-Date: 2015-10-23 19:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -123,7 +123,7 @@ msgstr ""
 
 #. Default: of D-BAS
 #: ./dbas/templates/index.pt:59 ./dbas/templates/index.pt:106
-#: ./dbas/templates/index.pt:177
+#: ./dbas/templates/index.pt:162
 msgid "of_dbas"
 msgstr ""
 
@@ -209,31 +209,171 @@ msgstr ""
 msgid "description"
 msgstr ""
 
+#. Default: In the following a short description of D-BAS will be given with
+#. the help of bulletpoints:
+#: ./dbas/templates/index.pt:108
+msgid "description_intro"
+msgstr ""
+
+#. Default: Participants are able to add and modify positions and arguments in
+#. every discussion.
+#: ./dbas/templates/index.pt:110
+msgid "description_list_1"
+msgstr ""
+
+#. Default: Positions and arguments are connected logically by participants
+#: ./dbas/templates/index.pt:111
+msgid "description_list_2"
+msgstr ""
+
+#. Default: The system is very easy to use.
+#. Default: It offers a time-shifted discussion in three modes:
+#: ./dbas/templates/index.pt:112 ./dbas/templates/index.pt:113
+msgid "description_list_3"
+msgstr ""
+
 #. Default: Guided View: The participants will be lead through the discussion .
-#: ./dbas/templates/index.pt:116
+#: ./dbas/templates/index.pt:115
 msgid "guided_view_description"
 msgstr ""
 
 #. Default: Island View: A position with all connected arguments is presented
 #. as island. This supports the insight of a discussion about a specific
 #. position.
-#: ./dbas/templates/index.pt:117
+#: ./dbas/templates/index.pt:116
 msgid "island_view_description"
 msgstr ""
 
 #. Default: Expert View: Participants are able to see and do everything.
-#: ./dbas/templates/index.pt:118
+#: ./dbas/templates/index.pt:117
 msgid "expert_view_description"
 msgstr ""
 
+#. Default: Contributions can be rated by the participants.
+#: ./dbas/templates/index.pt:120
+msgid "description_list_5"
+msgstr ""
+
+#. Default: You have the huge power of the crowd!.
+#: ./dbas/templates/index.pt:121
+msgid "description_list_6"
+msgstr ""
+
 #. Default: About
-#: ./dbas/templates/index.pt:147 ./dbas/templates/snippet-header.pt:28
+#: ./dbas/templates/index.pt:132 ./dbas/templates/snippet-header.pt:28
 msgid "about"
 msgstr ""
 
+#. Default: D-BAS is a of discussions in the field of online participation and
+#. developed by
+#: ./dbas/templates/index.pt:133
+msgid "about_description"
+msgstr ""
+
+#. Default: Cooperation with
+#: ./dbas/templates/index.pt:139 ./dbas/templates/index.pt:149
+msgid "cooperation_with"
+msgstr ""
+
+#. Default: A partner of practice of Tobias Krauthoff is Daniel Reichert of
+#. Liquid Democracy e.V.
+#: ./dbas/templates/index.pt:140
+msgid "liquid_democracy_description"
+msgstr ""
+
+#. Default: Graduation School
+#: ./dbas/templates/index.pt:144
+msgid "graduation_scool"
+msgstr ""
+
+#. Default: Online-Participation
+#: ./dbas/templates/index.pt:144
+msgid "fk_op"
+msgstr ""
+
+#. Default: The NRW Graduation School Online-Participation is subsidised
+#. governmentally by Ministry of Innovation, Science and Research in North
+#. Rhine-Westphalia. The Graduation School is a network of business economics,
+#. computer scientiests, communication scientists, political scientists,
+#. jurists and sociologist, which are wokring together with partners from
+#. practice. The objective is the examination of opportunities of the internet,
+#. where affected persons are able to participate in decisions, where they are
+#. affected.
+#: ./dbas/templates/index.pt:145
+msgid "fk_op_description"
+msgstr ""
+
+#. Default: Karlsruhe Institut of Technology
+#: ./dbas/templates/index.pt:149
+msgid "kit"
+msgstr ""
+
+#. Default: The workging group of functionality of the graduation school has a
+#. close-knit connection with the Institute for Technology Assessment and
+#. Systems Analysis (ITAS) of the Karlsruhe Institut of Technology.
+#: ./dbas/templates/index.pt:150
+msgid "kit_description"
+msgstr ""
+
 #. Default: Research
-#: ./dbas/templates/index.pt:177 ./dbas/templates/snippet-header.pt:31
+#: ./dbas/templates/index.pt:162 ./dbas/templates/snippet-header.pt:31
 msgid "research"
+msgstr ""
+
+#. Default: We are using a modified argumentation map as data structure. More
+#. information can be afforded via the
+#: ./dbas/templates/index.pt:166
+msgid "data_structure_description"
+msgstr ""
+
+#. Default: contact
+#. Default: Kontakt:
+#. Default: Contact
+#: ./dbas/templates/index.pt:166 ./dbas/templates/imprint.pt:20
+#: ./dbas/templates/snippet-footer.pt:33
+msgid "contact"
+msgstr ""
+
+#. Default: formular
+#: ./dbas/templates/index.pt:166
+msgid "formular"
+msgstr ""
+
+#. Default: Pro-Contra Lists
+#: ./dbas/templates/index.pt:174
+msgid "pro-contra_lists"
+msgstr ""
+
+#. Default: These lists are more arranged than the forum-based approaches, but
+#. even there are no connections between the arguments. Therefore these
+#. approaches are just lists and not more.
+#: ./dbas/templates/index.pt:175
+msgid "pro-contra_lists_description"
+msgstr ""
+
+#. Default: Forum
+#: ./dbas/templates/index.pt:179
+msgid "forum"
+msgstr ""
+
+#. Default: Forum-based approaches are well known to all kind of users, but are
+#. only scale with the number of users, not with the number of arguments.
+#. Therefore messages can be highly redundant. Additionally the messages are
+#. not connected logically to each other.
+#: ./dbas/templates/index.pt:180
+msgid "forum_description"
+msgstr ""
+
+#. Default: Argumentation-based Approaches
+#: ./dbas/templates/index.pt:184
+msgid "argu_approaches"
+msgstr ""
+
+#. Default: This concept seems to be perfect, because posts are connected
+#. logically to each other and redundancy can be avoided. Unfortunately these
+#. tools are for experts only and not for amateurs.
+#: ./dbas/templates/index.pt:185
+msgid "argu_approaches_description"
 msgstr ""
 
 #. Default: Toggle navigation
@@ -286,12 +426,6 @@ msgstr ""
 #. Default: Institut für Informatik
 #: ./dbas/templates/imprint.pt:14
 msgid "department"
-msgstr ""
-
-#. Default: Kontakt:
-#. Default: Contact
-#: ./dbas/templates/imprint.pt:20 ./dbas/templates/snippet-footer.pt:33
-msgid "contact"
 msgstr ""
 
 #. Default: Telefon:
