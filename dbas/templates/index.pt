@@ -162,7 +162,7 @@
 						<h2><span class="font-semi-bold" i18n:translate="research">Research</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
 						<ul class="lead list">
 							<li>
-								<span class="font-normal">Our data structure:</span>
+								<span class="font-normal" i18n:translate="our_datastructure">Our data structure:</span>
 								<br><span i18n:translate="data_structure_description">We are using a modified argumentation map as data structure. More information can be afforded via the</span> <a href="${request.application_url}/contact" title="Contact" i18n:translate="contact">contact</a>-<span i18n:translate="formular">formular</span>.
 							</li>
 						</ul>

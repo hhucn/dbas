@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-23 19:22+0200\n"
+"POT-Creation-Date: 2015-10-26 08:07+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -210,7 +210,10 @@ msgstr "Insel-Ansicht"
 #. specific statement.
 #: dbas/templates/index.pt:91
 msgid "island_view_content"
-msgstr "Insel Ansicht"
+msgstr ""
+"Okay, Sie möchten mehr sehen, aber nicht alles? Genau dafür haben wie eine "
+"Insel-Ansicht als weitere Modus. Mit dieser Möglichkeit sehen Sie alle "
+"Aussagen, die mit Ihrem aktuellen Standpunkt verbunden sind."
 
 #. Default: Expert View
 #: dbas/templates/index.pt:95
@@ -360,6 +363,11 @@ msgstr ""
 msgid "research"
 msgstr "Forschung"
 
+#. Default: Our data structure:
+#: dbas/templates/index.pt:165
+msgid "our_datastructure"
+msgstr "Unsere Datenstruktur:"
+
 #. Default: We are using a modified argumentation map as data structure. More
 #. information can be afforded via the
 #: dbas/templates/index.pt:166
@@ -492,7 +500,7 @@ msgstr "Haftungsausschluss:"
 #. Default: Haftung für Inhalte
 #: dbas/templates/imprint.pt:29
 msgid "disclaimer_content"
-msgstr "Insel Ansicht"
+msgstr "Haftung für Inhalte"
 
 #. Default: Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt.
 #. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir

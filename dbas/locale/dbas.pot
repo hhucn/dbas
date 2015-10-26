@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-23 19:22+0200\n"
+"POT-Creation-Date: 2015-10-26 08:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -318,6 +318,11 @@ msgstr ""
 #. Default: Research
 #: ./dbas/templates/index.pt:162 ./dbas/templates/snippet-header.pt:31
 msgid "research"
+msgstr ""
+
+#. Default: Our data structure:
+#: ./dbas/templates/index.pt:165
+msgid "our_datastructure"
 msgstr ""
 
 #. Default: We are using a modified argumentation map as data structure. More

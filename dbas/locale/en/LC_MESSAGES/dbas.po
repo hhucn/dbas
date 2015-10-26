@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-23 19:22+0200\n"
+"POT-Creation-Date: 2015-10-26 08:07+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -358,6 +358,11 @@ msgstr ""
 msgid "research"
 msgstr "Research"
 
+#. Default: Our data structure:
+#: dbas/templates/index.pt:165
+msgid "our_datastructure"
+msgstr "Our data structure:"
+
 #. Default: We are using a modified argumentation map as data structure. More
 #. information can be afforded via the
 #: dbas/templates/index.pt:166
@@ -451,7 +456,7 @@ msgstr "Log In"
 #. Default: Settings
 #: dbas/templates/snippet-header.pt:68
 msgid "settings"
-msgstr "Settings of"
+msgstr "Settings"
 
 #. Default: Logout
 #: dbas/templates/snippet-header.pt:73
