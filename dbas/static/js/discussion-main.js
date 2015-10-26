@@ -274,7 +274,7 @@ $(function () {
 
 			if (hidden_service == 'ajax_get_start_statements'){
 				ajaxHandler.getStartStatements();
-			} else if (hidden_service == 'ajax' + attrGetPremissesForStatement){
+			} else if (hidden_service == 'ajax_' + attrGetPremissesForStatement){
 				ajaxHandler.getPremisseForStatement(hidden_params);
 			} else if (hidden_service == 'ajax_' + attrReplyForPremissegroup){
 				ajaxHandler.getReplyForPremisseGroup(hidden_params);
