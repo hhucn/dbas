@@ -53,7 +53,7 @@ $(function () {
 			if($('#' + addStatementContainerMainInputId).val().length==0){
 				$('#' + addStatementContainerMainInputId).next().empty();
 			} else {
-				if ($('#' + discussionsDescriptionId).text() == startDiscussionText) {
+				if ($('#' + discussionsDescriptionId).text().indexOf(_t(startDiscussionText)) != -1) {
 					// here we have our start statement
 					ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
 				} else {

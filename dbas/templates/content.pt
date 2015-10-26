@@ -150,7 +150,7 @@
 
 						<h4><span id="add-statement-container-main-input-intro"></span></h4>
 						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
-						<div class="list-group">
+						<div class="list-group" id="proposal-list-group">
 						</div>
 
 						<div id="pro-position-column">
@@ -197,7 +197,7 @@
 			</div>
 		</div>
 
-		<div tal:condition="is_admin" class="container" style="display:none">
+		<div tal:condition="is_admin" class="container">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
@@ -212,7 +212,7 @@
 			</div>
 		</div>
 
-		<div tal:condition="is_admin" class="container" style="display:none">
+		<div tal:condition="is_admin" class="container">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">

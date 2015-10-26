@@ -641,67 +641,74 @@ class DatabaseHelper(object):
 		transaction.commit()
 		return new_argument
 
-	def set_premisses_for_conclusion(self, transaction, user, pdict, key, conclusion_id, is_supportive, issue):
+	def set_premisses_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
 		"""
 		Inserts the given dictionary with premisses for an statement or an argument
 		:param transaction: current transaction for the database
 		:param user: current users nickname
-		:param pdict: dictionary with all statements
-		:param key: pro or con
+		:param text: text
 		:param conclusion_id:
 		:param is_supportive: for the argument
 		:return: dict
 		"""
 
+		logger('DatabaseHelper', 'set_premisses_for_conclusion', 'main')
+
 		# insert the premisses as statements
 		return_dict = dict()
 		qh = QueryHelper()
 
+		# current conclusion
 		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==conclusion_id, Statement.issue_uid==issue)).first()
 
-		logger('DatabaseHelper', 'set_premisses_for_conclusion', 'main')
-		for index, entry in enumerate(pdict):
-			# first, save the premisse as statement
-			new_statement, is_duplicate = self.set_statement(transaction, pdict[entry], user, False, issue)
+		# first, save the premisse as statement
+		new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
 
+		if not is_duplicate:
+			logger('DatabaseHelper', 'set_premisses_for_conclusion', 'text is no duplicate')
 			# second, set the new statement as premisse
 			new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
-			logger('DatabaseHelper', 'set_premisses_for_conclusion', pdict[entry] + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
+			logger('DatabaseHelper', 'set_premisses_for_conclusion', text + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
 			       + ' to statement ' + str(db_conclusion.uid) + ', ' + ('' if is_supportive else '' ) + 'supportive')
 
 			# third, insert the argument
 			qh.set_argument(transaction, user, new_premissegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
-			return_dict[key + '_' + str(index)] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+		else:
+			logger('DatabaseHelper', 'set_premisses_for_conclusion', 'text is duplicate')
+
+		# we need the 'pro'-key cause the callback uses a method, where we differentiate between several prefixes
+		return_dict = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
 
 		transaction.commit()
-		return return_dict
+		return return_dict, is_duplicate
 
-	def set_premisses_for_premissegroups(self, transaction, user, pdict, key, premissegroup_id, is_supportive, issue):
-		"""
-		Inserts the given dictionary with premisses for an statement or an argument
-		:param transaction: current transaction for the database
-		:param user: current users nickname
-		:param pdict: dictionary with all statements
-		:param key: pro or con
-		:param premissegroup_id:
-		:param is_supportive: for the argument
-		:param issue:
-		:return: dict
-		"""
-
-		# insert the premisses as statements
-		return_dict = dict()
-
-		db_premisses = DBDiscussionSession.query(Premisse).filter(and_(Premisse.premissesGroup_uid==premissegroup_id,
-		                                                               Premisse.issue_uid==issue)).all()
-
-		logger('DatabaseHelper', 'set_premisses_for_premissegroups', 'main')
-		for premisse in db_premisses:
-			logger('DatabaseHelper', 'set_premisses_for_premissegroups', 'calling set_premisses_for_conclusion with ' + str(premisse.statement_uid))
-			return_dict.update(self.set_premisses_for_conclusion(transaction, user, pdict, key, premisse.statement_uid, is_supportive,
-			                                                     issue))
-
-		return return_dict
+#	def set_premisses_for_premissegroups(self, transaction, user, pdict, key, premissegroup_id, is_supportive, issue):
+#		"""
+#		Inserts the given dictionary with premisses for an statement or an argument
+#		:param transaction: current transaction for the database
+#		:param user: current users nickname
+#		:param pdict: dictionary with all statements
+#		:param key: pro or con
+#		:param premissegroup_id:
+#		:param is_supportive: for the argument
+#		:param issue:
+#		:return: dict
+#		"""
+#
+#		# insert the premisses as statements
+#		return_dict = dict()
+#
+#		db_premisses = DBDiscussionSession.query(Premisse).filter(and_(Premisse.premissesGroup_uid==premissegroup_id,
+#		                                                               Premisse.issue_uid==issue)).all()
+#
+#		logger('DatabaseHelper', 'set_premisses_for_premissegroups', 'main')
+#		for premisse in db_premisses:
+#			logger('DatabaseHelper', 'set_premisses_for_premissegroups', 'calling set_premisses_for_conclusion with ' + str(
+# premisse.statement_uid))
+#			return_dict.update(self.set_premisses_for_conclusion(transaction, user, pdict, key, premisse.statement_uid, is_supportive,
+#			                                                     issue))
+#
+#		return return_dict
 
 	def handle_inserting_new_statements(self, user, pro_dict, con_dict, transaction, argument_id, premissegroup_id, confrontation_uid,
 	                                    current_attack, premissegroup_con, premissegroup_pro, issue):
@@ -952,8 +959,8 @@ class DatabaseHelper(object):
 			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
 			# logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'current db_textvalue ' + db_textvalue.textversions.content.lower())
 			if value.lower() in db_textvalue.textversions.content.lower():
-				lev = distance(value, db_textvalue.textversions.content)
-				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + db_textvalue.textversions.content)
+				lev = distance(value.lower(), db_textvalue.textversions.content.lower())
+				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textvalue.textversions.content)
 				if lev < 10:
 					lev = '0000' + str(lev)
 				elif lev < 100:
@@ -989,8 +996,8 @@ class DatabaseHelper(object):
 		tmp_dict = dict()
 		for index, textversion in enumerate(db_textversions):
 			if value.lower() in textversion.content.lower():
-				lev = distance(value, textversion.content)
-				logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'lev: ' + str(lev) + ', value: ' + textversion.content)
+				lev = distance(value.lower(), textversion.content.lower())
+				logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' + textversion.content.lower())
 				if lev < 10:
 					lev = '0000' + str(lev)
 				elif lev < 100:

@@ -308,14 +308,17 @@ function InteractionHandler() {
 		}
 	};
 
-
-
 	/**
 	 * Callback, when new premisses were send
 	 * @param data returned data
 	 */
 	this.callbackIfDoneForSendNewStartPremisse= function (data) {
-		this.callbackIfDoneForSendNewPremissesX(data);
+		var parsedData = $.parseJSON(data);
+		 if (parsedData.status == '0') {
+			 new InteractionHandler().premisseButtonWasClicked(parsedData.premissegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'))
+		 } else {
+			 this.callbackIfDoneForSendNewPremissesX(data);
+		 }
 	};
 
 	/**

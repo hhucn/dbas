@@ -65,6 +65,7 @@ var dbas_de = {
 	'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz!',
 	'email': 'E-Mail',
 	'edit': 'Bearbeiten',
+	'error_code': 'Fehler-Code',
 	'editTitle': 'Aussagen bearbeiten',
 	'firstConclusionRadioButtonText': 'Lass mich meine eigenen Ideen einfügen!',
 	'firstArgumentRadioButtonText': 'Lass mich meine eigenen Aussagen einfügen!',

@@ -6,7 +6,7 @@
  * @copyright Krauthoff 2015
  */
 
-// Todo: replace JSON.stringify(err)
+// Todo: replace _t(requestFailed) + ', ' + _t(errorCode) + ' xx'
 
 function AjaxSiteHandler() {
 	'use strict';
@@ -101,7 +101,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetAllPositionsFail(err) {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
-			new GuiHandler().showDiscussionError(JSON.stringify(err));
+			new GuiHandler().showDiscussionError();
 		});
 	};
 
@@ -133,7 +133,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetPremisseForStatementFail(err) {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
-			new GuiHandler().showDiscussionError(JSON.stringify(err));
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ', ' + _t(errorCode) + ' 2');
 		});
 	};
 
@@ -165,7 +165,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetReplyForPremisseFail(err) {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
-			new GuiHandler().showDiscussionError(JSON.stringify(err));
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ', ' + _t(errorCode) + ' 3');
 		});
 	};
 
@@ -197,7 +197,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetReplyForArgumentFail(err) {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
-			new GuiHandler().showDiscussionError(JSON.stringify(err));
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ', ' + _t(errorCode) + ' 4');
 		});
 	};
 
@@ -229,7 +229,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail(err) {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
-			new GuiHandler().showDiscussionError(JSON.stringify(err));
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ', ' + _t(errorCode) + ' 5');
 		});
 	};
 
@@ -256,7 +256,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewPremissesX(data);
 		}).fail(function ajaxSendNewPremissesForXFail(err) {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(JSON.stringify(err));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + _t(errorCode) + ' 6');
 		});
 	};
 
@@ -280,7 +280,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartPremisse(data);
 		}).fail(function ajaxSendNewStartPremisseFail(err) {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(JSON.stringify(err));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + _t(errorCode) + ' 7');
 		});
 	};
 
@@ -305,7 +305,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
 		}).fail(function ajaxSendStartStatementFail(err) {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(JSON.stringify(err));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + _t(errorCode) + ' 8');
 		});
 	};
 
@@ -336,7 +336,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetLogfileForStatementFail(err) {
 			// $('#' + popupEditStatementErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).text(internal_error);
+			$('#' + popupEditStatementErrorDescriptionId).text(_t(requestFailed) + ', ' + _t(errorCode) + ' 14');
 		});
 	};
 
@@ -373,7 +373,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxSendCorrectureOfStatementFail(err) {
 			// $('#' + popupEditStatementErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).text(JSON.stringify(err));
+			$('#' + popupEditStatementErrorDescriptionId).text(_t(requestFailed) + ', ' + _t(errorCode) + ' 13');
 		});
 	};
 
@@ -425,7 +425,7 @@ function AjaxSiteHandler() {
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail(err) {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(JSON.stringify(err));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + _t(errorCode) + ' 9');
 		});
 	};
 
@@ -454,7 +454,7 @@ function AjaxSiteHandler() {
 			new GuiHandler().setErrorDescription('');
 		}).fail(function ajaxGetAllUsersFail(err) {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(JSON.stringify(err));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + _t(errorCode) + ' 10');
 			$('#' + listAllUsersAttacksId).val(_t(showAllAttacks));
 		});
 	};
@@ -484,7 +484,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail(err) {
-			alert('fail in fuzzy search');
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + _t(errorCode) + ' 11');
 		});
 		$('#' + callbackid).focus();
 	};
@@ -508,7 +508,7 @@ function AjaxSiteHandler() {
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetIssueListFail(err) {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(JSON.stringify(err));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + _t(errorCode) + ' 12');
 		});
 	};
 }

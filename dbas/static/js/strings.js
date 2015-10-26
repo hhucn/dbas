@@ -95,6 +95,7 @@ var euCookiePopoupButton2 					= 'euCookiePopoupButton2';
 var empty_news_input  						= 'empty_news_input';
 var email 									= 'email';
 var edit 									= 'edit';
+var errorCode 								= 'error_code';
 var editTitle								= 'editTitle';
 var firstConclusionRadioButtonText 			= 'firstConclusionRadioButtonText';
 var firstArgumentRadioButtonText			= 'firstArgumentRadioButtonText';

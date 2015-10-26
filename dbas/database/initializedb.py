@@ -343,7 +343,7 @@ def setupDiscussionDatabase():
 	textversion103 = TextVersion(content="Shutting down university park will save 100.000$ a year.", author=user2.uid, weight=0)
 	textversion104 = TextVersion(content="Criminals use university park to sell drugs.", author=user2.uid, weight=0)
 	textversion105 = TextVersion(content="We should not give in to criminals.", author=user2.uid, weight=0)
-	textversion106 = TextVersion(content="We should close close public swimming pools.", author=user2.uid, weight=0)
+	textversion106 = TextVersion(content="We should close public swimming pools.", author=user2.uid, weight=0)
 	textversion107 = TextVersion(content="The mayor should increase the taxes", author=user2.uid, weight=0)
 	textversion108 = TextVersion(content="The number of police patrols should be increased.", author=user2.uid, weight=0)
 

@@ -1,4 +1,4 @@
-/*global $, jQuery, discussionsDescriptionId, discussionContainerId, discussionSpaceId, discussionAvoidanceSpaceId */
+/*global $, jQuery, discussionsDescriptionId, discussionContainerId, discussionSpaceId, discussionAvoidanceSpaceId, _t */
 
 /**
  * @author Tobias Krauthoff
@@ -339,7 +339,7 @@ function GuiHandler() {
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == keyword) {
 				if (!same_group) {
-					text = _t(because) + ' ' + + val.text;
+					text = _t(because) + ' ' + val.text;
 					l = text.length - 1;
 					if (text.substr(l) != '.' && text.substr(l) != '?' && text.substr(l) != '!') {
 						text += '.';
@@ -418,10 +418,10 @@ function GuiHandler() {
 		addReasonButton.disable = true;
 
 		if (isStatement || typeof relation == 'undefined') {
+			// some pretty print options
 			if (isStart) {
 				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
 			}else {
-				// pretty print
 				if (discussionsDescription.html().indexOf(_t(firstPremisseText1)) != -1){
 					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>');
 				} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHave)) != -1) {
@@ -433,16 +433,17 @@ function GuiHandler() {
 					$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremisse) + '<br><br>' + discussionsDescription.html());
 				}
 				$('#' + addStatementContainerMainInputIntroId).text(_t(because) + '...');
-				$('#')
 			}
+
+			// gui modifications
 			$('#' + addStatementContainerMainInputId).show();
 			$('#' + proPositionColumnId).hide();
 			$('#' + conPositionColumnId).hide();
+			// at the beginning we differentiate between statement and statements
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenStatement() {
 				if (isStart) {
 					ajaxhandler.sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
 				} else {
-					alert('What now (I)? GuiHandler: setDisplayStylesOfAddStatementContainer');
 					ajaxhandler.sendNewStartPremisse($('#' + addStatementContainerMainInputId).val(), discussionsDescription.attr('conclusion_id'));
 				}
 				guihandler.setErrorDescription('');
@@ -514,7 +515,7 @@ function GuiHandler() {
 	 * @param callbackid
 	 */
 	this.setStatementsAsProposal = function (parsedData, callbackid){
-		var callback = $('#' + callbackid);
+		var callback = $('#' + callbackid), uneditted_value;
 		// is there any value ?
 		if (Object.keys(parsedData).length == 0){
 			callback.next().empty();
@@ -536,7 +537,8 @@ function GuiHandler() {
 			var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0;
 			var start = 0;
 
-			// make all tokens bild
+			// make all tokens bold
+			uneditted_value = val;
 			while (token.length>0 && newpos != -1){//val.length) {
 				val = val.substr(0, pos) + '<b>' + val.substr(pos, token.length) + '</b>' + val.substr(pos + token.length);
 				start = pos + token.length + 7;
@@ -555,7 +557,7 @@ function GuiHandler() {
 			span_dist = $('<span>').attr({class : 'badge'}).text(_t(levenshteinDistance) + ' ' + distance);
 			span_text = $('<span>').attr({id : 'proposal_' + index + '_text'}).html(val);
 			button.append(span_dist).append(span_text).click(function(){
-				callback.val(val.replace('<b>','').replace('</b>',''));
+				callback.val(uneditted_value);
 				statementListGroup.empty(); // list with elements should be after the callbacker
 			});
 			statementListGroup.append(button);

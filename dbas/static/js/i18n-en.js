@@ -64,6 +64,7 @@ var dbas_en = {
 	'euCookiePopoupButton2': 'Learn&nbsp;more',
 	'empty_news_input': 'News title or text is empty or too short!',
 	'email': 'E-Mail',
+	'error_code': 'Error code',
 	'edit': 'Edit',
 	'editTitle': 'Editing the statements.',
 	'firstConclusionRadioButtonText': 'Let me enter my idea!',
