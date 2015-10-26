@@ -568,7 +568,13 @@ comment .container and wrap each container with <div class="coloured-div">
 	margin: 0 5px;
 }
 
-	
+#modal-checkbox-body{
+	padding: 0px 15px 0px 15px;
+}
+
+#confirm-dialog-checkbox-label{
+	font-weight: 100;
+}
 
 @media (max-width: 768px) {
 	.container {

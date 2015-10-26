@@ -97,10 +97,10 @@ function goBackToTop() {
 }
 
 /**
- * Displays dialog for language translation and send ajax requests
- * @param functionForAccept
+ * Displays dialog
  * @param titleText
  * @param bodyText
+ * @param functionForAccept
  * @param isRestartingDiscussion
  */
 function displayConfirmationDialog(titleText, bodyText, functionForAccept, isRestartingDiscussion) {
@@ -108,16 +108,52 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, isRes
 	$('#' + popupConfirmDialogId).modal('show');
 	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
-	$('#' + confirmDialogAcceptBtn).click( function () {
+	$('#' + popupConfirmDialogAcceptBtn).click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
 		if (isRestartingDiscussion)
 			window.location.href = mainpage + 'discussion/start/issue=' + functionForAccept;
 		else
 			functionForAccept();
 	});
-	$('#' + confirmDialogRefuseBtn).click( function () {
+	$('#' + popupConfirmDialogRefuseBtn).click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
 	});
+}
+
+/**
+ * Displays dialog with checkbox
+ * @param titleText
+ * @param bodyText
+ * @param checkboxText
+ * @param functionForAccept
+ * @param isRestartingDiscussion
+ */
+function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
+	// display dialog only if the cookie was not set yet
+	if (new Helper().isCookieSet(WARNING_CHANGE_DISCUSSION_POPUP)){
+		window.location.href = mainpage + 'discussion/start/issue=' + functionForAccept;
+	} else {
+		$('#' + popupConfirmChecbkoxDialogId).modal('show');
+		$('#' + popupConfirmChecbkoxDialogId + ' h4.modal-title').text(titleText);
+		$('#' + popupConfirmChecbkoxDialogId + ' div.modal-body').html(bodyText);
+		$('#' + popupConfirmChecbkoxDialogTextId).text(checkboxText);
+		$('#' + popupConfirmChecbkoxDialogAcceptBtn).click( function () {
+			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
+			// maybe set a cookie
+			if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
+				new Helper().setCookie(WARNING_CHANGE_DISCUSSION_POPUP);
+			}
+
+			if (isRestartingDiscussion)
+				window.location.href = mainpage + 'discussion/start/issue=' + functionForAccept;
+			else
+				functionForAccept();
+
+		});
+		$('#' + popupConfirmDialogRefuseBtn).click( function () {
+			$('#' + popupConfirmDialogId).modal('hide');
+		})
+	}
 }
 
 /**

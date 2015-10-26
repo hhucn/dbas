@@ -58,6 +58,8 @@ var dbas_de = {
 	'doesNotJustify': 'nicht gerechtfertigen, dass',
 	'deleteTrack': 'Track löschen',
 	'doYouWantToEnterYourStatements': 'Möchten Sie Ihre eigenen Gründe angeben?',
+	'doNotHesitateToContact': 'Zögern Sie nicht, uns eine  <a' +
+	' href="mailto:krauthoff@cs.uni-duesseldorf.de?subject=Fehler%20beim%20Navigieren&body=Bitte%20beschreiben%20Sie%20hier%20kurz%20den%20Fehler">Nachricht zu senden</a>',
 	'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Google Analytics.',
 	'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit.',
 	'euCookiePopoupButton1': 'Weiter',
@@ -99,6 +101,7 @@ var dbas_de = {
 	'iHaveStrongerArgument': 'Jedoch habe ich ein stärkeres Argument zum Akzeptieren von',
 	'iNoOpinion': 'Ich habe keine Meinung bezüglich',
 	'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
+	'keepSetting': 'Entscheidung merken',
 	'hideAllUsers': 'Verstecke alle Benutzer',
 	'hideAllAttacks': 'Verstecke alle Angriffe',
 	'letMeExplain': 'Lass\' es mich so erklären',

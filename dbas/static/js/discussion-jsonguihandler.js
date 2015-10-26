@@ -102,7 +102,7 @@ function JsonGuiHandler() {
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
 			confronation_id = '_argument_' + jsonData.confrontation_argument_id,
 			argument_id = '_argument_' + jsonData.argument_id,
-			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, false, true);
+			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, jsonData.attack, false, true);
 
 		if (typeof jsonData.relation == 'undefined'){
 			opinion = '<b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse + '</b>';

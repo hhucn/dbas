@@ -581,7 +581,7 @@ function GuiHandler() {
 	 */
 	this.showDiscussionError = function (error_msg) {
 		$('#' + discussionFailureRowId).fadeIn('slow');
-		$('#' + discussionFailureMsgId).text(error_msg);
+		$('#' + discussionFailureMsgId).html(error_msg);
 	};
 
 	/**
@@ -908,7 +908,8 @@ function GuiHandler() {
 					func = $(this).parent().attr('issue');
 					topic = $('#issue_' + func + ' a').text();
 
-					displayConfirmationDialog(_t(switchDiscussion), _t(switchDiscussionText1) + ': <i>\'' + topic + '\'</i> ' + _t(switchDiscussionText2), func, true);
+					displayConfirmationDialogWithCheckbox(_t(switchDiscussion), _t(switchDiscussionText1) + ': <i>\'' + topic
+						+ '\'</i> ' + _t(switchDiscussionText2), _t(keepSetting), func, true);
 					// set new title and text
 					$('#' + issueDropdownButtonID).text($(this).text());
 					$('#' + issueDateId).text($(this).attr('title'));

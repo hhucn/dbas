@@ -40,7 +40,6 @@ function InteractionHandler() {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
-
 		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id, relation, confrontation_uid);
 	};
 

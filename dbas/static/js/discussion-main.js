@@ -274,13 +274,13 @@ $(function () {
 
 			if (hidden_service == 'ajax_get_start_statements'){
 				ajaxHandler.getStartStatements();
-			} else if (hidden_service == 'ajax_get_premisses_for_statement'){
+			} else if (hidden_service == 'ajax' + attrGetPremissesForStatement){
 				ajaxHandler.getPremisseForStatement(hidden_params);
-			} else if (hidden_service == 'ajax_reply_for_premissegroup'){
+			} else if (hidden_service == 'ajax_' + attrReplyForPremissegroup){
 				ajaxHandler.getReplyForPremisseGroup(hidden_params);
-			} else if (hidden_service == 'ajax_reply_for_response_of_confrontation'){
+			} else if (hidden_service == 'ajax_' + attrReplyForResponseOfConfrontation){
 				ajaxHandler.handleReplyForResponseOfConfrontation(hidden_params);
-			} else if (hidden_service == 'ajax_reply_for_argument'){
+			} else if (hidden_service == 'ajax_' + attrReplyForArgument){
 				ajaxHandler.getReplyForArgument(hidden_params);	}
 		}
 	});

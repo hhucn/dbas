@@ -56,6 +56,8 @@ var dbas_en = {
 	'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version' +
 	' as the current one once again?',
 	'doesNotHoldBecause': 'does not hold, because',
+	'doNotHesitateToContact': 'Do not hesitate to <a' +
+	' href="mailto:krauthoff@cs.uni-duesseldorf.de?subject=Error%20in%20navigating&body=Please%20describe%20the%20error">contact us via mail</a>',
 	'doesNotJustify': 'does not justify that',
 	'doYouWantToEnterYourStatements': 'Do you want to enter your statement(s)?',
 	'euCookiePopupTitle': 'This website is using cookies and Google Analytics.',
@@ -99,6 +101,7 @@ var dbas_en = {
 	'iHaveStrongerArgument': 'However, I have a much stronger argument for accepting that',
 	'iNoOpinion': 'I have no opinion regarding',
 	'interestingOnDBAS': 'Interesting discussion on DBAS',
+	'keepSetting': 'Keep this',
 	'hideAllUsers': 'Hide all users',
 	'hideAllAttacks': 'Hide all attacks',
 	'letMeExplain': 'Let me explain it this way',

@@ -88,18 +88,33 @@ function Helper() {
 	 * @param confrontation current confrontation
 	 * @param conclusion current conclusion
 	 * @param premisse current premisse
+	 * @param attackType current type of the attack
 	 * @param startLowerCase, true, when each sentences should start as lowercase
 	 * @param endWithDot, true, when each sentences should end with a dot
 	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createConfrontationsRelationsText = function(confrontation, conclusion, premisse, startLowerCase, endWithDot){
+	this.createConfrontationsRelationsText = function(confrontation, conclusion, premisse, attackType, startLowerCase, endWithDot){
+		var rebutConclusion;
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+		// if (attackType == 'undermine'){			rebutConclusion = premisse;
+		// } else if (attackType == 'rebut'){		rebutConclusion = conclusion;
+		// } else if (attackType == 'undercut'){	rebutConclusion = conclusion + ' ' + _t(because).toLocaleLowerCase() + ' ' + premisse;
+		// }
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
 
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
 		var w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong)),
 			r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right)),
-			i = startLowerCase ? this.startWithLowerCase(_t(irrelevant)) : this.startWithUpperCase(_t(irrelevant)),
 			enddot = endWithDot ? '.' : '',
 			counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premisse + '</b>', // todo with or without premisse ?
 			undermine = w + ', ' + _t(itIsFalse) + ' <b>' + confrontation + '</b>' + enddot,
@@ -107,7 +122,7 @@ function Helper() {
 			undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + enddot,
 			overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + enddot,
 			rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + ' ' + _t(because).toLocaleLowerCase() + ' ' + premisse
-				+ '</b>. ' + _t(iHaveStrongerArgument) + ' <b>' + premisse + '</b>' + enddot,
+				+ '</b>. ' + _t(iHaveStrongerArgument) + ' <b>' + rebutConclusion + '</b>' + enddot,
 			noopinion  = _t(iNoOpinion) + ': <b>' + confrontation + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
@@ -257,8 +272,17 @@ function Helper() {
 	 * @param cookie_name
 	 */
 	this.setCookie = function(cookie_name){
+		this.setCookieForDays(cookie_name, 7);
+	};
+
+	/**
+	 *
+	 * @param cookie_name
+	 * @param days
+	 */
+	this.setCookieForDays = function(cookie_name, days){
 		var d = new Date(), consent = true;
-		var expiresInDays = 7 * 24 * 60 * 60 * 1000; // Todo expiresInDays for how to write cookie
+		var expiresInDays = days * 24 * 60 * 60 * 1000; // Todo expiresInDays for how to write cookie
 		d.setTime( d.getTime() + expiresInDays );
 		var expires = 'expires=' + d.toGMTString();
 		document.cookie = cookie_name + '=' + consent + '; ' + expires + ';path=/';
