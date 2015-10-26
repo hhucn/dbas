@@ -473,11 +473,13 @@ class QueryHelper(object):
 				# now attacks contains all attacks, which were not be done
 				logger('QueryHelper', 'get_attack_for_argument_by_random', 'attacks, which were not done yet ' + str(attacks))
 
+		logger('QueryHelper', 'get_attack_for_argument_by_random', 'attack_list : ' + str(attacks))
 		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
 		dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, attack_list, issue, complete_list_of_attacks)
 		# sanity check if we could not found an attack for a left attack in out set
 		if not dict and len(attacks) > 0:
-			dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, complete_list_of_attacks, issue, complete_list_of_attacks)
+			logger('QueryHelper', 'get_attack_for_argument_by_random', 'no attack found, try to find an attack for any other left attack')
+			dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, [], issue, complete_list_of_attacks)
 
 		return dict, key
 
@@ -526,7 +528,6 @@ class QueryHelper(object):
 			return_dict, key = self.get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks)
 		else:
 			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
-
 
 		return return_dict, key
 

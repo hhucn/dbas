@@ -344,7 +344,7 @@ class DatabaseHelper(object):
 		return_dict['attack'] = key
 
 		status = 1
-		if int(attacks[key]) == 0:
+		if not attacks or int(attacks[key]) == 0:
 			logger('DatabaseHelper', 'get_attack_for_premissegroup', 'there is no attack!')
 			status = 0
 		else:
