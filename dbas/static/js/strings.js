@@ -4,7 +4,7 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
+// var mainpage = 'http://localhost:4284/';
 var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
