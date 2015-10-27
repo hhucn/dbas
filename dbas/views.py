@@ -22,7 +22,7 @@ from .logger import logger
 name = 'D-BAS'
 version = '0.3.9'
 header = name + ' ' + version
-issue_fallback = 1#DBDiscussionSession.query(Issue).first().uid
+issue_fallback = 1
 
 class Dbas(object):
 	def __init__(self, request):
@@ -389,6 +389,7 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('notfound', 'def', 'view \'' + self.request.view_name + '\' not found')
+
 		self.request.response.status = 404
 		try:
 			lang = str(self.request.cookies['_LOCALE_'])
@@ -971,15 +972,6 @@ class Dbas(object):
 
 		:return:
 		"""
-		logger('user_logout', 'def', 'main')
-		logger('user_logout', 'def', 'main')
-		logger('user_logout', 'def', 'main')
-		logger('user_logout', 'def', 'main')
-		logger('user_logout', 'def', 'main')
-		logger('user_logout', 'def', 'main')
-		logger('user_logout', 'def', 'main')
-		logger('user_logout', 'def', 'main')
-		logger('user_logout', 'def', 'main')
 		logger('user_logout', 'def', 'main')
 
 		url = self.request.params['url']
