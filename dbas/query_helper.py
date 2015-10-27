@@ -455,8 +455,7 @@ class QueryHelper(object):
 		# 4 = overbid
 		# 5 = rebut
 
-		logger('QueryHelper', 'get_attack_for_argument_by_random', 'user ' + (user if user else 'anonymous') + ', arg.uid ' + str(
-			db_argument.uid))
+		logger('QueryHelper', 'get_attack_for_argument_by_random', 'user ' + (user if user else 'anonymous') + ', arg.uid ' + str(db_argument.uid))
 
 		# all possible attacks
 		complete_list_of_attacks = [1,3,5]

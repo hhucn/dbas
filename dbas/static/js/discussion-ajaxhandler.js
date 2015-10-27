@@ -1,12 +1,10 @@
-/*global $, jQuery, alert, GuiHandler, InteractionHandler, internal_error, popupErrorDescriptionId */
+/*global $, jQuery, alert, GuiHandler, InteractionHandler, internal_error, popupErrorDescriptionId, _t */
 
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
  * @copyright Krauthoff 2015
  */
-
-// Todo: replace _t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' xx'
 
 function AjaxSiteHandler() {
 	'use strict';
@@ -98,7 +96,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetAllPositionsDone(data) {
 			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetAllPositionsFail(err) {
+		}).fail(function ajaxGetAllPositionsFail() {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
 			new GuiHandler().showDiscussionError();
@@ -130,10 +128,11 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetPremisseForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForPremisseForStatement(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetPremisseForStatementFail(err) {
+		}).fail(function ajaxGetPremisseForStatementFail() {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 2. ' + _t(doNotHesitateToContact));
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 2) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -162,10 +161,11 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetReplyForPremisseDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForPremissegroup(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetReplyForPremisseFail(err) {
+		}).fail(function ajaxGetReplyForPremisseFail() {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 3. ' + _t(doNotHesitateToContact));
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 3) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -194,10 +194,11 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetReplyForArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForArgument(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetReplyForArgumentFail(err) {
+		}).fail(function ajaxGetReplyForArgumentFail() {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 4. ' + _t(doNotHesitateToContact));
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 4) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -226,10 +227,11 @@ function AjaxSiteHandler() {
 		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
 			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail(err) {
+		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
 			new GuiHandler().setErrorDescription(_t(internal_error));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 5. ' + _t(doNotHesitateToContact));
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 5) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -254,9 +256,10 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxSendNewPremissesForXDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewPremissesX(data);
-		}).fail(function ajaxSendNewPremissesForXFail(err) {
+		}).fail(function ajaxSendNewPremissesForXFail() {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 6. ' + _t(doNotHesitateToContact));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 6) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -278,9 +281,10 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxSendNewStartPremisseDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewStartPremisse(data);
-		}).fail(function ajaxSendNewStartPremisseFail(err) {
+		}).fail(function ajaxSendNewStartPremisseFail() {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 7. ' + _t(doNotHesitateToContact));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 7) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -303,9 +307,10 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxSendStartStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
-		}).fail(function ajaxSendStartStatementFail(err) {
+		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8. ' + _t(doNotHesitateToContact));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -333,10 +338,11 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetLogfileForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetLogfileForStatementFail(err) {
+		}).fail(function ajaxGetLogfileForStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).text(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 14. ' + _t(doNotHesitateToContact));
+			$('#' + popupEditStatementErrorDescriptionId).text(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 14) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -370,10 +376,11 @@ function AjaxSiteHandler() {
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, edit_dialog_td_id);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxSendCorrectureOfStatementFail(err) {
+		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).text('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).text(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 13. ' + _t(doNotHesitateToContact));
+			$('#' + popupEditStatementErrorDescriptionId).text(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 13) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -398,7 +405,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetShortenUrlDone(data) {
 			new InteractionHandler().callbackIfDoneForShortenUrl(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetShortenUrl(err) {
+		}).fail(function ajaxGetShortenUrl() {
 			$('#' + popupUrlSharingInputId).val(long_url);
 		});
 	};
@@ -423,9 +430,10 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneGetUsersOverview(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetAllUsersFail(err) {
+		}).fail(function ajaxGetAllUsersFail() {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9. ' + _t(doNotHesitateToContact));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 
@@ -452,9 +460,10 @@ function AjaxSiteHandler() {
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 			$('#' + listAllUsersAttacksId).val(_t(hideAllAttacks));
 			new GuiHandler().setErrorDescription('');
-		}).fail(function ajaxGetAllUsersFail(err) {
+		}).fail(function ajaxGetAllUsersFail() {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10. ' + _t(doNotHesitateToContact));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 			$('#' + listAllUsersAttacksId).val(_t(showAllAttacks));
 		});
 	};
@@ -483,12 +492,12 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetAllUsersFail(err) {
-			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 11. ' + _t(doNotHesitateToContact));
+		}).fail(function ajaxGetAllUsersFail() {
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 11) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 		$('#' + callbackid).focus();
 	};
-
 	/**
 	 *
 	 */
@@ -506,9 +515,10 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetIssueListDone(data) {
 			new InteractionHandler().callbackIfDoneForGetIssueList(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetIssueListFail(err) {
+		}).fail(function ajaxGetIssueListFail() {
 			// new GuiHandler().setErrorDescription(_t(internal_error));
-			new GuiHandler().setErrorDescription(_t(requestFailed) + ', ' + new Helper().startWithLowerCase(_t(errorCode)) + ' 12. ' + _t(doNotHesitateToContact));
+			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 12) '
+				 + _t(doNotHesitateToContact) + '.<br> ' + _t(restartOnError) + '.');
 		});
 	};
 }

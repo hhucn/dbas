@@ -6,6 +6,7 @@
 
 function JsonGuiHandler() {
 	'use strict';
+	var DEBUG_ATTACK = true;
 
 	/**
 	 * Sets given json content as start statement buttons in the discussions space
@@ -102,8 +103,9 @@ function JsonGuiHandler() {
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
 			confronation_id = '_argument_' + jsonData.confrontation_argument_id,
 			argument_id = '_argument_' + jsonData.argument_id,
-			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, jsonData.attack, false, true);
+			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, jsonData.attack, false);
 
+		// sanity check
 		if (typeof jsonData.relation == 'undefined'){
 			opinion = '<b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse + '</b>';
 		} else {
@@ -120,20 +122,26 @@ function JsonGuiHandler() {
 			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotJustify) + ' <b>' + conclusion + '</b>,' +
 				' ' + _t(because).toLocaleLowerCase() + ' ';
 		}
-		confrontationText += '<b>' + confrontation + '</b>. [<i>' + jsonData.attack + '</i>]';
+		confrontationText += '<b>' + confrontation + '</b>' + (DEBUG_ATTACK ? (' [<i>' + jsonData.attack + '</i>]') : '');
 
 		// set discussions text
 		dict = {confrontation_uid: jsonData.confrontation_uid, current_attack: jsonData.attack};
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
-			+ confrontationText + '.<br><br>' + _t(whatDoYouThink), 'This confrontation is a ' + jsonData.attack, dict);
+			+ confrontationText + '.<br><br>' + _t(whatDoYouThink), 'This confrontation is a ' + jsonData.attack + '.', dict);
 
 		// build the radio buttons
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine + confronation_id, relationArray[0] + ' [<i>undermine</i>]', false, false, true, attr_undermine));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_support + confronation_id, relationArray[1] + ' [<i>support</i>]', false, false, true, attr_support));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undercut + confronation_id, relationArray[2] + ' [<i>undercut</i>]', false, false, true, attr_undercut));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_overbid + confronation_id, relationArray[3] + ' [<i>overbid</i>]', false, false, true, attr_overbid));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_rebut + argument_id, relationArray[4] + ' [<i>rebut</i>]', false, false, true, attr_rebut));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_no_opinion + argument_id, relationArray[5] + ' [<i>noopinion</i>]', false, false, true, attr_no_opinion));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine + confronation_id, relationArray[0] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : ''), false, false, true, _t(description_undermine)));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_support + confronation_id, relationArray[1] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_support + '</i>]') : ''), false, false, true, _t(description_support)));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undercut + confronation_id, relationArray[2] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : ''), false, false, true, _t(description_undercut)));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_overbid + confronation_id, relationArray[3] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_overbid + '</i>]') : ''), false, false, true, _t(description_overbid)));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_rebut + argument_id, relationArray[4] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : ''), false, false, true, _t(description_rebut)));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_no_opinion + argument_id, relationArray[5] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : ''), false, false, true, _t(description_no_opinion)));
 		// TODO HOW TO INSERT ATTACKING PREMISEGROUPS?
 
 		// set the buttons
@@ -149,10 +157,7 @@ function JsonGuiHandler() {
 			guihandler = new GuiHandler(),
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
 			premisse = jsonData.premisse_text,
-			opinion,
-			confrontationText,
-			listitems = [],
-			dict,
+			opinion, confrontationText, listitems = [], dict,
 			relation = jsonData.relation,
 			conclusion_uid = jsonData.conclusion_uid,
 			argument_uid = jsonData.argument_uid,
@@ -204,16 +209,17 @@ function JsonGuiHandler() {
 			helper = new Helper(),
 			guihandler = new GuiHandler(),
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
-			relationArray = helper.createRelationsText(jsonData.confrontation_text, premisse, conclusion, true, false),
-			text, listitems = [], i, reason, id, long_id, dict;
+			listitems = [], i, reason, id, long_id, dict, lastAttack, text;
 
-		if (jsonData.relation === attr_undermine) {			text = relationArray[0] + '. ' + _t(canYouGiveAReason) + ' (' + _t(youMadeAn) + ' ' + attr_undermine + ')';
-		} else if (jsonData.relation === attr_support) {	text = relationArray[1] + '. ' + _t(canYouGiveAReason) + ' (' + _t(youMadeA) + ' ' + attr_support + ')';
-		} else if (jsonData.relation === attr_undercut) {	text = relationArray[2] + '. ' + _t(canYouGiveAReason) + ' (' + _t(youMadeAn) + ' ' + attr_undercut + ')';
-		} else if (jsonData.relation === attr_overbid) {	text = relationArray[3] + '. ' + _t(canYouGiveAReason) + ' (' + _t(youMadeAn) + ' ' + attr_overbid + ')';
-		} else if (jsonData.relation === attr_rebut) {		text = relationArray[4] + ', ' + _t(butWhich) + '?'	   + ' (' + _t(youMadeA) + ' ' + attr_rebut + ')';
-		}
+		lastAttack = $('#' + hiddenDiscussionInformationParametersId).text();
+		lastAttack = lastAttack.substr(lastAttack.indexOf('relation=') + 'relation='.length);
+		lastAttack = lastAttack.substr(0,lastAttack.indexOf('&'));
 
+		text = helper.createRelationsText(jsonData.confrontation_text, premisse, jsonData.relation, lastAttack, conclusion, true);
+		text += DEBUG_ATTACK ? (' (' + _t(youMadeA) + ' ' + jsonData.relation + ')' ): '';
+		text += '<br><br>' + _t(canYouGiveAReason);
+
+		// build the reasons
 		for (i=0; i<parseInt(jsonData.reason); i++){
 			long_id = jsonData.relation + '_' + jsonData.type + '_' + jsonData['reason' + i + 'id'];
 			id = jsonData['reason' + i + '_statement_id'];
@@ -222,7 +228,7 @@ function JsonGuiHandler() {
 		}
 
 		dict = { // todo params in id.js!
-			'text': premisse,
+			'text': jsonData.confrontation_text,
 			'attack': jsonData.relation,
 			'related_argument': jsonData.argument_uid,
 			'premissegroup_uid': jsonData.premissegroup_uid,
@@ -233,8 +239,7 @@ function JsonGuiHandler() {
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + text, '', dict);
 
 		if (typeof jsonData.logged_in == "string") {
-			text = parseInt(jsonData.reason) == 0 ? _t(addPremisseRadioButtonText) : _t(addPremissesRadioButtonText);
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, text, false, false, false, text));
+			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));
 		} else if (parseInt(jsonData.reason) == 0){
 			guihandler.setErrorDescription(_t(discussionEnd) + '<br>' + _t(clickHereForRegistration));
 		}

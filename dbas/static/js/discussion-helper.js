@@ -57,30 +57,38 @@ function Helper() {
 	 * Returns all kinds of attacks for the given premisse and conclusion
 	 * @param confrontation current confrontation
 	 * @param premisse current premisses
+	 * @param attackType current type of the attack
+	 * @param lastAttack last attack
 	 * @param conclusion current conclusion
 	 * @param startLowerCase, true, when each sentences should start as lowercase
-	 * @param endWithDot, true, when each sentences should end with a dot
-	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
+	 * @returns {string} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createRelationsText = function(confrontation, premisse, conclusion, startLowerCase, endWithDot){
+	this.createRelationsText = function(confrontation, premisse, attackType, lastAttack, conclusion, startLowerCase){
 		if (premisse.substr(premisse.length-1) == '.')
 			premisse = premisse.substr(0, premisse.length-1);
 
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong)),
-			r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right)),
-			enddot = endWithDot ? '.' : '',
-			counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premisse + '</b>', // todo with or without premisse ?
-			undermine = '<b>' + w + ', ' + _t(itIsFalse) + " " + premisse + '</b>' + enddot,
-			support	  = '<b>' + r + ', ' + _t(itIsTrue) + " " + premisse + '</b>' + enddot,
-			undercut  = '<b>' + r + ', ' + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + enddot,
-			overbid	  = '<b>' + r + ', ' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + enddot,
-			rebut	  = '<b>' + r + ', ' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion
-				+ '</b>.<br><br>' + _t(iHaveStrongerArgument) + ' <b>' + premisse + '</b>' + enddot,
-			noopinion  = _t(iNoOpinion) + ' <b>' + conclusion + '</b>. ' + _t(goStepBack) + '.';
-		return [undermine, support, undercut, overbid, rebut, noopinion];
+		var rebutConclusion, w,  r, counterJusti;
+
+		if (lastAttack == attr_undermine){			rebutConclusion = premisse;
+		} else if (lastAttack == attr_rebut){		rebutConclusion = conclusion;
+		} else if (lastAttack == attr_undercut){	rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse;
+		}
+
+		// pretty print
+		w = '<b>' + (startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong))) + ', ';
+		r = '<b>' + (startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right))) + ', ';
+		counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premisse + '</b>';
+
+		// different cases
+		if (attackType === attr_undermine)	return w + _t(itIsFalse) + ' ' + confrontation + '</b>.';
+		if (attackType === attr_support)	return r + _t(itIsTrue) + ' ' + confrontation + '</b>.';
+		if (attackType === attr_undercut)	return r + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + '.';
+		if (attackType === attr_overbid)	return r + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.';
+		if (attackType === attr_rebut)		return r + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br><br>'
+												+ _t(iHaveStrongerArgument) + ' <b>' + rebutConclusion + '</b>.';
 	};
 
 	/**
@@ -90,40 +98,28 @@ function Helper() {
 	 * @param premisse current premisse
 	 * @param attackType current type of the attack
 	 * @param startLowerCase, true, when each sentences should start as lowercase
-	 * @param endWithDot, true, when each sentences should end with a dot
 	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createConfrontationsRelationsText = function(confrontation, conclusion, premisse, attackType, startLowerCase, endWithDot){
-		var rebutConclusion;
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
-		// if (attackType == 'undermine'){			rebutConclusion = premisse;
-		// } else if (attackType == 'rebut'){		rebutConclusion = conclusion;
-		// } else if (attackType == 'undercut'){	rebutConclusion = conclusion + ' ' + _t(because).toLocaleLowerCase() + ' ' + premisse;
-		// }
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
-		// TODO THIS! Ajax: ajax_reply_for_response_of_confrontation; But how are statements inserted on the following page?
+	this.createConfrontationsRelationsText = function(confrontation, conclusion, premisse, attackType, startLowerCase){
+		var rebutConclusion, w, r, counterJusti, undermine, support, undercut, overbid, rebut, noopinion;
+		if (attackType == attr_undermine){			rebutConclusion = premisse;
+		} else if (attackType == attr_rebut){		rebutConclusion = conclusion;
+		} else if (attackType == attr_undercut){	rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse;
+		}
 
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong)),
-			r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right)),
-			enddot = endWithDot ? '.' : '',
-			counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premisse + '</b>', // todo with or without premisse ?
-			undermine = w + ', ' + _t(itIsFalse) + ' <b>' + confrontation + '</b>' + enddot,
-			support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>' + enddot,
-			undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + enddot,
-			overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + enddot,
-			rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + ' ' + _t(because).toLocaleLowerCase() + ' ' + premisse
-				+ '</b>. ' + _t(iHaveStrongerArgument) + ' <b>' + rebutConclusion + '</b>' + enddot,
-			noopinion  = _t(iNoOpinion) + ': <b>' + confrontation + '</b>. ' + _t(goStepBack) + '.';
+		w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong));
+		r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right));
+		counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse + '</b>';
+		undermine = w + ', ' + _t(itIsFalse) + ' <b>' + confrontation + '</b>.';
+		support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>.';
+		undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + '.';
+		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.';
+		rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>. '
+			+ _t(iHaveStrongerArgument) + ' <b>' + rebutConclusion + '</b>.';
+		noopinion  = _t(iNoOpinion) + ': <b>' + confrontation + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 

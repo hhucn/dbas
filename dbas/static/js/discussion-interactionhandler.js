@@ -71,7 +71,7 @@ function InteractionHandler() {
 			if (text.indexOf(_t(newConclusionRadioButtonText)) >= 0 || text.indexOf(_t(firstConclusionRadioButtonText)) >= 0) {
 				// statement
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, true, false);
-			} else if (text.indexOf(_t(addArgumentRadioButtonText)) >= 0) {
+			} else if (text.indexOf(_t(addArgumentRadioButtonText)) >= 0 || text.indexOf(_t(addPremisseRadioButtonText)) >= 0) {
 				// argument
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, false, true);
 			} else {
@@ -110,10 +110,11 @@ function InteractionHandler() {
 	/**
 	 * Fetches all premisses out of the textares and send them
 	 * @param useIntro
-	 * @param isForConclusion
 	 */
-	this.getPremissesAndSendThem = function (useIntro, isForConclusion) {
-		var i = 0, dict = {}, no, intro, disc_desc = $('#' + discussionsDescriptionId);
+	this.getPremissesAndSendThem = function (useIntro) {
+		var i = 0, dict = {}, no, intro, lastAttack, disc_desc = $('#' + discussionsDescriptionId),
+			conTextareaPremissegroupCheckbox = $('#' + conTextareaPremissegroupCheckboxId),
+			proTextareaPremissegroupCheckbox = $('#' + proTextareaPremissegroupCheckboxId);
 		// all pro statements
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
@@ -136,22 +137,30 @@ function InteractionHandler() {
 			}
 		});
 
+		lastAttack = $('#' + hiddenDiscussionInformationParametersId).text();
+		lastAttack = lastAttack.substr(lastAttack.indexOf('relation=') + 'relation='.length);
+		lastAttack = lastAttack.substr(0,lastAttack.indexOf('&'));
+
+		// get some id's
 		dict['conclusion_id'] 	  = disc_desc.attr('conclusion_id');
 		dict['related_argument']  = disc_desc.attr('related_argument');
-		dict['premissegroup_id']  = disc_desc.attr('premissegroup_id');
+		dict['premissegroup_id']  = disc_desc.attr('premissegroup_uid');
 		dict['current_attack'] 	  = disc_desc.attr('attack');
-		dict['premissegroup_con'] = $('#' + conTextareaPremissegroupCheckboxId).prop('checked');
-		dict['premissegroup_pro'] = $('#' + proTextareaPremissegroupCheckboxId).prop('checked');
+		dict['last_attack'] 	  = lastAttack;
+		dict['confrontation_uid'] = disc_desc.attr('confrontation_uid');
+		dict['premissegroup_con'] = conTextareaPremissegroupCheckbox.prop('checked');
+		dict['premissegroup_pro'] = proTextareaPremissegroupCheckbox.prop('checked');
 
-		$('#' + conTextareaPremissegroupCheckboxId).prop('checked', false);
-		$('#' + proTextareaPremissegroupCheckboxId).prop('checked', false);
+		conTextareaPremissegroupCheckbox.prop('checked', false);
+		proTextareaPremissegroupCheckbox.prop('checked', false);
 
-		if (isForConclusion) {
-			dict['confrontation_uid'] = disc_desc.attr('confrontation_uid');
-			new AjaxSiteHandler().sendNewPremisseForX(dict);
-		} else {
-			alert('todo 157 in interactionhandler');
-		}
+		// var txt='dict:\n';
+		// $.each(dict, function (key, val) {
+		// 	txt += '\n' + key + ': ' + val;
+		// });
+		// alert(txt);
+
+		new AjaxSiteHandler().sendNewPremisseForX(dict);
 	};
 
 	/**
@@ -254,7 +263,7 @@ function InteractionHandler() {
 		} else if (parsedData.status == '0') {
 			alert('callbackIfDoneHandleReplyForResponseOfConfrontation status 0');
 		} else {
-			alert('callbackIfDoneHandleReplyForResponseOfConfrontation status -1');
+			alert(_t('wrongURL'));
 		}
 		gh.resetEditButton();
 	};

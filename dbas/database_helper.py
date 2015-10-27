@@ -340,6 +340,10 @@ class DatabaseHelper(object):
 		return_dict['argument_id'] = str(db_argument.uid) if db_argument else '0'
 
 		# getting undermines or undercuts or rebuts
+		#if not db_argument:
+		#	attacks = None
+		#	key = ''
+		#else:
 		attacks, key = qh.get_attack_for_argument_by_random(db_argument, user, issue)
 		return_dict['attack'] = key
 
@@ -711,7 +715,7 @@ class DatabaseHelper(object):
 #		return return_dict
 
 	def handle_inserting_new_statements(self, user, pro_dict, con_dict, transaction, argument_id, premissegroup_id, confrontation_uid,
-	                                    current_attack, premissegroup_con, premissegroup_pro, issue):
+	                                    current_attack, last_attack, premissegroup_con, premissegroup_pro, issue):
 		"""
 
 		:param user:
@@ -722,6 +726,7 @@ class DatabaseHelper(object):
 		:param premissegroup_id:
 		:param confrontation_uid:
 		:param current_attack:
+		:param last_attack:
 		:param premissegroup_con:
 		:param premissegroup_pro:
 		:param issue:
@@ -748,7 +753,7 @@ class DatabaseHelper(object):
 		db_premisses_of_current_attack = DBDiscussionSession.query(Premisse).filter(and_(
 			Premisse.premissesGroup_uid==confrontation_uid, Premisse.issue_uid==issue)).all()
 
-		logger('DatabaseHelper', 'handle_inserting_new_statemens', 'db_argument_of_current_attack '
+		logger('DatabaseHelper', 'handle_inserting_new_statemens', 'db_argument_of_current_attack: '
 		       + ' premissesGroup_uid=' + str(premissegroup_id)
 		       + ', argument_id=' + str(argument_id))
 		db_argument_of_current_attack = DBDiscussionSession.query(Argument).filter(and_(Argument.premissesGroup_uid==premissegroup_id,
@@ -779,6 +784,7 @@ class DatabaseHelper(object):
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine: new_premissegroup_uid is ' + str(new_premissegroup_uid))
 				# now, every new statement will attack the attack of the system, which is as confrontation_uid
 				for premisse in db_premisses_of_current_attack:
+					# now, every new statement will be inserted, because groups will be added once only
 					if (premissegroup_con):
 						if (not is_inserted):
 							new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=premisse.statement_uid, issue=issue)
@@ -813,8 +819,9 @@ class DatabaseHelper(object):
 					logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch support: every round, new pgroup')
 					new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch support: new_premissegroup_uid is ' + str(new_premissegroup_uid))
-				# now, every new statement will ...
+				# now, every new statement will attack the attack of the system, which is as confrontation_uid
 				for premisse in db_premisses_of_current_attack:
+					# now, every new statement will be inserted, because groups will be added once only
 					if (premissegroup_pro):
 						if (not is_inserted):
 							new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=premisse.statement_uid, issue=issue)
@@ -847,7 +854,7 @@ class DatabaseHelper(object):
 					logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undercut: every round, new pgroup')
 					new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undercut: new_premissegroup_uid is ' + str(new_premissegroup_uid))
-				# now, every new statement will ...
+				# now, every new statement will be inserted, because groups will be added once only
 				if (premissegroup_con):
 					if (not is_inserted):
 						new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=0, issue=issue)
@@ -882,7 +889,7 @@ class DatabaseHelper(object):
 					logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid: every round, new pgroup')
 					new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid: new_premissegroup_uid is ' + str(new_premissegroup_uid))
-				# now, every new statement will ...
+				# now, every new statement will be inserted, because groups will be added once only
 				if (premissegroup_pro):
 					if (not is_inserted):
 						new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=0, issue=issue)
@@ -921,13 +928,27 @@ class DatabaseHelper(object):
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch rebut: new_premissegroup_uid is ' + str(new_premissegroup_uid))
 				# now, every new statement will ...
 				for premisse in db_premisses:
+					# now, every new statement will be inserted, because groups will be added once only
 					if (premissegroup_pro):
 						if (not is_inserted):
 							new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=premisse.statement_uid, issue=issue)
+
+							# differentiate between the attacks
+							if last_attack == 'undermine':
+								new_argument.conclusion = premisse.statement_uid
+							elif last_attack == 'undercut':
+								new_argument.conclusion = 0
+								new_argument.conclusions_argument(argument_id)
+							elif last_attack == 'rebut':
+								new_argument.conclusion = db_argument.conclusion_uid
+
 							argument_list.append(new_argument)
 							is_inserted = True
 					else:
 						new_argument = Argument(premissegroup=new_premissegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=premisse.statement_uid, issue=issue)
+						# if last_attack == 'undermine':
+						# elif last_attack == 'undercut':
+						# elif last_attack == 'rebut':
 						argument_list.append(new_argument)
 				key = 'pro_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)

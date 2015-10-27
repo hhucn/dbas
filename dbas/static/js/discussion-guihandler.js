@@ -398,6 +398,7 @@ function GuiHandler() {
 			discussionsDescription = $('#' + discussionsDescriptionId),
 			addStatementContainer = $('#' + addStatementContainerId),
 			addReasonButton = $('#' + addReasonButtonId),
+			addStatementContainerMainInputIntro = $('#' + addStatementContainerMainInputIntroId),
 			relation = discussionsDescription.attr('attack'),
 			guihandler = new GuiHandler(),
 			ajaxhandler = new AjaxSiteHandler(),
@@ -412,7 +413,7 @@ function GuiHandler() {
 		// isVisible == true:
 		$('#' + proPositionTextareaId).empty();
 		$('#' + conPositionTextareaId).empty();
-		$('#' + addStatementContainerMainInputIntroId).text('');
+		addStatementContainerMainInputIntro.text('');
 		addStatementContainer.fadeIn('slow');
 		$('#' + addStatementErrorContainer).hide();
 		addReasonButton.disable = true;
@@ -421,7 +422,7 @@ function GuiHandler() {
 			// some pretty print options
 			if (isStart) {
 				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
-			}else {
+			} else {
 				if (discussionsDescription.html().indexOf(_t(firstPremisseText1)) != -1){
 					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>');
 				} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHave)) != -1) {
@@ -432,7 +433,7 @@ function GuiHandler() {
 				} else {
 					$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremisse) + '<br><br>' + discussionsDescription.html());
 				}
-				$('#' + addStatementContainerMainInputIntroId).text(_t(because) + '...');
+				addStatementContainerMainInputIntro.text(_t(because) + '...');
 			}
 
 			// gui modifications
@@ -452,7 +453,9 @@ function GuiHandler() {
 
 		} else if (isPremisse || isArgument) {
 			statement = discussionsDescription.attr('text');
-			$('#' + addStatementContainerH4Id).text(isPremisse ? _t(argumentContainerH4TextIfPremisse) : _t(argumentContainerH4TextIfArgument));
+			// $('#' + addStatementContainerH4Id).text(isPremisse ? _t(argumentContainerH4TextIfPremisse) :
+			// _t(argumentContainerH4TextIfArgument));
+			$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfPremisse));
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
 			// take a look, if we agree or disagree, and where we are
@@ -462,21 +465,21 @@ function GuiHandler() {
 			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, true, statement);
 			} else if (relation.indexOf(attr_rebut) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, false, statement);
 			} else {
-				alert("2 Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
+				alert("Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
 			}
 
 			// does other users have an opinion?
 			if (isArgument) {
-				if (discussionsDescription.text().indexOf(_t(otherParticipantsDontHave)) == -1) {
-					alert('Todo: How to insert something at this place?');
-				} else {
+				if (discussionsDescription.text().indexOf(_t(otherParticipantsDontHave)) != -1) {
 					// other users have no opinion, so the participant can give pro and con
 					this.showAddStatementsTextareasWithTitle(true, true, false, statement);
+				} else {
+					// alert('Todo: How to insert something at this place?');
 				}
 			}
 
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenArgument() {
-				interactionhandler.getPremissesAndSendThem(false, isPremisse);
+				interactionhandler.getPremissesAndSendThem(false);
 				guihandler.setErrorDescription('');
 				guihandler.setSuccessDescription('');
 				$('#' + addStatementErrorContainer).hide();
@@ -613,9 +616,10 @@ function GuiHandler() {
 	 * Opens the edit statements popup
 	 */
 	this.showEditStatementsPopup = function () {
-		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premisse, tmp, text_count, statement_id, text, i, helper = new Helper(), is_final;
+		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premisse, tmp, text_count, statement_id, text, i,
+			helper = new Helper(), is_final, popupEditStatementSubmitButton = $('#' + popupEditStatementSubmitButtonId);
 		$('#' + popupEditStatementId).modal('show');
-		$('#' + popupEditStatementSubmitButtonId).hide();
+		popupEditStatementSubmitButton.hide();
 		$('#' + popupEditStatementWarning).hide();
 
 		// each statement will be in a table with row: index, text, button for editing
@@ -680,7 +684,7 @@ function GuiHandler() {
 		$('#' + popupEditStatementContentId).empty().append(table);
 		$('#' + popupEditStatementTextareaId).hide();
 		$('#' + popupEditStatementDescriptionId).hide();
-		$('#' + popupEditStatementSubmitButtonId).hide().click(function edit_statement_click() {
+		popupEditStatementSubmitButton.hide().click(function edit_statement_click() {
 			statement = $('#' + popupEditStatementTextareaId).val();
 			is_final = $('#' + popupEditStatementWarning).is(':visible');
 			//$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
@@ -864,7 +868,8 @@ function GuiHandler() {
 	 */
 	this.setDisplayStyleAsProContraList = function () {
 		$('#' + islandViewContainerId).fadeIn('slow');
-		new AjaxSiteHandler().getAllArgumentsForIslandView();
+		alert('new AjaxSiteHandler().getAllArgumentsForIslandView()');
+		//new AjaxSiteHandler().getAllArgumentsForIslandView();
 	};
 
 	/**
@@ -888,7 +893,7 @@ function GuiHandler() {
 	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, current_id = '', func, topic;
+		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr;
 
 		li = $('<li>');
 		li.addClass('dropdown-header').text(_t(issueList));
@@ -911,7 +916,7 @@ function GuiHandler() {
 					displayConfirmationDialogWithCheckbox(_t(switchDiscussion), _t(switchDiscussionText1) + ': <i>\'' + topic
 						+ '\'</i> ' + _t(switchDiscussionText2), _t(keepSetting), func, true);
 					// set new title and text
-					$('#' + issueDropdownButtonID).text($(this).text());
+					issueDropdownButton.text($(this).text());
 					$('#' + issueDateId).text($(this).attr('title'));
 					// set inactive class
 					$(this).parent().parent().children('li').each(function () {
@@ -923,13 +928,14 @@ function GuiHandler() {
 			}
 		});
 
-		if ($('#' + issueDropdownButtonID).text().length == 0) {
-			$('#' + issueDateId).text($('#issue_' + current_id).attr('date'));
-			$('#' + issueDropdownButtonID).html($('#issue_' + current_id + ' a').text() + '   <span class="caret"></span>');
-			$('#issue_' + current_id).addClass('disabled');
+		if (issueDropdownButton.text().length == 0) {
+			issue_curr = $('#issue_' + current_id);
+			$('#' + issueDateId).text(issue_curr.attr('date'));
+			issueDropdownButton.html($('#issue_' + current_id + ' a').text() + '   <span class="caret"></span>');
+			issue_curr.addClass('disabled');
 		}
 
 		// some helper
-		$('#' + issueDropdownButtonID).attr('issue', current_id);
+		issueDropdownButton.attr('issue', current_id);
 	};
 }

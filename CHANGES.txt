@@ -63,3 +63,8 @@
 0.3.8 (20.10.2015)
 ---
 - Bug fixes
+
+0.3.9 (27.10.2015)
+---
+- Bug fixes
+- Back-button issue for browsers fixed

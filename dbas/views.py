@@ -20,7 +20,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.8'
+version = '0.3.9'
 header = name + ' ' + version
 issue_fallback = 1#DBDiscussionSession.query(Issue).first().uid
 
@@ -687,9 +687,11 @@ class Dbas(object):
 			logger('set_new_premisses_for_X', 'def', 'getting params')
 			pro_dict = dict()
 			con_dict = dict()
+
 			related_argument  = self.request.params['related_argument'] if 'related_argument' in self.request.params else -1
 			premissegroup_id  = self.request.params['premissegroup_id'] if 'premissegroup_id' in self.request.params else -1
 			current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
+			last_attack       = self.request.params['last_attack'] if 'last_attack' in self.request.params else -1
 			confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
 			premissegroup_con = self.request.params['premissegroup_con'] if 'premissegroup_con' in self.request.params else '0'
 			premissegroup_pro = self.request.params['premissegroup_pro'] if 'premissegroup_pro' in self.request.params else '0'
@@ -701,9 +703,12 @@ class Dbas(object):
 			logger('set_new_premisses_for_X', 'def', 'param related_argument: ' + str(related_argument))
 			logger('set_new_premisses_for_X', 'def', 'param premissegroup_id: ' + str(premissegroup_id))
 			logger('set_new_premisses_for_X', 'def', 'param current_attack: ' + str(current_attack))
+			logger('set_new_premisses_for_X', 'def', 'param current_attack: ' + str(last_attack))
 			logger('set_new_premisses_for_X', 'def', 'param confrontation_uid: ' + str(confrontation_uid))
 			logger('set_new_premisses_for_X', 'def', 'param premissegroup_con: ' + str(premissegroup_con))
 			logger('set_new_premisses_for_X', 'def', 'param premissegroup_pro: ' + str(premissegroup_pro))
+			logger('set_new_premisses_for_X', 'def', 'param issue: ' + str(issue))
+			# Todo do we need the last attack, when we want to attack a rebut?
 
 			# confrontation_uid is a premisse group
 
@@ -734,6 +739,7 @@ class Dbas(object):
 				premissegroup_id = premissegroup_id,
 				confrontation_uid = confrontation_uid,
 				current_attack = current_attack,
+				last_attack = last_attack,
 				premissegroup_con = premissegroup_con,
 				premissegroup_pro = premissegroup_pro,
 				issue = issue
