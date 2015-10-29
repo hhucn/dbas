@@ -55,7 +55,7 @@ var dbas_en = {
 	'deleteTrack': 'Delete track',
 	'disagreeBecause': 'I disagree because ',
 	'dataRemoved': 'Data was successfully removed.',
-	'didYouMean': 'Top10 of the statements, which you probably could mean:',
+	'didYouMean': 'Top10 statements, which you probably could mean:',
 	'dialogView': 'Dialog View',
 	'dialogViewTitle': 'Show the dialog View',
 	'discussionEnd': 'The discussion ends here. If you want to proceed, please feel free to login yourself :)',
