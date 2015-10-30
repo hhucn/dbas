@@ -388,7 +388,7 @@ class Dbas(object):
 		logger('notfound', 'def', 'main')
 
 		logger('notfound', 'def', 'path: ' + self.request.path)
-		logger('notfound', 'def', 'view_name: ' + self.request.view_name)
+		logger('notfound', 'def', 'view name: ' + self.request.view_name)
 
 		# TODO: Dirty bugfix
 		if 'ajax_get_start_statements' in self.request.path:
