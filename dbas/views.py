@@ -1013,6 +1013,11 @@ class Dbas(object):
 
 		url = self.request.params['url']
 		logger('user_logout', 'def', 'url: ' + url)
+
+		if ('setting' in url):
+			url = self.request.application_url
+			logger('user_logout', 'def', 'redirect: ' + url)
+
 		headers = forget(self.request)
 		return HTTPFound(
 			location=url,

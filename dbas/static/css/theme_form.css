@@ -248,7 +248,9 @@ input.active {
 }
 
 #password-generator-output,
-#password-generator-button {
+#password-generator-button,
+#popup-password-generator-output,
+#popup-password-generator-button{
 	padding: 5px;
 	margin: 0px;
 	width: 45%;
@@ -259,13 +261,15 @@ input.active {
 	-o-text-overflow: ellipsis;
 }
 
-#password-generator-output {
+#password-generator-output,
+#popup-password-generator-output {
 	float: left;
 	margin-left: 0.5em;
 	text-align: center;
 }
 
-#password-generator-button {
+#password-generator-button,
+#popup-password-generator-button{
 	float: right;
 	margin-right: 0.5em;
 }

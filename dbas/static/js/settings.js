@@ -174,27 +174,27 @@ function PasswordHandler(){
 
 	this.set_total = function (total) {
 		'use strict';
-		$('#'  + passwordMeter).removeClass().addClass('col-sm-9');
-		$('#'  + passwordStrength).text(_t(strength) + ': ' + _t(veryweak)).fadeIn("slow");
+		$('#'  + passwordMeterId).removeClass().addClass('col-sm-9');
+		$('#'  + passwordStrengthId).text(_t(strength) + ': ' + _t(veryweak)).fadeIn("slow");
 
-		if (total === 1) {			$('#' + passwordMeter).addClass('veryweak');$('#' + passwordStrength).text(_t(strength) + ': ' + _t(veryweak));
-		} else if (total === 2) {	$('#' + passwordMeter).addClass('weak');	$('#' + passwordStrength).text(_t(strength) + ': ' + _t(weak));
-		} else if (total === 3) {	$('#' + passwordMeter).addClass('medium');	$('#' + passwordStrength).text(_t(strength) + ': ' + _t(medium));
-		} else if (total > 3) {		$('#' + passwordMeter).addClass('strong');	$('#' + passwordStrength).text(_t(strength) + ': ' + _t(strong));
-		} else {					$('#' + passwordExtras).fadeOut('slow');
+		if (total === 1) {			$('#' + passwordMeterId).addClass('veryweak');	$('#' + passwordStrengthId).text(_t(strength) + ': ' + _t(veryweak));
+		} else if (total === 2) {	$('#' + passwordMeterId).addClass('weak');		$('#' + passwordStrengthId).text(_t(strength) + ': ' + _t(weak));
+		} else if (total === 3) {	$('#' + passwordMeterId).addClass('medium');	$('#' + passwordStrengthId).text(_t(strength) + ': ' + _t(medium));
+		} else if (total > 3) {		$('#' + passwordMeterId).addClass('strong');	$('#' + passwordStrengthId).text(_t(strength) + ': ' + _t(strong));
+		} else {					$('#' + passwordExtrasId).fadeOut('slow');
 		}
 	};
 
 	this.check_strength = function () {
 		'use strict';
 		var total = 0,
-			pw = $('#' + passwordInput).val();
+			pw = $('#' + passwordInputId).val();
 		if (pw.length > 8) {					total = total + 1;	}
 		if (upperCase.test(pw)) {			total = total + 1;	}
 		if (lowerCase.test(pw)) {			total = total + 1;	}
 		if (numbers.test(pw)) {				total = total + 1;	}
 		if (specialchars.test(pw)) {	total = total + 1;	}
-		set_total(total);
+		new PasswordHandler().set_total(total);
 	};
 
 	// password generator
@@ -231,22 +231,30 @@ $(function () {
 		$('#' + requestTrackButtonId).val(_t(requestTrack));
 	});
 
-	$('#' + passwordInput).hide();
-	$('#' + passwordInput).keyup(function passwordInputKeyUp() {
-		alert($(this).text().length);
+	$('#' + passwordInputId).hide();
+
+	$('#' + passwordOldInput).keyup(function passwordInputKeyUp() {
 		new PasswordHandler().check_strength();
-		if ($(this).text().length > 0){
-			$('#' + passwordExtras).fadeIn('slow');
+		if ($(this).val().length > 0){
+			$('#' + passwordExtrasId).fadeIn('slow');
 		} else {
-			$('#' + passwordExtras).fadeOut('slow');
+			$('#' + passwordExtrasId).fadeOut('slow');
 		}
+	});
+
+	$('#' + passwordInfoIconId).click(function passwordInfoIcon() {
+		new GuiHandler().showGeneratePasswordPopup();
 	});
 
 	$('#' + passwordGeneratorButton).click(function passwordGeneratorButton() {
 		new PasswordHandler().generate_password($('#' + passwordGeneratorOutput));
 	});
 
-	$('#' + passwordExtras).hide();
+	$('#' + popupPasswordGeneratorButton).click(function passwordGeneratorButton() {
+		new PasswordHandler().generate_password($('#' + popupPasswordGeneratorOutput));
+	});
+
+	$('#' + passwordExtrasId).hide();
 	$('#' + dangerMessage).hide();
 	$('#' + deleteTrackButtonId).hide();
 	$('#' + trackTableSuccessId).hide();

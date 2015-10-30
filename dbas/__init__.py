@@ -93,7 +93,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_fuzzy_search',                        '{url:.*}ajax_fuzzy_search')
 	config.add_route('ajax_get_issue_list',                      '{url:.*}ajax_get_issue_list')
 	config.add_route('ajax_switch_language',                     '{url:.*}ajax_switch_language{params:.*}')
-	config.add_route('ajax_get_user_track',                   'ajax_get_user_track')
+	config.add_route('ajax_get_user_track',                      'ajax_get_user_track')
 	config.add_route('ajax_delete_user_track',                   'ajax_delete_user_track')
 	config.add_route('ajax_get_news',                            'ajax_get_news')
 	config.add_route('ajax_send_news',                           'ajax_send_news')

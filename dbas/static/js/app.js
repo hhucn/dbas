@@ -191,6 +191,7 @@ function setButtonLanguage(){
 	$('#' + deleteTrackButtonId).prop('value', _t(deleteTrack)).prop('title', _t(deleteTrack));
 	$('#' + requestTrackButtonId).prop('value', _t(requestTrack)).prop('title', _t(requestTrack));
 	$('#' + passwordSubmitButtonId).prop('value', _t(passwordSubmit)).prop('title', _t(passwordSubmit));
+
 }
 
 function hideExtraViewsOfLoginPopup(){
@@ -368,10 +369,11 @@ function ajaxLogout (){
 		async: true
 	}).done(function ajaxLogoutDone(data) {
 	}).fail(function ajaxLogoutFail(xhr) {
+		alert(xhr.status);
 		if (xhr.status == 200) {
 			location.reload(true);
-		} else {
-			alert(_t(internalError));
+		} else if (xhr.status == 403) {
+			window.location.href = mainpage;
 		}
 	});
 }

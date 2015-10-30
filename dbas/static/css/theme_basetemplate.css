@@ -410,7 +410,8 @@ comment .container and wrap each container with <div class="coloured-div">
 
 #popup-login-body,
 #popup-write-text-body,
-#popup-set-premissegroups-body{
+#popup-set-premissegroups-body,
+#popup-generate-password-body{
 	padding: 10px;
 }
 

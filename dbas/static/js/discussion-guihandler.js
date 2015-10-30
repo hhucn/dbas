@@ -701,6 +701,19 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Display url sharing popup
+	 */
+	this.showGeneratePasswordPopup = function () {
+		$('#' + popupGeneratePasswordId).modal('show');
+		$('#' + popupGeneratePasswordCloseButtonId).click(function(){
+			$('#' + popupGeneratePasswordId).modal('hide');
+		});
+		$('#' + popupLoginCloseButton).click(function(){
+			$('#' + popupGeneratePasswordId).modal('hide');
+		});
+	};
+
+	/**
 	 * Displays the edit text field
 	 */
 	this.showEditFieldsInEditPopup = function () {

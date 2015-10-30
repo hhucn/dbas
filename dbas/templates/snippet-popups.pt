@@ -138,12 +138,12 @@
 				<textarea id="popup-edit-statement-textarea" type="text" placeholder="some corrected statement"></textarea>
 				<div class="list-group">
 				</div>
-				
+
 				<div id="popup-edit-statement-warning" class="alert alert-warning" role="alert">
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 					<span class="sr-only" i18n:translate="warning">Warning:</span> <span id="popup-edit-statement-warning-message"></span>
 				</div>
-				
+
 				<h4 id="popup-edit-statement-logfile-header"></h4>
 				<div id="popup-edit-statement-logfile">
 				</div>
@@ -187,10 +187,10 @@
 			<div class="modal-body">
 			</div>
 			<div id="modal-checkbox-body">
-				<label id ="confirm-dialog-checkbox-label" for="confirm-dialog-checkbox">
+				<label id="confirm-dialog-checkbox-label" for="confirm-dialog-checkbox">
 					<input id="confirm-dialog-checkbox" type="checkbox">&thinsp;&thinsp;<span id="confirm-dialog-checkbox-text">Keep this setting</span>
 				</label>
-				
+
 			</div>
 			<div class="modal-footer">
 				<button id="confirm-dialog-checkbox-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
@@ -267,8 +267,7 @@
 
 						<div id="forgot-password" class="form-group">
 							<a id="forgot-password-text">
-								Forgot Password?
-								<span i18n:translate="forgot_password">Forgot Password?</span>
+								<span i18n:translate="forgot_password"></span>
 							</a>
 						</div>
 
@@ -432,6 +431,44 @@
 </div>
 
 <!-- HOW TO WRITE POPUP -->
+<div class="modal fade" id="popup-generate-password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" id="popup-generate-password-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel" i18n:translate="select_password">How to select a strong password</h4>
+			</div>
+			<div id="popup-generate-password-body">
+				<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>
+				<ul>
+					<li i18n:translate="select_password_rule1">eight characters</li>
+					<li i18n:translate="select_password_rule2">one uppercase letter</li>
+					<li i18n:translate="select_password_rule3">one lowercase letter</li>
+					<li i18n:translate="select_password_rule4">one special sign</li>
+				</ul>
+				<span i18n:translate="popup_password_text">For example 'M2015_fiO' is a strong password. And it would take 275 days to crack this password with a desktop pc in 2015. Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 years. It should be noted:</span>
+				<ul>
+					<li i18n:translate="select_password_avoid1">Avoid using a password on several pages</li>
+					<li i18n:translate="select_password_avoid2">Avoid using patterns, which can be found in a dictionary</li>
+					<li i18n:translate="select_password_avoid3">Avoid using information that is or might become publicly associated with the user or the account</li>
+					<li i18n:translate="select_password_avoid4">Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user</li>
+				</ul>
+				<br><span i18n:translate="select_password_help">If you need some help with our password, you can get one here:</span>
+				<br>
+				<br>
+				<input type="text" id="popup-password-generator-output">
+				<input type="button" id="popup-password-generator-button" value="Generate Password" class="button button-block btn btn-primary">
+				<br><br>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" id="popup-generate-password-close-button" i18n:translate="close">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- HOW TO WRITE POPUP -->
 <div class="modal fade" id="popup-write-text" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -444,22 +481,23 @@
 				<h4><span i18n:translate="how-to-write-text-header-body-title">There are a few simple rules for writing good arguments:</span></h4>
 				<br>
 				<span i18n:translate="how-to-write-text-header-body">Writing good is a necessary skill for using D-BAS, unless you do not want to persuade other participants. Hereafter a few rules are listed, what should be noted, and what should not.</span>
-				<br><br>
+				<br>
+				<br>
 				<b class="green-bg" i18n:translate="dos">Do's:</b>
 				<ul id="how-to-write-text-do-list">
-				<li i18n:translate="how-to-write-text-short">Write short!</li>
-				<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per textarea!</li>
+					<li i18n:translate="how-to-write-text-short">Write short!</li>
+					<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per textarea!</li>
 				</ul>
 				<br>
 				<b class="red-bg" i18n:translate="donts">Don'ts:</b>
 				<ul id="how-to-write-text-dont-list">
-				<li i18n:translate="how-to-write-text-complicated">Complicated and nested sentences!</li>
-				<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per textarea!</li>
+					<li i18n:translate="how-to-write-text-complicated">Complicated and nested sentences!</li>
+					<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per textarea!</li>
 				</ul>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default btn-primary" id="popup-write-text-okay-button" i18n:translate="Okay">Okay</button>
-				<button type="button" class="btn btn-default" id="popup-write-text-close-button" data-dismiss="modal"  i18n:translate="abort">Abort</button>
+				<button type="button" class="btn btn-default" id="popup-write-text-close-button" data-dismiss="modal" i18n:translate="abort">Abort</button>
 			</div>
 		</div>
 	</div>
@@ -478,25 +516,26 @@
 				<h4><span i18n:translate="how-to-set-premissegroups-header-body-title">There are a few simple tricks for setting premisse groups:</span></h4>
 				<br>
 				<span i18n:translate="how-to-set-premissegroups-header-body">Sometimes you want to state more than one statement, but they are connected...in some way. These statements can be connected in one premisse group</span>
-				<br><br>
+				<br>
+				<br>
 				<ol>
 					<li i18n:translate="set-premissegroups1">Normally, each statement of you is independent of the others.</li>
 					<li i18n:translate="set-premissegroups2">If you want to add an 'and' in your statement, please do not do it!</li>
 					<li><span i18n:translate="set-premissegroups3">Sometimes you have dependent statemens, like:</span>
-					<ul type="a">
-						<li i18n:translate="set-premissegroups4">Let's say, you argument, that you want to have a cat, but if and only iff she is small and fluffy. Then you have two statements for your position:</li>
-						<li i18n:translate="set-premissegroups5">I want a cat, because:</li>
-						<li i18n:translate="set-premissegroups6">She is fluffy</li>
-						<li i18n:translate="set-premissegroups7">She is small</li>
-						<li i18n:translate="set-premissegroups8">Then you have to check the box!</li>
-					</ul>
+						<ul type="a">
+							<li i18n:translate="set-premissegroups4">Let's say, you argument, that you want to have a cat, but if and only iff she is small and fluffy. Then you have two statements for your position:</li>
+							<li i18n:translate="set-premissegroups5">I want a cat, because:</li>
+							<li i18n:translate="set-premissegroups6">She is fluffy</li>
+							<li i18n:translate="set-premissegroups7">She is small</li>
+							<li i18n:translate="set-premissegroups8">Then you have to check the box!</li>
+						</ul>
 					</li>
 					<li i18n:translate="set-premissegroups9">Otherwise you do not need this checkbox.</li>
 				</ol>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default btn-primary" id="popup-set-premissegroups-okay-button" i18n:translate="Okay">Okay</button>
-				<button type="button" class="btn btn-default" id="popup-set-premissegroups-close-button" data-dismiss="modal"  i18n:translate="abort">Abort</button>
+				<button type="button" class="btn btn-default" id="popup-set-premissegroups-close-button" data-dismiss="modal" i18n:translate="abort">Abort</button>
 			</div>
 		</div>
 	</div>
