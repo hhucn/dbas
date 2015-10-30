@@ -27,7 +27,7 @@ requires = [
 	'lingua',
 ]
 
-setup(name='D-BAS',
+setup(name='dbas',
 	version='0.3.9',
 	description='Novel prototype for a dialog-based argumentation software',
 	long_description=README + '\n\n' + CHANGES,
