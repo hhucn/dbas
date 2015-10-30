@@ -889,7 +889,7 @@ function GuiHandler() {
 	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr;
+		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr, text, pos, i, l, helper = new Helper();
 		li = $('<li>');
 		li.addClass('dropdown-header').text(_t(issueList));
 		$('#' + issueDropdownListID).empty().append(li);
@@ -926,7 +926,17 @@ function GuiHandler() {
 		if (issueDropdownButton.text().length == 0 || issueDropdownButton.text().length == 15) {
 			issue_curr = $('#issue_' + current_id);
 			$('#' + issueDateId).text(issue_curr.attr('date'));
-			issueDropdownButton.html($('#issue_' + current_id + ' a').text() + '   <span class="caret"></span>');
+			text = $('#issue_' + current_id + ' a').text();
+			if ($(window).width() < 1000){
+				i=1;
+				l = text.length;
+				while (i*50 < l){
+					pos = text.indexOf(' ',i*50);
+					text = helper.replaceAt(text, pos, '<br>', ' ');
+					i=i+1;
+				}
+			}
+			issueDropdownButton.html(text + '&#160;&#160;&#160;<span class="caret"></span>');
 			issue_curr.addClass('disabled');
 		}
 

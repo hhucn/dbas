@@ -627,7 +627,6 @@ class Dbas(object):
 			return_dict = QueryHelper().get_track_of_user(nickname)
 		else:
 			logger('manage_user_track', 'def', 'remove track data')
-			return_dict['removed data'] = 'true'
 			QueryHelper().del_track_of_user(transaction, nickname)
 
 		dictionary_helper = DictionaryHelper()

@@ -26,6 +26,16 @@ screen and (min-height: 1600px) {
 	}
 }
 
+a {
+	text-decoration: none;
+	color: #006ab3;
+	transition: .5s ease;
+}
+
+a:hover {
+	color: #1A7CEA;
+}
+
 h1,
 h2,
 h3,

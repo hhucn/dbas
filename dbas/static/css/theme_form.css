@@ -79,7 +79,7 @@ textarea[type="text"] {
 	font-size: 18px;
 	font-weight: 400;
 	color: #000;
-	padding: 6px 5px 6px 5px;
+	padding: 10px 5px 10px 45px;
 	border-radius: 5px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 5px;
@@ -177,6 +177,7 @@ input.userlastname:hover,
 input.nickname:hover,
 input.email:hover,
 input.password:hover,
+input.passwordold:hover,
 input.tel:hover,
 input.spam:hover,
 textarea.content:hover,
@@ -320,6 +321,7 @@ input.active {
 	input.nickname,
 	input.email,
 	input.password,
+	input.passwordold,
 	input.passwordconfirm,
 	input.spam,
 	input.tel,
@@ -347,6 +349,7 @@ input.active {
 	input.email,
 	input.nickname,
 	input.password,
+	input.passwordold,
 	input.passwordconfirm,
 	input.spam,
 	input.tel,
@@ -369,6 +372,7 @@ input.active {
 	input.email,
 	input.nickname,
 	input.password,
+	input.passwordold,
 	input.passwordconfirm,
 	input.spam,
 	input.tel,
@@ -398,6 +402,7 @@ input.active {
 	input.email,
 	input.nickname,
 	input.password,
+	input.passwordold,
 	input.passwordconfirm,
 	input.spam,
 	input.tel,
@@ -422,6 +427,7 @@ input.active {
 		background: url(../images/glyphicons_free/glyphicons/glyphicons-204-lock.png) no-repeat 8px 6px;
 	}
 	input.password,
+	input.passwordold,
 	input.passwordconfirm {
 		background: url(../images/glyphicons_free/glyphicons/glyphicons-205-unlock.png) no-repeat 8px 6px;
 	}

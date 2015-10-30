@@ -183,7 +183,7 @@ function JsonGuiHandler() {
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + _t(discussionEnd), 'This confrontation is a ' + jsonData.attack, dict);
 		//_t(doYouWantToEnterYourStatements),
-		return;
+		return; // TODO is this, how the discussion ends?
 
 		// build the radio buttons
 		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>

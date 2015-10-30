@@ -180,9 +180,10 @@ class QueryHelper(object):
 		"""
 
 		:param uid: id of a statement
+		:param issue:
 		:return: text of the mapped textvalue for this statement
 		"""
-		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid) + ', issue ' + str(issue))
+		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid))
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).join(
 			TextValue).first()
 		if not db_statement:
@@ -203,7 +204,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(id) + ', issue ' + str(issue))
-		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==id, Argument.issue_uid==issue)).first()
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=id).first()
 		retValue = ''
 
 		# catch error
@@ -218,6 +219,8 @@ class QueryHelper(object):
 			premisses, uids = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid, issue)
 			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid, issue)
 			premisses = premisses[:-1] if premisses.endswith('.') else premisses # pretty print
+			if not conclusion:
+				return None
 			conclusion = conclusion[0:1].lower() + conclusion[1:] # pretty print
 			argument = '\'' + premisses + ('\' supports \'' if db_argument.isSupportive else '\' attacks \'') + conclusion + '\''
 			return argument
@@ -228,6 +231,8 @@ class QueryHelper(object):
 			       + ', in argument: ' + str(db_argument.uid))
 			argument = self.get_text_for_argument_uid(db_argument.argument_uid, issue)
 			premisses, uids = self.get_text_for_premissesGroup_uid(db_argument.premissesGroup_uid, issue)
+			if not premisses:
+				return None
 			retValue = premisses + (' supports ' if db_argument.isSupportive else ' attacks ') + argument
 
 		return retValue
@@ -599,44 +604,47 @@ class QueryHelper(object):
 				attacked_by_relation_str = attacked_by_relation.name if attacked_by_relation else '-'
 				attacked_with_relation_str = attacked_with_relation.name if attacked_with_relation else '-'
 				track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid, issue.uid)
-				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid, issue.uid)[1:-1]
-				if track.premissesGroup_uid == 0:
-					track_premissesGroup = '-'
-				else:
-					track_premissesGroup,tash = qh.get_text_for_premissesGroup_uid(track.premissesGroup_uid, issue.uid)
+				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid, issue.uid)
+				if track_argument:
+					track_argument = track_argument[1:-1]
 
-				if track_statement:
+					if track.premissesGroup_uid == 0:
+						track_premissesGroup = '-'
+					else:
+						track_premissesGroup,tash = qh.get_text_for_premissesGroup_uid(track.premissesGroup_uid, issue.uid)
 
-					# text
-					track_dict['statement']                  = track_statement
-					track_dict['premissesGroup']             = track_premissesGroup
-					track_dict['argument']                   = track_argument
-					track_dict['attacked_by_relation']       = attacked_by_relation_str
-					track_dict['attacked_with_relation']     = attacked_with_relation_str
+					if track_statement:
 
-					# ids
-					track_dict['uid']                        = str(track.uid)
-					track_dict['statement_uid']              = str(track.statement_uid)
-					track_dict['premissesGroup_uid']         = str(track.premissesGroup_uid)
-					track_dict['argument_uid']               = str(track.argument_uid)
-					track_dict['attacked_by_relation_uid']   = attacked_by_relation_id
-					track_dict['attacked_with_relation_uid'] = attacked_with_relation_id
-					track_dict['timestamp']                  = str(track.timestamp)
+						# text
+						track_dict['statement']                  = track_statement
+						track_dict['premissesGroup']             = track_premissesGroup
+						track_dict['argument']                   = track_argument
+						track_dict['attacked_by_relation']       = attacked_by_relation_str
+						track_dict['attacked_with_relation']     = attacked_with_relation_str
 
-					if not attacked_by_relation_str == '-':
-						track_dict['text'] = 'Others say: \'' + track_argument + \
-						                     '\' <i>' + attacked_by_relation_str + 's</i> \'' + \
-						                     track_premissesGroup + '\''
-					if not attacked_with_relation_str == '-':
-						if track_premissesGroup == '-':
-							track_dict['text'] = 'You will <i>' + attacked_with_relation_str + '</i> \'' + \
-						                         track_argument + '\''
-						else:
-							track_dict['text'] = 'You say: \'' + track_premissesGroup + \
-						                         '\' <i>' + attacked_with_relation_str + 's</i> \'' + \
-						                         track_argument + '\''
+						# ids
+						track_dict['uid']                        = str(track.uid)
+						track_dict['statement_uid']              = str(track.statement_uid)
+						track_dict['premissesGroup_uid']         = str(track.premissesGroup_uid)
+						track_dict['argument_uid']               = str(track.argument_uid)
+						track_dict['attacked_by_relation_uid']   = attacked_by_relation_id
+						track_dict['attacked_with_relation_uid'] = attacked_with_relation_id
+						track_dict['timestamp']                  = str(track.timestamp)
 
-					issue_dict[str(index)] = track_dict
+						if not attacked_by_relation_str == '-':
+							track_dict['text'] = 'Others say: \'' + track_argument + \
+							                     '\' <i>' + attacked_by_relation_str + 's</i> \'' + \
+							                     track_premissesGroup + '\''
+						if not attacked_with_relation_str == '-':
+							if track_premissesGroup == '-':
+								track_dict['text'] = 'You will <i>' + attacked_with_relation_str + '</i> \'' + \
+							                         track_argument + '\''
+							else:
+								track_dict['text'] = 'You say: \'' + track_premissesGroup + \
+							                         '\' <i>' + attacked_with_relation_str + 's</i> \'' + \
+							                         track_argument + '\''
+
+						issue_dict[str(index)] = track_dict
 			issue_dict['uid'] = str(issue.uid)
 			issue_dict['text'] = str(issue.text)
 			issue_dict['date'] = str(issue.date)

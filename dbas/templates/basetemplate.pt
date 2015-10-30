@@ -12,7 +12,6 @@
 	<!-- Bootstrap core CSS -->
 	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5.min.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_contact_login.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.css')}" rel="stylesheet">
 	<title>${project} - ${title}</title>
@@ -55,13 +54,11 @@
 
 	<!-- Bootstrap core, JavaScript, jquery
 	<!-- Placed at the end of the document so the pages load faster -->
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.5.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-en.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-de.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/password-handler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/google-analytics.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/eu-cookie-law-popup.js')}"></script>
 

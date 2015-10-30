@@ -156,24 +156,91 @@ function TrackHandler() {
 	};
 }
 
+function PasswordHandler(){
+	// check password strength
+	// based on http://git.aaronlumsden.com/strength.js/
+	var upperCase = new RegExp('[A-Z]'),
+		lowerCase = new RegExp('[a-z]'),
+		numbers = new RegExp('[0-9]'),
+		keylist = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%&@#$?_~<>+-*/',
+		specialchars = new RegExp('([!,%,&,@,#,$,^,*,?,_,~])');
+
+	this.set_total = function (total) {
+		'use strict';
+		$('#'  + passwordMeter).removeClass().addClass('col-sm-9');
+		$('#'  + passwordStrength).text(_t(strength) + ': ' + _t(veryweak)).fadeIn("slow");
+
+		if (total === 1) {			$('#' + passwordMeter).addClass('veryweak');$('#' + passwordStrength).text(_t(strength) + ': ' + _t(veryweak));
+		} else if (total === 2) {	$('#' + passwordMeter).addClass('weak');	$('#' + passwordStrength).text(_t(strength) + ': ' + _t(weak));
+		} else if (total === 3) {	$('#' + passwordMeter).addClass('medium');	$('#' + passwordStrength).text(_t(strength) + ': ' + _t(medium));
+		} else if (total > 3) {		$('#' + passwordMeter).addClass('strong');	$('#' + passwordStrength).text(_t(strength) + ': ' + _t(strong));
+		} else {					$('#' + passwordExtras).fadeOut('slow');
+		}
+	};
+
+	this.check_strength = function () {
+		'use strict';
+		var total = 0,
+			pw = $('#' + passwordInput).val();
+		if (pw.length > 8) {					total = total + 1;	}
+		if (upperCase.test(pw)) {			total = total + 1;	}
+		if (lowerCase.test(pw)) {			total = total + 1;	}
+		if (numbers.test(pw)) {				total = total + 1;	}
+		if (specialchars.test(pw)) {	total = total + 1;	}
+		set_total(total);
+	};
+
+	// password generator
+	this.generate_password = function (output) {
+		'use strict';
+		var password = '',
+			i = 0;
+		while (!(upperCase.test(password) && lowerCase.test(password) && numbers.test(password) && specialchars.test(password))) {
+			i = 0;
+			password = '';
+			for (i; i < 8; i = i + 1) {
+				password += keylist.charAt(Math.floor(Math.random() * keylist.length));
+			}
+		}
+		output.val(password);
+	};
+}
+
 $(function () {
 	'use strict';
 
-	$('#request-track').click(function requestTrack() {
+	$('#' + requestTrackButtonId).click(function requestTrack() {
 		new TrackHandler().manageUserTrackData(true);
 		$('#' + trackTableSuccessId).fadeOut('slow');
 		$('#' + trackTableFailureId).fadeOut('slow');
 		$('#' + trackTableSpaceId).empty();
-		$('#request-track').val(_t(refreshTrack));
+		$('#' + requestTrackButtonId).val(_t(refreshTrack));
 	});
 
 	$('#' + deleteTrackButtonId).click(function requestTrack() {
 		new TrackHandler().manageUserTrackData(false);
 		$('#' + trackTableSuccessId).fadeOut('slow');
 		$('#' + trackTableFailureId).fadeOut('slow');
-		$('#request-track').val(requestTrack);
+		$('#' + requestTrackButtonId).val(requestTrack);
 	});
 
+	$('#' + passwordInput).hide();
+	$('#' + passwordInput).keyup(function passwordInputKeyUp() {
+		alert($(this).text().length);
+		new PasswordHandler().check_strength();
+		if ($(this).text().length > 0){
+			$('#' + passwordExtras).fadeIn('slow');
+		} else {
+			$('#' + passwordExtras).fadeOut('slow');
+		}
+	});
+
+	$('#' + passwordGeneratorButton).click(function passwordGeneratorButton() {
+		new PasswordHandler().generate_password($('#' + passwordGeneratorOutput));
+	});
+
+	$('#' + passwordExtras).hide();
+	$('#' + dangerMessage).hide();
 	$('#' + deleteTrackButtonId).hide();
 	$('#' + trackTableSuccessId).hide();
 	$('#' + trackTableFailureId).hide();

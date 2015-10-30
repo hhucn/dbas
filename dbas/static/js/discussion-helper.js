@@ -301,4 +301,16 @@ function Helper() {
 		}
 		return userAcceptedCookies;
 	};
+
+	/**
+	 *
+	 * @param string
+	 * @param index
+	 * @param character
+	 * @param replacedCharacter
+	 * @returns {string}
+	 */
+	this.replaceAt = function(string, index, character, replacedCharacter) {
+    	return string.substr(0, index) + character + string.substr(index + replacedCharacter.length);
+	};
 }

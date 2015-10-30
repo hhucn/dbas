@@ -141,7 +141,7 @@ var dbas_en = {
 	'otherParticipantAgree': 'Other partcipants agree, that ',
 	'otherParticipantDisagree': 'Other partcipants disagree, that ',
 	'premisseGroup': 'PremisseGroup',
-	'passwordSubmit': 'Change Passwort',
+	'passwordSubmit': 'Change Password',
 	'registered': 'Registered',
 	'restartDiscussion': 'Restart Discussion',
 	'restartDiscussionTitle': 'Restart Discussion',
