@@ -27,9 +27,11 @@ function TrackHandler() {
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetUserTrackDone(data) {
 			var th = new TrackHandler();
+			alert("1");
 			get_track_data ? th.getUserTrackDataDone(data) : th.removeUserTrackDataDone();
 		}).fail(function ajaxGetUserTrackFail() {
 			var th = new TrackHandler();
+			alert("2");
 			get_track_data ? th.getUserTrackDataFail() : th.removeUserTrackDataFail();
 		});
 	};
