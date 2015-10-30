@@ -763,10 +763,14 @@ class DatabaseHelper(object):
 		is_inserted = False
 		qh = QueryHelper()
 
+		#############
+		# UNDERMINE #
+		#############
 		if current_attack == 'undermine':
 			return_dict['same_group'] = '1' if premissegroup_con else '0'
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine')
 			argument_list = []
+			# for every statement in current dictionary
 			for index, con in enumerate(con_dict):
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine: ' + con_dict[con] + ', with same pgroup: ' + str(premissegroup_con))
 				# every entry of the dict will be a new statement with a new premissegroup
@@ -799,10 +803,14 @@ class DatabaseHelper(object):
 			DBDiscussionSession.flush()
 			transaction.commit()
 
+		###########
+		# SUPPORT #
+		###########
 		elif current_attack == 'support':
 			return_dict['same_group'] = '1' if premissegroup_pro else '0'
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch support')
 			argument_list = []
+			# for every statement in current dictionary
 			for index, pro in enumerate(pro_dict):
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch support: ' + pro_dict[pro] + ', with same pgroup: ' + str(premissegroup_pro))
 				# every entry of the dict will be a new statement with a new premissegroup
@@ -836,10 +844,14 @@ class DatabaseHelper(object):
 			DBDiscussionSession.flush()
 			transaction.commit()
 
+		############
+		# UNDERCUT #
+		############
 		elif current_attack == 'undercut':
 			return_dict['same_group'] = '1' if premissegroup_con else '0'
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undercut')
 			argument_list = []
+			# for every statement in current dictionary
 			for index, con in enumerate(con_dict):
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undercut: ' + con_dict[con] + ', with same pgroup: ' + str(premissegroup_con))
 				new_statement, is_duplicate = self.set_statement(transaction, con_dict[con], user, False, issue)
@@ -871,10 +883,14 @@ class DatabaseHelper(object):
 			transaction.commit()
 			return return_dict
 
+		###########
+		# OVERBID #
+		###########
 		elif current_attack == 'overbid':
 			return_dict['same_group'] = '1' if premissegroup_pro else '0'
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid')
 			argument_list = []
+			# for every statement in current dictionary
 			for index, pro in enumerate(pro_dict):
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid: ' + pro_dict[pro] + ', with same pgroup: ' + str(premissegroup_pro))
 				new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
@@ -905,12 +921,17 @@ class DatabaseHelper(object):
 			DBDiscussionSession.flush()
 			transaction.commit()
 
+		#########
+		# REBUT #
+		#########
 		elif current_attack == 'rebut':
 			return_dict['same_group'] = '1' if premissegroup_pro else '0'
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch rebut')
+			# getting premisse of users argument
 			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==argument_id, Argument.issue_uid==issue)).first()
 			db_premisses = DBDiscussionSession.query(Premisse).filter(and_(Premisse.premissesGroup_uid==db_argument.premissesGroup_uid, Premisse.issue_uid==issue)).all()
 			argument_list = []
+			# for every statement in current dictionary
 			for index, pro in enumerate(pro_dict):
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch rebut: ' + pro_dict[pro] + ', with same pgroup: ' + str(premissegroup_pro))
 				# every entry of the dict will be a new statement with a new premissegroup

@@ -42,7 +42,7 @@ function TrackHandler() {
 	this.getUserTrackDataFail = function(){
 		$('#' + trackTableSuccessId).hide();
 		$('#' + trackTableFailureId).fadeIn('slow');
-		$('#' + trackFailureMessageId).text(_t(internal_error));
+		$('#' + trackFailureMessageId).text(_t(internalError));
 	};
 
 	this.removeUserTrackDataDone = function(){
@@ -57,7 +57,7 @@ function TrackHandler() {
 	this.removeUserTrackDataFail = function(){
 		$('#' + trackTableSuccessId).hide();
 		$('#' + trackTableFailureId).show();
-		$('#' + trackFailureMessageId).text(_t(internal_error));
+		$('#' + trackFailureMessageId).text(_t(internalError));
 	};
 
 

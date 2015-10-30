@@ -371,7 +371,7 @@ function ajaxLogout (){
 		if (xhr.status == 200) {
 			location.reload(true);
 		} else {
-			alert(_t(internal_error));
+			alert(_t(internalError));
 		}
 	});
 }

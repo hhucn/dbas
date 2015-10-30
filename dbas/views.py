@@ -166,7 +166,6 @@ class Dbas(object):
 		logger('main_discussion', 'def', 'main')
 
 		parameters = self.request.matchdict['parameters'] if 'parameters' in self.request.matchdict else '-'
-		service = 'ajax_' + self.request.matchdict['service'] if 'service' in self.request.matchdict else '-'
 
 		logger('main_discussion', 'def', 'is issue in params ' + str('issue' in self.request.params))
 		logger('main_discussion', 'def', 'is issue in session ' + str('issue' in self.request.session))
@@ -187,7 +186,6 @@ class Dbas(object):
 			issue = issue_fallback
 
 		logger('main_discussion', 'def', 'self.request.matchdict[parameters]: ' + parameters)
-		logger('main_discussion', 'def', 'self.request.matchdict[service]: ' + service)
 		logger('main_discussion', 'def', where + ': ' + str(issue))
 
 		# save issue in session
@@ -214,7 +212,6 @@ class Dbas(object):
 			'logged_in': self.request.authenticated_userid,
 			'is_admin': is_admin,
 			'parameters': parameters,
-			'service': service,
 			'issue': issue
 		}
 

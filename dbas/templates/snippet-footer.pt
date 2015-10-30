@@ -6,7 +6,7 @@
 		<div class="row links">
 			<ul>
 				<li>
-					<a href="" data-toggle="modal" data-target="#popup_licence" title="Show Licence">&copy; 2015 Krauthoff</a>&#160;&#160;&#160;
+					&copy; 2015 Krauthoff&#160;&#160;&#160;
 				</li>
 				<li>
 					<a href="${request.application_url}/imprint">

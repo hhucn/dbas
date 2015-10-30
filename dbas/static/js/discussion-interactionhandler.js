@@ -137,8 +137,7 @@ function InteractionHandler() {
 			}
 		});
 
-		lastAttack = $('#' + hiddenDiscussionInformationParametersId).text();
-		lastAttack = lastAttack.substr(lastAttack.indexOf('relation=') + 'relation='.length);
+		lastAttack = window.location.href.substr(window.location.href.indexOf('relation=') + 'relation='.length);
 		lastAttack = lastAttack.substr(0,lastAttack.indexOf('&'));
 
 		// get some id's

@@ -14,7 +14,9 @@
 					<h2><span class="font-semi-bold" i18n:translate="dbas_long">Dialog-Based Argumentation System</span></h2>
 					<p><span i18n:translate="current_discussion">Current discussion is about</span></p>
 					<div class="dropdown">
-						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><span class="caret"></span></button>
+						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							<span class="caret"></span>
+						</button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
 							<li><a href="#">Action</a></li>
 						</ul>
@@ -54,8 +56,8 @@
 					<h4><p id="discussion-success-description" class="success-description"></p></h4>
 					<h4><p id="discussions-description"></p></h4>
 					<div id="discussions-space"> </div>
-					<h4><p id="discussions-avoidance-description"></p></h4>
-					<div id="discussions-avoidance-space"> </div>
+					<h4><p id="discussions-attack-description"></p></h4>
+					<div id="discussions-attack-space"></div>
 				</div>
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
@@ -229,11 +231,6 @@
 
 		<div id="navigation-minimap-container" style="display:none">
 			<p i18n:translate="minimap">Minimap:</p>
-		</div>
-
-		<div class="hidden-information">
-			<p id="hidden-discussion-information-parameters" type="hidden" tal:content="parameters" class="hidden-discussion-information"></p>
-			<p id="hidden-discussion-information-service" type="hidden" tal:content="service" class="hidden-discussion-information"></p>
 		</div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
