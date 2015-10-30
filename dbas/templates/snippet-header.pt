@@ -55,26 +55,24 @@
 						</a>
 					</li>
 
-					<li tal:condition="logged_in">
-						<li class="dropdown">
-							<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" title="User options">
-										<img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
-								<span tal:replace="logged_in" />
-								<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li>
-									<a href="${request.application_url}/settings" title="Settings">
-										<img id="header_settings" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="settings">Settings</span>
-									</a>
-								</li>
-								<li>
-									<a id="logout-link" href="#" title="Logout the user">
-										<img id="header_logout" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="logout">Logout</span>
-									</a>
-								</li>
-							</ul>
-						</li>
+					<li tal:condition="logged_in" class="dropdown">
+						<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" title="User options">
+							<img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
+							<span tal:replace="logged_in" />
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="${request.application_url}/settings" title="Settings">
+									<img id="header_settings" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="settings">Settings</span>
+								</a>
+							</li>
+							<li>
+								<a id="logout-link" href="#" title="Logout the user">
+									<img id="header_logout" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="logout">Logout</span>
+								</a>
+							</li>
+						</ul>
 					</li>
 
 					<li class="dropdown">
