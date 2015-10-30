@@ -3,7 +3,7 @@ import datetime
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
-from pyramid.view import view_config, notfound_view_config#
+from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 from pyramid.session import check_csrf_token
 from pyramid.renderers import get_renderer

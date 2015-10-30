@@ -369,7 +369,6 @@ function ajaxLogout (){
 		async: true
 	}).done(function ajaxLogoutDone(data) {
 	}).fail(function ajaxLogoutFail(xhr) {
-		alert(xhr.status);
 		if (xhr.status == 200) {
 			location.reload(true);
 		} else if (xhr.status == 403) {
