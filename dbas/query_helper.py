@@ -662,6 +662,17 @@ class QueryHelper(object):
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
 		DBDiscussionSession.query(Track).filter_by(author_uid=db_user.uid).delete()
 		transaction.commit()
 

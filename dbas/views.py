@@ -601,36 +601,54 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting complete track of the user
-	@view_config(route_name='ajax_manage_user_track', renderer='json', check_csrf=True)
-	def manage_user_track(self):
+	@view_config(route_name='ajax_get_user_track', renderer='json', check_csrf=True)
+	def get_user_track(self):
 		"""
 		Request the complete user track
 		:return:
 		"""
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		logger('manage_user_track', 'def', 'main')
+		logger('get_user_track', 'def', 'main')
 
 		nickname = 'unknown'
-		get_data = ''
 		try:
-			logger('manage_user_track', 'def', 'read params')
+			logger('get_user_track', 'def', 'read params')
 			nickname = str(self.request.authenticated_userid)
-			get_data = self.request.params['get_data']
-			logger('manage_user_track', 'def', 'nickname ' + nickname + ', get ' + get_data)
+			logger('get_user_track', 'def', 'nickname ' + nickname)
 		except KeyError as e:
-			logger('manage_user_track', 'error', repr(e))
+			logger('get_user_track', 'error', repr(e))
 
+		logger('manage_user_track', 'def', 'get track data')
+		return_dict = QueryHelper().get_track_of_user(nickname)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - deleting complete track of the user
+	@view_config(route_name='ajax_delete_user_track', renderer='json', check_csrf=True)
+	def delete_user_track(self):
+		"""
+		Request the complete user track
+		:return:
+		"""
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('delete_user_track', 'def', 'main')
+
+		nickname = 'unknown'
+		try:
+			logger('delete_user_track', 'def', 'read params')
+			nickname = str(self.request.authenticated_userid)
+			logger('delete_user_track', 'def', 'nickname ' + nickname)
+		except KeyError as e:
+			logger('delete_user_track', 'error', repr(e))
+
+		logger('delete_user_track', 'def', 'remove track data')
+		QueryHelper().del_track_of_user(transaction, nickname)
 		return_dict = {}
-		if get_data == '1':
-			logger('manage_user_track', 'def', 'get track data')
-			return_dict = QueryHelper().get_track_of_user(nickname)
-		else:
-			logger('manage_user_track', 'def', 'remove track data')
-			QueryHelper().del_track_of_user(transaction, nickname)
-
-		dictionary_helper = DictionaryHelper()
-		return_json = dictionary_helper.dictionary_to_json_array(return_dict, True)
+		return_dict['removed_data'] = 'true' # necessary
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 

@@ -11,28 +11,39 @@ function TrackHandler() {
 
 	/**
 	 *
-	 * @param get_track_data is true, when the data should be get, false, when it should be deleted
 	 */
-	this.manageUserTrackData = function(get_track_data){
+	this.getUserTrackData = function(){
 		'use strict';
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_manage_user_track',
+			url: 'ajax_get_user_track',
 			method: 'POST',
-			data: {
-				get_data: get_track_data ? '1' : '0'
-			},
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetUserTrackDone(data) {
-			var th = new TrackHandler();
-			alert("1");
-			get_track_data ? th.getUserTrackDataDone(data) : th.removeUserTrackDataDone();
+			new TrackHandler().getUserTrackDataDone(data);
 		}).fail(function ajaxGetUserTrackFail() {
-			var th = new TrackHandler();
-			alert("2");
-			get_track_data ? th.getUserTrackDataFail() : th.removeUserTrackDataFail();
+			new TrackHandler().getDataFail();
+		});
+	};
+
+	/**
+	 *
+	 */
+	this.deleteUserTrackData = function(){
+		'use strict';
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_delete_user_track',
+			method: 'POST',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function ajaxGetUserTrackDone(data) {
+			new TrackHandler().removeUserTrackDataDone(data);
+		}).fail(function ajaxGetUserTrackFail() {
+			new TrackHandler().getDataFail();
 		});
 	};
 
@@ -41,7 +52,7 @@ function TrackHandler() {
 		new TrackHandler().setDataInTrackTable(data);
 	};
 
-	this.getUserTrackDataFail = function(){
+	this.getDataFail = function(){
 		$('#' + trackTableSuccessId).hide();
 		$('#' + trackTableFailureId).fadeIn('slow');
 		$('#' + trackFailureMessageId).text(_t(internalError));
@@ -54,12 +65,6 @@ function TrackHandler() {
 		$('#' + trackTableFailureId).hide();
 		$('#' + trackSuccessMessageId).text(_t(dataRemoved));
 
-	};
-
-	this.removeUserTrackDataFail = function(){
-		$('#' + trackTableSuccessId).hide();
-		$('#' + trackTableFailureId).show();
-		$('#' + trackFailureMessageId).text(_t(internalError));
 	};
 
 
@@ -153,7 +158,7 @@ function TrackHandler() {
 			$('#' + trackTableSuccessId).show();
 			$('#' + trackSuccessMessageId).text(_t(noTrackedData));
 			$('#' + deleteTrackButtonId).hide();
-			$('#request-track').hide();
+			$('#' + requestTrackButtonId).hide();
 		}
 	};
 }
@@ -212,18 +217,18 @@ $(function () {
 	'use strict';
 
 	$('#' + requestTrackButtonId).click(function requestTrack() {
-		new TrackHandler().manageUserTrackData(true);
+		new TrackHandler().getUserTrackData(true);
 		$('#' + trackTableSuccessId).fadeOut('slow');
 		$('#' + trackTableFailureId).fadeOut('slow');
 		$('#' + trackTableSpaceId).empty();
 		$('#' + requestTrackButtonId).val(_t(refreshTrack));
 	});
 
-	$('#' + deleteTrackButtonId).click(function requestTrack() {
-		new TrackHandler().manageUserTrackData(false);
+	$('#' + deleteTrackButtonId).click(function deleteTrack() {
+		new TrackHandler().deleteUserTrackData(false);
 		$('#' + trackTableSuccessId).fadeOut('slow');
 		$('#' + trackTableFailureId).fadeOut('slow');
-		$('#' + requestTrackButtonId).val(requestTrack);
+		$('#' + requestTrackButtonId).val(_t(requestTrack));
 	});
 
 	$('#' + passwordInput).hide();
