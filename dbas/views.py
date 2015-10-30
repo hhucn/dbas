@@ -42,6 +42,7 @@ class Dbas(object):
 
 	# main page
 	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
+	@forbidden_view_config(renderer='templates/index.pt')
 	def main_page(self):
 		"""
 		View configuration for the main page
