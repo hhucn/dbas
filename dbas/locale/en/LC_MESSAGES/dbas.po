@@ -692,7 +692,7 @@ msgstr ""
 #. Default: Copyrights and used Software
 #: dbas/templates/imprint.pt:68
 msgid "copyright_and_used_software"
-msgstr "Copyrights and used Software"
+msgstr "Copyright and used Software"
 
 #. Default: Icons by
 #: dbas/templates/imprint.pt:76
@@ -707,7 +707,7 @@ msgstr "generated_with"
 #. Default: Imprint and Copyrights
 #: dbas/templates/snippet-footer.pt:14
 msgid "imprint_copyright"
-msgstr "Imprint and Copyrights"
+msgstr "Imprint and Copyright"
 
 #. Default: Author
 #: dbas/templates/snippet-footer.pt:20 dbas/templates/news.pt:35

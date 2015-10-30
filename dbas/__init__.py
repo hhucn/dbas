@@ -71,10 +71,10 @@ def main(global_config, **settings):
 
 	# ajax for navigation logic, administraion, settigs and editing/viewing log
 	config.add_route('ajax_get_start_statements',                '/discussion/{url:.*}ajax_get_start_statements')
-	config.add_route('ajax_get_premisses_for_statement',         '/discussion/{url:.*}/ajax_get_premisses_for_statement')
-	config.add_route('ajax_reply_for_premissegroup',             '/discussion/{url:.*}/ajax_reply_for_premissegroup')
-	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}/ajax_reply_for_response_of_confrontation')
-	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}/ajax_reply_for_argument')
+	config.add_route('ajax_get_premisses_for_statement',         '/discussion/{url:.*}ajax_get_premisses_for_statement')
+	config.add_route('ajax_reply_for_premissegroup',             '/discussion/{url:.*}ajax_reply_for_premissegroup')
+	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}ajax_reply_for_response_of_confrontation')
+	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}ajax_reply_for_argument')
 
 	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')
 	config.add_route('ajax_user_logout',                         '{url:.*}ajax_user_logout')

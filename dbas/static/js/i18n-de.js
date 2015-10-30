@@ -95,7 +95,7 @@ var dbas_de = {
 	'hidePasswordRequest': 'Verstecke die Passwort-Anfrage',
 	'hideGenerator': 'Verstecke Generator',
 	'internalFailureWhileDeletingTrack': 'Interner Fehler, bitte versuchen Sie es später erneut.',
-	'internal_error': 'Interner Fehler: Wahrscheinlich ist Ihre Sitzung abgelaufen. Bitte laden Sie die Seite erneut!.',
+	'internalError': 'Interner Fehler: Wahrscheinlich ist Ihre Sitzung abgelaufen. Bitte laden Sie die Seite erneut!.',
 	'issueList': 'Themen',
 	'islandViewHeaderText': 'Dies sind alle Argumente für: ',
 	'irrelevant': 'Irrelevant',

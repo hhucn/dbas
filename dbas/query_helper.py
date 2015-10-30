@@ -679,3 +679,18 @@ class QueryHelper(object):
 		time = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
 
 		return time.strftime(format)
+
+#	def handle_undermine_for_inserting_statements(self):
+#		logger('QueryHelper', 'handle_undermine_for_inserting_statements', 'def')
+#
+#	def handle_support_for_inserting_statements(self):
+#		logger('QueryHelper', 'handle_support_for_inserting_statements', 'def')
+#
+#	def handle_undercut_for_inserting_statements(self):
+#		logger('QueryHelper', 'handle_undercut_for_inserting_statements', 'def')
+#
+#	def handle_overbid_for_inserting_statements(self):
+#		logger('QueryHelper', 'handle_overbid_for_inserting_statements', 'def')
+#
+#	def handle_rebut_for_inserting_statements(self):
+#		logger('QueryHelper', 'handle_rebut_for_inserting_statements', 'def')

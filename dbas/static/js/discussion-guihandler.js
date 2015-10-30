@@ -40,8 +40,8 @@ function GuiHandler() {
 	 * Setting a description in some p-tag
 	 * @param text to set
 	 */
-	this.setDiscussionsAvoidanceDescription = function (text) {
-		$('#' + discussionsAvoidanceDescriptionId).html(text);
+	this.setDiscussionAttackDescription = function (text) {
+		$('#' + discussionAttackDescriptionId).html(text);
 	};
 
 	/**
@@ -117,9 +117,8 @@ function GuiHandler() {
 	/**
 	 * Appends all items in an ul list and this will be appended in the 'discussionsSpace'
 	 * @param items list with al items
-	 * @param isAvoidance true, when the given data should be used as avoidance
 	 */
-	this.addListItemsToDiscussionsSpace = function (items, isAvoidance) {
+	this.addListItemsToDiscussionsSpace = function (items) {
 		var ulElement;
 
 		// wrap all elements into a list
@@ -127,10 +126,7 @@ function GuiHandler() {
 		ulElement.append(items);
 
 		// append them to the space
-		if (isAvoidance)
-			$('#' + discussionAvoidanceSpaceId).append(ulElement);
-		else
-			$('#' + discussionSpaceId).append(ulElement);
+		$('#' + discussionSpaceId).append(ulElement);
 
 		// hover style element for the list elements
 		ulElement.children().hover(function () {
@@ -894,7 +890,6 @@ function GuiHandler() {
 	 */
 	this.setIssueList = function (jsonData){
 		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr;
-
 		li = $('<li>');
 		li.addClass('dropdown-header').text(_t(issueList));
 		$('#' + issueDropdownListID).empty().append(li);
@@ -928,7 +923,7 @@ function GuiHandler() {
 			}
 		});
 
-		if (issueDropdownButton.text().length == 0) {
+		if (issueDropdownButton.text().length == 0 || issueDropdownButton.text().length == 15) {
 			issue_curr = $('#issue_' + current_id);
 			$('#' + issueDateId).text(issue_curr.attr('date'));
 			issueDropdownButton.html($('#issue_' + current_id + ' a').text() + '   <span class="caret"></span>');

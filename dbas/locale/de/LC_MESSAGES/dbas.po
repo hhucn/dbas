@@ -710,7 +710,7 @@ msgstr ""
 #. Default: Copyrights and used Software
 #: dbas/templates/imprint.pt:68
 msgid "copyright_and_used_software"
-msgstr "Copyrights und benutze Software"
+msgstr "Copyright und benutze Software"
 
 #. Default: Icons by
 #: dbas/templates/imprint.pt:76
@@ -725,7 +725,7 @@ msgstr "erstellt mit dem Pyramid Web Framework 1.54"
 #. Default: Imprint and Copyrights
 #: dbas/templates/snippet-footer.pt:14
 msgid "imprint_copyright"
-msgstr "Impressum und Copyrights"
+msgstr "Impressum und Copyright"
 
 #. Default: Author
 #: dbas/templates/snippet-footer.pt:20 dbas/templates/news.pt:35

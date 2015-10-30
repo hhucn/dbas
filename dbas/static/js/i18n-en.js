@@ -95,7 +95,7 @@ var dbas_en = {
 	'hidePasswordRequest': 'Hide Password Request',
 	'hideGenerator': 'Hide Generator',
 	'internalFailureWhileDeletingTrack': 'Internal failure, please try again or did you have deleted your track recently?',
-	'internal_error': 'Internal Error: Maybe the server is offline or your session run out.',
+	'internalError': 'Internal Error: Maybe the server is offline or your session run out.',
 	'issueList': 'Topics',
 	'islandViewHeaderText': 'These are all arguments for: ',
 	'islandView': 'Island View',

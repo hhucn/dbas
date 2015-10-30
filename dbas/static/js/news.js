@@ -44,7 +44,7 @@ function ajaxGetNews (){
 	}).done(function ajaxGetNewsDone(data) {
 		callbackIfDoneForGettingNews(data);
 	}).fail(function ajaxGetNewsFail() {
-		$('#' + newsBodyId).append("<h4>" + internal_error + "</h4>");
+		$('#' + newsBodyId).append("<h4>" + internalError + "</h4>");
 	});
 }
 
@@ -74,7 +74,7 @@ function ajaxSendNews (){
 		callbackIfDoneForSendingNews(data);
 	}).fail(function ajaxSendNewsFail() {
 		$('#' + writingNewsFailedId).show();
-		$('#' + writingNewsFailedMessageId).text(_t(internal_error));
+		$('#' + writingNewsFailedMessageId).text(_t(internalError));
 	});
 }
 
@@ -108,7 +108,7 @@ function callbackIfDoneForSendingNews(data) {
 		window.scrollTo(0,0);
 	} else {
 		$('#' + writingNewsFailedId).show();
-		$('#' + writingNewsFailedMessageId).text(_t(internal_error));
+		$('#' + writingNewsFailedMessageId).text(_t(internalError));
 	}
 
 }

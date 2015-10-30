@@ -211,8 +211,7 @@ function JsonGuiHandler() {
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
 			listitems = [], i, reason, id, long_id, dict, lastAttack, text;
 
-		lastAttack = $('#' + hiddenDiscussionInformationParametersId).text();
-		lastAttack = lastAttack.substr(lastAttack.indexOf('relation=') + 'relation='.length);
+		lastAttack = window.location.href.substr(window.location.href.indexOf('relation=') + 'relation='.length);
 		lastAttack = lastAttack.substr(0,lastAttack.indexOf('&'));
 
 		text = helper.createRelationsText(jsonData.confrontation_text, premisse, jsonData.relation, lastAttack, conclusion, true);

@@ -36,7 +36,7 @@ $(function () {
 	var guiHandler = new GuiHandler(),
 		ajaxHandler = new AjaxSiteHandler(),
 		interactionHandler = new InteractionHandler(),
-		hidden_service, hidden_params,
+		hidden_service, params,
 		delay = (function(){
 			var timer = 0;
 			return function(callback, ms){
@@ -266,22 +266,21 @@ $(function () {
 			$('#' + discussionContainerId).fadeIn('fast');
 			$('#' + restartDiscussionButtonId).show(); // show the restart button
 
-			hidden_service = $('#' + hiddenDiscussionInformationServiceId).text();
-			hidden_params = $('#' + hiddenDiscussionInformationParametersId).text();
-
+			params = window.location.href.substr(window.location.href.indexOf('discussion/') + 'discussion/'.length);
+			params = params.substr(0,params.indexOf('/'));
 			// get issue list
 			ajaxHandler.getIssueList();
 
-			if (hidden_service == 'ajax_get_start_statements'){
+			if (url.indexOf('start') != -1){
 				ajaxHandler.getStartStatements();
-			} else if (hidden_service == 'ajax_' + attrGetPremissesForStatement){
-				ajaxHandler.getPremisseForStatement(hidden_params);
-			} else if (hidden_service == 'ajax_' + attrReplyForPremissegroup){
-				ajaxHandler.getReplyForPremisseGroup(hidden_params);
-			} else if (hidden_service == 'ajax_' + attrReplyForResponseOfConfrontation){
-				ajaxHandler.handleReplyForResponseOfConfrontation(hidden_params);
-			} else if (hidden_service == 'ajax_' + attrReplyForArgument){
-				ajaxHandler.getReplyForArgument(hidden_params);	}
+			} else if (url.indexOf(attrGetPremissesForStatement) != -1){
+				ajaxHandler.getPremisseForStatement(params);
+			} else if (url.indexOf(attrReplyForPremissegroup) != -1){
+				ajaxHandler.getReplyForPremisseGroup(params);
+			} else if (url.indexOf(attrReplyForResponseOfConfrontation) != -1){
+				ajaxHandler.handleReplyForResponseOfConfrontation(params);
+			} else if (url.indexOf(attrReplyForArgument) != -1){
+				ajaxHandler.getReplyForArgument(params);	}
 		}
 	});
 
