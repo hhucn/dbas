@@ -35,6 +35,7 @@ coverage.xml
 .python-version
 #*.sh
 *.bak
+pull*.sh
 
 # Pycharm
 .idea/
