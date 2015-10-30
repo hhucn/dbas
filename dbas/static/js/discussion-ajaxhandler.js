@@ -11,7 +11,7 @@ function AjaxSiteHandler() {
 	var push=0,
 		loca=0,
 		hash=0,
-		aler=0;
+		aler= 0;
 
 	/**
 	 * Redirection before an ajax call
@@ -98,14 +98,14 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllPositionsFail(err) {
-			if (err.responseText.indexOf('404') != -1 ){
-				location.reload();
-			} else {
+			//if (err.responseText.indexOf('404') != -1 ){
+			//	location.reload();
+			//} else {
 				new GuiHandler().setErrorDescription(_t(internalError));
 				// new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
 				new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 1). '
 					+ _t(doNotHesitateToContact) + ' ' + new Helper().startWithLowerCase(_t(restartOnError)) + '.');
-			}
+			//}
 		});
 	};
 

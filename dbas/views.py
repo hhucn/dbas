@@ -385,7 +385,32 @@ class Dbas(object):
 		View configuration for the 404 page.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
-		logger('notfound', 'def', 'view \'' + self.request.view_name + '\' not found')
+		logger('notfound', 'def', 'main')
+
+		logger('notfound', 'def', 'path: ' + self.request.path)
+		logger('notfound', 'def', 'view_name: ' + self.request.view_name)
+
+		# TODO: Dirty bugfix
+		if 'ajax_get_start_statements' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ax_get_start_statements')
+			return self.get_start_statements()
+		elif 'ajax_get_premisses_for_statement' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ajax_get_premisses_for_statement')
+			return self.get_premisses_for_statement()
+		elif 'ajax_reply_for_premissegroup' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ajax_reply_for_premissegroup')
+			return self.reply_for_premissegroup()
+		elif 'ajax_reply_for_response_of_confrontation' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ajax_reply_for_response_of_confrontation')
+			return self.reply_for_response_of_confrontation()
+		elif 'ajax_reply_for_argument' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ajax_reply_for_argument')
+			return self.reply_for_argument()
+
+		logger('notfound', 'def', 'params:')
+		for param in self.request.params:
+			logger('notfound', 'def', '  ' + param + ' -> ' + self.request.params[param])
+
 
 		self.request.response.status = 404
 		try:
@@ -418,8 +443,8 @@ class Dbas(object):
 		return return_json
 
 	# ajax - return all start statements in the database
-	@view_config(route_name='ajax_get_start_statements', renderer='json', check_csrf=True)
-	def get_start_statemens(self):
+	@view_config(route_name='ajax_get_start_statements', renderer='json', check_csrf=False)
+	def get_start_statements(self):
 		"""
 		Returns all positions as dictionary with uid <-> value
 		:return: list of all positions
@@ -444,7 +469,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_get_premisses_for_statement', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_get_premisses_for_statement', renderer='json', check_csrf=False)
 	def get_premisses_for_statement(self):
 		"""
 
@@ -476,7 +501,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - get reply for a premisse group
-	@view_config(route_name='ajax_reply_for_premissegroup', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_reply_for_premissegroup', renderer='json', check_csrf=False)
 	def reply_for_premissegroup(self):
 		"""
 		Get reply for a premisse
@@ -508,7 +533,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - get reply for an argument
-	@view_config(route_name='ajax_reply_for_argument', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_reply_for_argument', renderer='json', check_csrf=False)
 	def reply_for_argument(self):
 		"""
 		Get reply for ana rgument
@@ -540,7 +565,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - get reply for a confrontation
-	@view_config(route_name='ajax_reply_for_response_of_confrontation', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_reply_for_response_of_confrontation', renderer='json', check_csrf=False)
 	def reply_for_response_of_confrontation(self):
 		"""
 
@@ -701,12 +726,11 @@ class Dbas(object):
 			logger('set_new_premisses_for_X', 'def', 'param related_argument: ' + str(related_argument))
 			logger('set_new_premisses_for_X', 'def', 'param premissegroup_id: ' + str(premissegroup_id))
 			logger('set_new_premisses_for_X', 'def', 'param current_attack: ' + str(current_attack))
-			logger('set_new_premisses_for_X', 'def', 'param current_attack: ' + str(last_attack))
+			logger('set_new_premisses_for_X', 'def', 'param last_attack: ' + str(last_attack))
 			logger('set_new_premisses_for_X', 'def', 'param confrontation_uid: ' + str(confrontation_uid))
 			logger('set_new_premisses_for_X', 'def', 'param premissegroup_con: ' + str(premissegroup_con))
 			logger('set_new_premisses_for_X', 'def', 'param premissegroup_pro: ' + str(premissegroup_pro))
 			logger('set_new_premisses_for_X', 'def', 'param issue: ' + str(issue))
-			# Todo do we need the last attack, when we want to attack a rebut?
 
 			# confrontation_uid is a premisse group
 
@@ -717,7 +741,6 @@ class Dbas(object):
 			#   undercut:   D => !(E=>A)    | #premissegroup_id  =>  !#related_argument
 			#   rebut:      B => !A         | #premissegroup_id  =>  !conclusion of #related_argument
 			# Handle it, based on current and last attack
-
 
 			# getting all arguments
 			for key in self.request.params:
