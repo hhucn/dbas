@@ -4,7 +4,7 @@
  * @copyright Krauthoff 2015
  */
 
-// var mainpage = 'http://localhost:4284/';
+//var mainpage = 'http://localhost:4284/';
 var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
@@ -88,6 +88,7 @@ var description_rebut 						= 'description_rebut';
 var description_no_opinion 					= 'description_no_opinion';
 var didYouMean								= 'didYouMean';
 var discussionEnd							= 'discussionEnd';
+var discussionEndFeelFreeToLogin			= 'discussionEndFeelFreeToLogin';
 var duplicateDialog							= 'duplicateDialog';
 var doesNotHoldBecause 						= 'doesNotHoldBecause';
 var doesNotJustify 							= 'doesNotJustify';

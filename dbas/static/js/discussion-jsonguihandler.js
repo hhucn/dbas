@@ -181,8 +181,9 @@ function JsonGuiHandler() {
 			'conclusion_id': conclusion_uid};
 
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
-			+ confrontationText + '.<br><br>' + _t(doYouWantToEnterYourStatements),
-			'This confrontation is a ' + jsonData.attack, dict);
+			+ confrontationText + '.<br><br>' + _t(discussionEnd), 'This confrontation is a ' + jsonData.attack, dict);
+		//_t(doYouWantToEnterYourStatements),
+		return;
 
 		// build the radio buttons
 		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>
@@ -190,7 +191,7 @@ function JsonGuiHandler() {
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newStatementRadioButtonTextAsFirstOne), false, false, false, _t(newStatementRadioButtonTextAsFirstOne)));
 		} else {
-			guihandler.setErrorDescription(_t(discussionEnd) + '<br>' + _t(clickHereForRegistration));
+			guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
 			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
 			+ confrontationText + '.',
 			'This confrontation is a ' + jsonData.attack, dict);
@@ -240,7 +241,7 @@ function JsonGuiHandler() {
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));
 		} else if (parseInt(jsonData.reason) == 0){
-			guihandler.setErrorDescription(_t(discussionEnd) + '<br>' + _t(clickHereForRegistration));
+			guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
 		}
 		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
