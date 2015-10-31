@@ -116,11 +116,9 @@ function JsonGuiHandler() {
 		if (jsonData.attack == 'undermine'){
 			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotHoldBecause) + ' ';
 		} else if (jsonData.attack == 'rebut'){
-			confrontationText = _t(otherParticipantsAcceptBut) + ' ' + _t(strongerStatementForRecjecting) + ' <b>' + conclusion + '</b>.' +
-				' ' + _t(theySay) + ': ';
+			confrontationText = _t(otherParticipantsAcceptBut) + ' ' + _t(strongerStatementForRecjecting) + ' <b>' + conclusion + '</b>.' + ' ' + _t(theySay) + ': ';
 		} else if (jsonData.attack == 'undercut'){
-			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotJustify) + ' <b>' + conclusion + '</b>,' +
-				' ' + _t(because).toLocaleLowerCase() + ' ';
+			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotJustify) + ' <b>' + conclusion + '</b>,' + ' ' + _t(because).toLocaleLowerCase() + ' ';
 		}
 		confrontationText += '<b>' + confrontation + '</b>' + (DEBUG_ATTACK ? (' [<i>' + jsonData.attack + '</i>]') : '');
 

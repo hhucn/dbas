@@ -143,6 +143,8 @@ function InteractionHandler() {
 		// get some id's
 		dict['conclusion_id'] 	  = disc_desc.attr('conclusion_id');
 		dict['related_argument']  = disc_desc.attr('related_argument');
+
+
 		dict['premissegroup_id']  = disc_desc.attr('premissegroup_uid');
 		dict['current_attack'] 	  = disc_desc.attr('attack');
 		dict['last_attack'] 	  = lastAttack;

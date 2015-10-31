@@ -109,10 +109,10 @@
 
 				<input id="password-submit" type="submit" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" />
 			</form>
+		</div>
 
 
 			<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
-		</div>
 	</tal:block>
 </tal:block>
 
