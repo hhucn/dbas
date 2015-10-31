@@ -417,6 +417,7 @@
 							<input type="button" id="password-generator-button" value="Generate Password" class="button button-block btn btn-primary">
 						</div>
 					</div>
+					
 				</div>
 
 			</div>
