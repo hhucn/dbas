@@ -1228,12 +1228,15 @@ class Dbas(object):
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			if mode == '0': # start statement
 				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value, issue, True)
-			elif mode == '1': # edit statememt popup
+			elif mode == '1': # edit statement popup
 				statement_uid = self.request.params['extra']
 				return_dict = DatabaseHelper().get_fuzzy_string_for_edits(value, statement_uid, issue)
 			elif mode == '2':  # start premisse
 				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value, issue, False)
+			elif mode == '3':  # adding reasons
+				return_dict = DatabaseHelper().get_fuzzy_string_for_reasons(value, issue)
 			else:
+				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
 				return_dict = dict()
 		except KeyError as e:
 			return_dict = dict()

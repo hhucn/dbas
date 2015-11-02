@@ -139,13 +139,14 @@ function GuiHandler() {
 	 * @param parentid id-tag of the parent element, where a textare should be added
 	 * @param identifier additional id
 	 * @param is_statement
+	 * @param type
 	 */
-	this.addTextareaAsChildInParent = function (parentid, identifier, is_statement) {
+	this.addTextareaOrInputAsChildInParent = function (parentid, identifier, is_statement, type) {
 		/**
 		 * The structure is like:
 		 * <div><textarea .../><button...></button></div>
 		 */
-		var area, parent, div, div_content, button, span, childCount, div_dropdown;
+		var area, parent, div, div_content, button, span, childCount, div_dropdown, id;
 		parent = $('#' + parentid);
 		childCount = parent.children().length;
 
@@ -170,14 +171,15 @@ function GuiHandler() {
 		span = $('<span>');
 		span.html('&times;');
 
-		area = $('<textarea>');
+		area = $('<' + type + '>');
+		id = 'textarea_' + identifier + childCount.toString();
 		area.attr({
 			type: 'text',
 			class: '',
 			name: '',
 			autocomplete: 'off',
 			value: '',
-			id: 'textarea_' + identifier + childCount.toString()
+			id: id
 		});
 
 		button.append(span);
@@ -205,7 +207,14 @@ function GuiHandler() {
 			div_dropdown.hide();
 		}
 
+		// dropdown listener with sentence openers
 		this.setDropdownClickListener(identifier, childCount.toString());
+		// fuzzy search
+		$('#' + id).keyup(function () {
+			new Helper().delay(function() {
+				new AjaxSiteHandler().fuzzySearch($('#' + id).val(), id, fuzzy_add_reason, '');
+			},200);
+		});
 	};
 
 	/**
@@ -335,7 +344,7 @@ function GuiHandler() {
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == keyword) {
 				if (!same_group) {
-					text = _t(because) + ' ' + val.text;
+					text = _t(because) + ' ' + new Helper().startWithLowerCase(val.text);
 					l = text.length - 1;
 					if (text.substr(l) != '.' && text.substr(l) != '?' && text.substr(l) != '!') {
 						text += '.';
@@ -485,8 +494,8 @@ function GuiHandler() {
 			alert('What now (II)? GuiHandler: setDisplayStylesOfAddStatementContainer');
 		}
 
-		guihandler.addTextareaAsChildInParent(proPositionTextareaId, id_pro, isStatement);
-		guihandler.addTextareaAsChildInParent(conPositionTextareaId, id_con, isStatement);
+		guihandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, id_pro, isStatement, 'input');
+		guihandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, id_con, isStatement, 'input');
 	};
 
 	/**
@@ -521,11 +530,11 @@ function GuiHandler() {
 			return;
 		}
 
-		var params, token, button, span_dist, span_text, statementListGroup, distance, index;
+		var params, token, button, span_dist, span_text, distance, index;
 		callback.focus();
-		statementListGroup = callback.next();
-		statementListGroup.empty(); // list with elements should be after the callbacker
-		// $('#' + statementListGroupId).empty();
+		//statementListGroup = callback.next();
+		//statementListGroup.empty(); // list with elements should be after the callbacker
+		$('#' + proposalListGroupId).empty();
 
 		$.each(parsedData, function (key, val) {
 			params = key.split('_');
@@ -549,20 +558,21 @@ function GuiHandler() {
 
 			button = $('<button>').attr({type : 'button',
 				class : 'list-group-item',
-				id : 'proposal_' + index});
+				id : 'proposal_' + index,
+				text: uneditted_value});
    			button.hover(function(){ $(this).addClass('active');
    			    	  }, function(){ $(this).removeClass('active');
    			});
 			span_dist = $('<span>').attr({class : 'badge'}).text(_t(levenshteinDistance) + ' ' + distance);
 			span_text = $('<span>').attr({id : 'proposal_' + index + '_text'}).html(val);
 			button.append(span_dist).append(span_text).click(function(){
-				callback.val(uneditted_value);
-				statementListGroup.empty(); // list with elements should be after the callbacker
+				callback.val($(this).attr('text'));
+				$('#' + proposalListGroupId).empty(); // list with elements should be after the callbacker
 			});
-			statementListGroup.append(button);
+			$('#' + proposalListGroupId).append(button);
 		});
 		 // list with elements should be after the callbacker
-		statementListGroup.prepend('<h4>' + _t(didYouMean) + '</h4>');
+		$('#' + proposalListGroupId).prepend('<h4>' + _t(didYouMean) + '</h4>');
 		//$('#' + statementListGroupId).prepend('<h4>' + didYouMean + '</h4>');
 	};
 

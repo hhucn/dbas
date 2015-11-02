@@ -152,8 +152,6 @@
 
 						<h4><span id="add-statement-container-main-input-intro"></span></h4>
 						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
-						<div class="list-group" id="proposal-list-group">
-						</div>
 
 						<div id="pro-position-column">
 							<h4 id="heading-pro-positions" class="font-semi-bold" i18n:translate="pro">Pro</h4>
@@ -192,6 +190,9 @@
 							</div>
 						</div>
 
+						<div class="list-group" id="proposal-list-group">
+						</div>
+						
 						<input id="send-new-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 					</form>
 				</div>

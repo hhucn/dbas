@@ -391,6 +391,7 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_supports_for_argument_uid', 'main')
 
 		return_dict = {}
+		given_supports = set()
 		index = 0
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==argument_uid, Argument.issue_uid==issue)).join(
 			PremisseGroup).first()
@@ -398,18 +399,22 @@ class QueryHelper(object):
 			Premisse.premissesGroup_uid==db_argument.premissesGroup_uid, Premisse.issue_uid==issue)).all()
 
 		for arguments_premisses in db_arguments_premisses:
-			db_supports = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==arguments_premisses.statement_uid, Argument.isSupportive==True, Argument.issue_uid==issue)).join(
-				PremisseGroup).all()
+			db_supports = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==arguments_premisses.statement_uid,
+			                                                              Argument.isSupportive==True,
+			                                                              Argument.issue_uid==issue)).join(PremisseGroup).all()
 			if not db_supports:
 				continue
 
 			for support in db_supports:
-				db_support_premisses = DBDiscussionSession.query(Premisse).filter(and_(
-					Premisse.premissesGroup_uid==support.premissesGroup_uid, Premisse.issue_uid==issue)).first()
-				return_dict[key + str(index)], trash = self.get_text_for_premissesGroup_uid(support.premissesGroup_uid, issue)
-				return_dict[key + str(index) + 'id'] = support.premissesGroup_uid
-				return_dict[key + str(index) + '_statement_id'] = db_support_premisses.statement_uid
-				index += 1
+				if support.premissesGroup_uid not in given_supports:
+					db_support_premisses = DBDiscussionSession.query(Premisse).filter(and_(
+						Premisse.premissesGroup_uid==support.premissesGroup_uid,
+						Premisse.issue_uid==issue)).first()
+					return_dict[key + str(index)], trash = self.get_text_for_premissesGroup_uid(support.premissesGroup_uid, issue)
+					return_dict[key + str(index) + 'id'] = support.premissesGroup_uid
+					return_dict[key + str(index) + '_statement_id'] = db_support_premisses.statement_uid
+					index += 1
+					given_supports.add(support.premissesGroup_uid)
 
 		return_dict[key] = str(index)
 

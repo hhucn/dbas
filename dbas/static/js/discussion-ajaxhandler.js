@@ -482,7 +482,12 @@ function AjaxSiteHandler() {
 	 * @param extra optional
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
-		var settings_data, url;
+		var settings_data, url, callback = $('#' + callbackid);
+
+		if(callback.val().length==0) {
+			$('#' + proposalListGroupId).empty();
+			return;
+		}
 
 		$.ajax({
 			url: 'ajax_fuzzy_search',
@@ -502,7 +507,7 @@ function AjaxSiteHandler() {
 			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 11). '
 				 + _t(doNotHesitateToContact) + ' ' + new Helper().startWithLowerCase(_t(restartOnError)) + '.');
 		});
-		$('#' + callbackid).focus();
+		callback.focus();
 	};
 	/**
 	 *

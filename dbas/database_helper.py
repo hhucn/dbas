@@ -513,6 +513,7 @@ class DatabaseHelper(object):
 			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
 		else:
 			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid, issue)
+			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
 
 		QueryHelper().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()), session_id)
 
@@ -1003,14 +1004,10 @@ class DatabaseHelper(object):
 			if value.lower() in db_textvalue.textversions.content.lower():
 				lev = distance(value.lower(), db_textvalue.textversions.content.lower())
 				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textvalue.textversions.content)
-				if lev < 10:
-					lev = '0000' + str(lev)
-				elif lev < 100:
-					lev = '000' + str(lev)
-				elif lev < 1000:
-					lev = '00' + str(lev)
-				elif lev < 10000:
-					lev = '0' + str(lev)
+				if lev < 10:		lev = '0000' + str(lev)
+				elif lev < 100:		lev = '000' + str(lev)
+				elif lev < 1000:	lev = '00' + str(lev)
+				elif lev < 10000:	lev = '0' + str(lev)
 				tmp_dict[str(lev) + '_' + str(index)] = db_textvalue.textversions.content
 
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
@@ -1057,5 +1054,37 @@ class DatabaseHelper(object):
 			return_dict[i] = tmp_dict[i]
 
 		logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'dictionary length: ' + str(len(return_dict.keys())))
+
+		return return_dict
+
+	def get_fuzzy_string_for_reasons(self, value, issue):
+		"""
+
+		:param value:
+		:param issue:
+		:return:
+		"""
+		logger('DatabaseHelper', 'get_fuzzy_string_for_reasons', 'string: ' + value + ', issue: ' + str(issue))
+		db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).join(TextValue).all()
+		tmp_dict = dict()
+
+		for index, statement in enumerate(db_statements):
+			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
+			if value.lower() in db_textvalue.textversions.content.lower():
+				lev = distance(value.lower(), db_textvalue.textversions.content.lower())
+				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textvalue.textversions.content)
+				if lev < 10:		lev = '0000' + str(lev)
+				elif lev < 100:		lev = '000' + str(lev)
+				elif lev < 1000:	lev = '00' + str(lev)
+				elif lev < 10000:	lev = '0' + str(lev)
+				tmp_dict[str(lev) + '_' + str(index)] = db_textvalue.textversions.content
+
+		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
+
+		return_dict = collections.OrderedDict()
+		for i in list(tmp_dict.keys())[0:10]: # TODO RETURN COUNT
+			return_dict[i] = tmp_dict[i]
+
+		logger('DatabaseHelper', 'get_fuzzy_string_for_reasons', 'dictionary length: ' + str(len(return_dict.keys())))
 
 		return return_dict

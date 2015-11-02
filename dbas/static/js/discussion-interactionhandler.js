@@ -112,12 +112,14 @@ function InteractionHandler() {
 	 * @param useIntro
 	 */
 	this.getPremissesAndSendThem = function (useIntro) {
-		var i = 0, dict = {}, no, intro, lastAttack, disc_desc = $('#' + discussionsDescriptionId),
+		var i = 0, dict = {}, no, intro, lastAttack, disc_desc = $('#' + discussionsDescriptionId), type,
 			conTextareaPremissegroupCheckbox = $('#' + conTextareaPremissegroupCheckboxId),
 			proTextareaPremissegroupCheckbox = $('#' + proTextareaPremissegroupCheckboxId);
 		// all pro statements
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
-		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
+			// differ between textarea and inputs
+			type = $(this).prop('tagName').toLowerCase().indexOf('textarea') != -1 ? 'textarea' : 'input';
+		    if ($(this).prop('tagName').toLowerCase().indexOf(type) != -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);
 				intro = useIntro ? $('#left-dropdown-sentences-openers-' + no).text() : '';
@@ -128,7 +130,9 @@ function InteractionHandler() {
 		i = 0;
 		// all con statements
 		$('#' + conPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
-		    if ($(this).prop("tagName").toLowerCase().indexOf('textarea') > -1 && $(this).val().length > 0) {
+			// differ between textarea and inputs
+			type = $(this).prop('tagName').toLowerCase().indexOf('textarea') != -1 ? 'textarea' : 'input';
+		    if ($(this).prop('tagName').toLowerCase().indexOf(type) > -1 && $(this).val().length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);
 				intro = useIntro ? $('#right-dropdown-sentences-openers-' + no).text() : '';
@@ -155,11 +159,11 @@ function InteractionHandler() {
 		conTextareaPremissegroupCheckbox.prop('checked', false);
 		proTextareaPremissegroupCheckbox.prop('checked', false);
 
-		// var txt='dict:\n';
-		// $.each(dict, function (key, val) {
-		// 	txt += '\n' + key + ': ' + val;
-		// });
-		// alert(txt);
+		//var txt='type: ' + type + '\ndict:\n';
+		//$.each(dict, function (key, val) {
+		//	txt += '\n' + key + ': ' + val;
+		//});
+		//alert(txt);
 
 		new AjaxSiteHandler().sendNewPremisseForX(dict);
 	};
@@ -409,7 +413,12 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneFuzzySearch = function (data, callbackid){
 		var parsedData = $.parseJSON(data);
-		new GuiHandler().setStatementsAsProposal(parsedData, callbackid);
+		// if there is no returned data, we will clean the list
+		if (Object.keys(parsedData).length == 0){
+			$('#' + proposalListGroupId).empty();
+		} else {
+			new GuiHandler().setStatementsAsProposal(parsedData, callbackid);
+		}
 	};
 
 	/**

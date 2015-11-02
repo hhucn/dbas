@@ -313,4 +313,12 @@ function Helper() {
 	this.replaceAt = function(string, index, character, replacedCharacter) {
     	return string.substr(0, index) + character + string.substr(index + replacedCharacter.length);
 	};
+
+	this.delay = (function(){
+			var timer = 0;
+			return function(callback, ms){
+				clearTimeout (timer);
+				timer = setTimeout(callback, ms);
+			};
+		})();
 }

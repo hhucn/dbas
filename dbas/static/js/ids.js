@@ -77,6 +77,7 @@ var proPositionColumnId 						= 'pro-position-column';
 var proPositionTextareaId 						= 'pro-textareas';
 var proIslandId 								= 'pro-island';
 var proTextareaPremissegroupCheckboxId 			= 'pro-textarea-premissegroup-checkbox';
+var proposalListGroupId 						= 'proposal-list-group';
 var popupConfirmDialogId 						= 'confirm-dialog-popup';
 var popupConfirmDialogAcceptBtn 				= 'confirm-dialog-accept-btn';
 var popupConfirmDialogRefuseBtn 				= 'confirm-dialog-refuse-btn';
@@ -186,6 +187,10 @@ var writingNewNewsTextId 						= 'writing-news-text';
 
 
 // classes and id's
+var fuzzy_start_statement		= 0;
+var fuzzy_statement_popup 		= 1;
+var fuzzy_start_premisse 		= 2;
+var fuzzy_add_reason 			= 3;
 var attr_id 					= 'id';
 var attr_relation 				= 'relation';
 var attr_premisse 				= 'premisse';

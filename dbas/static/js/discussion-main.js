@@ -36,45 +36,30 @@ $(function () {
 	var guiHandler = new GuiHandler(),
 		ajaxHandler = new AjaxSiteHandler(),
 		interactionHandler = new InteractionHandler(),
-		hidden_service, params,
-		delay = (function(){
-			var timer = 0;
-			return function(callback, ms){
-				clearTimeout (timer);
-				timer = setTimeout(callback, ms);
-			};
-		})();
+		params;
 
 	guiHandler.setHandler(interactionHandler);
 
 	// gui for the fuzzy search
 	$('#' + addStatementContainerMainInputId).keyup(function () {
-		delay(function() {
-			if($('#' + addStatementContainerMainInputId).val().length==0){
-				$('#' + addStatementContainerMainInputId).next().empty();
+		new Helper().delay(function() {
+			if ($('#' + discussionsDescriptionId).text().indexOf(_t(startDiscussionText)) != -1) {
+				// here we have our start statement
+				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {
-				if ($('#' + discussionsDescriptionId).text().indexOf(_t(startDiscussionText)) != -1) {
-					// here we have our start statement
-					ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 0, '');
-				} else {
-					// some trick: here we have a premisse for our start statement
-					ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, 2, '');
-				}
+				// some trick: here we have a premisse for our start statement
+				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, fuzzy_start_premisse, '');
 			}
 		},200);
 	});
 
 	// gui for editing statements
 	$('#' + popupEditStatementTextareaId).keyup(function () {
-		delay(function() {
-			if($('#' + popupEditStatementTextareaId).val().length==0){
-				$('#' + popupEditStatementTextareaId).next().empty();
-			} else {
-				ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, 1,
-					$('#' + popupEditStatementTextareaId).attr('statement_id'));
-				$('#' + popupEditStatementWarning).hide();
-				$('#' + popupEditStatementWarningMessage).text('');
-			}
+		new Helper.delay(function() {
+			ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, fuzzy_statement_popup,
+				$('#' + popupEditStatementTextareaId).attr('statement_id'));
+			$('#' + popupEditStatementWarning).hide();
+			$('#' + popupEditStatementWarningMessage).text('');
 		},200);
 	});
 
@@ -123,20 +108,21 @@ $(function () {
 
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).click(function addConTextareaId() {
-		guiHandler.addTextareaAsChildInParent(conPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'));
+		guiHandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
+		$('#' + proposalListGroupId).empty();
 	});
 
 	// adding a textarea in the left column
 	$('#' + addProTextareaId).click(function addProTextareaId() {
-		guiHandler.addTextareaAsChildInParent(proPositionTextareaId, 'left', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'));
+		guiHandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, 'left', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
+		$('#' + proposalListGroupId).empty();
 	});
 
 	// hiding the argument container, when the X button is clicked
 	$('#' + closeStatementContainerId).click(function closeStatementContainerId() {
 		$('#' + addStatementContainerId).hide();
 		$('#' + addStatementErrorContainer).hide();
-		$('#' + addReasonButtonId).enable = true;
-		$('#' + addReasonButtonId).attr('checked', false);
+		$('#' + addReasonButtonId).attr('checked', false).enable = true;
 	});
 
 	// hiding the island view, when the X button is clicked

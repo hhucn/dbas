@@ -305,8 +305,6 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonLogin).click(function() {
-		$('#' + popupLoginWarning).hide();
-		$('#' + popupLoginSuccess).hide();
 		ajaxLogin()
 	});
 
