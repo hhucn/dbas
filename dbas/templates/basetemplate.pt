@@ -60,6 +60,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-en.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-de.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/google-analytics.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/eu-cookie-law-popup.js')}"></script>
 

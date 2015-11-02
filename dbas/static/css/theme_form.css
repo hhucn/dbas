@@ -199,25 +199,31 @@ input.active {
 	text-align: center;
 }
 
-#password-strength,
-#password-info-link {
+#popup-login-password-strength,
+#popup-login-password-info-link,
+#settings-password-strength,
+#settings-password-info-link {
 	float: right;
 }
 
-#password-info-icon {
+#popup-login-password-info-icon,
+#settings-password-info-icon {
 	color: #bcbcbc;
 }
 
-#password-info-icon:hover {
+#popup-login-password-info-icon:hover,
+#settings-password-info-icon:hover {
 	color: #006ab3;
 }
 
-#password-extras {
+#popup-login-password-extras,
+#settings-password-extras {
 	margin-bottom: 35px;
 	transition: .5s ease;
 }
 
-#password-meter {
+#popup-login-password-meter,
+#settings-password-meter {
 	height: 5px;
 	border-radius: 5px;
 	transition: .5s ease-in-out;

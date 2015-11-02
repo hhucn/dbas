@@ -230,7 +230,7 @@
 </div>
 
 <!-- LOGIN POPUP -->
-<div class="modal fade" id="popup_login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -266,12 +266,12 @@
 						</div>
 
 						<div id="forgot-password" class="form-group">
-							<a id="forgot-password-text">
+							<a id="popup-login-forgot-password-text">
 								<span i18n:translate="forgot_password"></span>
 							</a>
 						</div>
 
-						<div id="forgot-password-body" class="form-group">
+						<div id="popup-login-forgot-password-body" class="form-group">
 							<h4 class="modal-title" id="exampleModalLabel" i18n:translate="password_request">Password-Request</h4>
 
 							<label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>
@@ -347,24 +347,24 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label" i18n:translate="password">Your Password</label>
 							<div class="col-sm-9">
-								<input id="password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******">
+								<input id="popup-login-password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******">
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label class="col-sm-3 control-label" i18n:translate="password-confirm">Password (confirm)</label>
 							<div class="col-sm-9">
-								<input id="passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******">
+								<input id="popup-login-passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******">
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label class="col-sm-3 control-label" i18n:translate="password-strength">Password Strength</label>
 							<div class="col-sm-9">
-								<div class="col-sm-9 veryweak" id="password-meter"></div>
-								<h4 id="password-strength" i18n:translate="password_strength">very weak</h4>
+								<div class="col-sm-9 veryweak" id="popup-login-password-meter"></div>
+								<h4 id="popup-login-password-strength" i18n:translate="password_strength">very weak</h4>
 								<br>
-								<div id="generate-password" class="form-group">
+								<div id="popup-login-generate-password" class="form-group">
 									<a>
 										<span i18n:translate="generate_password">Generate secure password</span>
 									</a>
@@ -392,7 +392,7 @@
 						</div>
 
 
-						<div id="generate-password-body">
+						<div id="popup-login-generate-password-body">
 							<h4 class="modal-title" id="myModalLabel" i18n:translate="select_password">How to select a strong password</h4>
 
 							<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>

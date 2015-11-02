@@ -1,4 +1,4 @@
-/*global $, alert*/
+/*global $, alert, _t, statement_uid, premissesGroup_uid, argument_uid, attacked_by_relation_uid, attacked_with_relation_uid*/
 
 /**
  * @author Tobias Krauthoff
@@ -47,6 +47,27 @@ function TrackHandler() {
 		});
 	};
 
+	/**
+	 *
+	 */
+	/*
+	this.changeUserPassword = function(){
+		'use strict';
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_user_password_change',
+			method: 'POST',
+			data: { oldpw: $('#' + settingsPasswordOldInputId), newpw: $('#' + settingsPasswordInputId), confirmpw: $('#' + settingsPasswordConfirmInputId) },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function changeUserPasswordDone(data) {
+			alert("to do 1");
+		}).fail(function changeUserPasswordFail() {
+			alert("to do 2");
+		});
+	};*/
+
 	this.getUserTrackDataDone = function(data){
 		$('#' + deleteTrackButtonId).fadeIn('slow');
 		new TrackHandler().setDataInTrackTable(data);
@@ -67,7 +88,6 @@ function TrackHandler() {
 
 	};
 
-
 	/**
 	 *
 	 * @param jsonData
@@ -83,8 +103,6 @@ function TrackHandler() {
 			border: '0',
 			style: 'border-collapse: separate; border-spacing: 0px;'
 		});
-
-		// todo: DEBUG HERE
 
 		trElement = $('<tr>');
 
@@ -172,29 +190,29 @@ function PasswordHandler(){
 		keylist = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%&@#$?_~<>+-*/',
 		specialchars = new RegExp('([!,%,&,@,#,$,^,*,?,_,~])');
 
-	this.set_total = function (total) {
+	this.set_total = function (total, passwordMeter, passwordStrength, passwordExtras) {
 		'use strict';
-		$('#'  + passwordMeterId).removeClass().addClass('col-sm-9');
-		$('#'  + passwordStrengthId).text(_t(strength) + ': ' + _t(veryweak)).fadeIn("slow");
+		passwordMeter.removeClass().addClass('col-sm-9');
+		passwordStrength.text(_t(strength) + ': ' + _t(veryweak)).fadeIn("slow");
 
-		if (total === 1) {			$('#' + passwordMeterId).addClass('veryweak');	$('#' + passwordStrengthId).text(_t(strength) + ': ' + _t(veryweak));
-		} else if (total === 2) {	$('#' + passwordMeterId).addClass('weak');		$('#' + passwordStrengthId).text(_t(strength) + ': ' + _t(weak));
-		} else if (total === 3) {	$('#' + passwordMeterId).addClass('medium');	$('#' + passwordStrengthId).text(_t(strength) + ': ' + _t(medium));
-		} else if (total > 3) {		$('#' + passwordMeterId).addClass('strong');	$('#' + passwordStrengthId).text(_t(strength) + ': ' + _t(strong));
-		} else {					$('#' + passwordExtrasId).fadeOut('slow');
+		if (total === 1) {			passwordMeter.addClass('veryweak');	passwordStrength.text(_t(strength) + ': ' + _t(veryweak));
+		} else if (total === 2) {	passwordMeter.addClass('weak');		passwordStrength.text(_t(strength) + ': ' + _t(weak));
+		} else if (total === 3) {	passwordMeter.addClass('medium');	passwordStrength.text(_t(strength) + ': ' + _t(medium));
+		} else if (total > 3) {		passwordMeter.addClass('strong');	passwordStrength.text(_t(strength) + ': ' + _t(strong));
+		} else if (passwordExtras){	passwordExtras.fadeOut('slow');
 		}
 	};
 
-	this.check_strength = function () {
+	this.check_strength = function (passwordInput, passwordMeter, passwordStrength, passwordExtras) {
 		'use strict';
 		var total = 0,
-			pw = $('#' + passwordInputId).val();
+			pw = passwordInput.val();
 		if (pw.length > 8) {					total = total + 1;	}
 		if (upperCase.test(pw)) {			total = total + 1;	}
 		if (lowerCase.test(pw)) {			total = total + 1;	}
 		if (numbers.test(pw)) {				total = total + 1;	}
 		if (specialchars.test(pw)) {	total = total + 1;	}
-		new PasswordHandler().set_total(total);
+		new PasswordHandler().set_total(total, passwordMeter, passwordStrength, passwordExtras);
 	};
 
 	// password generator
@@ -224,25 +242,23 @@ $(function () {
 		$('#' + requestTrackButtonId).val(_t(refreshTrack));
 	});
 
-	$('#' + deleteTrackButtonId).click(function deleteTrack() {
+	$('#' + deleteTrackButtonId).hide().click(function deleteTrack() {
 		new TrackHandler().deleteUserTrackData(false);
 		$('#' + trackTableSuccessId).fadeOut('slow');
 		$('#' + trackTableFailureId).fadeOut('slow');
 		$('#' + requestTrackButtonId).val(_t(requestTrack));
 	});
 
-	$('#' + passwordInputId).hide();
-
-	$('#' + passwordOldInput).keyup(function passwordInputKeyUp() {
-		new PasswordHandler().check_strength();
+	$('#' + settingsPasswordInputId).keyup(function passwordInputKeyUp() {
+		new PasswordHandler().check_strength($('#' + settingsPasswordInputId), $('#' + settingsPasswordMeterId), $('#' + settingsPasswordStrengthId), $('#' + settingsPasswordExtrasId));
 		if ($(this).val().length > 0){
-			$('#' + passwordExtrasId).fadeIn('slow');
+			$('#' + settingsPasswordExtrasId).fadeIn('slow');
 		} else {
-			$('#' + passwordExtrasId).fadeOut('slow');
+			$('#' + settingsPasswordExtrasId).fadeOut('slow');
 		}
 	});
 
-	$('#' + passwordInfoIconId).click(function passwordInfoIcon() {
+	$('#' + settingsPasswordInfoIconId).click(function passwordInfoIcon() {
 		new GuiHandler().showGeneratePasswordPopup();
 	});
 
@@ -254,11 +270,13 @@ $(function () {
 		new PasswordHandler().generate_password($('#' + popupPasswordGeneratorOutput));
 	});
 
-	$('#' + passwordExtrasId).hide();
+	$('#' + settingsPasswordExtrasId).hide();
 	$('#' + dangerMessage).hide();
-	$('#' + deleteTrackButtonId).hide();
 	$('#' + trackTableSuccessId).hide();
 	$('#' + trackTableFailureId).hide();
+
+
+	alert("debug pw change");
 
 	// ajax loading animation
 	$(document).on({

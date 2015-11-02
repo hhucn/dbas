@@ -77,21 +77,22 @@
 			<form action="/settings" method="post">
 
 				<h3 i18n:translate="old_password">Old password</h3>
-				<input id="password-old-input" type="password" name="passwordold" class="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
+				<input id="settings-password-old-input" type="password" name="passwordold" class="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
 
 
 				<h3 i18n:translate="new_password">New Password</h3>
-				<input id="password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
-				<div id="password-extras">
-					<div id="password-meter" class="veryweak"></div>
-					<h4 id="password-strength" i18n:translate="strength">Strength</h4>
-					<a id="password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
-						<i id="password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
+				<input id="settings-password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
+				
+				<div id="settings-password-extras">
+					<div id="settings-password-meter" class="veryweak"></div>
+					<h4 id="settings-password-strength" i18n:translate="strength">Strength</h4>
+					<a id="settings-password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
+						<i id="settings-password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
 					</a>
 				</div>
 
 				<h3 i18n:translate="new_password_confirm">New Password (confirm)</h3>
-				<input id="passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+				<input id="settings-passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
 
 
 				<div tal:condition="change_error" id="danger-message" class="alert alert-danger alert-dismissible">
@@ -107,7 +108,7 @@
 					<span class="font-semi-bold" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
 				</div>
 
-				<input id="password-submit" type="submit" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" />
+				<input id="settings-password-submit" type="submit" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" />
 			</form>
 		</div>
 

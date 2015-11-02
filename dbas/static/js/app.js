@@ -190,8 +190,8 @@ function setButtonLanguage(){
 	$('#' + listAllUsersButtonId).prop('value', _t(showAllUsers)).prop('title', _t(showAllUsers));
 	$('#' + deleteTrackButtonId).prop('value', _t(deleteTrack)).prop('title', _t(deleteTrack));
 	$('#' + requestTrackButtonId).prop('value', _t(requestTrack)).prop('title', _t(requestTrack));
-	$('#' + passwordSubmitButtonId).prop('value', _t(passwordSubmit)).prop('title', _t(passwordSubmit));
-
+	$('#' + settingsPasswordSubmitButtonId).prop('value', _t(passwordSubmit)).prop('title', _t(passwordSubmit));
+	// todo every button
 }
 
 function hideExtraViewsOfLoginPopup(){
@@ -210,7 +210,7 @@ function prepareLoginRegistrationPopup(){
 	// hide on startup
 	hideExtraViewsOfLoginPopup();
 	$('#' + popupLoginButtonLogin).show();
-	$('#generate-password-body').hide();
+	$('#' + popupLoginGeneratePasswordBody).hide();
 
 	// switching tabs
 	$('.tab-login a').on('click', function (e) {
@@ -230,7 +230,7 @@ function prepareLoginRegistrationPopup(){
 		}
 	});
 
-	$('#' + forgotPasswordText).click(function(){
+	$('#' + popupLoginForgotPasswordText).click(function(){
 		if ($('#' + popupLoginForgotPasswordBody).is(':visible')){
 			$('#' + popupLoginForgotPasswordBody).hide();
 			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
@@ -256,13 +256,17 @@ function prepareLoginRegistrationPopup(){
 
 	});
 
+	$('#' + popupLoginPasswordInputId).keyup(function popupLoginPasswordInputKeyUp() {
+		new PasswordHandler().check_strength($('#' + popupLoginPasswordInputId), $('#' + popupLoginPasswordMeterId), $('#' + popupLoginPasswordStrengthId), $('#' + popupLoginPasswordExtrasId));
+	});
+
 	$('#' + popupLoginButtonRegister).click(function(){
-		var userfirstname = $('#' + userfirstnameInputId).val(),
-			userlastname = $('#' + userlastnameInputId).val(),
-			nick = $('#' + nickInputId).val(),
-			email = $('#' + emailInputId).val(),
-			password = $('#' + passwordInputId).val(),
-			passwordconfirm = $('#' + passwordconfirmInputId).val();
+		var userfirstname = $('#' + popupLoginUserfirstnameInputId).val(),
+			userlastname = $('#' + popupLoginUserlastnameInputId).val(),
+			nick = $('#' + popupLoginNickInputId).val(),
+			email = $('#' + popupLoginEmailInputId).val(),
+			password = $('#' + popupLoginPasswordInputId).val(),
+			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
 			ajaxRegistration();
 
 		if (!userfirstname || /^\s*$/.test(userfirstname) || 0 === userfirstname.length) {
@@ -486,12 +490,12 @@ function callbackIfDoneForPasswordRequest(data){
 	if (parsedData.success == '0') {
 		$('#' + popupLoginFailed).show();
 		$('#' + popupLoginSuccess).hide();
-		$('#' + popupLoginFailed + '-message').text(parsedData.message);
+		$('#' + popupLoginFailed + '-message').text(_t(parsedData.message));
 	} else {
 		$('#' + popupLoginForgotPasswordBody).hide();
 		$('#' + popupLoginFailed).hide();
 		$('#' + popupLoginSuccess).show();
-		$('#' + popupLoginSuccess + '-message').text(parsedData.message);
+		$('#' + popupLoginSuccess + '-message').text(_t(parsedData.message));
 	}
 }
 

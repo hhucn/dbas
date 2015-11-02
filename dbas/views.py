@@ -1169,7 +1169,7 @@ class Dbas(object):
 					logger('user_password_request', 'form.passwordrequest.submitted', 'Error occured')
 			else:
 				logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
-				message = 'The given e-mail address is unkown'
+				message = 'emailUnknown'
 
 
 		except KeyError as e:
@@ -1180,6 +1180,30 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
+
+	# ajax - password requests
+	@view_config(route_name='ajax_user_password_change', renderer='json')
+	def user_password_request(self):
+		"""
+
+		:return:
+		"""
+		logger('ajax_user_password_change', 'def', 'main')
+
+		success = '0'
+		message = ''
+		return_dict = {}
+
+		try:
+			old = self.request.params['old']
+			new = self.request.params['new']
+			confirm = self.request.params['confirm']
+			logger('ajax_user_password_change', 'def', 'params old: ' + old + ', new: ' + new + ', confirm: ' + confirm)
+			success = '1'
+		except KeyError as e:
+			logger('ajax_user_password_change', 'error', repr(e))
+
+		return None
 
 	# ajax - for getting all news
 	@view_config(route_name='ajax_get_news', renderer='json')

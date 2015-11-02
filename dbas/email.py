@@ -30,7 +30,7 @@ class EmailHelper(object):
 		try:
 			mailer.send_immediately(message, fail_silently=False)
 			send_message = True
-			message = 'An E-Mail was sent to the given address.'
+			message = 'emailWasSent'
 		except smtplib.SMTPConnectError as exception:
 			logger('EmailHelper', 'send_mail', 'error while sending')
 			code = str(exception.smtp_code)
@@ -38,11 +38,11 @@ class EmailHelper(object):
 			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_code ' + code)
 			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_error ' + error)
 			contact_error = True
-			message = 'Your message could not be send due to a system error! (' + 'smtp_code ' + code + ' || smtp_error ' + error + ')'
+			message = 'emailWasNotSent'
 		except socket_error as serr:
 			logger('EmailHelper', 'send_mail', 'error while sending')
 			logger('EmailHelper', 'send_mail', 'socket_error ' + str(serr))
 			contact_error = True
-			message = 'Your message could not be send due to a system error! (' + 'socket_error ' + str(serr) + ')'
+			message = 'emailWasNotSent'
 
 		return send_message, contact_error, message

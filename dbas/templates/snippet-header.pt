@@ -50,7 +50,7 @@
 						<!--
 						<a href="${request.application_url}/login" title="Login">
 						-->
-						<a id="link_popup_login" href="" data-toggle="modal" data-target="#popup_login" title="Login">
+						<a id="link_popup_login" href="" data-toggle="modal" data-target="#popup-login" title="Login">
 							<img id="header_login" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="login">Login</span>
 						</a>
 					</li>
