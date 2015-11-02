@@ -271,12 +271,8 @@ $(function () {
 	});
 
 	$('#' + settingsPasswordExtrasId).hide();
-	$('#' + dangerMessage).hide();
 	$('#' + trackTableSuccessId).hide();
 	$('#' + trackTableFailureId).hide();
-
-
-	alert("debug pw change");
 
 	// ajax loading animation
 	$(document).on({

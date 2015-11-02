@@ -95,15 +95,16 @@
 				<input id="settings-passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
 
 
-				<div tal:condition="change_error" id="danger-message" class="alert alert-danger alert-dismissible">
+				<div tal:condition="change_error" id="settings-danger-message" class="alert alert-danger alert-dismissible">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<div id="danger-message-text"><span tal:replace="message" />
-					</div>
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">
+					<span tal:replace="message" />
+					</span>
 				</div>
 
-				<div tal:condition="change_success" class="alert alert-success" role="alert">
+				<div tal:condition="change_success" id="settings-success-message" class="alert alert-success" role="alert">
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 					<span class="font-semi-bold" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
 				</div>

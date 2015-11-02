@@ -305,6 +305,8 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonLogin).click(function() {
+		$('#' + popupLoginWarning).hide();
+		$('#' + popupLoginSuccess).hide();
 		ajaxLogin()
 	});
 
@@ -496,6 +498,7 @@ function callbackIfDoneForPasswordRequest(data){
 		$('#' + popupLoginFailed).hide();
 		$('#' + popupLoginSuccess).show();
 		$('#' + popupLoginSuccess + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 	}
 }
 

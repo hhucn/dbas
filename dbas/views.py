@@ -228,32 +228,22 @@ class Dbas(object):
 		token = self.request.session.new_csrf_token()
 		logger('main_settings', 'new token', str(token))
 
-		oldpw = ''
-		newpw = ''
-		confirmpw = ''
+		old_pw = ''
+		new_pw = ''
+		confirm_pw = ''
 		message = ''
 		error = False
 		success = False
 
-		db_user_firstname = 'unknown'
-		db_user_surname = 'unknown'
-		db_user_nickname = 'unknown'
-		db_user_mail = 'unknown'
-		db_user_group = 'unknown'
-
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
-		if db_user:
-			db_user_firstname = db_user.firstname
-			db_user_surname = db_user.surname
-			db_user_nickname = db_user.nickname
-			db_user_mail = db_user.email
-			db_user_group = db_user.groups.name
-
-		if 'form.passwordchange.submitted' in self.request.params:
+		logger('main_settings', 'db_user', db_user.nickname)
+		logger('main_settings', 'db_user.groups', str(db_user.groups.uid))
+		logger('main_settings', 'db_user.groups', str(db_user.groups.name))
+		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			logger('main_settings', 'form.changepassword.submitted', 'requesting params')
 			old_pw = self.request.params['passwordold']
 			new_pw = self.request.params['password']
-			confirmpw = self.request.params['passwordconfirm']
+			confirm_pw = self.request.params['passwordconfirm']
 
 			# is the old password given?
 			if not old_pw:
@@ -266,24 +256,27 @@ class Dbas(object):
 				message = 'The new password field is empty.'
 				error = True
 			# is the cofnrimation password given?
-			elif not confirmpw:
+			elif not confirm_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'confirm pwd is empty')
 				message = 'The password confirmation field is empty.'
 				error = True
 			# is new password equals the confirmation?
-			elif not new_pw == confirmpw:
+			elif not new_pw == confirm_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'new pwds not equal')
 				message = 'The new passwords are not equal'
 				error = True
 			# is new old password equals the new one?
-			elif oldpw == new_pw:
+			elif old_pw == new_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'pwds are the same')
 				message = 'The new and old password are the same'
 				error = True
 			else:
 				# is the old password valid?
-				if not db_user.validate_password(oldpw):
+				if not db_user.validate_password(old_pw):
 					logger('main_settings', 'form.changepassword.submitted', 'old password is wrong')
+					logger('main_settings', 'old', old_pw + " " + PasswordHandler().get_hashed_password(old_pw))
+					logger('main_settings', 'new', new_pw + " " + PasswordHandler().get_hashed_password(new_pw))
+					logger('main_settings', 'current', db_user.password)
 					message = 'Your old password is wrong.'
 					error = True
 				else:
@@ -306,23 +299,26 @@ class Dbas(object):
 		except KeyError:
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
+		logger('main_settings', 'return change_error', str(error))
+		logger('main_settings', 'return change_success', str(success))
+		logger('main_settings', 'return message', str(message))
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
 			'title': 'Settings',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
-			'passwordold': oldpw,
-			'password': newpw,
-			'passwordconfirm': confirmpw,
+			'passwordold': '' if success else old_pw,
+			'password': '' if success else new_pw,
+			'passwordconfirm': '' if success else confirm_pw,
 			'change_error': error,
 			'change_success': success,
 			'message': message,
-			'db_firstname': db_user_firstname,
-			'db_surname': db_user_surname,
-			'db_nickname': db_user_nickname,
-			'db_mail': db_user_mail,
-			'db_group': db_user_group,
+			'db_firstname': db_user.firstname if db_user else 'unknown',
+			'db_surname': db_user.surname if db_user else 'unknown',
+			'db_nickname': db_user.nickname if db_user else 'unknown',
+			'db_mail': db_user.email if db_user else 'unknown',
+			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
 			'csrf_token': token
 		}
 
@@ -1180,30 +1176,6 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
-
-	# ajax - password requests
-	@view_config(route_name='ajax_user_password_change', renderer='json')
-	def user_password_request(self):
-		"""
-
-		:return:
-		"""
-		logger('ajax_user_password_change', 'def', 'main')
-
-		success = '0'
-		message = ''
-		return_dict = {}
-
-		try:
-			old = self.request.params['old']
-			new = self.request.params['new']
-			confirm = self.request.params['confirm']
-			logger('ajax_user_password_change', 'def', 'params old: ' + old + ', new: ' + new + ', confirm: ' + confirm)
-			success = '1'
-		except KeyError as e:
-			logger('ajax_user_password_change', 'error', repr(e))
-
-		return None
 
 	# ajax - for getting all news
 	@view_config(route_name='ajax_get_news', renderer='json')
