@@ -183,7 +183,7 @@ function InteractionHandler() {
 			id_pgroup, id_conclusion, relation, confrontation_uid;
 
 		if (id.indexOf(attr_no_opinion) != -1){
-			parent.history.back();
+			this.oneStepBack();
 			return;
 		}
 
@@ -216,6 +216,10 @@ function InteractionHandler() {
 
 		// reset style box
 		guiHandler.resetChangeDisplayStyleBox();
+	};
+
+	this.oneStepBack = function(){
+		parent.history.back();
 	};
 
 	/**

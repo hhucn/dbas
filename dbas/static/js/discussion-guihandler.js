@@ -460,7 +460,12 @@ function GuiHandler() {
 			statement = discussionsDescription.attr('text');
 			// $('#' + addStatementContainerH4Id).text(isPremisse ? _t(argumentContainerH4TextIfPremisse) :
 			// _t(argumentContainerH4TextIfArgument));
-			$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfPremisse));
+			// pretty print, whether above are more than one lititems
+			if($('#' + discussionSpaceId + ' ul li').length == 1) {
+				$('#' + addStatementContainerH4Id).text(_t(addPremisseRadioButtonText));
+			} else {
+				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfPremisse));
+			}
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
 			// take a look, if we agree or disagree, and where we are

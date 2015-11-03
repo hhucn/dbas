@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Returns a translatet string with the given id in the right suitable.
@@ -88,6 +88,7 @@ var description_rebut 						= 'description_rebut';
 var description_no_opinion 					= 'description_no_opinion';
 var didYouMean								= 'didYouMean';
 var discussionEnd							= 'discussionEnd';
+var discussionEndText						= 'discussionEndText';
 var discussionEndFeelFreeToLogin			= 'discussionEndFeelFreeToLogin';
 var duplicateDialog							= 'duplicateDialog';
 var doesNotHoldBecause 						= 'doesNotHoldBecause';
@@ -114,6 +115,7 @@ var fetchLongUrl 							= 'fetchLongUrl';
 var fetchShortUrl 							= 'fetchShortUrl';
 var forgotPassword 							= 'forgotPassword';
 var firstOneText 							= 'firstOneText';
+var firstOneReason 							= 'firstOneReason';
 var firstPositionText 						= 'firstPositionText';
 var firstname 								= 'firstname';
 var firstPremisseText1 						= 'firstPremisseText1';

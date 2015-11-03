@@ -179,13 +179,24 @@ function JsonGuiHandler() {
 			'conclusion_id': conclusion_uid};
 
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
-			+ confrontationText + '.<br><br>' + _t(discussionEnd), 'This confrontation is a ' + jsonData.attack, dict);
+			+ confrontationText + '.<br><br>' + _t(discussionEnd) + ' ' + _t(discussionEndText), _t(discussionEnd), dict);
+		$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).click(function(){
+			new InteractionHandler().oneStepBack();
+		});
+		$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).click(function(){
+			resetDiscussion();
+		});
 		//_t(doYouWantToEnterYourStatements),
+
+		// listitems.push(helper.getKeyValAsInputInLiWithType(attr_step_back + argument_uid, _t(goStepBack), false, false, true, _t(discussionEnd)));
+		// guihandler.addListItemsToDiscussionsSpace(listitems);
+
 		return; // TODO is this, how the discussion ends?
 
 		// build the radio buttons
 		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>
 		// TODO BUTTONS ARE DEPENDING ON THE ATTACK?</u></i></b>
+		/*
 		if (typeof jsonData.logged_in == "string") {
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newStatementRadioButtonTextAsFirstOne), false, false, false, _t(newStatementRadioButtonTextAsFirstOne)));
 		} else {
@@ -197,6 +208,7 @@ function JsonGuiHandler() {
 
 		// set the buttons
 		guihandler.addListItemsToDiscussionsSpace(listitems);
+		*/
 	};
 
 	/**
@@ -237,11 +249,20 @@ function JsonGuiHandler() {
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + text, '', dict);
 
 		if (typeof jsonData.logged_in == "string") {
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));
+			// check this item, if it is the only one
+			if (parseInt(jsonData.reason) == 0){
+				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(firstOneReason), false, false, false, _t(addPremisseRadioButtonText)));
+				guihandler.addListItemsToDiscussionsSpace(listitems);
+				$('#' + addReasonButtonId).attr('checked', true);
+				new InteractionHandler().radioButtonChanged();
+			} else {
+				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));
+				guihandler.addListItemsToDiscussionsSpace(listitems);
+			}
 		} else if (parseInt(jsonData.reason) == 0){
 			guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
+			guihandler.addListItemsToDiscussionsSpace(listitems);
 		}
-		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
 
 	/**

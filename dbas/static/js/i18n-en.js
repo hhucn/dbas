@@ -59,6 +59,7 @@ var dbas_en = {
 	'dialogView': 'Dialog View',
 	'dialogViewTitle': 'Show the dialog View',
 	'discussionEnd': 'The discussion ends here.',
+	'discussionEndText': 'You can click <a id="discussionEndStepBack" href="">here</a> to go one step back. Alternatively you can use the button above or <a id="discussionEndRestart" href="">this link</a> to restart the discussion.',
 	'discussionEndFeelFreeToLogin': 'The discussion ends here. If you want to proceed, please feel free to login yourself :)',
 	'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version' +
 	' as the current one once again?',
@@ -86,6 +87,7 @@ var dbas_en = {
 	'fetchShortUrl': 'Fetch short url!',
 	'forgotPassword': 'Forgot Password',
 	'firstOneText': 'You are the first one, who said: ',
+	'firstOneReason': 'You are the first one with this argument, please give a reason.',
 	'firstPositionText': 'You are the first one in this discussion!',
 	'firstPremisseText1': 'You are the first one, who said that',
 	'firstPremisseText2': 'Do you want to enter one or more reasons for your opinion?',
