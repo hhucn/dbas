@@ -164,7 +164,7 @@ var dbas_de = {
 	'strong': 'stark',
 	'strongerStatementForRecjecting': 'Sie haben eine stärkere Aussage zur Ablehnung von',
 	'soYourOpinionIsThat': 'Ihre Meinung ist, dass',
-	'shortenedWith': 'welche gekürzt wurde mit',
+	'shortenedBy': 'welche gekürzt wurde mit',
 	'switchDiscussion': 'Diskussionsthema ändern',
 	'switchDiscussionText1': 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu',
 	'switchDiscussionText2': 'und die Diskussion neugestartet.',

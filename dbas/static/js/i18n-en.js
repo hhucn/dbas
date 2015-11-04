@@ -164,7 +164,7 @@ var dbas_en = {
 	'strong': 'strong',
 	'strongerStatementForRecjecting': 'they claim to have a stronger statement for rejecting',
 	'soYourOpinionIsThat': 'So your opinion is that',
-	'shortenedWith': 'which was shortened with',
+	'shortenedBy': 'which was shortened with',
 	'switchDiscussion': 'Change the discussion\'s topic',
 	'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
 	'switchDiscussionText2': 'and the discussion will be restarted.',

@@ -106,14 +106,14 @@ $(function () {
 		guiHandler.setDisplayStylesOfAddStatementContainer(true, true, false, false);
 	});
 
-	// adding a textarea in the right column
-	$('#' + addConTextareaId).click(function addConTextareaId() {
+	// adding a textarea in the right column TODO: add a textfield is currently hidden; look for X button
+	$('#' + addConTextareaId).hide().click(function addConTextareaId() {
 		guiHandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
 		$('#' + proposalListGroupId).empty();
 	});
 
-	// adding a textarea in the left column
-	$('#' + addProTextareaId).click(function addProTextareaId() {
+	// adding a textarea in the left column TODO: add a textfield is currently hidden; look for X button
+	$('#' + addProTextareaId).hide().click(function addProTextareaId() {
 		guiHandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, 'left', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
 		$('#' + proposalListGroupId).empty();
 	});

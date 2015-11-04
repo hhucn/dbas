@@ -68,3 +68,8 @@
 ---
 - Bug fixes
 - Back-button issue for browsers fixed
+
+0.3.10 (04.11.2015)
+---
+- Bug fixes
+- Bootstrap for the news

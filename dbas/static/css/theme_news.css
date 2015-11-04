@@ -9,12 +9,32 @@
 
 .newscontainer {
 	display: inline-block;
-	padding-left: 1%;
-	padding-right: 1%;
-	padding-top: 1%;
-	padding-bottom: 1%;
-	margin: 1%;
+	border-radius: 2px;
+	background: #f4f4f4;
+	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
+	margin: 5px 5px 5px 5px;
+	padding: 10px 10px 10px 10px;
 	vertical-align: top;
+	height: 100%;
+	width: 100%;
+}
+
+
+.row-height {
+  display: table;
+  table-layout: fixed;
+  height: 100%;
+  width: 100%;
+}
+.col-height {
+  display: table-cell;
+  float: none;
+  height: 100%;
+}
+
+.container {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
 }
 
 .newscontainer:hover {
@@ -24,40 +44,4 @@
 
 #send-news{
 	float:right;
-}
-
-@media only screen and (max-width: 480px) {
-	/* Smartphone view: 1 tile */
-	
-	.newscontainer {
-		width: 98%;
-	}
-}
-
-@media only screen and (max-width: 649px) and (min-width: 481px) {
-	.newscontainer {
-		width: 98%;
-	}
-}
-
-@media only screen and (max-width: 650px) and (min-width: 1051px) {
-	.newscontainer {
-		width: 98%;
-	}
-}
-
-@media only screen and (max-width: 1050px) and (min-width: 651px) {
-	/* Small desktop / ipad view: 3 tiles */
-	
-	.newscontainer {
-		width: 47%;
-	}
-}
-
-@media only screen and (min-width: 1051px) {
-	/* Medium desktop: 4 tiles */
-	
-	.newscontainer {
-		width: 30%;
-	}
 }

@@ -12,7 +12,8 @@
  * @returns {string}
  */
 function getNewsContainerAsHtml(title, date, author, news, no){
-	return '<div class="container newscontainer" id="news_'
+	return '<div class="col-md-4 col-height">'
+		+ '<div class="newscontainer" id="news_'
 		+ no
 		+ '"><ul class="share-table"><li><a class="share-icon share-def"></a><ul><li><a class="share-icon share-mail"></a></li>'
 		+ '<li><a class="share-icon share-twitter"></a></li><li><a class="share-icon share-google"></a></li>'
@@ -25,6 +26,7 @@ function getNewsContainerAsHtml(title, date, author, news, no){
 		+ author
 		+ '</h5><br>'
 		+ news
+		+ '</div>'
 		+ '</div>';
 }
 
@@ -87,10 +89,25 @@ function ajaxSendNews (){
  * @param data
  */
 function callbackIfDoneForGettingNews(data) {
-	var parsedData = $.parseJSON(data);
+	var parsedData = $.parseJSON(data), counter = 0, div = '', height = '';
 	$.each(parsedData, function callbackIfDoneForGettingNewsEach(key, val) {
-		$('#' + newsBodyId).prepend(getNewsContainerAsHtml(val.title, val.date, val.author, val.news, val.uid))
+		if (counter % 3 == 0){
+			if (div !== '') {
+				div.append(height);
+				$('#' + newsBodyId).prepend(div);
+			}
+			div = $('<div>').addClass('row');
+			height = $('<div>').addClass('row-height');
+		}
+		height.prepend(getNewsContainerAsHtml(val.title, val.date, val.author, val.news, val.uid));
+		counter += 1
 	});
+	alert(counter);
+	counter -=1;
+	if (counter %3 != 0){
+		div.append(height);
+		$('#' + newsBodyId).prepend(div);
+	}
 }
 
 /**

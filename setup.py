@@ -28,7 +28,7 @@ requires = [
 ]
 
 setup(name='dbas',
-	version='0.3.9',
+	version='0.3.10',
 	description='Novel prototype for a dialog-based argumentation software',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[

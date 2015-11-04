@@ -436,7 +436,7 @@ class DatabaseHelper(object):
 			logger('DatabaseHelper', 'get_attack_for_argument', 'there is no attack!')
 			status = 0
 		else:
-			attack_no = str(random.randrange(0, int(attacks[key])))
+			attack_no = str(random.randrange(0, int(attacks[key]))) # Todo fix random
 			logger('DatabaseHelper', 'get_attack_for_argument', 'attack with ' + attacks[key + str(attack_no)])
 			logger('DatabaseHelper', 'get_attack_for_argument', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
 			return_dict['confrontation'] = attacks[key + str(attack_no)]
@@ -777,6 +777,7 @@ class DatabaseHelper(object):
 				# every entry of the dict will be a new statement with a new premissegroup
 				new_statement, is_duplicate = self.set_statement(transaction, con_dict[con], user, False, issue)
 				if premissegroup_con:
+					# Todo handle duplicats in pgroups
 					if new_premissegroup_uid is None:
 						logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undermine: new pgroup, but this one will be for all')
 						new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
@@ -800,9 +801,8 @@ class DatabaseHelper(object):
 						argument_list.append(new_argument)
 				key = 'con_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
-			DBDiscussionSession.add_all(argument_list)
-			DBDiscussionSession.flush()
-			transaction.commit()
+				return_dict[key]['duplicate'] = str(is_duplicate)
+			qh.add_arguments(transaction, argument_list)
 
 		###########
 		# SUPPORT #
@@ -818,6 +818,7 @@ class DatabaseHelper(object):
 				new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
 				# new pgroup only if they should be new
 				if premissegroup_pro:
+					# Todo handle duplicats in pgroups
 					if new_premissegroup_uid is None:
 						logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch support: new pgroup, but this one will be for all')
 						new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
@@ -841,6 +842,8 @@ class DatabaseHelper(object):
 						argument_list.append(new_argument)
 				key = 'pro_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+				return_dict[key]['duplicate'] = str(is_duplicate)
+			qh.add_arguments(transaction, argument_list)
 			DBDiscussionSession.add_all(argument_list)
 			DBDiscussionSession.flush()
 			transaction.commit()
@@ -857,6 +860,7 @@ class DatabaseHelper(object):
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undercut: ' + con_dict[con] + ', with same pgroup: ' + str(premissegroup_con))
 				new_statement, is_duplicate = self.set_statement(transaction, con_dict[con], user, False, issue)
 				if premissegroup_con:
+					# Todo handle duplicats in pgroups
 					if new_premissegroup_uid is None:
 						logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch undercut: new pgroup, but this one will be for all')
 						new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
@@ -879,10 +883,11 @@ class DatabaseHelper(object):
 					argument_list.append(new_argument)
 				key = 'con_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+				return_dict[key]['duplicate'] = str(is_duplicate)
+			qh.add_arguments(transaction, argument_list)
 			DBDiscussionSession.add_all(argument_list)
 			DBDiscussionSession.flush()
 			transaction.commit()
-			return return_dict
 
 		###########
 		# OVERBID #
@@ -896,6 +901,7 @@ class DatabaseHelper(object):
 				logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid: ' + pro_dict[pro] + ', with same pgroup: ' + str(premissegroup_pro))
 				new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
 				if premissegroup_pro:
+					# Todo handle duplicats in pgroups
 					if new_premissegroup_uid is None:
 						logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch overbid: new pgroup, but this one will be for all')
 						new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
@@ -918,6 +924,8 @@ class DatabaseHelper(object):
 					argument_list.append(new_argument)
 				key = 'pro_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+				return_dict[key]['duplicate'] = str(is_duplicate)
+			qh.add_arguments(transaction, argument_list)
 			DBDiscussionSession.add_all(argument_list)
 			DBDiscussionSession.flush()
 			transaction.commit()
@@ -938,6 +946,7 @@ class DatabaseHelper(object):
 				# every entry of the dict will be a new statement with a new premissegroup
 				new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
 				if premissegroup_pro:
+					# Todo handle duplicats in pgroups
 					if new_premissegroup_uid is None:
 						logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch rebut: new pgroup, but this one will be for all')
 						new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
@@ -974,6 +983,8 @@ class DatabaseHelper(object):
 						argument_list.append(new_argument)
 				key = 'pro_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+				return_dict[key]['duplicate'] = str(is_duplicate)
+			qh.add_arguments(transaction, argument_list)
 			DBDiscussionSession.add_all(argument_list)
 			DBDiscussionSession.flush()
 			transaction.commit()

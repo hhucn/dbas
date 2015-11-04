@@ -6,7 +6,7 @@
 
 function JsonGuiHandler() {
 	'use strict';
-	var DEBUG_ATTACK = true;
+	var DEBUG_ATTACK = false;
 
 	/**
 	 * Sets given json content as start statement buttons in the discussions space
@@ -155,7 +155,7 @@ function JsonGuiHandler() {
 			guihandler = new GuiHandler(),
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
 			premisse = jsonData.premisse_text,
-			opinion, confrontationText, listitems = [], dict,
+			opinion, confrontationText, dict,
 			relation = jsonData.relation,
 			conclusion_uid = jsonData.conclusion_uid,
 			argument_uid = jsonData.argument_uid,

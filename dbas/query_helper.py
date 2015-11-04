@@ -13,6 +13,43 @@ class QueryHelper(object):
 
 	"""
 
+	def add_arguments(self, transaction, argument_list):
+		"""
+		Ass all arguments in argument_list only if they are not duplicates
+		:param transaction:
+		:param argument_list:
+		:return:
+		"""
+		logger('DatabaseHelper', 'add_arguments', 'main')
+		duplicate_free_list = []
+		for argument in argument_list:
+			logger('DatabaseHelper', 'add_arguments', 'check for duplicate of argument with '
+			       + ', premissesGroup_uid: ' + str(argument.premissesGroup_uid)
+			       + ', isSupportive: ' + str(argument.isSupportive)
+			       + ', author_uid: ' + str(argument.author_uid)
+			       + ', weight: ' + str(argument.weight)
+			       + ', conclusion_uid: ' + str(argument.conclusion_uid)
+			       + ', issue_uid: ' + str(argument.issue_uid)
+			       + ', argument_uid: ' + str(argument.argument_uid))
+			db_duplicate = DBDiscussionSession.query(Argument).filter(and_(Argument.premissesGroup_uid == argument.premissesGroup_uid,
+			                                                               Argument.isSupportive == argument.isSupportive,
+			                                                               Argument.author_uid == argument.author_uid,
+			                                                               Argument.weight == argument.weight,
+			                                                               Argument.conclusion_uid == argument.conclusion_uid,
+			                                                               Argument.issue_uid == argument.issue_uid,
+			                                                               Argument.argument_uid == 0)).first()
+
+
+			if db_duplicate:
+				logger('DatabaseHelper', 'add_arguments', 'argument is a duplicate')
+			else:
+				logger('DatabaseHelper', 'add_arguments', 'argument is no duplicate')
+				duplicate_free_list.append(argument)
+
+		DBDiscussionSession.add_all(duplicate_free_list)
+		DBDiscussionSession.flush()
+		transaction.commit()
+
 	def set_statement_as_new_premisse(self, statement, user, issue):
 		"""
 
@@ -24,6 +61,17 @@ class QueryHelper(object):
 		logger('DatabaseHelper', 'set_statement_as_new_premisse', 'statement: ' + str(statement) + ', user: ' + str(user))
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+		# check for duplicate
+		db_premisse = DBDiscussionSession.query(Premisse).filter_by(statement_uid=statement.uid).first()
+		if db_premisse:
+			logger('DatabaseHelper', 'set_statement_as_new_premisse', 'statement is already given as premisse')
+			db_premissegroup = DBDiscussionSession.query(Premisse).filter_by(premissesGroup_uid=db_premisse.premissesGroup_uid).all()
+
+			if len(db_premissegroup) == 1:
+				logger('DatabaseHelper', 'set_statement_as_new_premisse', 'statement is already given as premisse and the only one in its group')
+				return db_premissegroup[0].premissesGroup_uid
+
 		premisse_group = PremisseGroup(author=db_user.uid)
 		DBDiscussionSession.add(premisse_group)
 		DBDiscussionSession.flush()
@@ -468,7 +516,7 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_attack_for_argument_by_random', 'user ' + (user if user else 'anonymous') + ', arg.uid ' + str(db_argument.uid))
 
 		# all possible attacks
-		complete_list_of_attacks = [1,3,5]
+		complete_list_of_attacks = [1,3,5] # todo fix this, when overbid is killed
 		attacks = [1,3,5]
 		# maybe we are anonymous
 		if user:

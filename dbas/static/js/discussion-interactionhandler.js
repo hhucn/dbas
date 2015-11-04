@@ -402,7 +402,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), service;
 		if (parsedData.status == '1'){
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
-			$('#' + popupUrlSharingDescriptionPId).html(_t(feelFreeToShareUrl) + ',' + _t(shortenedWith) + ' ' + service + ':');
+			$('#' + popupUrlSharingDescriptionPId).html(_t(feelFreeToShareUrl) + ', ' + _t(shortenedBy) + ' ' + service + ':');
 			$('#' + popupUrlSharingInputId).val(parsedData.url);
 		} else {
 			$('#' + popupUrlSharingDescriptionPId).text(_t(feelFreeToShareUrl) + ":");

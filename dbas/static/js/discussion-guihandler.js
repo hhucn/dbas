@@ -180,12 +180,16 @@ function GuiHandler() {
 			autocomplete: 'off',
 			value: '',
 			id: id
+		}).click(function(){ // new fuzzy search, when the text field changes
+			new Helper().delay(function() {
+				new AjaxSiteHandler().fuzzySearch($('#' + id).val(), id, fuzzy_add_reason, '');
+			},200);
 		});
 
 		button.append(span);
 		div_dropdown = this.getDropdownWithSentencesOpeners(identifier, childCount.toString());
 		div_content.append(area);
-		div_content.append(button);
+		// div_content.append(button); // TODO add a textfield is currently hidden
 
 		// remove everything on click
 		button.attr({
@@ -329,7 +333,7 @@ function GuiHandler() {
 	 * @param jsonData returned data
 	 */
 	this.setPremissesAsLastChild = function (jsonData) {
-		var newElement = '', helper = new Helper(), text, tmp='', l, keyword, attack, same_group, premissegroup_uid = '0';
+		var newElement = '', helper = new Helper(), text, tmp='', l, keyword, attack, same_group, premissegroup_uid = '0', countSg = 0, countPl = 0, long_id, last_id;
 
 		// premisse group?
 		same_group = jsonData.same_group == '1';
@@ -344,30 +348,38 @@ function GuiHandler() {
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == keyword) {
 				if (!same_group) {
+					countSg += 1;
 					text = _t(because) + ' ' + new Helper().startWithLowerCase(val.text);
 					l = text.length - 1;
 					if (text.substr(l) != '.' && text.substr(l) != '?' && text.substr(l) != '!') {
 						text += '.';
 					}
 
-					newElement = helper.getKeyValAsInputInLiWithType(val.premissegroup_uid, text, false, true, false, val.text);
-					newElement.children().hover(function () {
-						$(this).toggleClass('table-hover');
-					});
-					$('#li_' + addReasonButtonId).before(newElement);
+					last_id = val.uid;
+					long_id = attack + '_premissegroup_' + val.premissegroup_uid;
+					// add only, if it is now duplicate
+					if (String(val.duplicate).toLocaleLowerCase() != 'true') {
+						newElement = helper.getKeyValAsInputInLiWithType(val.uid, text, false, true, true, val.text, {'long_id': long_id});
+						newElement.children().hover(function () {
+							$(this).toggleClass('table-hover');
+						});
+						$('#li_' + addReasonButtonId).before(newElement);
+					}
 				} else {
+					countPl += 1;
 					alert("How to handle pgroups? Look at 'changelog and edit'");
 					// TODO how to handle inserting pgroups? Look at 'changelog and edit'
+					// TODO how to handle duplicates
 					text = val.text;
 					l = text.length - 1;
 					if (text.substr(l) == '.' || text.substr(l) == '?' || text.substr(l) == '!') {
-						text = text.substr(0,l);
-					}
+							text = text.substr(0,l);
+						}
 
 					if (tmp == ''){
-						tmp = _t(because) + ' ' + text;
-						premissegroup_uid = val.premissegroup_uid;
-					} else {
+							tmp = _t(because) + ' ' + text;
+							premissegroup_uid = val.premissegroup_uid;
+						} else {
 						tmp += ' ' + _t(and) + ' ' + text
 					}
 				}
@@ -388,6 +400,11 @@ function GuiHandler() {
 		this.setDisplayStylesOfAddStatementContainer(false, false, false, false, false);
 		$('#' + addReasonButtonId).attr('checked', false);
 
+		// todo chose the only element, which was given
+		if (countSg == 1){
+			$('#li_' + last_id + ' input').attr('checked', true);
+			new InteractionHandler().radioButtonChanged();
+		}
 	};
 
 	/**
