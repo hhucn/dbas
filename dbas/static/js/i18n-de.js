@@ -183,6 +183,7 @@ var dbas_de = {
 	'veryweak': 'sehr schwach',
 	'weak': 'schwach',
 	'wrong': 'Falsch',
+	'wouldYourShareArgument': 'Können Sie einen Grund angeben?',
 	'wrongURL': 'Ihre URL scheint falsch zu sein.',
 	'whatDoYouThink': 'Was halten Sie davon?',
 	'whyDoYouThinkThat': 'Wieso denken Sie, dass',

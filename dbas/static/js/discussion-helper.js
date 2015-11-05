@@ -70,7 +70,7 @@ function Helper() {
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var rebutConclusion, w,  r, counterJusti;
+		var rebutConclusion, w,  r;
 
 		if (lastAttack == attr_undermine){			rebutConclusion = premisse;
 		} else if (lastAttack == attr_rebut){		rebutConclusion = conclusion;
@@ -80,13 +80,13 @@ function Helper() {
 		// pretty print
 		w = '<b>' + (startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong))) + ', ';
 		r = '<b>' + (startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right))) + ', ';
-		counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premisse + '</b>';
+		// counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premisse + '</b>';
 
 		// different cases
 		if (attackType === attr_undermine)	return w + _t(itIsFalse) + ' ' + confrontation + '</b>.';
 		if (attackType === attr_support)	return r + _t(itIsTrue) + ' ' + confrontation + '</b>.';
-		if (attackType === attr_undercut)	return r + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + '.';
-		if (attackType === attr_overbid)	return r + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.';
+		if (attackType === attr_undercut)	return r + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' <b>' + conclusion + '</b>.';
+		if (attackType === attr_overbid)	return r + confrontation + '</b>, ' + _t(andIDoBelieve) + ' <b>' + conclusion + '</b>.';
 		if (attackType === attr_rebut)		return r + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br><br>'
 												+ _t(iHaveStrongerArgument) + ' <b>' + rebutConclusion + '</b>.';
 	};

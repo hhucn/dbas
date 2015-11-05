@@ -50,6 +50,14 @@ class QueryHelper(object):
 		DBDiscussionSession.flush()
 		transaction.commit()
 
+	def get_number_of_arguments(self, issue):
+		"""
+
+		:param issue:
+		:return:
+		"""
+		return len(DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all())
+
 	def set_statement_as_new_premisse(self, statement, user, issue):
 		"""
 

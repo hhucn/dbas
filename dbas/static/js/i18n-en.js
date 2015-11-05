@@ -183,6 +183,7 @@ var dbas_en = {
 	'veryweak': 'very weak',
 	'weak': 'weak',
 	'wrong': 'Wrong',
+	'wouldYourShareArgument': 'Would you share that argument?',
 	'whatDoYouThink': 'What do you think about that?',
 	'whyDoYouThinkThat': 'Why do you think that',
 	'wrongURL': 'Your URL seems to be wrong.',

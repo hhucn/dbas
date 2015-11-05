@@ -100,9 +100,9 @@ $(function () {
 
 	// add argument button in the island view
 	$('#' + islandViewAddArgumentsBtnid).click(function islandViewAddArgumentsBtnid() {
-		$('#' + scStyle2Id).attr('checked', true);
-		$('#' + scStyle1Id).attr('checked', false);
-		$('#' + scStyle3Id).attr('checked', false);
+		$('#' + scStyle2Id).attr('checked', true).prop('checked', true);
+		$('#' + scStyle1Id).attr('checked', false).prop('checked', false);
+		$('#' + scStyle3Id).attr('checked', false).prop('checked', false);
 		guiHandler.setDisplayStylesOfAddStatementContainer(true, true, false, false);
 	});
 
@@ -122,14 +122,14 @@ $(function () {
 	$('#' + closeStatementContainerId).click(function closeStatementContainerId() {
 		$('#' + addStatementContainerId).hide();
 		$('#' + addStatementErrorContainer).hide();
-		$('#' + addReasonButtonId).attr('checked', false).enable = true;
+		$('#' + addReasonButtonId).attr('checked', false).prop('checked', false).enable = true;
 	});
 
 	// hiding the island view, when the X button is clicked
 	$('#' + closeIslandViewContainerId).click(function () {
 		$('#' + islandViewContainerId).hide();
 		guiHandler.resetChangeDisplayStyleBox();
-		$('#li_' + addReasonButtonId).attr('checked', true);
+		$('#li_' + addReasonButtonId).attr('checked', true).prop('checked', true);
 	});
 
 	// open edit statement

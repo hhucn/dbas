@@ -322,7 +322,7 @@ function GuiHandler() {
 			newElement.children().hover(function () {
 				$(this).toggleClass('table-hover');
 			});
-			$('#li_' + addReasonButtonId).before(newElement); // TODO.slideDown('slow').attr('checked', false);
+			$('#li_' + addReasonButtonId).before(newElement); // TODO.slideDown('slow').attr('checked', false).prop('checked', false);
 			new GuiHandler().setSuccessDescription(_t(addedEverything));
 
 		}
@@ -398,11 +398,11 @@ function GuiHandler() {
 		}
 
 		this.setDisplayStylesOfAddStatementContainer(false, false, false, false, false);
-		$('#' + addReasonButtonId).attr('checked', false);
+		$('#' + addReasonButtonId).attr('checked', false).prop('checked', false);
 
 		// todo chose the only element, which was given
 		if (countSg == 1){
-			$('#li_' + last_id + ' input').attr('checked', true);
+			$('#li_' + last_id + ' input').attr('checked', true).prop('checked', true);
 			new InteractionHandler().radioButtonChanged();
 		}
 	};
@@ -416,8 +416,12 @@ function GuiHandler() {
 	 * @param isArgument
 	 */
 	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
-		var statement, attack, header,
-			discussionsDescription = $('#' + discussionsDescriptionId),
+		var	discussionsDescription = $('#' + discussionsDescriptionId),
+			confrontation = discussionsDescription.attr('confrontation_text'),
+			conclusion = discussionsDescription.attr('conclusion'),
+			premisse = discussionsDescription.attr('premisse'),
+			argument =  conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse,
+			header,
 			addStatementContainer = $('#' + addStatementContainerId),
 			addReasonButton = $('#' + addReasonButtonId),
 			addStatementContainerMainInputIntro = $('#' + addStatementContainerMainInputIntroId),
@@ -425,6 +429,7 @@ function GuiHandler() {
 			guihandler = new GuiHandler(),
 			ajaxhandler = new AjaxSiteHandler(),
 			interactionhandler = new InteractionHandler();
+
 		if (!isVisible) {
 			addStatementContainer.fadeOut('slow');
 			$('#' + addStatementContainerMainInputId).val('');
@@ -474,7 +479,6 @@ function GuiHandler() {
 			});
 
 		} else if (isPremisse || isArgument) {
-			statement = discussionsDescription.attr('text');
 			// $('#' + addStatementContainerH4Id).text(isPremisse ? _t(argumentContainerH4TextIfPremisse) :
 			// _t(argumentContainerH4TextIfArgument));
 			// pretty print, whether above are more than one lititems
@@ -486,11 +490,11 @@ function GuiHandler() {
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
 			// take a look, if we agree or disagree, and where we are
-			if (relation.indexOf(attr_undermine) != -1) {this.showAddStatementsTextareasWithTitle(false, true, false, statement);
-			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, false, statement);
-			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, true, statement);
-			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, true, statement);
-			} else if (relation.indexOf(attr_rebut) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, false, statement);
+			if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, confrontation);
+			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation);
+			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, confrontation);
+			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation);
+			} else if (relation.indexOf(attr_rebut) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, argument);
 			} else {
 				alert("Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
 			}
@@ -499,7 +503,7 @@ function GuiHandler() {
 			if (isArgument) {
 				if (discussionsDescription.text().indexOf(_t(otherParticipantsDontHave)) != -1) {
 					// other users have no opinion, so the participant can give pro and con
-					this.showAddStatementsTextareasWithTitle(true, true, false, statement);
+					this.showAddStatementsTextareasWithTitle(true, true, statement);
 				} else {
 					// alert('Todo: How to insert something at this place?');
 				}
@@ -527,16 +531,15 @@ function GuiHandler() {
 	 * @param isAttackingRelation
 	 * @param title
 	 */
-	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, isAttackingRelation, title) {
-		var extra = isAttackingRelation ? (' ' + _t(theCounterArgument)) : '';
+	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, title) {
 		if (isAgreeing) {	 $('#' + proPositionColumnId).show(); } else { $('#' + proPositionColumnId).hide(); }
 		if (isDisagreeing) { $('#' + conPositionColumnId).show(); } else { $('#' + conPositionColumnId).hide(); }
 
 		// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
-		$('#' + headingProPositionTextId).html(isAgreeing ? ' I <span class=\'green-bg\'>agree</span> with' + extra +
-			': <b>' + title + '</b>, because...' : '');
-		$('#' + headingConPositionTextId).html(isDisagreeing ? ' I <span class=\'red-bg\'>disagree</span> with' + extra +
-			': <b>' + title + '</b>, because...' : '');
+		$('#' + headingProPositionTextId).html(isAgreeing ? ' I <span class=\'green-bg\'>agree</span> with'
+			+ ': <b>' + title + '</b>,' + ' because...' : '');
+		$('#' + headingConPositionTextId).html(isDisagreeing ? ' I <span class=\'red-bg\'>disagree</span> with'
+			+ ': <b>' + title + '</b>, because...' : '');
 	};
 
 	/**
@@ -871,13 +874,13 @@ function GuiHandler() {
 		}
 
 		$('#' + popupHowToSetPremisseGroupsCloseButton).click(function(){
-			$('#' + proTextareaPremissegroupCheckboxId).attr('checked', false);
-			$('#' + conTextareaPremissegroupCheckboxId).attr('checked', false);
+			$('#' + proTextareaPremissegroupCheckboxId).attr('checked', false).prop('checked', false);
+			$('#' + conTextareaPremissegroupCheckboxId).attr('checked', false).prop('checked', false);
 		});
 
 		$('#' + popupHowToSetPremisseGroupsClose).click(function(){
-			$('#' + proTextareaPremissegroupCheckboxId).attr('checked', false);
-			$('#' + conTextareaPremissegroupCheckboxId).attr('checked', false);
+			$('#' + proTextareaPremissegroupCheckboxId).attr('checked', false).prop('checked', false);
+			$('#' + conTextareaPremissegroupCheckboxId).attr('checked', false).prop('checked', false);
 		});
 
 		// accept cookie
@@ -924,9 +927,9 @@ function GuiHandler() {
 	 * Sets style attributes to default
 	 */
 	this.resetChangeDisplayStyleBox = function () {
-		$('#' + scStyle1Id).attr('checked', true);
-		$('#' + scStyle2Id).attr('checked', false);
-		$('#' + scStyle3Id).attr('checked', false);
+		$('#' + scStyle1Id).attr('checked', true).prop('checked', true);
+		$('#' + scStyle2Id).attr('checked', false).prop('checked', false);
+		$('#' + scStyle3Id).attr('checked', false).prop('checked', false);
 	};
 
 	/**
@@ -934,18 +937,19 @@ function GuiHandler() {
 	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr, text, pos, i, l, helper = new Helper();
+		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr, text, pos, i, l, helper = new Helper(), count;
 		li = $('<li>');
 		li.addClass('dropdown-header').text(_t(issueList));
 		$('#' + issueDropdownListID).empty().append(li);
 
 		// create an issue for each entry
+		count = jsonData.current_issue_arg_count;
 		$.each(jsonData, function setIssueListEach(key, val) {
 			if (key == 'current_issue') {
 				current_id = val;
 			} else {
 				li = $('<li>');
-				li.attr({id: 'issue_' + val.uid, 'issue': val.uid, 'date': val.date});
+				li.attr({id: 'issue_' + val.uid, 'issue': val.uid, 'date': val.date, 'count': count});
 				a = $('<a>');
 				a.text(val.text);
 				li.append(a);
@@ -958,6 +962,7 @@ function GuiHandler() {
 					// set new title and text
 					issueDropdownButton.text($(this).text());
 					$('#' + issueDateId).text($(this).attr('title'));
+					$('#' + issueCountId).text($(this).attr('count'));
 					// set inactive class
 					$(this).parent().parent().children('li').each(function () {
 						$(this).removeClass('disabled');
@@ -971,6 +976,7 @@ function GuiHandler() {
 		if (issueDropdownButton.text().length == 0 || issueDropdownButton.text().length == 15) {
 			issue_curr = $('#issue_' + current_id);
 			$('#' + issueDateId).text(issue_curr.attr('date'));
+			$('#' + issueCountId).text(issue_curr.attr('count'));
 			text = $('#issue_' + current_id + ' a').text();
 			if ($(window).width() < 1000){
 				i=1;

@@ -210,6 +210,7 @@ var text 									= 'text';
 var theySay 								= 'theySay';
 var veryweak 								= 'veryweak';
 var weak 									= 'weak';
+var wouldYourShareArgument					= 'wouldYourShareArgument';
 var wrong 									= 'wrong';
 var whatDoYouThink 							= 'whatDoYouThink';
 var whyDoYouThinkThat 						= 'whyDoYouThinkThat';

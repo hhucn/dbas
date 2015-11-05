@@ -6,7 +6,7 @@
 
 function JsonGuiHandler() {
 	'use strict';
-	var DEBUG_ATTACK = false;
+	var DEBUG_ATTACK = true;
 
 	/**
 	 * Sets given json content as start statement buttons in the discussions space
@@ -124,7 +124,7 @@ function JsonGuiHandler() {
 
 		// set discussions text
 		dict = {confrontation_uid: jsonData.confrontation_uid, current_attack: jsonData.attack};
-		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + _t(whatDoYouThink), 'This confrontation is a ' + jsonData.attack + '.', dict);
 
 		// build the radio buttons
@@ -178,7 +178,7 @@ function JsonGuiHandler() {
 			'premissegroup_uid': premissegroup_uid,
 			'conclusion_id': conclusion_uid};
 
-		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + opinion + '.<br><br>'
+		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + _t(discussionEnd) + ' ' + _t(discussionEndText), _t(discussionEnd), dict);
 		$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).click(function(){
 			new InteractionHandler().oneStepBack();
@@ -227,7 +227,6 @@ function JsonGuiHandler() {
 
 		text = helper.createRelationsText(jsonData.confrontation_text, premisse, jsonData.relation, lastAttack, conclusion, true);
 		text += DEBUG_ATTACK ? (' (' + _t(youMadeA) + ' ' + jsonData.relation + ')' ): '';
-		text += '<br><br>' + _t(canYouGiveAReason);
 
 		// build the reasons
 		for (i=0; i<parseInt(jsonData.reason); i++){
@@ -239,6 +238,8 @@ function JsonGuiHandler() {
 
 		dict = { // todo params in id.js!
 			'text': jsonData.confrontation_text,
+			'conclusion': conclusion,
+			'premisse': premisse,
 			'attack': jsonData.relation,
 			'related_argument': jsonData.argument_uid,
 			'premissegroup_uid': jsonData.premissegroup_uid,
@@ -246,22 +247,29 @@ function JsonGuiHandler() {
 			'last_relation': jsonData.last_relation,
 			'confrontation_text': jsonData.confrontation_text,
 			'confrontation_uid': jsonData.confrontation_uid};
-		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ' ' + text, '', dict);
 
 		if (typeof jsonData.logged_in == "string") {
+			text += '<br><br>' + _t(wouldYourShareArgument);
+			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + text, '', dict);
 			// check this item, if it is the only one
 			if (parseInt(jsonData.reason) == 0){
 				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(firstOneReason), false, false, false, _t(addPremisseRadioButtonText)));
 				guihandler.addListItemsToDiscussionsSpace(listitems);
-				$('#' + addReasonButtonId).attr('checked', true);
+				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
 				new InteractionHandler().radioButtonChanged();
 			} else {
 				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));
 				guihandler.addListItemsToDiscussionsSpace(listitems);
 			}
-		} else if (parseInt(jsonData.reason) == 0){
-			guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
-			guihandler.addListItemsToDiscussionsSpace(listitems);
+		} else {
+			text += '<br><br>' + _t(discussionEnd);
+			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + text, '', dict);
+			if (parseInt(jsonData.reason) == 0){
+				guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
+				guihandler.addListItemsToDiscussionsSpace(listitems);
+			} else {
+				guihandler.addListItemsToDiscussionsSpace(listitems);
+			}
 		}
 	};
 

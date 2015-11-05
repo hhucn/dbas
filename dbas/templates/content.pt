@@ -32,7 +32,7 @@
 					<br>
 					-->
 					<br>
-					<span i18n:translate="startet_at">The discussion was started at</span> <span class="font-semi-bold" id="issue-date"></span>.
+					<span i18n:translate="startet_at">The discussion was started at</span> <span class="font-semi-bold" id="issue-date"></span> <span i18n:translate="already_has">and already has</span> <span id="issue-count" class="font-semi-bold"></span> <span i18n:translate="arguments" class="font-semi-bold">arguments</span>.
 					<br>
 					<br>
 					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>

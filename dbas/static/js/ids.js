@@ -58,6 +58,7 @@ var islandViewContainerH4Id 					= 'island-view-container-h4';
 var islandViewAddArgumentsBtnid 				= 'island-view-add-arguments';
 var issueDropdownButtonID						= 'issue-dropdown';
 var issueDateId									= 'issue-date';
+var issueCountId 								= 'issue-count';
 var listAllUsersButtonId 						= 'list-all-users';
 var listAllUsersAttacksId 						= 'list-all-attacks';
 var loginLinkId 								= 'login-link';

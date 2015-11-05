@@ -20,7 +20,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.10'
+version = '0.3.11'
 header = name + ' ' + version
 issue_fallback = 1
 
@@ -944,6 +944,7 @@ class Dbas(object):
 		return_dict = DatabaseHelper().get_issue_list(lang)
 		issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
 		return_dict['current_issue'] = issue
+		return_dict['current_issue_arg_count'] = QueryHelper().get_number_of_arguments(issue)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
