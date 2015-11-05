@@ -490,11 +490,11 @@ function GuiHandler() {
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
 			// take a look, if we agree or disagree, and where we are
-			if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, confrontation);
-			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation);
-			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, confrontation);
-			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation);
-			} else if (relation.indexOf(attr_rebut) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, argument);
+			if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, confrontation, false);
+			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, false);
+			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, confrontation, true);
+			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, true);
+			} else if (relation.indexOf(attr_rebut) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, argument, false);
 			} else {
 				alert("Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
 			}
@@ -531,15 +531,15 @@ function GuiHandler() {
 	 * @param isAttackingRelation
 	 * @param title
 	 */
-	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, title) {
+	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, title, addCounterArgument) {
 		if (isAgreeing) {	 $('#' + proPositionColumnId).show(); } else { $('#' + proPositionColumnId).hide(); }
 		if (isDisagreeing) { $('#' + conPositionColumnId).show(); } else { $('#' + conPositionColumnId).hide(); }
 
 		// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
 		$('#' + headingProPositionTextId).html(isAgreeing ? ' I <span class=\'green-bg\'>agree</span> with'
-			+ ': <b>' + title + '</b>,' + ' because...' : '');
+			+ (addCounterArgument ? ' ' + _t(theCounterArgument) : '') + ': <b>' + title + '</b>,' + ' because...' : '');
 		$('#' + headingConPositionTextId).html(isDisagreeing ? ' I <span class=\'red-bg\'>disagree</span> with'
-			+ ': <b>' + title + '</b>, because...' : '');
+			+ (addCounterArgument ? ' ' + _t(theCounterArgument) : '') +': <b>' + title + '</b>, because...' : '');
 	};
 
 	/**

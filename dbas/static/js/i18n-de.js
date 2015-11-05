@@ -173,7 +173,7 @@ var dbas_de = {
 	'sureThat': 'Ich bin sehr sicher, dass ',
 	'surname': 'Nachname',
 	'textAreaReasonHintText': 'Bitte nutzen Sie ein Feld für jeden Grund. Schreiben Sie kurz und prägnant!',
-	'theCounterArgument': 'das Gegenargument',
+	'theCounterArgument': 'dem Gegenargument',
 	'therefore': 'Daher',
 	'thinkWeShould': 'Ich denke, wir sollten ',
 	'track': 'Spur',
