@@ -90,7 +90,7 @@ var dbas_en = {
 	'firstOneReason': 'You are the first one with this argument, please give a reason.',
 	'firstPositionText': 'You are the first one in this discussion!',
 	'firstPremisseText1': 'You are the first one, who said that',
-	'firstPremisseText2': 'Do you want to enter one or more reasons for your opinion?',
+	'firstPremisseText2': 'Please enter your reason for your statement.',
 	'firstname': 'Firstname',
 	'gender': 'Gender',
 	'goStepBack': 'Go one step back',
@@ -187,10 +187,15 @@ var dbas_en = {
 	'veryweak': 'very weak',
 	'weak': 'weak',
 	'wrong': 'Wrong',
-	'wouldYourShareArgument': 'Would you share that argument?',
+	'wouldYourShareArgument': 'Would you share your argument?',
 	'whatDoYouThink': 'What do you think about that?',
 	'whyDoYouThinkThat': 'Why do you think that',
 	'wrongURL': 'Your URL seems to be wrong.',
 	'youMadeA': 'You made a',
-	'youMadeAn': 'You made an'
+	'youMadeAn': 'You made an',
+	'relation_undermine': 'attacks',
+	'relation_support': 'supports',
+	'relation_undercut': 'attacks',
+	'relation_overbid': 'supports',
+	'relation_rebut': 'attacks'
 };

@@ -102,7 +102,6 @@ function callbackIfDoneForGettingNews(data) {
 		height.prepend(getNewsContainerAsHtml(val.title, val.date, val.author, val.news, val.uid));
 		counter += 1
 	});
-	alert(counter);
 	counter -=1;
 	if (counter %3 != 0){
 		div.append(height);

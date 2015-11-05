@@ -6,7 +6,7 @@
 
 function JsonGuiHandler() {
 	'use strict';
-	var DEBUG_ATTACK = true;
+	var DEBUG_ATTACK = false;
 
 	/**
 	 * Sets given json content as start statement buttons in the discussions space
@@ -81,10 +81,18 @@ function JsonGuiHandler() {
 			// would be this premisse the first premisse for the statement?
 			text = parseInt(jsonData.premisses) == 0 ? _t(newPremisseRadioButtonTextAsFirstOne) : _t(newPremissesRadioButtonText);
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, text, false, false, false, ''));
+			guihandler.addListItemsToDiscussionsSpace(listitems);
 
+			// if there is no argument
+			if (Object.keys(jsonData.premisses).length == 0){
+				$('#' + addReasonButtonId).next().text(_t(newPremissesRadioButtonTextAsFirstOne));
+				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
+				new InteractionHandler().radioButtonChanged();
+			}
+		} else {
+			guihandler.addListItemsToDiscussionsSpace(listitems);
 		}
 
-		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
 
 	/**
@@ -105,11 +113,18 @@ function JsonGuiHandler() {
 			argument_id = '_argument_' + jsonData.argument_id,
 			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, jsonData.attack, false);
 
+		// pretty print
+		if (premisse.indexOf('.') == premisse.length-1
+				|| premisse.indexOf('?') == premisse.length-1
+				|| premisse.indexOf('!') == premisse.length-1){
+			premisse = premisse.substr(0, premisse.length-1);
+		}
+
 		// sanity check
 		if (typeof jsonData.relation == 'undefined'){
 			opinion = '<b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse + '</b>';
 		} else {
-			opinion = '<b>' + conclusion + '</b> ' + jsonData.relation + 's ' + '<b>' + premisse + '</b>';
+			opinion = '<b>' + premisse + '</b> ' + _t('relation_' + jsonData.relation) + ' ' + '<b>' + conclusion + '</b>';
 		}
 
 		// build some confrontation text
@@ -183,9 +198,7 @@ function JsonGuiHandler() {
 		$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).click(function(){
 			new InteractionHandler().oneStepBack();
 		});
-		$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).click(function(){
-			resetDiscussion();
-		});
+		$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
 		//_t(doYouWantToEnterYourStatements),
 
 		// listitems.push(helper.getKeyValAsInputInLiWithType(attr_step_back + argument_uid, _t(goStepBack), false, false, true, _t(discussionEnd)));

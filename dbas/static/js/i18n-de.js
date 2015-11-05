@@ -90,7 +90,7 @@ var dbas_de = {
 	'firstOneReason': 'Sie sind der Erste mit diesem Argument. Bitte geben Sie Ihre Begründung an.',
 	'firstPositionText': 'Sie sind der Erste in dieser Diskussion!',
 	'firstPremisseText1': 'Sie sind der erste, der sagt, dass ',
-	'firstPremisseText2': 'Möchten Sie einen oder mehrere Gründe dafür geben?',
+	'firstPremisseText2': 'Bitte begründen Sie Ihre Aussage.',
 	'firstname': 'Vorname',
 	'gender': 'Geschlecht',
 	'goStepBack': 'Einen Schritt zurück',
@@ -192,5 +192,10 @@ var dbas_de = {
 	'whatDoYouThink': 'Was halten Sie davon?',
 	'whyDoYouThinkThat': 'Wieso denken Sie, dass',
 	'youMadeA': 'Sie machten ein/e',
-	'youMadeAn': 'Sie machten ein/e'
-};
+	'youMadeAn': 'Sie machten ein/e',
+	'relation_undermine': 'attackiert',
+	'relation_support': 'unterstützt',
+	'relation_undercut': 'attackiert',
+	'relation_overbid': 'unterstützt',
+	'relation_rebut': 'attackiert'
+}

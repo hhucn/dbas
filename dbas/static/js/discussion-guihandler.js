@@ -323,8 +323,9 @@ function GuiHandler() {
 				$(this).toggleClass('table-hover');
 			});
 			$('#li_' + addReasonButtonId).before(newElement); // TODO.slideDown('slow').attr('checked', false).prop('checked', false);
+			$('#' + jsonData.statement.uid).attr('checked', true).prop('checked', true);
+			new InteractionHandler().radioButtonChanged();
 			new GuiHandler().setSuccessDescription(_t(addedEverything));
-
 		}
 	};
 
@@ -458,7 +459,7 @@ function GuiHandler() {
 				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
 			} else {
 				if (discussionsDescription.html().indexOf(_t(firstPremisseText1)) != -1){
-					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>');
+					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>?');
 				} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHave)) != -1) {
 					var index1 = discussionsDescription.html().indexOf('<b>');
 					var index2 = discussionsDescription.html().indexOf('</b>');
@@ -723,6 +724,9 @@ function GuiHandler() {
 		$('#' + popupEditStatementDescriptionId).hide();
 		popupEditStatementSubmitButton.hide().click(function edit_statement_click() {
 			statement = $('#' + popupEditStatementTextareaId).val();
+			if (statement.toLocaleLowerCase().indexOf(_t(because).toLocaleLowerCase()) == 0){
+				statement = statement.substr(_t(because.length() + 1));
+			}
 			is_final = $('#' + popupEditStatementWarning).is(':visible');
 			//$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
 			new AjaxSiteHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement, is_final);

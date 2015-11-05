@@ -20,7 +20,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.11'
+version = '0.3.12'
 header = name + ' ' + version
 issue_fallback = 1
 

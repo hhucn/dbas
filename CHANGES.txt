@@ -73,3 +73,7 @@
 ---
 - Bug fixes
 - Bootstrap for the news
+
+0.3.11 (05.11.2015)
+---
+- Bug fixes
