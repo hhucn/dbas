@@ -331,9 +331,11 @@ function GuiHandler() {
 	/**
 	 * Sets the new premisses as list child in discussion space or displays an error
 	 * @param jsonData returned data
+	 * @param isStart is at the beginning with a premisse. at the start we need a reply for an premissegroup, otherwise for an argument
 	 */
-	this.setPremissesAsLastChild = function (jsonData) {
-		var newElement = '', helper = new Helper(), text, tmp='', l, keyword, attack, same_group, premissegroup_uid = '0', countSg = 0, countPl = 0, long_id, last_id;
+	this.setPremissesAsLastChild = function (jsonData, isStart) {
+		var newElement = '', helper = new Helper(), text, tmp='', l, keyword, attack, same_group,
+				premissegroup_uid = '0', countSg = 0, countPl = 0, long_id, last_id, current_id;
 
 		// premisse group?
 		same_group = jsonData.same_group == '1';
@@ -345,8 +347,10 @@ function GuiHandler() {
 			keyword = 'pro';
 		}
 
+
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == keyword) {
+
 				if (!same_group) {
 					countSg += 1;
 					text = _t(because) + ' ' + new Helper().startWithLowerCase(val.text);
@@ -355,11 +359,14 @@ function GuiHandler() {
 						text += '.';
 					}
 
-					last_id = val.uid;
-					long_id = attack + '_premissegroup_' + val.premissegroup_uid;
+					last_id = isStart ? val.premissegroup_uid : val.uid;
+					if (!isStart)
+						long_id = attack + '_premissegroup_' + val.premissegroup_uid;
+
 					// add only, if it is now duplicate
 					if (String(val.duplicate).toLocaleLowerCase() != 'true') {
-						newElement = helper.getKeyValAsInputInLiWithType(val.uid, text, false, true, true, val.text, {'long_id': long_id});
+						current_id = isStart ? val.premissegroup_uid : val.uid;
+						newElement = helper.getKeyValAsInputInLiWithType(current_id, text, false, true, !isStart, val.text, isStart? {} : {'long_id': long_id});
 						newElement.children().hover(function () {
 							$(this).toggleClass('table-hover');
 						});
@@ -377,9 +384,9 @@ function GuiHandler() {
 						}
 
 					if (tmp == ''){
-							tmp = _t(because) + ' ' + text;
-							premissegroup_uid = val.premissegroup_uid;
-						} else {
+						tmp = _t(because) + ' ' + text;
+						premissegroup_uid = val.premissegroup_uid;
+					} else {
 						tmp += ' ' + _t(and) + ' ' + text
 					}
 				}
@@ -390,7 +397,7 @@ function GuiHandler() {
 		// add the group element, because we have not done this
 		if (same_group){
 			tmp += '.';
-			newElement = helper.getKeyValAsInputInLiWithType(premissegroup_uid, tmp, false, true, false, tmp);
+			newElement = helper.getKeyValAsInputInLiWithType(premissegroup_uid, tmp, isStart, true, false, tmp);
 			newElement.children().hover(function () {
 				$(this).toggleClass('table-hover');
 			});
@@ -528,18 +535,17 @@ function GuiHandler() {
 	 *
 	 * @param isAgreeing
 	 * @param isDisagreeing
-	 * @param isAttackingRelation
 	 * @param title
+	 * @param addCounterArgument
 	 */
 	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, title, addCounterArgument) {
 		if (isAgreeing) {	 $('#' + proPositionColumnId).show(); } else { $('#' + proPositionColumnId).hide(); }
 		if (isDisagreeing) { $('#' + conPositionColumnId).show(); } else { $('#' + conPositionColumnId).hide(); }
 
 		// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
-		$('#' + headingProPositionTextId).html(isAgreeing ? ' I <span class=\'green-bg\'>agree</span> with'
-			+ (addCounterArgument ? ' ' + _t(theCounterArgument) : '') + ': <b>' + title + '</b>,' + ' because...' : '');
-		$('#' + headingConPositionTextId).html(isDisagreeing ? ' I <span class=\'red-bg\'>disagree</span> with'
-			+ (addCounterArgument ? ' ' + _t(theCounterArgument) : '') +': <b>' + title + '</b>, because...' : '');
+		var suffix = (addCounterArgument ? ' ' + _t(theCounterArgument) : '') + ': <b>' + title + '</b>, ' +  _t(because).toLocaleLowerCase() + '...';
+		$('#' + headingProPositionTextId).html(_t(iAgreeWithInColor) + suffix);
+		$('#' + headingConPositionTextId).html(_t(iDisagreeWithInColor) + suffix);
 	};
 
 	/**

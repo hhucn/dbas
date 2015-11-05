@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Returns a translatet string with the given id in the right suitable.
@@ -128,6 +128,10 @@ var group_uid 								= 'group_uid';
 var haveALookAt 							= 'haveALookAt';
 var hidePasswordRequest 					= 'hidePasswordRequest';
 var hideGenerator 							= 'hideGenerator';
+var iAgreeWithInColor 						= 'iAgreeWithInColor';
+var iAgreeWith 								= 'iAgreeWith';
+var iDisagreeWithInColor 					= 'iDisagreeWithInColor';
+var iDisagreeWith 							= 'iDisagreeWith';
 var internalFailureWhileDeletingTrack 		= 'internalFailureWhileDeletingTrack';
 var internalError 							= 'internalError';
 var issueList								= 'issueList';

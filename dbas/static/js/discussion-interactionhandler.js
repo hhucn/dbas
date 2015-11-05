@@ -182,11 +182,13 @@ function InteractionHandler() {
 			value = radioButton.val(),
 			id_pgroup, id_conclusion, relation, confrontation_uid;
 
+		// should we step back?
 		if (id.indexOf(attr_no_opinion) != -1){
 			this.oneStepBack();
 			return;
 		}
 
+		// is something wrong?
 		if (typeof id === 'undefined' || typeof value === 'undefined') {
 			guiHandler.setErrorDescription(_t(selectStatement));
 			
@@ -321,7 +323,7 @@ function InteractionHandler() {
 			$('#' + addStatementErrorContainer).show();
 			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
 		} else {
-			new GuiHandler().setPremissesAsLastChild(parsedData);
+			new GuiHandler().setPremissesAsLastChild(parsedData, false);
 		}
 	};
 
@@ -334,7 +336,7 @@ function InteractionHandler() {
 		 if (parsedData.status == '0') {
 			 new InteractionHandler().premisseButtonWasClicked(parsedData.premissegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'))
 		 } else {
-			 this.callbackIfDoneForSendNewPremissesX(data);
+			new GuiHandler().setPremissesAsLastChild(parsedData, true);
 		 }
 	};
 

@@ -694,7 +694,9 @@ class Dbas(object):
 			conclusion_id = self.request.params['conclusion_id']
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
 			logger('set_new_start_premisse', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', issue: ' + str(issue))
+
 			tmp_dict, is_duplicate = DatabaseHelper().set_premisses_for_conclusion(transaction, user_id, text, conclusion_id, True, issue)
+
 			return_dict['pro_0'] = tmp_dict
 			if is_duplicate:
 				return_dict['premissegroup_uid'] = tmp_dict['premissegroup_uid']

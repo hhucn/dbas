@@ -340,12 +340,12 @@ class DatabaseHelper(object):
 		return_dict['argument_id'] = str(db_argument.uid) if db_argument else '0'
 
 		# getting undermines or undercuts or rebuts
-		#if not db_argument:
-		#	attacks = None
-		#	key = ''
-		#else:
-		attacks, key = qh.get_attack_for_argument_by_random(db_argument, user, issue)
-		return_dict['attack'] = key
+		if not db_argument:
+			attacks = None
+			key = ''
+		else:
+			attacks, key = qh.get_attack_for_argument_by_random(db_argument, user, issue)
+			return_dict['attack'] = key
 
 		status = 1
 		if not attacks or int(attacks[key]) == 0:
@@ -668,18 +668,15 @@ class DatabaseHelper(object):
 
 		# first, save the premisse as statement
 		new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
+		# duplicates do not count, because they will be fetched in set_statement_as_new_premisse
 
-		if not is_duplicate:
-			logger('DatabaseHelper', 'set_premisses_for_conclusion', 'text is no duplicate')
-			# second, set the new statement as premisse
-			new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
-			logger('DatabaseHelper', 'set_premisses_for_conclusion', text + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
-			       + ' to statement ' + str(db_conclusion.uid) + ', ' + ('' if is_supportive else '' ) + 'supportive')
+		# second, set the new statement as premisse
+		new_premissegroup_uid = qh.set_statement_as_new_premisse(new_statement, user, issue)
+		logger('DatabaseHelper', 'set_premisses_for_conclusion', text + ' in new_premissegroup_uid ' + str(new_premissegroup_uid)
+		       + ' to statement ' + str(db_conclusion.uid) + ', ' + ('' if is_supportive else '' ) + 'supportive')
 
-			# third, insert the argument
-			qh.set_argument(transaction, user, new_premissegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
-		else:
-			logger('DatabaseHelper', 'set_premisses_for_conclusion', 'text is duplicate')
+		# third, insert the argument
+		qh.set_argument(transaction, user, new_premissegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
 
 		# we need the 'pro'-key cause the callback uses a method, where we differentiate between several prefixes
 		return_dict = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
