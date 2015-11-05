@@ -77,3 +77,4 @@
 0.3.11 (05.11.2015)
 ---
 - Bug fixes
+- Duplicates

@@ -799,7 +799,7 @@ class DatabaseHelper(object):
 				key = 'con_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
 				return_dict[key]['duplicate'] = str(is_duplicate)
-			qh.add_arguments(transaction, argument_list)
+			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 
 		###########
 		# SUPPORT #
@@ -840,10 +840,7 @@ class DatabaseHelper(object):
 				key = 'pro_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
 				return_dict[key]['duplicate'] = str(is_duplicate)
-			qh.add_arguments(transaction, argument_list)
-			DBDiscussionSession.add_all(argument_list)
-			DBDiscussionSession.flush()
-			transaction.commit()
+			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 
 		############
 		# UNDERCUT #
@@ -881,10 +878,7 @@ class DatabaseHelper(object):
 				key = 'con_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
 				return_dict[key]['duplicate'] = str(is_duplicate)
-			qh.add_arguments(transaction, argument_list)
-			DBDiscussionSession.add_all(argument_list)
-			DBDiscussionSession.flush()
-			transaction.commit()
+			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 
 		###########
 		# OVERBID #
@@ -922,10 +916,7 @@ class DatabaseHelper(object):
 				key = 'pro_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
 				return_dict[key]['duplicate'] = str(is_duplicate)
-			qh.add_arguments(transaction, argument_list)
-			DBDiscussionSession.add_all(argument_list)
-			DBDiscussionSession.flush()
-			transaction.commit()
+			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 
 		#########
 		# REBUT #
@@ -981,10 +972,7 @@ class DatabaseHelper(object):
 				key = 'pro_' + current_attack + '_premissegroup_' + str(new_premissegroup_uid) + '_index_' + str(index)
 				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
 				return_dict[key]['duplicate'] = str(is_duplicate)
-			qh.add_arguments(transaction, argument_list)
-			DBDiscussionSession.add_all(argument_list)
-			DBDiscussionSession.flush()
-			transaction.commit()
+			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 
 		else:
 			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'branch error')

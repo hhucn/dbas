@@ -22,6 +22,7 @@ class QueryHelper(object):
 		"""
 		logger('DatabaseHelper', 'add_arguments', 'main')
 		duplicate_free_list = []
+		duplicate_dict = {}
 		for argument in argument_list:
 			logger('DatabaseHelper', 'add_arguments', 'check for duplicate of argument with '
 			       + ', premissesGroup_uid: ' + str(argument.premissesGroup_uid)
@@ -42,13 +43,17 @@ class QueryHelper(object):
 
 			if db_duplicate:
 				logger('DatabaseHelper', 'add_arguments', 'argument is a duplicate')
+				duplicate_dict['arg_' + str(argument.premissesGroup_uid)] = 'true'
 			else:
 				logger('DatabaseHelper', 'add_arguments', 'argument is no duplicate')
 				duplicate_free_list.append(argument)
+				duplicate_dict['arg_' + str(argument.premissesGroup_uid)] = 'false'
 
 		DBDiscussionSession.add_all(duplicate_free_list)
 		DBDiscussionSession.flush()
 		transaction.commit()
+
+		return duplicate_dict
 
 	def get_number_of_arguments(self, issue):
 		"""
@@ -153,34 +158,8 @@ class QueryHelper(object):
 		transaction.commit()
 		if new_inserted_argument:
 			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
 			return new_inserted_argument.uid
 		else:
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
-			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
 			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
 			return 0
 

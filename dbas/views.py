@@ -788,6 +788,7 @@ class Dbas(object):
 
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
+		logger('set_new_premisses_for_X', 'def', 'returning')
 		return return_json
 
 	# ajax - getting all arguments for the island view

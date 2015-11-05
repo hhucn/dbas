@@ -179,7 +179,7 @@ function JsonGuiHandler() {
 		if (typeof relation == 'undefined'){
 			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(_t(because)) + ' ' + premisse + '</b>';
 		} else {
-			opinion = '<b>' + premisse + '</b> ' + relation + 's ' + '<b>' + conclusion + '</b>';
+			opinion = '<b>' + premisse + '</b> ' + _t('relation_' + relation) + ' ' + '<b>' + conclusion + '</b>';
 		}
 
 		// build some confrontation text

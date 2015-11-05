@@ -348,7 +348,6 @@ function GuiHandler() {
 			keyword = 'pro';
 		}
 
-
 		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == keyword) {
 
@@ -365,7 +364,7 @@ function GuiHandler() {
 						long_id = attack + '_premissegroup_' + val.premissegroup_uid;
 
 					// add only, if it is now duplicate
-					if (String(val.duplicate).toLocaleLowerCase() != 'true') {
+					if (jsonData.duplicates['arg_' + val.premissegroup_uid] == 'false') {
 						current_id = isStart ? val.premissegroup_uid : val.uid;
 						newElement = helper.getKeyValAsInputInLiWithType(current_id, text, false, true, !isStart, val.text, isStart? {} : {'long_id': long_id});
 						newElement.children().hover(function () {
