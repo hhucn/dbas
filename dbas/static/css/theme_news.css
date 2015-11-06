@@ -13,7 +13,6 @@
 	background: #f4f4f4;
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
 	margin: 5px 5px 5px 5px;
-	padding: 10px 10px 10px 10px;
 	vertical-align: top;
 	height: 100%;
 	width: 100%;
@@ -24,12 +23,12 @@
   display: table;
   table-layout: fixed;
   height: 100%;
-  width: 100%;
 }
 .col-height {
   display: table-cell;
   float: none;
   height: 100%;
+	padding: 10px 10px 10px 10px;
 }
 
 .container {

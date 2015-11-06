@@ -43,12 +43,13 @@ function JsonGuiHandler() {
 			text,
 			helper = new Helper(),
 			attributes,
-			index, dict;
+			index=0,
+			dict;
 
 		text = helper.startWithLowerCase(jsonData.currentStatement.text);
 		dict =  {'text': text, 'conclusion_id': jsonData.conclusion_id};
 
-		// check length of premisses-dict
+		// check length of premisses-dict and set specifix text elements
 		if (Object.keys(jsonData.premisses).length == 0) {
 			guihandler.setDiscussionsDescription(_t(firstPremisseText1) + ' <b>' + text + '</b>.<br><br>' + _t(firstPremisseText2), text, dict);
 		} else {
@@ -85,11 +86,22 @@ function JsonGuiHandler() {
 
 			// if there is no argument
 			if (Object.keys(jsonData.premisses).length == 0){
-				$('#' + addReasonButtonId).next().text(_t(newPremissesRadioButtonTextAsFirstOne));
-				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
+				$('#' + addReasonButtonId).next().text(_t(newPremissesRadioButtonTextAsFirstOne)).attr('checked', true).prop('checked', true);
 				new InteractionHandler().radioButtonChanged();
 			}
 		} else {
+
+
+			text = '<b>' + text + '</b><br><br>' + _t(discussionEnd) + '<br><br>' + _t(discussionEndText);
+			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + text, '', dict);
+			if (index == 0){
+				guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
+				guihandler.addListItemsToDiscussionsSpace(listitems);
+			} else {
+				guihandler.addListItemsToDiscussionsSpace(listitems);
+			}
+
+
 			guihandler.addListItemsToDiscussionsSpace(listitems);
 		}
 
@@ -125,15 +137,27 @@ function JsonGuiHandler() {
 			opinion = '<b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse + '</b>';
 		} else {
 			opinion = '<b>' + premisse + '</b> ' + _t('relation_' + jsonData.relation) + ' ' + '<b>' + conclusion + '</b>';
+
 		}
 
 		// build some confrontation text
 		if (jsonData.attack == 'undermine'){
 			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotHoldBecause) + ' ';
+
 		} else if (jsonData.attack == 'rebut'){
-			confrontationText = _t(otherParticipantsAcceptBut) + ' ' + _t(strongerStatementForRecjecting) + ' <b>' + conclusion + '</b>.' + ' ' + _t(theySay) + ': ';
+			// distinguish between reply for argument and reply for premisse group
+			if (window.location.href.indexOf(attrReplyForArgument) != 0){
+				// reply for argument
+				confrontationText = _t(otherUsersClaimStrongerArgument) + ' <b>' + conclusion + '</b>.' + ' ' + _t(theySay) + ': ';
+			} else {
+				// reply for premisse group
+				confrontationText = _t(otherParticipantsAcceptBut) + ' ' + _t(strongerStatementForRecjecting) + ' <b>' + conclusion
+						+ '</b>.' + ' ' + _t(theySay) + ': ';
+			}
+
 		} else if (jsonData.attack == 'undercut'){
-			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotJustify) + ' <b>' + conclusion + '</b>,' + ' ' + _t(because).toLocaleLowerCase() + ' ';
+			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotJustify) + ' <b>' + conclusion
+					+ '</b>,' + ' ' + _t(because).toLocaleLowerCase() + ' ';
 		}
 		confrontationText += '<b>' + confrontation + '</b>' + (DEBUG_ATTACK ? (' [<i>' + jsonData.attack + '</i>]') : '');
 

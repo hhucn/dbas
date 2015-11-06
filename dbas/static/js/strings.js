@@ -177,6 +177,7 @@ var otherParticipantsDontHave 				= 'otherParticipantsDontHave';
 var otherParticipantsAcceptBut 				= 'otherParticipantsAcceptBut';
 var otherParticipantAgree 					= 'otherParticipantAgree';
 var otherParticipantDisagree 				= 'otherParticipantDisagree';
+var otherUsersClaimStrongerArgument			= 'otherUsersClaimStrongerArgument';
 var premisseGroup 							= 'premisseGroup';
 var passwordSubmit 							= 'passwordSubmit';
 var registered 								= 'registered';
@@ -222,11 +223,11 @@ var wrongURL								= 'wrongURL';
 var youMadeA 								= 'youMadeA';
 var youMadeAn 								= 'youMadeAn';
 
-var relation_undermine						= 'relation_undermine';
-var relation_support						= 'relation_support';
-var relation_undercut						= 'relation_undercut';
-var relation_overbid						= 'relation_overbid';
-var relation_rebut							= 'relation_rebut';
+var relation_undermine						= 'relation_undermine';		// used in 'relation_' + jsonData.relation
+var relation_support						= 'relation_support';		// used in 'relation_' + jsonData.relation
+var relation_undercut						= 'relation_undercut';		// used in 'relation_' + jsonData.relation
+var relation_overbid						= 'relation_overbid';		// used in 'relation_' + jsonData.relation
+var relation_rebut							= 'relation_rebut';			// used in 'relation_' + jsonData.relation
 
 // cookies
 var WARNING_CHANGE_DISCUSSION_POPUP = 'WARNING_CHANGE_DISCUSSION_POPUP';

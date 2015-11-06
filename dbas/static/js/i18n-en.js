@@ -149,6 +149,7 @@ var dbas_en = {
 	'otherParticipantsAcceptBut': 'Other users accept your argument, but',
 	'otherParticipantAgree': 'Other partcipants agree, that ',
 	'otherParticipantDisagree': 'Other partcipants disagree, that ',
+	'otherUsersClaimStrongerArgument': 'Other users claim to have a stronger statement for rejecting',
 	'premisseGroup': 'PremisseGroup',
 	'passwordSubmit': 'Change Password',
 	'registered': 'Registered',
@@ -193,9 +194,9 @@ var dbas_en = {
 	'wrongURL': 'Your URL seems to be wrong.',
 	'youMadeA': 'You made a',
 	'youMadeAn': 'You made an',
-	'relation_undermine': 'attacks',
-	'relation_support': 'supports',
-	'relation_undercut': 'attacks',
-	'relation_overbid': 'supports',
-	'relation_rebut': 'attacks'
+	'relation_undermine': 'is a counter-argument for',
+	'relation_support': 'is a argument for',
+	'relation_undercut': 'is a counter-argument for',
+	'relation_overbid': 'is a argument for',
+	'relation_rebut': 'is a counter-argument for'
 };

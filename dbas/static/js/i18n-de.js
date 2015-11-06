@@ -149,6 +149,7 @@ var dbas_de = {
 	'otherParticipantsAcceptBut': 'Andere Teilnehmer akzeptieren Ihr Argument, aber',
 	'otherParticipantAgree': 'Andere Teilnehmer stimmen zu, dass ',
 	'otherParticipantDisagree': 'Andere Teilnehmer widersprechen, dass ',
+	'otherUsersClaimStrongerArgument': 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung von',
 	'premisseGroup': 'Gruppe von Voraussetzung(en)',
 	'passwordSubmit': 'Passwort ändern',
 	'registered': 'Registriert',
@@ -193,9 +194,9 @@ var dbas_de = {
 	'whyDoYouThinkThat': 'Wieso denken Sie, dass',
 	'youMadeA': 'Sie machten ein/e',
 	'youMadeAn': 'Sie machten ein/e',
-	'relation_undermine': 'attackiert',
-	'relation_support': 'unterstützt',
-	'relation_undercut': 'attackiert',
-	'relation_overbid': 'unterstützt',
-	'relation_rebut': 'attackiert'
+	'relation_undermine': 'ist ein Gegenargument für',
+	'relation_support': 'ist ein Argument für',
+	'relation_undercut': 'ist ein Gegenargument für',
+	'relation_overbid': 'ist ein Argument für',
+	'relation_rebut': 'ist ein Gegenargument für'
 }

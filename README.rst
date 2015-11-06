@@ -23,8 +23,6 @@ Server (backend):
 
 - `SQLAlchemy <http://www.sqlalchemy.org/>`_ (database)
 
-- `colander <http://docs.pylonsproject.org/projects/colander/en/latest/>`_ (data schema)
-
 - `Sphinx <http://sphinx-doc.org/index.html>`_ (documentation)
 
 - `Chameleon <https://chameleon.readthedocs.org/>`_ (html template)

@@ -336,7 +336,7 @@ function GuiHandler() {
 	 */
 	this.setPremissesAsLastChild = function (jsonData, isStart) {
 		var newElement = '', helper = new Helper(), text, tmp='', l, keyword, attack, same_group,
-				premissegroup_uid = '0', countSg = 0, countPl = 0, long_id, last_id, current_id;
+				premissegroup_uid = '0', countSg = 0, countPl = 0, long_id, last_id, current_id, is_duplicate = false;
 
 		// premisse group?
 		same_group = jsonData.same_group == '1';
@@ -360,11 +360,13 @@ function GuiHandler() {
 					}
 
 					last_id = isStart ? val.premissegroup_uid : val.uid;
-					if (!isStart)
+					if (!isStart) {
 						long_id = attack + '_premissegroup_' + val.premissegroup_uid;
+						is_duplicate = jsonData.duplicates['arg_' + val.premissegroup_uid] == 'false';
+					}
 
 					// add only, if it is now duplicate
-					if (jsonData.duplicates['arg_' + val.premissegroup_uid] == 'false') {
+					if (!is_duplicate) {
 						current_id = isStart ? val.premissegroup_uid : val.uid;
 						newElement = helper.getKeyValAsInputInLiWithType(current_id, text, false, true, !isStart, val.text, isStart? {} : {'long_id': long_id});
 						newElement.children().hover(function () {
