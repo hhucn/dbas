@@ -362,7 +362,7 @@ function GuiHandler() {
 					last_id = isStart ? val.premissegroup_uid : val.uid;
 					if (!isStart) {
 						long_id = attack + '_premissegroup_' + val.premissegroup_uid;
-						is_duplicate = jsonData.duplicates['arg_' + val.premissegroup_uid] == 'false';
+						is_duplicate = jsonData.duplicates['arg_' + val.premissegroup_uid] == 'true';
 					}
 
 					// add only, if it is now duplicate
