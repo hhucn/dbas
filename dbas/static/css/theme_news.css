@@ -13,27 +13,13 @@
 	background: #f4f4f4;
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
 	margin: 5px 5px 5px 5px;
+	padding: 15px 15px 15px 15px;
 	vertical-align: top;
-	height: 100%;
-	width: 100%;
+	width:  100%;
 }
-
-
-.row-height {
-  display: table;
-  table-layout: fixed;
-  height: 100%;
-}
-.col-height {
-  display: table-cell;
-  float: none;
-  height: 100%;
-	padding: 10px 10px 10px 10px;
-}
-
-.container {
-	margin: 0px 0px 0px 0px;
-	padding: 0px 0px 0px 0px;
+.row{
+	width: 99%;
+	margin-left: 0px;
 }
 
 .newscontainer:hover {

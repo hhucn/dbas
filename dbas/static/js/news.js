@@ -12,7 +12,7 @@
  * @returns {string}
  */
 function getNewsContainerAsHtml(title, date, author, news, no){
-	return '<div class="col-md-4 col-height">'
+	return '<div class="col-md-4">'
 		+ '<div class="newscontainer" id="news_'
 		+ no
 		+ '"><ul class="share-table"><li><a class="share-icon share-def"></a><ul><li><a class="share-icon share-mail"></a></li>'
@@ -26,7 +26,6 @@ function getNewsContainerAsHtml(title, date, author, news, no){
 		+ author
 		+ '</h5><br>'
 		+ news
-		+ '</div>'
 		+ '</div>';
 }
 
@@ -89,23 +88,50 @@ function ajaxSendNews (){
  * @param data
  */
 function callbackIfDoneForGettingNews(data) {
-	var parsedData = $.parseJSON(data), counter = 0, div = '', height = '';
+	var parsedData = $.parseJSON(data), counter = 1, div = '', row = 0, id, length = Object.keys(parsedData).length, array = new Array(length);
+
+	// add every news in reverted order
 	$.each(parsedData, function callbackIfDoneForGettingNewsEach(key, val) {
+		array[length - counter] = getNewsContainerAsHtml(val.title, val.date, val.author, val.news, val.uid);
+		counter += 1;
+	});
+	counter = 0;
+
+	// build rows
+	for (counter = 0; counter<length; counter++){
 		if (counter % 3 == 0){
 			if (div !== '') {
-				div.append(height);
-				$('#' + newsBodyId).prepend(div);
+				$('#' + newsBodyId).append(div);
 			}
-			div = $('<div>').addClass('row');
-			height = $('<div>').addClass('row-height');
+			div = $('<div>').attr('id','row_' + row).addClass('row');
+			row += 1;
 		}
-		height.prepend(getNewsContainerAsHtml(val.title, val.date, val.author, val.news, val.uid));
-		counter += 1
+		div.append(array[counter]);
+	}
+
+	// set length of last row
+	length = div.children().length;
+	$.each(div.children(), function(){
+		$(this).attr('class','').attr('class', 'col-md-' + (12/length));
 	});
+
+	// add last row
 	counter -=1;
 	if (counter %3 != 0){
-		div.append(height);
-		$('#' + newsBodyId).prepend(div);
+		$('#' + newsBodyId).append(div);
+	}
+
+	// find max height of each row and set it
+	for (counter = 0; counter < row; counter ++) {
+		var heights = $('#row_' + counter + ' div').children(':first-child').map(function () {
+			return $(this).height();
+		}).get(), maxHeight = Math.max.apply(null, heights);
+
+		$.each($('#row_' + counter).children(), function () {
+			id = $(this).children(':first-child').attr('id');
+			$('div#' + id).height(maxHeight);
+
+		});
 	}
 }
 
