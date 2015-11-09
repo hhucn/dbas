@@ -70,14 +70,14 @@ def main(global_config, **settings):
 	config.add_route('404',                     '/404')
 
 	# ajax for navigation logic, administraion, settigs and editing/viewing log
+	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')
+	config.add_route('ajax_user_logout',                         '{url:.*}ajax_user_logout')
+
 	config.add_route('ajax_get_start_statements',                '/discussion/{url:.*}ajax_get_start_statements')
 	config.add_route('ajax_get_premisses_for_statement',         '/discussion/{url:.*}ajax_get_premisses_for_statement')
 	config.add_route('ajax_reply_for_premissegroup',             '/discussion/{url:.*}ajax_reply_for_premissegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}ajax_reply_for_argument')
-
-	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')
-	config.add_route('ajax_user_logout',                         '{url:.*}ajax_user_logout')
 
 	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}ajax_set_new_start_statement{params:.*}')
 	config.add_route('ajax_set_new_start_premisse',              '/discussion/{url:.*}ajax_set_new_start_premisse{params:.*}')
@@ -97,6 +97,8 @@ def main(global_config, **settings):
 	config.add_route('ajax_delete_user_track',                   'ajax_delete_user_track')
 	config.add_route('ajax_get_news',                            'ajax_get_news')
 	config.add_route('ajax_send_news',                           'ajax_send_news')
+
+
 
 	# read the input and start
 	config.scan()

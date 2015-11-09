@@ -78,3 +78,8 @@
 ---
 - Bug fixes
 - Duplicates
+
+0.3.12 (09.11.2015)
+---
+- Bug fixes
+- Fixed sharing option

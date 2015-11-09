@@ -35,6 +35,17 @@ function Helper() {
 	};
 
 	/**
+	 * Checks if the string contains one of the keyword undercut, rebut or undermine
+	 * @param text to check
+	 * @returns {boolean} if the string contains a keyword
+	 */
+	this.stringContainsAnAttack = function (text){
+		return (text.indexOf('undermine') != -1
+				|| text.indexOf('rebut') != -1
+				|| text.indexOf('undercut') != -1);
+	};
+
+	/**
 	 *
 	 * @param id
 	 * @param title

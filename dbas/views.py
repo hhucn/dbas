@@ -389,7 +389,7 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('notfound', 'def', 'main')
+		logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request')
 
 		logger('notfound', 'def', 'path: ' + self.request.path)
 		logger('notfound', 'def', 'view name: ' + self.request.view_name)
@@ -410,10 +410,30 @@ class Dbas(object):
 		elif 'ajax_reply_for_argument' in self.request.path:
 			logger('notfound', 'def', 'redirect to: ajax_reply_for_argument')
 			return self.reply_for_argument()
+
+		# TODO: Dirty bugfix
+		elif 'ajax_set_new_start_statement' in self.request.path:
+			logger('notfound', 'def', 'redirect to: set_new_start_statement')
+			return self.set_new_start_statement()
+		elif 'ajax_set_new_start_premisse' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ajax_set_new_start_premisse')
+			return self.set_new_start_premisse()
+		elif 'ajax_set_new_premisses_for_X' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ajax_set_new_premisses_for_X')
+			return self.set_new_premisses_for_X()
+		elif 'ajax_set_correcture_of_statement' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ajax_set_correcture_of_statement')
+			return self.set_correcture_of_statement()
+		elif 'ajax_get_logfile_for_statement' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ajax_get_logfile_for_statement')
+			return self.get_logfile_for_statement()
+		elif 'ajax_set_correcture_of_statement' in self.request.path:
+			logger('notfound', 'def', 'redirect to: ajax_set_correcture_of_statement')
+			return self.set_correcture_of_statement()
+
 		logger('notfound', 'def', 'params:')
 		for param in self.request.params:
-			logger('notfound', 'def', '  ' + param + ' -> ' + self.request.params[param])
-
+			logger('notfound', 'def', '    ' + param + ' -> ' + self.request.params[param])
 
 		self.request.response.status = 404
 		try:
@@ -666,7 +686,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new start statement
-	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=False)
 	def set_new_start_statement(self):
 		"""
 		Inserts a new statement into the database
@@ -697,7 +717,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new start premisse
-	@view_config(route_name='ajax_set_new_start_premisse', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_set_new_start_premisse', renderer='json', check_csrf=False)
 	def set_new_start_premisse(self):
 		"""
 
@@ -732,7 +752,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new premisses
-	@view_config(route_name='ajax_set_new_premisses_for_X', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_set_new_premisses_for_X', renderer='json', check_csrf=False)
 	def set_new_premisses_for_X(self):
 		"""
 
@@ -815,7 +835,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=False)
 	def get_logfile_for_statement(self):
 		"""
 
@@ -841,7 +861,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=False)
 	def set_correcture_of_statement(self):
 		"""
 

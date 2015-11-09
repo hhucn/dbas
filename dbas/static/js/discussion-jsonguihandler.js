@@ -87,6 +87,7 @@ function JsonGuiHandler() {
 			// if there is no argument
 			if (Object.keys(jsonData.premisses).length == 0){
 				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
+				$('#li_' + addReasonButtonId).hide();
 				new InteractionHandler().radioButtonChanged();
 			}
 		} else {
@@ -113,11 +114,8 @@ function JsonGuiHandler() {
 		var helper = new Helper(),
 			guihandler = new GuiHandler(),
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
-			premisse = new Helper().cutOffPunctiation(jsonData.premisse_text),
-			opinion,
-			confrontationText,
-			listitems = [],
-			dict,
+			premisse = helper.cutOffPunctiation(jsonData.premisse_text),
+			opinion, confrontationText, listitems = [], dict, double_attack,
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
 			confronation_id = '_argument_' + jsonData.confrontation_argument_id,
 			argument_id = '_argument_' + jsonData.argument_id,
@@ -130,6 +128,9 @@ function JsonGuiHandler() {
 			opinion = '<b>' + premisse + '</b> ' + _t('relation_' + jsonData.relation) + ' ' + '<b>' + conclusion + '</b>';
 		}
 
+		// does we have an attack for an attack? if true, we have to pretty print a little bit
+		double_attack = helper.stringContainsAnAttack(window.location.href) && helper.stringContainsAnAttack(jsonData.attack);
+
 		// build some confrontation text
 		if (jsonData.attack == 'undermine'){
 			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotHoldBecause) + ' ';
@@ -137,7 +138,8 @@ function JsonGuiHandler() {
 			// distinguish between reply for argument and reply for premisse group
 			if (window.location.href.indexOf(attrReplyForArgument) != 0){
 				// reply for argument
-				confrontationText = _t(otherUsersClaimStrongerArgument) + ' <b>' + conclusion + '</b>.' + ' ' + _t(theySay) + ': ';
+				confrontationText = (double_attack ? _t(otherUsersClaimStrongerArgumentAccepting) : _t(otherUsersClaimStrongerArgumentRejecting))
+						+ ' <b>' + conclusion + '</b>.' + ' ' + _t(theySay) + ': ';
 			} else {
 				// reply for premisse group
 				confrontationText = _t(otherParticipantsAcceptBut) + ' ' + _t(strongerStatementForRecjecting) + ' <b>' + conclusion
@@ -283,6 +285,7 @@ function JsonGuiHandler() {
 				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(firstOneReason), false, false, false, _t(addPremisseRadioButtonText)));
 				guihandler.addListItemsToDiscussionsSpace(listitems);
 				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
+				$('#li_' + addReasonButtonId).hide();
 				new InteractionHandler().radioButtonChanged();
 			} else {
 				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));
