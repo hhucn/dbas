@@ -48,6 +48,7 @@ class Dbas(object):
 		View configuration for the main page
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_page', 'def', 'main page')
 		try:
 			lang = str(self.request.cookies['_LOCALE_'])
@@ -69,6 +70,7 @@ class Dbas(object):
 		View configuration for the contact view.
 		:return: dictionary with title and project username as well as a value, weather the user is logged in
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_contact', 'def', 'contact page')
 
 		token = self.request.session.new_csrf_token()
@@ -164,6 +166,7 @@ class Dbas(object):
 		View configuration for the content view. Only logged in user can reach this page.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_discussion', 'def', 'main')
 
 		parameters = self.request.matchdict['parameters'] if 'parameters' in self.request.matchdict else '-'
@@ -223,6 +226,7 @@ class Dbas(object):
 		View configuration for the content view. Only logged in user can reach this page.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_settings', 'def', 'main')
 
 		token = self.request.session.new_csrf_token()
@@ -329,6 +333,7 @@ class Dbas(object):
 		View configuration for the news.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_news', 'def', 'main')
 		try:
 			lang = str(self.request.cookies['_LOCALE_'])
@@ -361,6 +366,7 @@ class Dbas(object):
 		View configuration for the imprint.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_imprint', 'def', 'main')
 		try:
 			lang = str(self.request.cookies['_LOCALE_'])
@@ -382,6 +388,7 @@ class Dbas(object):
 		View configuration for the 404 page.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('notfound', 'def', 'main')
 
 		logger('notfound', 'def', 'path: ' + self.request.path)
@@ -403,7 +410,6 @@ class Dbas(object):
 		elif 'ajax_reply_for_argument' in self.request.path:
 			logger('notfound', 'def', 'redirect to: ajax_reply_for_argument')
 			return self.reply_for_argument()
-
 		logger('notfound', 'def', 'params:')
 		for param in self.request.params:
 			logger('notfound', 'def', '  ' + param + ' -> ' + self.request.params[param])
@@ -431,6 +437,7 @@ class Dbas(object):
 		Returns all users as dictionary with name <-> group
 		:return: list of all users
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_all_users', 'def', 'main')
 		logger('get_all_users', 'check_csrf_token', str(check_csrf_token(self.request)))
 
@@ -446,6 +453,7 @@ class Dbas(object):
 		Returns all positions as dictionary with uid <-> value
 		:return: list of all positions
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_start_statemens', 'def', 'main')
 
 		# update timestamp
@@ -472,6 +480,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('get_premisses_for_statement', 'def', 'main')
@@ -504,6 +513,7 @@ class Dbas(object):
 		Get reply for a premisse
 		:return: dictionary with every arguments
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('reply_for_premissegroup', 'def', 'main')
@@ -536,6 +546,7 @@ class Dbas(object):
 		Get reply for ana rgument
 		:return: dictionary with every arguments
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('reply_for_argument', 'def', 'main')
@@ -568,6 +579,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('reply_for_response_of_confrontation', 'def', 'main')
@@ -576,11 +588,13 @@ class Dbas(object):
 		try:
 			uid_text = self.request.params['id'].split('=')[1]
 			relation = self.request.params['relation'].split('=')[1]
-			confrontation = self.request.params['confrontation'].split('=')[1]
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			confrontation = uid_text.split('_')[2]
+			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
 
 			# track will be saved in get_reply_confrontation_response
-			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text + ', last relation ' + relation + ', confrontation ' + confrontation)
+			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text + ', last relation ' + relation + ', confrontation ' +  confrontation + ', issue ' + str(issue))
 			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid_text, self.request.authenticated_userid,
 			                                                                         self.request.session.id, issue)
 			return_dict['status'] = status
@@ -604,6 +618,7 @@ class Dbas(object):
 		Request the complete user track
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('get_user_track', 'def', 'main')
@@ -629,6 +644,7 @@ class Dbas(object):
 		Request the complete user track
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('delete_user_track', 'def', 'main')
@@ -656,6 +672,7 @@ class Dbas(object):
 		Inserts a new statement into the database
 		:return: a status code, if everything was successfull
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('set_new_start_statement', 'def', 'main')
@@ -682,6 +699,11 @@ class Dbas(object):
 	# ajax - send new start premisse
 	@view_config(route_name='ajax_set_new_start_premisse', renderer='json', check_csrf=True)
 	def set_new_start_premisse(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		user_id = self.request.authenticated_userid
 		UserHandler().update_last_action(transaction, user_id)
 
@@ -718,6 +740,7 @@ class Dbas(object):
 		"""
 		user_id = self.request.authenticated_userid
 		UserHandler().update_last_action(transaction, user_id)
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
 		logger('set_new_premisses_for_X', 'def', 'main')
 
@@ -798,6 +821,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('get_logfile_for_statement', 'def', 'main')
@@ -823,6 +847,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('set_correcture_of_statement', 'def', 'main')
@@ -851,6 +876,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('switch_language', 'def', 'main')
@@ -875,6 +901,7 @@ class Dbas(object):
 		Shortens url with the help of a python lib
 		:return: dictionary with shortend url
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('get_shortened_url', 'def', 'main')
@@ -920,6 +947,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
 		logger('get_attack_overview', 'def', 'main')
 		logger('get_attack_overview', 'check_csrf_token', str(check_csrf_token(self.request)))
@@ -936,6 +964,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
 		logger('get_issue_list', 'def', 'main')
 
@@ -959,6 +988,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_login', 'def', 'main')
 
 		success = '0'
@@ -1010,6 +1040,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_logout', 'def', 'main')
 
 		url = self.request.params['url']
@@ -1032,6 +1063,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_registration', 'def', 'main')
 
 		success = '0'
@@ -1130,6 +1162,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_password_request', 'def', 'main')
 
 		success = '0'
@@ -1188,6 +1221,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
 		logger('get_news', 'def', 'main')
 		return_dict = DatabaseHelper().get_news()
@@ -1208,7 +1242,7 @@ class Dbas(object):
 			return_dict = DatabaseHelper().set_news(transaction, title, text, self.request.authenticated_userid)
 		except KeyError as e:
 			return_dict = dict()
-			logger('reply_for_response_of_confrontation', 'error', repr(e))
+			logger('ajax_send_news', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		logger('send_news', 'def', 'main')
@@ -1223,6 +1257,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('fuzzy_search', 'main', 'def')
 		try:
 			value = self.request.params['value']

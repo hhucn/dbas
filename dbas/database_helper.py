@@ -421,10 +421,10 @@ class DatabaseHelper(object):
 
 		# if there as no non-supportive argument, let's get back
 		if no_attacked_argument:
+			logger('DatabaseHelper', 'get_attack_for_argument', 'no_attacked_argument, so return')
 			return return_dict, 0
-
-		return_dict['argument_uid'] = db_argument.uid
-		return_dict['premissegroup_uid'] = db_argument.premissesGroup_uid
+		else:
+			return_dict['argument_uid'] = db_argument.uid
 
 
 		# getting undermines or undercuts or rebuts
@@ -441,6 +441,7 @@ class DatabaseHelper(object):
 			logger('DatabaseHelper', 'get_attack_for_argument', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
 			return_dict['confrontation'] = attacks[key + str(attack_no)]
 			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
+			return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
 
 			# save the attack
 			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
@@ -465,7 +466,7 @@ class DatabaseHelper(object):
 
 		# get argument
 		logger('DatabaseHelper', 'get_reply_confrontations_response', 'get reply confrontations for argument ' + argument_uid
-		       + ', issue ' + (issue))
+		       + ', issue ' + str(issue))
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==int(argument_uid), Argument.issue_uid==issue)).first()
 
 		# get attack
@@ -747,9 +748,12 @@ class DatabaseHelper(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		logger('DatabaseHelper', 'handle_inserting_new_statemens', 'users nick: ' + user + ', id ' + str(db_user.uid))
 
-		logger('DatabaseHelper', 'handle_inserting_new_statemens', 'db_premisses_of_current_attack premissesGroup_uid=' + str(confrontation_uid))
+		logger('DatabaseHelper', 'handle_inserting_new_statemens', 'db_premisses_of_current_attack premissesGroup_uid=' + str(premissegroup_id))
 		db_premisses_of_current_attack = DBDiscussionSession.query(Premisse).filter(and_(
-			Premisse.premissesGroup_uid==confrontation_uid, Premisse.issue_uid==issue)).all()
+			Premisse.premissesGroup_uid==premissegroup_id, Premisse.issue_uid==issue)).all()
+
+		for premisse in db_premisses_of_current_attack:
+			logger('DatabaseHelper', 'handle_inserting_new_statemens', 'db_premisses_of_current_attack premisse.statement_uid ' + str(premisse.statement_uid))
 
 		logger('DatabaseHelper', 'handle_inserting_new_statemens', 'db_argument_of_current_attack: '
 		       + ' premissesGroup_uid=' + str(premissegroup_id)

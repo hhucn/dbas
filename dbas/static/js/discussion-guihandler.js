@@ -478,6 +478,7 @@ function GuiHandler() {
 			$('#' + conPositionColumnId).hide();
 			// at the beginning we differentiate between statement and statements
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenStatement() {
+
 				if (isStart) {
 					ajaxhandler.sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
 				} else {

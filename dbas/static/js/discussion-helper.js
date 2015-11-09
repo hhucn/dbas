@@ -9,6 +9,32 @@
 function Helper() {
 
 	/**
+	 * For debugging: Displays an alert with entries of the json data
+	 * @param jsonData data for displaying
+	 */
+	this.alertWithJsonData = function (jsonData){
+		var txt = '';
+		$.each(jsonData, function(k,v){
+			txt += k+": " + v + "\n";
+		});
+		alert(txt);
+	};
+
+	/**
+	 * Cuts off each punctuation at the end
+	 * @param text
+	 * @returns {*} text without {.,?,!} at the end
+	 */
+	this.cutOffPunctiation = function (text){
+		if (text.indexOf('.') == text.length-1
+				|| text.indexOf('?') == text.length-1
+				|| text.indexOf('!') == text.length-1){
+			text = text.substr(0, text.length-1);
+		}
+		return text;
+	};
+
+	/**
 	 *
 	 * @param id
 	 * @param title

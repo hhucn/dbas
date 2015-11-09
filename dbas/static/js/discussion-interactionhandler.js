@@ -34,13 +34,12 @@ function InteractionHandler() {
 	 * Handler when an relation button was clicked
 	 * @param id of the button
 	 * @param relation of the button
-	 * @param confrontation_uid
 	 */
-	this.relationButtonWasClicked = function (id, relation, confrontation_uid) {
+	this.relationButtonWasClicked = function (id, relation) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
-		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id, relation, confrontation_uid);
+		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id, relation);
 	};
 
 	/**
@@ -145,16 +144,16 @@ function InteractionHandler() {
 		lastAttack = lastAttack.substr(0,lastAttack.indexOf('&'));
 
 		// get some id's
-		dict['conclusion_id'] 	  = disc_desc.attr('conclusion_id');
-		dict['related_argument']  = disc_desc.attr('related_argument');
+		dict[attr_conclusion_id] 	  	= disc_desc.attr('conclusion_id');
+		dict[attr_related_argument]  	= disc_desc.attr('related_argument');
+		dict[attr_premissegroup_id]  	= disc_desc.attr('premissegroup_uid');
+		dict[attr_current_attack] 	  	= disc_desc.attr('attack');
+		dict[attr_last_attack] 	  		= lastAttack;
+		dict[attr_confrontation_uid] 	= disc_desc.attr(attr_confrontation_uid);
+		dict[attr_premissegroup_con] 	= conTextareaPremissegroupCheckbox.prop('checked');
+		dict[attr_premissegroup_pro] 	= proTextareaPremissegroupCheckbox.prop('checked');
 
-
-		dict['premissegroup_id']  = disc_desc.attr('premissegroup_uid');
-		dict['current_attack'] 	  = disc_desc.attr('attack');
-		dict['last_attack'] 	  = lastAttack;
-		dict['confrontation_uid'] = disc_desc.attr('confrontation_uid');
-		dict['premissegroup_con'] = conTextareaPremissegroupCheckbox.prop('checked');
-		dict['premissegroup_pro'] = proTextareaPremissegroupCheckbox.prop('checked');
+		// new Helper().alertWithJsonData(dict);
 
 		conTextareaPremissegroupCheckbox.prop('checked', false);
 		proTextareaPremissegroupCheckbox.prop('checked', false);
@@ -203,8 +202,7 @@ function InteractionHandler() {
 				this.premisseButtonWasClicked(id_pgroup, id_conclusion);
 			} else if (hasRelation && !hasPremisse && !hasStart) {
 				relation = $('#' + discussionsDescriptionId).attr(attr_current_attack);
-				confrontation_uid = $('#' + discussionsDescriptionId).attr(attr_confrontation_uid);
-				this.relationButtonWasClicked(id, relation, confrontation_uid);
+				this.relationButtonWasClicked(id, relation);
 			} else if (hasPremisse && hasRelation && !hasStart){
 				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premissegroup_uid);
 				this.argumentButtonWasClicked(long_id, id_pgroup);
@@ -220,6 +218,9 @@ function InteractionHandler() {
 		guiHandler.resetChangeDisplayStyleBox();
 	};
 
+	/**
+	 *
+	 */
 	this.oneStepBack = function(){
 		parent.history.back();
 	};
@@ -260,7 +261,15 @@ function InteractionHandler() {
 	 * @param data returned json data
 	 */
 	this.callbackIfDoneReplyForArgument = function (data) {
-		this.callbackIfDoneReplyForPremissegroup(data);
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		if (parsedData.status == '1') {
+			new JsonGuiHandler().setJsonDataAsConfrontation(parsedData);
+		} else if (parsedData.status == '0') {
+			new JsonGuiHandler().setJsonDataAsConfrontationWithoutConfrontation(parsedData);
+		} else {
+			alert('error in callbackIfDoneReplyForArgument');
+		}
+		gh.resetEditButton();
 	};
 
 	/**
