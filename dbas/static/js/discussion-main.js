@@ -168,28 +168,28 @@ $(function () {
 	 * Sharing shortened url with mail
 	 */
 	$('#' + shareUrlButtonMail).click(function shareUrlButtonMail(){
-		mailShare('user@example.com', _t(interestingOnDBAS), _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val());
+		new Sharing().emailShare('user@example.com', _t(interestingOnDBAS), _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val());
 	});
 
 	/**
 	 * Sharing shortened url on twitter
 	 */
 	$('#' + shareUrlButtonTwitter).click(function shareUrlButtonTwitter(){
-		tweetShare($('#' + popupUrlSharingInputId).val());
+		new Sharing().twitterShare($('#' + popupUrlSharingInputId).val());
 	});
 
 	/**
 	 * Sharing shortened url on google
 	 */
 	$('#' + shareUrlButtonGoogle).click(function shareUrlButtonGoogle(){
-		googleShare($('#' + popupUrlSharingInputId).val());
+		new Sharing().googlePlusShare($('#' + popupUrlSharingInputId).val());
 	});
 
 	/**
 	 * Sharing shortened url on facebook
 	 */
 	$('#' + shareUrlButtonFacebook).click(function shareUrlButtonFacebook(){
-		fbShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val(),
+		new Sharing().facebookShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val(),
 			mainpage + "static/images/logo.png");
 	});
 
