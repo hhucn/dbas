@@ -82,6 +82,7 @@ function TrackHandler() {
 	this.removeUserTrackDataDone = function(){
 		$('#' + trackTableSpaceId).empty();
 		$('#' + deleteTrackButtonId).hide();
+		$('#' + requestTrackButtonId).hide();
 		$('#' + trackTableSuccessId).show();
 		$('#' + trackTableFailureId).hide();
 		$('#' + trackSuccessMessageId).text(_t(dataRemoved));
@@ -243,7 +244,7 @@ $(function () {
 	});
 
 	$('#' + deleteTrackButtonId).hide().click(function deleteTrack() {
-		new TrackHandler().deleteUserTrackData(false);
+		new TrackHandler().deleteUserTrackData();
 		$('#' + trackTableSuccessId).fadeOut('slow');
 		$('#' + trackTableFailureId).fadeOut('slow');
 		$('#' + requestTrackButtonId).val(_t(requestTrack));

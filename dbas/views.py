@@ -189,6 +189,10 @@ class Dbas(object):
 			where = 'fallback'
 			issue = issue_fallback
 
+		if issue == 'undefined':
+			where = 'fallback because undefined'
+			issue = issue_fallback
+
 		logger('main_discussion', 'def', 'self.request.matchdict[parameters]: ' + parameters)
 		logger('main_discussion', 'def', where + ': ' + str(issue))
 
@@ -473,19 +477,30 @@ class Dbas(object):
 		:return: list of all positions
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_start_statemens', 'def', 'main')
+		logger('get_start_statements', 'def', 'main')
 
 		# update timestamp
-		logger('get_start_statemens', 'def',  'update login timestamp')
+		logger('get_start_statements', 'def',  'update login timestamp')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		return_dict = dict()
 		try:
-			logger('get_start_statemens', 'def', 'read params')
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
-			return_dict = DatabaseHelper().get_start_statements(issue)
+			logger('get_start_statements', 'def', 'read params')
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+
+			if issue == 'undefined':
+				logger('get_start_statements', 'def', 'issue is undefined -> fallback')
+				issue = issue_fallback
+				return_dict['reset_url'] = 'true'
+				return_dict['reset_issue'] = issue
+			else:
+				logger('get_start_statements', 'def', 'issue found')
+
+			return_dict.update(DatabaseHelper().get_start_statements(issue))
 		except KeyError as e:
-			logger('get_start_statemens', 'error', repr(e))
+			logger('get_start_statements', 'error', repr(e))
 
 		return_dict['logged_in'] = self.request.authenticated_userid
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -511,7 +526,10 @@ class Dbas(object):
 			uid = uids[1]
 			logger('get_premises_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('get_premises_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
 			logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
 			return_dict = DatabaseHelper().get_premises_for_statement(transaction, uid, True, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
@@ -541,7 +559,10 @@ class Dbas(object):
 		try:
 			pgroup = self.request.params['pgroup'].split('=')[1]
 			conclusion = self.request.params['conclusion'].split('=')[1]
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
 			logger('reply_for_argument', 'def', 'pgroup ' + str(pgroup))
 			logger('reply_for_argument', 'def', 'conclusion ' + str(conclusion))
@@ -572,7 +593,10 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
 			id_text = self.request.params['id_text'].split('=')[1]
 			pgroup_id = self.request.params['pgroup'].split('=')[1]
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
@@ -611,6 +635,7 @@ class Dbas(object):
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
 
 			# track will be saved in get_reply_confrontation_response
 			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text + ', last relation ' + relation + ', confrontation ' +  confrontation + ', issue ' + str(issue))
@@ -699,7 +724,10 @@ class Dbas(object):
 		return_dict = {}
 		try:
 			statement = self.request.params['statement']
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
 			new_statement, is_duplicate = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
 			if not new_statement:
@@ -733,7 +761,10 @@ class Dbas(object):
 			logger('set_new_start_premise', 'def', 'getting params')
 			text = self.request.params['text']
 			conclusion_id = self.request.params['conclusion_id']
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
 			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', issue: ' + str(issue))
 
 			tmp_dict, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, True, issue)
@@ -776,7 +807,10 @@ class Dbas(object):
 			confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
 			premisegroup_con = self.request.params['premisegroup_con'] if 'premisegroup_con' in self.request.params else '0'
 			premisegroup_pro = self.request.params['premisegroup_pro'] if 'premisegroup_pro' in self.request.params else '0'
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
 
 			premisegroup_con = True if premisegroup_con.lower() == 'true' else False
 			premisegroup_pro = True if premisegroup_pro.lower() == 'true' else False

@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Returns a translatet string with the given id in the right suitable.
@@ -22,7 +22,7 @@ _t = function(id){
 			if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){
 				value= dbas_en[id];
 			} else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){
-				value = dbas_de[id]
+				value = dbas_de[id];
 			} else {
 				value = 'unknown value';
 			}

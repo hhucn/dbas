@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-11-10 09:57+0100\n"
+"POT-Creation-Date: 2015-11-10 10:27+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -385,6 +385,11 @@ msgstr "Contact"
 #: dbas/templates/index.pt:166
 msgid "formular"
 msgstr "formular"
+
+#. Default: In addition, we have studied several tools:
+#: dbas/templates/index.pt:169
+msgid "additional_studies"
+msgstr "In addition, we have studied several tools:"
 
 #. Default: Pro-Contra Lists
 #: dbas/templates/index.pt:174

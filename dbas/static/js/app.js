@@ -269,7 +269,6 @@ function prepareLoginRegistrationPopup(){
 			email = $('#' + popupLoginEmailInputId).val(),
 			password = $('#' + popupLoginPasswordInputId).val(),
 			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
-			ajaxRegistration();
 
 		if (!userfirstname || /^\s*$/.test(userfirstname) || 0 === userfirstname.length) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
@@ -310,6 +309,16 @@ function prepareLoginRegistrationPopup(){
 		ajaxLogin()
 	});
 
+	// bind enter key
+	$('#' + loginUserId).keypress(function(e) {							if (e.which == 13) {	ajaxLogin()			}	});
+	$('#' + loginPwId).keypress(function(e) {							if (e.which == 13) {	ajaxLogin()			}	});
+	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which == 13) {	ajaxRegistration()	}	});
+	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which == 13) {	ajaxRegistration()	}	});
+	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which == 13) {	ajaxRegistration()	}	});
+	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which == 13) {	ajaxRegistration()	}	});
+	$('#' + popupLoginPasswordInputId).keypress(function(e) {			if (e.which == 13) {	ajaxRegistration()	}	});
+	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which == 13) {	ajaxRegistration()	}	});
+
 	$('#' + popupLoginButtonRequest).click(function() {
 		ajaxPasswordRequest();
 	});
@@ -341,8 +350,8 @@ function ajaxSwitchDisplayLanguage (new_lang){
  *
  */
 function ajaxLogin (){
-	var user = $('#login-user').val(),
-		password = $('#login-pw').val(),
+	var user = $('#' + loginUserId).val(),
+		password = $('#' + loginPwId).val(),
 		url = window.location.href;
 		// csrfToken = $('#' + hiddenCSRFTokenId).val(); // Todo CSRF
 	$.ajax({
