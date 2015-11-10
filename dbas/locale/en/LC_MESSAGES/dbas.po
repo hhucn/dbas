@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-11-10 09:36+0100\n"
+"POT-Creation-Date: 2015-11-10 09:57+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -306,7 +306,9 @@ msgstr "Cooperation with"
 #. Liquid Democracy e.V.
 #: dbas/templates/index.pt:140
 msgid "liquid_democracy_description"
-msgstr "A partner of practice of Tobias Krauthoff is Daniel Reichert of"
+msgstr ""
+"A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid "
+"Democracy e.V."
 
 #. Default: Graduation School
 #: dbas/templates/index.pt:144

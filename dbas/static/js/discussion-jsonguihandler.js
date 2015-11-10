@@ -34,10 +34,10 @@ function JsonGuiHandler() {
 	};
 
 	/**
-	 * Sets given json content as start premisses buttons in the discussions space
+	 * Sets given json content as start premises buttons in the discussions space
 	 * @param jsonData data with json content
 	 */
-	this.setJsonDataToContentAsStartPremisses = function (jsonData) {
+	this.setJsonDataToContentAsStartPremises = function (jsonData) {
 		var listitems = [],
 			guihandler = new GuiHandler(),
 			text,
@@ -49,15 +49,15 @@ function JsonGuiHandler() {
 		text = helper.startWithLowerCase(jsonData.currentStatement.text);
 		dict =  {'text': text, 'conclusion_id': jsonData.conclusion_id};
 
-		// check length of premisses-dict and set specifix text elements
-		if (Object.keys(jsonData.premisses).length == 0) {
-			guihandler.setDiscussionsDescription(_t(firstPremisseText1) + ' <b>' + text + '</b>.<br><br>' + _t(firstPremisseText2), text, dict);
+		// check length of premises-dict and set specifix text elements
+		if (Object.keys(jsonData.premises).length == 0) {
+			guihandler.setDiscussionsDescription(_t(firstPremiseText1) + ' <b>' + text + '</b>.<br><br>' + _t(firstPremiseText2), text, dict);
 		} else {
 			guihandler.setDiscussionsDescription(_t(sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> ?', text, dict);
 		}
 
-		// adding every premisse as radio button
-		$.each(jsonData.premisses, function setJsonDataToContentAsConclusionEach(key, val) {
+		// adding every premise as radio button
+		$.each(jsonData.premises, function setJsonDataToContentAsConclusionEach(key, val) {
 			text = '';
 			index = 0;
 			attributes = {};
@@ -77,22 +77,24 @@ function JsonGuiHandler() {
 			listitems.push(helper.getKeyValAsInputInLiWithType(key, text, false, true, false, text, attributes));
 		});
 
-		// adding new premisses will be available, if the user is logged in
+		// adding new premises will be available, if the user is logged in
 		if (typeof jsonData.logged_in == "string") {
-			// would be this premisse the first premisse for the statement?
-			text = parseInt(jsonData.premisses) == 0 ? _t(newPremisseRadioButtonTextAsFirstOne) : _t(newPremissesRadioButtonText);
+			// would be this premise the first premise for the statement?
+			text = parseInt(jsonData.premises) == 0 ? _t(newPremiseRadioButtonTextAsFirstOne) : _t(newPremisesRadioButtonText);
 			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, text, false, false, false, ''));
 			guihandler.addListItemsToDiscussionsSpace(listitems);
 
 			// if there is no argument
-			if (Object.keys(jsonData.premisses).length == 0){
+			if (Object.keys(jsonData.premises).length == 0){
 				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
 				$('#li_' + addReasonButtonId).hide();
 				new InteractionHandler().radioButtonChanged();
 			}
 		} else {
-			text = '<b>' + text + '</b><br><br>' + _t(discussionEnd) + '<br><br>' + _t(discussionEndText);
-			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + text, '', dict);
+			if (Object.keys(jsonData.premises).length == 0) {
+				text = '<b>' + text + '</b><br><br>' + _t(discussionEnd) + '<br><br>' + _t(discussionEndText);
+			}
+
 			if (index == 0){
 				guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
 				guihandler.addListItemsToDiscussionsSpace(listitems);
@@ -100,8 +102,13 @@ function JsonGuiHandler() {
 				guihandler.addListItemsToDiscussionsSpace(listitems);
 			}
 
-
 			guihandler.addListItemsToDiscussionsSpace(listitems);
+
+			// set some attributes to special text
+			$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).attr('href','#').click(function(){
+				new InteractionHandler().oneStepBack();
+			});
+			$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
 		}
 
 	};
@@ -114,18 +121,18 @@ function JsonGuiHandler() {
 		var helper = new Helper(),
 			guihandler = new GuiHandler(),
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
-			premisse = helper.cutOffPunctiation(jsonData.premisse_text),
+			premise = helper.cutOffPunctiation(jsonData.premise_text),
 			opinion, confrontationText, listitems = [], dict, double_attack,
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
 			confronation_id = '_argument_' + jsonData.confrontation_argument_id,
 			argument_id = '_argument_' + jsonData.argument_id,
-			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premisse, jsonData.attack, false);
+			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premise, jsonData.attack, false);
 
 		// sanity check
 		if (typeof jsonData.relation == 'undefined'){
-			opinion = '<b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse + '</b>';
+			opinion = '<b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
 		} else {
-			opinion = '<b>' + premisse + '</b> ' + _t('relation_' + jsonData.relation) + ' ' + '<b>' + conclusion + '</b>';
+			opinion = '<b>' + premise + '</b> ' + _t('relation_' + jsonData.relation) + ' ' + '<b>' + conclusion + '</b>';
 		}
 
 		// does we have an attack for an attack? if true, we have to pretty print a little bit
@@ -133,20 +140,20 @@ function JsonGuiHandler() {
 
 		// build some confrontation text
 		if (jsonData.attack == 'undermine'){
-			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotHoldBecause) + ' ';
+			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premise + '</b> ' + _t(doesNotHoldBecause) + ' ';
 		} else if (jsonData.attack == 'rebut'){
-			// distinguish between reply for argument and reply for premisse group
+			// distinguish between reply for argument and reply for premise group
 			if (window.location.href.indexOf(attrReplyForArgument) != 0){
 				// reply for argument
 				confrontationText = (double_attack ? _t(otherUsersClaimStrongerArgumentAccepting) : _t(otherUsersClaimStrongerArgumentRejecting))
 						+ ' <b>' + conclusion + '</b>.' + ' ' + _t(theySay) + ': ';
 			} else {
-				// reply for premisse group
+				// reply for premise group
 				confrontationText = _t(otherParticipantsAcceptBut) + ' ' + _t(strongerStatementForRecjecting) + ' <b>' + conclusion
 						+ '</b>.' + ' ' + _t(theySay) + ': ';
 			}
 		} else if (jsonData.attack == 'undercut'){
-			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premisse + '</b> ' + _t(doesNotJustify) + ' <b>' + conclusion
+			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premise + '</b> ' + _t(doesNotJustify) + ' <b>' + conclusion
 					+ '</b>,' + ' ' + _t(because).toLocaleLowerCase() + ' ';
 		}
 		confrontationText += '<b>' + confrontation + '</b>' + (DEBUG_ATTACK ? (' [<i>' + jsonData.attack + '</i>]') : '');
@@ -184,33 +191,33 @@ function JsonGuiHandler() {
 		var helper = new Helper(),
 			guihandler = new GuiHandler(),
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
-			premisse = jsonData.premisse_text,
+			premise = jsonData.premise_text,
 			opinion, confrontationText, dict,
 			relation = jsonData.relation,
 			conclusion_uid = jsonData.conclusion_uid,
 			argument_uid = jsonData.argument_uid,
-			premissegroup_uid = jsonData.premissegroup_uid;
+			premisegroup_uid = jsonData.premisegroup_uid;
 
 		if (typeof relation == 'undefined'){
-			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(_t(because)) + ' ' + premisse + '</b>';
+			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(_t(because)) + ' ' + premise + '</b>';
 		} else {
-			opinion = '<b>' + premisse + '</b> ' + _t('relation_' + relation) + ' ' + '<b>' + conclusion + '</b>';
+			opinion = '<b>' + premise + '</b> ' + _t('relation_' + relation) + ' ' + '<b>' + conclusion + '</b>';
 		}
 
 		// build some confrontation text
-		confrontationText = _t(otherParticipantsDontHave) + ' <b>' + premisse + '</b>';
+		confrontationText = _t(otherParticipantsDontHave) + ' <b>' + premise + '</b>';
 
 		// set discussions text
 		dict = { // todo params in id.js!
-			'text': premisse,
+			'text': premise,
 			'attack': relation,
 			'related_argument': argument_uid,
-			'premissegroup_uid': premissegroup_uid,
+			'premisegroup_uid': premisegroup_uid,
 			'conclusion_id': conclusion_uid};
 
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + _t(discussionEnd) + ' ' + _t(discussionEndText), _t(discussionEnd), dict);
-		$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).click(function(){
+		$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).attr('href','#').click(function(){
 			new InteractionHandler().oneStepBack();
 		});
 		$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
@@ -222,7 +229,7 @@ function JsonGuiHandler() {
 		return; // TODO is this, how the discussion ends?
 
 		// build the radio buttons
-		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premissesgroup_uid + '?</u></i></b>
+		// TODO HOW TO INSERT THINGS FOR PGROUP ' + jsonData.premisesgroup_uid + '?</u></i></b>
 		// TODO BUTTONS ARE DEPENDING ON THE ATTACK?</u></i></b>
 		/*
 		if (typeof jsonData.logged_in == "string") {
@@ -244,7 +251,7 @@ function JsonGuiHandler() {
 	 * @param jsonData
 	 */
 	this.setJsonDataAsConfrontationReasoning = function (jsonData){
-		var premisse = jsonData.premissegroup.replace('.',''),
+		var premise = jsonData.premisegroup.replace('.',''),
 			helper = new Helper(),
 			guihandler = new GuiHandler(),
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
@@ -253,7 +260,7 @@ function JsonGuiHandler() {
 		lastAttack = window.location.href.substr(window.location.href.indexOf('relation=') + 'relation='.length);
 		lastAttack = lastAttack.substr(0,lastAttack.indexOf('&'));
 
-		text = helper.createRelationsText(jsonData.confrontation_text, premisse, jsonData.relation, lastAttack, conclusion, true);
+		text = helper.createRelationsText(jsonData.confrontation_text, premise, jsonData.relation, lastAttack, conclusion, true);
 		text += DEBUG_ATTACK ? (' (' + _t(youMadeA) + ' ' + jsonData.relation + ')' ): '';
 
 		// build the reasons
@@ -268,10 +275,10 @@ function JsonGuiHandler() {
 		dict = { // todo params in id.js!
 			'text': jsonData.confrontation_text,
 			'conclusion': conclusion,
-			'premisse': premisse,
+			'premise': premise,
 			'attack': jsonData.relation,
 			'related_argument': jsonData.argument_uid,
-			'premissegroup_uid': jsonData.premissegroup_uid,
+			'premisegroup_uid': jsonData.premisegroup_uid,
 			'conclusion_id': jsonData.conclusion_uid,
 			'last_relation': jsonData.last_relation,
 			'confrontation_text': jsonData.confrontation_text,
@@ -282,13 +289,13 @@ function JsonGuiHandler() {
 			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + text, '', dict);
 			// check this item, if it is the only one
 			if (parseInt(jsonData.reason) == 0){
-				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(firstOneReason), false, false, false, _t(addPremisseRadioButtonText)));
+				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(firstOneReason), false, false, false, _t(addPremiseRadioButtonText)));
 				guihandler.addListItemsToDiscussionsSpace(listitems);
 				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
 				$('#li_' + addReasonButtonId).hide();
 				new InteractionHandler().radioButtonChanged();
 			} else {
-				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremisseRadioButtonText), false, false, false, _t(addPremisseRadioButtonText)));
+				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremiseRadioButtonText), false, false, false, _t(addPremiseRadioButtonText)));
 				guihandler.addListItemsToDiscussionsSpace(listitems);
 			}
 		} else {

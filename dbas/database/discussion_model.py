@@ -8,17 +8,17 @@ from dbas.database import DBDiscussionSession, DiscussionBase
 # ORM Relationships
 # Statement : Text              many-to-one     fk on the parent referencing the child, relationship() on the parent
 # Statement : Author            many-to-one
-# Statement : Premisses         many-to-one
-# PremisseGroups : Author       many-to-one
+# Statement : Premises         many-to-one
+# PremiseGroups : Author       many-to-one
 # Argument : Statement          many-to-one
 # Argument : Author             many-to-one
-# Premisses : Author            many-to-one
+# Premises : Author            many-to-one
 # TextValue : TextVersions      one-to-many     fk on the child referencing the parent, relationship() on the parent
 # Author : TextVersions         one-to-many
-# PremisseGroups : Premisses    one-to-many
+# PremiseGroups : Premises    one-to-many
 # Track : Author                one-to-many
 # Track : Statement             one-to-many
-# Argument : PremisseGroups     many-to-many    association tables
+# Argument : PremiseGroups     many-to-many    association tables
 # Argument : Argument           many-to-many    adjacency list relationship
 
 
@@ -202,12 +202,12 @@ class TextVersion(DiscussionBase):
 		return DBDiscussionSession.query(TextVersion).order_by(TextVersion.weight)
 
 
-class PremisseGroup(DiscussionBase):
+class PremiseGroup(DiscussionBase):
 	"""
-	PremisseGroup-table with several columns.
-	Each premissesGroup has a id and an author
+	PremiseGroup-table with several columns.
+	Each premisesGroup has a id and an author
 	"""
-	__tablename__ = 'premissegroups'
+	__tablename__ = 'premisegroups'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 
@@ -215,34 +215,34 @@ class PremisseGroup(DiscussionBase):
 
 	def __init__(self, author):
 		"""
-		Initializes a row in current premissesGroup-table
+		Initializes a row in current premisesGroup-table
 		"""
 		self.author_uid = author
 
 
-class Premisse(DiscussionBase):
+class Premise(DiscussionBase):
 	"""
-	Premisses-table with several columns.
-	Each premisses has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
+	Premises-table with several columns.
+	Each premises has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
 	"""
-	__tablename__ = 'premisses'
-	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'), primary_key=True)
+	__tablename__ = 'premises'
+	premisesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'), primary_key=True)
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'), primary_key=True)
 	isNegated = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
-	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
+	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesGroup_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, premissesgroup, statement, isnegated, author, issue):
+	def __init__(self, premisesgroup, statement, isnegated, author, issue):
 		"""
-		Initializes a row in current premisses-table
+		Initializes a row in current premises-table
 		"""
-		self.premissesGroup_uid = premissesgroup
+		self.premisesGroup_uid = premisesgroup
 		self.statement_uid = statement
 		self.isNegated = isnegated
 		self.author_uid = author
@@ -253,12 +253,12 @@ class Premisse(DiscussionBase):
 class Argument(DiscussionBase):
 	"""
 	Argument-table with several columns.
-	Each argument has justifying statement(s) (premisses) and the the statement-to-be-justified (argument or statement).
+	Each argument has justifying statement(s) (premises) and the the statement-to-be-justified (argument or statement).
 	Additionally there is a relation, timestamp, author, weight, ...
 	"""
 	__tablename__ = 'arguments'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'))
+	premisesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'))
 	conclusion_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
 	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
 	isSupportive = sa.Column(sa.Boolean, nullable=False)
@@ -267,17 +267,17 @@ class Argument(DiscussionBase):
 	weight = sa.Column(sa.Integer, nullable=False)
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
-	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
+	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesGroup_uid])
 	statements = relationship('Statement', foreign_keys=[conclusion_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, premissegroup, issupportive, author, weight, issue, conclusion=0):
+	def __init__(self, premisegroup, issupportive, author, weight, issue, conclusion=0):
 		"""
 		Initializes a row in current argument-table
 		"""
-		self.premissesGroup_uid = premissegroup
+		self.premisesGroup_uid = premisegroup
 		self.conclusion_uid = conclusion
 		self.argument_uid = None
 		self.isSupportive = issupportive
@@ -299,7 +299,7 @@ class Track(DiscussionBase):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
-	premissesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premissegroups.uid'))
+	premisesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'))
 	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
 	attacked_by_relation = sa.Column(sa.Integer, sa.ForeignKey('relation.uid'))
 	attacked_with_relation = sa.Column(sa.Integer, sa.ForeignKey('relation.uid'))
@@ -308,18 +308,18 @@ class Track(DiscussionBase):
 
 	users = relationship('User', foreign_keys=[author_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
-	premissegroups = relationship('PremisseGroup', foreign_keys=[premissesGroup_uid])
+	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesGroup_uid])
 	arguments = relationship('Argument', foreign_keys=[argument_uid])
 	attacked_by = relationship('Relation', foreign_keys=[attacked_by_relation])
 	attacked_with = relationship('Relation', foreign_keys=[attacked_with_relation])
 
-	def __init__(self, user, statement, premissegroup=0, argument=0, attacked_by=0, attacked_with=0, session_id=0):
+	def __init__(self, user, statement, premisegroup=0, argument=0, attacked_by=0, attacked_with=0, session_id=0):
 		"""
 		Initializes a row in current track-table
 		"""
 		self.author_uid = user
 		self.statement_uid = statement
-		self.premissesGroup_uid = premissegroup
+		self.premisesGroup_uid = premisegroup
 		self.argument_uid = argument
 		self.attacked_by_relation = attacked_by
 		self.attacked_with_relation = attacked_with

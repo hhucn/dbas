@@ -330,15 +330,15 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Sets the new premisses as list child in discussion space or displays an error
+	 * Sets the new premises as list child in discussion space or displays an error
 	 * @param jsonData returned data
-	 * @param isStart is at the beginning with a premisse. at the start we need a reply for an premissegroup, otherwise for an argument
+	 * @param isStart is at the beginning with a premise. at the start we need a reply for an premisegroup, otherwise for an argument
 	 */
-	this.setPremissesAsLastChild = function (jsonData, isStart) {
+	this.setPremisesAsLastChild = function (jsonData, isStart) {
 		var newElement = '', helper = new Helper(), text, tmp='', l, keyword, attack, same_group,
-				premissegroup_uid = '0', countSg = 0, countPl = 0, long_id, last_id, current_id, is_duplicate = false;
+				premisegroup_uid = '0', countSg = 0, countPl = 0, long_id, last_id, current_id, is_duplicate = false;
 
-		// premisse group?
+		// premise group?
 		same_group = jsonData.same_group == '1';
 		// are we positive or negative?
 		attack = $('#' + discussionsDescriptionId).attr('attack');
@@ -348,7 +348,7 @@ function GuiHandler() {
 			keyword = 'pro';
 		}
 
-		$.each(jsonData, function setPremissesAsLastChildEach(key, val) {
+		$.each(jsonData, function setPremisesAsLastChildEach(key, val) {
 			if (key.substr(0, 3) == keyword) {
 
 				if (!same_group) {
@@ -359,15 +359,15 @@ function GuiHandler() {
 						text += '.';
 					}
 
-					last_id = isStart ? val.premissegroup_uid : val.uid;
+					last_id = isStart ? val.premisegroup_uid : val.uid;
 					if (!isStart) {
-						long_id = attack + '_premissegroup_' + val.premissegroup_uid;
-						is_duplicate = jsonData.duplicates['arg_' + val.premissegroup_uid] == 'true';
+						long_id = attack + '_premisegroup_' + val.premisegroup_uid;
+						is_duplicate = jsonData.duplicates['arg_' + val.premisegroup_uid] == 'true';
 					}
 
 					// add only, if it is now duplicate
 					if (!is_duplicate) {
-						current_id = isStart ? val.premissegroup_uid : val.uid;
+						current_id = isStart ? val.premisegroup_uid : val.uid;
 						newElement = helper.getKeyValAsInputInLiWithType(current_id, text, false, true, !isStart, val.text, isStart? {} : {'long_id': long_id});
 						newElement.children().hover(function () {
 							$(this).toggleClass('table-hover');
@@ -387,19 +387,19 @@ function GuiHandler() {
 
 					if (tmp == ''){
 						tmp = _t(because) + ' ' + text;
-						premissegroup_uid = val.premissegroup_uid;
+						premisegroup_uid = val.premisegroup_uid;
 					} else {
 						tmp += ' ' + _t(and) + ' ' + text
 					}
 				}
 			} else if (key.substr(0, 3) == 'con') {
-				// todo setPremissesAsLastChild contra premisses
+				// todo setPremisesAsLastChild contra premises
 			}
 		});
 		// add the group element, because we have not done this
 		if (same_group){
 			tmp += '.';
-			newElement = helper.getKeyValAsInputInLiWithType(premissegroup_uid, tmp, isStart, true, false, tmp);
+			newElement = helper.getKeyValAsInputInLiWithType(premisegroup_uid, tmp, isStart, true, false, tmp);
 			newElement.children().hover(function () {
 				$(this).toggleClass('table-hover');
 			});
@@ -421,15 +421,15 @@ function GuiHandler() {
 	 * @param isVisible true, if the container should be displayed
 	 * @param isStatement true, if we have an argument
 	 * @param isStart
-	 * @param isPremisse
+	 * @param isPremise
 	 * @param isArgument
 	 */
-	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremisse, isStatement, isArgument) {
+	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremise, isStatement, isArgument) {
 		var	discussionsDescription = $('#' + discussionsDescriptionId),
 			confrontation = discussionsDescription.attr('confrontation_text'),
 			conclusion = discussionsDescription.attr('conclusion'),
-			premisse = discussionsDescription.attr('premisse'),
-			argument =  conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse,
+			premise = discussionsDescription.attr('premise'),
+			argument =  conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise,
 			header, escapedText,
 			addStatementContainer = $('#' + addStatementContainerId),
 			addReasonButton = $('#' + addReasonButtonId),
@@ -459,7 +459,7 @@ function GuiHandler() {
 			if (isStart) {
 				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
 			} else {
-				if (discussionsDescription.html().indexOf(_t(firstPremisseText1)) != -1){
+				if (discussionsDescription.html().indexOf(_t(firstPremiseText1)) != -1){
 					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>?');
 				} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHave)) != -1) {
 					var index1 = discussionsDescription.html().indexOf('<b>');
@@ -467,7 +467,7 @@ function GuiHandler() {
 					header = discussionsDescription.html().substr(index1, index2-index1+5);
 					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + header + '</b>');
 				} else {
-					$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremisse) + '<br><br>' + discussionsDescription.html());
+					$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremise) + '<br><br>' + discussionsDescription.html());
 				}
 				addStatementContainerMainInputIntro.text(_t(because) + '...');
 			}
@@ -482,20 +482,20 @@ function GuiHandler() {
 				if (isStart) {
 					ajaxhandler.sendNewStartStatement(escapedText);
 				} else {
-					ajaxhandler.sendNewStartPremisse(escapedText, discussionsDescription.attr('conclusion_id'));
+					ajaxhandler.sendNewStartPremise(escapedText, discussionsDescription.attr('conclusion_id'));
 				}
 				guihandler.setErrorDescription('');
 				guihandler.setSuccessDescription('');
 			});
 
-		} else if (isPremisse || isArgument) {
-			// $('#' + addStatementContainerH4Id).text(isPremisse ? _t(argumentContainerH4TextIfPremisse) :
+		} else if (isPremise || isArgument) {
+			// $('#' + addStatementContainerH4Id).text(isPremise ? _t(argumentContainerH4TextIfPremise) :
 			// _t(argumentContainerH4TextIfArgument));
 			// pretty print, whether above are more than one lititems
 			if($('#' + discussionSpaceId + ' ul li').length == 1) {
-				$('#' + addStatementContainerH4Id).text(_t(addPremisseRadioButtonText));
+				$('#' + addStatementContainerH4Id).text(_t(addPremiseRadioButtonText));
 			} else {
-				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfPremisse));
+				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfPremise));
 			}
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
@@ -520,7 +520,7 @@ function GuiHandler() {
 			}
 
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenArgument() {
-				interactionhandler.getPremissesAndSendThem(false);
+				interactionhandler.getPremisesAndSendThem(false);
 				guihandler.setErrorDescription('');
 				guihandler.setSuccessDescription('');
 				$('#' + addStatementErrorContainer).hide();
@@ -631,14 +631,14 @@ function GuiHandler() {
 	 * Check whether the edit button should be visible or not
 	 */
 	this.resetEditButton = function () {
-		var is_editable = false, statement, uid, is_premisse, is_start;
+		var is_editable = false, statement, uid, is_premise, is_start;
 		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();
 			uid = $(this).attr('id');
-			is_premisse = $(this).hasClass('premisse');
+			is_premise = $(this).hasClass('premise');
 			is_start = $(this).hasClass('start');
 			// do we have a child with input or just the label?
-			if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premisse || is_start) {
+			if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premise || is_start) {
 				is_editable = true;
 				return false; // break
 			}
@@ -656,7 +656,7 @@ function GuiHandler() {
 	 * Opens the edit statements popup
 	 */
 	this.showEditStatementsPopup = function () {
-		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premisse, tmp, text_count, statement_id, text, i,
+		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premise, tmp, text_count, statement_id, text, i,
 			helper = new Helper(), is_final, popupEditStatementSubmitButton = $('#' + popupEditStatementSubmitButtonId);
 		$('#' + popupEditStatementId).modal('show');
 		popupEditStatementSubmitButton.hide();
@@ -691,22 +691,22 @@ function GuiHandler() {
 			}
 			uid = $(this).attr('id');
 			type = $(this).attr('class');
-			is_premisse = $(this).hasClass('premisse');
+			is_premise = $(this).hasClass('premise');
 			is_start = $(this).hasClass('start');
 
-			// TODO edit premisse groups
+			// TODO edit premise groups
 			if (typeof uid != 'undefined' && uid.indexOf('_') != -1){
 				tmp = uid.split('_');
 				uid = tmp[tmp.length -1];
 			}
 
 			// do we have a child with input or just the label?
-			if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premisse || is_start) {
+			if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premise || is_start) {
 
-				// is this a premisse group with more than one text?
+				// is this a premise group with more than one text?
 				if (typeof $(this).attr('text_count') !== typeof undefined && $(this).attr('text_count') !== false){
 					text_count = $(this).attr('text_count');
-					type = 'premissesgroup';
+					type = 'premisesgroup';
 
 					for (i=1; i<=parseInt(text_count); i++) {
 						statement_id = $(this).attr('text_' + i + '_statement_id');
@@ -876,28 +876,28 @@ function GuiHandler() {
 	/**
 	 * Dispalys the 'how to write text '-popup, when the setting is not in the cookies
 	 */
-	this.displayPremisseGroupPopup = function(){
-		var cookie_name = 'HOW_TO_SET_PREMISSEGROUPS',
+	this.displayPremiseGroupPopup = function(){
+		var cookie_name = 'HOW_TO_SET_PremiseGROUPS',
 			// show popup, when the user does not accepted the cookie already
 			userAcceptedCookies = new Helper().isCookieSet(cookie_name);
 
 		if (!userAcceptedCookies) {
-			$('#' + popupHowToSetPremisseGroups).modal('show');
+			$('#' + popupHowToSetPremiseGroups).modal('show');
 		}
 
-		$('#' + popupHowToSetPremisseGroupsCloseButton).click(function(){
-			$('#' + proTextareaPremissegroupCheckboxId).attr('checked', false).prop('checked', false);
-			$('#' + conTextareaPremissegroupCheckboxId).attr('checked', false).prop('checked', false);
+		$('#' + popupHowToSetPremiseGroupsCloseButton).click(function(){
+			$('#' + proTextareaPremisegroupCheckboxId).attr('checked', false).prop('checked', false);
+			$('#' + conTextareaPremisegroupCheckboxId).attr('checked', false).prop('checked', false);
 		});
 
-		$('#' + popupHowToSetPremisseGroupsClose).click(function(){
-			$('#' + proTextareaPremissegroupCheckboxId).attr('checked', false).prop('checked', false);
-			$('#' + conTextareaPremissegroupCheckboxId).attr('checked', false).prop('checked', false);
+		$('#' + popupHowToSetPremiseGroupsClose).click(function(){
+			$('#' + proTextareaPremisegroupCheckboxId).attr('checked', false).prop('checked', false);
+			$('#' + conTextareaPremisegroupCheckboxId).attr('checked', false).prop('checked', false);
 		});
 
 		// accept cookie
-		$('#' + popupHowToSetPremisseGroupsOkayButton).click(function(){
-			$('#' + popupHowToSetPremisseGroups).modal('hide');
+		$('#' + popupHowToSetPremiseGroupsOkayButton).click(function(){
+			$('#' + popupHowToSetPremiseGroups).modal('hide');
 			new Helper().setCookie(cookie_name);
 		});
 	};

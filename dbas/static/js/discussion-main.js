@@ -48,8 +48,8 @@ $(function () {
 				// here we have our start statement
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {
-				// some trick: here we have a premisse for our start statement
-				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premisse, '');
+				// some trick: here we have a premise for our start statement
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premise, '');
 			}
 		},200);
 	});
@@ -200,16 +200,16 @@ $(function () {
 	});
 
 	/*
-	 * Display message on premisse group checkbox
+	 * Display message on premise group checkbox
 	 */
-	$('#' + proTextareaPremissegroupCheckboxId).click(function (){
-		if ($('#' + proTextareaPremissegroupCheckboxId).prop('checked')){
-			guiHandler.displayPremisseGroupPopup();
+	$('#' + proTextareaPremisegroupCheckboxId).click(function (){
+		if ($('#' + proTextareaPremisegroupCheckboxId).prop('checked')){
+			guiHandler.displayPremiseGroupPopup();
 		}
 	});
-	$('#' + conTextareaPremissegroupCheckboxId).click(function (){
-		if ($('#' + conTextareaPremissegroupCheckboxId).prop('checked')){
-			guiHandler.displayPremisseGroupPopup();
+	$('#' + conTextareaPremisegroupCheckboxId).click(function (){
+		if ($('#' + conTextareaPremisegroupCheckboxId).prop('checked')){
+			guiHandler.displayPremiseGroupPopup();
 		}
 	});
 
@@ -260,10 +260,10 @@ $(function () {
 
 			if (url.indexOf('start') != -1){
 				ajaxHandler.getStartStatements();
-			} else if (url.indexOf(attrGetPremissesForStatement) != -1){
-				ajaxHandler.getPremisseForStatement(params);
-			} else if (url.indexOf(attrReplyForPremissegroup) != -1){
-				ajaxHandler.getReplyForPremisseGroup(params);
+			} else if (url.indexOf(attrGetPremisesForStatement) != -1){
+				ajaxHandler.getPremiseForStatement(params);
+			} else if (url.indexOf(attrReplyForPremisegroup) != -1){
+				ajaxHandler.getReplyForPremiseGroup(params);
 			} else if (url.indexOf(attrReplyForResponseOfConfrontation) != -1){
 				ajaxHandler.handleReplyForResponseOfConfrontation(params);
 			} else if (url.indexOf(attrReplyForArgument) != -1){

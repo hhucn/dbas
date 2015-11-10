@@ -255,6 +255,10 @@ comment .container and wrap each container with <div class="coloured-div">
 	color: #006ab3;
 }
 
+.content {
+	margin: 1em;
+}
+
 .content,
 .lead,
 .font-normal,

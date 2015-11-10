@@ -17,8 +17,8 @@ function AjaxSiteHandler() {
 	 * Redirection before an ajax call
 	 * @param uid current identifier
 	 */
-	this.callSiteForGetPremisseForStatement = function (uid) {
-		this.redirectBrowser('uid=' + uid, attrGetPremissesForStatement);
+	this.callSiteForGetPremiseForStatement = function (uid) {
+		this.redirectBrowser('uid=' + uid, attrGetPremisesForStatement);
 	};
 
 	/**
@@ -26,8 +26,8 @@ function AjaxSiteHandler() {
 	 * @param pgroup_id
 	 * @param conclusion_id
 	 */
-	this.callSiteForGetReplyForPremisseGroup = function (pgroup_id, conclusion_id) {
-		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id, attrReplyForPremissegroup);
+	this.callSiteForGetReplyForPremiseGroup = function (pgroup_id, conclusion_id) {
+		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id, attrReplyForPremisegroup);
 	};
 
 	/**
@@ -109,14 +109,14 @@ function AjaxSiteHandler() {
 	};
 
 	/**
-	 * Send an ajax request for getting all premisses for a givens tatement
+	 * Send an ajax request for getting all premises for a givens tatement
 	 * @param params of clicked statement
 	 */
-	this.getPremisseForStatement = function (params) {
+	this.getPremiseForStatement = function (params) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		params = params.split('&');
 		$.ajax({
-			url: 'ajax_get_premisses_for_statement',
+			url: 'ajax_get_premises_for_statement',
 			method: 'POST',
 			data: {
 				uid: params[0], issue: params[1]
@@ -130,10 +130,10 @@ function AjaxSiteHandler() {
 				settings_data = settings.data;
 				url = this.url;
 			}
-		}).done(function ajaxGetPremisseForStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForPremisseForStatement(data);
+		}).done(function ajaxGetPremiseForStatementDone(data) {
+			new InteractionHandler().callbackIfDoneForPremiseForStatement(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetPremisseForStatementFail() {
+		}).fail(function ajaxGetPremiseForStatementFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 2). '
@@ -142,14 +142,14 @@ function AjaxSiteHandler() {
 	};
 
 	/**
-	 * Sends an ajax request for getting all premisses for a given statement
+	 * Sends an ajax request for getting all premises for a given statement
 	 * @param params of clicked statement
 	 */
-	this.getReplyForPremisseGroup = function (params) {
+	this.getReplyForPremiseGroup = function (params) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		params = params.split('&');
 		$.ajax({
-			url: 'ajax_reply_for_premissegroup',
+			url: 'ajax_reply_for_premisegroup',
 			method: 'POST',
 			data: {
 				pgroup: params[0], conclusion: params[1], issue: params[2]
@@ -163,10 +163,10 @@ function AjaxSiteHandler() {
 				settings_data = settings.data;
 				url = this.url;
 			}
-		}).done(function ajaxGetReplyForPremisseDone(data) {
-			new InteractionHandler().callbackIfDoneReplyForPremissegroup(data);
+		}).done(function ajaxGetReplyForPremiseDone(data) {
+			new InteractionHandler().callbackIfDoneReplyForPremisegroup(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetReplyForPremisseFail() {
+		}).fail(function ajaxGetReplyForPremiseFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 3). '
@@ -176,7 +176,7 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends an ajax request for getting all confrotations for a given argument
-	 * @param params of the clicked premisse group
+	 * @param params of the clicked premise group
 	 */
 	this.getReplyForArgument = function (params) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
@@ -241,17 +241,17 @@ function AjaxSiteHandler() {
 	};
 
 	/**
-	 * Sends new premisses to the server. Answer will be given to a callback
-	 * @param dictionary for inserting; can have the keys {related_argument, premissegroup_id, current_attack, confrontation_uid}; must
+	 * Sends new premises to the server. Answer will be given to a callback
+	 * @param dictionary for inserting; can have the keys {related_argument, premisegroup_id, current_attack, confrontation_uid}; must
 	 * have keys with pro_i and con_i
 	 */
-	this.sendNewPremisseForX = function (dictionary) {
+	this.sendNewPremiseForX = function (dictionary) {
 		var url = window.location.href;
 		url = url.substr(url.indexOf('issue=') + 'issue='.length);
 		dictionary['issue'] = url.substr(0,url.indexOf('/'));
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_new_premisses_for_X',
+			url: 'ajax_set_new_premises_for_X',
 			method: 'POST',
 			data: dictionary,
 			dataType: 'json',
@@ -259,9 +259,9 @@ function AjaxSiteHandler() {
 			headers: {
 				'X-CSRF-Token': csrfToken
 			}
-		}).done(function ajaxSendNewPremissesForXDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewPremissesX(data);
-		}).fail(function ajaxSendNewPremissesForXFail() {
+		}).done(function ajaxSendNewPremisesForXDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewPremisesX(data);
+		}).fail(function ajaxSendNewPremisesForXFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 6). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
@@ -269,14 +269,14 @@ function AjaxSiteHandler() {
 	};
 
 	/**
-	 * Sends new premisses to the server. Answer will be given to a callback
+	 * Sends new premises to the server. Answer will be given to a callback
 	 */
-	this.sendNewStartPremisse = function (text, conclusion_id) {
+	this.sendNewStartPremise = function (text, conclusion_id) {
 		var url = window.location.href;
 		url = url.substr(url.indexOf('issue=') + 'issue='.length);
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_new_start_premisse',
+			url: 'ajax_set_new_start_premise',
 			method: 'POST',
 			data: {'issue': url.substr(0,url.indexOf('/')), 'text':text, 'conclusion_id': conclusion_id},
 			dataType: 'json',
@@ -284,9 +284,9 @@ function AjaxSiteHandler() {
 			headers: {
 				'X-CSRF-Token': csrfToken
 			}
-		}).done(function ajaxSendNewStartPremisseDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartPremisse(data);
-		}).fail(function ajaxSendNewStartPremisseFail() {
+		}).done(function ajaxSendNewStartPremiseDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
+		}).fail(function ajaxSendNewStartPremiseFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 7). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
