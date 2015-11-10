@@ -83,3 +83,8 @@
 ---
 - Bug fixes
 - Fixed sharing option
+
+0.3.12 (10.11.2015)
+---
+- CSRF frontend
+- CSRF backend

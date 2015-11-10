@@ -73,6 +73,11 @@
 							</a>
 						</li>
 						<li>
+							<a href="http://www.fontsquirrel.com/">
+								Fonts by the Font Squirrel
+							</a>
+						</li>
+						<li>
 							<span i18n:translate="icons_by">Icons by</span>
 							<a href="http://glyphicons.com/">glyphicons</a>,&thinsp;
 							<a href="https://www.iconfinder.com/iconsets/ballicons-free">ballicons</a>,&thinsp;
