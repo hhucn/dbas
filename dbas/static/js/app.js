@@ -344,6 +344,7 @@ function ajaxLogin (){
 	var user = $('#login-user').val(),
 		password = $('#login-pw').val(),
 		url = window.location.href;
+		// csrfToken = $('#' + hiddenCSRFTokenId).val(); // Todo CSRF
 	$.ajax({
 		url: 'ajax_user_login',
 		type: 'POST',
@@ -394,6 +395,7 @@ function ajaxRegistration (){
 		password = $('#password-input').val(),
 		passwordconfirm = $('#passwordconfirm-input').val(),
 		gender = '';
+		// csrfToken = $('#' + hiddenCSRFTokenId).val(); // Todo CSRF
 
 	if ($('#' + popupLoginInlineRadioGenderN).is(':checked'))	gender = 'n';
 	if ($('#' + popupLoginInlineRadioGenderM).is(':checked'))	gender = 'm';
@@ -533,6 +535,7 @@ $(document).ready(function () {
 	$('#' + translationLinkDe + ' img').click(function(){ ajaxSwitchDisplayLanguage('de') });
 	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
 
+	// gui preperation
 	prepareLoginRegistrationPopup();
 
 	// logout
