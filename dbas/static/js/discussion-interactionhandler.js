@@ -111,18 +111,26 @@ function InteractionHandler() {
 	 * @param useIntro
 	 */
 	this.getPremissesAndSendThem = function (useIntro) {
-		var i = 0, dict = {}, no, intro, lastAttack, disc_desc = $('#' + discussionsDescriptionId), type,
+		var i = 0,
+				dict = {},
+				no, intro,
+				lastAttack,
+				disc_desc = $('#' + discussionsDescriptionId),
+				type,
+				escapedText,
+				helper = new Helper(),
 			conTextareaPremissegroupCheckbox = $('#' + conTextareaPremissegroupCheckboxId),
 			proTextareaPremissegroupCheckbox = $('#' + proTextareaPremissegroupCheckboxId);
 		// all pro statements
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 			// differ between textarea and inputs
 			type = $(this).prop('tagName').toLowerCase().indexOf('textarea') != -1 ? 'textarea' : 'input';
-		    if ($(this).prop('tagName').toLowerCase().indexOf(type) != -1 && $(this).val().length > 0) {
+			escapedText = helper.escapeHtml($(this).val());
+		    if ($(this).prop('tagName').toLowerCase().indexOf(type) != -1 && escapedText.length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);
 				intro = useIntro ? $('#left-dropdown-sentences-openers-' + no).text() : '';
-				dict['pro_' + i] = intro + $(this).val();
+				dict['pro_' + i] = intro + escapedText;
 				i = i + 1;
 			}
 		});
@@ -131,11 +139,12 @@ function InteractionHandler() {
 		$('#' + conPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 			// differ between textarea and inputs
 			type = $(this).prop('tagName').toLowerCase().indexOf('textarea') != -1 ? 'textarea' : 'input';
-		    if ($(this).prop('tagName').toLowerCase().indexOf(type) > -1 && $(this).val().length > 0) {
+			escapedText = helper.escapeHtml($(this).val());
+		    if ($(this).prop('tagName').toLowerCase().indexOf(type) > -1 && escapedText.length > 0) {
 				// get current number and then the value of the dropdown
 				no = $(this).prop('id').substr($(this).prop('id').length-1);
 				intro = useIntro ? $('#right-dropdown-sentences-openers-' + no).text() : '';
-				dict['con_' + i] = intro + $(this).val();
+				dict['con_' + i] = intro + escapedText;
 				i = i + 1;
 			}
 		});

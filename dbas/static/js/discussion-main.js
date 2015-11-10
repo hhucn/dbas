@@ -43,12 +43,13 @@ $(function () {
 	// gui for the fuzzy search
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		new Helper().delay(function() {
+			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
 			if ($('#' + discussionsDescriptionId).text().indexOf(_t(startDiscussionText)) != -1) {
 				// here we have our start statement
-				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, fuzzy_start_statement, '');
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {
 				// some trick: here we have a premisse for our start statement
-				ajaxHandler.fuzzySearch($('#' + addStatementContainerMainInputId).val(), addStatementContainerMainInputId, fuzzy_start_premisse, '');
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premisse, '');
 			}
 		},200);
 	});

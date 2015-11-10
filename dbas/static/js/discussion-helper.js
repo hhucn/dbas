@@ -35,6 +35,18 @@ function Helper() {
 	};
 
 	/**
+	 * Use the browser's built-in functionality to quickly and safely escape the string
+	 * Based on http://shebang.brandonmintern.com/foolproof-html-escaping-in-javascript/
+	 * @param text to escape
+	 * @returns {*} escaped string
+	 */
+	this.escapeHtml = function(text) {
+		var div = document.createElement('div');
+    	div.appendChild(document.createTextNode(text));
+    	return div.innerHTML;
+	};
+
+	/**
 	 * Checks if the string contains one of the keyword undercut, rebut or undermine
 	 * @param text to check
 	 * @returns {boolean} if the string contains a keyword
