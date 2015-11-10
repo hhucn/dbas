@@ -196,7 +196,7 @@ class Dbas(object):
 		self.request.session['issue'] = issue
 		logger('main_discussion', 'def', 'set session[issue] to ' + str(issue))
 
-		token = self.request.session.new_csrf_token()
+		token = self.request.session.get_csrf_token()
 		logger('main_discussion', 'new token', str(token))
 
 		# checks whether the current user is admin
@@ -229,7 +229,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_settings', 'def', 'main')
 
-		token = self.request.session.new_csrf_token()
+		token = self.request.session.get_csrf_token()
 		logger('main_settings', 'new token', str(token))
 
 		old_pw = ''
@@ -395,41 +395,41 @@ class Dbas(object):
 		logger('notfound', 'def', 'view name: ' + self.request.view_name)
 
 		# TODO: Dirty bugfix
-		if 'ajax_get_start_statements' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ax_get_start_statements')
-			return self.get_start_statements()
-		elif 'ajax_get_premisses_for_statement' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ajax_get_premisses_for_statement')
-			return self.get_premisses_for_statement()
-		elif 'ajax_reply_for_premissegroup' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ajax_reply_for_premissegroup')
-			return self.reply_for_premissegroup()
-		elif 'ajax_reply_for_response_of_confrontation' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ajax_reply_for_response_of_confrontation')
-			return self.reply_for_response_of_confrontation()
-		elif 'ajax_reply_for_argument' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ajax_reply_for_argument')
-			return self.reply_for_argument()
-
-		# TODO: Dirty bugfix
-		elif 'ajax_set_new_start_statement' in self.request.path:
-			logger('notfound', 'def', 'redirect to: set_new_start_statement')
-			return self.set_new_start_statement()
-		elif 'ajax_set_new_start_premisse' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ajax_set_new_start_premisse')
-			return self.set_new_start_premisse()
-		elif 'ajax_set_new_premisses_for_X' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ajax_set_new_premisses_for_X')
-			return self.set_new_premisses_for_X()
-		elif 'ajax_set_correcture_of_statement' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ajax_set_correcture_of_statement')
-			return self.set_correcture_of_statement()
-		elif 'ajax_get_logfile_for_statement' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ajax_get_logfile_for_statement')
-			return self.get_logfile_for_statement()
-		elif 'ajax_set_correcture_of_statement' in self.request.path:
-			logger('notfound', 'def', 'redirect to: ajax_set_correcture_of_statement')
-			return self.set_correcture_of_statement()
+		# if 'ajax_get_start_statements' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_get_start_statements')
+		# 	return self.get_start_statements()
+		# elif 'ajax_get_premisses_for_statement' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_get_premisses_for_statement')
+		# 	return self.get_premisses_for_statement()
+		# elif 'ajax_reply_for_premissegroup' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_premissegroup')
+		# 	return self.reply_for_premissegroup()
+		# elif 'ajax_reply_for_response_of_confrontation' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_response_of_confrontation')
+		# 	return self.reply_for_response_of_confrontation()
+		# elif 'ajax_reply_for_argument' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_argument')
+		# 	return self.reply_for_argument()
+		#
+		# # TODO: Dirty bugfix
+		# elif 'ajax_set_new_start_statement' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: set_new_start_statement')
+		# 	return self.set_new_start_statement()
+		# elif 'ajax_set_new_start_premisse' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_set_new_start_premisse')
+		# 	return self.set_new_start_premisse()
+		# elif 'ajax_set_new_premisses_for_X' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_set_new_premisses_for_X')
+		# 	return self.set_new_premisses_for_X()
+		# elif 'ajax_set_correcture_of_statement' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_set_correcture_of_statement')
+		# 	return self.set_correcture_of_statement()
+		# elif 'ajax_get_logfile_for_statement' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_get_logfile_for_statement')
+		# 	return self.get_logfile_for_statement()
+		# elif 'ajax_set_correcture_of_statement' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_set_correcture_of_statement')
+		# 	return self.set_correcture_of_statement()
 
 		logger('notfound', 'def', 'params:')
 		for param in self.request.params:
@@ -451,7 +451,7 @@ class Dbas(object):
 		}
 
 	# ajax - getting every user, and returns dicts with name <-> group
-	@view_config(route_name='ajax_all_users', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_all_users', renderer='json', check_csrf=False)
 	def get_all_users(self):
 		"""
 		Returns all users as dictionary with name <-> group
@@ -459,7 +459,6 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_all_users', 'def', 'main')
-		logger('get_all_users', 'check_csrf_token', str(check_csrf_token(self.request)))
 
 		return_dict = DatabaseHelper().get_all_users(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -686,7 +685,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new start statement
-	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=False)
+	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
 	def set_new_start_statement(self):
 		"""
 		Inserts a new statement into the database
@@ -717,7 +716,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new start premisse
-	@view_config(route_name='ajax_set_new_start_premisse', renderer='json', check_csrf=False)
+	@view_config(route_name='ajax_set_new_start_premisse', renderer='json', check_csrf=True)
 	def set_new_start_premisse(self):
 		"""
 
@@ -752,7 +751,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - send new premisses
-	@view_config(route_name='ajax_set_new_premisses_for_X', renderer='json', check_csrf=False)
+	@view_config(route_name='ajax_set_new_premisses_for_X', renderer='json', check_csrf=True)
 	def set_new_premisses_for_X(self):
 		"""
 
@@ -861,7 +860,7 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=False)
+	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
 	def set_correcture_of_statement(self):
 		"""
 
@@ -927,7 +926,8 @@ class Dbas(object):
 		logger('get_shortened_url', 'def', 'main')
 
 		return_dict = {}
-		# google_api_key = ' AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0'
+		# google_api_key = 'AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0' # browser is
+		# google_api_key = 'AIzaSyDneaEJN9FNGUpXHDZahe9Rhb21FsFNS14' # server id
 		# bitly_login = 'dbashhu'
 		# bitly_token = ''
 		# bitly_key = 'R_d8c4acf2fb554494b65529314d1e11d1'
@@ -943,6 +943,8 @@ class Dbas(object):
 			logger('get_shortened_url', 'def', service + ' will shorten ' + str(url))
 
 			# shortener = Shortener(service, api_key=google_api_key) # TODO use google
+			# here is a per-IP or per-Referer restriction configured on your API key and the request does not match these restrictions.
+			# Please use the Google Developers Console to update your API key configuration if request from this IP or referer should be allowed)
 			# shortener = Shortener(service, bitly_login=bitly_login, bitly_api_key=bitly_key, bitly_token=bitly_token)
 			shortener = Shortener(service)
 

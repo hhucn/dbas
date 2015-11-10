@@ -430,7 +430,7 @@ function GuiHandler() {
 			conclusion = discussionsDescription.attr('conclusion'),
 			premisse = discussionsDescription.attr('premisse'),
 			argument =  conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse,
-			header,
+			header, escapedText,
 			addStatementContainer = $('#' + addStatementContainerId),
 			addReasonButton = $('#' + addReasonButtonId),
 			addStatementContainerMainInputIntro = $('#' + addStatementContainerMainInputIntroId),
@@ -478,11 +478,11 @@ function GuiHandler() {
 			$('#' + conPositionColumnId).hide();
 			// at the beginning we differentiate between statement and statements
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenStatement() {
-
+				escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
 				if (isStart) {
-					ajaxhandler.sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
+					ajaxhandler.sendNewStartStatement(escapedText);
 				} else {
-					ajaxhandler.sendNewStartPremisse($('#' + addStatementContainerMainInputId).val(), discussionsDescription.attr('conclusion_id'));
+					ajaxhandler.sendNewStartPremisse(escapedText, discussionsDescription.attr('conclusion_id'));
 				}
 				guihandler.setErrorDescription('');
 				guihandler.setSuccessDescription('');

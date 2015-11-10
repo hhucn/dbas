@@ -1,5 +1,7 @@
 /**
- * Created by tobias on 09.11.15.
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ * @copyright Krauthoff 2015
  */
 
 function Sharing(){
