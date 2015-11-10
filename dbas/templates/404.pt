@@ -4,7 +4,7 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<head>
-			<link type="text/css" href="${request.static_url('dbas:static/css/theme_404_logout.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_404.css')}" rel="stylesheet">
 		</head>
 
 
