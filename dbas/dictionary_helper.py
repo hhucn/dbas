@@ -1,7 +1,7 @@
 import random
 import json
 from .database import DBDiscussionSession
-from .database.discussion_model import Statement, User, TextValue, TextVersion, Premisse
+from .database.discussion_model import Statement, User, TextValue, TextVersion, Premise
 from .logger import logger
 from sqlalchemy import and_
 
@@ -59,10 +59,10 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'statement uid ' + str(statement_row.uid))
 		db_statement    = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_row.uid,
 		                                                                   Statement.issue_uid==issue)).join(TextValue).first()
-		db_premisse     = DBDiscussionSession.query(Premisse).filter(and_(Premisse.statement_uid==db_statement.uid,
-		                                                                  Premisse.issue_uid==issue)).first()
-		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'premisse uid ' +
-			       ((str(db_premisse.premissesGroup_uid) + '.' + str(db_premisse.statement_uid)) if db_premisse else 'null'))
+		db_premise     = DBDiscussionSession.query(Premise).filter(and_(Premise.statement_uid==db_statement.uid,
+		                                                                  Premise.issue_uid==issue)).first()
+		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'premise uid ' +
+			       ((str(db_premise.premisesGroup_uid) + '.' + str(db_premise.statement_uid)) if db_premise else 'null'))
 		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
 
 		uid    = str(db_statement.uid)
@@ -70,11 +70,11 @@ class DictionaryHelper(object):
 		date   = str(db_textversion.timestamp)
 		weight = str(db_textversion.weight)
 		author = db_textversion.users.nickname
-		pgroup = str( db_premisse.premissesGroup_uid) if db_premisse else '0'
+		pgroup = str( db_premise.premisesGroup_uid) if db_premise else '0'
 
 		while text.endswith('.'):
 			text = text[:-1]
 
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + weight + ', ' + author +
 		       ', ' + pgroup + ', ' + str(issue))
-		return {'uid':uid, 'text':text, 'date':date, 'weight':weight, 'author':author, 'premissegroup_uid':pgroup, 'issue':issue}
+		return {'uid':uid, 'text':text, 'date':date, 'weight':weight, 'author':author, 'premisegroup_uid':pgroup, 'issue':issue}

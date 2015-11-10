@@ -14,20 +14,20 @@ function InteractionHandler() {
 	this.statementButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		// new AjaxSiteHandler().getPremisseForStatement(id);
-		new AjaxSiteHandler().callSiteForGetPremisseForStatement(id);
+		// new AjaxSiteHandler().getPremiseForStatement(id);
+		new AjaxSiteHandler().callSiteForGetPremiseForStatement(id);
 	};
 
 	/**
-	 * Handler when an start premisse was clicked
+	 * Handler when an start premise was clicked
 	 * @param pgroup_id
 	 * @param conclusion_id
 	 */
-	this.premisseButtonWasClicked = function (pgroup_id, conclusion_id) {
+	this.premiseButtonWasClicked = function (pgroup_id, conclusion_id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		// new AjaxSiteHandler().getReplyForPremisseGroup(id);
-		new AjaxSiteHandler().callSiteForGetReplyForPremisseGroup(pgroup_id, conclusion_id);
+		// new AjaxSiteHandler().getReplyForPremiseGroup(id);
+		new AjaxSiteHandler().callSiteForGetReplyForPremiseGroup(pgroup_id, conclusion_id);
 	};
 
 	/**
@@ -70,11 +70,11 @@ function InteractionHandler() {
 			if (text.indexOf(_t(newConclusionRadioButtonText)) >= 0 || text.indexOf(_t(firstConclusionRadioButtonText)) >= 0) {
 				// statement
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, true, false);
-			} else if (text.indexOf(_t(addArgumentRadioButtonText)) >= 0 || text.indexOf(_t(addPremisseRadioButtonText)) >= 0) {
+			} else if (text.indexOf(_t(addArgumentRadioButtonText)) >= 0 || text.indexOf(_t(addPremiseRadioButtonText)) >= 0) {
 				// argument
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, false, true);
 			} else {
-				// premisse
+				// premise
 				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, true, false, false);
 			}
 		} else {
@@ -107,10 +107,10 @@ function InteractionHandler() {
 	};
 
 	/**
-	 * Fetches all premisses out of the textares and send them
+	 * Fetches all premises out of the textares and send them
 	 * @param useIntro
 	 */
-	this.getPremissesAndSendThem = function (useIntro) {
+	this.getPremisesAndSendThem = function (useIntro) {
 		var i = 0,
 				dict = {},
 				no, intro,
@@ -119,8 +119,8 @@ function InteractionHandler() {
 				type,
 				escapedText,
 				helper = new Helper(),
-			conTextareaPremissegroupCheckbox = $('#' + conTextareaPremissegroupCheckboxId),
-			proTextareaPremissegroupCheckbox = $('#' + proTextareaPremissegroupCheckboxId);
+			conTextareaPremisegroupCheckbox = $('#' + conTextareaPremisegroupCheckboxId),
+			proTextareaPremisegroupCheckbox = $('#' + proTextareaPremisegroupCheckboxId);
 		// all pro statements
 		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 			// differ between textarea and inputs
@@ -155,17 +155,17 @@ function InteractionHandler() {
 		// get some id's
 		dict[attr_conclusion_id] 	  	= disc_desc.attr('conclusion_id');
 		dict[attr_related_argument]  	= disc_desc.attr('related_argument');
-		dict[attr_premissegroup_id]  	= disc_desc.attr('premissegroup_uid');
+		dict[attr_premisegroup_id]  	= disc_desc.attr('premisegroup_uid');
 		dict[attr_current_attack] 	  	= disc_desc.attr('attack');
 		dict[attr_last_attack] 	  		= lastAttack;
 		dict[attr_confrontation_uid] 	= disc_desc.attr(attr_confrontation_uid);
-		dict[attr_premissegroup_con] 	= conTextareaPremissegroupCheckbox.prop('checked');
-		dict[attr_premissegroup_pro] 	= proTextareaPremissegroupCheckbox.prop('checked');
+		dict[attr_premisegroup_con] 	= conTextareaPremisegroupCheckbox.prop('checked');
+		dict[attr_premisegroup_pro] 	= proTextareaPremisegroupCheckbox.prop('checked');
 
 		// new Helper().alertWithJsonData(dict);
 
-		conTextareaPremissegroupCheckbox.prop('checked', false);
-		proTextareaPremissegroupCheckbox.prop('checked', false);
+		conTextareaPremisegroupCheckbox.prop('checked', false);
+		proTextareaPremisegroupCheckbox.prop('checked', false);
 
 		//var txt='type: ' + type + '\ndict:\n';
 		//$.each(dict, function (key, val) {
@@ -173,7 +173,7 @@ function InteractionHandler() {
 		//});
 		//alert(txt);
 
-		new AjaxSiteHandler().sendNewPremisseForX(dict);
+		new AjaxSiteHandler().sendNewPremiseForX(dict);
 	};
 
 	/**
@@ -183,7 +183,7 @@ function InteractionHandler() {
 		var guiHandler = new GuiHandler(),
 			radioButton= $('input[name=' + radioButtonGroup + ']:checked'),
 			hasRelation = radioButton.hasClass(attr_relation),
-			hasPremisse = radioButton.hasClass(attr_premisse),
+			hasPremise = radioButton.hasClass(attr_premise),
 			hasStart = radioButton.hasClass(attr_start),
 			id = radioButton.attr(attr_id),
 			long_id = radioButton.attr(attr_long_id),
@@ -203,22 +203,22 @@ function InteractionHandler() {
 		} else {
 			guiHandler.setErrorDescription('');
 			guiHandler.setSuccessDescription('');
-			if (hasStart && !hasRelation && !hasPremisse) {
+			if (hasStart && !hasRelation && !hasPremise) {
 				this.statementButtonWasClicked(id);
-			} else if (hasPremisse && !hasRelation && !hasStart) {
+			} else if (hasPremise && !hasRelation && !hasStart) {
 				id_pgroup = id;
 				id_conclusion = $('#' + discussionsDescriptionId).attr(attr_conclusion_id);
-				this.premisseButtonWasClicked(id_pgroup, id_conclusion);
-			} else if (hasRelation && !hasPremisse && !hasStart) {
+				this.premiseButtonWasClicked(id_pgroup, id_conclusion);
+			} else if (hasRelation && !hasPremise && !hasStart) {
 				relation = $('#' + discussionsDescriptionId).attr(attr_current_attack);
 				this.relationButtonWasClicked(id, relation);
-			} else if (hasPremisse && hasRelation && !hasStart){
-				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premissegroup_uid);
+			} else if (hasPremise && hasRelation && !hasStart){
+				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premisegroup_uid);
 				this.argumentButtonWasClicked(long_id, id_pgroup);
 			} else {
 				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +
 				'has start: ' + hasStart + '\n' +
-				'has premisse: ' + hasPremisse + '\n' +
+				'has premise: ' + hasPremise + '\n' +
 				'has relation: ' + hasRelation)
 			}
 		}
@@ -235,32 +235,32 @@ function InteractionHandler() {
 	};
 
 	/**
-	 * Callback for the ajax method getPremisseForStatement
+	 * Callback for the ajax method getPremiseForStatement
 	 * @param data returned json data
 	 */
-	this.callbackIfDoneForPremisseForStatement = function (data) {
+	this.callbackIfDoneForPremiseForStatement = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			new JsonGuiHandler().setJsonDataToContentAsStartPremisses(parsedData);
+			new JsonGuiHandler().setJsonDataToContentAsStartPremises(parsedData);
 		} else {
 			gh.setDiscussionsDescription(_t(firstPositionText), '' , null);
-			gh.setNewArgumentButtonOnly(_t(addPremisseRadioButtonText), true);
+			gh.setNewArgumentButtonOnly(_t(addPremiseRadioButtonText), true);
 		}
 		gh.resetEditButton();
 	};
 
 	/**
-	 * Callback for the ajax method getPremisseForStatement
+	 * Callback for the ajax method getPremiseForStatement
 	 * @param data returned json data
 	 */
-	this.callbackIfDoneReplyForPremissegroup = function (data) {
+	this.callbackIfDoneReplyForPremisegroup = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
 			new JsonGuiHandler().setJsonDataAsConfrontation(parsedData);
 		} else if (parsedData.status == '0') {
 			new JsonGuiHandler().setJsonDataAsConfrontationWithoutConfrontation(parsedData);
 		} else {
-			alert('error in callbackIfDoneReplyForPremissegroup');
+			alert('error in callbackIfDoneReplyForPremisegroup');
 		}
 		gh.resetEditButton();
 	};
@@ -335,26 +335,26 @@ function InteractionHandler() {
 	 * Callback, when new statements were send
 	 * @param data returned data
 	 */
-	this.callbackIfDoneForSendNewPremissesX = function (data) {
+	this.callbackIfDoneForSendNewPremisesX = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
 			$('#' + addStatementErrorContainer).show();
 			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
 		} else {
-			new GuiHandler().setPremissesAsLastChild(parsedData, false);
+			new GuiHandler().setPremisesAsLastChild(parsedData, false);
 		}
 	};
 
 	/**
-	 * Callback, when new premisses were send
+	 * Callback, when new premises were send
 	 * @param data returned data
 	 */
-	this.callbackIfDoneForSendNewStartPremisse= function (data) {
+	this.callbackIfDoneForSendNewStartPremise= function (data) {
 		var parsedData = $.parseJSON(data);
 		 if (parsedData.status == '0') {
-			 new InteractionHandler().premisseButtonWasClicked(parsedData.premissegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'))
+			 new InteractionHandler().premiseButtonWasClicked(parsedData.premisegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'))
 		 } else {
-			new GuiHandler().setPremissesAsLastChild(parsedData, true);
+			new GuiHandler().setPremisesAsLastChild(parsedData, true);
 		 }
 	};
 

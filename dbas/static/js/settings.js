@@ -1,4 +1,4 @@
-/*global $, alert, _t, statement_uid, premissesGroup_uid, argument_uid, attacked_by_relation_uid, attacked_with_relation_uid*/
+/*global $, alert, _t, statement_uid, premisesGroup_uid, argument_uid, attacked_by_relation_uid, attacked_with_relation_uid*/
 
 /**
  * @author Tobias Krauthoff
@@ -119,7 +119,7 @@ function TrackHandler() {
 		spanElement[1].text(_t(track));
 		spanElement[2].text(_t(topicString));
 		spanElement[3].text(_t(statement));
-		spanElement[4].text(_t(premisseGroup));
+		spanElement[4].text(_t(premiseGroup));
 		spanElement[5].text(_t(argument));
 		spanElement[6].text(_t(attackedBy));
 		spanElement[7].text(_t(attackedWith));
@@ -150,7 +150,7 @@ function TrackHandler() {
 					tdElement[1].text(value.uid).attr('title', 'Track ID: ' + value.uid);
 					tdElement[2].text(topic).attr('title', 'Date: ' + date);
 					tdElement[3].text(value.statement).attr('title', 'Statement ID: ' + value.statement_uid);
-					tdElement[4].text(value.premissesGroup).attr('title', 'Premisses Groups ID: ' + value.premissesGroup_uid);
+					tdElement[4].text(value.premisesGroup).attr('title', 'Premises Groups ID: ' + value.premisesGroup_uid);
 					tdElement[5].text(value.argument).attr('title', 'Argument ID: ' + value.argument_uid);
 					tdElement[6].text(value.attacked_by_relation).attr('title', 'Relation ID: ' + value.attacked_by_relation_uid);
 					tdElement[7].text(value.attacked_with_relation).attr('title', 'Relation ID: ' + value.attacked_with_relation_uid);

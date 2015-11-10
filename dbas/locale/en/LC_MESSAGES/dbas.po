@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-11-05 11:01+0100\n"
+"POT-Creation-Date: 2015-11-10 09:57+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -306,7 +306,9 @@ msgstr "Cooperation with"
 #. Liquid Democracy e.V.
 #: dbas/templates/index.pt:140
 msgid "liquid_democracy_description"
-msgstr "A partner of practice of Tobias Krauthoff is Daniel Reichert of"
+msgstr ""
+"A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid "
+"Democracy e.V."
 
 #. Default: Graduation School
 #: dbas/templates/index.pt:144
@@ -481,7 +483,7 @@ msgstr "Information according to § 5 TMG "
 #. Default: Institut für Informatik
 #: dbas/templates/imprint.pt:14
 msgid "department"
-msgstr "Department"
+msgstr "Department of Computer Science"
 
 #. Default: Telefon:
 #: dbas/templates/imprint.pt:21
@@ -695,12 +697,12 @@ msgid "copyright_and_used_software"
 msgstr "Copyright and used Software"
 
 #. Default: Icons by
-#: dbas/templates/imprint.pt:76
+#: dbas/templates/imprint.pt:81
 msgid "icons_by"
 msgstr "Icons by"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:89
+#: dbas/templates/imprint.pt:94
 msgid "generated_with"
 msgstr "generated_with"
 

@@ -1,7 +1,42 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
-@import url(https://fonts.googleapis.com/css?family=Indie+Flower);
+@font-face {
+	font-family: 'OpenSans';
+	src: url('../fonts/open-sans/OpenSans-Regular.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'OpenSansLight';
+	src: url('../fonts/open-sans/OpenSans-Light.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Pacifico';
+	src: url('../fonts/pacifico/Pacifico.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'DroidSans';
+	src: url('../fonts/pacifico/DroidSans.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Roboto';
+	src: url('../fonts/pacifico/Roboto-Regular.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'RobotoCondensed';
+	src: url('../fonts/pacifico/RobotoCondensed-Regular.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
 body {
-	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "RobotoCondensed", "OpenSans", Helvetica, Arial, sans-serif;
 	font-weight: 300;
 	color: #000;
 	background: url('../images/bg4.png') repeat fixed center;
@@ -191,7 +226,7 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 .modal-title {
-	font-family: "Indie Flower", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "Pacifico", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 30px;
 }
 
@@ -218,6 +253,10 @@ comment .container and wrap each container with <div class="coloured-div">
 .links ul li a:hover {
 	text-decoration: underline;
 	color: #006ab3;
+}
+
+.content {
+	margin: 1em;
 }
 
 .content,

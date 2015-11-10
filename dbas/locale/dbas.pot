@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-11-05 11:01+0100\n"
+"POT-Creation-Date: 2015-11-10 09:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -583,12 +583,12 @@ msgid "copyright_and_used_software"
 msgstr ""
 
 #. Default: Icons by
-#: ./dbas/templates/imprint.pt:76
+#: ./dbas/templates/imprint.pt:81
 msgid "icons_by"
 msgstr ""
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: ./dbas/templates/imprint.pt:89
+#: ./dbas/templates/imprint.pt:94
 msgid "generated_with"
 msgstr ""
 

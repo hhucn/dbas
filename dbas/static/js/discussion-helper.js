@@ -103,33 +103,33 @@ function Helper() {
 	};
 
 	/**
-	 * Returns all kinds of attacks for the given premisse and conclusion
+	 * Returns all kinds of attacks for the given premise and conclusion
 	 * @param confrontation current confrontation
-	 * @param premisse current premisses
+	 * @param premise current premises
 	 * @param attackType current type of the attack
 	 * @param lastAttack last attack
 	 * @param conclusion current conclusion
 	 * @param startLowerCase, true, when each sentences should start as lowercase
 	 * @returns {string} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createRelationsText = function(confrontation, premisse, attackType, lastAttack, conclusion, startLowerCase){
-		if (premisse.substr(premisse.length-1) == '.')
-			premisse = premisse.substr(0, premisse.length-1);
+	this.createRelationsText = function(confrontation, premise, attackType, lastAttack, conclusion, startLowerCase){
+		if (premise.substr(premise.length-1) == '.')
+			premise = premise.substr(0, premise.length-1);
 
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
 		var rebutConclusion, w,  r;
 
-		if (lastAttack == attr_undermine){			rebutConclusion = premisse;
+		if (lastAttack == attr_undermine){			rebutConclusion = premise;
 		} else if (lastAttack == attr_rebut){		rebutConclusion = conclusion;
-		} else if (lastAttack == attr_undercut){	rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse;
+		} else if (lastAttack == attr_undercut){	rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
 		}
 
 		// pretty print
 		w = '<b>' + (startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong))) + ', ';
 		r = '<b>' + (startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right))) + ', ';
-		// counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premisse + '</b>';
+		// counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premise + '</b>';
 
 		// different cases
 		if (attackType === attr_undermine)	return w + _t(itIsFalse) + ' ' + confrontation + '</b>.';
@@ -144,16 +144,16 @@ function Helper() {
 	 * Returns all kinds of attacks for the given confrontation and conclusion
 	 * @param confrontation current confrontation
 	 * @param conclusion current conclusion
-	 * @param premisse current premisse
+	 * @param premise current premise
 	 * @param attackType current type of the attack
 	 * @param startLowerCase, true, when each sentences should start as lowercase
 	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createConfrontationsRelationsText = function(confrontation, conclusion, premisse, attackType, startLowerCase){
+	this.createConfrontationsRelationsText = function(confrontation, conclusion, premise, attackType, startLowerCase){
 		var rebutConclusion, w, r, counterJusti, undermine, support, undercut, overbid, rebut, noopinion;
-		if (attackType == attr_undermine){			rebutConclusion = premisse;
+		if (attackType == attr_undermine){			rebutConclusion = premise;
 		} else if (attackType == attr_rebut){		rebutConclusion = conclusion;
-		} else if (attackType == attr_undercut){	rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse;
+		} else if (attackType == attr_undercut){	rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
 		}
 
 		if (conclusion.substr(conclusion.length-1) == '.')
@@ -161,7 +161,7 @@ function Helper() {
 
 		w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong));
 		r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right));
-		counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premisse + '</b>';
+		counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
 		undermine = w + ', ' + _t(itIsFalse) + ' <b>' + confrontation + '</b>.';
 		support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>.';
 		undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + '.';
@@ -177,13 +177,13 @@ function Helper() {
 	 * @param key will be used as id
 	 * @param val will be used as value
 	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
-	 * @param isPremisse
+	 * @param isPremise
 	 * @param isRelation
 	 * @param mouseover
 	 * @returns {Element|*} a type-input element in a li tag
 	 */
-	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse, isRelation, mouseover) {
-		return this.getKeyValAsInputInLiWithType(key, val, isStartStatement, isPremisse, isRelation, mouseover, {'text_count':'0'});
+	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremise, isRelation, mouseover) {
+		return this.getKeyValAsInputInLiWithType(key, val, isStartStatement, isPremise, isRelation, mouseover, {'text_count':'0'});
 	};
 
 	/**
@@ -191,13 +191,13 @@ function Helper() {
 	 * @param key will be used as id
 	 * @param val will be used as value
 	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
-	 * @param isPremisse
+	 * @param isPremise
 	 * @param isRelation
 	 * @param mouseover
 	 * @param additionalAttributesAsDict
 	 * @returns {Element|*} a type-input element in a li tag
 	 */
-	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremisse, isRelation, mouseover, additionalAttributesAsDict) {
+	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremise, isRelation, mouseover, additionalAttributesAsDict) {
 		var liElement, inputElement, labelElement, extras = '', tmp;
 		liElement = $('<li>');
 		liElement.attr({id: 'li_' + key});
@@ -217,9 +217,9 @@ function Helper() {
 
 		inputElement.attr({onclick: 'new InteractionHandler().radioButtonChanged();'});
 		if (isStartStatement){ inputElement.addClass('start'); }
-		if (isPremisse){ inputElement.addClass('premisse'); }
+		if (isPremise){ inputElement.addClass('premise'); }
 		if (isRelation){ inputElement.addClass('relation'); }
-		if (!isStartStatement && !isPremisse && !isRelation){ inputElement.addClass('add'); }
+		if (!isStartStatement && !isPremise && !isRelation){ inputElement.addClass('add'); }
 
 		tmp = new Helper().getFullHtmlTextOf(inputElement);
 		tmp = tmp.substr(0,tmp.length-1) + extras + '>';

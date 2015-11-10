@@ -20,7 +20,7 @@ from .dictionary_helper import DictionaryHelper
 from .logger import logger
 
 name = 'D-BAS'
-version = '0.3.12'
+version = '0.3.13'
 header = name + ' ' + version
 issue_fallback = 1
 
@@ -398,12 +398,12 @@ class Dbas(object):
 		# if 'ajax_get_start_statements' in self.request.path:
 		# 	logger('notfound', 'def', 'redirect to: ajax_get_start_statements')
 		# 	return self.get_start_statements()
-		# elif 'ajax_get_premisses_for_statement' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_get_premisses_for_statement')
-		# 	return self.get_premisses_for_statement()
-		# elif 'ajax_reply_for_premissegroup' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_premissegroup')
-		# 	return self.reply_for_premissegroup()
+		# elif 'ajax_get_premises_for_statement' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_get_premises_for_statement')
+		# 	return self.get_premises_for_statement()
+		# elif 'ajax_reply_for_premisegroup' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_premisegroup')
+		# 	return self.reply_for_premisegroup()
 		# elif 'ajax_reply_for_response_of_confrontation' in self.request.path:
 		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_response_of_confrontation')
 		# 	return self.reply_for_response_of_confrontation()
@@ -415,12 +415,12 @@ class Dbas(object):
 		# elif 'ajax_set_new_start_statement' in self.request.path:
 		# 	logger('notfound', 'def', 'redirect to: set_new_start_statement')
 		# 	return self.set_new_start_statement()
-		# elif 'ajax_set_new_start_premisse' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_set_new_start_premisse')
-		# 	return self.set_new_start_premisse()
-		# elif 'ajax_set_new_premisses_for_X' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_set_new_premisses_for_X')
-		# 	return self.set_new_premisses_for_X()
+		# elif 'ajax_set_new_start_premise' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_set_new_start_premise')
+		# 	return self.set_new_start_premise()
+		# elif 'ajax_set_new_premises_for_X' in self.request.path:
+		# 	logger('notfound', 'def', 'redirect to: ajax_set_new_premises_for_X')
+		# 	return self.set_new_premises_for_X()
 		# elif 'ajax_set_correcture_of_statement' in self.request.path:
 		# 	logger('notfound', 'def', 'redirect to: ajax_set_correcture_of_statement')
 		# 	return self.set_correcture_of_statement()
@@ -493,8 +493,8 @@ class Dbas(object):
 		return return_json
 
 	# ajax - getting all arguments for the island view
-	@view_config(route_name='ajax_get_premisses_for_statement', renderer='json', check_csrf=False)
-	def get_premisses_for_statement(self):
+	@view_config(route_name='ajax_get_premises_for_statement', renderer='json', check_csrf=False)
+	def get_premises_for_statement(self):
 		"""
 
 		:return:
@@ -502,22 +502,22 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		logger('get_premisses_for_statement', 'def', 'main')
+		logger('get_premises_for_statement', 'def', 'main')
 
 		return_dict = {}
 		try:
-			logger('get_premisses_for_statement', 'def', 'read params: ' + str(self.request.params))
+			logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
 			uids = self.request.params['uid'].split('=')
 			uid = uids[1]
-			logger('get_premisses_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
-			logger('get_premisses_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
+			logger('get_premises_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
+			logger('get_premises_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
-			logger('get_premisses_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
-			return_dict = DatabaseHelper().get_premisses_for_statement(transaction, uid, True, self.request.authenticated_userid,
+			logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
+			return_dict = DatabaseHelper().get_premises_for_statement(transaction, uid, True, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
 			return_dict['status'] = '1'
 		except KeyError as e:
-			logger('get_premisses_for_statement', 'error', repr(e))
+			logger('get_premises_for_statement', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
@@ -525,17 +525,17 @@ class Dbas(object):
 
 		return return_json
 
-	# ajax - get reply for a premisse group
-	@view_config(route_name='ajax_reply_for_premissegroup', renderer='json', check_csrf=False)
-	def reply_for_premissegroup(self):
+	# ajax - get reply for a premise group
+	@view_config(route_name='ajax_reply_for_premisegroup', renderer='json', check_csrf=False)
+	def reply_for_premisegroup(self):
 		"""
-		Get reply for a premisse
+		Get reply for a premise
 		:return: dictionary with every arguments
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		logger('reply_for_premissegroup', 'def', 'main')
+		logger('reply_for_premisegroup', 'def', 'main')
 
 		return_dict = {}
 		try:
@@ -546,11 +546,11 @@ class Dbas(object):
 			logger('reply_for_argument', 'def', 'pgroup ' + str(pgroup))
 			logger('reply_for_argument', 'def', 'conclusion ' + str(conclusion))
 			# track will be saved in the method
-			return_dict, status = DatabaseHelper().get_attack_for_premissegroup(transaction, self.request.authenticated_userid, pgroup,
+			return_dict, status = DatabaseHelper().get_attack_for_premisegroup(transaction, self.request.authenticated_userid, pgroup,
 			                                                                    conclusion, self.request.session.id, issue)
 			return_dict['status'] = str(status)
 		except KeyError as e:
-			logger('reply_for_premissegroup', 'error', repr(e))
+			logger('reply_for_premisegroup', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
@@ -619,8 +619,8 @@ class Dbas(object):
 			return_dict['status'] = status
 			return_dict['last_relation'] = relation
 			return_dict['confrontation_uid'] = confrontation
-			# return_dict['confrontation_text'] = QueryHelper().get_text_for_arguments_premissesGroup_uid(confrontation, issue)
-			return_dict['confrontation_text'], uids = QueryHelper().get_text_for_premissesGroup_uid(confrontation, issue)
+			# return_dict['confrontation_text'] = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
+			return_dict['confrontation_text'], uids = QueryHelper().get_text_for_premisesGroup_uid(confrontation, issue)
 		except KeyError as e:
 			logger('reply_for_response_of_confrontation', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -715,9 +715,9 @@ class Dbas(object):
 
 		return return_json
 
-	# ajax - send new start premisse
-	@view_config(route_name='ajax_set_new_start_premisse', renderer='json', check_csrf=True)
-	def set_new_start_premisse(self):
+	# ajax - send new start premise
+	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
+	def set_new_start_premise(self):
 		"""
 
 		:return:
@@ -726,33 +726,33 @@ class Dbas(object):
 		user_id = self.request.authenticated_userid
 		UserHandler().update_last_action(transaction, user_id)
 
-		logger('set_new_start_premisse', 'def', 'main')
+		logger('set_new_start_premise', 'def', 'main')
 
 		return_dict = dict()
 		try:
-			logger('set_new_start_premisse', 'def', 'getting params')
+			logger('set_new_start_premise', 'def', 'getting params')
 			text = self.request.params['text']
 			conclusion_id = self.request.params['conclusion_id']
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
-			logger('set_new_start_premisse', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', issue: ' + str(issue))
+			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', issue: ' + str(issue))
 
-			tmp_dict, is_duplicate = DatabaseHelper().set_premisses_for_conclusion(transaction, user_id, text, conclusion_id, True, issue)
+			tmp_dict, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, True, issue)
 
 			return_dict['pro_0'] = tmp_dict
 			if is_duplicate:
-				return_dict['premissegroup_uid'] = tmp_dict['premissegroup_uid']
+				return_dict['premisegroup_uid'] = tmp_dict['premisegroup_uid']
 			return_dict['status'] = '0' if is_duplicate else '1'
 		except KeyError as e:
-			logger('set_new_premisses_for_X', 'error', repr(e))
+			logger('set_new_premises_for_X', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
-	# ajax - send new premisses
-	@view_config(route_name='ajax_set_new_premisses_for_X', renderer='json', check_csrf=True)
-	def set_new_premisses_for_X(self):
+	# ajax - send new premises
+	@view_config(route_name='ajax_set_new_premises_for_X', renderer='json', check_csrf=True)
+	def set_new_premises_for_X(self):
 		"""
 
 		:return:
@@ -761,48 +761,48 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, user_id)
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
-		logger('set_new_premisses_for_X', 'def', 'main')
+		logger('set_new_premises_for_X', 'def', 'main')
 
 		return_dict = dict()
 		try:
-			logger('set_new_premisses_for_X', 'def', 'getting params')
+			logger('set_new_premises_for_X', 'def', 'getting params')
 			pro_dict = dict()
 			con_dict = dict()
 
 			related_argument  = self.request.params['related_argument'] if 'related_argument' in self.request.params else -1
-			premissegroup_id  = self.request.params['premissegroup_id'] if 'premissegroup_id' in self.request.params else -1
+			premisegroup_id  = self.request.params['premisegroup_id'] if 'premisegroup_id' in self.request.params else -1
 			current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
 			last_attack       = self.request.params['last_attack'] if 'last_attack' in self.request.params else -1
 			confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
-			premissegroup_con = self.request.params['premissegroup_con'] if 'premissegroup_con' in self.request.params else '0'
-			premissegroup_pro = self.request.params['premissegroup_pro'] if 'premissegroup_pro' in self.request.params else '0'
+			premisegroup_con = self.request.params['premisegroup_con'] if 'premisegroup_con' in self.request.params else '0'
+			premisegroup_pro = self.request.params['premisegroup_pro'] if 'premisegroup_pro' in self.request.params else '0'
 			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
 
-			premissegroup_con = True if premissegroup_con.lower() == 'true' else False
-			premissegroup_pro = True if premissegroup_pro.lower() == 'true' else False
+			premisegroup_con = True if premisegroup_con.lower() == 'true' else False
+			premisegroup_pro = True if premisegroup_pro.lower() == 'true' else False
 
-			logger('set_new_premisses_for_X', 'def', 'param related_argument: ' + str(related_argument))
-			logger('set_new_premisses_for_X', 'def', 'param premissegroup_id: ' + str(premissegroup_id))
-			logger('set_new_premisses_for_X', 'def', 'param current_attack: ' + str(current_attack))
-			logger('set_new_premisses_for_X', 'def', 'param last_attack: ' + str(last_attack))
-			logger('set_new_premisses_for_X', 'def', 'param confrontation_uid: ' + str(confrontation_uid))
-			logger('set_new_premisses_for_X', 'def', 'param premissegroup_con: ' + str(premissegroup_con))
-			logger('set_new_premisses_for_X', 'def', 'param premissegroup_pro: ' + str(premissegroup_pro))
-			logger('set_new_premisses_for_X', 'def', 'param issue: ' + str(issue))
+			logger('set_new_premises_for_X', 'def', 'param related_argument: ' + str(related_argument))
+			logger('set_new_premises_for_X', 'def', 'param premisegroup_id: ' + str(premisegroup_id))
+			logger('set_new_premises_for_X', 'def', 'param current_attack: ' + str(current_attack))
+			logger('set_new_premises_for_X', 'def', 'param last_attack: ' + str(last_attack))
+			logger('set_new_premises_for_X', 'def', 'param confrontation_uid: ' + str(confrontation_uid))
+			logger('set_new_premises_for_X', 'def', 'param premisegroup_con: ' + str(premisegroup_con))
+			logger('set_new_premises_for_X', 'def', 'param premisegroup_pro: ' + str(premisegroup_pro))
+			logger('set_new_premises_for_X', 'def', 'param issue: ' + str(issue))
 
-			# confrontation_uid is a premisse group
+			# confrontation_uid is a premise group
 
 			# Interpretation of the parameters
 			# User says: E => A             | #related_argument
 			# System says:
-			#   undermine:  F => !E         | #premissegroup_id  =>  !premissegroup of #related_argument
-			#   undercut:   D => !(E=>A)    | #premissegroup_id  =>  !#related_argument
-			#   rebut:      B => !A         | #premissegroup_id  =>  !conclusion of #related_argument
+			#   undermine:  F => !E         | #premisegroup_id  =>  !premisegroup of #related_argument
+			#   undercut:   D => !(E=>A)    | #premisegroup_id  =>  !#related_argument
+			#   rebut:      B => !A         | #premisegroup_id  =>  !conclusion of #related_argument
 			# Handle it, based on current and last attack
 
 			# getting all arguments
 			for key in self.request.params:
-				logger('set_new_premisses_for_X', key, self.request.params[key])
+				logger('set_new_premises_for_X', key, self.request.params[key])
 				if 'pro_' in key:
 					pro_dict[key] = self.request.params[key]
 				if 'con_' in key:
@@ -815,22 +815,22 @@ class Dbas(object):
 				con_dict = con_dict,
 				transaction = transaction,
 				argument_id = related_argument,
-				premissegroup_id = premissegroup_id,
+				premisegroup_id = premisegroup_id,
 				confrontation_uid = confrontation_uid,
 				current_attack = current_attack,
 				last_attack = last_attack,
-				premissegroup_con = premissegroup_con,
-				premissegroup_pro = premissegroup_pro,
+				premisegroup_con = premisegroup_con,
+				premisegroup_pro = premisegroup_pro,
 				issue = issue
 			))
 
 		except KeyError as e:
-			logger('set_new_premisses_for_X', 'error', repr(e))
+			logger('set_new_premises_for_X', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		logger('set_new_premisses_for_X', 'def', 'returning')
+		logger('set_new_premises_for_X', 'def', 'returning')
 		return return_json
 
 	# ajax - getting all arguments for the island view
@@ -854,7 +854,7 @@ class Dbas(object):
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
 
-		# return_dict = DatabaseHelper().get_logfile_for_premissegroup(uid)
+		# return_dict = DatabaseHelper().get_logfile_for_premisegroup(uid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -1292,7 +1292,7 @@ class Dbas(object):
 			elif mode == '1': # edit statement popup
 				statement_uid = self.request.params['extra']
 				return_dict = DatabaseHelper().get_fuzzy_string_for_edits(value, statement_uid, issue)
-			elif mode == '2':  # start premisse
+			elif mode == '2':  # start premise
 				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value, issue, False)
 			elif mode == '3':  # adding reasons
 				return_dict = DatabaseHelper().get_fuzzy_string_for_reasons(value, issue)
