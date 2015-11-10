@@ -223,6 +223,7 @@ def setupDiscussionDatabase():
 	pw8 = pwHandler.get_hashed_password('gregor')
 	pw9 = pwHandler.get_hashed_password('christian')
 	pw10 = pwHandler.get_hashed_password('alexander')
+	pw11 = pwHandler.get_hashed_password('raphael')
 	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='',password=pw0, group=group3.uid, gender='m')
 	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com',password=pw1, group=group0.uid, gender='m')
 	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de',password=pw2, group=group1.uid, gender='m')
@@ -232,9 +233,10 @@ def setupDiscussionDatabase():
 	user6 = User(firstname='Tobias', surname='Escher', nickname='drtobias', email='tobias.escher@hhu.de',password=pw6, group=group2.uid, gender='m')
 	user7 = User(firstname='Michael', surname='Baurmann', nickname='michael', email='baurmann@hhu.de',password=pw7, group=group2.uid, gender='m')
 	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu',password=pw8, group=group2.uid, gender='m')
-	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='christian.meter@uni-duesseldorf.de', password=pw9, group=group2.uid, gender='m')
-	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='alexander.schneider@uni-duesseldorf.de', password=pw10, group=group2.uid, gender='m')
-	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10])
+	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group2.uid, gender='m')
+	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='schneider@cs.uni-duesseldorf.de', password=pw10, group=group2.uid, gender='m')
+	user11 = User(firstname='Raphael', surname='Bialon', nickname='raphael', email='bialon@cs.uni-duesseldorf.de', password=pw11, group=group2.uid, gender='m')
+	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11])
 	DBDiscussionSession.flush()
 
 	#Adding all textversions
