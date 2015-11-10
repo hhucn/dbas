@@ -959,7 +959,7 @@ function GuiHandler() {
 		$.each(jsonData, function setIssueListEach(key, val) {
 			if (key == 'current_issue') {
 				current_id = val;
-			} else {
+			} else if (typeof val.text !== 'undefined'){
 				li = $('<li>');
 				li.attr({id: 'issue_' + val.uid, 'issue': val.uid, 'date': val.date, 'count': count});
 				a = $('<a>');

@@ -303,6 +303,12 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForGetStartStatements = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+
+		// correction of an undefined issue
+		if (parsedData.reset_url === 'true'){
+			window.location.replace(mainpage + 'discussion/start/issue=' + parsedData.reset_issue);
+		}
+
 		if (parsedData.status == '-1') {
 			gh.setDiscussionsDescription(_t(firstPositionText), _t(firstPositionText), null);
 			gh.setNewArgumentButtonOnly(_t(firstConclusionRadioButtonText), false);

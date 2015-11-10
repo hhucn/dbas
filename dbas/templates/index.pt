@@ -166,7 +166,7 @@
 								<br><span i18n:translate="data_structure_description">We are using a modified argumentation map as data structure. More information can be afforded via the</span> <a href="${request.application_url}/contact" title="Contact" i18n:translate="contact">contact</a>-<span i18n:translate="formular">formular</span>.
 							</li>
 						</ul>
-						<p class="lead">In addition, we have studied several tools:</p>
+						<p class="lead" i18n:translate="additional_studies">In addition, we have studied several tools:</p>
 
 						<div class="row">
 							<div class="col-md-4 col-badge">

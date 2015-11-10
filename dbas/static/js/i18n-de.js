@@ -157,7 +157,7 @@ var dbas_de = {
 	'registered': 'Registriert',
 	'right': 'Richtig',
 	'requestTrack': 'Track anfragen',
-	'refreshTrack': 'Track neuladenk',
+	'refreshTrack': 'Track neuladen',
 	'requestFailed': 'Anfrage fehlgeschlagen',
 	'restartDiscussion': 'Diskussion neustarten',
 	'restartDiscussionTitle': 'Diskussion neustarten',

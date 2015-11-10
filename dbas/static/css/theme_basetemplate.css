@@ -18,25 +18,25 @@
 }
 @font-face {
 	font-family: 'DroidSans';
-	src: url('../fonts/pacifico/DroidSans.ttf');
+	src: url('../fonts/droid-sans/DroidSans.ttf');
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
 	font-family: 'Roboto';
-	src: url('../fonts/pacifico/Roboto-Regular.ttf');
+	src: url('../fonts/roboto/Roboto-Regular.ttf');
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
 	font-family: 'RobotoCondensed';
-	src: url('../fonts/pacifico/RobotoCondensed-Regular.ttf');
+	src: url('../fonts/roboto/RobotoCondensed-Regular.ttf');
 	font-weight: normal;
 	font-style: normal;
 }
 
 body {
-	font-family: "RobotoCondensed", "OpenSans", Helvetica, Arial, sans-serif;
+	font-family: "DroidSans", "OpenSans", Helvetica, Arial, sans-serif;
 	font-weight: 300;
 	color: #000;
 	background: url('../images/bg4.png') repeat fixed center;
@@ -159,6 +159,10 @@ body.loading .ajaxloader {
 	text-align: left;
 }
 
+.content{
+	margin: 1em;
+}
+
 .container,
 .first-container {
 	margin-top: 50px;
@@ -198,12 +202,13 @@ comment .container and wrap each container with <div class="coloured-div">
 .first-container {
 	margin-top: -20px;
 }
-
+/**
 .first-container:hover,
 .container:hover {
 	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
 	transition: .5s ease;
 }
+**/
 
 .jsdiabled {
 	position: absolute;
@@ -228,13 +233,13 @@ comment .container and wrap each container with <div class="coloured-div">
 .modal-title {
 	font-family: "Pacifico", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 30px;
+	margin-bottom: 5px;
 }
 
 .links {
 	float: none;
 	text-align: center;
 	margin-bottom: 15px;
-	margin-right: 15px;
 	color: #000;
 }
 
@@ -253,10 +258,6 @@ comment .container and wrap each container with <div class="coloured-div">
 .links ul li a:hover {
 	text-decoration: underline;
 	color: #006ab3;
-}
-
-.content {
-	margin: 1em;
 }
 
 .content,
