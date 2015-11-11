@@ -136,8 +136,7 @@
 /* link color for the 'dropdown' */
 
 #add-pro-position,
-#add-con-position,
-{
+#add-con-position{
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-433-plus.png) center no-repeat 12px 10px;
 }
 
