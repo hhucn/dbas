@@ -9,113 +9,133 @@
 
 		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
-		<div class="container settings-container">
-			<h2 i18n:translate="info_about_yourself">Information about yourself</h2>
-			<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
-				<tr>
-					<td>
-						<spand class="font-semi-bold" i18n:translate="firstname">Firstname</spand>
-					</td>
-					<td><span tal:replace="db_firstname" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<spand class="font-semi-bold" i18n:translate="surname">Surname</spand>
-					</td>
-					<td><span tal:replace="db_surname" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<spand class="font-semi-bold" i18n:translate="nickname">Nickname</spand>
-					</td>
-					<td id='table_nickname'><span tal:replace="db_nickname" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<spand class="font-semi-bold">E-Mail</spand>
-					</td>
-					<td><span tal:replace="db_mail" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<spand class="font-semi-bold" i18n:translate="group">Group</spand>
-					</td>
-					<td><span tal:replace="db_group" />
-					</td>
-				</tr>
-			</table>
-		</div>
+		<div class="container">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<div class="row">
 
-		<div class="container settings-container-wide">
-			<h2 i18n:translate="decisions">Your decisions</h2>
-			<div id="track-table-space">
-				<table id="track-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
-					<tr>
-					</tr>
-				</table>
-			</div>
-			<input id="request-track" type="button" value="Request track" class="button button-block btn btn-primary" />
-			<input id="delete-track" type="button" value="Delete track" class="button button-block btn btn-primary"/>
-			<div id="track-table-success" class="alert alert-success" role="alert">
-				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-				<span class="font-semi-bold" i18n:translate="success">Success:</span>
-				<span id="track-success-msg"></span>
-			</div>
-			<div id="track-table-failure" class="alert alert-danger" role="alert">
-				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-				<span class="font-semi-bold" i18n:translate="error:">Error:</span>
-				<span id="track-failure-msg"></span>
-			</div>
-		</div>
-
-		<div class="form" id="password-form">
-			<h2 i18n:translate="change_password">Change your password</h2>
-			<form action="/settings" method="post">
-
-				<h3 i18n:translate="old_password">Old password</h3>
-				<input id="settings-password-old-input" type="password" name="passwordold" class="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
-
-
-				<h3 i18n:translate="new_password">New Password</h3>
-				<input id="settings-password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
-				
-				<div id="settings-password-extras">
-					<div id="settings-password-meter" class="veryweak"></div>
-					<h4 id="settings-password-strength" i18n:translate="strength">Strength</h4>
-					<a id="settings-password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
-						<i id="settings-password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
-					</a>
+					<h3 i18n:translate="info_about_yourself">Information about yourself</h3>
+					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<tr>
+							<td>
+								<spand class="font-semi-bold" i18n:translate="firstname">Firstname</spand>
+							</td>
+							<td><span tal:replace="db_firstname" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<spand class="font-semi-bold" i18n:translate="surname">Surname</spand>
+							</td>
+							<td><span tal:replace="db_surname" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<spand class="font-semi-bold" i18n:translate="nickname">Nickname</spand>
+							</td>
+							<td id='table_nickname'><span tal:replace="db_nickname" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<spand class="font-semi-bold">E-Mail</spand>
+							</td>
+							<td><span tal:replace="db_mail" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<spand class="font-semi-bold" i18n:translate="group">Group</spand>
+							</td>
+							<td><span tal:replace="db_group" />
+							</td>
+						</tr>
+					</table>
 				</div>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
 
-				<h3 i18n:translate="new_password_confirm">New Password (confirm)</h3>
-				<input id="settings-passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+		<div class="container">
+			<div class="col-md-12">
+				<div class="row">
+					<h3 i18n:translate="decisions">Your decisions</h3>
+					
+					<div style="text-align:center;">
+						<input id="request-track" type="button" value="Request track" class="button button-block btn btn-primary" style="display: inline-block;"/>
+						<input id="delete-track" type="button" value="Delete track" class="button button-block btn btn-primary" style="display: inline-block;"/>
+						</div>
+					
+					<div id="track-table-success" class="alert alert-success" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span class="font-semi-bold" i18n:translate="success">Success:</span>
+						<span id="track-success-msg"></span>
+					</div>
+					<div id="track-table-failure" class="alert alert-danger" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span class="font-semi-bold" i18n:translate="error:">Error:</span>
+						<span id="track-failure-msg"></span>
+					</div>
+					<div id="track-table-space">
+						<table id="track-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+							<tr>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<div class="row">
+					<h3 i18n:translate="change_password">Change your password</h3>
+					<form action="/settings" method="post">
+
+						<h4 i18n:translate="old_password">Old password</h4>
+						<input id="settings-password-old-input" type="password" name="passwordold" class="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
 
 
-				<div tal:condition="change_error" id="settings-danger-message" class="alert alert-danger alert-dismissible">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">
+						<h4 i18n:translate="new_password">New Password</h4>
+						<input id="settings-password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
+
+						<div id="settings-password-extras">
+							<div id="settings-password-meter" class="veryweak"></div>
+							<h5 id="settings-password-strength" i18n:translate="strength">Strength</h5>
+							<a id="settings-password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
+								<i id="settings-password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
+							</a>
+						</div>
+
+						<h4 i18n:translate="new_password_confirm">New Password (confirm)</h4>
+						<input id="settings-passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+
+
+						<div tal:condition="change_error" id="settings-danger-message" class="alert alert-danger alert-dismissible">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">
 					<span tal:replace="message" />
 					</span>
-				</div>
+						</div>
 
-				<div tal:condition="change_success" id="settings-success-message" class="alert alert-success" role="alert">
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-					<span class="font-semi-bold" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
+						<div tal:condition="change_success" id="settings-success-message" class="alert alert-success" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="font-semi-bold" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
+						</div>
+							<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" />
+					</form>
 				</div>
-
-				<input id="settings-password-submit" type="submit" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" />
-			</form>
+			</div>
+			<div class="col-md-2"></div>
 		</div>
 
 
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
 	</tal:block>
 </tal:block>
 

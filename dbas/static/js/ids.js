@@ -183,6 +183,7 @@ var trackTableFailureId 						= 'track-table-failure';
 var trackTableSpaceId 							= 'track-table-space';
 var popupLoginUserfirstnameInputId 				= 'userfirstname-input';
 var popupLoginUserlastnameInputId 				= 'userlastname-input';
+var uid 										= 'uid';
 var writingNewsFailedId 						= 'writing-news-failed';
 var writingNewsSuccessId 						= 'writing-news-success';
 var writingNewsFailedMessageId 					= 'writing-news-failed-message';

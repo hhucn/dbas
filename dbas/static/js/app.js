@@ -255,7 +255,7 @@ function prepareLoginRegistrationPopup(){
 	$('#' + popupLoginCloseButton).click(function(){
 		hideExtraViewsOfLoginPopup();
 		$('#' + popupLogin).modal('hide');
-
+		$('#' + popupLoginButtonLogin).show();
 	});
 
 	$('#' + popupLoginPasswordInputId).keyup(function popupLoginPasswordInputKeyUp() {

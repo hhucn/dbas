@@ -3,8 +3,12 @@ signalblue #006ab3 (0, 106, 179), to use in 1, 0.7, 0.5, 0.3 and 0.1
 achatgrey #d9dadb (217, 218, 219), to use in 1.0 and 0.1
 gelbruen #97bf0d (151, 191, 13), to use in 1, 0.7, 0.5, 0.3 and 0.1
 verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
+bootstrap-paper hover #eeeeee
 */
 
+/**
+ * Custom design for bootstrap
+ */
 #custom-bootstrap-menu.navbar-default .navbar-brand {
 	color: #d9dadb;
 	font-size: 20px;
@@ -17,10 +21,13 @@ verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 }
 
 #custom-bootstrap-menu.navbar-default .navbar-brand:hover {
+	background-color: #eeeeee;
+	/*
 	background-color: #006ab3;
 	background-image: url('../images/brand_white_small.png');
+	*/
 }
-
+/*
 #custom-bootstrap-menu.navbar-default {
 	font-size: 16px;
 	background-color: #d9dadb;
@@ -81,6 +88,7 @@ verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 	font-weight: normal;
 }
 
+*/
 .navbar-nav.navbar-right:last-child {
 	margin-right: 20px;
 }
@@ -89,6 +97,15 @@ verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 	padding-right: 10px;
 }
 
+/* CUSTOM */
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+	color: #000;
+	background-color: #bababa;
+}
+
+/* END CUSTOM */
+/*
 .dropdown-menu li a:hover img,
 .dropdown-menu li .active,
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover img,
@@ -96,4 +113,81 @@ verkehrsrot #8e0a26 (142, 10, 38), to use in 1, 0.7, 0.5, 0.3 and 0.1
 #custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover img,
 .glyphicon-local:hover {
 	-webkit-filter: invert(100%);
+}
+*/
+
+/**
+ * Footer and custom design
+ */
+
+#footer,
+#footer > a,
+#footer .links ul li a,
+#footer .links ul li .glyphicon-local {
+	font-size: 12px;
+}
+
+#footer {
+	position: absolute;
+	width: 100%;
+	margin-top: 50px;
+	height: 50px;
+	padding-top: 15px;
+	/*
+	background: #d9dadb;
+	border-top: thin solid #006ab3;
+	*/
+	/* paper bootstrap */
+	background: #fff;
+	border-top: thin solid #bababa;	
+	bottom: 0;
+	left: 0;
+}
+
+#footer_imprint {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-115-list.png) no-repeat;
+}
+
+#footer-glyphicons {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-249-asterisk.png) no-repeat;
+}
+
+#footer_contact {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-310-comments.png) no-repeat;
+}
+
+#header_letsgo {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-551-erase.png) no-repeat;
+}
+
+#header_news {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat;
+}
+
+#header_login {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-387-log-in.png) no-repeat;
+}
+
+#header_settings {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-281-settings.png) no-repeat;
+}
+
+#header_user {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
+}
+
+#header_logout {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-388-log-out.png) no-repeat;
+}
+
+#header_privacy {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-499-sunglasses.png) no-repeat;
+}
+
+#footer_author {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
+}
+
+#footer_licence {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-444-floppy-disk.png) no-repeat;
 }

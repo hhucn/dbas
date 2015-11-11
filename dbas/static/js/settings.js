@@ -69,7 +69,6 @@ function TrackHandler() {
 	};*/
 
 	this.getUserTrackDataDone = function(data){
-		$('#' + deleteTrackButtonId).fadeIn('slow');
 		new TrackHandler().setDataInTrackTable(data);
 	};
 
@@ -95,43 +94,40 @@ function TrackHandler() {
 	 */
 	this.setDataInTrackTable = function (jsonData) {
 		'use strict';
-		var tableElement, trElement, tdElement, spanElement, i, is_argument, parsedData, topic, date;
-		tdElement = ['', '', '', '', '', '', '', '', '', ''];
-		spanElement = ['', '', '', '', '', '', '', '', '', ''];
+		var tableElement, trElement, tElement, i, is_argument, parsedData, topic, date, thead, tbody;
+		tElement = ['', '', '', '', '', '', '', '', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr({
-			class: 'table table-condensed',
+			class: 'table table-striped table-hover',
 			border: '0',
 			style: 'border-collapse: separate; border-spacing: 0px;'
 		});
 
 		trElement = $('<tr>');
+		thead = $('<thead>');
+		tbody = $('<tbody>');
 
-		for (i = 0; i < tdElement.length; i += 1) {
-			tdElement[i] = $('<td>');
-			spanElement[i] = $('<spand>');
-			spanElement[i].attr({
-				class: 'font-semi-bold'
-			});
+		for (i = 0; i < tElement.length; i += 1) {
+			tElement[i] = $('<th>');
 		}
 
 		// add header row
-		spanElement[0].text(_t(number));
-		spanElement[1].text(_t(track));
-		spanElement[2].text(_t(topicString));
-		spanElement[3].text(_t(statement));
-		spanElement[4].text(_t(premiseGroup));
-		spanElement[5].text(_t(argument));
-		spanElement[6].text(_t(attackedBy));
-		spanElement[7].text(_t(attackedWith));
-		spanElement[8].text(_t(text));
-		spanElement[9].text(_t(dateString));
+		tElement[0] = $('<th>').text('#');
+		tElement[1] = $('<th>').text(_t(track));
+		tElement[2] = $('<th>').text(_t(topicString));
+		tElement[3] = $('<th>').text(_t(statement));
+		tElement[4] = $('<th>').text(_t(premiseGroup));
+		tElement[5] = $('<th>').text(_t(argument));
+		tElement[6] = $('<th>').text(_t(attackedBy));
+		tElement[7] = $('<th>').text(_t(attackedWith));
+		tElement[8] = $('<th>').text(_t(text));
+		tElement[9] = $('<th>').text(_t(dateString));
 
-		for (i = 0; i < tdElement.length; i += 1) {
-			tdElement[i].append(spanElement[i]);
-			trElement.append(tdElement[i]);
-			tableElement.append(trElement);
+		for (i = 0; i < tElement.length; i += 1) {
+			trElement.append(tElement[i]);
 		}
+		thead.append(trElement);
+		tableElement.append(thead);
 
 		// adding the tracks
 		var has_data = false;
@@ -143,36 +139,32 @@ function TrackHandler() {
 			$.each(issue_value, function setDataInTrackTableEach(key, value) {
 				if (key != 'uid' && key != 'date' && key != 'text' ) {
 					has_data = true;
-					for (i = 0; i < tdElement.length; i += 1) {
-						tdElement[i] = $('<td>');
-					}
 					is_argument = value.is_argument;
-					tdElement[0].text(key).attr('title', 'No: ' + key);
-					tdElement[1].text(value.uid).attr('title', 'Track ID: ' + value.uid);
-					tdElement[2].text(topic).attr('title', 'Date: ' + date);
-					tdElement[3].text(value.statement).attr('title', 'Statement ID: ' + value.statement_uid);
-					tdElement[4].text(value.premisesGroup).attr('title', 'Premises Groups ID: ' + value.premisesGroup_uid);
-					tdElement[5].text(value.argument).attr('title', 'Argument ID: ' + value.argument_uid);
-					tdElement[6].text(value.attacked_by_relation).attr('title', 'Relation ID: ' + value.attacked_by_relation_uid);
-					tdElement[7].text(value.attacked_with_relation).attr('title', 'Relation ID: ' + value.attacked_with_relation_uid);
-					tdElement[8].html(value.text).attr('title', 'Text: ' + value.text);
-					tdElement[9].text(value.timestamp).attr('title', 'Timestamp: ' + value.timestamp);
+					tElement[0] = $('<td>').text(key).attr('title', 'No: ' + key);
+					tElement[1] = $('<td>').text(value.uid).attr('title', 'Track ID: ' + value.uid);
+					tElement[2] = $('<td>').text(topic).attr('title', 'Date: ' + date);
+					tElement[3] = $('<td>').text(value.statement).attr('title', 'Statement ID: ' + value.statement_uid);
+					tElement[4] = $('<td>').text(value.premisesGroup).attr('title', 'Premises Groups ID: ' + value.premisesGroup_uid);
+					tElement[5] = $('<td>').text(value.argument).attr('title', 'Argument ID: ' + value.argument_uid);
+					tElement[6] = $('<td>').text(value.attacked_by_relation).attr('title', 'Relation ID: ' + value.attacked_by_relation_uid);
+					tElement[7] = $('<td>').text(value.attacked_with_relation).attr('title', 'Relation ID: ' + value.attacked_with_relation_uid);
+					tElement[8] = $('<td>').html(value.text).attr('title', 'Text: ' + value.text);
+					tElement[9] = $('<td>').text(value.timestamp).attr('title', 'Timestamp: ' + value.timestamp);
 
 					trElement = $('<tr>');
-					for (i = 0; i < tdElement.length; i += 1) {
-						trElement.append(tdElement[i]);
+					for (i = 0; i < tElement.length; i += 1) {
+						trElement.append(tElement[i]);
 					}
-					trElement.hover(function () {
-						$(this).toggleClass('table-hover');
-					});
-					tableElement.append(trElement);
+					tbody.append(trElement);
 				}
 			});
+			tableElement.append(tbody);
 		});
 
 		$('#' + trackTableSpaceId).empty();
 		if (has_data) {
 			$('#' + trackTableSpaceId).append(tableElement);
+			$('#' + deleteTrackButtonId).fadeIn('slow');
 		} else {
 			$('#' + trackTableSuccessId).show();
 			$('#' + trackSuccessMessageId).text(_t(noTrackedData));

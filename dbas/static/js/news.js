@@ -13,7 +13,7 @@
  */
 function getNewsContainerAsHtml(title, date, author, news, no) {
 	return '<div class="col-md-4">'
-			+ '<div class="newscontainer" id="news_' + no + '">'
+			+ '<div class="container newscontainer" id="news_' + no + '">'
 			+ '<div class="share-table">'
 				+ '<li><a class="share-icon share-def"></a>'
 				+ '<ul>'

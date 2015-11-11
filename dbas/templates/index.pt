@@ -11,7 +11,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
+						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo"><br>
 						<h2><span class="font-semi-bold" i18n:translate="welcome">Welcome</span>
 								<span class="smaller"><span i18n:translate="to_the_dbas">to the</span>
 									<span class="font-semi-bold">D</span><span i18n:translate="ialog">ialog</span>-<span class="font-semi-bold">B</span><span i18n:translate="ased">ased</span> <span class="font-semi-bold">A</span><span i18n:translate="rgumentation">rgumentation</span> <span class="font-semi-bold">S</span><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span> 
@@ -52,7 +52,6 @@
 		</div>
 
 		<div class="container" id="features-template">
-
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">

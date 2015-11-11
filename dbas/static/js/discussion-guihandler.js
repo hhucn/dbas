@@ -130,7 +130,7 @@ function GuiHandler() {
 
 		// hover style element for the list elements
 		ulElement.children().hover(function () {
-			$(this).toggleClass('table-hover');
+			$(this).toggleClass('text-hover');
 		});
 	};
 
@@ -320,7 +320,7 @@ function GuiHandler() {
 		} else {
 			var newElement = new Helper().getKeyValAsInputInLiWithType(jsonData.statement.uid, jsonData.statement.text, true, false, false, '');
 			newElement.children().hover(function () {
-				$(this).toggleClass('table-hover');
+				$(this).toggleClass('text-hover');
 			});
 			$('#li_' + addReasonButtonId).before(newElement); // TODO.slideDown('slow').attr('checked', false).prop('checked', false);
 			$('#' + jsonData.statement.uid).attr('checked', true).prop('checked', true);
@@ -370,7 +370,7 @@ function GuiHandler() {
 						current_id = isStart ? val.premisegroup_uid : val.uid;
 						newElement = helper.getKeyValAsInputInLiWithType(current_id, text, false, true, !isStart, val.text, isStart? {} : {'long_id': long_id});
 						newElement.children().hover(function () {
-							$(this).toggleClass('table-hover');
+							$(this).toggleClass('text-hover');
 						});
 						$('#li_' + addReasonButtonId).before(newElement);
 					}
@@ -401,7 +401,7 @@ function GuiHandler() {
 			tmp += '.';
 			newElement = helper.getKeyValAsInputInLiWithType(premisegroup_uid, tmp, isStart, true, false, tmp);
 			newElement.children().hover(function () {
-				$(this).toggleClass('table-hover');
+				$(this).toggleClass('text-hover');
 			});
 			$('#li_' + addReasonButtonId).before(newElement);
 		}

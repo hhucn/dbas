@@ -137,7 +137,7 @@ function Helper() {
 		if (attackType === attr_undercut)	return r + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' <b>' + conclusion + '</b>.';
 		if (attackType === attr_overbid)	return r + confrontation + '</b>, ' + _t(andIDoBelieve) + ' <b>' + conclusion + '</b>.';
 		if (attackType === attr_rebut)		return r + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br><br>'
-												+ _t(iHaveStrongerArgument) + ' <b>' + rebutConclusion + '</b>.';
+												+ _t(iHaveMuchStrongerArgument) + ' <b>' + rebutConclusion + '</b>.';
 	};
 
 	/**
@@ -165,9 +165,9 @@ function Helper() {
 		undermine = w + ', ' + _t(itIsFalse) + ' <b>' + confrontation + '</b>.';
 		support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>.';
 		undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + '.';
-		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.';
+		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.' + _t(iHaveEvenStrongerArgument) + ' ' + counterJusti + '.';
 		rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>. '
-			+ _t(iHaveStrongerArgument) + ' <b>' + rebutConclusion + '</b>.';
+			+ _t(iHaveMuchStrongerArgument) + ' <b>' + rebutConclusion + '</b>.';
 		noopinion  = _t(iNoOpinion) + ': <b>' + confrontation + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
@@ -264,9 +264,9 @@ function Helper() {
 				statement_id: $(this).attr('statement_id'),
 				callback_td: 'edit_' + type + '_td_text_' + uid
 			});
-			$('#' + popupEditStatementTableId + ' td').removeClass('table-hover');
-			$('#edit_' + type + '_td_index_' + uid).addClass('table-hover');
-			$('#edit_' + type + '_td_text_' + uid).addClass('table-hover');
+			$('#' + popupEditStatementTableId + ' td').removeClass('text-hover');
+			$('#edit_' + type + '_td_index_' + uid).addClass('text-hover');
+			$('#edit_' + type + '_td_text_' + uid).addClass('text-hover');
 			$('#' + popupEditStatementErrorDescriptionId).text('');
 			$('#' + popupEditStatementSuccessDescriptionId).text('');
 			guiHandler.showEditFieldsInEditPopup();
@@ -288,7 +288,7 @@ function Helper() {
 			$('#' + popupEditStatementLogfileHeaderId).html(_t(logfile) + ': <b>' + $(this).attr('statement_text') + '</b>');
 			$('#' + popupEditStatementErrorDescriptionId).text('');
 			$('#' + popupEditStatementSuccessDescriptionId).text('');
-			$('#edit_statement_table td').removeClass('table-hover');
+			$('#edit_statement_table td').removeClass('text-hover');
 			ajaxHandler.getLogfileForStatement($(this).attr('statement_id'));
 			guiHandler.hideEditFieldsInEditPopup();
 		}).hover(function log_button_hover() {

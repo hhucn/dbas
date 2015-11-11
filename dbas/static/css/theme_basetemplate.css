@@ -36,7 +36,7 @@
 }
 
 body {
-	font-family: "DroidSans", "OpenSans", Helvetica, Arial, sans-serif;
+	/* font-family: "DroidSans", "OpenSans", Helvetica, Arial, sans-serif; */
 	font-weight: 300;
 	color: #000;
 	background: url('../images/bg4.png') repeat fixed center;
@@ -60,6 +60,10 @@ screen and (min-height: 1600px) {
 		background: url('../images/bg5.png') repeat fixed center;
 	}
 }
+.row{
+	margin-left: 0px;
+	margin-right: 0px;
+}
 
 h1,
 h2,
@@ -76,13 +80,11 @@ p {
 
 a {
 	text-decoration: none;
-	color: #006ab3;
 	transition: .5s ease;
 }
 
 a:hover {
 	text-decoration: underline;
-	color: #1A7CEA;
 }
 
 .ajaxloader {
@@ -165,15 +167,17 @@ body.loading .ajaxloader {
 
 .container,
 .first-container {
-	margin-top: 50px;
-	padding-left: 30px;
-	padding-right: 30px;
-	padding-top: 5px;
-	padding-bottom: 5px;
+	padding: 1em;
 	margin-bottom: 10px;
-	border-radius: 2px;
-	background: #f4f4f4;
+	background: #fff;
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
+}
+
+.newscontainer {	
+	display: inline-block;
+	margin: 1em;
+	vertical-align: top;
+	width:  100%;
 }
 
 .imprint-container {
@@ -231,7 +235,9 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 .modal-title {
+	/*
 	font-family: "Pacifico", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	*/
 	font-size: 30px;
 	margin-bottom: 5px;
 }
@@ -269,13 +275,6 @@ comment .container and wrap each container with <div class="coloured-div">
 	font-size: 18px;
 }
 
-#footer,
-#footer > a,
-#footer .links ul li a,
-#footer .links ul li .glyphicon-local {
-	font-size: 12px;
-}
-
 .list {
 	text-align: left;
 }
@@ -292,17 +291,21 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 .glyphicon-local:hover {
-	-webkit-filter: invert(100%);
+	-webkit-filter: invert(50%);
 }
 
 .icon-badge:hover {
 	-webkit-filter: saturate(200%);
 }
 
-.table-hover {
+.text-hover {
 	color: rgba(0, 106, 179, 1.0);
 	font-weight: 300;
 	font-style: italic;
+}
+
+.table>thead>tr>th{
+	text-align: center;
 }
 
 #additional-wrapper {
@@ -314,66 +317,6 @@ comment .container and wrap each container with <div class="coloured-div">
 	padding-top: 100px;
 	padding-bottom: 100px;
 	/* Height of the footer element */
-}
-
-#footer {
-	position: absolute;
-	width: 100%;
-	margin-top: 50px;
-	height: 50px;
-	padding-top: 15px;
-	background: #d9dadb;
-	border-top: thin solid #006ab3;
-	bottom: 0;
-	left: 0;
-}
-
-#footer_imprint {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-115-list.png) no-repeat;
-}
-
-#footer-glyphicons {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-249-asterisk.png) no-repeat;
-}
-
-#header_letsgo {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-551-erase.png) no-repeat;
-}
-
-#header_news {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat;
-}
-
-#footer_contact {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-310-comments.png) no-repeat;
-}
-
-#header_login {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-387-log-in.png) no-repeat;
-}
-
-#header_settings {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-281-settings.png) no-repeat;
-}
-
-#header_user {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
-}
-
-#header_logout {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-388-log-out.png) no-repeat;
-}
-
-#footer_author {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
-}
-
-#footer_licence {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-444-floppy-disk.png) no-repeat;
-}
-
-#header_privacy {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-499-sunglasses.png) no-repeat;
 }
 
 .share-icon {

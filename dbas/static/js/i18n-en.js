@@ -48,8 +48,10 @@ var dbas_en = {
 	'clickToChoose': 'Click to choose',
 	'description_undermine' : 'This statement supports the premise.',
 	'description_support' : 'This statement attacks the premise.',
-	'description_undercut' : 'This statement is attacks the justification. You do not believe that the premise justifies the conclusion.',
-	'description_overbid' : 'This statement is supports the justification. You do believe that the premise justifies the  conclusion.',
+	'description_undercut' : 'This statement attacks the justification (undercut). You do not believe that the premise justifies the' +
+	' conclusion.',
+	'description_overbid' : 'This statement supports the justification (overbid). You do believe that the premise justifies the' +
+	'  conclusion.',
 	'description_rebut' : 'This statement is against the conclusion itstelf.',
 	'description_no_opinion' : 'You just have no opinion regarding the confrontation or you just want to skip this.',
 	'dateString': 'Date',
@@ -115,7 +117,8 @@ var dbas_en = {
 	'itIsTrue': 'it is true that',
 	'itIsFalse': 'it is false that',
 	'iAcceptCounter': 'and I do accept that this is an counter-argument for',
-	'iHaveStrongerArgument': 'However, I have a much stronger argument for accepting that',
+	'iHaveMuchStrongerArgument': 'However, I have a much stronger argument for accepting that',
+	'iHaveEvenStrongerArgument': 'However, I have a even stronger argument for accepting that',
 	'iNoOpinion': 'I have no opinion regarding',
 	'interestingOnDBAS': 'Interesting discussion on DBAS',
 	'keepSetting': 'Keep this',
@@ -201,5 +204,6 @@ var dbas_en = {
 	'relation_support': 'is a argument for',
 	'relation_undercut': 'is a counter-argument for',
 	'relation_overbid': 'is a argument for',
-	'relation_rebut': 'is a counter-argument for'
+	'relation_rebut': 'is a counter-argument for',
+	'uid': 'ID'
 };

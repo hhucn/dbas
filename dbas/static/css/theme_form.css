@@ -13,45 +13,8 @@
 	text-align: center;
 }
 
-.form:hover {
-	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
-	transition: .5s ease;
-}
-
-.tab-group {
-	list-style: none;
-	padding: 0;
-	margin: 0 0 0 0;
-}
-
-.tab-group:after {
-	content: "";
-	display: table;
-	clear: both;
-}
-
-.tab-group li a {
-	display: block;
-	text-decoration: none;
-	padding: 15px;
-	background: rgba(0, 106, 179, 0.3);
-	color: #000;
-	font-size: 20px;
-	float: left;
-	width: 50%;
-	text-align: center;
-	cursor: pointer;
-	transition: .5s ease;
-}
-
-.tab-group li a:hover {
-	background: #1A7CEA;
-	color: #fff
-}
-
-.tab-group .active a {
-	background: #006ab3;
-	color: #fff;
+.tab-login a{
+	font-size: 25px;
 }
 
 .tab-content > div:last-child {
@@ -137,25 +100,20 @@ textarea.content {
 	resize: vertical;
 }
 
-#inlineRadioGender1{
-	margin-right: 10px;
+#inlineRadioGender2,
+#inlineRadioGender3{
+	margin-left: 35px;
 }
 #inlineRadioGender1img{
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-200-ban.png) no-repeat;
 	width: 26px;
 	height: 26px;
 }
-#inlineRadioGender2{
-	margin-right: 10px;
-	}
 #inlineRadioGender2img{
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-248-female.png) no-repeat;
 	width: 17px;
 	height: 29px;
 }
-#inlineRadioGender3{
-	margin-right: 10px;
-	}
 #inlineRadioGender3img{
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-247-male.png) no-repeat;
 	width: 23px;
@@ -169,25 +127,6 @@ textarea.content {
 #writing-news-text {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat 12px 10px;
 	resize: vertical;
-}
-
-input.name:hover,
-input.userfirstname:hover,
-input.userlastname:hover,
-input.nickname:hover,
-input.email:hover,
-input.password:hover,
-input.passwordold:hover,
-input.tel:hover,
-input.spam:hover,
-textarea.content:hover,
-.passwordconfirm:hover,
-input.active {
-	box-shadow: 0px 0px 7px 0px #3386E1;
-	transition: 0.5s all;
-	-webkit-transition: 0.5s all;
-	-moz-transition: 0.5s all;
-	-o-transition: 0.5s all;
 }
 
 .center {
@@ -258,7 +197,7 @@ input.active {
 #popup-password-generator-output,
 #popup-password-generator-button{
 	padding: 5px;
-	margin: 0px;
+	margin: 1em;
 	width: 45%;
 	border-radius: 0px;
 	white-space: nowrap;

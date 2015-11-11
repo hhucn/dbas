@@ -3,20 +3,23 @@
 <tal:block metal:use-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<head>
-			<link type="text/css" href="${request.static_url('dbas:static/css/theme_404.css')}" rel="stylesheet">
-		</head>
-
-
-		<div class="center text-center">
-			<div class="error">
-				<h1><span class="font-semi-bold" i18n:translate="404">404 Error</span></h1>
-				<p class="lead font-normal"><span i18n:translate="404_text_part1">The page</span>&quot;<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; <span i18n:translate="404_text_part2">for could not be found.</span>
-				</p>
-				<br>
-				<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" i18n:translate="lets_go_home" />
+			<div class="row">
+				<div class="col-md-3"></div>
+				<div class="container first-container col-md-6 center text-center">
+					<h1>
+						<span class="font-semi-bold" i18n:translate="404">404 Error</span>
+					</h1>
+					<p class="lead font-normal">
+						<span i18n:translate="404_text_part1">The page</span>&quot;
+						<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; 
+						<span i18n:translate="404_text_part2">for could not be found.</span>
+					</p>
+					<br>
+					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" i18n:translate="lets_go_home" />
+				</div>
+				<div class="col-md-3"></div>
 			</div>
-		</div>
+
 	</tal:block>
 </tal:block>
 

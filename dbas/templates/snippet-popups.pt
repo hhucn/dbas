@@ -24,9 +24,13 @@
 									<td>
 										<span class="font-semi-bold" i18n:translate="role">Role</span>
 									</td>
-									<td><span i18n:translate="role_value_1">Doctoral Student</span>
+									<td>
+										<span i18n:translate="role_value_1">Doctoral Student</span>
 										<br><a href="http://www.tsn.hhu.de/en.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
-										<br><span i18n:translate="role_value_2">Member of the graduation school</span> <a href="http://www.fortschrittskolleg.de/" target="_blank"><span i18n:translate="role_value_3">Online Participation</span></a>
+										<br><span i18n:translate="role_value_2">Member of the graduation school</span> 
+										<a href="http://www.fortschrittskolleg.de/" target="_blank">
+											<span i18n:translate="role_value_3">Online Participation</span>
+										</a>
 									</td>
 								</tr>
 								<tr>
@@ -237,10 +241,10 @@
 				<button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 				</button>
 				<br>
-				<ul class="tab-group">
-					<li class="tab tab-login active"><a href="#login" i18n:translate="login">Log In</a>
+				<ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
+					<li class="tab-login active"><a href="#login" i18n:translate="login">Log In</a>
 					</li>
-					<li class="tab tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a>
+					<li class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a>
 					</li>
 				</ul>
 			</div>
@@ -249,7 +253,9 @@
 				<div class="tab-content">
 
 					<div id="login">
+						<!--
 						<h2 class="modal-title" i18n:translate="welcome_back">Welcome Back!</h2>
+						-->
 
 						<div class="form-group">
 							<label class="col-sm-3 control-label" i18n:translate="your_nickname">Your Nickname</label>
@@ -293,7 +299,9 @@
 					</div>
 
 					<div id="signup">
+						<!--
 						<h2 class="modal-title" i18n:translate="signup_free">Sign Up for Free</h2>
+						-->
 
 						<div class="form-group">
 							<label class="col-sm-3 control-label" i18n:translate="first_name">Your First Name</label>
@@ -322,17 +330,17 @@
 								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked>
 								<label for="inlineRadioGender1">
 									<img id="inlineRadioGender1img" src="${request.static_url('dbas:static/images/transparent.gif')}">
-									<b i18n:translate="none">none</b>
+									<span i18n:translate="none">none</span>
 								</label>
 								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f">
 								<label for="inlineRadioGender2">
 									<img id="inlineRadioGender2img" src="${request.static_url('dbas:static/images/transparent.gif')}">
-									<b i18n:translate="female">female</b>
+									<span i18n:translate="female">female</span>
 								</label>
 								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m">
 								<label for="inlineRadioGender3">
 									<img id="inlineRadioGender3img" src="${request.static_url('dbas:static/images/transparent.gif')}">
-									<b i18n:translate="male">male</b>
+									<span i18n:translate="male">male</span>
 								</label>
 							</div>
 						</div>
@@ -362,7 +370,7 @@
 							<label class="col-sm-3 control-label" i18n:translate="password-strength">Password Strength</label>
 							<div class="col-sm-9">
 								<div class="col-sm-9 veryweak" id="popup-login-password-meter"></div>
-								<h4 id="popup-login-password-strength" i18n:translate="password_strength">very weak</h4>
+								<h6 id="popup-login-password-strength" i18n:translate="password_strength">very weak</h6>
 								<br>
 								<div id="popup-login-generate-password" class="form-group">
 									<a>

@@ -53,8 +53,10 @@ var dbas_de = {
 	'disagreeBecause': 'Ich widerspreche, weil ',
 	'description_undermine' : 'Diese Aussage ist gegen die Prämisse.',
 	'description_support' : 'Diese Aussage ist für die Prämisse.',
-	'description_undercut' : 'Diese Aussage ist gegen die Begründung. Sie glauben nicht, dass aus der Prämisse die Konklusion folgt.',
-	'description_overbid' : 'Diese Aussage ist für die Begründung. Sie glauben nicht, dass aus der Prämisse die Konklusion folgt.',
+	'description_undercut' : 'Diese Aussage ist gegen die Begründung (undercut). Sie glauben nicht, dass aus der Prämisse die Konklusion' +
+	' folgt.',
+	'description_overbid' : 'Diese Aussage ist für die Begründung (overbid). Sie glauben nicht, dass aus der Prämisse die Konklusion' +
+	' folgt.',
 	'description_rebut' : 'Diese Aussage ist gegen die Konklusion.',
 	'description_no_opinion' : 'Sie haben keine Meinung oder möchten diesen Punkt nur überpringen.',
 	'dataRemoved': 'Daten wurden erfolgreich gelöscht.',
@@ -115,7 +117,8 @@ var dbas_de = {
 	'iAgreeWith' : 'Ich akzeptiere die Aussage',
 	'iDisagreeWithInColor' : 'Ich <span class=\'red-bg\'>wiederspreche</span> der Aussage',
 	'iDisagreeWith' : 'Ich wiederspreche die Aussage',
-	'iHaveStrongerArgument': 'Jedoch habe ich ein stärkeres Argument zum Akzeptieren von',
+	'iHaveMuchStrongerArgument': 'Jedoch habe ich ein viel stärkeres Argument zum Akzeptieren von',
+	'iHaveEvenStrongerArgument': 'Jedoch habe ich ein stärkeres Argument zum Akzeptieren von',
 	'iNoOpinion': 'Ich habe keine Meinung bezüglich',
 	'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
 	'keepSetting': 'Entscheidung merken',
@@ -201,5 +204,6 @@ var dbas_de = {
 	'relation_support': 'ist ein Argument für',
 	'relation_undercut': 'ist ein Gegenargument für',
 	'relation_overbid': 'ist ein Argument für',
-	'relation_rebut': 'ist ein Gegenargument für'
+	'relation_rebut': 'ist ein Gegenargument für',
+	'uid': 'ID'
 }

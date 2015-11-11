@@ -10,7 +10,7 @@
 	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
 	<title>${project} - ${title}</title>
 	<!-- Bootstrap core CSS -->
-	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5.min.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5-paper.min.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.css')}" rel="stylesheet">

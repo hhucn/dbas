@@ -178,17 +178,6 @@
 	padding-top: 25px;
 }
 
-#admins-space-users table tbody tr:nth-child(even),
-#admins-space-attacks table tbody tr:nth-child(even) {
-	background-color: rgba(217, 218, 219, 0.7);
-}
-
-#admins-space-users table thead tr:nth-child(1),
-#admins-space-attacks table thead tr:nth-child(1) {
-	text-align: center;
-	background-color: rgba(0, 106, 179, 0.3);
-}
-
 #list-all-users,
 #list-all-attacks {
 	margin-bottom: 15px;

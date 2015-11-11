@@ -330,7 +330,7 @@ function JsonGuiHandler() {
 
 		// hover style element for the list elements
 		$('#' + argumentListId).children().hover(function () {
-			$(this).toggleClass('table-hover');
+			$(this).toggleClass('text-hover');
 		});
 	};
 
@@ -339,67 +339,59 @@ function JsonGuiHandler() {
 	 * @param jsonData
 	 */
 	this.setJsonUserDataToAdminContent = function (jsonData) {
-		var tableElement, trElement, tbody, thead, tdElement, spanElement, i;
-		tdElement = ['', '', '', '', '', '', '', '', '', ''];
-		spanElement = ['', '', '', '', '', '', '', '', '', ''];
+		//var tableElement, trElement, tbody, thead, tdElement, spanElement, i;
+		var tableElement, trElement, tElement, i, is_argument, thead, tbody;
+		tElement = ['', '', '', '', '', '', '', '', '', ''];
 		tableElement = $('<table>');
-		tableElement.attr({class: 'table table-condensed tablesorter',
+		tableElement.attr({class: 'table table-striped table-hover',
 						border: '0',
 						style: 'border-collapse: separate; border-spacing: 0px;'});
 
 		trElement = $('<tr>');
-		tbody = $('<tbody>');
 		thead = $('<thead>');
+		tbody = $('<tbody>');
 
-		for (i = 0; i < tdElement.length; i += 1) {
-			tdElement[i] = $('<td>');
-			spanElement[i] = $('<spand>');
-			spanElement[i].attr({class: 'font-semi-bold'});
+		for (i = 0; i < tElement.length; i += 1) {
+			tElement[i] = $('<th>');
 		}
 
 		// add header row
-		spanElement[0].text('uid');
-		spanElement[1].text(_t(firstname));
-		spanElement[2].text(_t(surname));
-		spanElement[3].text(_t(nickname));
-		spanElement[4].text(_t(email));
-		spanElement[5].text(_t(group_uid));
-		spanElement[6].text(_t(last_action));
-		spanElement[7].text(_t(last_login));
-		spanElement[8].text(_t(registered));
-		spanElement[9].text(_t(gender));
+		tElement[0] = $('<th>').text('#');
+		tElement[1] = $('<th>').text(_t(firstname));
+		tElement[2] = $('<th>').text(_t(surname));
+		tElement[3] = $('<th>').text(_t(nickname));
+		tElement[4] = $('<th>').text(_t(email));
+		tElement[5] = $('<th>').text(_t(group_uid));
+		tElement[6] = $('<th>').text(_t(last_action));
+		tElement[7] = $('<th>').text(_t(last_login));
+		tElement[8] = $('<th>').text(_t(registered));
+		tElement[9] = $('<th>').text(_t(gender));
 
-		for (i = 0; i < tdElement.length; i += 1) {
-			tdElement[i].append(spanElement[i]);
-			trElement.append(tdElement[i]);
-			thead.append(trElement);
+		for (i = 0; i < tElement.length; i += 1) {
+			trElement.append(tElement[i]);
 		}
+		thead.append(trElement);
 		tableElement.append(thead);
 
 		// add each user element
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
 			trElement = $('<tr>');
-			for (i = 0; i < tdElement.length; i += 1) {
-				tdElement[i] = $('<td>');
-			}
 
-			tdElement[0].text(value.uid);
-			tdElement[1].text(value.firstname);
-			tdElement[2].text(value.surname);
-			tdElement[3].text(value.nickname);
-			tdElement[4].text(value.email);
-			tdElement[5].text(value.group_uid);
-			tdElement[6].text(value.last_action);
-			tdElement[7].text(value.last_login);
-			tdElement[8].text(value.registered);
-			tdElement[9].text(value.gender);
+			tElement[0] = $('<td>').text(value.uid);
+			tElement[1] = $('<td>').text(value.firstname);
+			tElement[2] = $('<td>').text(value.surname);
+			tElement[3] = $('<td>').text(value.nickname);
+			tElement[4] = $('<td>').text(value.email);
+			tElement[5] = $('<td>').text(value.group_uid);
+			tElement[6] = $('<td>').text(value.last_action);
+			tElement[7] = $('<td>').text(value.last_login);
+			tElement[8] = $('<td>').text(value.registered);
+			tElement[9] = $('<td>').text(value.gender);
 
-			for (i = 0; i < tdElement.length; i += 1) {
-				trElement.append(tdElement[i]);
+			trElement = $('<tr>');
+			for (i = 0; i < tElement.length; i += 1) {
+				trElement.append(tElement[i]);
 			}
-			trElement.hover(function () {
-				$(this).toggleClass('table-hover');
-			});
 			tbody.append(trElement);
 		});
 		tableElement.append(tbody);
@@ -467,7 +459,7 @@ function JsonGuiHandler() {
 				trElement.append(tdElement[i]);
 			}
 			trElement.hover(function () {
-				$(this).toggleClass('table-hover');
+				$(this).toggleClass('text-hover');
 			});
 			tbody.append(trElement);
 		});
