@@ -41,7 +41,7 @@
 			</div>
 
 			<div id="wrapper-footer">
-				<a href="#top" class="back-to-top" title="Go to the top"></a>
+				<a href="#top" class="back-to-top" title="Go to the top"><img class="center" id="back-to-top-img" src="${request.static_url('dbas:static/images/backtotop.png')}" style="width:150px;height:auto;"></a>
 
 				<div metal:use-macro="load: snippet-footer.pt" />
 			</div>
