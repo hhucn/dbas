@@ -264,56 +264,10 @@ class Dbas(object):
 			old_pw = self.request.params['passwordold']
 			new_pw = self.request.params['password']
 			confirm_pw = self.request.params['passwordconfirm']
-			t = Translator(lang)
 
-			# is the old password given?
-			if not old_pw:
-				logger('main_settings', 'form.changepassword.submitted', 'old pwd is empty')
-				message = t.get('oldPwdEmpty') # 'The old password field is empty.'
-				error = True
-			# is the new password given?
-			elif not new_pw:
-				logger('main_settings', 'form.changepassword.submitted', 'new pwd is empty')
-				message = t.get('newPwdEmtpy') # 'The new password field is empty.'
-				error = True
-			# is the cofnrimation password given?
-			elif not confirm_pw:
-				logger('main_settings', 'form.changepassword.submitted', 'confirm pwd is empty')
-				message = t.get('confPwdEmpty') # 'The password confirmation field is empty.'
-				error = True
-			# is new password equals the confirmation?
-			elif not new_pw == confirm_pw:
-				logger('main_settings', 'form.changepassword.submitted', 'new pwds not equal')
-				message = t.get('newPwdNotEqual') # 'The new passwords are not equal'
-				error = True
-			# is new old password equals the new one?
-			elif old_pw == new_pw:
-				logger('main_settings', 'form.changepassword.submitted', 'pwds are the same')
-				message = t.get('pwdsSame') # 'The new and old password are the same'
-				error = True
-			else:
-				# is the old password valid?
-				if not db_user.validate_password(old_pw):
-					logger('main_settings', 'form.changepassword.submitted', 'old password is wrong')
-					logger('main_settings', 'old', old_pw + " " + PasswordHandler().get_hashed_password(old_pw))
-					logger('main_settings', 'new', new_pw + " " + PasswordHandler().get_hashed_password(new_pw))
-					logger('main_settings', 'current', db_user.password)
-					message = t.get('oldPwdWrong') # 'Your old password is wrong.'
-					error = True
-				else:
-					logger('main_settings', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
-					password_handler = PasswordHandler()
-					hashed_pw = password_handler.get_hashed_password(new_pw)
-					logger('main_settings', 'form.passwordrequest.submitted', 'New hashed password is ' + hashed_pw)
+			message, error, success = DatabaseHelper().change_password(transaction, db_user, old_pw, new_pw, confirm_pw, lang)
 
-					# set the hased one
-					db_user.password = hashed_pw
-					DBDiscussionSession.add(db_user)
-					transaction.commit()
 
-					logger('main_settings', 'form.changepassword.submitted', 'password was changed')
-					message = t.get('pwdChanged') # 'Your password was changed'
-					success = True
 
 		logger('main_settings', 'return change_error', str(error))
 		logger('main_settings', 'return change_success', str(success))
@@ -823,14 +777,14 @@ class Dbas(object):
 			premisegroup_con = True if premisegroup_con.lower() == 'true' else False
 			premisegroup_pro = True if premisegroup_pro.lower() == 'true' else False
 
-			logger('set_new_premises_for_X', 'def', 'param related_argument: ' + str(related_argument))
-			logger('set_new_premises_for_X', 'def', 'param premisegroup_id: ' + str(premisegroup_id))
-			logger('set_new_premises_for_X', 'def', 'param current_attack: ' + str(current_attack))
-			logger('set_new_premises_for_X', 'def', 'param last_attack: ' + str(last_attack))
-			logger('set_new_premises_for_X', 'def', 'param confrontation_uid: ' + str(confrontation_uid))
-			logger('set_new_premises_for_X', 'def', 'param premisegroup_con: ' + str(premisegroup_con))
-			logger('set_new_premises_for_X', 'def', 'param premisegroup_pro: ' + str(premisegroup_pro))
-			logger('set_new_premises_for_X', 'def', 'param issue: ' + str(issue))
+			logger('set_new_premises_for_X', 'def', 'param related_argument: ' + str(related_argument)
+			       + ', param premisegroup_id: ' + str(premisegroup_id)
+			       + ', param current_attack: ' + str(current_attack)
+			       + ', param last_attack: ' + str(last_attack)
+			       + ', param confrontation_uid: ' + str(confrontation_uid)
+			       + ', param premisegroup_con: ' + str(premisegroup_con)
+			       + ', param premisegroup_pro: ' + str(premisegroup_pro)
+			       + ', param issue: ' + str(issue))
 
 			# confrontation_uid is a premise group
 
@@ -890,7 +844,9 @@ class Dbas(object):
 		return_dict = dict()
 		try:
 			uid = self.request.params['uid']
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
 			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
 			return_dict = DatabaseHelper().get_logfile_for_statement(uid, issue)
 		except KeyError as e:
@@ -917,7 +873,9 @@ class Dbas(object):
 			uid = self.request.params['uid']
 			corrected_text = self.request.params['text']
 			is_final = self.request.params['final']
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
 			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text)
 			       + ', final ' + str(is_final))
 			return_dict = DatabaseHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text,
@@ -985,8 +943,6 @@ class Dbas(object):
 			logger('get_shortened_url', 'def', service + ' will shorten ' + str(url))
 
 			# shortener = Shortener(service, api_key=google_api_key) # TODO use google
-			# here is a per-IP or per-Referer restriction configured on your API key and the request does not match these restrictions.
-			# Please use the Google Developers Console to update your API key configuration if request from this IP or referer should be allowed)
 			# shortener = Shortener(service, bitly_login=bitly_login, bitly_api_key=bitly_key, bitly_token=bitly_token)
 			shortener = Shortener(service)
 
@@ -1015,7 +971,9 @@ class Dbas(object):
 
 		logger('get_attack_overview', 'def', 'main')
 		logger('get_attack_overview', 'check_csrf_token', str(check_csrf_token(self.request)))
-		issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+		issue = self.request.params['issue'] if 'issue' in self.request.params \
+			else self.request.session['issue'] if 'issue' in self.request.session \
+			else issue_fallback
 		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid, issue)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -1038,7 +996,9 @@ class Dbas(object):
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
 		return_dict = DatabaseHelper().get_issue_list(lang)
-		issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+		issue = self.request.params['issue'] if 'issue' in self.request.params \
+			else self.request.session['issue'] if 'issue' in self.request.session \
+			else issue_fallback
 		return_dict['current_issue'] = issue
 		return_dict['current_issue_arg_count'] = QueryHelper().get_number_of_arguments(issue)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -1337,7 +1297,9 @@ class Dbas(object):
 		try:
 			value = self.request.params['value']
 			mode = str(self.request.params['type'])
-			issue = self.request.params['issue'] if 'issue' in self.request.params else self.request.session['issue'] if 'issue' in self.request.session else issue_fallback
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
 
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			if mode == '0': # start statement

@@ -15,7 +15,7 @@ class Translator(object):
 	def setUpEnDict(self):
 		"""
 
-		:return:
+		:return: dictionary for the english language
 		"""
 		logger('Translator', 'setUpEnDict', 'def')
 
@@ -65,7 +65,7 @@ class Translator(object):
 	def setUpDeDict(self):
 		"""
 
-		:return:
+		:return: dictionary for the german language
 		"""
 		logger('Translator', 'setUpDeDict', 'def')
 

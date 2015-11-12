@@ -298,9 +298,8 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 .text-hover {
-	color: rgba(0, 106, 179, 1.0);
+	color: #2196f3;
 	font-weight: 300;
-	font-style: italic;
 }
 
 .table>thead>tr>th{

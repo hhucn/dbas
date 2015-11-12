@@ -25,13 +25,13 @@ function getNewsContainerAsHtml(title, date, author, news, no) {
 			+ '</div>'
 			+ '<div class="row">'
 				+ '<div class="col-md-6">'
-					+ '<h3><span class="font-semi-bold">' + title + '</span></h3>'
+					+ '<h4><span class="font-semi-bold">' + title + '</span></h4>'
 				+ '</div>'
 				+ '<div class="col-md-4">'
-					+ '<h4><p>' + date + '</p></h4>'
+					+ '<h5><p>' + date + '</p></h5>'
 				+ '</div>'
 			+ '</div>'
-			+ '<h5><span i18n:translate="author">Author</span>: ' + author + '</h5>'
+			+ '<h6><span i18n:translate="author">Author</span>: ' + author + '</h6>'
 			+ '<br>'
 			+ news
 			+ '</div>';
