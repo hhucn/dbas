@@ -159,24 +159,26 @@
 				<div class="col-md-12">
 					<div class="content">
 						<h2><span class="font-semi-bold" i18n:translate="research">Research</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
-						<ul class="lead list">
-							<li>
-								<span class="font-normal" i18n:translate="our_datastructure">Our data structure:</span>
-								<br><span i18n:translate="data_structure_description">We are using a modified argumentation map as data structure. More information can be afforded via the</span> <a href="${request.application_url}/contact" title="Contact" i18n:translate="contact">contact</a>-<span i18n:translate="formular">formular</span>.
-							</li>
-						</ul>
+						<span class="font-normal" i18n:translate="our_datastructure">
+							Our data structure:
+						</span>
+						<br>
+						<span i18n:translate="data_structure_description">
+							We are using a modified argumentation map as data structure, whereby we differentiate between arguments, statements, (groups of) premises and conclusions. An <b>argument</b> consists of one or more <b>statements</b> that form the <b>premis(es)</b> and one statement or another argument or the negation of any of those two that form the <b>conclusion</b>. For example: '<i>Shutting down university park will save 100.000$ a year, therefore we should shut down university park.</i>' would be an argument where '<i>Shutting down university park will save 100.000$ a year.</i>' is the premise and '<i>we should shut down university park.</i>' is the conclusion. An example where the conclusion is an argument itself, would be: '<i>Yes, drug dealers are using the park to sell drugs but this is not a good reason for shutting down university park since we should not give in to criminals.</i>'. In this example the premise is '<i>we should not give in to criminals.</i>' while the conclusion is the negative form of the argument '<i>We should shut down university park because criminals use university park to sell drugs</i>'. More information can be afforded via the</span> <a href="${request.application_url}/contact" title="Contact" i18n:translate="contact">contact</a>-<span i18n:translate="formular">formular</span>.
+						<br>
+						<br>
 						<p class="lead" i18n:translate="additional_studies">In addition, we have studied several tools:</p>
 
 						<div class="row">
 							<div class="col-md-4 col-badge">
-								<img id="icon-pro-con" class="icon-badge" alt="icon-pro-con" src="${request.static_url('dbas:static/images/icon_procon.png')}" />
-								<h3 i18n:translate="pro-contra_lists">Pro-Contra Lists</h3>
-								<p i18n:translate="pro-contra_lists_description">These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.</p>
-							</div>
-							<div class="col-md-4 col-badge">
 								<img id="icon-forum" class="icon-badge" alt="icon-forum" src="${request.static_url('dbas:static/images/icon_forum.png')}" />
 								<h3 i18n:translate="forum">Forum</h3>
 								<p i18n:translate="forum_description">Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.</p>
+							</div>
+							<div class="col-md-4 col-badge">
+								<img id="icon-pro-con" class="icon-badge" alt="icon-pro-con" src="${request.static_url('dbas:static/images/icon_procon.png')}" />
+								<h3 i18n:translate="pro-contra_lists">Pro-Contra Lists</h3>
+								<p i18n:translate="pro-contra_lists_description">These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.</p>
 							</div>
 							<div class="col-md-4 col-badge">
 								<img id="icon-argapproach" class="icon-badge" alt="icon-argapproach" src="${request.static_url('dbas:static/images/icon_argu.png')}" />
