@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-11-11 19:54+0100\n"
+"POT-Creation-Date: 2015-11-12 13:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -404,7 +404,7 @@ msgstr ""
 #. Default: Login
 #. Default: Log In
 #: ./dbas/templates/snippet-header.pt:54 ./dbas/templates/snippet-popups.pt:245
-#: ./dbas/templates/snippet-popups.pt:433
+#: ./dbas/templates/snippet-popups.pt:437
 msgid "login"
 msgstr ""
 
@@ -691,8 +691,8 @@ msgstr ""
 #: ./dbas/templates/snippet-popups.pt:76 ./dbas/templates/snippet-popups.pt:121
 #: ./dbas/templates/snippet-popups.pt:157
 #: ./dbas/templates/snippet-popups.pt:230
-#: ./dbas/templates/snippet-popups.pt:436
-#: ./dbas/templates/snippet-popups.pt:474
+#: ./dbas/templates/snippet-popups.pt:440
+#: ./dbas/templates/snippet-popups.pt:478
 msgid "close"
 msgstr ""
 
@@ -742,7 +742,7 @@ msgstr ""
 #. Default: Warning:
 #. Default: Warning!
 #: ./dbas/templates/snippet-popups.pt:148
-#: ./dbas/templates/snippet-popups.pt:386 ./dbas/templates/contact.pt:59
+#: ./dbas/templates/snippet-popups.pt:388 ./dbas/templates/contact.pt:59
 msgid "warning"
 msgstr ""
 
@@ -805,116 +805,116 @@ msgid "fill_in_mail_for_password"
 msgstr ""
 
 #. Default: Error:
-#: ./dbas/templates/snippet-popups.pt:292
-#: ./dbas/templates/snippet-popups.pt:399 ./dbas/templates/content.pt:103
+#: ./dbas/templates/snippet-popups.pt:293
+#: ./dbas/templates/snippet-popups.pt:403 ./dbas/templates/content.pt:103
 msgid "error"
 msgstr ""
 
 #. Default: Success:
-#: ./dbas/templates/snippet-popups.pt:297
-#: ./dbas/templates/snippet-popups.pt:394 ./dbas/templates/settings.pt:72
+#: ./dbas/templates/snippet-popups.pt:299
+#: ./dbas/templates/snippet-popups.pt:397 ./dbas/templates/settings.pt:72
 msgid "success"
 msgstr ""
 
 #. Default: Your First Name
-#: ./dbas/templates/snippet-popups.pt:307
+#: ./dbas/templates/snippet-popups.pt:309
 msgid "first_name"
 msgstr ""
 
 #. Default: Your Last Name
-#: ./dbas/templates/snippet-popups.pt:314
+#: ./dbas/templates/snippet-popups.pt:316
 msgid "last_name"
 msgstr ""
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: ./dbas/templates/snippet-popups.pt:321 ./dbas/templates/settings.pt:35
+#: ./dbas/templates/snippet-popups.pt:323 ./dbas/templates/settings.pt:35
 msgid "nickname"
 msgstr ""
 
 #. Default: Your Gender
-#: ./dbas/templates/snippet-popups.pt:328
+#: ./dbas/templates/snippet-popups.pt:330
 msgid "gender"
 msgstr ""
 
 #. Default: none
-#: ./dbas/templates/snippet-popups.pt:333
+#: ./dbas/templates/snippet-popups.pt:335
 msgid "none"
 msgstr ""
 
 #. Default: female
-#: ./dbas/templates/snippet-popups.pt:338
+#: ./dbas/templates/snippet-popups.pt:340
 msgid "female"
 msgstr ""
 
 #. Default: male
-#: ./dbas/templates/snippet-popups.pt:343
+#: ./dbas/templates/snippet-popups.pt:345
 msgid "male"
 msgstr ""
 
 #. Default: Your Email Address
-#: ./dbas/templates/snippet-popups.pt:349
+#: ./dbas/templates/snippet-popups.pt:351
 msgid "email"
 msgstr ""
 
 #. Default: Your Password
-#: ./dbas/templates/snippet-popups.pt:356
+#: ./dbas/templates/snippet-popups.pt:358
 msgid "password"
 msgstr ""
 
 #. Default: Password (confirm)
-#: ./dbas/templates/snippet-popups.pt:363
+#: ./dbas/templates/snippet-popups.pt:365
 msgid "password-confirm"
 msgstr ""
 
 #. Default: Password Strength
-#: ./dbas/templates/snippet-popups.pt:370
+#: ./dbas/templates/snippet-popups.pt:372
 msgid "password-strength"
 msgstr ""
 
 #. Default: very weak
-#: ./dbas/templates/snippet-popups.pt:373
+#: ./dbas/templates/snippet-popups.pt:375
 msgid "password_strength"
 msgstr ""
 
 #. Default: Generate secure password
-#: ./dbas/templates/snippet-popups.pt:377
+#: ./dbas/templates/snippet-popups.pt:379
 msgid "generate_password"
 msgstr ""
 
 #. Default: How to select a strong password
-#: ./dbas/templates/snippet-popups.pt:404
-#: ./dbas/templates/snippet-popups.pt:449
+#: ./dbas/templates/snippet-popups.pt:408
+#: ./dbas/templates/snippet-popups.pt:453
 msgid "select_password"
 msgstr ""
 
 #. Default: A Password is strong, when it contains at least:
-#: ./dbas/templates/snippet-popups.pt:406
-#: ./dbas/templates/snippet-popups.pt:452
+#: ./dbas/templates/snippet-popups.pt:410
+#: ./dbas/templates/snippet-popups.pt:456
 msgid "select_password_intro"
 msgstr ""
 
 #. Default: eight characters
-#: ./dbas/templates/snippet-popups.pt:408
-#: ./dbas/templates/snippet-popups.pt:454
+#: ./dbas/templates/snippet-popups.pt:412
+#: ./dbas/templates/snippet-popups.pt:458
 msgid "select_password_rule1"
 msgstr ""
 
 #. Default: one uppercase letter
-#: ./dbas/templates/snippet-popups.pt:409
-#: ./dbas/templates/snippet-popups.pt:455
+#: ./dbas/templates/snippet-popups.pt:413
+#: ./dbas/templates/snippet-popups.pt:459
 msgid "select_password_rule2"
 msgstr ""
 
 #. Default: one lowercase letter
-#: ./dbas/templates/snippet-popups.pt:410
-#: ./dbas/templates/snippet-popups.pt:456
+#: ./dbas/templates/snippet-popups.pt:414
+#: ./dbas/templates/snippet-popups.pt:460
 msgid "select_password_rule3"
 msgstr ""
 
 #. Default: one special sign
-#: ./dbas/templates/snippet-popups.pt:411
-#: ./dbas/templates/snippet-popups.pt:457
+#: ./dbas/templates/snippet-popups.pt:415
+#: ./dbas/templates/snippet-popups.pt:461
 msgid "select_password_rule4"
 msgstr ""
 
@@ -922,168 +922,168 @@ msgstr ""
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: ./dbas/templates/snippet-popups.pt:413
-#: ./dbas/templates/snippet-popups.pt:459
+#: ./dbas/templates/snippet-popups.pt:417
+#: ./dbas/templates/snippet-popups.pt:463
 msgid "popup_password_text"
 msgstr ""
 
 #. Default: Avoid using a password on several pages
-#: ./dbas/templates/snippet-popups.pt:415
-#: ./dbas/templates/snippet-popups.pt:461
+#: ./dbas/templates/snippet-popups.pt:419
+#: ./dbas/templates/snippet-popups.pt:465
 msgid "select_password_avoid1"
 msgstr ""
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: ./dbas/templates/snippet-popups.pt:416
-#: ./dbas/templates/snippet-popups.pt:462
+#: ./dbas/templates/snippet-popups.pt:420
+#: ./dbas/templates/snippet-popups.pt:466
 msgid "select_password_avoid2"
 msgstr ""
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: ./dbas/templates/snippet-popups.pt:417
-#: ./dbas/templates/snippet-popups.pt:463
+#: ./dbas/templates/snippet-popups.pt:421
+#: ./dbas/templates/snippet-popups.pt:467
 msgid "select_password_avoid3"
 msgstr ""
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: ./dbas/templates/snippet-popups.pt:418
-#: ./dbas/templates/snippet-popups.pt:464
+#: ./dbas/templates/snippet-popups.pt:422
+#: ./dbas/templates/snippet-popups.pt:468
 msgid "select_password_avoid4"
 msgstr ""
 
 #. Default: If you need some help with our password, you can get one here:
-#: ./dbas/templates/snippet-popups.pt:420
-#: ./dbas/templates/snippet-popups.pt:466
+#: ./dbas/templates/snippet-popups.pt:424
+#: ./dbas/templates/snippet-popups.pt:470
 msgid "select_password_help"
 msgstr ""
 
 #. Default: Register
-#: ./dbas/templates/snippet-popups.pt:434
+#: ./dbas/templates/snippet-popups.pt:438
 msgid "register"
 msgstr ""
 
 #. Default: How to write text
-#: ./dbas/templates/snippet-popups.pt:487
+#: ./dbas/templates/snippet-popups.pt:491
 msgid "how-to-write-text-header"
 msgstr ""
 
 #. Default: There are a few simple rules for writing good arguments:
-#: ./dbas/templates/snippet-popups.pt:490
+#: ./dbas/templates/snippet-popups.pt:494
 msgid "how-to-write-text-header-body-title"
 msgstr ""
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: ./dbas/templates/snippet-popups.pt:492
+#: ./dbas/templates/snippet-popups.pt:496
 msgid "how-to-write-text-header-body"
 msgstr ""
 
 #. Default: Do's:
-#: ./dbas/templates/snippet-popups.pt:495
+#: ./dbas/templates/snippet-popups.pt:499
 msgid "dos"
 msgstr ""
 
 #. Default: Write short!
-#: ./dbas/templates/snippet-popups.pt:497
+#: ./dbas/templates/snippet-popups.pt:501
 msgid "how-to-write-text-short"
 msgstr ""
 
 #. Default: Only one statement/argument/point per textarea!
-#: ./dbas/templates/snippet-popups.pt:498
+#: ./dbas/templates/snippet-popups.pt:502
 msgid "how-to-write-text-one-point"
 msgstr ""
 
 #. Default: Don'ts:
-#: ./dbas/templates/snippet-popups.pt:501
+#: ./dbas/templates/snippet-popups.pt:505
 msgid "donts"
 msgstr ""
 
 #. Default: Complicated and nested sentences!
-#: ./dbas/templates/snippet-popups.pt:503
+#: ./dbas/templates/snippet-popups.pt:507
 msgid "how-to-write-text-complicated"
 msgstr ""
 
 #. Default: More than one statement/argument/point per textarea!
-#: ./dbas/templates/snippet-popups.pt:504
+#: ./dbas/templates/snippet-popups.pt:508
 msgid "how-to-write-text-multiple-points"
 msgstr ""
 
 #. Default: Okay
-#: ./dbas/templates/snippet-popups.pt:508
-#: ./dbas/templates/snippet-popups.pt:546
+#: ./dbas/templates/snippet-popups.pt:512
+#: ./dbas/templates/snippet-popups.pt:550
 msgid "Okay"
 msgstr ""
 
 #. Default: Abort
-#: ./dbas/templates/snippet-popups.pt:509
-#: ./dbas/templates/snippet-popups.pt:547
+#: ./dbas/templates/snippet-popups.pt:513
+#: ./dbas/templates/snippet-popups.pt:551
 msgid "abort"
 msgstr ""
 
 #. Default: How to set premisse groups
-#: ./dbas/templates/snippet-popups.pt:522
+#: ./dbas/templates/snippet-popups.pt:526
 msgid "how-to-set-premissegroups-header"
 msgstr ""
 
 #. Default: There are a few simple tricks for setting premisse groups:
-#: ./dbas/templates/snippet-popups.pt:525
+#: ./dbas/templates/snippet-popups.pt:529
 msgid "how-to-set-premissegroups-header-body-title"
 msgstr ""
 
 #. Default: Sometimes you want to state more than one statement, but they are
 #. connected...in some way. These statements can be connected in one premisse
 #. group
-#: ./dbas/templates/snippet-popups.pt:527
+#: ./dbas/templates/snippet-popups.pt:531
 msgid "how-to-set-premissegroups-header-body"
 msgstr ""
 
 #. Default: Normally, each statement of you is independent of the others.
-#: ./dbas/templates/snippet-popups.pt:531
+#: ./dbas/templates/snippet-popups.pt:535
 msgid "set-premissegroups1"
 msgstr ""
 
 #. Default: If you want to add an 'and' in your statement, please do not do it!
-#: ./dbas/templates/snippet-popups.pt:532
+#: ./dbas/templates/snippet-popups.pt:536
 msgid "set-premissegroups2"
 msgstr ""
 
 #. Default: Sometimes you have dependent statemens, like:
-#: ./dbas/templates/snippet-popups.pt:533
+#: ./dbas/templates/snippet-popups.pt:537
 msgid "set-premissegroups3"
 msgstr ""
 
 #. Default: Let's say, you argument, that you want to have a cat, but if and
 #. only iff she is small and fluffy. Then you have two statements for your
 #. position:
-#: ./dbas/templates/snippet-popups.pt:535
+#: ./dbas/templates/snippet-popups.pt:539
 msgid "set-premissegroups4"
 msgstr ""
 
 #. Default: I want a cat, because:
-#: ./dbas/templates/snippet-popups.pt:536
+#: ./dbas/templates/snippet-popups.pt:540
 msgid "set-premissegroups5"
 msgstr ""
 
 #. Default: She is fluffy
-#: ./dbas/templates/snippet-popups.pt:537
+#: ./dbas/templates/snippet-popups.pt:541
 msgid "set-premissegroups6"
 msgstr ""
 
 #. Default: She is small
-#: ./dbas/templates/snippet-popups.pt:538
+#: ./dbas/templates/snippet-popups.pt:542
 msgid "set-premissegroups7"
 msgstr ""
 
 #. Default: Then you have to check the box!
-#: ./dbas/templates/snippet-popups.pt:539
+#: ./dbas/templates/snippet-popups.pt:543
 msgid "set-premissegroups8"
 msgstr ""
 
 #. Default: Otherwise you do not need this checkbox.
-#: ./dbas/templates/snippet-popups.pt:542
+#: ./dbas/templates/snippet-popups.pt:546
 msgid "set-premissegroups9"
 msgstr ""
 
@@ -1139,32 +1139,32 @@ msgid "change_password"
 msgstr ""
 
 #. Default: Old password
-#: ./dbas/templates/settings.pt:97
+#: ./dbas/templates/settings.pt:98
 msgid "old_password"
 msgstr ""
 
 #. Default: New Password
-#: ./dbas/templates/settings.pt:101
+#: ./dbas/templates/settings.pt:103
 msgid "new_password"
 msgstr ""
 
 #. Default: Strength
-#: ./dbas/templates/settings.pt:106
+#: ./dbas/templates/settings.pt:108
 msgid "strength"
 msgstr ""
 
 #. Default: New Password (confirm)
-#: ./dbas/templates/settings.pt:112
+#: ./dbas/templates/settings.pt:116
 msgid "new_password_confirm"
 msgstr ""
 
 #. Default: Great:
-#: ./dbas/templates/settings.pt:127
+#: ./dbas/templates/settings.pt:133
 msgid "great:"
 msgstr ""
 
 #. Default: Your password was changed
-#: ./dbas/templates/settings.pt:127
+#: ./dbas/templates/settings.pt:133
 msgid "password_changed"
 msgstr ""
 
