@@ -5,26 +5,27 @@ from socket import error as socket_error
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from .logger import logger
+from .strings import Translator
+
 
 class EmailHelper(object):
 
-	def send_mail(self, request, subject, body, recipient):
+	def send_mail(self, request, subject, body, recipient, lang):
 		"""
 		Try except block for sending an email
 		:param request: current request
 		:param subject: subject text of the mail
 		:param body: body text of the mail
 		:param recipient: recipient of the mail
+		:param lang: current language
 		:return: boolean if message was sent, boolean an error occured, message if an error occured
 		"""
 		logger('EmailHelper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
+		t = Translator(lang)
 		send_message = False
 		contact_error = False
 		mailer = get_mailer(request)
-		body = body +"\n\n---\n" + \
-				"This is an automatically generated mail by the D-BAS System.\n" + \
-				"For contact please write an mail to krauthoff@cs.uni-duesseldorf.de\n" + \
-				"This system is part of a doctoral thesis and currently in an alpha-phase."
+		body = body +"\n\n---\n" + t.get('emailBodyText')
 		message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
 		# try sending an catching errors
 		try:
@@ -38,11 +39,11 @@ class EmailHelper(object):
 			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_code ' + code)
 			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_error ' + error)
 			contact_error = True
-			message = 'emailWasNotSent'
+			message = t.get('emailWasNotSent')
 		except socket_error as serr:
 			logger('EmailHelper', 'send_mail', 'error while sending')
 			logger('EmailHelper', 'send_mail', 'socket_error ' + str(serr))
 			contact_error = True
-			message = 'emailWasNotSent'
+			message = t.get('emailWasNotSent')
 
 		return send_message, contact_error, message

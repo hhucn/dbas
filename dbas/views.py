@@ -18,6 +18,7 @@ from .query_helper import QueryHelper
 from .email import EmailHelper
 from .dictionary_helper import DictionaryHelper
 from .logger import logger
+from .strings import Translator
 
 name = 'D-BAS'
 version = '0.3.14'
@@ -85,6 +86,11 @@ class Dbas(object):
 		content = ''
 		spam = ''
 
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
 		if 'form.contact.submitted' in self.request.params:
 			logger('main_contact', 'form.contact.submitted', 'requesting params')
 			username = self.request.params['name']
@@ -94,6 +100,8 @@ class Dbas(object):
 			spam = self.request.params['spam']
 			request_token = self.request.params['csrf_token']
 
+			t = Translator(lang)
+
 			logger('main_contact', 'form.contact.submitted', 'validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
 
@@ -102,43 +110,41 @@ class Dbas(object):
 			if not username:
 				logger('main_contact', 'form.contact.submitted', 'username empty')
 				contact_error = True
-				message = "Your name is empty!"
+				message = t.get('emptyName')
 
 			# check for non valid mail
 			elif not is_mail_valid:
 				logger('main_contact', 'form.contact.submitted', 'mail is not valid')
 				contact_error = True
-				message = "Your e-mail is empty!"
+				message = t.get('emptyEmail')
 
 			# check for empty content
 			elif not content:
 				logger('main_contact', 'form.contact.submitted', 'content is empty')
 				contact_error = True
-				message = "Your content is empty!"
+				message = t.get('emtpyContent')
 
 			# check for empty username
 			elif (not spam) or (not spam.isdigit()) or (not int(spam) == 4):
 				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer')
 				contact_error = True
-				message = "Your anti-spam message is empty or wrong!"
+				message = t.get('maliciousAntiSpam')
 
 			# is the token valid?
 			elif request_token != token :
 				logger('main_contact', 'form.contact.submitted', 'token is not valid')
 				logger('main_contact', 'form.contact.submitted', 'request_token: ' + str(request_token))
 				logger('main_contact', 'form.contact.submitted', 'token: ' + str(token))
-				message = 'CSRF-Token is not valid'
+				message = t.get('nonValidCSRF')
 				contact_error = True
 
 			else:
-				subject = 'Contact D-BAS'
-				body = 'Name: ' + username + '\n' + 'Mail: ' + email + '\n' + 'Phone: ' + phone + '\n' + 'Message:\n' + content
-				send_message, contact_error, message = EmailHelper().send_mail(self.request, subject, body, email)
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
+				subject = 'contactDBAS''Contact D-BAS'
+				body = t.get('name') + ': ' + username + '\n'\
+				       + t.get('mail') + ': ' + email + '\n'\
+				       + t.get('phone') + ': ' + phone + '\n'\
+				       + t.get('message') + ':\n' + content
+				send_message, contact_error, message = EmailHelper().send_mail(self.request, subject, body, email, lang)
 
 		return {
 			'layout': self.base_layout(),
@@ -236,6 +242,12 @@ class Dbas(object):
 		token = self.request.session.get_csrf_token()
 		logger('main_settings', 'new token', str(token))
 
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+		logger('main_settings', 'language', lang)
+
 		old_pw = ''
 		new_pw = ''
 		confirm_pw = ''
@@ -252,31 +264,32 @@ class Dbas(object):
 			old_pw = self.request.params['passwordold']
 			new_pw = self.request.params['password']
 			confirm_pw = self.request.params['passwordconfirm']
+			t = Translator(lang)
 
 			# is the old password given?
 			if not old_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'old pwd is empty')
-				message = 'The old password field is empty.'
+				message = t.get('oldPwdEmpty') # 'The old password field is empty.'
 				error = True
 			# is the new password given?
 			elif not new_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'new pwd is empty')
-				message = 'The new password field is empty.'
+				message = t.get('newPwdEmtpy') # 'The new password field is empty.'
 				error = True
 			# is the cofnrimation password given?
 			elif not confirm_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'confirm pwd is empty')
-				message = 'The password confirmation field is empty.'
+				message = t.get('confPwdEmpty') # 'The password confirmation field is empty.'
 				error = True
 			# is new password equals the confirmation?
 			elif not new_pw == confirm_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'new pwds not equal')
-				message = 'The new passwords are not equal'
+				message = t.get('newPwdNotEqual') # 'The new passwords are not equal'
 				error = True
 			# is new old password equals the new one?
 			elif old_pw == new_pw:
 				logger('main_settings', 'form.changepassword.submitted', 'pwds are the same')
-				message = 'The new and old password are the same'
+				message = t.get('pwdsSame') # 'The new and old password are the same'
 				error = True
 			else:
 				# is the old password valid?
@@ -285,7 +298,7 @@ class Dbas(object):
 					logger('main_settings', 'old', old_pw + " " + PasswordHandler().get_hashed_password(old_pw))
 					logger('main_settings', 'new', new_pw + " " + PasswordHandler().get_hashed_password(new_pw))
 					logger('main_settings', 'current', db_user.password)
-					message = 'Your old password is wrong.'
+					message = t.get('oldPwdWrong') # 'Your old password is wrong.'
 					error = True
 				else:
 					logger('main_settings', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
@@ -299,13 +312,8 @@ class Dbas(object):
 					transaction.commit()
 
 					logger('main_settings', 'form.changepassword.submitted', 'password was changed')
-					message = 'Your password was changed'
+					message = t.get('pwdChanged') # 'Your password was changed'
 					success = True
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
 
 		logger('main_settings', 'return change_error', str(error))
 		logger('main_settings', 'return change_success', str(success))
@@ -1134,7 +1142,16 @@ class Dbas(object):
 			gender = self.request.params['gender']
 			password = self.request.params['password']
 			passwordconfirm = self.request.params['passwordconfirm']
-			logger('user_registration', 'def', 'params firstname: ' + str(firstname) + ', lastname: ' + str(lastname) + ', nickname: ' + str(nickname) + ', email: ' + str(email) + ', password: ' + str(password) + ', passwordconfirm: ' + str(passwordconfirm))
+			lang = self.request.params['lang']
+			logger('user_registration', 'def', 'params firstname: ' + str(firstname)
+			       + ', lastname: ' + str(lastname)
+			       + ', nickname: ' + str(nickname)
+			       + ', email: ' + str(email)
+			       + ', password: ' + str(password)
+			       + ', passwordconfirm: ' + str(passwordconfirm)
+			       + ', lang: ' + lang)
+
+			t = Translator(lang)
 
 			# database queries mail verification
 			db_nick = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -1145,19 +1162,19 @@ class Dbas(object):
 			# are the password equal?
 			if not password == passwordconfirm:
 				logger('user_registration', 'main', 'Passwords are not equal')
-				message = 'Passwords are not equal'
+				message = t.get('pwdNotEqual')
 			# is the nick already taken?
 			elif db_nick:
 				logger('user_registration', 'main', 'Nickname \'' + nickname + '\' is taken')
-				message = 'Nickname is taken'
+				message = t.get('nickIsTaken')
 			# is the email already taken?
 			elif db_mail:
 				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is taken')
-				message = 'E-Mail is taken'
+				message = t.get('mailIsTaken')
 			# is the email valid?
 			elif not is_mail_valid:
 				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is not valid')
-				message = 'E-Mail is not valid'
+				message = t.get('mailNotValid')
 			# is the token valid?
 			# elif request_token != token :
 			# 	logger('user_registration', 'main', 'token is not valid')
@@ -1170,7 +1187,7 @@ class Dbas(object):
 
 				# does the group exists?
 				if not db_group:
-					message = 'An error occured, please try again later or contact the author'
+					message = t.get('errorTryLateOrContant')
 					logger('user_registration', 'main', 'Error occured')
 				else:
 					# creating a new user with hased password
@@ -1190,17 +1207,17 @@ class Dbas(object):
 					checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 					if checknewuser:
 						logger('user_registration', 'main', 'New data was added with uid ' + str(checknewuser.uid))
-						message = 'Your account was added and you are now able to login.'
+						message = t.get('accountWasAdded')
 						success = '1'
 
 						# sending an email
 						subject = 'D-BAS Account Registration'
-						body = 'Your account was successfully registered for this e-mail.'
-						EmailHelper().send_mail(self.request, subject, body, email)
+						body = t.get('accountWasRegistered')
+						EmailHelper().send_mail(self.request, subject, body, email, lang)
 
 					else:
 						logger('user_registration', 'main', 'New data was not added')
-						message = 'Your account with the nick could not be added. Please try again or contact the author.'
+						message = t.get('accoutErrorTryLateOrContant')
 
 		except KeyError as e:
 			logger('user_registration', 'error', repr(e))
@@ -1227,8 +1244,10 @@ class Dbas(object):
 
 		try:
 			email = self.request.params['email']
-			logger('user_password_request', 'def', 'params email: ' + str(email))
+			lang = self.request.params['lang']
+			logger('user_password_request', 'def', 'params email: ' + str(email) + ', lang ' + lang)
 			success = '1'
+			t = Translator(lang)
 
 			db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
 
@@ -1245,10 +1264,10 @@ class Dbas(object):
 				DBDiscussionSession.add(db_user)
 				transaction.commit()
 
-				body = 'Your nickname is: ' + db_user.nickname + '\n'
-				body += 'Your new password is: ' + pwd
-				subject = 'D-BAS Password Request'
-				reg_success, reg_failed, message= EmailHelper().send_mail(self.request, subject, body, email)
+				body = t.get('nicknameIs') + db_user.nickname + '\n'
+				body += t.get('newPwdIs') + pwd
+				subject = t.get('dbasPwdRequest')
+				reg_success, reg_failed, message= EmailHelper().send_mail(self.request, subject, body, email, lang)
 
 				# logger
 				if reg_success:

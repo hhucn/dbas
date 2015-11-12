@@ -14,3 +14,20 @@
 	margin-right: auto;
 	width: 100%;
 }
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+textarea[type="text"] {
+	width: auto;
+}
+
+#settings-password-old-input {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-204-lock.png) no-repeat 12px 10px;
+}
+
+#settings-passwordconfirm-input,
+#settings-password-input {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-205-unlock.png) no-repeat 12px 10px;
+}

@@ -192,6 +192,7 @@ function setButtonLanguage(){
 	$('#' + requestTrackButtonId).prop('value', _t(requestTrack)).prop('title', _t(requestTrack));
 	$('#' + settingsPasswordSubmitButtonId).prop('value', _t(passwordSubmit)).prop('title', _t(passwordSubmit));
 	// $('#' + popupEditStatementShowLogButtonId).prop('value', _t(changelog)).prop('title', _t(changelog));
+	$('#' + contactSubmitButtonId).prop('value', _t(contactSubmit)).prop('title', _t(contactSubmit));
 
 	// todo every button
 }
@@ -419,7 +420,8 @@ function ajaxRegistration (){
 			gender: gender,
 			email: email,
 			password: password,
-			passwordconfirm: passwordconfirm},
+			passwordconfirm: passwordconfirm,
+			lang: getLanguage()},
 		dataType: 'json',
 		async: true
 	}).done(function ajaxRegistrationDone(data) {
@@ -438,7 +440,7 @@ function ajaxPasswordRequest (){
 	$.ajax({
 		url: 'ajax_user_password_request',
 		type: 'POST',
-		data: { email: email},
+		data: { email: email, lang: getLanguage()},
 		dataType: 'json',
 		async: true
 	}).done(function ajaxPasswordRequestDone(data) {

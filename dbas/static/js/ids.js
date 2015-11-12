@@ -23,6 +23,7 @@ var adminsSpaceForAttacksId 					= 'admins-space-attacks';
 var addStatementErrorContainer 					= 'add-statement-error-container';
 var addStatementErrorMsg 						= 'add-statement-error-msg';
 var argumentBloggingSidebarId 					= 'argument-blogging-sidebar';
+var contactSubmitButtonId						= 'contact-submit';
 var closeStatementContainerId 					= 'close-statement-container';
 var closeIslandViewContainerId 					= 'close-island-view-container';
 var contactLink 								= 'contact-link';

@@ -33,6 +33,7 @@ var dbas_de = {
 	'clickHereForRegistration': 'Klick <a href="" data-toggle="modal" data-target="#popup_login" title="Login">hier</a> für die ' +
 	'Anmeldung oder eine Registrierung!',
 	'confirmation': 'Bestätigung',
+	'contactSubmit' : 'Absenden der Nachricht',
 	'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'checkFirstname': 'Bitte überprüfen Sie Ihren Vornamen, da die Eingabe leer ist!',

@@ -34,6 +34,7 @@ var dbas_en = {
 	'canYouGiveAReasonForThat': 'Can you give a reason for that?',
 	'clickHereForRegistration': 'Click <a href="" data-toggle="modal" data-target="#popup_login" title="Login">here</a> for login or registration!',
 	'confirmation': 'Confirmation',
+	'contactSubmit' : 'Submit your Message',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
 	'correctionsSet': 'Your correction was set.',
 	'checkFirstname': 'Better check your first name, because the input is empty!',

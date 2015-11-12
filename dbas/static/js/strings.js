@@ -32,6 +32,22 @@ _t = function(id){
 };
 
 /**
+ *
+ */
+getLanguage = function(){
+	$('#' + languageDropdownId).children().each(function(){
+		if ($(this).hasClass('active')){
+			this_id = $(this).children().first().attr('id');
+
+			if (this_id.indexOf('en') != -1){			return 'en';
+			} else if (this_id.indexOf('de') != -1){	return 'de';
+			} else {									return 'unknown value';
+			}
+		}
+	});
+};
+
+/**
  * Messages & Errors
  * @type {string}
  */
@@ -62,6 +78,7 @@ var because 								= 'because';
 var butWhich 								= 'butWhich';
 var canYouGiveAReason 						= 'canYouGiveAReason';
 var canYouGiveAReasonForThat 				= 'canYouGiveAReasonForThat';
+var contactSubmit							= 'contactSubmit';
 var clickHereForRegistration 				= 'clickHereForRegistration';
 var confirmation 							= 'confirmation';
 var confirmTranslation 						= 'confirmTranslation';

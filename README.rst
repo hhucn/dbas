@@ -37,3 +37,20 @@ Client (frontend):
 - `HTML5 <http://www.w3.org/TR/html5/>`_ (text markup)
 
 - `Bootstrap <getbootstrap.com/>`_ (css preprocessor)
+
+
+Internationalization
+--------------------
+
+Frontend Javascript:
+ - strings.js contains every id
+ - i18n-de.js german dict
+ - i18n-en.js englisch dict
+
+Frontent HTML:
+ - little script i18n.sh which extract all i18n:translate metals
+ - locale/de/LC_MESSAGES/dbas.po german dict
+ - locale/en/LC_MESSAGES/dbas.po englisch dict
+
+Backend Python:
+ - string.py contains all identifiers and dictionaries
