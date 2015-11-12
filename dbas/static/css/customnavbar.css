@@ -21,7 +21,7 @@ bootstrap-paper hover #eeeeee
 }
 
 #custom-bootstrap-menu.navbar-default .navbar-brand:hover {
-	background-color: #eeeeee;
+	background-color: #EBEBEB;
 	/*
 	background-color: #006ab3;
 	background-image: url('../images/brand_white_small.png');
@@ -101,7 +101,7 @@ bootstrap-paper hover #eeeeee
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
 	color: #000;
-	background-color: #bababa;
+	background-color: #EBEBEB;
 }
 
 /* END CUSTOM */
