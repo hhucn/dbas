@@ -303,7 +303,7 @@ function prepareLoginRegistrationPopup(){
 			$('#' + popupLoginWarningMessage);
 			ajaxRegistration();
 		}
-		
+
 	});
 
 	$('#' + popupLoginButtonLogin).click(function() {
