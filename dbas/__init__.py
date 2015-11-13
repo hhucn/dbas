@@ -75,6 +75,7 @@ def main(global_config, **settings):
 
 	config.add_route('ajax_get_start_statements',                '/discussion/{url:.*}ajax_get_start_statements')
 	config.add_route('ajax_get_premises_for_statement',          '/discussion/{url:.*}ajax_get_premises_for_statement')
+	config.add_route('ajax_get_attack_for_statement',            '/discussion/{url:.*}ajax_get_attack_for_statement')
 	config.add_route('ajax_reply_for_premisegroup',              '/discussion/{url:.*}ajax_reply_for_premisegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}ajax_reply_for_argument')

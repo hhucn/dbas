@@ -35,6 +35,19 @@ function Helper() {
 	};
 
 	/**
+	 * Returns today as date
+	 * @returns {string} date as dd.mm.yyy
+	 */
+	this.getTodayAsDate = function(){
+		var d = new Date(),
+				month = d.getMonth()+ 1,
+				day = d.getDate();
+		return ((day<10 ? '0' : '') + day + '.' +
+		(month<10 ? '0' : '') + month + '.' +
+		d.getFullYear());
+	};
+
+	/**
 	 * Use the browser's built-in functionality to quickly and safely escape the string
 	 * Based on http://shebang.brandonmintern.com/foolproof-html-escaping-in-javascript/
 	 * @param text to escape
@@ -134,10 +147,10 @@ function Helper() {
 		// different cases
 		if (attackType === attr_undermine)	return w + _t(itIsFalse) + ' ' + confrontation + '</b>.';
 		if (attackType === attr_support)	return r + _t(itIsTrue) + ' ' + confrontation + '</b>.';
-		if (attackType === attr_undercut)	return r + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' <b>' + conclusion + '</b>.';
+		if (attackType === attr_undercut)	return r + confrontation + '</b>, ' + _t(butIDoNotBelieveCounter) + ' <b>' + conclusion + '</b>.';
 		if (attackType === attr_overbid)	return r + confrontation + '</b>, ' + _t(andIDoBelieve) + ' <b>' + conclusion + '</b>.';
 		if (attackType === attr_rebut)		return r + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br><br>'
-												+ _t(iHaveMuchStrongerArgument) + ' <b>' + rebutConclusion + '</b>.';
+												+ _t(iHaveMuchStrongerArgumentAccepting) + ' <b>' + rebutConclusion + '</b>.';
 	};
 
 	/**
@@ -164,12 +177,36 @@ function Helper() {
 		counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
 		undermine = w + ', ' + _t(itIsFalse) + ' <b>' + confrontation + '</b>.';
 		support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>.';
-		undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieve) + ' ' + counterJusti + '.';
-		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.' + _t(iHaveEvenStrongerArgument) + ' ' + counterJusti + '.';
+		undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieveCounter) + ' ' + counterJusti + '.';
+		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.' + _t(iHaveEvenStrongerArgumentAccepting) + ' ' + counterJusti + '.';
 		rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>. '
-			+ _t(iHaveMuchStrongerArgument) + ' <b>' + rebutConclusion + '</b>.';
+			+ _t(iHaveMuchStrongerArgumentAccepting) + ' <b>' + rebutConclusion + '</b>.';
 		noopinion  = _t(iNoOpinion) + ': <b>' + confrontation + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
+	};
+
+	/**
+	 * Returns all real attacks for the given premise and conclusion
+	 * @param premise
+	 * @param conclusion
+	 * @param startLowerCase boolean
+	 * @returns {*[]}
+	 */
+	this.createAttacksOnlyText = function (premise, conclusion, startLowerCase){
+		var w, r, counterJusti, undermine, undercut, rebut, noopinion;
+
+		if (conclusion.substr(conclusion.length-1) == '.')
+			conclusion = conclusion.substr(0, conclusion.length-1);
+
+		w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong));
+		r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right));
+		counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
+		undermine = w + ', ' + _t(itIsFalse) + ' <b>' + premise + '</b>.';
+		undercut  = r + ', <b>' + conclusion + '</b>, ' + _t(butIDoNotBelieveArgument) + ' ' + counterJusti + '.';
+		rebut	  = r + ', <b>' + premise + '</b> ' + _t(iAcceptArgument) + ' <b>' + conclusion + '</b>. '
+			+ _t(iHaveMuchStrongerArgumentRejecting) + ' <b>' + 'conclusion' + '</b>.';
+		noopinion  = _t(iNoOpinion) + ': <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>. ' + _t(goStepBack) + '.';
+		return [undermine, undercut, rebut, noopinion];
 	};
 
 	/**

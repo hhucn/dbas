@@ -3,7 +3,7 @@
 <tal:block metal:use-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="contact form">
+		<div class="container contact form">
 			<h2 i18n:translate="contact_header_1">Get In Touch With Us</h2>
 			<h5 i18n:translate="contact_header_2">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</h5>
 			<br>

@@ -178,7 +178,7 @@ function setActiveLanguage(lang){
 }
 
 function setButtonLanguage(){
-	// $('#' + reportStatementButtonId).prop('value', _t(report)).prop('title', _t(reportTitle));
+	$('#' + reportButtonId).prop('value', _t(report)).prop('title', _t(reportTitle));
 	$('#' + restartDiscussionButtonId).prop('value', _t(restartDiscussion)).prop('title', _t(restartDiscussionTitle));
 	$('#' + editStatementButtonId).prop('value', _t(edit)).prop('title', _t(editTitle));
 	$('#' + scStyle1Id).prop('value', _t(dialogView)).prop('title', _t(dialogViewTitle));
@@ -193,6 +193,8 @@ function setButtonLanguage(){
 	$('#' + settingsPasswordSubmitButtonId).prop('value', _t(passwordSubmit)).prop('title', _t(passwordSubmit));
 	// $('#' + popupEditStatementShowLogButtonId).prop('value', _t(changelog)).prop('title', _t(changelog));
 	$('#' + contactSubmitButtonId).prop('value', _t(contactSubmit)).prop('title', _t(contactSubmit));
+	$('#' + discussionStartToggleButtonId).next().children().eq(0).text(_t(attackPosition))
+	$('#' + discussionStartToggleButtonId).next().children().eq(1).text(_t(supportPosition));
 
 	// todo every button
 }

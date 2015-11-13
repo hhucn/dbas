@@ -44,7 +44,7 @@ $(function () {
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		new Helper().delay(function() {
 			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
-			if ($('#' + discussionsDescriptionId).text().indexOf(_t(startDiscussionText)) != -1) {
+			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionSupport)) != -1) {
 				// here we have our start statement
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {
@@ -213,6 +213,56 @@ $(function () {
 		}
 	});
 
+	/**
+	 * Handling report button
+	 */
+	$('#' + reportButtonId).click(function(){
+		var mailto = 'dbas.hhu@gmail.com',
+				cc = 'krauthoff@cs.uni-duesseldorf.de',
+				subject = 'Report ' + new Helper().getTodayAsDate(),
+				body = 'URL: ' + window.location.href + '%0A%0AReport:%0A' + _t(fillLine).toUpperCase();
+		window.location.href = 'mailto:' + mailto
+				+ '?cc=' + cc
+				+ '&subject=' + subject
+				+ '&body=' + body;
+	});
+
+	/**
+	 * handle toggle button
+	 */
+	if (window.location.href.indexOf('start') != -1){
+		$('#' + discussionAttackSpaceId).show();
+	} else {
+		$('#' + discussionAttackSpaceId).hide();
+	}
+	$('#' + discussionStartToggleButtonId).prop('checked', false).change().change(function(){
+		$('#' + discussionAttackDescriptionId).text($(this).prop('checked') ? _t(argueForPositionToggleButton) : _t(argueAgainstPositionToggleButton));
+		guiHandler.setDiscussionsDescription($(this).prop('checked') ? _t(initialPositionAttack) : _t(initialPositionSupport), '', null);
+
+		// set classes to the radio buttons and check, if the add reason view is there
+		if ($(this).prop('checked')){
+			$.each($('#' + discussionSpaceId + ' ul').children(), function(){
+				var id  = $(this).attr('id').substr(3);
+				if ($.isNumeric(id)){
+					$($('#' + id).addClass('attack'));
+				}
+				$('#' + addReasonButtonId).addClass('attack');
+			});
+
+			if ($('#' + addStatementContainerId).is(":visible") == true){
+				alert("handle this 2");
+			}
+		} else {
+			$.each($('#' + discussionSpaceId + ' ul').children(), function(){
+			var id  = $(this).attr('id').substr(3);
+			if ($.isNumeric(id)){
+				$($('#' + id).removeClass('attack'));
+			}
+			$('#' + addReasonButtonId).removeClass('attack');
+		});
+		}
+	});
+
 	/*
 	// managed in the html file
 	$('#' + scStyle1Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
@@ -262,6 +312,8 @@ $(function () {
 				ajaxHandler.getStartStatements();
 			} else if (url.indexOf(attrGetPremisesForStatement) != -1){
 				ajaxHandler.getPremiseForStatement(params);
+			} else if (url.indexOf(attrGetAttackForArgument) != -1){
+				ajaxHandler.getAttacksForStatement(params);
 			} else if (url.indexOf(attrReplyForPremisegroup) != -1){
 				ajaxHandler.getReplyForPremiseGroup(params);
 			} else if (url.indexOf(attrReplyForResponseOfConfrontation) != -1){

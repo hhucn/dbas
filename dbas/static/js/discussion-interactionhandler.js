@@ -14,8 +14,17 @@ function InteractionHandler() {
 	this.statementButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		// new AjaxSiteHandler().getPremiseForStatement(id);
 		new AjaxSiteHandler().callSiteForGetPremiseForStatement(id);
+	};
+
+	/**
+	 * Handler when an start statement was clicked, which should be attacked
+	 * @param id of the button
+	 */
+	this.attackStatementButtonWasClicked = function (id) {
+		// clear the discussion space
+		$('#' + discussionSpaceId).empty();
+		new AjaxSiteHandler().callSiteForGetAttackForArgument(id);
 	};
 
 	/**
@@ -185,6 +194,7 @@ function InteractionHandler() {
 			hasRelation = radioButton.hasClass(attr_relation),
 			hasPremise = radioButton.hasClass(attr_premise),
 			hasStart = radioButton.hasClass(attr_start),
+			hasAttack = radioButton.hasClass(attr_attack),
 			id = radioButton.attr(attr_id),
 			long_id = radioButton.attr(attr_long_id),
 			value = radioButton.val(),
@@ -203,23 +213,32 @@ function InteractionHandler() {
 		} else {
 			guiHandler.setErrorDescription('');
 			guiHandler.setSuccessDescription('');
-			if (hasStart && !hasRelation && !hasPremise) {
+			if (hasStart && !hasRelation && !hasPremise && !hasAttack) {
 				this.statementButtonWasClicked(id);
-			} else if (hasPremise && !hasRelation && !hasStart) {
+			} else if (hasStart && !hasRelation && !hasPremise && hasAttack) {
+				this.attackStatementButtonWasClicked(id);
+			} else if (hasPremise && !hasRelation && !hasStart && !hasAttack) {
 				id_pgroup = id;
 				id_conclusion = $('#' + discussionsDescriptionId).attr(attr_conclusion_id);
 				this.premiseButtonWasClicked(id_pgroup, id_conclusion);
-			} else if (hasRelation && !hasPremise && !hasStart) {
+			} else if (hasRelation && !hasPremise && !hasStart && !hasAttack) {
 				relation = $('#' + discussionsDescriptionId).attr(attr_current_attack);
+				alert("old " + relation);
+				// differentiate between an attack of a new argument or the old style
+				if (typeof relation == 'undefined') {
+					relation = radioButton.attr('id').substr(0,radioButton.attr('id').indexOf('_'));
+					id = relation + '_argument_' + $('#' + discussionsDescriptionId).attr('argument_uid');
+				}
 				this.relationButtonWasClicked(id, relation);
-			} else if (hasPremise && hasRelation && !hasStart){
+			} else if (hasPremise && hasRelation && !hasStart && !hasAttack){
 				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premisegroup_uid);
 				this.argumentButtonWasClicked(long_id, id_pgroup);
 			} else {
 				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +
 				'has start: ' + hasStart + '\n' +
 				'has premise: ' + hasPremise + '\n' +
-				'has relation: ' + hasRelation)
+				'has relation: ' + hasRelation + '\n' +
+				'has attack: ' + hasAttack)
 			}
 		}
 
@@ -240,13 +259,33 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForPremiseForStatement = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		gh.resetEditAndRefactorButton();
 		if (parsedData.status == '1') {
 			new JsonGuiHandler().setJsonDataToContentAsStartPremises(parsedData);
 		} else {
 			gh.setDiscussionsDescription(_t(firstPositionText), '' , null);
 			gh.setNewArgumentButtonOnly(_t(addPremiseRadioButtonText), true);
 		}
-		gh.resetEditButton();
+	};
+
+	/**
+	 * Callback for the ajax method getAttackForStatement
+	 * @param data returned json data
+	 */
+	this.callbackIfDoneForAttackForStatement = function (data) {
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		gh.resetEditAndRefactorButton();
+		if (parsedData.status == '1') {
+			new JsonGuiHandler().setJsonDataToContentAsStartAttack(parsedData);
+		} else {
+			alert("Some error happened, please contact the author. (Error is in callback for AttackForStatement)");
+			gh.setDiscussionsDescription(_t(discussionEndStepBack), '' , null);
+			gh.setDiscussionsDescription(_t(discussionEnd) + ' ' + _t(discussionEndText), _t(discussionEnd), null);
+			$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).attr('href','#').click(function(){
+				new InteractionHandler().oneStepBack();
+			});
+			$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
+		}
 	};
 
 	/**
@@ -262,7 +301,7 @@ function InteractionHandler() {
 		} else {
 			alert('error in callbackIfDoneReplyForPremisegroup');
 		}
-		gh.resetEditButton();
+		gh.resetEditAndRefactorButton();
 	};
 
 	/**
@@ -278,7 +317,7 @@ function InteractionHandler() {
 		} else {
 			alert('error in callbackIfDoneReplyForArgument');
 		}
-		gh.resetEditButton();
+		gh.resetEditAndRefactorButton();
 	};
 
 	/**
@@ -294,7 +333,7 @@ function InteractionHandler() {
 		} else {
 			alert(_t('wrongURL'));
 		}
-		gh.resetEditButton();
+		gh.resetEditAndRefactorButton();
 	};
 
 	/**
@@ -315,7 +354,7 @@ function InteractionHandler() {
 		} else {
 			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData);
 		}
-		gh.resetEditButton();
+		gh.resetEditAndRefactorButton();
 	};
 
 	/**

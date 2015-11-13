@@ -19,7 +19,7 @@ function GuiHandler() {
 	 * @param text to set
 	 */
 	this.setDiscussionsDescription = function (text) {
-		$('#' + discussionsDescriptionId).html(text).attr('title', text);
+		this.setDiscussionsDescription(text, text, null);
 	};
 
 	/**
@@ -480,6 +480,10 @@ function GuiHandler() {
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenStatement() {
 				escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
 				if (isStart) {
+					if ($('#' + addReasonButtonId).hasClass(attr_attack)){
+						alert("handle this 1");
+						return;
+					}
 					ajaxhandler.sendNewStartStatement(escapedText);
 				} else {
 					ajaxhandler.sendNewStartPremise(escapedText, discussionsDescription.attr('conclusion_id'));
@@ -630,7 +634,7 @@ function GuiHandler() {
 	/**
 	 * Check whether the edit button should be visible or not
 	 */
-	this.resetEditButton = function () {
+	this.resetEditAndRefactorButton = function () {
 		var is_editable = false, statement, uid, is_premise, is_start;
 		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();
@@ -646,9 +650,11 @@ function GuiHandler() {
 
 		// do we have an statement there?
 		if (is_editable) {
-			$('#' + editStatementButtonId).fadeIn('slow');
+			$('#' + editStatementButtonId).show();
+			$('#' + reportButtonId).show();
 		} else {
-			$('#' + editStatementButtonId).fadeOut('slow');
+			$('#' + editStatementButtonId).hide();
+			$('#' + reportButtonId).hide();
 		}
 	};
 

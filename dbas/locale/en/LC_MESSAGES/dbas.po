@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-11-12 14:10+0100\n"
+"POT-Creation-Date: 2015-11-13 10:52+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -199,8 +199,8 @@ msgid "guided_view_content2"
 msgstr "for you."
 
 #. Default: Island View
-#: dbas/templates/index.pt:89 dbas/templates/content.pt:86
-#: dbas/templates/content.pt:118
+#: dbas/templates/index.pt:89 dbas/templates/content.pt:91
+#: dbas/templates/content.pt:123
 msgid "island_view"
 msgstr "Island View"
 
@@ -413,23 +413,8 @@ msgstr "formular"
 msgid "additional_studies"
 msgstr "In addition, we have studied several tools:"
 
-#. Default: Pro-Contra Lists
-#: dbas/templates/index.pt:175
-msgid "pro-contra_lists"
-msgstr "Pro-Contra Lists"
-
-#. Default: These lists are more arranged than the forum-based approaches, but
-#. even there are no connections between the arguments. Therefore these
-#. approaches are just lists and not more.
-#: dbas/templates/index.pt:176
-msgid "pro-contra_lists_description"
-msgstr ""
-"These lists are more arranged than the forum-based approaches, but even "
-"there are no connections between the arguments. Therefore these approaches "
-"are just lists and not more."
-
 #. Default: Forum
-#: dbas/templates/index.pt:180
+#: dbas/templates/index.pt:175
 msgid "forum"
 msgstr "Forum"
 
@@ -437,13 +422,28 @@ msgstr "Forum"
 #. only scale with the number of users, not with the number of arguments.
 #. Therefore messages can be highly redundant. Additionally the messages are
 #. not connected logically to each other.
-#: dbas/templates/index.pt:181
+#: dbas/templates/index.pt:176
 msgid "forum_description"
 msgstr ""
 "Forum-based approaches are well known to all kind of users, but are only "
 "scale with the number of users, not with the number of arguments. Therefore "
 "messages can be highly redundant. Additionally the messages are not "
 "connected logically to each other."
+
+#. Default: Pro-Contra Lists
+#: dbas/templates/index.pt:180
+msgid "pro-contra_lists"
+msgstr "Pro-Contra Lists"
+
+#. Default: These lists are more arranged than the forum-based approaches, but
+#. even there are no connections between the arguments. Therefore these
+#. approaches are just lists and not more.
+#: dbas/templates/index.pt:181
+msgid "pro-contra_lists_description"
+msgstr ""
+"These lists are more arranged than the forum-based approaches, but even "
+"there are no connections between the arguments. Therefore these approaches "
+"are just lists and not more."
 
 #. Default: Argumentation-based Approaches
 #: dbas/templates/index.pt:185
@@ -724,12 +724,12 @@ msgid "copyright_and_used_software"
 msgstr "Copyright and used Software"
 
 #. Default: Icons by
-#: dbas/templates/imprint.pt:81
+#: dbas/templates/imprint.pt:82
 msgid "icons_by"
 msgstr "Icons by"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:94
+#: dbas/templates/imprint.pt:95
 msgid "generated_with"
 msgstr "generated_with"
 
@@ -954,13 +954,13 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:293 dbas/templates/snippet-popups.pt:403
-#: dbas/templates/content.pt:103
+#: dbas/templates/content.pt:108
 msgid "error"
 msgstr "Error:"
 
 #. Default: Success:
 #: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:397
-#: dbas/templates/settings.pt:72
+#: dbas/templates/settings.pt:75
 msgid "success"
 msgstr "Success:"
 
@@ -976,7 +976,7 @@ msgstr "Your Last Name"
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: dbas/templates/snippet-popups.pt:323 dbas/templates/settings.pt:35
+#: dbas/templates/snippet-popups.pt:323 dbas/templates/settings.pt:36
 msgid "nickname"
 msgstr "Nickname"
 
@@ -1242,8 +1242,8 @@ msgid "writing_message"
 msgstr "Writing a new message"
 
 #. Default: Error:
-#: dbas/templates/news.pt:19 dbas/templates/settings.pt:77
-#: dbas/templates/content.pt:153
+#: dbas/templates/news.pt:19 dbas/templates/settings.pt:80
+#: dbas/templates/content.pt:158
 msgid "error:"
 msgstr "Error:"
 
@@ -1258,62 +1258,62 @@ msgid "date"
 msgstr "Date"
 
 #. Default: Information about yourself
-#: dbas/templates/settings.pt:17
+#: dbas/templates/settings.pt:18
 msgid "info_about_yourself"
 msgstr "Information about yourself"
 
 #. Default: Firstname
-#: dbas/templates/settings.pt:21
+#: dbas/templates/settings.pt:22
 msgid "firstname"
 msgstr "Firstname"
 
 #. Default: Surname
-#: dbas/templates/settings.pt:28
+#: dbas/templates/settings.pt:29
 msgid "surname"
 msgstr "Surname"
 
 #. Default: Group
-#: dbas/templates/settings.pt:49
+#: dbas/templates/settings.pt:50
 msgid "group"
 msgstr "Group"
 
 #. Default: Your decisions
-#: dbas/templates/settings.pt:63
+#: dbas/templates/settings.pt:66
 msgid "decisions"
 msgstr "Your decisions"
 
 #. Default: Change your password
-#: dbas/templates/settings.pt:94
+#: dbas/templates/settings.pt:99
 msgid "change_password"
 msgstr "Change your password"
 
 #. Default: Old password
-#: dbas/templates/settings.pt:98
+#: dbas/templates/settings.pt:103
 msgid "old_password"
 msgstr "Old password"
 
 #. Default: New Password
-#: dbas/templates/settings.pt:103
+#: dbas/templates/settings.pt:108
 msgid "new_password"
 msgstr "New Password"
 
 #. Default: Strength
-#: dbas/templates/settings.pt:108
+#: dbas/templates/settings.pt:113
 msgid "strength"
 msgstr "Strength"
 
 #. Default: New Password (confirm)
-#: dbas/templates/settings.pt:116
+#: dbas/templates/settings.pt:121
 msgid "new_password_confirm"
 msgstr "New Password (confirm)"
 
 #. Default: Great:
-#: dbas/templates/settings.pt:133
+#: dbas/templates/settings.pt:138
 msgid "great:"
 msgstr "Great:"
 
 #. Default: Your password was changed
-#: dbas/templates/settings.pt:133
+#: dbas/templates/settings.pt:138
 msgid "password_changed"
 msgstr "Your password was changed"
 
@@ -1327,8 +1327,7 @@ msgstr "Get In Touch With Us"
 #: dbas/templates/contact.pt:8
 msgid "contact_header_2"
 msgstr ""
-"Default: Feel free to drop us a line and we’ll try to get back to you in 48 "
-"hours max!"
+"Feel free to drop us a line and we’ll try to get back to you in 48 hours max!"
 
 #. Default: Your Name (required)
 #: dbas/templates/contact.pt:14
@@ -1366,12 +1365,12 @@ msgid "message_sent"
 msgstr "Your message was sent."
 
 #. Default: JavaScript is not enabled:
-#: dbas/templates/basetemplate.pt:29
+#: dbas/templates/basetemplate.pt:30
 msgid "js_disabled1"
 msgstr "JavaScript is not enabled:"
 
 #. Default: Please enable JavaScript!
-#: dbas/templates/basetemplate.pt:30
+#: dbas/templates/basetemplate.pt:31
 msgid "js_disabled2"
 msgstr "Please enable JavaScript!"
 
@@ -1405,73 +1404,79 @@ msgstr "arguments"
 msgid "your_opinion_matters"
 msgstr "Now your opinion matters!"
 
+#. Default: Or if you want to argue against a position, mentioned above, please
+#. toggle this button:
+#: dbas/templates/content.pt:65
+msgid "argueAgainstPositionToggleButton"
+msgstr "Or do you want to argue against a position? Please toggle this button:"
+
 #. Default: Report
-#: dbas/templates/content.pt:72
+#: dbas/templates/content.pt:78
 msgid "report"
 msgstr "Report"
 
 #. Default: Change display style:
-#: dbas/templates/content.pt:77
+#: dbas/templates/content.pt:82
 msgid "change_style"
 msgstr "Change display style:"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:81
+#: dbas/templates/content.pt:86
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:91
+#: dbas/templates/content.pt:96
 msgid "complete_view"
 msgstr "Complete View"
 
 #. Default: Island View
-#: dbas/templates/content.pt:117
+#: dbas/templates/content.pt:122
 msgid "istland_view"
 msgstr "Island View"
 
 #. Default: Pro
-#: dbas/templates/content.pt:121 dbas/templates/content.pt:161
+#: dbas/templates/content.pt:126 dbas/templates/content.pt:166
 msgid "pro"
 msgstr "Pro"
 
 #. Default: Contra
-#: dbas/templates/content.pt:127 dbas/templates/content.pt:180
+#: dbas/templates/content.pt:132 dbas/templates/content.pt:185
 msgid "contra"
 msgstr "Contra"
 
 #. Default: Please insert a new Argument
-#: dbas/templates/content.pt:149
+#: dbas/templates/content.pt:154
 msgid "insert-argument"
 msgstr "Please insert a new Argument"
 
 #. Default: Add a textfield
-#: dbas/templates/content.pt:167 dbas/templates/content.pt:185
+#: dbas/templates/content.pt:172 dbas/templates/content.pt:190
 msgid "add_textfield"
 msgstr "Add a textfield"
 
 #. Default: Statements are connected
-#: dbas/templates/content.pt:174 dbas/templates/content.pt:192
+#: dbas/templates/content.pt:179 dbas/templates/content.pt:197
 msgid "statements_connected"
 msgstr "Statements are connected"
 
 #. Default: List of participants
-#: dbas/templates/content.pt:211
+#: dbas/templates/content.pt:216
 msgid "participant_list"
 msgstr "List of participants"
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/content.pt:212 dbas/templates/content.pt:227
+#: dbas/templates/content.pt:217 dbas/templates/content.pt:232
 msgid "admin_only"
 msgstr "Some additional options for the administrator."
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/content.pt:226
+#: dbas/templates/content.pt:231
 msgid "list_attacks"
 msgstr "List of attacks, clicked by the participants"
 
 #. Default: Minimap:
-#: dbas/templates/content.pt:238
+#: dbas/templates/content.pt:243
 msgid "minimap"
 msgstr "Minimap:"
 

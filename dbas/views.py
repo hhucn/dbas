@@ -469,11 +469,11 @@ class Dbas(object):
 
 		return return_json
 
-	# ajax - getting all arguments for the island view
+	# ajax - getting all premisses for a statement
 	@view_config(route_name='ajax_get_premises_for_statement', renderer='json', check_csrf=False)
 	def get_premises_for_statement(self):
 		"""
-
+		Returns all premisses for a statement
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -493,7 +493,7 @@ class Dbas(object):
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
 			logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
-			return_dict = DatabaseHelper().get_premises_for_statement(transaction, uid, True, self.request.authenticated_userid,
+			return_dict = DatabaseHelper().get_premises_for_statement(transaction, uid, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
 			return_dict['status'] = '1'
 		except KeyError as e:
@@ -504,6 +504,45 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
+
+
+	# ajax - getting all arguments for the island view
+	@view_config(route_name='ajax_get_attack_for_statement', renderer='json', check_csrf=False)
+	def get_attack_for_statement(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('get_attack_for_statement', 'def', 'main')
+
+		return_dict = {}
+		try:
+			logger('get_attack_for_statement', 'def', 'read params: ' + str(self.request.params))
+			uids = self.request.params['uid'].split('=')
+			uid = uids[1]
+			logger('get_attack_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
+			logger('get_attack_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
+			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
+
+			logger('get_attack_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
+			return_dict = DatabaseHelper().get_attack_for_statement(transaction, uid, self.request.authenticated_userid,
+			                                                           self.request.session.id, issue)
+			return_dict['status'] = '1'
+		except KeyError as e:
+			logger('get_attack_for_statement', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_dict['logged_in'] = self.request.authenticated_userid
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
 
 	# ajax - get reply for a premise group
 	@view_config(route_name='ajax_reply_for_premisegroup', renderer='json', check_csrf=False)

@@ -330,12 +330,11 @@ class DatabaseHelper(object):
 		return_dict['statements'] = statements_dict
 		return return_dict
 
-	def get_premises_for_statement(self, transaction, statement_uid, issupportive, user, session_id, issue):
+	def get_premises_for_statement(self, transaction, statement_uid, user, session_id, issue):
 		"""
 
 		:param transaction:
 		:param statement_uid:
-		:param issupportive:
 		:param user:
 		:param session_id:
 		:param issue:
@@ -346,9 +345,8 @@ class DatabaseHelper(object):
 
 		return_dict = dict()
 		premises_dict = dict()
-		logger('DatabaseHelper', 'get_premises_for_statement', 'get all premises: isSupportive: ' + str(issupportive)
-		       + ', conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' + str(issue))
-		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==issupportive,
+		logger('DatabaseHelper', 'get_premises_for_statement', 'get all premises: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' + str(issue))
+		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==True,
 																Argument.conclusion_uid==statement_uid,
 		                                                        Argument.issue_uid==issue)).all()
 
@@ -368,6 +366,7 @@ class DatabaseHelper(object):
 					logger('DatabaseHelper', 'get_premises_for_statement', 'premises group has statement ' + str(statement.uid))
 					premisesgroups_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement, issue)
 
+				logger('DatabaseHelper', 'get_premises_for_statement', 'new premises_dict entry with key ' + str(premise.premisesGroup_uid))
 				premises_dict[str(premise.premisesGroup_uid)] = premisesgroups_dict
 
 		# premises dict has for each group a new dictionary
@@ -379,6 +378,39 @@ class DatabaseHelper(object):
 		return_dict['currentStatement'] = DictionaryHelper().save_statement_row_in_dictionary(db_statements, issue)
 
 		return return_dict
+
+	def get_attack_for_statement(self, transaction, statement_uid, user, session_id, issue):
+		"""
+
+		:param transaction: current transaction
+		:param statement_uid:
+		:param user:
+		:param session_id:
+		:param issue:
+		:return:
+		"""
+		logger('DatabaseHelper', 'get_attack_for_statement', 'get all attacks: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' +
+		       str(issue))
+
+		return_dict = self.get_premises_for_statement(transaction, statement_uid, user, session_id, issue)
+
+		# get one random premise todo random
+
+		premises_dict = return_dict['premises']
+		rnd_element = random.choice(list(premises_dict.keys()))
+		logger('DatabaseHelper', 'get_attack_for_statement', 'rnd_element out of premise keys['
+		       + str(list(premises_dict.keys())) + '] is ' + str(rnd_element))
+		return_dict['premises'] = premises_dict[rnd_element]
+		logger('DatabaseHelper', 'get_attack_for_statement', 'return random premise: ' + str(return_dict['premises']))
+
+		# current argument
+		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==rnd_element,
+		                                                              Argument.conclusion_uid==statement_uid)).first()
+		return_dict['argument_uid'] = db_argument.uid
+
+		logger('DatabaseHelper', 'get_attack_for_statement', 'return')
+		return return_dict
+
 
 	def get_attack_for_premisegroup(self, transaction, user, last_premises_group_uid, last_statement_uid, session_id, issue):
 		"""

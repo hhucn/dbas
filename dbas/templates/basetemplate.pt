@@ -11,6 +11,7 @@
 	<title>${project} - ${title}</title>
 	<!-- Bootstrap core CSS -->
 	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5-paper.min.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-toggle.min.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.css')}" rel="stylesheet">
@@ -55,6 +56,7 @@
 	<!-- Bootstrap core, JavaScript, jquery
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.5.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.js')}"></script>

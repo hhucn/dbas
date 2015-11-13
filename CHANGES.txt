@@ -92,3 +92,8 @@
 0.3.14 (11.11.2015)
 ---
 - Material Design
+
+0.3.15 (13.11.2015)
+----
+- Report Button
+- Toggle start button

@@ -60,18 +60,23 @@
 					<h4><p id="discussion-success-description" class="success-description"></p></h4>
 					<h4><p id="discussions-description"></p></h4>
 					<div id="discussions-space"> </div>
-					<h4><p id="discussions-attack-description"></p></h4>
-					<div id="discussions-attack-space"></div>
+					<div id="discussions-attack-space">
+					<h5>
+						<p id="discussions-attack-description" i18n:translate="argueAgainstPositionToggleButton">
+						Or if you want to argue against a position, mentioned above, please toggle this button:
+						</p>
+					<input id="discussion-attack-toggle-start" type="checkbox" data-toggle="toggle" data-size="small" data-on="attack Positions" data-off="support Positions" data-onstyle="danger" data-width="175">
+					</h5>
+						</div>
 				</div>
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
 						<input tal:condition="logged_in" id="edit-statement" type="button" i18n:translate="edit" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
 						<br>
-
-						<button type="button" class="button button-block btn-sm btn" aria-label="Left Align" style="display:none">
-							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign" aria-hidden="true" i18n:translate="report">Report</span>
+						<br>
+						<button id="report-button" type="button" class="button button-block btn-sm btn" aria-label="Left Align">
+							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="report">Report</span>
 						</button>
-
 						<br>
 						<div id="display-control-container" style="display:none">
 							<p i18n:translate="change_style">Change display style:</p>
@@ -204,7 +209,7 @@
 			</div>
 		</div>
 
-		<div tal:condition="is_admin" class="container">
+		<div class="container" tal:condition="is_admin">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
@@ -219,7 +224,7 @@
 			</div>
 		</div>
 
-		<div tal:condition="is_admin" class="container">
+		<div class="container" tal:condition="is_admin">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">

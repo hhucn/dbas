@@ -14,7 +14,7 @@ function JsonGuiHandler() {
 	 */
 	this.setJsonDataToContentAsStartStatement = function (jsonData) {
 		var listitems = [], guihandler = new GuiHandler(), helper = new Helper();
-		guihandler.setDiscussionsDescription(_t(startDiscussionText), '' , null);
+		guihandler.setDiscussionsDescription(_t(initialPositionSupport), '' , null);
 		$.each(jsonData.statements, function setJsonDataToContentAsConclusionEach(key, val) {
 			listitems.push(helper.getKeyValAsInputInLiWithType(val.uid, val.text + '.', true, false, false, ''));
 		});
@@ -110,6 +110,49 @@ function JsonGuiHandler() {
 			});
 			$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
 		}
+	};
+
+	/**
+	 * Sets given json content as start attack buttons in the discussions space
+	 * @param jsonData data with json content
+	 */
+	this.setJsonDataToContentAsStartAttack = function (jsonData){
+		var guihandler = new GuiHandler(),
+			helper = new Helper(),
+			conclusion = helper.startWithLowerCase(jsonData.currentStatement.text),
+			text, premise = '', relationArray, listitems = [], dict;
+
+		// build premise
+		$.each(jsonData.premises, function setJsonDataToContentAsStartAttackEach(key, val) {
+			if (premise == '')
+				premise += helper.startWithLowerCase(jsonData.premises[key].text);
+			else
+				premise += ' <i>' + _t(and) + '</i> ' + helper.startWithLowerCase(jsonData.premises[key].text);
+		});
+
+		text = _t(otherParticipantsThinkThat) + ' <b>' + conclusion
+				+ '</b>, ' + helper.startWithLowerCase(_t(because))
+				+ ' <b>' + premise + '</b>.<br><br>' + _t(whatDoYouThink);
+
+		dict = {'argument_uid': jsonData.argument_uid};
+		guihandler.setDiscussionsDescription(text, '', dict);
+
+		// get attacks
+		relationArray = helper.createAttacksOnlyText(premise, conclusion, false);
+
+		// build the radio buttons
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine + '_' + jsonData.argument_uid, relationArray[0] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : ''), false, false, true, _t(description_undermine)));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undercut + '_' + jsonData.argument_uid, relationArray[1] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : ''), false, false, true, _t(description_undercut)));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_rebut + '_' + jsonData.argument_uid, relationArray[2] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : ''), false, false, true, _t(description_rebut)));
+		listitems.push(helper.getKeyValAsInputInLiWithType(attr_no_opinion + '_' + jsonData.argument_uid, relationArray[3] +
+			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : ''), false, false, true, _t(description_no_opinion)));
+		// TODO HOW TO INSERT ATTACKING PREMISEGROUPS?
+
+		// set the buttons
+		guihandler.addListItemsToDiscussionsSpace(listitems);
 
 	};
 
