@@ -122,37 +122,68 @@ function JsonGuiHandler() {
 			conclusion = helper.startWithLowerCase(jsonData.currentStatement.text),
 			text, premise = '', relationArray, listitems = [], dict;
 
-		// build premise
-		$.each(jsonData.premises, function setJsonDataToContentAsStartAttackEach(key, val) {
-			if (premise == '')
-				premise += helper.startWithLowerCase(jsonData.premises[key].text);
-			else
-				premise += ' <i>' + _t(and) + '</i> ' + helper.startWithLowerCase(jsonData.premises[key].text);
-		});
+		// build premise, if there is any
+		if (jsonData.premises == '0'){
 
-		text = _t(otherParticipantsThinkThat) + ' <b>' + conclusion
-				+ '</b>, ' + helper.startWithLowerCase(_t(because))
-				+ ' <b>' + premise + '</b>.<br><br>' + _t(whatDoYouThink);
+			// adding new premises will be available, if the user is logged in
+			text = _t(soYouWantToArgueAgainst) + ' <b>' + conclusion + '</b>, ' + _t(butOtherParticipantsDontHaveArgument);
+			if (typeof jsonData.logged_in == "string") {
+				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, '-', false, false, false, ''));
+				guihandler.addListItemsToDiscussionsSpace(listitems);
 
-		dict = {'argument_uid': jsonData.argument_uid};
-		guihandler.setDiscussionsDescription(text, '', dict);
+				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
+				$('#li_' + addReasonButtonId).hide();
+				new InteractionHandler().radioButtonChanged();
+				$('#' + addStatementContainerH4Id).text(_t(canYouGiveACounter));
+				$('#' + sendNewStatementId).click(function(){
+					alert("handle this 3");
+				})
 
-		// get attacks
-		relationArray = helper.createAttacksOnlyText(premise, conclusion, false);
+			} else {
+				text += '<br><br>' + _t(discussionEndFeelFreeToLogin);
 
-		// build the radio buttons
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine + '_' + jsonData.argument_uid, relationArray[0] +
-			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : ''), false, false, true, _t(description_undermine)));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undercut + '_' + jsonData.argument_uid, relationArray[1] +
-			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : ''), false, false, true, _t(description_undercut)));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_rebut + '_' + jsonData.argument_uid, relationArray[2] +
-			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : ''), false, false, true, _t(description_rebut)));
-		listitems.push(helper.getKeyValAsInputInLiWithType(attr_no_opinion + '_' + jsonData.argument_uid, relationArray[3] +
-			' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : ''), false, false, true, _t(description_no_opinion)));
-		// TODO HOW TO INSERT ATTACKING PREMISEGROUPS?
+				guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
+				// set some attributes to special text
+				$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).attr('href','#').click(function(){
+				new InteractionHandler().oneStepBack();
+			});
+				$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
+			}
+			guihandler.setDiscussionsDescription(text, '', null);
 
-		// set the buttons
-		guihandler.addListItemsToDiscussionsSpace(listitems);
+
+		} else {
+			$.each(jsonData.premises, function setJsonDataToContentAsStartAttackEach(key, val) {
+				if (premise == '')
+					premise += helper.startWithLowerCase(jsonData.premises[key].text);
+				else
+					premise += ' <i>' + _t(and) + '</i> ' + helper.startWithLowerCase(jsonData.premises[key].text);
+			});
+
+			text = _t(otherParticipantsThinkThat) + ' <b>' + conclusion
+					+ '</b>, ' + helper.startWithLowerCase(_t(because))
+					+ ' <b>' + premise + '</b>.<br><br>' + _t(whatDoYouThink);
+
+			dict = {'argument_uid': jsonData.argument_uid};
+			guihandler.setDiscussionsDescription(text, '', dict);
+
+			// get attacks
+			relationArray = helper.createAttacksOnlyText(premise, conclusion, false);
+
+			// build the radio buttons
+			listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine + '_' + jsonData.argument_uid, relationArray[0] +
+					' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : ''), false, false, true, _t(description_undermine)));
+			listitems.push(helper.getKeyValAsInputInLiWithType(attr_undercut + '_' + jsonData.argument_uid, relationArray[1] +
+					' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : ''), false, false, true, _t(description_undercut)));
+			listitems.push(helper.getKeyValAsInputInLiWithType(attr_rebut + '_' + jsonData.argument_uid, relationArray[2] +
+					' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : ''), false, false, true, _t(description_rebut)));
+			listitems.push(helper.getKeyValAsInputInLiWithType(attr_no_opinion + '_' + jsonData.argument_uid, relationArray[3] +
+					' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : ''), false, false, true, _t(description_no_opinion)));
+			// TODO HOW TO INSERT ATTACKING PREMISEGROUPS?
+
+			// set the buttons
+			guihandler.addListItemsToDiscussionsSpace(listitems);
+		}
 
 	};
 
@@ -248,7 +279,7 @@ function JsonGuiHandler() {
 		}
 
 		// build some confrontation text
-		confrontationText = _t(otherParticipantsDontHave) + ' <b>' + premise + '</b>';
+		confrontationText = _t(otherParticipantsDontHaveCounter) + ' <b>' + premise + '</b>';
 
 		// set discussions text
 		dict = { // todo params in id.js!

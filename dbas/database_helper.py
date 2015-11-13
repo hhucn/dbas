@@ -397,16 +397,21 @@ class DatabaseHelper(object):
 		# get one random premise todo random
 
 		premises_dict = return_dict['premises']
-		rnd_element = random.choice(list(premises_dict.keys()))
-		logger('DatabaseHelper', 'get_attack_for_statement', 'rnd_element out of premise keys['
-		       + str(list(premises_dict.keys())) + '] is ' + str(rnd_element))
-		return_dict['premises'] = premises_dict[rnd_element]
-		logger('DatabaseHelper', 'get_attack_for_statement', 'return random premise: ' + str(return_dict['premises']))
+		if len(premises_dict) == 0:
+			logger('DatabaseHelper', 'get_attack_for_statement', 'no premisses')
+			return_dict['premises'] = '0'
+		else:
+			logger('DatabaseHelper', 'get_attack_for_statement', 'found ' + str(len(premises_dict)) + ' premises')
+			rnd_element = random.choice(list(premises_dict.keys()))
+			logger('DatabaseHelper', 'get_attack_for_statement', 'rnd_element out of premise keys['
+			       + str(list(premises_dict.keys())) + '] is ' + str(rnd_element))
+			return_dict['premises'] = premises_dict[rnd_element]
+			logger('DatabaseHelper', 'get_attack_for_statement', 'return random premise: ' + str(return_dict['premises']))
 
-		# current argument
-		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==rnd_element,
+			# current argument
+			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==rnd_element,
 		                                                              Argument.conclusion_uid==statement_uid)).first()
-		return_dict['argument_uid'] = db_argument.uid
+			return_dict['argument_uid'] = db_argument.uid
 
 		logger('DatabaseHelper', 'get_attack_for_statement', 'return')
 		return return_dict

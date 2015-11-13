@@ -61,13 +61,13 @@
 					<h4><p id="discussions-description"></p></h4>
 					<div id="discussions-space"> </div>
 					<div id="discussions-attack-space">
-					<h5>
+							<h5>
 						<p id="discussions-attack-description" i18n:translate="argueAgainstPositionToggleButton">
 						Or if you want to argue against a position, mentioned above, please toggle this button:
 						</p>
-					<input id="discussion-attack-toggle-start" type="checkbox" data-toggle="toggle" data-size="small" data-on="attack Positions" data-off="support Positions" data-onstyle="danger" data-width="175">
-					</h5>
-						</div>
+							</h5>
+							<input id="discussion-attack-toggle-start" type="checkbox" data-toggle="toggle" data-size="small" data-on="attack Positions" data-off="support Positions" data-onstyle="danger" data-width="175">
+				</div>
 				</div>
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
@@ -201,7 +201,7 @@
 
 						<div class="list-group" id="proposal-list-group">
 						</div>
-						
+
 						<input id="send-new-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 					</form>
 				</div>

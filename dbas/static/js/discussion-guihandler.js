@@ -461,7 +461,7 @@ function GuiHandler() {
 			} else {
 				if (discussionsDescription.html().indexOf(_t(firstPremiseText1)) != -1){
 					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>?');
-				} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHave)) != -1) {
+				} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHaveCounter)) != -1) {
 					var index1 = discussionsDescription.html().indexOf('<b>');
 					var index2 = discussionsDescription.html().indexOf('</b>');
 					header = discussionsDescription.html().substr(index1, index2-index1+5);
@@ -515,7 +515,7 @@ function GuiHandler() {
 
 			// does other users have an opinion?
 			if (isArgument) {
-				if (discussionsDescription.text().indexOf(_t(otherParticipantsDontHave)) != -1) {
+				if (discussionsDescription.text().indexOf(_t(otherParticipantsDontHaveCounter)) != -1) {
 					// other users have no opinion, so the participant can give pro and con
 					this.showAddStatementsTextareasWithTitle(true, true, statement);
 				} else {

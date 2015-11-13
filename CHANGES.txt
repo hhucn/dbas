@@ -97,3 +97,8 @@
 ----
 - Report Button
 - Toggle start button
+- Second way of bootstraping: argumentation against initial given position
+
+0.3.16 (.11.2015)
+---
+- Improving of the second way of bootstrapping: argumentation against a new initial position
