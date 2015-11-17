@@ -17,8 +17,24 @@ function AjaxSiteHandler() {
 	 * Redirection before an ajax call
 	 * @param uid current identifier
 	 */
+	this.callSiteForChooseActionForStatement = function (uid) {
+		this.redirectBrowser('uid=' + uid, attrChooseActionForStatement);
+	};
+
+	/**
+	 * Redirection before an ajax call
+	 * @param uid current identifier
+	 */
 	this.callSiteForGetPremiseForStatement = function (uid) {
 		this.redirectBrowser('uid=' + uid, attrGetPremisesForStatement);
+	};
+
+	/**
+	 * Redirection before an ajax call
+	 * @param uid current identifier
+	 */
+	this.callSiteForGetMoreForArgument = function (uid) {
+		this.redirectBrowser('uid=' + uid, attrMoreAboutArgument);
 	};
 
 	/**
@@ -33,9 +49,10 @@ function AjaxSiteHandler() {
 	 * Redirection before an ajax call
 	 * @param pgroup_id
 	 * @param conclusion_id
+	 * @param supportive
 	 */
-	this.callSiteForGetReplyForPremiseGroup = function (pgroup_id, conclusion_id) {
-		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id, attrReplyForPremisegroup);
+	this.callSiteForGetReplyForPremiseGroup = function (pgroup_id, conclusion_id, supportive) {
+		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id + '&supportive=' + supportive, attrReplyForPremisegroup);
 	};
 
 	/**
@@ -119,12 +136,14 @@ function AjaxSiteHandler() {
 	/**
 	 * Send an ajax request for getting all premises for a givens tatement
 	 * @param params of clicked statement
+	 * @param type
 	 */
-	this.getPremiseForStatement = function (params) {
+	this.getPremiseForStatement = function (params, type) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		params = params.split('&');
+		url = type == id_support ? 'ajax_get_premises_for_statement' : 'ajax_get_premise_for_statement';
 		$.ajax({
-			url: 'ajax_get_premises_for_statement',
+			url: url,
 			method: 'POST',
 			data: {
 				uid: params[0], issue: params[1]
@@ -139,26 +158,32 @@ function AjaxSiteHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetPremiseForStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForPremiseForStatement(data);
+			if 		(type == id_support) new InteractionHandler().callbackIfDoneForGetPremiseForStatement(data);
+			else if (type == id_attack) new InteractionHandler().callbackIfDoneForAttackForStatement(data, false);
+			else if (type == id_more) new InteractionHandler().callbackIfDoneForAttackForStatement(data, true);
+			else {
+
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 2.x). '
+				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			}
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetPremiseForStatementFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 2). '
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 2.' + type + '). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
 
-
 	/**
-	 * Send an ajax request for get an premise for a given statement, so we can attack it :)
+	 * Send an ajax request for getting text of a statement
 	 * @param params of clicked statement
 	 */
-	this.getAttacksForStatement = function (params){
+	this.getTextForStatement = function (params) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		params = params.split('&');
 		$.ajax({
-			url: 'ajax_get_attack_for_statement',
+			url: 'ajax_get_text_for_statement',
 			method: 'POST',
 			data: {
 				uid: params[0], issue: params[1]
@@ -172,12 +197,12 @@ function AjaxSiteHandler() {
 				settings_data = settings.data;
 				url = this.url;
 			}
-		}).done(function ajaxGetAttackForStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForAttackForStatement(data);
+		}).done(function ajaxGetTextForStatementDone(data) {
+			new InteractionHandler().callbackIfDoneForTextGetTextForStatement(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetAttackForStatementFail() {
+		}).fail(function ajaxGetTextForStatementFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 13). '
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 14). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -193,7 +218,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_reply_for_premisegroup',
 			method: 'POST',
 			data: {
-				pgroup: params[0], conclusion: params[1], issue: params[2]
+				pgroup: params[0], conclusion: params[1], supportive: params[2], issue: params[3]
 			},
 			dataType: 'json',
 			async: true,
@@ -292,7 +317,7 @@ function AjaxSiteHandler() {
 		dictionary['issue'] = url.substr(0,url.indexOf('/'));
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_new_premises_for_X',
+			url: 'ajax_set_new_premises_for_x',
 			method: 'POST',
 			data: dictionary,
 			dataType: 'json',
@@ -311,22 +336,25 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
+	 * @param text of the premise
+	 * @param conclusion_id id of the conclusion
+	 * @param supportive boolean, whether it is supportive
 	 */
-	this.sendNewStartPremise = function (text, conclusion_id) {
+	this.sendNewStartPremise = function (text, conclusion_id, supportive) {
 		var url = window.location.href;
 		url = url.substr(url.indexOf('issue=') + 'issue='.length);
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
-			data: {'issue': url.substr(0,url.indexOf('/')), 'text':text, 'conclusion_id': conclusion_id},
+			data: {'issue': url.substr(0,url.indexOf('/')), 'text':text, 'conclusion_id': conclusion_id, 'support': supportive},
 			dataType: 'json',
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxSendNewStartPremiseDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
+			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data, supportive);
 		}).fail(function ajaxSendNewStartPremiseFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 7). '
@@ -505,7 +533,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneAttackOverview(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 			$('#' + listAllUsersAttacksId).val(_t(hideAllAttacks));
-			new GuiHandler().setErrorDescription('');
+			new GuiHandler().hideErrorDescription();
 		}).fail(function ajaxGetAllUsersFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '

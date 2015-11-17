@@ -139,7 +139,13 @@ class QueryHelper(object):
 		:param issue:
 		:return:
 		"""
-		logger('QueryHelper', 'set_argument', 'main')
+		logger('QueryHelper', 'set_argument', 'main with user: ' + str(user)
+		       + ', premisegroup_uid: ' + str(premisegroup_uid)
+		       + ', conclusion_uid: ' + str(conclusion_uid)
+		       + ', argument_uid: ' + str(argument_uid)
+		       + ', is_supportive: ' + str(is_supportive)
+		       + ', issue: ' + str(issue))
+
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid, weight=0,
 							conclusion=conclusion_uid, issue=issue)
@@ -305,7 +311,7 @@ class QueryHelper(object):
 		:param issue:
 		:return: text of all premises in this group and the uids as list
 		"""
-		logger('QueryHelper', 'get_text_for_premisesGroup_uid', 'main group ' + str(uid))
+		logger('QueryHelper', 'get_text_for_premisesGroup_uid', 'main group ' + str(uid) + ', issue ' + str(issue))
 		db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==uid, 
 		                                                               Premise.issue_uid==issue)).join(Statement).all()
 		text = ''
@@ -329,8 +335,8 @@ class QueryHelper(object):
 		:return:
 		"""
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==uid, Argument.issue_uid==issue)).first()
-		text, tmp = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
-		return text
+		text, uids = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
+		return text, uids
 
 	def get_undermines_for_premises(self, key, premises_as_statements_uid, issue):
 		"""
@@ -415,10 +421,11 @@ class QueryHelper(object):
 		:return:
 		"""
 		return_dict = {}
-		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid',
-		       'db_rebut against Argument.conclusion_uid=='+str(conclusion_statements_uid))
+		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' + str(conclusion_statements_uid)
+		       + ', is_current_argument_supportive ' + str(is_current_argument_supportive) + ' (searching for the opposite)')
 		db_rebut = DBDiscussionSession.query(Argument).filter(Argument.isSupportive==(not is_current_argument_supportive),
-		                                            Argument.conclusion_uid==conclusion_statements_uid, Argument.issue_uid==issue).all()
+		                                                      Argument.conclusion_uid==conclusion_statements_uid,
+		                                                      Argument.issue_uid==issue).all()
 		for index, rebut in enumerate(db_rebut):
 			db_rebut_premises = DBDiscussionSession.query(Premise).filter(and_(
 				Premise.premisesGroup_uid==rebut.premisesGroup_uid, Premise.issue_uid==issue)).first()

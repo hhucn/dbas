@@ -404,8 +404,8 @@ function ajaxRegistration (){
 		lastname = $('#userlastname-input').val(),
 		nickname = $('#nick-input').val(),
 		email = $('#email-input').val(),
-		password = $('#password-input').val(),
-		passwordconfirm = $('#passwordconfirm-input').val(),
+		password = $('#' + popupLoginPasswordInputId).val(),
+		passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
 		gender = '';
 		// csrfToken = $('#' + hiddenCSRFTokenId).val(); // Todo CSRF
 
@@ -417,13 +417,13 @@ function ajaxRegistration (){
 		url: 'ajax_user_registration',
 		type: 'POST',
 		data: { firstname: firstname,
-			lastname: lastname,
-			nickname: nickname,
-			gender: gender,
-			email: email,
-			password: password,
-			passwordconfirm: passwordconfirm,
-			lang: getLanguage()},
+				lastname: lastname,
+				nickname: nickname,
+				gender: gender,
+				email: email,
+				password: password,
+				passwordconfirm: passwordconfirm,
+				lang: getLanguage()},
 		dataType: 'json',
 		async: true
 	}).done(function ajaxRegistrationDone(data) {

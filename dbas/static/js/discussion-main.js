@@ -72,6 +72,8 @@ $(function () {
 	$('#' + scStyle3Id).hide();
 	$('#label-' + scStyle3Id).hide();
 	$('#' + minimapId).hide();
+	guiHandler.hideSuccessDescription();
+	guiHandler.hideErrorDescription();
 
 	// hide the restart button and add click function
 	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
@@ -225,6 +227,8 @@ $(function () {
 				+ '?cc=' + cc
 				+ '&subject=' + subject
 				+ '&body=' + body;
+	}).hover(function () {
+		$(this).toggleClass('btn-primary', 400);
 	});
 
 	/**
@@ -235,33 +239,6 @@ $(function () {
 	} else {
 		$('#' + discussionAttackSpaceId).hide();
 	}
-	$('#' + discussionStartToggleButtonId).prop('checked', false).change().change(function(){
-		$('#' + discussionAttackDescriptionId).text($(this).prop('checked') ? _t(argueForPositionToggleButton) : _t(argueAgainstPositionToggleButton));
-		guiHandler.setDiscussionsDescription($(this).prop('checked') ? _t(initialPositionAttack) : _t(initialPositionSupport), '', null);
-
-		// set classes to the radio buttons and check, if the add reason view is there
-		if ($(this).prop('checked')){
-			$.each($('#' + discussionSpaceId + ' ul').children(), function(){
-				var id  = $(this).attr('id').substr(3);
-				if ($.isNumeric(id)){
-					$($('#' + id).addClass('attack'));
-				}
-				$('#' + addReasonButtonId).addClass('attack');
-			});
-
-			if ($('#' + addStatementContainerId).is(":visible") == true){
-				alert("handle this 2");
-			}
-		} else {
-			$.each($('#' + discussionSpaceId + ' ul').children(), function(){
-			var id  = $(this).attr('id').substr(3);
-			if ($.isNumeric(id)){
-				$($('#' + id).removeClass('attack'));
-			}
-			$('#' + addReasonButtonId).removeClass('attack');
-		});
-		}
-	});
 
 	/*
 	// managed in the html file
@@ -292,6 +269,11 @@ $(function () {
 		// send request on unload
 	});
 
+	$(window).on('resize', function resizeWindow(){
+		// todo:
+		// make some things pretty
+	});
+
 	// some hack
 	$('#navbar-left').empty();
 
@@ -308,18 +290,14 @@ $(function () {
 			// get issue list
 			ajaxHandler.getIssueList();
 
-			if (url.indexOf('start') != -1){
-				ajaxHandler.getStartStatements();
-			} else if (url.indexOf(attrGetPremisesForStatement) != -1){
-				ajaxHandler.getPremiseForStatement(params);
-			} else if (url.indexOf(attrGetAttackForArgument) != -1){
-				ajaxHandler.getAttacksForStatement(params);
-			} else if (url.indexOf(attrReplyForPremisegroup) != -1){
-				ajaxHandler.getReplyForPremiseGroup(params);
-			} else if (url.indexOf(attrReplyForResponseOfConfrontation) != -1){
-				ajaxHandler.handleReplyForResponseOfConfrontation(params);
-			} else if (url.indexOf(attrReplyForArgument) != -1){
-				ajaxHandler.getReplyForArgument(params);	}
+			if (url.indexOf('start') != -1) {										ajaxHandler.getStartStatements();
+			} else if (url.indexOf(attrChooseActionForStatement) != -1){ 			ajaxHandler.getTextForStatement(params);
+			} else if (url.indexOf(attrMoreAboutArgument) != -1){ 					ajaxHandler.getPremiseForStatement(params, id_more);
+			} else if (url.indexOf(attrGetPremisesForStatement) != -1){				ajaxHandler.getPremiseForStatement(params, id_support);
+			} else if (url.indexOf(attrGetAttackForArgument) != -1){				ajaxHandler.getPremiseForStatement(params, id_attack);
+			} else if (url.indexOf(attrReplyForPremisegroup) != -1){				ajaxHandler.getReplyForPremiseGroup(params);
+			} else if (url.indexOf(attrReplyForResponseOfConfrontation) != -1){		ajaxHandler.handleReplyForResponseOfConfrontation(params);
+			} else if (url.indexOf(attrReplyForArgument) != -1){					ajaxHandler.getReplyForArgument(params);	}
 		}
 	});
 

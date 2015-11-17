@@ -28,7 +28,7 @@ requires = [
 ]
 
 setup(name='dbas',
-	version='0.3.14',
+	version='0.4.1',
 	description='Novel prototype for a dialog-based argumentation software',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[
@@ -39,7 +39,7 @@ setup(name='dbas',
 		],
 	author='Tobias Krauthoff',
 	author_email='krauthoff@cs.uni-duesseldorf.de',
-	url='http://dbas.cs.uni-duesseldorf.de',
+	url='https://dbas.cs.uni-duesseldorf.de',
 	keywords='web pyramid pylons dialog-based argumentation software',
 	packages=find_packages(),
 	include_package_data=True,

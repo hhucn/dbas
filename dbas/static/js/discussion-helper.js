@@ -123,9 +123,10 @@ function Helper() {
 	 * @param lastAttack last attack
 	 * @param conclusion current conclusion
 	 * @param startLowerCase, true, when each sentences should start as lowercase
+	 * @param isAttacking, special case for the rebut, if we are attacking
 	 * @returns {string} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createRelationsText = function(confrontation, premise, attackType, lastAttack, conclusion, startLowerCase){
+	this.createRelationsTextWithConfrontation = function(confrontation, premise, attackType, lastAttack, conclusion, startLowerCase, isAttacking){
 		if (premise.substr(premise.length-1) == '.')
 			premise = premise.substr(0, premise.length-1);
 
@@ -149,8 +150,12 @@ function Helper() {
 		if (attackType === attr_support)	return r + _t(itIsTrue) + ' ' + confrontation + '</b>.';
 		if (attackType === attr_undercut)	return r + confrontation + '</b>, ' + _t(butIDoNotBelieveCounter) + ' <b>' + conclusion + '</b>.';
 		if (attackType === attr_overbid)	return r + confrontation + '</b>, ' + _t(andIDoBelieve) + ' <b>' + conclusion + '</b>.';
-		if (attackType === attr_rebut)		return r + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br><br>'
-												+ _t(iHaveMuchStrongerArgumentAccepting) + ' <b>' + rebutConclusion + '</b>.';
+		if (attackType === attr_rebut)
+			if (isAttacking)
+											return _t(iHaveMuchStrongerArgumentRejecting) + ' <b>' + rebutConclusion + '</b>.';
+			else
+											return r + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br><br>'
+												+ _t(howeverIHaveMuchStrongerArgumentAccepting) + ' <b>' + rebutConclusion + '</b>.';
 	};
 
 	/**
@@ -178,10 +183,36 @@ function Helper() {
 		undermine = w + ', ' + _t(itIsFalse) + ' <b>' + confrontation + '</b>.';
 		support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>.';
 		undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieveCounter) + ' ' + counterJusti + '.';
-		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.' + _t(iHaveEvenStrongerArgumentAccepting) + ' ' + counterJusti + '.';
+		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.' + _t(howeverIHaveEvenStrongerArgumentAccepting) + ' ' + counterJusti + '.';
 		rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>. '
-			+ _t(iHaveMuchStrongerArgumentAccepting) + ' <b>' + rebutConclusion + '</b>.';
+			+ _t(howeverIHaveMuchStrongerArgumentAccepting) + ' <b>' + rebutConclusion + '</b>.';
 		noopinion  = _t(iNoOpinion) + ': <b>' + confrontation + '</b>. ' + _t(goStepBack) + '.';
+		return [undermine, support, undercut, overbid, rebut, noopinion];
+	};
+
+	/**
+	 * Returns all real attacks for the given premise and conclusion
+	 * @param premise
+	 * @param conclusion
+	 * @param startLowerCase boolean
+	 * @returns {*[]}
+	 */
+	this.createRelationsTextWithoutConfrontation = function (premise, conclusion, startLowerCase){
+		var w, r, counterJusti, undermine, support, undercut, overbid, rebut, noopinion;
+
+		if (conclusion.substr(conclusion.length-1) == '.')
+			conclusion = conclusion.substr(0, conclusion.length-1);
+
+		w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong));
+		r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right));
+		counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
+		undermine 	= w + ', ' + _t(itIsFalse) + ' <b>' + premise + '</b>.';
+		support 	= r + ', ' + _t(itIsTrue) + ' <b>' + premise + '</b>.';
+		undercut  	= r + ', <b>' + conclusion + '</b>, ' + _t(butIDoNotBelieveArgument) + ' ' + counterJusti + '.';
+		overbid 	= r + ', <b>' + conclusion + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.';
+		rebut	  	= r + ', <b>' + premise + '</b> ' + _t(iAcceptArgument) + ' <b>' + conclusion + '</b>. '
+			+ _t(howeverIHaveMuchStrongerArgumentRejecting) + ' <b>' + conclusion + '</b>.';
+		noopinion  = _t(iNoOpinion) + ': <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 
@@ -198,13 +229,16 @@ function Helper() {
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong));
-		r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right));
+		w = (startLowerCase ? this.startWithLowerCase(_t(because)) : this.startWithUpperCase(_t(because))) + ' ' + this.startWithLowerCase(_t(itIsFalse));
+		r = (startLowerCase ? this.startWithLowerCase(_t(because)) : this.startWithUpperCase(_t(because))) + ' ' + this.startWithLowerCase(_t(itIsTrue));
 		counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
-		undermine = w + ', ' + _t(itIsFalse) + ' <b>' + premise + '</b>.';
+
+		undermine = w + ', <b>' + premise + '</b>.';
 		undercut  = r + ', <b>' + conclusion + '</b>, ' + _t(butIDoNotBelieveArgument) + ' ' + counterJusti + '.';
 		rebut	  = r + ', <b>' + premise + '</b> ' + _t(iAcceptArgument) + ' <b>' + conclusion + '</b>. '
-			+ _t(iHaveMuchStrongerArgumentRejecting) + ' <b>' + 'conclusion' + '</b>.';
+			+ _t(howeverIHaveMuchStrongerArgumentRejecting) + ' <b>' + conclusion + '</b>.';
+
+
 		noopinion  = _t(iNoOpinion) + ': <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, undercut, rebut, noopinion];
 	};
@@ -257,6 +291,37 @@ function Helper() {
 		if (isPremise){ inputElement.addClass('premise'); }
 		if (isRelation){ inputElement.addClass('relation'); }
 		if (!isStartStatement && !isPremise && !isRelation){ inputElement.addClass('add'); }
+
+		tmp = new Helper().getFullHtmlTextOf(inputElement);
+		tmp = tmp.substr(0,tmp.length-1) + extras + '>';
+		liElement.html(tmp + labelElement);
+
+		return liElement;
+	};
+
+	/**
+	 * Creates an input element tih key as id and val as value. This is embedded in an li element
+	 * @param key will be used as id
+	 * @param val will be used as value
+	 * @param mouseover
+	 * @param classes all classes
+	 * @returns {Element|*} a type-input element in a li tag
+	 */
+	this.getExtraInputInLiWithType = function (key, val, mouseover, classes) {
+		var liElement, inputElement, labelElement, extras = '', tmp;
+		liElement = $('<li>');
+		liElement.attr({id: 'li_' + key});
+
+		inputElement = $('<input>');
+		inputElement.attr({id: key + '_' + classes[0], type: 'radio', value: val});
+		//inputElement.attr({data-dismiss: 'modal'});
+
+		inputElement.attr({name: radioButtonGroup}).attr({onclick: 'new InteractionHandler().radioButtonChanged();'});
+		for (var i = 0; i < classes.length; i++) {
+			inputElement.addClass(classes[i]);
+		}
+		// adding label for the value
+		labelElement = '<label title="' + mouseover + '" for="' + key + '_' + classes[0] + '">' + val + '</label>';
 
 		tmp = new Helper().getFullHtmlTextOf(inputElement);
 		tmp = tmp.substr(0,tmp.length-1) + extras + '>';

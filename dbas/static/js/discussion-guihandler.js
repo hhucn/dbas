@@ -50,6 +50,7 @@ function GuiHandler() {
 	 */
 	this.setErrorDescription = function (text) {
 		$('#' + discussionErrorDescriptionId).html(text);
+		$('#' + discussionErrorDescriptionSpaceId).show();
 	};
 
 	/**
@@ -58,6 +59,7 @@ function GuiHandler() {
 	 */
 	this.setSuccessDescription = function (text) {
 		$('#' + discussionSuccessDescriptionId).text(text);
+		$('#' + discussionSuccessDescriptionSpaceId).show();
 	};
 
 	/**
@@ -336,7 +338,7 @@ function GuiHandler() {
 	 */
 	this.setPremisesAsLastChild = function (jsonData, isStart) {
 		var newElement = '', helper = new Helper(), text, tmp='', l, keyword, attack, same_group,
-				premisegroup_uid = '0', countSg = 0, countPl = 0, long_id, last_id, current_id, is_duplicate = false;
+				premisegroup_uid = '0', countSg = 0, countPl = 0, long_id, last_id = 0, current_id, is_duplicate = false;
 
 		// premise group?
 		same_group = jsonData.same_group == '1';
@@ -479,6 +481,10 @@ function GuiHandler() {
 			// at the beginning we differentiate between statement and statements
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenStatement() {
 				escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
+				if (escapedText.length == 0){
+					guihandler.setErrorDescription(_t(inputEmpty));
+					//return;
+				}
 				if (isStart) {
 					if ($('#' + addReasonButtonId).hasClass(attr_attack)){
 						alert("handle this 1");
@@ -486,10 +492,10 @@ function GuiHandler() {
 					}
 					ajaxhandler.sendNewStartStatement(escapedText);
 				} else {
-					ajaxhandler.sendNewStartPremise(escapedText, discussionsDescription.attr('conclusion_id'));
+					ajaxhandler.sendNewStartPremise(escapedText, discussionsDescription.attr('conclusion_id'), (discussionsDescription.attr('supportive')=='true'));
 				}
-				guihandler.setErrorDescription('');
-				guihandler.setSuccessDescription('');
+				guihandler.hideErrorDescription();
+				guihandler.hideSuccessDescription();
 			});
 
 		} else if (isPremise || isArgument) {
@@ -504,11 +510,15 @@ function GuiHandler() {
 			$('#' + addStatementContainerMainInputId).hide().focus();
 
 			// take a look, if we agree or disagree, and where we are
-			if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, confrontation, false);
-			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, false);
-			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, confrontation, true);
-			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, true);
-			} else if (relation.indexOf(attr_rebut) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, argument, false);
+			if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, confrontation, '', false);
+			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, '', false);
+			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, confrontation, conclusion, true);
+			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, conclusion, true);
+			} else if (relation.indexOf(attr_rebut) != -1) { // special case, when we are in the attack branch
+				var supportive = discussionsDescription.attr('supportive') == 'true';
+				if (supportive)									this.showAddStatementsTextareasWithTitle(true, false, argument, '', false);
+				else											this.showAddStatementsTextareasWithTitle(false, true, conclusion, '', false);
+
 			} else {
 				alert("Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
 			}
@@ -524,11 +534,14 @@ function GuiHandler() {
 			}
 
 			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenArgument() {
-				interactionhandler.getPremisesAndSendThem(false);
-				guihandler.setErrorDescription('');
-				guihandler.setSuccessDescription('');
-				$('#' + addStatementErrorContainer).hide();
-				$('#' + addStatementErrorMsg).text('');
+				if (interactionhandler.getPremisesAndSendThem(false)) {
+					guihandler.hideErrorDescription();
+					guihandler.hideSuccessDescription();
+					$('#' + addStatementErrorContainer).hide();
+					$('#' + addStatementErrorMsg).text('');
+				} else {
+					guihandler.setErrorDescription(_t(inputEmpty));
+				}
 			});
 		} else {
 			alert('What now (II)? GuiHandler: setDisplayStylesOfAddStatementContainer');
@@ -542,15 +555,19 @@ function GuiHandler() {
 	 *
 	 * @param isAgreeing
 	 * @param isDisagreeing
-	 * @param title
-	 * @param addCounterArgument
+	 * @param text1
+	 * @param text2
+	 * @param isAttackingRelation
 	 */
-	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, title, addCounterArgument) {
+	this.showAddStatementsTextareasWithTitle = function (isAgreeing, isDisagreeing, text1, text2, isAttackingRelation) {
 		if (isAgreeing) {	 $('#' + proPositionColumnId).show(); } else { $('#' + proPositionColumnId).hide(); }
 		if (isDisagreeing) { $('#' + conPositionColumnId).show(); } else { $('#' + conPositionColumnId).hide(); }
 
-		// given colors are the HHU colors. we could use bootstrap (text-success, text-danger) instead, but they are too dark
-		var suffix = (addCounterArgument ? ' ' + _t(theCounterArgument) : '') + ': <b>' + title + '</b>, ' +  _t(because).toLocaleLowerCase() + '...';
+		var suffix;
+		if (isAttackingRelation)
+			suffix = ': <b>' + text1 + ' ' + _t(asReasonFor) + ' ' + text2 + '</b>, ' + _t(because).toLocaleLowerCase() + '...';
+		else
+			suffix = ': <b>' + text1 + '</b>, ' + _t(because).toLocaleLowerCase() + '...';
 		$('#' + headingProPositionTextId).html(_t(iAgreeWithInColor) + suffix);
 		$('#' + headingConPositionTextId).html(_t(iDisagreeWithInColor) + suffix);
 	};
@@ -634,7 +651,9 @@ function GuiHandler() {
 	/**
 	 * Check whether the edit button should be visible or not
 	 */
-	this.resetEditAndRefactorButton = function () {
+	this.resetEditAndRefactorButton = function (optionalEditable) {
+		if (typeof optionalEditable === 'undefined') { optionalEditable = true; }
+
 		var is_editable = false, statement, uid, is_premise, is_start;
 		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
 			statement = $(this).val();
@@ -642,9 +661,15 @@ function GuiHandler() {
 			is_premise = $(this).hasClass('premise');
 			is_start = $(this).hasClass('start');
 			// do we have a child with input or just the label?
-			if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premise || is_start) {
-				is_editable = true;
-				return false; // break
+			if (optionalEditable) {
+				if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1
+						&& statement.length > 0
+						&& $.isNumeric(uid)
+						|| is_premise
+						|| is_start) {
+					is_editable = true;
+					return false; // break
+				}
 			}
 		});
 
@@ -811,6 +836,22 @@ function GuiHandler() {
 	this.hideUrlSharingPopup = function () {
 		$('#' + popupUrlSharingId).modal('hide');
 		$('#' + popupUrlSharingInputId).val('');
+	};
+
+	/**
+	 * Hides error description
+	 */
+	this.hideErrorDescription = function(){
+		$('#' + discussionErrorDescriptionId).html('');
+		$('#' + discussionErrorDescriptionSpaceId).hide();
+	};
+
+	/**
+	 * Hides success description
+	 */
+	this.hideSuccessDescription = function(){
+		$('#' + discussionSuccessDescriptionId).html('');
+		$('#' + discussionSuccessDescriptionSpaceId).hide();
 	};
 
 	/**

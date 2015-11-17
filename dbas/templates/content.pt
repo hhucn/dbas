@@ -56,17 +56,34 @@
 					</div>
 				</div>
 				<div class="col-md-8">
-					<h4><p id="discussion-error-description" class="error-description"></p></h4>
-					<h4><p id="discussion-success-description" class="success-description"></p></h4>
+					
+					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong i18n:translate="error">Error</strong>
+						<span id="discussion-error-description"></span>
+					</div>
+					
+					<div id="discussion-success-description-space" class="alert alert-success alert-dismissible" style="display: none;">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong i18n:translate="success">Success</strong>
+						<span id="discussion-success-description"></span>
+					</div>
+					
 					<h4><p id="discussions-description"></p></h4>
 					<div id="discussions-space"> </div>
 					<div id="discussions-attack-space">
+						<!--
 							<h5>
 						<p id="discussions-attack-description" i18n:translate="argueAgainstPositionToggleButton">
 						Or if you want to argue against a position, mentioned above, please toggle this button:
 						</p>
 							</h5>
 							<input id="discussion-attack-toggle-start" type="checkbox" data-toggle="toggle" data-size="small" data-on="attack Positions" data-off="support Positions" data-onstyle="danger" data-width="175">
+-->
 				</div>
 				</div>
 				<div class="col-md-2">

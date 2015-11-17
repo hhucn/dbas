@@ -1382,7 +1382,7 @@ msgstr "Dialog-Based Argumentation System"
 #. Default: Current discussion is about
 #: dbas/templates/content.pt:15
 msgid "current_discussion"
-msgstr "The current discussion is about"
+msgstr "Current discussion is about"
 
 #. Default: The discussion was started at
 #: dbas/templates/content.pt:36

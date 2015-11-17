@@ -14,6 +14,16 @@ function InteractionHandler() {
 	this.statementButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
+		new AjaxSiteHandler().callSiteForChooseActionForStatement(id);
+	};
+
+	/**
+	 * Handler when an start statement was clicked, which should be supported
+	 * @param id of the button
+	 */
+	this.supportStatementButtonWasClicked = function (id) {
+		// clear the discussion space
+		$('#' + discussionSpaceId).empty();
 		new AjaxSiteHandler().callSiteForGetPremiseForStatement(id);
 	};
 
@@ -28,15 +38,26 @@ function InteractionHandler() {
 	};
 
 	/**
+	 * Handler when an start statement was clicked, which should be attacked
+	 * @param id of the button
+	 */
+	this.moreAboutStatementButtonWasClicked = function (id) {
+		// clear the discussion space
+		$('#' + discussionSpaceId).empty();
+		new AjaxSiteHandler().callSiteForGetMoreForArgument(id);
+	};
+
+	/**
 	 * Handler when an start premise was clicked
 	 * @param pgroup_id
 	 * @param conclusion_id
+	 * @param supportive
 	 */
-	this.premiseButtonWasClicked = function (pgroup_id, conclusion_id) {
+	this.premiseButtonWasClicked = function (pgroup_id, conclusion_id, supportive) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		// new AjaxSiteHandler().getReplyForPremiseGroup(id);
-		new AjaxSiteHandler().callSiteForGetReplyForPremiseGroup(pgroup_id, conclusion_id);
+		new AjaxSiteHandler().callSiteForGetReplyForPremiseGroup(pgroup_id, conclusion_id, supportive);
 	};
 
 	/**
@@ -118,6 +139,7 @@ function InteractionHandler() {
 	/**
 	 * Fetches all premises out of the textares and send them
 	 * @param useIntro
+	 * @returns {boolean} true, if all input is not empty
 	 */
 	this.getPremisesAndSendThem = function (useIntro) {
 		var i = 0,
@@ -128,38 +150,58 @@ function InteractionHandler() {
 				type,
 				escapedText,
 				helper = new Helper(),
+				emptyInput = false,
+				exceptionForRebut = false,
 			conTextareaPremisegroupCheckbox = $('#' + conTextareaPremisegroupCheckboxId),
 			proTextareaPremisegroupCheckbox = $('#' + proTextareaPremisegroupCheckboxId);
 		// all pro statements
-		$('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
+		 $('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 			// differ between textarea and inputs
 			type = $(this).prop('tagName').toLowerCase().indexOf('textarea') != -1 ? 'textarea' : 'input';
 			escapedText = helper.escapeHtml($(this).val());
-		    if ($(this).prop('tagName').toLowerCase().indexOf(type) != -1 && escapedText.length > 0) {
-				// get current number and then the value of the dropdown
-				no = $(this).prop('id').substr($(this).prop('id').length-1);
-				intro = useIntro ? $('#left-dropdown-sentences-openers-' + no).text() : '';
-				dict['pro_' + i] = intro + escapedText;
-				i = i + 1;
+			// check if this type is visible and if the input is not empty
+		    if ($(this).is(":visible") && $(this).prop('tagName').toLowerCase().indexOf(type) != -1) {
+				if (escapedText.length > 0) {
+					// get current number and then the value of the dropdown
+					no = $(this).prop('id').substr($(this).prop('id').length-1);
+					intro = useIntro ? $('#left-dropdown-sentences-openers-' + no).text() : '';
+					dict['pro_' + i] = intro + escapedText;
+					i = i + 1;
+				} else {
+					emptyInput = true;
+					return true;
+				}
 			}
 		});
+		if (emptyInput) return false;
+
 		i = 0;
 		// all con statements
 		$('#' + conPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 			// differ between textarea and inputs
 			type = $(this).prop('tagName').toLowerCase().indexOf('textarea') != -1 ? 'textarea' : 'input';
 			escapedText = helper.escapeHtml($(this).val());
-		    if ($(this).prop('tagName').toLowerCase().indexOf(type) > -1 && escapedText.length > 0) {
-				// get current number and then the value of the dropdown
-				no = $(this).prop('id').substr($(this).prop('id').length-1);
-				intro = useIntro ? $('#right-dropdown-sentences-openers-' + no).text() : '';
-				dict['con_' + i] = intro + escapedText;
-				i = i + 1;
+			// check if this type is visible and if the input is not empty
+		    if ($(this).is(":visible") && $(this).prop('tagName').toLowerCase().indexOf(type) > -1) {
+				if (escapedText.length > 0) {
+					// get current number and then the value of the dropdown
+					no = $(this).prop('id').substr($(this).prop('id').length - 1);
+					intro = useIntro ? $('#right-dropdown-sentences-openers-' + no).text() : '';
+					dict['con_' + i] = intro + escapedText;
+					i = i + 1;
+				} else {
+					emptyInput = true;
+					return true;
+				}
 			}
 		});
+		if (emptyInput) return false;
 
 		lastAttack = window.location.href.substr(window.location.href.indexOf('relation=') + 'relation='.length);
 		lastAttack = lastAttack.substr(0,lastAttack.indexOf('&'));
+
+		// special case, again for the attacking branch and rebut
+		exceptionForRebut = lastAttack == attr_rebut && window.location.href.substr(window.location.href.indexOf('id=')).indexOf('_attacking_') != -1;
 
 		// get some id's
 		dict[attr_conclusion_id] 	  	= disc_desc.attr('conclusion_id');
@@ -170,19 +212,15 @@ function InteractionHandler() {
 		dict[attr_confrontation_uid] 	= disc_desc.attr(attr_confrontation_uid);
 		dict[attr_premisegroup_con] 	= conTextareaPremisegroupCheckbox.prop('checked');
 		dict[attr_premisegroup_pro] 	= proTextareaPremisegroupCheckbox.prop('checked');
+		dict['exceptionForRebut'] 		= exceptionForRebut;
 
 		// new Helper().alertWithJsonData(dict);
 
 		conTextareaPremisegroupCheckbox.prop('checked', false);
 		proTextareaPremisegroupCheckbox.prop('checked', false);
 
-		//var txt='type: ' + type + '\ndict:\n';
-		//$.each(dict, function (key, val) {
-		//	txt += '\n' + key + ': ' + val;
-		//});
-		//alert(txt);
-
 		new AjaxSiteHandler().sendNewPremiseForX(dict);
+		return true;
 	};
 
 	/**
@@ -195,42 +233,60 @@ function InteractionHandler() {
 			hasPremise = radioButton.hasClass(attr_premise),
 			hasStart = radioButton.hasClass(attr_start),
 			hasAttack = radioButton.hasClass(attr_attack),
+			hasSupport = radioButton.hasClass(attr_support),
+			hasMore = radioButton.hasClass(attr_more_about),
 			id = radioButton.attr(attr_id),
 			long_id = radioButton.attr(attr_long_id),
 			value = radioButton.val(),
-			id_pgroup, id_conclusion, relation, confrontation_uid;
-
+			id_pgroup, id_conclusion, relation;
 		// should we step back?
 		if (id.indexOf(attr_no_opinion) != -1){
 			this.oneStepBack();
 			return;
 		}
 
+		// if we differentiate between the attack, support or dont know case, we have to trim the id
+		// this is so, because every input had the same id, because it is the same and we only differentiate between the different cases
+
 		// is something wrong?
 		if (typeof id === 'undefined' || typeof value === 'undefined') {
 			guiHandler.setErrorDescription(_t(selectStatement));
 			
 		} else {
-			guiHandler.setErrorDescription('');
-			guiHandler.setSuccessDescription('');
-			if (hasStart && !hasRelation && !hasPremise && !hasAttack) {
-				this.statementButtonWasClicked(id);
-			} else if (hasStart && !hasRelation && !hasPremise && hasAttack) {
-				this.attackStatementButtonWasClicked(id);
-			} else if (hasPremise && !hasRelation && !hasStart && !hasAttack) {
+			guiHandler.hideErrorDescription();
+			guiHandler.hideSuccessDescription();
+			if (hasStart		&& !hasRelation && !hasPremise	&& !hasAttack	&& !hasSupport	&& !hasMore){	this.statementButtonWasClicked(id);
+			} else if (hasStart	&& !hasRelation	&& !hasPremise	&& !hasAttack	&& hasSupport	&& !hasMore) {	id = id.substr(0, id.indexOf('_')); this.supportStatementButtonWasClicked(id);
+			} else if (hasStart	&& !hasRelation && !hasPremise	&& hasAttack 	&& !hasSupport	&& !hasMore) {	id = id.substr(0, id.indexOf('_')); this.attackStatementButtonWasClicked(id);
+			} else if (hasStart	&& !hasRelation	&& !hasPremise	&& !hasAttack	&& !hasSupport	&& hasMore) {	id = id.substr(0, id.indexOf('_')); this.moreAboutStatementButtonWasClicked(id);
+			} else if (hasPremise
+					&& !hasRelation
+					&& !hasStart
+					&& !hasAttack
+					&& !hasSupport
+					&& !hasMore) {
 				id_pgroup = id;
 				id_conclusion = $('#' + discussionsDescriptionId).attr(attr_conclusion_id);
-				this.premiseButtonWasClicked(id_pgroup, id_conclusion);
-			} else if (hasRelation && !hasPremise && !hasStart && !hasAttack) {
+				this.premiseButtonWasClicked(id_pgroup, id_conclusion, true);
+			} else if (hasRelation
+					&& !hasPremise
+					&& !hasStart
+					&& !hasAttack
+					&& !hasSupport
+					&& !hasMore) {
 				relation = $('#' + discussionsDescriptionId).attr(attr_current_attack);
-				alert("old " + relation);
 				// differentiate between an attack of a new argument or the old style
 				if (typeof relation == 'undefined') {
 					relation = radioButton.attr('id').substr(0,radioButton.attr('id').indexOf('_'));
-					id = relation + '_argument_' + $('#' + discussionsDescriptionId).attr('argument_uid');
+					id = relation + '_attacking_' + $('#' + discussionsDescriptionId).attr('argument_uid');
 				}
 				this.relationButtonWasClicked(id, relation);
-			} else if (hasPremise && hasRelation && !hasStart && !hasAttack){
+			} else if (hasPremise
+					&& hasRelation
+					&& !hasStart
+					&& !hasAttack
+					&& !hasSupport
+					&& !hasMore){
 				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premisegroup_uid);
 				this.argumentButtonWasClicked(long_id, id_pgroup);
 			} else {
@@ -238,7 +294,9 @@ function InteractionHandler() {
 				'has start: ' + hasStart + '\n' +
 				'has premise: ' + hasPremise + '\n' +
 				'has relation: ' + hasRelation + '\n' +
-				'has attack: ' + hasAttack)
+				'has attack: ' + hasAttack + '\n' +
+				'has support: ' + hasSupport + '\n' +
+				'has more: ' + hasMore);
 			}
 		}
 
@@ -257,26 +315,40 @@ function InteractionHandler() {
 	 * Callback for the ajax method getPremiseForStatement
 	 * @param data returned json data
 	 */
-	this.callbackIfDoneForPremiseForStatement = function (data) {
+	this.callbackIfDoneForGetPremiseForStatement = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
-		gh.resetEditAndRefactorButton();
 		if (parsedData.status == '1') {
 			new JsonGuiHandler().setJsonDataToContentAsStartPremises(parsedData);
 		} else {
 			gh.setDiscussionsDescription(_t(firstPositionText), '' , null);
 			gh.setNewArgumentButtonOnly(_t(addPremiseRadioButtonText), true);
 		}
+		gh.resetEditAndRefactorButton();
+	};
+
+	/**
+	 *
+	 * @param data
+	 */
+	this.callbackIfDoneForTextGetTextForStatement = function (data){
+		var parsedData = $.parseJSON(data), gh = new GuiHandler();
+		if (parsedData.status == '1') {
+			new JsonGuiHandler().setActionsForStatement(parsedData);
+		} else {
+			new GuiHandler().setErrorDescription(_t(internalError));
+		}
+		gh.resetEditAndRefactorButton(false);
 	};
 
 	/**
 	 * Callback for the ajax method getAttackForStatement
 	 * @param data returned json data
+	 * @param supportive
 	 */
-	this.callbackIfDoneForAttackForStatement = function (data) {
+	this.callbackIfDoneForAttackForStatement = function (data, supportive) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
-		gh.resetEditAndRefactorButton();
 		if (parsedData.status == '1') {
-			new JsonGuiHandler().setJsonDataToContentAsStartAttack(parsedData);
+			new JsonGuiHandler().setJsonDataToContentAsSingleArgument(parsedData, supportive);
 		} else {
 			alert("Some error happened, please contact the author. (Error is in callback for AttackForStatement)");
 			gh.setDiscussionsDescription(_t(discussionEndStepBack), '' , null);
@@ -286,6 +358,7 @@ function InteractionHandler() {
 			});
 			$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
 		}
+		gh.resetEditAndRefactorButton(false);
 	};
 
 	/**
@@ -393,13 +466,14 @@ function InteractionHandler() {
 	/**
 	 * Callback, when new premises were send
 	 * @param data returned data
+	 * @param supportive, true if the new premise was supportive
 	 */
-	this.callbackIfDoneForSendNewStartPremise= function (data) {
+	this.callbackIfDoneForSendNewStartPremise= function (data, supportive) {
 		var parsedData = $.parseJSON(data);
 		 if (parsedData.status == '0') {
-			 new InteractionHandler().premiseButtonWasClicked(parsedData.premisegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'))
+			 new InteractionHandler().premiseButtonWasClicked(parsedData.premisegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'), supportive)
 		 } else {
-			new GuiHandler().setPremisesAsLastChild(parsedData, true);
+			new GuiHandler().setPremisesAsLastChild(parsedData, true, supportive);
 		 }
 	};
 

@@ -210,7 +210,6 @@ function setSharingClasses(){
 	 * Sharing shortened url on google
 	 */
 	$('.' + shareButtonGoogle).click(function(){
-		alert("google share id: " + $(this).attr('id'));
 		if($(this).attr('id') === shareUrlButtonGoogle){
 			return;
 		}

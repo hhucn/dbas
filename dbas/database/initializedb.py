@@ -165,7 +165,7 @@ def setupNewsDatabase():
 	news27 = News(title='Start',
 				  date='14.04.2015',
 				  author='Tobias Krauthoff',
-				  news='I\'ve started with the Prototype')
+				  news='I\'ve started with the Prototype.')
 	news28 = News(title='First steps',
 				  date='01.12.2014',
 				  author='Tobias Krauthoff',
@@ -187,11 +187,15 @@ def setupNewsDatabase():
 				  date='11.11.2015',
 				  author='Tobias Krauthoff',
 				  news='Today we released a new material-oriented design. Enjoy it!')
+	news33 = News(title='Improved Bootstrapping',
+				  date='16.11.2015',
+				  author='Tobias Krauthoff',
+				  news='Bootstraping is one of the main challenges in discussion. Therefore we have a two-step process for this task!')
 
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
-	              news32]
+	              news32, news33]
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 

@@ -74,15 +74,16 @@ def main(global_config, **settings):
 	config.add_route('ajax_user_logout',                         '{url:.*}ajax_user_logout')
 
 	config.add_route('ajax_get_start_statements',                '/discussion/{url:.*}ajax_get_start_statements')
+	config.add_route('ajax_get_text_for_statement',              '/discussion/{url:.*}ajax_get_text_for_statement')
 	config.add_route('ajax_get_premises_for_statement',          '/discussion/{url:.*}ajax_get_premises_for_statement')
-	config.add_route('ajax_get_attack_for_statement',            '/discussion/{url:.*}ajax_get_attack_for_statement')
+	config.add_route('ajax_get_premise_for_statement',           '/discussion/{url:.*}ajax_get_premise_for_statement')
 	config.add_route('ajax_reply_for_premisegroup',              '/discussion/{url:.*}ajax_reply_for_premisegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}ajax_reply_for_argument')
 
 	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}ajax_set_new_start_statement{params:.*}')
 	config.add_route('ajax_set_new_start_premise',               '/discussion/{url:.*}ajax_set_new_start_premise{params:.*}')
-	config.add_route('ajax_set_new_premises_for_X',              '/discussion/{url:.*}ajax_set_new_premises_for_X{params:.*}')
+	config.add_route('ajax_set_new_premises_for_x',              '/discussion/{url:.*}ajax_set_new_premises_for_x{params:.*}')
 	config.add_route('ajax_set_correcture_of_statement',         '/discussion/{url:.*}ajax_set_correcture_of_statement{params:.*}')
 	config.add_route('ajax_all_users',                           '/discussion/{url:.*}ajax_all_users{params:.*}')
 	config.add_route('ajax_get_logfile_for_statement',           '/discussion/{url:.*}ajax_get_logfile_for_statement{params:.*}')
