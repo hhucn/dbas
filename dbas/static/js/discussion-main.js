@@ -272,6 +272,7 @@ $(function () {
 	$(window).on('resize', function resizeWindow(){
 		// todo:
 		// make some things pretty
+		new GuiHandler().setissueDropDownText(new Helper().cutTextOnWhitespaces($('#'  +issueDropdownButtonID).attr('value'), 1200, 50));
 	});
 
 	// some hack

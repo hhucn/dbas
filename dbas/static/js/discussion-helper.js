@@ -21,6 +21,26 @@ function Helper() {
 	};
 
 	/**
+	 *
+	 * @param text
+	 * @param windowWidth
+	 * @param maxTextWidth
+	 */
+	this.cutTextOnWhitespaces = function(text, windowWidth, maxTextWidth){
+		var i, pos, l;
+		if ($(window).width() < windowWidth){
+			i=1;
+			l = text.length;
+			while (i*maxTextWidth < l){
+				pos = text.indexOf(' ',i*maxTextWidth);
+				text = this.replaceAt(text, pos, '<br>', ' ');
+				i=i+1;
+			}
+		}
+		return text;
+	};
+
+	/**
 	 * Cuts off each punctuation at the end
 	 * @param text
 	 * @returns {*} text without {.,?,!} at the end

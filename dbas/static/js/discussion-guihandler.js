@@ -1037,20 +1037,17 @@ function GuiHandler() {
 			$('#' + issueDateId).text(issue_curr.attr('date'));
 			$('#' + issueCountId).text(issue_curr.attr('count'));
 			text = $('#issue_' + current_id + ' a').text();
-			if ($(window).width() < 1000){
-				i=1;
-				l = text.length;
-				while (i*50 < l){
-					pos = text.indexOf(' ',i*50);
-					text = helper.replaceAt(text, pos, '<br>', ' ');
-					i=i+1;
-				}
-			}
-			issueDropdownButton.html(text + '&#160;&#160;&#160;<span class="caret"></span>');
+			issueDropdownButton.attr('value', text);
+			text = helper.cutTextOnWhitespaces(text, 1200, 50);
+			this.setissueDropDownText(text);
 			issue_curr.addClass('disabled');
 		}
 
 		// some helper
 		issueDropdownButton.attr('issue', current_id);
 	};
+
+	this.setissueDropDownText = function(text){
+		$('#' + issueDropdownButtonID).html(text + '&#160;&#160;&#160;<span class="caret"></span>');
+	}
 }
