@@ -3,9 +3,10 @@
 <tal:block metal:use-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
+				<div class="container first-container colored_container">
 			<div class="row">
 				<div class="col-md-3"></div>
-				<div class="container first-container col-md-6 center text-center">
+				<div class="col-md-6 center text-center">
 					<h1>
 						<span class="font-semi-bold" i18n:translate="404">404 Error</span>
 					</h1>
@@ -17,6 +18,7 @@
 					<br>
 					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" i18n:translate="lets_go_home" />
 				</div>
+					</div>
 				<div class="col-md-3"></div>
 			</div>
 

@@ -28,14 +28,15 @@ function Sharing(){
 	/**
 	 *
 	 * @param text
+	 * @param link
 	 */
-	this.twitterShare = function(text){
+	this.twitterShare = function(text, link){
 		'use strict';
-		var winTop, winLeft, winWidth, winHeight;
-		winWidth = 550;
-		winHeight = 420;
-		winTop = (screen.height / 2) - (winHeight / 2);
+		var winWidth = 550,
+		winHeight = 420,
+		winTop = (screen.height / 2) - (winHeight / 2),
 		winLeft = (screen.width / 2) - (winWidth / 2);
+		text = link.length>0 ? text + ' on ' + link : text;
 		window.open('https://twitter.com/intent/tweet?text=' + text + '&hashtags=DBAS,nrwfkop', 'sharer',
 			',top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width=' + winWidth + ',height=' + winHeight);
 	};

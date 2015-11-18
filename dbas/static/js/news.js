@@ -13,25 +13,19 @@
  */
 function getNewsContainerAsHtml(title, date, author, news, no) {
 	return '<div class="col-md-4">'
-			+ '<div class="container newscontainer" id="news_' + no + '">'
-			+ '<div class="share-table">'
-				+ '<li><a class="share-icon share-def"></a>'
-				+ '<ul>'
-					+ '<li><a class="share-icon share-mail"></a></li>'
-					+ '<li><a class="share-icon share-twitter"></a></li>'
-					+ '<li><a class="share-icon share-google"></a></li>'
-					+ '<li><a class="share-icon share-facebook"></a></li>'
-				+ '</ul>'
-			+ '</div>'
+			//+ '<div class="container newscontainer" id="news_' + no + '">'
+			+ '<div class="news colored_container" id="news_' + no + '">'
+					+ '<a class="share-icon share-mail"></a>'
+					+ '<a class="share-icon share-twitter"></a>'
+					+ '<a class="share-icon share-google"></a>'
+					+ '<a class="share-icon share-facebook"></a>'
 			+ '<div class="row">'
-				+ '<div class="col-md-6">'
-					+ '<h4><span class="font-semi-bold">' + title + '</span></h4>'
-				+ '</div>'
-				+ '<div class="col-md-4">'
-					+ '<h5><p>' + date + '</p></h5>'
-				+ '</div>'
+					+ '<h4><span class="font-semi-bold" id="news_' + no + '_title">' + title + '</span></h4>'
 			+ '</div>'
-			+ '<h6><span i18n:translate="author">Author</span>: ' + author + '</h6>'
+			+ '<h6><span i18n:translate="author">Author</span>: '
+				+ '<span id="news_' + no + '_author">' + author + '</span>' + ', '
+				+ '<span id="news_' + no + '_date">' + date + '</span>'
+			+ '</h6>'
 			+ '<br>'
 			+ news
 			+ '</div>';
@@ -97,7 +91,14 @@ function ajaxSendNews (){
  * @param data
  */
 function callbackIfDoneForGettingNews(data) {
-	var parsedData = $.parseJSON(data), counter = 1, div = '', row = 0, id, length = Object.keys(parsedData).length, array = new Array(length);
+	var parsedData = $.parseJSON(data),
+			counter = 1,
+			div = '',
+			row = 0,
+			id,
+			length = Object.keys(parsedData).length,
+			array = new Array(length),
+			container = '';
 
 	// add every news in reverted order
 	$.each(parsedData, function callbackIfDoneForGettingNewsEach(key, val) {
@@ -110,24 +111,26 @@ function callbackIfDoneForGettingNews(data) {
 	for (counter = 0; counter<length; counter++){
 		if (counter % 3 == 0){
 			if (div !== '') {
-				$('#' + newsBodyId).append(div);
+				$('#' + newsBodyId).append(container);
 			}
 			div = $('<div>').attr('id','row_' + row).addClass('row');
+			container = $('<div>').attr('id','container_' + row).addClass('container');
 			row += 1;
 		}
 		div.append(array[counter]);
+		container.append(div);
 	}
 
 	// set length of last row
-	length = div.children().length;
-	$.each(div.children(), function(){
+	length = container.children().eq(0).children().length;
+	$.each(container.children().eq(0).children(), function(){
 		$(this).attr('class','').attr('class', 'col-md-' + (12/length));
 	});
 
 	// add last row
 	counter -=1;
 	if (counter %3 != 0){
-		$('#' + newsBodyId).append(div);
+		$('#' + newsBodyId).append(container);
 	}
 
 	// find max height of each row and set it
@@ -181,17 +184,12 @@ function setSharingClasses(){
 		if($(this).attr('id') === shareUrlButtonMail){
 			return;
 		}
-		var container, textarraydate, textarrayauthor, textarraysubject;
-		container = $(this).parents(".newscontainer");
+		var id = $(this).parent().attr('id'),
+				title = $('#' + id + '_title').text(),
+				date = $('#' + id + '_date').text(),
+				author = $('#' + id + '_author').text();
 
-		textarraysubject = container.html().split('<span class="font-semi-bold">');
-		textarraydate 	 = container.html().split('<h4><p>');
-		textarrayauthor  = container.html().split('</span>: ');
-		textarraysubject = textarraysubject[1].split('</span>');
-		textarraydate 	 = textarraydate[1].split('</p>');
-		textarrayauthor  = textarrayauthor[1].split('</h5>');
-
-		new Sharing().emailShare('user@example.com', "DBAS: " + textarraysubject[0], "Interesting news from " + textarraydate[0] + ", by " + textarrayauthor[0] + " - " + window.location.href);
+		new Sharing().emailShare('user@example.com', "DBAS: " + title, "Interesting news from " + date + ", by " + author + " - " + window.location.href);
 	});
 
 	/**
@@ -201,9 +199,9 @@ function setSharingClasses(){
 		if($(this).attr('id') === shareUrlButtonTwitter){
 			return;
 		}
-		var container = $(this).parents(".newscontainer"),
-			textarraysubject = container.html().split('<span class="font-semi-bold">');
-		new Sharing().twitterShare(textarraysubject[0]);
+		var id = $(this).parent().attr('id'),
+				title = $('#' + id + '_title').text();
+		new Sharing().twitterShare(title, window.location.href);
 	});
 
 	/**
@@ -223,17 +221,13 @@ function setSharingClasses(){
 		if($(this).attr('id') === shareUrlButtonFacebook){
 			return;
 		}
-		var container, textarraydate, textarrayauthor, textarraysubject;
-		container = $(this).parents(".newscontainer");
 
-		textarraysubject = container.html().split('<span class="font-semi-bold">');
-		textarraydate 	 = container.html().split('<h4><p>');
-		textarrayauthor  = container.html().split('</span>: ');
-		textarraysubject = textarraysubject[1].split('</span>');
-		textarraydate 	 = textarraydate[1].split('</p>');
-		textarrayauthor  = textarrayauthor[1].split('</h5>');
+		var id = $(this).parent().attr('id'),
+				title = $('#' + id + '_title').text(),
+				date = $('#' + id + '_date').text(),
+				author = $('#' + id + '_author').text();
 
-		var message = "News '" + textarraysubject[0] + "', from " + textarraydate[0] + ", by " + textarrayauthor[0] + " on " + window.location.href;
+		var message = "News '" + title + "', from " + date + ", by " + author + " on " + window.location.href;
 		new Sharing().facebookShare(window.location.href, "FB Sharing", message, mainpage + "static/images/logo.png");
 	});
 }

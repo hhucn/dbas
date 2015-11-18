@@ -5,10 +5,15 @@
 
 		<head>
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.css')}" rel="stylesheet">
+			
+			<style>
+			</style>
 		</head>
+		
+		<div class="container firstcontainer colored_container" tal:condition="is_author">
 <div class="row">
 		<div  class="col-md-12">
-		<div class="container firstcontainer" tal:condition="is_author">
 			
 				<div id="write-news-body">
 

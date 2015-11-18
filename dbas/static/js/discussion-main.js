@@ -143,10 +143,10 @@ $(function () {
 	});
 
 	// close popups
-	$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId(){	guiHandler.hideEditStatementsPopup();	});
-	$('#' + popupEditStatementCloseButtonId).click(function popupEditStatementCloseButtonId(){	guiHandler.hideEditStatementsPopup();	});
-	$('#' + popupUrlSharingCloseButtonXId).click(function popupUrlSharingCloseButtonXId(){	guiHandler.hideUrlSharingPopup();	});
-	$('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId(){		guiHandler.hideUrlSharingPopup();	});
+	$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId(){	guiHandler.hideEditStatementsPopup(); });
+	$('#' + popupEditStatementCloseButtonId).click(function popupEditStatementCloseButtonId(){		guiHandler.hideEditStatementsPopup(); });
+	$('#' + popupUrlSharingCloseButtonXId).click(function popupUrlSharingCloseButtonXId(){			guiHandler.hideUrlSharingPopup(); });
+	$('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId(){			guiHandler.hideUrlSharingPopup(); });
 
 	// share url for argument blogging
 	$('#' + shareUrlId).click(function shareurlClick (){
@@ -178,7 +178,7 @@ $(function () {
 	 * Sharing shortened url on twitter
 	 */
 	$('#' + shareUrlButtonTwitter).click(function shareUrlButtonTwitter(){
-		new Sharing().twitterShare($('#' + popupUrlSharingInputId).val());
+		new Sharing().twitterShare($('#' + popupUrlSharingInputId).val(), '');
 	});
 
 	/**

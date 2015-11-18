@@ -8,7 +8,7 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
 
-		<div class="container first-container">
+		<div class="container first-container colored_container">
 			<div class="row">
 				<div class="col-md-8 center text-center">
 					<h3><span class="font-semi-bold" i18n:translate="dbas_long">Dialog-Based Argumentation System</span></h3>
@@ -47,7 +47,7 @@
 			</div>
 		</div>
 
-		<div class="container" id="discussion-container">
+		<div class="container colored_container" id="discussion-container">
 			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
 				<div class="col-md-2">
@@ -130,7 +130,7 @@
 			</div>
 		</div>
 
-		<div class="container" id="island-view-container" style="display:none">
+		<div class="container colored_container" id="island-view-container" style="display:none">
 			<button id="close-island-view-ontainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row">
@@ -160,7 +160,7 @@
 			</div>
 		</div>
 
-		<div class="container" id="add-statement-container" style="display:none">
+		<div class="container colored_container" id="add-statement-container" style="display:none">
 			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row">
@@ -226,7 +226,7 @@
 			</div>
 		</div>
 
-		<div class="container" tal:condition="is_admin">
+		<div class="container colored_container" tal:condition="is_admin">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
@@ -241,7 +241,7 @@
 			</div>
 		</div>
 
-		<div class="container" tal:condition="is_admin">
+		<div class="container colored_container" tal:condition="is_admin">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">

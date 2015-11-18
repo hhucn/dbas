@@ -7,7 +7,7 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
 		</head>
 
-		<div class="container first-container" id="home-template">
+		<div class="container colored_container first-container" id="home-template">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
@@ -51,7 +51,7 @@
 			</div>
 		</div>
 
-		<div class="container" id="features-template">
+		<div class="container colored_container" id="features-template">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
@@ -98,7 +98,7 @@
 
 		</div>
 
-		<div class="container" id="description-template">
+		<div class="container colored_container" id="description-template">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
@@ -124,7 +124,7 @@
 			</div>
 		</div>
 
-		<div class="container" id="about-template">
+		<div class="container colored_container" id="about-template">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
@@ -154,7 +154,7 @@
 			</div>
 		</div>
 
-		<div class="container" id="research-template">
+		<div class="container colored_container" id="research-template">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">

@@ -168,10 +168,19 @@ body.loading .ajaxloader {
 
 .container,
 .first-container {
-	padding: 1em;
 	margin-bottom: 10px;
+}
+
+.colored_container{
 	background: #fff;
+	padding: 1em;
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
+}
+
+.news{
+	display: inline-block;
+	vertical-align: top;
+    width: 100%;
 }
 
 .first-container {
@@ -184,13 +193,6 @@ body.loading .ajaxloader {
 	transition: .5s ease;
 }
 **/
-
-.newscontainer {	
-	display: inline-block;
-	margin: 1em;
-	vertical-align: top;
-	width:  100%;
-}
 
 .imprint-container {
 	margin-left: 30px;

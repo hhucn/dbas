@@ -9,7 +9,7 @@
 
 		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
-		<div class="container">
+		<div class="container colored_container">
 			<div class="row">
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
@@ -59,7 +59,7 @@
 			</div>
 		</div>
 
-		<div class="container">
+		<div class="container colored_container">
 			<div class="row">
 			<div class="col-md-12">
 				<div class="row">
@@ -91,7 +91,7 @@
 			</div>
 		</div>
 
-		<div class="container">
+		<div class="container colored_container">
 			<div class="row">
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
