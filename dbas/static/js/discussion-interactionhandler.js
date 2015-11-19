@@ -307,6 +307,21 @@ function InteractionHandler() {
 	/**
 	 *
 	 */
+	this.setDiscussionEndLinksInText = function (){alert("  " + mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
+		$('#' + discussionEndStepBack)
+				.attr('title', _t(goStepBack))
+				.attr('href','#')
+				.click(function(){
+			new InteractionHandler().oneStepBack();
+		});
+		$('#' + discussionEndRestart)
+				.attr('title', _t(restartDiscussion))
+				.attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
+	};
+
+	/**
+	 *
+	 */
 	this.oneStepBack = function(){
 		parent.history.back();
 	};
@@ -350,13 +365,9 @@ function InteractionHandler() {
 		if (parsedData.status == '1') {
 			new JsonGuiHandler().setJsonDataToContentAsSingleArgument(parsedData, supportive);
 		} else {
-			alert("Some error happened, please contact the author. (Error is in callback for AttackForStatement)");
-			gh.setDiscussionsDescription(_t(discussionEndStepBack), '' , null);
+			gh.setErrorDescription("Some error happened, please contact the author. (Error is in callback for AttackForStatement)");
 			gh.setDiscussionsDescription(_t(discussionEnd) + ' ' + _t(discussionEndText), _t(discussionEnd), null);
-			$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).attr('href','#').click(function(){
-				new InteractionHandler().oneStepBack();
-			});
-			$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
+			new InteractionHandler().setDiscussionEndLinksInText();
 		}
 		gh.resetEditAndRefactorButton(false);
 	};

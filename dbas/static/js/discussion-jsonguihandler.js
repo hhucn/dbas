@@ -117,6 +117,7 @@ function JsonGuiHandler() {
 		} else {
 			if (Object.keys(jsonData.premises).length == 0) {
 				text = '<b>' + text + '</b><br><br>' + _t(discussionEnd) + '<br><br>' + _t(discussionEndText);
+				new InteractionHandler().setDiscussionEndLinksInText();
 			}
 
 			if (index == 0){
@@ -127,12 +128,6 @@ function JsonGuiHandler() {
 			}
 
 			guihandler.addListItemsToDiscussionsSpace(listitems);
-
-			// set some attributes to special text
-			$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).attr('href','#').click(function(){
-				new InteractionHandler().oneStepBack();
-			});
-			$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
 		}
 	};
 
@@ -146,18 +141,20 @@ function JsonGuiHandler() {
 			helper = new Helper(),
 			conclusion = helper.startWithLowerCase(jsonData.currentStatement.text),
 			conclusion_id = jsonData.currentStatement.uid,
-			text, premise = '', relationArraySup, relationArray, listitems = [], dict, argument, premisegroup_uid = 0, id = [], tmp = [];
+			text, premise = '', relationArray, listitems = [], dict, argument, premisegroup_uid = 0, id = [], tmp = [];
 
 		// build premise, if there is any
 		if (jsonData.premises == '0'){
 
 			// adding new premises will be available, if the user is logged in
 			argument = '<b>' + conclusion + '</b>';
-			if (supportive)
+			if (supportive) {
 				text = _t(unfortunatelyNoMoreArgument) + ' ' + argument + '.<br><br>' + _t(canYouGiveAReason)
 						+ '<br><br>' + _t(alternatively) + ': ' + _t(discussionEndText);
-			else
+
+			} else {
 				text = _t(soYouWantToArgueAgainst) + ' ' + argument + ', ' + _t(butOtherParticipantsDontHaveArgument);
+			}
 
 			if (typeof jsonData.logged_in == "string") {
 				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, '-', false, false, false, ''));
@@ -174,16 +171,11 @@ function JsonGuiHandler() {
 				text += '<br><br>' + _t(discussionEndFeelFreeToLogin);
 
 				guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
-				// set some attributes to special text
-				$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).attr('href','#').click(function(){
-				new InteractionHandler().oneStepBack();
-			});
-				$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
 			}
 
 			dict = {'argument_uid': jsonData.argument_uid, 'conclusion_id': conclusion_id, 'text': argument, 'supportive': supportive};
 			guihandler.setDiscussionsDescription(text, '', dict);
-
+				new InteractionHandler().setDiscussionEndLinksInText();
 
 		} else {
 			$.each(jsonData.premises, function setJsonDataToContentAsStartAttackEach(key, val) {
@@ -351,10 +343,7 @@ function JsonGuiHandler() {
 
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + _t(discussionEnd) + ' ' + _t(discussionEndText), _t(discussionEnd), dict);
-		$('#' + discussionEndStepBack).attr('title', _t(goStepBack)).attr('href','#').click(function(){
-			new InteractionHandler().oneStepBack();
-		});
-		$('#' + discussionEndRestart).attr('title', _t(restartDiscussion)).attr('href', mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
+			new InteractionHandler().setDiscussionEndLinksInText();
 		//_t(doYouWantToEnterYourStatements),
 
 		// listitems.push(helper.getKeyValAsInputInLiWithType(attr_step_back + argument_uid, _t(goStepBack), false, false, true, _t(discussionEnd)));
