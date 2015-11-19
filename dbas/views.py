@@ -1,6 +1,7 @@
 import transaction
 import datetime
 import re # for escaping string
+import requests
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
@@ -1417,3 +1418,25 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
+
+
+
+	# ajax - for additional service
+	@view_config(route_name='ajax_additional_service', renderer='json')
+	def additional_service(self):
+		"""
+
+		:return:
+		"""
+		logger('additional_service', 'main', 'def')
+		type = self.request.params['type']
+
+		if type == "chuck":
+			data = requests.get('http://api.icndb.com/jokes/random')
+		else:
+			data = requests.get('http://api.yomomma.info/')
+
+		for a in data.json():
+			logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
+
+		return data.json()

@@ -108,14 +108,14 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, isRes
 	$('#' + popupConfirmDialogId).modal('show');
 	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
-	$('#' + popupConfirmDialogAcceptBtn).click( function () {
+	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
 		if (isRestartingDiscussion)
 			window.location.href = mainpage + 'discussion/start/issue=' + functionForAccept;
 		else
 			functionForAccept();
 	});
-	$('#' + popupConfirmDialogRefuseBtn).click( function () {
+	$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
 	});
 }
@@ -150,8 +150,8 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 				functionForAccept();
 
 		});
-		$('#' + popupConfirmDialogRefuseBtn).click( function () {
-			$('#' + popupConfirmDialogId).modal('hide');
+		$('#' + popupConfirmChecbkoxDialogRefuseBtn).click( function () {
+			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
 		})
 	}
 }
@@ -453,6 +453,45 @@ function ajaxPasswordRequest (){
 	});
 }
 
+/**
+ * Get-Request for an roundhouse kick
+ */
+function ajaxRoundhouseKick(){
+	$.ajax({
+		url: 'additional_service',
+		type: 'GET',
+		data: {type:'chuck'},
+		global: false,
+		async: true
+	}).done(function ajaxPasswordRequestDone(data) {
+		if (data.type == 'success'){
+			displayConfirmationDialog('Chuck Norris Fact #' + data.value.id,  '<h4>' + data.value.joke + '</h4>\n\n<span' +
+					' style="float:right;">powered by <a href="http://www.icndb.com/">http://www.icndb.com/</a></span>');
+			$('#' + popupConfirmDialogAcceptBtn).removeClass('btn-success');
+			$('#' + popupConfirmDialogRefuseBtn).hide();
+
+		}
+	});
+}
+
+/**
+ * Get your mama with broadband dsl, because she is so ...
+ */
+function ajaxMama(){
+	$.ajax({
+		url: 'additional_service',
+		type: 'GET',
+		data: {type:'mama'},
+		global: false,
+		async: true
+	}).done(function ajaxPasswordRequestDone(data) {
+		displayConfirmationDialog('Yo Mamma',  '<h4>' + data.joke + '</h4>\n\n<span' +
+				' style="float:right;">powered by <a href="http://yomomma.info/">http://yomomma.info/</a></span>');
+		$('#' + popupConfirmDialogAcceptBtn).removeClass('btn-success');
+		$('#' + popupConfirmDialogRefuseBtn).hide();
+	});
+}
+
 // *********************
 //	CALLBACKS
 // *********************
@@ -547,6 +586,8 @@ $(document).ready(function () {
 	$('#' + translationLinkEn).click(function(){ ajaxSwitchDisplayLanguage('en') });
 	$('#' + translationLinkDe + ' img').click(function(){ ajaxSwitchDisplayLanguage('de') });
 	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
+	$('#roundhousekick').click(function(){ ajaxRoundhouseKick(); });
+	$('#yomamma').click(function(){ ajaxMama(); });
 
 	// gui preperation
 	prepareLoginRegistrationPopup();

@@ -195,3 +195,13 @@ bootstrap-paper hover #eeeeee
 #footer_licence {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-444-floppy-disk.png) no-repeat;
 }
+
+#roundhousekick {
+	background: url(../images/chucknorris.png) no-repeat;
+	float:right;
+}
+
+#yomamma {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-36-woman.png) no-repeat;
+	float:right;
+}

@@ -33,6 +33,12 @@
 						<span i18n:translate="contact">Contact</span>
 					</a>
 				</li>
+					<img id="roundhousekick"
+							 style="width: 25px; height: 25px; border: none; visibility: hidden;"
+							 src="${request.static_url('dbas:static/images/transparent.gif')}">
+					<img id="yomamma"
+							 style="width: 25px; height: 25px; border: none; visibility: hidden;"
+							 src="${request.static_url('dbas:static/images/transparent.gif')}">
 			</ul>
 		</div>
 	</div>
