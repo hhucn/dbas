@@ -379,7 +379,6 @@ class Dbas(object):
 		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_argument')
 		# 	return self.reply_for_argument()
 		#
-		# # TODO: Dirty bugfix
 		# elif 'ajax_set_new_start_statement' in self.request.path:
 		# 	logger('notfound', 'def', 'redirect to: set_new_start_statement')
 		# 	return self.set_new_start_statement()
@@ -559,16 +558,19 @@ class Dbas(object):
 		return_dict = {}
 		try:
 			logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
-			uids = self.request.params['uid'].split('=')
-			uid = uids[1]
+			uid = self.request.params['uid'].split('=')[1]
+			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+
 			logger('get_premises_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('get_premises_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
-			logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
-			return_dict = DatabaseHelper().get_premises_for_statement(transaction, uid, self.request.authenticated_userid,
+
+			logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', supportive ' + str(supportive) + ', issue ' + str(issue))
+
+			return_dict = DatabaseHelper().get_premises_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
 			return_dict['status'] = '1'
 		except KeyError as e:

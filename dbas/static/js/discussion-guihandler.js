@@ -483,11 +483,11 @@ function GuiHandler() {
 				escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
 				if (escapedText.length == 0){
 					guihandler.setErrorDescription(_t(inputEmpty));
-					//return;
+					return;
 				}
 				if (isStart) {
 					if ($('#' + addReasonButtonId).hasClass(attr_attack)){
-						alert("handle this 1");
+						alert("handle this case in guiHandler");
 						return;
 					}
 					ajaxhandler.sendNewStartStatement(escapedText);

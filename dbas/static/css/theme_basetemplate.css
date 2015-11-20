@@ -180,7 +180,7 @@ body.loading .ajaxloader {
 .news{
 	display: inline-block;
 	vertical-align: top;
-    width: 100%;
+    height: 100%;
 }
 
 .first-container {
@@ -328,6 +328,13 @@ comment .container and wrap each container with <div class="coloured-div">
 	transition: 1s ease;
 }
 
+.share-icon-small {
+	float: right;
+	padding: 1.0em;
+	opacity: 0.5;
+	transition: 1s ease;
+}
+
 .share-icon:hover {
 	opacity: 1.0;
 	transition: .2s ease;
@@ -391,6 +398,41 @@ comment .container and wrap each container with <div class="coloured-div">
 
 .share-mail:hover {
 	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail.png') no-repeat 10px 10px;
+}
+
+
+
+
+.share-facebook-small {
+	background: url('../images/glyphicons_free/glyphicons_social/social-31-facebook-small.png') no-repeat 5px 5px;
+}
+
+.share-google-small {
+	background: url('../images/glyphicons_free/glyphicons_social/social-3-google-plus-small.png') no-repeat 5px 5px;
+}
+
+.share-twitter-small {
+	background: url('../images/glyphicons_free/glyphicons_social/social-32-twitter-small.png') no-repeat 5px 5px;
+}
+
+.share-mail-small {
+	background: url('../images/glyphicons_free/glyphicons_social/social-40-e-mail-small.png') no-repeat 5px 5px;
+}
+
+.share-facebook-small:hover {
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-31-facebook-small.png') no-repeat 5px 5px;
+}
+
+.share-google-small:hover {
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-3-google-plus-small.png') no-repeat 5px 5px;
+}
+
+.share-twitter-small:hover {
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-32-twitter-small.png') no-repeat 5px 5px;
+}
+
+.share-mail-small:hover {
+	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail-small.png') no-repeat 5px 5px;
 }
 
 #popup-login-body,

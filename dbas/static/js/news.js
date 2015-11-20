@@ -12,22 +12,25 @@
  * @returns {string}
  */
 function getNewsContainerAsHtml(title, date, author, news, no) {
-	return '<div class="col-md-4">'
-			//+ '<div class="container newscontainer" id="news_' + no + '">'
-			+ '<div class="news colored_container" id="news_' + no + '">'
-					+ '<a class="share-icon share-mail"></a>'
-					+ '<a class="share-icon share-twitter"></a>'
-					+ '<a class="share-icon share-google"></a>'
-					+ '<a class="share-icon share-facebook"></a>'
-			+ '<div class="row">'
-					+ '<h4><span class="font-semi-bold" id="news_' + no + '_title">' + title + '</span></h4>'
+	return	'<div class="col-md-4">'
+			+ '<div class="panel panel-default">'
+				+ '<div class="panel-heading" id="news_' + no + '">'
+					+ '<a class="share-icon-small share-mail-small"></a>'
+					+ '<a class="share-icon-small share-twitter-small"></a>'
+					+ '<a class="share-icon-small share-google-small"></a>'
+					+ '<a class="share-icon-small share-facebook-small"></a>'
+					+ '<h5><span class="font-semi-bold" id="news_' + no + '_title">' + title + '</span></h5>'
+				+ '</div>'
+				+ '<div class="panel-body">'
+					+ '<h6>'
+						//+ '<span i18n:translate="author">Author</span>: '
+						+ '<span id="news_' + no + '_author">' + author + '</span>' + ', '
+						+ '<span id="news_' + no + '_date">' + date + '</span>'
+					+ '</h6>'
+					+ '<br>'
+					+ news
+				+ '</div>'
 			+ '</div>'
-			+ '<h6><span i18n:translate="author">Author</span>: '
-				+ '<span id="news_' + no + '_author">' + author + '</span>' + ', '
-				+ '<span id="news_' + no + '_date">' + date + '</span>'
-			+ '</h6>'
-			+ '<br>'
-			+ news
 			+ '</div>';
 }
 
@@ -140,9 +143,7 @@ function callbackIfDoneForGettingNews(data) {
 		}).get(), maxHeight = Math.max.apply(null, heights);
 
 		$.each($('#row_' + counter).children(), function () {
-			id = $(this).children(':first-child').attr('id');
-			$('div#' + id).height(maxHeight);
-
+			$(this).children().eq(0).height(maxHeight);
 		});
 	}
 
@@ -181,55 +182,95 @@ function setSharingClasses(){
 	 * Sharing shortened url with mail
 	 */
 	$('.' + shareButtonMail).click(function(){
-		if($(this).attr('id') === shareUrlButtonMail){
-			return;
-		}
-		var id = $(this).parent().attr('id'),
-				title = $('#' + id + '_title').text(),
-				date = $('#' + id + '_date').text(),
-				author = $('#' + id + '_author').text();
-
-		new Sharing().emailShare('user@example.com', "DBAS: " + title, "Interesting news from " + date + ", by " + author + " - " + window.location.href);
+		mailShare(this);
+	});
+	$('.' + shareButtonMailSmall).click(function(){
+		mailShare(this);
 	});
 
 	/**
 	 * Sharing shortened url on twitteer
 	 */
 	$('.' + shareButtonTwitter).click(function(){
-		if($(this).attr('id') === shareUrlButtonTwitter){
-			return;
-		}
-		var id = $(this).parent().attr('id'),
-				title = $('#' + id + '_title').text();
-		new Sharing().twitterShare(title, window.location.href);
+		twitterShare(this);
+	});
+	$('.' + shareButtonTwitterSmall).click(function(){
+		twitterShare(this);
 	});
 
 	/**
 	 * Sharing shortened url on google
 	 */
 	$('.' + shareButtonGoogle).click(function(){
-		if($(this).attr('id') === shareUrlButtonGoogle){
-			return;
-		}
-		new Sharing().googlePlusShare(window.location.href);
+		googleShare(this);
+	});
+	$('.' + shareButtonGoogleSmall).click(function(){
+		googleShare(this);
 	});
 
 	/**
 	 * Sharing shortened url on facebook
 	 */
 	$('.' + shareButtonFacebook).click(function(){
-		if($(this).attr('id') === shareUrlButtonFacebook){
-			return;
-		}
-
-		var id = $(this).parent().attr('id'),
-				title = $('#' + id + '_title').text(),
-				date = $('#' + id + '_date').text(),
-				author = $('#' + id + '_author').text();
-
-		var message = "News '" + title + "', from " + date + ", by " + author + " on " + window.location.href;
-		new Sharing().facebookShare(window.location.href, "FB Sharing", message, mainpage + "static/images/logo.png");
+		facebookShare(this);
 	});
+	$('.' + shareButtonFacebookSmall).click(function(){
+		facebookShare(this);
+	});
+}
+
+/**
+ * Sharing shortened url via mail
+ */
+function mailShare(_this){
+	if($(_this).attr('id') === shareUrlButtonMail){
+		return;
+	}
+	var id = $(_this).parent().attr('id'),
+			title = $('#' + id + '_title').text(),
+			date = $('#' + id + '_date').text(),
+			author = $('#' + id + '_author').text();
+
+	new Sharing().emailShare('user@example.com', "DBAS: " + title, "Interesting news from " + date + ", by " + author + " - " + window.location.href);
+}
+
+/**
+ * Sharing shortened url on google
+ */
+function googleShare(_this){
+	if($(_this).attr('id') === shareUrlButtonGoogle){
+		return;
+	}
+	new Sharing().googlePlusShare(window.location.href);
+
+}
+
+/**
+ * Sharing shortened url on facebook
+ */
+function facebookShare(_this){
+	if($(_this).attr('id') === shareUrlButtonFacebook){
+		return;
+	}
+
+	var id = $(_this).parent().attr('id'),
+			title = $('#' + id + '_title').text(),
+			date = $('#' + id + '_date').text(),
+			author = $('#' + id + '_author').text(),
+			message = "News '" + title + "', from " + date + ", by " + author + " on " + window.location.href;
+	new Sharing().facebookShare(window.location.href, "FB Sharing", message, mainpage + "static/images/logo.png");
+}
+
+/**
+ * Sharing shortened url on twitter
+ */
+function twitterShare(_this){
+	if($(_this).attr('id') === shareUrlButtonTwitter){
+		return;
+	}
+	var id = $(_this).parent().attr('id'),
+			title = $('#' + id + '_title').text();
+	new Sharing().twitterShare(title, window.location.href);
 }
 
 $(document).ready(function () {

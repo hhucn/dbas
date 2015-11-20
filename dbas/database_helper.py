@@ -347,23 +347,26 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def get_premises_for_statement(self, transaction, statement_uid, user, session_id, issue):
+	def get_premises_for_statement(self, transaction, statement_uid, isSupportive, user, session_id, issue):
 		"""
-
-		:param transaction:
-		:param statement_uid:
-		:param user:
-		:param session_id:
-		:param issue:
-		:return:
+		Rerturns all premises for the given statement
+		:param transaction: current transaction
+		:param statement_uid: uid of the statement
+		:param isSupportive: boolean
+		:param user: self.request.authenticated_userid
+		:param session_id: self.request.session.id
+		:param issue: current issue
+		:return: dictionary
 		"""
 
 		QueryHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0, session_id)
 
 		return_dict = dict()
 		premises_dict = dict()
-		logger('DatabaseHelper', 'get_premises_for_statement', 'get all premises: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' + str(issue))
-		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==True,
+		logger('DatabaseHelper', 'get_premises_for_statement', 'get all premises: conclusion_uid: ' + str(isSupportive)
+		       + ', isSupportive: ' + str(issue)
+		       + ', issue_uid: ' + str(issue))
+		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
 																Argument.conclusion_uid==statement_uid,
 		                                                        Argument.issue_uid==issue)).all()
 

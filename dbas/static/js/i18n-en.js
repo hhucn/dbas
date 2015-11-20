@@ -77,9 +77,11 @@ var dbas_en = {
 	'discussionEndFeelFreeToLogin': 'The discussion ends here. If you want to proceed, please feel free to login yourself :)',
 	'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version' +
 	' as the current one once again?',
+	'doesNotHold': 'does not hold',
 	'doesNotHoldBecause': 'does not hold, because',
 	'doNotHesitateToContact': 'Do not hesitate to <a' +
 	' href="mailto:krauthoff@cs.uni-duesseldorf.de?subject=Error%20in%20navigating&body=Please%20describe%20the%20error">contact us via mail</a>',
+	'doesJustify': 'does justify that',
 	'doesNotJustify': 'does not justify that',
 	'doYouWantToEnterYourStatements': 'Do you want to enter your statement(s)?',
 	'euCookiePopupTitle': 'This website is using cookies and Google Analytics.',
@@ -134,6 +136,8 @@ var dbas_en = {
 	'irrelevant': 'Irrelevant',
 	'itIsTrue': 'it is true that',
 	'itIsFalse': 'it is false that',
+	'isFalse': 'does not hold',
+	'isTrue': 'holds',
 	'initialPositionSupport' : 'What is your initial position, you are supporting?',
 	'initialPositionAttack' : 'What is your initial position, you want to attack?',
 	'initialPositionInterest' : 'What is the initial position, you are interested in?',

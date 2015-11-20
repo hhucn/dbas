@@ -24,7 +24,7 @@ function InteractionHandler() {
 	this.supportStatementButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		new AjaxSiteHandler().callSiteForGetPremiseForStatement(id);
+		new AjaxSiteHandler().callSiteForGetPremiseForStatement(id, true);
 	};
 
 	/**
@@ -34,7 +34,7 @@ function InteractionHandler() {
 	this.attackStatementButtonWasClicked = function (id) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		new AjaxSiteHandler().callSiteForGetAttackForArgument(id);
+		new AjaxSiteHandler().callSiteForGetPremiseForStatement(id, false);
 	};
 
 	/**
@@ -64,12 +64,13 @@ function InteractionHandler() {
 	 * Handler when an relation button was clicked
 	 * @param id of the button
 	 * @param relation of the button
+	 * @param isSupportive
 	 */
-	this.relationButtonWasClicked = function (id, relation) {
+	this.relationButtonWasClicked = function (id, relation, isSupportive) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
-		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id, relation);
+		new AjaxSiteHandler().callSiteForHandleReplyForResponseOfConfrontation(id, relation, isSupportive);
 	};
 
 	/**
@@ -111,7 +112,7 @@ function InteractionHandler() {
 			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true, false);
 
 			this.radioButtonWasChoosen();
-			guiHandler.setVisibilityOfDisplayStyleContainer(false, ''); // TODO setVisibilityOfDisplayStyleContainer
+			guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
 			$('#' + islandViewContainerId).fadeOut('slow');
 		}
 	};
@@ -151,9 +152,10 @@ function InteractionHandler() {
 				escapedText,
 				helper = new Helper(),
 				emptyInput = false,
-				exceptionForRebut = false,
-			conTextareaPremisegroupCheckbox = $('#' + conTextareaPremisegroupCheckboxId),
-			proTextareaPremisegroupCheckbox = $('#' + proTextareaPremisegroupCheckboxId);
+				exceptionForRebut,
+				isSupportive,
+				conTextareaPremisegroupCheckbox = $('#' + conTextareaPremisegroupCheckboxId),
+				proTextareaPremisegroupCheckbox = $('#' + proTextareaPremisegroupCheckboxId);
 		// all pro statements
 		 $('#' + proPositionTextareaId + ' div[id^="div-content-"]').children().each(function (){
 			// differ between textarea and inputs
@@ -167,6 +169,7 @@ function InteractionHandler() {
 					intro = useIntro ? $('#left-dropdown-sentences-openers-' + no).text() : '';
 					dict['pro_' + i] = intro + escapedText;
 					i = i + 1;
+					isSupportive = true;
 				} else {
 					emptyInput = true;
 					return true;
@@ -189,6 +192,7 @@ function InteractionHandler() {
 					intro = useIntro ? $('#right-dropdown-sentences-openers-' + no).text() : '';
 					dict['con_' + i] = intro + escapedText;
 					i = i + 1;
+					isSupportive = false;
 				} else {
 					emptyInput = true;
 					return true;
@@ -229,6 +233,7 @@ function InteractionHandler() {
 	this.radioButtonWasChoosen = function () {
 		var guiHandler = new GuiHandler(),
 			radioButton= $('input[name=' + radioButtonGroup + ']:checked'),
+			discussionsDescription = $('#' + discussionsDescriptionId),
 			hasRelation = radioButton.hasClass(attr_relation),
 			hasPremise = radioButton.hasClass(attr_premise),
 			hasStart = radioButton.hasClass(attr_start),
@@ -238,7 +243,7 @@ function InteractionHandler() {
 			id = radioButton.attr(attr_id),
 			long_id = radioButton.attr(attr_long_id),
 			value = radioButton.val(),
-			id_pgroup, id_conclusion, relation;
+			id_pgroup, id_conclusion, relation, supportive;
 		// should we step back?
 		if (id.indexOf(attr_no_opinion) != -1){
 			this.oneStepBack();
@@ -265,29 +270,32 @@ function InteractionHandler() {
 					&& !hasAttack
 					&& !hasSupport
 					&& !hasMore) {
+				supportive = discussionsDescription.attr(attr_supportive).toLocaleLowerCase().indexOf('true') != -1;
 				id_pgroup = id;
-				id_conclusion = $('#' + discussionsDescriptionId).attr(attr_conclusion_id);
-				this.premiseButtonWasClicked(id_pgroup, id_conclusion, true);
+				id_conclusion = discussionsDescription.attr(attr_conclusion_id);
+				this.premiseButtonWasClicked(id_pgroup, id_conclusion, supportive);
 			} else if (hasRelation
 					&& !hasPremise
 					&& !hasStart
 					&& !hasAttack
 					&& !hasSupport
 					&& !hasMore) {
-				relation = $('#' + discussionsDescriptionId).attr(attr_current_attack);
+				supportive = discussionsDescription.attr(attr_supportive).toLocaleLowerCase().indexOf('true') != -1;
+				//return;
+				relation = discussionsDescription.attr(attr_current_attack);
 				// differentiate between an attack of a new argument or the old style
 				if (typeof relation == 'undefined') {
 					relation = radioButton.attr('id').substr(0,radioButton.attr('id').indexOf('_'));
-					id = relation + '_attacking_' + $('#' + discussionsDescriptionId).attr('argument_uid');
+					id = relation + '_attacking_' + discussionsDescription.attr('argument_uid');
 				}
-				this.relationButtonWasClicked(id, relation);
+				this.relationButtonWasClicked(id, relation, supportive);
 			} else if (hasPremise
 					&& hasRelation
 					&& !hasStart
 					&& !hasAttack
 					&& !hasSupport
 					&& !hasMore){
-				id_pgroup = $('#' + discussionsDescriptionId).attr(attr_premisegroup_uid);
+				id_pgroup = discussionsDescription.attr(attr_premisegroup_uid);
 				this.argumentButtonWasClicked(long_id, id_pgroup);
 			} else {
 				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +
@@ -305,9 +313,9 @@ function InteractionHandler() {
 	};
 
 	/**
-	 *
+	 * Sets the links in the discussion end text (go back and restart)
 	 */
-	this.setDiscussionEndLinksInText = function (){alert("  " + mainpage + 'discussion/start/issue=' + new Helper().getCurrentIssueId());
+	this.setDiscussionEndLinksInText = function (){
 		$('#' + discussionEndStepBack)
 				.attr('title', _t(goStepBack))
 				.attr('href','#')
@@ -327,13 +335,14 @@ function InteractionHandler() {
 	};
 
 	/**
-	 * Callback for the ajax method getPremiseForStatement
+	 * Callback for the ajax method getPremisesForStatement
 	 * @param data returned json data
+	 * @param isSupportive, true when the premisses are supportive
 	 */
-	this.callbackIfDoneForGetPremiseForStatement = function (data) {
+	this.callbackIfDoneForGetPremisesForStatement = function (data, isSupportive) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			new JsonGuiHandler().setJsonDataToContentAsStartPremises(parsedData);
+			new JsonGuiHandler().setJsonDataToContentAsStartPremises(parsedData, isSupportive);
 		} else {
 			gh.setDiscussionsDescription(_t(firstPositionText), '' , null);
 			gh.setNewArgumentButtonOnly(_t(addPremiseRadioButtonText), true);
@@ -356,14 +365,13 @@ function InteractionHandler() {
 	};
 
 	/**
-	 * Callback for the ajax method getAttackForStatement
+	 * Callback for the ajax method getPremiseForStatement
 	 * @param data returned json data
-	 * @param supportive
 	 */
-	this.callbackIfDoneForAttackForStatement = function (data, supportive) {
+	this.callbackIfDoneForGetPremiseForStatement = function (data) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			new JsonGuiHandler().setJsonDataToContentAsSingleArgument(parsedData, supportive);
+			new JsonGuiHandler().setJsonDataToContentAsSingleArgument(parsedData, true);
 		} else {
 			gh.setErrorDescription("Some error happened, please contact the author. (Error is in callback for AttackForStatement)");
 			gh.setDiscussionsDescription(_t(discussionEnd) + ' ' + _t(discussionEndText), _t(discussionEnd), null);
@@ -375,13 +383,14 @@ function InteractionHandler() {
 	/**
 	 * Callback for the ajax method getPremiseForStatement
 	 * @param data returned json data
+	 * @param isSupportive, true when the premisses are supportive
 	 */
-	this.callbackIfDoneReplyForPremisegroup = function (data) {
+	this.callbackIfDoneReplyForPremisegroup = function (data, isSupportive) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			new JsonGuiHandler().setJsonDataAsConfrontation(parsedData);
+			new JsonGuiHandler().setJsonDataAsConfrontation(parsedData, isSupportive);
 		} else if (parsedData.status == '0') {
-			new JsonGuiHandler().setJsonDataAsConfrontationWithoutConfrontation(parsedData);
+			new JsonGuiHandler().setJsonDataAsConfrontationWithoutConfrontation(parsedData, isSupportive);
 		} else {
 			alert('error in callbackIfDoneReplyForPremisegroup');
 		}
@@ -407,11 +416,12 @@ function InteractionHandler() {
 	/**
 	 * Callback for the ajax method handleReplyForResponseOfConfrontation
 	 * @param data
+	 * @param isSupportive
 	 */
-	this.callbackIfDoneHandleReplyForResponseOfConfrontation = function (data) {
+	this.callbackIfDoneHandleReplyForResponseOfConfrontation = function (data, isSupportive) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			new JsonGuiHandler().setJsonDataAsConfrontationReasoning(parsedData);
+			new JsonGuiHandler().setJsonDataAsConfrontationReasoning(parsedData, isSupportive);
 		} else if (parsedData.status == '0') {
 			alert('callbackIfDoneHandleReplyForResponseOfConfrontation status 0');
 		} else {
@@ -434,7 +444,7 @@ function InteractionHandler() {
 
 		if (parsedData.status == '-1') {
 			gh.setDiscussionsDescription(_t(firstPositionText), _t(firstPositionText), null);
-			gh.setNewArgumentButtonOnly(_t(firstConclusionRadioButtonText), false);
+			gh.setNewArgumentButtonOnly(_t(firstConclusionRadioButtonText), false, true);
 		} else {
 			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData);
 		}
@@ -463,6 +473,7 @@ function InteractionHandler() {
 	/**
 	 * Callback, when new statements were send
 	 * @param data returned data
+	 * @param isSupportive
 	 */
 	this.callbackIfDoneForSendNewPremisesX = function (data) {
 		var parsedData = $.parseJSON(data);
@@ -477,14 +488,13 @@ function InteractionHandler() {
 	/**
 	 * Callback, when new premises were send
 	 * @param data returned data
-	 * @param supportive, true if the new premise was supportive
 	 */
-	this.callbackIfDoneForSendNewStartPremise= function (data, supportive) {
+	this.callbackIfDoneForSendNewStartPremise= function (data) {
 		var parsedData = $.parseJSON(data);
 		 if (parsedData.status == '0') {
 			 new InteractionHandler().premiseButtonWasClicked(parsedData.premisegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'), supportive)
 		 } else {
-			new GuiHandler().setPremisesAsLastChild(parsedData, true, supportive);
+			new GuiHandler().setPremisesAsLastChild(parsedData, true);
 		 }
 	};
 

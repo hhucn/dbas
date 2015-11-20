@@ -109,13 +109,13 @@ $(function () {
 		guiHandler.setDisplayStylesOfAddStatementContainer(true, true, false, false);
 	});
 
-	// adding a textarea in the right column TODO: add a textfield is currently hidden; look for X button
+	// adding a textarea in the right column
 	$('#' + addConTextareaId).hide().click(function addConTextareaId() {
 		guiHandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
 		$('#' + proposalListGroupId).empty();
 	});
 
-	// adding a textarea in the left column TODO: add a textfield is currently hidden; look for X button
+	// adding a textarea in the left column
 	$('#' + addProTextareaId).hide().click(function addProTextareaId() {
 		guiHandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, 'left', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
 		$('#' + proposalListGroupId).empty();
@@ -263,14 +263,12 @@ $(function () {
 
 	// logout user on unload
 	$(window).on('unload', function windowUnload(){
-		// todo:
 		// set checkbox on login
 		// new db field for "stay_logged_in"
 		// send request on unload
 	});
 
 	$(window).on('resize', function resizeWindow(){
-		// todo:
 		// make some things pretty
 		new GuiHandler().setissueDropDownText(new Helper().cutTextOnWhitespaces($('#'  +issueDropdownButtonID).attr('value'), 1200, 50));
 	});
@@ -293,9 +291,8 @@ $(function () {
 
 			if (url.indexOf('start') != -1) {										ajaxHandler.getStartStatements();
 			} else if (url.indexOf(attrChooseActionForStatement) != -1){ 			ajaxHandler.getTextForStatement(params);
-			} else if (url.indexOf(attrMoreAboutArgument) != -1){ 					ajaxHandler.getPremiseForStatement(params, id_more);
-			} else if (url.indexOf(attrGetPremisesForStatement) != -1){				ajaxHandler.getPremiseForStatement(params, id_support);
-			} else if (url.indexOf(attrGetAttackForArgument) != -1){				ajaxHandler.getPremiseForStatement(params, id_attack);
+			} else if (url.indexOf(attrGetPremisesForStatement) != -1){				ajaxHandler.getPremiseForStatement(params, id_premisses);
+			} else if (url.indexOf(attrMoreAboutArgument) != -1){ 					ajaxHandler.getPremiseForStatement(params, id_premisse);
 			} else if (url.indexOf(attrReplyForPremisegroup) != -1){				ajaxHandler.getReplyForPremiseGroup(params);
 			} else if (url.indexOf(attrReplyForResponseOfConfrontation) != -1){		ajaxHandler.handleReplyForResponseOfConfrontation(params);
 			} else if (url.indexOf(attrReplyForArgument) != -1){					ajaxHandler.getReplyForArgument(params);	}

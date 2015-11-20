@@ -24,9 +24,10 @@ function AjaxSiteHandler() {
 	/**
 	 * Redirection before an ajax call
 	 * @param uid current identifier
+	 * @param isSupportive true, if the premisse should be supportive
 	 */
-	this.callSiteForGetPremiseForStatement = function (uid) {
-		this.redirectBrowser('uid=' + uid, attrGetPremisesForStatement);
+	this.callSiteForGetPremiseForStatement = function (uid, isSupportive) {
+		this.redirectBrowser('uid=' + uid + '&supportive=' + isSupportive, attrGetPremisesForStatement);
 	};
 
 	/**
@@ -39,20 +40,12 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Redirection before an ajax call
-	 * @param uid current identifier
-	 */
-	this.callSiteForGetAttackForArgument = function (uid) {
-		this.redirectBrowser('uid=' + uid, attrGetAttackForArgument);
-	};
-
-	/**
-	 * Redirection before an ajax call
 	 * @param pgroup_id
 	 * @param conclusion_id
-	 * @param supportive
+	 * @param isSupportive true, if the premisse should be supportive
 	 */
-	this.callSiteForGetReplyForPremiseGroup = function (pgroup_id, conclusion_id, supportive) {
-		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id + '&supportive=' + supportive, attrReplyForPremisegroup);
+	this.callSiteForGetReplyForPremiseGroup = function (pgroup_id, conclusion_id, isSupportive) {
+		this.redirectBrowser('pgroup_id=' + pgroup_id + '&conclusion_id=' + conclusion_id + '&supportive=' + isSupportive, attrReplyForPremisegroup);
 	};
 
 	/**
@@ -68,9 +61,10 @@ function AjaxSiteHandler() {
 	 * Redirection before an ajax call
 	 * @param id current identifier
 	 * @param relation
+	 * @param isSupportive true, if the premisse should be supportive
 	 */
-	this.callSiteForHandleReplyForResponseOfConfrontation = function (id, relation) {
-		this.redirectBrowser('id=' + id + '&relation=' + relation, attrReplyForResponseOfConfrontation);
+	this.callSiteForHandleReplyForResponseOfConfrontation = function (id, relation, isSupportive) {
+		this.redirectBrowser('id=' + id + '&relation=' + relation + '&supportive=' + isSupportive, attrReplyForResponseOfConfrontation);
 	};
 
 	/**
@@ -139,14 +133,15 @@ function AjaxSiteHandler() {
 	 * @param type
 	 */
 	this.getPremiseForStatement = function (params, type) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, supportive;
 		params = params.split('&');
-		url = type == id_support ? 'ajax_get_premises_for_statement' : 'ajax_get_premise_for_statement';
+		supportive = params[1].indexOf('true') != -1;
+		url = type == id_premisse ? 'ajax_get_premise_for_statement' : 'ajax_get_premises_for_statement';
 		$.ajax({
 			url: url,
 			method: 'POST',
 			data: {
-				uid: params[0], issue: params[1]
+				uid: params[0], supportive: params[1], issue: params[2]
 			},
 			dataType: 'json',
 			async: true,
@@ -158,9 +153,8 @@ function AjaxSiteHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetPremiseForStatementDone(data) {
-			if 		(type == id_support) new InteractionHandler().callbackIfDoneForGetPremiseForStatement(data);
-			else if (type == id_attack) new InteractionHandler().callbackIfDoneForAttackForStatement(data, false);
-			else if (type == id_more) new InteractionHandler().callbackIfDoneForAttackForStatement(data, true);
+			if 		(type == id_premisses) new InteractionHandler().callbackIfDoneForGetPremisesForStatement(data, supportive);
+			else if (type == id_premisse) new InteractionHandler().callbackIfDoneForGetPremiseForStatement(data);
 			else {
 
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 2.x). '
@@ -212,8 +206,9 @@ function AjaxSiteHandler() {
 	 * @param params of clicked statement
 	 */
 	this.getReplyForPremiseGroup = function (params) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, supportive;
 		params = params.split('&');
+		supportive = params[2].indexOf('true') != -1;
 		$.ajax({
 			url: 'ajax_reply_for_premisegroup',
 			method: 'POST',
@@ -230,7 +225,7 @@ function AjaxSiteHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetReplyForPremiseDone(data) {
-			new InteractionHandler().callbackIfDoneReplyForPremisegroup(data);
+			new InteractionHandler().callbackIfDoneReplyForPremisegroup(data, supportive);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetReplyForPremiseFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
@@ -278,13 +273,14 @@ function AjaxSiteHandler() {
 	 * @param params of clicked relation and statement
 	 */
 	this.handleReplyForResponseOfConfrontation = function (params) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, supportive;
 		params = params.split('&');
+		supportive = params[2].indexOf('true') != -1;
 		$.ajax({
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
 			data: {
-				id: params[0], relation: params[1], confrontation: params[2], issue: params[3]
+				id: params[0], relation: params[1], confrontation: params[2], supportive:params[3], issue: params[4]
 			},
 			dataType: 'json',
 			async: true,
@@ -296,7 +292,7 @@ function AjaxSiteHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
-			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data);
+			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data, supportive);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
@@ -354,7 +350,7 @@ function AjaxSiteHandler() {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxSendNewStartPremiseDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data, supportive);
+			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
 		}).fail(function ajaxSendNewStartPremiseFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 7). '

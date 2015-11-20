@@ -143,39 +143,43 @@ function Helper() {
 	 * @param lastAttack last attack
 	 * @param conclusion current conclusion
 	 * @param startLowerCase, true, when each sentences should start as lowercase
-	 * @param isAttacking, special case for the rebut, if we are attacking
+	 * @param isAttacking
+	 * @param isSupportive, true, if it should be supportive
 	 * @returns {string} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createRelationsTextWithConfrontation = function(confrontation, premise, attackType, lastAttack, conclusion, startLowerCase, isAttacking){
+	this.createRelationsTextWithConfrontation = function(confrontation, premise, attackType, lastAttack, conclusion, startLowerCase, isAttacking, isSupportive){
 		if (premise.substr(premise.length-1) == '.')
 			premise = premise.substr(0, premise.length-1);
 
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
-		var rebutConclusion, w,  r;
+		var longConclusion, w, r, text;
 
-		if (lastAttack == attr_undermine){			rebutConclusion = premise;
-		} else if (lastAttack == attr_rebut){		rebutConclusion = conclusion;
-		} else if (lastAttack == attr_undercut){	rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
+		//if (lastAttack == attr_undermine){			longConclusion = premise;
+		//} else if (lastAttack == attr_rebut){		longConclusion = conclusion;
+		//} else if (lastAttack == attr_undercut){	longConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
+		//}
+
+		if (attackType === attr_overbid){
+			if (isSupportive) 	longConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
+			else				longConclusion = premise + ', ' + _t(doesNotJustify).toLocaleLowerCase() + ' ' + conclusion;
 		}
-
 		// pretty print
 		w = '<b>' + (startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong))) + ', ';
 		r = '<b>' + (startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right))) + ', ';
-		// counterJusti = ' <b>' + conclusion + ', </b>' + _t(because).toLocaleLowerCase() + '<b> ' + premise + '</b>';
 
 		// different cases
 		if (attackType === attr_undermine)	return w + _t(itIsFalse) + ' ' + confrontation + '</b>.';
 		if (attackType === attr_support)	return r + _t(itIsTrue) + ' ' + confrontation + '</b>.';
 		if (attackType === attr_undercut)	return r + confrontation + '</b>, ' + _t(butIDoNotBelieveCounter) + ' <b>' + conclusion + '</b>.';
-		if (attackType === attr_overbid)	return r + confrontation + '</b>, ' + _t(andIDoBelieve) + ' <b>' + conclusion + '</b>.';
-		if (attackType === attr_rebut)
-			if (isAttacking)
-											return _t(iHaveMuchStrongerArgumentRejecting) + ' <b>' + rebutConclusion + '</b>.';
-			else
-											return r + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br><br>'
-												+ _t(howeverIHaveMuchStrongerArgumentAccepting) + ' <b>' + rebutConclusion + '</b>.';
+		if (attackType === attr_overbid)	return r + confrontation + '</b>, ' + _t(andIDoBelieve) + ' <b>' + conclusion + '</b>.<br><br>'
+												+ _t(howeverIHaveEvenStrongerArgumentAccepting) + ' <b>' + longConclusion + '</b>.';
+		if (attackType === attr_rebut) {	text = r + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br><br>';
+			if (isSupportive)               text += _t(howeverIHaveMuchStrongerArgumentAccepting) + ' <b>' + conclusion + '</b>.';
+			else                            text += _t(howeverIHaveMuchStrongerArgumentRejecting) + ' <b>' + conclusion + '</b>.';
+											return text;
+		}
 	};
 
 	/**
@@ -185,51 +189,73 @@ function Helper() {
 	 * @param premise current premise
 	 * @param attackType current type of the attack
 	 * @param startLowerCase, true, when each sentences should start as lowercase
-	 * @returns {*[]} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
+	 * @param isSupportive, true, if it should be supportive
+	 * @returns {*[]} array with [undermine, support, undercut, overbid, rebut, noopinion]:
+	 *     undermine:
+     *     support:
+     *     undercut:
+     *     overbid:
+     *     rebut:
+     *     no opinion:
 	 */
-	this.createConfrontationsRelationsText = function(confrontation, conclusion, premise, attackType, startLowerCase){
+	this.createConfrontationsRelationsText = function(confrontation, conclusion, premise, attackType, startLowerCase, isSupportive){
 		var rebutConclusion, w, r, counterJusti, undermine, support, undercut, overbid, rebut, noopinion;
+
+		// some options for pretty print
 		if (attackType == attr_undermine){			rebutConclusion = premise;
 		} else if (attackType == attr_rebut){		rebutConclusion = conclusion;
-		} else if (attackType == attr_undercut){	rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
+		} else if (attackType == attr_undercut){
+			if (isSupportive)						rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
+			else 									rebutConclusion = premise + ', ' +  _t(doesNotJustify).toLocaleLowerCase() + ' '  + conclusion;
 		}
+
+		if (isSupportive)
+			counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
+		else
+			counterJusti = ' <b>' + premise + ', ' + _t(doesNotJustify).toLocaleLowerCase() + ' ' + conclusion + '</b>';
 
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
 		w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong));
 		r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right));
-		counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
 		undermine = w + ', ' + _t(itIsFalse) + ' <b>' + confrontation + '</b>.';
 		support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>.';
 		undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieveCounter) + ' ' + counterJusti + '.';
-		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.' + _t(howeverIHaveEvenStrongerArgumentAccepting) + ' ' + counterJusti + '.';
-		rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>. '
-			+ _t(howeverIHaveMuchStrongerArgumentAccepting) + ' <b>' + rebutConclusion + '</b>.';
+		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.<br>'
+					+ _t(howeverIHaveEvenStrongerArgumentAccepting) + ' ' + counterJusti + '.';
+		rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br>'
+					+ (isSupportive ? _t(howeverIHaveEvenStrongerArgumentAccepting) : _t(howeverIHaveMuchEvenArgumentRejecting))
+					+ ' <b>' + premise + '</b>.';
 		noopinion  = _t(iNoOpinion) + ': <b>' + confrontation + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
 	};
 
 	/**
 	 * Returns all real attacks for the given premise and conclusion
-	 * @param premise
-	 * @param conclusion
+	 * @param premise of current argument
+	 * @param conclusion of current argument
 	 * @param startLowerCase boolean
-	 * @returns {*[]}
+	 * @returns {*[]} array with [undermine, support, undercut, overbid, rebut, noopinion]:
+	 *     undermine: premise is false
+	 *     support: premise is true
+	 *     undercut: premise is right, but no good justification for the conclusion
+	 *     overbid: premise is right and a justification for the conclusion
+	 *     rebut: premise and conclusion is right, but there is a stronger premise for rejecting the conclusion
+	 *     no opinion: take me back
 	 */
 	this.createRelationsTextWithoutConfrontation = function (premise, conclusion, startLowerCase){
-		var w, r, counterJusti, undermine, support, undercut, overbid, rebut, noopinion;
+		var w, r, undermine, support, undercut, overbid, rebut, noopinion;
 
 		if (conclusion.substr(conclusion.length-1) == '.')
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
 		w = startLowerCase ? this.startWithLowerCase(_t(wrong)) : this.startWithUpperCase(_t(wrong));
 		r = startLowerCase ? this.startWithLowerCase(_t(right)) : this.startWithUpperCase(_t(right));
-		counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
 		undermine 	= w + ', ' + _t(itIsFalse) + ' <b>' + premise + '</b>.';
 		support 	= r + ', ' + _t(itIsTrue) + ' <b>' + premise + '</b>.';
-		undercut  	= r + ', <b>' + conclusion + '</b>, ' + _t(butIDoNotBelieveArgument) + ' ' + counterJusti + '.';
-		overbid 	= r + ', <b>' + conclusion + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.';
+		undercut  	= r + ', <b>' + premise + '</b>, ' + _t(butIDoNotBelieveArgument) + ' <b>' + conclusion + '</b>.';
+		overbid 	= r + ', <b>' + premise + '</b>, ' + _t(andIDoBelieve) + ' <b>' + conclusion + '</b>.';
 		rebut	  	= r + ', <b>' + premise + '</b> ' + _t(iAcceptArgument) + ' <b>' + conclusion + '</b>. '
 			+ _t(howeverIHaveMuchStrongerArgumentRejecting) + ' <b>' + conclusion + '</b>.';
 		noopinion  = _t(iNoOpinion) + ': <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>. ' + _t(goStepBack) + '.';
@@ -449,7 +475,7 @@ function Helper() {
 	 */
 	this.setCookieForDays = function(cookie_name, days){
 		var d = new Date(), consent = true;
-		var expiresInDays = days * 24 * 60 * 60 * 1000; // Todo expiresInDays for how to write cookie
+		var expiresInDays = days * 24 * 60 * 60 * 1000;
 		d.setTime( d.getTime() + expiresInDays );
 		var expires = 'expires=' + d.toGMTString();
 		document.cookie = cookie_name + '=' + consent + '; ' + expires + ';path=/';
