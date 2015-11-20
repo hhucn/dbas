@@ -2,7 +2,6 @@ from pyramid.security import Allow, Everyone
 from dbas.views import logger
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
-import re # for escaping string
 
 class RootFactory(object):
 	"""
@@ -37,12 +36,3 @@ def groupfinder(nick, request):
 
 	logger('security', 'groupfinder', 'return []')
 	return []
-
-def escape_string(text):
-	"""
-
-	:param text:
-	:return:
-	"""
-	return text
-	#return re.escape(text)
