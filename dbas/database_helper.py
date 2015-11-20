@@ -436,7 +436,6 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'get_premise_for_statement', 'return')
 		return return_dict
 
-
 	def get_attack_or_support_for_premisegroup(self, transaction, user, last_premises_group_uid, last_statement_uid, session_id,
 	                                           supportive, issue):
 		"""
@@ -1142,7 +1141,6 @@ class DatabaseHelper(object):
 
 
 		return return_dict
-
 
 	def get_fuzzy_string_for_start(self, value, issue, isStatement):
 		"""
