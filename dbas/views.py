@@ -1,6 +1,5 @@
 import transaction
 import datetime
-import re # for escaping string
 import requests
 
 from validate_email import validate_email
@@ -21,6 +20,7 @@ from .email import EmailHelper
 from .dictionary_helper import DictionaryHelper
 from .logger import logger
 from .strings import Translator
+from .security import escape_string
 
 name = 'D-BAS'
 version = '0.4.1'
@@ -813,7 +813,7 @@ class Dbas(object):
 		return_dict = dict()
 		try:
 			logger('set_new_start_premise', 'def', 'getting params')
-			text = re.escape(self.request.params['text'])
+			text = escape_string(self.request.params['text'])
 			conclusion_id = self.request.params['conclusion_id']
 			support = True if self.request.params['support'].lower() == 'true' else False
 			issue = self.request.params['issue'] if 'issue' in self.request.params \
@@ -897,9 +897,9 @@ class Dbas(object):
 			for key in self.request.params:
 				logger('set_new_premises_for_x', key, self.request.params[key])
 				if 'pro_' in key:
-					pro_dict[key] = re.escape(self.request.params[key])
+					pro_dict[key] = escape_string(self.request.params[key])
 				if 'con_' in key:
-					con_dict[key] = re.escape(self.request.params[key])
+					con_dict[key] = escape_string(self.request.params[key])
 
 			return_dict['status'] = '1'
 			return_dict.update(DatabaseHelper().handle_inserting_new_statements(
@@ -968,7 +968,7 @@ class Dbas(object):
 
 		try:
 			uid = self.request.params['uid']
-			corrected_text = re.escape(self.request.params['text'])
+			corrected_text = escape_string(self.request.params['text'])
 			is_final = self.request.params['final']
 			issue = self.request.params['issue'] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
@@ -1117,8 +1117,8 @@ class Dbas(object):
 		return_dict = {}
 
 		try:
-			nickname = re.escape(self.request.params['user'])
-			password = re.escape(self.request.params['password'])
+			nickname = escape_string(self.request.params['user'])
+			password = escape_string(self.request.params['password'])
 			url = self.request.params['url']
 			logger('user_login', 'def', 'params nickname: ' + str(nickname) + ', password: ' + str(password) + ', url: ' + url)
 
@@ -1195,13 +1195,13 @@ class Dbas(object):
 			logger('user_registration', 'def', param)
 
 		try:
-			firstname       = re.escape(self.request.params['firstname'])
-			lastname        = re.escape(self.request.params['lastname'])
-			nickname        = re.escape(self.request.params['nickname'])
-			email           = re.escape(self.request.params['email'])
-			gender          = re.escape(self.request.params['gender'])
-			password        = re.escape(self.request.params['password'])
-			passwordconfirm = re.escape(self.request.params['passwordconfirm'])
+			firstname       = escape_string(self.request.params['firstname'])
+			lastname        = escape_string(self.request.params['lastname'])
+			nickname        = escape_string(self.request.params['nickname'])
+			email           = escape_string(self.request.params['email'])
+			gender          = escape_string(self.request.params['gender'])
+			password        = escape_string(self.request.params['password'])
+			passwordconfirm = escape_string(self.request.params['passwordconfirm'])
 			lang            = self.request.params['lang']
 			logger('user_registration', 'def', 'params firstname: ' + str(firstname)
 			       + ', lastname: ' + str(lastname)
@@ -1303,7 +1303,7 @@ class Dbas(object):
 		return_dict = {}
 
 		try:
-			email = re.escape(self.request.params['email'])
+			email = escape_string(self.request.params['email'])
 			lang = self.request.params['lang']
 			logger('user_password_request', 'def', 'params email: ' + str(email) + ', lang ' + lang)
 			success = '1'
@@ -1372,8 +1372,8 @@ class Dbas(object):
 		:return:
 		"""
 		try:
-			title = re.escape(self.request.params['title'])
-			text = re.escape(self.request.params['text'])
+			title = escape_string(self.request.params['title'])
+			text = escape_string(self.request.params['text'])
 			return_dict = DatabaseHelper().set_news(transaction, title, text, self.request.authenticated_userid)
 		except KeyError as e:
 			return_dict = dict()
