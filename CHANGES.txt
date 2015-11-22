@@ -102,3 +102,7 @@
 0.4.1 (16.11.2015)
 ---
 - Improving bootstraping: It is now a two-step process!
+
+0.4.2 (23.11.2015)
+---
+- Bug fixes

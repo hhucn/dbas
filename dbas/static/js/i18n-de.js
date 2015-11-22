@@ -76,7 +76,7 @@ var dbas_de = {
 	'discussionEndText': 'Sie können <a id="discussionEndStepBack" href="#">hier</a> klicken, um einen Schritt zurück zugehen oder den oberen Button bzw. <a href="" id="discussionEndRestart">diesen Link</a> nutzen, um die Diskussion neu zustarten.',
 	'discussionEndFeelFreeToLogin': 'Die Diskussion endet hier. Wenn Sie weiter machen möchten, melden Sie sich bitte an :)',
 	'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
-	'doesNotHold': 'nicht wahr ist.',
+	'doesNotHold': 'keine gute Idee ist',
 	'doesNotHoldBecause': 'nicht genügen, weil',
 	'doesJustify': 'gerechtfertigen, dass',
 	'doesNotJustify': 'nicht gerechtfertigen, dass',

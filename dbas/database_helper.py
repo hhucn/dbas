@@ -399,11 +399,12 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def get_premise_for_statement(self, transaction, statement_uid, user, session_id, issue):
+	def get_premise_for_statement(self, transaction, statement_uid, isSupportive, user, session_id, issue):
 		"""
 
-		:param transaction: current transaction
+		:param transaction:
 		:param statement_uid:
+		:param isSupportive:
 		:param user:
 		:param session_id:
 		:param issue:
@@ -412,7 +413,7 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'get_premise_for_statement', 'get all premisses: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' +
 		       str(issue))
 
-		return_dict = self.get_premises_for_statement(transaction, statement_uid, user, session_id, issue)
+		return_dict = self.get_premises_for_statement(transaction, statement_uid, isSupportive, user, session_id, issue)
 
 		# get one random premise todo random
 

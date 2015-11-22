@@ -44,7 +44,7 @@ $(function () {
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		new Helper().delay(function() {
 			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
-			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionSupport)) != -1) {
+			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
 				// here we have our start statement
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {

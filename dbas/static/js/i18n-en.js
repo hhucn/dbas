@@ -136,7 +136,7 @@ var dbas_en = {
 	'irrelevant': 'Irrelevant',
 	'itIsTrue': 'it is true that',
 	'itIsFalse': 'it is false that',
-	'isFalse': 'does not hold',
+	'isFalse': 'is not a good idea',
 	'isTrue': 'holds',
 	'initialPositionSupport' : 'What is your initial position, you are supporting?',
 	'initialPositionAttack' : 'What is your initial position, you want to attack?',

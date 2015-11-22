@@ -23,7 +23,7 @@ from .logger import logger
 from .strings import Translator
 
 name = 'D-BAS'
-version = '0.4.1'
+version = '0.4.2'
 header = name + ' ' + version
 issue_fallback = 1
 
@@ -528,17 +528,18 @@ class Dbas(object):
 		return_dict = {}
 		try:
 			logger('ajax_get_premise_for_statement', 'def', 'read params: ' + str(self.request.params))
-			uids = self.request.params['uid'].split('=')
-			uid = uids[1]
+			uid = self.request.params['uid'].split('=')[1]
+			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+
 			logger('ajax_get_premise_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('ajax_get_premise_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
-			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
+			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid + ', supportive:' + str(supportive) + ',issue: ' + str(issue))
 
-			return_dict = DatabaseHelper().get_premise_for_statement(transaction, uid, self.request.authenticated_userid,
+			return_dict = DatabaseHelper().get_premise_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
 
 			return_dict['status'] = '1'

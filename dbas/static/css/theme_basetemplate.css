@@ -42,7 +42,6 @@ body {
 	background: url('../images/bg4.png') repeat fixed center;
 	background: #EBEBEB;
 	font-size: 14px;
-	/* background: #b3b3b3; */
 }
 
 html,
@@ -59,7 +58,8 @@ body {
 screen and (min-height: 1600px) {
 	body {
 		background: url('../images/bg5.png') repeat fixed center;
-		background: #EBEBEB;
+		/* background: #EBEBEB; */
+		background: #F5F5F5;
 	}
 }
 .row{

@@ -585,7 +585,7 @@ $(document).ready(function () {
 	$('#' + translationLinkDe + ' img').click(function(){ ajaxSwitchDisplayLanguage('de') });
 	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
 	$('#roundhousekick').click(function(){ ajaxRoundhouseKick(); });
-	$('#yomamma').click(function(){ ajaxMama(); });
+	//$('#yomamma').click(function(){ ajaxMama(); });
 
 	// gui preperation
 	prepareLoginRegistrationPopup();
