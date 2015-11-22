@@ -41,10 +41,10 @@ function InteractionHandler() {
 	 * Handler when an start statement was clicked, which should be attacked
 	 * @param id of the button
 	 */
-	this.moreAboutStatementButtonWasClicked = function (id) {
+	this.moreAboutStatementButtonWasClicked = function (id, isSupportive) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
-		new AjaxSiteHandler().callSiteForGetMoreForArgument(id);
+		new AjaxSiteHandler().callSiteForGetMoreForArgument(id, isSupportive);
 	};
 
 	/**
@@ -263,7 +263,7 @@ function InteractionHandler() {
 			if (hasStart		&& !hasRelation && !hasPremise	&& !hasAttack	&& !hasSupport	&& !hasMore){	this.statementButtonWasClicked(id);
 			} else if (hasStart	&& !hasRelation	&& !hasPremise	&& !hasAttack	&& hasSupport	&& !hasMore) {	id = id.substr(0, id.indexOf('_')); this.supportStatementButtonWasClicked(id);
 			} else if (hasStart	&& !hasRelation && !hasPremise	&& hasAttack 	&& !hasSupport	&& !hasMore) {	id = id.substr(0, id.indexOf('_')); this.attackStatementButtonWasClicked(id);
-			} else if (hasStart	&& !hasRelation	&& !hasPremise	&& !hasAttack	&& !hasSupport	&& hasMore) {	id = id.substr(0, id.indexOf('_')); this.moreAboutStatementButtonWasClicked(id);
+			} else if (hasStart	&& !hasRelation	&& !hasPremise	&& !hasAttack	&& !hasSupport	&& hasMore) {	id = id.substr(0, id.indexOf('_')); this.moreAboutStatementButtonWasClicked(id, true);
 			} else if (hasPremise
 					&& !hasRelation
 					&& !hasStart
@@ -488,11 +488,12 @@ function InteractionHandler() {
 	/**
 	 * Callback, when new premises were send
 	 * @param data returned data
+	 * @param isSupportive
 	 */
-	this.callbackIfDoneForSendNewStartPremise= function (data) {
+	this.callbackIfDoneForSendNewStartPremise = function (data, isSupportive) {
 		var parsedData = $.parseJSON(data);
 		 if (parsedData.status == '0') {
-			 new InteractionHandler().premiseButtonWasClicked(parsedData.premisegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'), supportive)
+			 new InteractionHandler().premiseButtonWasClicked(parsedData.premisegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'), isSupportive)
 		 } else {
 			new GuiHandler().setPremisesAsLastChild(parsedData, true);
 		 }

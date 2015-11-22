@@ -333,7 +333,7 @@ function JsonGuiHandler() {
 			conclusion_uid = jsonData.conclusion_uid,
 			argument_uid = jsonData.argument_uid,
 			premisegroup_uid = jsonData.premisegroup_uid;
-		alert("todo today 1"); // TODO TODAY
+		//alert("todo today 1"); // TODO TODAY
 		if (typeof relation == 'undefined'){
 			opinion = '<b>' + conclusion + ', ' + helper.startWithLowerCase(_t(because)) + ' ' + premise + '</b>';
 		} else {

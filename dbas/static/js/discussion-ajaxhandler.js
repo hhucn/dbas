@@ -33,9 +33,10 @@ function AjaxSiteHandler() {
 	/**
 	 * Redirection before an ajax call
 	 * @param uid current identifier
+	 * @param isSupportive
 	 */
-	this.callSiteForGetMoreForArgument = function (uid) {
-		this.redirectBrowser('uid=' + uid, attrMoreAboutArgument);
+	this.callSiteForGetMoreForArgument = function (uid, isSupportive) {
+		this.redirectBrowser('uid=' + uid + '&supportive=' + isSupportive, attrMoreAboutArgument);
 	};
 
 	/**
@@ -350,7 +351,7 @@ function AjaxSiteHandler() {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxSendNewStartPremiseDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
+			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data, supportive);
 		}).fail(function ajaxSendNewStartPremiseFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 7). '
