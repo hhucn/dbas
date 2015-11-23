@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Returns a translatet string with the given id in the right suitable.
@@ -187,6 +187,7 @@ var iHaveMuchStrongerArgumentAccepting				= 'iHaveMuchStrongerArgumentAccepting'
 var iHaveEvenStrongerArgumentAccepting				= 'iHaveEvenStrongerArgumentAccepting';
 var iNoOpinion 										= 'iNoOpinion';
 var interestingOnDBAS 								= 'interestingOnDBAS';
+var initialPosition 								= 'initialPosition';
 var initialPositionSupport 							= 'initialPositionSupport';
 var initialPositionAttack 							= 'initialPositionAttack';
 var initialPositionInterest 						= 'initialPositionInterest';

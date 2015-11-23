@@ -46,7 +46,8 @@ $(function () {
 			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
 			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
 				// here we have our start statement
-				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
+				// todo: currently not needed
+				// ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {
 				// some trick: here we have a premise for our start statement
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premise, '');

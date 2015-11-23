@@ -136,16 +136,11 @@ function callbackIfDoneForGettingNews(data) {
 		$('#' + newsBodyId).append(container);
 	}
 
-	// find max height of each row and set it
-	for (counter = 0; counter < row; counter ++) {
-		var heights = $('#row_' + counter + ' div').children(':first-child').map(function () {
-			return $(this).height();
-		}).get(), maxHeight = Math.max.apply(null, heights);
+	setMaxHeightOfNewsRows();
 
-		$.each($('#row_' + counter).children(), function () {
-			$(this).children().eq(0).height(maxHeight);
-		});
-	}
+	setPageNavigation();
+
+	// adding navigation bar
 
 	// set sharing
 	setSharingClasses();
@@ -170,6 +165,78 @@ function callbackIfDoneForSendingNews(data) {
 		$('#' + writingNewsFailedMessageId).text(_t(internalError));
 	}
 
+}
+
+/**
+ *
+ */
+function setMaxHeightOfNewsRows(){
+	var counter, row = $('#' + newsBodyId).children().length;
+
+	// bootstrap collapse
+	if ($(window).width() < 990){
+		return;
+	}
+
+	// find max height of each row and set it
+	for (counter = 0; counter < row; counter ++) {
+		var heights = $('#row_' + counter + ' div').children(':first-child').map(function () {
+			return $(this).height();
+		}).get(), maxHeight = Math.max.apply(null, heights);
+
+		$.each($('#row_' + counter).children(), function () {
+			$(this).children().eq(0).height(maxHeight);
+		});
+	}
+}
+
+/**
+ *
+ */
+function setPageNavigation(){
+	var counter, row = $('#' + newsBodyId).children().length, pagebreak = 2, pagecounter = 0, newsNavigator = $('#news-navigation'), tmp;
+
+	newsNavigator.empty();
+
+	// adding page classes to every news
+	for (counter = 0; counter < row; counter ++) {
+		if (counter != 0 && counter % pagebreak == 0){
+			pagecounter ++;
+		}
+		$('#container_' + counter).addClass('news-page-' + pagecounter).hide();
+	}
+
+	// create navbar
+	tmp = '<ul class="pagination"><li><a href="#" id="news-back"><span aria-hidden="true">&laquo;</span></a></li>';
+	for (counter = 0; counter <= pagecounter; counter ++) {
+		tmp += '<li><a href="#" counter="' + counter + '" max="' + pagecounter + '" id="news-' + (counter+1) + '">' + (counter+1) + '</a></li>';
+	}
+	tmp += '<li><a href="#" id="news-forth"><span aria-hidden="true">&raquo;</span></a></li></ul>';
+	newsNavigator.append(tmp);
+
+	// click events
+	for (counter = 0; counter <= pagecounter; counter ++) {
+		$('#news-' + counter).click(function(){
+			$('#news-navigation').children().eq(0).children().removeClass('active');
+			$(this).parent().addClass('active');
+
+			$('#' + newsBodyId).children().hide();
+			$('.news-page-' + $(this).attr('counter')).show();
+
+			// todo back and forth pagination
+			/*
+			if ($(this).attr('counter') != 0) 	$('#news-back').parent().removeClass('disabled');
+			else 								$('#news-back').parent().addClass('disabled');
+			if ($(this).attr('counter') != $(this).attr('max')) $('#news-forth').parent().removeClass('disabled');
+			else 												$('#news-forth').parent().addClass('disabled');
+			*/
+		});
+
+		$('#news-back').parent().hide();
+		$('#news-forth').parent().hide();
+		$('#news-1').parent().addClass('active');
+		$('.news-page-0').show();
+	}
 }
 
 
@@ -286,5 +353,11 @@ $(document).ready(function () {
 	 */
 	$('#' + sendNewsButtonId).click(function(){
 		ajaxSendNews();
+	});
+
+
+	// make some things pretty
+	$(window).on('resize', function resizeWindow(){
+		setMaxHeightOfNewsRows();
 	});
 });

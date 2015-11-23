@@ -138,6 +138,7 @@ var dbas_en = {
 	'itIsFalse': 'it is false that',
 	'isFalse': 'is not a good idea',
 	'isTrue': 'holds',
+	'initialPosition' : 'Initial Position',
 	'initialPositionSupport' : 'What is your initial position, you are supporting?',
 	'initialPositionAttack' : 'What is your initial position, you want to attack?',
 	'initialPositionInterest' : 'What is the initial position, you are interested in?',

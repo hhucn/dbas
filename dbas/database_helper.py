@@ -415,7 +415,7 @@ class DatabaseHelper(object):
 
 		return_dict = self.get_premises_for_statement(transaction, statement_uid, isSupportive, user, session_id, issue)
 
-		# get one random premise todo random
+		# get one random premise todo fix random
 
 		premises_dict = return_dict['premises']
 		if len(premises_dict) == 0:
@@ -701,8 +701,8 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'get_logfile_for_premisegroup', 'def with uid: ' + str(uid))
 
 		db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==uid,
-		                                                              Premise.issue_uid==issue)).first() # todo for 
-		# premise groups
+		                                                              Premise.issue_uid==issue)).first()
+		# todo for  premise groups
 		return self.get_logfile_for_statement(db_premises.statement_uid, issue)
 
 	def set_statement(self, transaction, statement, user, is_start, issue):

@@ -142,7 +142,7 @@ class Statement(DiscussionBase):
 		self.issue_uid = issue
 
 
-class TextValue(DiscussionBase):
+class TextValue(DiscussionBase): # TODO: remove this due to redundancy!
 	"""
 	Text-Value-table with several columns.
 	Each text value has a link to its most recent text value and a weight

@@ -7,19 +7,16 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
-		<!--
-		<div class="container first-container">
+		
+		<div class="container first-container colored_container" style="display:none;">
 			<div class="row">
 				<div class="col-md-12">
-					<ol class="breadcrumb" style="background: #fff;">
-  <li><a href="#">Home</a></li>
-  <li><a href="#">Library</a></li>
-  <li class="active">Data</li>
-</ol>
+					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0px;">
+					</ol>
 				</div>
 			</div>
 		</div>
--->
+
 
 		<div class="container first-container colored_container">
 			<div class="row">
@@ -39,11 +36,7 @@
 				<!--
 				<div class="col-md-1"></div>
 				-->
-				<div class="col-md-4 center text-center"><b style="display:none">Placeholder Minimap</b>
-					<!--
-					<br><img id="placeholder_minimap">
-					<br>
-					-->
+				<div class="col-md-4 center text-center">
 					<br>
 					<h6>
 					<span i18n:translate="startet_at">The discussion was started at</span> 
@@ -275,6 +268,7 @@
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-navigationhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>

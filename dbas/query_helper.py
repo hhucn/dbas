@@ -186,8 +186,6 @@ class QueryHelper(object):
 		db_related_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==related_argument_uid,
 		                                                                      Argument.issue_uid==issue)).first()
 
-		# todo: is this right?
-
 		lo = 'set_premises_related_to_argument'
 		pg = str(premisegroup_uid)
 		if 'undermine' in relation.lower() or 'support' in relation.lower():
@@ -250,8 +248,9 @@ class QueryHelper(object):
 		:param issue:
 		:return: text of the mapped textvalue for this statement
 		"""
-		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid))
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).join(
+		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid) + ', issue ' + str(issue))
+		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid,
+		                                                                Statement.issue_uid==issue)).join(
 			TextValue).first()
 		if not db_statement:
 			return None
@@ -289,7 +288,7 @@ class QueryHelper(object):
 			if not conclusion:
 				return None
 			conclusion = conclusion[0:1].lower() + conclusion[1:] # pretty print
-			argument = '\'' + premises + ('\' supports \'' if db_argument.isSupportive else '\' attacks \'') + conclusion + '\''
+			argument = premises + (' supports ' if db_argument.isSupportive else ' attacks ') + conclusion
 			return argument
 
 		# recursion
@@ -312,8 +311,8 @@ class QueryHelper(object):
 		:return: text of all premises in this group and the uids as list
 		"""
 		logger('QueryHelper', 'get_text_for_premisesGroup_uid', 'main group ' + str(uid) + ', issue ' + str(issue))
-		db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==uid, 
-		                                                               Premise.issue_uid==issue)).join(Statement).all()
+		db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==uid,
+		                                                             Premise.issue_uid==issue)).join(Statement).all()
 		text = ''
 		uids = []
 		for premise in db_premises:
@@ -349,19 +348,22 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_undermines_for_premises', 'main')
 		return_dict = {}
 		index = 0
+		given_undermines = set()
 		for s_uid in premises_as_statements_uid:
 			logger('QueryHelper', 'get_undermines_for_premises', 'db_undermine against Argument.conclusion_uid=='+str(s_uid))
 			db_undermine = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==False, Argument.conclusion_uid==s_uid, Argument.issue_uid==issue
 			                                                               )).all()
 			for undermine in db_undermine:
-				db_undermine_premises = DBDiscussionSession.query(Premise).filter(
-					and_(Premise.premisesGroup_uid==undermine.premisesGroup_uid, Premise.issue_uid==issue)).first()
-				logger('QueryHelper', 'get_undermines_for_premises', 'found db_undermine ' + str(undermine.uid))
-				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(undermine.premisesGroup_uid, issue)
-				return_dict[key + str(index) + 'id'] = undermine.premisesGroup_uid
-				return_dict[key + str(index) + '_statement_id'] = db_undermine_premises.statement_uid
-				return_dict[key + str(index) + '_argument_id'] = undermine.uid
-				index += 1
+				if undermine.premisesGroup_uid not in given_undermines:
+					given_undermines.add(undermine.premisesGroup_uid)
+					db_undermine_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==undermine.premisesGroup_uid,
+				                                                                       Premise.issue_uid==issue)).first()
+					logger('QueryHelper', 'get_undermines_for_premises', 'found db_undermine ' + str(undermine.uid))
+					return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(undermine.premisesGroup_uid, issue)
+					return_dict[key + str(index) + 'id'] = undermine.premisesGroup_uid
+					return_dict[key + str(index) + '_statement_id'] = db_undermine_premises.statement_uid
+					return_dict[key + str(index) + '_argument_id'] = undermine.uid
+					index += 1
 		return_dict[key] = str(index)
 		return return_dict
 
@@ -421,19 +423,24 @@ class QueryHelper(object):
 		:return:
 		"""
 		return_dict = {}
+		index = 0
+		given_rebuts = set()
 		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' + str(conclusion_statements_uid)
 		       + ', is_current_argument_supportive ' + str(is_current_argument_supportive) + ' (searching for the opposite)')
 		db_rebut = DBDiscussionSession.query(Argument).filter(Argument.isSupportive==(not is_current_argument_supportive),
 		                                                      Argument.conclusion_uid==conclusion_statements_uid,
 		                                                      Argument.issue_uid==issue).all()
-		for index, rebut in enumerate(db_rebut):
-			db_rebut_premises = DBDiscussionSession.query(Premise).filter(and_(
-				Premise.premisesGroup_uid==rebut.premisesGroup_uid, Premise.issue_uid==issue)).first()
-			logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
-			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(rebut.premisesGroup_uid, issue)
-			return_dict[key + str(index) + 'id'] = rebut.premisesGroup_uid
-			return_dict[key + str(index) + '_statement_id'] = db_rebut_premises.statement_uid
-			return_dict[key + str(index) + '_argument_id'] = rebut.uid
+		for rebut in db_rebut:
+			if rebut.premisesGroup_uid not in given_rebuts:
+				given_rebuts.add(rebut.premisesGroup_uid)
+				db_rebut_premises = DBDiscussionSession.query(Premise).filter(and_(
+					Premise.premisesGroup_uid==rebut.premisesGroup_uid, Premise.issue_uid==issue)).first()
+				logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
+				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(rebut.premisesGroup_uid, issue)
+				return_dict[key + str(index) + 'id'] = rebut.premisesGroup_uid
+				return_dict[key + str(index) + '_statement_id'] = db_rebut_premises.statement_uid
+				return_dict[key + str(index) + '_argument_id'] = rebut.uid
+				index += 1
 		return_dict[key] = str(len(db_rebut))
 		return return_dict
 
@@ -498,22 +505,29 @@ class QueryHelper(object):
 		:return:
 		"""
 		return_dict = {}
+		index = 0
 		logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 		       'db_undercut against Argument.argument_uid=='+str(argument_uid))
 		db_relation = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==is_supportive,
-		                                                         Argument.argument_uid==argument_uid, Argument.issue_uid==issue)).all()
+		                                                         Argument.argument_uid==argument_uid, Argument.issue_uid==issue)).all()#
+		given_relations = set()
+
 		if not db_relation:
 			return None
-		for index, relation in enumerate(db_relation):
-			db_relation_premises = DBDiscussionSession.query(Premise).filter(and_(
-				Premise.premisesGroup_uid==relation.premisesGroup_uid, Premise.issue_uid==issue)).first()
-			logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
-					'found relation, argument uid ' + str(relation.uid))
-			return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(relation.premisesGroup_uid, issue)
-			return_dict[key + str(index) + 'id'] = relation.premisesGroup_uid
-			return_dict[key + str(index) + '_statement_id'] = db_relation_premises.statement_uid
-			return_dict[key + str(index) + '_argument_id'] = relation.uid
-			#return_dict[key + str(index) + 'id'] = ','.join(uids)
+
+		for relation in db_relation:
+			if relation.premisesGroup_uid not in given_relations:
+				given_relations.add(relation.premisesGroup_uid)
+				db_relation_premises = DBDiscussionSession.query(Premise).filter(and_(
+					Premise.premisesGroup_uid==relation.premisesGroup_uid, Premise.issue_uid==issue)).first()
+				logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
+						'found relation, argument uid ' + str(relation.uid))
+				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(relation.premisesGroup_uid, issue)
+				return_dict[key + str(index) + 'id'] = relation.premisesGroup_uid
+				return_dict[key + str(index) + '_statement_id'] = db_relation_premises.statement_uid
+				return_dict[key + str(index) + '_argument_id'] = relation.uid
+				index += 1
+				#return_dict[key + str(index) + 'id'] = ','.join(uids)
 		return_dict[key] = str(len(db_relation))
 		return return_dict
 

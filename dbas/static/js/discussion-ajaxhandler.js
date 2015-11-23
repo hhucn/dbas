@@ -53,9 +53,10 @@ function AjaxSiteHandler() {
 	 * Redirection before an ajax callpgroup_id
 	 * @param id_text
 	 * @param pgroup_id
+	 * @param isSupportive true, if the premisse should be supportive
 	 */
-	this.callSiteForGetReplyForArgument = function (id_text, pgroup_id) {
-		this.redirectBrowser('id_text=' + id_text + '&pgroup_id=' + pgroup_id, attrReplyForArgument);
+	this.callSiteForGetReplyForArgument = function (id_text, pgroup_id, isSupportive) {
+		this.redirectBrowser('id_text=' + id_text + '&pgroup_id=' + pgroup_id + '&supportive=' + isSupportive, attrReplyForArgument);
 	};
 
 	/**
@@ -116,6 +117,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetAllPositionsDone(data) {
 			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
+			//new NavigationHandler().resetNavigation();
 		}).fail(function ajaxGetAllPositionsFail(err) {
 			//if (err.responseText.indexOf('404') != -1 ){
 			//	location.reload();
@@ -195,6 +197,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetTextForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForTextGetTextForStatement(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
+			//new NavigationHandler().addNavigationChooseAction();
 		}).fail(function ajaxGetTextForStatementFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 14). '
@@ -241,13 +244,15 @@ function AjaxSiteHandler() {
 	 * @param params of the clicked premise group
 	 */
 	this.getReplyForArgument = function (params) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, supportive;
 		params = params.split('&');
+		supportive = params[2].indexOf('true') != -1;
+
 		$.ajax({
 			url: 'ajax_reply_for_argument',
 			method: 'POST',
 			data: {
-				id_text: params[0], pgroup: params[1], issue: params[2]
+				id_text: params[0], pgroup: params[1], supportive: params[2], issue: params[3]
 			},
 			dataType: 'json',
 			async: true,
@@ -259,7 +264,7 @@ function AjaxSiteHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetReplyForArgumentDone(data) {
-			new InteractionHandler().callbackIfDoneReplyForArgument(data);
+			new InteractionHandler().callbackIfDoneReplyForArgument(data, supportive);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetReplyForArgumentFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));

@@ -6,46 +6,76 @@
 		<head>
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.css')}" rel="stylesheet">
-			
+
 			<style>
+
 			</style>
 		</head>
-		
+
 		<div class="container firstcontainer colored_container" tal:condition="is_author">
-<div class="row">
-		<div  class="col-md-12">
-			
-				<div id="write-news-body">
+			<div class="row">
+				<div class="col-md-12">
 
-					<h3 i18n:translate="writing_message">Writing a new message</h3>
+					<div id="write-news-body">
 
-					<div id="writing-news-failed" class="alert alert-danger" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="sr-only" i18n:translate="error:">Error:</span> <span id="writing-news-failed-message"></span>
-					</div>
+						<h3 i18n:translate="writing_message">Writing a new message</h3>
 
-					<div id="writing-news-success" class="alert alert-success" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="sr-only" i18n:translate="success:">Success:</span> <span id="writing-news-success-message"></span>
-					</div>
+						<div id="writing-news-failed" class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="error:">Error:</span> <span id="writing-news-failed-message"></span>
+						</div>
 
-					<input id="writing-news-title" name="newstitle" type="text" class="news-title" placeholder="Today is a wonderful day!" autocomplete="on" placeholder="..." tabindex="1">
+						<div id="writing-news-success" class="alert alert-success" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="success:">Success:</span> <span id="writing-news-success-message"></span>
+						</div>
 
-					<textarea id="writing-news-text" type="text" class="news-text" name="newstext" autocomplete="on" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="2"></textarea>
+						<input id="writing-news-title" name="newstitle" type="text" class="news-title" placeholder="Today is a wonderful day!" autocomplete="on" placeholder="..." tabindex="1">
 
-					<input id="send-news" type="button" value="Send News" class="button button-block btn btn-primary" data-dismiss="modal" />
-					<div id="news_credentials" style="float: right;">
-						<h5><span i18n:translate="author">Author</span>: 
+						<textarea id="writing-news-text" type="text" class="news-text" name="newstext" autocomplete="on" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="2"></textarea>
+
+						<input id="send-news" type="button" value="Send News" class="button button-block btn btn-primary" data-dismiss="modal" />
+						<div id="news_credentials" style="float: right;">
+							<h5><span i18n:translate="author">Author</span>: 
 					<span tal:replace="logged_in"></span>, 
 					<span i18n:translate="date">Date</span>: 
 					<span tal:replace="date"></span>
 				</h5>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div></div>
+		</div>
 
 		<div id="news-body"></div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 text-center">
+
+					<nav  id="news-navigation">
+						<ul class="pagination">
+							<li class="disabled">
+								<a href="#">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+							<li class="active"><a href="#">1</a></li>
+							<li><a href="#">2</a></li>
+							<li><a href="#">3</a></li>
+							<li><a href="#">4</a></li>
+							<li><a href="#">5</a></li>
+							<li>
+								<a href="#">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
 

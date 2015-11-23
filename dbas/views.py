@@ -649,9 +649,11 @@ class Dbas(object):
 			issue = issue_fallback if issue == 'undefined' else issue
 			id_text = self.request.params['id_text'].split('=')[1]
 			pgroup_id = self.request.params['pgroup'].split('=')[1]
+			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
 			logger('reply_for_argument', 'def', 'id_text ' + str(id_text))
 			logger('reply_for_argument', 'def', 'pgroup_id ' + str(pgroup_id))
+			logger('reply_for_argument', 'def', 'supportive ' + str(supportive))
 			# track will be saved in the method
 			return_dict, status = DatabaseHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, id_text,
 			                                                               pgroup_id, self.request.session.id, issue)
@@ -706,7 +708,7 @@ class Dbas(object):
 				text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
 			else:
 				logger('reply_for_response_of_confrontation', 'def', 'getting text for the first bootstrap way -> support')
-				text, uids = QueryHelper().get_text_for_premisesGroup_uid(confrontation, issue)
+				text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
 			logger('reply_for_response_of_confrontation', 'def', 'adding confrontation_text: ' + text)
 			return_dict['confrontation_text'] = text
 		except KeyError as e:

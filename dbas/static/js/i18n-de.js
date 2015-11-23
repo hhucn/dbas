@@ -132,6 +132,7 @@ var dbas_de = {
 	'islandView': 'Insel Ansicht',
 	'isFalse': 'falsch ist',
 	'isTrue': 'richtig ist',
+	'initialPosition': 'Anfangs-interesse',
 	'initialPositionSupport' : 'Was ist Ihre Meinung, die Sie unterstützen?',
 	'initialPositionAttack' : 'Was ist Ihre Meinung, di Sie angreifen möchten?',
 	'initialPositionInterest' : 'Was ist die erste Meinung, an der Sie interessiert sind?',

@@ -40,6 +40,7 @@ function InteractionHandler() {
 	/**
 	 * Handler when an start statement was clicked, which should be attacked
 	 * @param id of the button
+	 * @param isSupportive
 	 */
 	this.moreAboutStatementButtonWasClicked = function (id, isSupportive) {
 		// clear the discussion space
@@ -77,13 +78,14 @@ function InteractionHandler() {
 	 * Handler when an argument button was clicked
 	 * @param long_id
 	 * @param pgroup_id
+	 * @param isSupportive
 	 */
-	this.argumentButtonWasClicked = function (long_id, pgroup_id) {
+	this.argumentButtonWasClicked = function (long_id, pgroup_id, isSupportive) {
 		// clear the discussion space
 		$('#' + discussionSpaceId).empty();
 		$('#' + discussionsDescriptionId).empty();
 		// new AjaxSiteHandler().getReplyForArgument(id);
-		new AjaxSiteHandler().callSiteForGetReplyForArgument(long_id, pgroup_id);
+		new AjaxSiteHandler().callSiteForGetReplyForArgument(long_id, pgroup_id, isSupportive);
 	};
 
 	/**
@@ -296,7 +298,8 @@ function InteractionHandler() {
 					&& !hasSupport
 					&& !hasMore){
 				id_pgroup = discussionsDescription.attr(attr_premisegroup_uid);
-				this.argumentButtonWasClicked(long_id, id_pgroup);
+				supportive = discussionsDescription.attr(attr_supportive).toLocaleLowerCase().indexOf('true') != -1;
+				this.argumentButtonWasClicked(long_id, id_pgroup, supportive);
 			} else {
 				alert('new class in InteractionHandler: radioButtonWasChoosen\n' +
 				'has start: ' + hasStart + '\n' +
@@ -400,13 +403,14 @@ function InteractionHandler() {
 	/**
 	 * Callback for the ajax method getReplyForArgument
 	 * @param data returned json data
+	 * @param isSupportive
 	 */
-	this.callbackIfDoneReplyForArgument = function (data) {
+	this.callbackIfDoneReplyForArgument = function (data, isSupportive) {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		if (parsedData.status == '1') {
-			new JsonGuiHandler().setJsonDataAsConfrontation(parsedData);
+			new JsonGuiHandler().setJsonDataAsConfrontation(parsedData, isSupportive);
 		} else if (parsedData.status == '0') {
-			new JsonGuiHandler().setJsonDataAsConfrontationWithoutConfrontation(parsedData);
+			new JsonGuiHandler().setJsonDataAsConfrontationWithoutConfrontation(parsedData, isSupportive);
 		} else {
 			alert('error in callbackIfDoneReplyForArgument');
 		}
