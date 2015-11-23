@@ -119,14 +119,10 @@ function AjaxSiteHandler() {
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 			//new NavigationHandler().resetNavigation();
 		}).fail(function ajaxGetAllPositionsFail(err) {
-			//if (err.responseText.indexOf('404') != -1 ){
-			//	location.reload();
-			//} else {
-				new GuiHandler().setErrorDescription(_t(internalError));
-				// new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
-				new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 1). '
-					+ _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			//}
+			new GuiHandler().setErrorDescription(_t(internalError));
+			// new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 1). '
+				+ _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
 
