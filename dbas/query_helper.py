@@ -800,7 +800,7 @@ class QueryHelper(object):
 			hist['author_uid']  = str(history.author_uid)
 			hist['url']         = str(history.url)
 			hist['timestamp']   = str(history.timestamp)
-			return_dict[str(index)] = hist
+			return_dict[str(index+1)] = hist
 
 		return return_dict
 

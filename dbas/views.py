@@ -480,6 +480,7 @@ class Dbas(object):
 			logger('get_start_statements', 'error', repr(e))
 
 		return_dict['logged_in'] = self.request.authenticated_userid
+		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -517,6 +518,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
+		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -558,6 +560,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
+		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -599,6 +602,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
+		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -640,6 +644,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
+		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -681,6 +686,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
+		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -736,6 +742,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
+		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json

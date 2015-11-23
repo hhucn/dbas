@@ -95,7 +95,7 @@
 			<div class="row">
 			<div class="col-md-12">
 				<div class="row">
-					<h3 i18n:translate="history">Your history</h3>
+					<h3 i18n:translate="history">Your last history</h3>
 
 					<div style="text-align:center;">
 						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" />

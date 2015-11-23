@@ -117,7 +117,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetAllPositionsDone(data) {
 			new InteractionHandler().callbackIfDoneForGetStartStatements(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-			//new NavigationHandler().resetNavigation();
+			new NavigationHandler().setNavigationBreadcrumbs(data);
 		}).fail(function ajaxGetAllPositionsFail(err) {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			// new GuiHandler().showDiscussionError('Internal failure, could not find any start point.');
@@ -160,6 +160,7 @@ function AjaxSiteHandler() {
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 			}
 			new AjaxSiteHandler().debugger(data, url, settings_data);
+			new NavigationHandler().setNavigationBreadcrumbs(data);
 		}).fail(function ajaxGetPremiseForStatementFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting data for your statement.');
@@ -193,7 +194,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetTextForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForTextGetTextForStatement(data);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
-			//new NavigationHandler().addNavigationChooseAction();
+			new NavigationHandler().setNavigationBreadcrumbs(data);
 		}).fail(function ajaxGetTextForStatementFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 14). '
@@ -227,6 +228,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetReplyForPremiseDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForPremisegroup(data, supportive);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
+			new NavigationHandler().setNavigationBreadcrumbs(data);
 		}).fail(function ajaxGetReplyForPremiseFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
@@ -262,6 +264,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetReplyForArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneReplyForArgument(data, supportive);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
+			new NavigationHandler().setNavigationBreadcrumbs(data);
 		}).fail(function ajaxGetReplyForArgumentFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');
@@ -296,6 +299,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
 			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data, supportive);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
+			new NavigationHandler().setNavigationBreadcrumbs(data);
 		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
 			new GuiHandler().setErrorDescription(_t(internalError));
 			// new GuiHandler().showDiscussionError('Internal failure while requesting another opininion.');

@@ -169,7 +169,7 @@ function HistoryHandler(){
 	/**
 	 *
 	 */
-	this.getUserHistoryData = function(){
+	this.getUserHistoryData = function(callback){
 		'use strict';
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
@@ -240,7 +240,7 @@ function HistoryHandler(){
 	 */
 	this.setDataInHistoryTable = function (jsonData) {
 		'use strict';
-		var tableElement, trElement, tElement, i, is_argument, parsedData, topic, date, thead, tbody;
+		var tableElement, trElement, tElement, i, parsedData, thead, tbody;
 		tElement = ['', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr({
@@ -370,7 +370,7 @@ $(function () {
 	});
 
 	$('#' + requestHistoryButtonId).click(function requestTrack() {
-		new HistoryHandler().getUserHistoryData(true);
+		new HistoryHandler().getUserHistoryData();
 		$('#' + historyTableSuccessId).fadeOut('slow');
 		$('#' + historyTableFailureId).fadeOut('slow');
 		$('#' + historyTableSpaceId).empty();

@@ -1288,7 +1288,7 @@ msgstr "Your decisions"
 #. Default: Your history
 #: dbas/templates/settings.pt:98
 msgid "history"
-msgstr "Your URL-History"
+msgstr "Your last URL-History"
 
 #. Default: Change your password
 #: dbas/templates/settings.pt:133

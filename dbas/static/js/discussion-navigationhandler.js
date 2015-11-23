@@ -10,20 +10,12 @@ function NavigationHandler(){
 
 	/**
 	 *
-	 * @param classes[]
-	 * @param attributes
-	 * @param text
+	 * @param uid
 	 * @returns {*|jQuery|HTMLElement}
 	 */
-	this.getLiElement = function(classes, attributes, text){
+	this.getLiElement = function(uid){
 		var element = $('<li>');
-		element.html(text);
-		$.each(classes, function eachClasses(index, value) {
-			element.addClass(value);
-		});
-		$.each(attributes, function eachAttributes(key, value) {
-			element.attr(key, value);
-		});
+		element.attr('uid',uid);
 		return element;
 	};
 
@@ -35,38 +27,53 @@ function NavigationHandler(){
 	 */
 	this.getAElement = function(link, text){
 		var aElement = $('<a>');
-		aElement.attr('href', link).html(text);
+		aElement.attr('href', link).html(text).attr('title', text);
 		return aElement;
 	};
 
 	/**
 	 * Removes active class of the last child and adds an a-tag to the li-child
 	 */
-	this.setLastChildAsNonActive = function(){
-		var length = navigationBreadcrumb.children().length(),
-				lastChild = navigationBreadcrumb.children().eq(length-1),
-				aElement = this.getAElement(lastChild.attr('url'), lastChild.attr('t') + ' ' + lastChild.attr('s'));
-		lastChild.removeClass('active').empty().append(aElement);
+	this.setLastChildAsActive = function(){
+		var lastChild = navigationBreadcrumb.children().eq(navigationBreadcrumb.children().length-1),
+				aElement = lastChild.children().eq(0);
+		lastChild.addClass('active').empty().text(aElement.text());
 
-	};
-
-
-	/**
-	 * Reset the navigation breadcrumb
-	 */
-	this.resetNavigation = function(){
-		var liElement = this.getLiElement(['active'], {'url': window.location.href, 't': initialPosition, 's':''}, _t(initialPosition));
-		navigationBreadcrumb.empty().append(liElement);
 	};
 
 	/**
 	 * Adding a new, active child
-	 * @param textId id of text phrase
-	 * @param statement stirng of the current statement
+	 * @param url
+	 * @param text
+	 * @param uid
 	 */
-	this.addNavigationCrumb = function(textId, statement){
-		var liElement = this.getLiElement(['active'], {'url': window.location.href, 't': textId, 's': statement}, _t(textId) + ' ' + statement);
-		this.setLastChildAsNonActive();
+	this.addNavigationCrumb = function(url, text, uid){
+		var liElement = this.getLiElement(uid),
+				aElement = this.getAElement(url, text);
+		liElement.append(aElement);
 		navigationBreadcrumb.append(liElement);
-	}
+
+		aElement.click(function(){
+			alert("Todo Navi: " + aElement.attr('href'));
+		})
+	};
+
+	/**
+	 * Set jsonData.history as bread crumbs
+	 * @param jsonData
+	 */
+	this.setNavigationBreadcrumbs = function (jsonData){
+		var parsedData = $.parseJSON(jsonData), nh = new NavigationHandler(), text;
+		$.each(parsedData.history, function addJsonDataToContentAsArgumentsEach(index, history) {
+			if (history.url.indexOf('start') != -1) {										text = 'start';
+			} else if (history.url.indexOf(attrChooseActionForStatement) != -1){ 			text = 'choose action';
+			} else if (history.url.indexOf(attrGetPremisesForStatement) != -1){				text = 'get premisses';
+			} else if (history.url.indexOf(attrMoreAboutArgument) != -1){ 					text = 'more about' ;
+			} else if (history.url.indexOf(attrReplyForPremisegroup) != -1){				text = 'reply for group';
+			} else if (history.url.indexOf(attrReplyForResponseOfConfrontation) != -1){		text = 'reply for confrontation';
+			} else if (history.url.indexOf(attrReplyForArgument) != -1){					text = 'reply for argument';}
+			nh.addNavigationCrumb(history.url, text, history.uid);
+		});
+		this.setLastChildAsActive();
+	};
 }
