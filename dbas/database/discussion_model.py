@@ -327,6 +327,29 @@ class Track(DiscussionBase):
 		self.session_id = session_id
 
 
+class History(DiscussionBase):
+	"""
+	History-table with several columns.
+	Each user will be tracked
+	"""
+	__tablename__ = 'history'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	url = sa.Column(sa.Text, nullable=False)
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	session_id = sa.Column(sa.Integer)
+
+	def __init__(self, user, url, session_id=0):
+		"""
+		Initializes a row in current history-table
+		"""
+		self.author_uid = user
+		self.url = url
+		self.timestamp = func.now()
+		self.session_id = session_id
+
+
+
 class Relation(DiscussionBase):
 	"""
 	Relation-table with several columns.

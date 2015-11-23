@@ -103,7 +103,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_start_statements',
 			method: 'GET',
 			data: {
-				issue: issue_id
+				issue: issue_id, url: window.location.href
 			},
 			dataType: 'json',
 			async: true,
@@ -140,7 +140,7 @@ function AjaxSiteHandler() {
 			url: url,
 			method: 'POST',
 			data: {
-				uid: params[0], supportive: params[1], issue: params[2]
+				uid: params[0], supportive: params[1], issue: params[2], url: window.location.href
 			},
 			dataType: 'json',
 			async: true,
@@ -179,7 +179,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_text_for_statement',
 			method: 'POST',
 			data: {
-				uid: params[0], issue: params[1]
+				uid: params[0], issue: params[1], url: window.location.href
 			},
 			dataType: 'json',
 			async: true,
@@ -213,7 +213,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_reply_for_premisegroup',
 			method: 'POST',
 			data: {
-				pgroup: params[0], conclusion: params[1], supportive: params[2], issue: params[3]
+				pgroup: params[0], conclusion: params[1], supportive: params[2], issue: params[3], url: window.location.href
 			},
 			dataType: 'json',
 			async: true,
@@ -248,7 +248,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_reply_for_argument',
 			method: 'POST',
 			data: {
-				id_text: params[0], pgroup: params[1], supportive: params[2], issue: params[3]
+				id_text: params[0], pgroup: params[1], supportive: params[2], issue: params[3], url: window.location.href
 			},
 			dataType: 'json',
 			async: true,
@@ -282,7 +282,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
 			data: {
-				id: params[0], relation: params[1], confrontation: params[2], supportive:params[3], issue: params[4]
+				id: params[0], relation: params[1], confrontation: params[2], supportive:params[3], issue: params[4], url: window.location.href
 			},
 			dataType: 'json',
 			async: true,

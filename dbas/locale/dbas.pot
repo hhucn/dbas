@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-11-13 10:52+0100\n"
+"POT-Creation-Date: 2015-11-23 20:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,17 +17,17 @@ msgstr ""
 "Generated-By: Lingua 3.10\n"
 
 #. Default: 404 Error
-#: ./dbas/templates/404.pt:10
+#: ./dbas/templates/404.pt:11
 msgid "404"
 msgstr ""
 
 #. Default: The page
-#: ./dbas/templates/404.pt:13
+#: ./dbas/templates/404.pt:14
 msgid "404_text_part1"
 msgstr ""
 
 #. Default: for could not be found.
-#: ./dbas/templates/404.pt:15
+#: ./dbas/templates/404.pt:16
 msgid "404_text_part2"
 msgstr ""
 
@@ -181,8 +181,8 @@ msgid "guided_view_content2"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/index.pt:89 ./dbas/templates/content.pt:91
-#: ./dbas/templates/content.pt:123
+#: ./dbas/templates/index.pt:89 ./dbas/templates/content.pt:114
+#: ./dbas/templates/content.pt:146
 msgid "island_view"
 msgstr ""
 
@@ -612,7 +612,7 @@ msgid "imprint_copyright"
 msgstr ""
 
 #. Default: Author
-#: ./dbas/templates/snippet-footer.pt:20 ./dbas/templates/news.pt:33
+#: ./dbas/templates/snippet-footer.pt:20 ./dbas/templates/news.pt:39
 msgid "author"
 msgstr ""
 
@@ -814,14 +814,18 @@ msgid "fill_in_mail_for_password"
 msgstr ""
 
 #. Default: Error:
+#. Default: Error
 #: ./dbas/templates/snippet-popups.pt:293
-#: ./dbas/templates/snippet-popups.pt:403 ./dbas/templates/content.pt:108
+#: ./dbas/templates/snippet-popups.pt:403 ./dbas/templates/content.pt:70
+#: ./dbas/templates/content.pt:131
 msgid "error"
 msgstr ""
 
 #. Default: Success:
+#. Default: Success
 #: ./dbas/templates/snippet-popups.pt:299
 #: ./dbas/templates/snippet-popups.pt:397 ./dbas/templates/settings.pt:75
+#: ./dbas/templates/settings.pt:107 ./dbas/templates/content.pt:78
 msgid "success"
 msgstr ""
 
@@ -1097,23 +1101,23 @@ msgid "set-premissegroups9"
 msgstr ""
 
 #. Default: Writing a new message
-#: ./dbas/templates/news.pt:15
+#: ./dbas/templates/news.pt:21
 msgid "writing_message"
 msgstr ""
 
 #. Default: Error:
-#: ./dbas/templates/news.pt:19 ./dbas/templates/settings.pt:80
-#: ./dbas/templates/content.pt:158
+#: ./dbas/templates/news.pt:25 ./dbas/templates/settings.pt:80
+#: ./dbas/templates/settings.pt:113 ./dbas/templates/content.pt:181
 msgid "error:"
 msgstr ""
 
 #. Default: Success:
-#: ./dbas/templates/news.pt:24
+#: ./dbas/templates/news.pt:30
 msgid "success:"
 msgstr ""
 
 #. Default: Date
-#: ./dbas/templates/news.pt:35
+#: ./dbas/templates/news.pt:41
 msgid "date"
 msgstr ""
 
@@ -1142,38 +1146,43 @@ msgstr ""
 msgid "decisions"
 msgstr ""
 
+#. Default: Your history
+#: ./dbas/templates/settings.pt:98
+msgid "history"
+msgstr ""
+
 #. Default: Change your password
-#: ./dbas/templates/settings.pt:99
+#: ./dbas/templates/settings.pt:133
 msgid "change_password"
 msgstr ""
 
 #. Default: Old password
-#: ./dbas/templates/settings.pt:103
+#: ./dbas/templates/settings.pt:137
 msgid "old_password"
 msgstr ""
 
 #. Default: New Password
-#: ./dbas/templates/settings.pt:108
+#: ./dbas/templates/settings.pt:142
 msgid "new_password"
 msgstr ""
 
 #. Default: Strength
-#: ./dbas/templates/settings.pt:113
+#: ./dbas/templates/settings.pt:147
 msgid "strength"
 msgstr ""
 
 #. Default: New Password (confirm)
-#: ./dbas/templates/settings.pt:121
+#: ./dbas/templates/settings.pt:155
 msgid "new_password_confirm"
 msgstr ""
 
 #. Default: Great:
-#: ./dbas/templates/settings.pt:138
+#: ./dbas/templates/settings.pt:172
 msgid "great:"
 msgstr ""
 
 #. Default: Your password was changed
-#: ./dbas/templates/settings.pt:138
+#: ./dbas/templates/settings.pt:172
 msgid "password_changed"
 msgstr ""
 
@@ -1234,107 +1243,101 @@ msgid "js_disabled2"
 msgstr ""
 
 #. Default: Dialog-Based Argumentation System
-#: ./dbas/templates/content.pt:14
+#: ./dbas/templates/content.pt:24
 msgid "dbas_long"
 msgstr ""
 
 #. Default: Current discussion is about
-#: ./dbas/templates/content.pt:15
+#: ./dbas/templates/content.pt:25
 msgid "current_discussion"
 msgstr ""
 
 #. Default: The discussion was started at
-#: ./dbas/templates/content.pt:36
+#: ./dbas/templates/content.pt:42
 msgid "startet_at"
 msgstr ""
 
 #. Default: and already has
-#: ./dbas/templates/content.pt:38
+#: ./dbas/templates/content.pt:44
 msgid "already_has"
 msgstr ""
 
 #. Default: arguments
-#: ./dbas/templates/content.pt:40
+#: ./dbas/templates/content.pt:46
 msgid "arguments"
 msgstr ""
 
 #. Default: Now your opinion matters!
-#: ./dbas/templates/content.pt:43
+#: ./dbas/templates/content.pt:49
 msgid "your_opinion_matters"
 msgstr ""
 
-#. Default: Or if you want to argue against a position, mentioned above, please
-#. toggle this button:
-#: ./dbas/templates/content.pt:65
-msgid "argueAgainstPositionToggleButton"
-msgstr ""
-
 #. Default: Report
-#: ./dbas/templates/content.pt:78
+#: ./dbas/templates/content.pt:101
 msgid "report"
 msgstr ""
 
 #. Default: Change display style:
-#: ./dbas/templates/content.pt:82
+#: ./dbas/templates/content.pt:105
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ./dbas/templates/content.pt:86
+#: ./dbas/templates/content.pt:109
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Complete View
-#: ./dbas/templates/content.pt:96
+#: ./dbas/templates/content.pt:119
 msgid "complete_view"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/content.pt:122
+#: ./dbas/templates/content.pt:145
 msgid "istland_view"
 msgstr ""
 
 #. Default: Pro
-#: ./dbas/templates/content.pt:126 ./dbas/templates/content.pt:166
+#: ./dbas/templates/content.pt:149 ./dbas/templates/content.pt:189
 msgid "pro"
 msgstr ""
 
 #. Default: Contra
-#: ./dbas/templates/content.pt:132 ./dbas/templates/content.pt:185
+#: ./dbas/templates/content.pt:155 ./dbas/templates/content.pt:208
 msgid "contra"
 msgstr ""
 
 #. Default: Please insert a new Argument
-#: ./dbas/templates/content.pt:154
+#: ./dbas/templates/content.pt:177
 msgid "insert-argument"
 msgstr ""
 
 #. Default: Add a textfield
-#: ./dbas/templates/content.pt:172 ./dbas/templates/content.pt:190
+#: ./dbas/templates/content.pt:195 ./dbas/templates/content.pt:213
 msgid "add_textfield"
 msgstr ""
 
 #. Default: Statements are connected
-#: ./dbas/templates/content.pt:179 ./dbas/templates/content.pt:197
+#: ./dbas/templates/content.pt:202 ./dbas/templates/content.pt:220
 msgid "statements_connected"
 msgstr ""
 
 #. Default: List of participants
-#: ./dbas/templates/content.pt:216
+#: ./dbas/templates/content.pt:239
 msgid "participant_list"
 msgstr ""
 
 #. Default: Some additional options for the administrator.
-#: ./dbas/templates/content.pt:217 ./dbas/templates/content.pt:232
+#: ./dbas/templates/content.pt:240 ./dbas/templates/content.pt:255
 msgid "admin_only"
 msgstr ""
 
 #. Default: List of attacks, clicked by the participants
-#: ./dbas/templates/content.pt:231
+#: ./dbas/templates/content.pt:254
 msgid "list_attacks"
 msgstr ""
 
 #. Default: Minimap:
-#: ./dbas/templates/content.pt:243
+#: ./dbas/templates/content.pt:266
 msgid "minimap"
 msgstr ""

@@ -6,20 +6,18 @@
 
 function NavigationHandler(){
 	'use strict';
-	var navigationBreadcrumb = $('#navigation-breadcrumb'),
-		breadcrumbHome = $('#breadcrumb-home');
+	var navigationBreadcrumb = $('#navigation-breadcrumb');
 
 	/**
 	 *
-	 * @param id
 	 * @param classes[]
 	 * @param attributes
 	 * @param text
 	 * @returns {*|jQuery|HTMLElement}
 	 */
-	this.getLiElement = function(id, classes, attributes, text){
+	this.getLiElement = function(classes, attributes, text){
 		var element = $('<li>');
-		element.attr('id', id).html(text);
+		element.html(text);
 		$.each(classes, function eachClasses(index, value) {
 			element.addClass(value);
 		});
@@ -42,21 +40,33 @@ function NavigationHandler(){
 	};
 
 	/**
-	 *
+	 * Removes active class of the last child and adds an a-tag to the li-child
+	 */
+	this.setLastChildAsNonActive = function(){
+		var length = navigationBreadcrumb.children().length(),
+				lastChild = navigationBreadcrumb.children().eq(length-1),
+				aElement = this.getAElement(lastChild.attr('url'), lastChild.attr('t') + ' ' + lastChild.attr('s'));
+		lastChild.removeClass('active').empty().append(aElement);
+
+	};
+
+
+	/**
+	 * Reset the navigation breadcrumb
 	 */
 	this.resetNavigation = function(){
-		var liElement = this.getLiElement('breadcrumb-home', ['active'], {'url': window.location.href}, _t(initialPosition));
+		var liElement = this.getLiElement(['active'], {'url': window.location.href, 't': initialPosition, 's':''}, _t(initialPosition));
 		navigationBreadcrumb.empty().append(liElement);
 	};
 
 	/**
-	 *
+	 * Adding a new, active child
+	 * @param textId id of text phrase
+	 * @param statement stirng of the current statement
 	 */
-	this.addNavigationChooseAction = function(){
-		var aElement = this.getAElement(breadcrumbHome.attr('url'), _t(initialPosition)),
-			liElement = this.getLiElement('breadcrumb-choose-action', ['active'], {'url': window.location.href}, 'c');
-		breadcrumbHome.removeClass('active').empty().append(aElement);
-
+	this.addNavigationCrumb = function(textId, statement){
+		var liElement = this.getLiElement(['active'], {'url': window.location.href, 't': textId, 's': statement}, _t(textId) + ' ' + statement);
+		this.setLastChildAsNonActive();
 		navigationBreadcrumb.append(liElement);
 	}
 }

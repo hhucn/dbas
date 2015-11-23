@@ -440,6 +440,10 @@ class Dbas(object):
 
 		return return_json
 
+	######################
+	## DISCUSSION VIEWS ##
+	######################
+
 	# ajax - return all start statements in the database
 	@view_config(route_name='ajax_get_start_statements', renderer='json', check_csrf=False)
 	def get_start_statements(self):
@@ -460,6 +464,8 @@ class Dbas(object):
 			issue = self.request.params['issue'] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
+			url = self.request.params['url']
+			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
 
 			if issue == 'undefined':
 				logger('get_start_statements', 'def', 'issue is undefined -> fallback')
@@ -493,8 +499,10 @@ class Dbas(object):
 		return_dict = {}
 		try:
 			logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
-			uids = self.request.params['uid'].split('=')
-			uid = uids[1]
+			uid = self.request.params['uid'].split('=')[1]
+			url = self.request.params['url']
+			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
+
 			logger('get_text_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('get_text_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
@@ -530,6 +538,8 @@ class Dbas(object):
 			logger('ajax_get_premise_for_statement', 'def', 'read params: ' + str(self.request.params))
 			uid = self.request.params['uid'].split('=')[1]
 			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+			url = self.request.params['url']
+			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
 
 			logger('ajax_get_premise_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('ajax_get_premise_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
@@ -569,6 +579,8 @@ class Dbas(object):
 			logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
 			uid = self.request.params['uid'].split('=')[1]
 			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+			url = self.request.params['url']
+			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
 
 			logger('get_premises_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
 			logger('get_premises_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
@@ -611,6 +623,9 @@ class Dbas(object):
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
+			url = self.request.params['url']
+			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
+
 			issue = issue_fallback if issue == 'undefined' else issue
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
 			logger('reply_for_argument', 'def', 'pgroup ' + str(pgroup))
@@ -650,6 +665,9 @@ class Dbas(object):
 			id_text = self.request.params['id_text'].split('=')[1]
 			pgroup_id = self.request.params['pgroup'].split('=')[1]
 			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+			url = self.request.params['url']
+			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
+
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
 			logger('reply_for_argument', 'def', 'id_text ' + str(id_text))
 			logger('reply_for_argument', 'def', 'pgroup_id ' + str(pgroup_id))
@@ -689,13 +707,15 @@ class Dbas(object):
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
+			url = self.request.params['url']
+			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
 
 			# track will be saved in get_reply_confrontation_response
-			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text
-			       + ', last relation ' + relation
-			       + ', confrontation ' +  confrontation
-			       + ', issue ' + str(issue)
-			       + ', exception_rebut ' + str(exception_rebut))
+			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text)
+			logger('reply_for_response_of_confrontation', 'def', 'last relation ' + relation)
+			logger('reply_for_response_of_confrontation', 'def', 'confrontation ' +  confrontation)
+			logger('reply_for_response_of_confrontation', 'def', 'issue ' + str(issue))
+			logger('reply_for_response_of_confrontation', 'def', 'exception_rebut ' + str(exception_rebut))
 			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid_text, self.request.authenticated_userid,
 			                                                                         self.request.session.id, exception_rebut, issue)
 			return_dict['status'] = status
@@ -719,6 +739,10 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
+
+	##########################
+	## ADDTIONAL AJAX STUFF ##
+	##########################
 
 	# ajax - getting complete track of the user
 	@view_config(route_name='ajax_get_user_track', renderer='json', check_csrf=True)
@@ -768,6 +792,61 @@ class Dbas(object):
 
 		logger('delete_user_track', 'def', 'remove track data')
 		QueryHelper().del_track_of_user(transaction, nickname)
+		return_dict = {}
+		return_dict['removed_data'] = 'true' # necessary
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - getting complete track of the user
+	@view_config(route_name='ajax_get_user_history', renderer='json', check_csrf=True)
+	def get_user_history(self):
+		"""
+		Request the complete user track
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('get_user_history', 'def', 'main')
+
+		nickname = 'unknown'
+		try:
+			logger('get_user_history', 'def', 'read params')
+			nickname = str(self.request.authenticated_userid)
+			logger('get_user_history', 'def', 'nickname ' + nickname)
+		except KeyError as e:
+			logger('get_user_history', 'error', repr(e))
+
+		logger('get_user_history', 'def', 'get history data')
+		return_dict = QueryHelper().get_history_of_user(nickname)
+		logger('get_user_history', 'def', str(return_dict))
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - deleting complete history of the user
+	@view_config(route_name='ajax_delete_user_history', renderer='json', check_csrf=True)
+	def delete_user_history(self):
+		"""
+		Request the complete user history
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('delete_user_history', 'def', 'main')
+
+		nickname = 'unknown'
+		try:
+			logger('delete_user_history', 'def', 'read params')
+			nickname = str(self.request.authenticated_userid)
+			logger('delete_user_history', 'def', 'nickname ' + nickname)
+		except KeyError as e:
+			logger('delete_user_history', 'error', repr(e))
+
+		logger('delete_user_history', 'def', 'remove history data')
+		QueryHelper().del_history_of_user(transaction, nickname)
 		return_dict = {}
 		return_dict['removed_data'] = 'true' # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -1431,8 +1510,6 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
-
-
 
 	# ajax - for additional service
 	@view_config(route_name='ajax_additional_service', renderer='json')

@@ -190,10 +190,12 @@ function setButtonLanguage(){
 	$('#' + listAllUsersButtonId).prop('value', _t(showAllUsers)).prop('title', _t(showAllUsers));
 	$('#' + deleteTrackButtonId).prop('value', _t(deleteTrack)).prop('title', _t(deleteTrack));
 	$('#' + requestTrackButtonId).prop('value', _t(requestTrack)).prop('title', _t(requestTrack));
+	$('#' + deleteHistoryButtonId).prop('value', _t(deleteHistory)).prop('title', _t(deleteHistory));
+	$('#' + requestHistoryButtonId).prop('value', _t(requestHistory)).prop('title', _t(requestHistory));
 	$('#' + settingsPasswordSubmitButtonId).prop('value', _t(passwordSubmit)).prop('title', _t(passwordSubmit));
 	// $('#' + popupEditStatementShowLogButtonId).prop('value', _t(changelog)).prop('title', _t(changelog));
 	$('#' + contactSubmitButtonId).prop('value', _t(contactSubmit)).prop('title', _t(contactSubmit));
-	$('#' + discussionStartToggleButtonId).next().children().eq(0).text(_t(attackPosition))
+	$('#' + discussionStartToggleButtonId).next().children().eq(0).text(_t(attackPosition));
 	$('#' + discussionStartToggleButtonId).next().children().eq(1).text(_t(supportPosition));
 }
 

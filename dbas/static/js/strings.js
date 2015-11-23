@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Returns a translatet string with the given id in the right suitable.
@@ -127,6 +127,7 @@ var doesNotJustify 									= 'doesNotJustify';
 var doNotHesitateToContact 							= 'doNotHesitateToContact';
 var doYouWantToEnterYourStatements 					= 'doYouWantToEnterYourStatements';
 var deleteTrack 									= 'deleteTrack';
+var deleteHistory 									= 'deleteHistory';
 var euCookiePopupTitle 								= 'euCookiePopupTitle';
 var euCookiePopupText 								= 'euCookiePopupText';
 var euCookiePopoupButton1 							= 'euCookiePopoupButton1';
@@ -157,6 +158,7 @@ var goStepBack 										= 'goStepBack';
 var generateSecurePassword 							= 'generateSecurePassword';
 var goodPointTakeMeBackButtonText 					= 'goodPointTakeMeBackButtonText';
 var group_uid 										= 'group_uid';
+var history 										= 'history';
 var haveALookAt 									= 'haveALookAt';
 var howeverIHaveMuchStrongerArgumentRejecting		= 'howeverIHaveMuchStrongerArgumentRejecting';
 var howeverIHaveMuchEvenArgumentRejecting			= 'howeverIHaveMuchEvenArgumentRejecting';
@@ -171,6 +173,7 @@ var iDisagreeWith 									= 'iDisagreeWith';
 var iDoNotKnow 										= 'iDoNotKnow ';
 var iDoNotKnowInColor 								= 'iDoNotKnowInColor';
 var internalFailureWhileDeletingTrack 				= 'internalFailureWhileDeletingTrack';
+var internalFailureWhileDeletingHistory				= 'internalFailureWhileDeletingHistory';
 var internalError 									= 'internalError';
 var issueList										= 'issueList';
 var islandView 										= 'islandView';
@@ -237,6 +240,8 @@ var registered 										= 'registered';
 var right 											= 'right';
 var requestTrack 									= 'requestTrack';
 var refreshTrack 									= 'refreshTrack';
+var requestHistory 									= 'requestHistory';
+var refreshHistory 									= 'refreshHistory';
 var requestFailed 									= 'requestFailed';
 var restartDiscussion 								= 'restartDiscussion';
 var restartDiscussionTitle							= 'restartDiscussionTitle';

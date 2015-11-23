@@ -49,35 +49,24 @@ function TrackHandler() {
 
 	/**
 	 *
+	 * @param data
 	 */
-	/*
-	this.changeUserPassword = function(){
-		'use strict';
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_user_password_change',
-			method: 'POST',
-			data: { oldpw: $('#' + settingsPasswordOldInputId), newpw: $('#' + settingsPasswordInputId), confirmpw: $('#' + settingsPasswordConfirmInputId) },
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function changeUserPasswordDone(data) {
-			alert("to do 1");
-		}).fail(function changeUserPasswordFail() {
-			alert("to do 2");
-		});
-	};*/
-
 	this.getUserTrackDataDone = function(data){
 		new TrackHandler().setDataInTrackTable(data);
 	};
 
+	/**
+	 *
+	 */
 	this.getDataFail = function(){
 		$('#' + trackTableSuccessId).hide();
 		$('#' + trackTableFailureId).fadeIn('slow');
 		$('#' + trackFailureMessageId).text(_t(internalError));
 	};
 
+	/**
+	 *
+	 */
 	this.removeUserTrackDataDone = function(){
 		$('#' + trackTableSpaceId).empty();
 		$('#' + deleteTrackButtonId).hide();
@@ -174,6 +163,144 @@ function TrackHandler() {
 	};
 }
 
+function HistoryHandler(){
+	'use strict';
+
+	/**
+	 *
+	 */
+	this.getUserHistoryData = function(){
+		'use strict';
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_get_user_history',
+			method: 'POST',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function ajaxGetUserHistoryDone(data) {
+			new HistoryHandler().getUserHistoryDataDone(data);
+		}).fail(function ajaxGetUserHistoryFail() {
+			new HistoryHandler().getDataFail();
+		});
+	};
+
+	/**
+	 *
+	 */
+	this.deleteUserHistoryData = function(){
+		'use strict';
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_delete_user_history',
+			method: 'POST',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function ajaxGetUserHistoryDone(data) {
+			new HistoryHandler().removeUserHistoryDataDone(data);
+		}).fail(function ajaxGetUserHistoryFail() {
+			new HistoryHandler().getDataFail();
+		});
+	};
+
+	/**
+	 *
+	 * @param data
+	 */
+	this.getUserHistoryDataDone = function(data){
+		new HistoryHandler().setDataInHistoryTable(data);
+	};
+
+	/**
+	 *
+	 */
+	this.getDataFail = function(){
+		$('#' + historyTableSuccessId).hide();
+		$('#' + historyTableFailureId).fadeIn('slow');
+		$('#' + historyFailureMessageId).text(_t(internalError));
+	};
+
+	/**
+	 *
+	 */
+	this.removeUserHistoryDataDone = function(){
+		$('#' + historyTableSpaceId).empty();
+		$('#' + deleteHistoryButtonId).hide();
+		$('#' + requestHistoryButtonId).hide();
+		$('#' + historyTableSuccessId).show();
+		$('#' + historyTableFailureId).hide();
+		$('#' + historySuccessMessageId).text(_t(dataRemoved));
+
+	};
+
+	/**
+	 *
+	 * @param jsonData
+	 */
+	this.setDataInHistoryTable = function (jsonData) {
+		'use strict';
+		var tableElement, trElement, tElement, i, is_argument, parsedData, topic, date, thead, tbody;
+		tElement = ['', '', ''];
+		tableElement = $('<table>');
+		tableElement.attr({
+			class: 'table table-striped table-hover',
+			border: '0',
+			style: 'border-collapse: separate; border-spacing: 0px;'
+		});
+
+		trElement = $('<tr>');
+		thead = $('<thead>');
+		tbody = $('<tbody>');
+
+		for (i = 0; i < tElement.length; i += 1) {
+			tElement[i] = $('<th>');
+		}
+
+		// add header row
+		tElement[0] = $('<th>').text('#');
+		tElement[1] = $('<th>').text('ID');
+		tElement[2] = $('<th>').text('URL');
+		tElement[3] = $('<th>').text(_t(dateString));
+
+		for (i = 0; i < tElement.length; i += 1) {
+			trElement.append(tElement[i]);
+		}
+		thead.append(trElement);
+		tableElement.append(thead);
+
+		// adding the historys
+		var has_data = false;
+		parsedData = $.parseJSON(jsonData);
+		$.each(parsedData, function setDataInHistoryTableEach(history_index, history) {
+			has_data = true;
+			tElement[0] = $('<td>').text(history_index).attr('title', 'No: ' + history_index);
+			tElement[1] = $('<td>').text(history.uid).attr('title', 'History ID: ' + history.uid);
+			tElement[2] = $('<td>').html('<a href="' + history.url + '">' + history.url + '</a>').attr('title', 'URL: ' + history.url);
+			tElement[3] = $('<td>').text(history.timestamp).attr('title', 'Date: ' + history.timestamp);
+
+			trElement = $('<tr>');
+			for (i = 0; i < tElement.length; i += 1) {
+				trElement.append(tElement[i]);
+			}
+			tbody.append(trElement);
+		});
+		tableElement.append(tbody);
+
+		$('#' + historyTableSpaceId).empty();
+		if (has_data) {
+			$('#' + historyTableSpaceId).append(tableElement);
+			$('#' + deleteHistoryButtonId).fadeIn('slow');
+		} else {
+			$('#' + historyTableSuccessId).show();
+			$('#' + historySuccessMessageId).text(_t(noTrackedData));
+			$('#' + deleteHistoryButtonId).hide();
+			$('#' + requestHistoryButtonId).hide();
+		}
+	};
+
+}
+
 function PasswordHandler(){
 	// check password strength
 	// based on http://git.aaronlumsden.com/strength.js/
@@ -200,10 +327,10 @@ function PasswordHandler(){
 		'use strict';
 		var total = 0,
 			pw = passwordInput.val();
-		if (pw.length > 8) {					total = total + 1;	}
-		if (upperCase.test(pw)) {			total = total + 1;	}
-		if (lowerCase.test(pw)) {			total = total + 1;	}
-		if (numbers.test(pw)) {				total = total + 1;	}
+		if (pw.length > 8) {			total = total + 1;	}
+		if (upperCase.test(pw)) {		total = total + 1;	}
+		if (lowerCase.test(pw)) {		total = total + 1;	}
+		if (numbers.test(pw)) {			total = total + 1;	}
 		if (specialchars.test(pw)) {	total = total + 1;	}
 		new PasswordHandler().set_total(total, passwordMeter, passwordStrength, passwordExtras);
 	};
@@ -242,6 +369,21 @@ $(function () {
 		$('#' + requestTrackButtonId).val(_t(requestTrack));
 	});
 
+	$('#' + requestHistoryButtonId).click(function requestTrack() {
+		new HistoryHandler().getUserHistoryData(true);
+		$('#' + historyTableSuccessId).fadeOut('slow');
+		$('#' + historyTableFailureId).fadeOut('slow');
+		$('#' + historyTableSpaceId).empty();
+		$('#' + requestHistoryButtonId).val(_t(refreshHistory));
+	});
+
+	$('#' + deleteHistoryButtonId).hide().click(function deleteTrack() {
+		new HistoryHandler().deleteUserHistoryData();
+		$('#' + historyTableSuccessId).fadeOut('slow');
+		$('#' + historyTableFailureId).fadeOut('slow');
+		$('#' + requestHistoryButtonId).val(_t(requestHistory));
+	});
+
 	$('#' + settingsPasswordInputId).keyup(function passwordInputKeyUp() {
 		new PasswordHandler().check_strength($('#' + settingsPasswordInputId), $('#' + settingsPasswordMeterId), $('#' + settingsPasswordStrengthId), $('#' + settingsPasswordExtrasId));
 		if ($(this).val().length > 0){
@@ -266,6 +408,8 @@ $(function () {
 	$('#' + settingsPasswordExtrasId).hide();
 	$('#' + trackTableSuccessId).hide();
 	$('#' + trackTableFailureId).hide();
+	$('#' + historyTableSuccessId).hide();
+	$('#' + historyTableFailureId).hide();
 
 	// ajax loading animation
 	$(document).on({

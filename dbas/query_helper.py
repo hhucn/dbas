@@ -5,7 +5,8 @@ import locale
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup, Relation, Track, Issue
+from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup, Relation, Track, Issue, \
+	History
 from .logger import logger
 
 class QueryHelper(object):
@@ -741,7 +742,7 @@ class QueryHelper(object):
 
 	def del_track_of_user(self, transaction, user):
 		"""
-		Returns the complete track of given user
+		Deletes the complete track of given user
 		:param transaction: current transaction
 		:param user: current user
 		:param issue:
@@ -749,18 +750,71 @@ class QueryHelper(object):
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
-		logger('QueryHelper', 'del_track_of_user','user ' + str(db_user.uid))
 		DBDiscussionSession.query(Track).filter_by(author_uid=db_user.uid).delete()
+		transaction.commit()
+
+	def save_history_for_user(self, transaction, user, url, session_id):
+		"""
+		Saves history for user
+		:param transaction: current transaction
+		:param user: authentication nick id of the user
+		:param url: current url
+		:return: undefined
+		"""
+		if user == None:
+			user = 'anonymous'
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'save_history_for_user', 'user: ' + user +
+		                                                ', db_user: ' + str(db_user.uid) +
+														', url ' + str(url) +
+		                                                ', sesseion_id ' + str(session_id))
+		DBDiscussionSession.add(History(user=db_user.uid, url=url, session_id=session_id))
+		transaction.commit()
+
+	def get_history_of_user(self, user):
+		"""
+		Returns the complete track of given user
+		:param user: current user id
+		:param issue:
+		:return: track os the user id as dict
+		"""
+		logger('QueryHelper', 'get_history_of_user', 'user ' + user)
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+		if not db_user:
+			logger('QueryHelper', 'get_history_of_user', 'no user')
+			return dict()
+
+		db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
+
+		if not db_history:
+			logger('QueryHelper', 'get_history_of_user', 'no track')
+			return dict()
+
+		return_dict = collections.OrderedDict()
+
+		for index, history in enumerate(db_history):
+			hist = dict()
+			hist['uid']         = str(history.uid)
+			hist['author_uid']  = str(history.author_uid)
+			hist['url']         = str(history.url)
+			hist['timestamp']   = str(history.timestamp)
+			return_dict[str(index)] = hist
+
+		return return_dict
+
+	def del_history_of_user(self, transaction, user):
+		"""
+		Deletes the complete track of given user
+		:param transaction: current transaction
+		:param user: current user
+		:param issue:
+		:return: undefined
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'del_history_of_user','user ' + str(db_user.uid))
+		DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
 		transaction.commit()
 
 	def sql_timestamp_pretty_print(self, ts, lang):
