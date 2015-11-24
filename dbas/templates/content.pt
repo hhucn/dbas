@@ -8,7 +8,7 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
 		
-		<div class="container first-container colored_container">
+		<div class="container first-container colored_container" style="display: none;">
 			<div class="row">
 				<div class="col-md-12">
 					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0px;">

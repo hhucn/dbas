@@ -79,6 +79,7 @@ var languageDropdownId 							= 'language-dropdown';
 var minimapId 									= 'navigation-minimap-container';
 var moreAboutPositionButtonId 					= 'more-about-position';
 var navbarLeft									= 'navbar-left';
+var navigationBreadcrumbId 						= 'navigation-breadcrumb';
 var newsLink 									= 'news-link';
 var newsBodyId 									= 'news-body';
 var popupLoginNickInputId 						= 'nick-input';

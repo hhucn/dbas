@@ -290,7 +290,7 @@ class TrackingHelper(object):
 		:param user: current user id
 		:return: track os the user id as dict
 		"""
-		logger('QueryHelper', 'get_history_of_user', 'user ' + user)
+		logger('QueryHelper', 'get_history_of_user', 'user ' + str(user))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		if not db_user:

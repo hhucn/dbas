@@ -574,8 +574,10 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail() {
-			new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 11). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			new Helper().delay(function() {
+				new GuiHandler().setErrorDescription(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 11). '
+						+ _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			}, 350);
 		});
 		callback.focus();
 	};
