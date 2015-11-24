@@ -23,7 +23,7 @@ from .tracking_helper import TrackingHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
-version = '0.4.2'
+version = '0.4.3'
 header = name + ' ' + version
 issue_fallback = 1
 
