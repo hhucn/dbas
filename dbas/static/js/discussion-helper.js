@@ -25,15 +25,17 @@ function Helper() {
 	 * @param text
 	 * @param windowWidth
 	 * @param maxTextWidth
+	 * @param char
+	 * @returns {*}
 	 */
-	this.cutTextOnWhitespaces = function(text, windowWidth, maxTextWidth){
+	this.cutTextOnChar = function(text, windowWidth, maxTextWidth, char){
 		var i, pos, l;
 		if ($(window).width() < windowWidth){
 			i=1;
 			l = text.length;
 			while (i*maxTextWidth < l){
-				pos = text.indexOf(' ',i*maxTextWidth);
-				text = this.replaceAt(text, pos, '<br>', ' ');
+				pos = text.indexOf(char,i*maxTextWidth);
+				text = this.replaceAt(text, pos, '<br>', char);
 				i=i+1;
 			}
 		}

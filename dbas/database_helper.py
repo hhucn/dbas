@@ -4,7 +4,6 @@ import collections
 from sqlalchemy import and_
 from Levenshtein import distance
 from datetime import datetime
-from itertools import islice
 
 from .database import DBDiscussionSession, DBNewsSession
 from .database.discussion_model import Argument, Statement, User, Group, TextValue, TextVersion, Premise, PremiseGroup,  Track, \
@@ -15,6 +14,7 @@ from .query_helper import QueryHelper
 from .user_management import UserHandler
 from .logger import logger
 from .strings import Translator
+from .tracking_helper import TrackingHelper
 from .user_management import PasswordHandler
 
 # TODO: PEP 8
@@ -359,7 +359,7 @@ class DatabaseHelper(object):
 		:return: dictionary
 		"""
 
-		QueryHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0, session_id)
+		TrackingHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0, session_id)
 
 		return_dict = dict()
 		premises_dict = dict()
@@ -495,7 +495,7 @@ class DatabaseHelper(object):
 			return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
 
 			# save the attack
-			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
+			TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
 			                                  qh.get_relation_uid_by_name(key), 0, session_id)
 
 		return return_dict, status
@@ -580,7 +580,7 @@ class DatabaseHelper(object):
 			return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
 
 			# save the attack
-			QueryHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
+			TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
 			                                  qh.get_relation_uid_by_name(key), 0, session_id)
 
 		return return_dict, status
@@ -660,7 +660,7 @@ class DatabaseHelper(object):
 			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid, issue)
 			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
 
-		QueryHelper().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()), session_id)
+		TrackingHelper().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()), session_id)
 
 		return return_dict, status
 

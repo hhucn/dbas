@@ -1038,7 +1038,7 @@ function GuiHandler() {
 			$('#' + issueCountId).text(issue_curr.attr('count'));
 			text = $('#issue_' + current_id + ' a').text();
 			issueDropdownButton.attr('value', text);
-			text = helper.cutTextOnWhitespaces(text, 1200, 50);
+			text = helper.cutTextOnChar(text, 1200, 50, ' ');
 			this.setissueDropDownText(text);
 			issue_curr.addClass('disabled');
 		}

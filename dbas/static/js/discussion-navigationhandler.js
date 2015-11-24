@@ -52,10 +52,6 @@ function NavigationHandler(){
 				aElement = this.getAElement(url, text);
 		liElement.append(aElement);
 		navigationBreadcrumb.append(liElement);
-
-		aElement.click(function(){
-			alert("Todo Navi: " + aElement.attr('href'));
-		})
 	};
 
 	/**
@@ -65,13 +61,14 @@ function NavigationHandler(){
 	this.setNavigationBreadcrumbs = function (jsonData){
 		var parsedData = $.parseJSON(jsonData), nh = new NavigationHandler(), text;
 		$.each(parsedData.history, function addJsonDataToContentAsArgumentsEach(index, history) {
-			if (history.url.indexOf('start') != -1) {										text = 'start';
-			} else if (history.url.indexOf(attrChooseActionForStatement) != -1){ 			text = 'choose action';
-			} else if (history.url.indexOf(attrGetPremisesForStatement) != -1){				text = 'get premisses';
-			} else if (history.url.indexOf(attrMoreAboutArgument) != -1){ 					text = 'more about' ;
-			} else if (history.url.indexOf(attrReplyForPremisegroup) != -1){				text = 'reply for group';
-			} else if (history.url.indexOf(attrReplyForResponseOfConfrontation) != -1){		text = 'reply for confrontation';
-			} else if (history.url.indexOf(attrReplyForArgument) != -1){					text = 'reply for argument';}
+			if (history.url.indexOf('start') != -1) {										text = 'Start';
+			} else if (history.url.indexOf(attrChooseActionForStatement) != -1){ 			text = 'Choose action: ' + history.keyword;
+			} else if (history.url.indexOf(attrGetPremisesForStatement) != -1){				text = 'Get premises: ' + history.keyword;
+			} else if (history.url.indexOf(attrMoreAboutArgument) != -1){ 					text = 'More about: ' + history.keyword;
+			} else if (history.url.indexOf(attrReplyForPremisegroup) != -1){				text = 'Reply for argument: ' + history.keyword;
+			} else if (history.url.indexOf(attrReplyForResponseOfConfrontation) != -1){		text = 'Justification of: ' + history.keyword;
+			} else if (history.url.indexOf(attrReplyForArgument) != -1){					text = 'Confrontation: ' + history.keyword;
+			}
 			nh.addNavigationCrumb(history.url, text, history.uid);
 		});
 		this.setLastChildAsActive();

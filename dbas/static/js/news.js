@@ -216,7 +216,7 @@ function setPageNavigation(){
 
 	// click events
 	for (counter = 0; counter <= pagecounter; counter ++) {
-		$('#news-' + counter).click(function(){
+		$('#news-' + (counter+1)).click(function(){
 			$('#news-navigation').children().eq(0).children().removeClass('active');
 			$(this).parent().addClass('active');
 

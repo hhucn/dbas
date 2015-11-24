@@ -160,6 +160,7 @@ var dbas_de = {
 	'iHaveEvenStrongerArgumentAccepting': 'Ich habe ein stärkeres Argument zum Akzeptieren von',
 	'iNoOpinion': 'Ich habe keine Meinung bezüglich',
 	'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
+	'keyword': 'Schlüsselwort',
 	'keepSetting': 'Entscheidung merken',
 	'hideAllUsers': 'Verstecke alle Benutzer',
 	'hideAllAttacks': 'Verstecke alle Angriffe',

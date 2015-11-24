@@ -205,6 +205,7 @@ var inputEmpty										= 'inputEmpty';
 var isFalse											= 'isFalse';
 var isTrue											= 'isTrue';
 var keepSetting										= 'keepSetting';
+var keyword											= 'keyword';
 var hideAllUsers 									= 'hideAllUsers';
 var hideAllAttacks 									= 'hideAllAttacks';
 var letMeExplain 									= 'letMeExplain';

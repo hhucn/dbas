@@ -20,6 +20,10 @@ class Translator(object):
 		logger('Translator', 'setUpEnDict', 'def')
 
 		en_lang = {}
+		en_lang['attack']                       = 'Attack'
+		en_lang['support']                      = 'Support'
+		en_lang['premise']                      = 'Premise'
+		en_lang['because']                      = 'because'
 
 		en_lang['oldPwdEmpty']                  = 'Old password field is empty.'
 		en_lang['newPwdEmtpy']                  = 'New password field is empty.'
@@ -70,6 +74,10 @@ class Translator(object):
 		logger('Translator', 'setUpDeDict', 'def')
 
 		de_lang = {}
+		de_lang['attack']                       = 'Attackiere'
+		de_lang['support']                      = 'Unterstütze'
+		de_lang['premise']                      = 'Prämisse'
+		de_lang['because']                      = 'weil'
 
 		de_lang['oldPwdEmpty']                  = 'Altes Passwortfeld ist leer.'
 		de_lang['newPwdEmtpy']                  = 'Neues Passwortfeld ist leer.'

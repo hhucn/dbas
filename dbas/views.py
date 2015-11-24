@@ -1,7 +1,6 @@
 import transaction
 import datetime
 import requests
-import re # for escaping string
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
@@ -15,12 +14,13 @@ from pyshorteners.shorteners import Shortener
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue
 from .database_helper import DatabaseHelper
-from .user_management import PasswordGenerator, PasswordHandler, UserHandler
-from .query_helper import QueryHelper
-from .email import EmailHelper
 from .dictionary_helper import DictionaryHelper
+from .email import EmailHelper
 from .logger import logger
+from .query_helper import QueryHelper
 from .strings import Translator
+from .tracking_helper import TrackingHelper
+from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
 version = '0.4.2'
@@ -464,8 +464,11 @@ class Dbas(object):
 			issue = self.request.params['issue'] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
+
+			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
+			QueryHelper().del_history_of_user(transaction, self.request.authenticated_userid)
+			TrackingHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, 'Start', self.request.session.id)
 
 			if issue == 'undefined':
 				logger('get_start_statements', 'def', 'issue is undefined -> fallback')
@@ -480,7 +483,7 @@ class Dbas(object):
 			logger('get_start_statements', 'error', repr(e))
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -501,16 +504,17 @@ class Dbas(object):
 		try:
 			logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
 			uid = self.request.params['uid'].split('=')[1]
-			url = self.request.params['url']
-			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
-
-			logger('get_text_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
-			logger('get_text_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
-			logger('get_text_for_statement', 'def', 'uid: ' + uid + ', issue ' + str(issue))
+
+			# reset and save url for breadcrumbs
+			url = self.request.params['url']
+			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
+			                                                       uid, self.request.session.id)
+
+			logger('get_text_for_statement', 'def', 'uid: ' + uid)
+			logger('get_text_for_statement', 'def', 'issue ' + str(issue))
 			return_dict = DatabaseHelper().get_text_for_statement(transaction, uid, self.request.authenticated_userid, issue)
 			return_dict['status'] = '1'
 		except KeyError as e:
@@ -518,7 +522,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -535,21 +539,30 @@ class Dbas(object):
 
 		logger('ajax_get_premise_for_statement', 'def', 'main')
 
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
 		return_dict = {}
 		try:
 			logger('ajax_get_premise_for_statement', 'def', 'read params: ' + str(self.request.params))
 			uid = self.request.params['uid'].split('=')[1]
 			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
-			url = self.request.params['url']
-			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
-
-			logger('ajax_get_premise_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
-			logger('ajax_get_premise_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
-			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid + ', supportive:' + str(supportive) + ',issue: ' + str(issue))
+
+			# reset and save url for breadcrumbs
+			url = self.request.params['url']
+			#TrackingHelper().save_history_for_user_with_action(transaction, self.request.authenticated_userid, url, uid, supportive,
+			#                                                self.request.session.id, lang)
+			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
+			                                                       uid, self.request.session.id)
+
+			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid)
+			logger('ajax_get_premise_for_statement', 'def', 'supportive:' + str(supportive))
+			logger('ajax_get_premise_for_statement', 'def', 'issue: ' + str(issue))
 
 			return_dict = DatabaseHelper().get_premise_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
@@ -560,7 +573,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -582,17 +595,19 @@ class Dbas(object):
 			logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
 			uid = self.request.params['uid'].split('=')[1]
 			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
-			url = self.request.params['url']
-			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
 
-			logger('get_premises_for_statement', 'def', 'issue in params ' + str('issue' in self.request.params))
-			logger('get_premises_for_statement', 'def', 'issue in session ' + str('issue' in self.request.session))
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
 
-			logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', supportive ' + str(supportive) + ', issue ' + str(issue))
+			# reset and save url for breadcrumbs
+			url = self.request.params['url']
+			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
+			                                                       uid, self.request.session.id)
+
+			logger('get_premises_for_statement', 'def', 'uid: ' + uid)
+			logger('get_premises_for_statement', 'def', 'supportive ' + str(supportive))
+			logger('get_premises_for_statement', 'def', 'issue ' + str(issue))
 
 			return_dict = DatabaseHelper().get_premises_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
@@ -602,7 +617,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -619,21 +634,30 @@ class Dbas(object):
 
 		logger('reply_for_premisegroup', 'def', 'main')
 
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
 		return_dict = {}
 		try:
+			logger('reply_for_premisegroup', 'def', 'read params: ' + str(self.request.params))
 			pgroup = self.request.params['pgroup'].split('=')[1]
 			conclusion = self.request.params['conclusion'].split('=')[1]
 			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
-			url = self.request.params['url']
-			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
 
-			issue = issue_fallback if issue == 'undefined' else issue
+			# reset and save url for breadcrumbs
+			url = self.request.params['url']
+			TrackingHelper().save_history_for_user_with_argument_parts(transaction, self.request.authenticated_userid, url,
+			                                                        pgroup, conclusion, issue, self.request.session.id, lang)
+
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
 			logger('reply_for_argument', 'def', 'pgroup ' + str(pgroup))
 			logger('reply_for_argument', 'def', 'conclusion ' + str(conclusion))
+
 			# track will be saved in the method
 			return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid, pgroup,
 			                                                                    conclusion, self.request.session.id, supportive, issue)
@@ -644,7 +668,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -670,8 +694,11 @@ class Dbas(object):
 			id_text = self.request.params['id_text'].split('=')[1]
 			pgroup_id = self.request.params['pgroup'].split('=')[1]
 			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+
+			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
+			TrackingHelper().save_history_for_user_with_premissegroups_uid(transaction, self.request.authenticated_userid, url,
+			                                                           id_text.split('_')[2], pgroup_id, issue, self.request.session.id)
 
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
 			logger('reply_for_argument', 'def', 'id_text ' + str(id_text))
@@ -686,7 +713,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -713,8 +740,11 @@ class Dbas(object):
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
+
+			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			QueryHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, self.request.session.id)
+			TrackingHelper().save_history_for_user_with_premissegroup_of_arguments_uid(transaction, self.request.authenticated_userid, url,
+			                                                              uid_text.split('_')[2], issue, self.request.session.id)
 
 			# track will be saved in get_reply_confrontation_response
 			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text)
@@ -742,7 +772,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = QueryHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -826,7 +856,7 @@ class Dbas(object):
 			logger('get_user_history', 'error', repr(e))
 
 		logger('get_user_history', 'def', 'get history data')
-		return_dict = QueryHelper().get_history_of_user(nickname)
+		return_dict = TrackingHelper().get_history_of_user(nickname)
 		logger('get_user_history', 'def', str(return_dict))
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
