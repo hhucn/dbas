@@ -6,7 +6,7 @@
 
 function NavigationHandler(){
 	'use strict';
-	var navigationBreadcrumb = $('#navigation-breadcrumb');
+	var navigationBreadcrumb = $('#navigation-breadcrumb'), textThreshold = 25;
 
 	/**
 	 *
@@ -34,11 +34,10 @@ function NavigationHandler(){
 	/**
 	 * Removes active class of the last child and adds an a-tag to the li-child
 	 */
-	this.setLastChildAsActive = function(){
+	this.setLastChildAsActive = function(text){
 		var lastChild = navigationBreadcrumb.children().eq(navigationBreadcrumb.children().length-1),
 				aElement = lastChild.children().eq(0);
-		lastChild.addClass('active').empty().text(aElement.text());
-
+		lastChild.addClass('active').empty().text(text);
 	};
 
 	/**
@@ -49,9 +48,22 @@ function NavigationHandler(){
 	 */
 	this.addNavigationCrumb = function(url, text, uid){
 		var liElement = this.getLiElement(uid),
-				aElement = this.getAElement(url, text);
+				shorttext = text.length > textThreshold ? text.substr(0, textThreshold) + '...' : text,
+				aElement = this.getAElement(url, shorttext);
 		liElement.append(aElement);
 		navigationBreadcrumb.append(liElement);
+
+		aElement.hover(function(){
+			$(this).html(text);
+		}, function(){
+			$(this).html(shorttext + '...');
+		});
+
+		liElement.hover(function(){
+			aElement.html(text);
+		}, function(){
+			aElement.html(shorttext + '...');
+		});
 	};
 
 	/**
@@ -71,6 +83,6 @@ function NavigationHandler(){
 			}
 			nh.addNavigationCrumb(history.url, text, history.uid);
 		});
-		this.setLastChildAsActive();
+		this.setLastChildAsActive(text);
 	};
 }

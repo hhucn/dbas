@@ -10,8 +10,8 @@ from .query_helper import QueryHelper
 
 class TrackingHelper(object):
 
-	def __init__ (self):
-		self.char_threshold = 30
+	# def __init__ (self):
+	# 	self.char_threshold = 30
 
 	def save_track_for_user(self, transaction, user, statement_id, premisesgroup_uid, argument_uid, attacked_by_relation, attacked_with_relation, session_id):
 		"""
@@ -154,8 +154,8 @@ class TrackingHelper(object):
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid)).first()
 		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
 		text = db_textversion.content
-		if len(text) > self.char_threshold:
-			text = text[0:self.char_threshold] + '...'
+		# if len(text) > self.char_threshold:
+		# 	text = text[0:self.char_threshold] + '...'
 		self.save_history_for_user(transaction, user, url, text, session_id)
 
 	def save_history_for_user_with_argument_parts(self, transaction, user, url, premisegroups_uid, conclusion_uid, issue, session_id, lang):
@@ -175,10 +175,10 @@ class TrackingHelper(object):
 		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
 		text1, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroups_uid, issue)
 		text2 = db_textversion.content.lower()
-		if len(text1) > self.char_threshold:
-			text1 = text1[0:self.char_threshold] + '...'
-		if len(text2) > self.char_threshold:
-			text2 = text2[0:self.char_threshold] + '...'
+		# if len(text1) > self.char_threshold:
+		# 	text1 = text1[0:self.char_threshold] + '...'
+		# if len(text2) > self.char_threshold:
+		# 	text2 = text2[0:self.char_threshold] + '...'
 		self.save_history_for_user(transaction, user, url, text1 + ', ' + Translator(lang).get('because') + ' ' + text2,
 		                           session_id)
 
@@ -197,10 +197,10 @@ class TrackingHelper(object):
 		"""
 		text1, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroup_uid1, issue)
 		text2, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroup_uid2, issue)
-		if len(text1) > self.char_threshold:
-			text1 = text1[0:self.char_threshold] + '...'
-		if len(text2) > self.char_threshold:
-			text2 = text2[0:self.char_threshold] + '...'
+		# if len(text1) > self.char_threshold:
+		# 	text1 = text1[0:self.char_threshold] + '...'
+		# if len(text2) > self.char_threshold:
+		# 	text2 = text2[0:self.char_threshold] + '...'
 		self.save_history_for_user(transaction, user, url, text1 + ' vs. ' + text2, session_id)
 
 	def save_history_for_user_with_premissegroup_of_arguments_uid(self, transaction, user, url, argument_uid, issue, session_id):
@@ -235,8 +235,8 @@ class TrackingHelper(object):
 		_t = Translator(lang)
 		attribute = _t.get('support') if supportive else _t.get('attack')
 		text = db_textversion.content
-		if len(text) > self.char_threshold:
-			text = text[0:self.char_threshold] + '...'
+		# if len(text) > self.char_threshold:
+		# 	text = text[0:self.char_threshold] + '...'
 		self.save_history_for_user(transaction, user, url, attribute + ' ' + text, session_id)
 
 
