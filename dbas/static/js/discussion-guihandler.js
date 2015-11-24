@@ -148,7 +148,7 @@ function GuiHandler() {
 		 * The structure is like:
 		 * <div><textarea .../><button...></button></div>
 		 */
-		var area, parent, div, div_content, button, span, childCount, div_dropdown, id;
+		var area, parent, div, div_content, button, span, childCount, div_dropdown, id, span_because;
 		parent = $('#' + parentid);
 		childCount = parent.children().length;
 
@@ -173,6 +173,9 @@ function GuiHandler() {
 		span = $('<span>');
 		span.html('&times;');
 
+		span_because = $('<span>');
+		span_because.attr('style', 'float:left; line-height:60px; text-align:center;').html('<h4>' + _t(because) + '...' + '</h4>');
+
 		area = $('<' + type + '>');
 		id = 'textarea_' + identifier + childCount.toString();
 		area.attr({
@@ -190,6 +193,7 @@ function GuiHandler() {
 
 		button.append(span);
 		div_dropdown = this.getDropdownWithSentencesOpeners(identifier, childCount.toString());
+		div_content.append(span_because);
 		div_content.append(area);
 		// div_content.append(button); // TODO add a textfield is currently hidden
 
@@ -431,7 +435,7 @@ function GuiHandler() {
 			confrontation = discussionsDescription.attr('confrontation_text'),
 			conclusion = discussionsDescription.attr('conclusion'),
 			premise = discussionsDescription.attr('premise'),
-			argument =  conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise,
+			argument =  conclusion + ' ' + _t(because).toLocaleLowerCase() + ' ' + premise,
 			header, escapedText,
 			addStatementContainer = $('#' + addStatementContainerId),
 			addReasonButton = $('#' + addReasonButtonId),
@@ -565,9 +569,9 @@ function GuiHandler() {
 
 		var suffix;
 		if (isAttackingRelation)
-			suffix = ': <b>' + text1 + ' ' + _t(asReasonFor) + ' ' + text2 + '</b>, ' + _t(because).toLocaleLowerCase() + '...';
+			suffix = ': <b>' + text1 + ' ' + _t(asReasonFor) + ' ' + text2 + '</b>.';
 		else
-			suffix = ': <b>' + text1 + '</b>, ' + _t(because).toLocaleLowerCase() + '...';
+			suffix = ': <b>' + text1 + '</b>.' ;
 		$('#' + headingProPositionTextId).html(_t(iAgreeWithInColor) + suffix);
 		$('#' + headingConPositionTextId).html(_t(iDisagreeWithInColor) + suffix);
 	};

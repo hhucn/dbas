@@ -270,12 +270,9 @@ class DatabaseHelper(object):
 		return_dict = collections.OrderedDict(sorted(return_dict.items()))
 		return return_dict
 
-	def get_attack_overview(self, user, issue):
+	def get_attack_overview(self, user, issue, lang):
 		"""
 
-		:param user:
-		:param issue:
-		:return:
 		"""
 		is_admin = UserHandler().is_user_admin(user)
 		logger('DatabaseHelper', 'get_attack_overview', 'is_admin ' + str(is_admin) + ', issue ' + str(issue))
@@ -294,7 +291,7 @@ class DatabaseHelper(object):
 
 			for argument in db_arguments:
 				logger('DatabaseHelper', 'get_attack_overview', 'argument with uid ' + str(argument.uid) + ', issue ' + str(issue))
-				text = QueryHelper().get_text_for_argument_uid(argument.uid, issue)
+				text = QueryHelper().get_text_for_argument_uid(argument.uid, issue, lang)
 				if text:
 					argument_dict = {'id': str(argument.uid), 'text': text}
 
@@ -585,7 +582,7 @@ class DatabaseHelper(object):
 
 		return return_dict, status
 
-	def get_reply_confrontations_response(self, transaction, uid_text, user, session_id, exception_rebut, issue):
+	def get_reply_confrontations_response(self, transaction, uid_text, user, session_id, exception_rebut, issue, lang):
 		"""
 
 		:param transaction:
@@ -594,6 +591,7 @@ class DatabaseHelper(object):
 		:param session_id:
 		:param exception_rebut:
 		:param issue:
+		:param lang:
 		:return:
 		"""
 		qh = QueryHelper()
@@ -654,7 +652,7 @@ class DatabaseHelper(object):
 		return_dict['type'] = identifier
 
 		if db_argument.conclusion_uid is None or db_argument.conclusion_uid == 0:
-			return_dict['conclusion_text'] = qh.get_text_for_argument_uid(db_argument.argument_uid, issue)
+			return_dict['conclusion_text'] = qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
 			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
 		else:
 			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid, issue)

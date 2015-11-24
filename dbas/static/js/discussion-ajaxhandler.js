@@ -522,7 +522,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_attack_overview',
 			method: 'GET',
 			dataType: 'json',
-			data: { issue: new Helper().getCurrentIssueId() },
+			data: { issue: new Helper().getCurrentIssueId(), lang: getLanguage() },
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken

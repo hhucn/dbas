@@ -730,6 +730,11 @@ class Dbas(object):
 
 		logger('reply_for_response_of_confrontation', 'def', 'main')
 
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
 		return_dict = {}
 		try:
 			uid_text = self.request.params['id'].split('=')[1]
@@ -753,7 +758,7 @@ class Dbas(object):
 			logger('reply_for_response_of_confrontation', 'def', 'issue ' + str(issue))
 			logger('reply_for_response_of_confrontation', 'def', 'exception_rebut ' + str(exception_rebut))
 			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid_text, self.request.authenticated_userid,
-			                                                                         self.request.session.id, exception_rebut, issue)
+			                                                                         self.request.session.id, exception_rebut, issue, lang)
 			return_dict['status'] = status
 			return_dict['last_relation'] = relation
 			return_dict['confrontation_uid'] = confrontation
@@ -791,6 +796,11 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
 		logger('get_user_track', 'def', 'main')
 
 		nickname = 'unknown'
@@ -802,7 +812,7 @@ class Dbas(object):
 			logger('get_user_track', 'error', repr(e))
 
 		logger('manage_user_track', 'def', 'get track data')
-		return_dict = QueryHelper().get_track_of_user(nickname)
+		return_dict = TrackingHelper().get_track_of_user(nickname, lang)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -828,7 +838,7 @@ class Dbas(object):
 			logger('delete_user_track', 'error', repr(e))
 
 		logger('delete_user_track', 'def', 'remove track data')
-		QueryHelper().del_track_of_user(transaction, nickname)
+		TrackingHelper().del_track_of_user(transaction, nickname)
 		return_dict = {}
 		return_dict['removed_data'] = 'true' # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -1195,10 +1205,11 @@ class Dbas(object):
 
 		logger('get_attack_overview', 'def', 'main')
 		logger('get_attack_overview', 'check_csrf_token', str(check_csrf_token(self.request)))
+		lang = self.request.params['lang']
 		issue = self.request.params['issue'] if 'issue' in self.request.params \
 			else self.request.session['issue'] if 'issue' in self.request.session \
 			else issue_fallback
-		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid, issue)
+		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid, issue, lang)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json

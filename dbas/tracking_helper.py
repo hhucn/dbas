@@ -40,7 +40,7 @@ class TrackingHelper(object):
 		                    attacked_by=attacked_by_relation, attacked_with=attacked_with_relation, session_id=session_id))
 		transaction.commit()
 
-	def get_track_of_user(self, user):
+	def get_track_of_user(self, user, lang):
 		"""
 		Returns the complete track of given user
 		:param user: current user id
@@ -81,7 +81,7 @@ class TrackingHelper(object):
 				attacked_by_relation_str = attacked_by_relation.name if attacked_by_relation else '-'
 				attacked_with_relation_str = attacked_with_relation.name if attacked_with_relation else '-'
 				track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid, issue.uid)
-				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid, issue.uid)
+				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid, issue.uid, lang)
 				if track_argument:
 					track_argument = track_argument[1:-1]
 
@@ -179,7 +179,7 @@ class TrackingHelper(object):
 			text1 = text1[0:self.char_threshold] + '...'
 		if len(text2) > self.char_threshold:
 			text2 = text2[0:self.char_threshold] + '...'
-		self.save_history_for_user(transaction, user, url, text1 + ', ' + Translator(lang).get('because') + text2,
+		self.save_history_for_user(transaction, user, url, text1 + ', ' + Translator(lang).get('because') + ' ' + text2,
 		                           session_id)
 
 	def save_history_for_user_with_premissegroups_uid(self, transaction, user, url, premisegroup_uid1, premisegroup_uid2, issue,

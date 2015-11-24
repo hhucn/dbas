@@ -6,6 +6,7 @@ from sqlalchemy import and_
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup, Relation, Track, History
 from .logger import logger
+from .strings import Translator
 
 class QueryHelper(object):
 	"""
@@ -261,16 +262,18 @@ class QueryHelper(object):
 			tmp = tmp[:-1]
 		return tmp
 
-	def get_text_for_argument_uid(self, id, issue):
+	def get_text_for_argument_uid(self, id, issue, lang):
 		"""
 
 		:param id:
 		:param issue:
+		:param lang:
 		:return:
 		"""
 		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(id) + ', issue ' + str(issue))
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=id).first()
 		retValue = ''
+		_t = Translator(lang)
 
 		# catch error
 		if not db_argument:
@@ -287,18 +290,26 @@ class QueryHelper(object):
 			if not conclusion:
 				return None
 			conclusion = conclusion[0:1].lower() + conclusion[1:] # pretty print
-			argument = premises + (' supports ' if db_argument.isSupportive else ' attacks ') + conclusion
+			if db_argument.isSupportive:
+				argument = conclusion + ' ' + _t.get('because') + ' ' + premises
+			else:
+				argument = conclusion + ' ' + _t.get('doesNotHoldBecause') + ' ' + premises
+			#argument = premises + (' supports ' if db_argument.isSupportive else ' attacks ') + conclusion
 			return argument
 
 		# recursion
 		if db_argument.conclusion_uid == 0:
 			logger('QueryHelper', 'get_text_for_argument_uid', 'recursion with conclusion_uid: ' + str(db_argument.conclusion_uid)
 			       + ', in argument: ' + str(db_argument.uid))
-			argument = self.get_text_for_argument_uid(db_argument.argument_uid, issue)
+			argument = self.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
 			premises, uids = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
 			if not premises:
 				return None
-			retValue = premises + (' supports ' if db_argument.isSupportive else ' attacks ') + argument
+			if db_argument.isSupportive:
+				retValue = argument + ', ' + _t.get('because') + ' ' + premises
+			else:
+				retValue = argument + ' ' + _t.get('doesNotHoldBecause') + ' ' + premises
+			#retValue = premises + (' supports ' if db_argument.isSupportive else ' attacks ') + argument
 
 		return retValue
 
