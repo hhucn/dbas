@@ -79,6 +79,7 @@ function JsonGuiHandler() {
 			dict.text += !isSupportive? ' ' + _t(doesNotHold) : '';
 			guihandler.setDiscussionsDescription(_t(firstPremiseText1) + ' <b>' + text + '</b>' + (!isSupportive? ' ' + _t(doesNotHold): '')
 					+ '.<br><br>' + _t(firstPremiseText2), text, dict);
+			guihandler.hideDiscussionDescriptionsNextElement();
 		} else {
 			guihandler.setDiscussionsDescription(_t(sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> '
 					+ (isSupportive? _t(isTrue) : _t(isFalse)) + '?', text, dict);
@@ -412,6 +413,7 @@ function JsonGuiHandler() {
 				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(addPremiseRadioButtonText), false, false, false, _t(addPremiseRadioButtonText)));
 				guihandler.addListItemsToDiscussionsSpace(listitems);
 			}
+			guihandler.hideDiscussionDescriptionsNextElement();
 		} else {
 			text += '<br><br>' + _t(discussionEnd);
 			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + text, '', dict);

@@ -859,6 +859,13 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Hide some element for getting more space (hides last col-md-2)
+	 */
+	this.hideDiscussionDescriptionsNextElement = function() {
+		$('#' + discussionsDescriptionId).attr('style', 'margin-bottom: 0px;').parent().parent().next().hide();
+	};
+
+	/**
 	 * Displays all corrections in the popup
 	 * @param jsonData json encoded return data
 	 */

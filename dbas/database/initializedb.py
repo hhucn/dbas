@@ -266,7 +266,7 @@ def setupDiscussionDatabase():
 	textversion7 = TextVersion(content="You have to take the dog for a walk every day, which is tedious.", author=user2.uid, weight=0)
 	textversion8 = TextVersion(content="We have no use for a watch dog.", author=user2.uid, weight=0)
 	textversion9 = TextVersion(content="Going for a walk with the dog every day is good for social interaction and physical exercise.", author=user2.uid, weight=0)
-	textversion10 = TextVersion(content="It would be no problem to get both a cat and a dog.", author=user2.uid, weight=0)
+	textversion10 = TextVersion(content="It would be no problem.", author=user2.uid, weight=0)
 	textversion11 = TextVersion(content="A cat and a dog will generally not get along well.", author=user2.uid, weight=0)
 	textversion12 = TextVersion(content="We do not have enough money for two pets.", author=user2.uid, weight=0)
 	textversion13 = TextVersion(content="A dog costs taxes and will be more expensive than a cat.", author=user2.uid, weight=0)
