@@ -101,15 +101,21 @@ class Dbas(object):
 		except KeyError:
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
-		if 'form.contact.submitted' in self.request.params:
-			logger('main_contact', 'form.contact.submitted', 'requesting params')
-			username = self.request.params['name']
-			email = self.request.params['mail']
-			phone = self.request.params['phone']
-			content = self.request.params['content']
-			spam = self.request.params['spam']
-			request_token = self.request.params['csrf_token']
+		logger('main_contact', 'form.contact.submitted', 'requesting params')
+		username        = self.request.params['name'] if 'name' in self.request.params else ''
+		email           = self.request.params['mail'] if 'mail' in self.request.params else ''
+		phone           = self.request.params['phone'] if 'phone' in self.request.params else ''
+		content         = self.request.params['content'] if 'content' in self.request.params else ''
+		spam            = self.request.params['spam'] if 'spam' in self.request.params else ''
+		request_token   = self.request.params['csrf_token'] if 'csrf_token' in self.request.params else ''
+		logger('main_contact', 'form.contact.submitted', 'name: ' + name)
+		logger('main_contact', 'form.contact.submitted', 'mail: ' + email)
+		logger('main_contact', 'form.contact.submitted', 'phone: ' + phone)
+		logger('main_contact', 'form.contact.submitted', 'content: ' + content)
+		logger('main_contact', 'form.contact.submitted', 'spam: ' + spam)
+		logger('main_contact', 'form.contact.submitted', 'csrf_token: ' + request_token)
 
+		if 'form.contact.submitted' in self.request.params:
 			t = Translator(lang)
 
 			logger('main_contact', 'form.contact.submitted', 'validating email')
@@ -156,6 +162,7 @@ class Dbas(object):
 				       + t.get('message') + ':\n' + content
 				send_message, contact_error, message = EmailHelper().send_mail(self.request, subject, body, email, lang)
 
+		logger('main_contact', 'form.contact.submitted', 'content: ' + content)
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),

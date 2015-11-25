@@ -16,6 +16,12 @@
 	border: 1px solid #006ab3;
 	transition: .5s ease;
 }
+	#logo_kolleg_s{
+		display: none;
+	}
+	#logo_fhoev_s{
+		display: none;
+	}
 
 .logo {
 	margin-top: 20px;
@@ -84,6 +90,12 @@
 }
 
 @media (max-width: 768px) {
+	.first-container{
+		margin-top: 0px;
+	}
+	div#wrapper-content{
+		padding-top: 20px;
+	}
 	.content h1 .smaller {
 		display: block;
 	}
@@ -99,5 +111,21 @@
 	}
 	.glyphicon-icon {
 		display: none;
+	}
+	#logo_kolleg{
+		display: none;
+	}
+	#logo_fhoev{
+		display: none;
+	}
+	#logo_kolleg_s{
+		display: inline;
+		width:auto;
+		height: 84px;
+	}
+	#logo_fhoev_s{
+		display: inline;
+		width:auto;
+		height: 84px;
 	}
 }

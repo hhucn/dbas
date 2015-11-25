@@ -67,7 +67,6 @@
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<strong i18n:translate="error">Error</strong>
 						<span id="discussion-error-description"></span>
 					</div>
 					

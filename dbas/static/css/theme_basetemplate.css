@@ -39,7 +39,7 @@ body {
 	/* font-family: "DroidSans", "OpenSans", Helvetica, Arial, sans-serif; */
 	font-weight: 300;
 	color: #000;
-	background: url('../images/bg4.png') repeat fixed center;
+	/*background: url('../images/blur-03.jpg') repeat fixed center;*/
 	background: #EBEBEB;
 	font-size: 14px;
 }
@@ -53,15 +53,15 @@ body {
 
 
 /* new scale for bg for retina displays */
-
+/*
 @media screen and (min-width: 2560px),
 screen and (min-height: 1600px) {
 	body {
 		background: url('../images/bg5.png') repeat fixed center;
 		/* background: #EBEBEB; */
-		background: #F5F5F5;
-	}
-}
+		/* background: #F5F5F5; */
+/*	}
+}*/
 .row{
 	margin-left: 0px;
 	margin-right: 0px;
@@ -172,7 +172,7 @@ body.loading .ajaxloader {
 }
 
 .colored_container{
-	background: #fff;
+	background: rgba(255, 255, 255, 1.0);
 	padding: 1em;
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
 }

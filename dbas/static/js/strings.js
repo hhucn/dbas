@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Returns a translatet string with the given id in the right suitable.
@@ -206,6 +206,13 @@ var isFalse											= 'isFalse';
 var isTrue											= 'isTrue';
 var keepSetting										= 'keepSetting';
 var keyword											= 'keyword';
+var keywordStart 									= 'keywordStart';
+var keywordChooseActionForStatement 				= 'keywordChooseActionForStatement';
+var keywordGetPremisesForStatement 					= 'keywordGetPremisesForStatement';
+var keywordMoreAboutArgument 						= 'keywordMoreAboutArgument';
+var keywordReplyForPremisegroup 					= 'keywordReplyForPremisegroup';
+var keywordReplyForResponseOfConfrontation 			= 'keywordReplyForResponseOfConfrontation';
+var keywordReplyForArgument 						= 'keywordReplyForArgument';
 var hideAllUsers 									= 'hideAllUsers';
 var hideAllAttacks 									= 'hideAllAttacks';
 var letMeExplain 									= 'letMeExplain';
@@ -332,10 +339,19 @@ var sentencesOpenersRequesting = [
  * URL's
  * @type {string}
  */
-var attrChooseActionForStatement = 'choose_action_for_statement';
-var attrGetPremisesForStatement = 'get_premises_for_statement';
-var attrMoreAboutArgument = 'more_about_argument';
-var attrReplyForPremisegroup = 'reply_for_premisegroup';
-var attrReplyForArgument = 'reply_for_argument';
+var attrStart 							= 'start';
+var attrChooseActionForStatement 		= 'choose_action_for_statement';
+var attrGetPremisesForStatement 		= 'get_premises_for_statement';
+var attrMoreAboutArgument 				= 'more_about_argument';
+var attrReplyForPremisegroup 			= 'reply_for_premisegroup';
+var attrReplyForArgument 				= 'reply_for_argument';
 var attrReplyForResponseOfConfrontation = 'reply_for_response_of_confrontation';
-var attrGo = 'go';
+var attrGo 								= 'go';
+
+var urlContact 							= 'contact';
+var urlLogin 							= 'login';
+var urlNews 							= 'news';
+var urlContent 							= 'content';
+var urlSettings 						= 'settings';
+var urlImprint 							= 'imprint';
+var urlLogout 							= 'logout';

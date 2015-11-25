@@ -76,15 +76,15 @@ function NavigationHandler(){
 		navigationBreadcrumb.parent().parent().parent().show();
 
 		$.each(parsedData.history, function addJsonDataToContentAsArgumentsEach(index, history) {
-			if (history.url.indexOf('start') != -1) {										text = 'Start';
-			} else if (history.url.indexOf(attrChooseActionForStatement) != -1){ 			text = 'Choose action: ' + history.keyword;
-			} else if (history.url.indexOf(attrGetPremisesForStatement) != -1){				text = 'Get premises: ' + history.keyword;
-			} else if (history.url.indexOf(attrMoreAboutArgument) != -1){ 					text = 'More about: ' + history.keyword;
-			} else if (history.url.indexOf(attrReplyForPremisegroup) != -1){				text = 'Reply for argument: ' + history.keyword;
-			} else if (history.url.indexOf(attrReplyForResponseOfConfrontation) != -1){		text = 'Justification of: ' + history.keyword;
-			} else if (history.url.indexOf(attrReplyForArgument) != -1){					text = 'Confrontation: ' + history.keyword;
+			if (history.url.indexOf(attrStart) != -1) {										text = _t(keywordStart);
+			} else if (history.url.indexOf(attrChooseActionForStatement) != -1){ 			text = _t(keywordChooseActionForStatement) + ': ' + history.keyword;
+			} else if (history.url.indexOf(attrGetPremisesForStatement) != -1){				text = _t(keywordGetPremisesForStatement) + ': ' + history.keyword;
+			} else if (history.url.indexOf(attrMoreAboutArgument) != -1){ 					text = _t(keywordMoreAboutArgument) + ': ' + history.keyword;
+			} else if (history.url.indexOf(attrReplyForPremisegroup) != -1){				text = _t(keywordReplyForPremisegroup) + ': ' + history.keyword;
+			} else if (history.url.indexOf(attrReplyForResponseOfConfrontation) != -1){		text = _t(keywordReplyForResponseOfConfrontation) + ': ' + history.keyword;
+			} else if (history.url.indexOf(attrReplyForArgument) != -1){					text = _t(keywordReplyForArgument) + ': ' + history.keyword;
 			}
-			nh.addNavigationCrumb(history.url, text, history.uid, history.url.indexOf('start') == -1);
+			nh.addNavigationCrumb(history.url, text, history.uid, history.url.indexOf(attrStart) == -1);
 		});
 		this.setLastChildAsActive(text);
 	};

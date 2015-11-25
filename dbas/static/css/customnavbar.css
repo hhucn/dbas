@@ -21,7 +21,7 @@ bootstrap-paper hover #eeeeee
 }
 
 #custom-bootstrap-menu.navbar-default .navbar-brand:hover {
-	background-color: #EBEBEB;
+	background-color: #EBEBEB; /*Paper bootstrap*/
 	/*
 	background-color: #006ab3;
 	background-image: url('../images/brand_white_small.png');
@@ -101,7 +101,17 @@ bootstrap-paper hover #eeeeee
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
 	color: #000;
+	/*font-weight: 400;*/
 	background-color: #EBEBEB;
+}
+
+.navbar-transparent{
+	background-color: transparent;
+	-webkit-box-shadow: 0 0 0 rgba(0,0,0,0);
+	-webkit-transition: all 0.5s linear;
+	-moz-transition: all 0.5s linear;
+	-o-transition: all 0.5s linear;
+	transition: all 0.5s linear;
 }
 
 /* END CUSTOM */
@@ -139,7 +149,7 @@ bootstrap-paper hover #eeeeee
 	*/
 	/* paper bootstrap */
 	background: #fff;
-	border-top: thin solid #bababa;	
+	border-top: thin solid #bababa;
 	bottom: 0;
 	left: 0;
 }

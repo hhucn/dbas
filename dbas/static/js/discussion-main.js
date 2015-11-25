@@ -7,7 +7,7 @@
  */
 
 /**
- *
+ * Discussion will be started: Resstart button and discussion container are visible, issue list will be fetched
  */
 startDiscussion = function () {
 	//$('#' + startDiscussionButtonId).hide(); // hides the start button
@@ -20,7 +20,7 @@ startDiscussion = function () {
 };
 
 /**
- *
+ * Restarts discussion by redirecting to "mainpage + 'discussion/start/issue=' + issue_id"
  */
 resetDiscussion = function () {
 	var issue_id = new Helper().getCurrentIssueId();
@@ -77,8 +77,7 @@ $(function () {
 	guiHandler.hideErrorDescription();
 
 	// hide the restart button and add click function
-	$('#' + restartDiscussionButtonId).hide(); // hides the restart button
-	$('#' + restartDiscussionButtonId).click(function restartDiscussionButtonId() {
+	$('#' + restartDiscussionButtonId).hide().click(function restartDiscussionButtonId() {
 		resetDiscussion();
 	});
 
@@ -220,14 +219,40 @@ $(function () {
 	 * Handling report button
 	 */
 	$('#' + reportButtonId).click(function(){
+		/*
 		var mailto = 'dbas.hhu@gmail.com',
 				cc = 'krauthoff@cs.uni-duesseldorf.de',
 				subject = 'Report ' + new Helper().getTodayAsDate(),
 				body = 'URL: ' + window.location.href + '%0A%0AReport:%0A' + _t(fillLine).toUpperCase();
+		// open new email tab
 		window.location.href = 'mailto:' + mailto
 				+ '?cc=' + cc
 				+ '&subject=' + subject
 				+ '&body=' + body;
+		window.open(mainpage + 'contact', '_blank');
+		*/
+
+		// jump to contact tab
+		var line1 = 'Report ' + new Helper().getTodayAsDate(),
+				line2 = 'URL: ' + window.location.href,
+				line3 = _t(fillLine).toUpperCase(),
+				f = $("<form target='_blank' method='POST' style='display:none;'></form>").attr({action: mainpage + 'contact'}),
+				params = {'content': line1 + '\n' + line2 + '\n' + line3,
+					'name': $('#header_user').parent().text().replace(/\s/g,'')};
+		f.appendTo(document.body);
+		for (var i in params) {
+			if (params.hasOwnProperty(i)) {
+				f.append($('<input type="hidden" />').attr({
+					name: i,
+					value: params[i]
+				}));
+			}
+		}
+
+		f.submit();
+		f.remove();
+
+
 	}).hover(function () {
 		$(this).toggleClass('btn-primary', 400);
 	});
@@ -271,7 +296,7 @@ $(function () {
 
 	$(window).on('resize', function resizeWindow(){
 		// make some things pretty
-		new GuiHandler().setissueDropDownText(new Helper().cutTextOnChar($('#'  +issueDropdownButtonID).attr('value'), 1200, 50, ''));
+		new GuiHandler().setissueDropDownText(new Helper().cutTextOnChar($('#' + issueDropdownButtonID).attr('value'), 1200, 50, ''));
 	});
 
 	// some hack
@@ -290,7 +315,7 @@ $(function () {
 			// get issue list
 			ajaxHandler.getIssueList();
 
-			if (url.indexOf('start') != -1) {										ajaxHandler.getStartStatements();
+			if (url.indexOf(attrStart) != -1) {										ajaxHandler.getStartStatements();
 			} else if (url.indexOf(attrChooseActionForStatement) != -1){ 			ajaxHandler.getTextForStatement(params);
 			} else if (url.indexOf(attrGetPremisesForStatement) != -1){				ajaxHandler.getPremiseForStatement(params, id_premisses);
 			} else if (url.indexOf(attrMoreAboutArgument) != -1){ 					ajaxHandler.getPremiseForStatement(params, id_premisse);

@@ -96,6 +96,16 @@ function goBackToTop() {
 	});
 }
 
+function changeBackgroundOnScroll(){
+	$(window).scroll(function () {
+		if (jQuery(this).scrollTop() > 10) {
+			$('#custom-bootstrap-menu').removeClass('navbar-transparent');
+		} else {
+			$('#custom-bootstrap-menu').addClass('navbar-transparent');
+		}
+	});
+}
+
 /**
  * Displays dialog
  * @param titleText
@@ -567,19 +577,21 @@ $(document).ready(function () {
 
 	goBackToTop();
 
+	//changeBackgroundOnScroll();
+
 	setActiveLanguage($('#hidden_language').val());
 	setButtonLanguage();
 
 	// set current file to active
 	var path = window.location.href;
-		 if (path.indexOf('contact') != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('login') != -1){		setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('news') != -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('content') != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('settings') != -1 ||
-			 path.indexOf('imprint') != -1 ||
-			 path.indexOf('logout') != -1){											$('#' + navbarLeft).hide(); }
-	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
+		 if (path.indexOf('urlContact') != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf('urlLogin') != -1){		setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf('urlNews') != -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
+	else if (path.indexOf('urlContent') != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf('urlSettings') != -1 ||
+			 path.indexOf('urlImprint') != -1 ||
+			 path.indexOf('urlLogout') != -1){											$('#' + navbarLeft).hide(); }
+	else { 											setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
 	// language switch
 	$('#' + translationLinkDe).click(function(){ ajaxSwitchDisplayLanguage('de') });

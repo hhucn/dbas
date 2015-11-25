@@ -27,14 +27,14 @@
 				<div class="form-group">
 					<label class="col-sm-3 control-label" i18n:translate="phone_no">Your Phone Number</label>
 					<div class="col-sm-9">
-						<input type="tel" class="tel" name="phone" autocomplete="on" placeholder="example: +49 (0)211 81-13461" tabindex="3" autocomplete="on" value="${phone}">
+						<input type="tel" class="tel" name="phone" autocomplete="on" placeholder="example: +49 (0)211 81-13461" tabindex="3" value="${phone}">
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-sm-3 control-label" i18n:translate="message_req">Your Message (required)</label>
 					<div class="col-sm-9">
-						<textarea type="text" class="content" name="content" autocomplete="on" placeholder="example: I’d like to say good job!" tabindex="4" value="${content}"></textarea>
+						<textarea type="text" class="content" name="content" autocomplete="on" placeholder="example: I’d like to say good job!" tabindex="4" value="${name}"><span tal:replace="content"/></textarea>
 					</div>
 				</div>
 
