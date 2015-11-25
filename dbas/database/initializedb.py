@@ -366,6 +366,8 @@ def setupDiscussionDatabase():
 	textversion107 = TextVersion(content="The mayor should increase the taxes", author=user2.uid, weight=0)
 	textversion108 = TextVersion(content="The number of police patrols should be increased.", author=user2.uid, weight=0)
 
+	textversion109 = TextVersion(content="It is much work to take care of both animals.", author=user2.uid, weight=0)
+
 	DBDiscussionSession.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6, textversion7,
 	                             textversion8, textversion9, textversion10, textversion11, textversion12, textversion13, textversion14,
 	                             textversion15, textversion16, textversion17, textversion18, textversion19, textversion20, textversion21,
@@ -381,7 +383,7 @@ def setupDiscussionDatabase():
 	                             textversion86, textversion87, textversion88, textversion89, textversion90, textversion91, textversion92,
 	                             textversion93, textversion94, textversion95, textversion96, textversion97, textversion98, textversion99,
 	                             textversion100, textversion101, textversion102, textversion103, textversion104, textversion105,
-	                             textversion106, textversion107, textversion108] )
+	                             textversion106, textversion107, textversion108, textversion109] )
 	DBDiscussionSession.flush()
 
 	#Adding all textvalues
@@ -494,6 +496,8 @@ def setupDiscussionDatabase():
 	textvalue107 = TextValue(textversion=textversion107.uid)
 	textvalue108 = TextValue(textversion=textversion108.uid)
 
+	textvalue109 = TextValue(textversion=textversion109.uid)
+
 	DBDiscussionSession.add_all([textvalue1, textvalue2, textvalue3, textvalue4, textvalue5, textvalue6, textvalue7, textvalue8,
 	                             textvalue9, textvalue10, textvalue11, textvalue12, textvalue13, textvalue14, textvalue15, textvalue16,
 	                             textvalue17, textvalue18, textvalue19, textvalue20, textvalue21, textvalue22, textvalue23, textvalue24,
@@ -507,7 +511,7 @@ def setupDiscussionDatabase():
 	                             textvalue82, textvalue83, textvalue84, textvalue85, textvalue86, textvalue87, textvalue88, textvalue89,
 	                             textvalue90, textvalue91, textvalue92, textvalue93, textvalue94, textvalue95, textvalue96, textvalue97,
 	                             textvalue98, textvalue99, textvalue100, textvalue101, textvalue102, textvalue103, textvalue104,
-	                             textvalue105, textvalue106, textvalue107, textvalue108])
+	                             textvalue105, textvalue106, textvalue107, textvalue108, textvalue109])
 	DBDiscussionSession.flush()
 
 	#Set textvalues of the textversions
@@ -619,6 +623,9 @@ def setupDiscussionDatabase():
 	textversion106.set_textvalue(textvalue106.uid)
 	textversion107.set_textvalue(textvalue107.uid)
 	textversion108.set_textvalue(textvalue108.uid)
+
+	textversion109.set_textvalue(textvalue109.uid)
+
 	DBDiscussionSession.flush()
 
 	#Adding all statements
@@ -731,6 +738,8 @@ def setupDiscussionDatabase():
 	statement107 = Statement(text=textvalue107.uid, isstartpoint=True, issue=issue2.uid)
 	statement108 = Statement(text=textvalue108.uid, isstartpoint=False, issue=issue2.uid)
 
+	statement109 = Statement(text=textvalue109.uid, isstartpoint=False, issue=issue1.uid)
+
 	DBDiscussionSession.add_all([statement1, statement2, statement3, statement4, statement5, statement6, statement7, statement8,
 	                             statement9, statement10, statement11, statement12, statement13, statement14, statement15, statement16,
 	                             statement17, statement18, statement19, statement20, statement21, statement22, statement23, statement24,
@@ -744,7 +753,7 @@ def setupDiscussionDatabase():
 	                             statement82, statement83, statement84, statement85, statement86, statement87, statement88, statement89,
 	                             statement90, statement91, statement92, statement93, statement94, statement95, statement96, statement97,
 	                             statement98, statement99, statement100, statement101, statement102, statement103, statement104,
-	                             statement105, statement106, statement107, statement108])
+	                             statement105, statement106, statement107, statement108, statement109])
 	DBDiscussionSession.flush()
 
 	#Adding all premisegroups
@@ -853,6 +862,8 @@ def setupDiscussionDatabase():
 	premisegroup102 = PremiseGroup(author=user2.uid)
 	premisegroup103 = PremiseGroup(author=user2.uid)
 
+	premisegroup104 = PremiseGroup(author=user2.uid)
+
 	DBDiscussionSession.add_all([premisegroup1, premisegroup2, premisegroup3, premisegroup4, premisegroup5, premisegroup6,
 	                             premisegroup7, premisegroup8, premisegroup9, premisegroup10, premisegroup11, premisegroup12,
 	                             premisegroup13, premisegroup14, premisegroup15, premisegroup16, premisegroup17, premisegroup18,
@@ -870,7 +881,7 @@ def setupDiscussionDatabase():
 	                             premisegroup85, premisegroup86, premisegroup87, premisegroup88, premisegroup89, premisegroup90,
 	                             premisegroup91, premisegroup92, premisegroup93, premisegroup94, premisegroup95, premisegroup96,
 	                             premisegroup97, premisegroup98, premisegroup99, premisegroup100, premisegroup101, premisegroup102,
-	                             premisegroup103])
+	                             premisegroup103, premisegroup104])
 	DBDiscussionSession.flush()
 
 	premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement4.uid, isnegated=False, author=user2.uid, issue=issue1.uid)
@@ -979,6 +990,8 @@ def setupDiscussionDatabase():
 	premise103 = Premise(premisesgroup=premisegroup102.uid, statement=statement107.uid,  isnegated=False, author=user2.uid, issue=issue2.uid)
 	premise104 = Premise(premisesgroup=premisegroup103.uid, statement=statement108.uid,  isnegated=False, author=user2.uid, issue=issue2.uid)
 
+	premise105 = Premise(premisesgroup=premisegroup104.uid, statement=statement109.uid,  isnegated=False, author=user2.uid, issue=issue1.uid)
+
 	DBDiscussionSession.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9,
 	                             premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17, premise18,
 	                             premise19, premise20, premise21, premise22, premise23, premise24, premise25, premise26, premise27,
@@ -990,7 +1003,7 @@ def setupDiscussionDatabase():
 	                             premise73, premise74, premise75, premise76, premise77, premise78, premise79, premise80, premise81,
 	                             premise82, premise83, premise84, premise85, premise86, premise87, premise88, premise89, premise90,
 	                             premise91, premise92, premise93, premise94, premise95, premise96, premise97, premise98, premise99,
-	                             premise100, premise101, premise102, premise103, premise104])
+	                             premise100, premise101, premise102, premise103, premise104, premise105])
 	DBDiscussionSession.flush()
 
 	#Adding all arguments and set the adjacency list
@@ -1102,6 +1115,9 @@ def setupDiscussionDatabase():
 	argument102 = Argument(premisegroup=premisegroup103.uid, issupportive=False, author=user2.uid, weight=0, issue=issue2.uid)
 	#premise104 = Premise(premisesgroup=premisegroup103.uid, statement=statement108.uid,  isnegated=False, author=user2.uid,  issue=issue2.uid)
 
+	argument105 = Argument(premisegroup=premisegroup104.uid, issupportive=False, author=user2.uid, weight=0, conclusion=statement10.uid,
+	                       issue=issue1.uid)
+
 	DBDiscussionSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9,
 	                             argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18,
 	                             argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27,
@@ -1113,7 +1129,7 @@ def setupDiscussionDatabase():
 	                             argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81,
 	                             argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90,
 	                             argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99,
-	                             argument100, argument101, argument102])
+	                             argument100, argument101, argument102, argument105])
 	DBDiscussionSession.flush()
 
 	argument5.conclusions_argument(argument3.uid)
