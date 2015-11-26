@@ -193,6 +193,7 @@ var settingsPasswordSubmitButtonId 				= 'settings-password-submit';
 var settingsPasswordChangeDangerMessage 		= 'settings-danger-message';
 var settingsPasswordChangeSuccessMessage 		= 'settings-success-message';
 var switchLangIndicatorEnId						= 'switch-lang-indicator-en';
+var startDiscussionButtonId 					= 'start-discussion-button';
 var switchLangIndicatorDeId						= 'switch-lang-indicator-de';
 var supportPositionButtonId 					= 'support-position';
 var trackTableSuccessId 						= 'track-table-success';

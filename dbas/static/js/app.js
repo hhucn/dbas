@@ -207,6 +207,7 @@ function setButtonLanguage(){
 	$('#' + contactSubmitButtonId).prop('value', _t(contactSubmit)).prop('title', _t(contactSubmit));
 	$('#' + discussionStartToggleButtonId).next().children().eq(0).text(_t(attackPosition));
 	$('#' + discussionStartToggleButtonId).next().children().eq(1).text(_t(supportPosition));
+	$('#' + startDiscussionButtonId).prop('value', _t(letsGo)).prop('title', _t(letsGo));
 }
 
 function hideExtraViewsOfLoginPopup(){

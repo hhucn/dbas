@@ -11,13 +11,19 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo"><br>
+						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
+						<br>
 						<h2><span class="font-semi-bold" i18n:translate="welcome">Welcome</span>
 								<span class="smaller"><span i18n:translate="to_the_dbas">to the</span>
 									<span class="font-semi-bold">D</span><span i18n:translate="ialog">ialog</span>-<span class="font-semi-bold">B</span><span i18n:translate="ased">ased</span> <span class="font-semi-bold">A</span><span i18n:translate="rgumentation">rgumentation</span> <span class="font-semi-bold">S</span><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span> 
 									<span class="font-semi-bold">D-BAS</span>
 								</span></h2>
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
+						<br>
+						<form action="/discussion/start" method="get" style="text-align:center;">
+							<input class="button button-block btn btn-primary" type="submit" value="If you do wish to start now,<br>please click here!" name="Submit" id="start-discussion-button" />
+						</form>
+						<br>
 						<br>
 						<p class="lead" i18n:translate="dbas_intro_advantages_intro">D-Bas offers a lot of advantages, here are a few of them:</p>
 						<ul class="lead list">
@@ -36,13 +42,13 @@
 							<li>
 								<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
 									<img id="logo_kolleg" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo" />
-									<img id="logo_kolleg_s" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}" alt="graduation school logo"/>
+									<img id="logo_kolleg_s" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}" alt="graduation school logo" />
 								</a>
 							</li>
 							<li>
 								<a id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
 									<img id="logo_fhoev" class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" alt="fhoev logo" />
-									<img id="logo_fhoev_s" class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}" alt="fhoev logo"/>
+									<img id="logo_fhoev_s" class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}" alt="fhoev logo" />
 								</a>
 							</li>
 						</ul>

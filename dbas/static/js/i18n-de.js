@@ -177,6 +177,7 @@ var dbas_de = {
 	'last_action': 'Letzte Aktion',
 	'last_login': 'Letze Anmeldung',
 	'logfile': 'Logdatei für',
+	'letsGo': 'Wenn Sie direkt starten möchten, klicken Sie bitte hier!',
 	'medium': 'mittel',
 	'newPremisesRadioButtonText': 'Nichts von alldem. Ich habe neue Gründe!',
 	'newPremisesRadioButtonTextAsFirstOne': 'Ja, ich möchte neue Gründe angeben!',

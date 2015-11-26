@@ -221,6 +221,7 @@ var languageCouldNotBeSwitched 						= 'languageCouldNotBeSwitched';
 var last_action 									= 'last_action';
 var last_login 										= 'last_login';
 var logfile											= 'logfile';
+var letsGo 											= 'letsGo';
 var medium 											= 'medium';
 var newPremisesRadioButtonText 						= 'newPremiseRadioButtonText';
 var newPremisesRadioButtonTextAsFirstOne			= 'newPremiseRadioButtonTextAsFirstOne';
