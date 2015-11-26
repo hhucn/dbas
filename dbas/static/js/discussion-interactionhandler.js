@@ -447,8 +447,8 @@ function InteractionHandler() {
 		}
 
 		if (parsedData.status == '-1') {
-			gh.setDiscussionsDescription(_t(firstPositionText), _t(firstPositionText), null);
-			gh.setNewArgumentButtonOnly(_t(firstConclusionRadioButtonText), false, true);
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(_t(internalError));
 		} else {
 			new JsonGuiHandler().setJsonDataToContentAsStartStatement(parsedData);
 		}

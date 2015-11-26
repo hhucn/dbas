@@ -68,7 +68,7 @@
 								</a>
 							</li>
 							<li>
-								<a id="logout-link" href="#" title="Logout the user">
+								<a id="logout-link" href="" title="Logout the user">
 									<img id="header_logout" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="logout">Logout</span>
 								</a>
 							</li>

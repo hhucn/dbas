@@ -79,12 +79,19 @@ function GuiHandler() {
 	/**
 	 * Sets an "add statement" button as content
 	 * @param val will be used as value
-	 * @param isArgument if true, argumentButtonWasClicked is used, otherwise
+	 * @param isArgumentOrStart if true, argumentButtonWasClicked is used, otherwise
 	 */
-	this.setNewArgumentButtonOnly = function (val, isArgument) {
+	this.setNewArgumentButtonOnly = function (val, isArgumentOrStart) {
 		var listitem = [];
-		listitem.push(new Helper().getKeyValAsInputInLiWithType(addReasonButtonId, val, isArgument, false, false, ''));
+		listitem.push(new Helper().getKeyValAsInputInLiWithType(addReasonButtonId, val, isArgumentOrStart, false, false, ''));
 		new GuiHandler().addListItemsToDiscussionsSpace(listitem);
+	};
+
+	/**
+	 * Checks and hides the new argument button
+	 */
+	this.checkAndHideNewArgumentButton = function(){
+		$('#' + addReasonButtonId).attr('checked', true).prop('checked', true).parent().hide();
 	};
 
 	/**

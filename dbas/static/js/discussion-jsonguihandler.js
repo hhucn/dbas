@@ -39,22 +39,29 @@ function JsonGuiHandler() {
 	this.setJsonDataToContentAsStartStatement = function (jsonData) {
 		var listitems = [], guihandler = new GuiHandler(), helper = new Helper();
 		guihandler.setDiscussionsDescription(_t(initialPositionInterest), '' , null);
-		$.each(jsonData.statements, function setJsonDataToContentAsConclusionEach(key, val) {
-			listitems.push(helper.getKeyValAsInputInLiWithType(val.uid, val.text + '.', true, false, false,''));
-		});
 
-		// sanity check for an empty list
-		if (listitems.length === 0) {
-			// todo: is this even used?
-			alert('discussion-guihandler.: setJsonDataToContentAsStartStatement');
-			guihandler.setDiscussionsDescription(_t(firstOneText) + '<b>' + jsonData.statements.currentStatementText + '</b>', '' , null);
+		// status 1 = we have issues; 0, we habe nothing
+		if (jsonData.status == '1') {
+			$.each(jsonData.statements, function setJsonDataToContentAsConclusionEach(key, val) {
+				listitems.push(helper.getKeyValAsInputInLiWithType(val.uid, val.text + '.', true, false, false, ''));
+			});
+
+			if (typeof jsonData.logged_in == "string") {
+				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newConclusionRadioButtonText), false, false, false, ''));
+			}
+			guihandler.addListItemsToDiscussionsSpace(listitems);
+		} else {
+			if (typeof jsonData.logged_in == "string") {
+				guihandler.setDiscussionsDescription(_t(firstPositionText), _t(firstPositionText), null);
+				guihandler.setNewArgumentButtonOnly(_t(firstConclusionRadioButtonText), true);
+				guihandler.checkAndHideNewArgumentButton();
+				new InteractionHandler().radioButtonChanged();
+
+			} else {
+				guihandler.setDiscussionsDescription(_t(discussionEndFeelFreeToLogin), '', null);
+			}
 		}
 
-		if (typeof jsonData.logged_in == "string") {
-			listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(newConclusionRadioButtonText), false, false, false, ''));
-		}
-
-		guihandler.addListItemsToDiscussionsSpace(listitems);
 	};
 
 	/**
@@ -115,8 +122,7 @@ function JsonGuiHandler() {
 
 			// if there is no argument
 			if (Object.keys(jsonData.premises).length == 0){
-				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
-				$('#li_' + addReasonButtonId).hide();
+				new GuiHandler().checkAndHideNewArgumentButton();
 				new InteractionHandler().radioButtonChanged();
 			}
 		} else {
@@ -165,8 +171,7 @@ function JsonGuiHandler() {
 				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, '-', false, false, false, ''));
 				guihandler.addListItemsToDiscussionsSpace(listitems);
 
-				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true);
-				$('#li_' + addReasonButtonId).hide();
+				guihandler.checkAndHideNewArgumentButton();
 				new InteractionHandler().radioButtonChanged();
 				if (isSupportive)
 					$('#' + addStatementContainerH4Id).html(_t(canYouGiveAReasonFor) + ' ' + argument + '?');
@@ -406,7 +411,7 @@ function JsonGuiHandler() {
 			if (parseInt(jsonData.reason) == 0){
 				listitems.push(helper.getKeyValAsInputInLiWithType(addReasonButtonId, _t(firstOneReason), false, false, false, _t(addPremiseRadioButtonText)));
 				guihandler.addListItemsToDiscussionsSpace(listitems);
-				$('#' + addReasonButtonId).attr('checked', true).prop('checked', true).parent().hide();
+				guihandler.checkAndHideNewArgumentButton();
 				new InteractionHandler().radioButtonChanged();
 
 			} else {

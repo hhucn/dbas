@@ -443,7 +443,7 @@
 	</div>
 </div>
 
-<!-- HOW TO WRITE POPUP -->
+<!-- HOW TO PASSWORD -->
 <div class="modal fade" id="popup-generate-password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -506,6 +506,7 @@
 				<ul id="how-to-write-text-dont-list">
 					<li i18n:translate="how-to-write-text-complicated">Complicated and nested sentences!</li>
 					<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per textarea!</li>
+					<li i18n:translate="how-to-write-text-negations">Do never ever use negations! Every negation will be set extra! This is highly important!</li>
 				</ul>
 			</div>
 			<div class="modal-footer">

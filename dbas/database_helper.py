@@ -322,7 +322,7 @@ class DatabaseHelper(object):
 				statements_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement, issue)
 		else:
 			logger('DatabaseHelper', 'get_start_statements', 'there are no statements')
-			return_dict['status'] = '-1'
+			return_dict['status'] = '0'
 
 		return_dict['statements'] = statements_dict
 		return return_dict

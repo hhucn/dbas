@@ -488,6 +488,7 @@ class Dbas(object):
 			return_dict.update(DatabaseHelper().get_start_statements(issue))
 		except KeyError as e:
 			logger('get_start_statements', 'error', repr(e))
+			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
 		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
