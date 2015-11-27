@@ -21,8 +21,10 @@
 		<div class="container colored_container">
 			<div class="row">
 				<div class="col-md-8 center text-center">
+					<!--
 					<h3><span class="font-semi-bold" i18n:translate="dbas_long">Dialog-Based Argumentation System</span></h3>
-					<h5><span i18n:translate="current_discussion">Current discussion is about</span></h5>
+					-->
+					<h4><p i18n:translate="current_discussion">Current discussion is about</p></h4>
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<span class="caret"></span>
@@ -37,7 +39,6 @@
 				<div class="col-md-1"></div>
 				-->
 				<div class="col-md-4 center text-center">
-					<br>
 					<h6>
 					<span i18n:translate="startet_at">The discussion was started at</span> 
 						<span class="font-semi-bold" id="issue-date"></span> 
@@ -45,9 +46,11 @@
 						<span id="issue-count" class="font-semi-bold"></span> 
 						<span i18n:translate="arguments" class="font-semi-bold">arguments</span>.
 					</h6>
+					<!--
 					<h6>
 					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
 					</h6>
+					-->
 					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn btn-primary" data-dismiss="modal" />
 				</div>
 			</div>

@@ -497,6 +497,41 @@ class DatabaseHelper(object):
 
 		return return_dict, status
 
+	def get_attack_or_support_for_premisegroup_by_args(self, attack_with, attack_arg, pgroup, conclusion, issue):
+		"""
+		Same as get_attack_or_support_for_premisegroup, but more manually
+		:return:
+		"""
+
+		logger('DatabaseHelper', 'get_attack_for_premisegroup', 'attack_with: ' + attack_with
+		       + ', attack_arg:' + attack_arg
+		       + ', pgroup:' + pgroup
+		       + ', conclusion:' + conclusion)
+		return_dict = {}
+		status = '1'
+
+		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==int(pgroup),
+		                                                              Argument.conclusion_uid==int(conclusion))).first()
+
+		#{'attack': 'undercut',
+		##'argument_id': '1',
+		##'conclusion_text': 'We should get a cat',
+		##'premise_text': 'cats are very independent',
+		##'confrontation': 'the purpose of a pet is to have something to take care of',
+		# 'confrontation_uid': 17,
+		##'confrontation_argument_id': 17}>
+
+		return_dict['attack'] = attack_with
+		return_dict['argument_id'] = str(db_argument.uid)
+		return_dict['conclusion_text'] = QueryHelper().get_text_for_statement_uid(int(db_argument.conclusion_uid), issue)
+		return_dict['premise_text'], tmp = QueryHelper().get_text_for_arguments_premisesGroup_uid(db_argument.uid, issue)
+		return_dict['confrontation'], tmp = QueryHelper().get_text_for_arguments_premisesGroup_uid(int(attack_arg), issue)
+		return_dict['confrontation_uid'] = attack_arg
+		return_dict['confrontation_argument_id'] = attack_arg
+
+		return return_dict, status
+
+
 	def get_attack_for_argument(self, transaction, user, id_text, pgroup_id, session_id, issue):
 		"""
 

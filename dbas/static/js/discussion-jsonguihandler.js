@@ -18,7 +18,7 @@ function JsonGuiHandler() {
 		dict = {'conclusion_uid': jsonData.uid, 'text': jsonData.text};
 
 		txt = helper.startWithLowerCase(jsonData.text);
-		guihandler.setDiscussionsDescription(_t(whatDoYouThink) + ' <b>' + txt + '</b>?', '', dict);
+		guihandler.setDiscussionsDescription(_t(whatDoYouThinkAbout) + ' <b>' + txt + '</b>?', '', dict);
 
 		// build input-tags
 		txt = ': <b>' + txt + '</b>.';
@@ -199,7 +199,7 @@ function JsonGuiHandler() {
 			text = _t(otherParticipantsThinkThat) + ' <b>' + conclusion
 					+ '</b>, ' + helper.startWithLowerCase(_t(because))
 					+ ' <b>' + premise + '</b>.<br><br>';
-			text += isSupportive ? (_t(whatDoYouThink) + '?') : (_t(whyAreYouDisagreeing));
+			text += isSupportive ? (_t(whatDoYouThinkAboutThat) + '?') : (_t(whyAreYouDisagreeing));
 
 			dict = {'argument_uid': jsonData.argument_uid,
 				'conclusion_id': conclusion,
@@ -303,7 +303,7 @@ function JsonGuiHandler() {
 		// set discussions text - dictionary needs strings, no variables as keys!
 		dict = {'confrontation_uid': jsonData.confrontation_argument_id, 'current_attack': jsonData.attack, 'supportive': isSupportive};
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>'
-			+ confrontationText + '.<br><br>' + _t(whatDoYouThink) + '?', _t(thisConfrontationIs) + ' ' + jsonData.attack + '.', dict);
+			+ confrontationText + '.<br><br>' + _t(whatDoYouThinkAboutThat) + '?', _t(thisConfrontationIs) + ' ' + jsonData.attack + '.', dict);
 
 		// build the radio buttons
 		text[0] = relationArray[0] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : '');

@@ -336,19 +336,37 @@ class History(DiscussionBase):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	url = sa.Column(sa.Text, nullable=False)
-	keyword = sa.Column(sa.Text, nullable=False)
+	keyword_after_decission = sa.Column(sa.Text, nullable=False)
+	keyword_before_decission = sa.Column(sa.Text, nullable=False)
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	session_id = sa.Column(sa.Integer)
 
-	def __init__(self, user, url, keyword, session_id=0):
+	def __init__(self, user, url, keyword_after_decission='', keyword_before_decission='', session_id=0):
 		"""
 		Initializes a row in current history-table
 		"""
 		self.author_uid = user
 		self.url = url
-		self.keyword = keyword
+		self.keyword_after_decission = keyword_after_decission
+		self.keyword_before_decission = keyword_before_decission
 		self.timestamp = func.now()
 		self.session_id = session_id
+
+	def set_keyword_after_decission(self, keyword_after_decission):
+		"""
+		Refrehses the value
+		:param keyword_after_decission: current keyword
+		:return:
+		"""
+		self.keyword_after_decission = keyword_after_decission
+
+	def set_keyword_before_decission(self, keyword_before_decission):
+		"""
+		Refrehses the value
+		:param keyword_before_decission: current keyword
+		:return:
+		"""
+		self.keyword_before_decission = keyword_before_decission
 
 
 

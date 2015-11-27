@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-11-26 08:47+0100\n"
+"POT-Creation-Date: 2015-11-26 15:28+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -32,61 +32,61 @@ msgid "404_text_part2"
 msgstr "for could not be found."
 
 #. Default: Welcome
-#: dbas/templates/index.pt:15
+#: dbas/templates/index.pt:16
 msgid "welcome"
 msgstr "Welcome"
 
 #. Default: to the
-#: dbas/templates/index.pt:16
+#: dbas/templates/index.pt:17
 msgid "to_the_dbas"
 msgstr "to the"
 
 #. Default: ialog
-#: dbas/templates/index.pt:17
+#: dbas/templates/index.pt:18
 msgid "ialog"
 msgstr "ialog"
 
 #. Default: ased
-#: dbas/templates/index.pt:17
+#: dbas/templates/index.pt:18
 msgid "ased"
 msgstr "ased"
 
 #. Default: rgumentation
-#: dbas/templates/index.pt:17
+#: dbas/templates/index.pt:18
 msgid "rgumentation"
 msgstr "rgumentation"
 
 #. Default: oftware
-#: dbas/templates/index.pt:17
+#: dbas/templates/index.pt:18
 msgid "oftware"
 msgstr "oftware"
 
 #. Default: or short
-#: dbas/templates/index.pt:17
+#: dbas/templates/index.pt:18
 msgid "or_short"
 msgstr "or short"
 
 #. Default: This novel discussions software will help you to discuss a problem
 #. or statement in a structured manner.
-#: dbas/templates/index.pt:20
+#: dbas/templates/index.pt:21
 msgid "novel_software"
 msgstr ""
 "This novel discussions software will help you to discuss a problem or "
 "statement in a structured manner."
 
 #. Default: D-Bas offers a lot of advantages, here are a few of them:
-#: dbas/templates/index.pt:22
+#: dbas/templates/index.pt:28
 msgid "dbas_intro_advantages_intro"
 msgstr "D-Bas offers a lot of advantages, here are a few of them:"
 
 #. Default: Easy to use and very powerful
-#: dbas/templates/index.pt:24
+#: dbas/templates/index.pt:30
 msgid "dbas_intro_advantages_1"
 msgstr "Easy to use and very powerful"
 
 #. Default: Avoid redundancy due to multiple statements because an
 #. argumentation map is used as background structure
-#: dbas/templates/index.pt:25
+#: dbas/templates/index.pt:31
 msgid "dbas_intro_advantages_2"
 msgstr ""
 "Avoid redundancy due to multiple statements because an argumentation map is "
@@ -94,13 +94,13 @@ msgstr ""
 
 #. Default: Every argument and position will be connected logically to each
 #. other
-#: dbas/templates/index.pt:26
+#: dbas/templates/index.pt:32
 msgid "dbas_intro_advantages_3"
 msgstr "Every argument and position will be connected logically to each other"
 
 #. Default: This project is based on research of the graduation school Online-
 #. Participation, subsidised governmentally by
-#: dbas/templates/index.pt:29
+#: dbas/templates/index.pt:35
 msgid "projec_based_on"
 msgstr ""
 "This project is based on research of the graduation school Online-"
@@ -108,33 +108,33 @@ msgstr ""
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: dbas/templates/index.pt:29
+#: dbas/templates/index.pt:35
 msgid "ministry_of_innovation"
 msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 
 #. Default: And don't forget to check reguarly the
-#: dbas/templates/index.pt:50
+#: dbas/templates/index.pt:56
 msgid "dont_forget"
 msgstr "And don't forget to check reguarly the"
 
 #. Default: news-page
-#: dbas/templates/index.pt:50
+#: dbas/templates/index.pt:56
 msgid "news_page"
 msgstr "news-page"
 
 #. Default: Features
-#: dbas/templates/index.pt:60 dbas/templates/snippet-header.pt:26
+#: dbas/templates/index.pt:66 dbas/templates/snippet-header.pt:26
 msgid "features"
 msgstr "Features"
 
 #. Default: of D-BAS
-#: dbas/templates/index.pt:60 dbas/templates/index.pt:107
-#: dbas/templates/index.pt:163
+#: dbas/templates/index.pt:66 dbas/templates/index.pt:113
+#: dbas/templates/index.pt:169
 msgid "of_dbas"
 msgstr "of D-BAS"
 
 #. Default: Argumentation Maps
-#: dbas/templates/index.pt:68
+#: dbas/templates/index.pt:74
 msgid "argu_maps"
 msgstr "Argumentation Maps"
 
@@ -142,7 +142,7 @@ msgstr "Argumentation Maps"
 #. the nodes are highly important and can have several meanings. Additionally
 #. the bubbles of the map can have play a important role. Therefore using this
 #. data structure for logically presentations of some graphs makes sense.
-#: dbas/templates/index.pt:69
+#: dbas/templates/index.pt:75
 msgid "argu_maps_content"
 msgstr ""
 "A argumentation map is like a mind map, but the relations between the nodes "
@@ -151,14 +151,14 @@ msgstr ""
 "structure for logically presentations of some graphs makes sense."
 
 #. Default: Dialog-based
-#: dbas/templates/index.pt:73
+#: dbas/templates/index.pt:79
 msgid "dialog_based"
 msgstr "Dialog-based"
 
 #. Default: Yeah, this is a novel and it is a kind of dialog-based approach.
 #. This means that the system will represent argumentations of panelist and
 #. claims will be given through the other participants.
-#: dbas/templates/index.pt:74
+#: dbas/templates/index.pt:80
 msgid "dialog_based_content"
 msgstr ""
 "Yeah, this is a novel and it is a kind of dialog-based approach. This means "
@@ -166,14 +166,14 @@ msgstr ""
 "given through the other participants."
 
 #. Default: Simple UI
-#: dbas/templates/index.pt:78
+#: dbas/templates/index.pt:84
 msgid "simple_ui"
 msgstr "Simple UI"
 
 #. Default: The user interface of D-BAS is simple, clear and easy. At any point
 #. during the discussion the choices for the participant are bounded, but not
 #. isolating him/her.
-#: dbas/templates/index.pt:79
+#: dbas/templates/index.pt:85
 msgid "simple_ui_content"
 msgstr ""
 "The user interface of D-BAS is simple, clear and easy. At any point during "
@@ -181,33 +181,33 @@ msgstr ""
 "isolating him/her."
 
 #. Default: Guided View
-#: dbas/templates/index.pt:86
+#: dbas/templates/index.pt:92
 msgid "guided_view"
 msgstr "Guided View"
 
 #. Default: You will never see something like an argumentation map, because the
 #. systems seems to be like a dynamic and generic
-#: dbas/templates/index.pt:87
+#: dbas/templates/index.pt:93
 msgid "guided_view_content1"
 msgstr ""
 "You will never see something like an argumentation map, because the systems "
 "seems to be like a dynamic and generic"
 
 #. Default: for you
-#: dbas/templates/index.pt:87
+#: dbas/templates/index.pt:93
 msgid "guided_view_content2"
 msgstr "for you."
 
 #. Default: Island View
-#: dbas/templates/index.pt:91 dbas/templates/content.pt:113
-#: dbas/templates/content.pt:145
+#: dbas/templates/index.pt:97 dbas/templates/content.pt:116
+#: dbas/templates/content.pt:148
 msgid "island_view"
 msgstr "Island View"
 
 #. Default: Okay, you want to see more as, but not everything. Therefore the
 #. island view will present you a list of every connected statement for an
 #. specific statement.
-#: dbas/templates/index.pt:92
+#: dbas/templates/index.pt:98
 msgid "island_view_content"
 msgstr ""
 "Okay, you want to see more as, but not everything. Therefore the island view "
@@ -215,107 +215,107 @@ msgstr ""
 "statement."
 
 #. Default: Expert View
-#: dbas/templates/index.pt:96
+#: dbas/templates/index.pt:102
 msgid "expert_view"
 msgstr "Expert View"
 
 #. Default: So, you think you are an expert? Okay, you can have a view of the
 #. complete argumentation map.
-#: dbas/templates/index.pt:97
+#: dbas/templates/index.pt:103
 msgid "expert_view_content"
 msgstr ""
 "So, you think you are an expert? Okay, you can have a view of the complete "
 "argumentation map."
 
 #. Default: Description
-#: dbas/templates/index.pt:107 dbas/templates/snippet-header.pt:23
+#: dbas/templates/index.pt:113 dbas/templates/snippet-header.pt:23
 msgid "description"
 msgstr "Description"
 
 #. Default: In the following a short description of D-BAS will be given with
 #. the help of bulletpoints:
-#: dbas/templates/index.pt:109
+#: dbas/templates/index.pt:115
 msgid "description_intro"
 msgstr "In the following a short description of D-BAS will be given with"
 
 #. Default: Participants are able to add and modify positions and arguments in
 #. every discussion.
-#: dbas/templates/index.pt:111
+#: dbas/templates/index.pt:117
 msgid "description_list_1"
 msgstr "Participants are able to add and modify positions and arguments in"
 
 #. Default: Positions and arguments are connected logically by participants
-#: dbas/templates/index.pt:112
+#: dbas/templates/index.pt:118
 msgid "description_list_2"
 msgstr "Positions and arguments are connected logically by participants"
 
 #. Default: The system is very easy to use.
 #. Default: It offers a time-shifted discussion in three modes:
-#: dbas/templates/index.pt:113 dbas/templates/index.pt:114
+#: dbas/templates/index.pt:119 dbas/templates/index.pt:120
 msgid "description_list_3"
 msgstr "It offers a time-shifted discussion in three modes:"
 
 #. Default: Guided View: The participants will be lead through the discussion .
-#: dbas/templates/index.pt:116
+#: dbas/templates/index.pt:122
 msgid "guided_view_description"
 msgstr "Guided View: The participants will be lead through the discussion."
 
 #. Default: Island View: A position with all connected arguments is presented
 #. as island. This supports the insight of a discussion about a specific
 #. position.
-#: dbas/templates/index.pt:117
+#: dbas/templates/index.pt:123
 msgid "island_view_description"
 msgstr ""
 "Island View: A position with all connected arguments is presented as island. "
 "This supports the insight of a discussion about a specific position."
 
 #. Default: Expert View: Participants are able to see and do everything.
-#: dbas/templates/index.pt:118
+#: dbas/templates/index.pt:124
 msgid "expert_view_description"
 msgstr "Expert View: Participants are able to see and do everything."
 
 #. Default: Contributions can be rated by the participants.
-#: dbas/templates/index.pt:121
+#: dbas/templates/index.pt:127
 msgid "description_list_5"
 msgstr "Contributions can be rated by the participants."
 
 #. Default: You have the huge power of the crowd!.
-#: dbas/templates/index.pt:122
+#: dbas/templates/index.pt:128
 msgid "description_list_6"
 msgstr "You have the huge power of the crowd!"
 
 #. Default: About
-#: dbas/templates/index.pt:133 dbas/templates/snippet-header.pt:28
+#: dbas/templates/index.pt:139 dbas/templates/snippet-header.pt:28
 msgid "about"
 msgstr "About"
 
 #. Default: D-BAS is a of discussions in the field of online participation and
 #. developed by
-#: dbas/templates/index.pt:134
+#: dbas/templates/index.pt:140
 msgid "about_description"
 msgstr ""
 "D-BAS is a discussions software in the field of online participation and"
 
 #. Default: Cooperation with
-#: dbas/templates/index.pt:140 dbas/templates/index.pt:150
+#: dbas/templates/index.pt:146 dbas/templates/index.pt:156
 msgid "cooperation_with"
 msgstr "Cooperation with"
 
 #. Default: A partner of practice of Tobias Krauthoff is Daniel Reichert of
 #. Liquid Democracy e.V.
-#: dbas/templates/index.pt:141
+#: dbas/templates/index.pt:147
 msgid "liquid_democracy_description"
 msgstr ""
 "A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid "
 "Democracy e.V."
 
 #. Default: Graduation School
-#: dbas/templates/index.pt:145
+#: dbas/templates/index.pt:151
 msgid "graduation_scool"
 msgstr "Graduation School"
 
 #. Default: Online-Participation
-#: dbas/templates/index.pt:145
+#: dbas/templates/index.pt:151
 msgid "fk_op"
 msgstr "Online-Participation"
 
@@ -327,7 +327,7 @@ msgstr "Online-Participation"
 #. practice. The objective is the examination of opportunities of the internet,
 #. where affected persons are able to participate in decisions, where they are
 #. affected.
-#: dbas/templates/index.pt:146
+#: dbas/templates/index.pt:152
 msgid "fk_op_description"
 msgstr ""
 "The NRW Graduation School Online-Participation is subsidised governmentally "
@@ -340,14 +340,14 @@ msgstr ""
 "affected."
 
 #. Default: Karlsruhe Institut of Technology
-#: dbas/templates/index.pt:150
+#: dbas/templates/index.pt:156
 msgid "kit"
 msgstr "Karlsruhe Institut of Technology"
 
 #. Default: The workging group of functionality of the graduation school has a
 #. close-knit connection with the Institute for Technology Assessment and
 #. Systems Analysis (ITAS) of the Karlsruhe Institut of Technology.
-#: dbas/templates/index.pt:151
+#: dbas/templates/index.pt:157
 msgid "kit_description"
 msgstr ""
 "The workging group of functionality of the graduation school has a close-"
@@ -355,12 +355,12 @@ msgstr ""
 "Analysis (ITAS) of the Karlsruhe Institut of Technology."
 
 #. Default: Research
-#: dbas/templates/index.pt:163 dbas/templates/snippet-header.pt:31
+#: dbas/templates/index.pt:169 dbas/templates/snippet-header.pt:31
 msgid "research"
 msgstr "Research"
 
 #. Default: Our data structure:
-#: dbas/templates/index.pt:164
+#: dbas/templates/index.pt:170
 msgid "our_datastructure"
 msgstr "Our data structure:"
 
@@ -375,7 +375,7 @@ msgstr "Our data structure:"
 #. '<dynamic element>'. In this example the premise is '<dynamic element>'
 #. while the conclusion is the negative form of the argument '<dynamic
 #. element>'. More information can be afforded via the
-#: dbas/templates/index.pt:168
+#: dbas/templates/index.pt:174
 msgid "data_structure_description"
 msgstr ""
 "We are using a modified argumentation map as data structure, whereby we "
@@ -398,23 +398,23 @@ msgstr ""
 #. Default: contact
 #. Default: Kontakt:
 #. Default: Contact
-#: dbas/templates/index.pt:169 dbas/templates/imprint.pt:20
+#: dbas/templates/index.pt:175 dbas/templates/imprint.pt:20
 #: dbas/templates/snippet-footer.pt:33
 msgid "contact"
 msgstr "Contact"
 
 #. Default: formular
-#: dbas/templates/index.pt:169
+#: dbas/templates/index.pt:175
 msgid "formular"
 msgstr "formular"
 
 #. Default: In addition, we have studied several tools:
-#: dbas/templates/index.pt:172
+#: dbas/templates/index.pt:178
 msgid "additional_studies"
 msgstr "In addition, we have studied several tools:"
 
 #. Default: Forum
-#: dbas/templates/index.pt:177
+#: dbas/templates/index.pt:183
 msgid "forum"
 msgstr "Forum"
 
@@ -422,7 +422,7 @@ msgstr "Forum"
 #. only scale with the number of users, not with the number of arguments.
 #. Therefore messages can be highly redundant. Additionally the messages are
 #. not connected logically to each other.
-#: dbas/templates/index.pt:178
+#: dbas/templates/index.pt:184
 msgid "forum_description"
 msgstr ""
 "Forum-based approaches are well known to all kind of users, but are only "
@@ -431,14 +431,14 @@ msgstr ""
 "connected logically to each other."
 
 #. Default: Pro-Contra Lists
-#: dbas/templates/index.pt:182
+#: dbas/templates/index.pt:188
 msgid "pro-contra_lists"
 msgstr "Pro-Contra Lists"
 
 #. Default: These lists are more arranged than the forum-based approaches, but
 #. even there are no connections between the arguments. Therefore these
 #. approaches are just lists and not more.
-#: dbas/templates/index.pt:183
+#: dbas/templates/index.pt:189
 msgid "pro-contra_lists_description"
 msgstr ""
 "These lists are more arranged than the forum-based approaches, but even "
@@ -446,14 +446,14 @@ msgstr ""
 "are just lists and not more."
 
 #. Default: Argumentation-based Approaches
-#: dbas/templates/index.pt:187
+#: dbas/templates/index.pt:193
 msgid "argu_approaches"
 msgstr "Argumentation-based Approaches"
 
 #. Default: This concept seems to be perfect, because posts are connected
 #. logically to each other and redundancy can be avoided. Unfortunately these
 #. tools are for experts only and not for amateurs.
-#: dbas/templates/index.pt:188
+#: dbas/templates/index.pt:194
 msgid "argu_approaches_description"
 msgstr ""
 "This concept seems to be perfect, because posts are connected logically to "
@@ -954,7 +954,7 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:293 dbas/templates/snippet-popups.pt:403
-#: dbas/templates/content.pt:130
+#: dbas/templates/content.pt:133
 msgid "error"
 msgstr "Error:"
 
@@ -962,7 +962,7 @@ msgstr "Error:"
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:397
 #: dbas/templates/settings.pt:75 dbas/templates/settings.pt:107
-#: dbas/templates/content.pt:77
+#: dbas/templates/content.pt:80
 msgid "success"
 msgstr "Success:"
 
@@ -1140,10 +1140,10 @@ msgstr "Do's:"
 msgid "how-to-write-text-short"
 msgstr "Write short!"
 
-#. Default: Only one statement/argument/point per textarea!
+#. Default: Only one statement/argument/point per field!
 #: dbas/templates/snippet-popups.pt:502
 msgid "how-to-write-text-one-point"
-msgstr "Only one statement/argument/point per textarea!"
+msgstr "Only one statement/argument/point per field!"
 
 #. Default: Don'ts:
 #: dbas/templates/snippet-popups.pt:505
@@ -1155,10 +1155,10 @@ msgstr "Don'ts:"
 msgid "how-to-write-text-complicated"
 msgstr "Complicated and nested sentences!"
 
-#. Default: More than one statement/argument/point per textarea!
+#. Default: More than one statement/argument/point per field!
 #: dbas/templates/snippet-popups.pt:508
 msgid "how-to-write-text-multiple-points"
-msgstr "More than one statement/argument/point per textarea!"
+msgstr "More than one statement/argument/point per field!"
 
 #. Default: Do never ever use negations! Every negation will be set extra! This
 #. is highly important!
@@ -1253,7 +1253,7 @@ msgstr "Writing a new message"
 
 #. Default: Error:
 #: dbas/templates/news.pt:25 dbas/templates/settings.pt:80
-#: dbas/templates/settings.pt:113 dbas/templates/content.pt:180
+#: dbas/templates/settings.pt:113 dbas/templates/content.pt:183
 msgid "error:"
 msgstr "Error:"
 
@@ -1389,105 +1389,101 @@ msgstr "JavaScript is not enabled:"
 msgid "js_disabled2"
 msgstr "Please enable JavaScript!"
 
-#. Default: Dialog-Based Argumentation System
-#: dbas/templates/content.pt:24
-msgid "dbas_long"
-msgstr "Dialog-Based Argumentation System"
-
 #. Default: Current discussion is about
-#: dbas/templates/content.pt:25
+#: dbas/templates/content.pt:27
 msgid "current_discussion"
 msgstr "Current discussion is about"
 
 #. Default: The discussion was started at
-#: dbas/templates/content.pt:42
+#: dbas/templates/content.pt:43
 msgid "startet_at"
 msgstr "The discussion was started at"
 
 #. Default: and already has
-#: dbas/templates/content.pt:44
+#: dbas/templates/content.pt:45
 msgid "already_has"
 msgstr "and already has"
 
 #. Default: arguments
-#: dbas/templates/content.pt:46
+#: dbas/templates/content.pt:47
 msgid "arguments"
 msgstr "arguments"
 
-#. Default: Now your opinion matters!
-#: dbas/templates/content.pt:49
-msgid "your_opinion_matters"
-msgstr "Now your opinion matters!"
-
 #. Default: Report
-#: dbas/templates/content.pt:100
+#: dbas/templates/content.pt:103
 msgid "report"
 msgstr "Report"
 
 #. Default: Change display style:
-#: dbas/templates/content.pt:104
+#: dbas/templates/content.pt:107
 msgid "change_style"
 msgstr "Change display style:"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:108
+#: dbas/templates/content.pt:111
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:118
+#: dbas/templates/content.pt:121
 msgid "complete_view"
 msgstr "Complete View"
 
 #. Default: Island View
-#: dbas/templates/content.pt:144
+#: dbas/templates/content.pt:147
 msgid "istland_view"
 msgstr "Island View"
 
 #. Default: Pro
-#: dbas/templates/content.pt:148 dbas/templates/content.pt:188
+#: dbas/templates/content.pt:151 dbas/templates/content.pt:191
 msgid "pro"
 msgstr "Pro"
 
 #. Default: Contra
-#: dbas/templates/content.pt:154 dbas/templates/content.pt:207
+#: dbas/templates/content.pt:157 dbas/templates/content.pt:210
 msgid "contra"
 msgstr "Contra"
 
 #. Default: Please insert a new Argument
-#: dbas/templates/content.pt:176
+#: dbas/templates/content.pt:179
 msgid "insert-argument"
 msgstr "Please insert a new Argument"
 
 #. Default: Add a textfield
-#: dbas/templates/content.pt:194 dbas/templates/content.pt:212
+#: dbas/templates/content.pt:197 dbas/templates/content.pt:215
 msgid "add_textfield"
 msgstr "Add a textfield"
 
 #. Default: Statements are connected
-#: dbas/templates/content.pt:201 dbas/templates/content.pt:219
+#: dbas/templates/content.pt:204 dbas/templates/content.pt:222
 msgid "statements_connected"
 msgstr "Statements are connected"
 
 #. Default: List of participants
-#: dbas/templates/content.pt:238
+#: dbas/templates/content.pt:241
 msgid "participant_list"
 msgstr "List of participants"
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/content.pt:239 dbas/templates/content.pt:254
+#: dbas/templates/content.pt:242 dbas/templates/content.pt:257
 msgid "admin_only"
 msgstr "Some additional options for the administrator."
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/content.pt:253
+#: dbas/templates/content.pt:256
 msgid "list_attacks"
 msgstr "List of attacks, clicked by the participants"
 
 #. Default: Minimap:
-#: dbas/templates/content.pt:265
+#: dbas/templates/content.pt:268
 msgid "minimap"
 msgstr "Minimap:"
+
+#~ msgid "dbas_long"
+#~ msgstr "Dialog-Based Argumentation System"
+
+#~ msgid "your_opinion_matters"
+#~ msgstr "Now your opinion matters!"
 
 #~ msgid "argueAgainstPositionToggleButton"
 #~ msgstr ""

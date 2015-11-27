@@ -12,10 +12,10 @@ function Helper() {
 	 * For debugging: Displays an alert with entries of the json data
 	 * @param jsonData data for displaying
 	 */
-	this.alertWithJsonData = function (jsonData){
+	this.alertWithJsonData = function (jsonData) {
 		var txt = '';
-		$.each(jsonData, function(k,v){
-			txt += k+": " + v + "\n";
+		$.each(jsonData, function (k, v) {
+			txt += k + ": " + v + "\n";
 		});
 		alert(txt);
 	};
@@ -23,21 +23,31 @@ function Helper() {
 	/**
 	 *
 	 * @param text
-	 * @param windowWidth
 	 * @param maxTextWidth
 	 * @param char
 	 * @returns {*}
 	 */
-	this.cutTextOnChar = function(text, windowWidth, maxTextWidth, char){
+	this.cutTextOnChar = function (text, maxTextWidth, char) {
 		var i, pos, l;
-		if ($(window).width() < windowWidth){
-			i=1;
+			i = 1;
 			l = text.length;
-			while (i*maxTextWidth < l){
-				pos = text.indexOf(char,i*maxTextWidth);
-				text = this.replaceAt(text, pos, '<br>', char);
-				i=i+1;
-			}
+		while (i * maxTextWidth < l) {
+			pos = text.indexOf(char, i * maxTextWidth);
+			text = this.replaceAt(text, pos, '<br>', char);
+			i = i + 1;
+		}
+		return text;
+	};
+
+	/**
+	 *
+	 * @param text
+	 */
+	this.resizeIssueText = function (text) {
+		if ($(window).width() < 500) {
+			text = this.cutTextOnChar(text, 30, ' ');
+		} else if ($(window).width() < 1200) {
+			text = this.cutTextOnChar(text, 50, ' ');
 		}
 		return text;
 	};
@@ -79,6 +89,17 @@ function Helper() {
 		var div = document.createElement('div');
     	div.appendChild(document.createTextNode(text));
     	return div.innerHTML;
+	};
+
+	/**
+	 * Removes all HTML-Signs
+	 * @param text to escape
+	 * @returns {*} cleared string
+	 */
+	this.clearHtml = function(text) {
+		var p = $('<p>');
+    	p.html(text);
+    	return p.text();
 	};
 
 	/**
@@ -455,7 +476,7 @@ function Helper() {
 	};
 
 	/**
-	 *
+	 * Returns the uid of current issue
 	 * @returns {number}
 	 */
 	this.getCurrentIssueId = function(){
@@ -463,17 +484,17 @@ function Helper() {
 	};
 
 	/**
-	 *
-	 * @param cookie_name
+	 * Sets a cookie with given name
+	 * @param cookie_name string
 	 */
 	this.setCookie = function(cookie_name){
-		this.setCookieForDays(cookie_name, 7);
+		this.setCookieForDays(cookie_name, 1);
 	};
 
 	/**
-	 *
-	 * @param cookie_name
-	 * @param days
+	 * Sets Cookie with given name for given days
+	 * @param cookie_name string
+	 * @param days int
 	 */
 	this.setCookieForDays = function(cookie_name, days){
 		var d = new Date(), consent = true;

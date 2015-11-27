@@ -296,7 +296,7 @@ $(function () {
 
 	$(window).on('resize', function resizeWindow(){
 		// make some things pretty
-		new GuiHandler().setissueDropDownText(new Helper().cutTextOnChar($('#' + issueDropdownButtonID).attr('value'), 1200, 50, ''));
+		new GuiHandler().setissueDropDownText(new Helper().resizeIssueText($('#' + issueDropdownButtonID).attr('value')));
 	});
 
 	// some hack

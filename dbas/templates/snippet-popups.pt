@@ -499,13 +499,13 @@
 				<b class="green-bg" i18n:translate="dos">Do's:</b>
 				<ul id="how-to-write-text-do-list">
 					<li i18n:translate="how-to-write-text-short">Write short!</li>
-					<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per textarea!</li>
+					<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per field!</li>
 				</ul>
 				<br>
 				<b class="red-bg" i18n:translate="donts">Don'ts:</b>
 				<ul id="how-to-write-text-dont-list">
 					<li i18n:translate="how-to-write-text-complicated">Complicated and nested sentences!</li>
-					<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per textarea!</li>
+					<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per field!</li>
 					<li i18n:translate="how-to-write-text-negations">Do never ever use negations! Every negation will be set extra! This is highly important!</li>
 				</ul>
 			</div>

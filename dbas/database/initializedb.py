@@ -207,7 +207,7 @@ def setupDiscussionDatabase():
 	# adding our main issue
 	issue1 = Issue(text='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!')
 	issue2 = Issue(text='Our town needs to cut spending. Please discuss ideas how this should be done.')
-	issue3 = Issue(text='How will the weather be tomorrow? What does your gut feelgins tells you?')
+	issue3 = Issue(text='How can we make this world a better place?')
 	DBDiscussionSession.add_all([issue1, issue2, issue3])
 	DBDiscussionSession.flush()
 

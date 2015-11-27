@@ -20,12 +20,22 @@ class Translator(object):
 		logger('Translator', 'setUpEnDict', 'def')
 
 		en_lang = {}
-		en_lang['attack']                       = 'Attack'
-		en_lang['support']                      = 'Support'
+		en_lang['attack']                       = 'You disagreed with'
+		en_lang['support']                      = 'You agreed with'
 		en_lang['premise']                      = 'Premise'
 		en_lang['because']                      = 'because'
-		en_lang['because']                      = 'because'
 		en_lang['doesNotHoldBecause']           = 'does not hold because'
+		en_lang['moreAbout']                    = 'More about'
+		en_lang['undermine1']                   = 'It is false that'
+		en_lang['undermine2']                   = ''
+		en_lang['support1']                     = 'It is right'
+		en_lang['support2']                     = ''
+		en_lang['undercut1']                    = 'It is false that'
+		en_lang['undercut2']                    = 'and this is no good counter-argument'
+		en_lang['overbid1']                     = 'It is false that'
+		en_lang['overbid2']                     = 'and this is a good counter-argument'
+		en_lang['rebut1']                       = 'It is right that'
+		en_lang['rebut2']                       = ', but I have a better statement'
 
 		en_lang['oldPwdEmpty']                  = 'Old password field is empty.'
 		en_lang['newPwdEmtpy']                  = 'New password field is empty.'
@@ -76,11 +86,22 @@ class Translator(object):
 		logger('Translator', 'setUpDeDict', 'def')
 
 		de_lang = {}
-		de_lang['attack']                       = 'Attackiere'
-		de_lang['support']                      = 'Unterstütze'
+		de_lang['attack']                       = 'Sie lehnen ab, dass'
+		de_lang['support']                      = 'Sie akzeptiere'
 		de_lang['premise']                      = 'Prämisse'
 		de_lang['because']                      = 'weil'
 		de_lang['doesNotHoldBecause']           = 'gilt nicht, weil'
+		de_lang['moreAbout']                    = 'Mehr über'
+		de_lang['undermine1']                   = 'Es ist falsch, dass'
+		de_lang['undermine2']                   = ''
+		de_lang['support1']                     = 'Es ist richtig, dass'
+		de_lang['support2']                     = ''
+		de_lang['undercut1']                    = 'Es ist falsch, dass'
+		de_lang['undercut2']                    = 'und das ist ein schlechter Konter'
+		de_lang['overbid1']                     = 'Es ist falsch, dass'
+		de_lang['overbid2']                     = 'und das ist ein guter Konter'
+		de_lang['rebut1']                       = 'Es ist richtig, dass'
+		de_lang['rebut2']                       = ', aber ich habe etwas besseres'
 
 		de_lang['oldPwdEmpty']                  = 'Altes Passwortfeld ist leer.'
 		de_lang['newPwdEmtpy']                  = 'Neues Passwortfeld ist leer.'

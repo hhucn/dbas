@@ -475,7 +475,8 @@ class Dbas(object):
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
 			QueryHelper().del_history_of_user(transaction, self.request.authenticated_userid)
-			TrackingHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, 'Start', self.request.session.id)
+			TrackingHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, 'Start',
+			                                                           self.request.session.id)
 
 			if issue == 'undefined':
 				logger('get_start_statements', 'def', 'issue is undefined -> fallback')
@@ -508,9 +509,14 @@ class Dbas(object):
 
 		logger('get_text_for_statement', 'def', 'main')
 
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
 		return_dict = {}
 		try:
-			logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
+			logger('get_text_for_statement', 'def', 'read params: ' + str(self.request.params))
 			uid = self.request.params['uid'].split('=')[1]
 			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
@@ -518,8 +524,8 @@ class Dbas(object):
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
-			                                                       uid, self.request.session.id)
+			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid,
+			                                                                             url, uid, False, '', lang, self.request.session.id)
 
 			logger('get_text_for_statement', 'def', 'uid: ' + uid)
 			logger('get_text_for_statement', 'def', 'issue ' + str(issue))
@@ -563,10 +569,8 @@ class Dbas(object):
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			#TrackingHelper().save_history_for_user_with_action(transaction, self.request.authenticated_userid, url, uid, supportive,
-			#                                                self.request.session.id, lang)
 			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
-			                                                       uid, self.request.session.id)
+			                                                       uid, True, '', lang, self.request.session.id)
 
 			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid)
 			logger('ajax_get_premise_for_statement', 'def', 'supportive:' + str(supportive))
@@ -598,6 +602,11 @@ class Dbas(object):
 
 		logger('get_premises_for_statement', 'def', 'main')
 
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
 		return_dict = {}
 		try:
 			logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
@@ -611,7 +620,7 @@ class Dbas(object):
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
 			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
-			                                                       uid, self.request.session.id)
+			                                                       uid, True, supportive, lang, self.request.session.id)
 
 			logger('get_premises_for_statement', 'def', 'uid: ' + uid)
 			logger('get_premises_for_statement', 'def', 'supportive ' + str(supportive))
@@ -657,18 +666,40 @@ class Dbas(object):
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 
-			# reset and save url for breadcrumbs
-			url = self.request.params['url']
-			TrackingHelper().save_history_for_user_with_argument_parts(transaction, self.request.authenticated_userid, url,
-			                                                        pgroup, conclusion, issue, self.request.session.id, lang)
-
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
 			logger('reply_for_argument', 'def', 'pgroup ' + str(pgroup))
 			logger('reply_for_argument', 'def', 'conclusion ' + str(conclusion))
 
-			# track will be saved in the method
+			# check for additional params, maybe they were set by breadcrumbs
+			url = self.request.matchdict['url'] if 'url' in self.request.matchdict else '-'
+			attack_with = ''
+			attack_arg = ''
+			if 'attack_with=' in url and 'attack_arg=' in url:
+				pos1 = url.find('attack_with=') + len('attack_with=')
+				pos2 = url.find('&', pos1)
+				attack_with = url[pos1:pos2]
+				pos1 = url.find('attack_arg=') + len('attack_arg=')
+				pos2 = url.find('/', pos1)
+				attack_arg = url[pos1:pos2]
+
+			# get argument by system or with params, when we are navigating with breadcrumbs
 			return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid, pgroup,
 			                                                                    conclusion, self.request.session.id, supportive, issue)
+			if attack_arg is '' or attack_with is '':
+				# track will be saved in the method
+				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid, pgroup,
+			                                                                    conclusion, self.request.session.id, supportive, issue)
+			else:
+				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup_by_args(attack_with, attack_arg, pgroup,
+				                                                                                      conclusion, issue)
+			# reset and save url for breadcrumbs
+			url = self.request.params['url']
+			additional_params = dict()
+			additional_params['confrontation_argument_uid'] = return_dict['confrontation_argument_id']
+			additional_params['attack'] = return_dict['attack']
+			TrackingHelper().save_history_for_user_with_argument_parts(transaction, self.request.authenticated_userid, url,
+			                                                        pgroup, conclusion, issue, supportive, self.request.session.id, lang, additional_params)
+
 			return_dict['supportive'] = str(supportive)
 			return_dict['status'] = str(status)
 		except KeyError as e:
@@ -757,7 +788,7 @@ class Dbas(object):
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
 			TrackingHelper().save_history_for_user_with_premissegroup_of_arguments_uid(transaction, self.request.authenticated_userid, url,
-			                                                              uid_text.split('_')[2], issue, self.request.session.id)
+			                                                              confrontation, issue, relation, self.request.session.id, lang)
 
 			# track will be saved in get_reply_confrontation_response
 			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text)

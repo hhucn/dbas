@@ -275,11 +275,11 @@ function HistoryHandler(){
 		parsedData = $.parseJSON(jsonData);
 		$.each(parsedData, function setDataInHistoryTableEach(history_index, history) {
 			has_data = true;
-			breaked_url = helper.cutTextOnChar(history.url, 123456, 60, '/');
+			breaked_url = helper.cutTextOnChar(history.url, 60, '/');
 			tElement[0] = $('<td>').text(history_index).attr('title', 'No: ' + history_index);
 			tElement[1] = $('<td>').text(history.uid).attr('title', 'History ID: ' + history.uid);
 			tElement[2] = $('<td>').html('<a href="' + history.url + '">' + breaked_url + '</a>').attr('title', 'URL: ' + history.url);
-			tElement[3] = $('<td>').text(history.keyword).attr('title', _t(keyword) + ': ' + history.keyword);
+			tElement[3] = $('<td>').text(history.keyword_active).attr('title', _t(keyword) + ': ' + history.keyword_active);
 			tElement[4] = $('<td>').text(history.timestamp).attr('title', 'Date: ' + history.timestamp);
 
 			trElement = $('<tr>');

@@ -187,6 +187,9 @@ function setActiveLanguage(lang){
 	}
 }
 
+/**
+ * Changes the value and title of every button
+ */
 function setButtonLanguage(){
 	$('#' + reportButtonId).prop('value', _t(report)).prop('title', _t(reportTitle));
 	$('#' + restartDiscussionButtonId).prop('value', _t(restartDiscussion)).prop('title', _t(restartDiscussionTitle));
@@ -210,6 +213,9 @@ function setButtonLanguage(){
 	$('#' + startDiscussionButtonId).prop('value', _t(letsGo)).prop('title', _t(letsGo));
 }
 
+/**
+ *
+ */
 function hideExtraViewsOfLoginPopup(){
 	$('#' + popupLoginWarningMessage).hide();
 	$('#' + popupLoginFailed).hide();
@@ -222,6 +228,9 @@ function hideExtraViewsOfLoginPopup(){
 	$('#' + generatePasswordBodyId).hide();
 }
 
+/**
+ * Prepares the login popup
+ */
 function prepareLoginRegistrationPopup(){
 	// hide on startup
 	hideExtraViewsOfLoginPopup();

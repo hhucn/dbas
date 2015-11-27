@@ -66,26 +66,37 @@ function NavigationHandler(){
 	 * @param jsonData
 	 */
 	this.setNavigationBreadcrumbs = function (jsonData){
-		var parsedData = $.parseJSON(jsonData), nh = new NavigationHandler(), text = '';
+		var parsedData = $.parseJSON(jsonData), nh = new NavigationHandler(), before = '', after = '';
 
 		// check for data
 		if (Object.keys(parsedData.history).length == 0){
 			return;
 		}
 
+		// show breadcrumbs
 		navigationBreadcrumb.parent().parent().parent().show();
 
 		$.each(parsedData.history, function addJsonDataToContentAsArgumentsEach(index, history) {
-			if (history.url.indexOf(attrStart) != -1) {										text = _t(keywordStart);
-			} else if (history.url.indexOf(attrChooseActionForStatement) != -1){ 			text = _t(keywordChooseActionForStatement) + ': ' + history.keyword;
-			} else if (history.url.indexOf(attrGetPremisesForStatement) != -1){				text = _t(keywordGetPremisesForStatement) + ': ' + history.keyword;
-			} else if (history.url.indexOf(attrMoreAboutArgument) != -1){ 					text = _t(keywordMoreAboutArgument) + ': ' + history.keyword;
-			} else if (history.url.indexOf(attrReplyForPremisegroup) != -1){				text = _t(keywordReplyForPremisegroup) + ': ' + history.keyword;
-			} else if (history.url.indexOf(attrReplyForResponseOfConfrontation) != -1){		text = _t(keywordReplyForResponseOfConfrontation) + ': ' + history.keyword;
-			} else if (history.url.indexOf(attrReplyForArgument) != -1){					text = _t(keywordReplyForArgument) + ': ' + history.keyword;
+			//before = history.keyword_before_decission;
+			after = history.keyword_after_decission;
+			/*
+			if (history.url.indexOf(attrStart) != -1) {										before = _t(keywordStart);
+			} else if (history.url.indexOf(attrChooseActionForStatement) != -1){ 			before = _t(keywordChooseActionForStatement) + ': ' + before;
+			} else if (history.url.indexOf(attrGetPremisesForStatement) != -1){				before = _t(keywordGetPremisesForStatement) + ': ' + before;
+			} else if (history.url.indexOf(attrMoreAboutArgument) != -1){ 					before = _t(keywordMoreAboutArgument) + ': ' + before;
+			} else if (history.url.indexOf(attrReplyForPremisegroup) != -1){				before = _t(keywordReplyForPremisegroup) + ': ' + before;
+			} else if (history.url.indexOf(attrReplyForResponseOfConfrontation) != -1){		before = _t(keywordReplyForResponseOfConfrontation) + ': ' + before;
+			} else if (history.url.indexOf(attrReplyForArgument) != -1){					before = _t(keywordReplyForArgument) + ': ' + before;
 			}
-			nh.addNavigationCrumb(history.url, text, history.uid, history.url.indexOf(attrStart) == -1);
+			*/
+			nh.addNavigationCrumb(history.url, after, history.uid, history.url.indexOf(attrStart) == -1);
 		});
-		this.setLastChildAsActive(text);
+		before = $('#' + discussionsDescriptionId).html();
+		before = before.substr(0, (before.indexOf('<br>') != -1 ? before.indexOf('<br>') : before.length));
+		before = new Helper().clearHtml(before);
+		this.setLastChildAsActive(before);
+
+		// change document title
+		document.title = document.title.substr(0, document.title.indexOf(' - ')) + ' - ' + before;
 	};
 }
