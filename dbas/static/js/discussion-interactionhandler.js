@@ -468,16 +468,19 @@ function InteractionHandler() {
 			// $('#' + addStatementErrorMsg).text(alreadyInserted);
 			new InteractionHandler().statementButtonWasClicked(parsedData.statement.uid);
 		} else {
+			/*
 			$('#' + addStatementContainerId).hide();
 			$('#' + addStatementContainerMainInputId).text('');
 			new GuiHandler().setNewStatementAsLastChild(parsedData);
+			*/
+			// redirect
+			new AjaxSiteHandler().callSiteForGetPremiseForStatement(parsedData.statement.uid, true);
 		}
 	};
 
 	/**
 	 * Callback, when new statements were send
 	 * @param data returned data
-	 * @param isSupportive
 	 */
 	this.callbackIfDoneForSendNewPremisesX = function (data) {
 		var parsedData = $.parseJSON(data);
