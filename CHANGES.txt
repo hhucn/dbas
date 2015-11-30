@@ -107,10 +107,18 @@
 ---
 - Bug fixes
 
-0.4.3 (24.11.2015)
+0.4.3 (30.11.2015)
 ---
+<<<<<<< HEAD
 - Breadcrumbs
 
 0.4.4 (30.11.2015)
 ---
 - Breadcrumbs
+=======
+- Breadcrumbs hover vs. title
+
+0.4.4 (30.11.2015)
+---
+- Supports will redirect to arguments without any justification
+>>>>>>> general_bugfixes

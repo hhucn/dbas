@@ -260,9 +260,9 @@ var dbas_en = {
 	'youMadeA': 'You made a',
 	'youMadeAn': 'You made an',
 	'relation_undermine': 'is a counter-argument for',
-	'relation_support': 'is a argument for',
+	'relation_support': 'is a reason for',
 	'relation_undercut': 'is a counter-argument for',
-	'relation_overbid': 'is a argument for',
+	'relation_overbid': 'is a reason for',
 	'relation_rebut': 'is a counter-argument for',
 	'uid': 'ID',
 	'unfortunatelyNoMoreArgument': 'Unfortunately there are no more arguments about'

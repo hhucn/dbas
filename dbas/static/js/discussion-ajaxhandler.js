@@ -278,9 +278,10 @@ function AjaxSiteHandler() {
 	 * @param params of clicked relation and statement
 	 */
 	this.handleReplyForResponseOfConfrontation = function (params) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, supportive;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, supportive, supportive_argument;
 		params = params.split('&');
 		supportive = params[2].indexOf('true') != -1;
+		supportive_argument = params[0].indexOf('support') != -1;
 		$.ajax({
 			url: 'ajax_reply_for_response_of_confrontation',
 			method: 'POST',
@@ -297,7 +298,12 @@ function AjaxSiteHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxHandleReplyForResponseOfConfrontationDone(data) {
-			new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data, supportive);
+			// special case fur supports
+			if (supportive_argument) {
+				new InteractionHandler().callbackIfDoneReplyForArgument(data, supportive);
+			} else {
+				new InteractionHandler().callbackIfDoneHandleReplyForResponseOfConfrontation(data, supportive);
+			}
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 			new NavigationHandler().setNavigationBreadcrumbs(data);
 		}).fail(function ajaxHandleReplyForResponseOfConfrontationFail() {
