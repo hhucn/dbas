@@ -11,7 +11,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
+						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_beta.png')}" alt="dbas logo">
 						<br>
 						<h2><span class="font-semi-bold" i18n:translate="welcome">Welcome</span>
 								<span class="smaller"><span i18n:translate="to_the_dbas">to the</span>

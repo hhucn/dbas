@@ -174,14 +174,14 @@ function setActiveLanguage(lang){
 	if (lang === 'en'){
 		$('#' + translationLinkDe).parent().removeClass('active');
 		$('#' + translationLinkEn).parent().addClass('active');
-		$('.logo').attr('src','../static/images/logo.png');
+		$('.logo').attr('src','../static/images/logo_beta.png');
 		$('#' + switchLangIndicatorEnId).show();
 		$('#' + switchLangIndicatorDeId).hide();
 		// Buttons
 	} else {
 		$('#' + translationLinkEn).parent().removeClass('active');
 		$('#' + translationLinkDe).parent().addClass('active');
-		$('.logo').attr('src','../static/images/logo_de.png');
+		$('.logo').attr('src','../static/images/logo_de_beta.png');
 		$('#' + switchLangIndicatorEnId).hide();
 		$('#' + switchLangIndicatorDeId).show();
 	}

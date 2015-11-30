@@ -23,7 +23,7 @@ from .tracking_helper import TrackingHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
-version = '0.4.3'
+version = '0.4.4'
 header = name + ' ' + version
 issue_fallback = 1
 
@@ -776,6 +776,7 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
+			# IMPORTANT: Supports are a special case !
 			uid_text = self.request.params['id'].split('=')[1]
 			relation = self.request.params['relation'].split('=')[1]
 			confrontation = uid_text.split('_')[2]
@@ -796,7 +797,13 @@ class Dbas(object):
 			logger('reply_for_response_of_confrontation', 'def', 'confrontation ' +  confrontation)
 			logger('reply_for_response_of_confrontation', 'def', 'issue ' + str(issue))
 			logger('reply_for_response_of_confrontation', 'def', 'exception_rebut ' + str(exception_rebut))
-			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid_text, self.request.authenticated_userid,
+
+			# IMPORTANT: Supports are a special case !
+			if 'support' in uid_text:
+				return_dict, status = DatabaseHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
+				                                                                               uid_text, self.request.session.id, issue)
+			else:
+				return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid_text, self.request.authenticated_userid,
 			                                                                         self.request.session.id, exception_rebut, issue, lang)
 			return_dict['status'] = status
 			return_dict['last_relation'] = relation
