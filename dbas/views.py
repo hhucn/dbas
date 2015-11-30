@@ -802,7 +802,8 @@ class Dbas(object):
 			# IMPORTANT: Supports are a special case !
 			if 'support' in uid_text:
 				return_dict, status = DatabaseHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
-				                                                                               uid_text, self.request.session.id, issue)
+				                                                                               uid_text, self.request.session.id, issue,
+				                                                                          lang)
 			else:
 				return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid_text, self.request.authenticated_userid,
 			                                                                         self.request.session.id, exception_rebut, issue, lang)
