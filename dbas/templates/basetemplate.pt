@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="pyramid web application">
+	<meta name="description" content="dialog based discussion online participation">
 	<meta name="author" content="Tobias Krauthoff">
 	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
 	<title>${project} - ${title}</title>

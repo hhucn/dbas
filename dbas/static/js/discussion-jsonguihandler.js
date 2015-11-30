@@ -278,7 +278,8 @@ function JsonGuiHandler() {
 		}
 
 		// does we have an attack for an attack? if true, we have to pretty print a little bit
-		double_attack = helper.stringContainsAnAttack(window.location.href) && helper.stringContainsAnAttack(jsonData.attack);
+		double_attack = (helper.stringContainsAnAttack(window.location.href) && (helper.stringContainsAnAttack(jsonData.attack)))
+				||((window.location.href.indexOf('supportive=false') != -1) && (helper.stringContainsAnAttack(jsonData.attack)));
 
 		// build some confrontation text
 		if (jsonData.attack == attr_undermine){

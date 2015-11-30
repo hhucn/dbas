@@ -23,11 +23,12 @@ function NavigationHandler(){
 	 *
 	 * @param link
 	 * @param text
+	 * @param shorttext
 	 * @returns {*|jQuery|HTMLElement}
 	 */
-	this.getAElement = function(link, text){
+	this.getAElement = function(link, text, shorttext){
 		var aElement = $('<a>');
-		aElement.attr('href', link).html(text).attr('title', text);
+		aElement.attr('href', link).html(shorttext).attr('title', text);
 		return aElement;
 	};
 
@@ -44,20 +45,20 @@ function NavigationHandler(){
 	 * @param url
 	 * @param text
 	 * @param uid
-	 * @param useCutting
+	 * @param useHoverDueToCutting
 	 */
-	this.addNavigationCrumb = function(url, text, uid, useCutting){
+	this.addNavigationCrumb = function(url, text, uid, useHoverDueToCutting){
 		var liElement = this.getLiElement(uid),
 				shorttext = text.length > textThreshold ? text.substr(0, textThreshold) + '...' : text,
-				aElement = this.getAElement(url, shorttext);
+				aElement = this.getAElement(url, text, shorttext);
 		liElement.append(aElement);
 		navigationBreadcrumb.append(liElement);
 
-		if (useCutting)
+		if (useHoverDueToCutting)
 			liElement.hover(function(){
 				aElement.html(text);
 			}, function(){
-				aElement.html(shorttext + '...');
+				aElement.html(shorttext);
 			});
 	};
 
@@ -89,7 +90,7 @@ function NavigationHandler(){
 			} else if (history.url.indexOf(attrReplyForArgument) != -1){					before = _t(keywordReplyForArgument) + ': ' + before;
 			}
 			*/
-			nh.addNavigationCrumb(history.url, after, history.uid, history.url.indexOf(attrStart) == -1);
+			nh.addNavigationCrumb(history.url, after, history.uid, false); //history.url.indexOf(attrStart) == -1);
 		});
 		before = $('#' + discussionsDescriptionId).html();
 		before = before.substr(0, (before.indexOf('<br>') != -1 ? before.indexOf('<br>') : before.length));

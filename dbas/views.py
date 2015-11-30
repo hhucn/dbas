@@ -23,7 +23,7 @@ from .tracking_helper import TrackingHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
-version = '0.4.3'
+version = '0.4.4'
 header = name + ' ' + version
 issue_fallback = 1
 
@@ -788,7 +788,8 @@ class Dbas(object):
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
 			TrackingHelper().save_history_for_user_with_premissegroup_of_arguments_uid(transaction, self.request.authenticated_userid, url,
-			                                                              confrontation, issue, relation, self.request.session.id, lang)
+			                                                              confrontation, issue, uid_text.split('_')[0],
+			                                                                           self.request.session.id, lang)
 
 			# track will be saved in get_reply_confrontation_response
 			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text)

@@ -402,14 +402,3 @@ class TrackingHelper(object):
 			db_history[1].set_keyword_after_decission(keyword_after_decission)
 
 		transaction.commit()
-
-	def pathfinder(self, start_uid, is_start_argument, end_uid, is_end_argument): # TODO PATHFINDER
-		"""
-		Will return all path from the starting point to the end point in our web of reasons
-		:param start_uid:
-		:param is_start_argument:
-		:param end_uid:
-		:param is_end_argument:
-		:return:
-		"""
-		return None
