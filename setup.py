@@ -24,7 +24,7 @@ requires = [
     'validate_email',
 	'splinter',
     'pyramid_beaker',
-	'lingua',
+	'lingua', 'requests', 'pyshorteners',
 ]
 
 setup(name='dbas',

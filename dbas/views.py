@@ -285,7 +285,7 @@ class Dbas(object):
 			new_pw = self.request.params['password']
 			confirm_pw = self.request.params['passwordconfirm']
 
-			message, error, success = DatabaseHelper().change_password(transaction, db_user, old_pw, new_pw, confirm_pw, lang)
+			message, error, success = UserHandler().change_password(transaction, db_user, old_pw, new_pw, confirm_pw, lang)
 
 
 
@@ -409,7 +409,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_all_users', 'def', 'main')
 
-		return_dict = DatabaseHelper().get_all_users(self.request.authenticated_userid)
+		return_dict = UserHandler().get_all_users(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -855,7 +855,7 @@ class Dbas(object):
 
 		logger('delete_user_track', 'def', 'remove track data')
 		TrackingHelper().del_track_of_user(transaction, nickname)
-		return_dict = {}
+		return_dict = dict()
 		return_dict['removed_data'] = 'true' # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -910,7 +910,7 @@ class Dbas(object):
 
 		logger('delete_user_history', 'def', 'remove history data')
 		QueryHelper().del_history_of_user(transaction, nickname)
-		return_dict = {}
+		return_dict = dict()
 		return_dict['removed_data'] = 'true' # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -1321,7 +1321,7 @@ class Dbas(object):
 		url = self.request.params['url']
 		logger('user_logout', 'def', 'url: ' + url)
 
-		if ('setting' in url):
+		if 'setting' in url:
 			url = self.request.application_url
 			logger('user_logout', 'def', 'redirect: ' + url)
 
@@ -1583,9 +1583,9 @@ class Dbas(object):
 		:return:
 		"""
 		logger('additional_service', 'main', 'def')
-		type = self.request.params['type']
+		rtype = self.request.params['type']
 
-		if type == "chuck":
+		if rtype == "chuck":
 			data = requests.get('http://api.icndb.com/jokes/random')
 		else:
 			data = requests.get('http://api.yomomma.info/')
