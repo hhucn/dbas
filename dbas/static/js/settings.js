@@ -10,14 +10,14 @@ function TrackHandler() {
 	'use strict';
 
 	/**
-	 *
+	 * Ajax request for getting the users track
 	 */
 	this.getUserTrackData = function(){
 		'use strict';
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_user_track',
-			method: 'POST',
+			method: 'GET',
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
@@ -29,7 +29,7 @@ function TrackHandler() {
 	};
 
 	/**
-	 *
+	 * Ajax request for deleting the users track
 	 */
 	this.deleteUserTrackData = function(){
 		'use strict';
@@ -78,7 +78,7 @@ function TrackHandler() {
 	};
 
 	/**
-	 *
+	 * Sets json data into the track table of the settings page
 	 * @param jsonData
 	 */
 	this.setDataInTrackTable = function (jsonData) {
@@ -150,11 +150,11 @@ function TrackHandler() {
 			tableElement.append(tbody);
 		});
 
-		$('#' + trackTableSpaceId).empty();
 		if (has_data) {
-			$('#' + trackTableSpaceId).append(tableElement);
+			$('#' + trackTableSpaceId).empty().append(tableElement);
 			$('#' + deleteTrackButtonId).fadeIn('slow');
 		} else {
+			$('#' + trackTableSpaceId).empty();
 			$('#' + trackTableSuccessId).show();
 			$('#' + trackSuccessMessageId).text(_t(noTrackedData));
 			$('#' + deleteTrackButtonId).hide();
@@ -167,14 +167,14 @@ function HistoryHandler(){
 	'use strict';
 
 	/**
-	 *
+	 * Ajax request for getting the users history
 	 */
-	this.getUserHistoryData = function(callback){
+	this.getUserHistoryData = function(){
 		'use strict';
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_user_history',
-			method: 'POST',
+			method: 'GET',
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
@@ -186,7 +186,7 @@ function HistoryHandler(){
 	};
 
 	/**
-	 *
+	 * Ajax request for deleting the users history
 	 */
 	this.deleteUserHistoryData = function(){
 		'use strict';
@@ -231,7 +231,6 @@ function HistoryHandler(){
 		$('#' + historyTableSuccessId).show();
 		$('#' + historyTableFailureId).hide();
 		$('#' + historySuccessMessageId).text(_t(dataRemoved));
-
 	};
 
 	/**
@@ -291,11 +290,11 @@ function HistoryHandler(){
 		});
 		tableElement.append(tbody);
 
-		$('#' + historyTableSpaceId).empty();
 		if (has_data) {
-			$('#' + historyTableSpaceId).append(tableElement);
+			$('#' + historyTableSpaceId).empty().append(tableElement);
 			$('#' + deleteHistoryButtonId).fadeIn('slow');
 		} else {
+			$('#' + historyTableSpaceId).empty();
 			$('#' + historyTableSuccessId).show();
 			$('#' + historySuccessMessageId).text(_t(noTrackedData));
 			$('#' + deleteHistoryButtonId).hide();
