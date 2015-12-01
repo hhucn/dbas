@@ -295,28 +295,28 @@ function prepareLoginRegistrationPopup(){
 			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
 
 		if (!userfirstname || /^\s*$/.test(userfirstname) || 0 === userfirstname.length) {
-			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(_t(checkFirstname));
+			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
+			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkFirstname));
 
 		} else if (!userlastname || /^\s*$/.test(userlastname) || 0 === userlastname.length) {
-			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(_t(checkLastname));
+			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
+			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkLastname));
 
 		} else if (!nick || /^\s*$/.test(nick) || 0 === nick.length) {
-			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(_t(checkNickname));
+			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
+			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkNickname));
 
 		} else if (!email || /^\s*$/.test(email) || 0 === email.length) {
-			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(_t(checkEmail));
+			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
+			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkEmail));
 
 		} else if (!password || /^\s*$/.test(password) || 0 === password.length) {
-			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(_t(checkPassword));
+			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
+			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkPassword));
 
 		} else if (!passwordconfirm || /^\s*$/.test(passwordconfirm) || 0 === passwordconfirm.length) {
-			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(_t(checkConfirmation));
+			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
+			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkConfirmation));
 
 		} else if (password !== passwordconfirm) {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");

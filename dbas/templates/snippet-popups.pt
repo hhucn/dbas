@@ -382,26 +382,17 @@
 							</div>
 						</div>
 
-						<div id="popup-login-warning-message" class="alert alert-warning alert-dismissible" role="alert">
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-							</button>
-							<strong i18n:translate="warning">Warning!</strong>
-
-							<div id="popup-login-warning-message-text"><span id="message-warning-text"></span>
-							</div>
+						<div class="col-sm-12 alert alert-success alert-dismissible" id="popup-login-registration-success" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only" i18n:translate="success">Success:</span>
+								<span id="popup-login-registration-success-message"></span>
 						</div>
 
-						<div class="col-sm-12" id="popup-login-registration-success">
-							<div class="alert alert-success" role="alert">
+						<div class="col-sm-12 alert alert-danger alert-dismissible" id="popup-login-registration-failed" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-registration-success-message"></span>
-							</div></div>
-
-						<div class="col-sm-12" id="popup-login-registration-failed">
-							<div class="alert alert-danger" role="alert">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-registration-failed-message"></span>
-							</div></div>
+							<span class="sr-only" i18n:translate="error">Error:</span>
+							<span id="popup-login-registration-failed-message"></span>
+						</div>
 
 
 						<div id="popup-login-generate-password-body">
