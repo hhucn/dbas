@@ -117,7 +117,7 @@
 				<br>
 				<br>
 				<div class="first-container colored_container imprint-container">
-					<h4><span class="font-semi-bold" i18n:translate="changes">Changes in Major Version</span></h4>
+					<h4><span class="font-semi-bold" i18n:translate="changes">Changes in Version</span></h4>
 					
 					<span class="project font-semi-bold">0.4.6 (unreleased)</span>
 				<ul>

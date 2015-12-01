@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-12-01 10:49+0100\n"
+"POT-Creation-Date: 2015-12-01 15:30+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -32,61 +32,61 @@ msgid "404_text_part2"
 msgstr "Die Seite &quot;<dynamic element>&quot; konnte nicht gefunden werden"
 
 #. Default: Welcome
-#: dbas/templates/index.pt:16
+#: dbas/templates/index.pt:18
 msgid "welcome"
 msgstr "Willkommen"
 
 #. Default: to the
-#: dbas/templates/index.pt:17
+#: dbas/templates/index.pt:19
 msgid "to_the_dbas"
 msgstr "zu dem"
 
 #. Default: ialog
-#: dbas/templates/index.pt:18
+#: dbas/templates/index.pt:20
 msgid "ialog"
 msgstr "ialog"
 
 #. Default: ased
-#: dbas/templates/index.pt:18
+#: dbas/templates/index.pt:20
 msgid "ased"
 msgstr "asiertem"
 
 #. Default: rgumentation
-#: dbas/templates/index.pt:18
+#: dbas/templates/index.pt:20
 msgid "rgumentation"
 msgstr "rgument"
 
 #. Default: oftware
-#: dbas/templates/index.pt:18
+#: dbas/templates/index.pt:20
 msgid "oftware"
 msgstr "ystem"
 
 #. Default: or short
-#: dbas/templates/index.pt:18
+#: dbas/templates/index.pt:20
 msgid "or_short"
 msgstr "oder kurz"
 
 #. Default: This novel discussions software will help you to discuss a problem
 #. or statement in a structured manner.
-#: dbas/templates/index.pt:21
+#: dbas/templates/index.pt:23
 msgid "novel_software"
 msgstr ""
 "Diese neuartige Diskussionssoftware soll helfen, Probleme strukturiert zu "
 "erörtern."
 
 #. Default: D-Bas offers a lot of advantages, here are a few of them:
-#: dbas/templates/index.pt:28
+#: dbas/templates/index.pt:30
 msgid "dbas_intro_advantages_intro"
 msgstr "D-BAS hat viele Vorteile, hier sind einige davon:"
 
 #. Default: Easy to use and very powerful
-#: dbas/templates/index.pt:30
+#: dbas/templates/index.pt:32
 msgid "dbas_intro_advantages_1"
 msgstr "Einfach zu benutzen und sehr mächtig"
 
 #. Default: Avoid redundancy due to multiple statements because an
 #. argumentation map is used as background structure
-#: dbas/templates/index.pt:31
+#: dbas/templates/index.pt:33
 msgid "dbas_intro_advantages_2"
 msgstr ""
 "Reduziert Redundanz und Wiederholungen, da eine Argumentationskarte benutzt "
@@ -94,13 +94,13 @@ msgstr ""
 
 #. Default: Every argument and position will be connected logically to each
 #. other
-#: dbas/templates/index.pt:32
+#: dbas/templates/index.pt:34
 msgid "dbas_intro_advantages_3"
 msgstr "Jede Aussage steht logisch korrekt zu weiteren Aussagen"
 
 #. Default: This project is based on research of the graduation school Online-
 #. Participation, subsidised governmentally by
-#: dbas/templates/index.pt:35
+#: dbas/templates/index.pt:37
 msgid "projec_based_on"
 msgstr ""
 "Dieses Projekt basiert auf Forschungen des Fortschrittskolleg Online-"
@@ -108,41 +108,41 @@ msgstr ""
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: dbas/templates/index.pt:35
+#: dbas/templates/index.pt:37
 msgid "ministry_of_innovation"
 msgstr ""
 "Ministerium fpr Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
 "Westfalen"
 
 #. Default: And don't forget to check reguarly the
-#: dbas/templates/index.pt:56
+#: dbas/templates/index.pt:58
 msgid "dont_forget"
 msgstr "Und vergessen Sie nicht, auch folgende Seite zu lesen "
 
 #. Default: news-page
-#: dbas/templates/index.pt:56
+#: dbas/templates/index.pt:58
 msgid "news_page"
 msgstr "Nachrichten"
 
 #. Default: Features
-#: dbas/templates/index.pt:66 dbas/templates/snippet-header.pt:26
+#: dbas/templates/index.pt:68 dbas/templates/snippet-header.pt:26
 msgid "features"
 msgstr "Besonderheiten"
 
 #. Default: of D-BAS
-#: dbas/templates/index.pt:66 dbas/templates/index.pt:114
-#: dbas/templates/index.pt:169
+#: dbas/templates/index.pt:68 dbas/templates/index.pt:116
+#: dbas/templates/index.pt:171
 msgid "of_dbas"
 msgstr "von D-BAS"
 
 #. Default: Some of these features will be released in a future version of
 #. D-BAS.
-#: dbas/templates/index.pt:67
+#: dbas/templates/index.pt:69
 msgid "release_future_version"
 msgstr "Einige der Funktionen stehen erst bald zur Verfügung."
 
 #. Default: Argumentation Maps
-#: dbas/templates/index.pt:75
+#: dbas/templates/index.pt:77
 msgid "argu_maps"
 msgstr "Argumentationskarten"
 
@@ -150,7 +150,7 @@ msgstr "Argumentationskarten"
 #. the nodes are highly important and can have several meanings. Additionally
 #. the bubbles of the map can have play a important role. Therefore using this
 #. data structure for logically presentations of some graphs makes sense.
-#: dbas/templates/index.pt:76
+#: dbas/templates/index.pt:78
 msgid "argu_maps_content"
 msgstr ""
 "Eine Argumentationskarte ist wie eine Mind-Map, jedoch haben die Striche "
@@ -159,14 +159,14 @@ msgstr ""
 "logische Aussagen."
 
 #. Default: Dialog-based
-#: dbas/templates/index.pt:80
+#: dbas/templates/index.pt:82
 msgid "dialog_based"
 msgstr "Dialog-basiert"
 
 #. Default: Yeah, this is a novel and it is a kind of dialog-based approach.
 #. This means that the system will represent argumentations of panelist and
 #. claims will be given through the other participants.
-#: dbas/templates/index.pt:81
+#: dbas/templates/index.pt:83
 msgid "dialog_based_content"
 msgstr ""
 "Yeah, das ist neu und verwirklicht eine Art dialog-basierten Ansatz. Demnach "
@@ -174,39 +174,39 @@ msgstr ""
 "weiterer Benutzer beruhen."
 
 #. Default: Simple UI
-#: dbas/templates/index.pt:85
+#: dbas/templates/index.pt:87
 msgid "simple_ui"
 msgstr "Einfache Oberfläche"
 
 #. Default: The user interface of D-BAS is simple, clear and easy. At any point
 #. during the discussion the choices for the participant are bounded, but not
 #. isolating him/her.
-#: dbas/templates/index.pt:86
+#: dbas/templates/index.pt:88
 msgid "simple_ui_content"
 msgstr ""
 "Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
 "sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
 
 #. Default: Guided View
-#: dbas/templates/index.pt:93
+#: dbas/templates/index.pt:95
 msgid "guided_view"
 msgstr "Geführte Ansicht"
 
 #. Default: You will never see something like an argumentation map, because the
 #. systems seems to be like a dynamic and generic
-#: dbas/templates/index.pt:94
+#: dbas/templates/index.pt:96
 msgid "guided_view_content1"
 msgstr ""
 "Du wirst nie etwas wie eine Argumentationskarte sehen, da das System dich "
 "führt. Das System ist daher dynamisch und generisch ."
 
 #. Default: for you
-#: dbas/templates/index.pt:94
+#: dbas/templates/index.pt:96
 msgid "guided_view_content2"
 msgstr "für dich."
 
 #. Default: Island View
-#: dbas/templates/index.pt:98 dbas/templates/content.pt:116
+#: dbas/templates/index.pt:100 dbas/templates/content.pt:116
 #: dbas/templates/content.pt:148
 msgid "island_view"
 msgstr "Insel-Ansicht"
@@ -214,7 +214,7 @@ msgstr "Insel-Ansicht"
 #. Default: Okay, you want to see more as, but not everything. Therefore the
 #. island view will present you a list of every connected statement for an
 #. specific statement.
-#: dbas/templates/index.pt:99
+#: dbas/templates/index.pt:101
 msgid "island_view_content"
 msgstr ""
 "Okay, Sie möchten mehr sehen, aber nicht alles? Genau dafür haben wie eine "
@@ -222,57 +222,57 @@ msgstr ""
 "Aussagen, die mit Ihrem aktuellen Standpunkt verbunden sind."
 
 #. Default: Expert View
-#: dbas/templates/index.pt:103
+#: dbas/templates/index.pt:105
 msgid "expert_view"
 msgstr "Experten Ansicht"
 
 #. Default: So, you think you are an expert? Okay, you can have a view of the
 #. complete argumentation map.
-#: dbas/templates/index.pt:104
+#: dbas/templates/index.pt:106
 msgid "expert_view_content"
 msgstr ""
 "Experten Ansicht: Du bist also ein Experte? Okay, dann darfst du wirklich "
 "alles auf einen Blick sehen."
 
 #. Default: Description
-#: dbas/templates/index.pt:114 dbas/templates/snippet-header.pt:23
+#: dbas/templates/index.pt:116 dbas/templates/snippet-header.pt:23
 msgid "description"
 msgstr "Beschreibung"
 
 #. Default: In the following a short description of D-BAS will be given with
 #. the help of bulletpoints:
-#: dbas/templates/index.pt:116
+#: dbas/templates/index.pt:118
 msgid "description_intro"
 msgstr "Im Folgenden wird eine kurze Beschreibung von D-BAS gegeben:"
 
 #. Default: Participants are able to add and modify positions and arguments in
 #. every discussion.
-#: dbas/templates/index.pt:118
+#: dbas/templates/index.pt:120
 msgid "description_list_1"
 msgstr ""
 "Teilnehmer/innen können Argumente/Aussagen und Positionen hinzufügen und "
 "editieren."
 
 #. Default: Positions and arguments are connected logically by participants
-#: dbas/templates/index.pt:119
+#: dbas/templates/index.pt:121
 msgid "description_list_2"
 msgstr "Argumente/Aussagen und Positionen sind logisch miteinander verbunden"
 
 #. Default: The system is very easy to use.
 #. Default: It offers a time-shifted discussion in three modes:
-#: dbas/templates/index.pt:120 dbas/templates/index.pt:121
+#: dbas/templates/index.pt:122 dbas/templates/index.pt:123
 msgid "description_list_3"
 msgstr "Das System ist sehr einfach in der Benutzung"
 
 #. Default: Guided View: The participants will be lead through the discussion .
-#: dbas/templates/index.pt:123
+#: dbas/templates/index.pt:125
 msgid "guided_view_description"
 msgstr "Geführte Asnicht: Teilnehmer werden durch die Diskussion geführt."
 
 #. Default: Island View: A position with all connected arguments is presented
 #. as island. This supports the insight of a discussion about a specific
 #. position.
-#: dbas/templates/index.pt:124
+#: dbas/templates/index.pt:126
 msgid "island_view_description"
 msgstr ""
 "Insel Ansicht: Eine Aussage mit allen verknüpften Aussagen wird als Insel "
@@ -280,35 +280,35 @@ msgstr ""
 "die Übersicht"
 
 #. Default: Expert View: Participants are able to see and do everything.
-#: dbas/templates/index.pt:125
+#: dbas/templates/index.pt:127
 msgid "expert_view_description"
 msgstr "Experten Ansicht: Teilnehmer können die Argumentationskarte sehen."
 
 #. Default: Contributions can be rated by the participants.
-#: dbas/templates/index.pt:128
+#: dbas/templates/index.pt:130
 msgid "description_list_5"
 msgstr "Beiträge werden durch die Teilnehmer bewertet"
 
 #. Default: You have the huge power of the crowd!.
-#: dbas/templates/index.pt:129
+#: dbas/templates/index.pt:131
 msgid "description_list_6"
 msgstr "Dies ist die Weisheit der Menge"
 
 #. Default: About
-#: dbas/templates/index.pt:139 dbas/templates/snippet-header.pt:28
+#: dbas/templates/index.pt:141 dbas/templates/snippet-header.pt:28
 msgid "about"
 msgstr "Über"
 
 #. Default: D-BAS is a of discussions in the field of online participation and
 #. developed by
-#: dbas/templates/index.pt:140
+#: dbas/templates/index.pt:142
 msgid "about_description"
 msgstr ""
 "D-BAS ist eine Diskussions-Software im Bereich der Online-Partizipation und "
 "wurde enwickelt von"
 
 #. Default: Cooperation with
-#: dbas/templates/index.pt:146 dbas/templates/index.pt:156
+#: dbas/templates/index.pt:148 dbas/templates/index.pt:158
 msgid "cooperation_with"
 msgstr "In Kooperation mit"
 
@@ -319,19 +319,19 @@ msgstr "In Kooperation mit"
 #. different needs of our users. In addition, we are developing Thentos, an
 #. identity management system which ensures privacy during complex
 #. participation processes.
-#: dbas/templates/index.pt:147
+#: dbas/templates/index.pt:149
 msgid "liquid_democracy_description"
 msgstr ""
 "Der Praxispartner von Tobias Krauthoff ist Daniel Reichert vom Liquid "
 "Democracy e.V."
 
 #. Default: Graduation School
-#: dbas/templates/index.pt:151
+#: dbas/templates/index.pt:153
 msgid "graduation_scool"
 msgstr "Graduierten-Kolleg"
 
 #. Default: Online-Participation
-#: dbas/templates/index.pt:151
+#: dbas/templates/index.pt:153
 msgid "fk_op"
 msgstr "Online-Partizipation"
 
@@ -343,7 +343,7 @@ msgstr "Online-Partizipation"
 #. practice. The objective is the examination of opportunities of the internet,
 #. where affected persons are able to participate in decisions, where they are
 #. affected.
-#: dbas/templates/index.pt:152
+#: dbas/templates/index.pt:154
 msgid "fk_op_description"
 msgstr ""
 "Das NRW Fortschrittskolleg Online-Partizipation ist ein vom Land Nordrhein-"
@@ -355,7 +355,7 @@ msgstr ""
 "von Betroffenen an für sie relevanten Entscheidungen zu untersuchen."
 
 #. Default: Karlsruhe Institut of Technology
-#: dbas/templates/index.pt:156
+#: dbas/templates/index.pt:158
 msgid "kit"
 msgstr "Karlsruher Institut der Technologie"
 
@@ -367,7 +367,7 @@ msgstr "Karlsruher Institut der Technologie"
 #. of dialectical struc- tures, defines argument relations in terms of locigo-
 #. sematical relations between propositions and thus gives rise to a new
 #. computational approach to the reconstruction of complex debates.
-#: dbas/templates/index.pt:157
+#: dbas/templates/index.pt:159
 msgid "kit_description"
 msgstr ""
 "Die Arbeitsgruppe Funktionalität des Graduierten-Kollegs arbeitet eng mit "
@@ -375,12 +375,12 @@ msgstr ""
 "Karlsruher Institut der Technologie zusammen"
 
 #. Default: Research
-#: dbas/templates/index.pt:169 dbas/templates/snippet-header.pt:31
+#: dbas/templates/index.pt:171 dbas/templates/snippet-header.pt:31
 msgid "research"
 msgstr "Forschung"
 
 #. Default: Our data structure:
-#: dbas/templates/index.pt:170
+#: dbas/templates/index.pt:172
 msgid "our_datastructure"
 msgstr "Unsere Datenstruktur:"
 
@@ -395,7 +395,7 @@ msgstr "Unsere Datenstruktur:"
 #. '<dynamic element>'. In this example the premise is '<dynamic element>'
 #. while the conclusion is the negative form of the argument '<dynamic
 #. element>'. More information can be afforded via the
-#: dbas/templates/index.pt:174
+#: dbas/templates/index.pt:176
 msgid "data_structure_description"
 msgstr ""
 "Wir benutzen modifizierte Argumenkarten als Datenstruktur, wobei wir "
@@ -420,23 +420,23 @@ msgstr ""
 #. Default: contact
 #. Default: Kontakt:
 #. Default: Contact
-#: dbas/templates/index.pt:175 dbas/templates/imprint.pt:20
+#: dbas/templates/index.pt:177 dbas/templates/imprint.pt:20
 #: dbas/templates/snippet-footer.pt:33
 msgid "contact"
 msgstr "Kontakt"
 
 #. Default: formular
-#: dbas/templates/index.pt:175
+#: dbas/templates/index.pt:177
 msgid "formular"
 msgstr "Forumlar"
 
 #. Default: In addition, we have studied several tools:
-#: dbas/templates/index.pt:178
+#: dbas/templates/index.pt:180
 msgid "additional_studies"
 msgstr "Zusätzlich haben wir weitere Tools studiert:"
 
 #. Default: Forum
-#: dbas/templates/index.pt:183
+#: dbas/templates/index.pt:185
 msgid "forum"
 msgstr "Forum"
 
@@ -444,7 +444,7 @@ msgstr "Forum"
 #. only scale with the number of users, not with the number of arguments.
 #. Therefore messages can be highly redundant. Additionally the messages are
 #. not connected logically to each other.
-#: dbas/templates/index.pt:184
+#: dbas/templates/index.pt:186
 msgid "forum_description"
 msgstr ""
 "Foren-basierte Ansätze kennen die meisten Benutzer, skalieren aber nur mit "
@@ -453,28 +453,28 @@ msgstr ""
 "verknüpft."
 
 #. Default: Pro-Contra Lists
-#: dbas/templates/index.pt:188
+#: dbas/templates/index.pt:190
 msgid "pro-contra_lists"
 msgstr "Pro-Kontra Liste"
 
 #. Default: These lists are more arranged than the forum-based approaches, but
 #. even there are no connections between the arguments. Therefore these
 #. approaches are just lists and not more.
-#: dbas/templates/index.pt:189
+#: dbas/templates/index.pt:191
 msgid "pro-contra_lists_description"
 msgstr ""
 "Solche Listen sind besser sortiert als Foren, aber auch hier sind die "
 "Beiträge nicht miteinander logisch verbunden."
 
 #. Default: Argumentation-based Approaches
-#: dbas/templates/index.pt:193
+#: dbas/templates/index.pt:195
 msgid "argu_approaches"
 msgstr "Ansätze mit Argumentkarten"
 
 #. Default: This concept seems to be perfect, because posts are connected
 #. logically to each other and redundancy can be avoided. Unfortunately these
 #. tools are for experts only and not for amateurs.
-#: dbas/templates/index.pt:194
+#: dbas/templates/index.pt:196
 msgid "argu_approaches_description"
 msgstr ""
 "Dieses Konzept scheint perfekt zu sein, da Beiträge miteinander logisch "
@@ -499,7 +499,7 @@ msgstr "Nachrichten"
 #. Default: Login
 #. Default: Log In
 #: dbas/templates/snippet-header.pt:54 dbas/templates/snippet-popups.pt:245
-#: dbas/templates/snippet-popups.pt:437
+#: dbas/templates/snippet-popups.pt:428
 msgid "login"
 msgstr "Login"
 
@@ -768,6 +768,11 @@ msgstr "Icons von"
 msgid "generated_with"
 msgstr "erstellt mit dem Pyramid Web Framework 1.54"
 
+#. Default: Changes in Version
+#: dbas/templates/imprint.pt:120
+msgid "changes"
+msgstr "Änderungen in der Version"
+
 #. Default: Imprint and Copyrights
 #: dbas/templates/snippet-footer.pt:14
 msgid "imprint_copyright"
@@ -861,7 +866,7 @@ msgstr "Fax"
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:76 dbas/templates/snippet-popups.pt:121
 #: dbas/templates/snippet-popups.pt:157 dbas/templates/snippet-popups.pt:230
-#: dbas/templates/snippet-popups.pt:440 dbas/templates/snippet-popups.pt:478
+#: dbas/templates/snippet-popups.pt:431 dbas/templates/snippet-popups.pt:469
 msgid "close"
 msgstr "Schließen"
 
@@ -926,8 +931,7 @@ msgstr "Bitte hier bearbeiten"
 
 #. Default: Warning:
 #. Default: Warning!
-#: dbas/templates/snippet-popups.pt:148 dbas/templates/snippet-popups.pt:388
-#: dbas/templates/contact.pt:59
+#: dbas/templates/snippet-popups.pt:148 dbas/templates/contact.pt:59
 msgid "warning"
 msgstr "Warnung!"
 
@@ -990,14 +994,14 @@ msgstr ""
 "Adresse gesendet."
 
 #. Default: Error:
-#: dbas/templates/snippet-popups.pt:293 dbas/templates/snippet-popups.pt:403
+#: dbas/templates/snippet-popups.pt:293 dbas/templates/snippet-popups.pt:393
 #: dbas/templates/content.pt:133
 msgid "error"
 msgstr "Fehler:"
 
 #. Default: Success:
 #. Default: Success
-#: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:397
+#: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:387
 #: dbas/templates/settings.pt:75 dbas/templates/settings.pt:107
 #: dbas/templates/content.pt:80
 msgid "success"
@@ -1070,32 +1074,32 @@ msgid "generate_password"
 msgstr "Neues Password"
 
 #. Default: How to select a strong password
-#: dbas/templates/snippet-popups.pt:408 dbas/templates/snippet-popups.pt:453
+#: dbas/templates/snippet-popups.pt:399 dbas/templates/snippet-popups.pt:444
 msgid "select_password"
 msgstr "Wie wählt man ein sicheres Password"
 
 #. Default: A Password is strong, when it contains at least:
-#: dbas/templates/snippet-popups.pt:410 dbas/templates/snippet-popups.pt:456
+#: dbas/templates/snippet-popups.pt:401 dbas/templates/snippet-popups.pt:447
 msgid "select_password_intro"
 msgstr "Ein Passwort ist stark, wenn es mindestens folgende Sachen enthält:"
 
 #. Default: eight characters
-#: dbas/templates/snippet-popups.pt:412 dbas/templates/snippet-popups.pt:458
+#: dbas/templates/snippet-popups.pt:403 dbas/templates/snippet-popups.pt:449
 msgid "select_password_rule1"
 msgstr "acht Zeichen"
 
 #. Default: one uppercase letter
-#: dbas/templates/snippet-popups.pt:413 dbas/templates/snippet-popups.pt:459
+#: dbas/templates/snippet-popups.pt:404 dbas/templates/snippet-popups.pt:450
 msgid "select_password_rule2"
 msgstr "ein Großbuchstaben"
 
 #. Default: one lowercase letter
-#: dbas/templates/snippet-popups.pt:414 dbas/templates/snippet-popups.pt:460
+#: dbas/templates/snippet-popups.pt:405 dbas/templates/snippet-popups.pt:451
 msgid "select_password_rule3"
 msgstr "ein Kleinbuchstaben"
 
 #. Default: one special sign
-#: dbas/templates/snippet-popups.pt:415 dbas/templates/snippet-popups.pt:461
+#: dbas/templates/snippet-popups.pt:406 dbas/templates/snippet-popups.pt:452
 msgid "select_password_rule4"
 msgstr "ein Sonderzeichen"
 
@@ -1103,7 +1107,7 @@ msgstr "ein Sonderzeichen"
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: dbas/templates/snippet-popups.pt:417 dbas/templates/snippet-popups.pt:463
+#: dbas/templates/snippet-popups.pt:408 dbas/templates/snippet-popups.pt:454
 msgid "popup_password_text"
 msgstr ""
 "Als Beispiel ist 'M2015_fiO' ein starkes Passwort, dass erst nach ca. 275 "
@@ -1112,56 +1116,56 @@ msgstr ""
 "Foldenges sollte beachtet werden."
 
 #. Default: Avoid using a password on several pages
-#: dbas/templates/snippet-popups.pt:419 dbas/templates/snippet-popups.pt:465
+#: dbas/templates/snippet-popups.pt:410 dbas/templates/snippet-popups.pt:456
 msgid "select_password_avoid1"
 msgstr "Niemals Passwörter für mehrere Seiten nutzen"
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: dbas/templates/snippet-popups.pt:420 dbas/templates/snippet-popups.pt:466
+#: dbas/templates/snippet-popups.pt:411 dbas/templates/snippet-popups.pt:457
 msgid "select_password_avoid2"
 msgstr "Phrasen vermeiden, die in Büchern gefunden werden können"
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: dbas/templates/snippet-popups.pt:421 dbas/templates/snippet-popups.pt:467
+#: dbas/templates/snippet-popups.pt:412 dbas/templates/snippet-popups.pt:458
 msgid "select_password_avoid3"
 msgstr ""
 "Verwendung von Informationen, die eventuell in Verbindung zur Person stehen"
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: dbas/templates/snippet-popups.pt:422 dbas/templates/snippet-popups.pt:468
+#: dbas/templates/snippet-popups.pt:413 dbas/templates/snippet-popups.pt:459
 msgid "select_password_avoid4"
 msgstr ""
 "Verwendung von Informationen, die eventuell Freund/Bekannte der Person  "
 "kennen"
 
 #. Default: If you need some help with our password, you can get one here:
-#: dbas/templates/snippet-popups.pt:424 dbas/templates/snippet-popups.pt:470
+#: dbas/templates/snippet-popups.pt:415 dbas/templates/snippet-popups.pt:461
 msgid "select_password_help"
 msgstr ""
 "Wenn Sie Hilfe bei der Erstellung brauchen, können Sie sich hier eins "
 "generieren lassen:"
 
 #. Default: Register
-#: dbas/templates/snippet-popups.pt:438
+#: dbas/templates/snippet-popups.pt:429
 msgid "register"
 msgstr "Registierung"
 
 #. Default: How to write text
-#: dbas/templates/snippet-popups.pt:491
+#: dbas/templates/snippet-popups.pt:482
 msgid "how-to-write-text-header"
 msgstr "Wie schreibe ich Texte"
 
 #. Default: There are a few simple rules for writing good arguments:
-#: dbas/templates/snippet-popups.pt:494
+#: dbas/templates/snippet-popups.pt:485
 msgid "how-to-write-text-header-body-title"
 msgstr "Es gibt ein paar einfache Regeln um gute Argumente zu schreiben:"
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: dbas/templates/snippet-popups.pt:496
+#: dbas/templates/snippet-popups.pt:487
 msgid "how-to-write-text-header-body"
 msgstr ""
 "Gut zu schreiben ist ein Herausforderung und notwendig für die Benutzung von "
@@ -1169,66 +1173,66 @@ msgstr ""
 "paar Regeln gelistet, was gut und was schlecht ist."
 
 #. Default: Do's:
-#: dbas/templates/snippet-popups.pt:499
+#: dbas/templates/snippet-popups.pt:490
 msgid "dos"
 msgstr "Gut:"
 
 #. Default: Write short!
-#: dbas/templates/snippet-popups.pt:501
+#: dbas/templates/snippet-popups.pt:492
 msgid "how-to-write-text-short"
 msgstr "Schreiben Sie kurz!"
 
 #. Default: Only one statement/argument/point per field!
-#: dbas/templates/snippet-popups.pt:502
+#: dbas/templates/snippet-popups.pt:493
 msgid "how-to-write-text-one-point"
 msgstr "Immer nur eine Aussage/Argumete/Punkt pro Feld!"
 
 #. Default: Don'ts:
-#: dbas/templates/snippet-popups.pt:505
+#: dbas/templates/snippet-popups.pt:496
 msgid "donts"
 msgstr "Schlecht:"
 
 #. Default: Complicated and nested sentences!
-#: dbas/templates/snippet-popups.pt:507
+#: dbas/templates/snippet-popups.pt:498
 msgid "how-to-write-text-complicated"
 msgstr "Komplizierte und verschachtelte Sätze!"
 
 #. Default: More than one statement/argument/point per field!
-#: dbas/templates/snippet-popups.pt:508
+#: dbas/templates/snippet-popups.pt:499
 msgid "how-to-write-text-multiple-points"
 msgstr "Mehr als eine Aussage/Argumete/Punkt pro Feld!"
 
 #. Default: Do never ever use negations! Every negation will be set extra! This
 #. is highly important!
-#: dbas/templates/snippet-popups.pt:509
+#: dbas/templates/snippet-popups.pt:500
 msgid "how-to-write-text-negations"
 msgstr ""
 "Nutzen Sie niemals Verneinungen! Diese werden später immer extra gesetzt!"
 
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:513 dbas/templates/snippet-popups.pt:551
+#: dbas/templates/snippet-popups.pt:504 dbas/templates/snippet-popups.pt:542
 msgid "Okay"
 msgstr "Okay"
 
 #. Default: Abort
-#: dbas/templates/snippet-popups.pt:514 dbas/templates/snippet-popups.pt:552
+#: dbas/templates/snippet-popups.pt:505 dbas/templates/snippet-popups.pt:543
 msgid "abort"
 msgstr "Abbrechen"
 
 #. Default: How to set premisse groups
-#: dbas/templates/snippet-popups.pt:527
+#: dbas/templates/snippet-popups.pt:518
 msgid "how-to-set-premissegroups-header"
 msgstr "Wie markiere ich Gruppen von Aussagen"
 
 #. Default: There are a few simple tricks for setting premisse groups:
-#: dbas/templates/snippet-popups.pt:530
+#: dbas/templates/snippet-popups.pt:521
 msgid "how-to-set-premissegroups-header-body-title"
 msgstr "Es gibt ein paar einfache Regeln um Argumentgruppen zu setzen:"
 
 #. Default: Sometimes you want to state more than one statement, but they are
 #. connected...in some way. These statements can be connected in one premisse
 #. group
-#: dbas/templates/snippet-popups.pt:532
+#: dbas/templates/snippet-popups.pt:523
 msgid "how-to-set-premissegroups-header-body"
 msgstr ""
 "Manchmal möchten Sie mehr als nur eine Aussage angeben, aber die Aussagen "
@@ -1236,26 +1240,26 @@ msgstr ""
 "als Gruppe markeirt werden."
 
 #. Default: Normally, each statement of you is independent of the others.
-#: dbas/templates/snippet-popups.pt:536
+#: dbas/templates/snippet-popups.pt:527
 msgid "set-premissegroups1"
 msgstr "Normalerweise ist jede Aussagen unabhängig von den anderen."
 
 #. Default: If you want to add an 'and' in your statement, please do not do it!
-#: dbas/templates/snippet-popups.pt:537
+#: dbas/templates/snippet-popups.pt:528
 msgid "set-premissegroups2"
 msgstr ""
 "Wenn Sie ein 'und' in Ihrer Aussage hinzufügen möchten, lassen Sie es. Es "
 "sind meistens zwei unabhängige Aussagen."
 
 #. Default: Sometimes you have dependent statemens, like:
-#: dbas/templates/snippet-popups.pt:538
+#: dbas/templates/snippet-popups.pt:529
 msgid "set-premissegroups3"
 msgstr "Manchmal haben Sie abhängige Aussagen, wie:"
 
 #. Default: Let's say, you argument, that you want to have a cat, but if and
 #. only iff she is small and fluffy. Then you have two statements for your
 #. position:
-#: dbas/templates/snippet-popups.pt:540
+#: dbas/templates/snippet-popups.pt:531
 msgid "set-premissegroups4"
 msgstr ""
 "Sagen wir, Sie argumentieren, dass Sie eine Katze haben möchten, aber nur "
@@ -1263,27 +1267,27 @@ msgstr ""
 "Position:"
 
 #. Default: I want a cat, because:
-#: dbas/templates/snippet-popups.pt:541
+#: dbas/templates/snippet-popups.pt:532
 msgid "set-premissegroups5"
 msgstr "Ich möchte eine Katze, weil:"
 
 #. Default: She is fluffy
-#: dbas/templates/snippet-popups.pt:542
+#: dbas/templates/snippet-popups.pt:533
 msgid "set-premissegroups6"
 msgstr "Sie flauschig ist."
 
 #. Default: She is small
-#: dbas/templates/snippet-popups.pt:543
+#: dbas/templates/snippet-popups.pt:534
 msgid "set-premissegroups7"
 msgstr "Weil Sie klein ist."
 
 #. Default: Then you have to check the box!
-#: dbas/templates/snippet-popups.pt:544
+#: dbas/templates/snippet-popups.pt:535
 msgid "set-premissegroups8"
 msgstr "Dann sollten Sie die Box markieren."
 
 #. Default: Otherwise you do not need this checkbox.
-#: dbas/templates/snippet-popups.pt:547
+#: dbas/templates/snippet-popups.pt:538
 msgid "set-premissegroups9"
 msgstr "Andernfalls brauchen Sie die Checkbox nicht."
 
