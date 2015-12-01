@@ -21,7 +21,7 @@
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
 						<br>
 						<form action="/discussion/start" method="get" style="text-align:center;">
-							<input class="button button-block btn btn-primary" type="submit" value="If you do wish to start now,<br>please click here!" name="Submit" id="start-discussion-button" />
+							<input class="button button-block btn btn-lg btn-primary" type="submit" value="If you do wish to start now,<br>please click here!" name="Submit" id="start-discussion-button" />
 						</form>
 						<br>
 						<br>
@@ -64,6 +64,7 @@
 				<div class="col-md-12">
 					<div class="content">
 						<h2><span class="font-semi-bold" i18n:translate="features">Features</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
+						<p class="lead" i18n:translate="release_future_version">Some of these features will be released in a future version of D-BAS.</p><br>
 					</div>
 				</div>
 			</div>
@@ -72,17 +73,17 @@
 				<div class="col-md-4 col-badge">
 					<img id="icon-map" class="icon-badge" alt="icon-map" src="${request.static_url('dbas:static/images/icon_graph.png')}" />
 					<h3 i18n:translate="argu_maps">Argumentation Maps</h3>
-					<p i18n:translate="argu_maps_content">A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense.</p>
+					<p i18n:translate="argu_maps_content" class="content">A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense.</p>
 				</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-dialog" class="icon-badge" alt="icon-dialog" src="${request.static_url('dbas:static/images/icon_dialog.png')}" />
 					<h3 i18n:translate="dialog_based">Dialog-based</h3>
-					<p i18n:translate="dialog_based_content">Yeah, this is a novel and it is a kind of dialog-based approach. This means that the system will represent argumentations of panelist and claims will be given through the other participants.</p>
+					<p i18n:translate="dialog_based_content" class="content">Yeah, this is a novel and it is a kind of dialog-based approach. This means that the system will represent argumentations of panelist and claims will be given through the other participants.</p>
 				</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-simple" class="icon-badge" alt="icon-simple" src="${request.static_url('dbas:static/images/icon_simple.png')}" />
 					<h3 i18n:translate="simple_ui">Simple UI</h3>
-					<p i18n:translate="simple_ui_content">The user interface of D-BAS is simple, clear and easy. At any point during the discussion the choices for the participant are bounded, but not isolating him/her.</p>
+					<p i18n:translate="simple_ui_content" class="content">The user interface of D-BAS is simple, clear and easy. At any point during the discussion the choices for the participant are bounded, but not isolating him/her.</p>
 				</div>
 			</div>
 
@@ -90,17 +91,17 @@
 				<div class="col-md-4 col-badge">
 					<img id="icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
 					<h3 i18n:translate="guided_view">Guided View</h3>
-					<p><span i18n:translate="guided_view_content1">You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic</span> <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> <span i18n:translate="guided_view_content2">for you</span>.</p>
+					<p class="content"><span i18n:translate="guided_view_content1">You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic</span> <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> <span i18n:translate="guided_view_content2">for you</span>.</p>
 				</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
 					<h3 i18n:translate="island_view">Island View</h3>
-					<p i18n:translate="island_view_content">Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.</p>
+					<p class="content" i18n:translate="island_view_content">Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.</p>
 				</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
 					<h3 i18n:translate="expert_view">Expert View</h3>
-					<p i18n:translate="expert_view_content">So, you think you are an expert? Okay, you can have a view of the complete argumentation map.</p>
+					<p class="content" i18n:translate="expert_view_content">So, you think you are an expert? Okay, you can have a view of the complete argumentation map.</p>
 				</div>
 			</div>
 
@@ -134,8 +135,7 @@
 
 		<div class="container colored_container" id="about-template">
 			<div class="row">
-				<div class="col-md-12">
-					<div class="content">
+				<div class="col-md-12 content">
 						<h2><span class="font-semi-bold" i18n:translate="about">About</span> <span class="smaller">D-BAS</span></h2>
 						<p class="lead"><span i18n:translate="about_description">D-BAS is a of discussions in the field of online participation and developed by</span> <a href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html">Tobias Krauthoff</a>.
 						</p>
@@ -144,7 +144,7 @@
 							<div class="col-md-4 col-badge">
 								<img id="icon-liqd" class="icon-badge" alt="icon-liqd" src="${request.static_url('dbas:static/images/icon_liqd.png')}" />
 								<h3><span i18n:translate="cooperation_with">Cooperation with</span> <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a></h3>
-								<p i18n:translate="liquid_democracy_description">A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid Democracy e.V.</p>
+								<p i18n:translate="liquid_democracy_description">A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid Democracy e.V., which is a non-party, non-profit association. The key element of their work is the development of Adhocracy, a free software which serves as a digital participation tool. It offers various functions for the different needs of our users. In addition, we are developing Thentos, an identity management system which ensures privacy during complex participation processes.</p>
 							</div>
 							<div class="col-md-4 col-badge">
 								<img id="icon-kolleg" class="icon-badge" alt="icon-kolleg" src="${request.static_url('dbas:static/images/icon_kolleg.png')}" />
@@ -154,12 +154,12 @@
 							<div class="col-md-4 col-badge">
 								<img id="icon-kit" class="icon-badge" alt="icon-kit" src="${request.static_url('dbas:static/images/icon_kit.png')}" />
 								<h3><span i18n:translate="cooperation_with">Cooperation with</span> <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" i18n:translate="kit">Karlsruhe Institut of Technology</a></h3>
-								<p i18n:translate="kit_description">The workging group of functionality of the graduation school has a close-knit connection with the Institute for Technology Assessment and Systems Analysis (ITAS) of the Karlsruhe Institut of Technology.</p>
+								<p i18n:translate="kit_description">The workging group of functionality of the graduation school has a close-knit connection with the Institute for Technology Assessment and Systems Analysis (ITAS) of the Karlsruhe Institut of Technology, especially to Prof. Dr. G. Betz. His working group develoepd Argunet, a software tool for collaborative argumentation analysis. Its underlying theory, the theory of dialectical struc- tures, defines argument relations in terms of locigo- sematical relations between propositions and thus gives rise to a new computational approach to the reconstruction of complex debates.
+								</p>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 		</div>
 
 		<div class="container colored_container" id="research-template">

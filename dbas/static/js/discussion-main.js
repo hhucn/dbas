@@ -236,22 +236,10 @@ $(function () {
 		var line1 = 'Report ' + new Helper().getTodayAsDate(),
 				line2 = 'URL: ' + window.location.href,
 				line3 = _t(fillLine).toUpperCase(),
-				f = $("<form target='_blank' method='POST' style='display:none;'></form>").attr({action: mainpage + 'contact'}),
 				params = {'content': line1 + '\n' + line2 + '\n' + line3,
 					'name': $('#header_user').parent().text().replace(/\s/g,'')};
-		f.appendTo(document.body);
-		for (var i in params) {
-			if (params.hasOwnProperty(i)) {
-				f.append($('<input type="hidden" />').attr({
-					name: i,
-					value: params[i]
-				}));
-			}
-		}
 
-		f.submit();
-		f.remove();
-
+		new Helper().redirectInNewTabForContact(params);
 
 	}).hover(function () {
 		$(this).toggleClass('btn-primary', 400);

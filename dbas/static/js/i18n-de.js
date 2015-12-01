@@ -90,8 +90,7 @@ var dbas_de = {
 	'deleteTrack': 'Track löschen',
 	'deleteHistory': 'History löschen',
 	'doYouWantToEnterYourStatements': 'Möchten Sie Ihre eigenen Gründe angeben?',
-	'doNotHesitateToContact': 'Zögern Sie nicht, uns eine  <a' +
-	' href="mailto:krauthoff@cs.uni-duesseldorf.de?subject=Fehler%20beim%20Navigieren&body=Bitte%20beschreiben%20Sie%20hier%20kurz%20den%20Fehler">Nachricht zu senden</a>',
+	'doNotHesitateToContact': 'Zögern Sie nicht, uns zu <b><span style="cursor: pointer;" id="contact_on_error">kontaktieren (hier klicken)</span></b>',
 	'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Google Analytics.',
 	'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit.',
 	'euCookiePopoupButton1': 'Weiter',

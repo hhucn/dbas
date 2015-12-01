@@ -32,6 +32,7 @@ var conPositionColumnId 						= 'con-position-column';
 var conPositionTextareaId 						= 'con-textareas';
 var conIslandId 								= 'con-island';
 var conTextareaPremisegroupCheckboxId 			= 'con-textarea-premisegroup-checkbox';
+var contactOnErrorId 							= 'contact_on_error';
 var deleteTrackButtonId 						= 'delete-track';
 var deleteHistoryButtonId 						= 'delete-history';
 var discussionsDescriptionId 					= 'discussions-description';

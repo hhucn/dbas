@@ -651,12 +651,20 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Shows an error on discussion space as well as a retry button
+	 * Shows an error on discussion space as well as a retry button and sets a link for the contact page
 	 * @param error_msg message of the error
 	 */
 	this.showDiscussionError = function (error_msg) {
 		$('#' + discussionFailureRowId).fadeIn('slow');
 		$('#' + discussionFailureMsgId).html(error_msg);
+		$('#' + contactOnErrorId).click(function(){
+			var line1 = 'Report ' + new Helper().getTodayAsDate(),
+				line2 = 'URL: ' + window.location.href,
+				line3 = _t(fillLine).toUpperCase(),
+				params = {'content': line1 + '\n' + line2 + '\n' + line3,
+				'name': $('#header_user').parent().text().replace(/\s/g,'')};
+			new Helper().redirectInNewTabForContact(params);
+		})
 	};
 
 	/**

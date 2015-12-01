@@ -534,11 +534,34 @@ function Helper() {
     	return string.substr(0, index) + character + string.substr(index + replacedCharacter.length);
 	};
 
+	/**
+	 * Opens a new tab with the contact form. Given params should containt name and content
+	 * @param params dictionary with at least {'name': ?, 'content': ?}
+	 */
+	this.redirectInNewTabForContact = function(params){
+		var f = $("<form target='_blank' method='POST' style='display:none;'></form>").attr({action: mainpage + 'contact'});
+		f.appendTo(document.body);
+		for (var i in params) {
+			if (params.hasOwnProperty(i)) {
+				f.append($('<input type="hidden" />').attr({
+					name: i,
+					value: params[i]
+				}));
+			}
+		}
+
+		f.submit();
+		f.remove();
+	};
+
+	/**
+	 * Delays a specific function
+	 */
 	this.delay = (function(){
-			var timer = 0;
-			return function(callback, ms){
-				clearTimeout (timer);
-				timer = setTimeout(callback, ms);
-			};
-		})();
+		var timer = 0;
+		return function(callback, ms){
+			clearTimeout (timer);
+			timer = setTimeout(callback, ms);
+		};
+	})();
 }

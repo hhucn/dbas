@@ -87,8 +87,7 @@ var dbas_en = {
 	' as the current one once again?',
 	'doesNotHold': 'does not hold',
 	'doesNotHoldBecause': 'does not hold, because',
-	'doNotHesitateToContact': 'Do not hesitate to <a' +
-	' href="mailto:krauthoff@cs.uni-duesseldorf.de?subject=Error%20in%20navigating&body=Please%20describe%20the%20error">contact us via mail</a>',
+	'doNotHesitateToContact': 'Do not hesitate to <b><span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span></b>',
 	'doesJustify': 'does justify that',
 	'doesNotJustify': 'does not justify that',
 	'doYouWantToEnterYourStatements': 'Do you want to enter your statement(s)?',
@@ -177,7 +176,7 @@ var dbas_en = {
 	'last_action': 'Last Action',
 	'last_login': 'Last Login',
 	'logfile': 'Logfile for',
-	'letsGo': 'If you do wish to start now, please click here!',
+	'letsGo': 'If you want to start now, please click here!',
 	'medium': 'medium',
 	'newPremisesRadioButtonText': 'None of the above! Let me state my own reason(s)!',
 	'newPremisesRadioButtonTextAsFirstOne': 'Yes, let me state my own reason(s)!',

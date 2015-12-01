@@ -769,6 +769,7 @@ class Dbas(object):
 
 		logger('reply_for_response_of_confrontation', 'def', 'main')
 
+		# get language
 		try:
 			lang = str(self.request.cookies['_LOCALE_'])
 		except KeyError:
@@ -802,11 +803,11 @@ class Dbas(object):
 			# IMPORTANT: Supports are a special case !
 			if 'support' in uid_text:
 				return_dict, status = DatabaseHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
-				                                                                               uid_text, self.request.session.id, issue,
-				                                                                          lang)
+				                                                                          uid_text, self.request.session.id, issue, lang)
 			else:
-				return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, uid_text, self.request.authenticated_userid,
-			                                                                         self.request.session.id, exception_rebut, issue, lang)
+				return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, self.request.authenticated_userid,
+				                                                                         uid_text, self.request.session.id,
+				                                                                         exception_rebut, issue, lang)
 			return_dict['status'] = status
 			return_dict['last_relation'] = relation
 			return_dict['confrontation_uid'] = confrontation

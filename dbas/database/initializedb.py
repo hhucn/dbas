@@ -83,7 +83,7 @@ def setupNewsDatabase():
 				  author='Tobias Krauthoff',
 				  news='Now, each user can edit positions and arguments. All changes will be saved and can be watched. Future work is ' +
 				       'the chance to edit the relations between positions.')
-	news10 = News(title='imple Navigation was improved',
+	news10 = News(title='Simple Navigation was improved',
 				  date='19.06.2015',
 				  author='Tobias Krauthoff',
 				  news='Because the first kind of navigation was finished recently, D-BAS is now dynamically. That means, that each user ' +
@@ -195,11 +195,16 @@ def setupNewsDatabase():
 				  date='24.11.2015',
 				  author='Tobias Krauthoff',
 				  news='Now we have a breadcrumbs with shortcuts for every step in our discussion. This feature will be im improved soon!')
+	news35 = News(title='Logic improvements',
+				  date='01.12.2015',
+				  author='Tobias Krauthoff',
+				  news='Every week we try to improve the look and feel of the discussions navigation. Sometimes just a few words are '
+				       'edited, but on other day the logic itself gets an update. So keep on testing :)')
 
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
-	              news32, news33, news34]
+	              news32, news33, news34, news35]
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 

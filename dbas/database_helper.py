@@ -533,25 +533,24 @@ class DatabaseHelper(object):
 
 	def get_attack_for_argument_if_support(self, transaction, user, id_text, session_id, issue, lang):
 		"""
-		Calls get_attack_for_argument(self, transaction, user, id_text, pgroup_id, session_id, issue),
-		whereby the pgroup id is hidden in the argument id of id_text
+
 		:param transaction:
 		:param user:
 		:param id_text:
 		:param session_id:
 		:param issue:
+		:param lang:
 		:return:
 		"""
-		logger('DatabaseHelper', 'get_attack_for_argument_by_ids_argument', 'extracting argument')
+		logger('DatabaseHelper', 'get_attack_for_argument_if_support', 'extracting argument')
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(id_text.split('_')[2])).first()
 		return_dict = dict()
 		qh = QueryHelper()
 
 		return_dict['premise_text'], trash = qh.get_text_for_premisesGroup_uid(int(db_argument.premisesGroup_uid), issue)
 		return_dict['premisesgroup_uid'] = db_argument.premisesGroup_uid
-		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid, issue) if db_argument.conclusion_uid \
-		                                                                                                     != 0 else \
-			qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
+		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid, issue) \
+			if db_argument.conclusion_uid != 0 else qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
 		return_dict['conclusion_uid'] = db_argument.conclusion_uid
 		return_dict['relation'] = id_text.split('_')[0]
 
@@ -561,12 +560,12 @@ class DatabaseHelper(object):
 
 		status = 1
 		if not attacks or int(attacks[key]) == 0:
-			logger('DatabaseHelper', 'get_attack_for_argument', 'there is no attack!')
+			logger('DatabaseHelper', 'get_attack_for_argument_if_support', 'there is no attack!')
 			status = 0
 		else:
 			attack_no = str(random.randrange(0, int(attacks[key]))) # Todo fix random
-			logger('DatabaseHelper', 'get_attack_for_argument_by_ids_argument', 'attack with ' + attacks[key + str(attack_no)])
-			logger('DatabaseHelper', 'get_attack_for_argument_by_ids_argument', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
+			logger('DatabaseHelper', 'get_attack_for_argument_if_support', 'attack with ' + attacks[key + str(attack_no)])
+			logger('DatabaseHelper', 'get_attack_for_argument_if_support', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
 			return_dict['confrontation'] = attacks[key + str(attack_no)]
 			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
 			return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
@@ -664,12 +663,12 @@ class DatabaseHelper(object):
 
 		return return_dict, status
 
-	def get_reply_confrontations_response(self, transaction, uid_text, user, session_id, exception_rebut, issue, lang):
+	def get_reply_confrontations_response(self, transaction, user, uid_text, session_id, exception_rebut, issue, lang):
 		"""
 
 		:param transaction:
-		:param uid_text:
 		:param user:
+		:param uid_text:
 		:param session_id:
 		:param exception_rebut:
 		:param issue:
