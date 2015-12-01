@@ -8,7 +8,7 @@
 
 		<div>
 			<div class="col-md-7 first-container colored_container imprint-container">
-				<h2><span class="font-semi-bold" i18n:translate="imprint">Impressum</span></h2>
+				<h2><span class="font-semi-bold" i18n:translate="imprint">Impressum</span> ${project}</h2>
 				<p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
 				<p><a href="http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html">Tobias Krauthoff</a>
 					<br><span i18n:translate="department">Institut für Informatik</span>
@@ -53,8 +53,8 @@
 					<br>
 					<br>
 					<br>
-						<h5><strong i18n:translate="disclaimer_google_analytics">Google Analytics</strong></h5>
-						<span i18n:translate="google_analytics">Diese Website benutzt Google Analytics, einen Webanalysedienst der Google Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'', Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglicht. Die durch den Cookie erzeugten Informationen über Ihre Benutzung diese Website (einschließlich Ihrer IP-Adresse) wird an einen Server von Google in den USA übertragen und dort gespeichert. Google wird diese Informationen benutzen, um Ihre Nutzung der Website auszuwerten, um Reports über die Websiteaktivitäten für die Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und der Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird Google diese Informationen gegebenenfalls an Dritte übertragen, sofern dies gesetzlich vorgeschrieben oder soweit Dritte diese Daten im Auftrag von Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen Daten der Google in Verbindung bringen. Sie können die Installation der Cookies durch eine entsprechende Einstellung Ihrer Browser Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden.</span>
+					<h5><strong i18n:translate="disclaimer_google_analytics">Google Analytics</strong></h5>
+					<span i18n:translate="google_analytics">Diese Website benutzt Google Analytics, einen Webanalysedienst der Google Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'', Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglicht. Die durch den Cookie erzeugten Informationen über Ihre Benutzung diese Website (einschließlich Ihrer IP-Adresse) wird an einen Server von Google in den USA übertragen und dort gespeichert. Google wird diese Informationen benutzen, um Ihre Nutzung der Website auszuwerten, um Reports über die Websiteaktivitäten für die Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und der Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird Google diese Informationen gegebenenfalls an Dritte übertragen, sofern dies gesetzlich vorgeschrieben oder soweit Dritte diese Daten im Auftrag von Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen Daten der Google in Verbindung bringen. Sie können die Installation der Cookies durch eine entsprechende Einstellung Ihrer Browser Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden.</span>
 					<br>
 					<!--
 				<br><strong>Google AdSense</strong>
@@ -76,7 +76,7 @@
 							Some fonts are from <a href="http://www.fontsquirrel.com/">Font Squirrel</a>
 						</li>
 						<li>
-						<a href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a>
+							<a href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a>
 						</li>
 						<li>
 							<span i18n:translate="icons_by">Icons by</span>
@@ -114,6 +114,43 @@
 					</ul>
 				</div>
 
+				<br>
+				<br>
+				<div class="first-container colored_container imprint-container">
+					<h4><span class="font-semi-bold" i18n:translate="changes">Changes in Major Version</span></h4>
+					
+					<span class="project font-semi-bold">0.4.6 (unreleased)</span>
+				<ul>
+					<li>Collecting weights for arguments</li>
+				</ul>
+					
+					<span class="project font-semi-bold">0.4.5 (2015-12-01)</span>
+				<ul>
+					<li>Improved session management</li>
+					<li>Improved anti-spam questions</li>
+				</ul>
+					
+					<span class="project font-semi-bold">0.4.4 (2015-11-30)</span>
+				<ul>
+					<li>Breadcrumbs hover vs. title</li>
+					<li>Supports will redirect to arguments without any justification</li>
+				</ul>
+					
+					<span class="project font-semi-bold">0.4.3 (2015-11-30)</span>
+				<ul>
+					<li>Breadcrumbs</li>
+				</ul>
+					
+					<span class="project font-semi-bold">0.4.2 (2015-11-23)</span>
+				<ul>
+					<li>Bug fixes</li>
+				</ul>
+
+				<span class="project font-semi-bold">0.4.1 (16.11.2015)</span>
+				<ul>
+					<li>Improving bootstraping: It is now a two-step process!</li>
+				</ul>
+				</div>
 			</div>
 		</div>
 

@@ -75,6 +75,23 @@ class Translator(object):
 		en_lang['emailWasSent']                 = 'E-Mail was sent.'
 		en_lang['emailWasNotSent']              = 'E-Mail was not sent.'
 
+		en_lang['antispamquestion']             = 'What is'
+		en_lang['0']                            = 'zero'
+		en_lang['1']                            = 'one'
+		en_lang['2']                            = 'two'
+		en_lang['3']                            = 'three'
+		en_lang['4']                            = 'four'
+		en_lang['5']                            = 'five'
+		en_lang['6']                            = 'six'
+		en_lang['7']                            = 'seven'
+		en_lang['8']                            = 'eight'
+		en_lang['9']                            = 'nine'
+		en_lang['signs']                        = ['+','*','/','-']
+		en_lang['+']                            = 'plus'
+		en_lang['-']                            = 'minus'
+		en_lang['*']                            = 'multiply with'
+		en_lang['/']                            = 'divided by'
+
 		logger('Translator', 'setUpEnDict', 'length ' + str(len(en_lang)))
 		return en_lang
 
@@ -143,6 +160,23 @@ class Translator(object):
 		de_lang['emailWasSent']                 = 'E-Mail wurde gesendet.'
 		de_lang['emailWasNotSent']              = 'E-Mail wurde nicht gesendet.'
 
+		de_lang['antispamquestion']             = 'Was ist'
+		de_lang['0']                            = 'null'
+		de_lang['1']                            = 'eins'
+		de_lang['2']                            = 'zwei'
+		de_lang['3']                            = 'drei'
+		de_lang['4']                            = 'vier'
+		de_lang['5']                            = 'fünf'
+		de_lang['6']                            = 'sechs'
+		de_lang['7']                            = 'sieben'
+		de_lang['8']                            = 'acht'
+		de_lang['9']                            = 'neun'
+		de_lang['signs']                        = ['+','*','/','-']
+		de_lang['+']                            = 'plus'
+		de_lang['-']                            = 'minus'
+		de_lang['*']                            = 'mal'
+		de_lang['/']                            = 'durch'
+
 
 		logger('Translator', 'setUpDeDict', 'length ' + str(len(de_lang)))
 		return de_lang
@@ -156,11 +190,11 @@ class Translator(object):
 		"""
 		logger('Translator', 'get', 'id: ' + id + ', lang: ' + self.lang)
 		if self.lang == 'de' and id in self.de_dict:
-			logger('Translator', 'get', 'return de: ' + self.de_dict[id])
+			logger('Translator', 'get', 'return de: ' + str(self.de_dict[id]))
 			return self.de_dict[id]
 
 		elif self.lang == 'en' and id in self.en_dict:
-			logger('Translator', 'get', 'return en: ' + self.en_dict[id])
+			logger('Translator', 'get', 'return en: ' + str(self.en_dict[id]))
 			return self.en_dict[id]
 
 		elif self.lang == 'de' and id not in self.de_dict:

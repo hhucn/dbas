@@ -3,7 +3,7 @@
 <tal:block metal:use-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container contact form colored_container">
+		<div class="form container first-container colored_container">
 			<h2 i18n:translate="contact_header_1">Get In Touch With Us</h2>
 			<h5 i18n:translate="contact_header_2">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</h5>
 			<br>
@@ -41,7 +41,7 @@
 				<div class="form-group">
 					<label class="col-sm-3 control-label" i18n:translate="spam_req">Anti-Spam (required)</label>
 					<div class="col-sm-9">
-						<input type="text" id="spam-input" class="spam" name="spam" autocomplete="on" placeholder="What is one plus three?" tabindex="5" value="${spam}">
+						<input type="text" id="spam-input" class="spam" name="spam" autocomplete="on" placeholder="${spamquestion}" tabindex="5" value="${spam}">
 					</div>
 				</div>
 

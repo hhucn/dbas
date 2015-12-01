@@ -1,124 +1,98 @@
-0.0 (14.04.2015)
----
--  Initial version
--  Starting the project
+0.0 (2015-04-14)
+- Initial version
+- Starting the project
 
-0.1 (09.06.2015)
----
+0.1 (2015-06-09)
 - First milestone
 - Suitable discussion is missing
 
-0.2 (25.06.2015)
----
+0.2 (2015-06-25)
 - Options for adding statements
 - Options for editing statement
 - Added an email address
 - Sessions management and cache region support with beaker
 - CSRF prevention
 
-0.2.1 (07.07.2015)
----
+0.2.1 (2015-07-07)
 - Ready for production
 
-0.2.2 (07.07.2015)
----
+0.2.2 (2015-07-07)
 - Smaller changes of design aspects
 
-0.2.3 (23.07.2015)
----
+0.2.3 (2015-07-23)
 - i18n / l10n for Chameleon
 
-0.3.0 (23.07.2015)
----
+0.3.0 (2015-07-23)
 - New datastructure
 
-0.3.1 (01.09.2015)
----
+0.3.1 (2015-09-01)
 - Unique url's
 
-0.3.2 (25.09.2015)
----
+0.3.2 (2015-09-25)
 - Anonymous users
 
-0.3.3 (01.10.2015)
----
+0.3.3 (2015-10-01)
 - News interface for authors
 
-0.3.4 (06.10.2015)
----
+0.3.4 (2015-10-06)
 - Fuzzy string search for input fields
 
-0.3.5 (14.10.2015)
----
+0.3.5 (2015-10-14)
 - Logic for inserting statements
 
-0.3.6 (15.10.2015)
----
+0.3.6 (2015-10-15)
 - Switching topic
 
-0.3.7 (19.10.2015)
----
+0.3.7 (2015-10-19)
 - i18n / l10n for Ajax
 
-0.3.8 (20.10.2015)
----
+0.3.8 (2015-10-20)
 - Bug fixes
 
-0.3.9 (27.10.2015)
----
+0.3.9 (2015-10-27)
 - Bug fixes
 - Back-button issue for browsers fixed
 
-0.3.10 (04.11.2015)
----
+0.3.10 (2015-11-04)
 - Bug fixes
 - Bootstrap for the news
 
-0.3.11 (05.11.2015)
----
+0.3.11 (2015-11-05)
 - Bug fixes
 - Duplicates
 
-0.3.12 (09.11.2015)
----
+0.3.12 (2015-11-09)
 - Bug fixes
 - Fixed sharing option
 
-0.3.13 (10.11.2015)
----
+0.3.13 (2015-11-10)
 - CSRF frontend
 - CSRF backend
 
-0.3.14 (11.11.2015)
----
+0.3.14 (2015-11-11)
 - Material Design
 
-0.3.15 (13.11.2015)
-----
+0.3.15 (2015-11-13)
 - Report Button
 - Toggle start button
 - Second way of bootstraping: argumentation against initial given position
 
 0.4.1 (16.11.2015)
----
 - Improving bootstraping: It is now a two-step process!
 
-0.4.2 (23.11.2015)
----
+0.4.2 (2015-11-23)
 - Bug fixes
 
-0.4.3 (30.11.2015)
----
-<<<<<<< HEAD
+0.4.3 (2015-11-30)
 - Breadcrumbs
 
-0.4.4 (30.11.2015)
----
-- Breadcrumbs
-=======
+0.4.4 (2015-11-30)
 - Breadcrumbs hover vs. title
-
-0.4.4 (30.11.2015)
----
 - Supports will redirect to arguments without any justification
->>>>>>> general_bugfixes
+
+0.4.5 (2015-12-01)
+- Improved session management
+- Improved anti-spam-questions
+
+0.4.6 (unreleased)
+- Collecting weights for arguments

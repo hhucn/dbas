@@ -1,8 +1,10 @@
 import random
+
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
 from .logger import logger
+from .strings import Translator
 
 class PasswordGenerator(object):
 
@@ -94,3 +96,47 @@ class UserHandler(object):
 				return True
 
 		return False
+
+	def get_random_anti_spam_question(self, lang):
+		"""
+
+		:return:
+		"""
+		_t = Translator(lang)
+
+		int1 = random.randint(0,9)
+		int2 = random.randint(0,9)
+		answer = 0
+		question = _t.get('antispamquestion') + ' '
+		sign = _t.get('signs')[random.randint(0,3)]
+
+
+		if sign is '+':
+			sign = _t.get(sign)
+			answer = int1 + int2
+
+		elif sign is '-':
+			sign = _t.get(sign)
+			if int2 > int1:
+				tmp = int2
+				int2 = int1
+				int1 = tmp
+			answer = int1 - int2
+
+		elif sign is '*':
+			sign = _t.get(sign)
+			answer = int1 * int2
+
+		elif sign is '/':
+			sign = _t.get(sign)
+			answer = int1 / int2
+			while int1 % int2 != 0 or int1 == 0 or int2 == 0:
+				int1 = random.randint(1,9)
+				int2 = random.randint(1,9)
+
+
+		question += _t.get(str(int1)) + ' ' + sign + ' '+ _t.get(str(int2)) + '?'
+		logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question)
+		logger('UserHandler', 'get_random_anti_spam_question', 'answer: ' + str(answer))
+
+		return question, answer

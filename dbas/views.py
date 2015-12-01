@@ -23,7 +23,7 @@ from .tracking_helper import TrackingHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
-version = '0.4.4'
+version = '0.4.5'
 header = name + ' ' + version
 issue_fallback = 1
 
@@ -90,11 +90,6 @@ class Dbas(object):
 		contact_error = False
 		send_message = False
 		message = ''
-		username = ''
-		email = ''
-		phone = ''
-		content = ''
-		spam = ''
 
 		try:
 			lang = str(self.request.cookies['_LOCALE_'])
@@ -114,6 +109,11 @@ class Dbas(object):
 		logger('main_contact', 'form.contact.submitted', 'content: ' + content)
 		logger('main_contact', 'form.contact.submitted', 'spam: ' + spam)
 		logger('main_contact', 'form.contact.submitted', 'csrf_token: ' + request_token)
+
+		# get anti-spam-question
+		spamquestion, answer = UserHandler().get_random_anti_spam_question(lang)
+		# save answer in session
+		self.request.session['antispamanswer'] = answer
 
 		if 'form.contact.submitted' in self.request.params:
 			t = Translator(lang)
@@ -141,13 +141,15 @@ class Dbas(object):
 				message = t.get('emtpyContent')
 
 			# check for empty username
-			elif (not spam) or (not spam.isdigit()) or (not int(spam) == 4):
+			elif (not spam) or (not spam.isdigit()) or (not int(spam) == self.request.session['antispamanswer']):
 				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer')
+				logger('main_contact', 'form.contact.submitted', 'given answer ' + spam)
+				logger('main_contact', 'form.contact.submitted', 'right answer ' + str(self.request.session['antispamanswer']))
 				contact_error = True
 				message = t.get('maliciousAntiSpam')
 
 			# is the token valid?
-			elif request_token != token :
+			elif request_token != token:
 				logger('main_contact', 'form.contact.submitted', 'token is not valid')
 				logger('main_contact', 'form.contact.submitted', 'request_token: ' + str(request_token))
 				logger('main_contact', 'form.contact.submitted', 'token: ' + str(token))
@@ -176,7 +178,8 @@ class Dbas(object):
 			'mail': email,
 			'phone': phone,
 			'content': content,
-			'spam': spam,
+			'spam': '',
+			'spamquestion': spamquestion,
 			'csrf_token': token
 		}
 
@@ -376,42 +379,6 @@ class Dbas(object):
 
 		logger('notfound', 'def', 'path: ' + self.request.path)
 		logger('notfound', 'def', 'view name: ' + self.request.view_name)
-
-		# TODO: Dirty bugfix
-		# if 'ajax_get_start_statements' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_get_start_statements')
-		# 	return self.get_start_statements()
-		# elif 'ajax_get_premises_for_statement' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_get_premises_for_statement')
-		# 	return self.get_premises_for_statement()
-		# elif 'ajax_reply_for_premisegroup' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_premisegroup')
-		# 	return self.reply_for_premisegroup()
-		# elif 'ajax_reply_for_response_of_confrontation' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_response_of_confrontation')
-		# 	return self.reply_for_response_of_confrontation()
-		# elif 'ajax_reply_for_argument' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_reply_for_argument')
-		# 	return self.reply_for_argument()
-		#
-		# elif 'ajax_set_new_start_statement' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: set_new_start_statement')
-		# 	return self.set_new_start_statement()
-		# elif 'ajax_set_new_start_premise' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_set_new_start_premise')
-		# 	return self.set_new_start_premise()
-		# elif 'ajax_set_new_premises_for_x' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_set_new_premises_for_x')
-		# 	return self.set_new_premises_for_x()
-		# elif 'ajax_set_correcture_of_statement' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_set_correcture_of_statement')
-		# 	return self.set_correcture_of_statement()
-		# elif 'ajax_get_logfile_for_statement' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_get_logfile_for_statement')
-		# 	return self.get_logfile_for_statement()
-		# elif 'ajax_set_correcture_of_statement' in self.request.path:
-		# 	logger('notfound', 'def', 'redirect to: ajax_set_correcture_of_statement')
-		# 	return self.set_correcture_of_statement()
 
 		logger('notfound', 'def', 'params:')
 		for param in self.request.params:
