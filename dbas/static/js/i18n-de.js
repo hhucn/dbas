@@ -188,6 +188,7 @@ var dbas_de = {
 	'nickname': 'Spitzname',
 	'noIslandView': 'Daten für die Island View konnten nicht geladen werden. Tschuldigung!',
 	'noCorrections': 'Keinte Korreturen für die aktuelle Aussage.',
+	'noDecisionDone': 'Es liegt keine Entscheidung vor.',
 	'noCorrectionsSet': 'Korrektur wurde nicht gespeichert, da der Benutzer unbekannt ist. Sind Sie angemeldet?',
 	'notInsertedErrorBecauseEmpty': 'Ihre Idee wurde nicht gespeichert, da das Feld leer ist.',
 	'notInsertedErrorBecauseDuplicate': 'Ihre Idee wurde nicht gespeichert, da Ihre Idee ein Duplikat ist.',

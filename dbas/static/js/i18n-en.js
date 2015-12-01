@@ -189,6 +189,7 @@ var dbas_en = {
 	'noIslandView': 'Could not fetch data for the island view. Sorry!',
 	'noCorrections': 'No corrections for the given statement.',
 	'noCorrectionsSet': 'Correction could not be set, because your user was not fount in the database. Are you currently logged in?',
+	'noDecisionDone': 'No decision was done.',
 	'notInsertedErrorBecauseEmpty': 'Your idea was not inserted, because your input text is empty.',
 	'notInsertedErrorBecauseDuplicate': 'Your idea was not inserted, because your idea is a duplicate.',
 	'notInsertedErrorBecauseUnknown': 'Your idea was not inserted due to an unkown error.',

@@ -240,7 +240,7 @@ function HistoryHandler(){
 	 */
 	this.setDataInHistoryTable = function (jsonData) {
 		'use strict';
-		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url, helper = new Helper();
+		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url, helper = new Helper(), keword;
 		tElement = ['', '', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr({
@@ -275,11 +275,12 @@ function HistoryHandler(){
 		parsedData = $.parseJSON(jsonData);
 		$.each(parsedData, function setDataInHistoryTableEach(history_index, history) {
 			has_data = true;
+			keyword = history.keyword_after_decission.length == 0 ? _t(noDecisionDone) : history.keyword_after_decission;
 			breaked_url = helper.cutTextOnChar(history.url, 60, '/');
 			tElement[0] = $('<td>').text(history_index).attr('title', 'No: ' + history_index);
 			tElement[1] = $('<td>').text(history.uid).attr('title', 'History ID: ' + history.uid);
 			tElement[2] = $('<td>').html('<a href="' + history.url + '">' + breaked_url + '</a>').attr('title', 'URL: ' + history.url);
-			tElement[3] = $('<td>').text(history.keyword_active).attr('title', _t(keyword) + ': ' + history.keyword_active);
+			tElement[3] = $('<td>').text(keyword).attr('title', _t(keyword) + ': ' + keyword);
 			tElement[4] = $('<td>').text(history.timestamp).attr('title', 'Date: ' + history.timestamp);
 
 			trElement = $('<tr>');

@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Returns a translatet string with the given id in the right suitable.
@@ -234,6 +234,7 @@ var nickname 										= 'nickname';
 var noIslandView 									= 'noIslandView';
 var noCorrections 									= 'noCorrections';
 var noCorrectionsSet 								= 'noCorrectionsSet';
+var noDecisionDone									= 'noDecisionDone';
 var notInsertedErrorBecauseEmpty 					= 'notInsertedErrorBecauseEmpty';
 var notInsertedErrorBecauseDuplicate 				= 'notInsertedErrorBecauseDuplicate';
 var notInsertedErrorBecauseUnknown 					= 'notInsertedErrorBecauseUnknown';
