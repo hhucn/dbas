@@ -93,6 +93,7 @@
 0.4.5 (2015-12-01)
 - Improved session management
 - Improved anti-spam-questions
+- Fixes in the GUI for registration
 
 0.4.6 (unreleased)
 - Collecting weights for arguments

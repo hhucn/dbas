@@ -128,6 +128,7 @@
 				<ul>
 					<li>Improved session management</li>
 					<li>Improved anti-spam questions</li>
+					<li>Fixes in the GUI for registration</li>
 				</ul>
 					
 					<span class="project font-semi-bold">0.4.4 (2015-11-30)</span>
