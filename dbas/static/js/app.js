@@ -79,10 +79,11 @@ function jmpToChapter() {
  */
 function goBackToTop() {
 	$(window).scroll(function () {
-		if (jQuery(this).scrollTop() > 220) {
-			$('.back-to-top').fadeIn(500);
+		if (jQuery(this).scrollTop() > 500) {
+			$('.back-to-top').fadeIn('slow');
+			setTimeout(function() { $('.back-to-top').fadeOut('slow'); }, 2500);
 		} else {
-			$('.back-to-top').fadeOut(500);
+			$('.back-to-top').fadeOut('slow');
 		}
 	});
 
