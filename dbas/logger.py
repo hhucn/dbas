@@ -2,6 +2,10 @@ import logging
 
 log = logging.getLogger(__name__)
 
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
+
 def logger(who, when, what):
 	"""
 	Log for the console and logfile on disk. Logged format: [who.upper()] when <what>
@@ -10,5 +14,4 @@ def logger(who, when, what):
 	:param what: what mesage
 	:return: None
 	"""
-	if 'TrackingHelper' in who or 'aaa' in who:
-		log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')
+	log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')

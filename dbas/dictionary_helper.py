@@ -5,6 +5,10 @@ from .database.discussion_model import Statement, User, TextValue, TextVersion, 
 from .logger import logger
 from sqlalchemy import and_
 
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
+
 class DictionaryHelper(object):
 
 	def get_random_subdict_out_of_orderer_dict(self, ordered_dict, count):
@@ -68,13 +72,12 @@ class DictionaryHelper(object):
 		uid    = str(db_statement.uid)
 		text   = db_textversion.content
 		date   = str(db_textversion.timestamp)
-		weight = str(db_textversion.weight)
 		author = db_textversion.users.nickname
 		pgroup = str( db_premise.premisesGroup_uid) if db_premise else '0'
 
 		while text.endswith('.'):
 			text = text[:-1]
 
-		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + weight + ', ' + author +
+		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + author +
 		       ', ' + pgroup + ', ' + str(issue))
-		return {'uid':uid, 'text':text, 'date':date, 'weight':weight, 'author':author, 'premisegroup_uid':pgroup, 'issue':issue}
+		return {'uid':uid, 'text':text, 'date':date, 'author':author, 'premisegroup_uid':pgroup, 'issue':issue}

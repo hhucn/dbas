@@ -10,6 +10,10 @@ from .database import *
 
 import logging
 
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
+
 def main(global_config, **settings):
 	""" This function returns a Pyramid WSGI application.
 	"""

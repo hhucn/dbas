@@ -19,6 +19,7 @@ from .email import EmailHelper
 from .logger import logger
 from .query_helper import QueryHelper
 from .strings import Translator
+from .breadcrumb_helper import BreadcrumbHelper
 from .tracking_helper import TrackingHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
@@ -26,6 +27,10 @@ name = 'D-BAS'
 version = '0.4.5'
 header = name + ' ' + version
 issue_fallback = 1
+
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
 
 class Dbas(object):
 	def __init__(self, request):
@@ -442,8 +447,8 @@ class Dbas(object):
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
 			QueryHelper().del_history_of_user(transaction, self.request.authenticated_userid)
-			TrackingHelper().save_history_for_user(transaction, self.request.authenticated_userid, url, 'Start',
-			                                                           self.request.session.id)
+			BreadcrumbHelper().save_breadcrumb_for_user(transaction, self.request.authenticated_userid, url, 'Start',
+			                                            self.request.session.id)
 
 			if issue == 'undefined':
 				logger('get_start_statements', 'def', 'issue is undefined -> fallback')
@@ -459,7 +464,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -491,8 +496,8 @@ class Dbas(object):
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid,
-			                                                                             url, uid, False, '', lang, self.request.session.id)
+			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid,
+			                                                               url, uid, False, '', lang, self.request.session.id)
 
 			logger('get_text_for_statement', 'def', 'uid: ' + uid)
 			logger('get_text_for_statement', 'def', 'issue ' + str(issue))
@@ -503,7 +508,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -536,8 +541,8 @@ class Dbas(object):
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
-			                                                       uid, True, '', lang, self.request.session.id)
+			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
+			                                                               uid, True, '', lang, self.request.session.id)
 
 			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid)
 			logger('ajax_get_premise_for_statement', 'def', 'supportive:' + str(supportive))
@@ -552,7 +557,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -586,8 +591,8 @@ class Dbas(object):
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			TrackingHelper().save_history_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
-			                                                       uid, True, supportive, lang, self.request.session.id)
+			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
+			                                                               uid, True, supportive, lang, self.request.session.id)
 
 			logger('get_premises_for_statement', 'def', 'uid: ' + uid)
 			logger('get_premises_for_statement', 'def', 'supportive ' + str(supportive))
@@ -601,7 +606,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -653,8 +658,9 @@ class Dbas(object):
 			return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
 			                                                                              pgroup, conclusion, self.request.session.id,
 			                                                                              supportive, issue)
+			# Track will be saved in the method, whereby we differentiate between an 'normal' request and one,
+			# which was saved in the breadcrumbs to prevent the random attack
 			if attack_arg is '' or attack_with is '':
-				# track will be saved in the method
 				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
 				                                                                              pgroup, conclusion, self.request.session.id,
 				                                                                              supportive, issue)
@@ -662,14 +668,13 @@ class Dbas(object):
 				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup_by_args(attack_with, attack_arg, pgroup,
 				                                                                                      conclusion, issue)
 
-			logger('aaa','return',str(return_dict))
 			# reset and save url for breadcrumbs
 			url = self.request.params['url'] # TODO better url for noticing attacking arguments
 			additional_params = dict()
 			additional_params['confrontation_argument_uid'] = return_dict['confrontation_argument_id']
 			additional_params['attack'] = return_dict['attack']
-			TrackingHelper().save_history_for_user_with_argument_parts(transaction, self.request.authenticated_userid, url,
-			                                                        pgroup, conclusion, issue, supportive, self.request.session.id, lang, additional_params)
+			BreadcrumbHelper().save_breadcrumb_for_user_with_argument_parts(transaction, self.request.authenticated_userid, url,
+			                                                                pgroup, conclusion, issue, supportive, self.request.session.id, lang, additional_params)
 
 			return_dict['supportive'] = str(supportive)
 			return_dict['status'] = str(status)
@@ -678,7 +683,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -707,8 +712,8 @@ class Dbas(object):
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			TrackingHelper().save_history_for_user_with_premissegroups_uid(transaction, self.request.authenticated_userid, url,
-			                                                           id_text.split('_')[2], pgroup_id, issue, self.request.session.id)
+			BreadcrumbHelper().save_breadcrumb_for_user_with_premissegroups_uid(transaction, self.request.authenticated_userid, url,
+			                                                                    id_text.split('_')[2], pgroup_id, issue, self.request.session.id)
 
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
 			logger('reply_for_argument', 'def', 'id_text ' + str(id_text))
@@ -723,7 +728,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -760,9 +765,9 @@ class Dbas(object):
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			TrackingHelper().save_history_for_user_with_premissegroup_of_arguments_uid(transaction, self.request.authenticated_userid, url,
-			                                                              confrontation, issue, uid_text.split('_')[0],
-			                                                                           self.request.session.id, lang)
+			BreadcrumbHelper().save_breadcrumb_for_user_with_premissegroup_of_arguments_uid(transaction, self.request.authenticated_userid, url,
+			                                                                                confrontation, issue, uid_text.split('_')[0],
+			                                                                                self.request.session.id, lang)
 
 			# track will be saved in get_reply_confrontation_response
 			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text)
@@ -797,7 +802,7 @@ class Dbas(object):
 			return_dict['status'] = '-1'
 
 		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = TrackingHelper().get_history_of_user(self.request.authenticated_userid)
+		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -886,7 +891,7 @@ class Dbas(object):
 			logger('get_user_history', 'error', repr(e))
 
 		logger('get_user_history', 'def', 'get history data')
-		return_dict = TrackingHelper().get_history_of_user(nickname)
+		return_dict = BreadcrumbHelper().get_breadcrumbs_of_user(nickname)
 		logger('get_user_history', 'def', str(return_dict))
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 

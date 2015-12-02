@@ -8,6 +8,10 @@ from .database.discussion_model import Argument, Statement, User, TextValue, Tex
 from .logger import logger
 from .strings import Translator
 
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
+
 class QueryHelper(object):
 	"""
 

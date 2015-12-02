@@ -17,9 +17,14 @@ from pyramid_mailer.message import Message
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
+
 here = os.path.dirname(__file__)
 settings = appconfig('config:' + os.path.join(here, '../', 'production.ini'))
 
+# todo refresh
 
 class Setup:
 	def __init__(self):

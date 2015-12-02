@@ -409,7 +409,11 @@ function ajaxLogout (){
 	}).done(function ajaxLogoutDone(data) {
 	}).fail(function ajaxLogoutFail(xhr) {
 		if (xhr.status == 200) {
-			location.reload(true);
+			if (window.location.href.indexOf('settings') != 0){
+				window.location.href = mainpage;
+			} else {
+				location.reload(); // TODO page will not be reloaded properly
+			}
 		} else if (xhr.status == 403) {
 			window.location.href = mainpage;
 		}

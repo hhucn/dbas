@@ -1,14 +1,13 @@
 import collections
-from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Relation, Track, Issue, \
-	History
-from .logger import logger
-from .strings import Translator
-from .query_helper import QueryHelper
+from .database.discussion_model import Argument, Statement
 
 # todo pathfinder
+
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
 
 class PathFinder(object):
 

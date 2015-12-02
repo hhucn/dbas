@@ -2,6 +2,10 @@ import sqlalchemy as sa
 
 from dbas.database import NewsBase
 
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
+
 class News(NewsBase):
 	"""
 	News-table with several columns.

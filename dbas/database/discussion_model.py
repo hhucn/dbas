@@ -21,6 +21,9 @@ from dbas.database import DBDiscussionSession, DiscussionBase
 # Argument : PremiseGroups      many-to-many    association tables
 # Argument : Argument           many-to-many    adjacency list relationship
 
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
 
 class Issue(DiscussionBase):
 	"""
@@ -129,23 +132,43 @@ class Statement(DiscussionBase):
 	text_uid = sa.Column(sa.Integer, sa.ForeignKey('textvalues.uid'))
 	isStartpoint = sa.Column(sa.Boolean, nullable=False)
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
+	weight = sa.Column(sa.Integer, nullable=False)
 
 	textvalues = relationship('TextValue', foreign_keys=[text_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, text, isstartpoint, issue=0):
+	def __init__(self, text, isstartpoint, issue=0, weight=0):
 		"""
 		Initializes a row in current statement-table
 		"""
 		self.text_uid = text
 		self.isStartpoint = isstartpoint
 		self.issue_uid = issue
+		self.weight = weight
+
+	def increase_weight(self, weight):
+		"""
+		Increases weight by given paramter
+		:param weight: additional weight to increase
+		:return: increased weight
+		"""
+		self.weight += weight
+		return self.weight
+
+	def decrease_weight(self, weight):
+		"""
+		Decreases weight by given paramter
+		:param weight: additional weight to decrease
+		:return: increased weight
+		"""
+		self.weight -= weight
+		return self.weight
 
 
 class TextValue(DiscussionBase): # TODO: remove this due to redundancy!
 	"""
 	Text-Value-table with several columns.
-	Each text value has a link to its most recent text value and a weight
+	Each text value has a link to its most recent text value
 	"""
 	__tablename__ = 'textvalues'
 	uid = sa.Column(sa.Integer, primary_key=True)
@@ -174,18 +197,16 @@ class TextVersion(DiscussionBase):
 	content = sa.Column(sa.Text, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
 
 	textvalues = relationship('TextValue', foreign_keys=[textValue_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, content, author, weight):
+	def __init__(self, content, author):
 		"""
 		Initializes a row in current text versions-table
 		"""
 		self.content = content
 		self.author_uid = author
-		self.weight = weight
 		self.timestamp = func.now()
 
 	def set_textvalue(self, value):
@@ -195,11 +216,6 @@ class TextVersion(DiscussionBase):
 	def by_timestamp(cls):
 		"""Return a query of text versions sorted by timestamp."""
 		return DBDiscussionSession.query(TextVersion).order_by(TextVersion.timestamp)
-
-	@classmethod
-	def by_weight(cls):
-		"""Return a query of text versions sorted by wight."""
-		return DBDiscussionSession.query(TextVersion).order_by(TextVersion.weight)
 
 
 class PremiseGroup(DiscussionBase):
@@ -289,6 +305,24 @@ class Argument(DiscussionBase):
 	def conclusions_argument(self, argument):
 		self.argument_uid = argument
 
+	def increase_weight(self, weight):
+		"""
+		Increases weight by given paramter
+		:param weight: additional weight to increase
+		:return: increased weight
+		"""
+		self.weight += weight
+		return self.weight
+
+	def decrease_weight(self, weight):
+		"""
+		Decreases weight by given paramter
+		:param weight: additional weight to decrease
+		:return: increased weight
+		"""
+		self.weight -= weight
+		return self.weight
+
 
 class Track(DiscussionBase):
 	"""
@@ -367,7 +401,6 @@ class History(DiscussionBase):
 		:return:
 		"""
 		self.keyword_before_decission = keyword_before_decission
-
 
 
 class Relation(DiscussionBase):

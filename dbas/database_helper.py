@@ -17,6 +17,10 @@ from .tracking_helper import TrackingHelper
 
 # TODO: PEP 8
 
+# @author Tobias Krauthoff
+# @email krauthoff@cs.uni-duesseldorf.de
+# @copyright Krauthoff 2015
+
 class DatabaseHelper(object):
 
 	def get_news(self):
@@ -382,13 +386,13 @@ class DatabaseHelper(object):
 
 			# save the attack
 			TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
-			                                  qh.get_relation_uid_by_name(key), 0, session_id)
+			                                     qh.get_relation_uid_by_name(key), 0, session_id)
 
 		return return_dict, status
 
 	def get_attack_or_support_for_premisegroup_by_args(self, attack_with, attack_arg, pgroup, conclusion, issue):
 		"""
-		Same as get_attack_or_support_for_premisegroup, but more manually
+		Same as get_attack_or_support_for_premisegroup, but more manually, without saving this attack
 		:param attack_with:
 		:param attack_arg:
 		:param pgroup:
@@ -466,7 +470,7 @@ class DatabaseHelper(object):
 
 			# save the attack
 			TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
-			                                  qh.get_relation_uid_by_name(key), 0, session_id)
+			                                     qh.get_relation_uid_by_name(key), 0, session_id)
 
 		logger('DatabaseHelper', 'get_attack_for_argument_by_ids_argument', str(return_dict))
 		return return_dict, status
@@ -551,7 +555,7 @@ class DatabaseHelper(object):
 
 			# save the attack
 			TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
-			                                  qh.get_relation_uid_by_name(key), 0, session_id)
+			                                     qh.get_relation_uid_by_name(key), 0, session_id)
 
 		return return_dict, status
 
