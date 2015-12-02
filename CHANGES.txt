@@ -95,5 +95,5 @@
 - Improved anti-spam-questions
 - Fixes in the GUI for registration
 
-0.4.6 (unreleased)
-- Collecting weights for arguments
+0.4.6 (2015-12-02)
+- Collecting weights for arguments and statements

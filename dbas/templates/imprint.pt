@@ -119,7 +119,7 @@
 				<div class="first-container colored_container imprint-container">
 					<h4><span class="font-semi-bold" i18n:translate="changes">Changes in Version</span></h4>
 					
-					<span class="project font-semi-bold">0.4.6 (unreleased)</span>
+					<span class="project font-semi-bold">0.4.6 (2015-12-02)</span>
 				<ul>
 					<li>Collecting weights for arguments</li>
 				</ul>

@@ -12,7 +12,7 @@ from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
 
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue
+from .database.discussion_model import User, Group, Issue, Argument
 from .database_helper import DatabaseHelper
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
@@ -22,9 +22,10 @@ from .strings import Translator
 from .breadcrumb_helper import BreadcrumbHelper
 from .tracking_helper import TrackingHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
+from .weighting_helper import WeightingHelper
 
 name = 'D-BAS'
-version = '0.4.5'
+version = '0.4.6'
 header = name + ' ' + version
 issue_fallback = 1
 
@@ -543,6 +544,8 @@ class Dbas(object):
 			url = self.request.params['url']
 			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
 			                                                               uid, True, '', lang, self.request.session.id)
+			# DO NOT increase weight of statement, because this is the "do not know"-trace
+			# WeightingHelper().increase_weight_of_statement(uid)
 
 			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid)
 			logger('ajax_get_premise_for_statement', 'def', 'supportive:' + str(supportive))
@@ -593,6 +596,11 @@ class Dbas(object):
 			url = self.request.params['url']
 			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
 			                                                               uid, True, supportive, lang, self.request.session.id)
+			# increase or decreace weight of statement will be done in ajax_reply_for_premisegroup
+			if supportive:
+				WeightingHelper().increase_weight_of_statement(uid)
+			else:
+				WeightingHelper().decrease_weight_of_statement(uid)
 
 			logger('get_premises_for_statement', 'def', 'uid: ' + uid)
 			logger('get_premises_for_statement', 'def', 'supportive ' + str(supportive))
@@ -667,6 +675,13 @@ class Dbas(object):
 			else:
 				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup_by_args(attack_with, attack_arg, pgroup,
 				                                                                                      conclusion, issue)
+
+			# increase or decrease weights
+			wh = WeightingHelper()
+			wh.increase_weight_of_argument_by_components(pgroup, conclusion, supportive)
+			wh.increase_weight_of_statement(conclusion)
+			wh.increase_weight_of_statements_in_premissegroup(pgroup)
+			transaction.commit()
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url'] # TODO better url for noticing attacking arguments
@@ -762,6 +777,7 @@ class Dbas(object):
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
+			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
@@ -788,8 +804,15 @@ class Dbas(object):
 			return_dict['last_relation'] = relation
 			return_dict['confrontation_uid'] = confrontation
 
+			# increase or decrease weights
+			wh = WeightingHelper()
+			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid_text.split('_')[2]).first()
+			wh.increase_weight_of_argument_by_id(db_argument.uid)
+			wh.increase_weight_of_statements_in_premissegroup(db_argument.premisesGroup_uid)
+			transaction.commit()
+
 			# special case, when we are in the attack-branch
-			if exception_rebut:
+			if exception_rebut: # TODO ?
 				logger('reply_for_response_of_confrontation', 'def', 'getting text for the second bootstrap way -> attack')
 				text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
 			else:

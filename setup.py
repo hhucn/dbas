@@ -32,7 +32,7 @@ requires = [
 ]
 
 setup(name='dbas',
-	version='0.4.5',
+	version='0.4.6',
 	description='Novel prototype for a dialog-based argumentation software',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[
