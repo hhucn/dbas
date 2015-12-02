@@ -132,6 +132,7 @@ var dbas_de = {
 	'internalFailureWhileDeletingHistory': 'Interner Fehler, bitte versuchen Sie es später erneut.',
 	'internalError': '<strong>Interner Fehler:</strong> Wahrscheinlich ist Ihre Sitzung abgelaufen. Bitte laden Sie die Seite erneut!.',
 	'inputEmpty': 'Ihre Eingabe ist leer!',
+	'informationForExperts': 'Infos für Experten',
 	'issueList': 'Themen',
 	'islandViewHeaderText': 'Dies sind alle Argumente für: ',
 	'irrelevant': 'Irrelevant',

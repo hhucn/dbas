@@ -77,7 +77,6 @@ var logoutLinkId 								= 'logout-link';
 var loginUserId 								= 'login-user';
 var loginPwId 									= 'login-pw';
 var languageDropdownId 							= 'language-dropdown';
-var minimapId 									= 'navigation-minimap-container';
 var moreAboutPositionButtonId 					= 'more-about-position';
 var navbarLeft									= 'navbar-left';
 var navigationBreadcrumbId 						= 'navigation-breadcrumb';

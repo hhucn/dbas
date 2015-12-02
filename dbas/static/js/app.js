@@ -26,7 +26,6 @@ function Countdown(options) {
 
 	this.start = function () {
 		clearInterval(timer);
-		timer = 0;
 		seconds = options.seconds;
 		timer = setInterval(decrementCounter, 1000);
 	};

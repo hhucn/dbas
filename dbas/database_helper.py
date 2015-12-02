@@ -6,16 +6,14 @@ from Levenshtein import distance
 from datetime import datetime
 
 from .database import DBDiscussionSession, DBNewsSession
-from .database.discussion_model import Argument, Statement, User, Group, TextValue, TextVersion, Premise, PremiseGroup,  Track, \
+from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup,  Track, \
 	Relation, Issue
 from .database.news_model import News
 from .dictionary_helper import DictionaryHelper
 from .query_helper import QueryHelper
 from .user_management import UserHandler
 from .logger import logger
-from .strings import Translator
 from .tracking_helper import TrackingHelper
-from .user_management import PasswordHandler
 
 # TODO: PEP 8
 
@@ -31,7 +29,7 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'get_news', 'we have ' + str(len(db_news)) + ' news')
 		ret_dict = dict()
 		for index, news in enumerate(db_news):
-			news_dict = {}
+			news_dict = dict()
 			news_dict['title'] = news.title
 			news_dict['author'] = news.author
 			news_dict['date'] = news.date
@@ -51,6 +49,7 @@ class DatabaseHelper(object):
 	def set_news(self, transaction, title, text, user):
 		"""
 		Sets a new news into the news table
+		:param transaction: current transaction
 		:param title: news title
 		:param text: news text
 		:param user: self.request.authenticated_userid
@@ -59,7 +58,7 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'set_news', 'def')
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		author = db_user.firstname if db_user.firstname == "admin" else db_user.firstname + " " + db_user.surname
-		now = datetime.datetime.now()
+		now = datetime.now()
 		day = str(now.day) if now.day > 9 else ("0" + str(now.day))
 		month = str(now.month) if now.month > 9 else ("0" + str(now.month))
 		date = day + '.' + month + '.' + str(now.year)
@@ -117,7 +116,7 @@ class DatabaseHelper(object):
 		if db_user:
 			logger('DatabaseHelper', 'correct_statement', 'given user exists and correction will be set')
 			# duplicate or not?
-			if (len(db_textversions)>0):
+			if len(db_textversions)>0:
 				textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversions[-1].uid)
 			else:
 				textversion = TextVersion(content=corrected_text, author=db_user.uid, weight=db_textvalue.textversions.weight)
@@ -159,18 +158,22 @@ class DatabaseHelper(object):
 	def get_attack_overview(self, user, issue, lang):
 		"""
 
+		:param user:
+		:param issue:
+		:param lang:
+		:return:
 		"""
 		is_admin = UserHandler().is_user_admin(user)
 		logger('DatabaseHelper', 'get_attack_overview', 'is_admin ' + str(is_admin) + ', issue ' + str(issue))
 		if not is_admin:
 			return_dict = dict()
 		else:
-			return_dict = {}
+			return_dict = dict()
 			logger('DatabaseHelper', 'get_attack_overview', 'get all attacks for each argument')
 			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
 			db_relations = DBDiscussionSession.query(Relation).all()
 
-			relations_dict = {}
+			relations_dict = dict()
 			for relation in db_relations:
 				relations_dict[str(relation.uid)] = relation.name
 			return_dict['attacks'] = relations_dict
@@ -337,7 +340,7 @@ class DatabaseHelper(object):
 
 		logger('DatabaseHelper', 'get_attack_for_premisegroup', 'def')
 
-		return_dict = {}
+		return_dict = dict()
 		qh = QueryHelper()
 		# get premises and conclusion as text
 		return_dict['premise_text'], premises_as_statements_uid = qh.get_text_for_premisesGroup_uid(last_premises_group_uid, issue)
@@ -386,6 +389,11 @@ class DatabaseHelper(object):
 	def get_attack_or_support_for_premisegroup_by_args(self, attack_with, attack_arg, pgroup, conclusion, issue):
 		"""
 		Same as get_attack_or_support_for_premisegroup, but more manually
+		:param attack_with:
+		:param attack_arg:
+		:param pgroup:
+		:param conclusion:
+		:param issue:
 		:return:
 		"""
 
@@ -393,7 +401,7 @@ class DatabaseHelper(object):
 		       + ', attack_arg:' + attack_arg
 		       + ', pgroup:' + pgroup
 		       + ', conclusion:' + conclusion)
-		return_dict = {}
+		return_dict = dict()
 		status = '1'
 
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==int(pgroup),
@@ -510,7 +518,7 @@ class DatabaseHelper(object):
 			no_attacked_argument = True
 
 
-		return_dict = {}
+		return_dict = dict()
 		return_dict['premise_text'], trash = qh.get_text_for_premisesGroup_uid(int(premisesgroup_uid), issue)
 		return_dict['premisesgroup_uid'] = premisesgroup_uid
 		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_last_conclusion.statement_uid, issue)
@@ -597,7 +605,7 @@ class DatabaseHelper(object):
 				return_dict = qh.get_supports_for_argument_uid(key, argument_uid, issue)
 			identifier = 'premisesgroup'
 		else:
-			return_dict = {}
+			return_dict = dict()
 			identifier = 'none'
 			status = '-1'
 
@@ -605,7 +613,7 @@ class DatabaseHelper(object):
 
 		# check return value
 		if not return_dict:
-			return_dict = {}
+			return_dict = dict()
 		if len(return_dict) == 0:
 			return_dict[key] = '0'
 
@@ -639,8 +647,8 @@ class DatabaseHelper(object):
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).first()
 		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(textValue_uid=db_statement.text_uid).join(User).all()
 
-		return_dict = {}
-		content_dict = {}
+		return_dict = dict()
+		content_dict = dict()
 		# add all corrections
 		for index, versions in enumerate(db_textversions):
 			corr_dict = dict()

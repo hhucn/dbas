@@ -72,7 +72,6 @@ $(function () {
 	$('#' + displayControlContainerId).hide(); // hidding the control container
 	$('#' + scStyle3Id).hide();
 	$('#label-' + scStyle3Id).hide();
-	$('#' + minimapId).hide();
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
 

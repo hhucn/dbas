@@ -264,10 +264,6 @@
 			</div>
 		</div>
 
-		<div id="navigation-minimap-container" style="display:none">
-			<p i18n:translate="minimap">Minimap:</p>
-		</div>
-
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-navigationhandler.js')}"></script>

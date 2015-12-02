@@ -608,19 +608,19 @@ function GuiHandler() {
 			index = params[1];
 
 			token = callback.val();
-			var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0;
-			var start = 0;
+			//var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0, start = 0;
 
 			// make all tokens bold
 			uneditted_value = val;
-			while (token.length>0 && newpos != -1){//val.length) {
-				val = val.substr(0, pos) + '<b>' + val.substr(pos, token.length) + '</b>' + val.substr(pos + token.length);
-				start = pos + token.length + 7;
-				newpos = val.toLocaleLowerCase().substr(start).indexOf(token.toLocaleLowerCase());
-				pos = start + (newpos > -1 ? val.toLocaleLowerCase().substr(start).indexOf(token.toLocaleLowerCase()) : 0);
+			val = '<b>' + val.replace(token, '</b>' + token + '<b>').replace(token.toLocaleLowerCase(), '</b>' + token.toLocaleLowerCase() + '<b>') + '</b>';
 
-				// val = val.replace(token, '<b>' + token + '</b>');
-			}
+			//while (token.length>0 && newpos != -1){//val.length) {
+			//	val = val.substr(0, pos) + '<b>' + val.substr(pos, token.length) + '</b>' + val.substr(pos + token.length);
+			//	start = pos + token.length + 7;
+			//	newpos = val.toLocaleLowerCase().substr(start).indexOf(token.toLocaleLowerCase());
+			//	pos = start + (newpos > -1 ? val.toLocaleLowerCase().substr(start).indexOf(token.toLocaleLowerCase()) : 0);
+			//	// val = val.replace(token, '<b>' + token + '</b>');
+			//}
 
 			button = $('<button>').attr({type : 'button',
 				class : 'list-group-item',

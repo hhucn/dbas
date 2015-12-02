@@ -304,7 +304,8 @@ function JsonGuiHandler() {
 		// set discussions text - dictionary needs strings, no variables as keys!
 		dict = {'confrontation_uid': jsonData.confrontation_argument_id, 'current_attack': jsonData.attack, 'supportive': isSupportive};
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>'
-			+ confrontationText + '.<br><br>' + _t(whatDoYouThinkAboutThat) + '?', _t(thisConfrontationIs) + ' ' + jsonData.attack + '.', dict);
+			+ confrontationText + '.<br><br>' + _t(whatDoYouThinkAboutThat) + '?',
+				_t(informationForExperts) + ': ' + _t(thisConfrontationIs) + ' ' + jsonData.attack + '.', dict);
 
 		// build the radio buttons
 		text[0] = relationArray[0] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : '');
@@ -462,7 +463,7 @@ function JsonGuiHandler() {
 	 */
 	this.setJsonUserDataToAdminContent = function (jsonData) {
 		//var tableElement, trElement, tbody, thead, tdElement, spanElement, i;
-		var tableElement, trElement, tElement, i, is_argument, thead, tbody;
+		var tableElement, trElement, tElement, i, thead, tbody;
 		tElement = ['', '', '', '', '', '', '', '', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr({class: 'table table-striped table-hover',
@@ -497,8 +498,6 @@ function JsonGuiHandler() {
 
 		// add each user element
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
-			trElement = $('<tr>');
-
 			tElement[0] = $('<td>').text(value.uid);
 			tElement[1] = $('<td>').text(value.firstname);
 			tElement[2] = $('<td>').text(value.surname);

@@ -134,6 +134,7 @@ var dbas_en = {
 	'iDisagreeWith' : 'I disagree with',
 	'iDoNotKnow': 'I do not know',
 	'iDoNotKnowInColor': 'I <span class=\'text-info\'>do not know</span>',
+	'informationForExperts': 'Infos for experts',
 	'internalFailureWhileDeletingTrack': 'Internal failure, please try again or did you have deleted your track recently?',
 	'internalFailureWhileDeletingHistory': 'Internal failure, please try again or did you have deleted your history recently?',
 	'internalError': '<strong>Internal Error:</strong> Maybe the server is offline or your session run out.',

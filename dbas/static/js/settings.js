@@ -239,7 +239,7 @@ function HistoryHandler(){
 	 */
 	this.setDataInHistoryTable = function (jsonData) {
 		'use strict';
-		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url, helper = new Helper(), keword;
+		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url, helper = new Helper();
 		tElement = ['', '', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr({
@@ -388,7 +388,10 @@ $(function () {
 	});
 
 	$('#' + settingsPasswordInputId).keyup(function passwordInputKeyUp() {
-		new PasswordHandler().check_strength($('#' + settingsPasswordInputId), $('#' + settingsPasswordMeterId), $('#' + settingsPasswordStrengthId), $('#' + settingsPasswordExtrasId));
+		new PasswordHandler().check_strength($('#' + settingsPasswordInputId),
+				$('#' + settingsPasswordMeterId),
+				$('#' + settingsPasswordStrengthId),
+				$('#' + settingsPasswordExtrasId));
 		if ($(this).val().length > 0){
 			$('#' + settingsPasswordExtrasId).fadeIn('slow');
 		} else {

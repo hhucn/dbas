@@ -8,17 +8,17 @@ from dbas.database import DBDiscussionSession, DiscussionBase
 # ORM Relationships
 # Statement : Text              many-to-one     fk on the parent referencing the child, relationship() on the parent
 # Statement : Author            many-to-one
-# Statement : Premises         many-to-one
-# PremiseGroups : Author       many-to-one
+# Statement : Premises          many-to-one
+# PremiseGroups : Author        many-to-one
 # Argument : Statement          many-to-one
 # Argument : Author             many-to-one
-# Premises : Author            many-to-one
+# Premises : Author             many-to-one
 # TextValue : TextVersions      one-to-many     fk on the child referencing the parent, relationship() on the parent
 # Author : TextVersions         one-to-many
-# PremiseGroups : Premises    one-to-many
+# PremiseGroups : Premises      one-to-many
 # Track : Author                one-to-many
 # Track : Statement             one-to-many
-# Argument : PremiseGroups     many-to-many    association tables
+# Argument : PremiseGroups      many-to-many    association tables
 # Argument : Argument           many-to-many    adjacency list relationship
 
 

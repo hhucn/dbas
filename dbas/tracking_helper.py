@@ -2,16 +2,12 @@ import collections
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Relation, Track, Issue, \
-	History
+from .database.discussion_model import Argument, Statement, User, TextVersion, Relation, Track, Issue, History
 from .logger import logger
 from .strings import Translator
 from .query_helper import QueryHelper
 
 class TrackingHelper(object):
-
-	# def __init__ (self):
-	# 	self.char_threshold = 30
 
 	def save_track_for_user(self, transaction, user, statement_id, premisesgroup_uid, argument_uid, attacked_by_relation, attacked_with_relation, session_id):
 		"""
@@ -190,7 +186,7 @@ class TrackingHelper(object):
 		:param is_supportive: true, if the given decision was supportive
 		:param session_id: current session id
 		:param lang: current language
-		:param lang: additional_params
+		:param additional_params: additional paramseters
 		:return: undefined
 		"""
 		logger('TrackingHelper', 'save_history_for_user_with_argument_parts', 'def')
@@ -199,11 +195,14 @@ class TrackingHelper(object):
 		text1, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroups_uid, issue)
 		text2 = db_textversion.content.lower()
 
-		# change additional information
-		confrontation_argument_uid = additional_params['confrontation_argument_uid']
-		attack = additional_params['attack']
-		pos = url.find('/', url.find('&'))
-		url = url[0:pos] + '&attack_with=' + attack + '&' + 'attack_arg=' + str(confrontation_argument_uid) + url[pos:]
+		# change additional information, if they are not present
+		if 'attack_arg' not in url:
+			confrontation_argument_uid = additional_params['confrontation_argument_uid']
+			attack = additional_params['attack']
+			pos = url.find('/', url.find('&'))
+			logger('TrackingHelper', 'save_history_for_user_with_argument_parts', url)
+			url = url[0:pos] + '&attack_with=' + attack + '&' + 'attack_arg=' + str(confrontation_argument_uid) + url[pos:]
+			logger('TrackingHelper', 'save_history_for_user_with_argument_parts', url)
 
 		_t = Translator(lang)
 		arg = text2 + ' ' + _t.get('because') + ' ' + text1
@@ -290,8 +289,6 @@ class TrackingHelper(object):
 		_t = Translator(lang)
 		attribute = _t.get('support') if supportive else _t.get('attack')
 		text = db_textversion.content
-		# if len(text) > self.char_threshold:
-		# 	text = text[0:self.char_threshold] + '...'
 		self.save_history_for_user(transaction, user, url, attribute + ' ' + text, session_id)
 
 
@@ -337,9 +334,16 @@ class TrackingHelper(object):
 		if db_history:
 			returned_in_history = True
 			db_history = DBDiscussionSession.query(History).filter(and_(History.author_uid==db_user.uid, History.uid>db_history.uid)).all()
+			logger('TrackingHelper', 'save_history_for_user', 'duplicate check, unnecessary entries: ' + str(len(db_history)))
+			logger('TrackingHelper', 'save_history_for_user', 'duplicate check, unnecessary entries: ' + str(len(db_history)))
+			logger('TrackingHelper', 'save_history_for_user', 'duplicate check, unnecessary entries: ' + str(len(db_history)))
 			for history in db_history:
+				logger('TrackingHelper', 'save_history_for_user', 'duplicate check, deleting history: ' + str(history.uid))
+				logger('TrackingHelper', 'save_history_for_user', 'duplicate check, deleting history: ' + str(history.uid))
+				logger('TrackingHelper', 'save_history_for_user', 'duplicate check, deleting history: ' + str(history.uid))
 				DBDiscussionSession.query(History).filter_by(uid=history.uid).delete()
 		else:
+			logger('TrackingHelper', 'save_history_for_user', 'saving url: ' + url)
 			DBDiscussionSession.add(History(user=db_user.uid, url=url, keyword_before_decission=keyword, session_id=session_id))
 		transaction.commit()
 
@@ -380,11 +384,11 @@ class TrackingHelper(object):
 
 	def update_last_record_in_history(self, transaction, user, keyword_after_decission):
 		"""
-
-		:param transaction:
-		:param user:
-		:param keyword_after_decission:
-		:return:
+		Sets the given decision as after keyword for the last record of the user
+		:param transaction: current transaction
+		:param user: current user
+		:param keyword_after_decission: decision done by the user
+		:return: None
 		"""
 		logger('QueryHelper', 'update_last_record_in_history', 'user ' + str(user))
 

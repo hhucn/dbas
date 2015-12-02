@@ -43,7 +43,7 @@ class Dbas(object):
 		:param text:
 		:return:
 		"""
-		return text
+		return text # todo escaping string correctly
 		#return re.escape(text)
 
 	def base_layout(self):
@@ -650,17 +650,21 @@ class Dbas(object):
 				attack_arg = url[pos1:pos2]
 
 			# get argument by system or with params, when we are navigating with breadcrumbs
-			return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid, pgroup,
-			                                                                    conclusion, self.request.session.id, supportive, issue)
+			return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
+			                                                                              pgroup, conclusion, self.request.session.id,
+			                                                                              supportive, issue)
 			if attack_arg is '' or attack_with is '':
 				# track will be saved in the method
-				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid, pgroup,
-			                                                                    conclusion, self.request.session.id, supportive, issue)
+				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
+				                                                                              pgroup, conclusion, self.request.session.id,
+				                                                                              supportive, issue)
 			else:
 				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup_by_args(attack_with, attack_arg, pgroup,
 				                                                                                      conclusion, issue)
+
+			logger('aaa','return',str(return_dict))
 			# reset and save url for breadcrumbs
-			url = self.request.params['url']
+			url = self.request.params['url'] # TODO better url for noticing attacking arguments
 			additional_params = dict()
 			additional_params['confrontation_argument_uid'] = return_dict['confrontation_argument_id']
 			additional_params['attack'] = return_dict['attack']
