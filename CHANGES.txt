@@ -97,3 +97,6 @@
 
 0.4.6 (2015-12-02)
 - Collecting weights for arguments and statements
+
+0.5.0 (unreleased)
+- Improved recommendation of the next confrontation

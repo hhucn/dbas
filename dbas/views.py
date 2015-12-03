@@ -16,11 +16,13 @@ from .database.discussion_model import User, Group, Issue, Argument
 from .database_helper import DatabaseHelper
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
+from .fuzzy_string import FuzzySearch
 from .logger import logger
 from .query_helper import QueryHelper
 from .strings import Translator
 from .breadcrumb_helper import BreadcrumbHelper
 from .tracking_helper import TrackingHelper
+from .recommender_system import RecommenderHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .weighting_helper import WeightingHelper
 
@@ -663,17 +665,17 @@ class Dbas(object):
 				attack_arg = url[pos1:pos2]
 
 			# get argument by system or with params, when we are navigating with breadcrumbs
-			return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
+			return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
 			                                                                              pgroup, conclusion, self.request.session.id,
 			                                                                              supportive, issue)
 			# Track will be saved in the method, whereby we differentiate between an 'normal' request and one,
 			# which was saved in the breadcrumbs to prevent the random attack
 			if attack_arg is '' or attack_with is '':
-				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
+				return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
 				                                                                              pgroup, conclusion, self.request.session.id,
 				                                                                              supportive, issue)
 			else:
-				return_dict, status = DatabaseHelper().get_attack_or_support_for_premisegroup_by_args(attack_with, attack_arg, pgroup,
+				return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup_by_args(attack_with, attack_arg, pgroup,
 				                                                                                      conclusion, issue)
 
 			# increase or decrease weights
@@ -735,7 +737,7 @@ class Dbas(object):
 			logger('reply_for_argument', 'def', 'pgroup_id ' + str(pgroup_id))
 			logger('reply_for_argument', 'def', 'supportive ' + str(supportive))
 			# track will be saved in the method
-			return_dict, status = DatabaseHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, id_text,
+			return_dict, status = RecommenderHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, id_text,
 			                                                               pgroup_id, self.request.session.id, issue)
 			return_dict['status'] = str(status)
 		except KeyError as e:
@@ -777,7 +779,7 @@ class Dbas(object):
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
-			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+			# supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
@@ -794,7 +796,7 @@ class Dbas(object):
 
 			# IMPORTANT: Supports are a special case !
 			if 'support' in uid_text:
-				return_dict, status = DatabaseHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
+				return_dict, status = RecommenderHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
 				                                                                          uid_text, self.request.session.id, issue, lang)
 			else:
 				return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, self.request.authenticated_userid,
@@ -1224,7 +1226,7 @@ class Dbas(object):
 			service_url = 'http://tinyurl.com/'
 			logger('get_shortened_url', 'def', service + ' will shorten ' + str(url))
 
-			# shortener = Shortener(service, api_key=google_api_key) # TODO use google
+			# shortener = Shortener(service, api_key=google_api_key)
 			# shortener = Shortener(service, bitly_login=bitly_login, bitly_api_key=bitly_key, bitly_token=bitly_token)
 			shortener = Shortener(service)
 
@@ -1589,14 +1591,14 @@ class Dbas(object):
 
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			if mode == '0': # start statement
-				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value, issue, True)
+				return_dict = FuzzySearch().get_fuzzy_string_for_start(value, issue, True)
 			elif mode == '1': # edit statement popup
 				statement_uid = self.request.params['extra']
-				return_dict = DatabaseHelper().get_fuzzy_string_for_edits(value, statement_uid, issue)
+				return_dict = FuzzySearch().get_fuzzy_string_for_edits(value, statement_uid, issue)
 			elif mode == '2':  # start premise
-				return_dict = DatabaseHelper().get_fuzzy_string_for_start(value, issue, False)
+				return_dict = FuzzySearch().get_fuzzy_string_for_start(value, issue, False)
 			elif mode == '3':  # adding reasons
-				return_dict = DatabaseHelper().get_fuzzy_string_for_reasons(value, issue)
+				return_dict = FuzzySearch().get_fuzzy_string_for_reasons(value, issue)
 			else:
 				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
 				return_dict = dict()
