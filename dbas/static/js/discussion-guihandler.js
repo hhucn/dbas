@@ -600,7 +600,7 @@ function GuiHandler() {
 		callback.focus();
 		//statementListGroup = callback.next();
 		//statementListGroup.empty(); // list with elements should be after the callbacker
-		$('#' + proposalListGroupId).empty();
+		$('#' + proposalListGroupId).empty();//.prepend('<h4>' + _t(didYouMean) + '</h4>');
 
 		$.each(parsedData, function (key, val) {
 			params = key.split('_');
@@ -637,8 +637,6 @@ function GuiHandler() {
 			});
 			$('#' + proposalListGroupId).append(button);
 		});
-		 // list with elements should be after the callbacker
-		$('#' + proposalListGroupId).prepend('<h4>' + _t(didYouMean) + '</h4>');
 		//$('#' + statementListGroupId).prepend('<h4>' + didYouMean + '</h4>');
 	};
 
