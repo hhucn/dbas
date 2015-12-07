@@ -1,10 +1,9 @@
-import random
 import datetime
 import locale
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup, Relation, Track, History
+from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup, Relation, History
 from .logger import logger
 from .strings import Translator
 
