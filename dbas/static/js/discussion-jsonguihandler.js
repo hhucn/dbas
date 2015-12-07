@@ -296,8 +296,12 @@ function JsonGuiHandler() {
 						+ '</b>.' + ' ' + _t(theySay) + ': ';
 			}
 		} else if (jsonData.attack == attr_undercut){
+			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premise + '</b> ' + (isSupportive ? _t(andTheyDoNotBelieveCounter) : _t(andTheyDoNotBelieveCounter))
+					+ ' <b>' + conclusion + '</b>,' + ' ' + _t(because).toLocaleLowerCase() + ' ';
+			/*
 			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premise + '</b> ' + (isSupportive ? _t(doesNotJustify) : _t(doesJustify))
 					+ ' <b>' + conclusion + '</b>,' + ' ' + _t(because).toLocaleLowerCase() + ' ';
+					*/
 		}
 		confrontationText += '<b>' + confrontation + '</b>' + (DEBUG_ATTACK ? (' [<i>' + jsonData.attack + '</i>]') : '');
 

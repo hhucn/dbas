@@ -32,7 +32,7 @@ class Translator(object):
 		en_lang['moreAbout']                    = 'More about'
 		en_lang['undermine1']                   = 'It is false that'
 		en_lang['undermine2']                   = ''
-		en_lang['support1']                     = 'It is right'
+		en_lang['support1']                     = ''
 		en_lang['support2']                     = ''
 		en_lang['undercut1']                    = 'It is false that'
 		en_lang['undercut2']                    = 'and this is no good counter-argument'

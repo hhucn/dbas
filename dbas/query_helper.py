@@ -24,11 +24,11 @@ class QueryHelper(object):
 		:param argument_list:
 		:return:
 		"""
-		logger('DatabaseHelper', 'add_arguments', 'main')
+		logger('QueryHelper', 'add_arguments', 'main')
 		duplicate_free_list = []
 		duplicate_dict = {}
 		for argument in argument_list:
-			logger('DatabaseHelper', 'add_arguments', 'check for duplicate of argument with '
+			logger('QueryHelper', 'add_arguments', 'check for duplicate of argument with '
 			       + ', premisesGroup_uid: ' + str(argument.premisesGroup_uid)
 			       + ', isSupportive: ' + str(argument.isSupportive)
 			       + ', author_uid: ' + str(argument.author_uid)
@@ -46,10 +46,10 @@ class QueryHelper(object):
 
 
 			if db_duplicate:
-				logger('DatabaseHelper', 'add_arguments', 'argument is a duplicate')
+				logger('QueryHelper', 'add_arguments', 'argument is a duplicate')
 				duplicate_dict['arg_' + str(argument.premisesGroup_uid)] = 'true'
 			else:
-				logger('DatabaseHelper', 'add_arguments', 'argument is no duplicate')
+				logger('QueryHelper', 'add_arguments', 'argument is no duplicate')
 				duplicate_free_list.append(argument)
 				duplicate_dict['arg_' + str(argument.premisesGroup_uid)] = 'false'
 
@@ -75,18 +75,18 @@ class QueryHelper(object):
 		:param issue:
 		:return: uid of the PremiseGroup
 		"""
-		logger('DatabaseHelper', 'set_statement_as_new_premise', 'statement: ' + str(statement) + ', user: ' + str(user))
+		logger('QueryHelper', 'set_statement_as_new_premise', 'statement: ' + str(statement) + ', user: ' + str(user))
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		# check for duplicate
 		db_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement.uid).first()
 		if db_premise:
-			logger('DatabaseHelper', 'set_statement_as_new_premise', 'statement is already given as premise')
+			logger('QueryHelper', 'set_statement_as_new_premise', 'statement is already given as premise')
 			db_premisegroup = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=db_premise.premisesGroup_uid).all()
 
 			if len(db_premisegroup) == 1:
-				logger('DatabaseHelper', 'set_statement_as_new_premise', 'statement is already given as premise and the only one in its group')
+				logger('QueryHelper', 'set_statement_as_new_premise', 'statement is already given as premise and the only one in its group')
 				return db_premisegroup[0].premisesGroup_uid
 
 		premise_group = PremiseGroup(author=db_user.uid)
@@ -94,7 +94,7 @@ class QueryHelper(object):
 		DBDiscussionSession.flush()
 
 		premise_list = []
-		logger('DatabaseHelper', 'set_statement_as_new_premise', 'premisesgroup: ' + str(premise_group.uid) + ', statement: '
+		logger('QueryHelper', 'set_statement_as_new_premise', 'premisesgroup: ' + str(premise_group.uid) + ', statement: '
 				+ str(statement.uid) + ', isnegated: ' + ('0' if False else '1') + ', author: ' + str(db_user.uid))
 		premise = Premise(premisesgroup=premise_group.uid, statement=statement.uid, isnegated=False, author=db_user.uid, issue=issue)
 		premise_list.append(premise)
@@ -115,12 +115,12 @@ class QueryHelper(object):
 		:param issue:
 		:return:
 		"""
-		logger('DatabaseHelper', 'set_statement_as_premise', 'statement: ' + str(statement) + ', user: ' + str(user))
+		logger('QueryHelper', 'set_statement_as_premise', 'statement: ' + str(statement) + ', user: ' + str(user))
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		premise_list = []
-		logger('DatabaseHelper', 'set_statement_as_premise', 'premisesgroup: ' + str(premise_group_uid) + ', statement: '
+		logger('QueryHelper', 'set_statement_as_premise', 'premisesgroup: ' + str(premise_group_uid) + ', statement: '
 				+ str(statement.uid) + ', isnegated: ' + ('0' if False else '1') + ', author: ' + str(db_user.uid))
 		premise = Premise(premisesgroup=premise_group_uid, statement=statement.uid, isnegated=False, author=db_user.uid, issue=issue)
 		premise_list.append(premise)
@@ -242,7 +242,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		db_relation = DBDiscussionSession.query(Relation).filter_by(name=relation_name).first()
-		logger('DatabaseHelper', 'get_relation_uid_by_name', 'return ' + str(db_relation.name if db_relation else -1))
+		logger('QueryHelper', 'get_relation_uid_by_name', 'return ' + str(db_relation.name if db_relation else -1))
 		return db_relation.uid if db_relation else -1
 
 	def get_text_for_statement_uid(self, uid, issue):

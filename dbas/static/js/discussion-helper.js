@@ -222,15 +222,7 @@ function Helper() {
      *     no opinion:
 	 */
 	this.createConfrontationsRelationsText = function(confrontation, conclusion, premise, attackType, startLowerCase, isSupportive){
-		var rebutConclusion, w, r, counterJusti, undermine, support, undercut, overbid, rebut, noopinion;
-
-		// some options for pretty print
-		if (attackType == attr_undermine){			rebutConclusion = premise;
-		} else if (attackType == attr_rebut){		rebutConclusion = conclusion;
-		} else if (attackType == attr_undercut){
-			if (isSupportive)						rebutConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
-			else 									rebutConclusion = premise + ', ' +  _t(doesNotJustify).toLocaleLowerCase() + ' '  + conclusion;
-		}
+		var w, r, counterJusti, undermine, support, undercut, overbid, rebut, noopinion;
 
 		if (isSupportive)
 			counterJusti = ' <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>';
@@ -246,9 +238,9 @@ function Helper() {
 		support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>.';
 		undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieveCounter) + ' ' + counterJusti + '.';
 		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.<br>'
-					+ _t(howeverIHaveEvenStrongerArgumentAccepting) + ' ' + counterJusti + '.';
+					+ (isSupportive ? _t(howeverIHaveEvenStrongerArgumentAccepting) : _t(howeverIHaveEvenStrongerArgumentRejecting))
 		rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br>'
-					+ (isSupportive ? _t(howeverIHaveEvenStrongerArgumentAccepting) : _t(howeverIHaveMuchEvenArgumentRejecting))
+					+ (isSupportive ? _t(howeverIHaveEvenStrongerArgumentAccepting) : _t(howeverIHaveEvenStrongerArgumentRejecting))
 					+ ' <b>' + premise + '</b>.';
 		noopinion  = _t(iNoOpinion) + ': <b>' + confrontation + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, support, undercut, overbid, rebut, noopinion];
@@ -459,7 +451,7 @@ function Helper() {
 			$('#' + popupEditStatementLogfileHeaderId).html(_t(logfile) + ': <b>' + $(this).attr('statement_text') + '</b>');
 			$('#' + popupEditStatementErrorDescriptionId).text('');
 			$('#' + popupEditStatementSuccessDescriptionId).text('');
-			$('#edit_statement_table td').removeClass('text-hover');
+			$('#edit_statement_table').find('td').removeClass('text-hover');
 			ajaxHandler.getLogfileForStatement($(this).attr('statement_id'));
 			guiHandler.hideEditFieldsInEditPopup();
 		}).hover(function log_button_hover() {

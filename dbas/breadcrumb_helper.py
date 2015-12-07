@@ -141,10 +141,20 @@ class BreadcrumbHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==int(argument_uid), Argument.issue_uid==issue)).first()
 		text, tmp = QueryHelper().get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
 		returned_in_history = self.save_breadcrumb_for_user(transaction, user, url, text, session_id)
+		logger('BreadcrumbHelper', 'save_breadcrumb_for_user_with_premissegroup_of_arguments_uid', 'returned user in breadcrumbs: ' + str(returned_in_history))
 		if not returned_in_history:
 			_t = Translator(lang)
 			text1 = _t.get(relation + '1')
 			text2 = _t.get(relation + '2')
+			who = 'save_breadcrumb_for_user_with_premissegroup_of_arguments_uid'
+			when = 'calling update_last_record_in_breadcrumbs with: '
+			logger('BreadcrumbHelper', who, when + text1)
+			logger('BreadcrumbHelper', who, when + text)
+			logger('BreadcrumbHelper', who, when + text2)
+			# pretty printing
+			if text1 == '':
+				text = text[0:1].upper() + text[1:]
+
 			self.update_last_record_in_breadcrumbs(transaction, user, text1 + ' ' + text + ' ' + text2)
 
 	def save_breadcrumb_for_user_with_action(self, transaction, user, url, statement_uid, supportive, session_id, lang):
@@ -198,11 +208,11 @@ class BreadcrumbHelper(object):
 			user = 'anonymous'
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'save_breadcrumb_for_user', 'user: ' + user +
-		                                                ', db_user: ' + str(db_user.uid) +
-														', url ' + str(url) +
-														', keyword ' + str(keyword) +
-		                                                ', session_id ' + str(session_id))
+		logger('QueryHelper', 'save_breadcrumb_for_user', 'user: ' + user)
+		logger('QueryHelper', 'save_breadcrumb_for_user', 'db_user: ' + str(db_user.uid))
+		logger('QueryHelper', 'save_breadcrumb_for_user', 'url ' + str(url))
+		logger('QueryHelper', 'save_breadcrumb_for_user', 'keyword ' + str(keyword))
+		logger('QueryHelper', 'save_breadcrumb_for_user', 'session_id ' + str(session_id))
 		returned_in_history = False
 
 		# check for duplicates

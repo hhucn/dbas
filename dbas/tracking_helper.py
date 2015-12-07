@@ -27,7 +27,7 @@ class TrackingHelper(object):
 			user = 'anonymous'
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		logger('BreadcrumbHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
+		logger('TrackingHelper', 'save_track_for_user', 'user: ' + user + ', db_user: ' + str(db_user.uid) +
 														', statememt_id ' + str(statement_id) +
 														', premisesgroup_uid ' + str(premisesgroup_uid) +
 														', argument_uid ' + str(argument_uid) +
@@ -135,6 +135,6 @@ class TrackingHelper(object):
 		:return: undefined
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		logger('BreadcrumbHelper', 'del_track_of_user','user ' + str(db_user.uid))
+		logger('TrackingHelper', 'del_track_of_user','user ' + str(db_user.uid))
 		DBDiscussionSession.query(Track).filter_by(author_uid=db_user.uid).delete()
 		transaction.commit()
