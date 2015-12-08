@@ -217,7 +217,6 @@ function setPiwikOptOutLink(lang){
 	var src = 'https://dbas.cs.uni-duesseldorf.de/piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=';
 	if (lang === 'de')	src += 'de';
 	else 				src += 'en';
-
 	$('#piwik-opt-out-iframe').attr('src',src);
 }
 
