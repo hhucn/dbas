@@ -213,6 +213,14 @@ function setButtonLanguage(){
 	$('#' + startDiscussionButtonId).prop('value', _t(letsGo)).prop('title', _t(letsGo));
 }
 
+function setPiwikOptOutLink(lang){
+	var src = 'https://dbas.cs.uni-duesseldorf.de/piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=';
+	if (lang === 'de')	src += 'de';
+	else 				src += 'en';
+
+	$('#piwik-opt-out-iframe').attr('src',src);
+}
+
 /**
  *
  */
@@ -527,6 +535,7 @@ function callbackIfDoneForSwitchDisplayLanguage (new_lang) {
 	location.reload(true);
 	setActiveLanguage(new_lang);
 	setButtonLanguage();
+	setPiwikOptOutLink($('#hidden_language').val());
 }
 
 /**
@@ -595,6 +604,7 @@ $(document).ready(function () {
 
 	setActiveLanguage($('#hidden_language').val());
 	setButtonLanguage();
+	setPiwikOptOutLink($('#hidden_language').val());
 
 	// set current file to active
 	var path = window.location.href;

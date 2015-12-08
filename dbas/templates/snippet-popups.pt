@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+<html i18n:domain="dbas" metal:define-macro="layout">
 <!-- ABOUT POPUP IN dropdown-menu -->
 <div class="modal fade" id="popup_author" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
