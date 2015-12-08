@@ -97,7 +97,7 @@ var dbas_en = {
 	'doesJustify': 'does justify that',
 	'doesNotJustify': 'does not justify that',
 	'doYouWantToEnterYourStatements': 'Do you want to enter your statement(s)?',
-	'euCookiePopupTitle': 'This website is using cookies and Google Analytics.',
+	'euCookiePopupTitle': 'This website is using cookies and Piwik.',
 	'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website.',
 	'euCookiePopoupButton1': 'Continue',
 	'euCookiePopoupButton2': 'Learn&nbsp;more',

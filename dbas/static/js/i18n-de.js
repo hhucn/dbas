@@ -97,7 +97,7 @@ var dbas_de = {
 	'deleteHistory': 'History löschen',
 	'doYouWantToEnterYourStatements': 'Möchten Sie Ihre eigenen Gründe angeben?',
 	'doNotHesitateToContact': 'Zögern Sie nicht, uns zu <b><span style="cursor: pointer;" id="contact_on_error">kontaktieren (hier klicken)</span></b>',
-	'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Google Analytics.',
+	'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Piwik.',
 	'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit.',
 	'euCookiePopoupButton1': 'Weiter',
 	'euCookiePopoupButton2': 'Lerne&nbsp;mehr',

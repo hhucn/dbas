@@ -26,11 +26,27 @@
 
 	<!-- JS DISABLED -->
 	<noscript>
-		<div class="jsdiabled">
+		<div class="blocked jsdisabled">
 			<span class="font-semi-bold" i18n:translate="js_disabled1">JavaScript is not enabled:</span><br>
 			<span class="font-semi-bold" i18n:translate="js_disabled2">Please enable JavaScript!</span>
 		</div>
 	</noscript>
+	<div id="adblocker_message" class="blocked adblockenabled" style="display:none">
+		<span class="font-semi-bold" i18n:translate="adblock_enabled1">AdBlocker is enabled:</span><br>
+		<span class="font-semi-bold" i18n:translate="adblock_enabled2">Please disable your AdBlocker!</span>
+	</div>
+
+	<script type="text/javascript">
+    var adblock = true;
+	</script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/adframe.js')}"></script>
+	<script type="text/javascript">
+	    if(adblock) {
+				document.getElementById('adblocker_message').style.display = 'inline';
+	    }
+	</script>
+
+
 
 	<div id="additional-wrapper">
 		<div id="wrapper-header">

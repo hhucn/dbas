@@ -217,20 +217,25 @@ comment .container and wrap each container with <div class="coloured-div">
 	margin: 10px;
 }
 
-.jsdiabled {
+.blocked {
 	position: absolute;
 	top: 5px; left: auto; right: auto;
-	width: 98%;
+	width: 100%;
 	text-align: center;
 	color: #fff;
-	background: url('../images/bg_diagonals1.png') repeat fixed center;
-
-	padding: 5px;
-	margin-left: 1%;
-	margin-right: 1%;
+	padding: 0px;
 	border-radius: 4px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+}
+
+.jsdisabled {
+	background: url('../images/bg_diagonals1.png') repeat fixed center;
 	z-index: 9999999;
+}
+
+.adblockenabled {
+	background: url('../images/bg_diagonals2.png') repeat fixed center;
+	z-index: 9999998;
 }
 
 .button:hover {

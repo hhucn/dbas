@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-12-08 09:44+0100\n"
+"POT-Creation-Date: 2015-12-08 10:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1265,6 +1265,16 @@ msgstr ""
 #. Default: Please enable JavaScript!
 #: ./dbas/templates/basetemplate.pt:31
 msgid "js_disabled2"
+msgstr ""
+
+#. Default: AdBlocker is enabled:
+#: ./dbas/templates/basetemplate.pt:35
+msgid "adblock_enabled1"
+msgstr ""
+
+#. Default: Please disable your AdBlocker!
+#: ./dbas/templates/basetemplate.pt:36
+msgid "adblock_enabled2"
 msgstr ""
 
 #. Default: Current discussion is about
