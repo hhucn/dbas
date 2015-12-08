@@ -45,7 +45,7 @@
 					<br>
 					<br>
 					<h5><strong i18n:translate="disclaimer_session_cookie">Session-Cookies</strong></h5>
-					<span i18n:translate="disclaimer_session_cookie_content">Diese erlauben Ihnen notwendige Funktionen auf unseren Websites auszuführen, wie das Aufrechterhalten von Log-in Informationen für Ihre Sitzung oder einer Überweisung. Ebenfalls helfen sie dabei die Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht auf Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung beenden.<br>
+					<span i18n:translate="disclaimer_session_cookie_content">Diese erlauben Ihnen notwendige Funktionen auf unseren Websites auszuführen, wie das Aufrechterhalten von Log-in Informationen für Ihre Sitzung oder einer Überweisung. Ebenfalls helfen sie dabei die Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht auf Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung beenden.</span><br>
 					<br>
 					<br><h5><strong i18n:translate="disclaimer_tracking_cookie">Tracking-Cookies</strong></h5>
 					<span i18n:translate="disclaimer_tracking_cookie_content">Diese erlauben uns Ihre wiederholten Besuche unserer Website wahrzunehmen. Durch die Übereinstimmung von anononymen, willkürlichen Identifizierungszeichen, sind wir dazu in der Lage spezielle Browsing-Informationen festzuhalten, z.B.  von Ihnen ausgewählte Seiten und Optionen und den Weg, den Sie durch unsere Website gewählt haben. Durch das Überwachen dieser Informationen können wir unsere Websites verbessern. 
@@ -53,14 +53,9 @@
 					<br>
 					<br>
 					<br>
-					<h5><strong i18n:translate="disclaimer_google_analytics">Google Analytics</strong></h5>
-					<span i18n:translate="google_analytics">Diese Website benutzt Google Analytics, einen Webanalysedienst der Google Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'', Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglicht. Die durch den Cookie erzeugten Informationen über Ihre Benutzung diese Website (einschließlich Ihrer IP-Adresse) wird an einen Server von Google in den USA übertragen und dort gespeichert. Google wird diese Informationen benutzen, um Ihre Nutzung der Website auszuwerten, um Reports über die Websiteaktivitäten für die Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und der Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird Google diese Informationen gegebenenfalls an Dritte übertragen, sofern dies gesetzlich vorgeschrieben oder soweit Dritte diese Daten im Auftrag von Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen Daten der Google in Verbindung bringen. Sie können die Installation der Cookies durch eine entsprechende Einstellung Ihrer Browser Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden.</span>
+					<h5><strong i18n:translate="disclaimer_piwik">Piwik</strong></h5>
+						<span i18n:translate="disclaimer_piwik_content">Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”, Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer können die Installation der Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website vollumfänglich nutzen können.</span>
 					<br>
-					<!--
-				<br><strong>Google AdSense</strong>
-				<br>
-				<br>Diese Website benutzt Google Adsense, einen Webanzeigendienst der Google Inc., USA (''Google''). Google Adsense verwendet sog. ''Cookies'' (Textdateien), die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglicht. Google Adsense verwendet auch sog. ''Web Beacons'' (kleine unsichtbare Grafiken) zur Sammlung von Informationen. Durch die Verwendung des Web Beacons können einfache Aktionen wie der Besucherverkehr auf der Webseite aufgezeichnet und gesammelt werden. Die durch den Cookie und/oder Web Beacon erzeugten Informationen über Ihre Benutzung diese Website (einschließlich Ihrer IP-Adresse) werden an einen Server von Google in den USA übertragen und dort gespeichert. Google wird diese Informationen benutzen, um Ihre Nutzung der Website im Hinblick auf die Anzeigen auszuwerten, um Reports über die Websiteaktivitäten und Anzeigen für die Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und der Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird Google diese Informationen gegebenenfalls an Dritte übertragen, sofern dies gesetzlich vorgeschrieben oder soweit Dritte diese Daten im Auftrag von Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen Daten der Google in Verbindung bringen. Das Speichern von Cookies auf Ihrer Festplatte und die Anzeige von Web Beacons können Sie verhindern, indem Sie in Ihren Browser-Einstellungen ''keine Cookies akzeptieren'' wählen (Im MS Internet-Explorer unter ''Extras >Internetoptionen >Datenschutz >Einstellung''; im Firefox unter ''Extras >Einstellungen >Datenschutz >Cookies''); wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden.</p>
--->
 			</div>
 
 			<div class="col-md-4">
@@ -85,6 +80,7 @@
 							<a href="https://www.iconfinder.com/iconsets/ballicons-2-free">ballicons-2</a>,&thinsp;
 							<a href="https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons">keynote-and-powerpoint-icons</a>
 						</li>
+						<li>Tracking with <a href="http://piwik.org/">Piwik</a></li>
 					</ul>
 				</div>
 				<br>
@@ -129,6 +125,7 @@
 					<li>Improved session management</li>
 					<li>Improved anti-spam questions</li>
 					<li>Fixes in the GUI for registration</li>
+					<li>Replaced Googel Analytics with Üiwik</li>
 				</ul>
 					
 					<span class="project font-semi-bold">0.4.4 (2015-11-30)</span>

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-12-01 15:30+0100\n"
+"POT-Creation-Date: 2015-12-08 09:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -563,6 +563,16 @@ msgstr ""
 msgid "disclaimer_session_cookie"
 msgstr ""
 
+#. Default: Diese erlauben Ihnen notwendige Funktionen auf unseren Websites
+#. auszuführen, wie das Aufrechterhalten von Log-in Informationen für Ihre
+#. Sitzung oder einer Überweisung. Ebenfalls helfen sie dabei die
+#. Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht auf
+#. Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung
+#. beenden.
+#: ./dbas/templates/imprint.pt:48
+msgid "disclaimer_session_cookie_content"
+msgstr ""
+
 #. Default: Tracking-Cookies
 #: ./dbas/templates/imprint.pt:50
 msgid "disclaimer_tracking_cookie"
@@ -578,52 +588,43 @@ msgstr ""
 msgid "disclaimer_tracking_cookie_content"
 msgstr ""
 
-#. Default: Google Analytics
+#. Default: Piwik
 #: ./dbas/templates/imprint.pt:56
-msgid "disclaimer_google_analytics"
+msgid "disclaimer_piwik"
 msgstr ""
 
-#. Default: Diese Website benutzt Google Analytics, einen Webanalysedienst der
-#. Google Inc. (''Google''). Google Analytics verwendet sog. ''Cookies'',
-#. Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse
-#. der Benutzung der Website durch Sie ermöglicht. Die durch den Cookie
-#. erzeugten Informationen über Ihre Benutzung diese Website (einschließlich
-#. Ihrer IP-Adresse) wird an einen Server von Google in den USA übertragen und
-#. dort gespeichert. Google wird diese Informationen benutzen, um Ihre Nutzung
-#. der Website auszuwerten, um Reports über die Websiteaktivitäten für die
-#. Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und
-#. der Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird
-#. Google diese Informationen gegebenenfalls an Dritte übertragen, sofern dies
-#. gesetzlich vorgeschrieben oder soweit Dritte diese Daten im Auftrag von
-#. Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen
-#. Daten der Google in Verbindung bringen. Sie können die Installation der
-#. Cookies durch eine entsprechende Einstellung Ihrer Browser Software
-#. verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall
-#. gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich
-#. nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der
-#. Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor
-#. beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden.
+#. Default: Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur
+#. statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”,
+#. Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine
+#. Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch
+#. den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden
+#. auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird
+#. sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer
+#. können die Installation der Cookies durch eine entsprechende Einstellung
+#. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
+#. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
+#. Funktionen dieser Website vollumfänglich nutzen können.
 #: ./dbas/templates/imprint.pt:57
-msgid "google_analytics"
+msgid "disclaimer_piwik_content"
 msgstr ""
 
 #. Default: Copyrights and used Software
-#: ./dbas/templates/imprint.pt:68
+#: ./dbas/templates/imprint.pt:63
 msgid "copyright_and_used_software"
 msgstr ""
 
 #. Default: Icons by
-#: ./dbas/templates/imprint.pt:82
+#: ./dbas/templates/imprint.pt:77
 msgid "icons_by"
 msgstr ""
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: ./dbas/templates/imprint.pt:95
+#: ./dbas/templates/imprint.pt:91
 msgid "generated_with"
 msgstr ""
 
 #. Default: Changes in Version
-#: ./dbas/templates/imprint.pt:120
+#: ./dbas/templates/imprint.pt:116
 msgid "changes"
 msgstr ""
 
@@ -1349,9 +1350,4 @@ msgstr ""
 #. Default: List of attacks, clicked by the participants
 #: ./dbas/templates/content.pt:256
 msgid "list_attacks"
-msgstr ""
-
-#. Default: Minimap:
-#: ./dbas/templates/content.pt:268
-msgid "minimap"
 msgstr ""
