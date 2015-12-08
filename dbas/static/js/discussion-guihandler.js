@@ -1035,6 +1035,7 @@ function GuiHandler() {
 				li.attr({id: 'issue_' + val.uid, 'issue': val.uid, 'date': val.date, 'count': count});
 				a = $('<a>');
 				a.text(val.text);
+				a.attr('style','cursor:pointer');
 				li.append(a);
 				a.click(function () {
 					func = $(this).parent().attr('issue');
@@ -1064,7 +1065,7 @@ function GuiHandler() {
 			issueDropdownButton.attr('value', text);
 			text = helper.resizeIssueText(text);
 			this.setissueDropDownText(text);
-			issue_curr.addClass('disabled');
+			issue_curr.addClass('disabled').children().eq(0).removeAttr('style');
 		}
 
 		// some helper

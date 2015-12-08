@@ -1,10 +1,9 @@
-import random
 import datetime
 import locale
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup, Relation, Track, History
+from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup, Relation, History
 from .logger import logger
 from .strings import Translator
 
@@ -238,7 +237,6 @@ class QueryHelper(object):
 		"""
 
 		:param relation_name:
-		:param issue:
 		:return:
 		"""
 		db_relation = DBDiscussionSession.query(Relation).filter_by(name=relation_name).first()
@@ -545,103 +543,11 @@ class QueryHelper(object):
 		return_dict[key] = str(len(db_relation))
 		return return_dict
 
-	def get_attack_for_argument_by_random(self, db_argument, user, issue):
-		"""
-		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
-		Additionally returns id's of premises groups with [key + str(index) + 'id']
-		:param db_argument:
-		:param user:
-		:param issue:
-		:return: dict, key
-		"""
-
-		# 1 = undermine
-		# 2 = support
-		# 3 = undercut
-		# 4 = overbid
-		# 5 = rebut
-
-		logger('QueryHelper', 'get_attack_for_argument_by_random', 'user ' + (user if user else 'anonymous') + ', arg.uid ' + str(db_argument.uid))
-
-		# all possible attacks
-		complete_list_of_attacks = [1,3,5] # todo fix this, when overbid is killed
-		attacks = [1,3,5]
-		# maybe we are anonymous
-		if user:
-			# history of selected attacks
-			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-			if db_user.uid != 1: # not equal anonymous
-				db_track = DBDiscussionSession.query(Track).filter(and_(Track.author_uid==db_user.uid, Track.argument_uid==db_argument.uid)).all()
-				for track in db_track:
-					if track.attacked_by_relation in attacks:
-						attacks.remove(track.attacked_by_relation)
-				# now attacks contains all attacks, which were not be done
-				logger('QueryHelper', 'get_attack_for_argument_by_random', 'attacks, which were not done yet ' + str(attacks))
-
-		logger('QueryHelper', 'get_attack_for_argument_by_random', 'attack_list : ' + str(attacks))
-		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
-		dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, attack_list, issue, complete_list_of_attacks)
-		# sanity check if we could not found an attack for a left attack in out set
-		if not dict and len(attacks) > 0:
-			logger('QueryHelper', 'get_attack_for_argument_by_random', 'no attack found, try to find an attack for any other left attack')
-			dict, key = self.get_attack_for_argument_by_random_in_range(db_argument.uid, [], issue, complete_list_of_attacks)
-
-		return dict, key
-
-	def get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks):
-		"""
-
-		:param argument_uid:
-		:param attack_list:
-		:param issue:
-		:param complete_list_of_attacks:
-		:return:
-		"""
-		return_dict = None
-		key = ''
-		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
-		attack_found = False
-
-		logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'attack_list : ' + str(attack_list))
-		logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'complete_list_of_attacks : ' + str(complete_list_of_attacks))
-		logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'left_attacks : ' + str(left_attacks))
-
-		# randomize at least 1, maximal 3 times for getting an attack
-		while len(attack_list) > 0:
-			attack = random.choice(attack_list)
-			attack_list.remove(attack)
-			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
-			if attack == 1:
-				return_dict = self.get_undermines_for_argument_uid('undermine', argument_uid, issue)
-				key = 'undermine'
-			elif attack == 5:
-				return_dict = self.get_rebuts_for_argument_uid('rebut', argument_uid, issue)
-				key = 'rebut'
-			else:
-				return_dict = self.get_undercuts_for_argument_uid('undercut', argument_uid, issue)
-				key = 'undercut'
-
-			if return_dict and int(return_dict[key]) != 0:
-				logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'attack found')
-				attack_found = True
-				break
-			else:
-				logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'no attack found')
-
-		if len(left_attacks) > 0 and not attack_found:
-			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
-			return_dict, key = self.get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks)
-		else:
-			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
-
-		return return_dict, key
-
 	def del_history_of_user(self, transaction, user):
 		"""
 		Deletes the complete track of given user
 		:param transaction: current transaction
 		:param user: current user
-		:param issue:
 		:return: undefined
 		"""
 		# maybe we are anonymous

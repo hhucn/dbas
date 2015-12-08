@@ -122,7 +122,17 @@
 			<div class="first-container colored_container imprint-container">
 				<h4><span class="font-semi-bold" i18n:translate="changes">Changes in Version</span></h4>
 
-				<span class="project font-semi-bold">0.4.6 (unreleased)</span>
+				<br>
+				<br>
+				<div class="first-container colored_container imprint-container">
+					<h4><span class="font-semi-bold" i18n:translate="changes">Changes in Version</span></h4>
+					
+					<span class="project font-semi-bold">0.5.0 (unreleased)</span>
+				<ul>
+					<li>Improved recommendation of the next argument</li>
+				</ul>
+					
+					<span class="project font-semi-bold">0.4.6 (unreleased)</span>
 				<ul>
 					<li>Collecting weights for arguments</li>
 				</ul>
@@ -132,7 +142,7 @@
 					<li>Improved session management</li>
 					<li>Improved anti-spam questions</li>
 					<li>Fixes in the GUI for registration</li>
-					<li>Replaced Googel Analytics with Üiwik</li>
+					<li>Replaced Googel Analytics with Piwik</li>
 				</ul>
 
 				<span class="project font-semi-bold">0.4.4 (2015-11-30)</span>
