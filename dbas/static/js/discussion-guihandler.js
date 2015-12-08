@@ -202,7 +202,7 @@ function GuiHandler() {
 		div_dropdown = this.getDropdownWithSentencesOpeners(identifier, childCount.toString());
 		div_content.append(span_because);
 		div_content.append(area);
-		// div_content.append(button); // TODO add a textfield is currently hidden
+		// div_content.append(button); // TODO "add a textfield" is currently hidden
 
 		// remove everything on click
 		button.attr({
@@ -210,7 +210,7 @@ function GuiHandler() {
 		});
 
 		// add everything
-		// TODO insert dropdown menu
+		// TODO insert dropdown menu for sentences openers
 		// div_dropdown.attr('class', 'col-md-3');
 		// div_content.attr('class', 'col-md-9');
 		div_content.attr('title', _t(textAreaReasonHintText));
@@ -1020,7 +1020,7 @@ function GuiHandler() {
 	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr, text, pos, i, l, helper = new Helper(), count;
+		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr, text, i, l, helper = new Helper(), count;
 		li = $('<li>');
 		li.addClass('dropdown-header').text(_t(issueList));
 		$('#' + issueDropdownListID).empty().append(li);

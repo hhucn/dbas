@@ -114,8 +114,7 @@ $.fn.euCookieLawPopup = (function() {
 			'</div>';
 		*/
 
-		var html =
-			'<div class="eupopup-container' +
+		return '<div class="eupopup-container' +
 			    ' eupopup-container-' + _self.params.popupPosition +
 			    (_self.params.compactStyle ? ' eupopup-style-compact' : '') +
 				' eupopup-color-' + _self.params.colorStyle + '">' +
@@ -130,8 +129,6 @@ $.fn.euCookieLawPopup = (function() {
 				'</div>' +
 				//'<a href="#" class="eupopup-closebutton">x</a>' +
 			'</div>';
-
-		return html;
 	};
 
 	// Storing the consent in a cookie
@@ -171,7 +168,7 @@ $.fn.euCookieLawPopup = (function() {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC FUNCTIONS  //////////////////////////////////////////////////////////////////////////
-	var publicfunc = {
+	return {
 
 		// INITIALIZE EU COOKIE LAW POPUP /////////////////////////////////////////////////////////
 		init : function(settings) {
@@ -224,8 +221,6 @@ $.fn.euCookieLawPopup = (function() {
 		}
 
 	};
-
-	return publicfunc;
 });
 
 $(document).ready( function() {

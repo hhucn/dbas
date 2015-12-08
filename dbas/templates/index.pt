@@ -61,6 +61,32 @@
 			</div>
 		</div>
 
+		<div class="container colored_container" id="description-template">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="content">
+						<h2><span class="font-semi-bold" i18n:translate="description">Description</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
+
+						<p class="lead"><span i18n:translate="description_intro">In the following a short description of D-BAS will be given with the help of bulletpoints:</span>
+							<ul class="lead list">
+								<li i18n:translate="description_list_1"> Participants are able to add and modify positions and arguments in every discussion.</li>
+								<li i18n:translate="description_list_2"> Positions and arguments are connected logically by participants</li>
+								<li i18n:translate="description_list_3"> The system is very easy to use.</li>
+								<li><span i18n:translate="description_list_3"> It offers a time-shifted discussion in three modes:</span>
+									<ul class="lead list">
+										<li i18n:translate="guided_view_description"> Guided View: The participants will be lead through the discussion .</li>
+										<li i18n:translate="island_view_description"> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
+										<li i18n:translate="expert_view_description"> Expert View: Participants are able to see and do everything.</li>
+									</ul>
+								</li>
+								<li i18n:translate="description_list_5"> Contributions can be rated by the participants.</li>
+								<li i18n:translate="description_list_6"> You have the huge power of the crowd!.</li>
+							</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="container colored_container" id="features-template">
 			<div class="row">
 				<div class="col-md-12">
@@ -107,32 +133,6 @@
 				</div>
 			</div>
 
-		</div>
-
-		<div class="container colored_container" id="description-template">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="content">
-						<h2><span class="font-semi-bold" i18n:translate="description">Description</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
-
-						<p class="lead"><span i18n:translate="description_intro">In the following a short description of D-BAS will be given with the help of bulletpoints:</span>
-							<ul class="lead list">
-								<li i18n:translate="description_list_1"> Participants are able to add and modify positions and arguments in every discussion.</li>
-								<li i18n:translate="description_list_2"> Positions and arguments are connected logically by participants</li>
-								<li i18n:translate="description_list_3"> The system is very easy to use.</li>
-								<li><span i18n:translate="description_list_3"> It offers a time-shifted discussion in three modes:</span>
-									<ul class="lead list">
-										<li i18n:translate="guided_view_description"> Guided View: The participants will be lead through the discussion .</li>
-										<li i18n:translate="island_view_description"> Island View: A position with all connected arguments is presented as island. This supports the insight of a discussion about a specific position.</li>
-										<li i18n:translate="expert_view_description"> Expert View: Participants are able to see and do everything.</li>
-									</ul>
-								</li>
-								<li i18n:translate="description_list_5"> Contributions can be rated by the participants.</li>
-								<li i18n:translate="description_list_6"> You have the huge power of the crowd!.</li>
-							</ul>
-					</div>
-				</div>
-			</div>
 		</div>
 
 		<div class="container colored_container" id="about-template">

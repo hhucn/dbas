@@ -25,8 +25,8 @@ class DatabaseHelper(object):
 
 	def get_news(self):
 		"""
-
-		:return:
+		Returns all news in a dicitionary, sorted by date
+		:return: dict()
 		"""
 		logger('DatabaseHelper', 'get_news', 'main')
 		db_news = DBNewsSession.query(News).all()
@@ -141,8 +141,8 @@ class DatabaseHelper(object):
 
 	def get_issue_list(self, lang):
 		"""
-
-		:param lang:
+		Returns all isuees as dictionary
+		:param lang: dict() with {uid, text, date}
 		:return:
 		"""
 		logger('DatabaseHelper', 'get_issue_list', 'main')
@@ -161,17 +161,16 @@ class DatabaseHelper(object):
 
 	def get_attack_overview(self, user, issue, lang):
 		"""
-
-		:param user:
-		:param issue:
-		:param lang:
-		:return:
+		Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
+		:param user: current user
+		:param issue: current issue
+		:param lang: current language
+		:return: dict()
 		"""
 		is_admin = UserHandler().is_user_admin(user)
 		logger('DatabaseHelper', 'get_attack_overview', 'is_admin ' + str(is_admin) + ', issue ' + str(issue))
-		if not is_admin:
-			return_dict = dict()
-		else:
+		return_dict = dict()
+		if is_admin:
 			return_dict = dict()
 			logger('DatabaseHelper', 'get_attack_overview', 'get all attacks for each argument')
 			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
@@ -220,14 +219,13 @@ class DatabaseHelper(object):
 		return_dict['statements'] = statements_dict
 		return return_dict
 
-	def get_text_for_statement(self, transaction, statement_uid, user, issue):
+	def get_text_for_statement(self, transaction, statement_uid, issue):
 		"""
-
-		:param transaction:
-		:param statement_uid:
-		:param user:
-		:param issue:
-		:return:
+		Returns dictionary with all information about the given statement ui
+		:param transaction: current transaction
+		:param statement_uid: recent uid of the statement
+		:param issue: current issue
+		:return: dict()
 		"""
 
 		logger('DatabaseHelper', 'get_text_for_statement', 'get all premises: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' + str(issue))
@@ -239,7 +237,7 @@ class DatabaseHelper(object):
 
 	def get_premises_for_statement(self, transaction, statement_uid, isSupportive, user, session_id, issue):
 		"""
-		Rerturns all premises for the given statement
+		Returns all premises for the given statement
 		:param transaction: current transaction
 		:param statement_uid: uid of the statement
 		:param isSupportive: boolean
@@ -1115,107 +1113,5 @@ class DatabaseHelper(object):
 			return_dict['status'] = '-1'
 			return return_dict
 
-
-		return return_dict
-
-	def get_fuzzy_string_for_start(self, value, issue, isStatement):
-		"""
-		Levenshtein FTW
-		:param value:
-		:param issue:
-		:param isStatement:
-		:return:
-		"""
-		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'string: ' + value + ', isStatement: ' + str(isStatement))
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==isStatement, Statement.issue_uid==issue)).join(TextValue).all()
-		tmp_dict = dict()
-		for index, statement in enumerate(db_statements):
-			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
-			# logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'current db_textvalue ' + db_textvalue.textversions.content.lower())
-			if value.lower() in db_textvalue.textversions.content.lower():
-				lev = distance(value.lower(), db_textvalue.textversions.content.lower())
-				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textvalue.textversions.content)
-				if lev < 10:		lev = '0000' + str(lev)
-				elif lev < 100:		lev = '000' + str(lev)
-				elif lev < 1000:	lev = '00' + str(lev)
-				elif lev < 10000:	lev = '0' + str(lev)
-				tmp_dict[str(lev) + '_' + str(index)] = db_textvalue.textversions.content
-
-		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
-
-		return_dict = collections.OrderedDict()
-		for i in list(tmp_dict.keys())[0:10]: # TODO RETURN COUNT
-			return_dict[i] = tmp_dict[i]
-
-		logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'dictionary length: ' + str(len(return_dict.keys())))
-
-		return return_dict
-
-	def get_fuzzy_string_for_edits(self, value, statement_uid, issue):
-		"""
-		Levenshtein FTW
-		:param value:
-		:param issue:
-		:return:
-		"""
-		logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'string: ' + value + ', statement uid: ' + str(statement_uid))
-
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid, Statement.issue_uid==issue)).first()
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(textValue_uid=db_statement.text_uid).join(User).all()
-
-		tmp_dict = dict()
-		for index, textversion in enumerate(db_textversions):
-			if value.lower() in textversion.content.lower():
-				lev = distance(value.lower(), textversion.content.lower())
-				logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' + textversion.content.lower())
-				if lev < 10:
-					lev = '0000' + str(lev)
-				elif lev < 100:
-					lev = '000' + str(lev)
-				elif lev < 1000:
-					lev = '00' + str(lev)
-				elif lev < 10000:
-					lev = '0' + str(lev)
-				tmp_dict[str(lev) + '_' + str(index)] = textversion.content
-
-		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
-
-		return_dict = collections.OrderedDict()
-		for i in list(tmp_dict.keys())[0:10]: # TODO RETURN COUNT
-			return_dict[i] = tmp_dict[i]
-
-		logger('DatabaseHelper', 'get_fuzzy_string_for_edits', 'dictionary length: ' + str(len(return_dict.keys())))
-
-		return return_dict
-
-	def get_fuzzy_string_for_reasons(self, value, issue):
-		"""
-
-		:param value:
-		:param issue:
-		:return:
-		"""
-		logger('DatabaseHelper', 'get_fuzzy_string_for_reasons', 'string: ' + value + ', issue: ' + str(issue))
-		db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).join(TextValue).all()
-		tmp_dict = dict()
-
-		for index, statement in enumerate(db_statements):
-			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
-			if value.lower() in db_textvalue.textversions.content.lower():
-				lev = distance(value.lower(), db_textvalue.textversions.content.lower())
-				logger('DatabaseHelper', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textvalue.textversions.content)
-				if lev < 10:		lev = '0000' + str(lev)
-				elif lev < 100:		lev = '000' + str(lev)
-				elif lev < 1000:	lev = '00' + str(lev)
-				elif lev < 10000:	lev = '0' + str(lev)
-				tmp_dict[str(lev) + '_' + str(index)] = db_textvalue.textversions.content
-
-		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
-
-		return_dict = collections.OrderedDict()
-		for i in list(tmp_dict.keys())[0:10]: # TODO RETURN COUNT
-			return_dict[i] = tmp_dict[i]
-
-		logger('DatabaseHelper', 'get_fuzzy_string_for_reasons', 'dictionary length: ' + str(len(return_dict.keys())))
 
 		return return_dict
