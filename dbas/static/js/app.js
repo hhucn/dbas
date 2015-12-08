@@ -241,7 +241,6 @@ function hideExtraViewsOfLoginPopup(){
 function prepareLoginRegistrationPopup(){
 	// hide on startup
 	hideExtraViewsOfLoginPopup();
-	$('#' + popupLoginButtonLogin).show();
 	$('#' + popupLoginGeneratePasswordBody).hide();
 
 	// switching tabs
@@ -261,6 +260,10 @@ function prepareLoginRegistrationPopup(){
 			$('#' + popupLoginButtonRegister).hide();
 		}
 	});
+
+	$('#' + popupLoginButtonLogin).show().click(function() {
+		ajaxLogin()
+	}).keypress(function(e) { if (e.which == 13) { ajaxRegistration() } });
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
 		if ($('#' + popupLoginForgotPasswordBody).is(':visible')){
@@ -335,10 +338,6 @@ function prepareLoginRegistrationPopup(){
 
 	});
 
-	$('#' + popupLoginButtonLogin).click(function() {
-		ajaxLogin()
-	});
-
 	// bind enter key
 	$('#' + loginUserId).keypress(function(e) {							if (e.which == 13) {	ajaxLogin()			}	});
 	$('#' + loginPwId).keypress(function(e) {							if (e.which == 13) {	ajaxLogin()			}	});
@@ -346,7 +345,6 @@ function prepareLoginRegistrationPopup(){
 	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which == 13) {	ajaxRegistration()	}	});
 	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which == 13) {	ajaxRegistration()	}	});
 	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which == 13) {	ajaxRegistration()	}	});
-	$('#' + popupLoginPasswordInputId).keypress(function(e) {			if (e.which == 13) {	ajaxRegistration()	}	});
 	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which == 13) {	ajaxRegistration()	}	});
 
 	$('#' + popupLoginButtonRequest).click(function() {
@@ -534,7 +532,7 @@ function callbackIfDoneForSwitchDisplayLanguage (new_lang) {
 	location.reload(true);
 	setActiveLanguage(new_lang);
 	setButtonLanguage();
-	setPiwikOptOutLink($('#hidden_language').val());
+	setPiwikOptOutLink(new_lang);
 }
 
 /**
@@ -594,6 +592,7 @@ function callbackIfDoneForPasswordRequest(data){
 
 $(document).ready(function () {
 	'use strict';
+	var path = window.location.href, lang = $('#hidden_language').val();
 
 	jmpToChapter();
 
@@ -601,19 +600,18 @@ $(document).ready(function () {
 
 	//changeBackgroundOnScroll();
 
-	setActiveLanguage($('#hidden_language').val());
+	setActiveLanguage(lang);
 	setButtonLanguage();
-	setPiwikOptOutLink($('#hidden_language').val());
+	setPiwikOptOutLink(lang);
 
 	// set current file to active
-	var path = window.location.href;
-		 if (path.indexOf('urlContact') != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('urlLogin') != -1){		setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('urlNews') != -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('urlContent') != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf('urlSettings') != -1 ||
-			 path.indexOf('urlImprint') != -1 ||
-			 path.indexOf('urlLogout') != -1){											$('#' + navbarLeft).hide(); }
+		 if (path.indexOf(urlContact) != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlLogin) != -1){		setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlNews) != -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlContent) != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlSettings) != -1 ||
+			 path.indexOf(urlImprint) != -1 ||
+			 path.indexOf(urlLogout) != -1){											$('#' + navbarLeft).hide(); }
 	else { 											setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
 	// language switch
@@ -623,12 +621,10 @@ $(document).ready(function () {
 	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
 	$('#roundhousekick').click(function(){ ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ ajaxMama(); });
+	$('#' + logoutLinkId).click(function(){ ajaxLogout()});
 
 	// gui preperation
 	prepareLoginRegistrationPopup();
-
-	// logout
-	$('#' + logoutLinkId).click(function(){ ajaxLogout()});
 
 	// ajax loading animation
 	$(document).on({

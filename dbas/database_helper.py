@@ -23,8 +23,8 @@ class DatabaseHelper(object):
 
 	def get_news(self):
 		"""
-
-		:return:
+		Returns all news in a dicitionary, sorted by date
+		:return: dict()
 		"""
 		logger('DatabaseHelper', 'get_news', 'main')
 		db_news = DBNewsSession.query(News).all()
@@ -139,8 +139,8 @@ class DatabaseHelper(object):
 
 	def get_issue_list(self, lang):
 		"""
-
-		:param lang:
+		Returns all isuees as dictionary
+		:param lang: dict() with {uid, text, date}
 		:return:
 		"""
 		logger('DatabaseHelper', 'get_issue_list', 'main')
@@ -159,17 +159,16 @@ class DatabaseHelper(object):
 
 	def get_attack_overview(self, user, issue, lang):
 		"""
-
-		:param user:
-		:param issue:
-		:param lang:
-		:return:
+		Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
+		:param user: current user
+		:param issue: current issue
+		:param lang: current language
+		:return: dict()
 		"""
 		is_admin = UserHandler().is_user_admin(user)
 		logger('DatabaseHelper', 'get_attack_overview', 'is_admin ' + str(is_admin) + ', issue ' + str(issue))
-		if not is_admin:
-			return_dict = dict()
-		else:
+		return_dict = dict()
+		if is_admin:
 			return_dict = dict()
 			logger('DatabaseHelper', 'get_attack_overview', 'get all attacks for each argument')
 			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
@@ -218,14 +217,13 @@ class DatabaseHelper(object):
 		return_dict['statements'] = statements_dict
 		return return_dict
 
-	def get_text_for_statement(self, transaction, statement_uid, user, issue):
+	def get_text_for_statement(self, transaction, statement_uid, issue):
 		"""
-
-		:param transaction:
-		:param statement_uid:
-		:param user:
-		:param issue:
-		:return:
+		Returns dictionary with all information about the given statement ui
+		:param transaction: current transaction
+		:param statement_uid: recent uid of the statement
+		:param issue: current issue
+		:return: dict()
 		"""
 
 		logger('DatabaseHelper', 'get_text_for_statement', 'get all premises: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' + str(issue))
@@ -237,7 +235,7 @@ class DatabaseHelper(object):
 
 	def get_premises_for_statement(self, transaction, statement_uid, isSupportive, user, session_id, issue):
 		"""
-		Rerturns all premises for the given statement
+		Returns all premises for the given statement
 		:param transaction: current transaction
 		:param statement_uid: uid of the statement
 		:param isSupportive: boolean

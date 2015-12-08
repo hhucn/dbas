@@ -20,6 +20,7 @@ from .fuzzy_string import FuzzySearch
 from .logger import logger
 from .query_helper import QueryHelper
 from .strings import Translator
+from .string_matcher import FuzzyStringMatcher
 from .breadcrumb_helper import BreadcrumbHelper
 from .tracking_helper import TrackingHelper
 from .recommender_system import RecommenderHelper
@@ -504,7 +505,7 @@ class Dbas(object):
 
 			logger('get_text_for_statement', 'def', 'uid: ' + uid)
 			logger('get_text_for_statement', 'def', 'issue ' + str(issue))
-			return_dict = DatabaseHelper().get_text_for_statement(transaction, uid, self.request.authenticated_userid, issue)
+			return_dict = DatabaseHelper().get_text_for_statement(transaction, uid, issue)
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('get_text_for_statement', 'error', repr(e))
@@ -1588,7 +1589,6 @@ class Dbas(object):
 			issue = self.request.params['issue'] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
-
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			if mode == '0': # start statement
 				return_dict = FuzzySearch().get_fuzzy_string_for_start(value, issue, True)
