@@ -16,7 +16,6 @@ from .database.discussion_model import User, Group, Issue, Argument
 from .database_helper import DatabaseHelper
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
-from .fuzzy_string import FuzzySearch
 from .logger import logger
 from .query_helper import QueryHelper
 from .strings import Translator
@@ -66,7 +65,7 @@ class Dbas(object):
 	def main_page(self):
 		"""
 		View configuration for the main page
-		:return:
+		:return: HTTP 200 with several information
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_page', 'def', 'main page')
@@ -407,21 +406,6 @@ class Dbas(object):
 			'page_notfound_viewname': self.request.view_name,
 			'logged_in': self.request.authenticated_userid
 		}
-
-	# ajax - getting every user, and returns dicts with name <-> group
-	@view_config(route_name='ajax_all_users', renderer='json', check_csrf=False)
-	def get_all_users(self):
-		"""
-		Returns all users as dictionary with name <-> group
-		:return: list of all users
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_all_users', 'def', 'main')
-
-		return_dict = UserHandler().get_all_users(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
 
 	######################
 	## DISCUSSION VIEWS ##
@@ -815,7 +799,7 @@ class Dbas(object):
 			transaction.commit()
 
 			# special case, when we are in the attack-branch
-			if exception_rebut: # TODO ?
+			if exception_rebut: # TODO delete only, if there are no errors while testing
 				logger('reply_for_response_of_confrontation', 'def', 'getting text for the second bootstrap way -> attack')
 				text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
 			else:
@@ -837,12 +821,27 @@ class Dbas(object):
 	## ADDTIONAL AJAX STUFF ##
 	##########################
 
+	# ajax - getting every user, and returns dicts with name <-> group
+	@view_config(route_name='ajax_all_users', renderer='json', check_csrf=False)
+	def get_all_users(self):
+		"""
+		Returns all users as dictionary with name <-> group
+		:return: json-dict() of all users
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('get_all_users', 'def', 'main')
+
+		return_dict = UserHandler().get_all_users(self.request.authenticated_userid)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
 	# ajax - getting complete track of the user
 	@view_config(route_name='ajax_get_user_track', renderer='json', check_csrf=True)
 	def get_user_track(self):
 		"""
 		Request the complete user track
-		:return:
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -873,7 +872,7 @@ class Dbas(object):
 	def delete_user_track(self):
 		"""
 		Request the complete user track
-		:return:
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -901,7 +900,7 @@ class Dbas(object):
 	def get_user_history(self):
 		"""
 		Request the complete user track
-		:return:
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -928,7 +927,7 @@ class Dbas(object):
 	def delete_user_history(self):
 		"""
 		Request the complete user history
-		:return:
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -955,7 +954,7 @@ class Dbas(object):
 	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
 	def set_new_start_statement(self):
 		"""
-		Inserts a new statement into the database
+		Inserts a new statement into the database, which should be available at the beginning
 		:return: a status code, if everything was successfull
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -989,8 +988,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
 	def set_new_start_premise(self):
 		"""
-
-		:return:
+		Sets new premise for the start
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		user_id = self.request.authenticated_userid
@@ -1029,8 +1028,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_set_new_premises_for_x', renderer='json', check_csrf=True)
 	def set_new_premises_for_x(self):
 		"""
-
-		:return:
+		Sets a new premisse for statement, argument, ? Everything is possible
+		:return: json-dict()
 		"""
 		user_id = self.request.authenticated_userid
 		UserHandler().update_last_action(transaction, user_id)
@@ -1114,12 +1113,12 @@ class Dbas(object):
 		logger('set_new_premises_for_x', 'def', 'returning')
 		return return_json
 
-	# ajax - getting all arguments for the island view
+	# ajax - getting changelog of a statement
 	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=False)
 	def get_logfile_for_statement(self):
 		"""
-
-		:return:
+		Returns the changelog of a statement
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -1142,12 +1141,12 @@ class Dbas(object):
 
 		return return_json
 
-	# ajax - getting all arguments for the island view
+	# ajax - set new textvalue for a statement
 	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
 	def set_correcture_of_statement(self):
 		"""
-
-		:return:
+		Sets a new textvalue for a statement
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -1177,8 +1176,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_switch_language', renderer='json')
 	def switch_language(self):
 		"""
-
-		:return:
+		Switches the language
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -1249,8 +1248,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_get_attack_overview', renderer='json', check_csrf=True)
 	def get_attack_overview(self):
 		"""
-
-		:return:
+		Returns all attacks, done by the users
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
@@ -1269,8 +1268,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_get_issue_list', renderer='json')
 	def get_issue_list(self):
 		"""
-
-		:return:
+		Returns all issues 
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
@@ -1295,8 +1294,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_user_login', renderer='json')
 	def user_login(self):
 		"""
-
-		:return:
+		Will login the user by his nickname and password
+		:return: dict() with success and message
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_login', 'def', 'main')
@@ -1347,8 +1346,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_user_logout', renderer='json')
 	def user_logout(self):
 		"""
-
-		:return:
+		Will logout the user
+		:return: HTTPFound with forgotten headers
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_logout', 'def', 'main')
@@ -1370,19 +1369,18 @@ class Dbas(object):
 	@view_config(route_name='ajax_user_registration', renderer='json')
 	def user_registration(self):
 		"""
-
-		:return:
+		Registers new user
+		:return: dict() with success and message
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_registration', 'def', 'main')
 
+		# default values
 		success = '0'
 		message = ''
 		return_dict = {}
 
-		for param in self.request.params:
-			logger('user_registration', 'def', param)
-
+		# getting params
 		try:
 			firstname       = self.escape_string(self.request.params['firstname'])
 			lastname        = self.escape_string(self.request.params['lastname'])
@@ -1481,8 +1479,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_user_password_request', renderer='json')
 	def user_password_request(self):
 		"""
-
-		:return:
+		Sends an email, when the user requests his password
+		:return: dict() with success and message
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_password_request', 'def', 'main')
@@ -1542,11 +1540,10 @@ class Dbas(object):
 	@view_config(route_name='ajax_get_news', renderer='json')
 	def get_news(self):
 		"""
-
-		:return:
+		ajax interface for getting news
+		:return: json-set with all news
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-
 		logger('get_news', 'def', 'main')
 		return_dict = DatabaseHelper().get_news()
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -1557,9 +1554,11 @@ class Dbas(object):
 	@view_config(route_name='ajax_send_news', renderer='json')
 	def send_news(self):
 		"""
-
-		:return:
+		ajax interface for settings news
+		:return: json-set with new news
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+
 		try:
 			title = self.escape_string(self.request.params['title'])
 			text = self.escape_string(self.request.params['text'])
@@ -1578,8 +1577,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_fuzzy_search', renderer='json')
 	def fuzzy_search(self):
 		"""
-
-		:return:
+		ajax interface for fuzzy string search
+		:return: json-set with all matched strings
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('fuzzy_search', 'main', 'def')
@@ -1591,14 +1590,14 @@ class Dbas(object):
 				else issue_fallback
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			if mode == '0': # start statement
-				return_dict = FuzzySearch().get_fuzzy_string_for_start(value, issue, True)
+				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
 			elif mode == '1': # edit statement popup
 				statement_uid = self.request.params['extra']
-				return_dict = FuzzySearch().get_fuzzy_string_for_edits(value, statement_uid, issue)
+				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid, issue)
 			elif mode == '2':  # start premise
-				return_dict = FuzzySearch().get_fuzzy_string_for_start(value, issue, False)
+				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
 			elif mode == '3':  # adding reasons
-				return_dict = FuzzySearch().get_fuzzy_string_for_reasons(value, issue)
+				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_reasons(value, issue)
 			else:
 				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
 				return_dict = dict()
@@ -1616,6 +1615,7 @@ class Dbas(object):
 
 		:return:
 		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('additional_service', 'main', 'def')
 		rtype = self.request.params['type']
 

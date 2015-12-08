@@ -11,6 +11,8 @@ from .logger import logger
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
+# This class handles string search requests
+
 class FuzzyStringMatcher(object):
 
 	def get_fuzzy_string_for_start(self, value, issue, isStatement):
