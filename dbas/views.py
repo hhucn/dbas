@@ -40,7 +40,7 @@ class Dbas(object):
 		"""
 		Object initialization
 		:param request: init http request
-		:return:
+		:return: json-dict()
 		"""
 		self.request = request
 		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
@@ -49,7 +49,7 @@ class Dbas(object):
 		"""
 
 		:param text:
-		:return:
+		:return: json-dict()
 		"""
 		return text # todo escaping string correctly
 		#return re.escape(text)
@@ -170,7 +170,8 @@ class Dbas(object):
 				       + t.get('mail') + ': ' + email + '\n'\
 				       + t.get('phone') + ': ' + phone + '\n'\
 				       + t.get('message') + ':\n' + content
-				send_message, contact_error, message = EmailHelper().send_mail(self.request, subject, body, email, lang)
+				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, lang)
+				contact_error = not send_message
 
 		logger('main_contact', 'form.contact.submitted', 'content: ' + content)
 		return {
@@ -462,7 +463,7 @@ class Dbas(object):
 	def get_text_for_statement(self):
 		"""
 		Returns text of a statement
-		:return:
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -489,7 +490,7 @@ class Dbas(object):
 
 			logger('get_text_for_statement', 'def', 'uid: ' + uid)
 			logger('get_text_for_statement', 'def', 'issue ' + str(issue))
-			return_dict = DatabaseHelper().get_text_for_statement(transaction, uid, issue)
+			return_dict = DatabaseHelper().get_text_for_statement(uid, issue)
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('get_text_for_statement', 'error', repr(e))
@@ -506,7 +507,7 @@ class Dbas(object):
 	def get_premise_for_statement(self):
 		"""
 		Returns random premisses for a statement
-		:return:
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -557,7 +558,7 @@ class Dbas(object):
 	def get_premises_for_statement(self):
 		"""
 		Returns all premisses for a statement
-		:return:
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -740,7 +741,7 @@ class Dbas(object):
 	def reply_for_response_of_confrontation(self):
 		"""
 
-		:return:
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -1268,7 +1269,7 @@ class Dbas(object):
 	@view_config(route_name='ajax_get_issue_list', renderer='json')
 	def get_issue_list(self):
 		"""
-		Returns all issues 
+		Returns all issues
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1514,13 +1515,13 @@ class Dbas(object):
 				body = t.get('nicknameIs') + db_user.nickname + '\n'
 				body += t.get('newPwdIs') + pwd
 				subject = t.get('dbasPwdRequest')
-				reg_success, reg_failed, message= EmailHelper().send_mail(self.request, subject, body, email, lang)
+				reg_success, message= EmailHelper().send_mail(self.request, subject, body, email, lang)
 
 				# logger
 				if reg_success:
 					logger('user_password_request', 'form.passwordrequest.submitted', 'New password was sent')
 					success = '1'
-				elif reg_failed:
+				else:
 					logger('user_password_request', 'form.passwordrequest.submitted', 'Error occured')
 			else:
 				logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
@@ -1613,7 +1614,7 @@ class Dbas(object):
 	def additional_service(self):
 		"""
 
-		:return:
+		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('additional_service', 'main', 'def')

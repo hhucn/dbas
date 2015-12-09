@@ -4,11 +4,11 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
- * Returns a translatet string with the given id in the right suitable.
+ * Returns a translated string
  * @param id of the string
  * @returns {string} which is translated or unknown value
  * @private
@@ -32,7 +32,8 @@ _t = function(id){
 };
 
 /**
- *
+ * Returns the tag of current language. This is either {en,de} or 'unknown value' *
+ * @returns {string} language tag
  */
 getLanguage = function(){
 	var this_id, value = 'unknown value';

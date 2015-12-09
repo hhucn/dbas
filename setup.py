@@ -28,12 +28,14 @@ requires = [
     'validate_email',
 	'splinter',
     'pyramid_beaker',
-	'lingua', 'requests', 'pyshorteners',
+	'lingua',
+	'requests',
+	'pyshorteners',
 ]
 
 setup(name='dbas',
 	version='0.4.5',
-	description='Novel prototype for a dialog-based argumentation software',
+	description='Novel prototype for a dialog-based online argumentation',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[
 		"Programming Language :: Python",

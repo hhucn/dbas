@@ -2,7 +2,6 @@ import random
 import collections
 
 from sqlalchemy import and_
-from Levenshtein import distance
 from datetime import datetime
 
 from .database import DBDiscussionSession, DBNewsSession
@@ -59,10 +58,10 @@ class DatabaseHelper(object):
 		"""
 		logger('DatabaseHelper', 'set_news', 'def')
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		author = db_user.firstname if db_user.firstname == "admin" else db_user.firstname + " " + db_user.surname
+		author = db_user.firstname if db_user.firstname == 'admin' else db_user.firstname + ' ' + db_user.surname
 		now = datetime.now()
-		day = str(now.day) if now.day > 9 else ("0" + str(now.day))
-		month = str(now.month) if now.month > 9 else ("0" + str(now.month))
+		day = str(now.day) if now.day > 9 else ('0' + str(now.day))
+		month = str(now.month) if now.month > 9 else ('0' + str(now.month))
 		date = day + '.' + month + '.' + str(now.year)
 		news = News(title = title, author = author, date = date, news = text)
 
@@ -217,15 +216,13 @@ class DatabaseHelper(object):
 		return_dict['statements'] = statements_dict
 		return return_dict
 
-	def get_text_for_statement(self, transaction, statement_uid, issue):
+	def get_text_for_statement(self, statement_uid, issue):
 		"""
 		Returns dictionary with all information about the given statement ui
-		:param transaction: current transaction
 		:param statement_uid: recent uid of the statement
 		:param issue: current issue
 		:return: dict()
 		"""
-
 		logger('DatabaseHelper', 'get_text_for_statement', 'get all premises: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' + str(issue))
 
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid,Statement.issue_uid==issue)).first()
@@ -244,7 +241,6 @@ class DatabaseHelper(object):
 		:param issue: current issue
 		:return: dictionary
 		"""
-
 		TrackingHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0, session_id)
 
 		return_dict = dict()
@@ -287,14 +283,14 @@ class DatabaseHelper(object):
 
 	def get_premise_for_statement(self, transaction, statement_uid, isSupportive, user, session_id, issue):
 		"""
-
-		:param transaction:
-		:param statement_uid:
-		:param isSupportive:
-		:param user:
-		:param session_id:
-		:param issue:
-		:return:
+		Returns all premisses, which have a relation to this statement in the form of an argument
+		:param transaction: transaction
+		:param statement_uid: int
+		:param isSupportive: boolean
+		:param user: string
+		:param session_id: id
+		:param issue: int
+		:return: dict()
 		"""
 		logger('DatabaseHelper', 'get_premise_for_statement', 'get all premisses: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' +
 		       str(issue))
@@ -325,15 +321,15 @@ class DatabaseHelper(object):
 
 	def get_reply_confrontations_response(self, transaction, user, uid_text, session_id, exception_rebut, issue, lang):
 		"""
-
-		:param transaction:
-		:param user:
-		:param uid_text:
-		:param session_id:
-		:param exception_rebut:
-		:param issue:
-		:param lang:
-		:return:
+		Returns the answer for a confrontation by the user. We will differentiate between {undermine, support, undercut, overbid, rebut}
+		:param transaction: transaction
+		:param user: string
+		:param uid_text: int
+		:param session_id: id
+		:param exception_rebut: boolean
+		:param issue: int
+		:param lang: string
+		:return: dict()
 		"""
 		qh = QueryHelper()
 		splitted_id = uid_text.split('_')
@@ -460,7 +456,7 @@ class DatabaseHelper(object):
 
 		# check for dot at the end
 		if not statement.endswith(('.','?','!')):
-			statement += "."
+			statement += '.'
 		if statement.lower().startswith('because '):
 			statement = statement[8:]
 
@@ -499,37 +495,6 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'set_statement', 'returning new statement with uid ' + str(new_statement.uid))
 		return new_statement, False
 
-	def set_argument(self, transaction, text, user_id, is_supportive, related_to_arg_uid, issue):
-		"""
-
-		:param transaction:
-		:param text:
-		:param user_id:
-		:param is_supportive:
-		:param related_to_arg_uid:
-		:param issue:
-		:return:
-		"""
-		new_statement, is_duplicate = self.set_statement(transaction, text, user_id, False, issue)
-
-		new_premisegroup = PremiseGroup(author=user_id)
-		DBDiscussionSession.add(new_premisegroup)
-		DBDiscussionSession.flush()
-
-		new_premise = Premise(premisesgroup=new_premisegroup.uid, statement=new_premisegroup.uid, isnegated=False, author=user_id,
-		                        issue=issue)
-		DBDiscussionSession.add(new_premise)
-		DBDiscussionSession.flush()
-
-		new_argument = Argument(premisegroup=new_premisegroup.uid, issupportive=is_supportive, author=user_id, weight=0,
-		                        conclusion=new_statement.uid, issue=issue)
-		new_argument.conclusions_argument(related_to_arg_uid)
-		DBDiscussionSession.add(new_argument)
-		DBDiscussionSession.flush()
-
-		transaction.commit()
-		return new_argument
-
 	def set_premises_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
 		"""
 		Inserts the given dictionary with premises for an statement or an argument
@@ -540,7 +505,6 @@ class DatabaseHelper(object):
 		:param is_supportive: for the argument
 		:return: dict
 		"""
-
 		logger('DatabaseHelper', 'set_premises_for_conclusion', 'main')
 
 		# insert the premises as statements
@@ -567,53 +531,24 @@ class DatabaseHelper(object):
 		transaction.commit()
 		return return_dict, is_duplicate
 
-#	def set_premises_for_premisegroups(self, transaction, user, pdict, key, premisegroup_id, is_supportive, issue):
-#		"""
-#		Inserts the given dictionary with premises for an statement or an argument
-#		:param transaction: current transaction for the database
-#		:param user: current users nickname
-#		:param pdict: dictionary with all statements
-#		:param key: pro or con
-#		:param premisegroup_id:
-#		:param is_supportive: for the argument
-#		:param issue:
-#		:return: dict
-#		"""
-#
-#		# insert the premises as statements
-#		return_dict = dict()
-#
-#		db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==premisegroup_id,
-#		                                                               Premise.issue_uid==issue)).all()
-#
-#		logger('DatabaseHelper', 'set_premises_for_premisegroups', 'main')
-#		for premise in db_premises:
-#			logger('DatabaseHelper', 'set_premises_for_premisegroups', 'calling set_premises_for_conclusion with ' + str(
-# premise.statement_uid))
-#			return_dict.update(self.set_premises_for_conclusion(transaction, user, pdict, key, premise.statement_uid, is_supportive,
-#			                                                     issue))
-#
-#		return return_dict
-
 	def handle_inserting_new_statements(self, user, pro_dict, con_dict, transaction, argument_id, premisegroup_id,
 	                                    current_attack, last_attack, premisegroup_con, premisegroup_pro, exception_rebut, issue):
 		"""
-
-		:param user:
-		:param pro_dict:
-		:param con_dict:
-		:param transaction:
-		:param argument_id:
-		:param premisegroup_id:
-		:param current_attack:
-		:param last_attack:
-		:param premisegroup_con:
-		:param premisegroup_pro:
-		:param exception_rebut:
-		:param issue:
-		:return:
+		Highly complex stuff! Please ask the author!
+		:param user: string
+		:param pro_dict: dict()
+		:param con_dict: dict()
+		:param transaction: transactiom
+		:param argument_id: int
+		:param premisegroup_id: int
+		:param current_attack: string
+		:param last_attack: string
+		:param premisegroup_con: boolean
+		:param premisegroup_pro: boolean
+		:param exception_rebut: boolean
+		:param issue: int
+		:return: dict()
 		"""
-
 		# Interpretation of the parameters
 		# User says: E => A             | #argument_id
 		# System says:

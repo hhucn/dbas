@@ -21,12 +21,11 @@ class EmailHelper(object):
 		:param body: body text of the mail
 		:param recipient: recipient of the mail
 		:param lang: current language
-		:return: boolean if message was sent, boolean an error occured, message if an error occured
+		:return: tripple with boolean for sent message, message-string
 		"""
 		logger('EmailHelper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
 		t = Translator(lang)
 		send_message = False
-		contact_error = False
 		mailer = get_mailer(request)
 		body = body +"\n\n---\n" + t.get('emailBodyText')
 		message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
@@ -41,12 +40,10 @@ class EmailHelper(object):
 			error = str(exception.smtp_error)
 			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_code ' + code)
 			logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_error ' + error)
-			contact_error = True
 			message = t.get('emailWasNotSent')
 		except socket_error as serr:
 			logger('EmailHelper', 'send_mail', 'error while sending')
 			logger('EmailHelper', 'send_mail', 'socket_error ' + str(serr))
-			contact_error = True
 			message = t.get('emailWasNotSent')
 
-		return send_message, contact_error, message
+		return send_message, message

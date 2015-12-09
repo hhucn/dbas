@@ -238,7 +238,7 @@ function Helper() {
 		support	  = r + ', ' + _t(itIsTrue) + ' <b>' + confrontation + '</b>.';
 		undercut  = r + ', <b>' + confrontation + '</b>, ' + _t(butIDoNotBelieveCounter) + ' ' + counterJusti + '.';
 		overbid	  = r + ', <b>' + confrontation + '</b>, ' + _t(andIDoBelieve) + ' ' + counterJusti + '.<br>'
-					+ (isSupportive ? _t(howeverIHaveEvenStrongerArgumentAccepting) : _t(howeverIHaveEvenStrongerArgumentRejecting))
+					+ (isSupportive ? _t(howeverIHaveEvenStrongerArgumentAccepting) : _t(howeverIHaveEvenStrongerArgumentRejecting)) + ' <b>' + premise + '</b>.';
 		rebut	  = r + ', <b>' + confrontation + '</b> ' + _t(iAcceptCounter) + ' <b>' + conclusion + '</b>.<br>'
 					+ (isSupportive ? _t(howeverIHaveEvenStrongerArgumentAccepting) : _t(howeverIHaveEvenStrongerArgumentRejecting))
 					+ ' <b>' + premise + '</b>.';
@@ -298,8 +298,6 @@ function Helper() {
 		undercut  = r + ', <b>' + conclusion + '</b>, ' + _t(butIDoNotBelieveArgument) + ' ' + counterJusti + '.';
 		rebut	  = r + ', <b>' + premise + '</b> ' + _t(iAcceptArgument) + ' <b>' + conclusion + '</b>. '
 			+ _t(howeverIHaveMuchStrongerArgumentRejecting) + ' <b>' + conclusion + '</b>.';
-
-
 		noopinion  = _t(iNoOpinion) + ': <b>' + conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise + '</b>. ' + _t(goStepBack) + '.';
 		return [undermine, undercut, rebut, noopinion];
 	};

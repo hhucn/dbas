@@ -108,7 +108,7 @@ class Translator(object):
 
 		de_lang = {}
 		de_lang['attack']                       = 'Sie lehnen ab, dass'
-		de_lang['support']                      = 'Sie akzeptiere'
+		de_lang['support']                      = 'Sie akzeptieren'
 		de_lang['premise']                      = 'Prämisse'
 		de_lang['because']                      = 'weil'
 		de_lang['doesNotHoldBecause']           = 'gilt nicht, weil'
