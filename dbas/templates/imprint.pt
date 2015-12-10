@@ -62,7 +62,6 @@
 					<br>
 					<h5><strong>Piwik Opt-Out</strong></h5>
 			<iframe id="piwik-opt-out-iframe" style="border: 0; height: 200px; width: 600px;" src="https://dbas.cs.uni-duesseldorf.de/piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
-
 		</div>
 
 		<div class="col-md-4">

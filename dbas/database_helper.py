@@ -120,7 +120,7 @@ class DatabaseHelper(object):
 			if len(db_textversions)>0:
 				textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversions[-1].uid)
 			else:
-				textversion = TextVersion(content=corrected_text, author=db_user.uid, weight=db_textvalue.textversions.weight)
+				textversion = TextVersion(content=corrected_text, author=db_user.uid)
 				textversion.set_textvalue(db_textvalue.uid)
 				DBDiscussionSession.add(textversion)
 				DBDiscussionSession.flush()
@@ -471,7 +471,7 @@ class DatabaseHelper(object):
 			return db_statement, True
 
 		# add the version
-		textversion = TextVersion(content=statement, author=db_user.uid, weight=0)
+		textversion = TextVersion(content=statement, author=db_user.uid)
 		DBDiscussionSession.add(textversion)
 		DBDiscussionSession.flush()
 

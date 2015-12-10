@@ -1589,6 +1589,7 @@ class Dbas(object):
 			issue = self.request.params['issue'] if 'issue' in self.request.params \
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
+
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			if mode == '0': # start statement
 				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
@@ -1629,4 +1630,3 @@ class Dbas(object):
 			logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
 
 		return data.json()
-
