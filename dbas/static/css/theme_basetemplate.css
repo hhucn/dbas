@@ -218,12 +218,14 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 .blocked {
-	position: absolute;
-	top: 5px; left: auto; right: auto;
+	position: fixed;
+	padding: 10px;
+	top: 0px;
+	left: 0px;
+	right: 0px;
 	width: 100%;
 	text-align: center;
 	color: #fff;
-	padding: 0px;
 	border-radius: 4px;
 	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
@@ -622,4 +624,9 @@ comment .container and wrap each container with <div class="coloured-div">
 		height: 0px;
 	}
 	
+}
+@media (max-width: 1118px) {
+	.blocked{
+		padding: 40px;
+	}
 }

@@ -98,7 +98,7 @@ var dbas_en = {
 	'doesNotJustify': 'does not justify that',
 	'doYouWantToEnterYourStatements': 'Do you want to enter your statement(s)?',
 	'euCookiePopupTitle': 'This website is using cookies and Piwik.',
-	'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website.',
+	'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose. All tracked data are saved anonymously with reduced masked IP-adresses.',
 	'euCookiePopoupButton1': 'Continue',
 	'euCookiePopoupButton2': 'Learn&nbsp;more',
 	'empty_news_input': 'News title or text is empty or too short!',

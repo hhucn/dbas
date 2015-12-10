@@ -98,7 +98,7 @@ var dbas_de = {
 	'doYouWantToEnterYourStatements': 'Möchten Sie Ihre eigenen Gründe angeben?',
 	'doNotHesitateToContact': 'Zögern Sie nicht, uns zu <b><span style="cursor: pointer;" id="contact_on_error">kontaktieren (hier klicken)</span></b>',
 	'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Piwik.',
-	'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit.',
+	'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
 	'euCookiePopoupButton1': 'Weiter',
 	'euCookiePopoupButton2': 'Lerne&nbsp;mehr',
 	'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz!',
