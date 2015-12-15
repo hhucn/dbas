@@ -435,7 +435,7 @@ class Dbas(object):
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			QueryHelper().del_history_of_user(transaction, self.request.authenticated_userid)
+			BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
 			BreadcrumbHelper().save_breadcrumb_for_user(transaction, self.request.authenticated_userid, url, 'Start',
 			                                            self.request.session.id)
 
@@ -539,7 +539,7 @@ class Dbas(object):
 			logger('ajax_get_premise_for_statement', 'def', 'supportive:' + str(supportive))
 			logger('ajax_get_premise_for_statement', 'def', 'issue: ' + str(issue))
 
-			return_dict = DatabaseHelper().get_premise_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
+			return_dict = RecommenderHelper().get_premise_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
 
 			return_dict['status'] = '1'
@@ -594,7 +594,7 @@ class Dbas(object):
 			logger('get_premises_for_statement', 'def', 'supportive ' + str(supportive))
 			logger('get_premises_for_statement', 'def', 'issue ' + str(issue))
 
-			return_dict = DatabaseHelper().get_premises_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
+			return_dict = RecommenderHelper().get_premises_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
 			return_dict['status'] = '1'
 		except KeyError as e:
@@ -944,7 +944,7 @@ class Dbas(object):
 			logger('delete_user_history', 'error', repr(e))
 
 		logger('delete_user_history', 'def', 'remove history data')
-		QueryHelper().del_history_of_user(transaction, nickname)
+		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, nickname)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true' # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)

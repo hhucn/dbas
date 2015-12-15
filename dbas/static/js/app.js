@@ -220,6 +220,45 @@ function setPiwikOptOutLink(lang){
 	$('#piwik-opt-out-iframe').attr('src',src);
 }
 
+function setEasterEggs(){
+	$('#roundhousekick').click(function(){ ajaxRoundhouseKick(); });
+	//$('#yomamma').click(function(){ ajaxMama(); });
+    var div = $('<div>'),
+        christmas = $('<input>').attr('type','checkbox').attr('data-toggle','toggle').attr('data-onstyle','primary').bootstrapToggle('off'),
+        silvester = $('<input>').attr('type','checkbox').attr('data-toggle','toggle').attr('data-onstyle','primary').bootstrapToggle('off'),
+        spanChristmas = $('<span>').text('Christmas'),
+        spanSilvester = $('<span>').text('Silvester');
+    div.attr('style','padding-right: 50px; z-index: 200; text-align: right;');
+    christmas.attr('style','margin-left: 5px;');
+    silvester.attr('style','margin-left: 5px;');
+    spanSilvester.attr('style','margin-left: 20px;');
+    div.append(spanChristmas);
+    div.append(christmas);
+    div.append(spanSilvester);
+    div.append(silvester);
+    div.prependTo($('.first-container'));
+    $('#cot_tl3_fixed').hide();
+    $('#cot_tl4_fixed').hide();
+
+    christmas.change(function() {
+        if($(this).is(":checked")) {
+            $('#cot_tl3_fixed').show();
+            $('#cot_tl4_fixed').show();
+        } else {
+            $('#cot_tl3_fixed').hide();
+            $('#cot_tl4_fixed').hide();
+        }
+    });
+    silvester.change(function() {
+        if($(this).is(":checked")) {
+            document.body.appendChild(canvas);
+            window.scrollTo(0,document.body.scrollHeight);
+        } else {
+            canvas.remove();
+        }
+    });
+}
+
 /**
  *
  */
@@ -595,14 +634,12 @@ $(document).ready(function () {
 	var path = window.location.href, lang = $('#hidden_language').val();
 
 	jmpToChapter();
-
 	goBackToTop();
-
 	//changeBackgroundOnScroll();
-
 	setActiveLanguage(lang);
 	setButtonLanguage();
 	setPiwikOptOutLink(lang);
+	setEasterEggs();
 
 	// set current file to active
 		 if (path.indexOf(urlContact) != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
@@ -619,8 +656,6 @@ $(document).ready(function () {
 	$('#' + translationLinkEn).click(function(){ ajaxSwitchDisplayLanguage('en') });
 	$('#' + translationLinkDe + ' img').click(function(){ ajaxSwitchDisplayLanguage('de') });
 	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
-	$('#roundhousekick').click(function(){ ajaxRoundhouseKick(); });
-	//$('#yomamma').click(function(){ ajaxMama(); });
 	$('#' + logoutLinkId).click(function(){ ajaxLogout()});
 
 	// gui preperation

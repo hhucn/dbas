@@ -3,10 +3,11 @@ import random
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, User, Track
+from .database.discussion_model import Argument, Premise, User, Track, Statement
 from .query_helper import QueryHelper
 from .logger import logger
 from .tracking_helper import TrackingHelper
+from .dictionary_helper import DictionaryHelper
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -339,3 +340,92 @@ class RecommenderHelper(object):
 			logger('QueryHelper', 'get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
 
 		return return_dict, key
+
+	def get_premises_for_statement(self, transaction, statement_uid, isSupportive, user, session_id, issue):
+		"""
+		Returns all premises for the given statement
+		:param transaction: current transaction
+		:param statement_uid: uid of the statement
+		:param isSupportive: boolean
+		:param user: self.request.authenticated_userid
+		:param session_id: self.request.session.id
+		:param issue: current issue
+		:return: dictionary
+		"""
+		TrackingHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0, session_id)
+
+		return_dict = dict()
+		premises_dict = dict()
+		logger('RecommenderHelper', 'get_premises_for_statement', 'get all premises: conclusion_uid: ' + str(isSupportive)
+		       + ', isSupportive: ' + str(issue)
+		       + ', issue_uid: ' + str(issue))
+		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
+																Argument.conclusion_uid==statement_uid,
+		                                                        Argument.issue_uid==issue)).all()
+
+		for argument in db_arguments:
+			logger('RecommenderHelper', 'get_premises_for_statement', 'argument ' + str(argument.uid) + ' (' + str(argument.premisesGroup_uid)
+			       + '), issue ' + str(issue))
+			db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==argument.premisesGroup_uid, 
+			                                                               Premise.issue_uid==issue)).all()
+
+			# check out the group
+			premisesgroups_dict = dict()
+			for premise in db_premises:
+				logger('RecommenderHelper', 'get_premises_for_statement', 'premises group ' + str(premise.premisesGroup_uid))
+				db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==premise.statement_uid,
+				                                                                 Statement.issue_uid==issue)).all()
+				for statement in db_statements:
+					logger('RecommenderHelper', 'get_premises_for_statement', 'premises group has statement ' + str(statement.uid))
+					premisesgroups_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement, issue)
+
+				logger('RecommenderHelper', 'get_premises_for_statement', 'new premises_dict entry with key ' + str(premise.premisesGroup_uid))
+				premises_dict[str(premise.premisesGroup_uid)] = premisesgroups_dict
+
+		# premises dict has for each group a new dictionary
+		return_dict['premises'] = premises_dict
+		return_dict['conclusion_id'] = statement_uid
+		return_dict['status'] = '1'
+
+		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid, Statement.issue_uid==issue)).first()
+		return_dict['currentStatement'] = DictionaryHelper().save_statement_row_in_dictionary(db_statements, issue)
+
+		return return_dict
+
+	def get_premise_for_statement(self, transaction, statement_uid, isSupportive, user, session_id, issue):
+		"""
+		Returns one random premisses, which have a relation to this statement in the form of an argument
+		:param transaction: transaction
+		:param statement_uid: int
+		:param isSupportive: boolean
+		:param user: string
+		:param session_id: id
+		:param issue: int
+		:return: dict()
+		"""
+		logger('RecommenderHelper', 'get_premise_for_statement', 'get all premisses: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' +
+		       str(issue))
+
+		return_dict = self.get_premises_for_statement(transaction, statement_uid, isSupportive, user, session_id, issue)
+
+		# get one random premise todo fix random
+
+		premises_dict = return_dict['premises']
+		if len(premises_dict) == 0:
+			logger('RecommenderHelper', 'get_premise_for_statement', 'no premisses')
+			return_dict['premises'] = '0'
+		else:
+			logger('RecommenderHelper', 'get_premise_for_statement', 'found ' + str(len(premises_dict)) + ' premises')
+			rnd_element = random.choice(list(premises_dict.keys()))
+			logger('RecommenderHelper', 'get_premise_for_statement', 'rnd_element out of premise keys[' + str(list(premises_dict.keys())) + '] is ' + str(rnd_element))
+
+			return_dict['premises'] = premises_dict[rnd_element]
+			logger('RecommenderHelper', 'get_premise_for_statement', 'return random premise: ' + str(return_dict['premises']))
+
+			# current argument
+			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==rnd_element,
+		                                                              Argument.conclusion_uid==statement_uid)).first()
+			return_dict['argument_uid'] = db_argument.uid
+
+		logger('RecommenderHelper', 'get_premise_for_statement', 'return')
+		return return_dict

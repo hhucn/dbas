@@ -292,3 +292,17 @@ class BreadcrumbHelper(object):
 			db_history[1].set_keyword_after_decission(keyword_after_decission)
 
 		transaction.commit()
+
+	def del_breadcrumbs_of_user(self, transaction, user):
+		"""
+		Deletes the complete breadcrumbs of given user
+		:param transaction: current transaction
+		:param user: current user
+		:return: undefined
+		"""
+		# maybe we are anonymous
+		if user:
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user','user ' + str(db_user.uid))
+			DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
+			transaction.commit()
