@@ -27,7 +27,7 @@ from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .weighting_helper import WeightingHelper
 
 name = 'D-BAS'
-version = '0.4.5'
+version = '0.4.6'
 header = name + ' ' + version
 issue_fallback = 1
 
