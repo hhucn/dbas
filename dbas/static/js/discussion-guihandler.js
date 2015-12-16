@@ -1035,7 +1035,7 @@ function GuiHandler() {
 			} else if (typeof val.text !== 'undefined'){
 				li = $('<li>');
 				li.attr({id: 'issue_' + val.uid, 'issue': val.uid, 'date': val.date, 'count': count});
-				span = $('<span>').addClass('badge').attr({'id':'issue_args' + val.uid, 'style':'float: right'}).text(val.arguments);
+				span = $('<span>').addClass('badge').attr({'id':'issue_args' + val.uid, 'style':'float: right', 'title': _t(countOfArguments)}).text(val.arguments);
 				a = $('<a>');
 				a.text(val.text);
 				a.attr({'style':'cursor:pointer', 'text':val.text});

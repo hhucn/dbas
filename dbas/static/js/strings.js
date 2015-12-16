@@ -118,6 +118,7 @@ var checkPasswordConfirm							= 'checkPasswordConfirm';
 var clickToChoose 									= 'clickToChoose';
 var completeView 									= 'completeView';
 var completeViewTitle								= 'completeViewTitle';
+var countOfArguments                                = 'countOfArguments';
 var dateString										= 'dateString';
 var disagreeBecause 								= 'disagreeBecause';
 var dialogView 										= 'dialogView';
