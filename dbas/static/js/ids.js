@@ -8,7 +8,6 @@
  * ID's
  * @type {string}
  */
-
 var attackPositionButtonId 						= 'attack-position';
 var addReasonButtonId 							= 'add-reason';
 var addPositionButtonId 						= 'add-position';
