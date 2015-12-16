@@ -16,6 +16,7 @@ class FuzzyStringMatcher(object):
 
 	def __init__(self):
 		self.max_count_zeros = 5
+		self.return_count = 10 # same number as in googles suggest list (16.12.2015)
 
 	def get_fuzzy_string_for_start(self, value, issue, isStatement):
 		"""
@@ -39,7 +40,7 @@ class FuzzyStringMatcher(object):
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 
 		return_dict = collections.OrderedDict()
-		for i in list(tmp_dict.keys())[0:10]: # TODO RETURN COUNT
+		for i in list(tmp_dict.keys())[0:self.return_count]:
 			return_dict[i] = tmp_dict[i]
 
 		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'dictionary length: ' + str(len(return_dict.keys())))
@@ -70,7 +71,7 @@ class FuzzyStringMatcher(object):
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 
 		return_dict = collections.OrderedDict()
-		for i in list(tmp_dict.keys())[0:10]: # TODO RETURN COUNT
+		for i in list(tmp_dict.keys())[0:self.return_count]:
 			return_dict[i] = tmp_dict[i]
 
 		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_edits', 'dictionary length: ' + str(len(return_dict.keys())))
@@ -99,7 +100,7 @@ class FuzzyStringMatcher(object):
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 
 		return_dict = collections.OrderedDict()
-		for i in list(tmp_dict.keys())[0:10]: # TODO RETURN COUNT
+		for i in list(tmp_dict.keys())[0:self.return_count]:
 			return_dict[i] = tmp_dict[i]
 
 		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_reasons', 'dictionary length: ' + str(len(return_dict.keys())))

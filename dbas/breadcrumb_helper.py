@@ -221,11 +221,7 @@ class BreadcrumbHelper(object):
 			returned_in_history = True
 			db_history = DBDiscussionSession.query(History).filter(and_(History.author_uid==db_user.uid, History.uid>db_history.uid)).all()
 			logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, unnecessary entries: ' + str(len(db_history)))
-			logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, unnecessary entries: ' + str(len(db_history)))
-			logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, unnecessary entries: ' + str(len(db_history)))
 			for history in db_history:
-				logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, deleting history: ' + str(history.uid))
-				logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, deleting history: ' + str(history.uid))
 				logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, deleting history: ' + str(history.uid))
 				DBDiscussionSession.query(History).filter_by(uid=history.uid).delete()
 		else:

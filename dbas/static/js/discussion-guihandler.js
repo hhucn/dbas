@@ -1020,7 +1020,9 @@ function GuiHandler() {
 	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr, text, i, l, helper = new Helper(), count;
+		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr,
+				text, i, helper = new Helper(), count;
+
 		li = $('<li>');
 		li.addClass('dropdown-header').text(_t(issueList));
 		$('#' + issueDropdownListID).empty().append(li);

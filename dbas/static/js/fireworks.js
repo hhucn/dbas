@@ -1,4 +1,4 @@
-var SCREEN_WIDTH = window.innerWidth,
+var SCREEN_WIDTH = document.body.scrollWidth,
     SCREEN_HEIGHT = window.innerHeight,
     mousePos = {
         x: 400,
@@ -15,6 +15,7 @@ var SCREEN_WIDTH = window.innerWidth,
 
 // init
 $(document).ready(function() {
+	SCREEN_WIDTH = document.body.scrollWidth;
     canvas.width = SCREEN_WIDTH;
     canvas.height = SCREEN_HEIGHT;
     setInterval(launch, 800);
@@ -55,6 +56,7 @@ function launchFrom(x) {
 }
 
 function loop() {
+	SCREEN_WIDTH = document.body.scrollWidth;
     // update screen size
     if (SCREEN_WIDTH != window.innerWidth) {
         canvas.width = SCREEN_WIDTH = window.innerWidth;
