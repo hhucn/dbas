@@ -191,6 +191,7 @@ function setActiveLanguage(lang){
  * Changes the value and title of every button
  */
 function setButtonLanguage(){
+	var tmp;
 	$('#' + reportButtonId).prop('value', _t(report)).prop('title', _t(reportTitle));
 	$('#' + restartDiscussionButtonId).prop('value', _t(restartDiscussion)).prop('title', _t(restartDiscussionTitle));
 	$('#' + editStatementButtonId).prop('value', _t(edit)).prop('title', _t(editTitle));
@@ -208,9 +209,10 @@ function setButtonLanguage(){
 	$('#' + settingsPasswordSubmitButtonId).prop('value', _t(passwordSubmit)).prop('title', _t(passwordSubmit));
 	// $('#' + popupEditStatementShowLogButtonId).prop('value', _t(changelog)).prop('title', _t(changelog));
 	$('#' + contactSubmitButtonId).prop('value', _t(contactSubmit)).prop('title', _t(contactSubmit));
-	$('#' + discussionStartToggleButtonId).next().children().eq(0).text(_t(attackPosition));
-	$('#' + discussionStartToggleButtonId).next().children().eq(1).text(_t(supportPosition));
 	$('#' + startDiscussionButtonId).prop('value', _t(letsGo)).prop('title', _t(letsGo));
+	tmp = $('#' + discussionStartToggleButtonId).next().children();
+	tmp.eq(0).text(_t(attackPosition));
+	tmp.eq(1).text(_t(supportPosition));
 }
 
 function setPiwikOptOutLink(lang){
@@ -218,6 +220,47 @@ function setPiwikOptOutLink(lang){
 	if (lang === 'de')	src += 'de';
 	else 				src += 'en';
 	$('#piwik-opt-out-iframe').attr('src',src);
+}
+
+function setEasterEggs(){
+	$('#roundhousekick').click(function(){ ajaxRoundhouseKick(); });
+	//$('#yomamma').click(function(){ ajaxMama(); });
+
+	if (window.location.href == mainpage) {
+    var div = $('<div>'),
+        christmas = $('<input>').attr('type','checkbox').attr('data-toggle','toggle').attr('data-onstyle','primary').bootstrapToggle('off'),
+        silvester = $('<input>').attr('type','checkbox').attr('data-toggle','toggle').attr('data-onstyle','primary').bootstrapToggle('off'),
+        spanChristmas = $('<span>').text('Christmas'),
+        spanSilvester = $('<span>').text('Silvester');
+        christmas.attr('style','margin-left: 5px;');
+        silvester.attr('style','margin-left: 5px;');
+        spanSilvester.attr('style','margin-left: 20px;');
+        div.attr('style','padding-right: 50px; z-index: 200; text-align: right;')
+		        .append(spanChristmas)
+		        .append(christmas)
+		        .append(spanSilvester)
+		        .append(silvester);
+		div.prependTo($('.first-container'));
+		$('#cot_tl3_fixed').hide();
+		$('#cot_tl4_fixed').hide();
+		christmas.change(function() {
+			if($(this).is(":checked")) {
+				$('#cot_tl3_fixed').show();
+				$('#cot_tl4_fixed').show();
+			} else {
+				$('#cot_tl3_fixed').hide();
+				$('#cot_tl4_fixed').hide();
+			}
+		});
+		silvester.change(function() {
+			if($(this).is(":checked")) {
+				document.body.appendChild(canvas);
+				window.scrollTo(0,document.body.scrollHeight);
+			} else {
+				canvas.remove();
+			}
+		});
+	}
 }
 
 /**
@@ -239,9 +282,10 @@ function hideExtraViewsOfLoginPopup(){
  * Prepares the login popup
  */
 function prepareLoginRegistrationPopup(){
+	var popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBodyId);
 	// hide on startup
 	hideExtraViewsOfLoginPopup();
-	$('#' + popupLoginGeneratePasswordBody).hide();
+	popupLoginGeneratePasswordBody.hide();
 
 	// switching tabs
 	$('.tab-login a').on('click', function (e) {
@@ -266,8 +310,8 @@ function prepareLoginRegistrationPopup(){
 	}).keypress(function(e) { if (e.which == 13) { ajaxRegistration() } });
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
-		if ($('#' + popupLoginForgotPasswordBody).is(':visible')){
-			$('#' + popupLoginForgotPasswordBody).hide();
+		if (popupLoginGeneratePasswordBody.is(':visible')){
+			popupLoginGeneratePasswordBody.hide();
 			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 		} else {
 			$('#' + popupLoginForgotPasswordBody).show();
@@ -276,11 +320,11 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginGeneratePassword + ' > a').click(function(){
-		if ($('#' + popupLoginGeneratePasswordBody).is(':visible')){
-			$('#' + popupLoginGeneratePasswordBody).hide();
+		if (popupLoginGeneratePasswordBody.is(':visible')){
+			popupLoginGeneratePasswordBody.hide();
 			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(generateSecurePassword));
 		} else {
-			$('#' + popupLoginGeneratePasswordBody).show();
+			popupLoginGeneratePasswordBody.show();
 			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(hideGenerator));
 		}
 	});
@@ -292,48 +336,36 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginPasswordInputId).keyup(function popupLoginPasswordInputKeyUp() {
-		new PasswordHandler().check_strength($('#' + popupLoginPasswordInputId), $('#' + popupLoginPasswordMeterId), $('#' + popupLoginPasswordStrengthId), $('#' + popupLoginPasswordExtrasId));
+		new PasswordHandler().check_strength($('#' + popupLoginPasswordInputId), $('#' + popupLoginPasswordMeterId),
+				$('#' + popupLoginPasswordStrengthId), $('#' + popupLoginPasswordExtrasId));
 	});
 
 	$('#' + popupLoginButtonRegister).click(function(){
-		var userfirstname = $('#' + popupLoginUserfirstnameInputId).val(),
-			userlastname = $('#' + popupLoginUserlastnameInputId).val(),
-			nick = $('#' + popupLoginNickInputId).val(),
-			email = $('#' + popupLoginEmailInputId).val(),
-			password = $('#' + popupLoginPasswordInputId).val(),
-			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
+		var userfirstname   = $('#' + popupLoginUserfirstnameInputId).val(),
+			userlastname    = $('#' + popupLoginUserlastnameInputId).val(),
+			nick            = $('#' + popupLoginNickInputId).val(),
+			email           = $('#' + popupLoginEmailInputId).val(),
+			password        = $('#' + popupLoginPasswordInputId).val(),
+			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
+			text = '',
+			i,
+			fields = [userfirstname, userlastname, nick, email, password, passwordconfirm],
+			tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword), _t(checkConfirmation), _t(checkPasswordConfirm)];
 
-		if (!userfirstname || /^\s*$/.test(userfirstname) || 0 === userfirstname.length) {
-			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
-			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkFirstname));
+		// check all vields for obivously errors
+		for (i=0; i<fields.length; i++){
+			if (!fields[i] || /^\s*$/.test(fields[i]) || 0 === fields[i].length) {
+				text = tvalues[i];
+				break;
+			}
+		}
 
-		} else if (!userlastname || /^\s*$/.test(userlastname) || 0 === userlastname.length) {
-			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
-			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkLastname));
-
-		} else if (!nick || /^\s*$/.test(nick) || 0 === nick.length) {
-			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
-			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkNickname));
-
-		} else if (!email || /^\s*$/.test(email) || 0 === email.length) {
-			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
-			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkEmail));
-
-		} else if (!password || /^\s*$/.test(password) || 0 === password.length) {
-			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
-			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkPassword));
-
-		} else if (!passwordconfirm || /^\s*$/.test(passwordconfirm) || 0 === passwordconfirm.length) {
-			$('#' + popupLoginRegistrationFailed).fadeIn("slow");
-			$('#' + popupLoginRegistrationFailed + '-message').text(_t(checkConfirmation));
-
-		} else if (password !== passwordconfirm) {
-			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(_t(checkPasswordEqual));
-
-		} else {
-			$('#' + popupLoginWarningMessage);
+		if (text == '' ){
+			$('#' + popupLoginWarningMessage).hide();
 			ajaxRegistration();
+		} else {
+			$('#' + popupLoginWarningMessage).fadeIn("slow");
+			$('#' + popupLoginWarningMessageText).text(text);
 		}
 
 	});
@@ -595,14 +627,12 @@ $(document).ready(function () {
 	var path = window.location.href, lang = $('#hidden_language').val();
 
 	jmpToChapter();
-
 	goBackToTop();
-
 	//changeBackgroundOnScroll();
-
 	setActiveLanguage(lang);
 	setButtonLanguage();
 	setPiwikOptOutLink(lang);
+	setEasterEggs();
 
 	// set current file to active
 		 if (path.indexOf(urlContact) != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
@@ -619,8 +649,6 @@ $(document).ready(function () {
 	$('#' + translationLinkEn).click(function(){ ajaxSwitchDisplayLanguage('en') });
 	$('#' + translationLinkDe + ' img').click(function(){ ajaxSwitchDisplayLanguage('de') });
 	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
-	$('#roundhousekick').click(function(){ ajaxRoundhouseKick(); });
-	//$('#yomamma').click(function(){ ajaxMama(); });
 	$('#' + logoutLinkId).click(function(){ ajaxLogout()});
 
 	// gui preperation

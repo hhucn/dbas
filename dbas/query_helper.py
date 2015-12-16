@@ -349,6 +349,7 @@ class QueryHelper(object):
 		text, uids = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
 		return text, uids
 
+
 	def get_undermines_for_premises(self, key, premises_as_statements_uid, issue):
 		"""
 
@@ -542,20 +543,6 @@ class QueryHelper(object):
 				#return_dict[key + str(index) + 'id'] = ','.join(uids)
 		return_dict[key] = str(len(db_relation))
 		return return_dict
-
-	def del_history_of_user(self, transaction, user):
-		"""
-		Deletes the complete track of given user
-		:param transaction: current transaction
-		:param user: current user
-		:return: undefined
-		"""
-		# maybe we are anonymous
-		if user:
-			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-			logger('QueryHelper', 'del_history_of_user','user ' + str(db_user.uid))
-			DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
-			transaction.commit()
 
 	def sql_timestamp_pretty_print(self, ts, lang):
 		"""

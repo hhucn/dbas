@@ -8,7 +8,6 @@
  * ID's
  * @type {string}
  */
-
 var attackPositionButtonId 						= 'attack-position';
 var addReasonButtonId 							= 'add-reason';
 var addPositionButtonId 						= 'add-position';
@@ -52,7 +51,6 @@ var discussionSuccessDescriptionId 				= 'discussion-success-description';
 var discussionSuccessDescriptionSpaceId			= 'discussion-success-description-space';
 var editStatementButtonId 						= 'edit-statement';
 var forgotPasswordText 							= 'forgot-password-text';
-var issueDropdownListID							= 'dropdown-issue-list';
 var popupLoginEmailInputId 						= 'email-input';
 var generatePasswordBodyId 						= 'generate-password-body';
 var headingProPositionTextId 					= 'heading-pro-positions';
@@ -68,6 +66,7 @@ var islandViewContainerId 						= 'island-view-container';
 var islandViewContainerH4Id 					= 'island-view-container-h4';
 var islandViewAddArgumentsBtnid 				= 'island-view-add-arguments';
 var issueDropdownButtonID						= 'issue-dropdown';
+var issueDropdownListID							= 'dropdown-issue-list';
 var issueDateId									= 'issue-date';
 var issueCountId 								= 'issue-count';
 var listAllUsersButtonId 						= 'list-all-users';
@@ -132,7 +131,7 @@ var popupLoginSuccess 							= 'popup-login-success';
 var popupLoginForgotPasswordBody				= 'popup-login-forgot-password-body';
 var popupLoginForgotPasswordText				= 'popup-login-forgot-password-text';
 var popupLoginGeneratePassword					= 'popup-login-generate-password';
-var popupLoginGeneratePasswordBody				= 'popup-login-generate-password-body';
+var popupLoginGeneratePasswordBodyId			= 'popup-login-generate-password-body';
 var popupLoginPasswordMeterId 					= 'popup-login-password-meter';
 var popupLoginPasswordStrengthId 				= 'popup-login-password-strength';
 var popupLoginPasswordInputId 					= 'popup-login-password-input';

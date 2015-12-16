@@ -128,12 +128,13 @@
 					
 					<span class="project font-semi-bold">0.5.0 (unreleased)</span>
 				<ul>
-					<li>Improved recommendation of the next argument</li>
+					<li>Improved recommendation of the next argument/statement</li>
 				</ul>
 					
-					<span class="project font-semi-bold">0.4.6 (unreleased)</span>
+					<span class="project font-semi-bold">0.4.6 (2015-12-16)</span>
 				<ul>
 					<li>Collecting weights for arguments</li>
+					<li>Smaller design improvements like badges for the issues</li>
 				</ul>
 
 				<span class="project font-semi-bold">0.4.5 (2015-12-01)</span>

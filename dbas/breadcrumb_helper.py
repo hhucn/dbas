@@ -221,11 +221,7 @@ class BreadcrumbHelper(object):
 			returned_in_history = True
 			db_history = DBDiscussionSession.query(History).filter(and_(History.author_uid==db_user.uid, History.uid>db_history.uid)).all()
 			logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, unnecessary entries: ' + str(len(db_history)))
-			logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, unnecessary entries: ' + str(len(db_history)))
-			logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, unnecessary entries: ' + str(len(db_history)))
 			for history in db_history:
-				logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, deleting history: ' + str(history.uid))
-				logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, deleting history: ' + str(history.uid))
 				logger('BreadcrumbHelper', 'save_breadcrumb_for_user', 'duplicate check, deleting history: ' + str(history.uid))
 				DBDiscussionSession.query(History).filter_by(uid=history.uid).delete()
 		else:
@@ -292,3 +288,17 @@ class BreadcrumbHelper(object):
 			db_history[1].set_keyword_after_decission(keyword_after_decission)
 
 		transaction.commit()
+
+	def del_breadcrumbs_of_user(self, transaction, user):
+		"""
+		Deletes the complete breadcrumbs of given user
+		:param transaction: current transaction
+		:param user: current user
+		:return: undefined
+		"""
+		# maybe we are anonymous
+		if user:
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user','user ' + str(db_user.uid))
+			DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
+			transaction.commit()
