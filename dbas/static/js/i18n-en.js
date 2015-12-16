@@ -68,7 +68,7 @@ var dbas_en = {
 	'checkConfirmation': 'Better check the confirmation of your password, because the input is empty!',
 	'completeView': 'Complete View',
 	'completeViewTitle': 'Shows the complete graph',
-	'checkPasswordEqual': 'Better check your passwords, because they are not  equal!',
+	'checkPasswordConfirm': 'Better check your passwords, because they are not equal!',
 	'clickToChoose': 'Click to choose',
 	'description_undermine' : 'This statement attacks the premise.',
 	'description_support' : 'This statement supports the premise.',

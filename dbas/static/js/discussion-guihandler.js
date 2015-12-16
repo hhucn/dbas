@@ -1021,7 +1021,7 @@ function GuiHandler() {
 	 */
 	this.setIssueList = function (jsonData){
 		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr,
-				text, i, helper = new Helper(), count;
+				text, i, helper = new Helper(), count, span;
 
 		li = $('<li>');
 		li.addClass('dropdown-header').text(_t(issueList));
@@ -1035,9 +1035,11 @@ function GuiHandler() {
 			} else if (typeof val.text !== 'undefined'){
 				li = $('<li>');
 				li.attr({id: 'issue_' + val.uid, 'issue': val.uid, 'date': val.date, 'count': count});
+				span = $('<span>').addClass('badge').attr({'id':'issue_args' + val.uid, 'style':'float: right'}).text(val.arguments);
 				a = $('<a>');
 				a.text(val.text);
-				a.attr('style','cursor:pointer');
+				a.attr({'style':'cursor:pointer', 'text':val.text});
+				a.append(span);
 				li.append(a);
 				a.click(function () {
 					func = $(this).parent().attr('issue');
@@ -1063,7 +1065,7 @@ function GuiHandler() {
 			issue_curr = $('#issue_' + current_id);
 			$('#' + issueDateId).text(issue_curr.attr('date'));
 			$('#' + issueCountId).text(issue_curr.attr('count'));
-			text = $('#issue_' + current_id + ' a').text();
+			text = $('#issue_' + current_id + ' a').attr('text');
 			issueDropdownButton.attr('value', text);
 			text = helper.resizeIssueText(text);
 			this.setissueDropDownText(text);

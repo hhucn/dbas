@@ -282,7 +282,7 @@ function hideExtraViewsOfLoginPopup(){
  * Prepares the login popup
  */
 function prepareLoginRegistrationPopup(){
-	var popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBody);
+	var popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBodyId);
 	// hide on startup
 	hideExtraViewsOfLoginPopup();
 	popupLoginGeneratePasswordBody.hide();
@@ -336,33 +336,28 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginPasswordInputId).keyup(function popupLoginPasswordInputKeyUp() {
-		new PasswordHandler().check_strength($('#' + popupLoginPasswordInputId), $('#' + popupLoginPasswordMeterId), $('#' + popupLoginPasswordStrengthId), $('#' + popupLoginPasswordExtrasId));
+		new PasswordHandler().check_strength($('#' + popupLoginPasswordInputId), $('#' + popupLoginPasswordMeterId),
+				$('#' + popupLoginPasswordStrengthId), $('#' + popupLoginPasswordExtrasId));
 	});
 
 	$('#' + popupLoginButtonRegister).click(function(){
-		var userfirstname = $('#' + popupLoginUserfirstnameInputId).val(),
-			userlastname = $('#' + popupLoginUserlastnameInputId).val(),
-			nick = $('#' + popupLoginNickInputId).val(),
-			email = $('#' + popupLoginEmailInputId).val(),
-			password = $('#' + popupLoginPasswordInputId).val(),
+		var userfirstname   = $('#' + popupLoginUserfirstnameInputId).val(),
+			userlastname    = $('#' + popupLoginUserlastnameInputId).val(),
+			nick            = $('#' + popupLoginNickInputId).val(),
+			email           = $('#' + popupLoginEmailInputId).val(),
+			password        = $('#' + popupLoginPasswordInputId).val(),
 			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
-			text = '';
+			text = '',
+			i,
+			fields = [userfirstname, userlastname, nick, email, password, passwordconfirm],
+			tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword), _t(checkConfirmation), _t(checkPasswordConfirm)];
 
-		// check for an error in the formulat
-		if (!userfirstname || /^\s*$/.test(userfirstname) || 0 === userfirstname.length) {
-			text = _t(checkFirstname);
-		} else if (!userlastname || /^\s*$/.test(userlastname) || 0 === userlastname.length) {
-			text = _t(checkLastname);
-		} else if (!nick || /^\s*$/.test(nick) || 0 === nick.length) {
-			text = _t(checkNickname);
-		} else if (!email || /^\s*$/.test(email) || 0 === email.length) {
-			text = _t(checkEmail);
-		} else if (!password || /^\s*$/.test(password) || 0 === password.length) {
-			text = _t(checkPassword);
-		} else if (!passwordconfirm || /^\s*$/.test(passwordconfirm) || 0 === passwordconfirm.length) {
-			text = _t(checkConfirmation);
-		} else if (password !== passwordconfirm) {
-			text = _t(checkPasswordEqual);
+		// check all vields for obivously errors
+		for (i=0; i<fields.length; i++){
+			if (!fields[i] || /^\s*$/.test(fields[i]) || 0 === fields[i].length) {
+				text = tvalues[i];
+				break;
+			}
 		}
 
 		if (text == '' ){

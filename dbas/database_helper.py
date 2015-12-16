@@ -147,8 +147,11 @@ class DatabaseHelper(object):
 		return_dict = dict()
 		for issue in db_issues:
 			logger('DatabaseHelper', 'get_issue_list', 'issue no ' + str(issue.uid) + ': ' + issue.text)
-			return_dict[str(issue.uid)] = {'uid': str(issue.uid), 'text': issue.text, 'date': QueryHelper().sql_timestamp_pretty_print(
-				str(issue.date), lang)}
+			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).all()
+			return_dict[str(issue.uid)] = {'uid': str(issue.uid),
+										   'text': issue.text,
+										   'date': QueryHelper().sql_timestamp_pretty_print(str(issue.date), lang),
+										   'arguments': str(len(db_arguments))}
 
 		if not db_issues:
 			logger('DatabaseHelper', 'get_issue_list', 'no issues')

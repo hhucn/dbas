@@ -61,7 +61,7 @@ var dbas_de = {
 	'checkEmail': 'Bitte überprüfen Sie Ihre E-Mail, da die Eingabe leer ist!',
 	'checkPassword': 'Bitte überprüfen Sie Ihre Passwort, da die Eingabe leer ist!',
 	'checkConfirmation': 'Bitte überprüfen Sie Ihre Passwort-Bestätigung, da die Eingabe leer ist!',
-	'checkPasswordEqual': 'Bitte überprüfen Sie Ihre Passwörter, da die Passwärter nicht gleich sind!',
+	'checkPasswordConfirm': 'Bitte überprüfen Sie Ihre Passwörter, da die Passwärter nicht gleich sind!',
 	'clickToChoose': 'Klicken zum wählen',
 	'canYouGiveAReason': 'Können Sie einen Grund angeben?',
 	'canYouGiveAReasonFor': 'Können Sie einen Grund für folgendes angeben:',
