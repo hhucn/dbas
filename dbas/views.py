@@ -124,7 +124,7 @@ class Dbas(object):
 		self.request.session['antispamanswer'] = answer
 
 		if 'form.contact.submitted' in self.request.params:
-			t = Translator(lang)
+			_t = Translator(lang)
 
 			logger('main_contact', 'form.contact.submitted', 'validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
@@ -134,19 +134,19 @@ class Dbas(object):
 			if not username:
 				logger('main_contact', 'form.contact.submitted', 'username empty')
 				contact_error = True
-				message = t.get('emptyName')
+				message = _t.get(_t.emptyName)
 
 			# check for non valid mail
 			elif not is_mail_valid:
 				logger('main_contact', 'form.contact.submitted', 'mail is not valid')
 				contact_error = True
-				message = t.get('emptyEmail')
+				message = _t.get(_t.emptyEmail)
 
 			# check for empty content
 			elif not content:
 				logger('main_contact', 'form.contact.submitted', 'content is empty')
 				contact_error = True
-				message = t.get('emtpyContent')
+				message = _t.get(_t.emtpyContent)
 
 			# check for empty username
 			elif (not spam) or (not spam.isdigit()) or (not int(spam) == self.request.session['antispamanswer']):
@@ -154,22 +154,22 @@ class Dbas(object):
 				logger('main_contact', 'form.contact.submitted', 'given answer ' + spam)
 				logger('main_contact', 'form.contact.submitted', 'right answer ' + str(self.request.session['antispamanswer']))
 				contact_error = True
-				message = t.get('maliciousAntiSpam')
+				message = _t.get(_t.maliciousAntiSpam)
 
 			# is the token valid?
 			elif request_token != token:
 				logger('main_contact', 'form.contact.submitted', 'token is not valid')
 				logger('main_contact', 'form.contact.submitted', 'request_token: ' + str(request_token))
 				logger('main_contact', 'form.contact.submitted', 'token: ' + str(token))
-				message = t.get('nonValidCSRF')
+				message = _t.get(_t.nonValidCSRF)
 				contact_error = True
 
 			else:
 				subject = 'contactDBAS''Contact D-BAS'
-				body = t.get('name') + ': ' + username + '\n'\
-				       + t.get('mail') + ': ' + email + '\n'\
-				       + t.get('phone') + ': ' + phone + '\n'\
-				       + t.get('message') + ':\n' + content
+				body = _t.get(_t.name) + ': ' + username + '\n'\
+				       + _t.get(_t.mail) + ': ' + email + '\n'\
+				       + _t.get(_t.phone) + ': ' + phone + '\n'\
+				       + _t.get(_t.message) + ':\n' + content
 				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, lang)
 				contact_error = not send_message
 
@@ -1399,7 +1399,7 @@ class Dbas(object):
 			       + ', passwordconfirm: ' + str(passwordconfirm)
 			       + ', lang: ' + lang)
 
-			t = Translator(lang)
+			_t = Translator(lang)
 
 			# database queries mail verification
 			db_nick = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -1410,19 +1410,19 @@ class Dbas(object):
 			# are the password equal?
 			if not password == passwordconfirm:
 				logger('user_registration', 'main', 'Passwords are not equal')
-				message = t.get('pwdNotEqual')
+				message = _t.get(_t.pwdNotEqual)
 			# is the nick already taken?
 			elif db_nick:
 				logger('user_registration', 'main', 'Nickname \'' + nickname + '\' is taken')
-				message = t.get('nickIsTaken')
+				message = _t.get(_t.nickIsTaken)
 			# is the email already taken?
 			elif db_mail:
 				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is taken')
-				message = t.get('mailIsTaken')
+				message = _t.get(_t.mailIsTaken)
 			# is the email valid?
 			elif not is_mail_valid:
 				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is not valid')
-				message = t.get('mailNotValid')
+				message = _t.get(_t.mailNotValid)
 			# is the token valid?
 			# elif request_token != token :
 			# 	logger('user_registration', 'main', 'token is not valid')
@@ -1435,7 +1435,7 @@ class Dbas(object):
 
 				# does the group exists?
 				if not db_group:
-					message = t.get('errorTryLateOrContant')
+					message = _t.get(_t.errorTryLateOrContant)
 					logger('user_registration', 'main', 'Error occured')
 				else:
 					# creating a new user with hased password
@@ -1455,17 +1455,17 @@ class Dbas(object):
 					checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 					if checknewuser:
 						logger('user_registration', 'main', 'New data was added with uid ' + str(checknewuser.uid))
-						message = t.get('accountWasAdded')
+						message = _t.get(_t.accountWasAdded)
 						success = '1'
 
 						# sending an email
 						subject = 'D-BAS Account Registration'
-						body = t.get('accountWasRegistered')
+						body = _t.get(_t.accountWasRegistered)
 						EmailHelper().send_mail(self.request, subject, body, email, lang)
 
 					else:
 						logger('user_registration', 'main', 'New data was not added')
-						message = t.get('accoutErrorTryLateOrContant')
+						message = _t.get(_t.accoutErrorTryLateOrContant)
 
 		except KeyError as e:
 			logger('user_registration', 'error', repr(e))
@@ -1495,7 +1495,7 @@ class Dbas(object):
 			lang = self.request.params['lang']
 			logger('user_password_request', 'def', 'params email: ' + str(email) + ', lang ' + lang)
 			success = '1'
-			t = Translator(lang)
+			_t = Translator(lang)
 
 			db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
 
@@ -1512,9 +1512,9 @@ class Dbas(object):
 				DBDiscussionSession.add(db_user)
 				transaction.commit()
 
-				body = t.get('nicknameIs') + db_user.nickname + '\n'
-				body += t.get('newPwdIs') + pwd
-				subject = t.get('dbasPwdRequest')
+				body = _t.get(_t.nicknameIs) + db_user.nickname + '\n'
+				body += _t.get(_t.newPwdIs) + pwd
+				subject = _t.get(_t.dbasPwdRequest)
 				reg_success, message= EmailHelper().send_mail(self.request, subject, body, email, lang)
 
 				# logger

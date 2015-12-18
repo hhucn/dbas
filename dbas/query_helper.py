@@ -293,9 +293,9 @@ class QueryHelper(object):
 				return None
 			conclusion = conclusion[0:1].lower() + conclusion[1:] # pretty print
 			if db_argument.isSupportive:
-				argument = conclusion + ' ' + _t.get('because') + ' ' + premises
+				argument = conclusion + ' ' + _t.get(_t.because) + ' ' + premises
 			else:
-				argument = conclusion + ' ' + _t.get('doesNotHoldBecause') + ' ' + premises
+				argument = conclusion + ' ' + _t.get(_t.doesNotHoldBecause) + ' ' + premises
 			#argument = premises + (' supports ' if db_argument.isSupportive else ' attacks ') + conclusion
 			return argument
 
@@ -308,9 +308,9 @@ class QueryHelper(object):
 			if not premises:
 				return None
 			if db_argument.isSupportive:
-				retValue = argument + ', ' + _t.get('because') + ' ' + premises
+				retValue = argument + ', ' + _t.get(_t.because) + ' ' + premises
 			else:
-				retValue = argument + ' ' + _t.get('doesNotHoldBecause') + ' ' + premises
+				retValue = argument + ' ' + _t.get(_t.doesNotHoldBecause) + ' ' + premises
 			#retValue = premises + (' supports ' if db_argument.isSupportive else ' attacks ') + argument
 
 		return retValue

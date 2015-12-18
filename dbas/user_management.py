@@ -112,8 +112,8 @@ class UserHandler(object):
 		int1 = random.randint(0,9)
 		int2 = random.randint(0,9)
 		answer = 0
-		question = _t.get('antispamquestion') + ' '
-		sign = _t.get('signs')[random.randint(0,3)]
+		question = _t.get(_t.antispamquestion) + ' '
+		sign = _t.get(_t.signs)[random.randint(0,3)]
 
 
 		if sign is '+':
@@ -158,7 +158,7 @@ class UserHandler(object):
 		:return: an message and boolean for error and success
 		"""
 		logger('DatabaseHelper', 'change_password', 'def')
-		t = Translator(lang)
+		_t = Translator(lang)
 
 		error = False
 		success = False
@@ -166,27 +166,27 @@ class UserHandler(object):
 		# is the old password given?
 		if not old_pw:
 			logger('DatabaseHelper', 'change_password', 'old pwd is empty')
-			message = t.get('oldPwdEmpty') # 'The old password field is empty.'
+			message = _t.get(_t.oldPwdEmpty) # 'The old password field is empty.'
 			error = True
 		# is the new password given?
 		elif not new_pw:
 			logger('DatabaseHelper', 'change_password', 'new pwd is empty')
-			message = t.get('newPwdEmtpy') # 'The new password field is empty.'
+			message = _t.get(_t.newPwdEmtpy) # 'The new password field is empty.'
 			error = True
 		# is the cofnrimation password given?
 		elif not confirm_pw:
 			logger('DatabaseHelper', 'change_password', 'confirm pwd is empty')
-			message = t.get('confPwdEmpty') # 'The password confirmation field is empty.'
+			message = _t.get(_t.confPwdEmpty) # 'The password confirmation field is empty.'
 			error = True
 		# is new password equals the confirmation?
 		elif not new_pw == confirm_pw:
 			logger('DatabaseHelper', 'change_password', 'new pwds not equal')
-			message = t.get('newPwdNotEqual') # 'The new passwords are not equal'
+			message = _t.get(_t.newPwdNotEqual) # 'The new passwords are not equal'
 			error = True
 		# is new old password equals the new one?
 		elif old_pw == new_pw:
 			logger('DatabaseHelper', 'change_password', 'pwds are the same')
-			message = t.get('pwdsSame') # 'The new and old password are the same'
+			message = _t.get(_t.pwdsSame) # 'The new and old password are the same'
 			error = True
 		else:
 			# is the old password valid?
@@ -195,7 +195,7 @@ class UserHandler(object):
 				logger('DatabaseHelper', 'old', old_pw + " " + PasswordHandler().get_hashed_password(old_pw))
 				logger('DatabaseHelper', 'new', new_pw + " " + PasswordHandler().get_hashed_password(new_pw))
 				logger('DatabaseHelper', 'current', user.password)
-				message = t.get('oldPwdWrong') # 'Your old password is wrong.'
+				message = _t.get(_t.oldPwdWrong) # 'Your old password is wrong.'
 				error = True
 			else:
 				logger('DatabaseHelper', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
@@ -209,7 +209,7 @@ class UserHandler(object):
 				transaction.commit()
 
 				logger('DatabaseHelper', 'change_password', 'password was changed')
-				message = t.get('pwdChanged') # 'Your password was changed'
+				message = _t.get(_t.pwdChanged) # 'Your password was changed'
 				success = True
 
 		return message, error, success

@@ -1070,7 +1070,7 @@ function GuiHandler() {
 			text = $('#issue_' + current_id + ' a').attr('text');
 			issueDropdownButton.attr('value', text);
 			text = helper.resizeIssueText(text);
-			this.setissueDropDownText(text);
+			this.setIssueDropDownText(text);
 			issue_curr.addClass('disabled').children().eq(0).removeAttr('style');
 		}
 
@@ -1078,7 +1078,7 @@ function GuiHandler() {
 		issueDropdownButton.attr('issue', current_id);
 	};
 
-	this.setissueDropDownText = function(text){
+	this.setIssueDropDownText = function(text){
 		$('#' + issueDropdownButtonID).html(text + '&#160;&#160;&#160;<span class="caret"></span>');
 	}
 }
