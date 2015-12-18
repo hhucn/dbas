@@ -69,9 +69,11 @@ $(function () {
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
-	$('#' + displayControlContainerId).hide(); // hidding the control container
-	$('#' + scStyle3Id).hide();
-	$('#label-' + scStyle3Id).hide();
+	$('#' + displayControlContainerId).parent().hide(); // hidding the control container
+	//$('#' + scStyle2Id).hide();
+	//$('#' + scStyle2LabelId).hide();
+	//$('#' + scStyle1LabelId).next().hide();
+
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
 
@@ -101,7 +103,7 @@ $(function () {
 	});
 
 	// add argument button in the island view
-	$('#' + islandViewAddArgumentsBtnid).click(function islandViewAddArgumentsBtnid() {
+	$('#' + islandViewAddArgumentsBtnId).click(function islandViewAddArgumentsBtnid() {
 		$('#' + scStyle2Id).attr('checked', true).prop('checked', true);
 		$('#' + scStyle1Id).attr('checked', false).prop('checked', false);
 		$('#' + scStyle3Id).attr('checked', false).prop('checked', false);

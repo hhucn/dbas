@@ -1470,7 +1470,7 @@ msgstr "Melden"
 #. Default: Change display style:
 #: dbas/templates/content.pt:107
 msgid "change_style"
-msgstr "Wechsel die Darstellung:"
+msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
 #: dbas/templates/content.pt:111

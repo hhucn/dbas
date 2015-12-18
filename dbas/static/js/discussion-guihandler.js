@@ -988,6 +988,7 @@ function GuiHandler() {
 	 */
 	this.setDisplayStyleAsDiscussion = function () {
 		$('#' + islandViewContainerId).hide();
+		$('#' + discussionContainerId).show();
 	};
 
 	/**
@@ -1002,8 +1003,9 @@ function GuiHandler() {
 	/**
 	 * Full view, full interaction range for the graph
 	 */
-	this.setDisplayStyleAsFullView = function () {
+	this.setDisplayStyleAsGraphView = function () {
 		$('#' + islandViewContainerId).hide();
+		$('#' + discussionContainerId).hide();
 	};
 
 	/**

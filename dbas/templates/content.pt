@@ -7,7 +7,7 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
-		
+
 		<div class="container first-container colored_container" style="display: none;">
 			<div class="row">
 				<div class="col-md-12">
@@ -65,14 +65,14 @@
 					</div>
 				</div>
 				<div class="col-md-8">
-					
+
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						<span id="discussion-error-description"></span>
 					</div>
-					
+
 					<div id="discussion-success-description-space" class="alert alert-success alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
@@ -80,7 +80,7 @@
 						<strong i18n:translate="success">Success</strong>
 						<span id="discussion-success-description"></span>
 					</div>
-					
+
 					<h4><p id="discussions-description"></p></h4>
 					<div id="discussions-space"> </div>
 					<div id="discussions-attack-space">
@@ -92,7 +92,7 @@
 							</h5>
 							<input id="discussion-attack-toggle-start" type="checkbox" data-toggle="toggle" data-size="small" data-on="attack Positions" data-off="support Positions" data-onstyle="danger" data-width="175">
 -->
-				</div>
+					</div>
 				</div>
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
@@ -102,26 +102,6 @@
 						<button id="report-button" type="button" class="button button-block btn-sm btn" aria-label="Left Align">
 							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="report">Report</span>
 						</button>
-						<br>
-						<div id="display-control-container" style="display:none">
-							<p i18n:translate="change_style">Change display style:</p>
-							<div class="segmented-control">
-								<input type="radio" name="sc-display-style" id="sc-style-1" checked value="Dialog View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
-								<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
-									<p i18n:translate="dialog_view">Dialog View</p>
-								</label>
-								<br>
-								<input type="radio" name="sc-display-style" id="sc-style-2" value="Island View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
-								<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
-									<p i18n:translate="island_view">Island View</p>
-								</label>
-								<br>
-								<input type="radio" name="sc-display-style" id="sc-style-3" value="Complete View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
-								<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
-									<p i18n:translate="complete_view">Complete View</p>
-								</label>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -260,6 +240,32 @@
 				<div class="col-md-2"></div>
 				<div class="col-md-12">
 					<div id="admins-space-attacks" class="center"> </div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container colored_container" style="display: none;">
+			<div id="display-control-container">
+				<h4><p i18n:translate="change_style">Change display style</p></h4>
+				<div class="row">
+					<div class="col-md-4">
+						<input type="radio" id="sc-style-1" checked value="Dialog View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
+						<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
+							<p i18n:translate="dialog_view">Dialog View</p>
+						</label>
+					</div>
+					<div class="col-md-4">
+						<input type="radio" id="sc-style-2" value="Island View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
+						<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
+							<p i18n:translate="island_view">Island View</p>
+						</label>
+					</div>
+					<div class="col-md-4">
+						<input type="radio" id="sc-style-3" value="Complete View" onclick="new InteractionHandler().styleButtonChanged(this.id);">
+						<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
+							<p i18n:translate="complete_view">Complete View</p>
+						</label>
+					</div>
 				</div>
 			</div>
 		</div>
