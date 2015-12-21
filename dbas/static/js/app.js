@@ -198,7 +198,7 @@ function setButtonLanguage(){
 	$('#' + scStyle1Id).prop('value', _t(dialogView)).prop('title', _t(dialogViewTitle));
 	$('#' + scStyle2Id).prop('value', _t(islandView)).prop('title', _t(islandViewTitle));
 	$('#' + scStyle3Id).prop('value', _t(completeView)).prop('title', _t(completeViewTitle));
-	$('#' + islandViewAddArgumentsBtnid).prop('value', _t(addArguments)).prop('title', _t(addArguments));
+	$('#' + islandViewAddArgumentsBtnId).prop('value', _t(addArguments)).prop('title', _t(addArguments));
 	$('#' + sendNewStatementId).prop('value', _t(acceptIt)).prop('title', _t(acceptItTitle));
 	$('#' + listAllUsersAttacksId).prop('value', _t(showAllAttacks)).prop('title', _t(showAllAttacks));
 	$('#' + listAllUsersButtonId).prop('value', _t(showAllUsers)).prop('title', _t(showAllUsers));

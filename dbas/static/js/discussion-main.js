@@ -27,59 +27,12 @@ resetDiscussion = function () {
 	window.location.href = mainpage + 'discussion/start/issue=' + issue_id;
 };
 
-
 /**
- * main function
+ * Sets all click functions
+ * @param guiHandler
+ * @param ajaxHandler
  */
-$(function () {
-	'use strict';
-	var guiHandler = new GuiHandler(),
-		ajaxHandler = new AjaxSiteHandler(),
-		interactionHandler = new InteractionHandler(),
-		params;
-
-	guiHandler.setHandler(interactionHandler);
-
-	// gui for the fuzzy search
-	$('#' + addStatementContainerMainInputId).keyup(function () {
-		new Helper().delay(function() {
-			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
-			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
-				// here we have our start statement
-				// todo: currently not needed
-				// ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
-			} else {
-				// some trick: here we have a premise for our start statement
-				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premise, '');
-			}
-		},200);
-	});
-
-	// gui for editing statements
-	$('#' + popupEditStatementTextareaId).keyup(function () {
-		new Helper.delay(function() {
-			ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, fuzzy_statement_popup,
-				$('#' + popupEditStatementTextareaId).attr('statement_id'));
-			$('#' + popupEditStatementWarning).hide();
-			$('#' + popupEditStatementWarningMessage).text('');
-		},200);
-	});
-
-	$('#' + discussionContainerId).hide(); // hiding discussions container
-	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
-	$('#' + discussionFailureRowId).hide(); // hiding error message at start
-	$('#' + islandViewContainerId).hide(); // hidding the islandView
-	$('#' + displayControlContainerId).hide(); // hidding the control container
-	$('#' + scStyle3Id).hide();
-	$('#label-' + scStyle3Id).hide();
-	guiHandler.hideSuccessDescription();
-	guiHandler.hideErrorDescription();
-
-	// hide the restart button and add click function
-	$('#' + restartDiscussionButtonId).hide().click(function restartDiscussionButtonId() {
-		resetDiscussion();
-	});
-
+setClickFunctions = function (guiHandler, ajaxHandler){
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 		if ($(this).val() === _t(showAllUsers)) {
@@ -101,7 +54,7 @@ $(function () {
 	});
 
 	// add argument button in the island view
-	$('#' + islandViewAddArgumentsBtnid).click(function islandViewAddArgumentsBtnid() {
+	$('#' + islandViewAddArgumentsBtnId).click(function islandViewAddArgumentsBtnid() {
 		$('#' + scStyle2Id).attr('checked', true).prop('checked', true);
 		$('#' + scStyle1Id).attr('checked', false).prop('checked', false);
 		$('#' + scStyle3Id).attr('checked', false).prop('checked', false);
@@ -166,6 +119,13 @@ $(function () {
 		}
 	});
 
+	/*
+	// managed in the html file
+	$('#' + scStyle1Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	$('#' + scStyle2Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	$('#' + scStyle3Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	*/
+
 	/**
 	 * Sharing shortened url with mail
 	 */
@@ -194,10 +154,9 @@ $(function () {
 		new Sharing().facebookShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val(),
 			mainpage + "static/images/logo.png");
 	});
-
-	// focus text of input elements
-	$("input[type='text']").on("click", function () {
-		$(this).select();
+	// hide the restart button and add click function
+	$('#' + restartDiscussionButtonId).hide().click(function restartDiscussionButtonId() {
+		resetDiscussion();
 	});
 
 	/*
@@ -243,7 +202,70 @@ $(function () {
 	}).hover(function () {
 		$(this).toggleClass('btn-primary', 400);
 	});
+};
 
+/**
+ * Sets all keyUp functions
+ * @param guiHandler
+ * @param ajaxHandler
+ */
+setKeyUpFunctions = function (guiHandler, ajaxHandler){
+	// gui for the fuzzy search
+	$('#' + addStatementContainerMainInputId).keyup(function () {
+		new Helper().delay(function() {
+			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
+			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
+				// here we have our start statement
+				// todo: currently not needed
+				// ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
+			} else {
+				// some trick: here we have a premise for our start statement
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premise, '');
+			}
+		},200);
+	});
+
+	// gui for editing statements
+	$('#' + popupEditStatementTextareaId).keyup(function () {
+		new Helper.delay(function() {
+			ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, fuzzy_statement_popup,
+				$('#' + popupEditStatementTextareaId).attr('statement_id'));
+			$('#' + popupEditStatementWarning).hide();
+			$('#' + popupEditStatementWarningMessage).text('');
+		},200);
+	});
+};
+
+/**
+ *
+ * @param guiHandler
+ */
+setStyleOptions = function (guiHandler){
+	$('#' + discussionContainerId).hide(); // hiding discussions container
+	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
+	$('#' + discussionFailureRowId).hide(); // hiding error message at start
+	$('#' + islandViewContainerId).hide(); // hidding the islandView
+	$('#' + displayControlContainerId).parent().hide(); // hidding the control container
+	//$('#' + scStyle2Id).hide();
+	//$('#' + scStyle2LabelId).hide();
+	//$('#' + scStyle1LabelId).next().hide();
+
+	guiHandler.hideSuccessDescription();
+	guiHandler.hideErrorDescription();
+
+	// focus text of input elements
+	$("input[type='text']").on("click", function () {
+		$(this).select();
+	});
+};
+
+/**
+ *
+ * @param guiHandler
+ * @param ajaxHandler
+ */
+setWindowOptions = function(guiHandler, ajaxHandler){
+	var params;
 	/**
 	 * handle toggle button
 	 */
@@ -253,26 +275,11 @@ $(function () {
 		$('#' + discussionAttackSpaceId).hide();
 	}
 
-	/*
-	// managed in the html file
-	$('#' + scStyle1Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	$('#' + scStyle2Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	$('#' + scStyle3Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	*/
-
 	// ajax loading animation
 	$(document).on({
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
 	});
-
-	/*
-	// ask for refreshing
-	$(window).bind('beforeunload', function(){	return 'If you refresh this page, your progress will be lost.';	});
-
-	// asks for go back
-	$(window).bind('statechange', function(){	return 'If you refresh this page, your progress will be lost.';	});
-	*/
 
 	// logout user on unload
 	$(window).on('unload', function windowUnload(){
@@ -283,7 +290,7 @@ $(function () {
 
 	$(window).on('resize', function resizeWindow(){
 		// make some things pretty
-		new GuiHandler().setissueDropDownText(new Helper().resizeIssueText($('#' + issueDropdownButtonID).attr('value')));
+		new GuiHandler().setIssueDropDownText(new Helper().resizeIssueText($('#' + issueDropdownButtonID).attr('value')));
 	});
 
 	// some hack
@@ -311,5 +318,21 @@ $(function () {
 			} else if (url.indexOf(attrReplyForArgument) != -1){					ajaxHandler.getReplyForArgument(params);	}
 		}
 	});
+};
 
+/**
+ * main function
+ */
+$(function () {
+	'use strict';
+	var guiHandler = new GuiHandler(),
+		ajaxHandler = new AjaxSiteHandler(),
+		interactionHandler = new InteractionHandler();
+
+	guiHandler.setHandler(interactionHandler);
+
+	setClickFunctions(guiHandler, ajaxHandler);
+	setKeyUpFunctions(guiHandler, ajaxHandler);
+	setStyleOptions(guiHandler);
+	setWindowOptions(guiHandler, ajaxHandler);
 });

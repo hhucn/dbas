@@ -184,7 +184,7 @@ var dbas_en = {
 	'last_action': 'Last Action',
 	'last_login': 'Last Login',
 	'logfile': 'Logfile for',
-	'letsGo': 'If you want to start now, please click here!',
+	'letsGo': 'Click here to start now!',
 	'medium': 'medium',
 	'newPremisesRadioButtonText': 'None of the above! Let me state my own reason(s)!',
 	'newPremisesRadioButtonTextAsFirstOne': 'Yes, let me state my own reason(s)!',

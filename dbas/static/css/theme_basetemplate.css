@@ -614,6 +614,11 @@ comment .container and wrap each container with <div class="coloured-div">
 	font-weight: 100;
 }
 
+#display-control-container > ul{
+	display: inline;
+	list-style-type: none;
+}
+
 @media (max-width: 768px) {
 	.lead {
 		font-size: 18px;

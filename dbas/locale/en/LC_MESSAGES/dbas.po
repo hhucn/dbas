@@ -77,7 +77,7 @@ msgstr ""
 #. Default: D-Bas offers a lot of advantages, here are a few of them:
 #: dbas/templates/index.pt:30
 msgid "dbas_intro_advantages_intro"
-msgstr "D-Bas offers a lot of advantages, here are a few of them:"
+msgstr "D-BAS offers a lot of advantages, here are a few of them:"
 
 #. Default: Easy to use and very powerful
 #: dbas/templates/index.pt:32
@@ -1458,7 +1458,7 @@ msgstr "Report"
 #. Default: Change display style:
 #: dbas/templates/content.pt:107
 msgid "change_style"
-msgstr "Change display style:"
+msgstr "Change display style"
 
 #. Default: Dialog View
 #: dbas/templates/content.pt:111

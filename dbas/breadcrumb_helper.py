@@ -41,9 +41,9 @@ class BreadcrumbHelper(object):
 				_t = Translator(lang)
 				text = text[0:1].upper() + text[1:]
 				if is_supportive is '':
-					text = _t.get('moreAbout') + ': ' + text
+					text = _t.get(_t.moreAbout) + ': ' + text
 				else:
-					text = (_t.get('support') if is_supportive else _t.get('attack')) + ': ' + text
+					text = (_t.get(_t.support) if is_supportive else _t.get(_t.attack)) + ': ' + text
 				self.update_last_record_in_breadcrumbs(transaction, user, text)
 			else:
 				self.update_last_record_in_breadcrumbs(transaction, user, text)
@@ -81,7 +81,7 @@ class BreadcrumbHelper(object):
 			logger('BreadcrumbHelper', 'save_breadcrumb_for_user_with_argument_parts', url)
 
 		_t = Translator(lang)
-		arg = text2 + ' ' + _t.get('because') + ' ' + text1
+		arg = text2 + ' ' + _t.get(_t.because) + ' ' + text1
 		returned_in_history = self.save_breadcrumb_for_user(transaction, user, url, arg, session_id)
 
 		if not returned_in_history:
@@ -92,7 +92,7 @@ class BreadcrumbHelper(object):
 			if not text1.endswith(('.','!','?')):
 				text1 += '.'
 
-			arg = text2 + ' ' + (_t.get('because') if is_supportive else _t.get('doesNotHoldBecause')) + ' ' + text1
+			arg = text2 + ' ' + (_t.get(_t.because) if is_supportive else _t.get(_t.doesNotHoldBecause)) + ' ' + text1
 			self.update_last_record_in_breadcrumbs(transaction, user, arg)
 
 	def save_breadcrumb_for_user_with_premissegroups_uid(self, transaction, user, url, premisegroup_uid1, premisegroup_uid2, issue,
@@ -173,7 +173,7 @@ class BreadcrumbHelper(object):
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid)).first()
 		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
 		_t = Translator(lang)
-		attribute = _t.get('support') if supportive else _t.get('attack')
+		attribute = _t.get(_t.support) if supportive else _t.get(_t.attack)
 		text = db_textversion.content
 		self.save_breadcrumb_for_user(transaction, user, url, attribute + ' ' + text, session_id)
 

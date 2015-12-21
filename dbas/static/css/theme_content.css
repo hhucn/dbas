@@ -184,18 +184,7 @@
 	margin-bottom: 15px;
 }
 
-#display-control-container {
-	<!-- position: fixed;
-	bottom: 75px;
-	right: 0px;
-	--> display: inline-block;
-	color: #006AB3;
-	margin-top: 25px;
-	padding-top: 5px;
-	padding-left: 5px;
-	border-radius: 5px;
-	box-shadow: 0px 0px 2px 2px rgba(19, 35, 47, 0.3);
-}
+
 
 #navigation-minimap-container {
 	position: fixed;
@@ -256,10 +245,7 @@
 	#discussions-avoidance-space ul {
 		display: block;
 	}
-	#display-control-container {
-		<!-- bottom: 150px;
-		-->
-	}
+
 	#discussions-space ul li,
 	#discussions-avoidance-space ul li {
 		display: block;

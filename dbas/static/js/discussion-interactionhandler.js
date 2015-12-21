@@ -124,16 +124,25 @@ function InteractionHandler() {
 	 * @param buttonId current id
 	 */
 	this.styleButtonChanged = function (buttonId) {
-		var guiHandler = new GuiHandler();
+		var guiHandler = new GuiHandler(),
+				style1 = $('#' + scStyle1Id),
+				style2 = $('#' + scStyle2Id),
+				style3 = $('#' + scStyle3Id);
 		switch (buttonId){
 			case scStyle1Id:
+				style2.attr('checked', false).prop('checked', false);
+				style3.attr('checked', false).prop('checked', false);
 				guiHandler.setDisplayStyleAsDiscussion();
 				break;
 			case scStyle2Id:
+				style1.attr('checked', false).prop('checked', false);
+				style3.attr('checked', false).prop('checked', false);
 				guiHandler.setDisplayStyleAsProContraList();
 				break;
 			case scStyle3Id:
-				guiHandler.setDisplayStyleAsFullView();
+				style1.attr('checked', false).prop('checked', false);
+				style2.attr('checked', false).prop('checked', false);
+				guiHandler.setDisplayStyleAsGraphView();
 				break;
 			default: alert ('unknown id: ' + buttonId);
 		}
