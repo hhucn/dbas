@@ -31,8 +31,9 @@ resetDiscussion = function () {
  * Sets all click functions
  * @param guiHandler
  * @param ajaxHandler
+ * @param interactionHandler
  */
-setClickFunctions = function (guiHandler, ajaxHandler){
+setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 		if ($(this).val() === _t(showAllUsers)) {
@@ -167,11 +168,16 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 			guiHandler.displayPremiseGroupPopup();
 		}
 	});
+
 	$('#' + conTextareaPremisegroupCheckboxId).click(function (){
 		if ($('#' + conTextareaPremisegroupCheckboxId).prop('checked')){
 			guiHandler.displayPremiseGroupPopup();
 		}
 	});
+
+	$('#' + scStyle1Id).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	$('#' + scStyle2Id).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	$('#' + scStyle3Id).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
 
 	/**
 	 * Handling report button
@@ -245,10 +251,18 @@ setStyleOptions = function (guiHandler){
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
-	$('#' + displayControlContainerId).parent().hide(); // hidding the control container
 	//$('#' + scStyle2Id).hide();
 	//$('#' + scStyle2LabelId).hide();
 	//$('#' + scStyle1LabelId).next().hide();
+	$('#' + displayControlContainerIconGuidedId).click(function displayControlContainerIconGuidedClick(){
+		displayConfirmationDialog(_t(displayControlDialogGuidedTitle), '<h4>' + _t(displayControlDialogGuidedBody) + '</h4>', null, false);
+	});
+	$('#' + displayControlContainerIconIslandId).click(function displayControlContainerIconIslandClick(){
+		displayConfirmationDialog(_t(displayControlDialogIslandTitle), '<h4>' + _t(displayControlDialogIslandBody) + '</h4>', null, false);
+	});
+	$('#' + displayControlContainerIconExpertId).click(function displayControlContainerIconExpertClick(){
+		displayConfirmationDialog(_t(displayControlDialogExpertTitle), '<h4>' + _t(displayControlDialogExpertBody) + '</h4>', null, false);
+	});
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
@@ -257,6 +271,13 @@ setStyleOptions = function (guiHandler){
 	$("input[type='text']").on("click", function () {
 		$(this).select();
 	});
+	var url = window.location.href;
+
+	if (url.indexOf(attrReplyForPremisegroup) != -1) {
+		$('#' + displayControlContainerId).show();
+	} else {
+		$('#' + displayControlContainerId).hide();
+	}
 };
 
 /**
@@ -331,7 +352,7 @@ $(function () {
 
 	guiHandler.setHandler(interactionHandler);
 
-	setClickFunctions(guiHandler, ajaxHandler);
+	setClickFunctions(guiHandler, ajaxHandler, interactionHandler);
 	setKeyUpFunctions(guiHandler, ajaxHandler);
 	setStyleOptions(guiHandler);
 	setWindowOptions(guiHandler, ajaxHandler);

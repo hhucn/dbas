@@ -588,7 +588,24 @@ function InteractionHandler() {
 	};
 
 	/**
-	 *
+	 * Callback for the island view
+	 * @param data
+	 */
+	this.callbackIfDoneAllArgumentsForIslandView = function (data){
+		var parsedData = $.parseJSON(data);
+		if (parsedData.status == '-1') {
+			$('#' + popupEditStatementErrorDescriptionId).text(_t(noIslandView));
+			$('#' + scStyle2Id).attr('checked', true).prop('checked', true);
+			$('#' + scStyle1Id).attr('checked', false).prop('checked', false);
+			$('#' + scStyle3Id).attr('checked', false).prop('checked', false);
+			this.styleButtonChanged(scStyle1Id);
+		} else {
+			new GuiHandler().displayDataInIslandView(parsedData);
+		}
+	};
+
+	/**
+	 * Callback for Fuzzy Search
 	 * @param data
 	 * @param callbackid
 	 */
@@ -603,7 +620,7 @@ function InteractionHandler() {
 	};
 
 	/**
-	 *
+	 * Callback for the Issue List
 	 * @param data
 	 */
 	this.callbackIfDoneForGetIssueList = function(data){

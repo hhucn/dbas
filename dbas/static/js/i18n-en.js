@@ -88,6 +88,12 @@ var dbas_en = {
 	'dialogView': 'Dialog View',
 	'dialogViewTitle': 'Show the dialog View',
 	'discussionEnd': 'The discussion ends here.',
+	'displayControlDialogGuidedTitle': 'Dialog View',
+	'displayControlDialogGuidedBody': 'You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic.',
+	'displayControlDialogIslandTitle': 'Island View'   ,
+	'displayControlDialogIslandBody': 'Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.',
+	'displayControlDialogExpertTitle': 'Expert View'   ,
+	'displayControlDialogExpertBody': 'So, you think you are an expert? Okay, you can have a view of the complete argumentation map',
 	'discussionEndText': 'You can click <a id="discussionEndStepBack" href="#">here</a> to go one step back or you can use the button above or <a id="discussionEndRestart" href="">this link</a> to restart the discussion.',
 	'discussionEndFeelFreeToLogin': 'The discussion ends here. If you want to proceed, please feel free to login yourself :)',
 	'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version' +

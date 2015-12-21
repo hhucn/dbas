@@ -614,9 +614,12 @@ comment .container and wrap each container with <div class="coloured-div">
 	font-weight: 100;
 }
 
-#display-control-container > ul{
-	display: inline;
-	list-style-type: none;
+#display-control-container > div{
+	text-align: center;
+}
+
+#display-control-container > div img{
+	cursor: help;
 }
 
 @media (max-width: 768px) {

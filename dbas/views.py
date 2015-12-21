@@ -27,7 +27,7 @@ from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .weighting_helper import WeightingHelper
 
 name = 'D-BAS'
-version = '0.4.6'
+version = '0.4.7'
 header = name + ' ' + version
 issue_fallback = 1
 
@@ -1194,6 +1194,38 @@ class Dbas(object):
 		except KeyError as e:
 			logger('swich_language', 'error', repr(e))
 			return_dict['status'] = '0'
+
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return return_json
+
+	# ajax - for shorten url
+	@view_config(route_name='ajax_get_everything_for_island_view', renderer='json')
+	def get_everything_for_island_view(self):
+		"""
+		Everthing for the island view
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('get_everything_for_island_view', 'def', 'main')
+
+		return_dict = {}
+		try:
+			issue = self.request.params['issue']
+			arg_uid = self.request.params['arg_uid']
+			lang = self.request.params['lang']
+			logger('get_everything_for_island_view', 'def', 'params uid: issue ' + str(issue) + ', arg_uid ' + str(arg_uid))
+
+			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang, issue)
+
+			return_dict['status'] = '1'
+			logger('get_everything_for_island_view', 'return', str(return_dict))
+		except KeyError as e:
+			logger('swich_language', 'error', repr(e))
+			return_dict['status'] = '0'
+
+		return_dict = {}
 
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 		return return_json

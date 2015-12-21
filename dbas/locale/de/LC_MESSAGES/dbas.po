@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-12-08 10:07+0100\n"
+"POT-Creation-Date: 2015-12-21 13:29+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -124,25 +124,85 @@ msgstr "Und vergessen Sie nicht, auch folgende Seite zu lesen "
 msgid "news_page"
 msgstr "Nachrichten"
 
-#. Default: Features
-#: dbas/templates/index.pt:68 dbas/templates/snippet-header.pt:26
-msgid "features"
-msgstr "Besonderheiten"
+#. Default: Description
+#: dbas/templates/index.pt:68 dbas/templates/snippet-header.pt:23
+msgid "description"
+msgstr "Beschreibung"
 
 #. Default: of D-BAS
-#: dbas/templates/index.pt:68 dbas/templates/index.pt:116
-#: dbas/templates/index.pt:171
+#: dbas/templates/index.pt:68 dbas/templates/index.pt:94
+#: dbas/templates/index.pt:172
 msgid "of_dbas"
 msgstr "von D-BAS"
 
+#. Default: In the following a short description of D-BAS will be given with
+#. the help of bulletpoints:
+#: dbas/templates/index.pt:70
+msgid "description_intro"
+msgstr "Im Folgenden wird eine kurze Beschreibung von D-BAS gegeben:"
+
+#. Default: Participants are able to add and modify positions and arguments in
+#. every discussion.
+#: dbas/templates/index.pt:72
+msgid "description_list_1"
+msgstr ""
+"Teilnehmer/innen können Argumente/Aussagen und Positionen hinzufügen und "
+"editieren."
+
+#. Default: Positions and arguments are connected logically by participants
+#: dbas/templates/index.pt:73
+msgid "description_list_2"
+msgstr "Argumente/Aussagen und Positionen sind logisch miteinander verbunden"
+
+#. Default: The system is very easy to use.
+#. Default: It offers a time-shifted discussion in three modes:
+#: dbas/templates/index.pt:74 dbas/templates/index.pt:75
+msgid "description_list_3"
+msgstr "Das System ist sehr einfach in der Benutzung"
+
+#. Default: Guided View: The participants will be lead through the discussion .
+#: dbas/templates/index.pt:77
+msgid "guided_view_description"
+msgstr "Geführte Asnicht: Teilnehmer werden durch die Diskussion geführt."
+
+#. Default: Island View: A position with all connected arguments is presented
+#. as island. This supports the insight of a discussion about a specific
+#. position.
+#: dbas/templates/index.pt:78
+msgid "island_view_description"
+msgstr ""
+"Insel Ansicht: Eine Aussage mit allen verknüpften Aussagen wird als Insel "
+"bezeichnet. Die Aussagen werden nach Pro und Kontra sortiert. Dies erhöht "
+"die Übersicht"
+
+#. Default: Expert View: Participants are able to see and do everything.
+#: dbas/templates/index.pt:79
+msgid "expert_view_description"
+msgstr "Experten Ansicht: Teilnehmer können die Argumentationskarte sehen."
+
+#. Default: Contributions can be rated by the participants.
+#: dbas/templates/index.pt:82
+msgid "description_list_5"
+msgstr "Beiträge werden durch die Teilnehmer bewertet"
+
+#. Default: You have the huge power of the crowd!.
+#: dbas/templates/index.pt:83
+msgid "description_list_6"
+msgstr "Dies ist die Weisheit der Menge"
+
+#. Default: Features
+#: dbas/templates/index.pt:94 dbas/templates/snippet-header.pt:26
+msgid "features"
+msgstr "Besonderheiten"
+
 #. Default: Some of these features will be released in a future version of
 #. D-BAS.
-#: dbas/templates/index.pt:69
+#: dbas/templates/index.pt:95
 msgid "release_future_version"
 msgstr "Einige der Funktionen stehen erst bald zur Verfügung."
 
 #. Default: Argumentation Maps
-#: dbas/templates/index.pt:77
+#: dbas/templates/index.pt:104
 msgid "argu_maps"
 msgstr "Argumentationskarten"
 
@@ -150,7 +210,7 @@ msgstr "Argumentationskarten"
 #. the nodes are highly important and can have several meanings. Additionally
 #. the bubbles of the map can have play a important role. Therefore using this
 #. data structure for logically presentations of some graphs makes sense.
-#: dbas/templates/index.pt:78
+#: dbas/templates/index.pt:105
 msgid "argu_maps_content"
 msgstr ""
 "Eine Argumentationskarte ist wie eine Mind-Map, jedoch haben die Striche "
@@ -159,14 +219,14 @@ msgstr ""
 "logische Aussagen."
 
 #. Default: Dialog-based
-#: dbas/templates/index.pt:82
+#: dbas/templates/index.pt:109
 msgid "dialog_based"
 msgstr "Dialog-basiert"
 
 #. Default: Yeah, this is a novel and it is a kind of dialog-based approach.
 #. This means that the system will represent argumentations of panelist and
 #. claims will be given through the other participants.
-#: dbas/templates/index.pt:83
+#: dbas/templates/index.pt:110
 msgid "dialog_based_content"
 msgstr ""
 "Yeah, das ist neu und verwirklicht eine Art dialog-basierten Ansatz. Demnach "
@@ -174,47 +234,47 @@ msgstr ""
 "weiterer Benutzer beruhen."
 
 #. Default: Simple UI
-#: dbas/templates/index.pt:87
+#: dbas/templates/index.pt:114
 msgid "simple_ui"
 msgstr "Einfache Oberfläche"
 
 #. Default: The user interface of D-BAS is simple, clear and easy. At any point
 #. during the discussion the choices for the participant are bounded, but not
 #. isolating him/her.
-#: dbas/templates/index.pt:88
+#: dbas/templates/index.pt:115
 msgid "simple_ui_content"
 msgstr ""
 "Die Overfläche von D-BAs ist einfach und klar struktuert. An jeder Stelle "
 "sind die Auswahlen für den Benutzer begrenz, aber niemals einschränkend"
 
 #. Default: Guided View
-#: dbas/templates/index.pt:95
+#: dbas/templates/index.pt:122
 msgid "guided_view"
 msgstr "Geführte Ansicht"
 
 #. Default: You will never see something like an argumentation map, because the
 #. systems seems to be like a dynamic and generic
-#: dbas/templates/index.pt:96
+#: dbas/templates/index.pt:123
 msgid "guided_view_content1"
 msgstr ""
 "Du wirst nie etwas wie eine Argumentationskarte sehen, da das System dich "
 "führt. Das System ist daher dynamisch und generisch ."
 
 #. Default: for you
-#: dbas/templates/index.pt:96
+#: dbas/templates/index.pt:123
 msgid "guided_view_content2"
 msgstr "für dich."
 
 #. Default: Island View
-#: dbas/templates/index.pt:100 dbas/templates/content.pt:116
-#: dbas/templates/content.pt:148
+#: dbas/templates/index.pt:127 dbas/templates/content.pt:128
+#: dbas/templates/content.pt:229
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Okay, you want to see more as, but not everything. Therefore the
 #. island view will present you a list of every connected statement for an
 #. specific statement.
-#: dbas/templates/index.pt:101
+#: dbas/templates/index.pt:128
 msgid "island_view_content"
 msgstr ""
 "Okay, Sie möchten mehr sehen, aber nicht alles? Genau dafür haben wie eine "
@@ -222,93 +282,33 @@ msgstr ""
 "Aussagen, die mit Ihrem aktuellen Standpunkt verbunden sind."
 
 #. Default: Expert View
-#: dbas/templates/index.pt:105
+#: dbas/templates/index.pt:132
 msgid "expert_view"
 msgstr "Experten Ansicht"
 
 #. Default: So, you think you are an expert? Okay, you can have a view of the
 #. complete argumentation map.
-#: dbas/templates/index.pt:106
+#: dbas/templates/index.pt:133
 msgid "expert_view_content"
 msgstr ""
 "Experten Ansicht: Du bist also ein Experte? Okay, dann darfst du wirklich "
 "alles auf einen Blick sehen."
 
-#. Default: Description
-#: dbas/templates/index.pt:116 dbas/templates/snippet-header.pt:23
-msgid "description"
-msgstr "Beschreibung"
-
-#. Default: In the following a short description of D-BAS will be given with
-#. the help of bulletpoints:
-#: dbas/templates/index.pt:118
-msgid "description_intro"
-msgstr "Im Folgenden wird eine kurze Beschreibung von D-BAS gegeben:"
-
-#. Default: Participants are able to add and modify positions and arguments in
-#. every discussion.
-#: dbas/templates/index.pt:120
-msgid "description_list_1"
-msgstr ""
-"Teilnehmer/innen können Argumente/Aussagen und Positionen hinzufügen und "
-"editieren."
-
-#. Default: Positions and arguments are connected logically by participants
-#: dbas/templates/index.pt:121
-msgid "description_list_2"
-msgstr "Argumente/Aussagen und Positionen sind logisch miteinander verbunden"
-
-#. Default: The system is very easy to use.
-#. Default: It offers a time-shifted discussion in three modes:
-#: dbas/templates/index.pt:122 dbas/templates/index.pt:123
-msgid "description_list_3"
-msgstr "Das System ist sehr einfach in der Benutzung"
-
-#. Default: Guided View: The participants will be lead through the discussion .
-#: dbas/templates/index.pt:125
-msgid "guided_view_description"
-msgstr "Geführte Asnicht: Teilnehmer werden durch die Diskussion geführt."
-
-#. Default: Island View: A position with all connected arguments is presented
-#. as island. This supports the insight of a discussion about a specific
-#. position.
-#: dbas/templates/index.pt:126
-msgid "island_view_description"
-msgstr ""
-"Insel Ansicht: Eine Aussage mit allen verknüpften Aussagen wird als Insel "
-"bezeichnet. Die Aussagen werden nach Pro und Kontra sortiert. Dies erhöht "
-"die Übersicht"
-
-#. Default: Expert View: Participants are able to see and do everything.
-#: dbas/templates/index.pt:127
-msgid "expert_view_description"
-msgstr "Experten Ansicht: Teilnehmer können die Argumentationskarte sehen."
-
-#. Default: Contributions can be rated by the participants.
-#: dbas/templates/index.pt:130
-msgid "description_list_5"
-msgstr "Beiträge werden durch die Teilnehmer bewertet"
-
-#. Default: You have the huge power of the crowd!.
-#: dbas/templates/index.pt:131
-msgid "description_list_6"
-msgstr "Dies ist die Weisheit der Menge"
-
 #. Default: About
-#: dbas/templates/index.pt:141 dbas/templates/snippet-header.pt:28
+#: dbas/templates/index.pt:142 dbas/templates/snippet-header.pt:28
 msgid "about"
 msgstr "Über"
 
 #. Default: D-BAS is a of discussions in the field of online participation and
 #. developed by
-#: dbas/templates/index.pt:142
+#: dbas/templates/index.pt:143
 msgid "about_description"
 msgstr ""
 "D-BAS ist eine Diskussions-Software im Bereich der Online-Partizipation und "
 "wurde enwickelt von"
 
 #. Default: Cooperation with
-#: dbas/templates/index.pt:148 dbas/templates/index.pt:158
+#: dbas/templates/index.pt:149 dbas/templates/index.pt:159
 msgid "cooperation_with"
 msgstr "In Kooperation mit"
 
@@ -319,19 +319,19 @@ msgstr "In Kooperation mit"
 #. different needs of our users. In addition, we are developing Thentos, an
 #. identity management system which ensures privacy during complex
 #. participation processes.
-#: dbas/templates/index.pt:149
+#: dbas/templates/index.pt:150
 msgid "liquid_democracy_description"
 msgstr ""
 "Der Praxispartner von Tobias Krauthoff ist Daniel Reichert vom Liquid "
 "Democracy e.V."
 
 #. Default: Graduation School
-#: dbas/templates/index.pt:153
+#: dbas/templates/index.pt:154
 msgid "graduation_scool"
 msgstr "Graduierten-Kolleg"
 
 #. Default: Online-Participation
-#: dbas/templates/index.pt:153
+#: dbas/templates/index.pt:154
 msgid "fk_op"
 msgstr "Online-Partizipation"
 
@@ -343,7 +343,7 @@ msgstr "Online-Partizipation"
 #. practice. The objective is the examination of opportunities of the internet,
 #. where affected persons are able to participate in decisions, where they are
 #. affected.
-#: dbas/templates/index.pt:154
+#: dbas/templates/index.pt:155
 msgid "fk_op_description"
 msgstr ""
 "Das NRW Fortschrittskolleg Online-Partizipation ist ein vom Land Nordrhein-"
@@ -355,7 +355,7 @@ msgstr ""
 "von Betroffenen an für sie relevanten Entscheidungen zu untersuchen."
 
 #. Default: Karlsruhe Institut of Technology
-#: dbas/templates/index.pt:158
+#: dbas/templates/index.pt:159
 msgid "kit"
 msgstr "Karlsruher Institut der Technologie"
 
@@ -367,7 +367,7 @@ msgstr "Karlsruher Institut der Technologie"
 #. of dialectical struc- tures, defines argument relations in terms of locigo-
 #. sematical relations between propositions and thus gives rise to a new
 #. computational approach to the reconstruction of complex debates.
-#: dbas/templates/index.pt:159
+#: dbas/templates/index.pt:160
 msgid "kit_description"
 msgstr ""
 "Die Arbeitsgruppe Funktionalität des Graduierten-Kollegs arbeitet eng mit "
@@ -375,12 +375,12 @@ msgstr ""
 "Karlsruher Institut der Technologie zusammen"
 
 #. Default: Research
-#: dbas/templates/index.pt:171 dbas/templates/snippet-header.pt:31
+#: dbas/templates/index.pt:172 dbas/templates/snippet-header.pt:31
 msgid "research"
 msgstr "Forschung"
 
 #. Default: Our data structure:
-#: dbas/templates/index.pt:172
+#: dbas/templates/index.pt:173
 msgid "our_datastructure"
 msgstr "Unsere Datenstruktur:"
 
@@ -395,7 +395,7 @@ msgstr "Unsere Datenstruktur:"
 #. '<dynamic element>'. In this example the premise is '<dynamic element>'
 #. while the conclusion is the negative form of the argument '<dynamic
 #. element>'. More information can be afforded via the
-#: dbas/templates/index.pt:176
+#: dbas/templates/index.pt:177
 msgid "data_structure_description"
 msgstr ""
 "Wir benutzen modifizierte Argumenkarten als Datenstruktur, wobei wir "
@@ -420,23 +420,23 @@ msgstr ""
 #. Default: contact
 #. Default: Kontakt:
 #. Default: Contact
-#: dbas/templates/index.pt:177 dbas/templates/imprint.pt:20
+#: dbas/templates/index.pt:178 dbas/templates/imprint.pt:20
 #: dbas/templates/snippet-footer.pt:33
 msgid "contact"
 msgstr "Kontakt"
 
 #. Default: formular
-#: dbas/templates/index.pt:177
+#: dbas/templates/index.pt:178
 msgid "formular"
 msgstr "Forumlar"
 
 #. Default: In addition, we have studied several tools:
-#: dbas/templates/index.pt:180
+#: dbas/templates/index.pt:181
 msgid "additional_studies"
 msgstr "Zusätzlich haben wir weitere Tools studiert:"
 
 #. Default: Forum
-#: dbas/templates/index.pt:185
+#: dbas/templates/index.pt:186
 msgid "forum"
 msgstr "Forum"
 
@@ -444,7 +444,7 @@ msgstr "Forum"
 #. only scale with the number of users, not with the number of arguments.
 #. Therefore messages can be highly redundant. Additionally the messages are
 #. not connected logically to each other.
-#: dbas/templates/index.pt:186
+#: dbas/templates/index.pt:187
 msgid "forum_description"
 msgstr ""
 "Foren-basierte Ansätze kennen die meisten Benutzer, skalieren aber nur mit "
@@ -453,28 +453,28 @@ msgstr ""
 "verknüpft."
 
 #. Default: Pro-Contra Lists
-#: dbas/templates/index.pt:190
+#: dbas/templates/index.pt:191
 msgid "pro-contra_lists"
 msgstr "Pro-Kontra Liste"
 
 #. Default: These lists are more arranged than the forum-based approaches, but
 #. even there are no connections between the arguments. Therefore these
 #. approaches are just lists and not more.
-#: dbas/templates/index.pt:191
+#: dbas/templates/index.pt:192
 msgid "pro-contra_lists_description"
 msgstr ""
 "Solche Listen sind besser sortiert als Foren, aber auch hier sind die "
 "Beiträge nicht miteinander logisch verbunden."
 
 #. Default: Argumentation-based Approaches
-#: dbas/templates/index.pt:195
+#: dbas/templates/index.pt:196
 msgid "argu_approaches"
 msgstr "Ansätze mit Argumentkarten"
 
 #. Default: This concept seems to be perfect, because posts are connected
 #. logically to each other and redundancy can be avoided. Unfortunately these
 #. tools are for experts only and not for amateurs.
-#: dbas/templates/index.pt:196
+#: dbas/templates/index.pt:197
 msgid "argu_approaches_description"
 msgstr ""
 "Dieses Konzept scheint perfekt zu sein, da Beiträge miteinander logisch "
@@ -699,7 +699,7 @@ msgstr ""
 "und laufen ab, sobald Sie Ihre Browser-Sitzung beenden."
 
 #. Default: Tracking-Cookies
-#: dbas/templates/imprint.pt:50
+#: dbas/templates/imprint.pt:52
 msgid "disclaimer_tracking_cookie"
 msgstr "Tracking-Cookies"
 
@@ -709,7 +709,7 @@ msgstr "Tracking-Cookies"
 #. Informationen festzuhalten, z.B. von Ihnen ausgewählte Seiten und Optionen
 #. und den Weg, den Sie durch unsere Website gewählt haben. Durch das
 #. Überwachen dieser Informationen können wir unsere Websites verbessern.
-#: dbas/templates/imprint.pt:51
+#: dbas/templates/imprint.pt:53
 msgid "disclaimer_tracking_cookie_content"
 msgstr ""
 "Diese erlauben uns Ihre wiederholten Besuche unserer Website wahrzunehmen. "
@@ -720,7 +720,7 @@ msgstr ""
 "Überwachen dieser Informationen können wir unsere Websites verbessern. "
 
 #. Default: Piwik
-#: dbas/templates/imprint.pt:56
+#: dbas/templates/imprint.pt:58
 msgid "disclaimer_piwik"
 msgstr "Piwik"
 
@@ -735,7 +735,7 @@ msgstr "Piwik"
 #. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
 #. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
 #. Funktionen dieser Website vollumfänglich nutzen können.
-#: dbas/templates/imprint.pt:57
+#: dbas/templates/imprint.pt:59
 msgid "disclaimer_piwik_content"
 msgstr ""
 "Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur "
@@ -751,22 +751,22 @@ msgstr ""
 "Funktionen dieser Website vollumfänglich nutzen können."
 
 #. Default: Copyrights and used Software
-#: dbas/templates/imprint.pt:63
+#: dbas/templates/imprint.pt:69
 msgid "copyright_and_used_software"
 msgstr "Copyright und benutze Software"
 
 #. Default: Icons by
-#: dbas/templates/imprint.pt:77
+#: dbas/templates/imprint.pt:83
 msgid "icons_by"
 msgstr "Icons von"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:91
+#: dbas/templates/imprint.pt:97
 msgid "generated_with"
 msgstr "erstellt mit dem Pyramid Web Framework 1.54"
 
 #. Default: Changes in Version
-#: dbas/templates/imprint.pt:116
+#: dbas/templates/imprint.pt:122 dbas/templates/imprint.pt:127
 msgid "changes"
 msgstr "Änderungen in der Version"
 
@@ -992,7 +992,7 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:293 dbas/templates/snippet-popups.pt:393
-#: dbas/templates/content.pt:133
+#: dbas/templates/content.pt:113
 msgid "error"
 msgstr "Fehler:"
 
@@ -1295,7 +1295,7 @@ msgstr "Neue Nachricht schreiben"
 
 #. Default: Error:
 #: dbas/templates/news.pt:25 dbas/templates/settings.pt:80
-#: dbas/templates/settings.pt:113 dbas/templates/content.pt:183
+#: dbas/templates/settings.pt:113 dbas/templates/content.pt:163
 msgid "error:"
 msgstr "Fehler:"
 
@@ -1428,17 +1428,17 @@ msgid "js_disabled1"
 msgstr "JavaScript ist nicht aktiviert:"
 
 #. Default: Please enable JavaScript!
-#: dbas/templates/basetemplate.pt:31
+#: dbas/templates/basetemplate.pt:32
 msgid "js_disabled2"
 msgstr "Bitte JavaScript aktivieren!"
 
 #. Default: AdBlocker is enabled:
-#: dbas/templates/basetemplate.pt:35
+#: dbas/templates/basetemplate.pt:36
 msgid "adblock_enabled1"
 msgstr "AdBlocker ist aktiviert:"
 
 #. Default: Please disable your AdBlocker!
-#: dbas/templates/basetemplate.pt:36
+#: dbas/templates/basetemplate.pt:38
 msgid "adblock_enabled2"
 msgstr "Bitte deaktivieren Sie Ihren AdBlocker!"
 
@@ -1467,63 +1467,63 @@ msgstr "Argumente"
 msgid "report"
 msgstr "Melden"
 
-#. Default: Change display style:
-#: dbas/templates/content.pt:107
-msgid "change_style"
-msgstr "Wechsel die Darstellung"
-
-#. Default: Dialog View
-#: dbas/templates/content.pt:111
-msgid "dialog_view"
-msgstr "Dialog-Ansicht"
-
-#. Default: Complete View
-#: dbas/templates/content.pt:121
-msgid "complete_view"
-msgstr "Komplette Ansicht"
-
 #. Default: Island View
-#: dbas/templates/content.pt:147
+#: dbas/templates/content.pt:127
 msgid "istland_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Pro
-#: dbas/templates/content.pt:151 dbas/templates/content.pt:191
+#: dbas/templates/content.pt:131 dbas/templates/content.pt:171
 msgid "pro"
 msgstr "Pro"
 
 #. Default: Contra
-#: dbas/templates/content.pt:157 dbas/templates/content.pt:210
+#: dbas/templates/content.pt:137 dbas/templates/content.pt:190
 msgid "contra"
 msgstr "Kontra"
 
 #. Default: Please insert a new Argument
-#: dbas/templates/content.pt:179
+#: dbas/templates/content.pt:159
 msgid "insert-argument"
 msgstr "Bitte füge ein neues Argument hinzu"
 
 #. Default: Add a textfield
-#: dbas/templates/content.pt:197 dbas/templates/content.pt:215
+#: dbas/templates/content.pt:177 dbas/templates/content.pt:195
 msgid "add_textfield"
 msgstr "weiteres Textfeld"
 
 #. Default: Statements are connected
-#: dbas/templates/content.pt:204 dbas/templates/content.pt:222
+#: dbas/templates/content.pt:184 dbas/templates/content.pt:202
 msgid "statements_connected"
 msgstr "Aussagen als Gruppe"
 
+#. Default: Change display style
+#: dbas/templates/content.pt:219
+msgid "change_style"
+msgstr "Wechsel die Darstellung"
+
+#. Default: Dialog View
+#: dbas/templates/content.pt:223
+msgid "dialog_view"
+msgstr "Dialog-Ansicht"
+
+#. Default: Complete View
+#: dbas/templates/content.pt:235
+msgid "complete_view"
+msgstr "Komplette Ansicht"
+
 #. Default: List of participants
-#: dbas/templates/content.pt:241
+#: dbas/templates/content.pt:245
 msgid "participant_list"
 msgstr "Liste der Teilnehmer"
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/content.pt:242 dbas/templates/content.pt:257
+#: dbas/templates/content.pt:246 dbas/templates/content.pt:261
 msgid "admin_only"
 msgstr "Manche Sachen sind nur für den Admin."
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/content.pt:256
+#: dbas/templates/content.pt:260
 msgid "list_attacks"
 msgstr "Attacken aufführen"
 
