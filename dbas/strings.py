@@ -13,8 +13,6 @@ class Translator(object):
 		:param lang: current language
 		:return:
 		"""
-		self.en_dict = self.setUpEnDict()
-		self.de_dict = self.setUpDeDict()
 		self.lang = lang
 
 		self.attack = 'attack'
@@ -64,6 +62,10 @@ class Translator(object):
 		self.emailWasSent = 'emailWasSent'
 		self.emailWasNotSent = 'emailWasNotSent'
 		self.antispamquestion = 'antispamquestion'
+		self.signs = 'signs'
+
+		self.en_dict = self.setUpEnDict()
+		self.de_dict = self.setUpDeDict()
 
 	def setUpEnDict(self):
 		"""

@@ -423,7 +423,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetLogfileForStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).text('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).text(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 14). '
+			$('#' + popupEditStatementErrorDescriptionId).text(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 15). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -550,8 +550,37 @@ function AjaxSiteHandler() {
 		});
 	};
 
+	/**
+	 * Ajax request for the island view
+	 * @param arg_uid int
+	 */
+	this.getAllArgumentsForIslandView = function(arg_uid){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		$.ajax({
+			url: 'ajax_get_everything_for_island_view',
+			method: 'GET',
+			dataType: 'json',
+			data: { issue: new Helper().getCurrentIssueId(), lang: getLanguage(), arg_uid: arg_uid },
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			},
+			beforeSend: function(jqXHR, settings ){
+				settings_data = settings.data;
+				url = this.url;
+			}
+		}).done(function ajaxGetAllUsersDone(data) {
+			new InteractionHandler().callbackIfDoneAllArgumentsForIslandView(data);
+			new AjaxSiteHandler().debugger(data, url, settings_data);
+			new GuiHandler().hideErrorDescription();
+		}).fail(function ajaxGetAllUsersFail() {
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 16). '
+				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+		});
+	};
+
 	/***
-	 *
+	 * Ajax request for the fuzzy search
 	 * @param value
 	 * @param callbackid
 	 * @param type 0 for statements, 1 for edit-popup

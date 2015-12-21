@@ -131,6 +131,11 @@
 					<li>Improved recommendation of the next argument/statement</li>
 				</ul>
 					
+					<span class="project font-semi-bold">0.4.7 (unreleased)</span>
+				<ul>
+					<li>Island View</li>
+				</ul>
+					
 					<span class="project font-semi-bold">0.4.6 (2015-12-16)</span>
 				<ul>
 					<li>Collecting weights for arguments</li>

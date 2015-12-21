@@ -99,6 +99,11 @@ function GuiHandler() {
 	 * @param jsonData json encoded dictionary
 	 */
 	this.displayDataInIslandView = function (jsonData) {
+		var txt = "GH TODO:\n";
+		$.each(jsonData, function (key, val) {
+			txt += key + ": " + val + "\n";
+		});
+		alert(txt);
 		var liElement, ulProElement, ulConElement;
 		ulProElement = $('<ul>');
 		ulConElement = $('<ul>');
@@ -996,8 +1001,7 @@ function GuiHandler() {
 	 */
 	this.setDisplayStyleAsProContraList = function () {
 		$('#' + islandViewContainerId).fadeIn('slow');
-		alert('new AjaxSiteHandler().getAllArgumentsForIslandView()');
-		//new AjaxSiteHandler().getAllArgumentsForIslandView();
+		new AjaxSiteHandler().getAllArgumentsForIslandView($('#' + discussionsDescriptionId).attr(attr_confrontation_uid));
 	};
 
 	/**

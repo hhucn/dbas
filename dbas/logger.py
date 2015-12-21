@@ -14,5 +14,4 @@ def logger(who, when, what):
 	:param what: what mesage
 	:return: None
 	"""
-	if who.upper() == 'BreadcrumbHelper'.upper():
-		log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')
+	log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')

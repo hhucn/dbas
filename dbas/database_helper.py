@@ -356,6 +356,41 @@ class DatabaseHelper(object):
 		# todo for  premise groups
 		return self.get_logfile_for_statement(db_premises.statement_uid, issue)
 
+	def get_everything_for_island_view(self, arg_uid, lang, issue):
+		"""
+
+		:param arg_uid:
+		:param lang:
+		:param issue:
+		:return:
+		"""
+		logger('DatabaseHelper', 'get_everything_for_island_view', 'def with arg_uid: ' + str(arg_uid))
+		qh = QueryHelper()
+		return_dict = {}
+
+		# everything for or against the premise
+		args = qh.get_undermines_for_argument_uid('undermines', arg_uid, issue)
+		if args:
+			return_dict.update()
+		args = qh.get_supports_for_argument_uid('supports', arg_uid, issue)
+		if args:
+			return_dict.update()
+
+		# everything for or against the relation
+		args = qh.get_undercuts_for_argument_uid('undercuts', arg_uid, issue)
+		if args:
+			return_dict.update()
+		args = qh.get_overbids_for_argument_uid('overbids', arg_uid, issue)
+		if args:
+			return_dict.update()
+
+		# everything for or against the conclusion
+		args = qh.get_rebuts_for_argument_uid('rebuts', arg_uid, issue)
+		if args:
+			return_dict.update()
+
+		return {}
+
 	def set_statement(self, transaction, statement, user, is_start, issue):
 		"""
 		Saves statement for user
