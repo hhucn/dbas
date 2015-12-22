@@ -142,37 +142,23 @@
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-433-plus.png) center no-repeat 12px 10px;
 }
 
-#pro-island-column {
-	float: left;
-}
-
-#con-island-column {
-	float: right;
-}
-
-#pro-island-column,
-#con-island-column {
-	width: 50%;
-	margin-bottom: 50px;
-}
-
-.green-bg,
-#heading-pro-island {
+.green-bg {
 	color: rgba(151, 191, 13, 1.0);
-	/* official uni red */
-}
-
-.red-bg,
-#heading-contra-island {
-	color: rgba(190, 10, 38, 1.0);
 	/* official uni green */
 }
 
-#heading-pro-island,
-#heading-contra-island,
+.red-bg{
+	color: rgba(190, 10, 38, 1.0);
+	/* official uni red */
+}
+
 #island-view-container-h4,
 #island-view-container-header-h4 {
 	text-align: center;
+}
+
+#island-view-container-space ul{
+	list-style-type: circle;
 }
 
 #discussion-failure-row {
@@ -183,7 +169,6 @@
 #list-all-attacks {
 	margin-bottom: 15px;
 }
-
 
 
 #navigation-minimap-container {

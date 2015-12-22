@@ -1225,8 +1225,6 @@ class Dbas(object):
 			logger('swich_language', 'error', repr(e))
 			return_dict['status'] = '0'
 
-		return_dict = {}
-
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 		return return_json
 

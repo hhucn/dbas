@@ -366,30 +366,50 @@ class DatabaseHelper(object):
 		"""
 		logger('DatabaseHelper', 'get_everything_for_island_view', 'def with arg_uid: ' + str(arg_uid))
 		qh = QueryHelper()
+		counter = []
 		return_dict = {}
 
 		# everything for or against the premise
 		args = qh.get_undermines_for_argument_uid('undermines', arg_uid, issue)
-		if args:
-			return_dict.update()
+		counter.append(len(args) if args else 0)
+		return_dict.update(args if args else {'undermines': 0})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' undermines')
+
 		args = qh.get_supports_for_argument_uid('supports', arg_uid, issue)
-		if args:
-			return_dict.update()
+		counter.append(len(args) if args else 0)
+		return_dict.update(args if args else {'supports': 0})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' supports')
 
 		# everything for or against the relation
 		args = qh.get_undercuts_for_argument_uid('undercuts', arg_uid, issue)
-		if args:
-			return_dict.update()
+		counter.append(len(args) if args else 0)
+		return_dict.update(args if args else {'undercuts': 0})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' undercuts')
+
 		args = qh.get_overbids_for_argument_uid('overbids', arg_uid, issue)
-		if args:
-			return_dict.update()
+		counter.append(len(args) if args else 0)
+		return_dict.update(args if args else {'overbids': 0})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' overbids')
 
 		# everything for or against the conclusion
 		args = qh.get_rebuts_for_argument_uid('rebuts', arg_uid, issue)
-		if args:
-			return_dict.update()
+		counter.append(len(args) if args else 0)
+		return_dict.update(args if args else {'rebuts': 0})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' rebuts')
 
-		return {}
+		logger('DatabaseHelper', 'get_everything_for_island_view', 'summary: ' + str(counter[0]) + ' undermines')
+		logger('DatabaseHelper', 'get_everything_for_island_view', 'summary: ' + str(counter[1]) + ' supports')
+		logger('DatabaseHelper', 'get_everything_for_island_view', 'summary: ' + str(counter[2]) + ' undercuts')
+		logger('DatabaseHelper', 'get_everything_for_island_view', 'summary: ' + str(counter[3]) + ' overbids')
+		logger('DatabaseHelper', 'get_everything_for_island_view', 'summary: ' + str(counter[4]) + ' rebuts')
+
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
+		return_dict['premise'], tmp = qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
+		return_dict['conclusion'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid, issue) \
+			if db_argument.conclusion_uid != 0 else \
+			qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
+		return_dict['argument'] = qh.get_text_for_argument_uid(arg_uid, issue, lang)
+		return return_dict
 
 	def set_statement(self, transaction, statement, user, is_start, issue):
 		"""

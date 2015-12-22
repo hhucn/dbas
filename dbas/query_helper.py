@@ -266,11 +266,11 @@ class QueryHelper(object):
 
 	def get_text_for_argument_uid(self, id, issue, lang):
 		"""
-
-		:param id:
-		:param issue:
-		:param lang:
-		:return:
+		Returns current argument as string like conclusion, because premise1 and premise2
+		:param id: int
+		:param issue: int
+		:param lang: str
+		:return: str
 		"""
 		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(id) + ', issue ' + str(issue))
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=id).first()
