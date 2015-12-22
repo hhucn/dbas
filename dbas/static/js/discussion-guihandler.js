@@ -63,20 +63,6 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Sets the visibility of the island view conainter
-	 * @param shouldBeVisibile true, when it should be visible
-	 * @param currentStatementText current user statement
-	 */
-	this.setVisibilityOfDisplayStyleContainer = function (shouldBeVisibile, currentStatementText) {
-		if (shouldBeVisibile) {
-			$('#' + displayControlContainerId).fadeIn('slow');
-			$('#' + islandViewContainerH4Id).html(_t(islandViewHeaderText) + ' <b>' + currentStatementText + '</b>');
-		} else {
-			$('#' + displayControlContainerId).hide();
-		}
-	};
-
-	/**
 	 * Sets an "add statement" button as content
 	 * @param val will be used as value
 	 * @param isArgumentOrStart if true, argumentButtonWasClicked is used, otherwise
@@ -99,32 +85,89 @@ function GuiHandler() {
 	 * @param jsonData json encoded dictionary
 	 */
 	this.displayDataInIslandView = function (jsonData) {
-		var txt = "GH TODO:\n";
-		$.each(jsonData, function (key, val) {
-			txt += key + ": " + val + "\n";
-		});
-		alert(txt);
-		var liElement, ulProElement, ulConElement;
-		ulProElement = $('<ul>');
-		ulConElement = $('<ul>');
+		var div, row, header, islandViewContainerSpace = $('#' + islandViewContainerSpaceId), helper = new Helper(),
+				titles = helper.createRelationsTextWithoutConfrontation(jsonData.premise, jsonData.conclusion, false);
+		// title order = [undermine, support, undercut, overbid, rebut, noopinion]
+		islandViewContainerSpace.empty();
 
-		// get all values as text in list
-		$.each(jsonData, function displayDataInIslandViewEach(key, val) {
-			// is there a con or pro element?
-			if (key.indexOf('pro') == 0) {
-				liElement = $('<li>');
-				liElement.text(val.text);
-				ulProElement.append(liElement);
-			} else if (key.indexOf('con') == 0) {
-				liElement = $('<li>');
-				liElement.text(val.text);
-				ulConElement.append(liElement);
-			}
-		});
+		row = $('<div>').addClass("row");
+		// header
+		div = $('<div>').addClass("col-md-12");
+		header = '<h4><span>' + _t(islandView) + '</span></h4>';
+		div.append(header);
+		row.append(div);
+		islandViewContainerSpace.append(row);
 
-		// append in divs
-		$('#' + proIslandId).empty().append(ulProElement);
-		$('#' + conIslandId).empty().append(ulConElement);
+		row = $('<div>').addClass("row");
+		// pro premise - supports
+		div = $('<div>').addClass("col-md-6");
+		header = '<h5><span class="green-bg text-center">' + titles[1] + '</span></h5>';
+		div.append(header);
+		if (jsonData.supports > 0) {
+			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'supports'));
+		} else {
+			div.append("<label>" + _t(noEntries) + "</label>");
+		}
+		row.append(div);
+
+		// con premise - undermines
+		div = $('<div>').addClass("col-md-6");
+		header = '<h5><span class="red-bg text-center">' + titles[0] + '</span></h5>';
+		div.append(header);
+		if (jsonData.undermines > 0) {
+			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'undermines'));
+		} else {
+			div.append("<label>" + _t(noEntries) + "</label>");
+		}
+		row.append(div);
+		islandViewContainerSpace.append(row);
+
+
+		row = $('<div>').addClass("row");
+		// pro relation - overbids
+		div = $('<div>').addClass("col-md-6");
+		header = '<h5><span class="green-bg text-center">' + titles[3] + '</span></h5>';
+		div.append(header);
+		if (jsonData.overbids > 0) {
+			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'overbids'));
+		} else {
+			div.append("<label>" + _t(noEntries) + "</label>");
+		}
+		row.append(div);
+
+		// con relation - undercuts
+		div = $('<div>').addClass("col-md-6");
+		header = '<h5><span class="red-bg text-center">' + titles[2] + '</span></h5>';
+		div.append(header);
+		if (jsonData.undercuts > 0) {
+			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'undercuts'));
+		} else {
+			div.append("<label>" + _t(noEntries) + "</label>");
+		}
+		row.append(div);
+		islandViewContainerSpace.append(row);
+
+
+		row = $('<div>').addClass("row");
+		// con conclusion - rebuts
+		div = $('<div>').addClass("col-md-12");
+		header = '<h5 class="text-center"><span class="red-bg">' + titles[4] + '</span></h5>';
+		div.append(header);
+		if (jsonData.rebuts > 0) {
+			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'rebuts'));
+		} else {
+			div.append("<label>" + _t(noEntries) + "</label>");
+		}
+		row.append(div);
+		islandViewContainerSpace.append(row);
+
+
+		// add argument button
+		div = "<div class='center text-center'>";
+		div += "<input id='island-view-add-arguments' type='button' value='" + _t(addStatements);
+		div += "' class='button button-block btn btn-primary' data-dismiss='modal'/>";
+		div += "</div>";
+		islandViewContainerSpace.append(div);
 
 	};
 

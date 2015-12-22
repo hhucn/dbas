@@ -389,6 +389,24 @@ function Helper() {
 		return liElement;
 	};
 
+	/**
+	 * Returns an unsorted list with all values, which key has a specific prefix
+	 * @param dict dictionary
+	 * @param prefix string
+	 * @returns {jQuery|HTMLElement}
+	 */
+	this.getValuesOfDictWithPrefixAsUL = function(dict, prefix){
+		var li, label, ul = $('<ul>'), no = dict[prefix], i = 0;
+		for (i; i<no; i++){
+			li = $('<li>');
+			label = $('<label>');
+			label.text(this.startWithUpperCase(dict[prefix + i]));
+			li.append(label);
+			ul.append(li);
+		}
+		return ul;
+	};
+
 	this.createRowInEditDialog = function(uid, statement, type){
 		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxSiteHandler(), tr, td_text, td_buttons, tmp;
 

@@ -114,7 +114,6 @@ function InteractionHandler() {
 			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true, false);
 
 			this.radioButtonWasChoosen();
-			guiHandler.setVisibilityOfDisplayStyleContainer(false, '');
 			$('#' + islandViewContainerId).fadeOut('slow');
 		}
 	};
@@ -600,6 +599,7 @@ function InteractionHandler() {
 			$('#' + scStyle3Id).attr('checked', false).prop('checked', false);
 			this.styleButtonChanged(scStyle1Id);
 		} else {
+			$('#' + discussionFailureRowId).hide();
 			new GuiHandler().displayDataInIslandView(parsedData);
 		}
 	};
