@@ -200,21 +200,21 @@
 				<div class="col-md-4">
 					<input type="radio" id="sc-style-1" checked value="Dialog View" >
 					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
-						<p i18n:translate="dialog_view">Dialog View</p>
+						<p i18n:translate="dialog_view"><h6>Dialog View</h6></p>
 					</label><br>
 						<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
 				</div>
 				<div class="col-md-4">
 					<input type="radio" id="sc-style-2" value="Island View" >
 					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
-						<p i18n:translate="island_view">Island View</p>
+						<p i18n:translate="island_view"><h6>Island View</h6></p>
 					</label><br>
 						<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
 				</div>
 				<div class="col-md-4">
 					<input type="radio" id="sc-style-3" value="Complete View" >
 					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
-						<p i18n:translate="complete_view">Complete View</p>
+						<p i18n:translate="complete_view"><h6>Complete View</h6></p>
 					</label><br>
 						<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
 				</div>
