@@ -192,8 +192,6 @@
 			</div>
 		</div>
 
-<<<<<<< Updated upstream
-=======
 		<div class="container colored_container" style="display: none;" id="display-control-container">
 			<div class="row">
 				<h4><p i18n:translate="change_style">Change display style</p></h4>
@@ -221,7 +219,6 @@
 			</div>
 		</div>
 
->>>>>>> Stashed changes
 		<div class="container colored_container" tal:condition="is_admin">
 			<div class="row">
 				<div class="col-md-2"></div>
