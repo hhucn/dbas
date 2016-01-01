@@ -214,6 +214,36 @@
 			</div>
 		</div>
 
+<<<<<<< Updated upstream
+=======
+		<div class="container colored_container" style="display: none;" id="display-control-container">
+			<div class="row">
+				<h4><p i18n:translate="change_style">Change display style</p></h4>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-1" checked value="Dialog View" >
+					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
+						<p i18n:translate="dialog_view">Dialog View</p>
+					</label><br>
+						<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
+				</div>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-2" value="Island View" >
+					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
+						<p i18n:translate="island_view">Island View</p>
+					</label><br>
+						<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
+				</div>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-3" value="Complete View" >
+					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
+						<p i18n:translate="complete_view">Complete View</p>
+					</label><br>
+						<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
+				</div>
+			</div>
+		</div>
+
+>>>>>>> Stashed changes
 		<div class="container colored_container" tal:condition="is_admin">
 			<div class="row">
 				<div class="col-md-2"></div>
