@@ -117,6 +117,7 @@ var dbas_en = {
 	'error_code': 'Error code',
 	'edit': 'Edit',
 	'editTitle': 'Editing the statements.',
+	'forText': 'for',
 	'firstConclusionRadioButtonText': 'Let me enter my idea!',
 	'firstArgumentRadioButtonText': 'Let me enter my own statement(s)!',
 	'feelFreeToShareUrl': 'Please feel free to share this url',

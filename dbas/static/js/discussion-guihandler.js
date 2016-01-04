@@ -86,33 +86,26 @@ function GuiHandler() {
 	 */
 	this.displayDataInIslandView = function (jsonData) {
 		var div, row, header, islandViewContainerSpace = $('#' + islandViewContainerSpaceId), helper = new Helper(),
-				titles = helper.createRelationsTextWithoutConfrontation(jsonData.premise, jsonData.conclusion, false);
+				titles = helper.createRelationsTextWithoutConfrontation(jsonData.premise, jsonData.conclusion, false),
+				checkmark = '&#x2713;', // ✓
+				ballot = '&#x2717;'; // ✗
 		// title order = [undermine, support, undercut, overbid, rebut, noopinion]
 		islandViewContainerSpace.empty();
 
+		// first row with header only
 		row = $('<div>').addClass("row");
-		// header
 		div = $('<div>').addClass("col-md-12");
-		header = '<h4><span>' + _t(islandView) + '</span></h4>';
+		header = '<h4><p>' + _t(islandView) + ' ' + _t(forText) + '</p></h4>';
 		div.append(header);
 		row.append(div);
 		islandViewContainerSpace.append(row);
 
+		// second row with supports and undermines
 		row = $('<div>').addClass("row");
-		// pro premise - supports
-		div = $('<div>').addClass("col-md-6");
-		header = '<h5><span class="green-bg text-center">' + titles[1] + '</span></h5>';
-		div.append(header);
-		if (jsonData.supports > 0) {
-			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'supports'));
-		} else {
-			div.append("<label>" + _t(noEntries) + "</label>");
-		}
-		row.append(div);
 
 		// con premise - undermines
 		div = $('<div>').addClass("col-md-6");
-		header = '<h5><span class="red-bg text-center">' + titles[0] + '</span></h5>';
+		header = '<h5><span class="red-bg text-center">' + ballot + '</span> ' + titles[0] + '</h5>';
 		div.append(header);
 		if (jsonData.undermines > 0) {
 			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'undermines'));
@@ -122,22 +115,24 @@ function GuiHandler() {
 		row.append(div);
 		islandViewContainerSpace.append(row);
 
-
-		row = $('<div>').addClass("row");
-		// pro relation - overbids
+		// pro premise - supports
 		div = $('<div>').addClass("col-md-6");
-		header = '<h5><span class="green-bg text-center">' + titles[3] + '</span></h5>';
+		header = '<h5><span class="green-bg text-center">' + checkmark + '</span> ' + titles[1] + '</h5>';
 		div.append(header);
-		if (jsonData.overbids > 0) {
-			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'overbids'));
+		if (jsonData.supports > 0) {
+			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'supports'));
 		} else {
 			div.append("<label>" + _t(noEntries) + "</label>");
 		}
 		row.append(div);
 
+		// third row with overbids and undercuty
+
+		row = $('<div>').addClass("row");
+
 		// con relation - undercuts
 		div = $('<div>').addClass("col-md-6");
-		header = '<h5><span class="red-bg text-center">' + titles[2] + '</span></h5>';
+		header = '<h5><span class="red-bg text-center">' + ballot + '</span> ' + titles[2] + '</h5>';
 		div.append(header);
 		if (jsonData.undercuts > 0) {
 			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'undercuts'));
@@ -147,11 +142,23 @@ function GuiHandler() {
 		row.append(div);
 		islandViewContainerSpace.append(row);
 
+		// pro relation - overbids
+		div = $('<div>').addClass("col-md-6");
+		header = '<h5><span class="green-bg text-center">' + checkmark + '</span> ' + titles[3] + '</h5>';
+		div.append(header);
+		if (jsonData.overbids > 0) {
+			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'overbids'));
+		} else {
+			div.append("<label>" + _t(noEntries) + "</label>");
+		}
+		row.append(div);
 
+		// last row with rebuts
 		row = $('<div>').addClass("row");
+
 		// con conclusion - rebuts
 		div = $('<div>').addClass("col-md-12");
-		header = '<h5 class="text-center"><span class="red-bg">' + titles[4] + '</span></h5>';
+		header = '<h5 class="text-center"><span class="red-bg">' + ballot + '</span> ' + titles[4] + '</h5>';
 		div.append(header);
 		if (jsonData.rebuts > 0) {
 			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'rebuts'));
@@ -168,6 +175,16 @@ function GuiHandler() {
 		div += "' class='button button-block btn btn-primary' data-dismiss='modal'/>";
 		div += "</div>";
 		islandViewContainerSpace.append(div);
+		$('#island-view-add-arguments').click(function(){
+			var i, ul = $('<ul>').css('list-style-type', 'none').css('padding-left','0px'), input, li, h = new Helper();
+			for (i=0; i<5; i++){
+				li = $('<li>').attr({id: 'li_add_island_' + i});
+				input = $('<input>').attr({id: 'island_' + i, type: 'radio', value: titles[i], name: radioButtonGroup});
+				li.html(h.getFullHtmlTextOf(input) + '<label title="' + titles[i] + '" for="' + 'island_' + i + '" style="width:95%;">' + titles[i] + '</label>');
+				ul.append(li);
+			}
+			displayConfirmationDialog(_t(addStatements), helper.getFullHtmlTextOf(ul), '', false);
+		}).addClass('disabled');
 
 	};
 

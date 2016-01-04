@@ -117,6 +117,7 @@ var dbas_de = {
 	'edit': 'Bearbeiten',
 	'error_code': 'Fehler-Code',
 	'editTitle': 'Aussagen bearbeiten',
+	'forText': 'für',
 	'fillLine': 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung',
 	'firstConclusionRadioButtonText': 'Lass mich meine eigenen Ideen einfügen!',
 	'firstArgumentRadioButtonText': 'Lass mich meine eigenen Aussagen einfügen!',

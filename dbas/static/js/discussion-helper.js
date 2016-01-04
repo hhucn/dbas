@@ -329,11 +329,9 @@ function Helper() {
 	 */
 	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremise, isRelation, mouseover, additionalAttributesAsDict) {
 		var liElement, inputElement, labelElement, extras = '', tmp;
-		liElement = $('<li>');
-		liElement.attr({id: 'li_' + key});
+		liElement = $('<li>').attr({id: 'li_' + key});
 
-		inputElement = $('<input>');
-		inputElement.attr({id: key, type: 'radio', value: val});
+		inputElement = $('<input>').attr({id: key, type: 'radio', value: val, name: radioButtonGroup, onclick: 'new InteractionHandler().radioButtonChanged();'});
 		//inputElement.attr({data-dismiss: 'modal'});
 
 		if (typeof additionalAttributesAsDict !== 'undefined')
@@ -341,11 +339,9 @@ function Helper() {
 				extras += ' ' + key + '="' + val + '"';
 			});
 
-		inputElement.attr({name: radioButtonGroup});
 		// adding label for the value
 		labelElement = '<label title="' + mouseover + '" for="' + key + '">' + val + '</label>';
 
-		inputElement.attr({onclick: 'new InteractionHandler().radioButtonChanged();'});
 		if (isStartStatement){ inputElement.addClass('start'); }
 		if (isPremise){ inputElement.addClass('premise'); }
 		if (isRelation){ inputElement.addClass('relation'); }

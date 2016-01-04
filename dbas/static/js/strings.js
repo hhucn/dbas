@@ -162,6 +162,7 @@ var emailUnknown 	 								= 'emailUnknown';
 var edit 											= 'edit';
 var errorCode 										= 'error_code';
 var editTitle										= 'editTitle';
+var forText                                         = 'forText';
 var fillLine 										= 'fillLine';
 var firstConclusionRadioButtonText 					= 'firstConclusionRadioButtonText';
 var firstArgumentRadioButtonText					= 'firstArgumentRadioButtonText';
