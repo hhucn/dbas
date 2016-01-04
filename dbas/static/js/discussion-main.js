@@ -255,14 +255,23 @@ setStyleOptions = function (guiHandler){
 	//$('#' + scStyle2LabelId).hide();
 	//$('#' + scStyle1LabelId).next().hide();
 	$('#' + displayControlContainerIconGuidedId).click(function displayControlContainerIconGuidedClick(){
-		displayConfirmationDialog(_t(displayControlDialogGuidedTitle), '<h4>' + _t(displayControlDialogGuidedBody) + '</h4>', null, false);
+		var f = function scStyle1Function () { $('#' + scStyle1Id).attr('checked', true).prop('checked', true);
+			new InteractionHandler().styleButtonChanged($(this).attr('id'))};
+		displayConfirmationDialog(_t(displayControlDialogGuidedTitle), '<h4>' + _t(displayControlDialogGuidedBody) + '</h4>', f, false);
 	});
 	$('#' + displayControlContainerIconIslandId).click(function displayControlContainerIconIslandClick(){
-		displayConfirmationDialog(_t(displayControlDialogIslandTitle), '<h4>' + _t(displayControlDialogIslandBody) + '</h4>', null, false);
+		var f = function scStyle1Function () { $('#' + scStyle2Id).attr('checked', true).prop('checked', true);
+			new InteractionHandler().styleButtonChanged($('#' + scStyle2Id).attr('id'))};
+		displayConfirmationDialog(_t(displayControlDialogIslandTitle), '<h4>' + _t(displayControlDialogIslandBody) + '</h4>', f, false);
 	});
 	$('#' + displayControlContainerIconExpertId).click(function displayControlContainerIconExpertClick(){
-		displayConfirmationDialog(_t(displayControlDialogExpertTitle), '<h4>' + _t(displayControlDialogExpertBody) + '</h4>', null, false);
+		var f = function scStyle1Function () { $('#' + scStyle3Id).attr('checked', true).prop('checked', true);
+			new InteractionHandler().styleButtonChanged($('#' + scStyle3Id).attr('id'))};
+		displayConfirmationDialog(_t(displayControlDialogExpertTitle), '<h4>' + _t(displayControlDialogExpertBody) + '</h4>', f, false);
 	});
+	//$('#' + scStyle1Id).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	//$('#' + scStyle2Id).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	//$('#' + scStyle3Id).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
