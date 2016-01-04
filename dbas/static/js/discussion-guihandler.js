@@ -95,7 +95,7 @@ function GuiHandler() {
 		// first row with header only
 		row = $('<div>').addClass("row");
 		div = $('<div>').addClass("col-md-12");
-		header = '<h4><p>' + _t(islandView) + ' ' + _t(forText) + '</p></h4>';
+		header = '<h4><p>' + _t(islandView) + ' ' + _t(forText) + ' <b>' + jsonData.argument + '<b></p></h4>';
 		div.append(header);
 		row.append(div);
 		islandViewContainerSpace.append(row);
