@@ -224,6 +224,7 @@ var fuzzy_start_premise 		= 2;
 var fuzzy_add_reason 			= 3;
 var attr_add 					= 'add';
 var attr_attack 				= 'attack';
+var attr_argument_uid           = 'argument_uid';
 var attr_conclusion_id 			= 'conclusion_id';
 var attr_confrontation_uid 		= 'confrontation_uid';
 var attr_current_attack 		= 'current_attack';

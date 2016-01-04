@@ -272,7 +272,8 @@ function JsonGuiHandler() {
 
 		// sanity check
 		if (typeof jsonData.relation == 'undefined'){
-			opinion = '<b>' + conclusion + (isSupportive ? ', ' + _t(because).toLocaleLowerCase() : ' ' + _t(doesNotHoldBecause).toLocaleLowerCase()) + ' ' + premise + '</b>';
+			opinion = '<b>' + conclusion + (isSupportive ? ', ' + _t(because).toLocaleLowerCase() :
+					' ' + _t(doesNotHoldBecause).toLocaleLowerCase()) + ' ' + premise + '</b>';
 		} else {
 			opinion = '<b>' + premise + '</b> ' + _t('relation_' + jsonData.relation) + ' ' + '<b>' + conclusion + '</b>';
 		}
@@ -306,7 +307,11 @@ function JsonGuiHandler() {
 		confrontationText += '<b>' + confrontation + '</b>' + (DEBUG_ATTACK ? (' [<i>' + jsonData.attack + '</i>]') : '');
 
 		// set discussions text - dictionary needs strings, no variables as keys!
-		dict = {'confrontation_uid': jsonData.confrontation_argument_id, 'current_attack': jsonData.attack, 'supportive': isSupportive};
+		dict = {'argument': jsonData.argument,
+			'argument_uid': jsonData.argument_uid,
+			'confrontation_uid': jsonData.confrontation_argument_id,
+			'current_attack': jsonData.attack,
+			'supportive': isSupportive};
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + _t(whatDoYouThinkAboutThat) + '?',
 				_t(informationForExperts) + ': ' + _t(thisConfrontationIs) + ' ' + jsonData.attack + '.', dict);

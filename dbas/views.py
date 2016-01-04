@@ -634,9 +634,9 @@ class Dbas(object):
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 
-			logger('reply_for_argument', 'def', 'issue ' + str(issue))
-			logger('reply_for_argument', 'def', 'pgroup ' + str(pgroup))
-			logger('reply_for_argument', 'def', 'conclusion ' + str(conclusion))
+			logger('reply_for_premisegroup', 'def', 'issue ' + str(issue))
+			logger('reply_for_premisegroup', 'def', 'pgroup ' + str(pgroup))
+			logger('reply_for_premisegroup', 'def', 'conclusion ' + str(conclusion))
 
 			# check for additional params, maybe they were set by breadcrumbs
 			url = self.request.matchdict['url'] if 'url' in self.request.matchdict else '-'
@@ -681,6 +681,7 @@ class Dbas(object):
 
 			return_dict['supportive'] = str(supportive)
 			return_dict['status'] = str(status)
+			return_dict['argument'] = QueryHelper().get_text_for_argument_uid(return_dict['argument_uid'], issue, lang)
 		except KeyError as e:
 			logger('reply_for_premisegroup', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -726,6 +727,7 @@ class Dbas(object):
 			return_dict, status = RecommenderHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, id_text,
 			                                                               pgroup_id, self.request.session.id, issue)
 			return_dict['status'] = str(status)
+			return_dict['argument_uid'] = str(id_text.split('_')[2])
 		except KeyError as e:
 			logger('reply_for_argument', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -1221,6 +1223,10 @@ class Dbas(object):
 
 			return_dict['status'] = '1'
 			logger('get_everything_for_island_view', 'return', str(return_dict))
+
+			logger('- - - - - - - - - - - -', '-', QueryHelper().get_text_for_argument_uid(arg_uid, issue, lang))
+
+
 		except KeyError as e:
 			logger('swich_language', 'error', repr(e))
 			return_dict['status'] = '0'

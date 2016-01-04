@@ -73,6 +73,7 @@ class RecommenderHelper(object):
 			return_dict['confrontation'] = attacks[key + str(attack_no)]
 			return_dict['confrontation_uid'] = attacks[key + str(attack_no) + 'id']
 			return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
+			return_dict['argument_uid'] = str(db_argument.uid)
 
 			# save the attack
 			TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,

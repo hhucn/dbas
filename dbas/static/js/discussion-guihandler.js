@@ -95,7 +95,7 @@ function GuiHandler() {
 		// first row with header only
 		row = $('<div>').addClass("row");
 		div = $('<div>').addClass("col-md-12");
-		header = '<h4><p>' + _t(islandView) + ' ' + _t(forText) + ' <b>' + jsonData.argument + '<b></p></h4>';
+		header = '<h4><p>' + _t(islandView) + ' ' + _t(forText) + ' <b>' + jsonData.argument + '.<b></p></h4>';
 		div.append(header);
 		row.append(div);
 		islandViewContainerSpace.append(row);
@@ -1061,7 +1061,7 @@ function GuiHandler() {
 	 */
 	this.setDisplayStyleAsProContraList = function () {
 		$('#' + islandViewContainerId).fadeIn('slow');
-		new AjaxSiteHandler().getAllArgumentsForIslandView($('#' + discussionsDescriptionId).attr(attr_confrontation_uid));
+		new AjaxSiteHandler().getAllArgumentsForIslandView($('#' + discussionsDescriptionId).attr(attr_argument_uid));
 	};
 
 	/**
