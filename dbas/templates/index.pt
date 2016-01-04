@@ -203,10 +203,10 @@
 		</div>
 		
 		
+		<!--
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/lights_left.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/lights_right.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/fireworks.js')}"></script>
-		<!--
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/snowstorm-min.js')}"></script>
 		<script>
 			snowStorm.snowColor = '#006ab3'; // blue-ish snow!?

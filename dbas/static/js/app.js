@@ -227,7 +227,8 @@ function setEasterEggs(){
 	//$('#yomamma').click(function(){ ajaxMama(); });
 
 	if (window.location.href == mainpage) {
-    var div = $('<div>'),
+		/* christmas only
+        var div = $('<div>'),
         christmas = $('<input>').attr('type','checkbox').attr('data-toggle','toggle').attr('data-onstyle','primary').bootstrapToggle('off'),
         silvester = $('<input>').attr('type','checkbox').attr('data-toggle','toggle').attr('data-onstyle','primary').bootstrapToggle('off'),
         spanChristmas = $('<span>').text('Christmas'),
@@ -260,6 +261,7 @@ function setEasterEggs(){
 				canvas.remove();
 			}
 		});
+		*/
 	}
 }
 
