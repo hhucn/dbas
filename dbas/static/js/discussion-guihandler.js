@@ -183,7 +183,7 @@ function GuiHandler() {
 				li.html(h.getFullHtmlTextOf(input) + '<label title="' + titles[i] + '" for="' + 'island_' + i + '" style="width:95%;">' + titles[i] + '</label>');
 				ul.append(li);
 			}
-			displayConfirmationDialog(_t(addStatements), helper.getFullHtmlTextOf(ul), '', false);
+			displayConfirmationDialogWithoutCancelAndFunction(_t(addStatements), helper.getFullHtmlTextOf(ul));
 		}).addClass('disabled');
 
 	};
@@ -883,6 +883,13 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Shows the display style container
+	 */
+	this.showDisplayControlContainer = function(){
+		$('#' + displayControlContainerId).show();
+	};
+
+	/**
 	 * Hides the url sharing text field
 	 */
 	this.hideEditFieldsInEditPopup = function () {
@@ -941,6 +948,13 @@ function GuiHandler() {
 	 */
 	this.hideDiscussionDescriptionsNextElement = function() {
 		$('#' + discussionsDescriptionId).attr('style', 'margin-bottom: 0px;').parent().parent().next().hide();
+	};
+
+	/**
+	 * Hides the display style container
+	 */
+	this.hideDisplayControlContainer = function(){
+		$('#' + displayControlContainerId).hide();
 	};
 
 	/**

@@ -268,6 +268,7 @@ var otherParticipantAgree 							= 'otherParticipantAgree';
 var otherParticipantDisagree 						= 'otherParticipantDisagree';
 var otherUsersClaimStrongerArgumentRejecting		= 'otherUsersClaimStrongerArgumentRejecting';
 var otherUsersClaimStrongerArgumentAccepting		= 'otherUsersClaimStrongerArgumentAccepting';
+var opinionBarometer                                = 'opinionBarometer';
 var report 											= 'report';
 var reportTitle										= 'reportTitle';
 var premiseGroup 									= 'premiseGroup';

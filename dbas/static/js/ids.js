@@ -84,6 +84,7 @@ var navbarLeft									= 'navbar-left';
 var navigationBreadcrumbId 						= 'navigation-breadcrumb';
 var newsLink 									= 'news-link';
 var newsBodyId 									= 'news-body';
+var opinionBarometerImageId                     = 'opinion-barometer-img';
 var popupLoginNickInputId 						= 'nick-input';
 var passwordGeneratorButton 					= 'password-generator-button';
 var passwordGeneratorOutput 					= 'password-generator-output';

@@ -333,6 +333,8 @@ function JsonGuiHandler() {
 
 		// set the buttons
 		guihandler.addListItemsToDiscussionsSpace(listitems);
+
+		guihandler.showDisplayControlContainer();
 	};
 
 	/**
@@ -371,6 +373,8 @@ function JsonGuiHandler() {
 		guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>'
 			+ confrontationText + '.<br><br>' + _t(discussionEnd) + ' ' + _t(discussionEndText), _t(discussionEnd), dict);
 			new InteractionHandler().setDiscussionEndLinksInText();
+
+		guihandler.hideDisplayControlContainer();
 	};
 
 	/**

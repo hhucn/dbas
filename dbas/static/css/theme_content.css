@@ -215,6 +215,10 @@
 	float: left;
 }
 
+#opinion-barometer-img{
+	width: 80%;
+}
+
 .hidden-discussion-information,
 .hidden-information {
 	visibility: hidden;

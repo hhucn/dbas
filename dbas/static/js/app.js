@@ -131,6 +131,22 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, isRes
 }
 
 /**
+ * Displays dialog
+ * @param titleText
+ * @param bodyText
+ */
+function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
+	// display dialog
+	$('#' + popupConfirmDialogId).modal('show');
+	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
+	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
+	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
+		$('#' + popupConfirmDialogId).modal('hide');
+	}).removeClass('btn-success');
+	$('#' + popupConfirmDialogRefuseBtn).hide();
+}
+
+/**
  * Displays dialog with checkbox
  * @param titleText
  * @param bodyText
@@ -213,6 +229,7 @@ function setButtonLanguage(){
 	tmp = $('#' + discussionStartToggleButtonId).next().children();
 	tmp.eq(0).text(_t(attackPosition));
 	tmp.eq(1).text(_t(supportPosition));
+	$('#' + opinionBarometerImageId).prop('title', _t(opinionBarometer));
 }
 
 function setPiwikOptOutLink(lang){
@@ -528,10 +545,8 @@ function ajaxRoundhouseKick(){
 		async: true
 	}).done(function ajaxPasswordRequestDone(data) {
 		if (data.type == 'success'){
-			displayConfirmationDialog('Chuck Norris Fact #' + data.value.id,  '<h4>' + data.value.joke + '</h4>\n\n<span' +
+			displayConfirmationDialogWithoutCancelAndFunction('Chuck Norris Fact #' + data.value.id,  '<h4>' + data.value.joke + '</h4>\n\n<span' +
 					' style="float:right;">powered by <a href="http://www.icndb.com/">http://www.icndb.com/</a></span>');
-			$('#' + popupConfirmDialogAcceptBtn).removeClass('btn-success');
-			$('#' + popupConfirmDialogRefuseBtn).hide();
 
 		}
 	});
@@ -548,10 +563,8 @@ function ajaxMama(){
 		global: false,
 		async: true
 	}).done(function ajaxPasswordRequestDone(data) {
-		displayConfirmationDialog('Yo Mamma',  '<h4>' + data.joke + '</h4>\n\n<span' +
+		displayConfirmationDialogWithoutCancelAndFunction('Yo Mamma',  '<h4>' + data.joke + '</h4>\n\n<span' +
 				' style="float:right;">powered by <a href="http://yomomma.info/">http://yomomma.info/</a></span>');
-		$('#' + popupConfirmDialogAcceptBtn).removeClass('btn-success');
-		$('#' + popupConfirmDialogRefuseBtn).hide();
 	});
 }
 

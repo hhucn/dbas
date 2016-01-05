@@ -222,6 +222,7 @@ var dbas_de = {
 	'otherParticipantDisagree': 'Andere Teilnehmer widersprechen, dass ',
 	'otherUsersClaimStrongerArgumentRejecting': 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung von',
 	'otherUsersClaimStrongerArgumentAccepting': 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme von',
+	'opinionBarometer': 'Meinungsbarometer',
 	'premiseGroup': 'Gruppe von Voraussetzung(en)',
 	'passwordSubmit': 'Passwort ändern',
 	'report': 'Melden',

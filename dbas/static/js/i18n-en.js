@@ -222,6 +222,7 @@ var dbas_en = {
 	'otherParticipantDisagree': 'Other partcipants disagree, that ',
 	'otherUsersClaimStrongerArgumentRejecting': 'Other users claim to have a stronger statement for rejecting',
 	'otherUsersClaimStrongerArgumentAccepting': 'Other users claim to have a stronger statement for accepting',
+	'opinionBarometer': 'Opinion Barometer',
 	'premiseGroup': 'PremiseGroup',
 	'passwordSubmit': 'Change Password',
 	'registered': 'Registered',

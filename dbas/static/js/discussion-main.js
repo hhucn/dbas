@@ -182,7 +182,7 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 	/**
 	 * Handling report button
 	 */
-	$('#' + reportButtonId).click(function(){
+	$('#' + reportButtonId).click(function reportFunction(){
 		/*
 		var mailto = 'dbas.hhu@gmail.com',
 				cc = 'krauthoff@cs.uni-duesseldorf.de',
@@ -208,6 +208,15 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 	}).hover(function () {
 		$(this).toggleClass('btn-primary', 400);
 	});
+
+	// opinion barometer
+	if (window.location.href.indexOf('discussion/start') != -1) {
+		$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
+			var txt = 'Hier wird bald ein Meinungsbarometer erscheinen.';
+			txt += '<br><img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Disk_usage_(Boabab).png">';
+			displayConfirmationDialogWithoutCancelAndFunction('In progress', txt);
+		});
+	}
 };
 
 /**
@@ -280,13 +289,6 @@ setStyleOptions = function (guiHandler){
 	$("input[type='text']").on("click", function () {
 		$(this).select();
 	});
-	var url = window.location.href;
-
-	if (url.indexOf(attrReplyForPremisegroup) != -1) {
-		$('#' + displayControlContainerId).show();
-	} else {
-		$('#' + displayControlContainerId).hide();
-	}
 };
 
 /**

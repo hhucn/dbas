@@ -102,6 +102,10 @@
 						<button id="report-button" type="button" class="button button-block btn-sm btn" aria-label="Left Align">
 							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="report">Report</span>
 						</button>
+						<br>
+						<br>
+						
+						<img id="opinion-barometer-img" style="display:none" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="Opinion Barometer"/>
 					</div>
 				</div>
 			</div>

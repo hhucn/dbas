@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-12-21 13:29+0100\n"
+"POT-Creation-Date: 2016-01-05 08:44+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -262,8 +262,9 @@ msgid "guided_view_content2"
 msgstr "for you."
 
 #. Default: Island View
-#: dbas/templates/index.pt:127 dbas/templates/content.pt:128
-#: dbas/templates/content.pt:229
+#. Default: <dynamic element>
+#: dbas/templates/index.pt:127 dbas/templates/content.pt:215
+#: dbas/templates/content.pt:257
 msgid "island_view"
 msgstr "Island View"
 
@@ -985,7 +986,7 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:293 dbas/templates/snippet-popups.pt:393
-#: dbas/templates/content.pt:113
+#: dbas/templates/content.pt:120
 msgid "error"
 msgstr "Error:"
 
@@ -1284,7 +1285,7 @@ msgstr "Writing a new message"
 
 #. Default: Error:
 #: dbas/templates/news.pt:25 dbas/templates/settings.pt:80
-#: dbas/templates/settings.pt:113 dbas/templates/content.pt:163
+#: dbas/templates/settings.pt:113 dbas/templates/content.pt:148
 msgid "error:"
 msgstr "Error:"
 
@@ -1455,65 +1456,70 @@ msgstr "arguments"
 msgid "report"
 msgstr "Report"
 
-#. Default: Island View
-#: dbas/templates/content.pt:127
-msgid "istland_view"
-msgstr "Island View"
-
-#. Default: Pro
-#: dbas/templates/content.pt:131 dbas/templates/content.pt:171
-msgid "pro"
-msgstr "Pro"
-
-#. Default: Contra
-#: dbas/templates/content.pt:137 dbas/templates/content.pt:190
-msgid "contra"
-msgstr "Contra"
+#. Default: <dynamic element>
+#: dbas/templates/content.pt:108
+msgid "opinion_barometer"
+msgstr "Opinion Barometer"
 
 #. Default: Please insert a new Argument
-#: dbas/templates/content.pt:159
+#: dbas/templates/content.pt:144
 msgid "insert-argument"
 msgstr "Please insert a new Argument"
 
+#. Default: Pro
+#: dbas/templates/content.pt:156
+msgid "pro"
+msgstr "Pro"
+
 #. Default: Add a textfield
-#: dbas/templates/content.pt:177 dbas/templates/content.pt:195
+#: dbas/templates/content.pt:162 dbas/templates/content.pt:180
 msgid "add_textfield"
 msgstr "Add a textfield"
 
 #. Default: Statements are connected
-#: dbas/templates/content.pt:184 dbas/templates/content.pt:202
+#: dbas/templates/content.pt:169 dbas/templates/content.pt:187
 msgid "statements_connected"
 msgstr "Statements are connected"
 
+#. Default: Contra
+#: dbas/templates/content.pt:175
+msgid "contra"
+msgstr "Contra"
+
 #. Default: Change display style
-#: dbas/templates/content.pt:219
+#: dbas/templates/content.pt:204 dbas/templates/content.pt:246
 msgid "change_style"
 msgstr "Change display style"
 
+#. Default: <dynamic element>
 #. Default: Dialog View
-#: dbas/templates/content.pt:223
+#: dbas/templates/content.pt:208 dbas/templates/content.pt:250
 msgid "dialog_view"
 msgstr "Dialog View"
 
+#. Default: <dynamic element>
 #. Default: Complete View
-#: dbas/templates/content.pt:235
+#: dbas/templates/content.pt:222 dbas/templates/content.pt:264
 msgid "complete_view"
 msgstr "Complete View"
 
 #. Default: List of participants
-#: dbas/templates/content.pt:245
+#: dbas/templates/content.pt:233
 msgid "participant_list"
 msgstr "List of participants"
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/content.pt:246 dbas/templates/content.pt:261
+#: dbas/templates/content.pt:234 dbas/templates/content.pt:276
 msgid "admin_only"
 msgstr "Some additional options for the administrator."
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/content.pt:260
+#: dbas/templates/content.pt:275
 msgid "list_attacks"
 msgstr "List of attacks, clicked by the participants"
+
+#~ msgid "istland_view"
+#~ msgstr "Island View"
 
 #~ msgid "disclaimer_google_analytics"
 #~ msgstr "Google Analytics"
@@ -1543,9 +1549,6 @@ msgstr "List of attacks, clicked by the participants"
 
 #~ msgid "dbas_long"
 #~ msgstr "Dialog-Based Argumentation System"
-
-#~ msgid "your_opinion_matters"
-#~ msgstr "Now your opinion matters!"
 
 #~ msgid "argueAgainstPositionToggleButton"
 #~ msgstr ""

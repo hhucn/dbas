@@ -672,16 +672,19 @@ class Dbas(object):
 			transaction.commit()
 
 			# reset and save url for breadcrumbs
-			url = self.request.params['url'] # TODO better url for noticing attacking arguments
-			additional_params = dict()
-			additional_params['confrontation_argument_uid'] = return_dict['confrontation_argument_id']
-			additional_params['attack'] = return_dict['attack']
-			BreadcrumbHelper().save_breadcrumb_for_user_with_argument_parts(transaction, self.request.authenticated_userid, url,
-			                                                                pgroup, conclusion, issue, supportive, self.request.session.id, lang, additional_params)
+			if status != 0:
+				url = self.request.params['url'] # TODO better url for noticing attacking arguments
+				additional_params = dict()
+				additional_params['confrontation_argument_uid'] = return_dict['confrontation_argument_id']
+				additional_params['attack'] = return_dict['attack']
+				BreadcrumbHelper().save_breadcrumb_for_user_with_argument_parts(transaction,
+				                                                                self.request.authenticated_userid, url,
+				                                                                pgroup, conclusion, issue, supportive,
+				                                                                self.request.session.id, lang, additional_params)
+				return_dict['argument'] = QueryHelper().get_text_for_argument_uid(return_dict['argument_uid'], issue, lang)
 
 			return_dict['supportive'] = str(supportive)
 			return_dict['status'] = str(status)
-			return_dict['argument'] = QueryHelper().get_text_for_argument_uid(return_dict['argument_uid'], issue, lang)
 		except KeyError as e:
 			logger('reply_for_premisegroup', 'error', repr(e))
 			return_dict['status'] = '-1'
