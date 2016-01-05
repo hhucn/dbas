@@ -183,7 +183,7 @@ function GuiHandler() {
 				li.html(h.getFullHtmlTextOf(input) + '<label title="' + titles[i] + '" for="' + 'island_' + i + '" style="width:95%;">' + titles[i] + '</label>');
 				ul.append(li);
 			}
-			displayConfirmationDialogWithoutCancelAndFunction(_t(addStatements), helper.getFullHtmlTextOf(ul));
+			// displayConfirmationDialogWithoutCancelAndFunction(_t(addStatements), helper.getFullHtmlTextOf(ul));
 		}).addClass('disabled');
 
 	};
@@ -484,7 +484,8 @@ function GuiHandler() {
 			$('#li_' + addReasonButtonId).before(newElement);
 		}
 
-		this.setDisplayStylesOfAddStatementContainer(false, false, false, false, false);
+		this.hideAddStatementContainer();
+		//this.setDisplayStylesOfAddStatementContainer(false, false, false, false, false);
 		$('#' + addReasonButtonId).attr('checked', false).prop('checked', false);
 
 		// todo chose the only element, which was given
@@ -495,6 +496,159 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Hides the add statement/premise/argument container
+	 */
+	this.hideAddStatementContainer = function () {
+		$('#' + addStatementContainerId).fadeOut('slow');
+		$('#' + addStatementContainerMainInputId).val('');
+		$('#' + addReasonButtonId).disable = false;
+	};
+
+	/**
+	 *
+	 */
+	this.prepareAddStatementContainer = function() {
+		$('#' + proPositionTextareaId).empty();
+		$('#' + conPositionTextareaId).empty();
+		$('#' + addStatementContainerMainInputIntroId).text('');
+		$('#' + addStatementContainerId).fadeIn('slow');
+		$('#' + addStatementErrorContainer).hide();
+		$('#' + addReasonButtonId).disable = true;
+	};
+
+	/**
+	 * Shows an container for adding arguments
+	 * @param isArgument boolean
+	 * @param isStart boolean
+	 */
+	this.showAddPremiseOrArgumentContainer = function (isArgument, isStart){
+		var	discussionsDescription = $('#' + discussionsDescriptionId),
+			confrontation = discussionsDescription.attr('confrontation_text'),
+			conclusion = discussionsDescription.attr('conclusion'),
+			premise = discussionsDescription.attr('premise'),
+			argument =  conclusion + ' ' + _t(because).toLocaleLowerCase() + ' ' + premise,
+			relation = discussionsDescription.attr('attack'),
+			guihandler = new GuiHandler(),
+			interactionhandler = new InteractionHandler();
+		this.prepareAddStatementContainer();
+
+		// special case
+		if (typeof relation == 'undefined'){
+			this.showAddStatementContainer(isStart);
+			return;
+		}
+
+		// $('#' + addStatementContainerH4Id).text(isPremise ? _t(argumentContainerH4TextIfPremise) :
+		// _t(argumentContainerH4TextIfArgument));
+		// pretty print, whether above are more than one lititems
+		if($('#' + discussionSpaceId + ' ul li').length == 1) {
+			$('#' + addStatementContainerH4Id).text(_t(addPremiseRadioButtonText));
+		} else {
+			$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfPremise));
+		}
+		$('#' + addStatementContainerMainInputId).hide().focus();
+
+		// take a look, if we agree or disagree, and where we are
+		if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, confrontation, '', false);
+		} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, '', false);
+		} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, confrontation, conclusion, true);
+		} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, conclusion, true);
+		} else if (relation.indexOf(attr_rebut) != -1) { // special case, when we are in the attack branch
+			var supportive = discussionsDescription.attr('supportive') == 'true';
+			if (supportive)									this.showAddStatementsTextareasWithTitle(true, false, argument, '', false);
+			else											this.showAddStatementsTextareasWithTitle(false, true, conclusion, '', false);
+		} else {
+			alert("Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
+		}
+
+		// does other users have an opinion?
+		if (isArgument) {
+			if (discussionsDescription.text().indexOf(_t(otherParticipantsDontHaveCounter)) != -1) {
+				// other users have no opinion, so the participant can give pro and con
+				this.showAddStatementsTextareasWithTitle(true, true, statement);
+			} else {
+				// alert('Todo: How to insert something at this place?');
+			}
+		}
+
+		$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenArgument() {
+			if (interactionhandler.getPremisesAndSendThem(false)) {
+				guihandler.hideErrorDescription();
+				guihandler.hideSuccessDescription();
+				$('#' + addStatementErrorContainer).hide();
+				$('#' + addStatementErrorMsg).text('');
+			} else {
+				guihandler.setErrorDescription(_t(inputEmpty));
+			}
+		});
+
+		guihandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, id_pro, false, 'input');
+		guihandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, id_con, false, 'input');
+	};
+
+	/**
+	 * Shows an container for adding statement
+	 * @param isStart boolean
+	 */
+	this.showAddStatementContainer = function (isStart){
+		var	discussionsDescription = $('#' + discussionsDescriptionId),
+			conclusion = discussionsDescription.attr('conclusion'),
+			premise = discussionsDescription.attr('premise'),
+			header, escapedText,
+			addStatementContainerMainInputIntro = $('#' + addStatementContainerMainInputIntroId),
+			guihandler = new GuiHandler(),
+			ajaxhandler = new AjaxSiteHandler();
+		this.prepareAddStatementContainer();
+
+		// some pretty print options
+		if (isStart) {
+			$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
+		} else {
+			if (discussionsDescription.html().indexOf(_t(firstPremiseText1)) != -1){
+				$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>?');
+			} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHaveCounter)) != -1) {
+				var index1 = discussionsDescription.html().indexOf('<b>');
+				var index2 = discussionsDescription.html().indexOf('</b>');
+				header = discussionsDescription.html().substr(index1, index2-index1+5);
+				$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + header + '</b>');
+			} else {
+				$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremise) + '<br><br>' + discussionsDescription.html());
+			}
+			addStatementContainerMainInputIntro.text(_t(because) + '...');
+		}
+
+		// gui modifications
+		$('#' + addStatementContainerMainInputId).show();
+		$('#' + proPositionColumnId).hide();
+		$('#' + conPositionColumnId).hide();
+		// at the beginning we differentiate between statement and statements
+		$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenStatement() {
+			escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
+			if (escapedText.length == 0){
+				guihandler.setErrorDescription(_t(inputEmpty));
+				return;
+			}
+			if (isStart) {
+				if ($('#' + addReasonButtonId).hasClass(attr_attack)){
+					alert("handle this case in guiHandler");
+					return;
+				}
+				ajaxhandler.sendNewStartStatement(escapedText);
+			} else {
+				ajaxhandler.sendNewStartPremise(escapedText, discussionsDescription.attr('conclusion_id'), (discussionsDescription.attr('supportive')=='true'));
+			}
+			guihandler.hideErrorDescription();
+			guihandler.hideSuccessDescription();
+		});
+
+		guihandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, id_pro, true, 'input');
+		guihandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, id_con, true, 'input');
+	};
+
+
+
+	/**
+	 * DEPRECATED !!!
 	 * Set some style attributes,
 	 * @param isVisible true, if the container should be displayed
 	 * @param isStatement true, if we have an argument
@@ -1115,7 +1269,9 @@ function GuiHandler() {
 			} else if (typeof val.text !== 'undefined'){
 				li = $('<li>');
 				li.attr({id: 'issue_' + val.uid, 'issue': val.uid, 'date': val.date, 'count': count});
-				span = $('<span>').addClass('badge').attr({'id':'issue_args' + val.uid, 'style':'float: right', 'title': _t(countOfArguments)}).text(val.arguments);
+				span = $('<span>').addClass('badge').attr({'id':'issue_args' + val.uid,
+					'style':'float: right',
+					'title': _t(countOfArguments)}).text(val.arguments);
 				a = $('<a>');
 				a.text(val.text);
 				a.attr({'style':'cursor:pointer', 'text':val.text});

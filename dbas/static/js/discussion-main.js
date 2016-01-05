@@ -54,14 +54,6 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 		}
 	});
 
-	// add argument button in the island view
-	$('#' + islandViewAddArgumentsBtnId).click(function islandViewAddArgumentsBtnid() {
-		$('#' + scStyleIslandId).attr('checked', true).prop('checked', true);
-		$('#' + scStyleDialogId).attr('checked', false).prop('checked', false);
-		$('#' + scStyleCompleteId).attr('checked', false).prop('checked', false);
-		guiHandler.setDisplayStylesOfAddStatementContainer(true, true, false, false);
-	});
-
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).hide().click(function addConTextareaId() {
 		guiHandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');

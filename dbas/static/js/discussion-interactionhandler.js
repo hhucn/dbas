@@ -102,16 +102,20 @@ function InteractionHandler() {
 			text = addReasonButton.parent().children().eq(1).text();
 			if (text.indexOf(_t(newConclusionRadioButtonText)) >= 0 || text.indexOf(_t(firstConclusionRadioButtonText)) >= 0) {
 				// statement
-				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, true, false);
+				//guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, true, false);
+				guiHandler.showAddStatementContainer(isStart);
 			} else if (text.indexOf(_t(addArgumentRadioButtonText)) >= 0 || text.indexOf(_t(addPremiseRadioButtonText)) >= 0) {
 				// argument
-				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, false, true);
+				//guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, false, false, true);
+				guiHandler.showAddPremiseOrArgumentContainer(true, isStart);
 			} else {
 				// premise
-				guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, true, false, false);
+				//guiHandler.setDisplayStylesOfAddStatementContainer(true, isStart, true, false, false);
+				guiHandler.showAddPremiseOrArgumentContainer(false, isStart);
 			}
 		} else {
-			guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true, false);
+			//guiHandler.setDisplayStylesOfAddStatementContainer(false, isStart, false, true, false);
+			guiHandler.hideAddStatementContainer();
 
 			this.radioButtonWasChoosen();
 			$('#' + islandViewContainerId).fadeOut('slow');

@@ -67,7 +67,6 @@ var historySuccessMessageId 					= 'history-success-msg';
 var insertStatementForm 						= 'insert-statement-form';
 var islandViewContainerId 						= 'island-view-container';
 var islandViewContainerSpaceId 					= 'island-view-container-space';
-var islandViewAddArgumentsBtnId 				= 'island-view-add-arguments';
 var issueDropdownButtonID						= 'issue-dropdown';
 var issueDropdownListID							= 'dropdown-issue-list';
 var issueDateId									= 'issue-date';
