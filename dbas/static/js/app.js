@@ -195,9 +195,9 @@ function setButtonLanguage(){
 	$('#' + reportButtonId).prop('value', _t(report)).prop('title', _t(reportTitle));
 	$('#' + restartDiscussionButtonId).prop('value', _t(restartDiscussion)).prop('title', _t(restartDiscussionTitle));
 	$('#' + editStatementButtonId).prop('value', _t(edit)).prop('title', _t(editTitle));
-	$('#' + scStyle1Id).prop('value', _t(dialogView)).prop('title', _t(dialogViewTitle));
-	$('#' + scStyle2Id).prop('value', _t(islandView)).prop('title', _t(islandViewTitle));
-	$('#' + scStyle3Id).prop('value', _t(completeView)).prop('title', _t(completeViewTitle));
+	$('#' + scStyleDialogId).prop('value', _t(dialogView)).prop('title', _t(dialogViewTitle));
+	$('#' + scStyleIslandId).prop('value', _t(islandView)).prop('title', _t(islandViewTitle));
+	$('#' + scStyleCompleteId).prop('value', _t(completeView)).prop('title', _t(completeViewTitle));
 	$('#' + islandViewAddArgumentsBtnId).prop('value', _t(addStatements)).prop('title', _t(addStatements));
 	$('#' + sendNewStatementId).prop('value', _t(acceptIt)).prop('title', _t(acceptItTitle));
 	$('#' + listAllUsersAttacksId).prop('value', _t(showAllAttacks)).prop('title', _t(showAllAttacks));

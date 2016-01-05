@@ -60,7 +60,7 @@
 			</div>
 
 			<div id="wrapper-footer">
-				<a href="#top" class="back-to-top" title="Go to the top"><img class="center" id="back-to-top-img" src="${request.static_url('dbas:static/images/home.png')}"></a>
+				<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" src="${request.static_url('dbas:static/images/home.png')}"></a>
 
 				<div metal:use-macro="load: snippet-footer.pt" />
 			</div>

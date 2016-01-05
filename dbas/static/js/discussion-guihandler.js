@@ -1076,9 +1076,9 @@ function GuiHandler() {
 	 * Sets style attributes to default
 	 */
 	this.resetChangeDisplayStyleBox = function () {
-		$('#' + scStyle1Id).attr('checked', true).prop('checked', true);
-		$('#' + scStyle2Id).attr('checked', false).prop('checked', false);
-		$('#' + scStyle3Id).attr('checked', false).prop('checked', false);
+		$('#' + scStyleDialogId).attr('checked', true).prop('checked', true);
+		$('#' + scStyleIslandId).attr('checked', false).prop('checked', false);
+		$('#' + scStyleCompleteId).attr('checked', false).prop('checked', false);
 	};
 
 	/**
@@ -1127,6 +1127,7 @@ function GuiHandler() {
 			}
 		});
 
+		// set the main issue text for the button
 		if (issueDropdownButton.text().length == 0 || issueDropdownButton.text().length == 15) {
 			issue_curr = $('#issue_' + current_id);
 			$('#' + issueDateId).text(issue_curr.attr('date'));
@@ -1142,7 +1143,7 @@ function GuiHandler() {
 		issueDropdownButton.attr('issue', current_id);
 	};
 
-	this.setIssueDropDownText = function(text){
+	this.setIssueDropDownText = function(text) {
 		$('#' + issueDropdownButtonID).html(text + '&#160;&#160;&#160;<span class="caret"></span>');
-	}
+	};
 }

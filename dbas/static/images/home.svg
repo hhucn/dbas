@@ -15,7 +15,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="home.svg">
+   sodipodi:docname="home.svg"
+   inkscape:export-filename="/home/tobias/Dokumente/git/dbas/dbas/static/images/home.png"
+   inkscape:export-xdpi="18"
+   inkscape:export-ydpi="18">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="-155.57542"
-     inkscape:cy="2.7284048"
+     inkscape:zoom="5.6"
+     inkscape:cx="113.80265"
+     inkscape:cy="78.970081"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -36,8 +39,8 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1871"
-     inkscape:window-height="1056"
-     inkscape:window-x="49"
+     inkscape:window-height="1176"
+     inkscape:window-x="1969"
      inkscape:window-y="24"
      inkscape:window-maximized="1">
     <inkscape:grid
@@ -54,7 +57,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -64,29 +67,29 @@
      id="layer1"
      transform="translate(0.01753466,-852.34859)">
     <rect
-       style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.1630304px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#006ab3;fill-opacity:1;fill-rule:evenodd;stroke:#006ab3;stroke-width:0.1638436px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="rect8070"
-       width="49.836971"
-       height="99.836967"
-       x="25.081514"
-       y="952.44366" />
+       width="49.836647"
+       height="100.83608"
+       x="25.081921"
+       y="951.44415" />
     <rect
-       style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.1630304px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#006ab3;fill-opacity:1;fill-rule:evenodd;stroke:#006ab3;stroke-width:0.16376179px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="rect8070-9"
-       width="49.836971"
-       height="99.836967"
-       x="125.08151"
-       y="952.44373" />
+       width="49.836727"
+       height="100.73526"
+       x="125.08139"
+       y="951.54504" />
     <rect
-       style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.08151521px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#006ab3;fill-opacity:1;fill-rule:evenodd;stroke:#006ab3;stroke-width:0.08968844px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="rect8070-6"
-       width="49.918484"
-       height="24.918486"
-       x="75.040756"
-       y="952.40295" />
+       width="59.910419"
+       height="25.13485"
+       x="70.027252"
+       y="951.50787" />
     <path
        sodipodi:type="star"
-       style="fill:#bfbfbf;fill-opacity:1;stroke:#bfbfbf;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#006ab3;fill-opacity:1;stroke:#006ab3;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path8108"
        sodipodi:sides="3"
        sodipodi:cx="60.665081"

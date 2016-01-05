@@ -124,21 +124,21 @@ function InteractionHandler() {
 	 */
 	this.styleButtonChanged = function (buttonId) {
 		var guiHandler = new GuiHandler(),
-				style1 = $('#' + scStyle1Id),
-				style2 = $('#' + scStyle2Id),
-				style3 = $('#' + scStyle3Id);
+				style1 = $('#' + scStyleDialogId),
+				style2 = $('#' + scStyleIslandId),
+				style3 = $('#' + scStyleCompleteId);
 		switch (buttonId){
-			case scStyle1Id:
+			case scStyleDialogId:
 				style2.attr('checked', false).prop('checked', false);
 				style3.attr('checked', false).prop('checked', false);
 				guiHandler.setDisplayStyleAsDiscussion();
 				break;
-			case scStyle2Id:
+			case scStyleIslandId:
 				style1.attr('checked', false).prop('checked', false);
 				style3.attr('checked', false).prop('checked', false);
 				guiHandler.setDisplayStyleAsProContraList();
 				break;
-			case scStyle3Id:
+			case scStyleCompleteId:
 				style1.attr('checked', false).prop('checked', false);
 				style2.attr('checked', false).prop('checked', false);
 				guiHandler.setDisplayStyleAsGraphView();
@@ -594,10 +594,10 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
 			$('#' + popupEditStatementErrorDescriptionId).text(_t(noIslandView));
-			$('#' + scStyle2Id).attr('checked', true).prop('checked', true);
-			$('#' + scStyle1Id).attr('checked', false).prop('checked', false);
-			$('#' + scStyle3Id).attr('checked', false).prop('checked', false);
-			this.styleButtonChanged(scStyle1Id);
+			$('#' + scStyleIslandId).attr('checked', true).prop('checked', true);
+			$('#' + scStyleDialogId).attr('checked', false).prop('checked', false);
+			$('#' + scStyleCompleteId).attr('checked', false).prop('checked', false);
+			this.styleButtonChanged(scStyleDialogId);
 		} else {
 			$('#' + discussionFailureRowId).hide();
 			new GuiHandler().displayDataInIslandView(parsedData);
@@ -627,8 +627,8 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), gh = new GuiHandler();
 		gh.setIssueList(parsedData);
 
-		// are we starting ?
-			var url = window.location.href, issue_id;
+		// are we restarting ?
+		var url = window.location.href, issue_id;
 		if (url.indexOf(mainpage + 'discussion/start') != -1) {
 			// do we have a link with issue id?
 			if (url.indexOf(mainpage + 'discussion/start/issue=') != -1) {
@@ -640,7 +640,7 @@ function InteractionHandler() {
 				});
 				$('#issue_' + issue_id).addClass('disabled');
 				// set button text
-				$('#' + issueDropdownButtonID).text($('#issue_' + issue_id).text());
+				gh.setIssueDropDownText(new Helper().resizeIssueText($('#issue_' + issue_id).children().first().attr('text')));
 			} else {
 				issue_id = new Helper().getCurrentIssueId();
 			}

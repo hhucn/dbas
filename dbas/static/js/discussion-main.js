@@ -56,9 +56,9 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 
 	// add argument button in the island view
 	$('#' + islandViewAddArgumentsBtnId).click(function islandViewAddArgumentsBtnid() {
-		$('#' + scStyle2Id).attr('checked', true).prop('checked', true);
-		$('#' + scStyle1Id).attr('checked', false).prop('checked', false);
-		$('#' + scStyle3Id).attr('checked', false).prop('checked', false);
+		$('#' + scStyleIslandId).attr('checked', true).prop('checked', true);
+		$('#' + scStyleDialogId).attr('checked', false).prop('checked', false);
+		$('#' + scStyleCompleteId).attr('checked', false).prop('checked', false);
 		guiHandler.setDisplayStylesOfAddStatementContainer(true, true, false, false);
 	});
 
@@ -122,9 +122,9 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 
 	/*
 	// managed in the html file
-	$('#' + scStyle1Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	$('#' + scStyle2Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	$('#' + scStyle3Id).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	$('#' + scStyleDialogId).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	$('#' + scStyleIslandId).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
+	$('#' + scStyleCompleteId).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
 	*/
 
 	/**
@@ -175,9 +175,9 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 		}
 	});
 
-	$('#' + scStyle1Id).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	$('#' + scStyle2Id).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	$('#' + scStyle3Id).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	$('#' + scStyleDialogId).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	$('#' + scStyleIslandId).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	$('#' + scStyleCompleteId).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
 
 	/**
 	 * Handling report button
@@ -251,27 +251,27 @@ setStyleOptions = function (guiHandler){
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
-	//$('#' + scStyle2Id).hide();
+	//$('#' + scStyleIslandId).hide();
 	//$('#' + scStyle2LabelId).hide();
 	//$('#' + scStyle1LabelId).next().hide();
 	$('#' + displayControlContainerIconGuidedId).click(function displayControlContainerIconGuidedClick(){
-		var f = function scStyle1Function () { $('#' + scStyle1Id).attr('checked', true).prop('checked', true);
-			new InteractionHandler().styleButtonChanged($(this).attr('id'))};
+		var f = function dialogStyle () { $('#' + scStyleDialogId).attr('checked', true).prop('checked', true);
+			new InteractionHandler().styleButtonChanged($('#' + scStyleDialogId).attr('id'))};
 		displayConfirmationDialog(_t(displayControlDialogGuidedTitle), '<h4>' + _t(displayControlDialogGuidedBody) + '</h4>', f, false);
 	});
 	$('#' + displayControlContainerIconIslandId).click(function displayControlContainerIconIslandClick(){
-		var f = function scStyle1Function () { $('#' + scStyle2Id).attr('checked', true).prop('checked', true);
-			new InteractionHandler().styleButtonChanged($('#' + scStyle2Id).attr('id'))};
+		var f = function islandStyle () { $('#' + scStyleIslandId).attr('checked', true).prop('checked', true);
+			new InteractionHandler().styleButtonChanged($('#' + scStyleIslandId).attr('id'))};
 		displayConfirmationDialog(_t(displayControlDialogIslandTitle), '<h4>' + _t(displayControlDialogIslandBody) + '</h4>', f, false);
 	});
 	$('#' + displayControlContainerIconExpertId).click(function displayControlContainerIconExpertClick(){
-		var f = function scStyle1Function () { $('#' + scStyle3Id).attr('checked', true).prop('checked', true);
-			new InteractionHandler().styleButtonChanged($('#' + scStyle3Id).attr('id'))};
+		var f = function completeStyle () { $('#' + scStyleCompleteId).attr('checked', true).prop('checked', true);
+			new InteractionHandler().styleButtonChanged($('#' + scStyleCompleteId).attr('id'))};
 		displayConfirmationDialog(_t(displayControlDialogExpertTitle), '<h4>' + _t(displayControlDialogExpertBody) + '</h4>', f, false);
 	});
-	//$('#' + scStyle1Id).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	//$('#' + scStyle2Id).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	//$('#' + scStyle3Id).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	//$('#' + scStyleDialogId).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	//$('#' + scStyleIslandId).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	//$('#' + scStyleCompleteId).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
