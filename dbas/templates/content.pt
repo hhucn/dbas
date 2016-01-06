@@ -291,6 +291,7 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-graph.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-island.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-barometer.js')}"></script>
 
 	</tal:block>
 </tal:block>
