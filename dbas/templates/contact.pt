@@ -4,7 +4,7 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<div class="form container first-container colored_container">
-			<h2 i18n:translate="contact_header_1">Get In Touch With Us</h2>
+			<h3 i18n:translate="contact_header_1">Get In Touch With Us</h3>
 			<h5 i18n:translate="contact_header_2">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</h5>
 			<br>
 			<form action="/contact" method="post" class="form-horizontal">

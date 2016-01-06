@@ -132,37 +132,23 @@ class Statement(DiscussionBase):
 	text_uid = sa.Column(sa.Integer, sa.ForeignKey('textvalues.uid'))
 	isStartpoint = sa.Column(sa.Boolean, nullable=False)
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
-	weight = sa.Column(sa.Integer, nullable=False)
+	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'))
 
 	textvalues = relationship('TextValue', foreign_keys=[text_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
+	weights = relationship('Weight', foreign_keys=[weight_uid])
 
-	def __init__(self, text, isstartpoint, issue=0, weight=0):
+	def __init__(self, text, isstartpoint, issue=0):
 		"""
 		Initializes a row in current statement-table
 		"""
 		self.text_uid = text
 		self.isStartpoint = isstartpoint
 		self.issue_uid = issue
-		self.weight = weight
+		self.weight_uid = 0
 
-	def increase_weight(self, weight):
-		"""
-		Increases weight by given paramter
-		:param weight: additional weight to increase
-		:return: increased weight
-		"""
-		self.weight += weight
-		return self.weight
-
-	def decrease_weight(self, weight):
-		"""
-		Decreases weight by given paramter
-		:param weight: additional weight to decrease
-		:return: increased weight
-		"""
-		self.weight -= weight
-		return self.weight
+	def set_weight_uid(self, weight_uid):
+		self.weight_uid = weight_uid
 
 
 class TextValue(DiscussionBase): # TODO: remove this due to redundancy!
@@ -280,16 +266,17 @@ class Argument(DiscussionBase):
 	isSupportive = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	weight = sa.Column(sa.Integer, nullable=False)
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
+	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'))
 
 	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesGroup_uid])
 	statements = relationship('Statement', foreign_keys=[conclusion_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
 	issues = relationship('Issue', foreign_keys=[issue_uid])
+	weights = relationship('Weight', foreign_keys=[weight_uid])
 
-	def __init__(self, premisegroup, issupportive, author, weight, issue, conclusion=0):
+	def __init__(self, premisegroup, issupportive, author, issue, conclusion=0):
 		"""
 		Initializes a row in current argument-table
 		"""
@@ -298,30 +285,15 @@ class Argument(DiscussionBase):
 		self.argument_uid = None
 		self.isSupportive = issupportive
 		self.author_uid = author
-		self.weight = weight
 		self.argument_uid = 0
 		self.issue_uid = issue
+		self.weight_uid = 0
 
 	def conclusions_argument(self, argument):
 		self.argument_uid = argument
 
-	def increase_weight(self, weight):
-		"""
-		Increases weight by given paramter
-		:param weight: additional weight to increase
-		:return: increased weight
-		"""
-		self.weight += weight
-		return self.weight
-
-	def decrease_weight(self, weight):
-		"""
-		Decreases weight by given paramter
-		:param weight: additional weight to decrease
-		:return: increased weight
-		"""
-		self.weight -= weight
-		return self.weight
+	def set_weight_uid(self, weight_uid):
+		self.weight_uid = weight_uid
 
 
 class Track(DiscussionBase):
@@ -417,3 +389,39 @@ class Relation(DiscussionBase):
 		Initializes a row in current relation-table
 		"""
 		self.name = name
+
+
+class Weight(DiscussionBase):
+	"""
+	Weight-table with several columns.
+	"""
+	__tablename__ = 'weights'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	supports = sa.Column(sa.Integer)
+	attacks = sa.Column(sa.Integer)
+
+	def __init__(self, supports=0, attacks=0):
+		"""
+		Initializes a row in current weights-table
+		"""
+		self.supports = supports
+		self.attacks = attacks
+
+	def increase_weight(self, weight):
+		"""
+		Increases weight by given paramter
+		:param weight: additional weight to increase
+		:return: increased weight
+		"""
+		self.supports += weight
+		return self.supports
+
+	def decrease_weight(self, weight):
+		"""
+		Decreases weight by given paramter
+		:param weight: additional weight to decrease
+		:return: increased weight
+		"""
+		self.attacks -= weight
+		return self.attacks
+
