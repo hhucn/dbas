@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-01-05 08:44+0100\n"
+"POT-Creation-Date: 2016-01-06 13:15+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -263,8 +263,8 @@ msgstr "for you."
 
 #. Default: Island View
 #. Default: <dynamic element>
-#: dbas/templates/index.pt:127 dbas/templates/content.pt:215
-#: dbas/templates/content.pt:257
+#: dbas/templates/index.pt:127 dbas/templates/content.pt:214
+#: dbas/templates/content.pt:256
 msgid "island_view"
 msgstr "Island View"
 
@@ -757,12 +757,12 @@ msgid "icons_by"
 msgstr "Icons by"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:97
+#: dbas/templates/imprint.pt:100
 msgid "generated_with"
 msgstr "generated_with"
 
 #. Default: Changes in Version
-#: dbas/templates/imprint.pt:122 dbas/templates/imprint.pt:127
+#: dbas/templates/imprint.pt:125 dbas/templates/imprint.pt:130
 msgid "changes"
 msgstr "Changes in Version"
 
@@ -986,14 +986,14 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:293 dbas/templates/snippet-popups.pt:393
-#: dbas/templates/content.pt:120
+#: dbas/templates/content.pt:117
 msgid "error"
 msgstr "Error:"
 
 #. Default: Success:
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:387
-#: dbas/templates/settings.pt:75 dbas/templates/settings.pt:107
+#: dbas/templates/settings.pt:81 dbas/templates/settings.pt:113
 #: dbas/templates/content.pt:80
 msgid "success"
 msgstr "Success:"
@@ -1010,7 +1010,7 @@ msgstr "Your Last Name"
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: dbas/templates/snippet-popups.pt:323 dbas/templates/settings.pt:36
+#: dbas/templates/snippet-popups.pt:323 dbas/templates/settings.pt:39
 msgid "nickname"
 msgstr "Nickname"
 
@@ -1284,8 +1284,8 @@ msgid "writing_message"
 msgstr "Writing a new message"
 
 #. Default: Error:
-#: dbas/templates/news.pt:25 dbas/templates/settings.pt:80
-#: dbas/templates/settings.pt:113 dbas/templates/content.pt:148
+#: dbas/templates/news.pt:25 dbas/templates/settings.pt:86
+#: dbas/templates/settings.pt:119 dbas/templates/content.pt:147
 msgid "error:"
 msgstr "Error:"
 
@@ -1300,67 +1300,72 @@ msgid "date"
 msgstr "Date"
 
 #. Default: Information about yourself
-#: dbas/templates/settings.pt:18
+#: dbas/templates/settings.pt:15
 msgid "info_about_yourself"
 msgstr "Information about yourself"
 
 #. Default: Firstname
-#: dbas/templates/settings.pt:22
+#: dbas/templates/settings.pt:25
 msgid "firstname"
 msgstr "Firstname"
 
 #. Default: Surname
-#: dbas/templates/settings.pt:29
+#: dbas/templates/settings.pt:32
 msgid "surname"
 msgstr "Surname"
 
 #. Default: Group
-#: dbas/templates/settings.pt:50
+#: dbas/templates/settings.pt:53
 msgid "group"
 msgstr "Group"
 
+#. Default: Profile Picture
+#: dbas/templates/settings.pt:63
+msgid "profile_picture"
+msgstr "Profile Picture"
+
 #. Default: Your decisions
-#: dbas/templates/settings.pt:66
+#: dbas/templates/settings.pt:72
 msgid "decisions"
 msgstr "Your decisions"
 
 #. Default: Your last history
-#: dbas/templates/settings.pt:98
+#: dbas/templates/settings.pt:104
 msgid "history"
 msgstr "Your last URL-History"
 
 #. Default: Change your password
-#: dbas/templates/settings.pt:133
+#: dbas/templates/settings.pt:139
 msgid "change_password"
 msgstr "Change your password"
 
 #. Default: Old password
-#: dbas/templates/settings.pt:137
+#: dbas/templates/settings.pt:143
 msgid "old_password"
 msgstr "Old password"
 
 #. Default: New Password
-#: dbas/templates/settings.pt:142
+#: dbas/templates/settings.pt:148
 msgid "new_password"
 msgstr "New Password"
 
 #. Default: Strength
-#: dbas/templates/settings.pt:147
+#: dbas/templates/settings.pt:153
 msgid "strength"
 msgstr "Strength"
 
 #. Default: New Password (confirm)
-#: dbas/templates/settings.pt:155
+#: dbas/templates/settings.pt:161
 msgid "new_password_confirm"
 msgstr "New Password (confirm)"
 
 #. Default: Great:
-#: dbas/templates/settings.pt:172
+#: dbas/templates/settings.pt:178
 msgid "great:"
 msgstr "Great:"
 
 #. Default: Your password was changed
-#: dbas/templates/settings.pt:172
+#: dbas/templates/settings.pt:178
 msgid "password_changed"
 msgstr "Your password was changed"
 
@@ -1456,67 +1461,65 @@ msgstr "arguments"
 msgid "report"
 msgstr "Report"
 
-#. Default: <dynamic element>
-#: dbas/templates/content.pt:108
-msgid "opinion_barometer"
-msgstr "Opinion Barometer"
-
 #. Default: Please insert a new Argument
-#: dbas/templates/content.pt:144
+#: dbas/templates/content.pt:143
 msgid "insert-argument"
 msgstr "Please insert a new Argument"
 
 #. Default: Pro
-#: dbas/templates/content.pt:156
+#: dbas/templates/content.pt:155
 msgid "pro"
 msgstr "Pro"
 
 #. Default: Add a textfield
-#: dbas/templates/content.pt:162 dbas/templates/content.pt:180
+#: dbas/templates/content.pt:161 dbas/templates/content.pt:179
 msgid "add_textfield"
 msgstr "Add a textfield"
 
 #. Default: Statements are connected
-#: dbas/templates/content.pt:169 dbas/templates/content.pt:187
+#: dbas/templates/content.pt:168 dbas/templates/content.pt:186
 msgid "statements_connected"
 msgstr "Statements are connected"
 
 #. Default: Contra
-#: dbas/templates/content.pt:175
+#: dbas/templates/content.pt:174
 msgid "contra"
 msgstr "Contra"
 
 #. Default: Change display style
-#: dbas/templates/content.pt:204 dbas/templates/content.pt:246
+#: dbas/templates/content.pt:203 dbas/templates/content.pt:245
 msgid "change_style"
 msgstr "Change display style"
 
 #. Default: <dynamic element>
 #. Default: Dialog View
-#: dbas/templates/content.pt:208 dbas/templates/content.pt:250
+#: dbas/templates/content.pt:207 dbas/templates/content.pt:249
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: <dynamic element>
 #. Default: Complete View
-#: dbas/templates/content.pt:222 dbas/templates/content.pt:264
+#: dbas/templates/content.pt:221 dbas/templates/content.pt:263
 msgid "complete_view"
 msgstr "Complete View"
 
 #. Default: List of participants
-#: dbas/templates/content.pt:233
+#: dbas/templates/content.pt:232
 msgid "participant_list"
 msgstr "List of participants"
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/content.pt:234 dbas/templates/content.pt:276
+#: dbas/templates/content.pt:233 dbas/templates/content.pt:275
 msgid "admin_only"
 msgstr "Some additional options for the administrator."
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/content.pt:275
+#: dbas/templates/content.pt:274
 msgid "list_attacks"
 msgstr "List of attacks, clicked by the participants"
+
+#~ msgid "opinion_barometer"
+#~ msgstr "Opinion Barometer"
 
 #~ msgid "istland_view"
 #~ msgstr "Island View"

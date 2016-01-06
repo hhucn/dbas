@@ -1,6 +1,8 @@
 import transaction
 import datetime
 import requests
+import urllib
+import hashlib
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
@@ -296,7 +298,10 @@ class Dbas(object):
 
 			message, error, success = UserHandler().change_password(transaction, db_user, old_pw, new_pw, confirm_pw, lang)
 
-
+		# get gravater profile picture
+		email = db_user.email.encode('utf-8') if db_user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
+		gravatar_url += urllib.parse.urlencode({'d':'wavatar', 's':str(80)})
 
 		logger('main_settings', 'return change_error', str(error))
 		logger('main_settings', 'return change_success', str(success))
@@ -318,6 +323,7 @@ class Dbas(object):
 			'db_nickname': db_user.nickname if db_user else 'unknown',
 			'db_mail': db_user.email if db_user else 'unknown',
 			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
+			'avatar_url': gravatar_url,
 			'csrf_token': token
 		}
 

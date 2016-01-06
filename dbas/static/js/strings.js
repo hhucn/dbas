@@ -53,6 +53,9 @@ getLanguage = function(){
  * Messages & Errors
  * @type {string}
  */
+var checkmark                                       = '&#x2713;'; // ✓
+var ballot                                          = '&#x2717;'; // ✗
+
 var and 											= 'and';
 var addedEverything 								= 'addedEverything';
 var alreadyInserted									= 'alreadyInserted';

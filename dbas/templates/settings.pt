@@ -11,11 +11,14 @@
 
 		<div class="container colored_container">
 			<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-8">
+				<div class="col-md-12">
+					<h3 i18n:translate="info_about_yourself">Information about yourself</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-8">
 				<div class="row">
 
-					<h3 i18n:translate="info_about_yourself">Information about yourself</h3>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td>
@@ -55,7 +58,10 @@
 					</table>
 				</div>
 			</div>
-			<div class="col-md-2"></div>
+				<div class="col-md-4 center text-center">
+					<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src avatar_url">
+					<p i18n:translate="profile_picture">Profile Picture</p>
+					</div>
 			</div>
 		</div>
 

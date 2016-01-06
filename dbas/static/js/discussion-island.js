@@ -67,14 +67,12 @@ function DiscussionIsland(){
 	 */
 	this.displayDataInIslandView = function (jsonData) {
 		var div, row, header, islandViewContainerSpace = $('#' + islandViewContainerSpaceId), helper = new Helper(),
-				titles = helper.createRelationsTextWithoutConfrontation(jsonData.premise, jsonData.conclusion, false),
-				checkmark = '&#x2713;', // ✓
-				ballot = '&#x2717;'; // ✗
+				titles = helper.createRelationsTextWithoutConfrontation(jsonData.premise, jsonData.conclusion, false);
 		// title order = [undermine, support, undercut, overbid, rebut, noopinion]
 		islandViewContainerSpace.empty();
 
 		// first row with header only
-		row = $('<div>').addClass("row");
+		row = $('<div>').addClass('row');
 		div = $('<div>').addClass("col-md-12");
 		header = '<h4><p>' + _t(islandView) + ' ' + _t(forText) + ' <b>' + jsonData.argument + '.<b></p></h4>';
 		div.append(header);
@@ -82,7 +80,7 @@ function DiscussionIsland(){
 		islandViewContainerSpace.append(row);
 
 		// second row with supports and undermines
-		row = $('<div>').addClass("row");
+		row = $('<div>').addClass('row');
 		// con premise - undermines
 		this.createPartOfIsland('6', row, 'red', ballot, titles[0], jsonData, 'undermines');
 		islandViewContainerSpace.append(row);
@@ -90,7 +88,7 @@ function DiscussionIsland(){
 		this.createPartOfIsland('6', row, 'green', checkmark, titles[1], jsonData, 'supports');
 
 		// third row with overbids and undercuty
-		row = $('<div>').addClass("row");
+		row = $('<div>').addClass('row');
 		// con relation - undercuts
 		this.createPartOfIsland('6', row, 'red', ballot, titles[2], jsonData, 'undercuts');
 		islandViewContainerSpace.append(row);
@@ -98,7 +96,7 @@ function DiscussionIsland(){
 		this.createPartOfIsland('6', row, 'green', checkmark, titles[3], jsonData, 'overbids');
 
 		// last row with rebuts
-		row = $('<div>').addClass("row");
+		row = $('<div>').addClass('row');
 		// con conclusion - rebuts
 		this.createPartOfIsland('12', row, 'red', ballot, titles[4], jsonData, 'rebuts');
 		islandViewContainerSpace.append(row);
@@ -121,6 +119,16 @@ function DiscussionIsland(){
 		}).addClass('disabled');
 	};
 
+	/**
+	 * Creates on box in the island view
+	 * @param colSize 6 or 12 as string
+	 * @param row <row>
+	 * @param color "green" or "red"
+	 * @param sign ballot, checkmark, whatever
+	 * @param title of the box
+	 * @param data as json
+	 * @param valueName of the attack
+	 */
 	this.createPartOfIsland = function(colSize, row, color, sign, title, data, valueName){
 		var div, header;
 		div = $('<div>').addClass('col-md-' + colSize);

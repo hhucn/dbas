@@ -101,6 +101,7 @@
 
 0.4.7 (unreleased)
 - Island View
+- Profile Picture based on the MD5-value of the user's mail
 
 0.5.0 (unreleased)
 - Improved recommendation of the next confrontation
