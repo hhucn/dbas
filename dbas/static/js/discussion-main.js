@@ -202,13 +202,10 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 	});
 
 	// opinion barometer
-	if (window.location.href.indexOf('discussion/start') != -1) {
-		$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
-			var txt = 'Hier wird bald ein Meinungsbarometer erscheinen.';
-			txt += '<br><img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Disk_usage_(Boabab).png">';
-			displayConfirmationDialogWithoutCancelAndFunction('In progress', txt);
-		});
-	}
+	$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
+		new DiscussionBarometer().showBarometer()
+	});
+
 };
 
 /**

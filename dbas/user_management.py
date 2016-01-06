@@ -103,9 +103,9 @@ class UserHandler(object):
 
 	def get_random_anti_spam_question(self, lang):
 		"""
-
-		:param lang:
-		:return:
+		Returns a random math question
+		:param lang: string
+		:return: question, answer
 		"""
 		_t = Translator(lang)
 
@@ -115,18 +115,13 @@ class UserHandler(object):
 		question = _t.get(_t.antispamquestion) + ' '
 		sign = _t.get(_t.signs)[random.randint(0,3)]
 
-
 		if sign is '+':
 			sign = _t.get(sign)
 			answer = int1 + int2
 
 		elif sign is '-':
 			sign = _t.get(sign)
-			if int2 > int1:
-				tmp = int2
-				int2 = int1
-				int1 = tmp
-			answer = int1 - int2
+			answer = int2 - int1 if int2 > int1 else int1 - int2
 
 		elif sign is '*':
 			sign = _t.get(sign)
@@ -134,11 +129,10 @@ class UserHandler(object):
 
 		elif sign is '/':
 			sign = _t.get(sign)
-			answer = int1 / int2
-			while int1 % int2 != 0 or int1 == 0 or int2 == 0:
+			while int1 == 0 or int2 == 0 or int1 % int2 != 0:
 				int1 = random.randint(1,9)
 				int2 = random.randint(1,9)
-
+			answer = int1 / int2
 
 		question += _t.get(str(int1)) + ' ' + sign + ' '+ _t.get(str(int2)) + '?'
 		logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question)
