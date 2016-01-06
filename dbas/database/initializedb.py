@@ -207,11 +207,23 @@ def setupNewsDatabase():
 				  date='08.12.2015',
 				  author='Tobias Krauthoff',
 				  news='Today Piwik was installed. It will help to improve the services of D-BAS!')
+	news37 = News(title='Happy new Year',
+				  date='01.01.2016',
+				  author='Tobias Krauthoff',
+				  news='Frohes Neues Jahr ... Bonne Année ... Happy New Year ... Feliz Ano Nuevo ... Feliz Ano Novo')
+	news38 = News(title='Island View and Pictures',
+				  date='06.01.2016',
+				  author='Tobias Krauthoff',
+				  news='DBAS will be more personal and results driven. Therefore the new release has profile pictures for '
+				       'everyone. They are powered by gravatar and are based on a md5-hash of the users email. Next to this '
+				       'a new view was published - the island view. Do not be shy and try it in discussions ;-) Last '
+				       'improvement just collects the attacks and supports for arguments...this is needed for our next big '
+				       'thing :) Stay tuned!')
 
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
-	              news32, news33, news34, news35, news36]
+	              news32, news33, news34, news35, news36, news37, news38]
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 
