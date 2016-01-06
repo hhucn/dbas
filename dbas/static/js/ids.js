@@ -56,6 +56,7 @@ var editStatementButtonId 						= 'edit-statement';
 var forgotPasswordText 							= 'forgot-password-text';
 var popupLoginEmailInputId 						= 'email-input';
 var generatePasswordBodyId 						= 'generate-password-body';
+var graphViewContainerId 						= 'graph-view-container';
 var headingProPositionTextId 					= 'heading-pro-positions';
 var headingConPositionTextId 					= 'heading-contra-positions';
 var hiddenCSRFTokenId 							= 'hidden_csrf_token';

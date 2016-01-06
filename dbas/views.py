@@ -1227,9 +1227,6 @@ class Dbas(object):
 			return_dict['status'] = '1'
 			logger('get_everything_for_island_view', 'return', str(return_dict))
 
-			logger('- - - - - - - - - - - -', '-', QueryHelper().get_text_for_argument_uid(arg_uid, issue, lang))
-
-
 		except KeyError as e:
 			logger('swich_language', 'error', repr(e))
 			return_dict['status'] = '0'

@@ -130,6 +130,8 @@
 			</div>
 		</div>
 
+		<div class="container colored_container" id="graph-view-container" style="display:none"></div>
+
 		<div class="container colored_container" id="add-statement-container" style="display:none">
 			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 			</button>
@@ -287,6 +289,8 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-graph.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-island.js')}"></script>
 
 	</tal:block>
 </tal:block>

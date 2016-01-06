@@ -80,113 +80,6 @@ function GuiHandler() {
 		$('#' + addReasonButtonId).attr('checked', true).prop('checked', true).parent().hide();
 	};
 
-	/**
-	 * Displays given data in the island view
-	 * @param jsonData json encoded dictionary
-	 */
-	this.displayDataInIslandView = function (jsonData) {
-		var div, row, header, islandViewContainerSpace = $('#' + islandViewContainerSpaceId), helper = new Helper(),
-				titles = helper.createRelationsTextWithoutConfrontation(jsonData.premise, jsonData.conclusion, false),
-				checkmark = '&#x2713;', // ✓
-				ballot = '&#x2717;'; // ✗
-		// title order = [undermine, support, undercut, overbid, rebut, noopinion]
-		islandViewContainerSpace.empty();
-
-		// first row with header only
-		row = $('<div>').addClass("row");
-		div = $('<div>').addClass("col-md-12");
-		header = '<h4><p>' + _t(islandView) + ' ' + _t(forText) + ' <b>' + jsonData.argument + '.<b></p></h4>';
-		div.append(header);
-		row.append(div);
-		islandViewContainerSpace.append(row);
-
-		// second row with supports and undermines
-		row = $('<div>').addClass("row");
-
-		// con premise - undermines
-		div = $('<div>').addClass("col-md-6");
-		header = '<h5><span class="red-bg text-center">' + ballot + '</span> ' + titles[0] + '</h5>';
-		div.append(header);
-		if (jsonData.undermines > 0) {
-			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'undermines'));
-		} else {
-			div.append("<label>" + _t(noEntries) + "</label>");
-		}
-		row.append(div);
-		islandViewContainerSpace.append(row);
-
-		// pro premise - supports
-		div = $('<div>').addClass("col-md-6");
-		header = '<h5><span class="green-bg text-center">' + checkmark + '</span> ' + titles[1] + '</h5>';
-		div.append(header);
-		if (jsonData.supports > 0) {
-			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'supports'));
-		} else {
-			div.append("<label>" + _t(noEntries) + "</label>");
-		}
-		row.append(div);
-
-		// third row with overbids and undercuty
-
-		row = $('<div>').addClass("row");
-
-		// con relation - undercuts
-		div = $('<div>').addClass("col-md-6");
-		header = '<h5><span class="red-bg text-center">' + ballot + '</span> ' + titles[2] + '</h5>';
-		div.append(header);
-		if (jsonData.undercuts > 0) {
-			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'undercuts'));
-		} else {
-			div.append("<label>" + _t(noEntries) + "</label>");
-		}
-		row.append(div);
-		islandViewContainerSpace.append(row);
-
-		// pro relation - overbids
-		div = $('<div>').addClass("col-md-6");
-		header = '<h5><span class="green-bg text-center">' + checkmark + '</span> ' + titles[3] + '</h5>';
-		div.append(header);
-		if (jsonData.overbids > 0) {
-			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'overbids'));
-		} else {
-			div.append("<label>" + _t(noEntries) + "</label>");
-		}
-		row.append(div);
-
-		// last row with rebuts
-		row = $('<div>').addClass("row");
-
-		// con conclusion - rebuts
-		div = $('<div>').addClass("col-md-12");
-		header = '<h5 class="text-center"><span class="red-bg">' + ballot + '</span> ' + titles[4] + '</h5>';
-		div.append(header);
-		if (jsonData.rebuts > 0) {
-			div.append(helper.getValuesOfDictWithPrefixAsUL(jsonData, 'rebuts'));
-		} else {
-			div.append("<label>" + _t(noEntries) + "</label>");
-		}
-		row.append(div);
-		islandViewContainerSpace.append(row);
-
-
-		// add argument button
-		div = "<div class='center text-center'>";
-		div += "<input id='island-view-add-arguments' type='button' value='" + _t(addStatements);
-		div += "' class='button button-block btn btn-primary' data-dismiss='modal'/>";
-		div += "</div>";
-		islandViewContainerSpace.append(div);
-		$('#island-view-add-arguments').click(function(){
-			var i, ul = $('<ul>').css('list-style-type', 'none').css('padding-left','0px'), input, li, h = new Helper();
-			for (i=0; i<5; i++){
-				li = $('<li>').attr({id: 'li_add_island_' + i});
-				input = $('<input>').attr({id: 'island_' + i, type: 'radio', value: titles[i], name: radioButtonGroup});
-				li.html(h.getFullHtmlTextOf(input) + '<label title="' + titles[i] + '" for="' + 'island_' + i + '" style="width:95%;">' + titles[i] + '</label>');
-				ul.append(li);
-			}
-			// displayConfirmationDialogWithoutCancelAndFunction(_t(addStatements), helper.getFullHtmlTextOf(ul));
-		}).addClass('disabled');
-
-	};
 
 	/**
 	 * Appends all items in an ul list and this will be appended in the 'discussionsSpace'
@@ -644,8 +537,6 @@ function GuiHandler() {
 		guihandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, id_pro, true, 'input');
 		guihandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, id_con, true, 'input');
 	};
-
-
 
 	/**
 	 * DEPRECATED !!!
@@ -1221,15 +1112,17 @@ function GuiHandler() {
 	 */
 	this.setDisplayStyleAsDiscussion = function () {
 		$('#' + islandViewContainerId).hide();
+		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
 	};
 
 	/**
 	 * Some kind of pro contra list, but how?
 	 */
-	this.setDisplayStyleAsProContraList = function () {
+	this.setDisplayStyleAsIsland = function () {
 		$('#' + islandViewContainerId).fadeIn('slow');
-		new AjaxSiteHandler().getAllArgumentsForIslandView($('#' + discussionsDescriptionId).attr(attr_argument_uid));
+		$('#' + graphViewContainerId).hide();
+		new DiscussionIsland().showIsland($('#' + discussionsDescriptionId).attr(attr_argument_uid));
 	};
 
 	/**
@@ -1238,6 +1131,7 @@ function GuiHandler() {
 	this.setDisplayStyleAsGraphView = function () {
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
+		new DiscussionGraph().showGraph();
 	};
 
 	/**
@@ -1313,6 +1207,10 @@ function GuiHandler() {
 		issueDropdownButton.attr('issue', current_id);
 	};
 
+	/**
+	 * Sets text for the issue dropdown
+	 * @param text string
+	 */
 	this.setIssueDropDownText = function(text) {
 		$('#' + issueDropdownButtonID).html(text + '&#160;&#160;&#160;<span class="caret"></span>');
 	};

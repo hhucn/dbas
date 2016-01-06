@@ -140,7 +140,7 @@ function InteractionHandler() {
 			case scStyleIslandId:
 				style1.attr('checked', false).prop('checked', false);
 				style3.attr('checked', false).prop('checked', false);
-				guiHandler.setDisplayStyleAsProContraList();
+				guiHandler.setDisplayStyleAsIsland();
 				break;
 			case scStyleCompleteId:
 				style1.attr('checked', false).prop('checked', false);
@@ -587,24 +587,6 @@ function InteractionHandler() {
 		} else {
 			$('#' + popupUrlSharingDescriptionPId).text(_t(feelFreeToShareUrl) + ":");
 			$('#' + popupUrlSharingInputId).val(long_url);
-		}
-	};
-
-	/**
-	 * Callback for the island view
-	 * @param data
-	 */
-	this.callbackIfDoneAllArgumentsForIslandView = function (data){
-		var parsedData = $.parseJSON(data);
-		if (parsedData.status == '-1') {
-			$('#' + popupEditStatementErrorDescriptionId).text(_t(noIslandView));
-			$('#' + scStyleIslandId).attr('checked', true).prop('checked', true);
-			$('#' + scStyleDialogId).attr('checked', false).prop('checked', false);
-			$('#' + scStyleCompleteId).attr('checked', false).prop('checked', false);
-			this.styleButtonChanged(scStyleDialogId);
-		} else {
-			$('#' + discussionFailureRowId).hide();
-			new GuiHandler().displayDataInIslandView(parsedData);
 		}
 	};
 
