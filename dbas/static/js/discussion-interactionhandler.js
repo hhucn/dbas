@@ -257,7 +257,8 @@ function InteractionHandler() {
 			id = radioButton.attr(attr_id),
 			long_id = radioButton.attr(attr_long_id),
 			value = radioButton.val(),
-			id_pgroup, id_conclusion, relation, supportive;
+			id_pgroup, id_conclusion, relation, supportive, statementBtnClick, supportStatementBtnClick,
+			attackStatementBtnClick, moreAboutStatementBtnClick, premiseBtnClick, relationBtnClick, argumentBtnClick;
 		// should we step back?
 		if (id.indexOf(attr_no_opinion) != -1){
 			this.oneStepBack();
@@ -267,6 +268,18 @@ function InteractionHandler() {
 		// if we differentiate between the attack, support or dont know case, we have to trim the id
 		// this is so, because every input had the same id, because it is the same and we only differentiate between the different cases
 
+		// differentiate
+		if (hasStart && !hasRelation && !hasPremise) {
+			statementBtnClick           = !hasAttack && !hasSupport && !hasMore;
+			supportStatementBtnClick    = !hasAttack && hasSupport && !hasMore;
+			attackStatementBtnClick     = hasAttack && !hasSupport && !hasMore;
+			moreAboutStatementBtnClick  = !hasAttack && !hasSupport && hasMore;
+		} else if (!hasAttack && !hasSupport && !hasMore){
+			premiseBtnClick  = !hasRelation && hasPremise;
+			relationBtnClick = hasRelation && !hasPremise;
+			argumentBtnClick = hasRelation && hasPremise;
+		}
+
 		// is something wrong?
 		if (typeof id === 'undefined' || typeof value === 'undefined') {
 			guiHandler.setErrorDescription(_t(selectStatement));
@@ -274,28 +287,25 @@ function InteractionHandler() {
 		} else {
 			guiHandler.hideErrorDescription();
 			guiHandler.hideSuccessDescription();
-			if (hasStart		&& !hasRelation && !hasPremise	&& !hasAttack	&& !hasSupport	&& !hasMore){	this.statementButtonWasClicked(id);
-			} else if (hasStart	&& !hasRelation	&& !hasPremise	&& !hasAttack	&& hasSupport	&& !hasMore) {	id = id.substr(0, id.indexOf('_')); this.supportStatementButtonWasClicked(id);
-			} else if (hasStart	&& !hasRelation && !hasPremise	&& hasAttack 	&& !hasSupport	&& !hasMore) {	id = id.substr(0, id.indexOf('_')); this.attackStatementButtonWasClicked(id);
-			} else if (hasStart	&& !hasRelation	&& !hasPremise	&& !hasAttack	&& !hasSupport	&& hasMore) {	id = id.substr(0, id.indexOf('_')); this.moreAboutStatementButtonWasClicked(id, true);
-			} else if (hasPremise
-					&& !hasRelation
-					&& !hasStart
-					&& !hasAttack
-					&& !hasSupport
-					&& !hasMore) {
+
+			if (statementBtnClick){
+				this.statementButtonWasClicked(id);
+			} else if (supportStatementBtnClick) {
+				id = id.substr(0, id.indexOf('_'));
+				this.supportStatementButtonWasClicked(id);
+			} else if (attackStatementBtnClick) {
+				id = id.substr(0, id.indexOf('_'));
+				this.attackStatementButtonWasClicked(id);
+			} else if (moreAboutStatementBtnClick) {
+				id = id.substr(0, id.indexOf('_'));
+				this.moreAboutStatementButtonWasClicked(id, true);
+			} else if (premiseBtnClick) {
 				supportive = discussionsDescription.attr(attr_supportive).toLocaleLowerCase().indexOf('true') != -1;
 				id_pgroup = id;
 				id_conclusion = discussionsDescription.attr(attr_conclusion_id);
 				this.premiseButtonWasClicked(id_pgroup, id_conclusion, supportive);
-			} else if (hasRelation
-					&& !hasPremise
-					&& !hasStart
-					&& !hasAttack
-					&& !hasSupport
-					&& !hasMore) {
+			} else if (relationBtnClick) {
 				supportive = discussionsDescription.attr(attr_supportive).toLocaleLowerCase().indexOf('true') != -1;
-				//return;
 				relation = discussionsDescription.attr(attr_current_attack);
 				// differentiate between an attack of a new argument or the old style
 				if (typeof relation == 'undefined') {
@@ -303,12 +313,7 @@ function InteractionHandler() {
 					id = relation + '_attacking_' + discussionsDescription.attr('argument_uid');
 				}
 				this.relationButtonWasClicked(id, relation, supportive);
-			} else if (hasPremise
-					&& hasRelation
-					&& !hasStart
-					&& !hasAttack
-					&& !hasSupport
-					&& !hasMore){
+			} else if (argumentBtnClick){
 				id_pgroup = discussionsDescription.attr(attr_premisegroup_uid);
 				supportive = discussionsDescription.attr(attr_supportive).toLocaleLowerCase().indexOf('true') != -1;
 				this.argumentButtonWasClicked(long_id, id_pgroup, supportive);

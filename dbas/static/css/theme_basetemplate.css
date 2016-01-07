@@ -250,6 +250,7 @@ comment .container and wrap each container with <div class="coloured-div">
 	*/
 	font-size: 30px;
 	margin-bottom: 5px;
+	text-align: center;
 }
 
 .links {
