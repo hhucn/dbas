@@ -5,25 +5,9 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from dbas.database import DBDiscussionSession, DiscussionBase
 
-# ORM Relationships
-# Statement : Text              many-to-one     fk on the parent referencing the child, relationship() on the parent
-# Statement : Author            many-to-one
-# Statement : Premises          many-to-one
-# PremiseGroups : Author        many-to-one
-# Argument : Statement          many-to-one
-# Argument : Author             many-to-one
-# Premises : Author             many-to-one
-# TextValue : TextVersions      one-to-many     fk on the child referencing the parent, relationship() on the parent
-# Author : TextVersions         one-to-many
-# PremiseGroups : Premises      one-to-many
-# Track : Author                one-to-many
-# Track : Statement             one-to-many
-# Argument : PremiseGroups      many-to-many    association tables
-# Argument : Argument           many-to-many    adjacency list relationship
-
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015
+# @copyright Krauthoff 2015-2016
 
 class Issue(DiscussionBase):
 	"""
@@ -141,6 +125,10 @@ class Statement(DiscussionBase):
 	def __init__(self, text, isstartpoint, issue=0):
 		"""
 		Initializes a row in current statement-table
+		:param text:
+		:param isstartpoint:
+		:param issue:
+		:return:
 		"""
 		self.text_uid = text
 		self.isStartpoint = isstartpoint
@@ -165,6 +153,8 @@ class TextValue(DiscussionBase): # TODO: remove this due to redundancy!
 	def __init__(self, textversion):
 		"""
 		Initializes a row in current text-value-table
+		:param textversion:
+		:return:
 		"""
 		self.textVersion_uid = textversion
 
@@ -190,6 +180,9 @@ class TextVersion(DiscussionBase):
 	def __init__(self, content, author):
 		"""
 		Initializes a row in current text versions-table
+		:param content:
+		:param author:
+		:return:
 		"""
 		self.content = content
 		self.author_uid = author
@@ -218,6 +211,8 @@ class PremiseGroup(DiscussionBase):
 	def __init__(self, author):
 		"""
 		Initializes a row in current premisesGroup-table
+		:param author:
+		:return:
 		"""
 		self.author_uid = author
 
@@ -243,6 +238,12 @@ class Premise(DiscussionBase):
 	def __init__(self, premisesgroup, statement, isnegated, author, issue):
 		"""
 		Initializes a row in current premises-table
+		:param premisesgroup:
+		:param statement:
+		:param isnegated:
+		:param author:
+		:param issue:
+		:return:
 		"""
 		self.premisesGroup_uid = premisesgroup
 		self.statement_uid = statement
@@ -264,7 +265,7 @@ class Argument(DiscussionBase):
 	conclusion_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
 	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
 	isSupportive = sa.Column(sa.Boolean, nullable=False)
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey(User.uid))
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'))
@@ -279,6 +280,12 @@ class Argument(DiscussionBase):
 	def __init__(self, premisegroup, issupportive, author, issue, conclusion=0):
 		"""
 		Initializes a row in current argument-table
+		:param premisegroup:
+		:param issupportive:
+		:param author:
+		:param issue:
+		:param conclusion:
+		:return:
 		"""
 		self.premisesGroup_uid = premisegroup
 		self.conclusion_uid = conclusion
@@ -322,6 +329,14 @@ class Track(DiscussionBase):
 	def __init__(self, user, statement, premisegroup=0, argument=0, attacked_by=0, attacked_with=0, session_id=0):
 		"""
 		Initializes a row in current track-table
+		:param user:
+		:param statement:
+		:param premisegroup:
+		:param argument:
+		:param attacked_by:
+		:param attacked_with:
+		:param session_id:
+		:return:
 		"""
 		self.author_uid = user
 		self.statement_uid = statement
@@ -350,6 +365,12 @@ class History(DiscussionBase):
 	def __init__(self, user, url, keyword_after_decission='', keyword_before_decission='', session_id=0):
 		"""
 		Initializes a row in current history-table
+		:param user:
+		:param url:
+		:param keyword_after_decission:
+		:param keyword_before_decission:
+		:param session_id:
+		:return:
 		"""
 		self.author_uid = user
 		self.url = url
@@ -387,6 +408,8 @@ class Relation(DiscussionBase):
 	def __init__(self, name):
 		"""
 		Initializes a row in current relation-table
+		:param name:
+		:return:
 		"""
 		self.name = name
 
@@ -394,34 +417,30 @@ class Relation(DiscussionBase):
 class Weight(DiscussionBase):
 	"""
 	Weight-table with several columns.
+	Each weight uid is mapped with a vote.
 	"""
 	__tablename__ = 'weights'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	supports = sa.Column(sa.Integer)
-	attacks = sa.Column(sa.Integer)
 
-	def __init__(self, supports=0, attacks=0):
-		"""
-		Initializes a row in current weights-table
-		"""
-		self.supports = supports
-		self.attacks = attacks
 
-	def increase_weight(self, weight):
-		"""
-		Increases weight by given paramter
-		:param weight: additional weight to increase
-		:return: increased weight
-		"""
-		self.supports += weight
-		return self.supports
+class Vote(DiscussionBase):
+	"""
+	Vote-table with several columns.
+	The combination of the both FK is a PK
+	"""
+	__tablename__ = 'votes'
+	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'), primary_key=True)
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), primary_key=True)
 
-	def decrease_weight(self, weight):
-		"""
-		Decreases weight by given paramter
-		:param weight: additional weight to decrease
-		:return: increased weight
-		"""
-		self.attacks -= weight
-		return self.attacks
+	weights = relationship('Weight', foreign_keys=[weight_uid])
+	users = relationship('User', foreign_keys=[author_uid])
 
+	def __init__(self, weight_uid=0, author_uid=0):
+		"""
+		Initializes a row
+		:param weight_uid:
+		:param author_uid:
+		:return:
+		"""
+		self.weight_uid = weight_uid
+		self.author_uid = author_uid

@@ -592,9 +592,9 @@ class Dbas(object):
 			                                                               uid, True, supportive, lang, self.request.session.id)
 			# increase or decreace weight of statement will be done in ajax_reply_for_premisegroup
 			if supportive:
-				WeightingHelper().increase_weight_of_statement(uid)
+				WeightingHelper().increase_weight_of_statement(uid, self.request.authenticated_userid)
 			else:
-				WeightingHelper().decrease_weight_of_statement(uid)
+				WeightingHelper().decrease_weight_of_statement(uid, self.request.authenticated_userid)
 
 			logger('get_premises_for_statement', 'def', 'uid: ' + uid)
 			logger('get_premises_for_statement', 'def', 'supportive ' + str(supportive))
@@ -672,9 +672,9 @@ class Dbas(object):
 
 			# increase or decrease weights
 			wh = WeightingHelper()
-			wh.increase_weight_of_argument_by_components(pgroup, conclusion, supportive)
-			wh.increase_weight_of_statement(conclusion)
-			wh.increase_weight_of_statements_in_premissegroup(pgroup)
+			wh.increase_weight_of_argument_by_components(pgroup, conclusion, supportive, self.request.authenticated_userid)
+			wh.increase_weight_of_statement(conclusion, self.request.authenticated_userid)
+			wh.increase_weight_of_statements_in_premissegroup(pgroup, self.request.authenticated_userid)
 			transaction.commit()
 
 			# reset and save url for breadcrumbs
@@ -806,8 +806,8 @@ class Dbas(object):
 			# increase or decrease weights
 			wh = WeightingHelper()
 			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid_text.split('_')[2]).first()
-			wh.increase_weight_of_argument_by_id(db_argument.uid)
-			wh.increase_weight_of_statements_in_premissegroup(db_argument.premisesGroup_uid)
+			wh.increase_weight_of_argument_by_id(db_argument.uid, self.request.authenticated_userid)
+			wh.increase_weight_of_statements_in_premissegroup(db_argument.premisesGroup_uid, self.request.authenticated_userid)
 			transaction.commit()
 
 			# special case, when we are in the attack-branch
