@@ -1,6 +1,6 @@
 from sqlalchemy import and_
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, Premise, Weight, Vote
+from .database.discussion_model import Argument, Statement, Premise, Weight, Vote, User
 from .logger import logger
 
 # @author Tobias Krauthoff
@@ -145,8 +145,9 @@ class WeightingHelper(object):
 		:param user: self.request.authenticated_userid
 		:return: Weight
 		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		# do we have a weight?
-		if db_argument.weight_uid == 0:
+		if db_argument_or_statement.weight_uid == 0:
 			# add new weight
 			weight = Weight()
 			DBDiscussionSession.add(weight)

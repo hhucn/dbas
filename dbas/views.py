@@ -590,7 +590,7 @@ class Dbas(object):
 			url = self.request.params['url']
 			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
 			                                                               uid, True, supportive, lang, self.request.session.id)
-			# increase or decreace weight of statement will be done in ajax_reply_for_premisegroup
+			# increase or decrease weight of statement will be done in ajax_reply_for_premisegroup
 			if supportive:
 				WeightingHelper().increase_weight_of_statement(uid, self.request.authenticated_userid)
 			else:
