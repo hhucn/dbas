@@ -539,7 +539,6 @@ class Dbas(object):
 			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
 			                                                               uid, True, '', lang, self.request.session.id)
 			# DO NOT increase weight of statement, because this is the "do not know"-trace
-			# WeightingHelper().increase_weight_of_statement(uid)
 
 			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid)
 			logger('ajax_get_premise_for_statement', 'def', 'supportive:' + str(supportive))
@@ -590,11 +589,6 @@ class Dbas(object):
 			url = self.request.params['url']
 			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
 			                                                               uid, True, supportive, lang, self.request.session.id)
-			# increase or decreace weight of statement will be done in ajax_reply_for_premisegroup
-			if supportive:
-				WeightingHelper().increase_weight_of_statement(uid)
-			else:
-				WeightingHelper().decrease_weight_of_statement(uid)
 
 			logger('get_premises_for_statement', 'def', 'uid: ' + uid)
 			logger('get_premises_for_statement', 'def', 'supportive ' + str(supportive))
@@ -657,25 +651,28 @@ class Dbas(object):
 				attack_arg = url[pos1:pos2]
 
 			# get argument by system or with params, when we are navigating with breadcrumbs
-			return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
-			                                                                              pgroup, conclusion, self.request.session.id,
-			                                                                              supportive, issue)
+			return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction,
+			                                                                                 self.request.authenticated_userid,
+			                                                                                 pgroup, conclusion,
+			                                                                                 self.request.session.id,
+			                                                                                 supportive, issue)
 			# Track will be saved in the method, whereby we differentiate between an 'normal' request and one,
 			# which was saved in the breadcrumbs to prevent the random attack
 			if attack_arg is '' or attack_with is '':
-				return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction, self.request.authenticated_userid,
-				                                                                              pgroup, conclusion, self.request.session.id,
-				                                                                              supportive, issue)
+				return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction,
+				                                                                                 self.request.authenticated_userid,
+				                                                                                 pgroup, conclusion,
+				                                                                                 self.request.session.id,
+				                                                                                 supportive, issue)
 			else:
-				return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup_by_args(attack_with, attack_arg, pgroup,
-				                                                                                      conclusion, issue)
-
-			# increase or decrease weights
-			wh = WeightingHelper()
-			wh.increase_weight_of_argument_by_components(pgroup, conclusion, supportive)
-			wh.increase_weight_of_statement(conclusion)
-			wh.increase_weight_of_statements_in_premissegroup(pgroup)
-			transaction.commit()
+				return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup_by_args(attack_with,
+				                                                                                         attack_arg,
+				                                                                                         pgroup,
+				                                                                                         conclusion,
+				                                                                                         issue)
+			# rate premise, because here we have the first argument ever!
+			# votes for the oposite will decreased in the WeightingHelper
+			WeightingHelper().increase_weight_of_argument_by_id(return_dict['argument_uid'], self.request.authenticated_userid)
 
 			# reset and save url for breadcrumbs
 			if status != 0:
@@ -691,6 +688,7 @@ class Dbas(object):
 
 			return_dict['supportive'] = str(supportive)
 			return_dict['status'] = str(status)
+			transaction.commit()
 		except KeyError as e:
 			logger('reply_for_premisegroup', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -725,16 +723,23 @@ class Dbas(object):
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
-			BreadcrumbHelper().save_breadcrumb_for_user_with_premissegroups_uid(transaction, self.request.authenticated_userid, url,
-			                                                                    id_text.split('_')[2], pgroup_id, issue, self.request.session.id)
+			BreadcrumbHelper().save_breadcrumb_for_user_with_premissegroups_uid(transaction,
+			                                                                    self.request.authenticated_userid, url,
+			                                                                    id_text.split('_')[2], pgroup_id, issue,
+			                                                                    self.request.session.id)
 
 			logger('reply_for_argument', 'def', 'issue ' + str(issue))
 			logger('reply_for_argument', 'def', 'id_text ' + str(id_text))
 			logger('reply_for_argument', 'def', 'pgroup_id ' + str(pgroup_id))
 			logger('reply_for_argument', 'def', 'supportive ' + str(supportive))
 			# track will be saved in the method
-			return_dict, status = RecommenderHelper().get_attack_for_argument(transaction, self.request.authenticated_userid, id_text,
-			                                                               pgroup_id, self.request.session.id, issue)
+			return_dict, status = RecommenderHelper().get_attack_for_argument(transaction,
+			                                                                  self.request.authenticated_userid,
+			                                                                  id_text, pgroup_id,
+			                                                                  self.request.session.id, issue)
+			# rate argument, cause this is between confrontations
+			WeightingHelper().increase_weight_of_argument_by_id(int(id_text.split('_')[2]), self.request.authenticated_userid)
+
 			return_dict['status'] = str(status)
 			return_dict['argument_uid'] = str(id_text.split('_')[2])
 		except KeyError as e:
@@ -795,19 +800,17 @@ class Dbas(object):
 			if 'support' in uid_text:
 				return_dict, status = RecommenderHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
 				                                                                          uid_text, self.request.session.id, issue, lang)
+				# rate argument, cause supports are special cases
+				WeightingHelper().increase_weight_of_argument_by_id(int(uid_text.split('_')[2]), self.request.authenticated_userid, lang)
+
 			else:
 				return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, self.request.authenticated_userid,
 				                                                                         uid_text, self.request.session.id,
 				                                                                         exception_rebut, issue, lang)
+
 			return_dict['status'] = status
 			return_dict['last_relation'] = relation
 			return_dict['confrontation_uid'] = confrontation
-
-			# increase or decrease weights
-			wh = WeightingHelper()
-			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid_text.split('_')[2]).first()
-			wh.increase_weight_of_argument_by_id(db_argument.uid)
-			wh.increase_weight_of_statements_in_premissegroup(db_argument.premisesGroup_uid)
 			transaction.commit()
 
 			# special case, when we are in the attack-branch

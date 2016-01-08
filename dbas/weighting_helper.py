@@ -1,129 +1,168 @@
 from sqlalchemy import and_
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, Premise, Weight
+from .database.discussion_model import Argument, Statement, Premise, Weight, Vote, User
 from .logger import logger
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015
+# @copyright Krauthoff 2015-2016
 
 class WeightingHelper(object):
-	# TODO improve manipulation
 
-	def increase_weight_of_argument_by_id(self, argument_uid):
+	def increase_weight_of_argument_by_id(self, argument_uid, user):
 		"""
-		Increses the weight of a given argument by 1
+		Increses the weight of a given argument
 		:param argument_uid: id of the argument
+		:param user: self.request.authenticated_userid
 		:return: increased weight of the argument
 		"""
-		logger('WeightingHelper', 'increase_weight_of_argument_by_id', 'increasing argument ' + str(argument_uid) + ' weight by 1')
+		logger('WeightingHelper', 'increase_weight_of_argument_by_id', 'increasing argument ' + str(argument_uid) + ' weight')
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		db_weight = self.check_for_weight_uid(db_argument)
-		db_weight.increase_weight(1)
-		return db_weight.supports
+		db_weight = self.__check_weight_and_set_vote_uid(db_argument, user)
 
-	def decrease_weight_of_argument_by_id(self, argument_uid):
+		# if we vote for the argument, we have to vote the components to
+		self.__increase_weight_of_statements_in_premissegroup(db_argument.premisesGroup_uid, user)
+		if db_argument.isSupportive:
+			if db_argument.conclusion_uid != 0:
+				self.__increase_weight_of_statement(db_argument.conclusion_uid, user)
+			else:
+				self.increase_weight_of_argument_by_id(db_argument.argument_uid, user)
+		else:
+			if db_argument.conclusion_uid != 0:
+				self.__decrease_weight_of_statement(db_argument.conclusion_uid, user)
+			else:
+				self.decrease_weight_of_argument_by_id(db_argument.argument_uid, user)
+
+
+		# let's check, if the user voted for the oposite
+		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid == db_argument.premisesGroup_uid,
+		                                                              Argument.conclusion_uid == db_argument.conclusion_uid,
+		                                                              Argument.argument_uid == db_argument.argument_uid,
+		                                                              Argument.isSupportive != db_argument.isSupportive)).first()
+		if db_argument:
+			self.decrease_weight_of_argument_by_id(db_argument.uid, user)
+
+
+		# return count of votes
+		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_weight.uid).all()
+		return len(db_votes)
+
+	def decrease_weight_of_argument_by_id(self, argument_uid, user):
 		"""
-		Increses the weight of a given argument by 1
+		Increses the weight of a given argument
 		:param argument_uid: id of the argument
+		:param user: self.request.authenticated_userid
 		:return: increased weight of the argument
 		"""
-		logger('WeightingHelper', 'decrease_weight_of_argument_by_id', 'decreasing argument ' + str(argument_uid) + ' weight by 1')
+		logger('WeightingHelper', 'decrease_weight_of_argument_by_id', 'decreasing argument ' + str(argument_uid) + ' weight')
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		db_weight = self.check_for_weight_uid(db_argument)
-		db_weight.decrease_weight(1)
-		return db_weight.attacks
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
-	def increase_weight_of_argument_by_components(self, premissegroup_uid, conclusion_uid, is_supportive):
-		"""
-		Increses the weight of a given argument by 1
-		:param premissegroup_uid: id of the premisegroup
-		:param conclusion_uid: id of the conclusion
-		:param is_supportive: boolean
-		:return: increased weight of the argument
-		"""
-		logger('WeightingHelper', 'increase_weight_of_argument_by_components', 'increasing argument pgroup' + str(premissegroup_uid)
-		       + ' conclusion' + str(conclusion_uid) + ' supportive' + str(is_supportive) + ' weight by 1')
-		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==premissegroup_uid,
-		                                                              Argument.conclusion_uid==conclusion_uid,
-		                                                              Argument.isSupportive==is_supportive)).first()
-		return self.increase_weight_of_argument_by_id(db_argument.uid)
+		# remove votes
+		DBDiscussionSession.query(Vote).filter(and_(Vote.weight_uid==db_argument.weight_uid,
+		                                            Vote.author_uid==db_user.uid)).delete()
+		# remove votes of the components
+		self.__decrease_weight_of_statements_in_premissegroup(db_argument.premisesGroup_uid, user)
+		if db_argument.conclusion_uid != 0:
+			self.__decrease_weight_of_statement(db_argument.conclusion_uid, user)
+		else:
+			self.decrease_weight_of_argument_by_id(db_argument.argument_uid, user)
 
-	def decrease_weight_of_argument_by_components(self, premissegroup_uid, conclusion_uid, is_supportive):
-		"""
-		Increses the weight of a given argument by 1
-		:param premissegroup_uid: id of the premisegroup
-		:param conclusion_uid: id of the conclusion
-		:param is_supportive: boolean
-		:return: increased weight of the argument
-		"""
-		logger('WeightingHelper', 'decrease_weight_of_argument_by_components', 'decreasing argument pgroup' + str(premissegroup_uid)
-		       + ' conclusion' + str(conclusion_uid) + ' supportive' + str(is_supportive) + ' weight by 1')
-		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==premissegroup_uid,
-		                                                              Argument.conclusion_uid==conclusion_uid,
-		                                                              Argument.isSupportive==is_supportive)).first()
-		return self.decrease_weight_of_argument_by_id(db_argument.uid)
 
-	def increase_weight_of_statement(self, statement_uid):
+		# return count of votes
+		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_argument.weight_uid).all()
+		return len(db_votes)
+
+	def __increase_weight_of_statement(self, statement_uid, user):
 		"""
-		Increses the weight of a given statement by 1
+		Increses the weight of a given statement
 		:param statement_uid: id of the statement
+		:param user: self.request.authenticated_userid
 		:return: increased weight of the statement
 		"""
-		logger('WeightingHelper', 'increase_weight_of_statement', 'increasing statement ' + str(statement_uid) + ' weight by 1')
+		logger('WeightingHelper', '__increase_weight_of_statement', 'increasing statement ' + str(statement_uid) + ' weight')
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-		db_weight = self.check_for_weight_uid(db_statement)
-		db_weight.increase_weight(1)
-		return db_weight.supports
+		db_weight = self.__check_weight_and_set_vote_uid(db_statement, user)
 
-	def decrease_weight_of_statement(self, statement_uid):
+		# return count of votes
+		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_weight.uid).all()
+		return len(db_votes)
+
+	def __decrease_weight_of_statement(self, statement_uid, user):
 		"""
-		Increses the weight of a given statement by 1
+		Increses the weight of a given statement
 		:param statement_uid: id of the statement
+		:param user: self.request.authenticated_userid
 		:return: increased weight of the statement
 		"""
-		logger('WeightingHelper', 'decrease_weight_of_statement', 'decreasing statement ' + str(statement_uid) + ' weight by 1')
+		logger('WeightingHelper', '__decrease_weight_of_statement', 'decreasing statement ' + str(statement_uid) + ' weight')
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-		db_weight = self.check_for_weight_uid(db_statement)
-		db_weight.decrease_weight(1)
-		return db_weight.attacks
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
-	def increase_weight_of_statements_in_premissegroup(self, premissegroup_uid):
+		# remove vote
+		DBDiscussionSession.query(Vote).filter(and_(Vote.weight_uid==db_statement.weight_uid,
+		                                            Vote.author_uid==db_user.uid)).delete()
+
+		# return count of votes
+		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_statement.weight_uid).all()
+		return len(db_votes)
+
+	def __increase_weight_of_statements_in_premissegroup(self, premissegroup_uid, user):
 		"""
-		Increses the weight of a given statements in pgroup by 1
+		Increses the weight of a given statements in pgroup
 		:param premissegroup_uid: id of the premissegroup
+		:param user: self.request.authenticated_userid
 		:return: None
 		"""
 		db_group = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=premissegroup_uid).all()
 		for premise in db_group:
 			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
-			self.check_for_weight_uid(db_statement).increase_weight(1)
-			logger('WeightingHelper', 'increase_weight_of_statements_in_premissegroup', 'increasing statement ' + str(db_statement.uid) + ' weight by 1')
+			self.__check_weight_and_set_vote_uid(db_statement, user)
+			logger('WeightingHelper', '__increase_weight_of_statements_in_premissegroup', 'increasing statement ' + str(db_statement.uid) + ' weight')
 
-	def decrease_weight_of_statements_in_premissegroup(self, premissegroup_uid):
+	def __decrease_weight_of_statements_in_premissegroup(self, premissegroup_uid, user):
 		"""
-		Increses the weight of a given statements in pgroup by 1
+		Increses the weight of a given statements in pgroup
 		:param premissegroup_uid: id of the premissegroup
+		:param user: self.request.authenticated_userid
 		:return: None
 		"""
 		db_group = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=premissegroup_uid).all()
 		for premise in db_group:
 			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
-			self.check_for_weight_uid(db_statement).decrease_weight(1)
-			logger('WeightingHelper', 'decrease_weight_of_statement_in_premissegroup', 'decreasing statement ' + str(db_statement.uid) + ' weight by 1')
+			self.__decrease_weight_of_statement(db_statement.uid, user)
+			logger('WeightingHelper', 'decrease_weight_of_statement_in_premissegroup', 'decreasing statement ' + str(db_statement.uid) + ' weight')
 
-	def check_for_weight_uid(self, db_argument_or_statement):
+	def __check_weight_and_set_vote_uid(self, db_argument_or_statement, user):
 		"""
 		Check if the given argument has a weighting uid
 		:param db_argument_or_statement: Argument or Statement
+		:param user: self.request.authenticated_userid
 		:return: Weight
 		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		# do we have a weight?
 		if db_argument_or_statement.weight_uid == 0:
-			weight = Weight(attacks=0, supports=0)
+			# add new weight
+			weight = Weight()
 			DBDiscussionSession.add(weight)
 			DBDiscussionSession.flush()
+			# get new weight and create vote with weight uid and user uid; add the vote
+			db_weight = DBDiscussionSession.query(Weight).order_by(Weight.uid.desc()).first()
+			vote = Vote(weight_uid=db_weight.uid, author_uid=db_user.uid)
+			DBDiscussionSession.add(vote)
+			DBDiscussionSession.flush()
+			# set the weight as arguments weight
+			db_argument_or_statement.set_weight_uid(db_weight.uid)
 		else:
-			db_weight = DBDiscussionSession.query(Weight).filter_by(uid = db_argument_or_statement.weight_uid).first()
-		db_weight = DBDiscussionSession.query(Weight).order_by(Weight.uid.desc()).first()
-		db_argument_or_statement.set_weight_uid(db_weight.uid)
+			# get weight and vote
+			db_weight = DBDiscussionSession.query(Weight).filter_by(uid=db_argument_or_statement.weight_uid).first()
+			db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.weight_uid==db_weight.uid,
+			                                                      Vote.author_uid==db_user.uid)).all()
+			# add a vote, if there is no vote
+			if not db_vote:
+				vote = Vote(weight_uid=db_weight.uid, author_uid=db_user.uid)
+				DBDiscussionSession.add(vote)
+				DBDiscussionSession.flush()
+
 		return db_weight
