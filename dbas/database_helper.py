@@ -5,7 +5,7 @@ from sqlalchemy import and_
 from datetime import datetime
 
 from .database import DBDiscussionSession, DBNewsSession
-from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup,  Track, \
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup,  Track, \
 	Relation, Issue
 from .database.news_model import News
 from .dictionary_helper import DictionaryHelper
@@ -104,8 +104,7 @@ class DatabaseHelper(object):
 
 		return_dict = dict()
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).join(TextValue).first()
-		db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=db_statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
+		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).first()
 
 		# duplicate check
 		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).all()
@@ -118,14 +117,14 @@ class DatabaseHelper(object):
 			logger('DatabaseHelper', 'correct_statement', 'given user exists and correction will be set')
 			# duplicate or not?
 			if len(db_textversions)>0:
-				textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversions[-1].uid)
+				textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversions.uid)
 			else:
 				textversion = TextVersion(content=corrected_text, author=db_user.uid)
-				textversion.set_textvalue(db_textvalue.uid)
+				textversion.set_statement(db_statement.uid)
 				DBDiscussionSession.add(textversion)
 				DBDiscussionSession.flush()
 
-			db_textvalue.update_textversion(textversion.uid)
+			db_statement.set_textversion(textversion.uid)
 			transaction.commit()
 			return_dict['status'] = '1'
 		else:
@@ -204,13 +203,15 @@ class DatabaseHelper(object):
 		"""
 		return_dict = dict()
 		statements_dict = dict()
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==True, Statement.issue_uid==issue)).all()
+		db_statements = DBDiscussionSession.query(Statement)\
+			.filter(and_(Statement.isStartpoint==True, Statement.issue_uid==issue))\
+			.join(TextVersion, TextVersion.uid==Statement.textversion_uid).all()
 		logger('DatabaseHelper', 'get_start_statements', 'get all statements for issue ' + str(issue))
 		if db_statements:
 			return_dict['status'] = '1'
 			logger('DatabaseHelper', 'get_start_statements', 'there are start statements')
 			for statement in db_statements:
-				logger('DatabaseHelper', 'get_start_statements', 'statement ' + str(statement.uid) + ': ' + statement.textvalues.textversions.content)
+				logger('DatabaseHelper', 'get_start_statements', 'statement ' + str(statement.uid) + ': ' + statement.textversions.content)
 				statements_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement, issue)
 		else:
 			logger('DatabaseHelper', 'get_start_statements', 'there are no statements')
@@ -325,7 +326,7 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
 
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).first()
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(textValue_uid=db_statement.text_uid).join(User).all()
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
 
 		return_dict = dict()
 		content_dict = dict()
@@ -435,8 +436,7 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'set_statement', 'check for duplicate with: ' + statement)
 		db_duplicate = DBDiscussionSession.query(TextVersion).filter_by(content=statement).first()
 		if db_duplicate:
-			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(textVersion_uid=db_duplicate.uid).first()
-			db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.text_uid==db_textvalue.uid,
+			db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid==db_duplicate.uid,
 			                                                                Statement.issue_uid==issue)).first()
 			logger('DatabaseHelper', 'set_statement', 'duplicate, returning old statement with uid ' + str(db_statement.uid))
 			return db_statement, True
@@ -446,20 +446,15 @@ class DatabaseHelper(object):
 		DBDiscussionSession.add(textversion)
 		DBDiscussionSession.flush()
 
-		# add a new cache
-		textvalue = TextValue(textversion=textversion.uid)
-		DBDiscussionSession.add(textvalue)
-		DBDiscussionSession.flush()
-		textversion.set_textvalue(textvalue.uid)
-
 		# add the statement
-		statement = Statement(text=textvalue.uid, isstartpoint=is_start, issue=issue)
+		statement = Statement(textversion=textversion.uid, isstartpoint=is_start, issue=issue)
 		DBDiscussionSession.add(statement)
 		DBDiscussionSession.flush()
 
 		# get the new statement
-		new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.text_uid==textvalue.uid,
+		new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid==textversion.uid,
 		                                                                 Statement.issue_uid==issue)).order_by(Statement.uid.desc()).first()
+		textversion.set_statement(new_statement.uid)
 
 		transaction.commit()
 

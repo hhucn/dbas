@@ -423,6 +423,7 @@ class Dbas(object):
 	def get_start_statements(self):
 		"""
 		Returns all positions as dictionary with uid <-> value
+		:needed param self.request.params['issue']: id of the issue
 		:return: list of all positions
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -469,6 +470,8 @@ class Dbas(object):
 	def get_text_for_statement(self):
 		"""
 		Returns text of a statement
+		:needed param self.request.params['uid']: id of the statement
+		:needed param self.request.params['issue']: id of the issue
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -513,6 +516,9 @@ class Dbas(object):
 	def get_premise_for_statement(self):
 		"""
 		Returns random premisses for a statement
+		:needed param self.request.params['uid']: id of the statement
+		:needed param self.request.params['supportive']: does the user agrees or disagrees?
+		:needed param self.request.params['issue']: id of the issue
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -563,6 +569,9 @@ class Dbas(object):
 	def get_premises_for_statement(self):
 		"""
 		Returns all premisses for a statement
+		:needed param self.request.params['uid']: id of the statement
+		:needed param self.request.params['supportive']: does the user agrees or disagrees?
+		:needed param self.request.params['issue']: id of the issue
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -612,8 +621,12 @@ class Dbas(object):
 	def reply_for_premisegroup(self):
 		"""
 		Get reply for a premise
+		:needed param self.request.params['pgroup']: ....
+		:needed param self.request.params['conclusion']: ....
+		:needed param self.request.params['issue']: id of the issue
 		:return: dictionary with every arguments
 		"""
+		# todo text
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
@@ -703,9 +716,13 @@ class Dbas(object):
 	@view_config(route_name='ajax_reply_for_argument', renderer='json', check_csrf=False)
 	def reply_for_argument(self):
 		"""
-		Get reply for ana rgument
+		Get reply for an argument
+		:needed param self.request.params['issue']: id of the issue
+		:needed param self.request.params['id_text']: ....
+		:needed param self.request.params['pgroup']: ....
 		:return: dictionary with every arguments
 		"""
+		# todo text
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
@@ -756,9 +773,12 @@ class Dbas(object):
 	@view_config(route_name='ajax_reply_for_response_of_confrontation', renderer='json', check_csrf=False)
 	def reply_for_response_of_confrontation(self):
 		"""
-
+		:needed param self.request.params['id']: ....
+		:needed param self.request.params['relation']: ....
+		:needed param self.request.params['issue']: id of the issue
 		:return: json-dict()
 		"""
+		# todo text
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
@@ -814,12 +834,12 @@ class Dbas(object):
 			transaction.commit()
 
 			# special case, when we are in the attack-branch
-			if exception_rebut: # TODO delete only, if there are no errors while testing
-				logger('reply_for_response_of_confrontation', 'def', 'getting text for the second bootstrap way -> attack')
-				text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
-			else:
-				logger('reply_for_response_of_confrontation', 'def', 'getting text for the first bootstrap way -> support')
-				text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
+			#if exception_rebut: # TODO delete only, if there are no errors while testing
+			#	logger('reply_for_response_of_confrontation', 'def', 'getting text for the second bootstrap way -> attack')
+			text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
+			#else:
+			#	logger('reply_for_response_of_confrontation', 'def', 'getting text for the first bootstrap way -> support')
+			#	text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
 			logger('reply_for_response_of_confrontation', 'def', 'adding confrontation_text: ' + text)
 			return_dict['confrontation_text'] = text
 		except KeyError as e:

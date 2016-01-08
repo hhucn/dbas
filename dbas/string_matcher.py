@@ -4,7 +4,7 @@ from sqlalchemy import and_
 from Levenshtein import distance
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Statement, User, TextValue, TextVersion
+from .database.discussion_model import Statement, User, TextVersion
 from .logger import logger
 
 # @author Tobias Krauthoff
@@ -27,15 +27,15 @@ class FuzzyStringMatcher(object):
 		:return: dict()
 		"""
 		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'string: ' + value + ', isStatement: ' + str(isStatement))
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==isStatement, Statement.issue_uid==issue)).join(TextValue).all()
+		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==isStatement, Statement.issue_uid==issue)).all()
 		tmp_dict = dict()
 		for index, statement in enumerate(db_statements):
-			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
-			if value.lower() in db_textvalue.textversions.content.lower():
-				lev = distance(value.lower(), db_textvalue.textversions.content.lower())
-				logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textvalue.textversions.content)
+			db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
+			if value.lower() in db_textversion.content.lower():
+				lev = distance(value.lower(), db_textversion.content.lower())
+				logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textversion.content)
 				lev  = str(lev).zfill(self.max_count_zeros)
-				tmp_dict[str(lev) + '_' + str(index)] = db_textvalue.textversions.content
+				tmp_dict[str(lev) + '_' + str(index)] = db_textversion.content
 
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 
@@ -58,7 +58,7 @@ class FuzzyStringMatcher(object):
 		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_edits', 'string: ' + value + ', statement uid: ' + str(statement_uid))
 
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid, Statement.issue_uid==issue)).first()
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(textValue_uid=db_statement.text_uid).join(User).all()
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
 
 		tmp_dict = dict()
 		for index, textversion in enumerate(db_textversions):
@@ -86,16 +86,16 @@ class FuzzyStringMatcher(object):
 		:return: dict()
 		"""
 		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_reasons', 'string: ' + value + ', issue: ' + str(issue))
-		db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).join(TextValue).all()
+		db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
 		tmp_dict = dict()
 
 		for index, statement in enumerate(db_statements):
-			db_textvalue = DBDiscussionSession.query(TextValue).filter_by(uid=statement.text_uid).join(TextVersion, TextVersion.uid==TextValue.textVersion_uid).first()
-			if value.lower() in db_textvalue.textversions.content.lower():
-				lev = distance(value.lower(), db_textvalue.textversions.content.lower())
-				logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textvalue.textversions.content)
+			db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
+			if value.lower() in db_textversion.content.lower():
+				lev = distance(value.lower(), db_textversion.content.lower())
+				logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textversion.content)
 				lev  = str(lev).zfill(self.max_count_zeros)
-				tmp_dict[str(lev) + '_' + str(index)] = db_textvalue.textversions.content
+				tmp_dict[str(lev) + '_' + str(index)] = db_textversion.content
 
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 

@@ -29,7 +29,7 @@ class BreadcrumbHelper(object):
 		"""
 		logger('BreadcrumbHelper', 'save_history_for_user_with_statement_uid', 'def')
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid)).first()
-		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
+		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).first()
 		text = db_textversion.content
 
 		returned_in_history = self.save_breadcrumb_for_user(transaction, user, url, text, session_id)
@@ -67,7 +67,7 @@ class BreadcrumbHelper(object):
 		"""
 		logger('BreadcrumbHelper', 'save_breadcrumb_for_user_with_argument_parts', 'def')
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==conclusion_uid)).first()
-		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
+		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).first()
 		text1, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroups_uid, issue)
 		text2 = db_textversion.content.lower()
 
@@ -171,7 +171,7 @@ class BreadcrumbHelper(object):
 		"""
 		logger('BreadcrumbHelper', 'save_breadcrumb_for_user_with_action', 'def')
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid)).first()
-		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
+		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).first()
 		_t = Translator(lang)
 		attribute = _t.get(_t.support) if supportive else _t.get(_t.attack)
 		text = db_textversion.content

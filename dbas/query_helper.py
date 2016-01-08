@@ -3,7 +3,7 @@ import locale
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextValue, TextVersion, Premise, PremiseGroup, Relation, History
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History
 from .logger import logger
 from .strings import Translator
 
@@ -252,16 +252,18 @@ class QueryHelper(object):
 		"""
 		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid) + ', issue ' + str(issue))
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid,
-		                                                                Statement.issue_uid==issue)).join(
-			TextValue).first()
+		                                                                Statement.issue_uid==issue)).first()
 		if not db_statement:
 			return None
+
 		db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
-			textValue_uid=db_statement.textvalues.uid).first()
+			uid=db_statement.textversion_uid).first()
 		logger('QueryHelper', 'get_text_for_statement_uid', 'text ' + db_textversion.content)
 		tmp = db_textversion.content
+
 		if tmp.endswith('.'):
 			tmp = tmp[:-1]
+
 		return tmp
 
 	def get_text_for_argument_uid(self, id, issue, lang):

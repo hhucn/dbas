@@ -113,16 +113,16 @@ class Statement(DiscussionBase):
 	"""
 	__tablename__ = 'statements'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	text_uid = sa.Column(sa.Integer, sa.ForeignKey('textvalues.uid'))
+	textversion_uid = sa.Column(sa.Integer, sa.ForeignKey('textversions.uid'))
 	isStartpoint = sa.Column(sa.Boolean, nullable=False)
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'))
 
-	textvalues = relationship('TextValue', foreign_keys=[text_uid])
+	textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 	weights = relationship('Weight', foreign_keys=[weight_uid])
 
-	def __init__(self, text, isstartpoint, issue=0):
+	def __init__(self, textversion, isstartpoint, issue=0):
 		"""
 		Initializes a row in current statement-table
 		:param text:
@@ -130,7 +130,7 @@ class Statement(DiscussionBase):
 		:param issue:
 		:return:
 		"""
-		self.text_uid = text
+		self.textversion_uid = textversion
 		self.isStartpoint = isstartpoint
 		self.issue_uid = issue
 		self.weight_uid = 0
@@ -138,28 +138,8 @@ class Statement(DiscussionBase):
 	def set_weight_uid(self, weight_uid):
 		self.weight_uid = weight_uid
 
-
-class TextValue(DiscussionBase): # TODO: remove this due to redundancy!
-	"""
-	Text-Value-table with several columns.
-	Each text value has a link to its most recent text value
-	"""
-	__tablename__ = 'textvalues'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	textVersion_uid = sa.Column(sa.Integer, sa.ForeignKey('textversions.uid'))
-
-	textversions = relationship('TextVersion', foreign_keys=[textVersion_uid])
-
-	def __init__(self, textversion):
-		"""
-		Initializes a row in current text-value-table
-		:param textversion:
-		:return:
-		"""
-		self.textVersion_uid = textversion
-
-	def update_textversion(self, textVersion_uid):
-		self.textVersion_uid = textVersion_uid
+	def set_textversion(self, uid):
+		self.textversion_uid = uid
 
 
 class TextVersion(DiscussionBase):
@@ -169,12 +149,12 @@ class TextVersion(DiscussionBase):
 	"""
 	__tablename__ = 'textversions'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	textValue_uid = sa.Column(sa.Integer, sa.ForeignKey('textvalues.uid'), nullable=True)
+	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'), nullable=True)
 	content = sa.Column(sa.Text, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
-	textvalues = relationship('TextValue', foreign_keys=[textValue_uid])
+	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
 	def __init__(self, content, author):
@@ -188,8 +168,8 @@ class TextVersion(DiscussionBase):
 		self.author_uid = author
 		self.timestamp = func.now()
 
-	def set_textvalue(self, value):
-		self.textValue_uid = value
+	def set_statement(self, value):
+		self.statement_uid = value
 
 	@classmethod
 	def by_timestamp(cls):

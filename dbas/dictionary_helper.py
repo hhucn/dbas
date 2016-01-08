@@ -1,7 +1,7 @@
 import random
 import json
 from .database import DBDiscussionSession
-from .database.discussion_model import Statement, User, TextValue, TextVersion, Premise
+from .database.discussion_model import Statement, User, TextVersion, Premise
 from .logger import logger
 from sqlalchemy import and_
 
@@ -61,13 +61,13 @@ class DictionaryHelper(object):
 		:return: dictionary
 		"""
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'statement uid ' + str(statement_row.uid))
-		db_statement    = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_row.uid,
-		                                                                   Statement.issue_uid==issue)).join(TextValue).first()
-		db_premise     = DBDiscussionSession.query(Premise).filter(and_(Premise.statement_uid==db_statement.uid,
-		                                                                  Premise.issue_uid==issue)).first()
+		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_row.uid,
+		                                                                Statement.issue_uid==issue)).first()
+		db_premise = DBDiscussionSession.query(Premise).filter(and_(Premise.statement_uid==db_statement.uid,
+		                                                            Premise.issue_uid==issue)).first()
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'premise uid ' +
 			       ((str(db_premise.premisesGroup_uid) + '.' + str(db_premise.statement_uid)) if db_premise else 'null'))
-		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textvalues.textVersion_uid).join(User).first()
+		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).first()
 
 		uid    = str(db_statement.uid)
 		text   = db_textversion.content
