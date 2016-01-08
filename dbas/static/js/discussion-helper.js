@@ -159,18 +159,17 @@ function Helper() {
 	};
 
 	/**
+	 * * DEPRECATED: THIS IS NOW SERVER SIDE!
 	 * Returns all kinds of attacks for the given premise and conclusion
 	 * @param confrontation current confrontation
 	 * @param premise current premises
 	 * @param attackType current type of the attack
-	 * @param lastAttack last attack
 	 * @param conclusion current conclusion
 	 * @param startLowerCase, true, when each sentences should start as lowercase
-	 * @param isAttacking
 	 * @param isSupportive, true, if it should be supportive
 	 * @returns {string} with [undermine, support, undercut, overbid, rebut, dontknow, irrelevant]
 	 */
-	this.createRelationsTextWithConfrontation = function(confrontation, premise, attackType, lastAttack, conclusion, startLowerCase, isAttacking, isSupportive){
+	this.createRelationsTextWithConfrontation = function(confrontation, premise, attackType, conclusion, startLowerCase, isSupportive){
 		if (premise.substr(premise.length-1) == '.')
 			premise = premise.substr(0, premise.length-1);
 
@@ -178,11 +177,6 @@ function Helper() {
 			conclusion = conclusion.substr(0, conclusion.length-1);
 
 		var longConclusion, w, r, text;
-
-		//if (lastAttack == attr_undermine){			longConclusion = premise;
-		//} else if (lastAttack == attr_rebut){		longConclusion = conclusion;
-		//} else if (lastAttack == attr_undercut){	longConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
-		//}
 
 		if (attackType === attr_overbid){
 			if (isSupportive) 	longConclusion = conclusion + ', ' + _t(because).toLocaleLowerCase() + ' ' + premise;
@@ -206,6 +200,7 @@ function Helper() {
 	};
 
 	/**
+	 * * DEPRECATED: THIS IS NOW SERVER SIDE!
 	 * Returns all kinds of attacks for the given confrontation and conclusion
 	 * @param confrontation current confrontation
 	 * @param conclusion current conclusion
@@ -247,6 +242,7 @@ function Helper() {
 	};
 
 	/**
+	 * * DEPRECATED: THIS IS NOW SERVER SIDE!
 	 * Returns all real attacks for the given premise and conclusion
 	 * @param premise of current argument
 	 * @param conclusion of current argument
@@ -278,6 +274,7 @@ function Helper() {
 	};
 
 	/**
+	 * * DEPRECATED: THIS IS NOW SERVER SIDE!
 	 * Returns all real attacks for the given premise and conclusion
 	 * @param premise
 	 * @param conclusion

@@ -776,6 +776,13 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Hides the error field
+	 */
+	this.hideDiscussionError = function () {
+		$('#' + discussionFailureRowId).hide();
+	};
+
+	/**
 	 * Check whether the edit button should be visible or not
 	 */
 	this.resetEditAndRefactorButton = function (optionalEditable) {
@@ -1131,6 +1138,7 @@ function GuiHandler() {
 	this.setDisplayStyleAsGraphView = function () {
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
+		new GuiHandler().hideDiscussionError();
 		new DiscussionGraph().showGraph();
 	};
 

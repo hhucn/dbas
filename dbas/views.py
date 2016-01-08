@@ -20,7 +20,7 @@ from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
 from .query_helper import QueryHelper
-from .strings import Translator
+from .strings import Translator, TextGenerator
 from .string_matcher import FuzzyStringMatcher
 from .breadcrumb_helper import BreadcrumbHelper
 from .tracking_helper import TrackingHelper
@@ -424,6 +424,7 @@ class Dbas(object):
 		"""
 		Returns all positions as dictionary with uid <-> value
 		:needed param self.request.params['issue']: id of the issue
+		:needed param self.request.params['url']: current url for the breadcrumbs
 		:return: list of all positions
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -472,6 +473,7 @@ class Dbas(object):
 		Returns text of a statement
 		:needed param self.request.params['uid']: id of the statement
 		:needed param self.request.params['issue']: id of the issue
+		:needed param self.request.params['url']: current url for the breadcrumbs
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -519,6 +521,7 @@ class Dbas(object):
 		:needed param self.request.params['uid']: id of the statement
 		:needed param self.request.params['supportive']: does the user agrees or disagrees?
 		:needed param self.request.params['issue']: id of the issue
+		:needed param self.request.params['url']: current url for the breadcrumbs
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -553,6 +556,15 @@ class Dbas(object):
 			return_dict = RecommenderHelper().get_premise_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
 
+			if supportive:
+				return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premises'],
+				                                                                                    return_dict['currentStatement'][0:1].lower() + jsonData['currentStatement'][1],
+				                                                                                    False))
+			else:
+				return_dict.update(TextGenerator(lang).get_text_dict_for_attacks_only(return_dict['premises'],
+				                                                                      return_dict['currentStatement'][0:1].lower() + jsonData['currentStatement'][1],
+				                                                                      False))
+
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('ajax_get_premise_for_statement', 'error', repr(e))
@@ -572,6 +584,7 @@ class Dbas(object):
 		:needed param self.request.params['uid']: id of the statement
 		:needed param self.request.params['supportive']: does the user agrees or disagrees?
 		:needed param self.request.params['issue']: id of the issue
+		:needed param self.request.params['url']: current url for the breadcrumbs
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -621,12 +634,12 @@ class Dbas(object):
 	def reply_for_premisegroup(self):
 		"""
 		Get reply for a premise
-		:needed param self.request.params['pgroup']: ....
-		:needed param self.request.params['conclusion']: ....
+		:needed param self.request.params['pgroup']: id of current premisegroup | combined this is an argument
+		:needed param self.request.params['conclusion']: id of current conclusion | combined this is an argument
 		:needed param self.request.params['issue']: id of the issue
+		:needed param self.request.params['url']: current url for the breadcrumbs
 		:return: dictionary with every arguments
 		"""
-		# todo text
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
@@ -701,6 +714,12 @@ class Dbas(object):
 
 			return_dict['supportive'] = str(supportive)
 			return_dict['status'] = str(status)
+			return_dict.update(TextGenerator(lang).get_confrontation_relation_text_dict(return_dict['confrontation'],
+			                                                                            return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1],
+			                                                                            return_dict['premise_text'],
+			                                                                            return_dict['attack'],
+			                                                                            False,
+			                                                                            supportive))
 			transaction.commit()
 		except KeyError as e:
 			logger('reply_for_premisegroup', 'error', repr(e))
@@ -720,13 +739,19 @@ class Dbas(object):
 		:needed param self.request.params['issue']: id of the issue
 		:needed param self.request.params['id_text']: ....
 		:needed param self.request.params['pgroup']: ....
+		:needed param self.request.params['url']: current url for the breadcrumbs
 		:return: dictionary with every arguments
 		"""
-		# todo text
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('reply_for_argument', 'def', 'main')
+
+		# get language
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
 
 		return_dict = {}
 		try:
@@ -754,6 +779,12 @@ class Dbas(object):
 			                                                                  self.request.authenticated_userid,
 			                                                                  id_text, pgroup_id,
 			                                                                  self.request.session.id, issue)
+			return_dict.update(TextGenerator(lang).get_confrontation_relation_text_dict(return_dict['confrontation'],
+			                                                                            return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1],
+			                                                                            return_dict['premise_text'],
+			                                                                            return_dict['attack'],
+			                                                                            False,
+			                                                                            supportive))
 			# rate argument, cause this is between confrontations
 			WeightingHelper().increase_weight_of_argument_by_id(int(id_text.split('_')[2]), self.request.authenticated_userid)
 
@@ -773,12 +804,12 @@ class Dbas(object):
 	@view_config(route_name='ajax_reply_for_response_of_confrontation', renderer='json', check_csrf=False)
 	def reply_for_response_of_confrontation(self):
 		"""
-		:needed param self.request.params['id']: ....
-		:needed param self.request.params['relation']: ....
+		:needed param self.request.params['id']: x1_argument_x2, where x1 is the name of dbas confrontation and x2 the argument, which gets attacked
+		:needed param self.request.params['relation']: name of the current relation. this is the attack of the user
 		:needed param self.request.params['issue']: id of the issue
+		:needed param self.request.params['url']: current url for the breadcrumbs
 		:return: json-dict()
 		"""
-		# todo text
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
@@ -801,7 +832,7 @@ class Dbas(object):
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
-			# supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
@@ -832,16 +863,29 @@ class Dbas(object):
 			return_dict['last_relation'] = relation
 			return_dict['confrontation_uid'] = confrontation
 			transaction.commit()
-
-			# special case, when we are in the attack-branch
-			#if exception_rebut: # TODO delete only, if there are no errors while testing
-			#	logger('reply_for_response_of_confrontation', 'def', 'getting text for the second bootstrap way -> attack')
 			text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
-			#else:
-			#	logger('reply_for_response_of_confrontation', 'def', 'getting text for the first bootstrap way -> support')
-			#	text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
+
 			logger('reply_for_response_of_confrontation', 'def', 'adding confrontation_text: ' + text)
 			return_dict['confrontation_text'] = text
+
+			# IMPORTANT: Supports are a special case !
+			if 'support' in uid_text:
+				return_dict.update(TextGenerator(lang).get_confrontation_relation_text_dict(return_dict['confrontation'],
+			                                                                                return_dict['conclusion'][0:1].lower() + return_dict['conclusion'][1],
+			                                                                                return_dict['premise'],
+			                                                                                return_dict['attack'],
+			                                                                                False,
+			                                                                                supportive))
+			else:
+				return_dict['header_text'] = TextGenerator(lang).get_header_for_confrontation_response(text,
+			                                                                                           return_dict['premisegroup'].replace('.',''),
+			                                                                                           return_dict['relation'],
+			                                                                                           return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1],
+			                                                                                           True,
+			                                                                                           supportive,
+			                                                                                           self.request.authenticated_userid)
+
+
 		except KeyError as e:
 			logger('reply_for_response_of_confrontation', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -1252,6 +1296,7 @@ class Dbas(object):
 			logger('get_everything_for_island_view', 'def', 'params uid: issue ' + str(issue) + ', arg_uid ' + str(arg_uid))
 
 			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang, issue)
+			return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premise'], return_dict['conclusion'], False))
 
 			return_dict['status'] = '1'
 			logger('get_everything_for_island_view', 'return', str(return_dict))

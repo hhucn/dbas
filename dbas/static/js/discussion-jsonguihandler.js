@@ -196,7 +196,7 @@ function JsonGuiHandler() {
 			});
 
 			argument = conclusion + ' ' + helper.startWithLowerCase(_t(because)) + ' ' + premise;
-			text = _t(otherParticipantsThinkThat) + ' <b>' + conclusion
+			text = _t(otherParticipantsThinkThat) + ' <b>' + conclusion //  # todo server side
 					+ '</b>, ' + helper.startWithLowerCase(_t(because))
 					+ ' <b>' + premise + '</b>.<br><br>';
 			text += isSupportive ? (_t(whatDoYouThinkAboutThat) + '?') : (_t(whyAreYouDisagreeing));
@@ -221,13 +221,13 @@ function JsonGuiHandler() {
 			// only the attacking buttons, if we are attackingd;
 
 			if (isSupportive){
-				relationArray = helper.createRelationsTextWithoutConfrontation(premise, conclusion, false);
-				tmp[0] = relationArray[0] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : '');
-				tmp[1] = relationArray[1] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_support + '</i>]') : '');
-				tmp[2] = relationArray[2] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : '');
-				tmp[3] = relationArray[3] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_overbid + '</i>]') : '');
-				tmp[4] = relationArray[4] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : '');
-				tmp[5] = relationArray[5] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : '');
+				//relationArray = helper.createRelationsTextWithoutConfrontation(premise, conclusion, false); //  # todo server side
+				tmp[0] = jsonData.undermine_text    + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : '');
+				tmp[1] = jsonData.support_text      + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_support + '</i>]') : '');
+				tmp[2] = jsonData.undercut_text     + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : '');
+				tmp[3] = jsonData.overbid_text      + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_overbid + '</i>]') : '');
+				tmp[4] = jsonData.rebut_text        + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : '');
+				tmp[5] = jsonData.no_opinion_text   + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : '');
 				listitems.push(helper.getKeyValAsInputInLiWithType(id[0], tmp[0], false, false, true, _t(description_undermine)));
 				listitems.push(helper.getKeyValAsInputInLiWithType(id[1], tmp[1], false, false, true, _t(description_support)));
 				listitems.push(helper.getKeyValAsInputInLiWithType(id[2], tmp[2], false, false, true, _t(description_undercut)));
@@ -235,12 +235,11 @@ function JsonGuiHandler() {
 				listitems.push(helper.getKeyValAsInputInLiWithType(id[4], tmp[4], false, false, true, _t(description_rebut)));
 				listitems.push(helper.getKeyValAsInputInLiWithType(id[5], tmp[5], false, false, true, _t(description_no_opinion)));
 			} else {
-
-				relationArray = helper.createAttacksOnlyText(premise, conclusion, false);
-				tmp[0] = relationArray[0] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : '');
-				tmp[1] = relationArray[1] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : '');
-				tmp[2] = relationArray[2] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : '');
-				tmp[3] = relationArray[3] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : '');
+				//relationArray = helper.createAttacksOnlyText(premise, conclusion, false);
+				tmp[0] = jsonData.undermine_text    + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : '');
+				tmp[1] = jsonData.undercut_text     + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : '');
+				tmp[2] = jsonData.rebut_text        + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : '');
+				tmp[3] = jsonData.no_opinion_text   + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : '');
 				listitems.push(helper.getKeyValAsInputInLiWithType(id[0], tmp[0], false, false, true, _t(description_undermine)));
 				listitems.push(helper.getKeyValAsInputInLiWithType(id[2], tmp[1], false, false, true, _t(description_undercut)));
 				listitems.push(helper.getKeyValAsInputInLiWithType(id[4], tmp[2], false, false, true, _t(description_rebut)));
@@ -267,8 +266,8 @@ function JsonGuiHandler() {
 			opinion, confrontationText, listitems = [], dict, double_attack, text = [],
 			confrontation = jsonData.confrontation.substring(0, jsonData.confrontation.length),
 			confronation_id = '_argument_' + jsonData.confrontation_argument_id,
-			argument_id = '_argument_' + jsonData.argument_id,
-			relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premise, jsonData.attack, false, isSupportive);
+			argument_id = '_argument_' + jsonData.argument_id;
+			//relationArray = helper.createConfrontationsRelationsText(confrontation, conclusion, premise, jsonData.attack, false, isSupportive); // todo server side
 
 		// sanity check
 		if (typeof jsonData.relation == 'undefined'){
@@ -299,10 +298,6 @@ function JsonGuiHandler() {
 		} else if (jsonData.attack == attr_undercut){
 			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premise + '</b> ' + (isSupportive ? _t(andTheyDoNotBelieveCounter) : _t(andTheyDoNotBelieveCounter))
 					+ ' <b>' + conclusion + '</b>,' + ' ' + _t(because).toLocaleLowerCase() + ' ';
-			/*
-			confrontationText = _t(otherParticipantsThinkThat) + ' <b>' + premise + '</b> ' + (isSupportive ? _t(doesNotJustify) : _t(doesJustify))
-					+ ' <b>' + conclusion + '</b>,' + ' ' + _t(because).toLocaleLowerCase() + ' ';
-					*/
 		}
 		confrontationText += '<b>' + confrontation + '</b>' + (DEBUG_ATTACK ? (' [<i>' + jsonData.attack + '</i>]') : '');
 
@@ -317,12 +312,12 @@ function JsonGuiHandler() {
 				_t(informationForExperts) + ': ' + _t(thisConfrontationIs) + ' ' + jsonData.attack + '.', dict);
 
 		// build the radio buttons
-		text[0] = relationArray[0] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : '');
-		text[1] = relationArray[1] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_support + '</i>]') : '');
-		text[2] = relationArray[2] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : '');
-		text[3] = relationArray[3] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_overbid + '</i>]') : '');
-		text[4] = relationArray[4] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : '');
-		text[5] = relationArray[5] + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : '');
+		text[0] = jsonData.undermine_text   + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undermine + '</i>]') : '');
+		text[1] = jsonData.support_text     + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_support + '</i>]') : '');
+		text[2] = jsonData.undercut_text    + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_undercut + '</i>]') : '');
+		text[3] = jsonData.overbid_text     + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_overbid + '</i>]') : '');
+		text[4] = jsonData.rebut_text       + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_rebut + '</i>]') : '');
+		text[5] = jsonData.no_opinion_text  + ' ' + (DEBUG_ATTACK ? ('[<i>' + attr_no_opinion + '</i>]') : '');
 		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undermine	+ confronation_id,	text[0], false, false, true, _t(description_undermine)));
 		listitems.push(helper.getKeyValAsInputInLiWithType(attr_support 	+ confronation_id,	text[1], false, false, true, _t(description_support)));
 		listitems.push(helper.getKeyValAsInputInLiWithType(attr_undercut 	+ confronation_id,	text[2], false, false, true, _t(description_undercut)));
@@ -387,14 +382,10 @@ function JsonGuiHandler() {
 			helper = new Helper(),
 			guihandler = new GuiHandler(),
 			conclusion = helper.startWithLowerCase(jsonData.conclusion_text),
-			listitems = [], i, reason, id, long_id, dict, lastAttack, text, isAttacking;
-		lastAttack = window.location.href.substr(window.location.href.indexOf('relation=') + 'relation='.length);
-		lastAttack = lastAttack.substr(0,lastAttack.indexOf('&'));
-		isAttacking = window.location.href.substr(window.location.href.indexOf('id=') + 'id='.length).indexOf('_attacking_') != -1;
+			listitems = [], i, reason, id, long_id, dict, text;
 
-		// different case, when we are attacking
-		text = helper.createRelationsTextWithConfrontation(jsonData.confrontation_text, premise, jsonData.relation, lastAttack, conclusion,
-				true, isAttacking, isSupportive);
+		// different case, when we are attacking # todo server side
+		text = jsonData.header_text;
 		text += DEBUG_ATTACK ? (' (' + _t(youMadeA) + ' ' + jsonData.relation + ')' ): '';
 
 		// build the reasons
@@ -420,7 +411,6 @@ function JsonGuiHandler() {
 			'supportive': isSupportive};
 
 		if (typeof jsonData.logged_in == "string") {
-			text += '<br><br>' + _t(canYouGiveAReasonForThat);
 			guihandler.setDiscussionsDescription(_t(sentencesOpenersForArguments[0]) + ': ' + text, '', dict);
 			// check this item, if it is the only one
 			if (parseInt(jsonData.reason) == 0){

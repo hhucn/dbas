@@ -67,9 +67,14 @@ function DiscussionIsland(){
 	 */
 	this.displayDataInIslandView = function (jsonData) {
 		var div, row, header, islandViewContainerSpace = $('#' + islandViewContainerSpaceId), helper = new Helper(),
-				titles = helper.createRelationsTextWithoutConfrontation(jsonData.premise, jsonData.conclusion, false);
+				titles = [];// = helper.createRelationsTextWithoutConfrontation(jsonData.premise, jsonData.conclusion, false); //  # todo server side
 		// title order = [undermine, support, undercut, overbid, rebut, noopinion]
 		islandViewContainerSpace.empty();
+		titles[0] = jsonData.undermine_text;
+		titles[1] = jsonData.support_text;
+		titles[2] = jsonData.undercut_text;
+		titles[3] = jsonData.overbid_text;
+		titles[4] = jsonData.rebut_text;
 
 		// first row with header only
 		row = $('<div>').addClass('row');
