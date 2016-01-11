@@ -116,11 +116,9 @@ class Statement(DiscussionBase):
 	textversion_uid = sa.Column(sa.Integer, sa.ForeignKey('textversions.uid'))
 	isStartpoint = sa.Column(sa.Boolean, nullable=False)
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
-	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'))
 
 	textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
-	weights = relationship('Weight', foreign_keys=[weight_uid])
 
 	def __init__(self, textversion, isstartpoint, issue=0):
 		"""
@@ -134,9 +132,6 @@ class Statement(DiscussionBase):
 		self.isStartpoint = isstartpoint
 		self.issue_uid = issue
 		self.weight_uid = 0
-
-	def set_weight_uid(self, weight_uid):
-		self.weight_uid = weight_uid
 
 	def set_textversion(self, uid):
 		self.textversion_uid = uid
@@ -411,11 +406,12 @@ class Vote(DiscussionBase):
 	__tablename__ = 'votes'
 	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'), primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), primary_key=True)
+	isUpVote = sa.Column(sa.Boolean, nullable=False)
 
 	weights = relationship('Weight', foreign_keys=[weight_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, weight_uid=0, author_uid=0):
+	def __init__(self, weight_uid=0, author_uid=0, isUpVote=0):
 		"""
 		Initializes a row
 		:param weight_uid:
@@ -424,3 +420,7 @@ class Vote(DiscussionBase):
 		"""
 		self.weight_uid = weight_uid
 		self.author_uid = author_uid
+		self.isUpVote = isUpVote
+
+	def set_up_vote(self, isUpVote):
+		self.isUpVote = isUpVote

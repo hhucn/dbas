@@ -709,7 +709,7 @@ class Dbas(object):
 				                                                                                         issue)
 			# rate premise, because here we have the first argument ever!
 			# votes for the oposite will decreased in the WeightingHelper
-			WeightingHelper().increase_weight_of_argument_by_id(return_dict['argument_uid'], self.request.authenticated_userid)
+			WeightingHelper().add_vote_for_argument(return_dict['argument_uid'], self.request.authenticated_userid, transaction)
 
 			# reset and save url for breadcrumbs
 			if status != 0:
@@ -830,7 +830,7 @@ class Dbas(object):
 				                                                                                     True)
 
 			# rate argument, cause this is between confrontations
-			WeightingHelper().increase_weight_of_argument_by_id(int(id_text.split('_')[2]), self.request.authenticated_userid)
+			WeightingHelper().add_vote_for_argument(int(id_text.split('_')[2]), self.request.authenticated_userid, transaction)
 
 			return_dict['status'] = str(status)
 			return_dict['argument_uid'] = str(id_text.split('_')[2])
@@ -898,7 +898,7 @@ class Dbas(object):
 				return_dict, status = RecommenderHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
 				                                                                          uid_text, self.request.session.id, issue, lang)
 				# rate argument, cause supports are special cases
-				WeightingHelper().increase_weight_of_argument_by_id(int(uid_text.split('_')[2]), self.request.authenticated_userid)
+				WeightingHelper().add_vote_for_argument(int(uid_text.split('_')[2]), self.request.authenticated_userid, transaction)
 
 			else:
 				logger('reply_for_response_of_confrontation', 'def', 'path a2')
