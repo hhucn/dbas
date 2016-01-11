@@ -922,8 +922,10 @@ class Dbas(object):
 			premise = return_dict['premise_text'] if 'premise_text' in return_dict else return_dict['premisegroup']
 			attack = return_dict['attack']
 			attack_or_confrontation = return_dict['confrontation'] if 'confrontation' in return_dict else confrontation_text
+			argument = QueryHelper().get_text_for_argument_uid((int(confrontation)), issue, lang)
 
-			return_dict.update(_tg.get_text_for_response_of_confrontation(conclusion,
+			return_dict.update(_tg.get_text_for_response_of_confrontation(argument,
+			                                                              conclusion,
 			                                                              relation,
 			                                                              premise,
 			                                                              attack,

@@ -952,7 +952,7 @@ class Translator(object):
 		de_lang[self.hideAllUsers] = 'Verstecke alle Benutzer',
 		de_lang[self.hideAllAttacks] = 'Verstecke alle Angriffe',
 		de_lang[self.letMeExplain] = 'Lass\' es mich so erklären',
-		de_lang[self.levenshteinDistance] = 'Levenshtein-Distaanz',
+		de_lang[self.levenshteinDistance] = 'Levenshtein-Distanz',
 		de_lang[self.languageCouldNotBeSwitched] = 'Leider konnte die Sprache nicht gewechselt werden',
 		de_lang[self.last_action] = 'Letzte Aktion',
 		de_lang[self.last_login] = 'Letze Anmeldung',
@@ -1263,8 +1263,8 @@ class TextGenerator(object):
 
 		return ret_dict
 
-	def get_text_for_status_one_in_confrontation(self, premise, conclusion, relation, supportive, attack, url,
-	                                             confrontation, reply_for_argument):
+	def get_text_for_status_one_in_confrontation(self, premise, conclusion, relation, supportive, attack,
+	                                             url, confrontation, reply_for_argument, current_argument=''):
 		"""
 
 		:param premise:
@@ -1275,16 +1275,15 @@ class TextGenerator(object):
 		:param url:
 		:param confrontation:
 		:param reply_for_argument:
+		:param current_argument:
 		:return:
 		"""
 		_t = Translator(self.lang)
-
 		if not relation:
-			connector = (', ' + _t.get(_t.because).lower())  if supportive else (' '
-			                                                                     + _t.get(_t.doesNotHoldBecause).lower())
+			connector = (', ' + _t.get(_t.because).lower())  if supportive else (' ' +  _t.get(_t.doesNotHoldBecause).lower())
 			opinion = '<b>' + conclusion + connector + ' ' + premise + '</b>'
 		else:
-			opinion = '<b>' + premise + '</b> ' + _t.get('relation_' + relation) + ' ' + '<b>' + conclusion + '</b>'
+			opinion = '<b>' + current_argument + '</b>' if current_argument != '' else '<b>' + premise + '</b> ' + _t.get('relation_' + relation) + ' ' + '<b>' + conclusion + '</b>'
 
 		#  build some confrontation text
 		confrontationText = ''
@@ -1368,7 +1367,7 @@ class TextGenerator(object):
 		else:
 			premise = ''
 			for p in premises:
-				premise += ('' if premise == '' else (' <i>' + _t.get(_t.aand) + '</i> ')) + premises[p]['text'][0:1].lower() + premises[p]['text'][1:]
+				premise += ('' if premise == '' else (' ' + _t.get(_t.aand) + ' ')) + premises[p]['text'][0:1].lower() + premises[p]['text'][1:]
 			ret_dict['discussion_description'] = _t.get(_t.otherParticipantsThinkThat) + ' <b>' + conclusion + '</b>, ' \
 			                                     + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] \
 			                                     + ' <b>' + premise + '</b>.<br><br>' \
@@ -1383,16 +1382,20 @@ class TextGenerator(object):
 
 		return ret_dict
 
-	def get_text_for_response_of_confrontation(self, conclusion, relation, premise, attack, attack_or_confrontation,
-	                                           supportive, is_support, supportive_argument, user, url,  status):
+	def get_text_for_response_of_confrontation(self, current_argument, conclusion, relation, premise, attack,
+	                                           attack_or_confrontation, supportive, is_support, supportive_argument,
+	                                           user, url,  status):
 		"""
 
+		:param argument_uid:
 		:param conclusion:
 		:param relation:
 		:param premise:
 		:param attack:
 		:param attack_or_confrontation:
 		:param supportive:
+		:param is_support:
+		:param supportive_argument:
 		:param user:
 		:param url:
 		:param status:
@@ -1433,6 +1436,7 @@ class TextGenerator(object):
 			                                                                                  attack,
 			                                                                                  url,
 			                                                                                  attack_or_confrontation,
-			                                                                                  False)
+			                                                                                  False,
+			                                                                                  current_argument)
 
 		return ret_dict
