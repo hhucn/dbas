@@ -81,7 +81,7 @@ class BreadcrumbHelper(object):
 			logger('BreadcrumbHelper', 'save_breadcrumb_for_user_with_argument_parts', url)
 
 		_t = Translator(lang)
-		arg = text2 + ' ' + _t.get(_t.because) + ' ' + text1
+		arg = text2 + ' ' + _t.get(_t.because).lower() + ' ' + text1
 		returned_in_history = self.save_breadcrumb_for_user(transaction, user, url, arg, session_id)
 
 		if not returned_in_history:
@@ -92,7 +92,7 @@ class BreadcrumbHelper(object):
 			if not text1.endswith(('.','!','?')):
 				text1 += '.'
 
-			arg = text2 + ' ' + (_t.get(_t.because) if is_supportive else _t.get(_t.doesNotHoldBecause)) + ' ' + text1
+			arg = text2 + ' ' + (_t.get(_t.because).lower() if is_supportive else _t.get(_t.doesNotHoldBecause).lower()) + ' ' + text1
 			self.update_last_record_in_breadcrumbs(transaction, user, arg)
 
 	def save_breadcrumb_for_user_with_premissegroups_uid(self, transaction, user, url, premisegroup_uid1, premisegroup_uid2, issue,

@@ -342,6 +342,12 @@ class Translator(object):
 		self.uid = 'uid'
 		self.unfortunatelyNoMoreArgument = 'unfortunatelyNoMoreArgument'
 
+		self.sentencesOpenersRequesting = [self.whyDoYouThinkThat]
+		self.sentencesOpenersForArguments = [self.soYourOpinionIsThat]
+		self.sentencesOpenersArguingWithAgreeing = [self.agreeBecause, self.therefore]
+		self.sentencesOpenersArguingWithDisagreeing = [self.disagreeBecause, self.alternatively]
+		self.sentencesOpenersInforming = [self.thinkWeShould, self.letMeExplain, self.sureThat]
+
 		self.en_dict = self.setUpEnDict()
 		self.de_dict = self.setUpDeDict()
 
@@ -396,9 +402,7 @@ class Translator(object):
 		en_lang[self.nicknameIs]                   = 'Your nickname is: '
 		en_lang[self.newPwdIs]                     = 'Your new password is: '
 		en_lang[self.dbasPwdRequest]               = 'D-BAS Password Request'
-		en_lang[self.emailBodyText] = "This is an automatically generated mail by the D-BAS System.\n" + \
-				"For contact please write an mail to krauthoff@cs.uni-duesseldorf.de\n" + \
-				"This system is part of a doctoral thesis and currently in an alpha-phase."
+		en_lang[self.emailBodyText] = 'This is an automatically generated mail by the D-BAS System.\nFor contact please write an mail to krauthoff@cs.uni-duesseldorf.de\nThis system is part of a doctoral thesis and currently in an alpha-phase.'
 		en_lang[self.emailWasSent]                 = 'E-Mail was sent.'
 		en_lang[self.emailWasNotSent]              = 'E-Mail was not sent.'
 		en_lang[self.antispamquestion]             = 'What is'
@@ -741,18 +745,14 @@ class Translator(object):
 		de_lang[self.nickIsTaken]                  = 'Nickname ist schon vergeben.'
 		de_lang[self.mailIsTaken]                  = 'E-Mail ist schon vergeben.'
 		de_lang[self.mailNotValid]                 = 'E-Mail ist nicht gültig.'
-		de_lang[self.errorTryLateOrContant]        = 'Leider ist ein Fehler aufgetreten, bitte versuchen Sie später erneut oder ' \
-		                                          'kontaktieren Sie uns.'
+		de_lang[self.errorTryLateOrContant]        = 'Leider ist ein Fehler aufgetreten, bitte versuchen Sie später erneut oder kontaktieren Sie uns.'
 		de_lang[self.accountWasAdded]              = 'Ihr Account wurde angelegt. Sie können sich nun anmelden.'
 		de_lang[self.accountWasRegistered]         = 'Ihr Account wurde erfolgreich für die genannte E-Mail registiert.'
-		de_lang[self.accoutErrorTryLateOrContant]  = 'Ihr Account konnte nicht angelegt werden, bitte versuchen Sie später erneut oder ' \
-		                                          'kontaktieren Sie uns.'
+		de_lang[self.accoutErrorTryLateOrContant]  = 'Ihr Account konnte nicht angelegt werden, bitte versuchen Sie später erneut oder kontaktieren Sie uns.'
 		de_lang[self.nicknameIs]                   = 'Ihr Nickname lautet: '
 		de_lang[self.newPwdIs]                     = 'Ihr Passwort lautet: '
 		de_lang[self.dbasPwdRequest]               = 'D-BAS Passwort Nachfrage'
-		de_lang[self.emailBodyText] = 'Dies ist eine automatisch generierte E-Mail von D-BAS.\n' + \
-				'Für Kontakt können Sie gerne eine E-Mail an krauthoff@cs.uni-duesseldorf.de verfassen.\n' + \
-				'Dieses System ist Teil einer Promotion und noch in der Testphase.'
+		de_lang[self.emailBodyText]                = 'Dies ist eine automatisch generierte E-Mail von D-BAS.\nFür Kontakt können Sie gerne eine E-Mail an krauthoff@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Promotion und noch in der Testphase.'
 		de_lang[self.emailWasSent]                 = 'E-Mail wurde gesendet.'
 		de_lang[self.emailWasNotSent]              = 'E-Mail wurde nicht gesendet.'
 		de_lang[self.antispamquestion]             = 'Was ist'
@@ -924,16 +924,16 @@ class Translator(object):
 		de_lang[self.initialPosition] = 'Anfangs-interesse',
 		de_lang[self.initialPositionSupport] =  'Was ist Ihre Meinung, die Sie unterstützen?',
 		de_lang[self.initialPositionAttack] =  'Was ist Ihre Meinung, di Sie angreifen möchten?',
-		de_lang[self.initialPositionInterest] =  'An welcher Aussage, sind Sie interessiert?',
+		de_lang[self.initialPositionInterest] =  'An welcher Aussage sind Sie interessiert?',
 		de_lang[self.islandViewTitle] = 'Zeigt die Insel Ansicht',
 		de_lang[self.iAcceptCounter] = 'und ich akzeptiere, dass es ein Gegenargument ist, für',
 		de_lang[self.iAcceptArgument] = 'und ich akzeptiere, dass es ein Argument ist, für',
 		de_lang[self.iAgreeWithInColor] =  'Ich <span class=\'text-success\'>akzeptiere</span>',
 		de_lang[self.iAgreeWith] =  'Ich akzeptiere die Aussage',
-		de_lang[self.iDisagreeWithInColor] =  'Ich <span class=\'text-danger\'>wiederspreche</span> der Aussage',
+		de_lang[self.iDisagreeWithInColor] =  'Ich <span class=\'text-danger\'>widerspreche</span> der Aussage',
 		de_lang[self.iDoNotKnow] = 'Ich weiß es nicht',
 		de_lang[self.iDoNotKnowInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>',
-		de_lang[self.iDisagreeWith] =  'Ich wiederspreche die Aussage',
+		de_lang[self.iDisagreeWith] =  'Ich widerspreche die Aussage',
 		de_lang[self.iHaveMuchStrongerArgumentRejecting] = 'Ich habe ein viel stärkeres Argument zum Ablehnen von',
 		de_lang[self.iHaveMuchEvenArgumentRejecting] =  'Ich habe ein stärkeres Argument zum Ablehnen von',
 		de_lang[self.iHaveMuchStrongerArgumentAccepting] = 'Ich habe ein viel stärkeres Argument zum Akzeptieren von',
@@ -1060,25 +1060,25 @@ class Translator(object):
 		:param id: string identifier
 		:return: string
 		"""
-		logger('Translator', 'get', 'id: ' + id + ', lang: ' + self.lang)
+		#logger('Translator', 'get', 'id: ' + id + ', lang: ' + self.lang)
 		if self.lang == 'de' and id in self.de_dict:
-			logger('Translator', 'get', 'return de: ' + str(self.de_dict[id]))
+		#	logger('Translator', 'get', 'return de: ' + str(self.de_dict[id]))
 			return self.de_dict[id]
 
 		elif self.lang == 'en' and id in self.en_dict:
-			logger('Translator', 'get', 'return en: ' + str(self.en_dict[id]))
+		#	logger('Translator', 'get', 'return en: ' + str(self.en_dict[id]))
 			return self.en_dict[id]
 
 		elif self.lang == 'de' and id not in self.de_dict:
-			logger('Translator', 'get', 'unknown id for german dict')
+		#	logger('Translator', 'get', 'unknown id for german dict')
 			return 'unbekannter identifier im deutschen Wörterbuch'
 
 		elif self.lang == 'en' and id not in self.en_dict:
-			logger('Translator', 'get', 'unknown id for englisch dict')
+		#	logger('Translator', 'get', 'unknown id for englisch dict')
 			return 'unknown identifier in the englisch dictionary'
 
 		else:
-			logger('Translator', 'get', 'unknown lang')
+		#	logger('Translator', 'get', 'unknown lang')
 			return 'unknown language: ' + self.lang
 
 class TextGenerator(object):
@@ -1212,8 +1212,7 @@ class TextGenerator(object):
 		premise = ''
 		if type(premises) is dict:
 			for p in premises:
-				logger('---', '--', str(p))
-				premise += p['text'] + _t.get(_t.aand)
+				premise += premises[p]['text'] + _t.get(_t.aand)
 			premise = premise[0:-4]
 		else:
 			premise = premises
@@ -1248,7 +1247,7 @@ class TextGenerator(object):
 
 		premise = ''
 		for p in premises:
-			premise += p['text'] + _t.get(_t.aand)
+			premise += premises[p]['text'] + _t.get(_t.aand)
 		premise = premise[0:-4]
 
 		w = (_t.get(_t.wrong)[0:1].lower() if startLowerCase else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:]
@@ -1261,5 +1260,179 @@ class TextGenerator(object):
 		                         + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' <b>' + conclusion + '</b>.'
 		ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': <b>' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() \
 		                              + ' ' + premise + '</b>. ' + _t.get(_t.goStepBack) + '.'
+
+		return ret_dict
+
+	def get_text_for_status_one_in_confrontation(self, premise, conclusion, relation, supportive, attack, url,
+	                                             confrontation, reply_for_argument):
+		"""
+
+		:param premise:
+		:param conclusion:
+		:param relation:
+		:param supportive:
+		:param attack:
+		:param url:
+		:param confrontation:
+		:param reply_for_argument:
+		:return:
+		"""
+		_t = Translator(self.lang)
+
+		if not relation:
+			connector = (', ' + _t.get(_t.because).lower())  if supportive else (' '
+			                                                                     + _t.get(_t.doesNotHoldBecause).lower())
+			opinion = '<b>' + conclusion + connector + ' ' + premise + '</b>'
+		else:
+			opinion = '<b>' + premise + '</b> ' + _t.get('relation_' + relation) + ' ' + '<b>' + conclusion + '</b>'
+
+		#  build some confrontation text
+		confrontationText = ''
+		confrontation = '<b>' + confrontation + '</b>'
+
+		# does we have an attack for an attack? if true, we have to pretty print a little bit
+		attacks = ['undermine','rebut','undercut']
+		double_attack = ([s for s in attacks if s in url] or ('supportive=false' in url)) \
+		                and [s for s in attacks if s in attack]
+
+		# build some confrontation text
+		if attack == 'undermine':
+			confrontationText = _t.get(_t.otherParticipantsThinkThat) + ' <b>' + premise + '</b> ' \
+			                    + _t.get(_t.doesNotHoldBecause) + ' ' + confrontation
+
+		elif attack == 'rebut':
+			# distinguish between reply for argument and reply for premise group
+			if reply_for_argument:
+				# reply for argument
+				confrontationText = (_t.get(_t.otherUsersClaimStrongerArgumentAccepting)
+				                     if double_attack else _t.get(_t.otherUsersClaimStrongerArgumentRejecting))
+			else:
+				# reply for premise group
+				confrontationText = _t.get(_t.otherParticipantsAcceptBut) + ' ' \
+				                    + _t.get(_t.strongerStatementForRecjecting)
+			confrontationText += ' <b>' + conclusion + '</b>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
+
+		elif attack == 'undercut':
+			confrontationText = _t.get(_t.otherParticipantsThinkThat) + ' <b>' + premise + '</b> ' \
+			                    + (_t.get(_t.andTheyDoNotBelieveCounter)
+			                       if supportive else _t.get(_t.andTheyDoNotBelieveCounter)) \
+			                    + ' <b>' + conclusion + '</b>,' + ' ' + _t.get(_t.because).lower() + ' ' + confrontation
+
+		return _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>' + confrontationText \
+		       + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
+	
+	def get_text_for_status_zero_in_confrontation(self, premise, conclusion, relation):
+		"""
+		
+		:param premise: 
+		:param conclusion: 
+		:param relation: 
+		:return: 
+		"""
+		_t = Translator(self.lang)
+		
+		if not relation:
+			opinion = '<b>' + conclusion + ', ' + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] + ' ' + premise + '</b>'
+		else:
+			opinion = '<b>' + premise + '</b> ' + _t.get('relation_' + return_dict['relation']) + ' ' + '<b>' + conclusion + '</b>'
+		
+		return _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>' \
+		       + _t.get(_t.otherParticipantsDontHaveCounter) + ' <b>' + premise + '</b>' + '.<br><br>' \
+		       + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText), _t.get(_t.discussionEnd)
+		
+
+	def get_text_for_premise_for_statement(self, conclusion, premises, supportive, logged_in):
+		"""
+
+		:param conclusion:
+		:param premisses:
+		:param supportive:
+		:return:
+		"""
+		_t = Translator(self.lang)
+		_tg = TextGenerator(self.lang)
+		ret_dict = dict()
+
+		if len(premises) == 0:
+			text_add_on = '' if logged_in else ('<br><br>'  + _t.get(_t.discussionEndFeelFreeToLogin))
+			if supportive:
+				ret_dict['discussion_description'] = _t.get(_t.unfortunatelyNoMoreArgument) + ' ' + argument \
+				                                     + '.<br><br>' + _t.get(_t.canYouGiveAReason) + '<br><br>' \
+				                                     + _t.get(_t.alternatively) + ': ' + _t.get(_t.discussionEndText) \
+				                                     + text_add_on
+			else:
+				ret_dict['discussion_description'] = _t.get(_t.soYouWantToArgueAgainst) + ' ' + argument + ', ' \
+				                                     + _t.get(_t.butOtherParticipantsDontHaveArgument) + text_add_on
+			ret_dict['argument'] = '<b>' + conclusion + '</b>'
+
+		else:
+			premise = ''
+			for p in premises:
+				premise += ('' if premise == '' else (' <i>' + _t.get(_t.aand) + '</i> ')) + premises[p]['text'][0:1].lower() + premises[p]['text'][1:]
+			ret_dict['discussion_description'] = _t.get(_t.otherParticipantsThinkThat) + ' <b>' + conclusion + '</b>, ' \
+			                                     + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] \
+			                                     + ' <b>' + premise + '</b>.<br><br>' \
+			                                     + ((_t.get(_t.whatDoYouThinkAboutThat) + '?')
+			                                        if supportive else _t.get(_t.whyAreYouDisagreeing))
+			ret_dict['argument'] = conclusion + ' ' + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] + ' ' + premise
+
+		if supportive:
+			ret_dict.update(_tg.get_relation_text_dict_without_confrontation(premises, conclusion, False))
+		else:
+			ret_dict.update(_tg.get_text_dict_for_attacks_only(premises, conclusion, False))
+
+		return ret_dict
+
+	def get_text_for_response_of_confrontation(self, conclusion, relation, premise, attack, attack_or_confrontation,
+	                                           supportive, is_support, supportive_argument, user, url,  status):
+		"""
+
+		:param conclusion:
+		:param relation:
+		:param premise:
+		:param attack:
+		:param attack_or_confrontation:
+		:param supportive:
+		:param user:
+		:param url:
+		:param status:
+		:return:
+		"""
+		_tg = TextGenerator(self.lang)
+		ret_dict = dict()
+
+		if is_support and int(status) != 0:
+			logger('reply_for_response_of_confrontation', 'def', 'path b1')
+			ret_dict.update(_tg.get_confrontation_relation_text_dict(attack_or_confrontation,
+			                                                         conclusion,
+			                                                         premise,
+			                                                         attack,
+			                                                         False,
+			                                                         supportive))
+		else:
+			logger('reply_for_response_of_confrontation', 'def', 'path b2')
+			ret_dict['header_text'] = _tg.get_header_for_confrontation_response(attack_or_confrontation,
+			                                                                    premise,
+			                                                                    relation,
+			                                                                    conclusion,
+			                                                                    True,
+			                                                                    supportive,
+			                                                                    user)
+
+		if supportive_argument and int(status) == 0:
+			logger('reply_for_response_of_confrontation', 'def', 'path c1')
+			ret_dict['discussion_description'] = _tg.get_text_for_status_zero_in_confrontation(premise,
+			                                                                                   conclusion,
+			                                                                                   relation)
+		elif int(status) == 1:
+			logger('reply_for_response_of_confrontation', 'def', 'path c2')
+			ret_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(premise,
+			                                                                                  conclusion,
+			                                                                                  relation,
+			                                                                                  supportive,
+			                                                                                  attack,
+			                                                                                  url,
+			                                                                                  attack_or_confrontation,
+			                                                                                  False)
 
 		return ret_dict

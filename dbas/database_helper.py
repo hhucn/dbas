@@ -264,18 +264,22 @@ class DatabaseHelper(object):
 		if 'undermine' in relation.lower():
 			logger('DatabaseHelper', 'get_reply_confrontations_response', 'undermine')
 			return_dict = qh.get_undermines_for_argument_uid(key, argument_uid, issue)
+			return_dict['attack'] = 'undermine'
 			identifier = 'premisesgroup'
 		elif 'support' in relation.lower():
 			logger('DatabaseHelper', 'get_reply_confrontations_response', 'support')
 			return_dict = qh.get_supports_for_argument_uid(key, argument_uid, issue)
+			return_dict['attack'] = 'support'
 			identifier = 'premisesgroup'
 		elif 'undercut' in relation.lower():
 			logger('DatabaseHelper', 'get_reply_confrontations_response', 'undercut')
 			return_dict = qh.get_undercuts_for_argument_uid(key, argument_uid, issue)
+			return_dict['attack'] = 'undercut'
 			identifier = 'statement'
 		elif 'overbid' in relation.lower():
 			logger('DatabaseHelper', 'get_reply_confrontations_response', 'overbid')
 			return_dict = qh.get_overbids_for_argument_uid(key, argument_uid, issue)
+			return_dict['attack'] = 'overbid'
 			identifier = 'statement'
 		elif 'rebut' in relation.lower():
 			logger('DatabaseHelper', 'get_reply_confrontations_response', 'rebut')
@@ -285,6 +289,7 @@ class DatabaseHelper(object):
 			else:
 				return_dict = qh.get_supports_for_argument_uid(key, argument_uid, issue)
 			identifier = 'premisesgroup'
+			return_dict['attack'] = 'rebut'
 		else:
 			return_dict = dict()
 			identifier = 'none'

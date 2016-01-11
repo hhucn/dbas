@@ -101,6 +101,15 @@ class UserHandler(object):
 
 		return False
 
+	def is_user_logged_in(self, user):
+		"""
+		Checks if the user is logged in
+		:param user: current user name
+		:return: user or None
+		"""
+		return DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
+
+
 	def get_random_anti_spam_question(self, lang):
 		"""
 		Returns a random math question

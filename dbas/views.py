@@ -498,10 +498,16 @@ class Dbas(object):
 			url = self.request.params['url']
 			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid,
 			                                                               url, uid, False, '', lang, self.request.session.id)
-
 			logger('get_text_for_statement', 'def', 'uid: ' + uid)
 			logger('get_text_for_statement', 'def', 'issue ' + str(issue))
 			return_dict = DatabaseHelper().get_text_for_statement(uid, issue)
+			_t = Translator(lang)
+			text = ' <b>' + return_dict['text'][0:1].lower() + return_dict['text'][1:] + '</b>'
+			return_dict['discussion_description'] = _t.get(_t.whatDoYouThinkAbout) + text + '?'
+			return_dict['agree'] = _t.get(_t.iAgreeWithInColor) + text
+			return_dict['disagree'] = _t.get(_t.iDisagreeWithInColor) + text
+			return_dict['dont_know'] = _t.get(_t.iDoNotKnowInColor) + ', ' + _t.get(_t.showMeAnArgumentFor)[0:1].lower() + _t.get(_t.showMeAnArgumentFor)[1:] + text
+
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('get_text_for_statement', 'error', repr(e))
@@ -556,14 +562,12 @@ class Dbas(object):
 			return_dict = RecommenderHelper().get_premise_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
 
-			if supportive:
-				return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premises'],
-				                                                                                    return_dict['currentStatement'][0:1].lower() + jsonData['currentStatement'][1],
-				                                                                                    False))
-			else:
-				return_dict.update(TextGenerator(lang).get_text_dict_for_attacks_only(return_dict['premises'],
-				                                                                      return_dict['currentStatement'][0:1].lower() + jsonData['currentStatement'][1],
-				                                                                      False))
+			conclusion = return_dict['currentStatement']['text'][0:1].lower() + return_dict['currentStatement']['text'][1:]
+			return_dict.update(TextGenerator(lang).get_text_for_premise_for_statement(conclusion,
+			                                                                          return_dict['premises'],
+			                                                                          supportive,
+			                                                                          UserHandler().is_user_logged_in(self.request.authenticated_userid)))
+
 
 			return_dict['status'] = '1'
 		except KeyError as e:
@@ -618,6 +622,13 @@ class Dbas(object):
 
 			return_dict = RecommenderHelper().get_premises_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
+			_t = Translator(lang)
+			text = return_dict['currentStatement']['text'][0:1].lower() + return_dict['currentStatement']['text'][1:]
+			if len(return_dict['premises']) == 0:
+				return_dict['discussion_description'] = _t.get(_t.firstPremiseText1) + ' <b>' + text + '</b>' + (' ' + _t.get(_t.doesNotHold) if not supportive else '') + '.<br><br>' + _t.get(_t.firstPremiseText2)
+			else:
+				return_dict['discussion_description'] = _t.get(_t.sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> ' + (_t.get(_t.isTrue) if supportive else _t.get(_t.isFalse))
+
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('get_premises_for_statement', 'error', repr(e))
@@ -712,14 +723,29 @@ class Dbas(object):
 				                                                                self.request.session.id, lang, additional_params)
 				return_dict['argument'] = QueryHelper().get_text_for_argument_uid(return_dict['argument_uid'], issue, lang)
 
+			_tg = TextGenerator(lang)
+			conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
+			relation = return_dict['relation'] if 'relation' in return_dict else None
+			return_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(return_dict['premise_text'],
+			                                                                                     conclusion,
+			                                                                                     relation,
+			                                                                                     supportive,
+			                                                                                     return_dict['attack'],
+			                                                                                     url,
+			                                                                                     return_dict['confrontation'],
+			                                                                                     False)
+
+
+			return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
+			                                                            conclusion,
+			                                                            return_dict['premise_text'],
+			                                                            return_dict['attack'],
+			                                                            False,
+			                                                            supportive))
+
 			return_dict['supportive'] = str(supportive)
 			return_dict['status'] = str(status)
-			return_dict.update(TextGenerator(lang).get_confrontation_relation_text_dict(return_dict['confrontation'],
-			                                                                            return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1],
-			                                                                            return_dict['premise_text'],
-			                                                                            return_dict['attack'],
-			                                                                            False,
-			                                                                            supportive))
+
 			transaction.commit()
 		except KeyError as e:
 			logger('reply_for_premisegroup', 'error', repr(e))
@@ -779,12 +805,30 @@ class Dbas(object):
 			                                                                  self.request.authenticated_userid,
 			                                                                  id_text, pgroup_id,
 			                                                                  self.request.session.id, issue)
-			return_dict.update(TextGenerator(lang).get_confrontation_relation_text_dict(return_dict['confrontation'],
-			                                                                            return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1],
-			                                                                            return_dict['premise_text'],
-			                                                                            return_dict['attack'],
-			                                                                            False,
-			                                                                            supportive))
+
+			_tg = TextGenerator(lang)
+			return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
+			                                                            return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1],
+			                                                            return_dict['premise_text'],
+			                                                            return_dict['attack'],
+			                                                            False,
+			                                                            supportive))
+
+			premise = return_dict['premise_text']
+			conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
+			relation = return_dict['relation'] if 'relation' in return_dict else None
+			if int(status) == 0:
+				return_dict['discussion_description'] = _tg.get_text_for_status_zero_in_confrontation(premise, conclusion, relation)
+			else:
+				return_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(premise,
+				                                                                                     conclusion,
+				                                                                                     relation,
+				                                                                                     supportive,
+				                                                                                     return_dict['attack'],
+				                                                                                     url,
+				                                                                                     return_dict['confrontation'],
+				                                                                                     True)
+
 			# rate argument, cause this is between confrontations
 			WeightingHelper().increase_weight_of_argument_by_id(int(id_text.split('_')[2]), self.request.authenticated_userid)
 
@@ -833,6 +877,7 @@ class Dbas(object):
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
 			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+			supportive_argument = True if 'support' in uid_text else False
 
 			# reset and save url for breadcrumbs
 			url = self.request.params['url']
@@ -849,12 +894,14 @@ class Dbas(object):
 
 			# IMPORTANT: Supports are a special case !
 			if 'support' in uid_text:
+				logger('reply_for_response_of_confrontation', 'def', 'path a1')
 				return_dict, status = RecommenderHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
 				                                                                          uid_text, self.request.session.id, issue, lang)
 				# rate argument, cause supports are special cases
-				WeightingHelper().increase_weight_of_argument_by_id(int(uid_text.split('_')[2]), self.request.authenticated_userid, lang)
+				WeightingHelper().increase_weight_of_argument_by_id(int(uid_text.split('_')[2]), self.request.authenticated_userid)
 
 			else:
+				logger('reply_for_response_of_confrontation', 'def', 'path a2')
 				return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, self.request.authenticated_userid,
 				                                                                         uid_text, self.request.session.id,
 				                                                                         exception_rebut, issue, lang)
@@ -863,27 +910,30 @@ class Dbas(object):
 			return_dict['last_relation'] = relation
 			return_dict['confrontation_uid'] = confrontation
 			transaction.commit()
-			text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
+			confrontation_text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
 
-			logger('reply_for_response_of_confrontation', 'def', 'adding confrontation_text: ' + text)
-			return_dict['confrontation_text'] = text
+			logger('reply_for_response_of_confrontation', 'def', 'adding confrontation_text: ' + confrontation_text)
+			return_dict['confrontation_text'] = confrontation_text
 
 			# IMPORTANT: Supports are a special case !
-			if 'support' in uid_text:
-				return_dict.update(TextGenerator(lang).get_confrontation_relation_text_dict(return_dict['confrontation'],
-			                                                                                return_dict['conclusion'][0:1].lower() + return_dict['conclusion'][1],
-			                                                                                return_dict['premise'],
-			                                                                                return_dict['attack'],
-			                                                                                False,
-			                                                                                supportive))
-			else:
-				return_dict['header_text'] = TextGenerator(lang).get_header_for_confrontation_response(text,
-			                                                                                           return_dict['premisegroup'].replace('.',''),
-			                                                                                           return_dict['relation'],
-			                                                                                           return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1],
-			                                                                                           True,
-			                                                                                           supportive,
-			                                                                                           self.request.authenticated_userid)
+			_tg = TextGenerator(lang)
+			conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
+			relation = return_dict['relation'] if 'relation' in return_dict else None
+			premise = return_dict['premise_text'] if 'premise_text' in return_dict else return_dict['premisegroup']
+			attack = return_dict['attack']
+			attack_or_confrontation = return_dict['confrontation'] if 'confrontation' in return_dict else confrontation_text
+
+			return_dict.update(_tg.get_text_for_response_of_confrontation(conclusion,
+			                                                              relation,
+			                                                              premise,
+			                                                              attack,
+			                                                              attack_or_confrontation,
+			                                                              supportive,
+			                                                              'support' in uid_text,
+			                                                              supportive_argument,
+			                                                              self.request.authenticated_userid,
+			                                                              url,
+			                                                              status))
 
 
 		except KeyError as e:
@@ -1525,7 +1575,9 @@ class Dbas(object):
 			logger('get_everything_for_island_view', 'def', 'params uid: issue ' + str(issue) + ', arg_uid ' + str(arg_uid))
 
 			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang, issue)
-			return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premise'], return_dict['conclusion'], False))
+			return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premise'],
+			                                                                                    return_dict['conclusion'],
+			                                                                                    False))
 
 			return_dict['status'] = '1'
 			logger('get_everything_for_island_view', 'return', str(return_dict))
