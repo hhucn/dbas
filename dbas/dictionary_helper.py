@@ -73,7 +73,7 @@ class DictionaryHelper(object):
 		text   = db_textversion.content
 		date   = str(db_textversion.timestamp)
 		author = db_textversion.users.nickname
-		pgroup = str( db_premise.premisesGroup_uid) if db_premise else '0'
+		pgroup = str(db_premise.premisesGroup_uid) if db_premise else '0'
 
 		while text.endswith('.'):
 			text = text[:-1]

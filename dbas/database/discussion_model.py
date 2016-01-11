@@ -376,7 +376,7 @@ class History(DiscussionBase):
 		self.keyword_before_decission = keyword_before_decission
 
 
-class Relation(DiscussionBase):
+class Relation(DiscussionBase): # TODO IS THIS NECESSARY ?
 	"""
 	Relation-table with several columns.
 	Each user will be tracked

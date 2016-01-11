@@ -896,9 +896,9 @@ class Dbas(object):
 
 		return return_json
 
-	##########################
-	## ADDTIONAL AJAX STUFF ##
-	##########################
+	#######################################
+	## ADDTIONAL AJAX STUFF # USER THINGS #
+	#######################################
 
 	# ajax - getting every user, and returns dicts with name <-> group
 	@view_config(route_name='ajax_all_users', renderer='json', check_csrf=False)
@@ -1025,378 +1025,6 @@ class Dbas(object):
 		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, nickname)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true' # necessary
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - send new start statement
-	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
-	def set_new_start_statement(self):
-		"""
-		Inserts a new statement into the database, which should be available at the beginning
-		:return: a status code, if everything was successfull
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('set_new_start_statement', 'def', 'main')
-
-		return_dict = {}
-		try:
-			statement = self.request.params['statement']
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
-			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
-			new_statement, is_duplicate = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
-			if not new_statement:
-				return_dict['status'] = '0'
-			else:
-				return_dict['status'] = '0' if is_duplicate else '1'
-				return_dict['statement'] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
-		except KeyError as e:
-			logger('set_new_start_statement', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - send new start premise
-	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
-	def set_new_start_premise(self):
-		"""
-		Sets new premise for the start
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		user_id = self.request.authenticated_userid
-		UserHandler().update_last_action(transaction, user_id)
-
-		logger('set_new_start_premise', 'def', 'main')
-
-		return_dict = dict()
-		try:
-			logger('set_new_start_premise', 'def', 'getting params')
-			text = self.escape_string(self.request.params['text'])
-			conclusion_id = self.request.params['conclusion_id']
-			support = True if self.request.params['support'].lower() == 'true' else False
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
-			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', supportive: ' +
-			       str(support) + ', issue: ' + str(issue))
-
-			tmp_dict, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
-
-			return_dict['pro_0'] = tmp_dict
-			if is_duplicate:
-				return_dict['premisegroup_uid'] = tmp_dict['premisegroup_uid']
-			return_dict['status'] = '0' if is_duplicate else '1'
-		except KeyError as e:
-			logger('set_new_start_premise', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - send new premises
-	@view_config(route_name='ajax_set_new_premises_for_x', renderer='json', check_csrf=True)
-	def set_new_premises_for_x(self):
-		"""
-		Sets a new premisse for statement, argument, ? Everything is possible
-		:return: json-dict()
-		"""
-		user_id = self.request.authenticated_userid
-		UserHandler().update_last_action(transaction, user_id)
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-
-		logger('set_new_premises_for_x', 'def', 'main')
-
-		return_dict = dict()
-		try:
-			logger('set_new_premises_for_x', 'def', 'getting params')
-			pro_dict = dict()
-			con_dict = dict()
-
-			related_argument  = self.request.params['related_argument'] if 'related_argument' in self.request.params else -1
-			premisegroup_id   = self.request.params['premisegroup_id'] if 'premisegroup_id' in self.request.params else -1
-			current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
-			last_attack       = self.request.params['last_attack'] if 'last_attack' in self.request.params else -1
-			confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
-			premisegroup_con  = self.request.params['premisegroup_con'] if 'premisegroup_con' in self.request.params else '0'
-			premisegroup_pro  = self.request.params['premisegroup_pro'] if 'premisegroup_pro' in self.request.params else '0'
-			exception_rebut   = self.request.params['exceptionForRebut'] if 'exceptionForRebut' in self.request.params else '0'
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
-
-			premisegroup_con = True if premisegroup_con.lower() == 'true' else False
-			premisegroup_pro = True if premisegroup_pro.lower() == 'true' else False
-			exception_rebut  = True if exception_rebut.lower() == 'true' else False
-
-			logger('set_new_premises_for_x', 'def', 'param related_argument: ' + str(related_argument)
-			       + ', param premisegroup_id: ' + str(premisegroup_id)
-			       + ', param current_attack: ' + str(current_attack)
-			       + ', param last_attack: ' + str(last_attack)
-			       + ', param confrontation_uid: ' + str(confrontation_uid)
-			       + ', param premisegroup_con: ' + str(premisegroup_con)
-			       + ', param premisegroup_pro: ' + str(premisegroup_pro)
-			       + ', param issue: ' + str(issue)
-			       + ', param exception_rebut: ' + str(exception_rebut))
-
-			# confrontation_uid is a premise group
-
-			# Interpretation of the parameters
-			# User says: E => A             | #related_argument
-			# System says:
-			#   undermine:  F => !E         | #premisegroup_id  =>  !premisegroup of #related_argument
-			#   undercut:   D => !(E=>A)    | #premisegroup_id  =>  !#related_argument
-			#   rebut:      B => !A         | #premisegroup_id  =>  !conclusion of #related_argument
-			# Handle it, based on current and last attack
-
-			# getting all arguments
-			for key in self.request.params:
-				logger('set_new_premises_for_x', key, self.request.params[key])
-				if 'pro_' in key:
-					pro_dict[key] = self.escape_string(self.request.params[key])
-				if 'con_' in key:
-					con_dict[key] = self.escape_string(self.request.params[key])
-
-			return_dict['status'] = '1'
-			return_dict.update(DatabaseHelper().handle_inserting_new_statements(
-				user = user_id,
-				pro_dict = pro_dict,
-				con_dict = con_dict,
-				transaction = transaction,
-				argument_id = related_argument,
-				premisegroup_id = premisegroup_id,
-				current_attack = current_attack,
-				last_attack = last_attack,
-				premisegroup_con = premisegroup_con,
-				premisegroup_pro = premisegroup_pro,
-				issue = issue,
-				exception_rebut = exception_rebut
-			))
-
-		except KeyError as e:
-			logger('set_new_premises_for_x', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		logger('set_new_premises_for_x', 'def', 'returning')
-		return return_json
-
-	# ajax - getting changelog of a statement
-	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=False)
-	def get_logfile_for_statement(self):
-		"""
-		Returns the changelog of a statement
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('get_logfile_for_statement', 'def', 'main')
-
-		return_dict = dict()
-		try:
-			uid = self.request.params['uid']
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
-			return_dict = DatabaseHelper().get_logfile_for_statement(uid, issue)
-		except KeyError as e:
-			logger('get_logfile_for_statement', 'error', repr(e))
-
-		# return_dict = DatabaseHelper().get_logfile_for_premisegroup(uid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - set new textvalue for a statement
-	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
-	def set_correcture_of_statement(self):
-		"""
-		Sets a new textvalue for a statement
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('set_correcture_of_statement', 'def', 'main')
-
-		try:
-			uid = self.request.params['uid']
-			corrected_text = self.escape_string(self.request.params['text'])
-			is_final = self.request.params['final']
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text)
-			       + ', final ' + str(is_final))
-			return_dict = DatabaseHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text,
-			                                                 is_final, issue)
-		except KeyError as e:
-			return_dict = dict()
-			logger('set_correcture_of_statement', 'error', repr(e))
-
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - for language switch
-	@view_config(route_name='ajax_switch_language', renderer='json')
-	def switch_language(self):
-		"""
-		Switches the language
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('switch_language', 'def', 'main')
-
-		return_dict = {}
-		try:
-			lang = self.request.params['lang']
-			logger('switch_language', 'def', 'params uid: ' + str(lang))
-			self.request.response.set_cookie('_LOCALE_', str(lang))
-			return_dict['status'] = '1'
-		except KeyError as e:
-			logger('swich_language', 'error', repr(e))
-			return_dict['status'] = '0'
-
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-		return return_json
-
-	# ajax - for shorten url
-	@view_config(route_name='ajax_get_everything_for_island_view', renderer='json')
-	def get_everything_for_island_view(self):
-		"""
-		Everthing for the island view
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('get_everything_for_island_view', 'def', 'main')
-
-		return_dict = {}
-		try:
-			issue = self.request.params['issue']
-			arg_uid = self.request.params['arg_uid']
-			lang = self.request.params['lang']
-			logger('get_everything_for_island_view', 'def', 'params uid: issue ' + str(issue) + ', arg_uid ' + str(arg_uid))
-
-			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang, issue)
-			return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premise'], return_dict['conclusion'], False))
-
-			return_dict['status'] = '1'
-			logger('get_everything_for_island_view', 'return', str(return_dict))
-
-		except KeyError as e:
-			logger('swich_language', 'error', repr(e))
-			return_dict['status'] = '0'
-
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-		return return_json
-
-	# ajax - for shorten url
-	@view_config(route_name='ajax_get_shortened_url', renderer='json')
-	def get_shortened_url(self):
-		"""
-		Shortens url with the help of a python lib
-		:return: dictionary with shortend url
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('get_shortened_url', 'def', 'main')
-
-		return_dict = {}
-		# google_api_key = 'AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0' # browser is
-		# google_api_key = 'AIzaSyDneaEJN9FNGUpXHDZahe9Rhb21FsFNS14' # server id
-		# bitly_login = 'dbashhu'
-		# bitly_token = ''
-		# bitly_key = 'R_d8c4acf2fb554494b65529314d1e11d1'
-
-		try:
-			url = self.request.params['url']
-			# service = 'GoogleShortener'
-			# service = 'BitlyShortener'
-			service = 'TinyurlShortener'
-			# service_url = 'https://goo.gl/'
-			# service_url = 'https://bitly.com/'
-			service_url = 'http://tinyurl.com/'
-			logger('get_shortened_url', 'def', service + ' will shorten ' + str(url))
-
-			# shortener = Shortener(service, api_key=google_api_key)
-			# shortener = Shortener(service, bitly_login=bitly_login, bitly_api_key=bitly_key, bitly_token=bitly_token)
-			shortener = Shortener(service)
-
-			short_url = format(shortener.short(url))
-			return_dict['url'] = short_url
-			return_dict['service'] = service
-			return_dict['service_url'] = service_url
-			logger('get_shortened_url', 'def', 'short url ' + short_url)
-
-			return_dict['status'] = '1'
-		except KeyError as e:
-			logger('get_shortened_url', 'error', repr(e))
-			return_dict['status'] = '0'
-
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-		return return_json
-
-	# ajax - for attack overview
-	@view_config(route_name='ajax_get_attack_overview', renderer='json', check_csrf=True)
-	def get_attack_overview(self):
-		"""
-		Returns all attacks, done by the users
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-
-		logger('get_attack_overview', 'def', 'main')
-		logger('get_attack_overview', 'check_csrf_token', str(check_csrf_token(self.request)))
-		lang = self.request.params['lang']
-		issue = self.request.params['issue'] if 'issue' in self.request.params \
-			else self.request.session['issue'] if 'issue' in self.request.session \
-			else issue_fallback
-		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid, issue, lang)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - for attack overview
-	@view_config(route_name='ajax_get_issue_list', renderer='json')
-	def get_issue_list(self):
-		"""
-		Returns all issues
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-
-		logger('get_issue_list', 'def', 'main')
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		return_dict = DatabaseHelper().get_issue_list(lang)
-		issue = self.request.params['issue'] if 'issue' in self.request.params \
-			else self.request.session['issue'] if 'issue' in self.request.session \
-			else issue_fallback
-		return_dict['current_issue'] = issue
-		return_dict['current_issue_arg_count'] = QueryHelper().get_number_of_arguments(issue)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -1647,6 +1275,361 @@ class Dbas(object):
 
 		return return_json
 
+	##########################################
+	## ADDTIONAL AJAX STUFF # SET NEW THINGS #
+	##########################################
+
+	# ajax - send new start statement
+	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
+	def set_new_start_statement(self):
+		"""
+		Inserts a new statement into the database, which should be available at the beginning
+		:return: a status code, if everything was successfull
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_new_start_statement', 'def', 'main')
+
+		return_dict = {}
+		try:
+			statement = self.request.params['statement']
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
+			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
+			new_statement, is_duplicate = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
+			if not new_statement:
+				return_dict['status'] = '0'
+			else:
+				return_dict['status'] = '0' if is_duplicate else '1'
+				return_dict['statement'] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+		except KeyError as e:
+			logger('set_new_start_statement', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - send new start premise
+	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
+	def set_new_start_premise(self):
+		"""
+		Sets new premise for the start
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		user_id = self.request.authenticated_userid
+		UserHandler().update_last_action(transaction, user_id)
+
+		logger('set_new_start_premise', 'def', 'main')
+
+		return_dict = dict()
+		try:
+			logger('set_new_start_premise', 'def', 'getting params')
+			text = self.escape_string(self.request.params['text'])
+			conclusion_id = self.request.params['conclusion_id']
+			support = True if self.request.params['support'].lower() == 'true' else False
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
+			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', supportive: ' +
+			       str(support) + ', issue: ' + str(issue))
+
+			tmp_dict, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
+
+			return_dict['pro_0'] = tmp_dict
+			if is_duplicate:
+				return_dict['premisegroup_uid'] = tmp_dict['premisegroup_uid']
+			return_dict['status'] = '0' if is_duplicate else '1'
+		except KeyError as e:
+			logger('set_new_start_premise', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - send new premises
+	@view_config(route_name='ajax_set_new_premises_for_x', renderer='json', check_csrf=True)
+	def set_new_premises_for_x(self):
+		"""
+		Sets a new premisse for statement, argument, ? Everything is possible
+		:return: json-dict()
+		"""
+		user_id = self.request.authenticated_userid
+		UserHandler().update_last_action(transaction, user_id)
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+
+		logger('set_new_premises_for_x', 'def', 'main')
+
+		return_dict = dict()
+		try:
+			logger('set_new_premises_for_x', 'def', 'getting params')
+			pro_dict = dict()
+			con_dict = dict()
+
+			related_argument  = self.request.params['related_argument'] if 'related_argument' in self.request.params else -1
+			premisegroup_id   = self.request.params['premisegroup_id'] if 'premisegroup_id' in self.request.params else -1
+			current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
+			last_attack       = self.request.params['last_attack'] if 'last_attack' in self.request.params else -1
+			confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
+			premisegroup_con  = self.request.params['premisegroup_con'] if 'premisegroup_con' in self.request.params else '0'
+			premisegroup_pro  = self.request.params['premisegroup_pro'] if 'premisegroup_pro' in self.request.params else '0'
+			exception_rebut   = self.request.params['exceptionForRebut'] if 'exceptionForRebut' in self.request.params else '0'
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			issue = issue_fallback if issue == 'undefined' else issue
+
+			premisegroup_con = True if premisegroup_con.lower() == 'true' else False
+			premisegroup_pro = True if premisegroup_pro.lower() == 'true' else False
+			exception_rebut  = True if exception_rebut.lower() == 'true' else False
+
+			logger('set_new_premises_for_x', 'def', 'param related_argument: ' + str(related_argument)
+			       + ', param premisegroup_id: ' + str(premisegroup_id)
+			       + ', param current_attack: ' + str(current_attack)
+			       + ', param last_attack: ' + str(last_attack)
+			       + ', param confrontation_uid: ' + str(confrontation_uid)
+			       + ', param premisegroup_con: ' + str(premisegroup_con)
+			       + ', param premisegroup_pro: ' + str(premisegroup_pro)
+			       + ', param issue: ' + str(issue)
+			       + ', param exception_rebut: ' + str(exception_rebut))
+
+			# confrontation_uid is a premise group
+
+			# Interpretation of the parameters
+			# User says: E => A             | #related_argument
+			# System says:
+			#   undermine:  F => !E         | #premisegroup_id  =>  !premisegroup of #related_argument
+			#   undercut:   D => !(E=>A)    | #premisegroup_id  =>  !#related_argument
+			#   rebut:      B => !A         | #premisegroup_id  =>  !conclusion of #related_argument
+			# Handle it, based on current and last attack
+
+			# getting all arguments
+			for key in self.request.params:
+				logger('set_new_premises_for_x', key, self.request.params[key])
+				if 'pro_' in key:
+					pro_dict[key] = self.escape_string(self.request.params[key])
+				if 'con_' in key:
+					con_dict[key] = self.escape_string(self.request.params[key])
+
+			return_dict['status'] = '1'
+			return_dict.update(DatabaseHelper().handle_inserting_new_statements(
+				user = user_id,
+				pro_dict = pro_dict,
+				con_dict = con_dict,
+				transaction = transaction,
+				argument_id = related_argument,
+				premisegroup_id = premisegroup_id,
+				current_attack = current_attack,
+				last_attack = last_attack,
+				premisegroup_con = premisegroup_con,
+				premisegroup_pro = premisegroup_pro,
+				issue = issue,
+				exception_rebut = exception_rebut
+			))
+
+		except KeyError as e:
+			logger('set_new_premises_for_x', 'error', repr(e))
+			return_dict['status'] = '-1'
+
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		logger('set_new_premises_for_x', 'def', 'returning')
+		return return_json
+
+	# ajax - set new textvalue for a statement
+	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
+	def set_correcture_of_statement(self):
+		"""
+		Sets a new textvalue for a statement
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_correcture_of_statement', 'def', 'main')
+
+		try:
+			uid = self.request.params['uid']
+			corrected_text = self.escape_string(self.request.params['text'])
+			is_final = self.request.params['final']
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text)
+			       + ', final ' + str(is_final))
+			return_dict = DatabaseHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text,
+			                                                 is_final, issue)
+		except KeyError as e:
+			return_dict = dict()
+			logger('set_correcture_of_statement', 'error', repr(e))
+
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	######################################
+	## ADDTIONAL AJAX STUFF # GET THINGS #
+	######################################
+
+	# ajax - getting changelog of a statement
+	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=False)
+	def get_logfile_for_statement(self):
+		"""
+		Returns the changelog of a statement
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('get_logfile_for_statement', 'def', 'main')
+
+		return_dict = dict()
+		try:
+			uid = self.request.params['uid']
+			issue = self.request.params['issue'] if 'issue' in self.request.params \
+				else self.request.session['issue'] if 'issue' in self.request.session \
+				else issue_fallback
+			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
+			return_dict = DatabaseHelper().get_logfile_for_statement(uid, issue)
+		except KeyError as e:
+			logger('get_logfile_for_statement', 'error', repr(e))
+
+		# return_dict = DatabaseHelper().get_logfile_for_premisegroup(uid)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - for shorten url
+	@view_config(route_name='ajax_get_everything_for_island_view', renderer='json')
+	def get_everything_for_island_view(self):
+		"""
+		Everthing for the island view
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('get_everything_for_island_view', 'def', 'main')
+
+		return_dict = {}
+		try:
+			issue = self.request.params['issue']
+			arg_uid = self.request.params['arg_uid']
+			lang = self.request.params['lang']
+			logger('get_everything_for_island_view', 'def', 'params uid: issue ' + str(issue) + ', arg_uid ' + str(arg_uid))
+
+			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang, issue)
+			return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premise'], return_dict['conclusion'], False))
+
+			return_dict['status'] = '1'
+			logger('get_everything_for_island_view', 'return', str(return_dict))
+
+		except KeyError as e:
+			logger('swich_language', 'error', repr(e))
+			return_dict['status'] = '0'
+
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return return_json
+
+	# ajax - for shorten url
+	@view_config(route_name='ajax_get_shortened_url', renderer='json')
+	def get_shortened_url(self):
+		"""
+		Shortens url with the help of a python lib
+		:return: dictionary with shortend url
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('get_shortened_url', 'def', 'main')
+
+		return_dict = {}
+		# google_api_key = 'AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0' # browser is
+		# google_api_key = 'AIzaSyDneaEJN9FNGUpXHDZahe9Rhb21FsFNS14' # server id
+		# bitly_login = 'dbashhu'
+		# bitly_token = ''
+		# bitly_key = 'R_d8c4acf2fb554494b65529314d1e11d1'
+
+		try:
+			url = self.request.params['url']
+			# service = 'GoogleShortener'
+			# service = 'BitlyShortener'
+			service = 'TinyurlShortener'
+			# service_url = 'https://goo.gl/'
+			# service_url = 'https://bitly.com/'
+			service_url = 'http://tinyurl.com/'
+			logger('get_shortened_url', 'def', service + ' will shorten ' + str(url))
+
+			# shortener = Shortener(service, api_key=google_api_key)
+			# shortener = Shortener(service, bitly_login=bitly_login, bitly_api_key=bitly_key, bitly_token=bitly_token)
+			shortener = Shortener(service)
+
+			short_url = format(shortener.short(url))
+			return_dict['url'] = short_url
+			return_dict['service'] = service
+			return_dict['service_url'] = service_url
+			logger('get_shortened_url', 'def', 'short url ' + short_url)
+
+			return_dict['status'] = '1'
+		except KeyError as e:
+			logger('get_shortened_url', 'error', repr(e))
+			return_dict['status'] = '0'
+
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return return_json
+
+	# ajax - for attack overview
+	@view_config(route_name='ajax_get_attack_overview', renderer='json', check_csrf=True)
+	def get_attack_overview(self):
+		"""
+		Returns all attacks, done by the users
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+
+		logger('get_attack_overview', 'def', 'main')
+		logger('get_attack_overview', 'check_csrf_token', str(check_csrf_token(self.request)))
+		lang = self.request.params['lang']
+		issue = self.request.params['issue'] if 'issue' in self.request.params \
+			else self.request.session['issue'] if 'issue' in self.request.session \
+			else issue_fallback
+		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid, issue, lang)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+	# ajax - for attack overview
+	@view_config(route_name='ajax_get_issue_list', renderer='json')
+	def get_issue_list(self):
+		"""
+		Returns all issues
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+
+		logger('get_issue_list', 'def', 'main')
+
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
+		return_dict = DatabaseHelper().get_issue_list(lang)
+		issue = self.request.params['issue'] if 'issue' in self.request.params \
+			else self.request.session['issue'] if 'issue' in self.request.session \
+			else issue_fallback
+		return_dict['current_issue'] = issue
+		return_dict['current_issue_arg_count'] = QueryHelper().get_number_of_arguments(issue)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
 	# ajax - for getting all news
 	@view_config(route_name='ajax_get_news', renderer='json')
 	def get_news(self):
@@ -1659,6 +1642,53 @@ class Dbas(object):
 		return_dict = DatabaseHelper().get_news()
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
+		return return_json
+
+	# ajax - for getting database
+	@view_config(route_name='ajax_get_database_dump', renderer='json')
+	def get_database_dump(self):
+		"""
+		ajax interface for getting a dump
+		:return: json-set with everything
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('get_database_dump', 'def', 'main')
+		issue = self.request.params['issue'] if 'issue' in self.request.params \
+			else self.request.session['issue'] if 'issue' in self.request.session \
+			else issue_fallback
+		return_dict = DatabaseHelper().get_dump(issue)
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+
+	#######################################
+	## ADDTIONAL AJAX STUFF # USER THINGS #
+	#######################################
+
+	# ajax - for language switch
+	@view_config(route_name='ajax_switch_language', renderer='json')
+	def switch_language(self):
+		"""
+		Switches the language
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('switch_language', 'def', 'main')
+
+		return_dict = {}
+		try:
+			lang = self.request.params['lang']
+			logger('switch_language', 'def', 'params uid: ' + str(lang))
+			self.request.response.set_cookie('_LOCALE_', str(lang))
+			return_dict['status'] = '1'
+		except KeyError as e:
+			logger('swich_language', 'error', repr(e))
+			return_dict['status'] = '0'
+
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 		return return_json
 
 	# ajax - for sending news
