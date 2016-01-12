@@ -149,7 +149,7 @@
 						</div>
 
 						<h4><span id="add-statement-container-main-input-intro"></span></h4>
-						<input id="add-statement-container-main-input" type="text" class="" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+						<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 
 						<div id="pro-position-column">
 							<h4 id="heading-pro-positions" class="font-semi-bold" i18n:translate="pro">Pro</h4>

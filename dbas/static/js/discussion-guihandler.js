@@ -80,7 +80,6 @@ function GuiHandler() {
 		$('#' + addReasonButtonId).attr('checked', true).prop('checked', true).parent().hide();
 	};
 
-
 	/**
 	 * Appends all items in an ul list and this will be appended in the 'discussionsSpace'
 	 * @param items list with al items
@@ -145,11 +144,17 @@ function GuiHandler() {
 		id = 'textarea_' + identifier + childCount.toString();
 		area.attr({
 			type: 'text',
-			class: '',
+			class: 'form-control',
 			name: '',
 			autocomplete: 'off',
 			value: '',
-			id: id
+			id: id,
+			style: 'padding: 12px 10px 12px 50px; ' +
+			'-webkit-border-radius: 3px; ' +
+			'-moz-border-radius: 5px; ' +
+			'-o-border-radius: 5px; ' +
+			'margin: 0px 0px 10px 0px; ' +
+			'-webkit-appearance: none;'
 		}).click(function(){ // new fuzzy search, when the text field changes
 			new Helper().delay(function() {
 				new AjaxSiteHandler().fuzzySearch($('#' + id).val(), id, fuzzy_add_reason, '');
@@ -415,6 +420,7 @@ function GuiHandler() {
 	 * @param isStart boolean
 	 */
 	this.showAddPremiseOrArgumentContainer = function (isArgument, isStart){
+		// method is called while justifying arguments
 		var	discussionsDescription = $('#' + discussionsDescriptionId),
 			confrontation = discussionsDescription.attr('confrontation_text'),
 			conclusion = discussionsDescription.attr('conclusion'),
@@ -430,6 +436,7 @@ function GuiHandler() {
 			this.showAddStatementContainer(isStart);
 			return;
 		}
+		alert("showAddPremiseOrArgumentContainer");
 
 		// $('#' + addStatementContainerH4Id).text(isPremise ? _t(argumentContainerH4TextIfPremise) :
 		// _t(argumentContainerH4TextIfArgument));
@@ -484,28 +491,32 @@ function GuiHandler() {
 	 * @param isStart boolean
 	 */
 	this.showAddStatementContainer = function (isStart){
+		// method is called for the first position and the first premise
 		var	discussionsDescription = $('#' + discussionsDescriptionId),
 			conclusion = discussionsDescription.attr('conclusion'),
 			premise = discussionsDescription.attr('premise'),
 			header, escapedText,
 			addStatementContainerMainInputIntro = $('#' + addStatementContainerMainInputIntroId),
 			guihandler = new GuiHandler(),
-			ajaxhandler = new AjaxSiteHandler();
+			ajaxhandler = new AjaxSiteHandler(),
+			html = discussionsDescription.html();
 		this.prepareAddStatementContainer();
+		alert("showAddStatementContainer");
+		// TODO NARRATION FIELD FOR POSITION AND FIRST PREMISE
 
 		// some pretty print options
 		if (isStart) {
 			$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
 		} else {
-			if (discussionsDescription.html().indexOf(_t(firstPremiseText1)) != -1){
+			if (html.indexOf(_t(firstPremiseText1)) != -1){
 				$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>?');
-			} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHaveCounter)) != -1) {
-				var index1 = discussionsDescription.html().indexOf('<b>');
-				var index2 = discussionsDescription.html().indexOf('</b>');
-				header = discussionsDescription.html().substr(index1, index2-index1+5);
+			} else if (html.indexOf(_t(otherParticipantsDontHaveCounter)) != -1) {
+				var index1 = html.indexOf('<b>');
+				var index2 = html.indexOf('</b>');
+				header = html.substr(index1, index2-index1+5);
 				$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + header + '</b>');
 			} else {
-				$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremise) + '<br><br>' + discussionsDescription.html());
+				$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremise) + '<br><br>' + html);
 			}
 			addStatementContainerMainInputIntro.text(_t(because) + '...');
 		}
@@ -536,140 +547,6 @@ function GuiHandler() {
 
 		guihandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, id_pro, true, 'input');
 		guihandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, id_con, true, 'input');
-	};
-
-	/**
-	 * DEPRECATED !!!
-	 * Set some style attributes,
-	 * @param isVisible true, if the container should be displayed
-	 * @param isStatement true, if we have an argument
-	 * @param isStart
-	 * @param isPremise
-	 * @param isArgument
-	 */
-	this.setDisplayStylesOfAddStatementContainer = function (isVisible, isStart, isPremise, isStatement, isArgument) {
-		var	discussionsDescription = $('#' + discussionsDescriptionId),
-			confrontation = discussionsDescription.attr('confrontation_text'),
-			conclusion = discussionsDescription.attr('conclusion'),
-			premise = discussionsDescription.attr('premise'),
-			argument =  conclusion + ' ' + _t(because).toLocaleLowerCase() + ' ' + premise,
-			header, escapedText,
-			addStatementContainer = $('#' + addStatementContainerId),
-			addReasonButton = $('#' + addReasonButtonId),
-			addStatementContainerMainInputIntro = $('#' + addStatementContainerMainInputIntroId),
-			relation = discussionsDescription.attr('attack'),
-			guihandler = new GuiHandler(),
-			ajaxhandler = new AjaxSiteHandler(),
-			interactionhandler = new InteractionHandler();
-
-		if (!isVisible) {
-			addStatementContainer.fadeOut('slow');
-			$('#' + addStatementContainerMainInputId).val('');
-			addReasonButton.disable = false;
-			return;
-		}
-
-		// isVisible == true:
-		$('#' + proPositionTextareaId).empty();
-		$('#' + conPositionTextareaId).empty();
-		addStatementContainerMainInputIntro.text('');
-		addStatementContainer.fadeIn('slow');
-		$('#' + addStatementErrorContainer).hide();
-		addReasonButton.disable = true;
-
-		if (isStatement || typeof relation == 'undefined') {
-			// some pretty print options
-			if (isStart) {
-				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
-			} else {
-				if (discussionsDescription.html().indexOf(_t(firstPremiseText1)) != -1){
-					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>?');
-				} else if (discussionsDescription.html().indexOf(_t(otherParticipantsDontHaveCounter)) != -1) {
-					var index1 = discussionsDescription.html().indexOf('<b>');
-					var index2 = discussionsDescription.html().indexOf('</b>');
-					header = discussionsDescription.html().substr(index1, index2-index1+5);
-					$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + header + '</b>');
-				} else {
-					$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremise) + '<br><br>' + discussionsDescription.html());
-				}
-				addStatementContainerMainInputIntro.text(_t(because) + '...');
-			}
-
-			// gui modifications
-			$('#' + addStatementContainerMainInputId).show();
-			$('#' + proPositionColumnId).hide();
-			$('#' + conPositionColumnId).hide();
-			// at the beginning we differentiate between statement and statements
-			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenStatement() {
-				escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
-				if (escapedText.length == 0){
-					guihandler.setErrorDescription(_t(inputEmpty));
-					return;
-				}
-				if (isStart) {
-					if ($('#' + addReasonButtonId).hasClass(attr_attack)){
-						alert("handle this case in guiHandler");
-						return;
-					}
-					ajaxhandler.sendNewStartStatement(escapedText);
-				} else {
-					ajaxhandler.sendNewStartPremise(escapedText, discussionsDescription.attr('conclusion_id'), (discussionsDescription.attr('supportive')=='true'));
-				}
-				guihandler.hideErrorDescription();
-				guihandler.hideSuccessDescription();
-			});
-
-		} else if (isPremise || isArgument) {
-			// $('#' + addStatementContainerH4Id).text(isPremise ? _t(argumentContainerH4TextIfPremise) :
-			// _t(argumentContainerH4TextIfArgument));
-			// pretty print, whether above are more than one lititems
-			if($('#' + discussionSpaceId + ' ul li').length == 1) {
-				$('#' + addStatementContainerH4Id).text(_t(addPremiseRadioButtonText));
-			} else {
-				$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfPremise));
-			}
-			$('#' + addStatementContainerMainInputId).hide().focus();
-
-			// take a look, if we agree or disagree, and where we are
-			if (relation.indexOf(attr_undermine) != -1) {		this.showAddStatementsTextareasWithTitle(false, true, confrontation, '', false);
-			} else if (relation.indexOf(attr_support) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, '', false);
-			} else if (relation.indexOf(attr_undercut) != -1) {	this.showAddStatementsTextareasWithTitle(false, true, confrontation, conclusion, true);
-			} else if (relation.indexOf(attr_overbid) != -1) {	this.showAddStatementsTextareasWithTitle(true, false, confrontation, conclusion, true);
-			} else if (relation.indexOf(attr_rebut) != -1) { // special case, when we are in the attack branch
-				var supportive = discussionsDescription.attr('supportive') == 'true';
-				if (supportive)									this.showAddStatementsTextareasWithTitle(true, false, argument, '', false);
-				else											this.showAddStatementsTextareasWithTitle(false, true, conclusion, '', false);
-
-			} else {
-				alert("Something went wrong in 'setDisplayStylesOfAddStatementContainer'");
-			}
-
-			// does other users have an opinion?
-			if (isArgument) {
-				if (discussionsDescription.text().indexOf(_t(otherParticipantsDontHaveCounter)) != -1) {
-					// other users have no opinion, so the participant can give pro and con
-					this.showAddStatementsTextareasWithTitle(true, true, statement);
-				} else {
-					// alert('Todo: How to insert something at this place?');
-				}
-			}
-
-			$('#' + sendNewStatementId).off('click').click(function setDisplayStylesOfAddStatementContainerWhenArgument() {
-				if (interactionhandler.getPremisesAndSendThem(false)) {
-					guihandler.hideErrorDescription();
-					guihandler.hideSuccessDescription();
-					$('#' + addStatementErrorContainer).hide();
-					$('#' + addStatementErrorMsg).text('');
-				} else {
-					guihandler.setErrorDescription(_t(inputEmpty));
-				}
-			});
-		} else {
-			alert('What now (II)? GuiHandler: setDisplayStylesOfAddStatementContainer');
-		}
-
-		guihandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, id_pro, isStatement, 'input');
-		guihandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, id_con, isStatement, 'input');
 	};
 
 	/**

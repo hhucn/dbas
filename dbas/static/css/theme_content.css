@@ -81,7 +81,14 @@
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-547-quote.png) no-repeat 12px 10px;
 }
 
-#add-statement-container-main-input,
+#add-statement-container-main-input{
+	padding: 12px 10px 12px 50px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	margin: 0px 0px 10px 0px;
+	-webkit-appearance: none;
+}
 #insert_statement_form textarea {
 	outline: none;
 	font-size: 18px;
