@@ -1156,7 +1156,7 @@ function GuiHandler() {
 	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, current_id = '', func, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr,
+		var li, a, current_id = '', issue, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr,
 				text, i, helper = new Helper(), count, span;
 
 		li = $('<li>');
@@ -1180,20 +1180,12 @@ function GuiHandler() {
 				a.append(span);
 				li.append(a);
 				a.click(function () {
-					func = $(this).parent().attr('issue');
-					topic = $('#issue_' + func + ' a').text();
+					issue = $(this).parent().attr('issue');
+					topic = $('#issue_' + issue + ' a').text();
 
+					// parameter func will be used as a string to go to the new issue page
 					displayConfirmationDialogWithCheckbox(_t(switchDiscussion), _t(switchDiscussionText1) + ': <i>\'' + topic
-						+ '\'</i> ' + _t(switchDiscussionText2), _t(keepSetting), func, true);
-					// set new title and text
-					issueDropdownButton.text($(this).text());
-					$('#' + issueDateId).text($(this).attr('title'));
-					$('#' + issueCountId).text($(this).attr('count'));
-					// set inactive class
-					$(this).parent().parent().children('li').each(function () {
-						$(this).removeClass('disabled');
-					});
-					$(this).parent().addClass('disabled');
+						+ '\'</i> ' + _t(switchDiscussionText2), _t(keepSetting), issue, true);
 				});
 				$('#' + issueDropdownListID).append(li);
 			}

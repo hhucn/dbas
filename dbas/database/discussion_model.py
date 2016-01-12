@@ -252,7 +252,7 @@ class Argument(DiscussionBase):
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 	weights = relationship('Weight', foreign_keys=[weight_uid])
 
-	def __init__(self, premisegroup, issupportive, author, issue, conclusion=0):
+	def __init__(self, premisegroup, issupportive, author, issue, conclusion=0, weight=0):
 		"""
 		Initializes a row in current argument-table
 		:param premisegroup:
@@ -269,7 +269,7 @@ class Argument(DiscussionBase):
 		self.author_uid = author
 		self.argument_uid = 0
 		self.issue_uid = issue
-		self.weight_uid = 0
+		self.weight_uid = weight
 
 	def conclusions_argument(self, argument):
 		self.argument_uid = argument

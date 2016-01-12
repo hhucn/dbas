@@ -31,7 +31,7 @@ class QueryHelper(object):
 			       + ', premisesGroup_uid: ' + str(argument.premisesGroup_uid)
 			       + ', isSupportive: ' + str(argument.isSupportive)
 			       + ', author_uid: ' + str(argument.author_uid)
-			       + ', weight: ' + str(argument.weight)
+			       + ', weight_uid: ' + str(argument.weight)
 			       + ', conclusion_uid: ' + str(argument.conclusion_uid)
 			       + ', issue_uid: ' + str(argument.issue_uid)
 			       + ', argument_uid: ' + str(argument.argument_uid))
