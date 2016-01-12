@@ -406,6 +406,7 @@ class Vote(DiscussionBase):
 	__tablename__ = 'votes'
 	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'), primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), primary_key=True)
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	isUpVote = sa.Column(sa.Boolean, nullable=False)
 
 	weights = relationship('Weight', foreign_keys=[weight_uid])
@@ -421,6 +422,7 @@ class Vote(DiscussionBase):
 		self.weight_uid = weight_uid
 		self.author_uid = author_uid
 		self.isUpVote = isUpVote
+		self.timestamp = func.now()
 
 	def set_up_vote(self, isUpVote):
 		self.isUpVote = isUpVote

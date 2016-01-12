@@ -137,9 +137,13 @@ function DiscussionIsland(){
 	this.createPartOfIsland = function(colSize, row, color, sign, title, data, valueName){
 		var div, div_panel, div_header, div_body;
 		div = $('<div>').addClass('col-md-' + colSize);
-		//header = '<h5><span class="' + color + '-bg text-center">' + sign + '</span> ' + title + '</h5>';
-		//div.append(header);
-		//div.append(data[valueName] > 0 ? new Helper().getValuesOfDictWithPrefixAsUL(data, valueName) : '<label>' + _t(noEntries) + '</label>');
+		// version with panel
+		/*
+		header = '<h5><span class="' + color + '-bg text-center">' + sign + '</span> ' + title + '</h5>';
+		div.append(header);
+		div.append(data[valueName] > 0 ? new Helper().getValuesOfDictWithPrefixAsUL(data, valueName) : '<label>' + _t(noEntries) + '</label>');
+		*/
+		// version with panel
 		div_panel = $('<div>').addClass('panel').addClass('panel-default');
 		div_header = $('<div>').addClass('panel-heading').append('<h5><span class="' + color + '-bg text-center">' + sign + '</span> ' + title + '</h5>');
 		div_body = $('<div>').addClass('panel-body').append(data[valueName] > 0 ? new Helper().getValuesOfDictWithPrefixAsUL(data, valueName) : '<label>' + _t(noEntries) + '</label>');
