@@ -77,7 +77,7 @@
 - Toggle start button
 - Second way of bootstraping: argumentation against initial given position
 
-0.4.1 (16.11.2015)
+0.4.1 (2015-11-16)
 - Improving bootstraping: It is now a two-step process!
 
 0.4.2 (2015-11-23)
@@ -103,6 +103,10 @@
 - Island View
 - Profile Picture based on the MD5-value of the user's mail
 - Improved weighting helper
+
+0.4.8 (2016-01-12)
+- Improved weighting helper, also called voting helper
+- Moved many string building functions to the server side
 
 0.5.0 (unreleased)
 - Improved recommendation of the next confrontation

@@ -587,6 +587,7 @@ function AjaxSiteHandler() {
 		});
 		callback.focus();
 	};
+
 	/**
 	 *
 	 */

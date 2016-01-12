@@ -113,12 +113,7 @@ class Dbas(object):
 		content         = self.request.params['content'] if 'content' in self.request.params else ''
 		spam            = self.request.params['spam'] if 'spam' in self.request.params else ''
 		request_token   = self.request.params['csrf_token'] if 'csrf_token' in self.request.params else ''
-		logger('main_contact', 'form.contact.submitted', 'name: ' + name)
-		logger('main_contact', 'form.contact.submitted', 'mail: ' + email)
-		logger('main_contact', 'form.contact.submitted', 'phone: ' + phone)
-		logger('main_contact', 'form.contact.submitted', 'content: ' + content)
-		logger('main_contact', 'form.contact.submitted', 'spam: ' + spam)
-		logger('main_contact', 'form.contact.submitted', 'csrf_token: ' + request_token)
+		logger('main_contact', 'form.contact.submitted', 'name: ' + name + ', mail: ' + email + ', phone: ' + phone + ', content: ' + content + ', spam: ' + spam + ', csrf_token: ' + request_token)
 
 		# get anti-spam-question
 		spamquestion, answer = UserHandler().get_random_anti_spam_question(lang)
@@ -152,17 +147,13 @@ class Dbas(object):
 
 			# check for empty username
 			elif (not spam) or (not spam.isdigit()) or (not int(spam) == self.request.session['antispamanswer']):
-				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer')
-				logger('main_contact', 'form.contact.submitted', 'given answer ' + spam)
-				logger('main_contact', 'form.contact.submitted', 'right answer ' + str(self.request.session['antispamanswer']))
+				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spam + ', right answer ' + str(self.request.session['antispamanswer']))
 				contact_error = True
 				message = _t.get(_t.maliciousAntiSpam)
 
 			# is the token valid?
 			elif request_token != token:
-				logger('main_contact', 'form.contact.submitted', 'token is not valid')
-				logger('main_contact', 'form.contact.submitted', 'request_token: ' + str(request_token))
-				logger('main_contact', 'form.contact.submitted', 'token: ' + str(token))
+				logger('main_contact', 'form.contact.submitted', 'token is not valid' + ', request_token: ' + str(request_token) + ', token: ' + str(token))
 				message = _t.get(_t.nonValidCSRF)
 				contact_error = True
 
@@ -287,9 +278,7 @@ class Dbas(object):
 		success = False
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
-		logger('main_settings', 'db_user', db_user.nickname)
-		logger('main_settings', 'db_user.groups', str(db_user.groups.uid))
-		logger('main_settings', 'db_user.groups', str(db_user.groups.name))
+		logger('main_settings', 'db_user', db_user.nickname + ' ' + str(db_user.groups.uid) + ' ' + str(db_user.groups.name))
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			logger('main_settings', 'form.changepassword.submitted', 'requesting params')
 			old_pw = self.request.params['passwordold']
@@ -303,9 +292,7 @@ class Dbas(object):
 		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
 		gravatar_url += urllib.parse.urlencode({'d':'wavatar', 's':str(80)})
 
-		logger('main_settings', 'return change_error', str(error))
-		logger('main_settings', 'return change_success', str(success))
-		logger('main_settings', 'return message', str(message))
+		logger('main_settings', 'return change_error', str(error) + ', change_success', str(success) + ', message', str(message))
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
@@ -555,9 +542,7 @@ class Dbas(object):
 			                                                               uid, True, '', lang, self.request.session.id)
 			# DO NOT increase weight of statement, because this is the "do not know"-trace
 
-			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid)
-			logger('ajax_get_premise_for_statement', 'def', 'supportive:' + str(supportive))
-			logger('ajax_get_premise_for_statement', 'def', 'issue: ' + str(issue))
+			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid + ', supportive:' + str(supportive) + ', issue: ' + str(issue))
 
 			return_dict = RecommenderHelper().get_premise_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
@@ -616,9 +601,7 @@ class Dbas(object):
 			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
 			                                                               uid, True, supportive, lang, self.request.session.id)
 
-			logger('get_premises_for_statement', 'def', 'uid: ' + uid)
-			logger('get_premises_for_statement', 'def', 'supportive ' + str(supportive))
-			logger('get_premises_for_statement', 'def', 'issue ' + str(issue))
+			logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', supportive ' + str(supportive) + ', issue ' + str(issue))
 
 			return_dict = RecommenderHelper().get_premises_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
 			                                                           self.request.session.id, issue)
@@ -671,9 +654,7 @@ class Dbas(object):
 				else self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 
-			logger('reply_for_premisegroup', 'def', 'issue ' + str(issue))
-			logger('reply_for_premisegroup', 'def', 'pgroup ' + str(pgroup))
-			logger('reply_for_premisegroup', 'def', 'conclusion ' + str(conclusion))
+			logger('reply_for_premisegroup', 'def', 'issue ' + str(issue) + ', pgroup ' + str(pgroup) + ', conclusion ' + str(conclusion))
 
 			# check for additional params, maybe they were set by breadcrumbs
 			url = self.request.matchdict['url'] if 'url' in self.request.matchdict else '-'
@@ -796,10 +777,7 @@ class Dbas(object):
 			                                                                    id_text.split('_')[2], pgroup_id, issue,
 			                                                                    self.request.session.id)
 
-			logger('reply_for_argument', 'def', 'issue ' + str(issue))
-			logger('reply_for_argument', 'def', 'id_text ' + str(id_text))
-			logger('reply_for_argument', 'def', 'pgroup_id ' + str(pgroup_id))
-			logger('reply_for_argument', 'def', 'supportive ' + str(supportive))
+			logger('reply_for_argument', 'def', 'issue ' + str(issue) + ', id_text ' + str(id_text) + ', pgroup_id ' + str(pgroup_id) + ', supportive ' + str(supportive))
 			# track will be saved in the method
 			return_dict, status = RecommenderHelper().get_attack_for_argument(transaction,
 			                                                                  self.request.authenticated_userid,
@@ -886,11 +864,7 @@ class Dbas(object):
 			                                                                                self.request.session.id, lang)
 
 			# track will be saved in get_reply_confrontation_response
-			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text)
-			logger('reply_for_response_of_confrontation', 'def', 'last relation ' + relation)
-			logger('reply_for_response_of_confrontation', 'def', 'confrontation ' +  confrontation)
-			logger('reply_for_response_of_confrontation', 'def', 'issue ' + str(issue))
-			logger('reply_for_response_of_confrontation', 'def', 'exception_rebut ' + str(exception_rebut))
+			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text + ', last relation ' + relation + ', confrontation ' +  confrontation + ', issue ' + str(issue) + ', exception_rebut ' + str(exception_rebut))
 
 			# IMPORTANT: Supports are a special case !
 			if 'support' in uid_text:
@@ -1648,7 +1622,6 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
 		logger('get_attack_overview', 'def', 'main')
-		logger('get_attack_overview', 'check_csrf_token', str(check_csrf_token(self.request)))
 		lang = self.request.params['lang']
 		issue = self.request.params['issue'] if 'issue' in self.request.params \
 			else self.request.session['issue'] if 'issue' in self.request.session \

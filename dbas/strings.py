@@ -1338,7 +1338,6 @@ class TextGenerator(object):
 		return _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>' \
 		       + _t.get(_t.otherParticipantsDontHaveCounter) + ' <b>' + premise + '</b>' + '.<br><br>' \
 		       + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText), _t.get(_t.discussionEnd)
-		
 
 	def get_text_for_premise_for_statement(self, conclusion, premises, supportive, logged_in):
 		"""
