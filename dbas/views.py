@@ -1689,9 +1689,9 @@ class Dbas(object):
 		return return_json
 
 
-	#######################################
-	## ADDTIONAL AJAX STUFF # USER THINGS #
-	#######################################
+	###########################################
+	## ADDTIONAL AJAX STUFF # ADDITION THINGS #
+	###########################################
 
 	# ajax - for language switch
 	@view_config(route_name='ajax_switch_language', renderer='json')
