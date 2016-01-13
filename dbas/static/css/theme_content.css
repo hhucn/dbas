@@ -82,33 +82,14 @@
 }
 
 #add-statement-container-main-input{
-	padding: 12px 10px 12px 50px;
+	padding: 12px 10px 0px 50px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 5px;
 	-o-border-radius: 5px;
 	margin: 0px 0px 10px 0px;
 	-webkit-appearance: none;
-}
-#insert_statement_form textarea {
-	outline: none;
-	font-size: 18px;
-	font-weight: 400;
-	color: #000;
-	padding: 12px 10px 12px 50px;
-	border-radius: 5px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 5px;
-	-o-border-radius: 5px;
-	margin: 0px 0px 10px 0px;
-	-webkit-appearance: none;
-	border: 1px solid;
-	width: 80%;
-	border-color: #bcbcbc;
-}
-
-#add-statement-container-main-input{
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-547-quote.png) no-repeat 12px 10px;
-	width: 100%;
+	width: 80%;
 	margin-bottom: 0px;
 }
 

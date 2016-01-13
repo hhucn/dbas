@@ -30,9 +30,9 @@
 							<span class="sr-only" i18n:translate="success:">Success:</span> <span id="writing-news-success-message"></span>
 						</div>
 
-						<input id="writing-news-title" name="newstitle" type="text" class="news-title" placeholder="Today is a wonderful day!" autocomplete="on" placeholder="..." tabindex="1">
+						<input id="writing-news-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" autocomplete="on" placeholder="..." tabindex="1">
 
-						<textarea id="writing-news-text" type="text" class="news-text" name="newstext" autocomplete="on" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="2"></textarea>
+						<textarea id="writing-news-text" type="text" class="form-control news-text" name="newstext" autocomplete="on" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="2"></textarea>
 
 						<input id="send-news" type="button" value="Send News" class="button button-block btn btn-primary" data-dismiss="modal" />
 						<div id="news_credentials" style="float: right;">

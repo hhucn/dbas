@@ -18,38 +18,29 @@
 .tab-content > div:last-child {
 	display: none;
 }
-
-h2 {
-	text-align: center;
-	color: #000;
-	margin: 0 0 40px;
+.form-group{
+	height: 40px;
 }
-
-h3,
-h4 {
-	margin: 5px 0px 10px 0px;
-	text-align: center;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="password"],
-textarea[type="text"] {
-	outline: none;
-	font-size: 18px;
-	font-weight: 400;
-	color: #000;
-	padding: 10px 5px 10px 45px;
-	border-radius: 5px;
+#name-input,
+#email-input,
+#phone-input,
+#msg-input,
+#spam-input,
+#popup-login-password-input,
+#popup-login-passwordconfirm-input,
+#userfirstname-input,
+#userlastname-input,
+#nick-input,
+#login-user,
+#login-pw,
+textarea.content {
+	width: 100%;
+	padding: 12px 10px 6px 50px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 5px;
 	-o-border-radius: 5px;
 	margin: 0px 0px 10px 0px;
 	-webkit-appearance: none;
-	border: 1px solid;
-	width: 100%;
-	border-color: #bcbcbc;
 }
 
 .top-row:after {
@@ -70,29 +61,22 @@ input.userlastname,
 input.nickname {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat 12px 10px;
 }
-
 input.tel {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-442-phone-alt.png) no-repeat 12px 10px;
 }
-
 input.email {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-121-message-full.png) no-repeat 12px 10px;
 }
-
 input.password,
 input.passwordold {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-204-lock.png) no-repeat 12px 10px;
 }
-
-input.password,
 input.passwordconfirm {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-205-unlock.png) no-repeat 12px 10px;
 }
-
 input.spam {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-505-alert.png) no-repeat 12px 10px;
 }
-
 textarea.content {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-196-circle-info.png) no-repeat 12px 10px;
 	resize: vertical;

@@ -115,34 +115,24 @@ function GuiHandler() {
 		var area, parent, div, div_content, button, span, childCount, div_dropdown, id, span_because;
 		parent = $('#' + parentid);
 		childCount = parent.children().length;
+		id = 'textarea_' + identifier + childCount.toString();
 
-		div = $('<div>');
-		div.attr({
+		div = $('<div>').attr({
 			class: 'row',
 			id: 'div' + childCount.toString()
 		});
-
-		div_content = $('<div>');
-		div_content.attr({
+		div_content = $('<div>').attr({
 			id: 'div-content-' + childCount.toString()
 		});
-
-		button = $('<button>');
-		button.attr({
+		button = $('<button>').attr({
 			type: 'button',
 			class: 'close',
 			id: 'button_' + identifier + childCount.toString()
 		});
+		span = $('<span>').html('&times;');
+		span_because = $('<span>').attr('style', 'float:left; line-height:60px; text-align:center;').html('<h5>' + _t(because) + '...' + '</h5>');
 
-		span = $('<span>');
-		span.html('&times;');
-
-		span_because = $('<span>');
-		span_because.attr('style', 'float:left; line-height:60px; text-align:center;').html('<h4>' + _t(because) + '...' + '</h4>');
-
-		area = $('<' + type + '>');
-		id = 'textarea_' + identifier + childCount.toString();
-		area.attr({
+		area = $('<' + type + '>').attr({
 			type: 'text',
 			class: 'form-control',
 			name: '',
@@ -438,13 +428,13 @@ function GuiHandler() {
 		}
 		alert("showAddPremiseOrArgumentContainer");
 
-		// $('#' + addStatementContainerH4Id).text(isPremise ? _t(argumentContainerH4TextIfPremise) :
+		// $('#' + addStatementContainerTitleId).text(isPremise ? _t(argumentContainerH4TextIfPremise) :
 		// _t(argumentContainerH4TextIfArgument));
 		// pretty print, whether above are more than one lititems
 		if($('#' + discussionSpaceId + ' ul li').length == 1) {
-			$('#' + addStatementContainerH4Id).text(_t(addPremiseRadioButtonText));
+			$('#' + addStatementContainerTitleId).text(_t(addPremiseRadioButtonText));
 		} else {
-			$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfPremise));
+			$('#' + addStatementContainerTitleId).text(_t(argumentContainerH4TextIfPremise));
 		}
 		$('#' + addStatementContainerMainInputId).hide().focus();
 
@@ -495,7 +485,7 @@ function GuiHandler() {
 		var	discussionsDescription = $('#' + discussionsDescriptionId),
 			conclusion = discussionsDescription.attr('conclusion'),
 			premise = discussionsDescription.attr('premise'),
-			header, escapedText,
+			header, escapedText, titleText,
 			addStatementContainerMainInputIntro = $('#' + addStatementContainerMainInputIntroId),
 			guihandler = new GuiHandler(),
 			ajaxhandler = new AjaxSiteHandler(),
@@ -506,20 +496,19 @@ function GuiHandler() {
 
 		// some pretty print options
 		if (isStart) {
-			$('#' + addStatementContainerH4Id).text(_t(argumentContainerH4TextIfConclusion));
+			titleText = _t(argumentContainerH4TextIfConclusion);
 		} else {
 			if (html.indexOf(_t(firstPremiseText1)) != -1){
-				$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>?');
+				titleText = _t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>?';
 			} else if (html.indexOf(_t(otherParticipantsDontHaveCounter)) != -1) {
-				var index1 = html.indexOf('<b>');
-				var index2 = html.indexOf('</b>');
-				header = html.substr(index1, index2-index1+5);
-				$('#' + addStatementContainerH4Id).html(_t(whyDoYouThinkThat) + ' <b>' + header + '</b>');
+				header = html.substr(html.indexOf('<b>'), html.indexOf('</b>')-html.indexOf('<b>')+5);
+				titleText = _t(whyDoYouThinkThat) + ' <b>' + header + '</b>';
 			} else {
-				$('#' + addStatementContainerH4Id).html(_t(argumentContainerH4TextIfPremise) + '<br><br>' + html);
+				titleText = _t(argumentContainerH4TextIfPremise) + '<br><br>' + html;
 			}
 			addStatementContainerMainInputIntro.text(_t(because) + '...');
 		}
+		$('#' + addStatementContainerTitleId).html(titleText);
 
 		// gui modifications
 		$('#' + addStatementContainerMainInputId).show();

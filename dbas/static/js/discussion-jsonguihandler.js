@@ -155,9 +155,9 @@ function JsonGuiHandler() {
 				guihandler.checkAndHideNewArgumentButton();
 				new InteractionHandler().radioButtonChanged();
 				if (isSupportive)
-					$('#' + addStatementContainerH4Id).html(_t(canYouGiveAReasonFor) + ' ' + jsonData.argument + '?');
+					$('#' + addStatementContainerTitleId).html(_t(canYouGiveAReasonFor) + ' ' + jsonData.argument + '?');
 				else
-					$('#' + addStatementContainerH4Id).html(_t(canYouGiveACounterArgumentWhy1) + ' ' + jsonData.argument + ' ' +_t(canYouGiveACounterArgumentWhy2));
+					$('#' + addStatementContainerTitleId).html(_t(canYouGiveACounterArgumentWhy1) + ' ' + jsonData.argument + ' ' +_t(canYouGiveACounterArgumentWhy2));
 			} else {
 				guihandler.setErrorDescription(_t(discussionEndFeelFreeToLogin) + '<br>' + _t(clickHereForRegistration));
 			}

@@ -140,7 +140,7 @@
 				<div class="col-md-10">
 
 					<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
-						<h4 id="add-statement-container-h4" i18n:translate="insert-argument">Please insert a new Argument</h4>
+						<h4 id="add-statement-container-title" i18n:translate="insert-argument">Please insert a new Argument</h4>
 
 						<div id="add-statement-error-container" class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -148,7 +148,7 @@
 							<span id="add-statement-error-msg"></span>
 						</div>
 
-						<h4><span id="add-statement-container-main-input-intro"></span></h4>
+						<h5><span id="add-statement-container-main-input-intro"></span></h5>
 						<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 
 						<div id="pro-position-column">
