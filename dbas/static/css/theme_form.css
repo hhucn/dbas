@@ -206,7 +206,6 @@ textarea.content {
 #contact-submit {
 	margin-top: 25px;
 	display:inline-block;
-    width:100%;
 }
 
 @media (max-width: 1199px) {
