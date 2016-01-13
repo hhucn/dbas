@@ -1,4 +1,6 @@
 import random
+import hashlib
+import urllib
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
@@ -82,6 +84,17 @@ class UserHandler(object):
 				return True
 
 		return False
+
+	def get_profile_picture(self, user):
+		"""
+
+		:param user:
+		:return:
+		"""
+		email = user.email.encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
+		gravatar_url += urllib.parse.urlencode({'d':'wavatar', 's':str(80)})
+		return gravatar_url
 
 	def is_user_author(self, user):
 		"""

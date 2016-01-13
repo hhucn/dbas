@@ -37,7 +37,7 @@ main_discussion
     * *reply_for_argument* with parameters *id_text=undermine_premisesgroup_68&pgroup_id=17&supportive=true&issue=1*, whereby XXXXX This service will call *ajax_reply_for_argument*.
     * *more_about_argument* with parameters *uid=1&supportive=true&issue=1*, whereby XXXXX This service will call *ajax_get_premise_for_statement*.
 
-main_settings
+main_settingsrn
 +++++++++++++
 * Path: /settings
 * Content: Page with settings of the user. Only available, when the user is logged in

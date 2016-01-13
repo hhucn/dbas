@@ -3,9 +3,10 @@ import locale
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History, Vote
 from .logger import logger
 from .strings import Translator
+from .user_management import UserHandler
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -351,7 +352,6 @@ class QueryHelper(object):
 		text, uids = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
 		return text, uids
 
-
 	def get_undermines_for_premises(self, key, premises_as_statements_uid, issue):
 		"""
 
@@ -545,6 +545,26 @@ class QueryHelper(object):
 				#return_dict[key + str(index) + 'id'] = ','.join(uids)
 		return_dict[key] = str(len(db_relation))
 		return return_dict
+
+	def get_user_with_same_opinion(self, argument_uid, lang):
+		"""
+
+		:param argument_uid:
+		:param lang:
+		:return:
+		"""
+		ret_dict = dict()
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		if not db_argument:
+			return ret_dict
+
+		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_argument.weight_uid).all()
+		uh = UserHandler()
+		for vote in db_votes:
+			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+			ret_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
+			                                 'vote_timestamp': self.sql_timestamp_pretty_print(vote.timestamp, lang)}
+		return ret_dict
 
 	def sql_timestamp_pretty_print(self, ts, lang):
 		"""

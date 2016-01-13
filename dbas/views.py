@@ -279,20 +279,19 @@ class Dbas(object):
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
 		logger('main_settings', 'db_user', db_user.nickname + ' ' + str(db_user.groups.uid) + ' ' + str(db_user.groups.name))
+		uh = UserHandler()
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			logger('main_settings', 'form.changepassword.submitted', 'requesting params')
 			old_pw = self.request.params['passwordold']
 			new_pw = self.request.params['password']
 			confirm_pw = self.request.params['passwordconfirm']
 
-			message, error, success = UserHandler().change_password(transaction, db_user, old_pw, new_pw, confirm_pw, lang)
+			message, error, success = uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, lang)
 
 		# get gravater profile picture
-		email = db_user.email.encode('utf-8') if db_user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
-		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
-		gravatar_url += urllib.parse.urlencode({'d':'wavatar', 's':str(80)})
+		gravatar_url = uh.get_profile_picture(db_user)
 
-		logger('main_settings', 'return change_error', str(error) + ', change_success', str(success) + ', message', str(message))
+		logger('main_settings', 'return change_error', str(error) + ', change_success' + str(success) + ', message' + str(message))
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
@@ -669,11 +668,12 @@ class Dbas(object):
 				attack_arg = url[pos1:pos2]
 
 			# get argument by system or with params, when we are navigating with breadcrumbs
-			return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction,
-			                                                                                 self.request.authenticated_userid,
-			                                                                                 pgroup, conclusion,
-			                                                                                 self.request.session.id,
-			                                                                                 supportive, issue)
+			#return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction,
+			#                                                                                 self.request.authenticated_userid,
+			#                                                                                 pgroup, conclusion,
+			#                                                                                 self.request.session.id,
+			#                                                                                 supportive, issue)
+
 			# Track will be saved in the method, whereby we differentiate between an 'normal' request and one,
 			# which was saved in the breadcrumbs to prevent the random attack
 			if attack_arg is '' or attack_with is '':
@@ -726,6 +726,7 @@ class Dbas(object):
 
 			return_dict['supportive'] = str(supportive)
 			return_dict['status'] = str(status)
+			return_dict['same_opinion'] = QueryHelper().get_user_with_same_opinion(return_dict['argument_uid'] if 'argument_uid' in return_dict else 0, lang) # todo use this
 
 			transaction.commit()
 		except KeyError as e:
@@ -818,6 +819,7 @@ class Dbas(object):
 
 		return_dict['logged_in'] = self.request.authenticated_userid
 		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
+		return_dict['same_opinion'] = QueryHelper().get_user_with_same_opinion(return_dict['argument_uid'] if 'argument_uid' in return_dict else 0, lang) # todo use this
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -910,6 +912,7 @@ class Dbas(object):
 			                                                              self.request.authenticated_userid,
 			                                                              url,
 			                                                              status))
+			return_dict['same_opinion'] = QueryHelper().get_user_with_same_opinion(int(uid_text.split('_')[2]), lang) # todo use this
 
 
 		except KeyError as e:
