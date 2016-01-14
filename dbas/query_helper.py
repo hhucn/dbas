@@ -553,6 +553,8 @@ class QueryHelper(object):
 		:param lang:
 		:return:
 		"""
+		logger('QueryHelper', 'get_user_with_same_opinion', 'Argument ' + str(argument_uid))
+
 		ret_dict = dict()
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		if not db_argument:
@@ -562,15 +564,17 @@ class QueryHelper(object):
 		uh = UserHandler()
 		for vote in db_votes:
 			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+			logger('QueryHelper', 'get_user_with_same_opinion', 'User ' + str(voted_user.nickname)
+			       + ', avatar ' + uh.get_profile_picture(voted_user))
 			ret_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
-			                                 'vote_timestamp': self.sql_timestamp_pretty_print(vote.timestamp, lang)}
+			                                 'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 		return ret_dict
 
 	def sql_timestamp_pretty_print(self, ts, lang):
 		"""
 
-		:param ts:
-		:param lang:
+		:param ts: timestamp as string
+		:param lang: language
 		:return:
 		"""
 
