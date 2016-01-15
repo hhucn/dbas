@@ -427,6 +427,7 @@ function GuiHandler() {
 			return;
 		}
 		alert("showAddPremiseOrArgumentContainer");
+		// TODO NARRATION FIELD more statements
 
 		// $('#' + addStatementContainerTitleId).text(isPremise ? _t(argumentContainerH4TextIfPremise) :
 		// _t(argumentContainerH4TextIfArgument));
@@ -491,7 +492,6 @@ function GuiHandler() {
 			ajaxhandler = new AjaxSiteHandler(),
 			html = discussionsDescription.html();
 		this.prepareAddStatementContainer();
-		alert("showAddStatementContainer");
 		// TODO NARRATION FIELD FOR POSITION AND FIRST PREMISE
 
 		// some pretty print options

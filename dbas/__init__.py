@@ -69,6 +69,7 @@ def main(global_config, **settings):
 	config.add_route('main_discussion_issue',   '/discussion/start/issue={issue}')
 	config.add_route('main_discussion',         '/discussion/{parameters}/{service}/go')
 	config.add_route('main_settings',           '/settings')
+	config.add_route('main_admin',              '/admin')
 	config.add_route('main_news',               '/news')
 	config.add_route('main_imprint',            '/imprint')
 	config.add_route('404',                     '/404')
@@ -84,6 +85,10 @@ def main(global_config, **settings):
 	config.add_route('ajax_reply_for_premisegroup',              '/discussion/{url:.*}ajax_reply_for_premisegroup')
 	config.add_route('ajax_reply_for_response_of_confrontation', '/discussion/{url:.*}ajax_reply_for_response_of_confrontation')
 	config.add_route('ajax_reply_for_argument',                  '/discussion/{url:.*}ajax_reply_for_argument')
+
+	# config.add_route('init', '/d')
+	# config.add_route('init', '/d/{issue}')
+	# config.add_route('init', '/d/{issue}/')
 
 	config.add_route('ajax_set_new_start_statement',             '/discussion/{url:.*}ajax_set_new_start_statement{params:.*}')
 	config.add_route('ajax_set_new_start_premise',               '/discussion/{url:.*}ajax_set_new_start_premise{params:.*}')

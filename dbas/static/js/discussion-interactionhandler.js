@@ -539,24 +539,6 @@ function InteractionHandler() {
 	};
 
 	/**
-	 *
-	 * @param data
-	 */
-	this.callbackIfDoneGetUsersOverview = function (data){
-		var parsedData = $.parseJSON(data);
-		new JsonGuiHandler().setJsonUserDataToAdminContent(parsedData);
-	};
-
-	/**
-	 *
-	 * @param data
-	 */
-	this.callbackIfDoneAttackOverview = function (data){
-		var parsedData = $.parseJSON(data);
-		new JsonGuiHandler().setJsonAttackDataToAdminContent(parsedData);
-	};
-
-	/**
 	 * Callback, when a correcture could be send
 	 * @param data of the ajax request
 	 * @param edit_dialog_td_id

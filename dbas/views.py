@@ -313,6 +313,33 @@ class Dbas(object):
 			'csrf_token': token
 		}
 
+	# admin page, when logged in
+	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='use')
+	def main_admin(self):
+		"""
+		View configuration for the content view. Only logged in user can reach this page.
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('main_admin', 'def', 'main')
+
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
+		# checks whether the current user is admin
+		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(lang),
+			'title': 'Settings',
+			'project': header,
+			'logged_in': self.request.authenticated_userid,
+			'is_admin': is_admin,
+		}
+
 	# news page for everybody
 	@view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
 	def main_news(self):

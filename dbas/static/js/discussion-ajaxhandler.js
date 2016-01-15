@@ -492,64 +492,6 @@ function AjaxSiteHandler() {
 		});
 	};
 
-	/**
-	 * Requests all users
-	 */
-	this.getUsersOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
-		$.ajax({
-			url: 'ajax_all_users',
-			method: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrfToken
-			},
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
-			}
-		}).done(function ajaxGetAllUsersDone(data) {
-			new InteractionHandler().callbackIfDoneGetUsersOverview(data);
-			new AjaxSiteHandler().debugger(data, url, settings_data);
-		}).fail(function ajaxGetAllUsersFail() {
-			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-		});
-	};
-
-	/**
-	 * Requests all attacks
-	 */
-	this.getAttackOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
-		$.ajax({
-			url: 'ajax_get_attack_overview',
-			method: 'GET',
-			dataType: 'json',
-			data: { issue: new Helper().getCurrentIssueId(), lang: getLanguage() },
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrfToken
-			},
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
-			}
-		}).done(function ajaxGetAllUsersDone(data) {
-			new InteractionHandler().callbackIfDoneAttackOverview(data);
-			new AjaxSiteHandler().debugger(data, url, settings_data);
-			$('#' + listAllUsersAttacksId).val(_t(hideAllAttacks));
-			new GuiHandler().hideErrorDescription();
-		}).fail(function ajaxGetAllUsersFail() {
-			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			$('#' + listAllUsersAttacksId).val(_t(showAllAttacks));
-		});
-	};
-
 	/***
 	 * Ajax request for the fuzzy search
 	 * @param value
