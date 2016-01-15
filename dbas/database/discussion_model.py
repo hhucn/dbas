@@ -16,14 +16,16 @@ class Issue(DiscussionBase):
 	"""
 	__tablename__ = 'issues'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	text = sa.Column(sa.Text, nullable=False)
+	title = sa.Column(sa.Text, nullable=False)
+	info = sa.Column(sa.Text, nullable=False)
 	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
-	def __init__(self, text):
+	def __init__(self, title, info):
 		"""
 		Initializes a row in current position-table
 		"""
-		self.text = text
+		self.title = title
+		self.info = info
 
 	@classmethod
 	def by_text(cls):

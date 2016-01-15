@@ -72,6 +72,7 @@ var issueDropdownButtonID						= 'issue-dropdown';
 var issueDropdownListID							= 'dropdown-issue-list';
 var issueDateId									= 'issue-date';
 var issueCountId 								= 'issue-count';
+var issueInfoId                                 = 'issue_info';
 var listAllUsersButtonId 						= 'list-all-users';
 var listAllUsersAttacksId 						= 'list-all-attacks';
 var loginLinkId 								= 'login-link';
