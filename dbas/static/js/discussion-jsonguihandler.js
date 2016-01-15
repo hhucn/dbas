@@ -264,18 +264,15 @@ function JsonGuiHandler() {
 	 */
 	this.setJsonDataAsConfrontationWithoutConfrontation = function (jsonData, isSupportive) {
 		var guihandler = new GuiHandler(),
-			dict;
-
-		// set discussions text
-		dict = {
+			dict = {
 			'text': jsonData.premise_text,
 			'attack': jsonData.relation,
 			'related_argument': jsonData.argument_uid,
 			'premisegroup_uid': jsonData.premisegroup_uid,
 			'conclusion_id': jsonData.conclusion_uid};
 
-		guihandler.setDiscussionsDescription(jsonData.discussion_description, dict);
-			new InteractionHandler().setDiscussionEndLinksInText();
+		guihandler.setDiscussionsDescription(jsonData.discussion_description, '', dict);
+		new InteractionHandler().setDiscussionEndLinksInText();
 
 		guihandler.hideDisplayControlContainer();
 	};

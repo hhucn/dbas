@@ -709,18 +709,22 @@ class Dbas(object):
 				                                                                                 pgroup, conclusion,
 				                                                                                 self.request.session.id,
 				                                                                                 supportive, issue)
+				logger('reply_for_premisegroup', 'def', 'status I ' + str(status))
 			else:
 				return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup_by_args(attack_with,
 				                                                                                         attack_arg,
 				                                                                                         pgroup,
 				                                                                                         conclusion,
 				                                                                                         issue)
+				logger('reply_for_premisegroup', 'def', 'status II ' + str(status))
+
+			_tg = TextGenerator(lang)
+			conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
+			relation = return_dict['relation'] if 'relation' in return_dict else None
+			if status != 0:
 			# rate premise, because here we have the first argument ever!
 			# votes for the oposite will decreased in the WeightingHelper
-			WeightingHelper().add_vote_for_argument(return_dict['argument_uid'], self.request.authenticated_userid, transaction)
-
-			# reset and save url for breadcrumbs
-			if status != 0:
+				WeightingHelper().add_vote_for_argument(return_dict['argument_uid'], self.request.authenticated_userid, transaction)
 				url = self.request.params['url'] # TODO better url for noticing attacking arguments
 				additional_params = dict()
 				additional_params['confrontation_argument_uid'] = return_dict['confrontation_argument_id']
@@ -731,25 +735,24 @@ class Dbas(object):
 				                                                                self.request.session.id, lang, additional_params)
 				return_dict['argument'] = QueryHelper().get_text_for_argument_uid(return_dict['argument_uid'], issue, lang)
 
-			_tg = TextGenerator(lang)
-			conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
-			relation = return_dict['relation'] if 'relation' in return_dict else None
-			return_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(return_dict['premise_text'],
-			                                                                                     conclusion,
-			                                                                                     relation,
-			                                                                                     supportive,
-			                                                                                     return_dict['attack'],
-			                                                                                     url,
-			                                                                                     return_dict['confrontation'],
-			                                                                                     False)
-
-
-			return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
-			                                                            conclusion,
-			                                                            return_dict['premise_text'],
-			                                                            return_dict['attack'],
-			                                                            False,
-			                                                            supportive))
+				return_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(return_dict['premise_text'],
+				                                                                                     conclusion,
+				                                                                                     relation,
+				                                                                                     supportive,
+				                                                                                     return_dict['attack'],
+				                                                                                     url,
+				                                                                                     return_dict['confrontation'],
+				                                                                                     False)
+				return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
+			                                                                conclusion,
+			                                                                return_dict['premise_text'],
+			                                                                return_dict['attack'],
+			                                                                False,
+			                                                                supportive))
+			else:
+				return_dict['discussion_description'] = _tg.get_text_for_status_zero_in_confrontation(return_dict['premise_text'],
+				                                                                                      conclusion,
+				                                                                                      relation)
 
 			return_dict['supportive'] = str(supportive)
 			return_dict['status'] = str(status)

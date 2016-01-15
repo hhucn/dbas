@@ -32,14 +32,14 @@ class QueryHelper(object):
 			       + ', premisesGroup_uid: ' + str(argument.premisesGroup_uid)
 			       + ', isSupportive: ' + str(argument.isSupportive)
 			       + ', author_uid: ' + str(argument.author_uid)
-			       + ', weight_uid: ' + str(argument.weight)
+			       + ', weight_uid: ' + str(argument.weight_uid)
 			       + ', conclusion_uid: ' + str(argument.conclusion_uid)
 			       + ', issue_uid: ' + str(argument.issue_uid)
 			       + ', argument_uid: ' + str(argument.argument_uid))
 			db_duplicate = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid == argument.premisesGroup_uid,
 			                                                               Argument.isSupportive == argument.isSupportive,
 			                                                               Argument.author_uid == argument.author_uid,
-			                                                               Argument.weight == argument.weight,
+			                                                               Argument.weight_uid == argument.weight_uid,
 			                                                               Argument.conclusion_uid == argument.conclusion_uid,
 			                                                               Argument.issue_uid == argument.issue_uid,
 			                                                               Argument.argument_uid == 0)).first()
@@ -161,7 +161,7 @@ class QueryHelper(object):
 		new_inserted_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==premisegroup_uid,
 		                                                              Argument.isSupportive==is_supportive,
 		                                                              Argument.author_uid==db_user.uid,
-		                                                              Argument.weight==0,
+		                                                              Argument.weight_uid==0,
 		                                                              Argument.conclusion_uid==conclusion_uid,
 		                                                              Argument.argument_uid==argument_uid,
 		                                                              Argument.issue_uid==issue)).first()

@@ -419,7 +419,7 @@ class Translator(object):
 		en_lang['9']                               = 'nine'
 		en_lang['+']                               = 'plus'
 		en_lang['-']                               = 'minus'
-		en_lang['*']                               = 'multiply with'
+		en_lang['*']                               = 'times'
 		en_lang['/']                               = 'divided by'
 		
 		en_lang[self.aand] =  'and'

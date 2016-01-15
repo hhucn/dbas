@@ -23,7 +23,7 @@
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
 						<br>
 						<form action="/discussion/start" method="get" class="text-center">
-							<input class="button button-block btn btn-lg btn-primary" type="submit" value="If you do wish to start now,<br>please click here!" name="Submit" id="start-discussion-button" />
+							<input class="button button-block btn btn-lg btn-primary" type="submit" value="Click here to start now!" name="Submit" id="start-discussion-button" />
 						</form>
 						<br>
 						<br>

@@ -357,8 +357,8 @@ class RecommenderHelper(object):
 
 		return_dict = dict()
 		premises_dict = dict()
-		logger('RecommenderHelper', 'get_premises_for_statement', 'get all premises: conclusion_uid: ' + str(isSupportive)
-		       + ', isSupportive: ' + str(issue)
+		logger('RecommenderHelper', 'get_premises_for_statement', 'get all premises: conclusion_uid: '+ str(statement_uid)
+		       + ', isSupportive: ' + str(isSupportive)
 		       + ', issue_uid: ' + str(issue))
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
 																Argument.conclusion_uid==statement_uid,
@@ -388,8 +388,8 @@ class RecommenderHelper(object):
 		return_dict['conclusion_id'] = statement_uid
 		return_dict['status'] = '1'
 
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid, Statement.issue_uid==issue)).first()
-		return_dict['currentStatement'] = DictionaryHelper().save_statement_row_in_dictionary(db_statements, issue)
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+		return_dict['currentStatement'] = DictionaryHelper().save_statement_row_in_dictionary(db_statement, issue)
 
 		return return_dict
 
