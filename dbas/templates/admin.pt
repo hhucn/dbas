@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<head>
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
+		</head>
+		
+		<div class="container colored_container" tal:condition="not:is_admin" style="width: 578px;">
+				<img class="center"src="${request.static_url('dbas:static/images/nopower.jpg')}">
+		</div>
+
+		<div class="container colored_container" tal:condition="is_admin">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8">
+					<h4><span class="font-semi-bold" i18n:translate="participant_list">List of participants</span></h4>
+					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
+					<input id="list-all-users" type="button" name="" value="Show all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
+				</div>
+				<div class="col-md-2"></div>
+				<div class="col-md-12">
+					<div id="admins-space-users" class="center"> </div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container colored_container" tal:condition="is_admin">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8">
+					<h4><span class="font-semi-bold" i18n:translate="list_attacks">List of attacks, clicked by the participants</span></h4>
+					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
+					<input id="list-all-attacks" type="button" name="" value="Show all attacks" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" />
+				</div>
+				<div class="col-md-2"></div>
+				<div class="col-md-12">
+					<div id="admins-space-attacks" class="center"> </div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/admin.js')}"></script>
+
+	</tal:block>
+</tal:block>
+
+</html>
