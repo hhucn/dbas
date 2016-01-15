@@ -10,14 +10,13 @@
 		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
 		<div class="container colored_container">
-			<div class="row">
+			<div class="content row">
 				<div class="col-md-12">
 					<h4 i18n:translate="info_about_yourself">Information about yourself</h4>
 				</div>
 			</div>
-			<div class="row">
+			<div class="content row">
 				<div class="col-md-8">
-				<div class="row">
 
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
@@ -57,18 +56,16 @@
 						</tr>
 					</table>
 				</div>
-			</div>
 				<div class="col-md-4 center text-center">
 					<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src avatar_url">
 					<p i18n:translate="profile_picture">Profile Picture</p>
-					</div>
+				</div>
 			</div>
 		</div>
 
 		<div class="container colored_container">
-			<div class="row">
-			<div class="col-md-12">
-				<div class="row">
+			<div class="content row">
+				<div class="col-md-12">
 					<h4 i18n:translate="decisions">Your decisions</h4>
 
 					<div style="text-align:center;">
@@ -94,13 +91,11 @@
 					</div>
 				</div>
 			</div>
-			</div>
 		</div>
 
 		<div class="container colored_container">
-			<div class="row">
-			<div class="col-md-12">
-				<div class="row">
+			<div class="content row">
+				<div class="col-md-12">
 					<h4 i18n:translate="history">Your last history</h4>
 
 					<div style="text-align:center;">
@@ -113,13 +108,13 @@
 						<span class="lead" i18n:translate="success">Success:</span>
 						<span id="history-success-msg"></span>
 					</div>
-					
+
 					<div id="history-table-failure" class="alert alert-danger" role="alert">
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 						<span class="lead" i18n:translate="error:">Error:</span>
 						<span id="history-failure-msg"></span>
 					</div>
-					
+
 					<div id="history-table-space">
 						<table id="history-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 							<tr>
@@ -128,25 +123,27 @@
 					</div>
 				</div>
 			</div>
-			</div>
 		</div>
 
 		<div class="container colored_container">
-			<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-8">
-				<div class="row">
+			<div class="content row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8">
 					<h4 i18n:translate="change_password">Change your password</h4>
 					<form action="/settings" method="post">
 
-						<div>
-							<p class="col-sm-5" i18n:translate="old_password">Old password</p>
-							<input class="col-sm-7" id="settings-password-old-input" type="password" name="passwordold" class="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
+						<div class="form-group">
+							<p class="col-md-5 control-label" i18n:translate="old_password">Old password</p>
+							<div class="col-md-7">
+								<input class="form-control" id="settings-password-old-input" type="password" name="passwordold" class="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
+							</div>
 						</div>
 
-						<div>
-							<p class="col-sm-5" i18n:translate="new_password">New Password</p>
-							<input class="col-sm-7" id="settings-password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
+						<div class="form-group">
+							<p class="col-md-5 control-label" i18n:translate="new_password">New Password</p>
+							<div class="col-md-7">
+								<input class="form-control" id="settings-password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
+							</div>
 
 							<div id="settings-password-extras">
 								<div id="settings-password-meter" class="veryweak"></div>
@@ -157,20 +154,22 @@
 							</div>
 						</div>
 
-						<div>
-							<p class="col-sm-5" i18n:translate="new_password_confirm">New Password (confirm)</p>
-							<input class="col-sm-7" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+						<div class="form-group">
+							<p class="col-md-5 control-label" i18n:translate="new_password_confirm">New Password (confirm)</p>
+							<div class="col-md-7">
+								<input class="form-control" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+							</div>
 						</div>
-						
-<div class="col-sm-12" tal:condition="change_error">
-						<div id="settings-danger-message" class="alert alert-danger alert-dismissible">
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">
+
+						<div class="col-md-12" tal:condition="change_error">
+							<div id="settings-danger-message" class="alert alert-danger alert-dismissible">
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">
 					<span tal:replace="message" />
 					</span>
-						</div>
+							</div>
 						</div>
 
 						<div tal:condition="change_success" id="settings-success-message" class="alert alert-success" role="alert">
@@ -180,8 +179,7 @@
 						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" />
 					</form>
 				</div>
-			</div>
-			<div class="col-md-2"></div>
+				<div class="col-md-2"></div>
 			</div>
 		</div>
 

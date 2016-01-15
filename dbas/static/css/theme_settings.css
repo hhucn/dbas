@@ -15,12 +15,16 @@
 	width: 100%;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="password"],
-textarea[type="text"] {
-	width: auto;
+#settings-password-old-input,
+#settings-password-input,
+#settings-passwordconfirm-input {
+	width: 100%;
+	padding: 12px 10px 6px 50px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	margin: 0px 0px 10px 0px;
+	-webkit-appearance: none;
 }
 
 #settings-password-old-input {
