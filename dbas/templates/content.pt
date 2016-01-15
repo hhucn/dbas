@@ -22,7 +22,7 @@
 			<div class="row">
 				<div class="col-md-7 center text-center">
 					<!--
-					<h3><span class="font-semi-bold" i18n:translate="dbas_long">Dialog-Based Argumentation System</span></h3>
+					<h3><span class="lead" i18n:translate="dbas_long">Dialog-Based Argumentation System</span></h3>
 					-->
 					<h4><p i18n:translate="current_discussion">Current discussion is about</p>
 					<p id="issue_info"></p></h4>
@@ -33,10 +33,10 @@
 				<div class="col-md-5 center text-center">
 					<h6>
 					<span i18n:translate="startet_at">The discussion was started at</span> 
-						<span class="font-semi-bold" id="issue-date"></span> 
+						<span class="lead" id="issue-date"></span> 
 						<span i18n:translate="already_has">and already has</span> 
-						<span id="issue-count" class="font-semi-bold"></span> 
-						<span i18n:translate="arguments" class="font-semi-bold">arguments</span>.
+						<span id="issue-count" class="lead"></span> 
+						<span i18n:translate="arguments" class="lead">arguments</span>.
 					</h6>
 					<!--
 					<h6>
@@ -47,7 +47,7 @@
 					<br>
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-							<span class="caret"></span>
+							<span id="issue-dropdown-text"></span>&#160;&#160;&#160;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
 							<li><a href="#">Action</a></li>
@@ -115,7 +115,7 @@
 				<div class="col-md-6">
 					<div class="alert alert-danger" role="alert">
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="font-semi-bold" i18n:translate="error">Error:</span>
+						<span class="lead" i18n:translate="error">Error:</span>
 						<span id="discussion-failure-msg"></span>
 					</div>
 					<div class="col-md-3"></div>
@@ -145,7 +145,7 @@
 
 						<div id="add-statement-error-container" class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="font-semi-bold" i18n:translate="error:">Error:</span>
+							<span class="lead" i18n:translate="error:">Error:</span>
 							<span id="add-statement-error-msg"></span>
 						</div>
 
@@ -153,7 +153,7 @@
 						<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 
 						<div id="pro-position-column">
-							<h4 id="heading-pro-positions" class="font-semi-bold" i18n:translate="pro">Pro</h4>
+							<h4 id="heading-pro-positions" class="lead" i18n:translate="pro">Pro</h4>
 							<div id="pro-textareas">
 
 							</div>
@@ -172,7 +172,7 @@
 						</div>
 
 						<div id="con-position-column">
-							<h4 id="heading-contra-positions" class="font-semi-bold" i18n:translate="contra">Contra</h4>
+							<h4 id="heading-contra-positions" class="lead" i18n:translate="contra">Contra</h4>
 							<div id="con-textareas">
 							</div>
 							<div id="add-con-textarea">

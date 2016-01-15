@@ -130,16 +130,6 @@
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-433-plus.png) center no-repeat 12px 10px;
 }
 
-.green-bg {
-	color: rgba(151, 191, 13, 1.0);
-	/* official uni green */
-}
-
-.red-bg{
-	color: rgba(190, 10, 38, 1.0);
-	/* official uni red */
-}
-
 #island-view-container-h4,
 #island-view-container-header-h4 {
 	text-align: center;

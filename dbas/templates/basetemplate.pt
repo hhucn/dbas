@@ -27,15 +27,15 @@
 	<!-- JS DISABLED -->
 	<noscript>
 		<div class="blocked jsdisabled">
-			<span class="font-semi-bold" i18n:translate="js_disabled1">JavaScript is not enabled:</span>
+			<strong i18n:translate="js_disabled1">JavaScript is not enabled:</strong>
 			<br>
-			<span class="font-semi-bold" i18n:translate="js_disabled2">Please enable JavaScript!</span>
+			<strong i18n:translate="js_disabled2">Please enable JavaScript!</strong>
 		</div>
 	</noscript>
 	<div id="adblocker_message" class="blocked adblockenabled" style="display:none">
-		<span class="font-semi-bold" i18n:translate="adblock_enabled1">AdBlocker is enabled:</span>
+		<strong i18n:translate="adblock_enabled1">AdBlocker is enabled:</strong>
 		<br>
-		<span class="font-semi-bold" i18n:translate="adblock_enabled2">Please disable your AdBlocker!</span>
+		<strong i18n:translate="adblock_enabled2">Please disable your AdBlocker!</strong>
 	</div>
 
 	<script type="text/javascript">

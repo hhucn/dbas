@@ -4,8 +4,8 @@
  * @copyright Krauthoff 2015
  */
 
-//var mainpage = 'http://localhost:4284/';
-var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+var mainpage = 'http://localhost:4284/';
+//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
 
 /**
  * Returns a translated string
@@ -65,9 +65,9 @@ var argumentContainerH4TextIfPremises 				= 'argumentContainerH4TextIfPremises';
 var argumentContainerH4TextIfArguments 				= 'argumentContainerH4TextIfArguments';
 var addPremiseRadioButtonText 						= 'addPremiseRadioButtonText';
 var addArgumentRadioButtonText 						= 'addArgumentRadioButtonText';
-var argumentContainerH4TextIfPremise 				= 'argumentContainerH4TextIfPremise';
-var argumentContainerH4TextIfArgument 				= 'argumentContainerH4TextIfArgument';
-var argumentContainerH4TextIfConclusion 			= 'argumentContainerH4TextIfConclusion';
+var argumentContainerTextIfPremise 				    = 'argumentContainerTextIfPremise';
+var argumentContainerTextIfArgument 				= 'argumentContainerTextIfArgument';
+var argumentContainerTextIfConclusion 			    = 'argumentContainerTextIfConclusion';
 var argueAgainstPositionToggleButton 				= 'argueAgainstPositionToggleButton';
 var argueForPositionToggleButton 					= 'argueForPositionToggleButton';
 var alternatively 									= 'alternatively';

@@ -8,11 +8,11 @@
 				<div class="col-md-3"></div>
 				<div class="col-md-6 center text-center">
 					<h1>
-						<span class="font-semi-bold" i18n:translate="404">404 Error</span>
+						<strong i18n:translate="404">404 Error</strong>
 					</h1>
-					<p class="lead font-normal">
+					<p class="lead">
 						<span i18n:translate="404_text_part1">The page</span>&quot;
-						<span class="font-semi-bold">${page_notfound_viewname}</span>&quot; 
+						<strong>${page_notfound_viewname}</strong>&quot; 
 						<span i18n:translate="404_text_part2">for could not be found.</span>
 					</p>
 					<br>

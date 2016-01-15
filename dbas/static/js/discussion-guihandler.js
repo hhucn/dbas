@@ -429,13 +429,13 @@ function GuiHandler() {
 		alert("showAddPremiseOrArgumentContainer");
 		// TODO NARRATION FIELD more statements
 
-		// $('#' + addStatementContainerTitleId).text(isPremise ? _t(argumentContainerH4TextIfPremise) :
-		// _t(argumentContainerH4TextIfArgument));
+		// $('#' + addStatementContainerTitleId).text(isPremise ? _t(argumentContainerTextIfPremise) :
+		// _t(argumentContainerTextIfArgument));
 		// pretty print, whether above are more than one lititems
 		if($('#' + discussionSpaceId + ' ul li').length == 1) {
 			$('#' + addStatementContainerTitleId).text(_t(addPremiseRadioButtonText));
 		} else {
-			$('#' + addStatementContainerTitleId).text(_t(argumentContainerH4TextIfPremise));
+			$('#' + addStatementContainerTitleId).text(_t(argumentContainerTextIfPremise));
 		}
 		$('#' + addStatementContainerMainInputId).hide().focus();
 
@@ -496,7 +496,7 @@ function GuiHandler() {
 
 		// some pretty print options
 		if (isStart) {
-			titleText = _t(argumentContainerH4TextIfConclusion);
+			titleText = _t(argumentContainerTextIfConclusion);
 		} else {
 			if (html.indexOf(_t(firstPremiseText1)) != -1){
 				titleText = _t(whyDoYouThinkThat) + ' <b>' + discussionsDescription.attr('text') + '<b>?';
@@ -504,7 +504,7 @@ function GuiHandler() {
 				header = html.substr(html.indexOf('<b>'), html.indexOf('</b>')-html.indexOf('<b>')+5);
 				titleText = _t(whyDoYouThinkThat) + ' <b>' + header + '</b>';
 			} else {
-				titleText = _t(argumentContainerH4TextIfPremise) + '<br><br>' + html;
+				titleText = _t(argumentContainerTextIfPremise) + '<br><br>' + html;
 			}
 			addStatementContainerMainInputIntro.text(_t(because) + '...');
 		}
@@ -1022,7 +1022,7 @@ function GuiHandler() {
 	 * Also the onclick function is set
 	 */
 	this.setIssueList = function (jsonData){
-		var li, a, current_id = '', issue, topic, issueDropdownButton = $('#' + issueDropdownButtonID), issue_curr,
+		var li, a, current_id = '', issue, topic, issueDropdownText = $('#' + issueDropdownTextID), issue_curr,
 				text, i, helper = new Helper(), count, span, info;
 
 		li = $('<li>');
@@ -1048,7 +1048,7 @@ function GuiHandler() {
 				li.append(a);
 				a.click(function () {
 					issue = $(this).parent().attr('issue');
-					topic = $('#issue_' + issue + ' a').text();
+					topic = $('#issue_' + issue + ' a').attr('text');
 
 					// parameter func will be used as a string to go to the new issue page
 					displayConfirmationDialogWithCheckbox(_t(switchDiscussion), _t(switchDiscussionText1) + ': <i>\'' + topic
@@ -1059,12 +1059,12 @@ function GuiHandler() {
 		});
 
 		// set the main issue text for the button
-		if (issueDropdownButton.text().length == 0 || issueDropdownButton.text().length == 15) {
+		if (issueDropdownText.text().length == 0 || issueDropdownText.text().length == 15) {
 			issue_curr = $('#issue_' + current_id);
 			$('#' + issueDateId).text(issue_curr.attr('date'));
 			$('#' + issueCountId).text(issue_curr.attr('count'));
 			text = $('#issue_' + current_id + ' a').attr('text');
-			issueDropdownButton.attr('value', text);
+			issueDropdownText.attr('value', text);
 			text = helper.resizeIssueText(text);
 			this.setIssueDropDownText(text);
 			this.setIssueInfoText(info);
@@ -1072,7 +1072,7 @@ function GuiHandler() {
 		}
 
 		// some helper
-		issueDropdownButton.attr('issue', current_id);
+		issueDropdownText.attr('issue', current_id);
 	};
 
 	/**
@@ -1080,7 +1080,7 @@ function GuiHandler() {
 	 * @param text string
 	 */
 	this.setIssueDropDownText = function(text) {
-		$('#' + issueDropdownButtonID).html(text + '&#160;&#160;&#160;<span class="caret"></span>');
+		$('#' + issueDropdownTextID).text(text);
 	};
 
 	/**

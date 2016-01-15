@@ -15,11 +15,14 @@
 					<div class="content">
 						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
 						<br>
-						<h2><span class="font-semi-bold" i18n:translate="welcome">Welcome</span>
-								<span class="smaller"><span i18n:translate="to_the_dbas">to the</span>
-									<span class="font-semi-bold">D</span><span i18n:translate="ialog">ialog</span>-<span class="font-semi-bold">B</span><span i18n:translate="ased">ased</span> <span class="font-semi-bold">A</span><span i18n:translate="rgumentation">rgumentation</span> <span class="font-semi-bold">S</span><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span> 
-									<span class="font-semi-bold">D-BAS</span>
-								</span></h2>
+						<h2><span i18n:translate="welcome">Welcome</span>
+								<span i18n:translate="to_the_dbas">to the</span>
+									<strong>D</strong><span i18n:translate="ialog">ialog</span>-
+									<strong>B</strong><span i18n:translate="ased">ased</span> 
+									<strong>A</strong><span i18n:translate="rgumentation">rgumentation</span> 
+									<strong>S</strong><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span> 
+									<strong>D-BAS</strong>
+								</h2>
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
 						<br>
 						<form action="/discussion/start" method="get" class="text-center">
@@ -65,7 +68,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<h2><span class="font-semi-bold" i18n:translate="description">Description</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
+						<h2><strong i18n:translate="description">Description</strong> <span i18n:translate="of_dbas">of D-BAS</span></h2>
 
 						<p class="lead"><span i18n:translate="description_intro">In the following a short description of D-BAS will be given with the help of bulletpoints:</span>
 							<ul class="lead list">
@@ -91,7 +94,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<h2><span class="font-semi-bold" i18n:translate="features">Features</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
+						<h2><strong i18n:translate="features">Features</strong> <span i18n:translate="of_dbas">of D-BAS</span></h2>
 						<p class="lead" i18n:translate="release_future_version">Some of these features will be released in a future version of D-BAS.</p>
 						<br>
 					</div>
@@ -139,7 +142,7 @@
 		<div class="container colored_container" id="about-template">
 			<div class="row">
 				<div class="col-md-12 content">
-					<h2><span class="font-semi-bold" i18n:translate="about">About</span> <span class="smaller">D-BAS</span></h2>
+					<h2><strong i18n:translate="about">About</strong> <span>D-BAS</span></h2>
 					<p class="lead"><span i18n:translate="about_description">D-BAS is a of discussions in the field of online participation and developed by</span> <a href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html">Tobias Krauthoff</a>.
 					</p>
 
@@ -169,8 +172,8 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<h2><span class="font-semi-bold" i18n:translate="research">Research</span> <span class="smaller" i18n:translate="of_dbas">of D-BAS</span></h2>
-						<span class="font-normal" i18n:translate="our_datastructure">
+						<h2><strong i18n:translate="research">Research</strong> <span i18n:translate="of_dbas">of D-BAS</span></h2>
+						<span i18n:translate="our_datastructure">
 							Our data structure:
 						</span>
 						<br>

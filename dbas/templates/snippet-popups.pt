@@ -16,13 +16,13 @@
 							<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 								<tr>
 									<td>
-										<span class="font-semi-bold" i18n:translate="name">Name</span>
+										<strong i18n:translate="name">Name</strong>
 									</td>
 									<td>Tobias Krauthoff, M.Sc.</td>
 								</tr>
 								<tr>
 									<td>
-										<span class="font-semi-bold" i18n:translate="role">Role</span>
+										<strong i18n:translate="role">Role</strong>
 									</td>
 									<td>
 										<span i18n:translate="role_value_1">Doctoral Student</span>
@@ -35,14 +35,14 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="font-semi-bold">E-Mail</span>
+										<strong>E-Mail</strong>
 									</td>
 									<td><a href="mailto:krauthoff@cs.uni-duesseldorf.de">krauthoff@cs.uni-duesseldorf.de</a>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<span class="font-semi-bold" i18n:translate="office">Office</span>
+										<strong i18n:translate="office">Office</strong>
 									</td>
 									<td><span i18n:translate="office_value_1">Heinrich-Heine University Duesseldorf</span>
 										<br><span i18n:translate="office_value_2">Universitätsstraße 1</span>
@@ -53,13 +53,13 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="font-semi-bold" i18n:translate="telephone">Telephone</span>
+										<strong i18n:translate="telephone">Telephone</strong>
 									</td>
 									<td>+49 211 81-13461</td>
 								</tr>
 								<tr>
 									<td>
-										<span class="font-semi-bold" i18n:translate="fax">Fax</span>
+										<strong i18n:translate="fax">Fax</strong>
 									</td>
 									<td>+49 211 81-11638</td>
 								</tr>
@@ -489,13 +489,13 @@
 				<span i18n:translate="how-to-write-text-header-body">Writing good is a necessary skill for using D-BAS, unless you do not want to persuade other participants. Hereafter a few rules are listed, what should be noted, and what should not.</span>
 				<br>
 				<br>
-				<b class="green-bg" i18n:translate="dos">Do's:</b>
+				<b class="text-success" i18n:translate="dos">Do's:</b>
 				<ul id="how-to-write-text-do-list">
 					<li i18n:translate="how-to-write-text-short">Write short!</li>
 					<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per field!</li>
 				</ul>
 				<br>
-				<b class="red-bg" i18n:translate="donts">Don'ts:</b>
+				<b class="text-warning" i18n:translate="donts">Don'ts:</b>
 				<ul id="how-to-write-text-dont-list">
 					<li i18n:translate="how-to-write-text-complicated">Complicated and nested sentences!</li>
 					<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per field!</li>

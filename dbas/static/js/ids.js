@@ -69,6 +69,7 @@ var insertStatementForm 						= 'insert-statement-form';
 var islandViewContainerId 						= 'island-view-container';
 var islandViewContainerSpaceId 					= 'island-view-container-space';
 var issueDropdownButtonID						= 'issue-dropdown';
+var issueDropdownTextID					    	= 'issue-dropdown-text';
 var issueDropdownListID							= 'dropdown-issue-list';
 var issueDateId									= 'issue-date';
 var issueCountId 								= 'issue-count';
