@@ -29,7 +29,7 @@ from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .weighting_helper import WeightingHelper
 
 name = 'D-BAS'
-version = '0.4.7'
+version = '0.5.0'
 header = name + ' ' + version
 issue_fallback = 1
 
@@ -719,7 +719,7 @@ class Dbas(object):
 				logger('reply_for_premisegroup', 'def', 'status II ' + str(status))
 
 			_tg = TextGenerator(lang)
-			conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
+			conclusion_text = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
 			relation = return_dict['relation'] if 'relation' in return_dict else None
 			if status != 0:
 			# rate premise, because here we have the first argument ever!
@@ -730,13 +730,19 @@ class Dbas(object):
 				additional_params['confrontation_argument_uid'] = return_dict['confrontation_argument_id']
 				additional_params['attack'] = return_dict['attack']
 				BreadcrumbHelper().save_breadcrumb_for_user_with_argument_parts(transaction,
-				                                                                self.request.authenticated_userid, url,
-				                                                                pgroup, conclusion, issue, supportive,
-				                                                                self.request.session.id, lang, additional_params)
+				                                                                self.request.authenticated_userid,
+				                                                                url,
+				                                                                pgroup,
+				                                                                conclusion,
+				                                                                issue,
+				                                                                supportive,
+				                                                                self.request.session.id,
+				                                                                lang,
+				                                                                additional_params)
 				return_dict['argument'] = QueryHelper().get_text_for_argument_uid(return_dict['argument_uid'], issue, lang)
 
 				return_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(return_dict['premise_text'],
-				                                                                                     conclusion,
+				                                                                                     conclusion_text,
 				                                                                                     relation,
 				                                                                                     supportive,
 				                                                                                     return_dict['attack'],
@@ -744,14 +750,14 @@ class Dbas(object):
 				                                                                                     return_dict['confrontation'],
 				                                                                                     False)
 				return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
-			                                                                conclusion,
+			                                                                conclusion_text,
 			                                                                return_dict['premise_text'],
 			                                                                return_dict['attack'],
 			                                                                False,
 			                                                                supportive))
 			else:
 				return_dict['discussion_description'] = _tg.get_text_for_status_zero_in_confrontation(return_dict['premise_text'],
-				                                                                                      conclusion,
+				                                                                                      conclusion_text,
 				                                                                                      relation)
 
 			return_dict['supportive'] = str(supportive)

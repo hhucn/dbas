@@ -24,20 +24,18 @@
 					<!--
 					<h3><span class="lead" i18n:translate="dbas_long">Dialog-Based Argumentation System</span></h3>
 					-->
-					<h4><p i18n:translate="current_discussion">Current discussion is about</p>
-					<p id="issue_info"></p></h4>
+					<p i18n:translate="current_discussion">Current discussion is about</p>
+					<h5 id="issue_info"></h5>
 				</div>
 				<!--
 				<div class="col-md-1"></div>
 				-->
 				<div class="col-md-5 center text-center">
-					<h6>
 					<span i18n:translate="startet_at">The discussion was started at</span> 
-						<span class="lead" id="issue-date"></span> 
+						<span id="issue-date"></span><br>
 						<span i18n:translate="already_has">and already has</span> 
-						<span id="issue-count" class="lead"></span> 
-						<span i18n:translate="arguments" class="lead">arguments</span>.
-					</h6>
+						<span id="issue-count"></span> 
+						<span i18n:translate="arguments">arguments</span>.<br>
 					<!--
 					<h6>
 					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
@@ -115,7 +113,7 @@
 				<div class="col-md-6">
 					<div class="alert alert-danger" role="alert">
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="lead" i18n:translate="error">Error:</span>
+						<span i18n:translate="error">Error:</span>
 						<span id="discussion-failure-msg"></span>
 					</div>
 					<div class="col-md-3"></div>
@@ -145,7 +143,7 @@
 
 						<div id="add-statement-error-container" class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="lead" i18n:translate="error:">Error:</span>
+							<span i18n:translate="error:">Error:</span>
 							<span id="add-statement-error-msg"></span>
 						</div>
 

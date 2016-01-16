@@ -124,9 +124,14 @@
 			<div class="first-container colored_container imprint-container">
 				<h4><span i18n:translate="changes">Changes</span></h4>
 
-					<span class="project lead">0.5.0 (unreleased)</span>
+					<span class="project lead">0.6.0 (unreleased)</span>
 				<ul>
 					<li>Improved recommendation of the next argument/statement</li>
+				</ul>
+
+					<span class="project lead">0.5.0 (unreleased)</span>
+				<ul>
+					<li>Refactoring: Less Ajax, more HTML5</li>
 				</ul>
 					
 					<span class="project lead">0.4.8 (2015-01-12)</span>
