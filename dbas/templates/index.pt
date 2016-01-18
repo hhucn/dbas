@@ -205,7 +205,8 @@
 			</div>
 		</div>
 		
-		
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/eu-cookie-law-popup.js')}"></script>
 		<!--
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/lights_left.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/lights_right.js')}"></script>

@@ -79,14 +79,14 @@ class TrackingHelper(object):
 				attacked_by_relation_str = attacked_by_relation.name if attacked_by_relation else '-'
 				attacked_with_relation_str = attacked_with_relation.name if attacked_with_relation else '-'
 				track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid)
-				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid, issue.uid, lang)
+				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid, lang)
 				if track_argument:
 					track_argument = track_argument[1:-1]
 
 					if track.premisesGroup_uid == 0:
 						track_premisesGroup = '-'
 					else:
-						track_premisesGroup,tash = qh.get_text_for_premisesGroup_uid(track.premisesGroup_uid, issue.uid)
+						track_premisesGroup,tash = qh.get_text_for_premisesGroup_uid(track.premisesGroup_uid)
 
 					if track_statement:
 
@@ -121,7 +121,7 @@ class TrackingHelper(object):
 
 						issue_dict[str(index)] = track_dict
 			issue_dict['uid'] = str(issue.uid)
-			issue_dict['text'] = str(issue.text)
+			issue_dict['text'] = str(issue.title)
 			issue_dict['date'] = str(issue.date)
 			return_dict[str(issue.uid)] = issue_dict
 

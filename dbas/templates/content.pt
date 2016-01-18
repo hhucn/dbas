@@ -82,7 +82,7 @@
 						<span id="discussion-success-description"></span>
 					</div>
 
-					<h4><p id="discussions-description" tal:replace="discussion.heading"></p></h4>
+					<h4><p tal:replace="discussion.heading"></p></h4>
 					<div id="discussions-space">
 					
 						<ul>
@@ -127,7 +127,8 @@
 		</div>
 
 		<div class="container colored_container" id="island-view-container" style="display:none">
-			<button id="close-island-view-ontainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+			<button id="close-island-view-ontainer" type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row" id="island-view-container-space">
 
@@ -202,37 +203,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" style="display: none;" id="display-control-container">
-			<div class="row">
-				<h4><p i18n:translate="change_style">Change display style</p></h4>
-				<div class="col-md-4">
-					<input type="radio" id="sc-style-1" checked value="Dialog View">
-					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
-						<h6 i18n:translate="dialog_view">Dialog View</h6>
-					</label>
-					<br>
-					<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
-				</div>
-				<div class="col-md-4">
-					<input type="radio" id="sc-style-2" value="Island View">
-					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
-						<h6 i18n:translate="island_view">Island View</h6>
-					</label>
-					<br>
-					<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
-				</div>
-				<div class="col-md-4">
-					<input type="radio" id="sc-style-3" value="Complete View">
-					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
-						<h6 i18n:translate="complete_view">Complete View</h6>
-					</label>
-					<br>
-					<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
-				</div>
-			</div>
-		</div>
-
-		<div class="container colored_container" style="display: none;" id="display-control-container">
+		<div class="container colored_container" id="display-control-container" style="display: none;" >
 			<div class="row">
 				<h4><p i18n:translate="change_style">Change display style</p></h4>
 				<div class="col-md-4">
@@ -262,6 +233,7 @@
 			</div>
 		</div>
 
+		
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-navigationhandler.js')}"></script>
@@ -269,6 +241,8 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
+		
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-graph.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-island.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-barometer.js')}"></script>

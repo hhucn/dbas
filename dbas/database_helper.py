@@ -183,7 +183,7 @@ class DatabaseHelper(object):
 
 			for argument in db_arguments:
 				logger('DatabaseHelper', 'get_attack_overview', 'argument with uid ' + str(argument.uid) + ', issue ' + str(issue))
-				text = QueryHelper().get_text_for_argument_uid(argument.uid, issue, lang)
+				text = QueryHelper().get_text_for_argument_uid(argument.uid, lang)
 				if text:
 					argument_dict = {'id': str(argument.uid), 'text': text}
 
@@ -304,7 +304,7 @@ class DatabaseHelper(object):
 		if len(return_dict) == 0:
 			return_dict[key] = '0'
 
-		return_dict['premisegroup'], uids = qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
+		return_dict['premisegroup'], uids = qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 		# Todo: what is with an conclusion as premise group?
 		return_dict['relation'] = splitted_id[0]
 		return_dict['argument_uid'] = argument_uid
@@ -312,7 +312,7 @@ class DatabaseHelper(object):
 		return_dict['type'] = identifier
 
 		if db_argument.conclusion_uid is None or db_argument.conclusion_uid == 0:
-			return_dict['conclusion_text'] = qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
+			return_dict['conclusion_text'] = qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
 			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
 		else:
 			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid)
@@ -411,11 +411,11 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'get_everything_for_island_view', 'summary: ' + str(counter[4]) + ' rebuts')
 
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-		return_dict['premise'], tmp = qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
+		return_dict['premise'], tmp = qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 		return_dict['conclusion'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid,) \
 			if db_argument.conclusion_uid != 0 else \
-			qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
-		return_dict['argument'] = qh.get_text_for_argument_uid(arg_uid, issue, lang)
+			qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+		return_dict['argument'] = qh.get_text_for_argument_uid(arg_uid, lang)
 		return return_dict
 
 	def set_statement(self, transaction, statement, user, is_start, issue):

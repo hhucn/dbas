@@ -109,8 +109,8 @@ class BreadcrumbHelper(object):
 		:return: undefined
 		"""
 		logger('BreadcrumbHelper', 'save_breadcrumb_for_user_with_premissegroups_uid', 'def')
-		text1, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroup_uid1, issue)
-		text2, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroup_uid2, issue)
+		text1, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroup_uid1)
+		text2, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroup_uid2)
 
 		text1 = text1[0:1].upper() + text1[1:]
 		if text1.endswith(('.','!','?')):
@@ -139,7 +139,7 @@ class BreadcrumbHelper(object):
 		"""
 		logger('BreadcrumbHelper', 'save_breadcrumb_for_user_with_premissegroup_of_arguments_uid', 'def')
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==int(argument_uid), Argument.issue_uid==issue)).first()
-		text, tmp = QueryHelper().get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
+		text, tmp = QueryHelper().get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 		returned_in_history = self.save_breadcrumb_for_user(transaction, user, url, text, session_id)
 		logger('BreadcrumbHelper', 'save_breadcrumb_for_user_with_premissegroup_of_arguments_uid', 'returned user in breadcrumbs: ' + str(returned_in_history))
 		if not returned_in_history:

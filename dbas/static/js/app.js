@@ -641,7 +641,6 @@ $(document).ready(function () {
 
 	jmpToChapter();
 	goBackToTop();
-	//changeBackgroundOnScroll();
 	setActiveLanguage(lang);
 	setButtonLanguage();
 	setPiwikOptOutLink(lang);

@@ -1145,13 +1145,12 @@ class TextGenerator(object):
 
 		return ret_text
 
-	def get_confrontation_relation_text_dict(self, confrontation, conclusion, premise, attackType, startLowerCase, isSupportive):
+	def get_confrontation_relation_text_dict(self, confrontation, conclusion, premise, startLowerCase, isSupportive):
 		"""
 
 		:param confrontation:
 		:param conclusion:
 		:param premise:
-		:param attackType:
 		:param startLowerCase:
 		:param isSupportive:
 		:param lang:
@@ -1405,7 +1404,6 @@ class TextGenerator(object):
 			ret_dict.update(_tg.get_confrontation_relation_text_dict(attack_or_confrontation,
 			                                                         conclusion,
 			                                                         premise,
-			                                                         attack,
 			                                                         False,
 			                                                         supportive))
 		else:

@@ -37,7 +37,7 @@ class RecommenderHelper(object):
 		return_dict = dict()
 		qh = QueryHelper()
 		# get premises and conclusion as text
-		return_dict['premise_text'], premises_as_statements_uid = qh.get_text_for_premisesGroup_uid(last_premises_group_uid, issue)
+		return_dict['premise_text'], premises_as_statements_uid = qh.get_text_for_premisesGroup_uid(last_premises_group_uid)
 		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(last_statement_uid)
 
 		# getting the argument of the premises and conclusion
@@ -136,10 +136,10 @@ class RecommenderHelper(object):
 		return_dict = dict()
 		qh = QueryHelper()
 
-		return_dict['premise_text'], trash = qh.get_text_for_premisesGroup_uid(int(db_argument.premisesGroup_uid), issue)
+		return_dict['premise_text'], trash = qh.get_text_for_premisesGroup_uid(int(db_argument.premisesGroup_uid))
 		return_dict['premisesgroup_uid'] = db_argument.premisesGroup_uid
 		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid) \
-			if db_argument.conclusion_uid != 0 else qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
+			if db_argument.conclusion_uid != 0 else qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
 		return_dict['conclusion_uid'] = db_argument.conclusion_uid
 		return_dict['relation'] = id_text.split('_')[0]
 
@@ -214,7 +214,7 @@ class RecommenderHelper(object):
 
 
 		return_dict = dict()
-		return_dict['premise_text'], trash = qh.get_text_for_premisesGroup_uid(int(premisesgroup_uid), issue)
+		return_dict['premise_text'], trash = qh.get_text_for_premisesGroup_uid(int(premisesgroup_uid))
 		return_dict['premisesgroup_uid'] = premisesgroup_uid
 		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_last_conclusion.statement_uid)
 		return_dict['conclusion_uid'] = db_last_conclusion.statement_uid
@@ -393,7 +393,26 @@ class RecommenderHelper(object):
 
 		return return_dict
 
-	def get_premise_for_statement(self, transaction, statement_uid, isSupportive, user, session_id, issue):
+	def get_premise_for_statement(self, statement_uid, isSupportive):
+		"""
+
+		:param statement_uid:
+		:param isSupportive:
+		:return:
+		"""
+		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
+																Argument.conclusion_uid==statement_uid)).all()
+		if db_arguments:
+			arguments = []
+			for argument in db_arguments:
+				arguments.append(argument.uid)
+			# get one random premise todo fix random
+			return arguments[random.randint(0, len(arguments))]
+
+		else:
+			return 0
+
+	def get_premise_for_statement_old(self, transaction, statement_uid, isSupportive, user, session_id, issue):
 		"""
 		Returns one random premisses, which have a relation to this statement in the form of an argument
 		:param transaction: transaction
