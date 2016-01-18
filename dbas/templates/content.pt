@@ -52,7 +52,6 @@
 								</a>
 							</li>
 						</ul>
-
 					</div>
 				</div>
 			</div>
@@ -85,9 +84,14 @@
 
 					<h4><p id="discussions-description" tal:replace="discussion.heading"></p></h4>
 					<div id="discussions-space">
-					<ul>
-						<li tal:repeat="issue issue.all" tal:attributes="class issue.enabled">
+					
+						<ul>
+						<li tal:repeat="item item">
+							<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
+							<label tal:attributes="for item.id"><span tal:replace="item.title"/></label>
+						</li>
 					</ul>
+						
 					</div>
 					<div id="discussions-attack-space">
 					</div>
@@ -96,16 +100,16 @@
 				
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
-						<input tal:condition="logged_in" id="edit-statement" type="button" i18n:translate="edit" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
+						<input tal:condition="extras.is_editable" id="edit-statement" type="button" i18n:translate="edit" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
 						<br>
 						<br>
-						<button id="report-button" type="button" class="button button-block btn-sm btn" aria-label="Left Align">
+						<button tal:condition="extras.is_reportable" id="report-button" type="button" class="button button-block btn-sm btn" aria-label="Left Align">
 							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="report">Report</span>
 						</button>
 						<br>
 						<br>
 
-						<img id="opinion-barometer-img" style="display:none" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="Opinion Barometer" />
+						<img tal:condition="extras.show_bar_icon" id="opinion-barometer-img" style="display:none" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="Opinion Barometer" />
 					</div>
 				</div>
 			</div>

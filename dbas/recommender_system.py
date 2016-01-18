@@ -38,7 +38,7 @@ class RecommenderHelper(object):
 		qh = QueryHelper()
 		# get premises and conclusion as text
 		return_dict['premise_text'], premises_as_statements_uid = qh.get_text_for_premisesGroup_uid(last_premises_group_uid, issue)
-		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(last_statement_uid, issue)
+		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(last_statement_uid)
 
 		# getting the argument of the premises and conclusion
 		logger('RecommenderHelper', 'get_attack_for_premisegroup', 'find argument with group ' + str(last_premises_group_uid)
@@ -112,7 +112,7 @@ class RecommenderHelper(object):
 
 		return_dict['attack'] = attack_with
 		return_dict['argument_id'] = str(db_argument.uid)
-		return_dict['conclusion_text'] = QueryHelper().get_text_for_statement_uid(int(db_argument.conclusion_uid), issue)
+		return_dict['conclusion_text'] = QueryHelper().get_text_for_statement_uid(int(db_argument.conclusion_uid))
 		return_dict['premise_text'], tmp = QueryHelper().get_text_for_arguments_premisesGroup_uid(db_argument.uid, issue)
 		return_dict['confrontation'], tmp = QueryHelper().get_text_for_arguments_premisesGroup_uid(int(attack_arg), issue)
 		return_dict['confrontation_uid'] = attack_arg
@@ -138,7 +138,7 @@ class RecommenderHelper(object):
 
 		return_dict['premise_text'], trash = qh.get_text_for_premisesGroup_uid(int(db_argument.premisesGroup_uid), issue)
 		return_dict['premisesgroup_uid'] = db_argument.premisesGroup_uid
-		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid, issue) \
+		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid) \
 			if db_argument.conclusion_uid != 0 else qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
 		return_dict['conclusion_uid'] = db_argument.conclusion_uid
 		return_dict['relation'] = id_text.split('_')[0]
@@ -216,7 +216,7 @@ class RecommenderHelper(object):
 		return_dict = dict()
 		return_dict['premise_text'], trash = qh.get_text_for_premisesGroup_uid(int(premisesgroup_uid), issue)
 		return_dict['premisesgroup_uid'] = premisesgroup_uid
-		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_last_conclusion.statement_uid, issue)
+		return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_last_conclusion.statement_uid)
 		return_dict['conclusion_uid'] = db_last_conclusion.statement_uid
 		return_dict['relation'] = relation
 

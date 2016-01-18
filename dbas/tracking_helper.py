@@ -78,7 +78,7 @@ class TrackingHelper(object):
 				# get text
 				attacked_by_relation_str = attacked_by_relation.name if attacked_by_relation else '-'
 				attacked_with_relation_str = attacked_with_relation.name if attacked_with_relation else '-'
-				track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid, issue.uid)
+				track_statement = '-' if track.statement_uid == 0 else qh.get_text_for_statement_uid(track.statement_uid)
 				track_argument = '-' if track.argument_uid == 0 else qh.get_text_for_argument_uid(track.argument_uid, issue.uid, lang)
 				if track_argument:
 					track_argument = track_argument[1:-1]

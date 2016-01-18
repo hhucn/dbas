@@ -356,8 +356,6 @@ class Translator(object):
 
 		:return: dictionary for the english language
 		"""
-		logger('Translator', 'setUpEnDict', 'def')
-
 		en_lang = {}
 		en_lang[self.attack]                       = 'You disagreed with'
 		en_lang[self.support]                      = 'You agreed with'
@@ -707,7 +705,6 @@ class Translator(object):
 
 		:return: dictionary for the german language
 		"""
-		logger('Translator', 'setUpDeDict', 'def')
 		de_lang = {}
 		de_lang[self.attack]                       = 'Sie lehnen ab, dass'
 		de_lang[self.support]                      = 'Sie akzeptieren'

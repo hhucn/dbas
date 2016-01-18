@@ -121,9 +121,9 @@ def main(global_config, **settings):
 	# config.add_route('discussion_reaction',   '/d/{slug}/r/{pgroup_id}/{supportive}/{text_id}')   # Route 5 aus den Unterlagen
 	# config.add_route('discussion_reaction',   '/d/{slug}/r/{pgroup_id}/{supportive}/{text_id}')   # Route 7 aus den Unterlagen
 
+	config.add_route('discussion_justify',    '/a/{slug}/j/{statement_or_text_id}/{mode}*relation') # Route 4,6 aus den Unterlagen
+	config.add_route('discussion_attitude',   '/a/{slug}/a/{statement_id}')                               # Route   3 aus den Unterlagen
 	config.add_route('discussion_init',       '/a*slug')                                                  # Route 1,2 aus den Unterlagen
-	# config.add_route('discussion_attitude',   '/a/{slug}/a/{statement_id}')                               # Route   3 aus den Unterlagen
-	# config.add_route('discussion_justify',    '/a/{slug}/j/{statement_or_text_id}/{supportive}*relation') # Route 4,6 aus den Unterlagen
 	# config.add_route('discussion_reaction',   '/a/{slug}/r/{pgroup_id}/{supportive}/{text_id}')           # Route 5,7 aus den Unterlagen
 
 	# read the input and start

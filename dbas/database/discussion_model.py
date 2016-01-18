@@ -1,5 +1,7 @@
 import sqlalchemy as sa
 
+from slugify import slugify
+
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -31,6 +33,9 @@ class Issue(DiscussionBase):
 	def by_text(cls):
 		"""Return a query of positions sorted by text."""
 		return DBDiscussionSession.query(Issue).order_by(Issue.text)
+
+	def get_slug(self):
+		return slugify(self.title)
 
 
 class Group(DiscussionBase):

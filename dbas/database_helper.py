@@ -315,7 +315,7 @@ class DatabaseHelper(object):
 			return_dict['conclusion_text'] = qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
 			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
 		else:
-			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid, issue)
+			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid)
 			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
 
 		TrackingHelper().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()), session_id)
@@ -412,7 +412,7 @@ class DatabaseHelper(object):
 
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
 		return_dict['premise'], tmp = qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
-		return_dict['conclusion'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid, issue) \
+		return_dict['conclusion'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid,) \
 			if db_argument.conclusion_uid != 0 else \
 			qh.get_text_for_argument_uid(db_argument.argument_uid, issue, lang)
 		return_dict['argument'] = qh.get_text_for_argument_uid(arg_uid, issue, lang)

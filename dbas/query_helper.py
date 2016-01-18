@@ -246,16 +246,14 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_relation_uid_by_name', 'return ' + str(db_relation.name if db_relation else -1))
 		return db_relation.uid if db_relation else -1
 
-	def get_text_for_statement_uid(self, uid, issue):
+	def get_text_for_statement_uid(self, uid):
 		"""
 
 		:param uid: id of a statement
-		:param issue:
 		:return: text of the mapped textvalue for this statement
 		"""
-		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid) + ', issue ' + str(issue))
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid,
-		                                                                Statement.issue_uid==issue)).first()
+		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid))
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
 		if not db_statement:
 			return None
 
@@ -292,7 +290,7 @@ class QueryHelper(object):
 			logger('QueryHelper', 'get_text_for_argument_uid', 'basecase with argument_uid: ' + str(db_argument.argument_uid)
 			       + ', in argument: ' + str(db_argument.uid))
 			premises, uids = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid, issue)
-			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid, issue)
+			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
 			premises = premises[:-1] if premises.endswith('.') else premises # pretty print
 			if not conclusion:
 				return None
@@ -335,7 +333,7 @@ class QueryHelper(object):
 		for premise in db_premises:
 			logger('QueryHelper', 'get_text_for_premisesGroup_uid', 'premise ' + str(premise.premisesGroup_uid) + ' . statement'
 					+ str(premise.statement_uid) + ', premise.statement ' + str(premise.statements.uid))
-			tmp = self.get_text_for_statement_uid(premise.statements.uid, issue)
+			tmp = self.get_text_for_statement_uid(premise.statements.uid)
 			if tmp.endswith('.'):
 				tmp = tmp[:-1]
 			uids.append(str(premise.statements.uid))
@@ -572,6 +570,8 @@ class QueryHelper(object):
 			                                 'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 		return ret_dict
 
+	# new part
+
 	def get_id_of_slug(self, slug, request):
 		"""
 		Returns the uid
@@ -581,7 +581,7 @@ class QueryHelper(object):
 		"""
 		db_issues = DBDiscussionSession.query(Issue).all()
 		for issue in db_issues:
-			if slugify(issue.title) is slug:
+			if str(slugify(issue.title)) == str(slug):
 				return issue.uid
 		return self.get_issue(request)
 
@@ -635,36 +635,123 @@ class QueryHelper(object):
 		arg_count = self.get_number_of_arguments(id)
 		date = self.get_date_for_issue_uid(id, lang)
 
-		logger('QueryHelper', 'prepare_json_of_issue', 'id: ' + str(id) + ', slug: ' + str(slug) + ', title: '
-		       + str(title) + ', info: ' + str(info) + ', arg_count: ' + str(arg_count) + ', date: ' + str(date))
-
 		db_issues = DBDiscussionSession.query(Issue).all()
 		all_array = []
 		for issue in db_issues:
-			issue_dict = collections.OrderedDict()
-			issue_dict['slug'] = slugify(issue.title)
+			issue_dict = dict()
+			issue_dict['slug'] = issue.get_slug()
 			issue_dict['title'] = issue.title
-			issue_dict['url'] = url + slugify(issue.title)
+			issue_dict['url'] = 'location.href="' + url + issue.get_slug() + '"'
 			issue_dict['info'] = issue.info
 			issue_dict['arg_count'] = self.get_number_of_arguments(issue.uid)
 			issue_dict['date'] = self.sql_timestamp_pretty_print(str(issue.date), lang)
 			issue_dict['enabled'] = 'disabled' if str(id) == str(issue.uid) else 'enabled'
 			all_array.append(issue_dict)
-		logger('QueryHelper', 'prepare_json_of_issue', 'all_array: ' + str(all_array))
 
 		return {'slug': slug, 'info': info, 'title': title, 'id': id, 'arg_count': arg_count, 'date': date, 'all': all_array}
 
-	def prepare_discussion_dict(self, issue_uid, lang):
+	def prepare_discussion_dict(self, uid, lang, at_start=False, at_attitude=False, at_justify=False, is_supportive=False):
 		"""
 
-		:param issue_uid:
+		:param uid: Some uid
 		:param lang:
 		:return:
 		"""
 		_tn = Translator(lang)
-		heading = _tn.get(_tn.initialPositionInterest)
+		heading = ''
+		if at_start:
+			heading = _tn.get(_tn.initialPositionInterest)
+		elif at_attitude:
+			text = self.get_text_for_statement_uid(uid)
+			heading = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
+		elif at_justify:
+			text = self.get_text_for_statement_uid(uid)
+			heading = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
+			          + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
 
 		return {'heading': heading}
+
+	def prepare_item_dict_for_start(self, issue_uid, url, logged_in, lang):
+		"""
+
+		:param issue_uid:
+		:param logged_in:
+		:param lang:
+		:return:
+		"""
+		db_statements = DBDiscussionSession.query(Statement)\
+			.filter(and_(Statement.isStartpoint==True, Statement.issue_uid==issue_uid))\
+			.join(TextVersion, TextVersion.uid==Statement.textversion_uid).all()
+		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
+
+		statements_array = []
+		if db_statements:
+			for statement in db_statements:
+				statement_dict = dict()
+				statement_dict['id'] = statement.uid
+				statement_dict['title'] = self.get_text_for_statement_uid(statement.uid)
+				statement_dict['attitude'] = ''
+				statement_dict['url'] = 'location.href="' + url + slug + '/a/' + str(statement.uid) + '"'
+				statements_array.append(statement_dict)
+
+			if logged_in:
+				_tn = Translator(lang)
+				statement_dict = dict()
+				statement_dict['id'] = 0
+				statement_dict['title'] = _tn.get(_tn.newConclusionRadioButtonText)
+				statement_dict['attitude'] = 'null'
+				statement_dict['url'] = 'null'
+				statements_array.append(statement_dict)
+
+		return statements_array
+
+	def prepare_item_dict_for_attitude(self, statement_uid, issue_uid, url, lang):
+		"""
+
+		:param statement_uid:
+		:param lang:
+		:return:
+		"""
+		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
+		text = self.get_text_for_statement_uid(statement_uid)
+		text = text[0:1].lower() + text[1:]
+		statements_array = []
+
+		_tn = Translator(lang)
+		statement_dict = dict()
+		statement_dict['id'] = 'agree'
+		statement_dict['title'] = _tn.get(_tn.iAgreeWithInColor) + ' ' + text
+		statement_dict['attitude'] = 'agree'
+		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(statement_uid) + '/t"'
+		statements_array.append(statement_dict)
+
+		statement_dict = dict()
+		statement_dict['id'] = 'disagree'
+		statement_dict['title'] = _tn.get(_tn.iDisagreeWithInColor) + ' ' + text
+		statement_dict['attitude'] = 'disagree'
+		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(statement_uid) + '/f"'
+		statements_array.append(statement_dict)
+
+		statement_dict = dict()
+		statement_dict['id'] = 'dontknow'
+		statement_dict['title'] = _tn.get(_tn.iDoNotKnowInColor) + ' ' + text
+		statement_dict['attitude'] = 'dontknow'
+		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(statement_uid) + '/d"'
+		statements_array.append(statement_dict)
+
+		return statements_array
+
+
+	def prepare_extras_dict(self, discussion_url, current_slug, is_editable, is_reportable, show_bar_icon, is_logged_in):
+		"""
+
+		:param current_slug:
+		:return:
+		"""
+		return {'restart_url': 'location.href="' + discussion_url + current_slug + '"',
+		        'is_editable': is_editable and is_logged_in,
+		        'is_reportable': is_reportable,
+		        'show_bar_icon': show_bar_icon}
 
 	def get_language(self, request, current_registry):
 		"""
@@ -711,15 +798,12 @@ class QueryHelper(object):
 		:return:
 		"""
 
-		logger('QueryHelper', 'sql_timestamp_pretty_print', 'with locale ' + str(lang))
 		format = '%-I:%M %p, %d. %b. %Y'
-
 		if lang == 'de':
 			try:
 				locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
 				format = '%-H:%M Uhr, %d. %b. %Y'
 			except:
-				logger('QueryHelper', 'sql_timestamp_pretty_print', 'locale ' + str(lang) + ' is not supported')
 				locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
 
 		time = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
