@@ -209,7 +209,6 @@ function setActiveLanguage(lang){
 function setButtonLanguage(){
 	var tmp;
 	$('#' + reportButtonId).prop('value', _t(report)).prop('title', _t(reportTitle));
-	$('#' + restartDiscussionButtonId).prop('value', _t(restartDiscussion)).prop('title', _t(restartDiscussionTitle));
 	$('#' + editStatementButtonId).prop('value', _t(edit)).prop('title', _t(editTitle));
 	$('#' + scStyleDialogId).prop('value', _t(dialogView)).prop('title', _t(dialogViewTitle));
 	$('#' + scStyleIslandId).prop('value', _t(islandView)).prop('title', _t(islandViewTitle));

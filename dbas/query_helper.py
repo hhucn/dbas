@@ -1,11 +1,13 @@
 import datetime
 import locale
+import collections
 from sqlalchemy import and_
+from slugify import slugify
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History, Vote
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History, Vote, Issue
 from .logger import logger
-from .strings import Translator
+from .strings import Translator, TextGenerator
 from .user_management import UserHandler
 
 # @author Tobias Krauthoff
@@ -569,6 +571,137 @@ class QueryHelper(object):
 			ret_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
 			                                 'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 		return ret_dict
+
+	def get_id_of_slug(self, slug, request):
+		"""
+		Returns the uid
+		:param slug: slug
+		:param request: self.request for a fallback
+		:return: uid
+		"""
+		db_issues = DBDiscussionSession.query(Issue).all()
+		for issue in db_issues:
+			if slugify(issue.title) is slug:
+				return issue.uid
+		return self.get_issue(request)
+
+	def get_title_for_issue_uid(self, id):
+		"""
+		Returns the title or none for the issue id
+		:param id: Issue.uid
+		:return: String
+		"""
+		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=id).first()
+		return db_issue.title if db_issue else 'none'
+
+	def get_slug_for_issue_uid(self, id):
+		"""
+		Returns the slug of the title or none for the issue id
+		:param id: Issue.uid
+		:return: String
+		"""
+		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=id).first()
+		return slugify(db_issue.title) if db_issue else 'none'
+
+	def get_info_for_issue_uid(self, id):
+		"""
+		Returns the slug or none for the issue id
+		:param id: Issue.uid
+		:return: String
+		"""
+		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=id).first()
+		return db_issue.info if db_issue else 'none'
+
+	def get_date_for_issue_uid(self, id, lang):
+		"""
+		Returns the date or none for the issue id
+		:param id: Issue.uid
+		:return: String
+		"""
+		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=id).first()
+		return self.sql_timestamp_pretty_print(str(db_issue.date), lang) if db_issue else 'none'
+
+	def prepare_json_of_issue(self, id, url, lang):
+		"""
+		Prepares slug, info, argument count and the date of the issue as dict
+		:param id: Issue.uid
+		:param url: webservers discussion url
+		:param lang: String
+		:return: dict()
+		"""
+		slug = self.get_slug_for_issue_uid(id)
+		title = self.get_title_for_issue_uid(id)
+		info = self.get_info_for_issue_uid(id)
+		arg_count = self.get_number_of_arguments(id)
+		date = self.get_date_for_issue_uid(id, lang)
+
+		logger('QueryHelper', 'prepare_json_of_issue', 'id: ' + str(id) + ', slug: ' + str(slug) + ', title: '
+		       + str(title) + ', info: ' + str(info) + ', arg_count: ' + str(arg_count) + ', date: ' + str(date))
+
+		db_issues = DBDiscussionSession.query(Issue).all()
+		all_array = []
+		for issue in db_issues:
+			issue_dict = collections.OrderedDict()
+			issue_dict['slug'] = slugify(issue.title)
+			issue_dict['title'] = issue.title
+			issue_dict['url'] = url + slugify(issue.title)
+			issue_dict['info'] = issue.info
+			issue_dict['arg_count'] = self.get_number_of_arguments(issue.uid)
+			issue_dict['date'] = self.sql_timestamp_pretty_print(str(issue.date), lang)
+			issue_dict['enabled'] = 'disabled' if str(id) == str(issue.uid) else 'enabled'
+			all_array.append(issue_dict)
+		logger('QueryHelper', 'prepare_json_of_issue', 'all_array: ' + str(all_array))
+
+		return {'slug': slug, 'info': info, 'title': title, 'id': id, 'arg_count': arg_count, 'date': date, 'all': all_array}
+
+	def prepare_discussion_dict(self, issue_uid, lang):
+		"""
+
+		:param issue_uid:
+		:param lang:
+		:return:
+		"""
+		_tn = Translator(lang)
+		heading = _tn.get(_tn.initialPositionInterest)
+
+		return {'heading': heading}
+
+	def get_language(self, request, current_registry):
+		"""
+
+		:param request: self.request
+		:param current_registry: get_current_registry()
+		:return: language abr
+		"""
+		try:
+			lang = str(request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = current_registry().settings['pyramid.default_locale_name']
+		return lang
+
+	def get_issue(self, request):
+		"""
+		Returns issue uid
+		:param request: self.request
+		:return: uid
+		"""
+
+		# logger('QueryHelper', 'prepare_json_of_issue', '')
+
+		# first matchdict, then params, then session, afterwards fallback
+		issue = request.matchdict['issue'] if 'issue' in request.matchdict \
+			else request.params['issue'].split('=')[1] if 'issue' in request.params \
+			else request.session['issue'] if 'issue' in request.session \
+			else DBDiscussionSession.query(Issue).first().uid
+
+		if str(issue) is 'undefined':
+			self.issue_fallback = 1
+
+		# save issue in session
+		request.session['issue'] = issue
+		logger('discussion_init', 'def', 'set session[issue] to ' + str(issue))
+
+		return issue
 
 	def sql_timestamp_pretty_print(self, ts, lang):
 		"""

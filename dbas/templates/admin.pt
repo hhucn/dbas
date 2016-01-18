@@ -9,7 +9,7 @@
 		</head>
 		
 		<div class="container colored_container" tal:condition="not:is_admin" style="width: 578px;">
-				<img class="center"src="${request.static_url('dbas:static/images/nopower.jpg')}">
+				<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
 		</div>
 
 		<div class="container colored_container" tal:condition="is_admin">

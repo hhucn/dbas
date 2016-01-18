@@ -12,7 +12,6 @@
 startDiscussion = function () {
 	//$('#' + startDiscussionButtonId).hide(); // hides the start button
 	//$('#' + startDescriptionId).hide(); // hides the start description
-	$('#' + restartDiscussionButtonId).show(); // show the restart button
 	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
 
 	// on success we will get the start statements
@@ -147,10 +146,6 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 		new Sharing().facebookShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val(),
 			mainpage + "static/images/logo.png");
 	});
-	// hide the restart button and add click function
-	$('#' + restartDiscussionButtonId).hide().click(function restartDiscussionButtonId() {
-		resetDiscussion();
-	});
 
 	/*
 	 * Display message on premise group checkbox
@@ -245,7 +240,6 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
  * @param guiHandler
  */
 setStyleOptions = function (guiHandler){
-	$('#' + discussionContainerId).hide(); // hiding discussions container
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
@@ -319,11 +313,11 @@ setWindowOptions = function(guiHandler, ajaxHandler){
 
 	$(window).load( function windowLoad () {
 		var url = window.location.href;
-    	if (url.indexOf(mainpage + 'discussion/start') != -1) {
+    	if (url.indexOf(mainpage + 'a') != -1) {
+	    } else if (url.indexOf(mainpage + 'discussion/start') != -1) {
 			startDiscussion();
 		} else {
 			$('#' + discussionContainerId).fadeIn('fast');
-			$('#' + restartDiscussionButtonId).show(); // show the restart button
 
 			params = window.location.href.substr(window.location.href.indexOf('discussion/') + 'discussion/'.length);
 			params = params.substr(0,params.indexOf('/'));

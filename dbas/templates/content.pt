@@ -17,39 +17,42 @@
 			</div>
 		</div>
 
-
 		<div class="container colored_container">
 			<div class="row">
 				<div class="col-md-7 center text-center">
-					<!--
-					<h3><span class="lead" i18n:translate="dbas_long">Dialog-Based Argumentation System</span></h3>
-					-->
 					<p i18n:translate="current_discussion">Current discussion is about</p>
-					<h5 id="issue_info"></h5>
+					<h5 id="issue_info"><span tal:replace=issue.info></span></h5>
 				</div>
-				<!--
-				<div class="col-md-1"></div>
-				-->
 				<div class="col-md-5 center text-center">
-					<span i18n:translate="startet_at">The discussion was started at</span> 
-						<span id="issue-date"></span><br>
-						<span i18n:translate="already_has">and already has</span> 
-						<span id="issue-count"></span> 
-						<span i18n:translate="arguments">arguments</span>.<br>
-					<!--
-					<h6>
-					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
-					</h6>
-					-->
-					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;"/>
+					<span i18n:translate="startet_at">The discussion was started at</span>
+					<span id="issue-date" tal:replace=issue.date></span>
+					<br>
+					<span i18n:translate="already_has">and already has</span>
+					<span id="issue-count" tal:replace=issue.arg_count></span>
+					<span i18n:translate="arguments">arguments</span>.
+					<br>
+
+					<button class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
+						<span i18n:translate="restart_discussion">Restart Discussion</span>
+					</button>
+
 					<br>
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-							<span id="issue-dropdown-text"></span>&#160;&#160;&#160;<span class="caret"></span>
+							<span tal:replace="issue.title"></span>&#160;&#160;&#160;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
-							<li><a href="#">Action</a></li>
+							<li class="dropdown-header" i18n:translate="topics">Topics</li>
+							<li tal:repeat="issue issue.all" tal:attributes="class issue.enabled">
+								<a href="#" tal:attributes="href issue.url">
+									<span tal:replace="issue.title" />
+									<span class="badge" style="float: right">
+									<span tal:replace="issue.arg_count"/>
+								</span>
+								</a>
+							</li>
 						</ul>
+
 					</div>
 				</div>
 			</div>
@@ -80,19 +83,17 @@
 						<span id="discussion-success-description"></span>
 					</div>
 
-					<h4><p id="discussions-description"></p></h4>
-					<div id="discussions-space"> </div>
-					<div id="discussions-attack-space">
-						<!--
-							<h5>
-						<p id="discussions-attack-description" i18n:translate="argueAgainstPositionToggleButton">
-						Or if you want to argue against a position, mentioned above, please toggle this button:
-						</p>
-							</h5>
-							<input id="discussion-attack-toggle-start" type="checkbox" data-toggle="toggle" data-size="small" data-on="attack Positions" data-off="support Positions" data-onstyle="danger" data-width="175">
--->
+					<h4><p id="discussions-description" tal:replace="discussion.heading"></p></h4>
+					<div id="discussions-space">
+					<ul>
+						<li tal:repeat="issue issue.all" tal:attributes="class issue.enabled">
+					</ul>
 					</div>
+					<div id="discussions-attack-space">
+					</div>
+					
 				</div>
+				
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
 						<input tal:condition="logged_in" id="edit-statement" type="button" i18n:translate="edit" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
@@ -103,8 +104,8 @@
 						</button>
 						<br>
 						<br>
-						
-						<img id="opinion-barometer-img" style="display:none" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="Opinion Barometer"/>
+
+						<img id="opinion-barometer-img" style="display:none" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="Opinion Barometer" />
 					</div>
 				</div>
 			</div>
@@ -125,7 +126,7 @@
 			<button id="close-island-view-ontainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row" id="island-view-container-space">
-				
+
 			</div>
 		</div>
 
@@ -201,25 +202,28 @@
 			<div class="row">
 				<h4><p i18n:translate="change_style">Change display style</p></h4>
 				<div class="col-md-4">
-					<input type="radio" id="sc-style-1" checked value="Dialog View" >
+					<input type="radio" id="sc-style-1" checked value="Dialog View">
 					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
-						<p i18n:translate="dialog_view"><h6>Dialog View</h6></p>
-					</label><br>
-						<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
+						<h6 i18n:translate="dialog_view">Dialog View</h6>
+					</label>
+					<br>
+					<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
 				</div>
 				<div class="col-md-4">
-					<input type="radio" id="sc-style-2" value="Island View" >
+					<input type="radio" id="sc-style-2" value="Island View">
 					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
-						<p i18n:translate="island_view"><h6>Island View</h6></p>
-					</label><br>
-						<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
+						<h6 i18n:translate="island_view">Island View</h6>
+					</label>
+					<br>
+					<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
 				</div>
 				<div class="col-md-4">
-					<input type="radio" id="sc-style-3" value="Complete View" >
+					<input type="radio" id="sc-style-3" value="Complete View">
 					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
-						<p i18n:translate="complete_view"><h6>Complete View</h6></p>
-					</label><br>
-						<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
+						<h6 i18n:translate="complete_view">Complete View</h6>
+					</label>
+					<br>
+					<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
 				</div>
 			</div>
 		</div>
@@ -228,25 +232,28 @@
 			<div class="row">
 				<h4><p i18n:translate="change_style">Change display style</p></h4>
 				<div class="col-md-4">
-					<input type="radio" id="sc-style-1" checked value="Dialog View" >
+					<input type="radio" id="sc-style-1" checked value="Dialog View">
 					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
 						<p i18n:translate="dialog_view">Dialog View</p>
-					</label><br>
-						<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
+					</label>
+					<br>
+					<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
 				</div>
 				<div class="col-md-4">
-					<input type="radio" id="sc-style-2" value="Island View" >
+					<input type="radio" id="sc-style-2" value="Island View">
 					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
 						<p i18n:translate="island_view">Island View</p>
-					</label><br>
-						<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
+					</label>
+					<br>
+					<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
 				</div>
 				<div class="col-md-4">
-					<input type="radio" id="sc-style-3" value="Complete View" >
+					<input type="radio" id="sc-style-3" value="Complete View">
 					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
 						<p i18n:translate="complete_view">Complete View</p>
-					</label><br>
-						<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
+					</label>
+					<br>
+					<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
 				</div>
 			</div>
 		</div>

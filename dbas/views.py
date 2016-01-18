@@ -46,6 +46,9 @@ class Dbas(object):
 		"""
 		self.request = request
 		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
+		self.url = 'http://localhost:4284/'
+		self.discussion_url = self.url + 'a/'
+		logger('DBAS', 'MAIN', 'issue_fallback ' + str(issue_fallback))
 
 	def escape_string(self, text):
 		"""
@@ -186,9 +189,9 @@ class Dbas(object):
 		}
 
 	# content page, after login
-	@view_config(route_name='main_discussion', renderer='templates/content.pt', permission='everybody')
-	@view_config(route_name='main_discussion_start', renderer='templates/content.pt', permission='everybody')
-	@view_config(route_name='main_discussion_issue', renderer='templates/content.pt', permission='everybody')
+	@view_config(route_name='main_discussion', renderer='templates/content_old.pt', permission='everybody')
+	@view_config(route_name='main_discussion_start', renderer='templates/content_old.pt', permission='everybody')
+	@view_config(route_name='main_discussion_issue', renderer='templates/content_old.pt', permission='everybody')
 	def main_discussion(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
@@ -204,32 +207,14 @@ class Dbas(object):
 		logger('main_discussion', 'def', 'is issue in matchdict ' + str('issue' in self.request.matchdict))
 
 		# first matchdict, then params, then session, afterwards fallback
-		if 'issue' in self.request.matchdict:
-			issue = self.request.matchdict['issue']
-			where = 'self.request.matchdict[issue]'
-		elif 'issue' in self.request.params:
-			issue = self.request.params['issue']
-			where = 'self.request.params[issue]'
-		elif 'issue' in self.request.session:
-			issue = self.request.session['issue']
-			where = 'self.request.session[issue]'
-		else:
-			where = 'fallback'
-			issue = issue_fallback
-
-		if issue == 'undefined':
-			where = 'fallback because undefined'
-			issue = issue_fallback
-
-		logger('main_discussion', 'def', 'self.request.matchdict[parameters]: ' + parameters)
-		logger('main_discussion', 'def', where + ': ' + str(issue))
+		issue = self.request.matchdict['issue'] if 'issue' in self.request.matchdict \
+			else self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+			else self.request.session['issue'] if 'issue' in self.request.session \
+			else issue_fallback
 
 		# save issue in session
 		self.request.session['issue'] = issue
 		logger('main_discussion', 'def', 'set session[issue] to ' + str(issue))
-
-		token = self.request.session.get_csrf_token()
-		logger('main_discussion', 'new token', str(token))
 
 		# checks whether the current user is admin
 		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
@@ -250,6 +235,43 @@ class Dbas(object):
 			'parameters': parameters,
 			'issue': issue
 		}
+
+
+	# content page
+	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
+	def discussion_init(self):
+		"""
+		View configuration for the content view. Only logged in user can reach this page.
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('discussion_init', 'def', 'main')
+		logger('discussion_init', 'def', 'self.request.matchdict: ' + str(self.request.matchdict))
+
+		# has request a slug?
+		_qh = QueryHelper()
+		slug = self.request.matchdict['slug']
+		issue = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		lang = _qh.get_language(self.request, get_current_registry)
+		issue_dict = _qh.prepare_json_of_issue(issue, self.discussion_url, lang)
+		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
+
+		discussion_dict = _qh.prepare_discussion_dict(issue, lang)
+
+		logger('discussion_init', 'def', 'return')
+		return {
+			'layout': self.base_layout(),
+			'language': str(lang),
+			'title': issue_dict['title'],
+			'project': header,
+			'logged_in': self.request.authenticated_userid,
+			'is_admin': is_admin,
+
+			'issue': issue_dict,
+			'discussion': discussion_dict,
+			'extras': {'restart_url': 'location.href="' + self.discussion_url + issue_dict['slug'] + '"'}
+		}
+
 
 	# settings page, when logged in
 	@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
