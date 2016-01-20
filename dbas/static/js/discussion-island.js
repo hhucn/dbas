@@ -13,7 +13,6 @@ function DiscussionIsland(){
 
 		var url = window.location.href,
 			splits = url.split('/');
-		alert(splits[6]);
 		this.getAllArgumentsForIslandView(splits[6])
 	};
 
@@ -80,15 +79,15 @@ function DiscussionIsland(){
 		titles[4] = jsonData.rebut_text;
 
 		// first row with header only
-		row = $('<div>');
+		row = $('<div>').addClass('row').attr({style: 'padding-left: 15px; padding-right: 15px;'});
 		div = $('<div>').addClass('col-md-12');
-		header = '<h4>' + _t(islandView) + ' ' + _t(forText) + ' <strong>' + jsonData.argument + '.</strong>/h4>';
+		header = '<h4>' + _t(islandView) + ' ' + _t(forText) + ' <strong>' + jsonData.argument + '.</strong></h4>';
 		div.append(header);
 		row.append(div);
 		islandViewContainerSpace.append(row);
 
 		// second row with supports and undermines
-		row = $('<div>');
+		row = $('<div>').addClass('row').attr({style: 'padding-left: 15px; padding-right: 15px;'});
 		// con premise - undermines
 		this.createPartOfIsland('6', row, false, ballot, titles[0], jsonData, 'undermines');
 		islandViewContainerSpace.append(row);
@@ -96,7 +95,7 @@ function DiscussionIsland(){
 		this.createPartOfIsland('6', row, true, checkmark, titles[1], jsonData, 'supports');
 
 		// third row with overbids and undercuty
-		row = $('<div>');
+		row = $('<div>').addClass('row').attr({style: 'padding-left: 15px; padding-right: 15px;'});
 		// con relation - undercuts
 		this.createPartOfIsland('6', row, false, ballot, titles[2], jsonData, 'undercuts');
 		islandViewContainerSpace.append(row);
@@ -104,7 +103,7 @@ function DiscussionIsland(){
 		this.createPartOfIsland('6', row, true, checkmark, titles[3], jsonData, 'overbids');
 
 		// last row with rebuts
-		row = $('<div>');
+		row = $('<div>').addClass('row').attr({style: 'padding-left: 15px; padding-right: 15px;'});
 		// con conclusion - rebuts
 		this.createPartOfIsland('12', row, false, ballot, titles[4], jsonData, 'rebuts');
 		islandViewContainerSpace.append(row);

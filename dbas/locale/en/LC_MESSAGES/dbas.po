@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-01-18 10:40+0100\n"
+"POT-Creation-Date: 2016-01-20 22:04+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -263,8 +263,7 @@ msgstr "for you."
 
 #. Default: Island View
 #: dbas/templates/index.pt:130 dbas/templates/content_old.pt:213
-#: dbas/templates/content_old.pt:240 dbas/templates/content.pt:207
-#: dbas/templates/content.pt:234
+#: dbas/templates/content_old.pt:240 dbas/templates/content.pt:284
 msgid "island_view"
 msgstr "Island View"
 
@@ -986,7 +985,7 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:292 dbas/templates/snippet-popups.pt:393
-#: dbas/templates/content_old.pt:116 dbas/templates/content.pt:110
+#: dbas/templates/content_old.pt:116 dbas/templates/content.pt:122
 msgid "error"
 msgstr "Error:"
 
@@ -994,7 +993,7 @@ msgstr "Error:"
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:385
 #: dbas/templates/settings.pt:78 dbas/templates/settings.pt:108
-#: dbas/templates/content_old.pt:79 dbas/templates/content.pt:73
+#: dbas/templates/content_old.pt:79 dbas/templates/content.pt:81
 msgid "success"
 msgstr "Success:"
 
@@ -1286,7 +1285,7 @@ msgstr "Writing a new message"
 #. Default: Error:
 #: dbas/templates/news.pt:25 dbas/templates/settings.pt:83
 #: dbas/templates/settings.pt:114 dbas/templates/content_old.pt:146
-#: dbas/templates/content.pt:140
+#: dbas/templates/content.pt:155 dbas/templates/content.pt:180
 msgid "error:"
 msgstr "Error:"
 
@@ -1443,62 +1442,60 @@ msgid "startet_at"
 msgstr "The discussion was started at"
 
 #. Default: and already has
-#: dbas/templates/content_old.pt:36 dbas/templates/content.pt:29
+#: dbas/templates/content_old.pt:36 dbas/templates/content.pt:30
 msgid "already_has"
 msgstr "and already has"
 
 #. Default: arguments
-#: dbas/templates/content_old.pt:38 dbas/templates/content.pt:31
+#: dbas/templates/content_old.pt:38 dbas/templates/content.pt:32
 msgid "arguments"
 msgstr "arguments"
 
 #. Default: Report
-#: dbas/templates/content_old.pt:102 dbas/templates/content.pt:96
+#: dbas/templates/content_old.pt:102 dbas/templates/content.pt:109
 msgid "report"
 msgstr "Report"
 
 #. Default: Please insert a new Argument
-#: dbas/templates/content_old.pt:142 dbas/templates/content.pt:136
+#: dbas/templates/content_old.pt:142
 msgid "insert-argument"
 msgstr "Please insert a new Argument"
 
 #. Default: Pro
-#: dbas/templates/content_old.pt:154 dbas/templates/content.pt:148
+#: dbas/templates/content_old.pt:154
 msgid "pro"
 msgstr "Pro"
 
 #. Default: Add a textfield
 #: dbas/templates/content_old.pt:160 dbas/templates/content_old.pt:178
-#: dbas/templates/content.pt:154 dbas/templates/content.pt:172
 msgid "add_textfield"
 msgstr "Add a textfield"
 
 #. Default: Statements are connected
 #: dbas/templates/content_old.pt:167 dbas/templates/content_old.pt:185
-#: dbas/templates/content.pt:161 dbas/templates/content.pt:179
 msgid "statements_connected"
 msgstr "Statements are connected"
 
 #. Default: Contra
-#: dbas/templates/content_old.pt:173 dbas/templates/content.pt:167
+#: dbas/templates/content_old.pt:173
 msgid "contra"
 msgstr "Contra"
 
 #. Default: Change display style
 #: dbas/templates/content_old.pt:202 dbas/templates/content_old.pt:229
-#: dbas/templates/content.pt:196 dbas/templates/content.pt:223
+#: dbas/templates/content.pt:272
 msgid "change_style"
 msgstr "Change display style"
 
 #. Default: Dialog View
 #: dbas/templates/content_old.pt:206 dbas/templates/content_old.pt:233
-#: dbas/templates/content.pt:200 dbas/templates/content.pt:227
+#: dbas/templates/content.pt:276
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Complete View
 #: dbas/templates/content_old.pt:220 dbas/templates/content_old.pt:247
-#: dbas/templates/content.pt:214 dbas/templates/content.pt:241
+#: dbas/templates/content.pt:292
 msgid "complete_view"
 msgstr "Complete View"
 
@@ -1522,16 +1519,55 @@ msgstr "AdBlocker is enabled:"
 msgid "adblock_enabled2"
 msgstr "Please disable your AdBlocker!"
 
+#. Default: Restart Discussion
+#: dbas/templates/content.pt:36
+msgid "restart_discussion"
+msgstr "Diskussion neustarten"
+
 #. Default: Topics
-#: dbas/templates/content.pt:34
+#: dbas/templates/content.pt:45
 msgid "topics"
 msgstr "Topics"
 
-#. Default: Restart Discussion
-#: dbas/templates/content.pt:35
-#, fuzzy
-msgid "restart_discussion"
-msgstr "Diskussion neustarten"
+#. Default: Edit
+#: dbas/templates/content.pt:104
+msgid "edit"
+msgstr "Edit"
+
+#. Default: What is your idea? What should we do?
+#: dbas/templates/content.pt:149
+msgid "what_is_your_idea"
+msgstr "What is your idea? What should we do?"
+
+#. Default: You want to state your own reason?
+#: dbas/templates/content.pt:174
+msgid "want_to_state_own_reason"
+msgstr "You want to state your own reason?"
+
+#. Default: I
+#: dbas/templates/content.pt:184 dbas/templates/content.pt:185
+msgid "I"
+msgstr "I"
+
+#. Default: agree
+#: dbas/templates/content.pt:184
+msgid "agree"
+msgstr "agree"
+
+#. Default: with
+#: dbas/templates/content.pt:184 dbas/templates/content.pt:185
+msgid "with"
+msgstr "with"
+
+#. Default: disagree
+#: dbas/templates/content.pt:185
+msgid "disagree"
+msgstr "disagree"
+
+#. Default: Because
+#: dbas/templates/content.pt:191
+msgid "Because"
+msgstr "Because"
 
 #~ msgid "opinion_barometer"
 #~ msgstr "Opinion Barometer"

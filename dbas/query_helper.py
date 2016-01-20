@@ -639,7 +639,7 @@ class QueryHelper(object):
 
 	def prepare_discussion_dict(self, uid, lang, at_start=False, at_attitude=False, at_justify=False,
 	                            is_supportive=False, at_dont_know=False, at_argumentation=False,
-	                            at_justify_argumentation=False, additional_id=0, attack=''):
+	                            at_justify_argumentation=False, additional_id=0, attack='', logged_in=False):
 		"""
 
 		:param uid:
@@ -656,6 +656,7 @@ class QueryHelper(object):
 		"""
 		_tn = Translator(lang)
 		heading = ''
+		add_premise_text = ''
 		if at_start:
 			heading         = _tn.get(_tn.initialPositionInterest)
 
@@ -675,8 +676,8 @@ class QueryHelper(object):
 			premise, tmp    = self.get_text_for_premisesGroup_uid(uid)
 			conclusion      = self.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 				else self.get_text_for_argument_uid(db_argument.argument_uid)
-			user            = True
-			heading         = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, user)
+			heading         = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
+			add_premise_text= premise
 
 		elif at_dont_know:
 			text            = self.get_text_for_argument_uid(uid, lang)
@@ -696,7 +697,7 @@ class QueryHelper(object):
 			heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
 			                                                     confrontation, reply_for_argument, current_argument)
 
-		return {'heading': heading}
+		return {'heading': heading, 'add_premise_text': add_premise_text}
 
 	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang):
 		"""
@@ -844,7 +845,6 @@ class QueryHelper(object):
 		elif attack_type == 'rebut':
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_argument.conclusion_uid, Argument.isSupportive==False)).all()
 
-		mode = 't' if isSupportive else 'f'
 		_um = UrlManager(slug)
 
 		if db_arguments:
@@ -913,15 +913,37 @@ class QueryHelper(object):
 
 		return statements_array
 
+	def add_discussion_end_text(self, discussion_dict, logged_in, lang, at_dont_know=False, at_justify_argumentation=False, at_justify=False):
+		"""
 
-	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, authenticated_userid):
+		:param discussion_dict:
+		:param logged_in:
+		:param lang:
+		:return:
+		"""
+		_t = Translator(lang)
+		discussion_dict['heading'] += '<br><br>'
+		if at_justify_argumentation:
+			discussion_dict['heading'] += 'SHOW ADD PREMISE CONTAINER!!!'
+		elif at_dont_know:
+			discussion_dict['heading'] += _t.get(_t.otherParticipantsDontHaveOpinion) + '<br><br>' + (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText))
+		elif at_justify:
+			discussion_dict['heading'] += '?????'
+		else:
+			discussion_dict['heading'] += (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText)) if logged_in else _t.get(_t.discussionEndFeelFreeToLogin)
+
+
+
+	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, authenticated_userid, add_premise_supportive=False):
 		"""
 
 		:param current_slug:
 		:param is_editable:
 		:param is_reportable:
 		:param show_bar_icon:
-		:param is_logged_in:
+		:param show_display_styles:
+		:param add_premise_supportive:
+		:param authenticated_userid:
 		:return:
 		"""
 		_uh = UserHandler()
@@ -934,7 +956,8 @@ class QueryHelper(object):
 		        'is_admin': is_admin,
 		        'logged_in': authenticated_userid,
 		        'show_bar_icon': show_bar_icon,
-		        'show_display_style': show_display_styles}
+		        'show_display_style': show_display_styles,
+		        'add_premise_supportive': add_premise_supportive}
 
 	def get_language(self, request, current_registry):
 		"""

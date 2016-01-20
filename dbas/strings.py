@@ -70,13 +70,13 @@ class Translator(object):
 		self.alreadyInserted = 'alreadyInserted'
 		self.addPremisesRadioButtonText = 'addPremisesRadioButtonText'
 		self.addArgumentsRadioButtonText = 'addArgumentsRadioButtonText'
-		self.argumentContainerH4TextIfPremises = 'argumentContainerH4TextIfPremises'
-		self.argumentContainerH4TextIfArguments = 'argumentContainerH4TextIfArguments'
+		self.argumentContainerTextIfPremises = 'argumentContainerTextIfPremises'
+		self.argumentContainerTextIfArguments = 'argumentContainerTextIfArguments'
 		self.addPremiseRadioButtonText = 'addPremiseRadioButtonText'
 		self.addArgumentRadioButtonText = 'addArgumentRadioButtonText'
-		self.argumentContainerH4TextIfPremise = 'argumentContainerTextIfPremise'
-		self.argumentContainerH4TextIfArgument = 'argumentContainerTextIfArgument'
-		self.argumentContainerH4TextIfConclusion = 'argumentContainerTextIfConclusion'
+		self.argumentContainerTextIfPremise = 'argumentContainerTextIfPremise'
+		self.argumentContainerTextIfArgument = 'argumentContainerTextIfArgument'
+		self.argumentContainerTextIfConclusion = 'argumentContainerTextIfConclusion'
 		self.argueAgainstPositionToggleButton = 'argueAgainstPositionToggleButton'
 		self.argueForPositionToggleButton = 'argueForPositionToggleButton'
 		self.alternatively = 'alternatively'
@@ -273,6 +273,7 @@ class Translator(object):
 		self.note = 'note'
 		self.otherParticipantsThinkThat = 'otherParticipantsThinkThat'
 		self.otherParticipantsDontHaveCounter = 'otherParticipantsDontHaveCounter'
+		self.otherParticipantsDontHaveOpinion = 'otherParticipantsDontHaveOpinion'
 		self.otherParticipantsDontHaveArgument = 'otherParticipantsDontHaveArgument'
 		self.otherParticipantsAcceptBut = 'otherParticipantsAcceptBut'
 		self.otherParticipantAgree = 'otherParticipantAgree'
@@ -425,13 +426,13 @@ class Translator(object):
 		en_lang[self.alreadyInserted] =  'This is a duplicate and already there.'
 		en_lang[self.addPremisesRadioButtonText] =  'Let me enter my reasons!'
 		en_lang[self.addArgumentsRadioButtonText] =  'Let me enter my own statements!'
-		en_lang[self.argumentContainerH4TextIfPremises] =  'You want to state your own reasons?'
-		en_lang[self.argumentContainerH4TextIfArguments] =  'You want to state your own arguments?'
+		en_lang[self.argumentContainerTextIfPremises] =  'You want to state your own reasons?'
+		en_lang[self.argumentContainerTextIfArguments] =  'You want to state your own arguments?'
 		en_lang[self.addPremiseRadioButtonText] =  'Let me enter my reason!'
 		en_lang[self.addArgumentRadioButtonText] =  'Let me enter my own statement!'
-		en_lang[self.argumentContainerH4TextIfPremise] =  'You want to state your own reason?'
-		en_lang[self.argumentContainerH4TextIfArgument] =  'You want to state your own argument?'
-		en_lang[self.argumentContainerH4TextIfConclusion] =  'What is your idea? What should we do?'
+		en_lang[self.argumentContainerTextIfPremise] =  'You want to state your own reason?'
+		en_lang[self.argumentContainerTextIfArgument] =  'You want to state your own argument?'
+		en_lang[self.argumentContainerTextIfConclusion] =  'What is your idea? What should we do?'
 		en_lang[self.argueAgainstPositionToggleButton] = 'Or do you want to argue against a position? Please toggle this button:'
 		en_lang[self.argueForPositionToggleButton] = 'Or do you want to argue for a position? Please toggle this button:'
 		en_lang[self.andIDoNotBelieveCounter] =  'and I do not believe that this is a good counter-argument for'
@@ -627,6 +628,7 @@ class Translator(object):
 		en_lang[self.number] =  'No'
 		en_lang[self.note] =  'Note'
 		en_lang[self.otherParticipantsThinkThat] =  'Other partcipants think that'
+		en_lang[self.otherParticipantsDontHaveOpinion] =  'Other partcipants do not have any opinion regarding your selection.'
 		en_lang[self.otherParticipantsDontHaveCounter] =  'Other partcipants do not have any counter-argument for '
 		en_lang[self.otherParticipantsDontHaveArgument] =  'Other partcipants do not have any argument for '
 		en_lang[self.otherParticipantsAcceptBut] =  'Other partcipants accept your argument, but'
@@ -775,13 +777,13 @@ class Translator(object):
 		de_lang[self.alreadyInserted] = 'Dies ist ein Duplikat und schon vorhanden.',
 		de_lang[self.addPremisesRadioButtonText] = 'Lass\' mich meine eigenen Gründe angeben!',
 		de_lang[self.addArgumentsRadioButtonText] = 'Lass\' mich meine eigenen Aussagen angeben!',
-		de_lang[self.argumentContainerH4TextIfPremises] = 'Sie möchten Ihre eigenen Gründe angeben?',
-		de_lang[self.argumentContainerH4TextIfArguments] = 'Sie möchten Ihre eigenen Argumente angeben?',
+		de_lang[self.argumentContainerTextIfPremises] = 'Sie möchten Ihre eigenen Gründe angeben?',
+		de_lang[self.argumentContainerTextIfArguments] = 'Sie möchten Ihre eigenen Argumente angeben?',
 		de_lang[self.addPremiseRadioButtonText] = 'Lass\' mich meinen eigenen Grund angeben!',
 		de_lang[self.addArgumentRadioButtonText] = 'Lass\' mich meine eigene Aussage angeben!',
-		de_lang[self.argumentContainerH4TextIfPremise] = 'Sie möchten Ihren eigenen Grund angeben?',
-		de_lang[self.argumentContainerH4TextIfArgument] = 'Sie möchten Ihr eigenes Argument angeben?',
-		de_lang[self.argumentContainerH4TextIfConclusion] = 'Was ist Ihre Idee? Was sollten wir unternehmen?',
+		de_lang[self.argumentContainerTextIfPremise] = 'Sie möchten Ihren eigenen Grund angeben?',
+		de_lang[self.argumentContainerTextIfArgument] = 'Sie möchten Ihr eigenes Argument angeben?',
+		de_lang[self.argumentContainerTextIfConclusion] = 'Was ist Ihre Idee? Was sollten wir unternehmen?',
 		de_lang[self.argueAgainstPositionToggleButton] =  'Oder wenn Sie gegen eine Position argumentieren möchten, drücken Sie bitte diesen Schalter:',
 		de_lang[self.argueForPositionToggleButton] =  'Oder wenn Sie für eine Position argumentieren möchten, drücken Sie bitte diesen Schalter:',
 		de_lang[self.alternatively] = 'Alternativ',
@@ -977,6 +979,7 @@ class Translator(object):
 		de_lang[self.number] = 'Nr',
 		de_lang[self.note] = 'Hinweis',
 		de_lang[self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass',
+		de_lang[self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
 		de_lang[self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für ',
 		de_lang[self.otherParticipantsDontHaveArgument] = 'Andere Teilnehmer haben kein Argument für ',
 		de_lang[self.otherParticipantsAcceptBut] = 'Andere Teilnehmer akzeptieren Ihr Argument, aber',
@@ -1101,7 +1104,7 @@ class TextGenerator(object):
 		:return: string
 		"""
 		_t = Translator(self.lang)
-		ret_text = ''
+		ret_text = _t.get(_t.sentencesOpenersForArguments[0])  + ': '
 
 		if premise[-1] == '.':
 			premise = premise[:-1]
@@ -1122,18 +1125,18 @@ class TextGenerator(object):
 
 		# different cases
 		if attackType == 'undermine':
-			ret_text = w + _t.get(_t.itIsFalse) + ' <strong>' + confrontation + '</strong>.'
+			ret_text += w + _t.get(_t.itIsFalse) + ' <strong>' + confrontation + '</strong>.'
 		if attackType == 'support':
-			ret_text = r + _t.get(_t.itIsTrue) + ' <strong>' + confrontation + '</strong>.'
+			ret_text += r + _t.get(_t.itIsTrue) + ' <strong>' + confrontation + '</strong>.'
 		if attackType == 'undercut':
-			ret_text = r + '<strong>' + confrontation + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounter) + ' <strong>' \
+			ret_text += r + '<strong>' + confrontation + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounter) + ' <strong>' \
 			           + conclusion + '</strong>.'
 		if attackType == 'overbid':
-			ret_text = r + '<strong>' + confrontation + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' <strong>' \
+			ret_text += r + '<strong>' + confrontation + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' <strong>' \
 			           + conclusion + '</strong>.<br><br>' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) \
 			           + ' <strong>' + longConclusion + '</strong>.'
 		if attackType == 'rebut':
-			ret_text = r + '<strong>' + confrontation + '</strong> ' + _t.get(_t.iAcceptCounter) + ' <strong>' \
+			ret_text += r + '<strong>' + confrontation + '</strong> ' + _t.get(_t.iAcceptCounter) + ' <strong>' \
 			           + conclusion + '</strong>.<br><br>'
 			if isSupportive:
 				ret_text += _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) + ' <strong>' + conclusion + '</strong>.'

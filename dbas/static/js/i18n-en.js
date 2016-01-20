@@ -10,8 +10,6 @@ var dbas_en = {
 	'alreadyInserted': 'This is a duplicate and already there.',
 	'addPremisesRadioButtonText': 'Let me enter my reasons!',
 	'addArgumentsRadioButtonText': 'Let me enter my own statements!',
-	'argumentContainerH4TextIfPremises': 'You want to state your own reasons?',
-	'argumentContainerH4TextIfArguments': 'You want to state your own arguments?',
 	'addPremiseRadioButtonText': 'Let me enter my reason!',
 	'addArgumentRadioButtonText': 'Let me enter my own statement!',
 	'argumentContainerTextIfPremise': 'You want to state your own reason?',

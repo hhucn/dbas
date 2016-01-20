@@ -45,9 +45,9 @@
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
 							<li tal:repeat="issue issue.all" tal:attributes="class issue.enabled">
 								<a href="#" tal:attributes="href issue.url">
-									<span tal:replace="issue.title" />
+									<span tal:replace="issue.title" ></span>
 									<span class="badge" style="float: right">
-									<span tal:replace="issue.arg_count"/>
+										<span tal:replace="issue.arg_count"></span>
 								</span>
 								</a>
 							</li>
@@ -88,7 +88,7 @@
 						<ul>
 						<li tal:repeat="item item">
 							<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-							<label tal:attributes="for item.id"><span tal:replace="item.title"/></label>
+							<label tal:attributes="for item.id"><span tal:replace="item.title"></span></label>
 						</li>
 					</ul>
 						
@@ -139,69 +139,63 @@
 		<div class="container colored_container" id="graph-view-container" style="display:none"></div>
 
 		<div class="container colored_container" id="add-statement-container" style="display:none">
-			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
 			</button>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-10">
-
-					<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
-						<h4 id="add-statement-container-title" i18n:translate="insert-argument">Please insert a new Argument</h4>
-
-						<div id="add-statement-error-container" class="alert alert-danger" role="alert">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span i18n:translate="error:">Error:</span>
-							<span id="add-statement-error-msg"></span>
-						</div>
-
-						<h5><span id="add-statement-container-main-input-intro"></span></h5>
-						<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
-
-						<div id="pro-position-column">
-							<h4 id="heading-pro-positions" class="lead" i18n:translate="pro">Pro</h4>
-							<div id="pro-textareas">
-
-							</div>
-							<div id="add-pro-textarea">
-								<a>
-									<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> <span i18n:translate="add_textfield">Add a textfield</span>
-								</a>
-							</div>
-
-							<div id="pro-textarea-premissegroup" class="checkbox" style="display:none">
-								<label>
-									<a>
-										<input id="pro-textarea-premissegroup-checkbox" type="checkbox"><span i18n:translate="statements_connected">Statements are connected</span></a>
-								</label>
-							</div>
-						</div>
-
-						<div id="con-position-column">
-							<h4 id="heading-contra-positions" class="lead" i18n:translate="contra">Contra</h4>
-							<div id="con-textareas">
-							</div>
-							<div id="add-con-textarea">
-								<a>
-									<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> <span i18n:translate="add_textfield">Add a textfield</span>
-								</a>
-							</div>
-
-							<div id="con-textarea-premissegroup" class="checkbox" style="display:none">
-								<label>
-									<a>
-										<input id="con-textarea-premissegroup-checkbox" type="checkbox"><span i18n:translate="statements_connected">Statements are connected</span></a>
-								</label>
-							</div>
-						</div>
-
-						<div class="list-group" id="proposal-list-group">
-						</div>
-
-						<input id="send-new-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
-					</form>
-				</div>
-				<div class="col-md-1"></div>
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
+					<h4>
+						<span i18n:translate="what_is_your_idea">
+							What is your idea? What should we do?
+						</span>
+					</h4>
+					<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span i18n:translate="error:">Error:</span>
+						<span id="add-statement-error-msg"></span>
+					</div>
+					<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+					<div class="list-group" id="proposal-statement-list-group"></div>
+					<input id="send-statement-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+				</form>
 			</div>
+			<div class="col-md-1"></div>
+		</div>
+			
+		<div class="container colored_container" id="add-premise-container" style="display:none">
+			<button id="close-premise-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<form id="insert-premise-form" action="/not_implemented" method="post" class="text-center">
+					<h4>
+						<span i18n:translate="want_to_state_own_reason">
+							You want to state your own reason?
+						</span>
+					</h4>
+					<div id="add-premisen-error-container" class="alert alert-danger" role="alert" style="display:none">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span i18n:translate="error:">Error:</span>
+						<span id="add-premise-error-msg"></span>
+					</div>
+					<h5>
+						<span tal:condition="extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-success" i18n:translate="agree">agree</span> <span i18n:translate="with">with</span>: </span>
+						<span tal:condition="not:extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-danger" i18n:translate="disagree">disagree</span> <span i18n:translate="with">with</span>: </span>
+						<span id="add-premise-container-main-input-intro" tal:replace=discussion.add_premise_text>
+						</span>
+					</h5>
+					<span style="float:left; line-height:60px; text-align:center;">
+						<h5>
+							<span i18n:translate="Because">Because</span>...</h5>
+					</span>
+					<input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+					<div class="list-group" id="proposal-premise-list-group"></div>
+					<input id="send-premise-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+				</form>
+			</div>
+			<div class="col-md-1"></div>
 		</div>
 
 		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style" >

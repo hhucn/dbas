@@ -259,7 +259,7 @@ class Dbas(object):
 
 		discussion_dict = _qh.prepare_discussion_dict(issue, lang, at_start=True)
 		item_dict       = _qh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang)
-		extras_dict     = _qh.prepare_extras_dict(issue_dict['slug'], True, True, True, False, self.request.authenticated_userid)
+		extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -345,7 +345,14 @@ class Dbas(object):
 			logger('discussion_justify', 'def', 'justifying position')
 			discussion_dict = _qh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify=True, is_supportive=supportive)
 			item_dict       = _qh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, lang)
-			extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, self.request.authenticated_userid)
+			extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, self.request.authenticated_userid, True)
+
+			# is the discussion at the end?
+			if len(item_dict) == 0:
+				# TODO HANDLE DISCUSSION END ; NO PREMISE
+				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify=True)
+
+
 		elif 'd' in mode and relation == '':
 			# dont know
 			logger('discussion_justify', 'def', 'dont know position')
@@ -353,12 +360,25 @@ class Dbas(object):
 			discussion_dict = _qh.prepare_discussion_dict(argument_uid, lang, at_dont_know=True, is_supportive=supportive)
 			item_dict       = _qh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, lang)
 			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, self.request.authenticated_userid)
+
+			# is the discussion at the end?
+			if len(item_dict) == 0:
+				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_dont_know=True)
+
+
 		else:
 			# justifying argument
 			logger('discussion_justify', 'def', 'argument stuff')
-			discussion_dict = _qh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify_argumentation=True, is_supportive=supportive, attack=relation )
+			is_attack = True if [c for c in ('undermine','rebut','undercut') if c in relation] else False
+			discussion_dict = _qh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify_argumentation=True,
+			                                              is_supportive=supportive, attack=relation,
+			                                              logged_in=self.request.authenticated_userid)
 			item_dict       = _qh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, lang)
-			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, self.request.authenticated_userid)
+			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, self.request.authenticated_userid, is_attack)
+
+			# is the discussion at the end?
+			if len(item_dict) == 0:
+				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
 
 		return {
 			'layout': self.base_layout(),
