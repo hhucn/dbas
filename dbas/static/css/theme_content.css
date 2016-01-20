@@ -203,6 +203,10 @@
 	background-repeat: no-repeat;
 }
 
+#discussion-sidebar{
+	text-align: right;
+}
+
 @media (max-width: 767px) {
 	#discussions-space ul {
 		display: block;

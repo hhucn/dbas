@@ -259,8 +259,6 @@ class DatabaseHelper(object):
 		# get attack
 		key = 'reason'
 
-		# todo preselection of answers
-
 		status = '1'
 		if 'undermine' in relation.lower():
 			logger('DatabaseHelper', 'get_reply_confrontations_response', 'undermine')
@@ -363,7 +361,7 @@ class DatabaseHelper(object):
 		# todo for  premise groups
 		return self.get_logfile_for_statement(db_premises.statement_uid, issue)
 
-	def get_everything_for_island_view(self, arg_uid, lang, issue):
+	def get_everything_for_island_view(self, arg_uid, lang):
 		"""
 
 		:param arg_uid:
@@ -377,29 +375,29 @@ class DatabaseHelper(object):
 		return_dict = {}
 
 		# everything for or against the premise
-		args = qh.get_undermines_for_argument_uid('undermines', arg_uid, issue)
+		args = qh.get_undermines_for_argument_uid('undermines', arg_uid)
 		counter.append(len(args) if args else 0)
 		return_dict.update(args if args else {'undermines': 0})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' undermines')
 
-		args = qh.get_supports_for_argument_uid('supports', arg_uid, issue)
+		args = qh.get_supports_for_argument_uid('supports', arg_uid)
 		counter.append(len(args) if args else 0)
 		return_dict.update(args if args else {'supports': 0})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' supports')
 
 		# everything for or against the relation
-		args = qh.get_undercuts_for_argument_uid('undercuts', arg_uid, issue)
+		args = qh.get_undercuts_for_argument_uid('undercuts', arg_uid)
 		counter.append(len(args) if args else 0)
 		return_dict.update(args if args else {'undercuts': 0})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' undercuts')
 
-		args = qh.get_overbids_for_argument_uid('overbids', arg_uid, issue)
+		args = qh.get_overbids_for_argument_uid('overbids', arg_uid)
 		counter.append(len(args) if args else 0)
 		return_dict.update(args if args else {'overbids': 0})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' overbids')
 
 		# everything for or against the conclusion
-		args = qh.get_rebuts_for_argument_uid('rebuts', arg_uid, issue)
+		args = qh.get_rebuts_for_argument_uid('rebuts', arg_uid)
 		counter.append(len(args) if args else 0)
 		return_dict.update(args if args else {'rebuts': 0})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' rebuts')
@@ -416,6 +414,7 @@ class DatabaseHelper(object):
 			if db_argument.conclusion_uid != 0 else \
 			qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
 		return_dict['argument'] = qh.get_text_for_argument_uid(arg_uid, lang)
+
 		return return_dict
 
 	def set_statement(self, transaction, statement, user, is_start, issue):

@@ -7,6 +7,7 @@ from slugify import slugify
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History, Vote, Issue
 from .logger import logger
+from .recommender_system import RecommenderHelper
 from .strings import Translator, TextGenerator
 from .user_management import UserHandler
 
@@ -349,7 +350,7 @@ class QueryHelper(object):
 		text, uids = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 		return text, uids
 
-	def get_undermines_for_premises(self, key, premises_as_statements_uid, issue):
+	def get_undermines_for_premises(self, key, premises_as_statements_uid):
 		"""
 
 		:param premises_as_statements_uid:
@@ -363,13 +364,11 @@ class QueryHelper(object):
 		given_undermines = set()
 		for s_uid in premises_as_statements_uid:
 			logger('QueryHelper', 'get_undermines_for_premises', 'db_undermine against Argument.conclusion_uid=='+str(s_uid))
-			db_undermine = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==False, Argument.conclusion_uid==s_uid, Argument.issue_uid==issue
-			                                                               )).all()
+			db_undermine = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==False, Argument.conclusion_uid==s_uid)).all()
 			for undermine in db_undermine:
 				if undermine.premisesGroup_uid not in given_undermines:
 					given_undermines.add(undermine.premisesGroup_uid)
-					db_undermine_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==undermine.premisesGroup_uid,
-				                                                                       Premise.issue_uid==issue)).first()
+					db_undermine_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=undermine.premisesGroup_uid).first()
 					logger('QueryHelper', 'get_undermines_for_premises', 'found db_undermine ' + str(undermine.uid))
 					return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(undermine.premisesGroup_uid)
 					return_dict[key + str(index) + 'id'] = undermine.premisesGroup_uid
@@ -379,7 +378,7 @@ class QueryHelper(object):
 		return_dict[key] = str(index)
 		return return_dict
 
-	def get_undermines_for_argument_uid(self, key, argument_uid, issue):
+	def get_undermines_for_argument_uid(self, key, argument_uid):
 		"""
 		Calls get_undermines_for_premises('reason', premises_as_statements_uid)
 		:param argument_uid: uid of the specified argument
@@ -387,11 +386,10 @@ class QueryHelper(object):
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(argument_uid))
-		db_attacked_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==argument_uid,
-		                                                                       Argument.issue_uid==issue)).first()
-		db_attacked_premises = DBDiscussionSession.query(Premise).filter(and_(
-			Premise.premisesGroup_uid==db_attacked_argument.premisesGroup_uid, Premise.issue_uid==issue)).order_by(
-			Premise.premisesGroup_uid.desc()).all()
+		db_attacked_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		db_attacked_premises = DBDiscussionSession.query(Premise).filter_by(
+				premisesGroup_uid=db_attacked_argument.premisesGroup_uid).order_by(
+				Premise.premisesGroup_uid.desc()).all()
 
 		premises_as_statements_uid = set()
 		for premise in db_attacked_premises:
@@ -402,9 +400,9 @@ class QueryHelper(object):
 		if len(premises_as_statements_uid) == 0:
 			return None
 
-		return self.get_undermines_for_premises(key, premises_as_statements_uid, issue)
+		return self.get_undermines_for_premises(key, premises_as_statements_uid)
 
-	def get_overbids_for_argument_uid(self, key, argument_uid, issue):
+	def get_overbids_for_argument_uid(self, key, argument_uid):
 		"""
 		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, True)
 		:param argument_uid: uid of the specified argument
@@ -412,9 +410,9 @@ class QueryHelper(object):
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_overbids_for_argument_uid', 'main')
-		return self.get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, True, issue)
+		return self.get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, True)
 
-	def get_undercuts_for_argument_uid(self, key, argument_uid, issue):
+	def get_undercuts_for_argument_uid(self, key, argument_uid):
 		"""
 		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, False)
 		:param argument_uid:
@@ -423,9 +421,9 @@ class QueryHelper(object):
 		:return:
 		"""
 		logger('QueryHelper', 'get_undercuts_for_argument_uid', 'main')
-		return self.get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, False, issue)
+		return self.get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, False)
 
-	def get_rebuts_for_arguments_conclusion_uid(self, key, conclusion_statements_uid, is_current_argument_supportive, issue):
+	def get_rebuts_for_arguments_conclusion_uid(self, key, conclusion_statements_uid, is_current_argument_supportive):
 		"""
 
 		:param key:
@@ -440,13 +438,11 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' + str(conclusion_statements_uid)
 		       + ', is_current_argument_supportive ' + str(is_current_argument_supportive) + ' (searching for the opposite)')
 		db_rebut = DBDiscussionSession.query(Argument).filter(Argument.isSupportive==(not is_current_argument_supportive),
-		                                                      Argument.conclusion_uid==conclusion_statements_uid,
-		                                                      Argument.issue_uid==issue).all()
+		                                                      Argument.conclusion_uid==conclusion_statements_uid).all()
 		for rebut in db_rebut:
 			if rebut.premisesGroup_uid not in given_rebuts:
 				given_rebuts.add(rebut.premisesGroup_uid)
-				db_rebut_premises = DBDiscussionSession.query(Premise).filter(and_(
-					Premise.premisesGroup_uid==rebut.premisesGroup_uid, Premise.issue_uid==issue)).first()
+				db_rebut_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=rebut.premisesGroup_uid).first()
 				logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
 				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(rebut.premisesGroup_uid)
 				return_dict[key + str(index) + 'id'] = rebut.premisesGroup_uid
@@ -456,7 +452,7 @@ class QueryHelper(object):
 		return_dict[key] = str(len(db_rebut))
 		return return_dict
 
-	def get_rebuts_for_argument_uid(self, key, argument_uid, issue):
+	def get_rebuts_for_argument_uid(self, key, argument_uid):
 		"""
 		Calls self.get_rebuts_for_arguments_conclusion_uid('reason', Argument.conclusion_uid)
 		:param argument_uid: uid of the specified argument
@@ -464,39 +460,35 @@ class QueryHelper(object):
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_rebuts_for_argument_uid', 'main')
-		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==int(argument_uid), Argument.issue_uid==issue)).first()
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 		if not db_argument:
 			return None
-		return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid, db_argument.isSupportive, issue)
+		return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid, db_argument.isSupportive)
 
-	def get_supports_for_argument_uid(self, key, argument_uid, issue):
+	def get_supports_for_argument_uid(self, key, argument_uid):
 		"""
 
 		:param argument_uid: uid of the specified argument
 		:return: dictionary
 		"""
-		logger('QueryHelper', 'get_supports_for_argument_uid', 'main')
+		logger('QueryHelper', 'get_supporRects_for_argument_uid', 'main')
 
 		return_dict = {}
 		given_supports = set()
 		index = 0
-		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==argument_uid, Argument.issue_uid==issue)).join(
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).join(
 			PremiseGroup).first()
-		db_arguments_premises = DBDiscussionSession.query(Premise).filter(and_(
-			Premise.premisesGroup_uid==db_argument.premisesGroup_uid, Premise.issue_uid==issue)).all()
+		db_arguments_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=db_argument.premisesGroup_uid).all()
 
 		for arguments_premises in db_arguments_premises:
 			db_supports = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==arguments_premises.statement_uid,
-			                                                              Argument.isSupportive==True,
-			                                                              Argument.issue_uid==issue)).join(PremiseGroup).all()
+			                                                              Argument.isSupportive==True)).join(PremiseGroup).all()
 			if not db_supports:
 				continue
 
 			for support in db_supports:
 				if support.premisesGroup_uid not in given_supports:
-					db_support_premises = DBDiscussionSession.query(Premise).filter(and_(
-						Premise.premisesGroup_uid==support.premisesGroup_uid,
-						Premise.issue_uid==issue)).first()
+					db_support_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=support.premisesGroup_uid).first()
 					return_dict[key + str(index)], trash = self.get_text_for_premisesGroup_uid(support.premisesGroup_uid)
 					return_dict[key + str(index) + 'id'] = support.premisesGroup_uid
 					return_dict[key + str(index) + '_statement_id'] = db_support_premises.statement_uid
@@ -507,7 +499,7 @@ class QueryHelper(object):
 
 		return None if len(return_dict) == 0 else return_dict
 
-	def get_attack_or_support_for_justification_of_argument_uid(self, key, argument_uid, is_supportive, issue):
+	def get_attack_or_support_for_justification_of_argument_uid(self, key, argument_uid, is_supportive):
 		"""
 
 		:param key:
@@ -521,7 +513,7 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 		       'db_undercut against Argument.argument_uid=='+str(argument_uid))
 		db_relation = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==is_supportive,
-		                                                         Argument.argument_uid==argument_uid, Argument.issue_uid==issue)).all()#
+		                                                              Argument.argument_uid==argument_uid)).all()
 		given_relations = set()
 
 		if not db_relation:
@@ -530,8 +522,7 @@ class QueryHelper(object):
 		for relation in db_relation:
 			if relation.premisesGroup_uid not in given_relations:
 				given_relations.add(relation.premisesGroup_uid)
-				db_relation_premises = DBDiscussionSession.query(Premise).filter(and_(
-					Premise.premisesGroup_uid==relation.premisesGroup_uid, Premise.issue_uid==issue)).first()
+				db_relation_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=relation.premisesGroup_uid).first()
 				logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 						'found relation, argument uid ' + str(relation.uid))
 				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(relation.premisesGroup_uid)
@@ -618,11 +609,10 @@ class QueryHelper(object):
 		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=id).first()
 		return self.sql_timestamp_pretty_print(str(db_issue.date), lang) if db_issue else 'none'
 
-	def prepare_json_of_issue(self, id, url, lang):
+	def prepare_json_of_issue(self, id, lang):
 		"""
 		Prepares slug, info, argument count and the date of the issue as dict
 		:param id: Issue.uid
-		:param url: webservers discussion url
 		:param lang: String
 		:return: dict()
 		"""
@@ -638,7 +628,7 @@ class QueryHelper(object):
 			issue_dict = dict()
 			issue_dict['slug'] = issue.get_slug()
 			issue_dict['title'] = issue.title
-			issue_dict['url'] = 'location.href="' + url + issue.get_slug() + '"'
+			issue_dict['url'] = UrlManager(issue.get_slug()).get_slug_url(True)
 			issue_dict['info'] = issue.info
 			issue_dict['arg_count'] = self.get_number_of_arguments(issue.uid)
 			issue_dict['date'] = self.sql_timestamp_pretty_print(str(issue.date), lang)
@@ -648,32 +638,67 @@ class QueryHelper(object):
 		return {'slug': slug, 'info': info, 'title': title, 'id': id, 'arg_count': arg_count, 'date': date, 'all': all_array}
 
 	def prepare_discussion_dict(self, uid, lang, at_start=False, at_attitude=False, at_justify=False,
-	                            is_supportive=False, at_argumentation=False):
+	                            is_supportive=False, at_dont_know=False, at_argumentation=False,
+	                            at_justify_argumentation=False, additional_id=0, attack=''):
 		"""
 
-		:param uid: Some uid
+		:param uid:
 		:param lang:
+		:param at_start:
+		:param at_attitude:
+		:param at_justify:
+		:param is_supportive:
+		:param at_dont_know:
+		:param at_argumentation:
+		:param additional_id:
+		:param attack:
 		:return:
 		"""
 		_tn = Translator(lang)
 		heading = ''
 		if at_start:
-			heading = _tn.get(_tn.initialPositionInterest)
+			heading         = _tn.get(_tn.initialPositionInterest)
+
 		elif at_attitude:
-			text = self.get_text_for_statement_uid(uid)
-			heading = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
+			text            = self.get_text_for_statement_uid(uid)
+			heading         = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
+
 		elif at_justify:
-			text = self.get_text_for_statement_uid(uid)
-			heading = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
-			          + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
+			text            = self.get_text_for_statement_uid(uid)
+			heading         = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
+			                + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
+
+		elif at_justify_argumentation:
+			_tg = TextGenerator(lang)
+			db_argument     = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+			confrontation   = self.get_text_for_argument_uid(uid, lang)
+			premise, tmp    = self.get_text_for_premisesGroup_uid(uid)
+			conclusion      = self.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
+				else self.get_text_for_argument_uid(db_argument.argument_uid)
+			user            = True
+			heading         = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, user)
+
+		elif at_dont_know:
+			text            = self.get_text_for_argument_uid(uid, lang)
+			heading         = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
+			                + '</strong>. ' + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
+
 		elif at_argumentation:
-			text = self.get_text_for_argument_uid(uid, lang)
-			heading = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
-			          + '</strong> ' + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
+			_tg                 = TextGenerator(lang)
+			db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+			premise, tmp        = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
+			conclusion          = self.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
+				else self.get_text_for_argument_uid(db_argument.argument_uid)
+			confrontation       = self.get_text_for_argument_uid(additional_id, lang)
+
+			reply_for_argument  = True
+			current_argument    = self.get_text_for_argument_uid(uid, lang)
+			heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
+			                                                     confrontation, reply_for_argument, current_argument)
 
 		return {'heading': heading}
 
-	def prepare_item_dict_for_start(self, issue_uid, url, logged_in, lang):
+	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang):
 		"""
 
 		:param issue_uid:
@@ -687,13 +712,15 @@ class QueryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
 		statements_array = []
+		_um = UrlManager(slug)
+
 		if db_statements:
 			for statement in db_statements:
 				statement_dict = dict()
 				statement_dict['id'] = statement.uid
 				statement_dict['title'] = self.get_text_for_statement_uid(statement.uid)
 				statement_dict['attitude'] = ''
-				statement_dict['url'] = 'location.href="' + url + slug + '/a/' + str(statement.uid) + '"'
+				statement_dict['url'] = _um.get_url_for_statement_attitude(True, statement.uid)
 				statements_array.append(statement_dict)
 
 			if logged_in:
@@ -707,7 +734,7 @@ class QueryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_attitude(self, statement_uid, issue_uid, url, lang):
+	def prepare_item_dict_for_attitude(self, statement_uid, issue_uid, lang):
 		"""
 
 		:param statement_uid:
@@ -720,37 +747,38 @@ class QueryHelper(object):
 		text = self.get_text_for_statement_uid(statement_uid)
 		text = text[0:1].lower() + text[1:]
 		statements_array = []
+		_um = UrlManager(slug)
 
 		_tn = Translator(lang)
 		statement_dict = dict()
 		statement_dict['id'] = 'agree'
 		statement_dict['title'] = _tn.get(_tn.iAgreeWithInColor) + ' ' + text
 		statement_dict['attitude'] = 'agree'
-		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(statement_uid) + '/t"'
+		statement_dict['url'] = _um.get_url_for_justifying_statement(True, statement_uid, 't')
 		statements_array.append(statement_dict)
 
 		statement_dict = dict()
 		statement_dict['id'] = 'disagree'
 		statement_dict['title'] = _tn.get(_tn.iDisagreeWithInColor) + ' ' + text
 		statement_dict['attitude'] = 'disagree'
-		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(statement_uid) + '/f"'
+		statement_dict['url'] = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
 		statements_array.append(statement_dict)
 
 		statement_dict = dict()
 		statement_dict['id'] = 'dontknow'
 		statement_dict['title'] = _tn.get(_tn.iDoNotKnowInColor) + ' ' + text
 		statement_dict['attitude'] = 'dontknow'
-		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(statement_uid) + '/d"'
+		statement_dict['url'] = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
 		statements_array.append(statement_dict)
 
 		return statements_array
 
-	def prepare_item_dict_for_justify(self, statement_uid, isSupportive, issue_uid, url, lang):
+	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, isSupportive, lang):
 		"""
 
 		:param statement_uid:
+		:param issue_uid:
 		:param isSupportive:
-		:param url:
 		:param lang:
 		:return:
 		"""
@@ -760,16 +788,21 @@ class QueryHelper(object):
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
 		                                                               Argument.conclusion_uid==statement_uid)).all()
 
+		_um = UrlManager(slug)
+
 		if db_arguments:
 			for argument in db_arguments:
 				text, tmp = self.get_text_for_premisesGroup_uid(argument.premisesGroup_uid)
 				text = text[0:1].lower() + text[1:]
 
+				# get attack for each premise, so the urls will be unique
+				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument.uid, issue_uid, self)
+
 				statement_dict = dict()
 				statement_dict['id'] = str(argument.uid)
 				statement_dict['title'] = _tn.get(_tn.because) + ' ' + text
 				statement_dict['attitude'] = 'justify'
-				statement_dict['url'] = 'location.href="' + url + slug + '/r/' + str(argument.uid) + '/t/"'
+				statement_dict['url'] = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(statement_dict)
 
 			statement_dict = dict()
@@ -781,75 +814,127 @@ class QueryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, url, lang):
+	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, isSupportive, lang):
+		"""
+
+		:param argument_uid:
+		:param attack_type:
+		:param issue_uid:
+		:param lang:
+		:return:
+		"""
+		statements_array = []
+		_tn = Translator(lang)
+		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+
+		db_arguments = []
+		if attack_type == 'undermine':
+			db_premisses = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=db_argument.premisesGroup_uid).all()
+			for premise in db_premisses:
+				arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==premise.statement_uid, Argument.isSupportive==False)).all()
+				db_arguments = db_arguments + arguments
+
+		elif attack_type == 'undercut':
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid==argument_uid, Argument.isSupportive==False)).all()
+
+		elif attack_type == 'overbid':
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid==argument_uid, Argument.isSupportive==True)).all()
+
+		elif attack_type == 'rebut':
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_argument.conclusion_uid, Argument.isSupportive==False)).all()
+
+		mode = 't' if isSupportive else 'f'
+		_um = UrlManager(slug)
+
+		if db_arguments:
+			for argument in db_arguments:
+				text, tmp = self.get_text_for_premisesGroup_uid(argument.premisesGroup_uid)
+				text = text[0:1].lower() + text[1:]
+
+				# for each justifying premise, we need a new confrontation:
+				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self)
+
+				statement_dict = dict()
+				statement_dict['id'] = str(argument.uid)
+				statement_dict['title'] = _tn.get(_tn.because) + ' ' + text
+				statement_dict['attitude'] = 'justify'
+				statement_dict['url'] = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
+				statements_array.append(statement_dict)
+
+			statement_dict = dict()
+			statement_dict['id'] = '0'
+			statement_dict['title'] = _tn.get(_tn.newPremiseRadioButtonText)
+			statement_dict['attitude'] = 'justify'
+			statement_dict['url'] = 'null'
+			statements_array.append(statement_dict)
+
+		return statements_array
+
+	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, lang):
+		"""
+
+		:param argument_uid:
+		:param isSupportive:
+		:param issue_uid:
+		:param lang:
+		:return:
+		"""
 		_tg = TextGenerator(lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 
-		conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
+		if db_argument.argument_uid == 0:
+			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
+		else:
+			conclusion = self.get_text_for_argument_uid(db_argument.argument_uid, lang)
 		premise, tmp = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
 		premise = premise[0:1].lower() + premise[1:]
 		ret_dict = _tg.get_relation_text_dict_without_confrontation(conclusion, premise, False)
-		abbr = 't' if isSupportive else 't'
+		mode = 't' if isSupportive else 't'
 		statements_array = []
+		_um = UrlManager(slug)
 
-		statement_dict = dict()
-		statement_dict['id'] = 'undermine'
-		statement_dict['title'] = ret_dict['undermine_text']
-		statement_dict['attitude'] = 'undermine'
-		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(argument_uid) + '/' + abbr + '/undermine"'
-		statements_array.append(statement_dict)
-
-		statement_dict = dict()
-		statement_dict['id'] = 'support'
-		statement_dict['title'] = ret_dict['support_text']
-		statement_dict['attitude'] = 'support'
-		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(argument_uid) + '/' + abbr + '/support"'
-		statements_array.append(statement_dict)
-
-		statement_dict = dict()
-		statement_dict['id'] = 'undercut'
-		statement_dict['title'] = ret_dict['undercut_text']
-		statement_dict['attitude'] = 'undercut'
-		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(argument_uid) + '/' + abbr + '/undercut"'
-		statements_array.append(statement_dict)
-
-		statement_dict = dict()
-		statement_dict['id'] = 'overbid'
-		statement_dict['title'] = ret_dict['overbid_text']
-		statement_dict['attitude'] = 'overbid'
-		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(argument_uid) + '/' + abbr + '/overbid"'
-		statements_array.append(statement_dict)
-
-		statement_dict = dict()
-		statement_dict['id'] = 'rebut'
-		statement_dict['title'] = ret_dict['rebut_text']
-		statement_dict['attitude'] = 'rebut'
-		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(argument_uid) + '/' + abbr + '/rebut"'
-		statements_array.append(statement_dict)
-
-		statement_dict = dict()
-		statement_dict['id'] = 'no_opinion'
-		statement_dict['title'] = ret_dict['no_opinion_text']
-		statement_dict['attitude'] = 'no_opinion'
-		statement_dict['url'] = 'location.href="' + url + slug + '/j/' + str(argument_uid) + '/' + abbr + '/no_opinion"'
-		statements_array.append(statement_dict)
+		types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
+		for t in types:
+			statement_dict = dict()
+			statement_dict['id'] = t
+			statement_dict['title'] = ret_dict[t + '_text']
+			statement_dict['attitude'] = t
+			# special case, when the user selectes the support, because this does not need to be justified!
+			if t == 'support':
+				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self)
+				statement_dict['url'] = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
+			else:
+				statement_dict['url'] = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else ''
+			statements_array.append(statement_dict)
 
 		return statements_array
 
 
-	def prepare_extras_dict(self, discussion_url, current_slug, is_editable, is_reportable, show_bar_icon, is_logged_in):
+	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, authenticated_userid):
 		"""
 
 		:param current_slug:
+		:param is_editable:
+		:param is_reportable:
+		:param show_bar_icon:
+		:param is_logged_in:
 		:return:
 		"""
-		return {'restart_url': 'location.href="' + discussion_url + current_slug + '"',
+		_uh = UserHandler()
+		is_logged_in = _uh.is_user_logged_in(authenticated_userid)
+		is_admin     = _uh.is_user_admin(authenticated_userid)
+
+		return {'restart_url': UrlManager(current_slug).get_slug_url(True),
 		        'is_editable': is_editable and is_logged_in,
 		        'is_reportable': is_reportable,
-		        'show_bar_icon': show_bar_icon}
+		        'is_admin': is_admin,
+		        'logged_in': authenticated_userid,
+		        'show_bar_icon': show_bar_icon,
+		        'show_display_style': show_display_styles}
 
 	def get_language(self, request, current_registry):
 		"""
@@ -905,3 +990,65 @@ class QueryHelper(object):
 		time = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
 
 		return time.strftime(format)
+
+
+class UrlManager(object):
+
+	def __init__(self, slug=''):
+		self.url = 'http://localhost:4284/'
+		self.discussion_url = self.url + 'a/'
+		self.slug = slug
+
+	def get_slug_url(self, as_location_href):
+		"""
+
+		:param as_location_href:
+		:return:
+		"""
+		url = self.discussion_url + (self.slug if self.slug != '' else '')
+		return 'location.href="' + url + '"' if as_location_href else url
+
+	def get_url_for_statement_attitude(self, as_location_href, statement_uid):
+		"""
+
+		:param as_location_href:
+		:return: discussion_url/slug/a/statement_uid
+		"""
+		url = self.discussion_url +  self.slug + '/a/' + str(statement_uid)
+		return 'location.href="' + url + '"' if as_location_href else url
+
+	def get_url_for_justifying_statement(self, as_location_href, statement_uid, mode):
+		"""
+
+		:param as_location_href:
+		:param statement_uid:
+		:param mode:
+		:return:
+		"""
+		url = self.discussion_url +  self.slug + '/j/' + str(statement_uid) + '/' + mode
+		return 'location.href="' + url + '"' if as_location_href else url
+
+	def get_url_for_justifying_argument(self, as_location_href, argument_uid, mode, attitude):
+		"""
+
+		:param as_location_href:
+		:param argument_uid:
+		:param mode:
+		:param attitude:
+		:return:
+		"""
+		url = self.discussion_url +  self.slug + '/j/' + str(argument_uid) + '/' + mode + '/' + attitude
+		return 'location.href="' + url + '"' if as_location_href else url
+
+	def get_url_for_reaction_on_argument(self, as_location_href, argument_uid, mode, confrontation_argument):
+		"""
+
+		:param as_location_href:
+		:param argument_uid:
+		:param mode: 't' on supportive, 'f' otherwise
+		:param confrontation_argument:
+		:return:
+		"""
+		url = self.discussion_url + self.slug + '/r/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
+		return 'location.href="' + url + '"' if as_location_href else url
+

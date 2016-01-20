@@ -46,7 +46,7 @@
 						</a>
 					</li>
 
-					<li id="login-link" tal:condition="not:logged_in">
+					<li id="login-link" tal:condition="not:extras.logged_in">
 						<!--
 						<a href="${request.application_url}/login" title="Login">
 						-->
@@ -55,10 +55,10 @@
 						</a>
 					</li>
 
-					<li tal:condition="logged_in" class="dropdown">
+					<li tal:condition="extras.logged_in" class="dropdown">
 						<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" title="User options">
 							<img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
-							<span tal:replace="logged_in" />
+							<span tal:replace="extras.logged_in" />
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">

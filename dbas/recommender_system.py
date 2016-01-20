@@ -4,9 +4,8 @@ from sqlalchemy import and_
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Premise, User, Track, Statement
-from .query_helper import QueryHelper
 from .logger import logger
-from .tracking_helper import TrackingHelper
+#from .tracking_helper import TrackingHelper
 from .dictionary_helper import DictionaryHelper
 
 # @author Tobias Krauthoff
@@ -59,7 +58,7 @@ class RecommenderHelper(object):
 			attacks = None
 			key = ''
 		else:
-			attacks, key = self.__get_attack_for_argument_by_random(db_argument, user, issue)
+			attacks, key = self.__get_attack_for_argument_by_random_old(db_argument, user, issue)
 			return_dict['attack'] = key
 
 		status = 1
@@ -76,8 +75,8 @@ class RecommenderHelper(object):
 			return_dict['argument_uid'] = str(db_argument.uid)
 
 			# save the attack
-			TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
-			                                     qh.get_relation_uid_by_name(key), 0, session_id)
+			#TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
+			#                                     qh.get_relation_uid_by_name(key), 0, session_id)
 
 		return return_dict, status
 
@@ -144,7 +143,7 @@ class RecommenderHelper(object):
 		return_dict['relation'] = id_text.split('_')[0]
 
 		# getting undermines or undercuts or rebuts
-		attacks, key = self.__get_attack_for_argument_by_random(db_argument, user, issue)
+		attacks, key = self.__get_attack_for_argument_by_random_old(db_argument, user, issue)
 		return_dict['attack'] = key
 
 		status = 1
@@ -160,13 +159,28 @@ class RecommenderHelper(object):
 			return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
 
 			# save the attack
-			TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
-			                                     qh.get_relation_uid_by_name(key), 0, session_id)
+			#TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
+			#                                     qh.get_relation_uid_by_name(key), 0, session_id)
 
 		logger('RecommenderHelper', 'get_attack_for_argument_by_ids_argument', str(return_dict))
 		return return_dict, status
 
-	def get_attack_for_argument(self, transaction, user, id_text, pgroup_id, session_id, issue):
+	def get_attack_for_argument(self, argument_uid, issue, queryHelper=None):
+		# getting undermines or undercuts or rebuts
+		attacks, key = self.__get_attack_for_argument_by_random(argument_uid, issue, queryHelper)
+
+		if not attacks or int(attacks[key]) == 0:
+			logger('RecommenderHelper', 'get_attack_for_argument_old', 'there is no attack!')
+			return 0, ''
+		else:
+			attack_no = str(random.randrange(0, int(attacks[key]))) # Todo fix random
+			# return_dict['confrontation'] = attacks[key + str(attack_no)]
+			# return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
+			# return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
+
+			return attacks[key + str(attack_no) + '_argument_id'], key
+
+	def get_attack_for_argument_old(self, transaction, user, id_text, pgroup_id, session_id, issue):
 		"""
 		Returns an attack, if the id_text should refer to an argument and not skips the justification part
 		:param transaction: current transaction
@@ -178,7 +192,7 @@ class RecommenderHelper(object):
 		:return: dict()
 		"""
 
-		logger('RecommenderHelper', 'get_attack_for_argument', 'main')
+		logger('RecommenderHelper', 'get_attack_for_argument_old', 'main')
 
 		qh = QueryHelper()
 		splitted_id = id_text.split('_')
@@ -186,17 +200,17 @@ class RecommenderHelper(object):
 		premisesgroup_uid = splitted_id[2]
 		no_attacked_argument = False
 
-		logger('RecommenderHelper', 'get_attack_for_argument', 'relation: ' + relation
+		logger('RecommenderHelper', 'get_attack_for_argument_old', 'relation: ' + relation
 		       + ', premisesgroup_uid: ' + premisesgroup_uid
 		       + ', issue: ' + str(issue))
 
 		# get latest conclusion
-		logger('RecommenderHelper', 'get_attack_for_argument', 'get last premisesGroup_uid: ' + str(pgroup_id) + ', issue: ' + str(issue))
+		logger('RecommenderHelper', 'get_attack_for_argument_old', 'get last premisesGroup_uid: ' + str(pgroup_id) + ', issue: ' + str(issue))
 		db_last_conclusion = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==pgroup_id,
 		                                                                    Premise.issue_uid==issue)).first()
 
 		# get the non supportive argument
-		logger('RecommenderHelper', 'get_attack_for_argument', 'get the non supportive argument: conclusion_uid=' +
+		logger('RecommenderHelper', 'get_attack_for_argument_old', 'get the non supportive argument: conclusion_uid=' +
 		       str(db_last_conclusion.statement_uid) + ', premisesGroup_uid=' + premisesgroup_uid + ', isSupportive==False')
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
 		                                                              Argument.premisesGroup_uid==int(premisesgroup_uid),
@@ -204,8 +218,8 @@ class RecommenderHelper(object):
 
 		# maybe there is no argument, whoch is not-supportive
 		if not db_argument:
-			logger('RecommenderHelper', 'get_attack_for_argument', 'no suitable non supportive argument')
-			logger('RecommenderHelper', 'get_attack_for_argument', 'new try: conclusion_uid: ' +  str(db_last_conclusion.statement_uid)
+			logger('RecommenderHelper', 'get_attack_for_argument_old', 'no suitable non supportive argument')
+			logger('RecommenderHelper', 'get_attack_for_argument_old', 'new try: conclusion_uid: ' +  str(db_last_conclusion.statement_uid)
 			       + ', premisesGroup_uid: ' +  str(premisesgroup_uid) + ', issue_uid: ' +  str(issue))
 			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_last_conclusion.statement_uid,
 			                                                              Argument.premisesGroup_uid==int(premisesgroup_uid),
@@ -222,35 +236,66 @@ class RecommenderHelper(object):
 
 		# if there as no non-supportive argument, let's get back
 		if no_attacked_argument:
-			logger('RecommenderHelper', 'get_attack_for_argument', 'no_attacked_argument, so return')
+			logger('RecommenderHelper', 'get_attack_for_argument_old', 'no_attacked_argument, so return')
 			return return_dict, 0
 		else:
 			return_dict['argument_uid'] = db_argument.uid
 
 
 		# getting undermines or undercuts or rebuts
-		attacks, key = self.__get_attack_for_argument_by_random(db_argument, user, issue)
+		attacks, key = self.__get_attack_for_argument_by_random_old(db_argument, user, issue)
 		return_dict['attack'] = key
 
 		status = 1
 		if not attacks or int(attacks[key]) == 0:
-			logger('RecommenderHelper', 'get_attack_for_argument', 'there is no attack!')
+			logger('RecommenderHelper', 'get_attack_for_argument_old', 'there is no attack!')
 			status = 0
 		else:
 			attack_no = str(random.randrange(0, int(attacks[key]))) # Todo fix random
-			logger('RecommenderHelper', 'get_attack_for_argument', 'attack with ' + attacks[key + str(attack_no)])
-			logger('RecommenderHelper', 'get_attack_for_argument', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
+			logger('RecommenderHelper', 'get_attack_for_argument_old', 'attack with ' + attacks[key + str(attack_no)])
+			logger('RecommenderHelper', 'get_attack_for_argument_old', 'attack with pgroup ' + str(attacks[key + str(attack_no) + 'id']))
 			return_dict['confrontation'] = attacks[key + str(attack_no)]
 			return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
 			return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
 
 			# save the attack
-			TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
-			                                     qh.get_relation_uid_by_name(key), 0, session_id)
+			#TrackingHelper().save_track_for_user(transaction, user, 0, attacks[key + str(attack_no) + 'id'], db_argument.uid,
+			#                                     qh.get_relation_uid_by_name(key), 0, session_id)
 
 		return return_dict, status
 
-	def __get_attack_for_argument_by_random(self, db_argument, user, issue):
+	def __get_attack_for_argument_by_random(self, argument_uid, issue, queryHelper=None):
+		"""
+		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
+		Additionally returns id's of premises groups with [key + str(index) + 'id']
+		:param db_argument:
+		:param user:
+		:param issue:
+		:return: dict, key
+		"""
+
+		# 1 = undermine
+		# 2 = support
+		# 3 = undercut
+		# 4 = overbid
+		# 5 = rebut
+		# all possible attacks
+
+		complete_list_of_attacks = [1,3,5] # todo fix this, when overbid is killed
+		attacks = [1,3,5]
+
+		logger('RecommenderHelper', '__get_attack_for_argument_by_random_old', 'attack_list : ' + str(attacks))
+		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
+		return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, queryHelper)
+
+		# sanity check if we could not found an attack for a left attack in out set
+		if not return_dict and len(attacks) > 0:
+			logger('RecommenderHelper', '__get_attack_for_argument_by_random_old', 'no attack found, try to find an attack for any other left attack')
+			return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks, queryHelper)
+
+		return return_dict, key
+
+	def __get_attack_for_argument_by_random_old(self, db_argument, user, issue):
 		"""
 		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
 		Additionally returns id's of premises groups with [key + str(index) + 'id']
@@ -266,7 +311,7 @@ class RecommenderHelper(object):
 		# 4 = overbid
 		# 5 = rebut
 
-		logger('QueryHelper', '__get_attack_for_argument_by_random', 'user ' + (user if user else 'anonymous') + ', arg.uid ' + str(db_argument.uid))
+		logger('RecommenderHelper', '__get_attack_for_argument_by_random_old', 'user ' + (user if user else 'anonymous') + ', arg.uid ' + str(db_argument.uid))
 
 		# all possible attacks
 		complete_list_of_attacks = [1,3,5] # todo fix this, when overbid is killed
@@ -281,19 +326,19 @@ class RecommenderHelper(object):
 					if track.attacked_by_relation in attacks:
 						attacks.remove(track.attacked_by_relation)
 				# now attacks contains all attacks, which were not be done
-				logger('QueryHelper', '__get_attack_for_argument_by_random', 'attacks, which were not done yet ' + str(attacks))
+				logger('RecommenderHelper', '__get_attack_for_argument_by_random_old', 'attacks, which were not done yet ' + str(attacks))
 
-		logger('QueryHelper', '__get_attack_for_argument_by_random', 'attack_list : ' + str(attacks))
+		logger('RecommenderHelper', '__get_attack_for_argument_by_random_old', 'attack_list : ' + str(attacks))
 		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
 		return_dict, key = self.__get_attack_for_argument_by_random_in_range(db_argument.uid, attack_list, issue, complete_list_of_attacks)
 		# sanity check if we could not found an attack for a left attack in out set
 		if not return_dict and len(attacks) > 0:
-			logger('QueryHelper', '__get_attack_for_argument_by_random', 'no attack found, try to find an attack for any other left attack')
+			logger('RecommenderHelper', '__get_attack_for_argument_by_random_old', 'no attack found, try to find an attack for any other left attack')
 			return_dict, key = self.__get_attack_for_argument_by_random_in_range(db_argument.uid, [], issue, complete_list_of_attacks)
 
 		return return_dict, key
 
-	def __get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks):
+	def __get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks, queryHelper=None):
 		"""
 
 		:param argument_uid:
@@ -306,39 +351,41 @@ class RecommenderHelper(object):
 		key = ''
 		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
 		attack_found = False
-		qh = QueryHelper()
+		if not queryHelper:
+			from .query_helper import QueryHelper
+			queryHelper = QueryHelper()
 
-		logger('QueryHelper', '__get_attack_for_argument_by_random_in_range', 'attack_list : ' + str(attack_list))
-		logger('QueryHelper', '__get_attack_for_argument_by_random_in_range', 'complete_list_of_attacks : ' + str(complete_list_of_attacks))
-		logger('QueryHelper', '__get_attack_for_argument_by_random_in_range', 'left_attacks : ' + str(left_attacks))
+		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack_list : ' + str(attack_list))
+		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'complete_list_of_attacks : ' + str(complete_list_of_attacks))
+		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'left_attacks : ' + str(left_attacks))
 
 		# randomize at least 1, maximal 3 times for getting an attack
 		while len(attack_list) > 0:
 			attack = random.choice(attack_list)
 			attack_list.remove(attack)
-			logger('QueryHelper', '__get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
+			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
 			if attack == 1:
-				return_dict = qh.get_undermines_for_argument_uid('undermine', argument_uid, issue)
+				return_dict = queryHelper.get_undermines_for_argument_uid('undermine', argument_uid)
 				key = 'undermine'
 			elif attack == 5:
-				return_dict = qh.get_rebuts_for_argument_uid('rebut', argument_uid, issue)
+				return_dict = queryHelper.get_rebuts_for_argument_uid('rebut', argument_uid)
 				key = 'rebut'
 			else:
-				return_dict = qh.get_undercuts_for_argument_uid('undercut', argument_uid, issue)
+				return_dict = queryHelper.get_undercuts_for_argument_uid('undercut', argument_uid)
 				key = 'undercut'
 
 			if return_dict and int(return_dict[key]) != 0:
-				logger('QueryHelper', '__get_attack_for_argument_by_random_in_range', 'attack found')
+				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack found')
 				attack_found = True
 				break
 			else:
-				logger('QueryHelper', '__get_attack_for_argument_by_random_in_range', 'no attack found')
+				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attack found')
 
 		if len(left_attacks) > 0 and not attack_found:
-			logger('QueryHelper', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
+			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
 			return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks)
 		else:
-			logger('QueryHelper', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
+			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
 
 		return return_dict, key
 
@@ -353,7 +400,7 @@ class RecommenderHelper(object):
 		:param issue: current issue
 		:return: dictionary
 		"""
-		TrackingHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0, session_id)
+		#TrackingHelper().save_track_for_user(transaction, user, statement_uid, 0, 0, 0, 0, session_id)
 
 		return_dict = dict()
 		premises_dict = dict()
@@ -393,21 +440,25 @@ class RecommenderHelper(object):
 
 		return return_dict
 
-	def get_premise_for_statement(self, statement_uid, isSupportive):
+	def get_argument_by_conclusion(self, statement_uid, isSupportive):
 		"""
 
 		:param statement_uid:
 		:param isSupportive:
 		:return:
 		"""
+		logger('RecommenderHelper', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' + str(isSupportive))
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
 																Argument.conclusion_uid==statement_uid)).all()
+		logger('RecommenderHelper', 'get_argument_by_conclusion', 'found ' + str(len(db_arguments)) + ' arguments')
 		if db_arguments:
 			arguments = []
 			for argument in db_arguments:
 				arguments.append(argument.uid)
 			# get one random premise todo fix random
-			return arguments[random.randint(0, len(arguments))]
+			rnd = random.randint(0, len(arguments) - 1)
+			logger('RecommenderHelper', 'get_argument_by_conclusion', 'rnd ' + str(rnd))
+			return arguments[0 if len(arguments) == 1 else rnd]
 
 		else:
 			return 0
@@ -423,7 +474,7 @@ class RecommenderHelper(object):
 		:param issue: int
 		:return: dict()
 		"""
-		logger('RecommenderHelper', 'get_premise_for_statement', 'get all premisses: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' +
+		logger('RecommenderHelper', 'get_argument_by_conclusion', 'get all premisses: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' +
 		       str(issue))
 
 		return_dict = self.get_premises_for_statement(transaction, statement_uid, isSupportive, user, session_id, issue)
@@ -432,22 +483,22 @@ class RecommenderHelper(object):
 
 		premises_dict = return_dict['premises']
 		if len(premises_dict) == 0:
-			logger('RecommenderHelper', 'get_premise_for_statement', 'no premisses')
+			logger('RecommenderHelper', 'get_argument_by_conclusion', 'no premisses')
 			return_dict['premises'] = '0'
 		else:
-			logger('RecommenderHelper', 'get_premise_for_statement', 'found ' + str(len(premises_dict)) + ' premises')
+			logger('RecommenderHelper', 'get_argument_by_conclusion', 'found ' + str(len(premises_dict)) + ' premises')
 			rnd_element = random.choice(list(premises_dict.keys()))
-			logger('RecommenderHelper', 'get_premise_for_statement', 'rnd_element out of premise keys[' + str(list(premises_dict.keys())) + '] is ' + str(rnd_element))
+			logger('RecommenderHelper', 'get_argument_by_conclusion', 'rnd_element out of premise keys[' + str(list(premises_dict.keys())) + '] is ' + str(rnd_element))
 
 			return_dict['premises'] = premises_dict[rnd_element]
-			logger('RecommenderHelper', 'get_premise_for_statement', 'return random premise: ' + str(return_dict['premises']))
+			logger('RecommenderHelper', 'get_argument_by_conclusion', 'return random premise: ' + str(return_dict['premises']))
 
 			# current argument
 			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==rnd_element,
 		                                                              Argument.conclusion_uid==statement_uid)).first()
 			return_dict['argument_uid'] = db_argument.uid
 
-		logger('RecommenderHelper', 'get_premise_for_statement', 'return')
+		logger('RecommenderHelper', 'get_argument_by_conclusion', 'return')
 		return return_dict
 
 	def __evaluate_argument(self, argument_uid):

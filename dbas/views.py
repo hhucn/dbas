@@ -24,7 +24,7 @@ from .strings import Translator, TextGenerator
 from .string_matcher import FuzzyStringMatcher
 from .breadcrumb_helper import BreadcrumbHelper
 from .tracking_helper import TrackingHelper
-from .recommender_system import RecommenderHelper
+from .recommender_system import RecommenderHelper, RecommenderHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .weighting_helper import WeightingHelper
 
@@ -46,8 +46,6 @@ class Dbas(object):
 		"""
 		self.request = request
 		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
-		self.url = 'http://localhost:4284/'
-		self.discussion_url = self.url + 'a/'
 		logger('DBAS', 'MAIN', 'issue_fallback ' + str(issue_fallback))
 
 	def escape_string(self, text):
@@ -237,6 +235,7 @@ class Dbas(object):
 		}
 
 
+
 	# content page
 	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
 	def discussion_init(self):
@@ -244,34 +243,29 @@ class Dbas(object):
 		View configuration for the content view.
 		:return: dictionary
 		"""
+		#'/a*slug'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_init', 'def', 'main')
-		logger('discussion_init', 'def', 'self.request.matchdict: ' + str(self.request.matchdict))
+		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
 		# update timestamp
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		_qh = QueryHelper()
-		_uh = UserHandler()
 		slug = self.request.matchdict['slug'][0] if len(self.request.matchdict['slug'])>0 else ''
 
-		issue = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		lang = _qh.get_language(self.request, get_current_registry)
-		issue_dict = _qh.prepare_json_of_issue(issue, self.discussion_url, lang)
-		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
-		is_logged_in = UserHandler().is_user_logged_in(self.request.authenticated_userid)
+		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		lang            = _qh.get_language(self.request, get_current_registry)
+		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
 
 		discussion_dict = _qh.prepare_discussion_dict(issue, lang, at_start=True)
-		item_dict = _qh.prepare_item_dict_for_start(issue, self.discussion_url, self.request.authenticated_userid, lang)
-		extras_dict = _qh.prepare_extras_dict(self.discussion_url, issue_dict['slug'], True, True, True, is_logged_in)
+		item_dict       = _qh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang)
+		extras_dict     = _qh.prepare_extras_dict(issue_dict['slug'], True, True, True, False, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
 			'title': issue_dict['title'],
 			'project': header,
-			'logged_in': self.request.authenticated_userid, # TODO kann weg
-			'is_admin': is_admin,
 
 			'issue': issue_dict,
 			'discussion': discussion_dict,
@@ -286,35 +280,32 @@ class Dbas(object):
 		View configuration for the content view.
 		:return: dictionary
 		"""
+		# '/a/{slug}/a/{statement_id}'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_attitude', 'def', 'main')
-		logger('discussion_attitude', 'def', 'self.request.matchdict: ' + str(self.request.matchdict))
+		logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		matchdict = self.request.matchdict
 
 		# update timestamp
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		_qh = QueryHelper()
 		_uh = UserHandler()
-		slug = self.request.matchdict['slug'][0] if len(self.request.matchdict['slug'])>0 else ''
-		statement_id = self.request.matchdict['statement_id'][0] if 'statement_id' in self.request.matchdict else ''
+		slug            = matchdict['slug'] if 'slug' in matchdict['slug'] else ''
+		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
-		issue = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		lang = _qh.get_language(self.request, get_current_registry)
-		issue_dict = _qh.prepare_json_of_issue(issue, self.discussion_url, lang)
-		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
-		is_logged_in = UserHandler().is_user_logged_in(self.request.authenticated_userid)
+		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		lang            = _qh.get_language(self.request, get_current_registry)
+		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
 
 		discussion_dict = _qh.prepare_discussion_dict(statement_id, lang, at_attitude=True)
-		item_dict = _qh.prepare_item_dict_for_attitude(statement_id, issue, self.discussion_url, lang)
-		extras_dict = _qh.prepare_extras_dict(self.discussion_url, issue_dict['slug'], False, False, True, is_logged_in)
+		item_dict       = _qh.prepare_item_dict_for_attitude(statement_id, issue, lang)
+		extras_dict     = _qh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
 			'title': issue_dict['title'],
 			'project': header,
-			'logged_in': self.request.authenticated_userid,
-			'is_admin': is_admin,
 
 			'issue': issue_dict,
 			'discussion': discussion_dict,
@@ -322,68 +313,109 @@ class Dbas(object):
 			'extras': extras_dict
 		}
 
-	# justifty page
+	# justify page
 	@view_config(route_name='discussion_justify', renderer='templates/content.pt', permission='everybody')
 	def discussion_justify(self):
 		"""
 		View configuration for the content view.
 		:return: dictionary
 		"""
+		# '/a/{slug}/j/{statement_or_arg_id}/{mode}*relation'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_justify', 'def', 'main')
+		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
-		logger('discussion_justify', 'def', 'self.request.matchdict: ' + str(matchdict))
 
 		# update timestamp
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		_qh = QueryHelper()
-		_uh = UserHandler()
-		slug = matchdict['slug'][0] if len(matchdict['slug'])>0 else ''
-		statement_or_text_id = matchdict['statement_or_text_id'][0] if 'statement_or_text_id' in matchdict else ''
-		mode = matchdict['mode'][0] if len(matchdict['mode'])>0 else ''
-		supportive = mode == 't'
-		relation = matchdict['relation'][0] if len(matchdict['relation'])>0 else ''
-		is_logged_in = _uh.is_user_logged_in(self.request.authenticated_userid)
 
-		issue = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		lang = _qh.get_language(self.request, get_current_registry)
-		issue_dict = _qh.prepare_json_of_issue(issue, self.discussion_url, lang)
-		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
+		slug                = matchdict['slug'] if 'slug' in matchdict else ''
+		statement_or_arg_id = matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in matchdict else ''
+		mode                = matchdict['mode'] if 'mode' in matchdict else ''
+		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
+		relation            = matchdict['relation'][0] if len(matchdict['relation'])>0 else ''
+
+		issue               = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		lang                = _qh.get_language(self.request, get_current_registry)
+		issue_dict          = _qh.prepare_json_of_issue(issue, lang)
 
 		if [c for c in ('t','f') if c in mode] and relation == '':
 			# justifying position
 			logger('discussion_justify', 'def', 'justifying position')
-			discussion_dict = _qh.prepare_discussion_dict(statement_or_text_id, lang, at_justify=True, is_supportive=supportive)
-			item_dict = _qh.prepare_item_dict_for_justify(statement_or_text_id, supportive, issue, self.discussion_url, lang)
-			extras_dict = _qh.prepare_extras_dict(self.discussion_url, issue_dict['slug'], True, True, True, is_logged_in)
+			discussion_dict = _qh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify=True, is_supportive=supportive)
+			item_dict       = _qh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, lang)
+			extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, self.request.authenticated_userid)
 		elif 'd' in mode and relation == '':
 			# dont know
 			logger('discussion_justify', 'def', 'dont know position')
-			argument_uid = RecommenderHelper().get_premise_for_statement(statement_or_text_id, supportive) # todo empty uid
-			discussion_dict = _qh.prepare_discussion_dict(argument_uid, lang, at_argumentation=True, is_supportive=supportive)
-			item_dict = _qh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, self.discussion_url, lang)
-			extras_dict = _qh.prepare_extras_dict(self.discussion_url, issue_dict['slug'], False, False, True, is_logged_in)
+			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive) # todo empty uid
+			discussion_dict = _qh.prepare_discussion_dict(argument_uid, lang, at_dont_know=True, is_supportive=supportive)
+			item_dict       = _qh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, lang)
+			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, self.request.authenticated_userid)
 		else:
 			# justifying argument
 			logger('discussion_justify', 'def', 'argument stuff')
-			item_dict = _qh.prepare_item_dict_for_attitude(statement_or_text_id, issue, self.discussion_url, lang)
-			discussion_dict = _qh.prepare_discussion_dict(statement_or_text_id, lang, at_argumentation=True, is_supportive=supportive)
-			extras_dict = _qh.prepare_extras_dict(self.discussion_url, issue_dict['slug'], False, False, True, is_logged_in)
+			discussion_dict = _qh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify_argumentation=True, is_supportive=supportive, attack=relation )
+			item_dict       = _qh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, lang)
+			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
 			'title': issue_dict['title'],
 			'project': header,
-			'logged_in': self.request.authenticated_userid,
-			'is_admin': is_admin,
 
 			'issue': issue_dict,
 			'discussion': discussion_dict,
 			'item': item_dict,
 			'extras': extras_dict
 		}
+
+	# reaction page
+	@view_config(route_name='discussion_reaction', renderer='templates/content.pt', permission='everybody')
+	def discussion_reaction(self):
+		"""
+		View configuration for the content view.
+		:return: dictionary
+		"""
+		# '/a/{slug}/r/{arg_id_user}/{mode}*arg_id_sys'
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		matchdict = self.request.matchdict
+
+		# update timestamp
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		slug            = matchdict['slug'] if 'slug' in matchdict else ''
+		arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
+		attack          = matchdict['mode'] if 'mode' in matchdict else ''
+		arg_id_sys      = matchdict['arg_id_sys'][0] if len(matchdict['arg_id_sys'])>0 else ''
+		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().isSupportive
+
+		_qh = QueryHelper()
+
+		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		lang            = _qh.get_language(self.request, get_current_registry)
+		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
+
+		discussion_dict = _qh.prepare_discussion_dict(arg_id_user, lang, at_argumentation=True, is_supportive=supportive,
+		                                              additional_id=arg_id_sys, attack=attack)
+		item_dict       = _qh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, lang)
+		extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, self.request.authenticated_userid)
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(lang),
+			'title': issue_dict['title'],
+			'project': header,
+
+			'issue': issue_dict,
+			'discussion': discussion_dict,
+			'item': item_dict,
+			'extras': extras_dict
+		}
+
 
 
 	# settings page, when logged in
@@ -562,9 +594,9 @@ class Dbas(object):
 			'logged_in': self.request.authenticated_userid
 		}
 
-	######################
-	## DISCUSSION VIEWS ##
-	######################
+	#########################################
+	## DISCUSSION VIEWS ## TODO KILL THESE! #
+	#########################################
 
 	# ajax - return all start statements in the database
 	@view_config(route_name='ajax_get_start_statements', renderer='json', check_csrf=False)
@@ -706,7 +738,7 @@ class Dbas(object):
 			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid + ', supportive:' + str(supportive) + ', issue: ' + str(issue))
 
 			return_dict = RecommenderHelper().get_premise_for_statement_old(transaction, uid, supportive, self.request.authenticated_userid,
-			                                                           self.request.session.id, issue)
+			                                                                self.request.session.id, issue)
 
 			conclusion = return_dict['currentStatement']['text'][0:1].lower() + return_dict['currentStatement']['text'][1:]
 			return_dict.update(TextGenerator(lang).get_text_for_premise_for_statement(conclusion,
@@ -765,7 +797,7 @@ class Dbas(object):
 			logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', supportive ' + str(supportive) + ', issue ' + str(issue))
 
 			return_dict = RecommenderHelper().get_premises_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
-			                                                           self.request.session.id, issue)
+			                                                             self.request.session.id, issue)
 			_t = Translator(lang)
 			text = return_dict['currentStatement']['text'][0:1].lower() + return_dict['currentStatement']['text'][1:]
 			if len(return_dict['premises']) == 0:
@@ -950,10 +982,10 @@ class Dbas(object):
 
 			logger('reply_for_argument', 'def', 'issue ' + str(issue) + ', id_text ' + str(id_text) + ', pgroup_id ' + str(pgroup_id) + ', supportive ' + str(supportive))
 			# track will be saved in the method
-			return_dict, status = RecommenderHelper().get_attack_for_argument(transaction,
-			                                                                  self.request.authenticated_userid,
-			                                                                  id_text, pgroup_id,
-			                                                                  self.request.session.id, issue)
+			return_dict, status = RecommenderHelper().get_attack_for_argument_old(transaction,
+			                                                                      self.request.authenticated_userid,
+			                                                                      id_text, pgroup_id,
+			                                                                      self.request.session.id, issue)
 
 			_tg = TextGenerator(lang)
 			return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
@@ -1041,7 +1073,7 @@ class Dbas(object):
 			if 'support' in uid_text:
 				logger('reply_for_response_of_confrontation', 'def', 'path a1')
 				return_dict, status = RecommenderHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
-				                                                                          uid_text, self.request.session.id, issue, lang)
+				                                                                             uid_text, self.request.session.id, issue, lang)
 				# rate argument, cause supports are special cases
 				WeightingHelper().add_vote_for_argument(int(uid_text.split('_')[2]), self.request.authenticated_userid, transaction)
 
@@ -1319,13 +1351,14 @@ class Dbas(object):
 
 		# getting params
 		try:
-			firstname       = self.escape_string(self.request.params['firstname'])
-			lastname        = self.escape_string(self.request.params['lastname'])
-			nickname        = self.escape_string(self.request.params['nickname'])
-			email           = self.escape_string(self.request.params['email'])
-			gender          = self.escape_string(self.request.params['gender'])
-			password        = self.escape_string(self.request.params['password'])
-			passwordconfirm = self.escape_string(self.request.params['passwordconfirm'])
+			params          = self.request.params
+			firstname       = self.escape_string(params['firstname'])
+			lastname        = self.escape_string(params['lastname'])
+			nickname        = self.escape_string(params['nickname'])
+			email           = self.escape_string(params['email'])
+			gender          = self.escape_string(params['gender'])
+			password        = self.escape_string(params['password'])
+			passwordconfirm = self.escape_string(params['passwordconfirm'])
 			lang            = self.request.params['lang']
 			logger('user_registration', 'def', 'params firstname: ' + str(firstname)
 			       + ', lastname: ' + str(lastname)
@@ -1717,12 +1750,11 @@ class Dbas(object):
 
 		return_dict = {}
 		try:
-			issue = self.request.params['issue']
 			arg_uid = self.request.params['arg_uid']
 			lang = self.request.params['lang']
-			logger('get_everything_for_island_view', 'def', 'params uid: issue ' + str(issue) + ', arg_uid ' + str(arg_uid))
+			logger('get_everything_for_island_view', 'def', 'params arg_uid ' + str(arg_uid))
 
-			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang, issue)
+			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang)
 			return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premise'],
 			                                                                                    return_dict['conclusion'],
 			                                                                                    False))

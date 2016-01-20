@@ -350,4 +350,19 @@ $(function () {
 	setKeyUpFunctions(guiHandler, ajaxHandler);
 	setStyleOptions(guiHandler);
 	setWindowOptions(guiHandler, ajaxHandler);
+
+	// new function
+	replaceHtmlTags($('#discussions-header'));
+	$.each($('#discussions-space label'), function () {
+		replaceHtmlTags($(this));
+	});
 });
+
+// new
+replaceHtmlTags = function(element){
+	var text = element.text();
+	text = text.replace('&lt;strong&gt;', '<strong>');
+	text = text.replace('&lt;/strong&gt;', '</strong>');
+	text = text.replace('&lt;br&gt;', '<br>');
+	element.html(text);
+};

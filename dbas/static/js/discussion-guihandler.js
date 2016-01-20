@@ -801,13 +801,6 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Shows the display style container
-	 */
-	this.showDisplayControlContainer = function(){
-		$('#' + displayControlContainerId).show();
-	};
-
-	/**
 	 * Hides the url sharing text field
 	 */
 	this.hideEditFieldsInEditPopup = function () {
@@ -866,13 +859,6 @@ function GuiHandler() {
 	 */
 	this.hideDiscussionDescriptionsNextElement = function() {
 		$('#' + discussionsDescriptionId).attr('style', 'margin-bottom: 0px;').parent().parent().next().hide();
-	};
-
-	/**
-	 * Hides the display style container
-	 */
-	this.hideDisplayControlContainer = function(){
-		$('#' + displayControlContainerId).hide();
 	};
 
 	/**
@@ -995,7 +981,7 @@ function GuiHandler() {
 	this.setDisplayStyleAsIsland = function () {
 		$('#' + islandViewContainerId).fadeIn('slow');
 		$('#' + graphViewContainerId).hide();
-		new DiscussionIsland().showIsland($('#' + discussionsDescriptionId).attr(attr_argument_uid));
+		new DiscussionIsland().showIsland();
 	};
 
 	/**

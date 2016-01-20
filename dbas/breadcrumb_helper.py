@@ -66,9 +66,9 @@ class BreadcrumbHelper(object):
 		:return: undefined
 		"""
 		logger('BreadcrumbHelper', 'save_breadcrumb_for_user_with_argument_parts', 'def')
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==conclusion_uid)).first()
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_uid).first()
 		db_textversion  = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).first()
-		text1, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroups_uid, issue)
+		text1, tmp = QueryHelper().get_text_for_premisesGroup_uid(premisegroups_uid)
 		text2 = db_textversion.content.lower()
 
 		# change additional information, if they are not present

@@ -8,10 +8,13 @@ function DiscussionIsland(){
 
 	/**
 	 * Displays the island of current discussion
-	 * @param arg_uid int
 	 */
-	this.showIsland = function(arg_uid){
-		this.getAllArgumentsForIslandView(arg_uid)
+	this.showIsland = function(){
+
+		var url = window.location.href,
+			splits = url.split('/');
+		alert(splits[6]);
+		this.getAllArgumentsForIslandView(splits[6])
 	};
 
 	/**
@@ -24,7 +27,7 @@ function DiscussionIsland(){
 			url: 'ajax_get_everything_for_island_view',
 			method: 'GET',
 			dataType: 'json',
-			data: { issue: new Helper().getCurrentIssueId(), lang: getLanguage(), arg_uid: arg_uid },
+			data: { lang: getLanguage(), arg_uid: arg_uid },
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
@@ -77,33 +80,33 @@ function DiscussionIsland(){
 		titles[4] = jsonData.rebut_text;
 
 		// first row with header only
-		row = $('<div>').addClass('row');
-		div = $('<div>').addClass("col-md-12");
-		header = '<h4><p>' + _t(islandView) + ' ' + _t(forText) + ' <b>' + jsonData.argument + '.<b></p></h4>';
+		row = $('<div>');
+		div = $('<div>').addClass('col-md-12');
+		header = '<h4>' + _t(islandView) + ' ' + _t(forText) + ' <strong>' + jsonData.argument + '.</strong>/h4>';
 		div.append(header);
 		row.append(div);
 		islandViewContainerSpace.append(row);
 
 		// second row with supports and undermines
-		row = $('<div>').addClass('row');
+		row = $('<div>');
 		// con premise - undermines
-		this.createPartOfIsland('6', row, 'red', ballot, titles[0], jsonData, 'undermines');
+		this.createPartOfIsland('6', row, false, ballot, titles[0], jsonData, 'undermines');
 		islandViewContainerSpace.append(row);
 		// pro premise - supports
-		this.createPartOfIsland('6', row, 'green', checkmark, titles[1], jsonData, 'supports');
+		this.createPartOfIsland('6', row, true, checkmark, titles[1], jsonData, 'supports');
 
 		// third row with overbids and undercuty
-		row = $('<div>').addClass('row');
+		row = $('<div>');
 		// con relation - undercuts
-		this.createPartOfIsland('6', row, 'red', ballot, titles[2], jsonData, 'undercuts');
+		this.createPartOfIsland('6', row, false, ballot, titles[2], jsonData, 'undercuts');
 		islandViewContainerSpace.append(row);
 		// pro relation - overbids
-		this.createPartOfIsland('6', row, 'green', checkmark, titles[3], jsonData, 'overbids');
+		this.createPartOfIsland('6', row, true, checkmark, titles[3], jsonData, 'overbids');
 
 		// last row with rebuts
-		row = $('<div>').addClass('row');
+		row = $('<div>');
 		// con conclusion - rebuts
-		this.createPartOfIsland('12', row, 'red', ballot, titles[4], jsonData, 'rebuts');
+		this.createPartOfIsland('12', row, false, ballot, titles[4], jsonData, 'rebuts');
 		islandViewContainerSpace.append(row);
 
 		// add argument button
@@ -128,13 +131,13 @@ function DiscussionIsland(){
 	 * Creates on box in the island view
 	 * @param colSize 6 or 12 as string
 	 * @param row <row>
-	 * @param color "green" or "red"
+	 * @param isSupport
 	 * @param sign ballot, checkmark, whatever
 	 * @param title of the box
 	 * @param data as json
 	 * @param valueName of the attack
 	 */
-	this.createPartOfIsland = function(colSize, row, color, sign, title, data, valueName){
+	this.createPartOfIsland = function(colSize, row, isSupport, sign, title, data, valueName){
 		var div, div_panel, div_header, div_body;
 		div = $('<div>').addClass('col-md-' + colSize);
 		// version with panel
@@ -145,8 +148,11 @@ function DiscussionIsland(){
 		*/
 		// version with panel
 		div_panel = $('<div>').addClass('panel').addClass('panel-default');
-		div_header = $('<div>').addClass('panel-heading').append('<h5><span class="' + color + '-bg text-center">' + sign + '</span> ' + title + '</h5>');
-		div_body = $('<div>').addClass('panel-body').append(data[valueName] > 0 ? new Helper().getValuesOfDictWithPrefixAsUL(data, valueName) : '<label>' + _t(noEntries) + '</label>');
+		div_header = $('<div>').addClass('panel-heading').append('<h5><span class="' + (isSupport? 'text-success' : 'text-danger')
+			+ ' text-center">' + sign + '</span> ' + title + '</h5>');
+		div_body = $('<div>').addClass('panel-body').append(data[valueName] > 0 ?
+			new Helper().getValuesOfDictWithPrefixAsUL(data, valueName) :
+			'<label>' + _t(noEntries) + '</label>');
 		div_panel.append(div_header);
 		div_panel.append(div_body);
 		div.append(div_panel);

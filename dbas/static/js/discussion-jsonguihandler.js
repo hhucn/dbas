@@ -253,8 +253,6 @@ function JsonGuiHandler() {
 
 		// set the buttons
 		guihandler.addListItemsToDiscussionsSpace(listitems);
-
-		guihandler.showDisplayControlContainer();
 	};
 
 	/**
@@ -273,8 +271,6 @@ function JsonGuiHandler() {
 
 		guihandler.setDiscussionsDescription(jsonData.discussion_description, '', dict);
 		new InteractionHandler().setDiscussionEndLinksInText();
-
-		guihandler.hideDisplayControlContainer();
 	};
 
 	/**

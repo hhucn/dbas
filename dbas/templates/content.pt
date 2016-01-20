@@ -82,7 +82,7 @@
 						<span id="discussion-success-description"></span>
 					</div>
 
-					<h4><p tal:replace="discussion.heading"></p></h4>
+					<h4 id="discussions-header"><p tal:replace="discussion.heading"></p></h4>
 					<div id="discussions-space">
 					
 						<ul>
@@ -100,15 +100,16 @@
 				
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
-						<input tal:condition="extras.is_editable" id="edit-statement" type="button" i18n:translate="edit" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
-						<br>
-						<br>
-						<button tal:condition="extras.is_reportable" id="report-button" type="button" class="button button-block btn-sm btn" aria-label="Left Align">
+						<button tal:condition="extras.is_editable" id="edit-statement" type="button" class="button button-block btn-sm btn">
+							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-edit"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="edit">Edit</span>
+						</button>
+						<br tal:condition="extras.is_editable">
+						<br tal:condition="extras.is_editable">
+						<button tal:condition="extras.is_reportable" id="report-button" type="button" class="button button-block btn-sm btn">
 							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="report">Report</span>
 						</button>
-						<br>
-						<br>
-
+						<br tal:condition="extras.is_reportable">
+						<br tal:condition="extras.is_reportable">
 						<img tal:condition="extras.show_bar_icon" id="opinion-barometer-img" style="display:none" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="Opinion Barometer" />
 					</div>
 				</div>
@@ -203,7 +204,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="display-control-container" style="display: none;" >
+		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style" >
 			<div class="row">
 				<h4><p i18n:translate="change_style">Change display style</p></h4>
 				<div class="col-md-4">
