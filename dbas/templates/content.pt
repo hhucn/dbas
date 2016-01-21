@@ -127,7 +127,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="island-view-container" style="display:none">
+		<div class="container colored_container" id="island-view-container" style="display:none">ss
 			<button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -227,7 +227,7 @@
 			<div class="col-md-10">
 				<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
 					<h4>
-						<span i18n:translate="what_is_your_idea">
+						<span i18n:translate="what_is_your_idea"_text
 							What is your idea? What should we do?
 						</span>
 					</h4>
