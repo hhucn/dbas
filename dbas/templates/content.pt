@@ -127,7 +127,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="island-view-container" style="display:none">
+		<div class="container colored_container" id="island-view-container" style="display:none" tal:content="extras.show_display_style">
 			<button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>

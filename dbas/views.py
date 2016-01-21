@@ -379,13 +379,6 @@ class Dbas(object):
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
 
-		#if extras_dict['show_display_style']:
-		#	island_dict = QueryHelper().get_everything_for_island_view(statement_or_arg_id, lang)
-		#	island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
-		#	                                                                                    island_dict['conclusion'],
-		#	                                                                                    False, False))
-		#	extras_dict['island'] = island_dict
-
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
@@ -418,6 +411,10 @@ class Dbas(object):
 		attack          = matchdict['mode'] if 'mode' in matchdict else ''
 		arg_id_sys      = matchdict['arg_id_sys'][0] if len(matchdict['arg_id_sys'])>0 else ''
 		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().isSupportive
+
+
+		# set votings
+		WeightingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
 
 		_qh = QueryHelper()
 

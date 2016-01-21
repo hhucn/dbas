@@ -715,12 +715,15 @@ function GuiHandler() {
 
 		uid = 0;
 		// append a row for each statement
-		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
-			statement = $(this).val();
+		$('#' + discussionSpaceId + ' label').each(function () {
+			if ($(this).attr('for') == '0'){
+				return;
+			}
+			statement = $(this).text();
 			if (statement.toLocaleLowerCase().indexOf(_t(because)) == 0){
 				statement = new Helper().startWithUpperCase(statement.substring(8));
 			}
-			uid = $(this).attr('id');
+			uid = $(this).attr('for');
 			type = $(this).attr('class');
 			is_premise = $(this).hasClass('premise');
 			is_start = $(this).hasClass('start');
@@ -731,24 +734,20 @@ function GuiHandler() {
 				uid = tmp[tmp.length -1];
 			}
 
-			// do we have a child with input or just the label?
-			if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1 && statement.length > 0 && $.isNumeric(uid) || is_premise || is_start) {
+			// is this a premise group with more than one text?
+			if (typeof $(this).attr('text_count') !== typeof undefined && $(this).attr('text_count') !== false){
+				text_count = $(this).attr('text_count');
+				type = 'premisesgroup';
 
-				// is this a premise group with more than one text?
-				if (typeof $(this).attr('text_count') !== typeof undefined && $(this).attr('text_count') !== false){
-					text_count = $(this).attr('text_count');
-					type = 'premisesgroup';
-
-					for (i=1; i<=parseInt(text_count); i++) {
-						statement_id = $(this).attr('text_' + i + '_statement_id');
-						text = $(this).attr('text_' + i);
-						tr = helper.createRowInEditDialog(statement_id, text, type);
-						table.append(tr);
-					}
-				} else {
-					tr = helper.createRowInEditDialog(uid, statement, type);
+				for (i=1; i<=parseInt(text_count); i++) {
+					statement_id = $(this).attr('text_' + i + '_statement_id');
+					text = $(this).attr('text_' + i);
+					tr = helper.createRowInEditDialog(statement_id, text, type);
 					table.append(tr);
 				}
+			} else {
+				tr = helper.createRowInEditDialog(uid, statement, type);
+				table.append(tr);
 			}
 		});
 
