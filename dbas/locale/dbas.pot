@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-01-20 22:04+0100\n"
+"POT-Creation-Date: 2016-01-21 18:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -243,7 +243,7 @@ msgstr ""
 
 #. Default: Island View
 #: ./dbas/templates/index.pt:130 ./dbas/templates/content_old.pt:213
-#: ./dbas/templates/content_old.pt:240 ./dbas/templates/content.pt:284
+#: ./dbas/templates/content_old.pt:240 ./dbas/templates/content.pt:323
 msgid "island_view"
 msgstr ""
 
@@ -837,7 +837,7 @@ msgstr ""
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:292
 #: ./dbas/templates/snippet-popups.pt:393 ./dbas/templates/content_old.pt:116
-#: ./dbas/templates/content.pt:122
+#: ./dbas/templates/content.pt:124
 msgid "error"
 msgstr ""
 
@@ -1123,7 +1123,7 @@ msgstr ""
 #. Default: Error:
 #: ./dbas/templates/news.pt:25 ./dbas/templates/settings.pt:83
 #: ./dbas/templates/settings.pt:114 ./dbas/templates/content_old.pt:146
-#: ./dbas/templates/content.pt:155 ./dbas/templates/content.pt:180
+#: ./dbas/templates/content.pt:263 ./dbas/templates/content.pt:288
 msgid "error:"
 msgstr ""
 
@@ -1289,7 +1289,7 @@ msgid "arguments"
 msgstr ""
 
 #. Default: Report
-#: ./dbas/templates/content_old.pt:102 ./dbas/templates/content.pt:109
+#: ./dbas/templates/content_old.pt:102 ./dbas/templates/content.pt:111
 msgid "report"
 msgstr ""
 
@@ -1320,19 +1320,19 @@ msgstr ""
 
 #. Default: Change display style
 #: ./dbas/templates/content_old.pt:202 ./dbas/templates/content_old.pt:229
-#: ./dbas/templates/content.pt:272
+#: ./dbas/templates/content.pt:311
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
 #: ./dbas/templates/content_old.pt:206 ./dbas/templates/content_old.pt:233
-#: ./dbas/templates/content.pt:276
+#: ./dbas/templates/content.pt:315
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Complete View
 #: ./dbas/templates/content_old.pt:220 ./dbas/templates/content_old.pt:247
-#: ./dbas/templates/content.pt:292
+#: ./dbas/templates/content.pt:331
 msgid "complete_view"
 msgstr ""
 
@@ -1366,42 +1366,47 @@ msgstr ""
 msgid "topics"
 msgstr ""
 
+#. Default: Because
+#: ./dbas/templates/content.pt:92 ./dbas/templates/content.pt:299
+msgid "Because"
+msgstr ""
+
 #. Default: Edit
-#: ./dbas/templates/content.pt:104
+#: ./dbas/templates/content.pt:106
 msgid "edit"
 msgstr ""
 
+#. Default: Add statement
+#: ./dbas/templates/content.pt:241
+msgid "add_statement"
+msgstr ""
+
 #. Default: What is your idea? What should we do?
-#: ./dbas/templates/content.pt:149
+#: ./dbas/templates/content.pt:257
 msgid "what_is_your_idea"
 msgstr ""
 
 #. Default: You want to state your own reason?
-#: ./dbas/templates/content.pt:174
+#: ./dbas/templates/content.pt:282
 msgid "want_to_state_own_reason"
 msgstr ""
 
 #. Default: I
-#: ./dbas/templates/content.pt:184 ./dbas/templates/content.pt:185
+#: ./dbas/templates/content.pt:292 ./dbas/templates/content.pt:293
 msgid "I"
 msgstr ""
 
 #. Default: agree
-#: ./dbas/templates/content.pt:184
+#: ./dbas/templates/content.pt:292
 msgid "agree"
 msgstr ""
 
 #. Default: with
-#: ./dbas/templates/content.pt:184 ./dbas/templates/content.pt:185
+#: ./dbas/templates/content.pt:292 ./dbas/templates/content.pt:293
 msgid "with"
 msgstr ""
 
 #. Default: disagree
-#: ./dbas/templates/content.pt:185
+#: ./dbas/templates/content.pt:293
 msgid "disagree"
-msgstr ""
-
-#. Default: Because
-#: ./dbas/templates/content.pt:191
-msgid "Because"
 msgstr ""

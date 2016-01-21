@@ -379,6 +379,10 @@ class Dbas(object):
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
 
+		# TODO PRO PREMISEGROUP EIN LABEL UND DARÜBER ITERIEREN
+		# TODO PRO PREMISEGROUP EIN LABEL UND DARÜBER ITERIEREN
+		# TODO PRO PREMISEGROUP EIN LABEL UND DARÜBER ITERIEREN
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
@@ -387,7 +391,7 @@ class Dbas(object):
 
 			'issue': issue_dict,
 			'discussion': discussion_dict,
-			'item': item_dict,
+			'items': item_dict,
 			'extras': extras_dict
 		}
 

@@ -21,14 +21,14 @@
 			<div class="row">
 				<div class="col-md-7 center text-center">
 					<p i18n:translate="current_discussion">Current discussion is about</p>
-					<h5 id="issue_info"><span tal:replace=issue.info></span></h5>
+					<h5 id="issue_info" tal:content="issue.info"></h5>
 				</div>
 				<div class="col-md-5 center text-center">
 					<span i18n:translate="startet_at">The discussion was started at</span>
-					<span id="issue-date" tal:replace=issue.date></span>
+					<span id="issue-date" tal:content=issue.date></span>
 					<br>
 					<span i18n:translate="already_has">and already has</span>
-					<span id="issue-count" tal:replace=issue.arg_count></span>
+					<span id="issue-count" tal:content=issue.arg_count></span>
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 
@@ -82,13 +82,20 @@
 						<span id="discussion-success-description"></span>
 					</div>
 
-					<h4 id="discussions-header"><p tal:replace="discussion.heading"></p></h4>
+					<h4 id="discussions-header" tal:content="discussion.heading">
+                    </h4>
 					<div id="discussions-space">
 
 						<ul>
-							<li tal:repeat="item item">
+							<li tal:repeat="item items">
 								<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-								<label tal:attributes="for item.id"><span tal:replace="item.title"></span></label>
+								<!--
+								<label i18n:translate="Because">Because</label>
+                                <label tal:repeat="text item.values" tal:attributes="for item.id; id text.id">
+									<label tal:replace="text.title"></label>
+								</label>
+								-->
+								<label tal:attributes="for item.id" tal:content="item.title"></label>
 							</li>
 						</ul>
 
@@ -127,7 +134,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="island-view-container" style="display:none" tal:content="extras.show_display_style">
+		<div class="container colored_container" id="island-view-container" style="display:none" tal:condition="extras.show_display_style">
 			<button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -137,226 +144,216 @@
 					<h4>Island View for <strong>this is not true for overbred races does not hold, because even overbred races can be taught.</strong>
 					</h4>
 				</div>
-					<div class="col-md-2"></div>
+				<div class="col-md-2"></div>
 			</div>
 
-				<div class="row">
-					<div class="col-md-6">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h5>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
 									<span class="text-danger">✗</span>
 									<span tal:replace="extras.island.undermine_text">undermine_text</span>
 								</h5>
-							</div>
-							<div class="panel-body">
-								<ul>
-									<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
-										<label tal:attributes="for undermine.id">
-											<span tal:replace="undermine.text">No entries</span>
-										</label>
-									</li>
-								</ul>
-							</div>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
+									<label tal:attributes="for undermine.id" tal:content="undermine.text">No entries</label>
+								</li>
+							</ul>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h5>
+				</div>
+				<div class="col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
 									<span class="text-success">✓</span> 
 									<span tal:replace="extras.island.support_text">support_text</span>
 								</h5>
-							</div>
-							<div class="panel-body">
-								<ul>
-									<li tal:repeat="support extras.island.support" tal:attributes="id support.id">
-										<label tal:attributes="for support.id">
-											<span tal:replace="support.text">No entries</span>
-										</label>
-									</li>
-								</ul>
-							</div>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="support extras.island.support" tal:attributes="id support.id">
+									<label tal:attributes="for support.id" tal:content="support.text">No entries</label>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</div>
+			</div>
 
-				<div class="row">
-					<div class="col-md-6">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h5>
-								<span class="text-danger">✗</span>
-									<span tal:replace="extras.island.undercut_text">undercut_text</span>
-							</h5>
-							</div>
-							<div class="panel-body">
-								<ul>
-									<li tal:repeat="undercut extras.island.undercut" tal:attributes="id undercut.id">
-										<label tal:attributes="for undercut.id">
-											<span tal:replace="undercut.text">No entries</span>
-										</label>
-									</li>
-								</ul>
-							</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
+                                    <span class="text-danger">✗</span>
+                                    <span tal:replace="extras.island.undercut_text">undercut_text</span>
+							    </h5>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="undercut extras.island.undercut" tal:attributes="id undercut.id">
+									<label tal:attributes="for undercut.id" tal:content="undercut.text">No entries</label>
+								</li>
+							</ul>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h5>
+				</div>
+				<div class="col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
 									<span class="text-success">✓</span> 
 									<span tal:replace="extras.island.overbid_text">overbid_text</span>
 								</h5>
-							</div>
-							<div class="panel-body">
-								<ul>
-									<li tal:repeat="overbid extras.island.overbid" tal:attributes="id overbid.id">
-										<label tal:attributes="for overbid.id">
-											<span tal:replace="overbid.text">No entries</span>
-										</label>
-									</li>
-								</ul>
-							</div>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="overbid extras.island.overbid" tal:attributes="id overbid.id">
+									<label tal:attributes="for overbid.id" tal:content="overbid.text">No entries</label>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</div>
+			</div>
 
-				<div class="row">
-					<div class="col-md-12">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h5>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
 									<span class="text-danger">✗</span>
 									<span tal:replace="extras.island.rebut_text">rebut_text</span>
 								</h5>
-							</div>
-							<div class="panel-body">
-								<ul>
-									<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
-										<label tal:attributes="for rebut.id">
-											<span tal:replace="rebut.text">No entries</span>
-										</label>
-									</li>
-								</ul>
-							</div>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
+									<label tal:attributes="for rebut.id" tal:content="rebut.text">No entries</label>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</div>
-
-				<div class="center text-center">
-					<button id="island-view-add-arguments" type="button" class="button button-block btn btn-primary disabled" data-dismiss="modal">
-						<span i18n:translate="add_statement">Add statement</span>
-					</button>
-				</div>
-
 			</div>
-			
-			<div class="container colored_container" id="graph-view-container" style="display:none"></div>
-			
-			<div class="container colored_container" id="add-statement-container" style="display:none">
-				<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
+
+			<div class="center text-center">
+				<button id="island-view-add-arguments" type="button" class="button button-block btn btn-primary disabled" data-dismiss="modal">
+					<span i18n:translate="add_statement">Add statement</span>
 				</button>
-				<div class="col-md-1"></div>
-				<div class="col-md-10">
-					<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
-						<h4>
+			</div>
+
+		</div>
+
+		<div class="container colored_container" id="graph-view-container" style="display:none"></div>
+
+		<div class="container colored_container" id="add-statement-container" style="display:none">
+			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
+					<h4>
 						<span i18n:translate="what_is_your_idea">
 							What is your idea? What should we do?
 						</span>
 					</h4>
-						<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span i18n:translate="error:">Error:</span>
-							<span id="add-statement-error-msg"></span>
-						</div>
-						<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
-						<div class="list-group" id="proposal-statement-list-group"></div>
-						<input id="send-statement-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
-					</form>
-				</div>
-				<div class="col-md-1"></div>
+					<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span i18n:translate="error:">Error:</span>
+						<span id="add-statement-error-msg"></span>
+					</div>
+					<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+					<div class="list-group" id="proposal-statement-list-group"></div>
+					<input id="send-statement-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+				</form>
 			</div>
+			<div class="col-md-1"></div>
+		</div>
 
-			<div class="container colored_container" id="add-premise-container" style="display:none">
-				<button id="close-premise-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<div class="col-md-1"></div>
-				<div class="col-md-10">
-					<form id="insert-premise-form" action="/not_implemented" method="post" class="text-center">
-						<h4>
+		<div class="container colored_container" id="add-premise-container" style="display:none">
+			<button id="close-premise-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<form id="insert-premise-form" action="/not_implemented" method="post" class="text-center">
+					<h4>
 						<span i18n:translate="want_to_state_own_reason">
 							You want to state your own reason?
 						</span>
 					</h4>
-						<div id="add-premisen-error-container" class="alert alert-danger" role="alert" style="display:none">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span i18n:translate="error:">Error:</span>
-							<span id="add-premise-error-msg"></span>
-						</div>
-						<h5>
+					<div id="add-premisen-error-container" class="alert alert-danger" role="alert" style="display:none">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span i18n:translate="error:">Error:</span>
+						<span id="add-premise-error-msg"></span>
+					</div>
+					<h5>
 						<span tal:condition="extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-success" i18n:translate="agree">agree</span> <span i18n:translate="with">with</span>: </span>
 						<span tal:condition="not:extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-danger" i18n:translate="disagree">disagree</span> <span i18n:translate="with">with</span>: </span>
 						<span id="add-premise-container-main-input-intro" tal:replace=discussion.add_premise_text>
 						</span>
 					</h5>
-						<span style="float:left; line-height:60px; text-align:center;">
+					<span style="float:left; line-height:60px; text-align:center;">
 						<h5>
 							<span i18n:translate="Because">Because</span>...</h5>
-						</span>
-						<input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
-						<div class="list-group" id="proposal-premise-list-group"></div>
-						<input id="send-premise-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
-					</form>
-				</div>
-				<div class="col-md-1"></div>
+					</span>
+					<input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+					<div class="list-group" id="proposal-premise-list-group"></div>
+					<input id="send-premise-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+				</form>
 			</div>
+			<div class="col-md-1"></div>
+		</div>
 
-			<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style">
-				<div class="row">
-					<h4><p i18n:translate="change_style">Change display style</p></h4>
-					<div class="col-md-4">
-						<input type="radio" id="sc-style-1" checked value="Dialog View">
-						<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
-							<p i18n:translate="dialog_view">Dialog View</p>
-						</label>
-						<br>
-						<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
-					</div>
-					<div class="col-md-4">
-						<input type="radio" id="sc-style-2" value="Island View">
-						<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
-							<p i18n:translate="island_view">Island View</p>
-						</label>
-						<br>
-						<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
-					</div>
-					<div class="col-md-4">
-						<input type="radio" id="sc-style-3" value="Complete View">
-						<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
-							<p i18n:translate="complete_view">Complete View</p>
-						</label>
-						<br>
-						<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
-					</div>
+		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style">
+			<div class="row">
+				<h4><p i18n:translate="change_style">Change display style</p></h4>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-1" checked value="Dialog View">
+					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
+						<p i18n:translate="dialog_view">Dialog View</p>
+					</label>
+					<br>
+					<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
+				</div>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-2" value="Island View">
+					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
+						<p i18n:translate="island_view">Island View</p>
+					</label>
+					<br>
+					<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
+				</div>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-3" value="Complete View">
+					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
+						<p i18n:translate="complete_view">Complete View</p>
+					</label>
+					<br>
+					<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
 				</div>
 			</div>
+		</div>
 
 
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-navigationhandler.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-navigationhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
 
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-graph.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-island.js')}"></script>
-			<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-barometer.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-graph.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-island.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-barometer.js')}"></script>
 
 	</tal:block>
 </tal:block>

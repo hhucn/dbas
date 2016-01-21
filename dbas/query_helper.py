@@ -643,35 +643,35 @@ class QueryHelper(object):
 		:param attack:
 		:return:
 		"""
-		_tn = Translator(lang)
-		heading = ''
+		_tn              = Translator(lang)
+		heading          = ''
 		add_premise_text = ''
 		if at_start:
-			heading         = _tn.get(_tn.initialPositionInterest)
+			heading             = _tn.get(_tn.initialPositionInterest)
 
 		elif at_attitude:
-			text            = self.get_text_for_statement_uid(uid)
-			heading         = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
+			text                = self.get_text_for_statement_uid(uid)
+			heading             = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
 
 		elif at_justify:
-			text            = self.get_text_for_statement_uid(uid)
-			heading         = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
-			                + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
+			text                = self.get_text_for_statement_uid(uid)
+			heading             = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
+			                        + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
 
 		elif at_justify_argumentation:
 			_tg = TextGenerator(lang)
-			db_argument     = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-			confrontation   = self.get_text_for_argument_uid(uid, lang)
-			premise, tmp    = self.get_text_for_premisesGroup_uid(uid)
-			conclusion      = self.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
+			db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+			confrontation       = self.get_text_for_argument_uid(uid, lang)
+			premise, tmp        = self.get_text_for_premisesGroup_uid(uid)
+			conclusion          = self.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 				else self.get_text_for_argument_uid(db_argument.argument_uid)
-			heading         = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
-			add_premise_text= premise
+			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
+			add_premise_text    = premise
 
 		elif at_dont_know:
-			text            = self.get_text_for_argument_uid(uid, lang)
-			heading         = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
-			                + '</strong>. ' + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
+			text                = self.get_text_for_argument_uid(uid, lang)
+			heading             = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
+			                     + '</strong>. ' + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
 
 		elif at_argumentation:
 			_tg                 = TextGenerator(lang)
@@ -709,6 +709,7 @@ class QueryHelper(object):
 				statement_dict = dict()
 				statement_dict['id'] = statement.uid
 				statement_dict['title'] = self.get_text_for_statement_uid(statement.uid)
+				statement_dict['values'] = [{'title': self.get_text_for_statement_uid(statement.uid), 'id': statement.uid}]
 				statement_dict['attitude'] = ''
 				statement_dict['url'] = _um.get_url_for_statement_attitude(True, statement.uid)
 				statements_array.append(statement_dict)
@@ -718,6 +719,7 @@ class QueryHelper(object):
 				statement_dict = dict()
 				statement_dict['id'] = 0
 				statement_dict['title'] = _tn.get(_tn.newConclusionRadioButtonText)
+				statement_dict['values'] = [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}]
 				statement_dict['attitude'] = 'null'
 				statement_dict['url'] = 'null'
 				statements_array.append(statement_dict)
@@ -743,6 +745,7 @@ class QueryHelper(object):
 		statement_dict = dict()
 		statement_dict['id'] = 'agree'
 		statement_dict['title'] = _tn.get(_tn.iAgreeWithInColor) + ' ' + text
+		statement_dict['values'] = [{'title': _tn.get(_tn.iAgreeWithInColor) + ' ' + text, 'id': 'agree'}]
 		statement_dict['attitude'] = 'agree'
 		statement_dict['url'] = _um.get_url_for_justifying_statement(True, statement_uid, 't')
 		statements_array.append(statement_dict)
@@ -750,6 +753,7 @@ class QueryHelper(object):
 		statement_dict = dict()
 		statement_dict['id'] = 'disagree'
 		statement_dict['title'] = _tn.get(_tn.iDisagreeWithInColor) + ' ' + text
+		statement_dict['values'] = [{'title': _tn.get(_tn.iDisagreeWithInColor) + ' ' + text, 'id': 'disagree'}]
 		statement_dict['attitude'] = 'disagree'
 		statement_dict['url'] = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
 		statements_array.append(statement_dict)
@@ -757,6 +761,7 @@ class QueryHelper(object):
 		statement_dict = dict()
 		statement_dict['id'] = 'dontknow'
 		statement_dict['title'] = _tn.get(_tn.iDoNotKnowInColor) + ' ' + text
+		statement_dict['values'] = [{'title': _tn.get(_tn.iDoNotKnowInColor) + ' ' + text, 'id': 'dontknow'}]
 		statement_dict['attitude'] = 'dontknow'
 		statement_dict['url'] = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
 		statements_array.append(statement_dict)
@@ -782,15 +787,22 @@ class QueryHelper(object):
 
 		if db_arguments:
 			for argument in db_arguments:
-				text, tmp = self.get_text_for_premisesGroup_uid(argument.premisesGroup_uid)
+				# get all premises in the premisegroup of this argument
+				db_premises = DBDiscussionSession(Premise).filter_by(premisesGroup_uid=argument.premisesGroup_uid).all()
+				premise_array = []
+				for premise in db_premises:
+					text = self.get_text_for_statement_uid(premise.statement_uid)
+					premise_array.append({'title': text, 'id': premise.statement_uid})
+
+				text, uid = self.get_text_for_premisesGroup_uid(argument.premisesGroup_uid)
 				text = text[0:1].lower() + text[1:]
 
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument.uid, issue_uid, self)
-
 				statement_dict = dict()
 				statement_dict['id'] = str(argument.uid)
 				statement_dict['title'] = _tn.get(_tn.because) + ' ' + text
+				statement_dict['values'] = premise_array
 				statement_dict['attitude'] = 'justify'
 				statement_dict['url'] = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(statement_dict)
@@ -798,6 +810,7 @@ class QueryHelper(object):
 			statement_dict = dict()
 			statement_dict['id'] = '0'
 			statement_dict['title'] = _tn.get(_tn.newPremiseRadioButtonText)
+			statement_dict['values'] = [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id':0}]
 			statement_dict['attitude'] = 'justify'
 			statement_dict['url'] = 'null'
 			statements_array.append(statement_dict)
@@ -847,6 +860,7 @@ class QueryHelper(object):
 				statement_dict = dict()
 				statement_dict['id'] = str(argument.uid)
 				statement_dict['title'] = _tn.get(_tn.because) + ' ' + text
+				statement_dict['values'] = [{'title': _tn.get(_tn.because) + ' ' + text, 'id':argument.uid}]
 				statement_dict['attitude'] = 'justify'
 				statement_dict['url'] = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(statement_dict)
@@ -854,10 +868,12 @@ class QueryHelper(object):
 			statement_dict = dict()
 			statement_dict['id'] = '0'
 			statement_dict['title'] = _tn.get(_tn.newPremiseRadioButtonText)
+			statement_dict['values'] = [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id':0}]
 			statement_dict['attitude'] = 'justify'
 			statement_dict['url'] = 'null'
 			statements_array.append(statement_dict)
 
+		logger('-','-', str(statement_dict['values']))
 		return statements_array
 
 	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, lang):
@@ -892,6 +908,7 @@ class QueryHelper(object):
 			statement_dict              = dict()
 			statement_dict['id']        = t
 			statement_dict['title']     = ret_dict[t + '_text']
+			statement_dict['values']    = [{'title': ret_dict[t + '_text'], 'id':t}]
 			statement_dict['attitude']  = t
 			# special case, when the user selectes the support, because this does not need to be justified!
 			if t == 'support':
