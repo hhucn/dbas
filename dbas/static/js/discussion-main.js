@@ -53,23 +53,32 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 		}
 	});
 
+	/*
 	// adding a textarea in the right column
 	$('#' + addConTextareaId).hide().click(function addConTextareaId() {
 		guiHandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
 		$('#' + proposalListGroupId).empty();
 	});
+	*/
 
+	/*
 	// adding a textarea in the left column
 	$('#' + addProTextareaId).hide().click(function addProTextareaId() {
 		guiHandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, 'left', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
 		$('#' + proposalListGroupId).empty();
 	});
+	*/
 
 	// hiding the argument container, when the X button is clicked
 	$('#' + closeStatementContainerId).click(function closeStatementContainerId() {
 		$('#' + addStatementContainerId).hide();
 		$('#' + addStatementErrorContainer).hide();
-		$('#' + addReasonButtonId).attr('checked', false).prop('checked', false).enable = true;
+		$('#' + discussionSpaceId + ' ul').children().last().attr('checked', false).prop('checked', false).enable = true;
+	});
+	$('#' + closePremiseContainerId).click(function closeStatementContainerId() {
+		$('#' + addPremiseContainerId).hide();
+		$('#' + addPremiseErrorContainer).hide();
+		$('#' + discussionSpaceId + ' ul').children().last().attr('checked', false).prop('checked', false).enable = true;
 	});
 
 	// hiding the island view, when the X button is clicked
@@ -280,16 +289,6 @@ setStyleOptions = function (guiHandler){
  * @param ajaxHandler
  */
 setWindowOptions = function(guiHandler, ajaxHandler){
-	var params;
-	/**
-	 * handle toggle button
-	 */
-	if (window.location.href.indexOf('start') != -1){
-		$('#' + discussionAttackSpaceId).show();
-	} else {
-		$('#' + discussionAttackSpaceId).hide();
-	}
-
 	// ajax loading animation
 	$(document).on({
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
@@ -303,35 +302,17 @@ setWindowOptions = function(guiHandler, ajaxHandler){
 		// send request on unload
 	});
 
+	/*
 	$(window).on('resize', function resizeWindow(){
 		// make some things pretty
 		new GuiHandler().setIssueDropDownText(new Helper().resizeIssueText($('#' + issueDropdownButtonID).attr('value')));
 	});
+	*/
 
 	// some hack
 	$('#navbar-left').empty();
 
 	$(window).load( function windowLoad () {
-		var url = window.location.href;
-    	if (url.indexOf(mainpage + 'a') != -1) {
-	    } else if (url.indexOf(mainpage + 'discussion/start') != -1) {
-			startDiscussion();
-		} else {
-			$('#' + discussionContainerId).fadeIn('fast');
-
-			params = window.location.href.substr(window.location.href.indexOf('discussion/') + 'discussion/'.length);
-			params = params.substr(0,params.indexOf('/'));
-			// get issue list
-			ajaxHandler.getIssueList();
-
-			if (url.indexOf(attrStart) != -1) {										ajaxHandler.getStartStatements();
-			} else if (url.indexOf(attrChooseActionForStatement) != -1){ 			ajaxHandler.getTextForStatement(params);
-			} else if (url.indexOf(attrGetPremisesForStatement) != -1){				ajaxHandler.getPremiseForStatement(params, id_premisses);
-			} else if (url.indexOf(attrMoreAboutArgument) != -1){ 					ajaxHandler.getPremiseForStatement(params, id_premisse);
-			} else if (url.indexOf(attrReplyForPremisegroup) != -1){				ajaxHandler.getReplyForPremiseGroup(params);
-			} else if (url.indexOf(attrReplyForResponseOfConfrontation) != -1){		ajaxHandler.handleReplyForResponseOfConfrontation(params);
-			} else if (url.indexOf(attrReplyForArgument) != -1){					ajaxHandler.getReplyForArgument(params);	}
-		}
 	});
 };
 
@@ -351,7 +332,7 @@ $(function () {
 	setStyleOptions(guiHandler);
 	setWindowOptions(guiHandler, ajaxHandler);
 
-	// new function
+	// render html tags
 	replaceHtmlTags($('#discussions-header'));
 	$.each($('#discussions-space label'), function () {
 		replaceHtmlTags($(this));
@@ -366,6 +347,8 @@ replaceHtmlTags = function(element){
 	var text = element.text();
 	text = text.replace('&lt;strong&gt;', '<strong>');
 	text = text.replace('&lt;/strong&gt;', '</strong>');
+	text = text.replace('&lt;a', '<a');
+	text = text.replace('&lt;/a', '</a');
 	text = text.replace('&lt;br&gt;', '<br>');
 	element.html(text);
 };

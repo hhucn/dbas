@@ -127,15 +127,15 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="island-view-container" style="display:none" tal:condition="extras.show_display_style">
-			<button id="close-island-view-ontainer" type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<div class="container colored_container" id="island-view-container" style="display:none">
+			<button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row" id="island-view-container-space">
 
 				<div class="row" style="padding-left: 15px; padding-right: 15px;">
 					<div class="col-md-12">
-						<h4><span i18n:translate="island_view_for">Island View for</span>: <strong><strong tal:replace="extras.island.heading"></strong></strong>
+						<h4>Island View for <strong>this is not true for overbred races does not hold, because even overbred races can be taught.</strong>
 						</h4>
 					</div>
 				</div>
@@ -143,39 +143,23 @@
 				<div class="row" style="padding-left: 15px; padding-right: 15px;">
 					<div class="col-md-6">
 						<div class="panel panel-default">
-							<div class="panel-heading">
+							< div class="panel-heading">
 								<h5>
-									<span class="text-danger text-center">✗</span> 
-									<span tal:replace="extras.island.undermine_text"></span>
+									<span class="text-danger text-center">✗</span>
+									Wrong, it is false that <strong>even overbred races can be taught</strong>.
 								</h5>
 						</div>
 						<div class="panel-body">
-							<ul>
-								<li tal:repeat="entry extras.island.undermine" tal:attributes="class entry">
-									<label tal:attributes="for entry.id">
-										<span tal:content="entry.text"></span>
-									</label>
-								</li>
-							</ul>
+							<label>No entries</label>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5>
-								<span class="text-success text-center">✓</span> 
-								<span tal:replace="extras.island.support_text"></span>
-							</h5>
-						</div>
+							<h5><span class="text-success text-center">✓</span> Right, it is true that <strong>even overbred races can be taught</strong>.</h5></div>
 						<div class="panel-body">
-							<ul>
-								<li tal:repeat="entry extras.island.support" tal:attributes="class entry">
-									<label tal:attributes="for entry.id">
-										<span tal:content="entry.text"></span>
-									</label>
-								</li>
-							</ul>
+							<label>No entries</label>
 						</div>
 					</div>
 				</div>
@@ -187,35 +171,20 @@
 						<div class="panel-heading">
 							<h5>
 								<span class="text-danger text-center">✗</span>
-								<span tal:replace="extras.island.undercut_text"></span>
+								Right, <strong>even overbred races can be taught</strong>, but I do not believe that this is a good argument for <strong>This is not true for overbred races</strong>.
 							</h5>
 						</div>
 						<div class="panel-body">
-							<ul>
-								<li tal:repeat="entry extras.island.undercut" tal:attributes="class entry">
-									<label tal:attributes="for entry.id">
-										<span tal:content="entry.text"></span>
-									</label>
-								</li>
-							</ul>
+							<label>No entries</label>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5><span class="text-success text-center">✓</span> 
-								<span tal:replace="extras.island.overbid_text"></span>
-							</h5>
-						</div>
+							<h5><span class="text-success text-center">✓</span> Right, <strong>even overbred races can be taught</strong>, and I do believe that this is a good counter-argument for <strong>This is not true for overbred races</strong>.</h5></div>
 						<div class="panel-body">
-							<ul>
-								<li tal:repeat="entry extras.island.overbid" tal:attributes="class entry">
-									<label tal:attributes="for entry.id">
-										<span tal:content="entry.text"></span>
-									</label>
-								</li>
-							</ul>
+							<label>No entries</label>
 						</div>
 					</div>
 				</div>
@@ -226,16 +195,12 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h5>
-								<span class="text-danger text-center">✗</span>
-								<span tal:replace="extras.island.rebut_text"></span>
-							</h5>
-						</div>
+							<span class="text-danger text-center">✗</span>
+							Right, <strong>even overbred races can be taught</strong> and I do accept that this is an argument for <strong>This is not true for overbred races</strong>. However, I have a much stronger argument for rejecting that <strong>This is not true for overbred races</strong>.</h5></div>
 						<div class="panel-body">
 							<ul>
-								<li tal:repeat="entry extras.island.rebut" tal:attributes="class entry">
-									<label tal:attributes="for entry.id">
-										<span tal:content="entry.text"></span>
-									</label>
+								<li>
+									<label>For debugging argument 83. Thus this supports 'This is not true for overbred [...]'</label>
 								</li>
 							</ul>
 						</div>
