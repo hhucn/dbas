@@ -377,31 +377,31 @@ class DatabaseHelper(object):
 		_t = Translator(lang)
 
 		# everything for or against the premise
-		undermine = qh.get_undermines_for_argument_uid('undermine', arg_uid)
+		undermine = qh.get_undermines_for_argument_uid(arg_uid)
 		counter.append(len(undermine) if undermine else 0)
-		return_dict.update(undermine if undermine else {'undermine': {0: _t.get(_t.no_entry)}})
+		return_dict.update({'undermine': undermine} if undermine else {'undermine': {0: _t.get(_t.no_entry)}})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(undermine)) if undermine else 'no') + ' undermines')
 
-		support = qh.get_supports_for_argument_uid('support', arg_uid)
+		support = qh.get_supports_for_argument_uid(arg_uid)
 		counter.append(len(support) if support else 0)
-		return_dict.update(support if support else {'support': {0: _t.get(_t.no_entry)}})
+		return_dict.update({'support': support} if support else {'support': {0: _t.get(_t.no_entry)}})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(support)) if support else 'no') + ' supports')
 
 		# everything for or against the relation
-		undercut = qh.get_undercuts_for_argument_uid('undercut', arg_uid)
+		undercut = qh.get_undercuts_for_argument_uid(arg_uid)
 		counter.append(len(undercut) if undercut else 0)
-		return_dict.update(undercut if undercut else {'undercut': {0: _t.get(_t.no_entry)}})
+		return_dict.update({'undercut': undercut} if undercut else {'undercut': {0: _t.get(_t.no_entry)}})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(undercut)) if undercut else 'no') + ' undercuts')
 
-		overbid = qh.get_overbids_for_argument_uid('overbid', arg_uid)
+		overbid = qh.get_overbids_for_argument_uid(arg_uid)
 		counter.append(len(overbid) if overbid else 0)
-		return_dict.update(overbid if overbid else {'overbid': {0: _t.get(_t.no_entry)}})
+		return_dict.update({'overbid': overbid} if overbid else {'overbid': {0: _t.get(_t.no_entry)}})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(overbid)) if overbid else 'no') + ' overbids')
 
 		# everything for or against the conclusion
-		rebut = qh.get_rebuts_for_argument_uid('rebut', arg_uid)
+		rebut = qh.get_rebuts_for_argument_uid(arg_uid)
 		counter.append(len(rebut) if rebut else 0)
-		return_dict.update(rebut if rebut else {'rebut': {0: _t.get(_t.no_entry)}})
+		return_dict.update({'rebut': rebut} if rebut else {'rebut': {0: _t.get(_t.no_entry)}})
 		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(rebut)) if rebut else 'no') + ' rebuts')
 
 		logger('DatabaseHelper', 'get_everything_for_island_view', 'summary: ' + str(counter[0]) + ' undermines')

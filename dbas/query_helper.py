@@ -350,7 +350,7 @@ class QueryHelper(object):
 		text, uids = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 		return text, uids
 
-	def get_undermines_for_premises(self, key, premises_as_statements_uid):
+	def get_undermines_for_premises(self, premises_as_statements_uid):
 		"""
 
 		:param premises_as_statements_uid:
@@ -360,7 +360,6 @@ class QueryHelper(object):
 		"""
 		logger('QueryHelper', 'get_undermines_for_premises', 'main')
 		return_dict = {}
-		index = 0
 		given_undermines = set()
 		for s_uid in premises_as_statements_uid:
 			logger('QueryHelper', 'get_undermines_for_premises', 'db_undermine against Argument.conclusion_uid=='+str(s_uid))
@@ -368,21 +367,14 @@ class QueryHelper(object):
 			for undermine in db_undermine:
 				if undermine.premisesGroup_uid not in given_undermines:
 					given_undermines.add(undermine.premisesGroup_uid)
-					db_undermine_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=undermine.premisesGroup_uid).first()
 					logger('QueryHelper', 'get_undermines_for_premises', 'found db_undermine ' + str(undermine.uid))
-					return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(undermine.premisesGroup_uid)
-					return_dict[key + str(index) + 'id'] = undermine.premisesGroup_uid
-					return_dict[key + str(index) + '_statement_id'] = db_undermine_premises.statement_uid
-					return_dict[key + str(index) + '_argument_id'] = undermine.uid
-					index += 1
-		return_dict[key] = str(index)
+					return_dict[str(undermine.uid)], uids = QueryHelper().get_text_for_premisesGroup_uid(undermine.premisesGroup_uid)
 		return return_dict
 
-	def get_undermines_for_argument_uid(self, key, argument_uid):
+	def get_undermines_for_argument_uid(self, argument_uid):
 		"""
 		Calls get_undermines_for_premises('reason', premises_as_statements_uid)
 		:param argument_uid: uid of the specified argument
-		:param issue:
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(argument_uid))
@@ -400,9 +392,9 @@ class QueryHelper(object):
 		if len(premises_as_statements_uid) == 0:
 			return None
 
-		return self.get_undermines_for_premises(key, premises_as_statements_uid)
+		return self.get_undermines_for_premises(premises_as_statements_uid)
 
-	def get_overbids_for_argument_uid(self, key, argument_uid):
+	def get_overbids_for_argument_uid(self, argument_uid):
 		"""
 		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, True)
 		:param argument_uid: uid of the specified argument
@@ -410,9 +402,9 @@ class QueryHelper(object):
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_overbids_for_argument_uid', 'main')
-		return self.get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, True)
+		return self.get_attack_or_support_for_justification_of_argument_uid(argument_uid, True)
 
-	def get_undercuts_for_argument_uid(self, key, argument_uid):
+	def get_undercuts_for_argument_uid(self, argument_uid):
 		"""
 		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, False)
 		:param argument_uid:
@@ -421,19 +413,17 @@ class QueryHelper(object):
 		:return:
 		"""
 		logger('QueryHelper', 'get_undercuts_for_argument_uid', 'main')
-		return self.get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, False)
+		return self.get_attack_or_support_for_justification_of_argument_uid(argument_uid, False)
 
-	def get_rebuts_for_arguments_conclusion_uid(self, key, conclusion_statements_uid, is_current_argument_supportive):
+	def get_rebuts_for_arguments_conclusion_uid(self, conclusion_statements_uid, is_current_argument_supportive):
 		"""
 
-		:param key:
 		:param conclusion_statements_uid:
 		:param is_current_argument_supportive:
 		:param issue:
 		:return:
 		"""
 		return_dict = {}
-		index = 0
 		given_rebuts = set()
 		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' + str(conclusion_statements_uid)
 		       + ', is_current_argument_supportive ' + str(is_current_argument_supportive) + ' (searching for the opposite)')
@@ -442,30 +432,23 @@ class QueryHelper(object):
 		for rebut in db_rebut:
 			if rebut.premisesGroup_uid not in given_rebuts:
 				given_rebuts.add(rebut.premisesGroup_uid)
-				db_rebut_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=rebut.premisesGroup_uid).first()
 				logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
-				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(rebut.premisesGroup_uid)
-				return_dict[key + str(index) + 'id'] = rebut.premisesGroup_uid
-				return_dict[key + str(index) + '_statement_id'] = db_rebut_premises.statement_uid
-				return_dict[key + str(index) + '_argument_id'] = rebut.uid
-				index += 1
-		return_dict[key] = str(len(db_rebut))
+				return_dict[str(rebut.uid)], uids = QueryHelper().get_text_for_premisesGroup_uid(rebut.premisesGroup_uid)
 		return return_dict
 
-	def get_rebuts_for_argument_uid(self, key, argument_uid):
+	def get_rebuts_for_argument_uid(self, argument_uid):
 		"""
 		Calls self.get_rebuts_for_arguments_conclusion_uid('reason', Argument.conclusion_uid)
 		:param argument_uid: uid of the specified argument
-		:param issue:
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_rebuts_for_argument_uid', 'main')
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 		if not db_argument:
 			return None
-		return self.get_rebuts_for_arguments_conclusion_uid(key, db_argument.conclusion_uid, db_argument.isSupportive)
+		return self.get_rebuts_for_arguments_conclusion_uid(db_argument.conclusion_uid, db_argument.isSupportive)
 
-	def get_supports_for_argument_uid(self, key, argument_uid):
+	def get_supports_for_argument_uid(self, argument_uid):
 		"""
 
 		:param argument_uid: uid of the specified argument
@@ -475,7 +458,6 @@ class QueryHelper(object):
 
 		return_dict = {}
 		given_supports = set()
-		index = 0
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).join(
 			PremiseGroup).first()
 		db_arguments_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=db_argument.premisesGroup_uid).all()
@@ -488,18 +470,12 @@ class QueryHelper(object):
 
 			for support in db_supports:
 				if support.premisesGroup_uid not in given_supports:
-					db_support_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=support.premisesGroup_uid).first()
-					return_dict[key + str(index)], trash = self.get_text_for_premisesGroup_uid(support.premisesGroup_uid)
-					return_dict[key + str(index) + 'id'] = support.premisesGroup_uid
-					return_dict[key + str(index) + '_statement_id'] = db_support_premises.statement_uid
-					index += 1
+					return_dict[str(support.uid)], trash = self.get_text_for_premisesGroup_uid(support.premisesGroup_uid)
 					given_supports.add(support.premisesGroup_uid)
-
-		return_dict[key] = str(index)
 
 		return None if len(return_dict) == 0 else return_dict
 
-	def get_attack_or_support_for_justification_of_argument_uid(self, key, argument_uid, is_supportive):
+	def get_attack_or_support_for_justification_of_argument_uid(self, argument_uid, is_supportive):
 		"""
 
 		:param key:
@@ -509,7 +485,6 @@ class QueryHelper(object):
 		:return:
 		"""
 		return_dict = {}
-		index = 0
 		logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 		       'db_undercut against Argument.argument_uid=='+str(argument_uid))
 		db_relation = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==is_supportive,
@@ -522,16 +497,9 @@ class QueryHelper(object):
 		for relation in db_relation:
 			if relation.premisesGroup_uid not in given_relations:
 				given_relations.add(relation.premisesGroup_uid)
-				db_relation_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=relation.premisesGroup_uid).first()
 				logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 						'found relation, argument uid ' + str(relation.uid))
-				return_dict[key + str(index)], uids = QueryHelper().get_text_for_premisesGroup_uid(relation.premisesGroup_uid)
-				return_dict[key + str(index) + 'id'] = relation.premisesGroup_uid
-				return_dict[key + str(index) + '_statement_id'] = db_relation_premises.statement_uid
-				return_dict[key + str(index) + '_argument_id'] = relation.uid
-				index += 1
-				#return_dict[key + str(index) + 'id'] = ','.join(uids)
-		return_dict[key] = str(len(db_relation))
+				return_dict[str(relation.uid)], uids = QueryHelper().get_text_for_premisesGroup_uid(relation.premisesGroup_uid)
 		return return_dict
 
 	def get_user_with_same_opinion(self, argument_uid, lang):
