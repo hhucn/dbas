@@ -956,8 +956,6 @@ class QueryHelper(object):
 
 		return return_dict
 
-
-
 	def get_everything_for_island_view(self, arg_uid, lang):
 		"""
 
@@ -976,11 +974,17 @@ class QueryHelper(object):
 		overbid     = self.get_overbids_for_argument_uid(arg_uid)
 		rebut       = self.get_rebuts_for_argument_uid(arg_uid)
 
-		return_dict.update({'undermine': undermine} if undermine else {'undermine': {'id': 0, 'text': _t.get(_t.no_entry)}})
-		return_dict.update({'support':   support}   if support   else {'support':   {'id': 0, 'text': _t.get(_t.no_entry)}})
-		return_dict.update({'undercut':  undercut}  if undercut  else {'undercut':  {'id': 0, 'text': _t.get(_t.no_entry)}})
-		return_dict.update({'overbid':   overbid}   if overbid   else {'overbid':   {'id': 0, 'text': _t.get(_t.no_entry)}})
-		return_dict.update({'rebut':     rebut}     if rebut     else {'rebut':     {'id': 0, 'text': _t.get(_t.no_entry)}})
+		undermine   = undermine if undermine else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+		support     = support   if support   else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+		undercut    = undercut  if undercut  else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+		overbid     = overbid   if overbid   else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+		rebut       = rebut     if rebut     else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+
+		return_dict.update({'undermine': undermine})
+		return_dict.update({'support':   support})
+		return_dict.update({'undercut':  undercut})
+		return_dict.update({'overbid':   overbid})
+		return_dict.update({'rebut':     rebut})
 
 		logger('QueryHelper', 'get_everything_for_island_view', 'summary: ' + str(len(undermine)) + ' undermines')
 		logger('QueryHelper', 'get_everything_for_island_view', 'summary: ' + str(len(support)) + ' supports')

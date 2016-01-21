@@ -373,27 +373,18 @@ class Dbas(object):
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid)
 			item_dict       = _qh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, lang)
-			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, is_attack, argument_id=argument_uid)
+			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, is_attack, argument_id=statement_or_arg_id)
 
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
 
-		if extras_dict['show_display_style']:
-			island_dict = DatabaseHelper().get_everything_for_island_view(statement_or_arg_id, lang)
-			island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
-			                                                                                    island_dict['conclusion'],
-			                                                                                    False, False))
-			extras_dict['island'] = island_dict
-			logger('-','-','-')
-			for i in island_dict:
-				logger('IS','-','-')
-				logger('IS','k', str(i))
-				logger('IS','v', str(island_dict[i]))
-			for i in item_dict:
-				logger('IT','-','-')
-				logger('IT','k', str(i))
-				logger('IT','v', str(item_dict[i]))
+		#if extras_dict['show_display_style']:
+		#	island_dict = QueryHelper().get_everything_for_island_view(statement_or_arg_id, lang)
+		#	island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
+		#	                                                                                    island_dict['conclusion'],
+		#	                                                                                    False, False))
+		#	extras_dict['island'] = island_dict
 
 		return {
 			'layout': self.base_layout(),

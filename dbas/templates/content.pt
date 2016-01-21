@@ -127,7 +127,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="island-view-container" style="display:none">ss
+		<div class="container colored_container" id="island-view-container" style="display:none">
 			<button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -143,11 +143,12 @@
 				<div class="row" style="padding-left: 15px; padding-right: 15px;">
 					<div class="col-md-6">
 						<div class="panel panel-default">
-							< div class="panel-heading">
+							<div class="panel-heading">
 								<h5>
 									<span class="text-danger text-center">✗</span>
 									Wrong, it is false that <strong>even overbred races can be taught</strong>.
 								</h5>
+							</div>
 						</div>
 						<div class="panel-body">
 							<label>No entries</label>
@@ -215,7 +216,6 @@
 			</div>
 
 		</div>
-		</div>
 
 		<div class="container colored_container" id="graph-view-container" style="display:none"></div>
 
@@ -227,7 +227,7 @@
 			<div class="col-md-10">
 				<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
 					<h4>
-						<span i18n:translate="what_is_your_idea"_text
+						<span i18n:translate="what_is_your_idea">
 							What is your idea? What should we do?
 						</span>
 					</h4>
@@ -308,7 +308,6 @@
 				</div>
 			</div>
 		</div>
-
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
