@@ -87,6 +87,11 @@ body.loading .ajaxloader {
 	color: #bcbcbc;
 }
 
+.row{
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
 :-moz-placeholder {
 	/* Mozilla Firefox 4 to 18 */
 	color: #bcbcbc;

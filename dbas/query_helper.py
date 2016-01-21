@@ -615,13 +615,13 @@ class QueryHelper(object):
 		all_array = []
 		for issue in db_issues:
 			issue_dict = dict()
-			issue_dict['slug'] = issue.get_slug()
-			issue_dict['title'] = issue.title
-			issue_dict['url'] = UrlManager(issue.get_slug()).get_slug_url(True)
-			issue_dict['info'] = issue.info
+			issue_dict['slug']      = issue.get_slug()
+			issue_dict['title']     = issue.title
+			issue_dict['url']       = UrlManager(issue.get_slug()).get_slug_url(True)
+			issue_dict['info']      = issue.info
 			issue_dict['arg_count'] = self.get_number_of_arguments(issue.uid)
-			issue_dict['date'] = self.sql_timestamp_pretty_print(str(issue.date), lang)
-			issue_dict['enabled'] = 'disabled' if str(id) == str(issue.uid) else 'enabled'
+			issue_dict['date']      = self.sql_timestamp_pretty_print(str(issue.date), lang)
+			issue_dict['enabled']   = 'disabled' if str(id) == str(issue.uid) else 'enabled'
 			all_array.append(issue_dict)
 
 		return {'slug': slug, 'info': info, 'title': title, 'id': id, 'arg_count': arg_count, 'date': date, 'all': all_array}
@@ -949,6 +949,8 @@ class QueryHelper(object):
 		# add everything for the island view
 		if show_display_styles:
 			island_dict = self.get_everything_for_island_view(argument_id, lang)
+			island_dict['premise'] = island_dict['premise'][0:1].lower() + island_dict['premise'][1:]
+			island_dict['conclusion'] = island_dict['conclusion'][0:1].lower() + island_dict['conclusion'][1:]
 			island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
 			                                                                                    island_dict['conclusion'],
 			                                                                                    False, False))
