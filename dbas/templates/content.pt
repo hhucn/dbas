@@ -45,10 +45,10 @@
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
 							<li tal:repeat="issue issue.all" tal:attributes="class issue.enabled">
 								<a href="#" tal:attributes="href issue.url">
-									<span tal:replace="issue.title" ></span>
+									<span tal:replace="issue.title"></span>
 									<span class="badge" style="float: right">
 										<span tal:replace="issue.arg_count"></span>
-								</span>
+									</span>
 								</a>
 							</li>
 						</ul>
@@ -84,20 +84,20 @@
 
 					<h4 id="discussions-header"><p tal:replace="discussion.heading"></p></h4>
 					<div id="discussions-space">
-					
+
 						<ul>
-						<li tal:repeat="item item">
-							<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-							<label tal:attributes="for item.id"><span tal:replace="item.title"></span></label>
-						</li>
-					</ul>
-						
+							<li tal:repeat="item item">
+								<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
+								<label tal:attributes="for item.id"><span tal:replace="item.title"></span></label>
+							</li>
+						</ul>
+
 					</div>
 					<div id="discussions-attack-space">
 					</div>
-					
+
 				</div>
-				
+
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
 						<button tal:condition="extras.is_editable" id="edit-statement" type="button" class="button button-block btn-sm btn">
@@ -133,7 +133,123 @@
 			</button>
 			<div class="row" id="island-view-container-space">
 
+				<div class="row" style="padding-left: 15px; padding-right: 15px;">
+					<div class="col-md-12">
+						<h4><span i18n:translate="island_view_for">Island View for</span>: <strong><strong tal:replace="extras.island.heading"></strong></strong>
+						</h4>
+					</div>
+				</div>
+
+				<div class="row" style="padding-left: 15px; padding-right: 15px;">
+					<div class="col-md-6">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h5>
+									<span class="text-danger text-center">✗</span> 
+									<span tal:replace="extras.island.undermine_text"></span>
+								</h5>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="entry extras.island.undermine">
+									<label tal:attributes="for entry.id">
+										<span tal:replace="entry.title"></span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
+								<span class="text-success text-center">✓</span> 
+								<span tal:replace="extras.island.support_text"></span>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="entry extras.island.support">
+									<label tal:attributes="for entry.id">
+										<span tal:replace="entry.title"></span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</div>
+
+			<div class="row" style="padding-left: 15px; padding-right: 15px;">
+				<div class="col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
+								<span class="text-danger text-center">✗</span>
+								<span tal:replace="extras.island.undercut_text"></span>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="entry extras.island.undercut">
+									<label tal:attributes="for entry.id">
+										<span tal:replace="entry.title"></span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5><span class="text-success text-center">✓</span> 
+								<span tal:replace="extras.island.overbid_text"></span>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="entry extras.island.overbid">
+									<label tal:attributes="for entry.id">
+										<span tal:replace="entry.title"></span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" style="padding-left: 15px; padding-right: 15px;">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
+								<span class="text-danger text-center">✗</span>
+								<span tal:replace="extras.island.rebut_text"></span>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="entry extras.island.rebut">
+									<label tal:attributes="for entry.id">
+										<span tal:replace="entry.title"></span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="center text-center">
+				<button id="island-view-add-arguments" type="button" class="button button-block btn btn-primary disabled" data-dismiss="modal">
+					<span i18n:translate="add_statement">Add statement</span>
+				</button>
+			</div>
+
+		</div>
 		</div>
 
 		<div class="container colored_container" id="graph-view-container" style="display:none"></div>
@@ -162,7 +278,7 @@
 			</div>
 			<div class="col-md-1"></div>
 		</div>
-			
+
 		<div class="container colored_container" id="add-premise-container" style="display:none">
 			<button id="close-premise-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
@@ -198,7 +314,7 @@
 			<div class="col-md-1"></div>
 		</div>
 
-		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style" >
+		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style">
 			<div class="row">
 				<h4><p i18n:translate="change_style">Change display style</p></h4>
 				<div class="col-md-4">
@@ -228,7 +344,7 @@
 			</div>
 		</div>
 
-		
+
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-navigationhandler.js')}"></script>
@@ -236,7 +352,7 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
-		
+
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-graph.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-island.js')}"></script>

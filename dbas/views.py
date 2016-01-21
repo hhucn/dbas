@@ -380,6 +380,16 @@ class Dbas(object):
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
 
+		# add everything for the island view
+		if extras_dict['show_display_style']:
+			island_dict = DatabaseHelper().get_everything_for_island_view(statement_or_arg_id, lang)
+			island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
+		                                                                                    island_dict['conclusion'],
+		                                                                                    False))
+			for xyz in island_dict:
+				logger('x', str(xyz), str(island_dict[xyz]))
+			extras_dict['island'] = island_dict
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
@@ -1756,38 +1766,38 @@ class Dbas(object):
 
 		return return_json
 
-	# ajax - for shorten url
-	@view_config(route_name='ajax_get_everything_for_island_view', renderer='json')
-	def get_everything_for_island_view(self):
-		"""
-		Everthing for the island view
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('get_everything_for_island_view', 'def', 'main')
-
-		return_dict = {}
-		try:
-			arg_uid = self.request.params['arg_uid']
-			lang = self.request.params['lang']
-			logger('get_everything_for_island_view', 'def', 'params arg_uid ' + str(arg_uid))
-
-			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang)
-			return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premise'],
-			                                                                                    return_dict['conclusion'],
-			                                                                                    False))
-
-			return_dict['status'] = '1'
-			logger('get_everything_for_island_view', 'return', str(return_dict))
-
-		except KeyError as e:
-			logger('swich_language', 'error', repr(e))
-			return_dict['status'] = '0'
-
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-		return return_json
+#	# ajax - for shorten url
+#	@view_config(route_name='ajax_get_everything_for_island_view', renderer='json')
+#	def get_everything_for_island_view(self):
+#		"""
+#		Everthing for the island view
+#		:return: json-dict()
+#		"""
+#		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+#		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+#
+#		logger('get_everything_for_island_view', 'def', 'main')
+#
+#		return_dict = {}
+#		try:
+#			arg_uid = self.request.params['arg_uid']
+#			lang = self.request.params['lang']
+#			logger('get_everything_for_island_view', 'def', 'params arg_uid ' + str(arg_uid))
+#
+#			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang)
+#			return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premise'],
+#			                                                                                    return_dict['conclusion'],
+#			                                                                                    False))
+#
+#			return_dict['status'] = '1'
+#			logger('get_everything_for_island_view', 'return', str(return_dict))
+#
+#		except KeyError as e:
+#			logger('swich_language', 'error', repr(e))
+#			return_dict['status'] = '0'
+#
+#		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+#		return return_json
 
 	# ajax - for shorten url
 	@view_config(route_name='ajax_get_shortened_url', renderer='json')

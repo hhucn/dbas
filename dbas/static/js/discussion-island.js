@@ -11,9 +11,9 @@ function DiscussionIsland(){
 	 */
 	this.showIsland = function(){
 
-		var url = window.location.href,
-			splits = url.split('/');
-		this.getAllArgumentsForIslandView(splits[6])
+		// var url = window.location.href,
+		// 	splits = url.split('/');
+		// this.getAllArgumentsForIslandView(splits[6])
 	};
 
 	/**
@@ -68,9 +68,9 @@ function DiscussionIsland(){
 	 * @param jsonData json encoded dictionary
 	 */
 	this.displayDataInIslandView = function (jsonData) {
-		var div, row, header, islandViewContainerSpace = $('#' + islandViewContainerSpaceId), helper = new Helper(),
-				titles = [];// = helper.createRelationsTextWithoutConfrontation(jsonData.premise, jsonData.conclusion, false); //  # todo server side
-		// title order = [undermine, support, undercut, overbid, rebut, noopinion]
+		var div, row, header, islandViewContainerSpace = $('#' + islandViewContainerSpaceId),
+				titles = [];
+
 		islandViewContainerSpace.empty();
 		titles[0] = jsonData.undermine_text;
 		titles[1] = jsonData.support_text;

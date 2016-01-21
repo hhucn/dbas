@@ -933,7 +933,6 @@ class QueryHelper(object):
 			discussion_dict['heading'] += (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText)) if logged_in else _t.get(_t.discussionEndFeelFreeToLogin)
 
 
-
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, authenticated_userid, add_premise_supportive=False):
 		"""
 

@@ -12,6 +12,7 @@ from .dictionary_helper import DictionaryHelper
 from .query_helper import QueryHelper
 from .user_management import UserHandler
 from .logger import logger
+from .strings import Translator
 from .tracking_helper import TrackingHelper
 
 # @author Tobias Krauthoff
@@ -373,34 +374,35 @@ class DatabaseHelper(object):
 		qh = QueryHelper()
 		counter = []
 		return_dict = {}
+		_t = Translator(lang)
 
 		# everything for or against the premise
-		args = qh.get_undermines_for_argument_uid('undermines', arg_uid)
-		counter.append(len(args) if args else 0)
-		return_dict.update(args if args else {'undermines': 0})
-		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' undermines')
+		undermine = qh.get_undermines_for_argument_uid('undermine', arg_uid)
+		counter.append(len(undermine) if undermine else 0)
+		return_dict.update(undermine if undermine else {'undermine': {0: _t.get(_t.no_entry)}})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(undermine)) if undermine else 'no') + ' undermines')
 
-		args = qh.get_supports_for_argument_uid('supports', arg_uid)
-		counter.append(len(args) if args else 0)
-		return_dict.update(args if args else {'supports': 0})
-		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' supports')
+		support = qh.get_supports_for_argument_uid('support', arg_uid)
+		counter.append(len(support) if support else 0)
+		return_dict.update(support if support else {'support': {0: _t.get(_t.no_entry)}})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(support)) if support else 'no') + ' supports')
 
 		# everything for or against the relation
-		args = qh.get_undercuts_for_argument_uid('undercuts', arg_uid)
-		counter.append(len(args) if args else 0)
-		return_dict.update(args if args else {'undercuts': 0})
-		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' undercuts')
+		undercut = qh.get_undercuts_for_argument_uid('undercut', arg_uid)
+		counter.append(len(undercut) if undercut else 0)
+		return_dict.update(undercut if undercut else {'undercut': {0: _t.get(_t.no_entry)}})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(undercut)) if undercut else 'no') + ' undercuts')
 
-		args = qh.get_overbids_for_argument_uid('overbids', arg_uid)
-		counter.append(len(args) if args else 0)
-		return_dict.update(args if args else {'overbids': 0})
-		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' overbids')
+		overbid = qh.get_overbids_for_argument_uid('overbid', arg_uid)
+		counter.append(len(overbid) if overbid else 0)
+		return_dict.update(overbid if overbid else {'overbid': {0: _t.get(_t.no_entry)}})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(overbid)) if overbid else 'no') + ' overbids')
 
 		# everything for or against the conclusion
-		args = qh.get_rebuts_for_argument_uid('rebuts', arg_uid)
-		counter.append(len(args) if args else 0)
-		return_dict.update(args if args else {'rebuts': 0})
-		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(args)) if args else 'no') + ' rebuts')
+		rebut = qh.get_rebuts_for_argument_uid('rebut', arg_uid)
+		counter.append(len(rebut) if rebut else 0)
+		return_dict.update(rebut if rebut else {'rebut': {0: _t.get(_t.no_entry)}})
+		logger('DatabaseHelper', 'get_everything_for_island_view', (str(len(rebut)) if rebut else 'no') + ' rebuts')
 
 		logger('DatabaseHelper', 'get_everything_for_island_view', 'summary: ' + str(counter[0]) + ' undermines')
 		logger('DatabaseHelper', 'get_everything_for_island_view', 'summary: ' + str(counter[1]) + ' supports')
@@ -413,7 +415,7 @@ class DatabaseHelper(object):
 		return_dict['conclusion'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid,) \
 			if db_argument.conclusion_uid != 0 else \
 			qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
-		return_dict['argument'] = qh.get_text_for_argument_uid(arg_uid, lang)
+		return_dict['heading'] = qh.get_text_for_argument_uid(arg_uid, lang)
 
 		return return_dict
 

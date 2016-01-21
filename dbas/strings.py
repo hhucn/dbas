@@ -271,6 +271,7 @@ class Translator(object):
 		self.noTrackedData = 'noTrackedData'
 		self.number = 'number'
 		self.note = 'note'
+		self.no_entry = 'no_entry'
 		self.otherParticipantsThinkThat = 'otherParticipantsThinkThat'
 		self.otherParticipantsDontHaveCounter = 'otherParticipantsDontHaveCounter'
 		self.otherParticipantsDontHaveOpinion = 'otherParticipantsDontHaveOpinion'
@@ -627,6 +628,7 @@ class Translator(object):
 		en_lang[self.noTrackedData] =  'No data was tracked.'
 		en_lang[self.number] =  'No'
 		en_lang[self.note] =  'Note'
+		en_lang[self.no_entry] = 'No entry'
 		en_lang[self.otherParticipantsThinkThat] =  'Other partcipants think that'
 		en_lang[self.otherParticipantsDontHaveOpinion] =  'Other partcipants do not have any opinion regarding your selection.'
 		en_lang[self.otherParticipantsDontHaveCounter] =  'Other partcipants do not have any counter-argument for '
@@ -978,6 +980,7 @@ class Translator(object):
 		de_lang[self.noTrackedData] = 'Keine Daten wurden gespeichert.',
 		de_lang[self.number] = 'Nr',
 		de_lang[self.note] = 'Hinweis',
+		de_lang[self.no_entry] = 'Kein Eintrag'
 		de_lang[self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass',
 		de_lang[self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
 		de_lang[self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für ',
