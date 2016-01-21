@@ -259,7 +259,7 @@ class Dbas(object):
 
 		discussion_dict = _qh.prepare_discussion_dict(issue, lang, at_start=True)
 		item_dict       = _qh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang)
-		extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, self.request.authenticated_userid)
+		extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -289,7 +289,6 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		_qh = QueryHelper()
-		_uh = UserHandler()
 		slug            = matchdict['slug'] if 'slug' in matchdict['slug'] else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
@@ -299,7 +298,7 @@ class Dbas(object):
 
 		discussion_dict = _qh.prepare_discussion_dict(statement_id, lang, at_attitude=True)
 		item_dict       = _qh.prepare_item_dict_for_attitude(statement_id, issue, lang)
-		extras_dict     = _qh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, self.request.authenticated_userid)
+		extras_dict     = _qh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, lang, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -345,7 +344,7 @@ class Dbas(object):
 			logger('discussion_justify', 'def', 'justifying position')
 			discussion_dict = _qh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify=True, is_supportive=supportive)
 			item_dict       = _qh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, lang)
-			extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, self.request.authenticated_userid, True)
+			extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, True)
 
 			# is the discussion at the end?
 			if len(item_dict) == 0:
@@ -359,7 +358,7 @@ class Dbas(object):
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive) # todo empty uid
 			discussion_dict = _qh.prepare_discussion_dict(argument_uid, lang, at_dont_know=True, is_supportive=supportive)
 			item_dict       = _qh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, lang)
-			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, self.request.authenticated_userid)
+			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=argument_uid)
 
 			# is the discussion at the end?
 			if len(item_dict) == 0:
@@ -374,21 +373,27 @@ class Dbas(object):
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid)
 			item_dict       = _qh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, lang)
-			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, self.request.authenticated_userid, is_attack)
+			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, is_attack, argument_id=argument_uid)
 
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
 
-		# add everything for the island view
 		if extras_dict['show_display_style']:
 			island_dict = DatabaseHelper().get_everything_for_island_view(statement_or_arg_id, lang)
 			island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
-		                                                                                    island_dict['conclusion'],
-		                                                                                    False))
-			for xyz in island_dict:
-				logger('x', str(xyz), str(island_dict[xyz]))
+			                                                                                    island_dict['conclusion'],
+			                                                                                    False, False))
 			extras_dict['island'] = island_dict
+			logger('-','-','-')
+			for i in island_dict:
+				logger('IS','-','-')
+				logger('IS','k', str(i))
+				logger('IS','v', str(island_dict[i]))
+			for i in item_dict:
+				logger('IT','-','-')
+				logger('IT','k', str(i))
+				logger('IT','v', str(item_dict[i]))
 
 		return {
 			'layout': self.base_layout(),
@@ -432,7 +437,7 @@ class Dbas(object):
 		discussion_dict = _qh.prepare_discussion_dict(arg_id_user, lang, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
 		item_dict       = _qh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, lang)
-		extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, self.request.authenticated_userid)
+		extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=arg_id_user)
 
 		return {
 			'layout': self.base_layout(),

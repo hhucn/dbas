@@ -1200,7 +1200,7 @@ class TextGenerator(object):
 
 		return ret_dict
 
-	def get_relation_text_dict_without_confrontation(self, premises, conclusion, startLowerCase):
+	def get_relation_text_dict_without_confrontation(self, premises, conclusion, startLowerCase, withNoOpinionText):
 		"""
 
 		:param premise:
@@ -1231,8 +1231,9 @@ class TextGenerator(object):
 		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' <strong>' + conclusion + '</strong>.'
 		ret_dict['rebut_text'] = r + ', <strong>' + premise + '</strong> ' + _t.get(_t.iAcceptArgument) + ' <strong>' + conclusion + '</strong>. '\
 		                         + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' <strong>' + conclusion + '</strong>.'
-		ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': <strong>' + conclusion + ', ' + _t.get(_t.because).lower() \
-		                               + ' ' + premise + '</strong>. ' + _t.get(_t.goStepBack) + '.'
+		if withNoOpinionText:
+			ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': <strong>' + conclusion + ', ' + _t.get(_t.because).lower() \
+			                               + ' ' + premise + '</strong>. ' + _t.get(_t.goStepBack) + '.'
 
 		return ret_dict
 
@@ -1424,7 +1425,7 @@ class TextGenerator(object):
 			ret_dict['argument'] = conclusion + ' ' + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] + ' ' + premise
 
 		if supportive:
-			ret_dict.update(_tg.get_relation_text_dict_without_confrontation(premises, conclusion, False))
+			ret_dict.update(_tg.get_relation_text_dict_without_confrontation(premises, conclusion, False, True))
 		else:
 			ret_dict.update(_tg.get_text_dict_for_attacks_only(premises, conclusion, False))
 

@@ -127,7 +127,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="island-view-container" style="display:none">
+		<div class="container colored_container" id="island-view-container" style="display:none" tal:condition="extras.show_display_style">
 			<button id="close-island-view-ontainer" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -151,9 +151,9 @@
 						</div>
 						<div class="panel-body">
 							<ul>
-								<li tal:repeat="entry extras.island.undermine">
+								<li tal:repeat="entry extras.island.undermine" tal:attributes="class entry">
 									<label tal:attributes="for entry.id">
-										<span tal:replace="entry.title"></span>
+										<span tal:content="entry.text"></span>
 									</label>
 								</li>
 							</ul>
@@ -170,9 +170,9 @@
 						</div>
 						<div class="panel-body">
 							<ul>
-								<li tal:repeat="entry extras.island.support">
+								<li tal:repeat="entry extras.island.support" tal:attributes="class entry">
 									<label tal:attributes="for entry.id">
-										<span tal:replace="entry.title"></span>
+										<span tal:content="entry.text"></span>
 									</label>
 								</li>
 							</ul>
@@ -192,9 +192,9 @@
 						</div>
 						<div class="panel-body">
 							<ul>
-								<li tal:repeat="entry extras.island.undercut">
+								<li tal:repeat="entry extras.island.undercut" tal:attributes="class entry">
 									<label tal:attributes="for entry.id">
-										<span tal:replace="entry.title"></span>
+										<span tal:content="entry.text"></span>
 									</label>
 								</li>
 							</ul>
@@ -210,9 +210,9 @@
 						</div>
 						<div class="panel-body">
 							<ul>
-								<li tal:repeat="entry extras.island.overbid">
+								<li tal:repeat="entry extras.island.overbid" tal:attributes="class entry">
 									<label tal:attributes="for entry.id">
-										<span tal:replace="entry.title"></span>
+										<span tal:content="entry.text"></span>
 									</label>
 								</li>
 							</ul>
@@ -232,9 +232,9 @@
 						</div>
 						<div class="panel-body">
 							<ul>
-								<li tal:repeat="entry extras.island.rebut">
+								<li tal:repeat="entry extras.island.rebut" tal:attributes="class entry">
 									<label tal:attributes="for entry.id">
-										<span tal:replace="entry.title"></span>
+										<span tal:content="entry.text"></span>
 									</label>
 								</li>
 							</ul>

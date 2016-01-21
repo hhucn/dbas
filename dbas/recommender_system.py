@@ -169,16 +169,13 @@ class RecommenderHelper(object):
 		# getting undermines or undercuts or rebuts
 		attacks, key = self.__get_attack_for_argument_by_random(argument_uid, issue, queryHelper)
 
-		if not attacks or int(attacks[key]) == 0:
+		if not attacks or len(attacks) == 0:
 			logger('RecommenderHelper', 'get_attack_for_argument_old', 'there is no attack!')
 			return 0, ''
 		else:
-			attack_no = str(random.randrange(0, int(attacks[key]))) # Todo fix random
-			# return_dict['confrontation'] = attacks[key + str(attack_no)]
-			# return_dict['confrontation_id'] = attacks[key + str(attack_no) + 'id']
-			# return_dict['confrontation_argument_id'] = attacks[key + str(attack_no) + '_argument_id']
+			attack_no = random.randrange(0, len(attacks)) # Todo fix random
 
-			return attacks[key + str(attack_no) + '_argument_id'], key
+			return attacks[attack_no]['id'], key
 
 	def get_attack_for_argument_old(self, transaction, user, id_text, pgroup_id, session_id, issue):
 		"""
@@ -365,16 +362,16 @@ class RecommenderHelper(object):
 			attack_list.remove(attack)
 			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
 			if attack == 1:
-				return_dict = queryHelper.get_undermines_for_argument_uid('undermine', argument_uid)
+				return_dict = queryHelper.get_undermines_for_argument_uid(argument_uid)
 				key = 'undermine'
 			elif attack == 5:
-				return_dict = queryHelper.get_rebuts_for_argument_uid('rebut', argument_uid)
+				return_dict = queryHelper.get_rebuts_for_argument_uid(argument_uid)
 				key = 'rebut'
 			else:
-				return_dict = queryHelper.get_undercuts_for_argument_uid('undercut', argument_uid)
+				return_dict = queryHelper.get_undercuts_for_argument_uid(argument_uid)
 				key = 'undercut'
 
-			if return_dict and int(return_dict[key]) != 0:
+			if return_dict and len(return_dict) != 0:
 				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack found')
 				attack_found = True
 				break

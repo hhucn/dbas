@@ -356,6 +356,9 @@ $(function () {
 	$.each($('#discussions-space label'), function () {
 		replaceHtmlTags($(this));
 	});
+	$.each($('.panel-heading h5'), function () {
+		replaceHtmlTags($(this));
+	});
 });
 
 // new

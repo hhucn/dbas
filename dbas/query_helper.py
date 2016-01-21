@@ -359,7 +359,8 @@ class QueryHelper(object):
 		:return:
 		"""
 		logger('QueryHelper', 'get_undermines_for_premises', 'main')
-		return_dict = {}
+		return_array = []
+		index = 0
 		given_undermines = set()
 		for s_uid in premises_as_statements_uid:
 			logger('QueryHelper', 'get_undermines_for_premises', 'db_undermine against Argument.conclusion_uid=='+str(s_uid))
@@ -368,8 +369,12 @@ class QueryHelper(object):
 				if undermine.premisesGroup_uid not in given_undermines:
 					given_undermines.add(undermine.premisesGroup_uid)
 					logger('QueryHelper', 'get_undermines_for_premises', 'found db_undermine ' + str(undermine.uid))
-					return_dict[str(undermine.uid)], uids = QueryHelper().get_text_for_premisesGroup_uid(undermine.premisesGroup_uid)
-		return return_dict
+					tmp_dict = dict()
+					tmp_dict['id'] = undermine.uid
+					tmp_dict['text'], uids = QueryHelper().get_text_for_premisesGroup_uid(undermine.premisesGroup_uid)
+					return_array.append(tmp_dict)
+					index += 1
+		return return_array
 
 	def get_undermines_for_argument_uid(self, argument_uid):
 		"""
@@ -423,8 +428,9 @@ class QueryHelper(object):
 		:param issue:
 		:return:
 		"""
-		return_dict = {}
+		return_array = []
 		given_rebuts = set()
+		index = 0
 		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' + str(conclusion_statements_uid)
 		       + ', is_current_argument_supportive ' + str(is_current_argument_supportive) + ' (searching for the opposite)')
 		db_rebut = DBDiscussionSession.query(Argument).filter(Argument.isSupportive==(not is_current_argument_supportive),
@@ -433,8 +439,13 @@ class QueryHelper(object):
 			if rebut.premisesGroup_uid not in given_rebuts:
 				given_rebuts.add(rebut.premisesGroup_uid)
 				logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
-				return_dict[str(rebut.uid)], uids = QueryHelper().get_text_for_premisesGroup_uid(rebut.premisesGroup_uid)
-		return return_dict
+				tmp_dict = dict()
+				tmp_dict['id'] = rebut.uid
+				tmp_dict['text'], trash = self.get_text_for_premisesGroup_uid(rebut.premisesGroup_uid)
+				return_array.append(tmp_dict)
+				index += 1
+
+		return return_array
 
 	def get_rebuts_for_argument_uid(self, argument_uid):
 		"""
@@ -456,11 +467,12 @@ class QueryHelper(object):
 		"""
 		logger('QueryHelper', 'get_supporRects_for_argument_uid', 'main')
 
-		return_dict = {}
+		return_array = []
 		given_supports = set()
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).join(
 			PremiseGroup).first()
 		db_arguments_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=db_argument.premisesGroup_uid).all()
+		index = 0
 
 		for arguments_premises in db_arguments_premises:
 			db_supports = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==arguments_premises.statement_uid,
@@ -470,10 +482,14 @@ class QueryHelper(object):
 
 			for support in db_supports:
 				if support.premisesGroup_uid not in given_supports:
-					return_dict[str(support.uid)], trash = self.get_text_for_premisesGroup_uid(support.premisesGroup_uid)
+					tmp_dict = dict()
+					tmp_dict['id'] = support.uid
+					tmp_dict['text'], trash = self.get_text_for_premisesGroup_uid(support.premisesGroup_uid)
+					return_array.append(tmp_dict)
+					index += 1
 					given_supports.add(support.premisesGroup_uid)
 
-		return None if len(return_dict) == 0 else return_dict
+		return None if len(return_array) == 0 else return_array
 
 	def get_attack_or_support_for_justification_of_argument_uid(self, argument_uid, is_supportive):
 		"""
@@ -484,12 +500,13 @@ class QueryHelper(object):
 		:param issue:
 		:return:
 		"""
-		return_dict = {}
+		return_array = []
 		logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 		       'db_undercut against Argument.argument_uid=='+str(argument_uid))
 		db_relation = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==is_supportive,
 		                                                              Argument.argument_uid==argument_uid)).all()
 		given_relations = set()
+		index = 0
 
 		if not db_relation:
 			return None
@@ -499,8 +516,12 @@ class QueryHelper(object):
 				given_relations.add(relation.premisesGroup_uid)
 				logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 						'found relation, argument uid ' + str(relation.uid))
-				return_dict[str(relation.uid)], uids = QueryHelper().get_text_for_premisesGroup_uid(relation.premisesGroup_uid)
-		return return_dict
+				tmp_dict = dict()
+				tmp_dict['id'] = relation.uid
+				tmp_dict['text'], trash = self.get_text_for_premisesGroup_uid(relation.premisesGroup_uid)
+				return_array.append(tmp_dict)
+				index += 1
+		return return_array
 
 	def get_user_with_same_opinion(self, argument_uid, lang):
 		"""
@@ -848,7 +869,7 @@ class QueryHelper(object):
 		:param lang:
 		:return:
 		"""
-		_tg = TextGenerator(lang)
+		_tg  = TextGenerator(lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
@@ -857,20 +878,21 @@ class QueryHelper(object):
 			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
 		else:
 			conclusion = self.get_text_for_argument_uid(db_argument.argument_uid, lang)
-		premise, tmp = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
-		conclusion = conclusion[0:1].lower() + conclusion[1:]
-		premise = premise[0:1].lower() + premise[1:]
-		ret_dict = _tg.get_relation_text_dict_without_confrontation(conclusion, premise, False)
-		mode = 't' if isSupportive else 't'
+
+		premise, tmp     = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
+		conclusion       = conclusion[0:1].lower() + conclusion[1:]
+		premise          = premise[0:1].lower() + premise[1:]
+		ret_dict         = _tg.get_relation_text_dict_without_confrontation(conclusion, premise, False, True)
+		mode             = 't' if isSupportive else 't'
 		statements_array = []
-		_um = UrlManager(slug)
+		_um              = UrlManager(slug)
 
 		types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
 		for t in types:
-			statement_dict = dict()
-			statement_dict['id'] = t
-			statement_dict['title'] = ret_dict[t + '_text']
-			statement_dict['attitude'] = t
+			statement_dict              = dict()
+			statement_dict['id']        = t
+			statement_dict['title']     = ret_dict[t + '_text']
+			statement_dict['attitude']  = t
 			# special case, when the user selectes the support, because this does not need to be justified!
 			if t == 'support':
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self)
@@ -900,8 +922,7 @@ class QueryHelper(object):
 		else:
 			discussion_dict['heading'] += (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText)) if logged_in else _t.get(_t.discussionEndFeelFreeToLogin)
 
-
-	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, authenticated_userid, add_premise_supportive=False):
+	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang, authenticated_userid, add_premise_supportive=False, argument_id=0):
 		"""
 
 		:param current_slug:
@@ -914,17 +935,67 @@ class QueryHelper(object):
 		:return:
 		"""
 		_uh = UserHandler()
-		is_logged_in = _uh.is_user_logged_in(authenticated_userid)
-		is_admin     = _uh.is_user_admin(authenticated_userid)
+		return_dict = dict()
+		return_dict['restart_url']            =  UrlManager(current_slug).get_slug_url(True)
+		return_dict['is_editable']            =  is_editable and _uh.is_user_logged_in(authenticated_userid)
+		return_dict['is_reportable']          =  is_reportable
+		return_dict['is_admin']               =  _uh.is_user_admin(authenticated_userid)
+		return_dict['logged_in']              =  authenticated_userid
+		return_dict['show_bar_icon']          =  show_bar_icon
+		return_dict['show_display_style']     =  show_display_styles
+		return_dict['add_premise_supportive'] =  add_premise_supportive
 
-		return {'restart_url': UrlManager(current_slug).get_slug_url(True),
-		        'is_editable': is_editable and is_logged_in,
-		        'is_reportable': is_reportable,
-		        'is_admin': is_admin,
-		        'logged_in': authenticated_userid,
-		        'show_bar_icon': show_bar_icon,
-		        'show_display_style': show_display_styles,
-		        'add_premise_supportive': add_premise_supportive}
+
+		# add everything for the island view
+		if show_display_styles:
+			island_dict = self.get_everything_for_island_view(argument_id, lang)
+			island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
+			                                                                                    island_dict['conclusion'],
+			                                                                                    False, False))
+			return_dict['island'] = island_dict
+
+		return return_dict
+
+
+
+	def get_everything_for_island_view(self, arg_uid, lang):
+		"""
+
+		:param arg_uid:
+		:param lang:
+		:param issue:
+		:return:
+		"""
+		logger('QueryHelper', 'get_everything_for_island_view', 'def with arg_uid: ' + str(arg_uid))
+		return_dict = {}
+		_t = Translator(lang)
+
+		undermine   = self.get_undermines_for_argument_uid(arg_uid)
+		support     = self.get_supports_for_argument_uid(arg_uid)
+		undercut    = self.get_undercuts_for_argument_uid(arg_uid)
+		overbid     = self.get_overbids_for_argument_uid(arg_uid)
+		rebut       = self.get_rebuts_for_argument_uid(arg_uid)
+
+		return_dict.update({'undermine': undermine} if undermine else {'undermine': {'id': 0, 'text': _t.get(_t.no_entry)}})
+		return_dict.update({'support':   support}   if support   else {'support':   {'id': 0, 'text': _t.get(_t.no_entry)}})
+		return_dict.update({'undercut':  undercut}  if undercut  else {'undercut':  {'id': 0, 'text': _t.get(_t.no_entry)}})
+		return_dict.update({'overbid':   overbid}   if overbid   else {'overbid':   {'id': 0, 'text': _t.get(_t.no_entry)}})
+		return_dict.update({'rebut':     rebut}     if rebut     else {'rebut':     {'id': 0, 'text': _t.get(_t.no_entry)}})
+
+		logger('QueryHelper', 'get_everything_for_island_view', 'summary: ' + str(len(undermine)) + ' undermines')
+		logger('QueryHelper', 'get_everything_for_island_view', 'summary: ' + str(len(support)) + ' supports')
+		logger('QueryHelper', 'get_everything_for_island_view', 'summary: ' + str(len(undercut)) + ' undercuts')
+		logger('QueryHelper', 'get_everything_for_island_view', 'summary: ' + str(len(overbid)) + ' overbids')
+		logger('QueryHelper', 'get_everything_for_island_view', 'summary: ' + str(len(rebut)) + ' rebuts')
+
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
+		return_dict['premise'], tmp = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
+		return_dict['conclusion'] = self.get_text_for_statement_uid(db_argument.conclusion_uid,) \
+			if db_argument.conclusion_uid != 0 else \
+			self.get_text_for_argument_uid(db_argument.argument_uid, lang)
+		return_dict['heading'] = self.get_text_for_argument_uid(arg_uid, lang)
+
+		return return_dict
 
 	def get_language(self, request, current_registry):
 		"""
