@@ -706,23 +706,21 @@ class QueryHelper(object):
 
 		if db_statements:
 			for statement in db_statements:
-				statement_dict = dict()
-				statement_dict['id'] = statement.uid
-				statement_dict['title'] = self.get_text_for_statement_uid(statement.uid)
-				statement_dict['values'] = [{'title': self.get_text_for_statement_uid(statement.uid), 'id': statement.uid}]
-				statement_dict['attitude'] = ''
-				statement_dict['url'] = _um.get_url_for_statement_attitude(True, statement.uid)
-				statements_array.append(statement_dict)
+				statements_array.append(self.get_statement_dict(statement.uid,
+				                                                self.get_text_for_statement_uid(statement.uid),
+				                                                [{'title': self.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
+				                                                '',
+				                                                _um.get_url_for_statement_attitude(True, statement.uid),
+				                                                False))
 
 			if logged_in:
 				_tn = Translator(lang)
-				statement_dict = dict()
-				statement_dict['id'] = 0
-				statement_dict['title'] = _tn.get(_tn.newConclusionRadioButtonText)
-				statement_dict['values'] = [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}]
-				statement_dict['attitude'] = 'null'
-				statement_dict['url'] = 'null'
-				statements_array.append(statement_dict)
+				statements_array.append(self.get_statement_dict(0,
+				                                                _tn.get(_tn.newConclusionRadioButtonText),
+				                                                [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
+				                                                'null',
+				                                                'null',
+				                                                False))
 
 		return statements_array
 
@@ -737,34 +735,26 @@ class QueryHelper(object):
 		"""
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 		text = self.get_text_for_statement_uid(statement_uid)
-		text = text[0:1].lower() + text[1:]
 		statements_array = []
 		_um = UrlManager(slug)
 
 		_tn = Translator(lang)
-		statement_dict = dict()
-		statement_dict['id'] = 'agree'
-		statement_dict['title'] = _tn.get(_tn.iAgreeWithInColor) + ' ' + text
-		statement_dict['values'] = [{'title': _tn.get(_tn.iAgreeWithInColor) + ' ' + text, 'id': 'agree'}]
-		statement_dict['attitude'] = 'agree'
-		statement_dict['url'] = _um.get_url_for_justifying_statement(True, statement_uid, 't')
-		statements_array.append(statement_dict)
 
-		statement_dict = dict()
-		statement_dict['id'] = 'disagree'
-		statement_dict['title'] = _tn.get(_tn.iDisagreeWithInColor) + ' ' + text
-		statement_dict['values'] = [{'title': _tn.get(_tn.iDisagreeWithInColor) + ' ' + text, 'id': 'disagree'}]
-		statement_dict['attitude'] = 'disagree'
-		statement_dict['url'] = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
-		statements_array.append(statement_dict)
-
-		statement_dict = dict()
-		statement_dict['id'] = 'dontknow'
-		statement_dict['title'] = _tn.get(_tn.iDoNotKnowInColor) + ' ' + text
-		statement_dict['values'] = [{'title': _tn.get(_tn.iDoNotKnowInColor) + ' ' + text, 'id': 'dontknow'}]
-		statement_dict['attitude'] = 'dontknow'
-		statement_dict['url'] = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
-		statements_array.append(statement_dict)
+		statements_array.append(self.get_statement_dict('agree',
+		                                                _tn.get(_tn.iAgreeWithInColor) + ' ' + text,
+		                                                [{'title': _tn.get(_tn.iAgreeWithInColor) + ' ' + text, 'id': 'agree'}],
+		                                                'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't'),
+		                                                False))
+		statements_array.append(self.get_statement_dict('disagree',
+		                                                _tn.get(_tn.iDisagreeWithInColor) + ' ' + text,
+		                                                [{'title': _tn.get(_tn.iDisagreeWithInColor) + ' ' + text, 'id': 'disagree'}],
+		                                                'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f'),
+		                                                False))
+		statements_array.append(self.get_statement_dict('dontknow',
+		                                                _tn.get(_tn.iDoNotKnowInColor) + ' ' + text,
+		                                                [{'title': _tn.get(_tn.iDoNotKnowInColor) + ' ' + text, 'id': 'dontknow'}],
+		                                                'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd'),
+		                                                False))
 
 		return statements_array
 
@@ -788,32 +778,28 @@ class QueryHelper(object):
 		if db_arguments:
 			for argument in db_arguments:
 				# get all premises in the premisegroup of this argument
-				db_premises = DBDiscussionSession(Premise).filter_by(premisesGroup_uid=argument.premisesGroup_uid).all()
+				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=argument.premisesGroup_uid).all()
 				premise_array = []
 				for premise in db_premises:
 					text = self.get_text_for_statement_uid(premise.statement_uid)
 					premise_array.append({'title': text, 'id': premise.statement_uid})
 
 				text, uid = self.get_text_for_premisesGroup_uid(argument.premisesGroup_uid)
-				text = text[0:1].lower() + text[1:]
 
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument.uid, issue_uid, self)
-				statement_dict = dict()
-				statement_dict['id'] = str(argument.uid)
-				statement_dict['title'] = _tn.get(_tn.because) + ' ' + text
-				statement_dict['values'] = premise_array
-				statement_dict['attitude'] = 'justify'
-				statement_dict['url'] = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
-				statements_array.append(statement_dict)
+				statements_array.append(self.get_statement_dict(str(argument.uid),
+				                                                text,
+				                                                premise_array, 'justify',
+				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
+				                                                True))
 
-			statement_dict = dict()
-			statement_dict['id'] = '0'
-			statement_dict['title'] = _tn.get(_tn.newPremiseRadioButtonText)
-			statement_dict['values'] = [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id':0}]
-			statement_dict['attitude'] = 'justify'
-			statement_dict['url'] = 'null'
-			statements_array.append(statement_dict)
+			statements_array.append(self.get_statement_dict('0',
+			                                                _tn.get(_tn.newPremiseRadioButtonText),
+			                                                [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id':0}],
+			                                                'justify',
+			                                                'null',
+			                                                False))
 
 		return statements_array
 
@@ -852,28 +838,32 @@ class QueryHelper(object):
 		if db_arguments:
 			for argument in db_arguments:
 				text, tmp = self.get_text_for_premisesGroup_uid(argument.premisesGroup_uid)
-				text = text[0:1].lower() + text[1:]
+
+				# get alles premises in this group
+				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=argument.premisesGroup_uid).all()
+				premises_array = []
+				for premise in db_premises:
+					premise_dict = dict()
+					premise_dict['id'] = premise.statement_uid
+					premise_dict['title'] = self.get_text_for_statement_uid(premise.statement_uid)
+					premises_array.append(premise_dict)
 
 				# for each justifying premise, we need a new confrontation:
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self)
+				statements_array.append(self.get_statement_dict(argument.uid,
+				                                                text,
+				                                                premises_array,
+				                                                'justify',
+				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
+				                                                True))
 
-				statement_dict = dict()
-				statement_dict['id'] = str(argument.uid)
-				statement_dict['title'] = _tn.get(_tn.because) + ' ' + text
-				statement_dict['values'] = [{'title': _tn.get(_tn.because) + ' ' + text, 'id':argument.uid}]
-				statement_dict['attitude'] = 'justify'
-				statement_dict['url'] = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
-				statements_array.append(statement_dict)
+			statements_array.append(self.get_statement_dict(0,
+			                                                _tn.get(_tn.newPremiseRadioButtonText),
+			                                                [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
+			                                                'justify',
+			                                                'null',
+			                                                False))
 
-			statement_dict = dict()
-			statement_dict['id'] = '0'
-			statement_dict['title'] = _tn.get(_tn.newPremiseRadioButtonText)
-			statement_dict['values'] = [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id':0}]
-			statement_dict['attitude'] = 'justify'
-			statement_dict['url'] = 'null'
-			statements_array.append(statement_dict)
-
-		logger('-','-', str(statement_dict['values']))
 		return statements_array
 
 	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, lang):
@@ -905,18 +895,13 @@ class QueryHelper(object):
 
 		types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
 		for t in types:
-			statement_dict              = dict()
-			statement_dict['id']        = t
-			statement_dict['title']     = ret_dict[t + '_text']
-			statement_dict['values']    = [{'title': ret_dict[t + '_text'], 'id':t}]
-			statement_dict['attitude']  = t
 			# special case, when the user selectes the support, because this does not need to be justified!
 			if t == 'support':
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self)
-				statement_dict['url'] = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
+				url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
 			else:
-				statement_dict['url'] = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else ''
-			statements_array.append(statement_dict)
+				url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else ''
+			statements_array.append(self.get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url, False))
 
 		return statements_array
 
@@ -952,6 +937,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		_uh = UserHandler()
+		_tn = Translator(lang)
 		return_dict = dict()
 		return_dict['restart_url']            =  UrlManager(current_slug).get_slug_url(True)
 		return_dict['is_editable']            =  is_editable and _uh.is_user_logged_in(authenticated_userid)
@@ -961,6 +947,10 @@ class QueryHelper(object):
 		return_dict['show_bar_icon']          =  show_bar_icon
 		return_dict['show_display_style']     =  show_display_styles
 		return_dict['add_premise_supportive'] =  add_premise_supportive
+		return_dict['title']                  = {'barometer': _tn.get(_tn.opinionBarometer),
+												 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
+												 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
+												 'expert_view': _tn.get(_tn.displayControlDialogExpertBody)}
 
 
 		# add everything for the island view
@@ -1055,6 +1045,17 @@ class QueryHelper(object):
 
 		return issue
 
+	def get_statement_dict(self, id, title, premises, attitude, url, leading_because):
+		if leading_because:
+			title = title[0:1].lower() + title[1:]
+
+		return {'id': id,
+		        'title': title,
+		        'premises': premises,
+		        'attitude': attitude,
+		        'url': url,
+		        'leading_because': leading_because}
+
 	def sql_timestamp_pretty_print(self, ts, lang):
 		"""
 
@@ -1080,7 +1081,7 @@ class UrlManager(object):
 
 	def __init__(self, slug=''):
 		self.url = 'http://localhost:4284/'
-		self.discussion_url = self.url + 'a/'
+		self.discussion_url = self.url + 'd/'
 		self.slug = slug
 
 	def get_slug_url(self, as_location_href):

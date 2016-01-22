@@ -89,13 +89,17 @@
 						<ul>
 							<li tal:repeat="item items">
 								<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-								<!--
-								<label i18n:translate="Because">Because</label>
-                                <label tal:repeat="text item.values" tal:attributes="for item.id; id text.id">
-									<label tal:replace="text.title"></label>
-								</label>
-								-->
+                                <label tal:attributes="for item.id">
+								<span i18n:translate="Because:" tal:condition="item.leading_because">Because:</span>
+
+								<span tal:repeat="premise python: item.premises" tal:attributes="for item.id; id premise.id">
+									<span tal:attributes="for item.id; id premise.id" tal:content="premise.title">premise</span>
+                                    <span i18n:translate="and">and</span>
+								</span>
+                                </label>
+                                <!--
 								<label tal:attributes="for item.id" tal:content="item.title"></label>
+								-->
 							</li>
 						</ul>
 
@@ -125,19 +129,20 @@
 									<div>
 										<span i18n:translate="opinion_barometer">Opinion<br>Barometer</span>
 									</div>
-									<img id="opinion-barometer-img" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" />
+									<img id="opinion-barometer-img" class="icon-badge" alt="icon-bars"
+											 tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" />
 								</div>
 								
 								<div class="display-style-menu"
 										 id="display-style-icon-guided" 
 										 tal:condition="extras.show_display_style">
 									<div>
-										<span i18n:translate="dialog_view">
-											Dialog<br>View</span>
+										<span i18n:translate="dialog_view">Dialog<br>View</span>
 									</div>
 									<img id="display-style-icon-guided-img"
 											 class="icon-badge"
 											 alt="icon-guided"
+											 tal:attributes="title extras.title.guided_view"
 											 src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" />
 								</div>
 								
@@ -145,12 +150,12 @@
 										 id="display-style-icon-island" 
 										 tal:condition="extras.show_display_style">
 									<div>
-										<span i18n:translate="island_view">
-											Island<br>View</span>
+										<span i18n:translate="island_view">Island<br>View</span>
 									</div>
 									<img id="display-style-icon-island-img"
 											 class="icon-badge"
 											 alt="icon-island"
+											 tal:attributes="title extras.title.island_view"
 											 src="${request.static_url('dbas:static/images/icon_island.png')}" title="" />
 								</div>
 								
@@ -158,12 +163,12 @@
 										 id="display-style-icon-expert" 
 										 tal:condition="extras.show_display_style">
 									<div>
-										<span i18n:translate="complete_view">
-											Complete<br>View</span>
+										<span i18n:translate="complete_view">Complete<br>View</span>
 									</div>
 									<img id="display-style-icon-expert-img"
 											 class="icon-badge"
 											 alt="icon-expert"
+											 tal:attributes="title extras.title.expert_view"
 											 src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" />
 								</div>
 							</nav>
