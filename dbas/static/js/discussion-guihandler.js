@@ -969,6 +969,9 @@ function GuiHandler() {
 	 * Dialog based discussion modi
 	 */
 	this.setDisplayStyleAsDiscussion = function () {
+		this.setImageInactive($('#' + displayStyleIconGuidedId));
+		this.setImageActive($('#' + displayStyleIconIslandId));
+		this.setImageActive($('#' + displayStyleIconExpertId));
 		$('#' + islandViewContainerId).hide();
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
@@ -978,6 +981,9 @@ function GuiHandler() {
 	 * Some kind of pro contra list, but how?
 	 */
 	this.setDisplayStyleAsIsland = function () {
+		this.setImageActive($('#' + displayStyleIconGuidedId));
+		this.setImageInactive($('#' + displayStyleIconIslandId));
+		this.setImageActive($('#' + displayStyleIconExpertId));
 		$('#' + islandViewContainerId).fadeIn('slow');
 		$('#' + graphViewContainerId).hide();
 		new DiscussionIsland().showIsland();
@@ -987,6 +993,9 @@ function GuiHandler() {
 	 * Full view, full interaction range for the graph
 	 */
 	this.setDisplayStyleAsGraphView = function () {
+		this.setImageActive($('#' + displayStyleIconGuidedId));
+		this.setImageActive($('#' + displayStyleIconIslandId));
+		this.setImageInactive($('#' + displayStyleIconExpertId));
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
 		new GuiHandler().hideDiscussionError();
@@ -997,9 +1006,7 @@ function GuiHandler() {
 	 * Sets style attributes to default
 	 */
 	this.resetChangeDisplayStyleBox = function () {
-		$('#' + scStyleDialogId).attr('checked', true).prop('checked', true);
-		$('#' + scStyleIslandId).attr('checked', false).prop('checked', false);
-		$('#' + scStyleCompleteId).attr('checked', false).prop('checked', false);
+		this.setDisplayStyleAsDiscussion();
 	};
 
 	/**
@@ -1075,4 +1082,11 @@ function GuiHandler() {
 	this.setIssueInfoText = function(text) {
 		$('#' + issueInfoId).html(text);
 	};
+
+	this.setImageInactive = function(imageElement){
+		imageElement.attr({'style': '-webkit-filter: grayscale(100%); -webkit-filter: blur(100%);'});
+	}
+	this.setImageActive = function(imageElement){
+		imageElement.attr({'style': '-webkit-filter: grayscale(0%); -webkit-filter: blur(0%);'});
+	}
 }

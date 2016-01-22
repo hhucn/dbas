@@ -40,16 +40,6 @@
 	text-align: left;
 }
 
-.icon-badge {
-	margin: auto;
-}
-
-.icon-badge:hover {
-	transform: rotateY(180deg);
-	transition: 0.6s;
-	transform-style: preserve-3d;
-}
-
 .clearfix {
 	clear: both;
 }

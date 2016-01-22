@@ -9,8 +9,9 @@ function DiscussionGraph(){
 	 * Displays a graph of current discussion
 	 */
 	this.showGraph = function(){
-		var container = $('#' + graphViewContainerId),
+		var space = $('#' + graphViewContainerSpaceId),
 			image = 'http://cdno.gettingsmart.com/wp-content/uploads/2013/09/Complex-Mind-Map.png';
-		container.show().empty().append('<img style="width: ' + container.width()+ 'px" src="' + image + '">');
+		space.show().empty().append('<img style="width: ' + space.width()+ 'px" src="' + image + '">');
+		$('#' + graphViewContainerId).show();
 	};
 }

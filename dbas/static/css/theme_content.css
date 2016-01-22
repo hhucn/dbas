@@ -204,13 +204,33 @@
 	visibility: hidden;
 }
 
-#report-statement{
-	background:url(../images/glyphicons_free/glyphicons/glyphicons-197-circle-exclamation-mark.png) no-repeat;
+#report-statement{	background:url(../images/glyphicons_free/glyphicons/glyphicons-197-circle-exclamation-mark.png) no-repeat;
 	background-repeat: no-repeat;
 }
 
 #discussion-sidebar{
 	text-align: right;
+}
+.display-style-menu {
+	opacity: 0;
+}
+
+#display-style-menu-icon .icon-badge,
+#display-style-menu{
+	width: 60px;
+	margin-bottom: 5px;        
+}
+
+.display-style-menu > div{
+	width: 70px;
+	float: left;
+}
+
+#display-style-menu-icon:hover .display-style-menu {
+   opacity: 1;
+   transition: opacity .45s ease-in-out;
+   -moz-transition: opacity .45s ease-in-out;
+   -webkit-transition: opacity .45s ease-in-out;
 }
 
 @media (max-width: 767px) {

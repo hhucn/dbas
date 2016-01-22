@@ -51,18 +51,6 @@ body {
 	height: 100%;
 }
 
-
-/* new scale for bg for retina displays */
-/*
-@media screen and (min-width: 2560px),
-screen and (min-height: 1600px) {
-	body {
-		background: url('../images/bg5.png') repeat fixed center;
-		/* background: #EBEBEB; */
-		/* background: #F5F5F5; */
-/*	}
-}*/
-
 .ajaxloader {
 	display: none;
 	position: fixed;
@@ -273,14 +261,21 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 .icon-badge:hover {
-	-webkit-filter: saturate(200%);
+  -webkit-filter: saturate(2);
+  -webkit-filter: brightness(1.3);
+	transition: 0.6s;
+	transform-style: preserve-3d;
+}
+
+.icon-badge {
+	margin: auto;
 }
 
 .text-hover {
 	color: #2196f3;
 }
 
-.table>thead>tr>th{
+.table th{
 	text-align: center;
 }
 
@@ -373,9 +368,6 @@ comment .container and wrap each container with <div class="coloured-div">
 .share-mail:hover {
 	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail.png') no-repeat 10px 10px;
 }
-
-
-
 
 .share-facebook-small {
 	background: url('../images/glyphicons_free/glyphicons_social/social-31-facebook-small.png') no-repeat 5px 5px;
@@ -499,7 +491,7 @@ comment .container and wrap each container with <div class="coloured-div">
 	color: #a2a2a2;
 	filter: alpha(opacity=20);
 	position: absolute;
-	font-family: helvetica, arial, verdana, sans-serif;
+	font-family: Roboto, helvetica, arial, verdana, sans-serif;
 	top: 0; right: 0;
 	padding: 5px 10px;
 }

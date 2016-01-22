@@ -171,9 +171,13 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 		}
 	});
 
-	$('#' + scStyleDialogId).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	$('#' + scStyleIslandId).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	$('#' + scStyleCompleteId).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	//$('#' + scStyleDialogId).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	//$('#' + scStyleIslandId).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	//$('#' + scStyleCompleteId).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	guiHandler.setImageInactive($('#' + displayStyleIconGuidedId));
+	$('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct () { guiHandler.setDisplayStyleAsDiscussion(); });
+	$('#' + displayStyleIconIslandId).click(function displayStyleIconIslandFct () { guiHandler.setDisplayStyleAsIsland(); });
+	$('#' + displayStyleIconExpertId).click(function displayStyleIconExpertFct () { guiHandler.setDisplayStyleAsGraphView(); });
 
 	/**
 	 * Handling report button
@@ -252,9 +256,8 @@ setStyleOptions = function (guiHandler){
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
-	//$('#' + scStyleIslandId).hide();
-	//$('#' + scStyle2LabelId).hide();
-	//$('#' + scStyle1LabelId).next().hide();
+
+	/*
 	$('#' + displayControlContainerIconGuidedId).click(function displayControlContainerIconGuidedClick(){
 		var f = function dialogStyle () { $('#' + scStyleDialogId).attr('checked', true).prop('checked', true);
 			new InteractionHandler().styleButtonChanged($('#' + scStyleDialogId).attr('id'))};
@@ -270,9 +273,7 @@ setStyleOptions = function (guiHandler){
 			new InteractionHandler().styleButtonChanged($('#' + scStyleCompleteId).attr('id'))};
 		displayConfirmationDialog(_t(displayControlDialogExpertTitle), '<h4>' + _t(displayControlDialogExpertBody) + '</h4>', f, false);
 	});
-	//$('#' + scStyleDialogId).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	//$('#' + scStyleIslandId).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	//$('#' + scStyleCompleteId).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
+	*/
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();

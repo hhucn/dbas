@@ -194,7 +194,8 @@ function News() {
 	 *
 	 */
 	this.setPageNavigation = function () {
-		var counter, row = $('#' + newsBodyId).children().length, pagebreak = 2, pagecounter = 0, newsNavigator = $('#news-navigation'), tmp;
+		var counter, row = $('#' + newsBodyId).children().length, pagebreak = 2, _this = this,
+			pagecounter = 0, newsNavigator = $('#news-navigation'), html, back, forth, pages='', activeElement;
 
 		newsNavigator.empty();
 
@@ -207,12 +208,13 @@ function News() {
 		}
 
 		// create navbar
-		tmp = '<ul class="pagination"><li><a href="#" id="news-back"><span aria-hidden="true">&laquo;</span></a></li>';
+		back = '<li><a href="#" id="news-back"><span aria-hidden="true">&laquo;</span></a></li>';
 		for (counter = 0; counter <= pagecounter; counter++) {
-			tmp += '<li><a href="#" counter="' + counter + '" max="' + pagecounter + '" id="news-' + (counter + 1) + '">' + (counter + 1) + '</a></li>';
+			pages += '<li><a href="#" counter="' + counter + '" id="news-' + (counter + 1) + '">' + (counter + 1) + '</a></li>';
 		}
-		tmp += '<li><a href="#" id="news-forth"><span aria-hidden="true">&raquo;</span></a></li></ul>';
-		newsNavigator.append(tmp);
+		forth= '<li><a href="#" id="news-forth"><span aria-hidden="true">&raquo;</span></a></li>';
+		html = '<ul class="pagination">' + back + pages + forth + '</ul>';
+		newsNavigator.append(html);
 
 		// click events
 		for (counter = 0; counter <= pagecounter; counter++) {
@@ -222,21 +224,47 @@ function News() {
 
 				$('#' + newsBodyId).children().hide();
 				$('.news-page-' + $(this).attr('counter')).show();
-
-				// todo back and forth pagination
-				/*
-				 if ($(this).attr('counter') != 0) 	$('#news-back').parent().removeClass('disabled');
-				 else 								$('#news-back').parent().addClass('disabled');
-				 if ($(this).attr('counter') != $(this).attr('max')) $('#news-forth').parent().removeClass('disabled');
-				 else 												$('#news-forth').parent().addClass('disabled');
-				 */
+				_this.checkNewsForthAndBackButtons($(this).attr('counter'), pagecounter);
 			});
-
-			$('#news-back').parent().hide();
-			$('#news-forth').parent().hide();
-			$('#news-1').parent().addClass('active');
-			$('.news-page-0').show();
 		}
+
+		$('#news-back').click(function () {
+			if (!$(this).parent().hasClass('disabled')) {
+				_this.turnThePage(true);
+			}
+		});
+
+		$('#news-forth').click(function () {
+			if (!$(this).parent().hasClass('disabled')) {
+				_this.turnThePage(false);
+			}
+		});
+
+		$('#news-1').parent().addClass('active');
+		$('.news-page-0').show();
+		$('#news-back').parent().addClass('disabled');
+	};
+
+	this.turnThePage = function (isBack){
+		var activeElement = $('#news-navigation .active'),
+			counter = parseInt(activeElement.children().eq(0).attr('counter'));
+		activeElement.removeClass('active');
+		if (isBack)
+			activeElement.prev().addClass('active');
+		else
+			activeElement.next().addClass('active');
+		$('.news-page-' + counter).hide();
+		counter = isBack ? counter-1 : counter+1;
+		$('.news-page-' + counter).show();
+		this.checkNewsForthAndBackButtons(counter, pagecounter);
+	};
+
+	this.checkNewsForthAndBackButtons = function(currentCounter, max){
+		if (currentCounter == 0)   $('#news-back').parent().addClass('disabled');
+		else                       $('#news-back').parent().removeClass('disabled');
+
+		if (currentCounter == max) $('#news-forth').parent().addClass('disabled');
+		else                       $('#news-forth').parent().removeClass('disabled');
 	};
 
 	// *********************
