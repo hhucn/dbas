@@ -82,7 +82,7 @@ class Dbas(object):
 			'language': str(lang),
 			'title': 'Main',
 			'project': header,
-			'logged_in': self.request.authenticated_userid
+			'extras': {'logged_in': self.request.authenticated_userid},
 		}
 
 	# contact page
@@ -173,7 +173,7 @@ class Dbas(object):
 			'language': str(lang),
 			'title': 'Contact',
 			'project': header,
-			'logged_in': self.request.authenticated_userid,
+			'extras': {'logged_in': self.request.authenticated_userid},
 			'was_message_send': send_message,
 			'contact_error': contact_error,
 			'message': message,
@@ -185,56 +185,6 @@ class Dbas(object):
 			'spamquestion': spamquestion,
 			'csrf_token': token
 		}
-
-	# content page, after login
-	@view_config(route_name='main_discussion', renderer='templates/content_old.pt', permission='everybody')
-	@view_config(route_name='main_discussion_start', renderer='templates/content_old.pt', permission='everybody')
-	@view_config(route_name='main_discussion_issue', renderer='templates/content_old.pt', permission='everybody')
-	def main_discussion(self):
-		"""
-		View configuration for the content view. Only logged in user can reach this page.
-		:return: dictionary with title and project name as well as a value, weather the user is logged in
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('main_discussion', 'def', 'main')
-
-		parameters = self.request.matchdict['parameters'] if 'parameters' in self.request.matchdict else '-'
-
-		logger('main_discussion', 'def', 'is issue in params ' + str('issue' in self.request.params))
-		logger('main_discussion', 'def', 'is issue in session ' + str('issue' in self.request.session))
-		logger('main_discussion', 'def', 'is issue in matchdict ' + str('issue' in self.request.matchdict))
-
-		# first matchdict, then params, then session, afterwards fallback
-		issue = self.request.matchdict['issue'] if 'issue' in self.request.matchdict \
-			else self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
-			else self.request.session['issue'] if 'issue' in self.request.session \
-			else issue_fallback
-
-		# save issue in session
-		self.request.session['issue'] = issue
-		logger('main_discussion', 'def', 'set session[issue] to ' + str(issue))
-
-		# checks whether the current user is admin
-		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		logger('main_discussion', 'def', 'return')
-		return {
-			'layout': self.base_layout(),
-			'language': str(lang),
-			'title': 'Content',
-			'project': header,
-			'logged_in': self.request.authenticated_userid,
-			'is_admin': is_admin,
-			'parameters': parameters,
-			'issue': issue
-		}
-
-
 
 	# content page
 	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
@@ -269,7 +219,7 @@ class Dbas(object):
 
 			'issue': issue_dict,
 			'discussion': discussion_dict,
-			'item': item_dict,
+			'items': item_dict,
 			'extras': extras_dict
 		}
 
@@ -308,7 +258,7 @@ class Dbas(object):
 
 			'issue': issue_dict,
 			'discussion': discussion_dict,
-			'item': item_dict,
+			'items': item_dict,
 			'extras': extras_dict
 		}
 
@@ -439,11 +389,9 @@ class Dbas(object):
 
 			'issue': issue_dict,
 			'discussion': discussion_dict,
-			'item': item_dict,
+			'items': item_dict,
 			'extras': extras_dict
 		}
-
-
 
 	# settings page, when logged in
 	@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
@@ -562,7 +510,7 @@ class Dbas(object):
 			'language': str(lang),
 			'title': 'News',
 			'project': header,
-			'logged_in': self.request.authenticated_userid,
+			'extras': {'logged_in': self.request.authenticated_userid},
 			'date':date,
 			'is_author': is_author
 		}
@@ -586,7 +534,7 @@ class Dbas(object):
 			'language': str(lang),
 			'title': 'Imprint',
 			'project': header,
-			'logged_in': self.request.authenticated_userid
+			'extras': {'logged_in': self.request.authenticated_userid}
 		}
 
 	# 404 page
@@ -618,540 +566,536 @@ class Dbas(object):
 			'title': 'Error',
 			'project': header,
 			'page_notfound_viewname': self.request.view_name,
-			'logged_in': self.request.authenticated_userid
+			'extras': {'logged_in': self.request.authenticated_userid}
 		}
 
-	#########################################
-	## DISCUSSION VIEWS ## TODO KILL THESE! #
-	#########################################
-
-	# ajax - return all start statements in the database
-	@view_config(route_name='ajax_get_start_statements', renderer='json', check_csrf=False)
-	def get_start_statements(self):
-		"""
-		Returns all positions as dictionary with uid <-> value
-		:needed param self.request.params['issue']: id of the issue
-		:needed param self.request.params['url']: current url for the breadcrumbs
-		:return: list of all positions
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_start_statements', 'def', 'main')
-
-		# update timestamp
-		logger('get_start_statements', 'def',  'update login timestamp')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		return_dict = dict()
-		try:
-			logger('get_start_statements', 'def', 'read params')
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-
-			# reset and save url for breadcrumbs
-			url = self.request.params['url']
-			BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
-			BreadcrumbHelper().save_breadcrumb_for_user(transaction, self.request.authenticated_userid, url, 'Start',
-			                                            self.request.session.id)
-
-			if issue == 'undefined':
-				logger('get_start_statements', 'def', 'issue is undefined -> fallback')
-				issue = issue_fallback
-				return_dict['reset_url'] = 'true'
-				return_dict['reset_issue'] = issue
-			else:
-				logger('get_start_statements', 'def', 'issue found')
-
-			return_dict.update(DatabaseHelper().get_start_statements(issue))
-		except KeyError as e:
-			logger('get_start_statements', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - getting text for a statement
-	@view_config(route_name='ajax_get_text_for_statement', renderer='json', check_csrf=False)
-	def get_text_for_statement(self):
-		"""
-		Returns text of a statement
-		:needed param self.request.params['uid']: id of the statement
-		:needed param self.request.params['issue']: id of the issue
-		:needed param self.request.params['url']: current url for the breadcrumbs
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('get_text_for_statement', 'def', 'main')
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		return_dict = {}
-		try:
-			logger('get_text_for_statement', 'def', 'read params: ' + str(self.request.params))
-			uid = self.request.params['uid'].split('=')[1]
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-
-			# reset and save url for breadcrumbs
-			url = self.request.params['url']
-			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid,
-			                                                               url, uid, False, '', lang, self.request.session.id)
-			logger('get_text_for_statement', 'def', 'uid: ' + uid)
-			logger('get_text_for_statement', 'def', 'issue ' + str(issue))
-			return_dict = DatabaseHelper().get_text_for_statement(uid, issue)
-			_t = Translator(lang)
-			text = ' <b>' + return_dict['text'][0:1].lower() + return_dict['text'][1:] + '</b>'
-			return_dict['discussion_description'] = _t.get(_t.whatDoYouThinkAbout) + text + '?'
-			return_dict['agree'] = _t.get(_t.iAgreeWithInColor) + text
-			return_dict['disagree'] = _t.get(_t.iDisagreeWithInColor) + text
-			return_dict['dont_know'] = _t.get(_t.iDoNotKnowInColor) + ', ' + _t.get(_t.showMeAnArgumentFor)[0:1].lower() + _t.get(_t.showMeAnArgumentFor)[1:] + text
-
-			return_dict['status'] = '1'
-		except KeyError as e:
-			logger('get_text_for_statement', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - getting text for a statement
-	@view_config(route_name='ajax_get_premise_for_statement', renderer='json', check_csrf=False)
-	def get_premise_for_statement(self):
-		"""
-		Returns random premisses for a statement
-		:needed param self.request.params['uid']: id of the statement
-		:needed param self.request.params['supportive']: does the user agrees or disagrees?
-		:needed param self.request.params['issue']: id of the issue
-		:needed param self.request.params['url']: current url for the breadcrumbs
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('ajax_get_premise_for_statement', 'def', 'main')
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		return_dict = {}
-		try:
-			logger('ajax_get_premise_for_statement', 'def', 'read params: ' + str(self.request.params))
-			uid = self.request.params['uid'].split('=')[1]
-			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-
-			# reset and save url for breadcrumbs
-			url = self.request.params['url']
-			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
-			                                                               uid, True, '', lang, self.request.session.id)
-			# DO NOT increase weight of statement, because this is the "do not know"-trace
-
-			logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid + ', supportive:' + str(supportive) + ', issue: ' + str(issue))
-
-			return_dict = RecommenderHelper().get_premise_for_statement_old(transaction, uid, supportive, self.request.authenticated_userid,
-			                                                                self.request.session.id, issue)
-
-			conclusion = return_dict['currentStatement']['text'][0:1].lower() + return_dict['currentStatement']['text'][1:]
-			return_dict.update(TextGenerator(lang).get_text_for_premise_for_statement(conclusion,
-			                                                                          return_dict['premises'],
-			                                                                          supportive,
-			                                                                          UserHandler().is_user_logged_in(self.request.authenticated_userid)))
-
-
-			return_dict['status'] = '1'
-		except KeyError as e:
-			logger('ajax_get_premise_for_statement', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - getting all premisses for a statement
-	@view_config(route_name='ajax_get_premises_for_statement', renderer='json', check_csrf=False)
-	def get_premises_for_statement(self):
-		"""
-		Returns all premisses for a statement
-		:needed param self.request.params['uid']: id of the statement
-		:needed param self.request.params['supportive']: does the user agrees or disagrees?
-		:needed param self.request.params['issue']: id of the issue
-		:needed param self.request.params['url']: current url for the breadcrumbs
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('get_premises_for_statement', 'def', 'main')
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		return_dict = {}
-		try:
-			logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
-			uid = self.request.params['uid'].split('=')[1]
-			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
-
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-
-			# reset and save url for breadcrumbs
-			url = self.request.params['url']
-			BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
-			                                                               uid, True, supportive, lang, self.request.session.id)
-
-			logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', supportive ' + str(supportive) + ', issue ' + str(issue))
-
-			return_dict = RecommenderHelper().get_premises_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
-			                                                             self.request.session.id, issue)
-			_t = Translator(lang)
-			text = return_dict['currentStatement']['text'][0:1].lower() + return_dict['currentStatement']['text'][1:]
-			if len(return_dict['premises']) == 0:
-				return_dict['discussion_description'] = _t.get(_t.firstPremiseText1) + ' <b>' + text + '</b>' + (' ' + _t.get(_t.doesNotHold) if not supportive else '') + '.<br><br>' + _t.get(_t.firstPremiseText2)
-			else:
-				return_dict['discussion_description'] = _t.get(_t.sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> ' + (_t.get(_t.isTrue) if supportive else _t.get(_t.isFalse))
-
-			return_dict['status'] = '1'
-		except KeyError as e:
-			logger('get_premises_for_statement', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - get reply for a premise group
-	@view_config(route_name='ajax_reply_for_premisegroup', renderer='json', check_csrf=False)
-	def reply_for_premisegroup(self):
-		"""
-		Get reply for a premise
-		:needed param self.request.params['pgroup']: id of current premisegroup | combined this is an argument
-		:needed param self.request.params['conclusion']: id of current conclusion | combined this is an argument
-		:needed param self.request.params['issue']: id of the issue
-		:needed param self.request.params['url']: current url for the breadcrumbs
-		:return: dictionary with every arguments
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('reply_for_premisegroup', 'def', 'main')
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		return_dict = {}
-		try:
-			logger('reply_for_premisegroup', 'def', 'read params: ' + str(self.request.params))
-			pgroup = self.request.params['pgroup'].split('=')[1]
-			conclusion = self.request.params['conclusion'].split('=')[1]
-			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-
-			logger('reply_for_premisegroup', 'def', 'issue ' + str(issue) + ', pgroup ' + str(pgroup) + ', conclusion ' + str(conclusion))
-
-			# check for additional params, maybe they were set by breadcrumbs
-			url = self.request.matchdict['url'] if 'url' in self.request.matchdict else '-'
-			attack_with = ''
-			attack_arg = ''
-			if 'attack_with=' in url and 'attack_arg=' in url:
-				pos1 = url.find('attack_with=') + len('attack_with=')
-				pos2 = url.find('&', pos1)
-				attack_with = url[pos1:pos2]
-				pos1 = url.find('attack_arg=') + len('attack_arg=')
-				pos2 = url.find('/', pos1)
-				attack_arg = url[pos1:pos2]
-
-			# get argument by system or with params, when we are navigating with breadcrumbs
-			#return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction,
-			#                                                                                 self.request.authenticated_userid,
-			#                                                                                 pgroup, conclusion,
-			#                                                                                 self.request.session.id,
-			#                                                                                 supportive, issue)
-
-			# Track will be saved in the method, whereby we differentiate between an 'normal' request and one,
-			# which was saved in the breadcrumbs to prevent the random attack
-			if attack_arg is '' or attack_with is '':
-				return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction,
-				                                                                                 self.request.authenticated_userid,
-				                                                                                 pgroup, conclusion,
-				                                                                                 self.request.session.id,
-				                                                                                 supportive, issue)
-				logger('reply_for_premisegroup', 'def', 'status I ' + str(status))
-			else:
-				return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup_by_args(attack_with,
-				                                                                                         attack_arg,
-				                                                                                         pgroup,
-				                                                                                         conclusion,
-				                                                                                         issue)
-				logger('reply_for_premisegroup', 'def', 'status II ' + str(status))
-
-			_tg = TextGenerator(lang)
-			conclusion_text = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
-			relation = return_dict['relation'] if 'relation' in return_dict else None
-			if status != 0:
-			# rate premise, because here we have the first argument ever!
-			# votes for the oposite will decreased in the WeightingHelper
-				WeightingHelper().add_vote_for_argument(return_dict['argument_uid'], self.request.authenticated_userid, transaction)
-				url = self.request.params['url'] # TODO better url for noticing attacking arguments
-				additional_params = dict()
-				additional_params['confrontation_argument_uid'] = return_dict['confrontation_argument_id']
-				additional_params['attack'] = return_dict['attack']
-				BreadcrumbHelper().save_breadcrumb_for_user_with_argument_parts(transaction,
-				                                                                self.request.authenticated_userid,
-				                                                                url,
-				                                                                pgroup,
-				                                                                conclusion,
-				                                                                issue,
-				                                                                supportive,
-				                                                                self.request.session.id,
-				                                                                lang,
-				                                                                additional_params)
-				return_dict['argument'] = QueryHelper().get_text_for_argument_uid(return_dict['argument_uid'], lang)
-
-				return_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(return_dict['premise_text'],
-				                                                                                     conclusion_text,
-				                                                                                     relation,
-				                                                                                     supportive,
-				                                                                                     return_dict['attack'],
-				                                                                                     url,
-				                                                                                     return_dict['confrontation'],
-				                                                                                     False)
-				return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
-			                                                                conclusion_text,
-			                                                                return_dict['premise_text'],
-			                                                                False,
-			                                                                supportive))
-			else:
-				return_dict['discussion_description'] = _tg.get_text_for_status_zero_in_confrontation(return_dict['premise_text'],
-				                                                                                      conclusion_text,
-				                                                                                      relation)
-
-			return_dict['supportive'] = str(supportive)
-			return_dict['status'] = str(status)
-			return_dict['same_opinion'] = QueryHelper().get_user_with_same_opinion(return_dict['argument_uid'] if 'argument_uid' in return_dict else 0, lang) # todo use this
-
-			transaction.commit()
-		except KeyError as e:
-			logger('reply_for_premisegroup', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - get reply for an argument
-	@view_config(route_name='ajax_reply_for_argument', renderer='json', check_csrf=False)
-	def reply_for_argument(self):
-		"""
-		Get reply for an argument
-		:needed param self.request.params['issue']: id of the issue
-		:needed param self.request.params['id_text']: ....
-		:needed param self.request.params['pgroup']: ....
-		:needed param self.request.params['url']: current url for the breadcrumbs
-		:return: dictionary with every arguments
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('reply_for_argument', 'def', 'main')
-
-		# get language
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		return_dict = {}
-		try:
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
-			id_text = self.request.params['id_text'].split('=')[1]
-			pgroup_id = self.request.params['pgroup'].split('=')[1]
-			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
-
-			# reset and save url for breadcrumbs
-			url = self.request.params['url']
-			BreadcrumbHelper().save_breadcrumb_for_user_with_premissegroups_uid(transaction,
-			                                                                    self.request.authenticated_userid, url,
-			                                                                    id_text.split('_')[2], pgroup_id, issue,
-			                                                                    self.request.session.id)
-
-			logger('reply_for_argument', 'def', 'issue ' + str(issue) + ', id_text ' + str(id_text) + ', pgroup_id ' + str(pgroup_id) + ', supportive ' + str(supportive))
-			# track will be saved in the method
-			return_dict, status = RecommenderHelper().get_attack_for_argument_old(transaction,
-			                                                                      self.request.authenticated_userid,
-			                                                                      id_text, pgroup_id,
-			                                                                      self.request.session.id, issue)
-
-			_tg = TextGenerator(lang)
-			return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
-			                                                            return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1],
-			                                                            return_dict['premise_text'],
-			                                                            False,
-			                                                            supportive))
-
-			premise = return_dict['premise_text']
-			conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
-			relation = return_dict['relation'] if 'relation' in return_dict else None
-			if int(status) == 0:
-				return_dict['discussion_description'] = _tg.get_text_for_status_zero_in_confrontation(premise, conclusion, relation)
-			else:
-				return_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(premise,
-				                                                                                     conclusion,
-				                                                                                     relation,
-				                                                                                     supportive,
-				                                                                                     return_dict['attack'],
-				                                                                                     url,
-				                                                                                     return_dict['confrontation'],
-				                                                                                     True)
-
-			# rate argument, cause this is between confrontations
-			WeightingHelper().add_vote_for_argument(int(id_text.split('_')[2]), self.request.authenticated_userid, transaction)
-
-			return_dict['status'] = str(status)
-			return_dict['argument_uid'] = str(id_text.split('_')[2])
-		except KeyError as e:
-			logger('reply_for_argument', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
-		return_dict['same_opinion'] = QueryHelper().get_user_with_same_opinion(return_dict['argument_uid'] if 'argument_uid' in return_dict else 0, lang) # todo use this
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - get reply for a confrontation
-	@view_config(route_name='ajax_reply_for_response_of_confrontation', renderer='json', check_csrf=False)
-	def reply_for_response_of_confrontation(self):
-		"""
-		:needed param self.request.params['id']: x1_argument_x2, where x1 is the name of dbas confrontation and x2 the argument, which gets attacked
-		:needed param self.request.params['relation']: name of the current relation. this is the attack of the user
-		:needed param self.request.params['issue']: id of the issue
-		:needed param self.request.params['url']: current url for the breadcrumbs
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('reply_for_response_of_confrontation', 'def', 'main')
-
-		# get language
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		return_dict = {}
-		try:
-			# IMPORTANT: Supports are a special case !
-			uid_text = self.request.params['id'].split('=')[1]
-			relation = self.request.params['relation'].split('=')[1]
-			confrontation = uid_text.split('_')[2]
-			exception_rebut = True if uid_text.split('_')[1] == 'attacking' else False
-			issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
-			supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
-			supportive_argument = True if 'support' in uid_text else False
-
-			# reset and save url for breadcrumbs
-			url = self.request.params['url']
-			BreadcrumbHelper().save_breadcrumb_for_user_with_premissegroup_of_arguments_uid(transaction, self.request.authenticated_userid, url,
-			                                                                                confrontation, issue, uid_text.split('_')[0],
-			                                                                                self.request.session.id, lang)
-
-			# track will be saved in get_reply_confrontation_response
-			logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text + ', last relation ' + relation + ', confrontation ' +  confrontation + ', issue ' + str(issue) + ', exception_rebut ' + str(exception_rebut))
-
-			# IMPORTANT: Supports are a special case !
-			if 'support' in uid_text:
-				logger('reply_for_response_of_confrontation', 'def', 'path a1')
-				return_dict, status = RecommenderHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
-				                                                                             uid_text, self.request.session.id, issue, lang)
-				# rate argument, cause supports are special cases
-				WeightingHelper().add_vote_for_argument(int(uid_text.split('_')[2]), self.request.authenticated_userid, transaction)
-
-			else:
-				logger('reply_for_response_of_confrontation', 'def', 'path a2')
-				return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, self.request.authenticated_userid,
-				                                                                         uid_text, self.request.session.id,
-				                                                                         exception_rebut, issue, lang)
-
-			return_dict['status'] = status
-			return_dict['last_relation'] = relation
-			return_dict['confrontation_uid'] = confrontation
-			transaction.commit()
-			confrontation_text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
-
-			logger('reply_for_response_of_confrontation', 'def', 'adding confrontation_text: ' + confrontation_text)
-			return_dict['confrontation_text'] = confrontation_text
-
-			# IMPORTANT: Supports are a special case !
-			_tg = TextGenerator(lang)
-			conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
-			relation = return_dict['relation'] if 'relation' in return_dict else None
-			premise = return_dict['premise_text'] if 'premise_text' in return_dict else return_dict['premisegroup']
-			attack = return_dict['attack']
-			attack_or_confrontation = return_dict['confrontation'] if 'confrontation' in return_dict else confrontation_text
-			argument = QueryHelper().get_text_for_argument_uid((int(confrontation)), lang)
-
-			return_dict.update(_tg.get_text_for_response_of_confrontation(argument,
-			                                                              conclusion,
-			                                                              relation,
-			                                                              premise,
-			                                                              attack,
-			                                                              attack_or_confrontation,
-			                                                              supportive,
-			                                                              'support' in uid_text,
-			                                                              supportive_argument,
-			                                                              self.request.authenticated_userid,
-			                                                              url,
-			                                                              status))
-			return_dict['same_opinion'] = QueryHelper().get_user_with_same_opinion(int(uid_text.split('_')[2]), lang) # todo use this
-
-
-		except KeyError as e:
-			logger('reply_for_response_of_confrontation', 'error', repr(e))
-			return_dict['status'] = '-1'
-
-		return_dict['logged_in'] = self.request.authenticated_userid
-		return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
+	# # ajax - return all start statements in the database
+	# @view_config(route_name='ajax_get_start_statements', renderer='json', check_csrf=False)
+	# def get_start_statements(self):
+	# 	"""
+	# 	Returns all positions as dictionary with uid <-> value
+	# 	:needed param self.request.params['issue']: id of the issue
+	# 	:needed param self.request.params['url']: current url for the breadcrumbs
+	# 	:return: list of all positions
+	# 	"""
+	# 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+	# 	logger('get_start_statements', 'def', 'main')
+	#
+	# 	# update timestamp
+	# 	logger('get_start_statements', 'def',  'update login timestamp')
+	# 	UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+	#
+	# 	return_dict = dict()
+	# 	try:
+	# 		logger('get_start_statements', 'def', 'read params')
+	# 		issue = self.request.params['issue'] if 'issue' in self.request.params \
+	# 			else self.request.session['issue'] if 'issue' in self.request.session \
+	# 			else issue_fallback
+	#
+	# 		# reset and save url for breadcrumbs
+	# 		url = self.request.params['url']
+	# 		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
+	# 		BreadcrumbHelper().save_breadcrumb_for_user(transaction, self.request.authenticated_userid, url, 'Start',
+	# 		                                            self.request.session.id)
+	#
+	# 		if issue == 'undefined':
+	# 			logger('get_start_statements', 'def', 'issue is undefined -> fallback')
+	# 			issue = issue_fallback
+	# 			return_dict['reset_url'] = 'true'
+	# 			return_dict['reset_issue'] = issue
+	# 		else:
+	# 			logger('get_start_statements', 'def', 'issue found')
+	#
+	# 		return_dict.update(DatabaseHelper().get_start_statements(issue))
+	# 	except KeyError as e:
+	# 		logger('get_start_statements', 'error', repr(e))
+	# 		return_dict['status'] = '-1'
+	#
+	# 	return_dict['logged_in'] = self.request.authenticated_userid
+	# 	return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
+	# 	return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+	#
+	# 	return return_json
+	#
+	# # ajax - getting text for a statement
+	# @view_config(route_name='ajax_get_text_for_statement', renderer='json', check_csrf=False)
+	# def get_text_for_statement(self):
+	# 	"""
+	# 	Returns text of a statement
+	# 	:needed param self.request.params['uid']: id of the statement
+	# 	:needed param self.request.params['issue']: id of the issue
+	# 	:needed param self.request.params['url']: current url for the breadcrumbs
+	# 	:return: json-dict()
+	# 	"""
+	# 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+	# 	UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+	#
+	# 	logger('get_text_for_statement', 'def', 'main')
+	#
+	# 	try:
+	# 		lang = str(self.request.cookies['_LOCALE_'])
+	# 	except KeyError:
+	# 		lang = get_current_registry().settings['pyramid.default_locale_name']
+	#
+	# 	return_dict = {}
+	# 	try:
+	# 		logger('get_text_for_statement', 'def', 'read params: ' + str(self.request.params))
+	# 		uid = self.request.params['uid'].split('=')[1]
+	# 		issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+	# 			else self.request.session['issue'] if 'issue' in self.request.session \
+	# 			else issue_fallback
+	#
+	# 		# reset and save url for breadcrumbs
+	# 		url = self.request.params['url']
+	# 		BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid,
+	# 		                                                               url, uid, False, '', lang, self.request.session.id)
+	# 		logger('get_text_for_statement', 'def', 'uid: ' + uid)
+	# 		logger('get_text_for_statement', 'def', 'issue ' + str(issue))
+	# 		return_dict = DatabaseHelper().get_text_for_statement(uid, issue)
+	# 		_t = Translator(lang)
+	# 		text = ' <b>' + return_dict['text'][0:1].lower() + return_dict['text'][1:] + '</b>'
+	# 		return_dict['discussion_description'] = _t.get(_t.whatDoYouThinkAbout) + text + '?'
+	# 		return_dict['agree'] = _t.get(_t.iAgreeWithInColor) + text
+	# 		return_dict['disagree'] = _t.get(_t.iDisagreeWithInColor) + text
+	# 		return_dict['dont_know'] = _t.get(_t.iDoNotKnowInColor) + ', ' + _t.get(_t.showMeAnArgumentFor)[0:1].lower() + _t.get(_t.showMeAnArgumentFor)[1:] + text
+	#
+	# 		return_dict['status'] = '1'
+	# 	except KeyError as e:
+	# 		logger('get_text_for_statement', 'error', repr(e))
+	# 		return_dict['status'] = '-1'
+	#
+	# 	return_dict['logged_in'] = self.request.authenticated_userid
+	# 	return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
+	# 	return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+	#
+	# 	return return_json
+	#
+	# # ajax - getting text for a statement
+	# @view_config(route_name='ajax_get_premise_for_statement', renderer='json', check_csrf=False)
+	# def get_premise_for_statement(self):
+	# 	"""
+	# 	Returns random premisses for a statement
+	# 	:needed param self.request.params['uid']: id of the statement
+	# 	:needed param self.request.params['supportive']: does the user agrees or disagrees?
+	# 	:needed param self.request.params['issue']: id of the issue
+	# 	:needed param self.request.params['url']: current url for the breadcrumbs
+	# 	:return: json-dict()
+	# 	"""
+	# 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+	# 	UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+	#
+	# 	logger('ajax_get_premise_for_statement', 'def', 'main')
+	#
+	# 	try:
+	# 		lang = str(self.request.cookies['_LOCALE_'])
+	# 	except KeyError:
+	# 		lang = get_current_registry().settings['pyramid.default_locale_name']
+	#
+	# 	return_dict = {}
+	# 	try:
+	# 		logger('ajax_get_premise_for_statement', 'def', 'read params: ' + str(self.request.params))
+	# 		uid = self.request.params['uid'].split('=')[1]
+	# 		supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+	# 		issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+	# 			else self.request.session['issue'] if 'issue' in self.request.session \
+	# 			else issue_fallback
+	#
+	# 		# reset and save url for breadcrumbs
+	# 		url = self.request.params['url']
+	# 		BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
+	# 		                                                               uid, True, '', lang, self.request.session.id)
+	# 		# DO NOT increase weight of statement, because this is the "do not know"-trace
+	#
+	# 		logger('ajax_get_premise_for_statement', 'def', 'uid: ' + uid + ', supportive:' + str(supportive) + ', issue: ' + str(issue))
+	#
+	# 		return_dict = RecommenderHelper().get_premise_for_statement_old(transaction, uid, supportive, self.request.authenticated_userid,
+	# 		                                                                self.request.session.id, issue)
+	#
+	# 		conclusion = return_dict['currentStatement']['text'][0:1].lower() + return_dict['currentStatement']['text'][1:]
+	# 		return_dict.update(TextGenerator(lang).get_text_for_premise_for_statement(conclusion,
+	# 		                                                                          return_dict['premises'],
+	# 		                                                                          supportive,
+	# 		                                                                          UserHandler().is_user_logged_in(self.request.authenticated_userid)))
+	#
+	#
+	# 		return_dict['status'] = '1'
+	# 	except KeyError as e:
+	# 		logger('ajax_get_premise_for_statement', 'error', repr(e))
+	# 		return_dict['status'] = '-1'
+	#
+	# 	return_dict['logged_in'] = self.request.authenticated_userid
+	# 	return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
+	# 	return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+	#
+	# 	return return_json
+	#
+	# # ajax - getting all premisses for a statement
+	# @view_config(route_name='ajax_get_premises_for_statement', renderer='json', check_csrf=False)
+	# def get_premises_for_statement(self):
+	# 	"""
+	# 	Returns all premisses for a statement
+	# 	:needed param self.request.params['uid']: id of the statement
+	# 	:needed param self.request.params['supportive']: does the user agrees or disagrees?
+	# 	:needed param self.request.params['issue']: id of the issue
+	# 	:needed param self.request.params['url']: current url for the breadcrumbs
+	# 	:return: json-dict()
+	# 	"""
+	# 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+	# 	UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+	#
+	# 	logger('get_premises_for_statement', 'def', 'main')
+	#
+	# 	try:
+	# 		lang = str(self.request.cookies['_LOCALE_'])
+	# 	except KeyError:
+	# 		lang = get_current_registry().settings['pyramid.default_locale_name']
+	#
+	# 	return_dict = {}
+	# 	try:
+	# 		logger('get_premises_for_statement', 'def', 'read params: ' + str(self.request.params))
+	# 		uid = self.request.params['uid'].split('=')[1]
+	# 		supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+	#
+	# 		issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+	# 			else self.request.session['issue'] if 'issue' in self.request.session \
+	# 			else issue_fallback
+	#
+	# 		# reset and save url for breadcrumbs
+	# 		url = self.request.params['url']
+	# 		BreadcrumbHelper().save_breadcrumb_for_user_with_statement_uid(transaction, self.request.authenticated_userid, url,
+	# 		                                                               uid, True, supportive, lang, self.request.session.id)
+	#
+	# 		logger('get_premises_for_statement', 'def', 'uid: ' + uid + ', supportive ' + str(supportive) + ', issue ' + str(issue))
+	#
+	# 		return_dict = RecommenderHelper().get_premises_for_statement(transaction, uid, supportive, self.request.authenticated_userid,
+	# 		                                                             self.request.session.id, issue)
+	# 		_t = Translator(lang)
+	# 		text = return_dict['currentStatement']['text'][0:1].lower() + return_dict['currentStatement']['text'][1:]
+	# 		if len(return_dict['premises']) == 0:
+	# 			return_dict['discussion_description'] = _t.get(_t.firstPremiseText1) + ' <b>' + text + '</b>' + (' ' + _t.get(_t.doesNotHold) if not supportive else '') + '.<br><br>' + _t.get(_t.firstPremiseText2)
+	# 		else:
+	# 			return_dict['discussion_description'] = _t.get(_t.sentencesOpenersRequesting[0]) + ' <b>' + text + '</b> ' + (_t.get(_t.isTrue) if supportive else _t.get(_t.isFalse))
+	#
+	# 		return_dict['status'] = '1'
+	# 	except KeyError as e:
+	# 		logger('get_premises_for_statement', 'error', repr(e))
+	# 		return_dict['status'] = '-1'
+	#
+	# 	return_dict['logged_in'] = self.request.authenticated_userid
+	# 	return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
+	# 	return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+	#
+	# 	return return_json
+	#
+	# # ajax - get reply for a premise group
+	# @view_config(route_name='ajax_reply_for_premisegroup', renderer='json', check_csrf=False)
+	# def reply_for_premisegroup(self):
+	# 	"""
+	# 	Get reply for a premise
+	# 	:needed param self.request.params['pgroup']: id of current premisegroup | combined this is an argument
+	# 	:needed param self.request.params['conclusion']: id of current conclusion | combined this is an argument
+	# 	:needed param self.request.params['issue']: id of the issue
+	# 	:needed param self.request.params['url']: current url for the breadcrumbs
+	# 	:return: dictionary with every arguments
+	# 	"""
+	# 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+	# 	UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+	#
+	# 	logger('reply_for_premisegroup', 'def', 'main')
+	#
+	# 	try:
+	# 		lang = str(self.request.cookies['_LOCALE_'])
+	# 	except KeyError:
+	# 		lang = get_current_registry().settings['pyramid.default_locale_name']
+	#
+	# 	return_dict = {}
+	# 	try:
+	# 		logger('reply_for_premisegroup', 'def', 'read params: ' + str(self.request.params))
+	# 		pgroup = self.request.params['pgroup'].split('=')[1]
+	# 		conclusion = self.request.params['conclusion'].split('=')[1]
+	# 		supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+	# 		issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+	# 			else self.request.session['issue'] if 'issue' in self.request.session \
+	# 			else issue_fallback
+	#
+	# 		logger('reply_for_premisegroup', 'def', 'issue ' + str(issue) + ', pgroup ' + str(pgroup) + ', conclusion ' + str(conclusion))
+	#
+	# 		# check for additional params, maybe they were set by breadcrumbs
+	# 		url = self.request.matchdict['url'] if 'url' in self.request.matchdict else '-'
+	# 		attack_with = ''
+	# 		attack_arg = ''
+	# 		if 'attack_with=' in url and 'attack_arg=' in url:
+	# 			pos1 = url.find('attack_with=') + len('attack_with=')
+	# 			pos2 = url.find('&', pos1)
+	# 			attack_with = url[pos1:pos2]
+	# 			pos1 = url.find('attack_arg=') + len('attack_arg=')
+	# 			pos2 = url.find('/', pos1)
+	# 			attack_arg = url[pos1:pos2]
+	#
+	# 		# get argument by system or with params, when we are navigating with breadcrumbs
+	# 		#return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction,
+	# 		#                                                                                 self.request.authenticated_userid,
+	# 		#                                                                                 pgroup, conclusion,
+	# 		#                                                                                 self.request.session.id,
+	# 		#                                                                                 supportive, issue)
+	#
+	# 		# Track will be saved in the method, whereby we differentiate between an 'normal' request and one,
+	# 		# which was saved in the breadcrumbs to prevent the random attack
+	# 		if attack_arg is '' or attack_with is '':
+	# 			return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup(transaction,
+	# 			                                                                                 self.request.authenticated_userid,
+	# 			                                                                                 pgroup, conclusion,
+	# 			                                                                                 self.request.session.id,
+	# 			                                                                                 supportive, issue)
+	# 			logger('reply_for_premisegroup', 'def', 'status I ' + str(status))
+	# 		else:
+	# 			return_dict, status = RecommenderHelper().get_attack_or_support_for_premisegroup_by_args(attack_with,
+	# 			                                                                                         attack_arg,
+	# 			                                                                                         pgroup,
+	# 			                                                                                         conclusion,
+	# 			                                                                                         issue)
+	# 			logger('reply_for_premisegroup', 'def', 'status II ' + str(status))
+	#
+	# 		_tg = TextGenerator(lang)
+	# 		conclusion_text = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
+	# 		relation = return_dict['relation'] if 'relation' in return_dict else None
+	# 		if status != 0:
+	# 		# rate premise, because here we have the first argument ever!
+	# 		# votes for the oposite will decreased in the WeightingHelper
+	# 			WeightingHelper().add_vote_for_argument(return_dict['argument_uid'], self.request.authenticated_userid, transaction)
+	# 			url = self.request.params['url']
+	# 			additional_params = dict()
+	# 			additional_params['confrontation_argument_uid'] = return_dict['confrontation_argument_id']
+	# 			additional_params['attack'] = return_dict['attack']
+	# 			BreadcrumbHelper().save_breadcrumb_for_user_with_argument_parts(transaction,
+	# 			                                                                self.request.authenticated_userid,
+	# 			                                                                url,
+	# 			                                                                pgroup,
+	# 			                                                                conclusion,
+	# 			                                                                issue,
+	# 			                                                                supportive,
+	# 			                                                                self.request.session.id,
+	# 			                                                                lang,
+	# 			                                                                additional_params)
+	# 			return_dict['argument'] = QueryHelper().get_text_for_argument_uid(return_dict['argument_uid'], lang)
+	#
+	# 			return_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(return_dict['premise_text'],
+	# 			                                                                                     conclusion_text,
+	# 			                                                                                     relation,
+	# 			                                                                                     supportive,
+	# 			                                                                                     return_dict['attack'],
+	# 			                                                                                     url,
+	# 			                                                                                     return_dict['confrontation'],
+	# 			                                                                                     False)
+	# 			return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
+	# 		                                                                conclusion_text,
+	# 		                                                                return_dict['premise_text'],
+	# 		                                                                False,
+	# 		                                                                supportive))
+	# 		else:
+	# 			return_dict['discussion_description'] = _tg.get_text_for_status_zero_in_confrontation(return_dict['premise_text'],
+	# 			                                                                                      conclusion_text,
+	# 			                                                                                      relation)
+	#
+	# 		return_dict['supportive'] = str(supportive)
+	# 		return_dict['status'] = str(status)
+	# 		return_dict['same_opinion'] = QueryHelper().get_user_with_same_opinion(return_dict['argument_uid'] if 'argument_uid' in return_dict else 0, lang)
+	#
+	# 		transaction.commit()
+	# 	except KeyError as e:
+	# 		logger('reply_for_premisegroup', 'error', repr(e))
+	# 		return_dict['status'] = '-1'
+	#
+	# 	return_dict['logged_in'] = self.request.authenticated_userid
+	# 	return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
+	# 	return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+	#
+	# 	return return_json
+	#
+	# # ajax - get reply for an argument
+	# @view_config(route_name='ajax_reply_for_argument', renderer='json', check_csrf=False)
+	# def reply_for_argument(self):
+	# 	"""
+	# 	Get reply for an argument
+	# 	:needed param self.request.params['issue']: id of the issue
+	# 	:needed param self.request.params['id_text']: ....
+	# 	:needed param self.request.params['pgroup']: ....
+	# 	:needed param self.request.params['url']: current url for the breadcrumbs
+	# 	:return: dictionary with every arguments
+	# 	"""
+	# 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+	# 	UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+	#
+	# 	logger('reply_for_argument', 'def', 'main')
+	#
+	# 	# get language
+	# 	try:
+	# 		lang = str(self.request.cookies['_LOCALE_'])
+	# 	except KeyError:
+	# 		lang = get_current_registry().settings['pyramid.default_locale_name']
+	#
+	# 	return_dict = {}
+	# 	try:
+	# 		issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+	# 			else self.request.session['issue'] if 'issue' in self.request.session \
+	# 			else issue_fallback
+	# 		issue = issue_fallback if issue == 'undefined' else issue
+	# 		id_text = self.request.params['id_text'].split('=')[1]
+	# 		pgroup_id = self.request.params['pgroup'].split('=')[1]
+	# 		supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+	#
+	# 		# reset and save url for breadcrumbs
+	# 		url = self.request.params['url']
+	# 		BreadcrumbHelper().save_breadcrumb_for_user_with_premissegroups_uid(transaction,
+	# 		                                                                    self.request.authenticated_userid, url,
+	# 		                                                                    id_text.split('_')[2], pgroup_id, issue,
+	# 		                                                                    self.request.session.id)
+	#
+	# 		logger('reply_for_argument', 'def', 'issue ' + str(issue) + ', id_text ' + str(id_text) + ', pgroup_id ' + str(pgroup_id) + ', supportive ' + str(supportive))
+	# 		# track will be saved in the method
+	# 		return_dict, status = RecommenderHelper().get_attack_for_argument_old(transaction,
+	# 		                                                                      self.request.authenticated_userid,
+	# 		                                                                      id_text, pgroup_id,
+	# 		                                                                      self.request.session.id, issue)
+	#
+	# 		_tg = TextGenerator(lang)
+	# 		return_dict.update(_tg.get_confrontation_relation_text_dict(return_dict['confrontation'],
+	# 		                                                            return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1],
+	# 		                                                            return_dict['premise_text'],
+	# 		                                                            False,
+	# 		                                                            supportive))
+	#
+	# 		premise = return_dict['premise_text']
+	# 		conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
+	# 		relation = return_dict['relation'] if 'relation' in return_dict else None
+	# 		if int(status) == 0:
+	# 			return_dict['discussion_description'] = _tg.get_text_for_status_zero_in_confrontation(premise, conclusion, relation)
+	# 		else:
+	# 			return_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(premise,
+	# 			                                                                                     conclusion,
+	# 			                                                                                     relation,
+	# 			                                                                                     supportive,
+	# 			                                                                                     return_dict['attack'],
+	# 			                                                                                     url,
+	# 			                                                                                     return_dict['confrontation'],
+	# 			                                                                                     True)
+	#
+	# 		# rate argument, cause this is between confrontations
+	# 		WeightingHelper().add_vote_for_argument(int(id_text.split('_')[2]), self.request.authenticated_userid, transaction)
+	#
+	# 		return_dict['status'] = str(status)
+	# 		return_dict['argument_uid'] = str(id_text.split('_')[2])
+	# 	except KeyError as e:
+	# 		logger('reply_for_argument', 'error', repr(e))
+	# 		return_dict['status'] = '-1'
+	#
+	# 	return_dict['logged_in'] = self.request.authenticated_userid
+	# 	return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
+	# 	return_dict['same_opinion'] = QueryHelper().get_user_with_same_opinion(return_dict['argument_uid'] if 'argument_uid' in return_dict else 0, lang)
+	# 	return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+	#
+	# 	return return_json
+	#
+	# # ajax - get reply for a confrontation
+	# @view_config(route_name='ajax_reply_for_response_of_confrontation', renderer='json', check_csrf=False)
+	# def reply_for_response_of_confrontation(self):
+	# 	"""
+	# 	:needed param self.request.params['id']: x1_argument_x2, where x1 is the name of dbas confrontation and x2 the argument, which gets attacked
+	# 	:needed param self.request.params['relation']: name of the current relation. this is the attack of the user
+	# 	:needed param self.request.params['issue']: id of the issue
+	# 	:needed param self.request.params['url']: current url for the breadcrumbs
+	# 	:return: json-dict()
+	# 	"""
+	# 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+	# 	UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+	#
+	# 	logger('reply_for_response_of_confrontation', 'def', 'main')
+	#
+	# 	# get language
+	# 	try:
+	# 		lang = str(self.request.cookies['_LOCALE_'])
+	# 	except KeyError:
+	# 		lang = get_current_registry().settings['pyramid.default_locale_name']
+	#
+	# 	return_dict = {}
+	# 	try:
+	# 		# IMPORTANT: Supports are a special case !
+	# 		uid_text = self.request.params['id'].split('=')[1]
+	# 		relation = self.request.params['relation'].split('=')[1]
+	# 		confrontation = uid_text.split('_')[2]
+	# 		exception_rebut = True if uid_text.split('_')[1] == 'attacking' else False
+	# 		issue = self.request.params['issue'].split('=')[1] if 'issue' in self.request.params \
+	# 			else self.request.session['issue'] if 'issue' in self.request.session \
+	# 			else issue_fallback
+	# 		issue = issue_fallback if issue == 'undefined' else issue
+	# 		supportive = True if self.request.params['supportive'].split('=')[1].lower() == 'true' else False
+	# 		supportive_argument = True if 'support' in uid_text else False
+	#
+	# 		# reset and save url for breadcrumbs
+	# 		url = self.request.params['url']
+	# 		BreadcrumbHelper().save_breadcrumb_for_user_with_premissegroup_of_arguments_uid(transaction, self.request.authenticated_userid, url,
+	# 		                                                                                confrontation, issue, uid_text.split('_')[0],
+	# 		                                                                                self.request.session.id, lang)
+	#
+	# 		# track will be saved in get_reply_confrontation_response
+	# 		logger('reply_for_response_of_confrontation', 'def', 'id ' + uid_text + ', last relation ' + relation + ', confrontation ' +  confrontation + ', issue ' + str(issue) + ', exception_rebut ' + str(exception_rebut))
+	#
+	# 		# IMPORTANT: Supports are a special case !
+	# 		if 'support' in uid_text:
+	# 			logger('reply_for_response_of_confrontation', 'def', 'path a1')
+	# 			return_dict, status = RecommenderHelper().get_attack_for_argument_if_support(transaction, self.request.authenticated_userid,
+	# 			                                                                             uid_text, self.request.session.id, issue, lang)
+	# 			# rate argument, cause supports are special cases
+	# 			WeightingHelper().add_vote_for_argument(int(uid_text.split('_')[2]), self.request.authenticated_userid, transaction)
+	#
+	# 		else:
+	# 			logger('reply_for_response_of_confrontation', 'def', 'path a2')
+	# 			return_dict, status = DatabaseHelper().get_reply_confrontations_response(transaction, self.request.authenticated_userid,
+	# 			                                                                         uid_text, self.request.session.id,
+	# 			                                                                         exception_rebut, issue, lang)
+	#
+	# 		return_dict['status'] = status
+	# 		return_dict['last_relation'] = relation
+	# 		return_dict['confrontation_uid'] = confrontation
+	# 		transaction.commit()
+	# 		confrontation_text, uids = QueryHelper().get_text_for_arguments_premisesGroup_uid(confrontation, issue)
+	#
+	# 		logger('reply_for_response_of_confrontation', 'def', 'adding confrontation_text: ' + confrontation_text)
+	# 		return_dict['confrontation_text'] = confrontation_text
+	#
+	# 		# IMPORTANT: Supports are a special case !
+	# 		_tg = TextGenerator(lang)
+	# 		conclusion = return_dict['conclusion_text'][0:1].lower() + return_dict['conclusion_text'][1:]
+	# 		relation = return_dict['relation'] if 'relation' in return_dict else None
+	# 		premise = return_dict['premise_text'] if 'premise_text' in return_dict else return_dict['premisegroup']
+	# 		attack = return_dict['attack']
+	# 		attack_or_confrontation = return_dict['confrontation'] if 'confrontation' in return_dict else confrontation_text
+	# 		argument = QueryHelper().get_text_for_argument_uid((int(confrontation)), lang)
+	#
+	# 		return_dict.update(_tg.get_text_for_response_of_confrontation(argument,
+	# 		                                                              conclusion,
+	# 		                                                              relation,
+	# 		                                                              premise,
+	# 		                                                              attack,
+	# 		                                                              attack_or_confrontation,
+	# 		                                                              supportive,
+	# 		                                                              'support' in uid_text,
+	# 		                                                              supportive_argument,
+	# 		                                                              self.request.authenticated_userid,
+	# 		                                                              url,
+	# 		                                                              status))
+	# 		return_dict['same_opinion'] = QueryHelper().get_user_with_same_opinion(int(uid_text.split('_')[2]), lang)
+	#
+	#
+	# 	except KeyError as e:
+	# 		logger('reply_for_response_of_confrontation', 'error', repr(e))
+	# 		return_dict['status'] = '-1'
+	#
+	# 	return_dict['logged_in'] = self.request.authenticated_userid
+	# 	return_dict['history'] = BreadcrumbHelper().get_breadcrumbs_of_user(self.request.authenticated_userid)
+	# 	return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+	#
+	# 	return return_json
 
 	#######################################
 	## ADDTIONAL AJAX STUFF # USER THINGS #

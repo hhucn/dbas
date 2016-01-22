@@ -35,7 +35,7 @@
 				<ul id="navbar-right" class="nav navbar-nav navbar-right">
 
 					<li id="content-link">
-						<a href="${request.application_url}/discussion/start" title="Get the party started">
+						<a href="${request.application_url}/d" title="Get the party started">
 							<img id="header_letsgo" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="lets_go">Let's go</span>
 						</a>
 					</li>

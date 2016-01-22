@@ -117,10 +117,62 @@
 						</button>
 						<br tal:condition="extras.is_reportable">
 						<br tal:condition="extras.is_reportable">
-						<img tal:condition="extras.show_bar_icon" id="opinion-barometer-img" style="display:none" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="Opinion Barometer" />
+
+						<div id="display-style-menu-icon">
+							<img id="" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" />
+							<nav id="site-navigation">
+								<div class="display-style-menu" tal:condition="extras.show_bar_icon">
+									<div>
+										<span i18n:translate="opinion_barometer">Opinion<br>Barometer</span>
+									</div>
+									<img id="opinion-barometer-img" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" />
+								</div>
+								
+								<div class="display-style-menu"
+										 id="display-style-icon-guided" 
+										 tal:condition="extras.show_display_style">
+									<div>
+										<span i18n:translate="dialog_view">
+											Dialog<br>View</span>
+									</div>
+									<img id="display-style-icon-guided-img"
+											 class="icon-badge"
+											 alt="icon-guided"
+											 src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" />
+								</div>
+								
+								<div class="display-style-menu"
+										 id="display-style-icon-island" 
+										 tal:condition="extras.show_display_style">
+									<div>
+										<span i18n:translate="island_view">
+											Island<br>View</span>
+									</div>
+									<img id="display-style-icon-island-img"
+											 class="icon-badge"
+											 alt="icon-island"
+											 src="${request.static_url('dbas:static/images/icon_island.png')}" title="" />
+								</div>
+								
+								<div class="display-style-menu"
+										 id="display-style-icon-expert" 
+										 tal:condition="extras.show_display_style">
+									<div>
+										<span i18n:translate="complete_view">
+											Complete<br>View</span>
+									</div>
+									<img id="display-style-icon-expert-img"
+											 class="icon-badge"
+											 alt="icon-expert"
+											 src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" />
+								</div>
+							</nav>
+						</div>
+
 					</div>
 				</div>
 			</div>
+
 			<div class="row" id="discussion-failure-row" style="display:none">
 				<div class="col-md-3"></div>
 				<div class="col-md-6">
@@ -249,7 +301,12 @@
 
 		</div>
 
-		<div class="container colored_container" id="graph-view-container" style="display:none"></div>
+		<div class="container colored_container" id="graph-view-container" style="display:none">
+			<button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<div id="graph-view-container-space"></div>
+		</div>
 
 		<div class="container colored_container" id="add-statement-container" style="display:none">
 			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -311,7 +368,7 @@
 			<div class="col-md-1"></div>
 		</div>
 
-		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style">
+		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style" style="display:none">
 			<div class="row">
 				<h4><p i18n:translate="change_style">Change display style</p></h4>
 				<div class="col-md-4">

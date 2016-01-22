@@ -25,7 +25,7 @@
 								</h2>
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
 						<br>
-						<form action="/discussion/start" method="get" class="text-center">
+						<form action="/d" method="get" class="text-center">
 							<input class="button button-block btn btn-lg btn-primary" type="submit" value="Click here to start now!" name="Submit" id="start-discussion-button" />
 						</form>
 						<br>
@@ -88,6 +88,23 @@
 					</div>
 				</div>
 			</div>
+			
+
+			<div class="row">
+				<div class="col-md-4 col-badge">
+					<img id="icon-map" class="icon-badge" alt="icon-scooter" src="${request.static_url('dbas:static/images/icon_scooter.png')}" />
+					<h3 i18n:translate="Fast">Fast</h3>
+				</div>
+				<div class="col-md-4 col-badge">
+					<img id="icon-dialog" class="icon-badge" alt="icon-match" src="${request.static_url('dbas:static/images/icon_match.png')}" />
+					<h3 i18n:translate="dialog_based">Matching ideas</h3>
+			</div>
+				<div class="col-md-4 col-badge">
+					<img id="icon-simple" class="icon-badge" alt="icon-laboratory" src="${request.static_url('dbas:static/images/icon_laboratory.png')}" />
+					<h3 i18n:translate="simple_ui">Based on Science</h3>
+					</div>
+			</div>
+			
 		</div>
 
 		<div class="container colored_container" id="features-template">
@@ -113,7 +130,7 @@
 					<p i18n:translate="dialog_based_content" class="content">Yeah, this is a novel and it is a kind of dialog-based approach. This means that the system will represent argumentations of panelist and claims will be given through the other participants.</p>
 				</div>
 				<div class="col-md-4 col-badge">
-					<img id="icon-simple" class="icon-badge" alt="icon-simple" src="${request.static_url('dbas:static/images/icon_simple.png')}" />
+					<img id="icon-simple" class="icon-badge" alt="icon-lollipop" src="${request.static_url('dbas:static/images/icon_lollipop.png')}" />
 					<h3 i18n:translate="simple_ui">Simple UI</h3>
 					<p i18n:translate="simple_ui_content" class="content">The user interface of D-BAS is simple, clear and easy. At any point during the discussion the choices for the participant are bounded, but not isolating him/her.</p>
 				</div>
