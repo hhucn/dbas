@@ -415,11 +415,12 @@ class Vote(DiscussionBase):
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), primary_key=True)
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	isUpVote = sa.Column(sa.Boolean, nullable=False)
+	isValid = sa.Column(sa.Boolean, nullable=False)
 
 	weights = relationship('Weight', foreign_keys=[weight_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, weight_uid=0, author_uid=0, isUpVote=0):
+	def __init__(self, weight_uid=0, author_uid=0, isUpVote=False, isValid=False):
 		"""
 		Initializes a row
 		:param weight_uid:
@@ -430,6 +431,7 @@ class Vote(DiscussionBase):
 		self.author_uid = author_uid
 		self.isUpVote = isUpVote
 		self.timestamp = func.now()
+		self.isValid = isValid
 
 	def set_up_vote(self, isUpVote):
 		self.isUpVote = isUpVote

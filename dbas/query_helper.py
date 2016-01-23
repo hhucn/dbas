@@ -864,6 +864,7 @@ class QueryHelper(object):
 			                                                'null',
 			                                                False))
 
+
 		return statements_array
 
 	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, lang):

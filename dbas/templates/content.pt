@@ -89,13 +89,11 @@
 						<ul>
 							<li tal:repeat="item items">
 								<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-                                <label tal:attributes="for item.id">
-								<span i18n:translate="Because:" tal:condition="item.leading_because">Because:</span>
-
-								<span tal:repeat="premise python: item.premises" tal:attributes="for item.id; id premise.id">
-									<span tal:attributes="for item.id; id premise.id" tal:content="premise.title">premise</span>
-                                    <span i18n:translate="and">and</span>
-								</span>
+                                <label tal:attributes="for item.id"><span i18n:translate="Because:" tal:condition="item.leading_because">Because:</span>
+                                    <span tal:repeat="premise item.premises" tal:attributes="for item.id; id premise.id">
+                                        <span tal:attributes="for item.id; id premise.id" tal:content="premise.title">premise</span>
+                                        <span tal:condition="not:repeat.premise.end"><i><span i18n:translate="and"> and </span></i></span>
+                                    </span>
                                 </label>
                                 <!--
 								<label tal:attributes="for item.id" tal:content="item.title"></label>
