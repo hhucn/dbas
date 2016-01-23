@@ -141,6 +141,7 @@ body.loading .ajaxloader {
 .first-container {
 	margin-top: -20px;
 }
+
 /**
 .first-container:hover,
 .container:hover {
@@ -269,6 +270,11 @@ comment .container and wrap each container with <div class="coloured-div">
 
 .icon-badge {
 	margin: auto;
+}
+
+.inactive-image{
+    -webkit-filter: grayscale(0%);
+    -webkit-filter: blur(0%);
 }
 
 .text-hover {

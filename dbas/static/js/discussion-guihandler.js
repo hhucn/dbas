@@ -1083,10 +1083,19 @@ function GuiHandler() {
 		$('#' + issueInfoId).html(text);
 	};
 
+	/**
+	 * Adds the inactive-image-class, which includes a grayfilter and blur
+	 * @param imageElement <img>-Element
+	 */
 	this.setImageInactive = function(imageElement){
-		imageElement.attr({'style': '-webkit-filter: grayscale(100%); -webkit-filter: blur(100%);'});
-	}
+		imageElement.addClass('inactive-image');
+	};
+
+	/**
+	 * Removes the inactive-image-class, which includes a grayfilter and blur
+	 * @param imageElement <img>-Element
+	 */
 	this.setImageActive = function(imageElement){
-		imageElement.attr({'style': '-webkit-filter: grayscale(0%); -webkit-filter: blur(0%);'});
-	}
+		imageElement.removeClass('inactive-image');
+	};
 }

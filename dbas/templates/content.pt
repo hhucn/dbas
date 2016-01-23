@@ -45,10 +45,7 @@
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
 							<li tal:repeat="issue issue.all" tal:attributes="class issue.enabled">
 								<a href="#" tal:attributes="href issue.url">
-									<span tal:replace="issue.title"></span>
-									<span class="badge" style="float: right">
-										<span tal:replace="issue.arg_count"></span>
-									</span>
+									<span tal:replace="issue.title"></span><span class="badge" style="float: right"><span tal:replace="issue.arg_count"></span></span>
 								</a>
 							</li>
 						</ul>
@@ -95,9 +92,6 @@
                                         <span tal:condition="not:repeat.premise.end"><i><span i18n:translate="and"> and </span></i></span>
                                     </span>
                                 </label>
-                                <!--
-								<label tal:attributes="for item.id" tal:content="item.title"></label>
-								-->
 							</li>
 						</ul>
 
