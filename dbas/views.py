@@ -1694,13 +1694,13 @@ class Dbas(object):
 		return_dict = dict()
 		try:
 			uid = self.request.params['uid']
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
+
 			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
-			return_dict = DatabaseHelper().get_logfile_for_statement(uid, issue)
+			return_dict = DatabaseHelper().get_logfile_for_statement(uid)
+			return_dict['status'] = 1
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
+			return_dict['status'] = 0
 
 		# return_dict = DatabaseHelper().get_logfile_for_premisegroup(uid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)

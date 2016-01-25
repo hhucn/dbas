@@ -398,15 +398,15 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Requests the logfile for the given uid
-	 * @param statement_uid current uid of the statement
+	 * @param id_id current uid of the statement
 	 */
-	this.getLogfileForStatement = function (statement_uid) {
+	this.getLogfileForStatement = function (id_id) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
 			method: 'GET',
 			data: {
-				uid: statement_uid, issue: new Helper().getCurrentIssueId()
+				uid: id_id
 			},
 			dataType: 'json',
 			async: true,

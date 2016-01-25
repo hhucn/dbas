@@ -115,7 +115,6 @@ var popupConfirmChecbkoxDialogId 				= 'confirm-dialog-checkbox-popup';
 var popupConfirmChecbkoxDialogAcceptBtn 		= 'confirm-dialog-checkbox-accept-btn';
 var popupConfirmChecbkoxDialogRefuseBtn 		= 'confirm-dialog-checkbox-refuse-btn';
 var popupEditStatementId 						= 'popup-edit-statement';
-var popupEditStatementTableId					= 'edit_statement_table';
 var popupEditStatementShowLogButtonId 			= 'show_log_of_statement';
 var popupEditStatementCloseButtonXId 			= 'popup-edit-statement-close';
 var popupEditStatementCloseButtonId 			= 'popup-edit-statement-close-button';

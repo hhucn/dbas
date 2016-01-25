@@ -321,16 +321,15 @@ class DatabaseHelper(object):
 
 		return return_dict, status
 
-	def get_logfile_for_statement(self, uid, issue):
+	def get_logfile_for_statement(self, uid):
 		"""
 		Returns the logfile for the given statement uid
 		:param uid: requested statement uid
-		:param issue:
 		:return: dictionary with the logfile-rows
 		"""
 		logger('DatabaseHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
 
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).first()
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
 		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
 
 		return_dict = dict()

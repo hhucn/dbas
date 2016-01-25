@@ -221,10 +221,11 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
 	});
 
 	// gui for editing statements
-	$('#' + popupEditStatementTextareaId).keyup(function () {
+	$('#' + popupEditStatementTextareaId).keyup(function popupEditStatementTextareaKeyUp() {
 		new Helper.delay(function() {
+			alert($('#' + popupEditStatementContentId + ' .text-hover').attr('id'));
 			ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, fuzzy_statement_popup,
-				$('#' + popupEditStatementTextareaId).attr('statement_id'));
+				$('#' + popupEditStatementContentId + ' .text-hover').attr('id'));
 			$('#' + popupEditStatementWarning).hide();
 			$('#' + popupEditStatementWarningMessage).text('');
 		},200);
@@ -239,24 +240,6 @@ setStyleOptions = function (guiHandler){
 	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
 	$('#' + islandViewContainerId).hide(); // hidding the islandView
-
-	/*
-	$('#' + displayControlContainerIconGuidedId).click(function displayControlContainerIconGuidedClick(){
-		var f = function dialogStyle () { $('#' + scStyleDialogId).attr('checked', true).prop('checked', true);
-			new InteractionHandler().styleButtonChanged($('#' + scStyleDialogId).attr('id'))};
-		displayConfirmationDialog(_t(displayControlDialogGuidedTitle), '<h4>' + _t(displayControlDialogGuidedBody) + '</h4>', f, false);
-	});
-	$('#' + displayControlContainerIconIslandId).click(function displayControlContainerIconIslandClick(){
-		var f = function islandStyle () { $('#' + scStyleIslandId).attr('checked', true).prop('checked', true);
-			new InteractionHandler().styleButtonChanged($('#' + scStyleIslandId).attr('id'))};
-		displayConfirmationDialog(_t(displayControlDialogIslandTitle), '<h4>' + _t(displayControlDialogIslandBody) + '</h4>', f, false);
-	});
-	$('#' + displayControlContainerIconExpertId).click(function displayControlContainerIconExpertClick(){
-		var f = function completeStyle () { $('#' + scStyleCompleteId).attr('checked', true).prop('checked', true);
-			new InteractionHandler().styleButtonChanged($('#' + scStyleCompleteId).attr('id'))};
-		displayConfirmationDialog(_t(displayControlDialogExpertTitle), '<h4>' + _t(displayControlDialogExpertBody) + '</h4>', f, false);
-	});
-	*/
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();

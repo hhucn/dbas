@@ -75,28 +75,14 @@ def main(global_config, **settings):
 	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')
 	config.add_route('ajax_user_logout',                         '{url:.*}ajax_user_logout')
 
-	# ajax for navigation logic at the end, otherwise the * pattern will do shit
-	# config.add_route('discussion_init',       '/d')                                               # Route 1 aus den Unterlagen
-	# config.add_route('discussion_init',       '/d/{slug}')                                        # Route 2 aus den Unterlagen
-	# config.add_route('discussion_attitude',   '/d/{slug}/{statement_id}')                         # Route 3 aus den Unterlagen
-	# config.add_route('discussion_justify',    '/d/{slug}/j/{statement_id}/{supportive}')          # Route 4 aus den Unterlagen
-	# config.add_route('discussion_justify',    '/d/{slug}/j/{text_id}/{supportive}/{relation}')    # Route 6 aus den Unterlagen
-	# config.add_route('discussion_reaction',   '/d/{slug}/r/{pgroup_id}/{supportive}/{text_id}')   # Route 5 aus den Unterlagen
-	# config.add_route('discussion_reaction',   '/d/{slug}/r/{pgroup_id}/{supportive}/{text_id}')   # Route 7 aus den Unterlagen
-
-	config.add_route('discussion_reaction',   '/d/{slug}/r/{arg_id_user}/{mode}*arg_id_sys')         # Route 5,7 aus den Unterlagen
-	config.add_route('discussion_justify',    '/d/{slug}/j/{statement_or_arg_id}/{mode}*relation')   # Route 4,6 aus den Unterlagen
-	config.add_route('discussion_attitude',   '/d/{slug}/a/{statement_id}')                          # Route   3 aus den Unterlagen
-	config.add_route('discussion_init',       '/d*slug')                                             # Route 1,2 aus den Unterlagen
-
-	config.add_route('ajax_set_new_start_statement',             '/{prefix}/{url:.*}ajax_set_new_start_statement{params:.*}')
-	config.add_route('ajax_set_new_start_premise',               '/{prefix}/{url:.*}ajax_set_new_start_premise{params:.*}')
-	config.add_route('ajax_set_new_premises_for_x',              '/{prefix}/{url:.*}ajax_set_new_premises_for_x{params:.*}')
-	config.add_route('ajax_set_correcture_of_statement',         '/{prefix}/{url:.*}ajax_set_correcture_of_statement{params:.*}')
-	config.add_route('ajax_all_users',                           '/{prefix}/{url:.*}ajax_all_users{params:.*}')
-	config.add_route('ajax_get_logfile_for_statement',           '/{prefix}/{url:.*}ajax_get_logfile_for_statement{params:.*}')
-	config.add_route('ajax_get_shortened_url',                   '/{prefix}/{url:.*}ajax_get_shortened_url{params:.*}')
-	config.add_route('ajax_get_attack_overview',                 '/{prefix}/{url:.*}ajax_get_attack_overview{params:.*}')
+	config.add_route('ajax_set_new_start_statement',             '/{url:.*}ajax_set_new_start_statement')
+	config.add_route('ajax_set_new_start_premise',               '/{url:.*}ajax_set_new_start_premise')
+	config.add_route('ajax_set_new_premises_for_x',              '/{url:.*}ajax_set_new_premises_for_x')
+	config.add_route('ajax_set_correcture_of_statement',         '/{url:.*}ajax_set_correcture_of_statement')
+	config.add_route('ajax_all_users',                           '/{url:.*}ajax_all_users')
+	config.add_route('ajax_get_logfile_for_statement',           '/{url:.*}ajax_get_logfile_for_statement')
+	config.add_route('ajax_get_shortened_url',                   '/{url:.*}ajax_get_shortened_url')
+	config.add_route('ajax_get_attack_overview',                 '/{url:.*}ajax_get_attack_overview')
 
 	config.add_route('ajax_user_registration',                   '{url:.*}ajax_user_registration')
 	config.add_route('ajax_user_password_request',               '{url:.*}ajax_user_password_request')
@@ -113,6 +99,20 @@ def main(global_config, **settings):
 	config.add_route('ajax_send_news',                           'ajax_send_news')
 
 	config.add_route('ajax_additional_service',                  '{stuff:.*}additional_service')
+
+	# ajax for navigation logic at the end, otherwise the * pattern will do shit
+	# config.add_route('discussion_init',       '/d')                                               # Route 1 aus den Unterlagen
+	# config.add_route('discussion_init',       '/d/{slug}')                                        # Route 2 aus den Unterlagen
+	# config.add_route('discussion_attitude',   '/d/{slug}/{statement_id}')                         # Route 3 aus den Unterlagen
+	# config.add_route('discussion_justify',    '/d/{slug}/j/{statement_id}/{supportive}')          # Route 4 aus den Unterlagen
+	# config.add_route('discussion_justify',    '/d/{slug}/j/{text_id}/{supportive}/{relation}')    # Route 6 aus den Unterlagen
+	# config.add_route('discussion_reaction',   '/d/{slug}/r/{pgroup_id}/{supportive}/{text_id}')   # Route 5 aus den Unterlagen
+	# config.add_route('discussion_reaction',   '/d/{slug}/r/{pgroup_id}/{supportive}/{text_id}')   # Route 7 aus den Unterlagen
+
+	config.add_route('discussion_reaction',   '/d/{slug}/r/{arg_id_user}/{mode}*arg_id_sys')         # Route 5,7 aus den Unterlagen
+	config.add_route('discussion_justify',    '/d/{slug}/j/{statement_or_arg_id}/{mode}*relation')   # Route 4,6 aus den Unterlagen
+	config.add_route('discussion_attitude',   '/d/{slug}/a/{statement_id}')                          # Route   3 aus den Unterlagen
+	config.add_route('discussion_init',       '/d*slug')                                             # Route 1,2 aus den Unterlagen
 
 	# read the input and start
 	config.scan()
