@@ -58,8 +58,7 @@
 	width: 100%;
 }
 
-#discussions-space ul li label{
-	width: 95%;
+#discussions-space ul li{
 	vertical-align: middle;
 	font-weight: 400;
 }
