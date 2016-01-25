@@ -496,7 +496,7 @@ function InteractionHandler() {
 			$('#' + addStatementErrorContainer).show();
 			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
 		} else {
-			new GuiHandler().setPremisesAsLastChild(parsedData, false);
+			window.location.href = parsedData.url;
 		}
 	};
 

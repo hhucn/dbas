@@ -652,19 +652,23 @@ class QueryHelper(object):
 		heading          = ''
 		add_premise_text = ''
 		if at_start:
+			logger('QueryHelper', 'prepare_discussion_dict', 'at_start')
 			heading             = _tn.get(_tn.initialPositionInterest)
 
 		elif at_attitude:
+			logger('QueryHelper', 'prepare_discussion_dict', 'at_attitude')
 			text                = self.get_text_for_statement_uid(uid)
 			heading             = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
 
 		elif at_justify:
+			logger('QueryHelper', 'prepare_discussion_dict', 'at_justify')
 			text                = self.get_text_for_statement_uid(uid)
 			heading             = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
 			                        + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
 			add_premise_text    = text
 
 		elif at_justify_argumentation:
+			logger('QueryHelper', 'prepare_discussion_dict', 'at_justify_argumentation')
 			_tg = TextGenerator(lang)
 			db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 			confrontation       = self.get_text_for_argument_uid(uid, lang)
@@ -675,17 +679,22 @@ class QueryHelper(object):
 			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, is_supportive)
 
 		elif at_dont_know:
+			logger('QueryHelper', 'prepare_discussion_dict', 'at_dont_know')
 			text                = self.get_text_for_argument_uid(uid, lang)
 			heading             = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
 			                     + '</strong>. ' + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
 
 		elif at_argumentation:
+			logger('QueryHelper', 'prepare_discussion_dict', 'at_argumentation')
 			_tg                 = TextGenerator(lang)
 			db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 			premise, tmp        = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 			conclusion          = self.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 				else self.get_text_for_argument_uid(db_argument.argument_uid)
 			confrontation       = self.get_text_for_argument_uid(additional_id, lang)
+			logger('QueryHelper', 'prepare_discussion_dict', 'additional_id ' + str(additional_id))
+			logger('QueryHelper', 'prepare_discussion_dict', 'confrontation ' + str(confrontation))
+			logger('QueryHelper', 'prepare_discussion_dict', 'attack ' + str(attack))
 
 			reply_for_argument  = True
 			current_argument    = self.get_text_for_argument_uid(uid, lang)
@@ -747,17 +756,17 @@ class QueryHelper(object):
 		_tn = Translator(lang)
 
 		statements_array.append(self.get_statement_dict('agree',
-		                                                _tn.get(_tn.iAgreeWithInColor) + ' ' + text,
+		                                                _tn.get(_tn.iAgreeWithInColor) + ': ' + text,
 		                                                [{'title': _tn.get(_tn.iAgreeWithInColor) + ' ' + text, 'id': 'agree'}],
 		                                                'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't'),
 		                                                False))
 		statements_array.append(self.get_statement_dict('disagree',
-		                                                _tn.get(_tn.iDisagreeWithInColor) + ' ' + text,
+		                                                _tn.get(_tn.iDisagreeWithInColor) + ': ' + text,
 		                                                [{'title': _tn.get(_tn.iDisagreeWithInColor) + ' ' + text, 'id': 'disagree'}],
 		                                                'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f'),
 		                                                False))
 		statements_array.append(self.get_statement_dict('dontknow',
-		                                                _tn.get(_tn.iDoNotKnowInColor) + ' ' + text,
+		                                                _tn.get(_tn.iDoNotKnowInColor) + ': ' + text,
 		                                                [{'title': _tn.get(_tn.iDoNotKnowInColor) + ' ' + text, 'id': 'dontknow'}],
 		                                                'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd'),
 		                                                False))
@@ -856,6 +865,7 @@ class QueryHelper(object):
 
 				# for each justifying premise, we need a new confrontation:
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self)
+
 				statements_array.append(self.get_statement_dict(argument.uid,
 				                                                text,
 				                                                premises_array,

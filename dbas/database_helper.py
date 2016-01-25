@@ -438,6 +438,117 @@ class DatabaseHelper(object):
 		transaction.commit()
 		return new_argument_uid, is_duplicate
 
+	def handle_insert_new_premise_for_argument(self, text, current_attack, arg_uid, supportive, issue, user, transaction):
+		"""
+
+		:param relation:
+		:param arg_uid:
+		:param supportive:
+		:return:
+		"""
+		logger('DatabaseHelper', 'handle_insert_new_premise_for_argument', 'def')
+
+		#insert text as premise
+		new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
+		new_premisegroup_uid = QueryHelper().set_statement_as_new_premise(new_statement, user, issue)
+
+		# current argument
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+		# current user
+		current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
+
+		if current_attack == 'undermine' or current_attack == 'support': # TODO handle premise groups
+			new_arguments = []
+			already_in = []
+			# duplicate?
+			# all premises out of current pgroup
+			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=current_argument.premisesGroup_uid).all()
+			for premise in db_premises:
+				db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==new_premisegroup_uid,
+				                                                              Argument.isSupportive==(current_attack == 'support'),
+				                                                              Argument.conclusion_uid==premise.statement_uid,
+				                                                              Argument.argument_uid==0)).first()
+
+				if db_argument:
+					already_in.append(db_argument.uid)
+					logger('---', '---', 'OLD ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
+					logger('---', '---', 'OLD ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
+					logger('---', '---', 'OLD ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
+				else:
+					logger('---', '---', 'NEW ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
+					logger('---', '---', 'NEW ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
+					logger('---', '---', 'NEW ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
+					new_argument = Argument(premisegroup=new_premisegroup_uid,
+				                            issupportive=current_attack == 'support',
+				                            author=db_user.uid,
+				                            weight=0,
+				                            conclusion=premise.statement_uid,
+				                            issue=issue)
+					new_argument.conclusions_argument(0)
+					new_arguments.append(new_argument)
+
+				logger('DatabaseHelper', 'handle_insert_new_premise_for_argument', 'new_arguments ' + str(new_arguments))
+				if len(new_arguments)>0:
+					DBDiscussionSession.add_all(new_arguments)
+					DBDiscussionSession.flush()
+					transaction.commit()
+					for argument in new_arguments:
+						logger('DatabaseHelper', 'handle_insert_new_premise_for_argument', 'new_argument_uid ' + str(argument.uid))
+						already_in.append(argument.uid)
+
+				rnd = random.randint(0, len(already_in)-1)
+
+				logger('DatabaseHelper', 'handle_insert_new_premise_for_argument', 'already_in ' + str(already_in))
+				logger('DatabaseHelper', 'handle_insert_new_premise_for_argument', 'return a ' + str(already_in[rnd]))
+				return already_in[rnd]
+
+
+		elif current_attack == 'undercut' or current_attack == 'overbid':
+			# duplicate?
+			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==new_premisegroup_uid,
+			                                                              Argument.isSupportive==(current_attack == 'overbid'),
+			                                                              Argument.conclusion_uid==0,
+			                                                              Argument.argument_uid==current_argument.uid)).first()
+			if db_argument:
+				logger('DatabaseHelper', 'handle_insert_new_premise_for_argument', 'return b ' + str(db_argument.uid))
+				return db_argument.uid
+			else:
+				new_argument = Argument(premisegroup=new_premisegroup_uid,
+				                        issupportive=current_attack == 'overbid',
+				                        author=db_user.uid,
+				                        weight=0,
+				                        conclusion=0,
+				                        issue=issue)
+				new_argument.conclusions_argument(current_argument.uid)
+				DBDiscussionSession.add(new_argument)
+				DBDiscussionSession.flush()
+				transaction.commit()
+
+		elif current_attack == 'rebut':
+			# duplicate?
+			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==new_premisegroup_uid,
+			                                                              Argument.isSupportive==False,
+			                                                              Argument.conclusion_uid==current_argument.conclusion_uid,
+			                                                              Argument.argument_uid==0)).first()
+			if db_argument:
+				logger('DatabaseHelper', 'handle_insert_new_premise_for_argument', 'return c ' + str(db_argument.uid))
+				return db_argument.uid
+			else:
+				new_argument = Argument(premisegroup=new_premisegroup_uid,
+				                        issupportive=False,
+				                        author=db_user.uid,
+				                        weight=0,
+				                        conclusion=current_argument.conclusion_uid,
+				                        issue=issue)
+				new_argument.conclusions_argument(0)
+				DBDiscussionSession.add(new_argument)
+				DBDiscussionSession.flush()
+				transaction.commit()
+
+		logger('DatabaseHelper', 'handle_insert_new_premise_for_argument', 'return d ' + str(new_argument.uid if new_argument else 0))
+		return new_argument.uid if new_argument else 0
+
 	def handle_inserting_new_statements(self, user, pro_dict, con_dict, transaction, argument_id, premisegroup_id,
 	                                    current_attack, last_attack, premisegroup_con, premisegroup_pro, exception_rebut, issue):
 		"""

@@ -257,7 +257,7 @@ setWindowOptions = function(){
 };
 
 setInputExtraOptions = function(guiHandler, ajaxHandler){
-	var input = $('#' + discussionSpaceId + ' li:last-child input'), text, splits, conclusion, supportive;
+	var input = $('#' + discussionSpaceId + ' li:last-child input'), text, splits, conclusion, supportive, arg, relation;
 	if (window.location.href.indexOf('/r/') != -1){
 		$('#' + discussionSpaceId + ' label').each(function(){
 			$(this).css('width', '95%');
@@ -305,7 +305,12 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 				guiHandler.displayHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
 				$('#' + sendNewPremiseId).click(function(){
-					alert('todo');
+					splits = window.location.href.split('/');
+					text = $('#' + addPremiseContainerMainInputId).val();
+					arg = splits[splits.length - 3];
+					supportive = splits[splits.length - 2] == 't';
+					relation = splits[splits.length - 1];
+					ajaxHandler.sendNewPremiseForArgument(arg, relation, supportive, text)
 				});
 			}
 		}

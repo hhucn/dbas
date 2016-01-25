@@ -316,18 +316,17 @@ function AjaxSiteHandler() {
 
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
-	 * @param dictionary for inserting; can have the keys {related_argument, premisegroup_id, current_attack, confrontation_uid}; must
-	 * have keys with pro_i and con_i
+	 * @param arg_uid
+	 * @param relation
+	 * @param supportive
+	 * @param text
 	 */
-	this.sendNewPremiseForX = function (dictionary) {
-		var url = window.location.href;
-		url = url.substr(url.indexOf('issue=') + 'issue='.length);
-		dictionary['issue'] = url.substr(0,url.indexOf('/'));
+	this.sendNewPremiseForArgument = function (arg_uid, relation, supportive, text) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_new_premises_for_x',
+			url: 'ajax_set_new_premises_for_argument',
 			method: 'POST',
-			data: dictionary,
+			data: {arg_uid: arg_uid, relation: relation, text: text, supportive: supportive},
 			dataType: 'json',
 			async: true,
 			headers: {
