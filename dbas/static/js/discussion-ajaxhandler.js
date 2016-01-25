@@ -355,7 +355,11 @@ function AjaxSiteHandler() {
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
-			data: {'issue': url.substr(0,url.indexOf('/')), 'text':text, 'conclusion_id': conclusion_id, 'support': supportive},
+			data: {
+				'text':text,
+				'conclusion_id': conclusion_id,
+				'support': supportive
+			},
 			dataType: 'json',
 			async: true,
 			headers: {

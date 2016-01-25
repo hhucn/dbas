@@ -1005,19 +1005,20 @@ class Dbas(object):
 			text = self.escape_string(self.request.params['text'])
 			conclusion_id = self.request.params['conclusion_id']
 			support = True if self.request.params['support'].lower() == 'true' else False
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
+			issue = self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
 			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', supportive: ' +
 			       str(support) + ', issue: ' + str(issue))
 
-			tmp_dict, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
+			new_argument, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
 
-			return_dict['pro_0'] = tmp_dict
-			if is_duplicate:
-				return_dict['premisegroup_uid'] = tmp_dict['premisegroup_uid']
-			return_dict['status'] = '0' if is_duplicate else '1'
+			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument.uid, issue)
+
+			url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument.uid, attack, arg_id_sys)
+			return_dict['url'] = url
+
+			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('set_new_start_premise', 'error', repr(e))
 			return_dict['status'] = '-1'

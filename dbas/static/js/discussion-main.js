@@ -249,7 +249,7 @@ setWindowOptions = function(){
 };
 
 setInputExtraOptions = function(guiHandler, ajaxHandler){
-	var input = $('#' + discussionSpaceId + ' li:last-child input');
+	var input = $('#' + discussionSpaceId + ' li:last-child input'), text, splits, conclusion, supportive;
 	if (window.location.href.indexOf('/r/') != -1){
 		$('#' + discussionSpaceId + ' label').each(function(){
 			$(this).css('width', '95%');
@@ -263,7 +263,12 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 				guiHandler.displayHowToWriteTextPopup();
 				guiHandler.showAddPositionContainer();
 				$('#' + sendNewStatementId).click(function(){
-					ajaxHandler.sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
+					text = $('#' + addStatementContainerMainInputId).val();
+					if (text.length == 0){
+						guiHandler.setErrorDescription(_t(inputEmpty));
+					} else {
+						ajaxHandler.sendNewStartStatement(text);
+					}
 				});
 			}
 			// new premise for the start
@@ -271,7 +276,15 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 				guiHandler.displayHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
 				$('#' + sendNewPremiseId).click(function(){
-					alert('todo');
+					splits = window.location.href.split('/');
+					conclusion = splits[splits.length - 2];
+					supportive = splits[splits.length - 1] == 't';
+					text = $('#' + addPremiseContainerMainInputId).val();
+					if (text.length == 0){
+						guiHandler.setErrorDescription(_t(inputEmpty));
+					} else {
+						ajaxHandler.sendNewStartPremise(text, conclusion, supportive)
+					}
 				});
 			}
 			// new premise while judging
