@@ -88,7 +88,7 @@
 								<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
 								<label tal:attributes="for item.id" tal:condition="item.leading_because">
 									<span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;
-                                </label>
+								</label>
 								<span tal:repeat="premise item.premises" tal:omit-tag="">
 									<label tal:attributes="for item.id; id premise.id" tal:content="premise.title">premise</label>
 									<label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label>
@@ -104,14 +104,20 @@
 
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
+						<img tal:condition="extras.is_editable" id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.title.edit_statement"/>
+						<!--
 						<button tal:condition="extras.is_editable" id="edit-statement" type="button" class="button button-block btn-sm btn">
 							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-edit"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="edit">Edit</span>
 						</button>
+						-->
 						<br tal:condition="extras.is_editable">
 						<br tal:condition="extras.is_editable">
+						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="title extras.title.report_statement"/>
+						<!--
 						<button tal:condition="extras.is_reportable" id="report-button" type="button" class="button button-block btn-sm btn">
 							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="report">Report</span>
 						</button>
+						-->
 						<br tal:condition="extras.is_reportable">
 						<br tal:condition="extras.is_reportable">
 

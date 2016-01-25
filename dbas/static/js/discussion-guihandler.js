@@ -687,85 +687,31 @@ function GuiHandler() {
 	 * Opens the edit statements popup
 	 */
 	this.showEditStatementsPopup = function () {
-		var table, tr, td_text, td_buttons, statement, uid, type, is_start, is_premise, tmp, text_count, statement_id, text, i,
-			helper = new Helper(), is_final, popupEditStatementSubmitButton = $('#' + popupEditStatementSubmitButtonId);
+		var table, tr, td_text, td_buttons, helper = new Helper();
 		$('#' + popupEditStatementId).modal('show');
-		popupEditStatementSubmitButton.hide();
 		$('#' + popupEditStatementWarning).hide();
 
-		// each statement will be in a table with row: index, text, button for editing
-		// more action will happen, if the button is pressed
-
 		// top row
-		table = $('<table>');
-		table.attr({
-			id: 'edit_statement_table',
+		table = $('<table>').attr({
 			class: 'table table-condensed',
 			border: '0',
 			style: 'border-collapse: separate; border-spacing: 5px 5px;'
 		});
-		tr = $('<tr>');
-		td_text = $('<td>');
-		td_buttons = $('<td>');
-		td_text.html('<b>Text</b>').css('text-align', 'center');
-		td_buttons.html('<b>Options</b>').css('text-align', 'center');
-		tr.append(td_text);
-		tr.append(td_buttons);
-		table.append(tr);
+		td_text = $('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
+		td_buttons = $('<td>').html('<strong>' + _t(options) + '</strong>').css('text-align', 'center');
+		table.append($('<tr>').append(td_text).append(td_buttons));
 
-		uid = 0;
 		// append a row for each statement
-		$('#' + discussionSpaceId + ' label').each(function () {
-			if ($(this).attr('for') == '0'){
-				return;
-			}
-			statement = $(this).text();
-			if (statement.toLocaleLowerCase().indexOf(_t(because)) == 0){
-				statement = new Helper().startWithUpperCase(statement.substring(8));
-			}
-			uid = $(this).attr('for');
-			type = $(this).attr('class');
-			is_premise = $(this).hasClass('premise');
-			is_start = $(this).hasClass('start');
+		$('#' + discussionSpaceId + ' li:not(:last-child) label:nth-child(odd)').each(function () {
+			tr = helper.createRowInEditDialog($(this).text(), $(this).attr('for'), $(this).attr('id'));
+			table.append(tr);
 
-			// TODO edit premise groups
-			if (typeof uid != 'undefined' && uid.indexOf('_') != -1){
-				tmp = uid.split('_');
-				uid = tmp[tmp.length -1];
-			}
-
-			// is this a premise group with more than one text?
-			if (typeof $(this).attr('text_count') !== typeof undefined && $(this).attr('text_count') !== false){
-				text_count = $(this).attr('text_count');
-				type = 'premisesgroup';
-
-				for (i=1; i<=parseInt(text_count); i++) {
-					statement_id = $(this).attr('text_' + i + '_statement_id');
-					text = $(this).attr('text_' + i);
-					tr = helper.createRowInEditDialog(statement_id, text, type);
-					table.append(tr);
-				}
-			} else {
-				tr = helper.createRowInEditDialog(uid, statement, type);
-				table.append(tr);
-			}
 		});
 
-		//$('#' + popupEditStatementContentId).empty().append(table);
+		$('#' + popupEditStatementContentId).empty().append(table);
 		$('#' + popupEditStatementTextareaId).hide();
 		$('#' + popupEditStatementDescriptionId).hide();
-		popupEditStatementSubmitButton.hide().click(function edit_statement_click() {
-			statement = $('#' + popupEditStatementTextareaId).val();
-			if (statement.toLocaleLowerCase().indexOf(_t(because).toLocaleLowerCase()) == 0){
-				statement = statement.substr(_t(because.length() + 1));
-			}
-			is_final = $('#' + popupEditStatementWarning).is(':visible');
-			//$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
-			new AjaxSiteHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement, is_final);
-		});
-
-		// on click: do ajax
-		// ajax done: refresh current statement with new text
+		$('#' + popupEditStatementSubmitButtonId).hide();
 	};
 
 	/**

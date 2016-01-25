@@ -646,7 +646,7 @@ class Translator(object):
 		en_lang[self.restartDiscussionTitle] =  'Restart Discussion'
 		en_lang[self.restartOnError] =  'Please try to reload this page or restart the discussion when the error stays'
 		en_lang[self.report] =  'Report'
-		en_lang[self.reportTitle] =  'Opens a new mail for reporting an issue!'
+		en_lang[self.reportTitle] =  'Opens the contact for reporting!'
 		en_lang[self.right] =  'Right'
 		en_lang[self.requestTrack] =  'Request track'
 		en_lang[self.refreshTrack] =  'Refresh track'
@@ -994,7 +994,7 @@ class Translator(object):
 		de_lang[self.premiseGroup] = 'Gruppe von Voraussetzung(en)',
 		de_lang[self.passwordSubmit] = 'Passwort ändern',
 		de_lang[self.report] = 'Melden',
-		de_lang[self.reportTitle] = 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',
+		de_lang[self.reportTitle] = 'Öffnet die Kontaktseite, damit etwas gemeldet werden kann.',
 		de_lang[self.registered] = 'Registriert',
 		de_lang[self.right] = 'Wahr',
 		de_lang[self.requestTrack] = 'Track anfragen',

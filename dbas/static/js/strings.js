@@ -270,6 +270,7 @@ var otherParticipantDisagree 						= 'otherParticipantDisagree';
 var otherUsersClaimStrongerArgumentRejecting		= 'otherUsersClaimStrongerArgumentRejecting';
 var otherUsersClaimStrongerArgumentAccepting		= 'otherUsersClaimStrongerArgumentAccepting';
 var opinionBarometer                                = 'opinionBarometer';
+var options                                         = 'options';
 var report 											= 'report';
 var reportTitle										= 'reportTitle';
 var premiseGroup 									= 'premiseGroup';

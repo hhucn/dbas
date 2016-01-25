@@ -260,15 +260,76 @@ function Helper() {
 
 	/**
 	 *
-	 * @param uid
-	 * @param statement
-	 * @param type
+	 * @param text
+	 * @param for_id
+	 * @param id_id
 	 * @returns {jQuery|HTMLElement|*}
 	 */
-	this.createRowInEditDialog = function(uid, statement, type){
-		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxSiteHandler(), tr, td_text, td_buttons, tmp;
+	this.createRowInEditDialog = function(text, for_id, id_id){
+		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxSiteHandler(), tr, td_text, td_buttons;
+
+		// table items
+		tr = $('<tr>');
+		td_text = $('<td>').text(text);
+		td_buttons = $('<td>').css('text-align', 'center');
+
+		// buttons
+		edit_button = $('<input>').css('margin', '2px').attr({
+			type: 'button',
+			value: 'edit',
+			class: 'btn-sm btn button-primary'
+		}).click(function edit_button_click() {
+			$('#' + popupEditStatementTextareaId).text($(this).parent().prev().text());
+			$('#' + popupEditStatementTableId).find('td').removeClass('text-hover');
+			$(this).parent().prev().addClass('text-hover');
+			//$('#edit_' + type + '_td_text_' + uid).addClass('text-hover');
+			$('#' + popupEditStatementErrorDescriptionId).text('');
+			$('#' + popupEditStatementSuccessDescriptionId).text('');
+			guiHandler.showEditFieldsInEditPopup();
+			guiHandler.hideLogfileInEditPopup();
+			$('#' + popupEditStatementSubmitButtonId).click(function edit_statement_click() {
+				alert("todo ajax");
+				// statement = $('#' + popupEditStatementTextareaId).val();
+				// if (statement.toLocaleLowerCase().indexOf(_t(because).toLocaleLowerCase()) == 0){
+				// 	statement = statement.substr(_t(because.length() + 1));
+				// }
+				// is_final = $('#' + popupEditStatementWarning).is(':visible');
+				// //$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
+				// new AjaxSiteHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement, is_final);
+			});
+		}).hover(function edit_button_hover() {
+			$(this).toggleClass('btn-primary', 400);
+		});
+
+		log_button = $('<input>').css('margin', '2px').attr({
+			type: 'button',
+			value: 'changelog',
+			class: 'btn-sm btn button-primary'
+		}).click(function log_button_click() {
+			$('#' + popupEditStatementLogfileHeaderId).html(_t(logfile) + ': <strong>' + $(this).parent().prev().text() + '</strong>');
+			$('#' + popupEditStatementErrorDescriptionId).text('');
+			$('#' + popupEditStatementSuccessDescriptionId).text('');
+			$('#' + popupEditStatementTableId).find('td').removeClass('text-hover');
+			$(this).parent().prev().addClass('text-hover');
+				alert("todo ajax");
+			//ajaxHandler.getLogfileForStatement($(this).attr('statement_id'));
+			guiHandler.hideEditFieldsInEditPopup();
+		}).hover(function edit_button_hover() {
+			$(this).toggleClass('btn-primary', 400);
+		});
+
+		// append everything
+		td_buttons.append(edit_button);
+		td_buttons.append(log_button);
+		tr.append(td_text);
+		tr.append(td_buttons);
+
+		return tr;
+
+
 
 		// create new items
+		/*
 		tr = $('<tr>');
 		td_text = $('<td>').attr({
 			id: 'edit_' + type + '_td_text_' + uid
@@ -336,7 +397,7 @@ function Helper() {
 		td_buttons.append(edit_button);
 		td_buttons.append(log_button);
 		tr.append(td_text);
-		tr.append(td_buttons);
+		tr.append(td_buttons);*/
 
 		return tr;
 	};

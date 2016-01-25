@@ -214,6 +214,7 @@
 	opacity: 0;
 }
 
+#discussion-container .icon-badge,
 #display-style-menu-icon .icon-badge,
 #display-style-menu{
 	width: 60px;

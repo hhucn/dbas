@@ -951,7 +951,9 @@ class QueryHelper(object):
 		return_dict['title']                  = {'barometer': _tn.get(_tn.opinionBarometer),
 												 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 												 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
-												 'expert_view': _tn.get(_tn.displayControlDialogExpertBody)}
+												 'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
+		                                         'edit_statement': _tn.get(_tn.editTitle),
+		                                         'report_statement': _tn.get(_tn.reportTitle)}
 
 
 		# add everything for the island view

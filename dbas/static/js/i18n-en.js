@@ -221,6 +221,7 @@ var dbas_en = {
 	'otherUsersClaimStrongerArgumentRejecting': 'Other users claim to have a stronger statement for rejecting',
 	'otherUsersClaimStrongerArgumentAccepting': 'Other users claim to have a stronger statement for accepting',
 	'opinionBarometer': 'Opinion Barometer',
+	'options': 'Options',
 	'premiseGroup': 'PremiseGroup',
 	'passwordSubmit': 'Change Password',
 	'registered': 'Registered',

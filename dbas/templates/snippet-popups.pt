@@ -27,7 +27,7 @@
 									<td>
 										<span i18n:translate="role_value_1">Doctoral Student</span>
 										<br><a href="http://www.tsn.hhu.de/en.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
-										<br><span i18n:translate="role_value_2">Member of the graduation school</span> 
+										<br><span i18n:translate="role_value_2">Member of the graduation school</span>
 										<a href="http://www.fortschrittskolleg.de/" target="_blank">
 											<span i18n:translate="role_value_3">Online Participation</span>
 										</a>
@@ -248,7 +248,7 @@
 					</li>
 				</ul>
 			</div>
-			
+
 			<div id="popup-login-body">
 				<div class="tab-content">
 					<div id="login">
@@ -294,11 +294,12 @@
 						</div>
 
 						<div class="col-md-12" id="popup-login-success">
-						<div class="alert alert-success" role="alert">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
+							<div class="alert alert-success" role="alert">
+								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+								<span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
+							</div>
 						</div>
-						</div></div>
+					</div>
 
 					<div id="signup">
 
@@ -350,7 +351,7 @@
 								<input id="email-input" type="email" class="form-control email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label class="col-md-3 control-label" for="popup-login-password-input" i18n:translate="password">Your Password</label>
 							<div class="col-md-9">
@@ -421,7 +422,7 @@
 						</div>
 						-->
 					</div>
-					
+
 				</div>
 
 			</div>
@@ -465,7 +466,8 @@
 				<br>
 				<input type="text" id="popup-password-generator-output">
 				<input type="button" id="popup-password-generator-button" value="Generate Password" class="button button-block btn btn-primary">
-				<br><br>
+				<br>
+				<br>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" id="popup-generate-password-close-button" i18n:translate="close">Close</button>

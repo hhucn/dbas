@@ -91,9 +91,7 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 	// open edit statement
 	$('#' + editStatementButtonId).click(function(){
 		guiHandler.showEditStatementsPopup();
-	}).hover(function () {
-		$(this).toggleClass('btn-primary', 400);
-	});
+	})
 
 	// close popups
 	$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId(){	guiHandler.hideEditStatementsPopup(); });
@@ -183,19 +181,6 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 	 * Handling report button
 	 */
 	$('#' + reportButtonId).click(function reportFunction(){
-		/*
-		var mailto = 'dbas.hhu@gmail.com',
-				cc = 'krauthoff@cs.uni-duesseldorf.de',
-				subject = 'Report ' + new Helper().getTodayAsDate(),
-				body = 'URL: ' + window.location.href + '%0A%0AReport:%0A' + _t(fillLine).toUpperCase();
-		// open new email tab
-		window.location.href = 'mailto:' + mailto
-				+ '?cc=' + cc
-				+ '&subject=' + subject
-				+ '&body=' + body;
-		window.open(mainpage + 'contact', '_blank');
-		*/
-
 		// jump to contact tab
 		var line1 = 'Report ' + new Helper().getTodayAsDate(),
 				line2 = 'URL: ' + window.location.href,
@@ -205,8 +190,6 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 
 		new Helper().redirectInNewTabForContact(params);
 
-	}).hover(function () {
-		$(this).toggleClass('btn-primary', 400);
 	});
 
 	// opinion barometer
