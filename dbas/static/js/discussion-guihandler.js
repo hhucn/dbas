@@ -751,7 +751,7 @@ function GuiHandler() {
 			}
 		});
 
-		$('#' + popupEditStatementContentId).empty().append(table);
+		//$('#' + popupEditStatementContentId).empty().append(table);
 		$('#' + popupEditStatementTextareaId).hide();
 		$('#' + popupEditStatementDescriptionId).hide();
 		popupEditStatementSubmitButton.hide().click(function edit_statement_click() {
