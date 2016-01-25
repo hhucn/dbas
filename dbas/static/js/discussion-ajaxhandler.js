@@ -380,7 +380,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_set_new_start_statement',
 			method: 'POST',
 			data: {
-				statement: statement, issue: new Helper().getCurrentIssueId()
+				statement: statement
 			},
 			dataType: 'json',
 			async: true,

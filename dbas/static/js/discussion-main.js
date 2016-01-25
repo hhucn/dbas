@@ -248,7 +248,7 @@ setWindowOptions = function(){
 	});
 };
 
-setInputExtraOptions = function(guiHandler){
+setInputExtraOptions = function(guiHandler, ajaxHandler){
 	var input = $('#' + discussionSpaceId + ' li:last-child input');
 	if (window.location.href.indexOf('/r/') != -1){
 		$('#' + discussionSpaceId + ' label').each(function(){
@@ -263,7 +263,7 @@ setInputExtraOptions = function(guiHandler){
 				guiHandler.displayHowToWriteTextPopup();
 				guiHandler.showAddPositionContainer();
 				$('#' + sendNewStatementId).click(function(){
-					alert('todo');
+					ajaxHandler.sendNewStartStatement($('#' + addStatementContainerMainInputId).val());
 				});
 			}
 			// new premise for the start
@@ -302,7 +302,7 @@ $(function () {
 	setKeyUpFunctions(guiHandler, ajaxHandler);
 	setStyleOptions(guiHandler);
 	setWindowOptions();
-	setInputExtraOptions(guiHandler);
+	setInputExtraOptions(guiHandler, ajaxHandler);
 
 	// render html tags
 	replaceHtmlTags($('#discussions-header'));

@@ -422,7 +422,7 @@ class RecommenderHelper(object):
 				                                                                 Statement.issue_uid==issue)).all()
 				for statement in db_statements:
 					logger('RecommenderHelper', 'get_premises_for_statement', 'premises group has statement ' + str(statement.uid))
-					premisesgroups_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement, issue)
+					premisesgroups_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement)
 
 				logger('RecommenderHelper', 'get_premises_for_statement', 'new premises_dict entry with key ' + str(premise.premisesGroup_uid))
 				premises_dict[str(premise.premisesGroup_uid)] = premisesgroups_dict # TODO limit the number to 5
@@ -433,7 +433,7 @@ class RecommenderHelper(object):
 		return_dict['status'] = '1'
 
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-		return_dict['currentStatement'] = DictionaryHelper().save_statement_row_in_dictionary(db_statement, issue)
+		return_dict['currentStatement'] = DictionaryHelper().save_statement_row_in_dictionary(db_statement)
 
 		return return_dict
 

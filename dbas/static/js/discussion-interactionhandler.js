@@ -91,7 +91,7 @@ function InteractionHandler() {
 	/**
 	 * Method for some style attributes, when the radio buttons are chaning
 	 */
-	this.radioButtonChanged = function () {
+	this.radioButtonChanged = function () {// TODO KILL
 		var guiHandler = new GuiHandler(), text, isStart = $('#' + discussionSpaceId + ' ul li input').hasClass('start'), addReasonButton = $('#' + addReasonButtonId);
 		// did we have an "add statement" action or just "argumentation" ?
 		if (addReasonButton.is(':checked')) {
@@ -480,18 +480,8 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
 			alert('success -1 in callbackIfDoneForSendNewStartStatement');
-		} else if (parsedData.status == '0') {
-			// $('#' + addStatementErrorContainer).show();
-			// $('#' + addStatementErrorMsg).text(alreadyInserted);
-			new InteractionHandler().statementButtonWasClicked(parsedData.statement.uid);
 		} else {
-			/*
-			$('#' + addStatementContainerId).hide();
-			$('#' + addStatementContainerMainInputId).text('');
-			new GuiHandler().setNewStatementAsLastChild(parsedData);
-			*/
-			// redirect
-			new AjaxSiteHandler().callSiteForGetPremiseForStatement(parsedData.statement.uid, true);
+			window.location.href = parsedData.url;
 		}
 	};
 

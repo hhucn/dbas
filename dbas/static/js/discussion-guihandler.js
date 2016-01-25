@@ -417,7 +417,7 @@ function GuiHandler() {
 	 * @param isArgument boolean
 	 * @param isStart boolean
 	 */
-	this.showAddPremiseOrArgumentContainer = function (isArgument, isStart){
+	this.showAddPremiseOrArgumentContainer = function (isArgument, isStart){ // TODO KILL
 		// method is called while justifying arguments
 		var	discussionsDescription = $('#' + discussionsDescriptionId),
 			confrontation = discussionsDescription.attr('confrontation_text'),

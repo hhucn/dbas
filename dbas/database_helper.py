@@ -1,7 +1,7 @@
 import random
 import collections
 
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from datetime import datetime
 
 from .database import DBDiscussionSession, DBNewsSession
@@ -210,7 +210,7 @@ class DatabaseHelper(object):
 			logger('DatabaseHelper', 'get_start_statements', 'there are start statements')
 			for statement in db_statements:
 				logger('DatabaseHelper', 'get_start_statements', 'statement ' + str(statement.uid) + ': ' + statement.textversions.content)
-				statements_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement, issue)
+				statements_dict[str(statement.uid)] = DictionaryHelper().save_statement_row_in_dictionary(statement)
 		else:
 			logger('DatabaseHelper', 'get_start_statements', 'there are no statements')
 			return_dict['status'] = '0'
@@ -228,7 +228,7 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'get_text_for_statement', 'get all premises: conclusion_uid: ' + str(statement_uid) + ', issue_uid: ' + str(issue))
 
 		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid,Statement.issue_uid==issue)).first()
-		return_dict = DictionaryHelper().save_statement_row_in_dictionary(db_statement, issue)
+		return_dict = DictionaryHelper().save_statement_row_in_dictionary(db_statement)
 
 		return return_dict
 
@@ -378,7 +378,7 @@ class DatabaseHelper(object):
 
 		# check, if the statement already exists
 		logger('DatabaseHelper', 'set_statement', 'check for duplicate with: ' + statement)
-		db_duplicate = DBDiscussionSession.query(TextVersion).filter_by(content=statement).first()
+		db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content)==func.lower(statement)).first()
 		if db_duplicate:
 			db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid==db_duplicate.uid,
 			                                                                Statement.issue_uid==issue)).first()
@@ -436,7 +436,7 @@ class DatabaseHelper(object):
 		qh.set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
 
 		# we need the 'pro'-key cause the callback uses a method, where we differentiate between several prefixes
-		return_dict = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+		return_dict = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 
 		transaction.commit()
 		return return_dict, is_duplicate
@@ -528,7 +528,7 @@ class DatabaseHelper(object):
 						new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
 						argument_list.append(new_argument)
 				key = 'con_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 				return_dict[key]['duplicate'] = str(is_duplicate)
 			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 
@@ -569,7 +569,7 @@ class DatabaseHelper(object):
 						new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
 						argument_list.append(new_argument)
 				key = 'pro_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 				return_dict[key]['duplicate'] = str(is_duplicate)
 			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 
@@ -608,7 +608,7 @@ class DatabaseHelper(object):
 					new_argument.conclusions_argument(db_argument_of_current_attack.uid)
 					argument_list.append(new_argument)
 				key = 'con_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 				return_dict[key]['duplicate'] = str(is_duplicate)
 			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 
@@ -647,7 +647,7 @@ class DatabaseHelper(object):
 					new_argument.conclusions_argument(db_argument_of_current_attack.uid)
 					argument_list.append(new_argument)
 				key = 'pro_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 				return_dict[key]['duplicate'] = str(is_duplicate)
 			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 
@@ -714,7 +714,7 @@ class DatabaseHelper(object):
 				###
 				###
 				key = 'pro_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
 				return_dict[key]['duplicate'] = str(is_duplicate)
 			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
 

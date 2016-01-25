@@ -111,7 +111,7 @@ def main(global_config, **settings):
 
 	config.add_route('discussion_reaction',   '/d/{slug}/r/{arg_id_user}/{mode}*arg_id_sys')         # Route 5,7 aus den Unterlagen
 	config.add_route('discussion_justify',    '/d/{slug}/j/{statement_or_arg_id}/{mode}*relation')   # Route 4,6 aus den Unterlagen
-	config.add_route('discussion_attitude',   '/d/{slug}/a/{statement_id}')                          # Route   3 aus den Unterlagen
+	config.add_route('discussion_attitude',   '/d/{slug}/a/*statement_id')                          # Route   3 aus den Unterlagen
 	config.add_route('discussion_init',       '/d*slug')                                             # Route 1,2 aus den Unterlagen
 
 	# read the input and start

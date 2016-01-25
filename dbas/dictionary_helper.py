@@ -53,7 +53,7 @@ class DictionaryHelper(object):
 		return_dict = json.dumps(raw_dict, ensure_ascii)
 		return return_dict
 
-	def save_statement_row_in_dictionary(self, statement_row, issue):
+	def save_statement_row_in_dictionary(self, statement_row):
 		"""
 		Saved a row in dictionary
 		:param statement_row: for saving
@@ -79,5 +79,5 @@ class DictionaryHelper(object):
 			text = text[:-1]
 
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + author +
-		       ', ' + pgroup + ', ' + str(issue))
-		return {'uid':uid, 'text':text, 'date':date, 'author':author, 'premisegroup_uid':pgroup, 'issue':issue}
+		       ', ' + pgroup)
+		return {'uid':uid, 'text':text, 'date':date, 'author':author, 'premisegroup_uid':pgroup}

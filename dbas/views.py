@@ -19,7 +19,7 @@ from .database_helper import DatabaseHelper
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
-from .query_helper import QueryHelper
+from .query_helper import QueryHelper, UrlManager
 from .strings import Translator, TextGenerator
 from .string_matcher import FuzzyStringMatcher
 from .breadcrumb_helper import BreadcrumbHelper
@@ -230,7 +230,7 @@ class Dbas(object):
 		View configuration for the content view.
 		:return: dictionary
 		"""
-		# '/a/{slug}/a/{statement_id}'
+		# '/d/{slug}/a/{statement_id}'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
@@ -269,7 +269,7 @@ class Dbas(object):
 		View configuration for the content view.
 		:return: dictionary
 		"""
-		# '/a/{slug}/j/{statement_or_arg_id}/{mode}*relation'
+		# '/d/{slug}/j/{statement_or_arg_id}/{mode}*relation'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
@@ -352,7 +352,7 @@ class Dbas(object):
 		View configuration for the content view.
 		:return: dictionary
 		"""
-		# '/a/{slug}/r/{arg_id_user}/{mode}*arg_id_sys'
+		# '/d/{slug}/r/{arg_id_user}/{mode}*arg_id_sys'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
@@ -966,19 +966,18 @@ class Dbas(object):
 		logger('set_new_start_statement', 'def', 'main')
 
 		return_dict = {}
+		return_dict['status'] = '1'
 		try:
 			statement = self.request.params['statement']
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
+			issue = self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
+			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
 			new_statement, is_duplicate = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
-			if not new_statement:
-				return_dict['status'] = '0'
-			else:
-				return_dict['status'] = '0' if is_duplicate else '1'
-				return_dict['statement'] = DictionaryHelper().save_statement_row_in_dictionary(new_statement, issue)
+			url = UrlManager(slug).get_url_for_statement_attitude(False, new_statement.uid)
+			return_dict['url'] = url
+			logger('set_new_start_statement', 'def', 'return url ' + url)
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['status'] = '-1'
