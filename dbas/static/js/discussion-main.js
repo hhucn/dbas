@@ -10,8 +10,6 @@
  * Discussion will be started: Resstart button and discussion container are visible, issue list will be fetched
  */
 startDiscussion = function () {
-	//$('#' + startDiscussionButtonId).hide(); // hides the start button
-	//$('#' + startDescriptionId).hide(); // hides the start description
 	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
 
 	// on success we will get the start statements
@@ -30,9 +28,8 @@ resetDiscussion = function () {
  * Sets all click functions
  * @param guiHandler
  * @param ajaxHandler
- * @param interactionHandler
  */
-setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
+setClickFunctions = function (guiHandler, ajaxHandler){
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 		if ($(this).val() === _t(showAllUsers)) {
@@ -53,32 +50,17 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 		}
 	});
 
-	/*
-	// adding a textarea in the right column
-	$('#' + addConTextareaId).hide().click(function addConTextareaId() {
-		guiHandler.addTextareaOrInputAsChildInParent(conPositionTextareaId, 'right', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
-		$('#' + proposalListGroupId).empty();
-	});
-	*/
-
-	/*
-	// adding a textarea in the left column
-	$('#' + addProTextareaId).hide().click(function addProTextareaId() {
-		guiHandler.addTextareaOrInputAsChildInParent(proPositionTextareaId, 'left', $('#' + discussionSpaceId + ' ul li input').hasClass('statement'), 'input');
-		$('#' + proposalListGroupId).empty();
-	});
-	*/
-
 	// hiding the argument container, when the X button is clicked
 	$('#' + closeStatementContainerId).click(function closeStatementContainerId() {
 		$('#' + addStatementContainerId).hide();
 		$('#' + addStatementErrorContainer).hide();
-		$('#' + discussionSpaceId + ' ul').children().last().attr('checked', false).prop('checked', false).enable = true;
+		$('#' + discussionSpaceId + ' li:last-child input').attr('checked', false).prop('checked', false).enable = true;
 	});
+
 	$('#' + closePremiseContainerId).click(function closeStatementContainerId() {
 		$('#' + addPremiseContainerId).hide();
 		$('#' + addPremiseErrorContainer).hide();
-		$('#' + discussionSpaceId + ' ul').children().last().attr('checked', false).prop('checked', false).enable = true;
+		$('#' + discussionSpaceId + ' li:last-child input').attr('checked', false).prop('checked', false).enable = true;
 	});
 
 	// hiding the island view, when the X button is clicked
@@ -91,7 +73,7 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 	// open edit statement
 	$('#' + editStatementButtonId).click(function(){
 		guiHandler.showEditStatementsPopup();
-	})
+	});
 
 	// close popups
 	$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId(){	guiHandler.hideEditStatementsPopup(); });
@@ -150,7 +132,8 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 	 * Sharing shortened url on facebook
 	 */
 	$('#' + shareUrlButtonFacebook).click(function shareUrlButtonFacebook(){
-		new Sharing().facebookShare($('#' + popupUrlSharingInputId).val(), "FB Sharing", _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val(),
+		var val = $('#' + popupUrlSharingInputId).val();
+		new Sharing().facebookShare(val, "FB Sharing", _t(haveALookAt) + ' ' + val,
 			mainpage + "static/images/logo.png");
 	});
 
@@ -169,9 +152,6 @@ setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
 		}
 	});
 
-	//$('#' + scStyleDialogId).click(function scStyle1Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	//$('#' + scStyleIslandId).click(function scStyle2Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
-	//$('#' + scStyleCompleteId).click(function scStyle3Function () { interactionHandler.styleButtonChanged($(this).attr('id'))});
 	guiHandler.setImageInactive($('#' + displayStyleIconGuidedId));
 	$('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct () { guiHandler.setDisplayStyleAsDiscussion(); });
 	$('#' + displayStyleIconIslandId).click(function displayStyleIconIslandFct () { guiHandler.setDisplayStyleAsIsland(); });
@@ -222,10 +202,11 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
 
 	// gui for editing statements
 	$('#' + popupEditStatementTextareaId).keyup(function popupEditStatementTextareaKeyUp() {
-		new Helper.delay(function() {
-			alert($('#' + popupEditStatementContentId + ' .text-hover').attr('id'));
-			ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(), popupEditStatementTextareaId, fuzzy_statement_popup,
-				$('#' + popupEditStatementContentId + ' .text-hover').attr('id'));
+		new Helper().delay(function() {
+			ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(),
+				popupEditStatementTextareaId,
+				fuzzy_statement_popup,
+				$('#' + popupEditStatementContentId + ' .text-hover').attr('id').substr(3));
 			$('#' + popupEditStatementWarning).hide();
 			$('#' + popupEditStatementWarningMessage).text('');
 		},200);
@@ -252,34 +233,57 @@ setStyleOptions = function (guiHandler){
 
 /**
  *
- * @param guiHandler
- * @param ajaxHandler
  */
-setWindowOptions = function(guiHandler, ajaxHandler){
+setWindowOptions = function(){
 	// ajax loading animation
 	$(document).on({
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
 	});
 
-	// logout user on unload
-	$(window).on('unload', function windowUnload(){
-		// set checkbox on login
-		// new db field for "stay_logged_in"
-		// send request on unload
-	});
-
-	/*
-	$(window).on('resize', function resizeWindow(){
-		// make some things pretty
-		new GuiHandler().setIssueDropDownText(new Helper().resizeIssueText($('#' + issueDropdownButtonID).attr('value')));
-	});
-	*/
-
 	// some hack
 	$('#navbar-left').empty();
 
 	$(window).load( function windowLoad () {
+	});
+};
+
+setInputExtraOptions = function(guiHandler){
+	var input = $('#' + discussionSpaceId + ' li:last-child input');
+	if (window.location.href.indexOf('/r/') != -1){
+		$('#' + discussionSpaceId + ' label').each(function(){
+			$(this).css('width', '95%');
+		})
+	}
+
+	input.change(function () {
+		if (input.prop('checked')){
+			// new position at start
+			if (input.attr('id').indexOf('start_statement') != -1){
+				guiHandler.displayHowToWriteTextPopup();
+				guiHandler.showAddPositionContainer();
+				$('#' + sendNewStatementId).click(function(){
+					alert('todo');
+				});
+			}
+			// new premise for the start
+			else if (input.attr('id').indexOf('start_premise') != -1){
+				guiHandler.displayHowToWriteTextPopup();
+				guiHandler.showAddPremiseContainer();
+				$('#' + sendNewPremiseId).click(function(){
+					alert('todo');
+				});
+			}
+			// new premise while judging
+
+			else if (input.attr('id').indexOf('justify_premise') != -1){
+				guiHandler.displayHowToWriteTextPopup();
+				guiHandler.showAddPremiseContainer();
+				$('#' + sendNewPremiseId).click(function(){
+					alert('todo');
+				});
+			}
+		}
 	});
 };
 
@@ -294,10 +298,11 @@ $(function () {
 
 	guiHandler.setHandler(interactionHandler);
 
-	setClickFunctions(guiHandler, ajaxHandler, interactionHandler);
+	setClickFunctions(guiHandler, ajaxHandler);
 	setKeyUpFunctions(guiHandler, ajaxHandler);
 	setStyleOptions(guiHandler);
-	setWindowOptions(guiHandler, ajaxHandler);
+	setWindowOptions();
+	setInputExtraOptions(guiHandler);
 
 	// render html tags
 	replaceHtmlTags($('#discussions-header'));

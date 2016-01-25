@@ -89,36 +89,32 @@ class DatabaseHelper(object):
 
 		return return_dict
 
-	def correct_statement(self, transaction, user, uid, corrected_text, is_final, issue):
+	def correct_statement(self, transaction, user, uid, corrected_text):
 		"""
 		Corrects a statement
 		:param transaction: current transaction
 		:param user: requesting user
 		:param uid: requested statement uid
 		:param corrected_text: new text
-		:param is_final:
-		:param issue:
 		:return: True
 		"""
-		logger('DatabaseHelper', 'correct_statement', 'def')
-		is_final = is_final == 'true'
+		logger('DatabaseHelper', 'correct_statement', 'def ' + str(uid))
 
 		return_dict = dict()
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==uid, Statement.issue_uid==issue)).first()
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+
+		if corrected_text.endswith(('.','?','!')):
+			corrected_text = corrected_text[:-1]
 
 		# duplicate check
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).all()
-		if len(db_textversions)>0 and (not is_final):
-			logger('DatabaseHelper', 'correct_statement', 'duplicate')
-			return_dict['status'] = '0'
-			return return_dict
+		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(TextVersion.uid.desc()).first()
 
 		if db_user:
 			logger('DatabaseHelper', 'correct_statement', 'given user exists and correction will be set')
 			# duplicate or not?
-			if len(db_textversions)>0:
-				textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversions.uid)
+			if db_textversion:
+				textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversion.uid).first()
 			else:
 				textversion = TextVersion(content=corrected_text, author=db_user.uid)
 				textversion.set_statement(db_statement.uid)
@@ -329,8 +325,7 @@ class DatabaseHelper(object):
 		"""
 		logger('DatabaseHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
 
-		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).join(User).all()
 
 		return_dict = dict()
 		content_dict = dict()

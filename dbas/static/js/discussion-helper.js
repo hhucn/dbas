@@ -266,11 +266,12 @@ function Helper() {
 	 * @returns {jQuery|HTMLElement|*}
 	 */
 	this.createRowInEditDialog = function(text, for_id, id_id){
-		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxSiteHandler(), tr, td_text, td_buttons;
+		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxSiteHandler(), tr,
+			td_text, td_buttons, tmp;
 
 		// table items
 		tr = $('<tr>');
-		td_text = $('<td>').text(text).attr({id: id_id, for: for_id});
+		td_text = $('<td>').text(text).attr({id: 'td_' + id_id, for: for_id});
 		td_buttons = $('<td>').css('text-align', 'center');
 
 		// buttons
@@ -282,20 +283,16 @@ function Helper() {
 			$('#' + popupEditStatementTextareaId).text($(this).parent().prev().text());
 			$('#' + popupEditStatementContentId + ' td').removeClass('text-hover');
 			$(this).parent().prev().addClass('text-hover');
-			//$('#edit_' + type + '_td_text_' + uid).addClass('text-hover');
+
 			$('#' + popupEditStatementErrorDescriptionId).text('');
 			$('#' + popupEditStatementSuccessDescriptionId).text('');
+
 			guiHandler.showEditFieldsInEditPopup();
 			guiHandler.hideLogfileInEditPopup();
+
 			$('#' + popupEditStatementSubmitButtonId).click(function edit_statement_click() {
-				alert("todo ajax");
-				// statement = $('#' + popupEditStatementTextareaId).val();
-				// if (statement.toLocaleLowerCase().indexOf(_t(because).toLocaleLowerCase()) == 0){
-				// 	statement = statement.substr(_t(because.length() + 1));
-				// }
-				// is_final = $('#' + popupEditStatementWarning).is(':visible');
-				// //$('#edit_statement_td_text_' + $(this).attr('statement_id')).text(statement);
-				// new AjaxSiteHandler().sendCorrectureOfStatement($(this).attr('statement_id'), $(this).attr('callback_td'), statement, is_final);
+				tmp = $('#' + popupEditStatementContentId + ' .text-hover');
+				new AjaxSiteHandler().sendCorrectureOfStatement(tmp.attr('id').substr(3), $('#' + popupEditStatementTextareaId).val(), tmp);
 			});
 		}).hover(function edit_button_hover() {
 			$(this).toggleClass('btn-primary', 400);
@@ -311,7 +308,7 @@ function Helper() {
 			$('#' + popupEditStatementSuccessDescriptionId).text('');
 			$('#' + popupEditStatementContentId + ' td').removeClass('text-hover');
 			$(this).parent().prev().addClass('text-hover');
-			ajaxHandler.getLogfileForStatement($(this).parent().prev().attr('id'));
+			ajaxHandler.getLogfileForStatement($(this).parent().prev().attr('id').substr(3));
 			guiHandler.hideEditFieldsInEditPopup();
 		}).hover(function edit_button_hover() {
 			$(this).toggleClass('btn-primary', 400);

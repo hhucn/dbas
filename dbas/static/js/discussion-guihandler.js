@@ -404,6 +404,14 @@ function GuiHandler() {
 		$('#' + addReasonButtonId).disable = true;
 	};
 
+	this.showAddPositionContainer = function(){
+		$('#' + addStatementContainerId).show();
+	};
+
+	this.showAddPremiseContainer = function(){
+		$('#' + addPremiseContainerId).show();
+	};
+
 	/**
 	 * Shows an container for adding arguments
 	 * @param isArgument boolean
@@ -576,7 +584,9 @@ function GuiHandler() {
 		callback.focus();
 		//statementListGroup = callback.next();
 		//statementListGroup.empty(); // list with elements should be after the callbacker
-		$('#' + proposalListGroupId).empty();//.prepend('<h4>' + _t(didYouMean) + '</h4>');
+		$('#' + proposalStatementListGroupId).empty();
+		$('#' + proposalPremiseListGroupId).empty();
+		$('#' + proposalEditListGroupId).empty();
 
 		$.each(parsedData, function (key, val) {
 			params = key.split('_');
@@ -609,9 +619,13 @@ function GuiHandler() {
 			span_text = $('<span>').attr({id : 'proposal_' + index + '_text'}).html(val);
 			button.append(span_dist).append(span_text).click(function(){
 				callback.val($(this).attr('text'));
-				$('#' + proposalListGroupId).empty(); // list with elements should be after the callbacker
+				$('#' + proposalStatementListGroupId).empty();
+				$('#' + proposalPremiseListGroupId).empty();
+				$('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
 			});
-			$('#' + proposalListGroupId).append(button);
+			$('#' + proposalStatementListGroupId).append(button);
+			$('#' + proposalPremiseListGroupId).append(button);
+			$('#' + proposalEditListGroupId).append(button);
 		});
 		//$('#' + statementListGroupId).prepend('<h4>' + didYouMean + '</h4>');
 	};
@@ -712,6 +726,7 @@ function GuiHandler() {
 		$('#' + popupEditStatementTextareaId).hide();
 		$('#' + popupEditStatementDescriptionId).hide();
 		$('#' + popupEditStatementSubmitButtonId).hide();
+		$('#' + proposalEditListGroupId).empty();
 	};
 
 	/**
@@ -860,7 +875,6 @@ function GuiHandler() {
 		var cookie_name = 'HOW_TO_WRITE_TEXT',
 			// show popup, when the user does not accepted the cookie already
 			userAcceptedCookies = new Helper().isCookieSet(cookie_name);
-
 		if (!userAcceptedCookies) {
 			$('#' + popupHowToWriteText).modal('show');
 		}
@@ -906,9 +920,8 @@ function GuiHandler() {
 	 * @param jsonData
 	 */
 	this.updateOfStatementInDiscussion = function (jsonData) {
-		// append a row for each statement
-		$('#li_' + jsonData.uid + ' input').val(jsonData.text);
-		$('#li_' + jsonData.uid + ' label').text(jsonData.text);
+		$('#td_' + jsonData.uid).text(jsonData.text);
+		$('#' + jsonData.uid).text(jsonData.text);
 	};
 
 	/**

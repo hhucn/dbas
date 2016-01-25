@@ -166,22 +166,16 @@
 	margin-top: 20px;
 }
 
+#add-premise-container textarea,
 #popup-edit-statement-textarea,
 #popup-url-sharing-input {
-	outline: none;
-	font-size: 18px;
-	font-weight: 400;
-	color: #000;
-	padding: 12px 10px 12px 10px;
-	border-radius: 5px;
+	width: 100%;
+	padding: 12px 10px 6px 50px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 5px;
 	-o-border-radius: 5px;
 	margin: 0px 0px 10px 0px;
 	-webkit-appearance: none;
-	border: 1px solid;
-	width: 100%;
-	border-color: #bcbcbc;
 	resize: vertical;
 }
 
@@ -247,3 +241,5 @@
 		width: 95%;
 	}
 }
+
+	

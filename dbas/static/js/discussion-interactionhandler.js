@@ -541,9 +541,9 @@ function InteractionHandler() {
 	/**
 	 * Callback, when a correcture could be send
 	 * @param data of the ajax request
-	 * @param edit_dialog_td_id
+	 * @param element
 	 */
-	this.callbackIfDoneForSendCorrectureOfStatement = function (data, edit_dialog_td_id) {
+	this.callbackIfDoneForSendCorrectureOfStatement = function (data, element) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
 			$('#' + popupEditStatementErrorDescriptionId).text(_t(noCorrectionsSet));
@@ -553,10 +553,9 @@ function InteractionHandler() {
 			$('#' + popupEditStatementWarning).show();
 			$('#' + popupEditStatementWarningMessage).text(_t(duplicateDialog));
 		} else {
-			new GuiHandler().updateOfStatementInDiscussion(parsedData);
+			new GuiHandler().updateOfStatementInDiscussion(parsedData, element);
 			$('#' + popupEditStatementErrorDescriptionId).text('');
 			$('#' + popupEditStatementSuccessDescriptionId).text(_t(correctionsSet));
-			$('#' + edit_dialog_td_id).text(parsedData.text);
 		}
 	};
 
@@ -586,7 +585,9 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		// if there is no returned data, we will clean the list
 		if (Object.keys(parsedData).length == 0){
-			$('#' + proposalListGroupId).empty();
+			$('#' + proposalStatementListGroupId).empty();
+			$('#' + proposalPremiseListGroupId).empty();
+			$('#' + proposalEditListGroupId).empty();
 		} else {
 			new GuiHandler().setStatementsAsProposal(parsedData, callbackid);
 		}

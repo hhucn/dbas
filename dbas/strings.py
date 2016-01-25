@@ -1094,6 +1094,52 @@ class TextGenerator(object):
 		"""
 		self.lang = lang
 
+	def get_text_for_add_premise_container(self, confrontation, premise, attackType, conclusion, isSupportive):
+		"""
+		Based on the users reaction, text will be build.
+		:param confrontation: choosen confrontation
+		:param premise: current premise
+		:param attackType: type of the attack
+		:param conclusion: current conclusion
+		:param startLowerCase: boolean
+		:param isSupportive: boolean
+		:return: string
+		"""
+		_t = Translator(self.lang)
+
+		if premise[-1] == '.':
+			premise = premise[:-1]
+
+		if conclusion[-1] == '.':
+			conclusion = premise[:-1]
+
+		#longConclusion = ''
+		#if attackType == 'overbid':
+		#	if (isSupportive):
+		#		longConclusion = conclusion + ', ' + _t.get(_t.because).lower() + ' ' + premise
+		#	else:
+		#		longConclusion = premise + ', ' + _t.get(_t.doesNotJustify).lower() + ' ' + conclusion
+
+		# different cases
+		ret_text = ''
+		if attackType == 'undermine':
+			ret_text = _t.get(_t.itIsFalse) + ' ' + confrontation + '.'
+		if attackType == 'support':
+			ret_text = _t.get(_t.itIsTrue) + ' ' + confrontation + '.'
+		if attackType == 'undercut':
+			ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounter) + ' ' + conclusion + '.'
+		if attackType == 'overbid':
+			ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieve) + ' ' + conclusion
+			           #+ '.<br><br>' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
+		if attackType == 'rebut':
+			ret_text = confrontation + ' ' + _t.get(_t.iAcceptCounter) + ' ' + conclusion# + '.<br><br>'
+			# if isSupportive:
+			# 	ret_text += _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) + ' ' + conclusion + '.'
+			# else:
+			# 	ret_text += _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' ' + conclusion + '.'
+
+		return ret_text
+
 	def get_header_for_confrontation_response(self, confrontation, premise, attackType, conclusion, startLowerCase, isSupportive, user):
 		"""
 		Based on the users reaction, text will be build.

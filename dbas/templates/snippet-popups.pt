@@ -140,7 +140,7 @@
 				</div>
 				<p id="popup-edit-statement-description-p" i18n:translate="edit_statement_here">Please, edit the selected statement here:</p>
 				<textarea id="popup-edit-statement-textarea" type="text" placeholder="some corrected statement"></textarea>
-				<div class="list-group">
+				<div class="list-group" id="proposal-edit-list-group">
 				</div>
 
 				<div id="popup-edit-statement-warning" class="alert alert-warning" role="alert">
@@ -497,7 +497,7 @@
 					<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per field!</li>
 				</ul>
 				<br>
-				<b class="text-warning" i18n:translate="donts">Don'ts:</b>
+				<b class="text-danger" i18n:translate="donts">Don'ts:</b>
 				<ul id="how-to-write-text-dont-list">
 					<li i18n:translate="how-to-write-text-complicated">Complicated and nested sentences!</li>
 					<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per field!</li>

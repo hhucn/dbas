@@ -105,22 +105,8 @@
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
 						<img tal:condition="extras.is_editable" id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.title.edit_statement"/>
-						<!--
-						<button tal:condition="extras.is_editable" id="edit-statement" type="button" class="button button-block btn-sm btn">
-							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-edit"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="edit">Edit</span>
-						</button>
-						-->
-						<br tal:condition="extras.is_editable">
 						<br tal:condition="extras.is_editable">
 						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="title extras.title.report_statement"/>
-						<!--
-						<button tal:condition="extras.is_reportable" id="report-button" type="button" class="button button-block btn-sm btn">
-							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="report">Report</span>
-						</button>
-						-->
-						<br tal:condition="extras.is_reportable">
-						<br tal:condition="extras.is_reportable">
-
 						<div id="display-style-menu-icon">
 							<img id="" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" />
 							<nav id="site-navigation">
@@ -312,7 +298,7 @@
 					</div>
 					<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 					<div class="list-group" id="proposal-statement-list-group"></div>
-					<input id="send-statement-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+					<input id="send-new-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 				</form>
 			</div>
 			<div class="col-md-1"></div>
@@ -344,9 +330,9 @@
 					<span style="float:left; line-height:60px; text-align:center;">
 						<h5><span i18n:translate="Because">Because</span>...</h5>
 					</span>
-					<input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+					<textarea id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" ></textarea>
 					<div class="list-group" id="proposal-premise-list-group"></div>
-					<input id="send-premise-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+					<input id="send-new-premise" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 				</form>
 			</div>
 			<div class="col-md-1"></div>

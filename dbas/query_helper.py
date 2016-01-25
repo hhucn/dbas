@@ -263,7 +263,7 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_text_for_statement_uid', 'text ' + db_textversion.content)
 		tmp = db_textversion.content
 
-		if tmp.endswith('.'):
+		if tmp.endswith(('.','?','!')):
 			tmp = tmp[:-1]
 
 		return tmp
@@ -657,6 +657,7 @@ class QueryHelper(object):
 			text                = self.get_text_for_statement_uid(uid)
 			heading             = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
 			                        + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
+			add_premise_text    = text
 
 		elif at_justify_argumentation:
 			_tg = TextGenerator(lang)
@@ -664,9 +665,9 @@ class QueryHelper(object):
 			confrontation       = self.get_text_for_argument_uid(uid, lang)
 			premise, tmp        = self.get_text_for_premisesGroup_uid(uid)
 			conclusion          = self.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
-				else self.get_text_for_argument_uid(db_argument.argument_uid)
+				else self.get_text_for_argument_uid(db_argument.argument_uid, lang)
 			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
-			add_premise_text    = premise
+			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, is_supportive)
 
 		elif at_dont_know:
 			text                = self.get_text_for_argument_uid(uid, lang)
@@ -715,7 +716,7 @@ class QueryHelper(object):
 
 			if logged_in:
 				_tn = Translator(lang)
-				statements_array.append(self.get_statement_dict(0,
+				statements_array.append(self.get_statement_dict('start_statement',
 				                                                _tn.get(_tn.newConclusionRadioButtonText),
 				                                                [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
 				                                                'null',
@@ -794,10 +795,10 @@ class QueryHelper(object):
 				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
 				                                                True))
 
-			statements_array.append(self.get_statement_dict('0',
+			statements_array.append(self.get_statement_dict('start_premise',
 			                                                _tn.get(_tn.newPremiseRadioButtonText),
 			                                                [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id':0}],
-			                                                'justify',
+			                                                'null',
 			                                                'null',
 			                                                False))
 
@@ -857,10 +858,10 @@ class QueryHelper(object):
 				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
 				                                                True))
 
-			statements_array.append(self.get_statement_dict(0,
+			statements_array.append(self.get_statement_dict('justify_premise',
 			                                                _tn.get(_tn.newPremiseRadioButtonText),
 			                                                [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
-			                                                'justify',
+			                                                'null',
 			                                                'null',
 			                                                False))
 
@@ -901,7 +902,7 @@ class QueryHelper(object):
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self)
 				url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
 			else:
-				url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else ''
+				url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else 'window.history.go(-1)'
 			statements_array.append(self.get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url, False))
 
 		return statements_array

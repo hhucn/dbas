@@ -431,20 +431,17 @@ function AjaxSiteHandler() {
 	/**
 	 * Sends a correcture of a statement
 	 * @param uid
-	 * @param edit_dialog_td_id
+	 * @param element
 	 * @param corrected_text the corrected text
-	 * @param final_insert
 	 */
-	this.sendCorrectureOfStatement = function (uid, edit_dialog_td_id, corrected_text, final_insert) {
+	this.sendCorrectureOfStatement = function (uid, corrected_text, element) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(),settings_data, url;
 		$.ajax({
 			url: 'ajax_set_correcture_of_statement',
 			method: 'POST',
 			data: {
 				uid: uid,
-				text: corrected_text,
-				final: final_insert,
-				issue: new Helper().getCurrentIssueId()
+				text: corrected_text
 			},
 			dataType: 'json',
 			async: true,
@@ -456,7 +453,7 @@ function AjaxSiteHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, edit_dialog_td_id);
+			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, element);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the correcture could not be send (server offline or csrf check' +
@@ -503,7 +500,9 @@ function AjaxSiteHandler() {
 		var settings_data, url, callback = $('#' + callbackid);
 
 		if(callback.val().length==0) {
-			$('#' + proposalListGroupId).empty();
+			$('#' + proposalStatementListGroupId).empty();
+			$('#' + proposalPremiseListGroupId).empty();
+			$('#' + proposalEditListGroupId).empty();
 			return;
 		}
 
