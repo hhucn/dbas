@@ -109,7 +109,10 @@
 - Moved many string building functions to the server side
 
 0.5.0 (unreleased)
-- Refactoring: Less Ajax, more HTML with Chameleon and TAL
+- Refactoring:
+  - Less Ajax, more HTML
+  - Using Chameleon and TAL
+  - Reduced loading time
 
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation

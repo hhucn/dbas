@@ -185,7 +185,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
  * @param ajaxHandler
  */
 setKeyUpFunctions = function (guiHandler, ajaxHandler){
-	// gui for the fuzzy search
+	// gui for the fuzzy search (statements)
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		new Helper().delay(function() {
 			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
@@ -197,6 +197,14 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
 				// some trick: here we have a premise for our start statement
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premise, '');
 			}
+		},200);
+	});
+
+	// gui for the fuzzy search (premises)
+	$('#' + addPremiseContainerMainInputId).keyup(function () {
+		new Helper().delay(function() {
+			var escapedText = new Helper().escapeHtml($('#' + addPremiseContainerMainInputId).val());
+			ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
 		},200);
 	});
 
@@ -256,6 +264,10 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 		})
 	}
 
+	$('#' + discussionSpaceId + ' input').each(function() {
+		$(this).attr('checked', false).prop('checked', false);
+	});
+
 	input.change(function () {
 		if (input.prop('checked')){
 			// new position at start
@@ -310,7 +322,6 @@ $(function () {
 		interactionHandler = new InteractionHandler();
 
 	guiHandler.setHandler(interactionHandler);
-
 	setClickFunctions(guiHandler, ajaxHandler);
 	setKeyUpFunctions(guiHandler, ajaxHandler);
 	setStyleOptions(guiHandler);

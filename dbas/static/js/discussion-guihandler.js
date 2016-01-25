@@ -572,21 +572,20 @@ function GuiHandler() {
 	 * @param parsedData
 	 * @param callbackid
 	 */
-	this.setStatementsAsProposal = function (parsedData, callbackid){
+	this.setStatementsAsProposal = function (parsedData, callbackid, type){
 		var callback = $('#' + callbackid), uneditted_value;
+		if (type == fuzzy_start_premise)        $('#' + proposalPremiseListGroupId).empty();
+		else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).empty();
+		else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).empty();
+		else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).empty();
+
 		// is there any value ?
 		if (Object.keys(parsedData).length == 0){
-			callback.next().empty();
 			return;
 		}
 
 		var params, token, button, span_dist, span_text, distance, index;
 		callback.focus();
-		//statementListGroup = callback.next();
-		//statementListGroup.empty(); // list with elements should be after the callbacker
-		$('#' + proposalStatementListGroupId).empty();
-		$('#' + proposalPremiseListGroupId).empty();
-		$('#' + proposalEditListGroupId).empty();
 
 		$.each(parsedData, function (key, val) {
 			params = key.split('_');
@@ -611,10 +610,9 @@ function GuiHandler() {
 			button = $('<button>').attr({type : 'button',
 				class : 'list-group-item',
 				id : 'proposal_' + index,
-				text: uneditted_value});
-   			button.hover(function(){ $(this).addClass('active');
-   			    	  }, function(){ $(this).removeClass('active');
-   			});
+				text: uneditted_value})
+				.hover(function(){$(this).addClass('active');},
+					   function(){ $(this).removeClass('active');});
 			span_dist = $('<span>').attr({class : 'badge'}).text(_t(levenshteinDistance) + ' ' + distance);
 			span_text = $('<span>').attr({id : 'proposal_' + index + '_text'}).html(val);
 			button.append(span_dist).append(span_text).click(function(){
@@ -623,9 +621,11 @@ function GuiHandler() {
 				$('#' + proposalPremiseListGroupId).empty();
 				$('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
 			});
-			$('#' + proposalStatementListGroupId).append(button);
-			$('#' + proposalPremiseListGroupId).append(button);
-			$('#' + proposalEditListGroupId).append(button);
+
+			if (type == fuzzy_start_premise)        $('#' + proposalPremiseListGroupId).append(button);
+			else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).append(button);
+			else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).append(button);
+			else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).append(button);
 		});
 		//$('#' + statementListGroupId).prepend('<h4>' + didYouMean + '</h4>');
 	};

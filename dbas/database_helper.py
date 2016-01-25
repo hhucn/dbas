@@ -433,10 +433,10 @@ class DatabaseHelper(object):
 		       + ' to statement ' + str(db_conclusion.uid) + ', ' + ('' if is_supportive else '' ) + 'supportive')
 
 		# third, insert the argument
-		new_argument = qh.set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
+		new_argument_uid = qh.set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
 
 		transaction.commit()
-		return new_argument, is_duplicate
+		return new_argument_uid, is_duplicate
 
 	def handle_inserting_new_statements(self, user, pro_dict, con_dict, transaction, argument_id, premisegroup_id,
 	                                    current_attack, last_attack, premisegroup_con, premisegroup_pro, exception_rebut, issue):

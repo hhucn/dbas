@@ -154,24 +154,29 @@ class QueryHelper(object):
 		       + ', issue: ' + str(issue))
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid, weight=0,
-							conclusion=conclusion_uid, issue=issue)
-		new_argument.conclusions_argument(argument_uid)
+		new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==premisegroup_uid,
+		                                                               Argument.isSupportive==is_supportive,
+		                                                               Argument.conclusion_uid==conclusion_uid,
+		                                                               Argument.issue_uid==issue)).first()
+		if not new_argument:
+			new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid, weight=0,
+			                        conclusion=conclusion_uid, issue=issue)
+			new_argument.conclusions_argument(argument_uid)
 
-		DBDiscussionSession.add(new_argument)
-		DBDiscussionSession.flush()
+			DBDiscussionSession.add(new_argument)
+			DBDiscussionSession.flush()
 
-		new_inserted_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==premisegroup_uid,
-		                                                              Argument.isSupportive==is_supportive,
-		                                                              Argument.author_uid==db_user.uid,
-		                                                              Argument.weight_uid==0,
-		                                                              Argument.conclusion_uid==conclusion_uid,
-		                                                              Argument.argument_uid==argument_uid,
-		                                                              Argument.issue_uid==issue)).first()
+			new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==premisegroup_uid,
+			                                                               Argument.isSupportive==is_supportive,
+			                                                               Argument.author_uid==db_user.uid,
+			                                                               Argument.weight_uid==0,
+			                                                               Argument.conclusion_uid==conclusion_uid,
+			                                                               Argument.argument_uid==argument_uid,
+			                                                               Argument.issue_uid==issue)).first()
 		transaction.commit()
-		if new_inserted_argument:
-			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_inserted_argument.uid))
-			return new_inserted_argument.uid
+		if new_argument:
+			logger('QueryHelper', 'set_argument', 'new argument has uid ' + str(new_argument.uid))
+			return new_argument.uid
 		else:
 			logger('QueryHelper', 'set_argument', 'new argument is not in the database')
 			return 0

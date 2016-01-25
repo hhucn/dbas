@@ -522,7 +522,7 @@ function AjaxSiteHandler() {
 				url = this.url;
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
-			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid);
+			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
 			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail() {
 			new Helper().delay(function ajaxGetAllUsersFailDelay() {

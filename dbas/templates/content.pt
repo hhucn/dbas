@@ -86,13 +86,7 @@
 						<ul>
 							<li tal:repeat="item items">
 								<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-								<label tal:attributes="for item.id" tal:condition="item.leading_because">
-									<span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;
-								</label>
-								<span tal:repeat="premise item.premises" tal:omit-tag="">
-									<label tal:attributes="for item.id; id premise.id" tal:content="premise.title">premise</label>
-									<label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label>
-								</span>
+								<label tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id" tal:content="premise.title">premise</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
 							</li>
 						</ul>
 
@@ -147,6 +141,9 @@
 			<div class="row" id="discussion-failure-row" style="display:none">
 				<div class="col-md-3"></div>
 				<div class="col-md-6">
+					<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$(this).parent().hide();">
+						<span aria-hidden="true" style="color: white;">&times;</span>
+					</button>
 					<div class="alert alert-danger" role="alert">
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 						<span i18n:translate="error">Error:</span>
@@ -330,7 +327,10 @@
 					<span style="float:left; line-height:60px; text-align:center;">
 						<h5><span i18n:translate="Because">Because</span>...</h5>
 					</span>
+					<!--
 					<textarea id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" ></textarea>
+					-->
+					<input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" >
 					<div class="list-group" id="proposal-premise-list-group"></div>
 					<input id="send-new-premise" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 				</form>

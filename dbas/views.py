@@ -1011,11 +1011,12 @@ class Dbas(object):
 			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', supportive: ' +
 			       str(support) + ', issue: ' + str(issue))
 
-			new_argument, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
+			new_argument_uid, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
 
-			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument.uid, issue)
+			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-			url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument.uid, attack, arg_id_sys)
+			url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 			return_dict['url'] = url
 
 			return_dict['status'] = '1'

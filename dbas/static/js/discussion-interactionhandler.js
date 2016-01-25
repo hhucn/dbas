@@ -126,7 +126,7 @@ function InteractionHandler() {
 	 * Segmented button for display style was pressed
 	 * @param buttonId current id
 	 */
-	this.styleButtonChanged = function (buttonId) {
+	this.styleButtonChanged = function (buttonId) { // TODO KILL
 		var guiHandler = new GuiHandler(),
 				style1 = $('#' + scStyleDialogId),
 				style2 = $('#' + scStyleIslandId),
@@ -156,7 +156,7 @@ function InteractionHandler() {
 	 * @param useIntro
 	 * @returns {boolean} true, if all input is not empty
 	 */
-	this.getPremisesAndSendThem = function (useIntro) {
+	this.getPremisesAndSendThem = function (useIntro) { // TODO KILL
 		var i = 0,
 				dict = {},
 				no, intro,
@@ -244,7 +244,7 @@ function InteractionHandler() {
 	/**
 	 * Defines the action for the send button
 	 */
-	this.radioButtonWasChoosen = function () {
+	this.radioButtonWasChoosen = function () { // TODO KILL
 		var guiHandler = new GuiHandler(),
 			radioButton= $('input[name=' + radioButtonGroup + ']:checked'),
 			discussionsDescription = $('#' + discussionsDescriptionId),
@@ -481,6 +481,7 @@ function InteractionHandler() {
 		if (parsedData.status == '-1') {
 			alert('success -1 in callbackIfDoneForSendNewStartStatement');
 		} else {
+			 $('#' + discussionSpaceId + 'input:last-child').attr('checked', false).prop('checked', false);
 			window.location.href = parsedData.url;
 		}
 	};
@@ -509,7 +510,7 @@ function InteractionHandler() {
 		 if (parsedData.status == '0') {
 			 new InteractionHandler().premiseButtonWasClicked(parsedData.premisegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'), isSupportive)
 		 } else {
-			new GuiHandler().setPremisesAsLastChild(parsedData, true);
+			window.location.href = parsedData.url;
 		 }
 	};
 
@@ -571,7 +572,7 @@ function InteractionHandler() {
 	 * @param data
 	 * @param callbackid
 	 */
-	this.callbackIfDoneFuzzySearch = function (data, callbackid){
+	this.callbackIfDoneFuzzySearch = function (data, callbackid, type){
 		var parsedData = $.parseJSON(data);
 		// if there is no returned data, we will clean the list
 		if (Object.keys(parsedData).length == 0){
@@ -579,7 +580,7 @@ function InteractionHandler() {
 			$('#' + proposalPremiseListGroupId).empty();
 			$('#' + proposalEditListGroupId).empty();
 		} else {
-			new GuiHandler().setStatementsAsProposal(parsedData, callbackid);
+			new GuiHandler().setStatementsAsProposal(parsedData, callbackid, type);
 		}
 	};
 

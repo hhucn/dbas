@@ -139,7 +139,7 @@
 				<div id="popup-edit-statement-content">
 				</div>
 				<p id="popup-edit-statement-description-p" i18n:translate="edit_statement_here">Please, edit the selected statement here:</p>
-				<textarea id="popup-edit-statement-textarea" type="text" placeholder="some corrected statement"></textarea>
+				<textarea class="form-control"  id="popup-edit-statement-textarea" type="text" placeholder="some corrected statement"></textarea>
 				<div class="list-group" id="proposal-edit-list-group">
 				</div>
 
