@@ -339,25 +339,19 @@ class History(DiscussionBase):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	url = sa.Column(sa.Text, nullable=False)
-	keyword_after_decission = sa.Column(sa.Text, nullable=False)
-	keyword_before_decission = sa.Column(sa.Text, nullable=False)
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	session_id = sa.Column(sa.Integer)
 
-	def __init__(self, user, url, keyword_after_decission='', keyword_before_decission='', session_id=0):
+	def __init__(self, user, url, session_id=0):
 		"""
 		Initializes a row in current history-table
 		:param user:
 		:param url:
-		:param keyword_after_decission:
-		:param keyword_before_decission:
 		:param session_id:
 		:return:
 		"""
 		self.author_uid = user
 		self.url = url
-		self.keyword_after_decission = keyword_after_decission
-		self.keyword_before_decission = keyword_before_decission
 		self.timestamp = func.now()
 		self.session_id = session_id
 

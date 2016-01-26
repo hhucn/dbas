@@ -197,8 +197,9 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
-		# update timestamp
+		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb('', self.request.authenticated_userid, self.request.session)
 
 		_qh = QueryHelper()
 		slug = self.request.matchdict['slug'][0] if len(self.request.matchdict['slug'])>0 else ''
@@ -442,7 +443,7 @@ class Dbas(object):
 			'language': str(lang),
 			'title': 'Settings',
 			'project': header,
-			'logged_in': self.request.authenticated_userid,
+			'extras': {'logged_in': self.request.authenticated_userid},
 			'passwordold': '' if success else old_pw,
 			'password': '' if success else new_pw,
 			'passwordconfirm': '' if success else confirm_pw,
