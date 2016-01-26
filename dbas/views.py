@@ -997,7 +997,7 @@ class Dbas(object):
 			       str(support) + ', issue: ' + str(issue))
 
 			new_argument_uid, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
-			if new_statement == -1:
+			if new_argument_uid == -1:
 				return_dict['status'] = 0
 			else:
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
