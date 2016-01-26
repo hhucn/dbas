@@ -1,0 +1,702 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Interfaces &mdash; D-BAS 0.4.7 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="D-BAS 0.4.7 documentation" href="index.html"/>
+        <link rel="next" title="Datastructure" href="datastructure/index.html"/>
+        <link rel="prev" title="Expert View" href="views/expert.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> D-BAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture/index.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="views/index.html">Views</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#main-pages">Main pages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-page">main_page</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-contact">main_contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-discussion-start">main_discussion_start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-discussion-issue">main_discussion_issue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-discussion">main_discussion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-settings">main_settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-news">main_news</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-imprint">main_imprint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">404</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#discussion-stuff">Discussion Stuff</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-start-statements">ajax_get_start_statements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-text-for-statement">ajax_get_text_for_statement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-premises-for-statement">ajax_get_premises_for_statement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-premise-for-statement">ajax_get_premise_for_statement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-reply-for-premisegroup">ajax_reply_for_premisegroup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-reply-for-response-of-confrontation">ajax_reply_for_response_of_confrontation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-reply-for-argument">ajax_reply_for_argument</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#user-things">User Things</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-user-login">ajax_user_login</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-user-logout">ajax_user_logout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-user-registration">ajax_user_registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-user-password-request">ajax_user_password_request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-all-users">ajax_all_users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-delete-user-track">ajax_delete_user_track</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-delete-user-history">ajax_delete_user_history</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#add-new-things">Add new Things</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-set-new-start-statement">ajax_set_new_start_statement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-set-new-start-premise">ajax_set_new_start_premise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-set-new-premises-for-x">ajax_set_new_premises_for_x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-set-correcture-of-statement">ajax_set_correcture_of_statement</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#get-things">Get Things</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-logfile-for-statement">ajax_get_logfile_for_statement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-shortened-url">ajax_get_shortened_url</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-attack-overview">ajax_get_attack_overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-issue-list">ajax_get_issue_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-everything-for-island-view">ajax_get_everything_for_island_view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-database-dump">ajax_get_database_dump</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-user-track">ajax_get_user_track</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-user-history">ajax_get_user_history</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-get-news">ajax_get_news</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-things">Additional Things</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-fuzzy-search">ajax_fuzzy_search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-send-news">ajax_send_news</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-switch-language">ajax_switch_language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ajax-additional-service">ajax_additional_service</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="datastructure/index.html">Datastructure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notices.html">Notices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">D-BAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Interfaces</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/interfaces.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="interfaces">
+<h1>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="main-pages">
+<h2>Main pages<a class="headerlink" href="#main-pages" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="main-page">
+<h3>main_page<a class="headerlink" href="#main-page" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /</li>
+<li>Content: Landing page</li>
+</ul>
+</div>
+<div class="section" id="main-contact">
+<h3>main_contact<a class="headerlink" href="#main-contact" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /contact</li>
+<li>Content: Contact page</li>
+</ul>
+</div>
+<div class="section" id="main-discussion-start">
+<h3>main_discussion_start<a class="headerlink" href="#main-discussion-start" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/start</li>
+<li>Content: Start a discussion.</li>
+</ul>
+</div>
+<div class="section" id="main-discussion-issue">
+<h3>main_discussion_issue<a class="headerlink" href="#main-discussion-issue" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/start/issue={issue}</li>
+<li>Content: Starts a discussion with the given issue. {issue} in the uid of the issue.</li>
+</ul>
+</div>
+<div class="section" id="main-discussion">
+<h3>main_discussion<a class="headerlink" href="#main-discussion" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Path: /discussion/{parameters}/{service}/go</p>
+</li>
+<li><p class="first">Content: Wrapper for the complete discussion a discussion.</p>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in {service}:</dt>
+<dd><blockquote class="first">
+<div><ul class="simple">
+<li><em>choose_action_for_statement</em> with parameters <em>uid=1&amp;issue=1</em>, whereby <em>uid</em> is the unique identifier of the first clicked statement and <em>issue</em> is the unique identifier of the issue. This service will call <em>ajax_get_premises_for_statement</em>.</li>
+<li><em>get_premises_for_statement</em> with parameters <em>uid=1&amp;supportive=true&amp;issue=1</em>, whereby <em>XXXXX</em> This service will call <em>ajax_get_premises_for_statement</em>.</li>
+</ul>
+</div></blockquote>
+<ul class="last simple">
+<li><em>reply_for_premisegroup</em> with parameters <em>pgroup_id=1&amp;conclusion_id=1&amp;supportive=true&amp;issue=1</em>, whereby XXXXX This service will call <em>ajax_reply_for_premisegroup</em>.</li>
+<li><em>reply_for_response_of_confrontation</em> with parameters <em>id=undermine_argument_17&amp;relation=undercut&amp;supportive=true&amp;issue=1</em>, whereby XXXXX This service will call <em>ajax_reply_for_response_of_confrontation</em>.</li>
+<li><em>reply_for_argument</em> with parameters <em>id_text=undermine_premisesgroup_68&amp;pgroup_id=17&amp;supportive=true&amp;issue=1</em>, whereby XXXXX This service will call <em>ajax_reply_for_argument</em>.</li>
+<li><em>more_about_argument</em> with parameters <em>uid=1&amp;supportive=true&amp;issue=1</em>, whereby XXXXX This service will call <em>ajax_get_premise_for_statement</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="main-settings">
+<h3>main_settings<a class="headerlink" href="#main-settings" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /settings</li>
+<li>Content: Page with settings of the user. Only available, when the user is logged in</li>
+</ul>
+</div>
+<div class="section" id="main-news">
+<h3>main_news<a class="headerlink" href="#main-news" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /news</li>
+<li>Content: Page with news</li>
+</ul>
+</div>
+<div class="section" id="main-imprint">
+<h3>main_imprint<a class="headerlink" href="#main-imprint" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /imprint</li>
+<li>Content:</li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h3>404<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /404</li>
+<li>Content: Default 404 page</li>
+</ul>
+</div>
+</div>
+<div class="section" id="discussion-stuff">
+<h2>Discussion Stuff<a class="headerlink" href="#discussion-stuff" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ajax-get-start-statements">
+<h3>ajax_get_start_statements<a class="headerlink" href="#ajax-get-start-statements" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Path: /discussion/{url:.*}ajax_get_start_statements</p>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in {url:.*}:</dt>
+<dd><ul class="first last simple">
+<li>a</li>
+<li>b</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in the request:</dt>
+<dd><ul class="first last simple">
+<li>c</li>
+<li>d</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Content:</p>
+</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-text-for-statement">
+<h3>ajax_get_text_for_statement<a class="headerlink" href="#ajax-get-text-for-statement" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Path: /discussion/{url:.*}ajax_get_text_for_statement</p>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in {url:.*}: only necess</dt>
+<dd><ul class="first last simple">
+<li>a</li>
+<li>b</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in the request:</dt>
+<dd><ul class="first last simple">
+<li>c</li>
+<li>d</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Content:</p>
+</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-premises-for-statement">
+<h3>ajax_get_premises_for_statement<a class="headerlink" href="#ajax-get-premises-for-statement" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Path: /discussion/{url:.*}ajax_get_premises_for_statement</p>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in {url:.*}:</dt>
+<dd><ul class="first last simple">
+<li>a</li>
+<li>b</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in the request:</dt>
+<dd><ul class="first last simple">
+<li>c</li>
+<li>d</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Content:</p>
+</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-premise-for-statement">
+<h3>ajax_get_premise_for_statement<a class="headerlink" href="#ajax-get-premise-for-statement" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Path: /discussion/{url:.*}ajax_get_premise_for_statement</p>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in {url:.*}:</dt>
+<dd><ul class="first last simple">
+<li>a</li>
+<li>b</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in the request:</dt>
+<dd><ul class="first last simple">
+<li>c</li>
+<li>d</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Content:</p>
+</li>
+</ul>
+</div>
+<div class="section" id="ajax-reply-for-premisegroup">
+<h3>ajax_reply_for_premisegroup<a class="headerlink" href="#ajax-reply-for-premisegroup" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Path: /discussion/{url:.*}ajax_reply_for_premisegroup</p>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in {url:.*}:</dt>
+<dd><ul class="first last simple">
+<li>a</li>
+<li>b</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in the request:</dt>
+<dd><ul class="first last simple">
+<li>c</li>
+<li>d</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Content:</p>
+</li>
+</ul>
+</div>
+<div class="section" id="ajax-reply-for-response-of-confrontation">
+<h3>ajax_reply_for_response_of_confrontation<a class="headerlink" href="#ajax-reply-for-response-of-confrontation" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Path: /discussion/{url:.*}ajax_reply_for_response_of_confrontation</p>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in {url:.*}:</dt>
+<dd><ul class="first last simple">
+<li>a</li>
+<li>b</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in the request:</dt>
+<dd><ul class="first last simple">
+<li>c</li>
+<li>d</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Content:</p>
+</li>
+</ul>
+</div>
+<div class="section" id="ajax-reply-for-argument">
+<h3>ajax_reply_for_argument<a class="headerlink" href="#ajax-reply-for-argument" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Path: /discussion/{url:.*}ajax_reply_for_argument</p>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in {url:.*}:</dt>
+<dd><ul class="first last simple">
+<li>a</li>
+<li>b</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Parameters in the request:</dt>
+<dd><ul class="first last simple">
+<li>c</li>
+<li>d</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Content:</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="user-things">
+<h2>User Things<a class="headerlink" href="#user-things" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ajax-user-login">
+<h3>ajax_user_login<a class="headerlink" href="#ajax-user-login" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {url:.*}ajax_user_login</li>
+</ul>
+</div>
+<div class="section" id="ajax-user-logout">
+<h3>ajax_user_logout<a class="headerlink" href="#ajax-user-logout" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {url:.*}ajax_user_logout</li>
+</ul>
+</div>
+<div class="section" id="ajax-user-registration">
+<h3>ajax_user_registration<a class="headerlink" href="#ajax-user-registration" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {url:.*}ajax_user_registration</li>
+</ul>
+</div>
+<div class="section" id="ajax-user-password-request">
+<h3>ajax_user_password_request<a class="headerlink" href="#ajax-user-password-request" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {url:.*}ajax_user_password_request</li>
+</ul>
+</div>
+<div class="section" id="ajax-all-users">
+<h3>ajax_all_users<a class="headerlink" href="#ajax-all-users" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/{url:.*}ajax_all_users{params:.*}</li>
+</ul>
+</div>
+<div class="section" id="ajax-delete-user-track">
+<h3>ajax_delete_user_track<a class="headerlink" href="#ajax-delete-user-track" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: ajax_delete_user_track</li>
+</ul>
+</div>
+<div class="section" id="ajax-delete-user-history">
+<h3>ajax_delete_user_history<a class="headerlink" href="#ajax-delete-user-history" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: ajax_delete_user_history</li>
+</ul>
+</div>
+</div>
+<div class="section" id="add-new-things">
+<h2>Add new Things<a class="headerlink" href="#add-new-things" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ajax-set-new-start-statement">
+<h3>ajax_set_new_start_statement<a class="headerlink" href="#ajax-set-new-start-statement" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/{url:.*}ajax_set_new_start_statement{params:.*}</li>
+</ul>
+</div>
+<div class="section" id="ajax-set-new-start-premise">
+<h3>ajax_set_new_start_premise<a class="headerlink" href="#ajax-set-new-start-premise" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/{url:.*}ajax_set_new_start_premise{params:.*}</li>
+</ul>
+</div>
+<div class="section" id="ajax-set-new-premises-for-x">
+<h3>ajax_set_new_premises_for_x<a class="headerlink" href="#ajax-set-new-premises-for-x" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/{url:.*}ajax_set_new_premises_for_x{params:.*}</li>
+</ul>
+</div>
+<div class="section" id="ajax-set-correcture-of-statement">
+<h3>ajax_set_correcture_of_statement<a class="headerlink" href="#ajax-set-correcture-of-statement" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/{url:.*}ajax_set_correcture_of_statement{params:.*}</li>
+</ul>
+</div>
+</div>
+<div class="section" id="get-things">
+<h2>Get Things<a class="headerlink" href="#get-things" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ajax-get-logfile-for-statement">
+<h3>ajax_get_logfile_for_statement<a class="headerlink" href="#ajax-get-logfile-for-statement" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/{url:.*}ajax_get_logfile_for_statement{params:.*}</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-shortened-url">
+<h3>ajax_get_shortened_url<a class="headerlink" href="#ajax-get-shortened-url" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/{url:.*}ajax_get_shortened_url{params:.*}</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-attack-overview">
+<h3>ajax_get_attack_overview<a class="headerlink" href="#ajax-get-attack-overview" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: /discussion/{url:.*}ajax_get_attack_overview{params:.*}</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-issue-list">
+<h3>ajax_get_issue_list<a class="headerlink" href="#ajax-get-issue-list" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {url:.*}ajax_get_issue_list</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-everything-for-island-view">
+<h3>ajax_get_everything_for_island_view<a class="headerlink" href="#ajax-get-everything-for-island-view" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {url:.*}ajax_get_everything_for_island_view{params:.*}</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-database-dump">
+<h3>ajax_get_database_dump<a class="headerlink" href="#ajax-get-database-dump" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {url:.*}ajax_get_database_dump</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-user-track">
+<h3>ajax_get_user_track<a class="headerlink" href="#ajax-get-user-track" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: ajax_get_user_track</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-user-history">
+<h3>ajax_get_user_history<a class="headerlink" href="#ajax-get-user-history" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: ajax_get_user_history</li>
+</ul>
+</div>
+<div class="section" id="ajax-get-news">
+<h3>ajax_get_news<a class="headerlink" href="#ajax-get-news" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: ajax_get_news</li>
+</ul>
+</div>
+</div>
+<div class="section" id="additional-things">
+<h2>Additional Things<a class="headerlink" href="#additional-things" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ajax-fuzzy-search">
+<h3>ajax_fuzzy_search<a class="headerlink" href="#ajax-fuzzy-search" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {url:.*}ajax_fuzzy_search</li>
+</ul>
+</div>
+<div class="section" id="ajax-send-news">
+<h3>ajax_send_news<a class="headerlink" href="#ajax-send-news" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: ajax_send_news</li>
+</ul>
+</div>
+<div class="section" id="ajax-switch-language">
+<h3>ajax_switch_language<a class="headerlink" href="#ajax-switch-language" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {url:.*}ajax_switch_language{params:.*}</li>
+</ul>
+</div>
+<div class="section" id="ajax-additional-service">
+<h3>ajax_additional_service<a class="headerlink" href="#ajax-additional-service" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Path: {stuff:.*}additional_service</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="datastructure/index.html" class="btn btn-neutral float-right" title="Datastructure" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="views/expert.html" class="btn btn-neutral" title="Expert View" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Tobias Krauthoff.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.4.7',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

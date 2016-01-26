@@ -1,0 +1,1433 @@
+# 
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2016-01-26 11:09+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 3.10\n"
+
+#. Default: 404 Error
+#: ./dbas/templates/404.pt:11
+msgid "404"
+msgstr ""
+
+#. Default: The page
+#: ./dbas/templates/404.pt:14
+msgid "404_text_part1"
+msgstr ""
+
+#. Default: for could not be found.
+#: ./dbas/templates/404.pt:16
+msgid "404_text_part2"
+msgstr ""
+
+#. Default: Welcome
+#: ./dbas/templates/index.pt:18
+msgid "welcome"
+msgstr ""
+
+#. Default: to the
+#: ./dbas/templates/index.pt:19
+msgid "to_the_dbas"
+msgstr ""
+
+#. Default: ialog
+#: ./dbas/templates/index.pt:20
+msgid "ialog"
+msgstr ""
+
+#. Default: ased
+#: ./dbas/templates/index.pt:21
+msgid "ased"
+msgstr ""
+
+#. Default: rgumentation
+#: ./dbas/templates/index.pt:22
+msgid "rgumentation"
+msgstr ""
+
+#. Default: oftware
+#: ./dbas/templates/index.pt:23
+msgid "oftware"
+msgstr ""
+
+#. Default: or short
+#: ./dbas/templates/index.pt:23
+msgid "or_short"
+msgstr ""
+
+#. Default: This novel discussions software will help you to discuss a problem
+#. or statement in a structured manner.
+#: ./dbas/templates/index.pt:26
+msgid "novel_software"
+msgstr ""
+
+#. Default: D-Bas offers a lot of advantages, here are a few of them:
+#: ./dbas/templates/index.pt:33
+msgid "dbas_intro_advantages_intro"
+msgstr ""
+
+#. Default: Easy to use and very powerful
+#: ./dbas/templates/index.pt:35
+msgid "dbas_intro_advantages_1"
+msgstr ""
+
+#. Default: Avoid redundancy due to multiple statements because an
+#. argumentation map is used as background structure
+#: ./dbas/templates/index.pt:36
+msgid "dbas_intro_advantages_2"
+msgstr ""
+
+#. Default: Every argument and position will be connected logically to each
+#. other
+#: ./dbas/templates/index.pt:37
+msgid "dbas_intro_advantages_3"
+msgstr ""
+
+#. Default: This project is based on research of the graduation school Online-
+#. Participation, subsidised governmentally by
+#: ./dbas/templates/index.pt:40
+msgid "projec_based_on"
+msgstr ""
+
+#. Default: Ministry of Innovation, Science and Research in North Rhine-
+#. Westphalia
+#: ./dbas/templates/index.pt:40
+msgid "ministry_of_innovation"
+msgstr ""
+
+#. Default: And don't forget to check reguarly the
+#: ./dbas/templates/index.pt:61
+msgid "dont_forget"
+msgstr ""
+
+#. Default: news-page
+#: ./dbas/templates/index.pt:61
+msgid "news_page"
+msgstr ""
+
+#. Default: Description
+#: ./dbas/templates/index.pt:71 ./dbas/templates/snippet-header.pt:23
+msgid "description"
+msgstr ""
+
+#. Default: of D-BAS
+#: ./dbas/templates/index.pt:71 ./dbas/templates/index.pt:114
+#: ./dbas/templates/index.pt:192
+msgid "of_dbas"
+msgstr ""
+
+#. Default: In the following a short description of D-BAS will be given with
+#. the help of bulletpoints:
+#: ./dbas/templates/index.pt:73
+msgid "description_intro"
+msgstr ""
+
+#. Default: Participants are able to add and modify positions and arguments in
+#. every discussion.
+#: ./dbas/templates/index.pt:75
+msgid "description_list_1"
+msgstr ""
+
+#. Default: Positions and arguments are connected logically by participants
+#: ./dbas/templates/index.pt:76
+msgid "description_list_2"
+msgstr ""
+
+#. Default: The system is very easy to use.
+#. Default: It offers a time-shifted discussion in three modes:
+#: ./dbas/templates/index.pt:77 ./dbas/templates/index.pt:78
+msgid "description_list_3"
+msgstr ""
+
+#. Default: Guided View: The participants will be lead through the discussion .
+#: ./dbas/templates/index.pt:80
+msgid "guided_view_description"
+msgstr ""
+
+#. Default: Island View: A position with all connected arguments is presented
+#. as island. This supports the insight of a discussion about a specific
+#. position.
+#: ./dbas/templates/index.pt:81
+msgid "island_view_description"
+msgstr ""
+
+#. Default: Expert View: Participants are able to see and do everything.
+#: ./dbas/templates/index.pt:82
+msgid "expert_view_description"
+msgstr ""
+
+#. Default: Contributions can be rated by the participants.
+#: ./dbas/templates/index.pt:85
+msgid "description_list_5"
+msgstr ""
+
+#. Default: You have the huge power of the crowd!.
+#: ./dbas/templates/index.pt:86
+msgid "description_list_6"
+msgstr ""
+
+#. Default: Fast
+#: ./dbas/templates/index.pt:96
+msgid "Fast"
+msgstr ""
+
+#. Default: Matching ideas
+#. Default: Dialog-based
+#: ./dbas/templates/index.pt:100 ./dbas/templates/index.pt:129
+msgid "dialog_based"
+msgstr ""
+
+#. Default: Based on Science
+#. Default: Simple UI
+#: ./dbas/templates/index.pt:104 ./dbas/templates/index.pt:134
+msgid "simple_ui"
+msgstr ""
+
+#. Default: Features
+#: ./dbas/templates/index.pt:114 ./dbas/templates/snippet-header.pt:26
+msgid "features"
+msgstr ""
+
+#. Default: Some of these features will be released in a future version of
+#. D-BAS.
+#: ./dbas/templates/index.pt:115
+msgid "release_future_version"
+msgstr ""
+
+#. Default: Argumentation Maps
+#: ./dbas/templates/index.pt:124
+msgid "argu_maps"
+msgstr ""
+
+#. Default: A argumentation map is like a mind map, but the relations between
+#. the nodes are highly important and can have several meanings. Additionally
+#. the bubbles of the map can have play a important role. Therefore using this
+#. data structure for logically presentations of some graphs makes sense.
+#: ./dbas/templates/index.pt:125
+msgid "argu_maps_content"
+msgstr ""
+
+#. Default: Yeah, this is a novel and it is a kind of dialog-based approach.
+#. This means that the system will represent argumentations of panelist and
+#. claims will be given through the other participants.
+#: ./dbas/templates/index.pt:130
+msgid "dialog_based_content"
+msgstr ""
+
+#. Default: The user interface of D-BAS is simple, clear and easy. At any point
+#. during the discussion the choices for the participant are bounded, but not
+#. isolating him/her.
+#: ./dbas/templates/index.pt:135
+msgid "simple_ui_content"
+msgstr ""
+
+#. Default: Guided View
+#: ./dbas/templates/index.pt:142
+msgid "guided_view"
+msgstr ""
+
+#. Default: You will never see something like an argumentation map, because the
+#. systems seems to be like a dynamic and generic
+#: ./dbas/templates/index.pt:143
+msgid "guided_view_content1"
+msgstr ""
+
+#. Default: for you
+#: ./dbas/templates/index.pt:143
+msgid "guided_view_content2"
+msgstr ""
+
+#. Default: Island View
+#. Default: Island<dynamic element>View
+#: ./dbas/templates/index.pt:147 ./dbas/templates/content_old.pt:213
+#: ./dbas/templates/content_old.pt:240 ./dbas/templates/content.pt:123
+#: ./dbas/templates/content.pt:355
+msgid "island_view"
+msgstr ""
+
+#. Default: Okay, you want to see more as, but not everything. Therefore the
+#. island view will present you a list of every connected statement for an
+#. specific statement.
+#: ./dbas/templates/index.pt:148
+msgid "island_view_content"
+msgstr ""
+
+#. Default: Expert View
+#: ./dbas/templates/index.pt:152
+msgid "expert_view"
+msgstr ""
+
+#. Default: So, you think you are an expert? Okay, you can have a view of the
+#. complete argumentation map.
+#: ./dbas/templates/index.pt:153
+msgid "expert_view_content"
+msgstr ""
+
+#. Default: About
+#: ./dbas/templates/index.pt:162 ./dbas/templates/snippet-header.pt:28
+msgid "about"
+msgstr ""
+
+#. Default: D-BAS is a of discussions in the field of online participation and
+#. developed by
+#: ./dbas/templates/index.pt:163
+msgid "about_description"
+msgstr ""
+
+#. Default: Cooperation with
+#: ./dbas/templates/index.pt:169 ./dbas/templates/index.pt:179
+msgid "cooperation_with"
+msgstr ""
+
+#. Default: A partner of practice of Tobias Krauthoff is Daniel Reichert of
+#. Liquid Democracy e.V., which is a non-party, non-profit association. The key
+#. element of their work is the development of Adhocracy, a free software which
+#. serves as a digital participation tool. It offers various functions for the
+#. different needs of our users. In addition, we are developing Thentos, an
+#. identity management system which ensures privacy during complex
+#. participation processes.
+#: ./dbas/templates/index.pt:170
+msgid "liquid_democracy_description"
+msgstr ""
+
+#. Default: Graduation School
+#: ./dbas/templates/index.pt:174
+msgid "graduation_scool"
+msgstr ""
+
+#. Default: Online-Participation
+#: ./dbas/templates/index.pt:174
+msgid "fk_op"
+msgstr ""
+
+#. Default: The NRW Graduation School Online-Participation is subsidised
+#. governmentally by Ministry of Innovation, Science and Research in North
+#. Rhine-Westphalia. The Graduation School is a network of business economics,
+#. computer scientiests, communication scientists, political scientists,
+#. jurists and sociologist, which are wokring together with partners from
+#. practice. The objective is the examination of opportunities of the internet,
+#. where affected persons are able to participate in decisions, where they are
+#. affected.
+#: ./dbas/templates/index.pt:175
+msgid "fk_op_description"
+msgstr ""
+
+#. Default: Karlsruhe Institut of Technology
+#: ./dbas/templates/index.pt:179
+msgid "kit"
+msgstr ""
+
+#. Default: The workging group of functionality of the graduation school has a
+#. close-knit connection with the Institute for Technology Assessment and
+#. Systems Analysis (ITAS) of the Karlsruhe Institut of Technology, especially
+#. to Prof. Dr. G. Betz. His working group develoepd Argunet, a software tool
+#. for collaborative argumentation analysis. Its underlying theory, the theory
+#. of dialectical struc- tures, defines argument relations in terms of locigo-
+#. sematical relations between propositions and thus gives rise to a new
+#. computational approach to the reconstruction of complex debates.
+#: ./dbas/templates/index.pt:180
+msgid "kit_description"
+msgstr ""
+
+#. Default: Research
+#: ./dbas/templates/index.pt:192 ./dbas/templates/snippet-header.pt:31
+msgid "research"
+msgstr ""
+
+#. Default: Our data structure:
+#: ./dbas/templates/index.pt:193
+msgid "our_datastructure"
+msgstr ""
+
+#. Default: We are using a modified argumentation map as data structure,
+#. whereby we differentiate between arguments, statements, (groups of) premises
+#. and conclusions. An <dynamic element> consists of one or more <dynamic
+#. element> that form the <dynamic element> and one statement or another
+#. argument or the negation of any of those two that form the <dynamic
+#. element>. For example: '<dynamic element>' would be an argument where
+#. '<dynamic element>' is the premise and '<dynamic element>' is the
+#. conclusion. An example where the conclusion is an argument itself, would be:
+#. '<dynamic element>'. In this example the premise is '<dynamic element>'
+#. while the conclusion is the negative form of the argument '<dynamic
+#. element>'. More information can be afforded via the
+#: ./dbas/templates/index.pt:197
+msgid "data_structure_description"
+msgstr ""
+
+#. Default: contact
+#. Default: Kontakt:
+#. Default: Contact
+#: ./dbas/templates/index.pt:198 ./dbas/templates/imprint.pt:20
+#: ./dbas/templates/snippet-footer.pt:33
+msgid "contact"
+msgstr ""
+
+#. Default: formular
+#: ./dbas/templates/index.pt:198
+msgid "formular"
+msgstr ""
+
+#. Default: In addition, we have studied several tools:
+#: ./dbas/templates/index.pt:201
+msgid "additional_studies"
+msgstr ""
+
+#. Default: Forum
+#: ./dbas/templates/index.pt:206
+msgid "forum"
+msgstr ""
+
+#. Default: Forum-based approaches are well known to all kind of users, but are
+#. only scale with the number of users, not with the number of arguments.
+#. Therefore messages can be highly redundant. Additionally the messages are
+#. not connected logically to each other.
+#: ./dbas/templates/index.pt:207
+msgid "forum_description"
+msgstr ""
+
+#. Default: Pro-Contra Lists
+#: ./dbas/templates/index.pt:211
+msgid "pro-contra_lists"
+msgstr ""
+
+#. Default: These lists are more arranged than the forum-based approaches, but
+#. even there are no connections between the arguments. Therefore these
+#. approaches are just lists and not more.
+#: ./dbas/templates/index.pt:212
+msgid "pro-contra_lists_description"
+msgstr ""
+
+#. Default: Argumentation-based Approaches
+#: ./dbas/templates/index.pt:216
+msgid "argu_approaches"
+msgstr ""
+
+#. Default: This concept seems to be perfect, because posts are connected
+#. logically to each other and redundancy can be avoided. Unfortunately these
+#. tools are for experts only and not for amateurs.
+#: ./dbas/templates/index.pt:217
+msgid "argu_approaches_description"
+msgstr ""
+
+#. Default: Toggle navigation
+#: ./dbas/templates/snippet-header.pt:10
+msgid "Toggle Navigation"
+msgstr ""
+
+#. Default: Let's go
+#: ./dbas/templates/snippet-header.pt:39
+msgid "lets_go"
+msgstr ""
+
+#. Default: News
+#: ./dbas/templates/snippet-header.pt:45
+msgid "news"
+msgstr ""
+
+#. Default: Login
+#. Default: Log In
+#: ./dbas/templates/snippet-header.pt:54 ./dbas/templates/snippet-popups.pt:245
+#: ./dbas/templates/snippet-popups.pt:431
+msgid "login"
+msgstr ""
+
+#. Default: Settings
+#: ./dbas/templates/snippet-header.pt:67
+msgid "settings"
+msgstr ""
+
+#. Default: Logout
+#: ./dbas/templates/snippet-header.pt:72
+msgid "logout"
+msgstr ""
+
+#. Default: Language
+#: ./dbas/templates/snippet-header.pt:86
+msgid "language"
+msgstr ""
+
+#. Default: Impressum
+#: ./dbas/templates/imprint.pt:11
+msgid "imprint"
+msgstr ""
+
+#. Default: Angaben gemäß § 5 TMG
+#: ./dbas/templates/imprint.pt:12
+msgid "data_tmg"
+msgstr ""
+
+#. Default: Institut für Informatik
+#: ./dbas/templates/imprint.pt:14
+msgid "department"
+msgstr ""
+
+#. Default: Telefon:
+#: ./dbas/templates/imprint.pt:21
+msgid "phone"
+msgstr ""
+
+#. Default: Haftungsausschluss:
+#: ./dbas/templates/imprint.pt:27
+msgid "disclaimer"
+msgstr ""
+
+#. Default: Haftung für Inhalte
+#: ./dbas/templates/imprint.pt:29
+msgid "disclaimer_content"
+msgstr ""
+
+#. Default: Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt.
+#. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir
+#. jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1
+#. TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
+#. verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch
+#. nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu
+#. überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige
+#. Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der
+#. Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon
+#. unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der
+#. Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von
+#. entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
+#. entfernen.
+#: ./dbas/templates/imprint.pt:30
+msgid "disclaimer_content_content"
+msgstr ""
+
+#. Default: Haftung für Links
+#: ./dbas/templates/imprint.pt:33
+msgid "disclaimer_links"
+msgstr ""
+
+#. Default: Unser Angebot enthält Links zu externen Webseiten Dritter, auf
+#. deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese
+#. fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten
+#. Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten
+#. verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung
+#. auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum
+#. Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche
+#. Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer
+#. Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen
+#. werden wir derartige Links umgehend entfernen.
+#: ./dbas/templates/imprint.pt:34
+msgid "disclaimer_links_content"
+msgstr ""
+
+#. Default: Urheberrecht
+#: ./dbas/templates/imprint.pt:37
+msgid "disclaimer_copyright"
+msgstr ""
+
+#. Default: Die durch die Seitenbetreiber erstellten Inhalte und Werke auf
+#. diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung,
+#. Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen
+#. des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen
+#. Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den
+#. privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf
+#. dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte
+#. Dritter beachtet. Insbesondere werden Inhalte Dritter als solche
+#. gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung
+#. aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei
+#. Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend
+#. entfernen.
+#: ./dbas/templates/imprint.pt:38
+msgid "disclaimer_copyright_content"
+msgstr ""
+
+#. Default: Datenschutz
+#: ./dbas/templates/imprint.pt:41
+msgid "disclaimer_dataprotection"
+msgstr ""
+
+#. Default: Die Nutzung unserer Webseite ist in der Regel ohne Angabe
+#. personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene
+#. Daten (beispielsweise Name, oder eMail-Adressen) erhoben werden, erfolgt
+#. dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne
+#. Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben. <dynamic
+#. element>Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B.
+#. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein
+#. lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.
+#. <dynamic element>Der Nutzung von im Rahmen der Impressumspflicht
+#. veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht
+#. ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit
+#. ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich
+#. ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von
+#. Werbeinformationen, etwa durch Spam-Mails, vor.
+#: ./dbas/templates/imprint.pt:42
+msgid "disclaimer_dataprotection_content"
+msgstr ""
+
+#. Default: Session-Cookies
+#: ./dbas/templates/imprint.pt:47
+msgid "disclaimer_session_cookie"
+msgstr ""
+
+#. Default: Diese erlauben Ihnen notwendige Funktionen auf unseren Websites
+#. auszuführen, wie das Aufrechterhalten von Log-in Informationen für Ihre
+#. Sitzung oder einer Überweisung. Ebenfalls helfen sie dabei die
+#. Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht auf
+#. Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung
+#. beenden.
+#: ./dbas/templates/imprint.pt:48
+msgid "disclaimer_session_cookie_content"
+msgstr ""
+
+#. Default: Tracking-Cookies
+#: ./dbas/templates/imprint.pt:52
+msgid "disclaimer_tracking_cookie"
+msgstr ""
+
+#. Default: Diese erlauben uns Ihre wiederholten Besuche unserer Website
+#. wahrzunehmen. Durch die Übereinstimmung von anononymen, willkürlichen
+#. Identifizierungszeichen, sind wir dazu in der Lage spezielle Browsing-
+#. Informationen festzuhalten, z.B. von Ihnen ausgewählte Seiten und Optionen
+#. und den Weg, den Sie durch unsere Website gewählt haben. Durch das
+#. Überwachen dieser Informationen können wir unsere Websites verbessern.
+#: ./dbas/templates/imprint.pt:53
+msgid "disclaimer_tracking_cookie_content"
+msgstr ""
+
+#. Default: Piwik
+#: ./dbas/templates/imprint.pt:58
+msgid "disclaimer_piwik"
+msgstr ""
+
+#. Default: Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur
+#. statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”,
+#. Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine
+#. Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch
+#. den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden
+#. auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird
+#. sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer
+#. können die Installation der Cookies durch eine entsprechende Einstellung
+#. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
+#. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
+#. Funktionen dieser Website vollumfänglich nutzen können.
+#: ./dbas/templates/imprint.pt:59
+msgid "disclaimer_piwik_content"
+msgstr ""
+
+#. Default: Copyrights and used Software
+#: ./dbas/templates/imprint.pt:69
+msgid "copyright_and_used_software"
+msgstr ""
+
+#. Default: Icons by
+#: ./dbas/templates/imprint.pt:83
+msgid "icons_by"
+msgstr ""
+
+#. Default: is generated with Pyramid Web Framework 1.5.4
+#: ./dbas/templates/imprint.pt:102
+msgid "generated_with"
+msgstr ""
+
+#. Default: Changes
+#: ./dbas/templates/imprint.pt:127
+msgid "changes"
+msgstr ""
+
+#. Default: Imprint and Copyrights
+#: ./dbas/templates/snippet-footer.pt:14
+msgid "imprint_copyright"
+msgstr ""
+
+#. Default: Author
+#: ./dbas/templates/snippet-footer.pt:20 ./dbas/templates/news.pt:39
+msgid "author"
+msgstr ""
+
+#. Default: Licence
+#: ./dbas/templates/snippet-footer.pt:26
+msgid "licence"
+msgstr ""
+
+#. Default: About me
+#: ./dbas/templates/snippet-popups.pt:10
+msgid "about_me"
+msgstr ""
+
+#. Default: Name
+#: ./dbas/templates/snippet-popups.pt:19
+msgid "name"
+msgstr ""
+
+#. Default: Role
+#: ./dbas/templates/snippet-popups.pt:25
+msgid "role"
+msgstr ""
+
+#. Default: Doctoral Student
+#: ./dbas/templates/snippet-popups.pt:28
+msgid "role_value_1"
+msgstr ""
+
+#. Default: Lab for Technology of Social Networks
+#: ./dbas/templates/snippet-popups.pt:29
+msgid "lab_tsn"
+msgstr ""
+
+#. Default: Member of the graduation school
+#: ./dbas/templates/snippet-popups.pt:30
+msgid "role_value_2"
+msgstr ""
+
+#. Default: Online Participation
+#: ./dbas/templates/snippet-popups.pt:32
+msgid "role_value_3"
+msgstr ""
+
+#. Default: Office
+#: ./dbas/templates/snippet-popups.pt:45
+msgid "office"
+msgstr ""
+
+#. Default: Heinrich-Heine University Duesseldorf
+#: ./dbas/templates/snippet-popups.pt:47
+msgid "office_value_1"
+msgstr ""
+
+#. Default: Universitätsstraße 1
+#: ./dbas/templates/snippet-popups.pt:48
+msgid "office_value_2"
+msgstr ""
+
+#. Default: 40225 Duesseldorf
+#: ./dbas/templates/snippet-popups.pt:49
+msgid "office_value_3"
+msgstr ""
+
+#. Default: Department of Computer Science
+#: ./dbas/templates/snippet-popups.pt:50
+msgid "office_value_4"
+msgstr ""
+
+#. Default: Building 25.12, Room 02.45
+#: ./dbas/templates/snippet-popups.pt:51
+msgid "office_value_5"
+msgstr ""
+
+#. Default: Telephone
+#: ./dbas/templates/snippet-popups.pt:56
+msgid "telephone"
+msgstr ""
+
+#. Default: Fax
+#: ./dbas/templates/snippet-popups.pt:62
+msgid "fax"
+msgstr ""
+
+#. Default: Close
+#: ./dbas/templates/snippet-popups.pt:76 ./dbas/templates/snippet-popups.pt:121
+#: ./dbas/templates/snippet-popups.pt:157
+#: ./dbas/templates/snippet-popups.pt:230
+#: ./dbas/templates/snippet-popups.pt:434
+#: ./dbas/templates/snippet-popups.pt:473
+msgid "close"
+msgstr ""
+
+#. Default: MIT License (MIT)
+#: ./dbas/templates/snippet-popups.pt:89
+msgid "mit_licencse"
+msgstr ""
+
+#. Default: Permission is hereby granted, free of charge, to any person
+#. obtaining a copy of this software and associated documentation files (the
+#. "Software"), to deal in the Software without restriction, including without
+#. limitation the rights to use, copy, modify, merge, publish, distribute,
+#. sublicense, and/or sell copies of the Software, and to permit persons to
+#. whom the Software is furnished to do so, subject to the following
+#. conditions:
+#: ./dbas/templates/snippet-popups.pt:98
+msgid "mit_licence_part1"
+msgstr ""
+
+#. Default: The above copyright notice and this permission notice shall be
+#. included in all copies or substantial portions of the Software.
+#: ./dbas/templates/snippet-popups.pt:107
+msgid "mit_licence_part2"
+msgstr ""
+
+#. Default: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+#. EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+#. MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+#. EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+#. DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+#. OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+#. USE OR OTHER DEALINGS IN THE SOFTWARE.
+#: ./dbas/templates/snippet-popups.pt:112
+msgid "mit_licence_part3"
+msgstr ""
+
+#. Default: Edit Statements / View Changelog
+#: ./dbas/templates/snippet-popups.pt:134
+msgid "edit_statement_view_changelog"
+msgstr ""
+
+#. Default: Please, edit the selected statement here:
+#: ./dbas/templates/snippet-popups.pt:141
+msgid "edit_statement_here"
+msgstr ""
+
+#. Default: Warning:
+#. Default: Warning!
+#: ./dbas/templates/snippet-popups.pt:148 ./dbas/templates/contact.pt:59
+msgid "warning"
+msgstr ""
+
+#. Default: Submit
+#: ./dbas/templates/snippet-popups.pt:156
+msgid "submit"
+msgstr ""
+
+#. Default: Okay
+#: ./dbas/templates/snippet-popups.pt:175
+#: ./dbas/templates/snippet-popups.pt:200
+msgid "okay"
+msgstr ""
+
+#. Default: Cancel
+#: ./dbas/templates/snippet-popups.pt:176
+#: ./dbas/templates/snippet-popups.pt:201
+msgid "cancel"
+msgstr ""
+
+#. Default: Share your URL
+#: ./dbas/templates/snippet-popups.pt:214
+msgid "url-sharing"
+msgstr ""
+
+#. Default: Please feel free to share this url:
+#: ./dbas/templates/snippet-popups.pt:219
+msgid "url-sharing-description"
+msgstr ""
+
+#. Default: Fetch long url!
+#: ./dbas/templates/snippet-popups.pt:229
+msgid "fetchurl"
+msgstr ""
+
+#. Default: Sign Up
+#: ./dbas/templates/snippet-popups.pt:247
+msgid "sign_up"
+msgstr ""
+
+#. Default: Your Nickname
+#: ./dbas/templates/snippet-popups.pt:260
+msgid "your_nickname"
+msgstr ""
+
+#. Default: Your Password
+#: ./dbas/templates/snippet-popups.pt:267
+msgid "your_password"
+msgstr ""
+
+#. Default: Password-Request
+#: ./dbas/templates/snippet-popups.pt:280
+msgid "password_request"
+msgstr ""
+
+#. Default: Please fill in your e-mail below. A new password will be send this
+#. address:
+#: ./dbas/templates/snippet-popups.pt:282
+msgid "fill_in_mail_for_password"
+msgstr ""
+
+#. Default: Error:
+#: ./dbas/templates/snippet-popups.pt:292
+#: ./dbas/templates/snippet-popups.pt:394 ./dbas/templates/content_old.pt:116
+#: ./dbas/templates/content.pt:149
+msgid "error"
+msgstr ""
+
+#. Default: Success:
+#. Default: Success
+#: ./dbas/templates/snippet-popups.pt:299
+#: ./dbas/templates/snippet-popups.pt:386 ./dbas/templates/settings.pt:78
+#: ./dbas/templates/settings.pt:108 ./dbas/templates/content_old.pt:79
+#: ./dbas/templates/content.pt:78
+msgid "success"
+msgstr ""
+
+#. Default: Your First Name
+#: ./dbas/templates/snippet-popups.pt:307
+msgid "first_name"
+msgstr ""
+
+#. Default: Your Last Name
+#: ./dbas/templates/snippet-popups.pt:314
+msgid "last_name"
+msgstr ""
+
+#. Default: Your Nickname
+#. Default: Nickname
+#: ./dbas/templates/snippet-popups.pt:321 ./dbas/templates/settings.pt:38
+msgid "nickname"
+msgstr ""
+
+#. Default: Your Gender
+#: ./dbas/templates/snippet-popups.pt:328
+msgid "gender"
+msgstr ""
+
+#. Default: none
+#: ./dbas/templates/snippet-popups.pt:333
+msgid "none"
+msgstr ""
+
+#. Default: female
+#: ./dbas/templates/snippet-popups.pt:338
+msgid "female"
+msgstr ""
+
+#. Default: male
+#: ./dbas/templates/snippet-popups.pt:343
+msgid "male"
+msgstr ""
+
+#. Default: Your Email Address
+#: ./dbas/templates/snippet-popups.pt:349
+msgid "email"
+msgstr ""
+
+#. Default: Your Password
+#: ./dbas/templates/snippet-popups.pt:356
+msgid "password"
+msgstr ""
+
+#. Default: Password (confirm)
+#: ./dbas/templates/snippet-popups.pt:363
+msgid "password-confirm"
+msgstr ""
+
+#. Default: Password Strength
+#: ./dbas/templates/snippet-popups.pt:370
+msgid "password-strength"
+msgstr ""
+
+#. Default: very weak
+#: ./dbas/templates/snippet-popups.pt:373
+msgid "password_strength"
+msgstr ""
+
+#. Default: Generate secure password
+#: ./dbas/templates/snippet-popups.pt:377
+msgid "generate_password"
+msgstr ""
+
+#. Default: Register
+#: ./dbas/templates/snippet-popups.pt:432
+msgid "register"
+msgstr ""
+
+#. Default: How to select a strong password
+#: ./dbas/templates/snippet-popups.pt:447
+msgid "select_password"
+msgstr ""
+
+#. Default: A Password is strong, when it contains at least:
+#: ./dbas/templates/snippet-popups.pt:450
+msgid "select_password_intro"
+msgstr ""
+
+#. Default: eight characters
+#: ./dbas/templates/snippet-popups.pt:452
+msgid "select_password_rule1"
+msgstr ""
+
+#. Default: one uppercase letter
+#: ./dbas/templates/snippet-popups.pt:453
+msgid "select_password_rule2"
+msgstr ""
+
+#. Default: one lowercase letter
+#: ./dbas/templates/snippet-popups.pt:454
+msgid "select_password_rule3"
+msgstr ""
+
+#. Default: one special sign
+#: ./dbas/templates/snippet-popups.pt:455
+msgid "select_password_rule4"
+msgstr ""
+
+#. Default: For example 'M2015_fiO' is a strong password. And it would take 275
+#. days to crack this password with a desktop pc in 2015. Removing one sign,
+#. reduces the time to 3 days, and adding a sign increases the time to 57
+#. years. It should be noted:
+#: ./dbas/templates/snippet-popups.pt:457
+msgid "popup_password_text"
+msgstr ""
+
+#. Default: Avoid using a password on several pages
+#: ./dbas/templates/snippet-popups.pt:459
+msgid "select_password_avoid1"
+msgstr ""
+
+#. Default: Avoid using patterns, which can be found in a dictionary
+#: ./dbas/templates/snippet-popups.pt:460
+msgid "select_password_avoid2"
+msgstr ""
+
+#. Default: Avoid using information that is or might become publicly associated
+#. with the user or the account
+#: ./dbas/templates/snippet-popups.pt:461
+msgid "select_password_avoid3"
+msgstr ""
+
+#. Default: Avoid using information that the user's colleagues and/or
+#. acquaintances might know to be associated with the user
+#: ./dbas/templates/snippet-popups.pt:462
+msgid "select_password_avoid4"
+msgstr ""
+
+#. Default: If you need some help with our password, you can get one here:
+#: ./dbas/templates/snippet-popups.pt:464
+msgid "select_password_help"
+msgstr ""
+
+#. Default: How to write text
+#: ./dbas/templates/snippet-popups.pt:486
+msgid "how-to-write-text-header"
+msgstr ""
+
+#. Default: There are a few simple rules for writing good arguments:
+#: ./dbas/templates/snippet-popups.pt:489
+msgid "how-to-write-text-header-body-title"
+msgstr ""
+
+#. Default: Writing good is a necessary skill for using D-BAS, unless you do
+#. not want to persuade other participants. Hereafter a few rules are listed,
+#. what should be noted, and what should not.
+#: ./dbas/templates/snippet-popups.pt:491
+msgid "how-to-write-text-header-body"
+msgstr ""
+
+#. Default: Do's:
+#: ./dbas/templates/snippet-popups.pt:494
+msgid "dos"
+msgstr ""
+
+#. Default: Write short!
+#: ./dbas/templates/snippet-popups.pt:496
+msgid "how-to-write-text-short"
+msgstr ""
+
+#. Default: Only one statement/argument/point per field!
+#: ./dbas/templates/snippet-popups.pt:497
+msgid "how-to-write-text-one-point"
+msgstr ""
+
+#. Default: Don'ts:
+#: ./dbas/templates/snippet-popups.pt:500
+msgid "donts"
+msgstr ""
+
+#. Default: Complicated and nested sentences!
+#: ./dbas/templates/snippet-popups.pt:502
+msgid "how-to-write-text-complicated"
+msgstr ""
+
+#. Default: More than one statement/argument/point per field!
+#: ./dbas/templates/snippet-popups.pt:503
+msgid "how-to-write-text-multiple-points"
+msgstr ""
+
+#. Default: Do never ever use negations! Every negation will be set extra! This
+#. is highly important!
+#: ./dbas/templates/snippet-popups.pt:504
+msgid "how-to-write-text-negations"
+msgstr ""
+
+#. Default: Okay
+#: ./dbas/templates/snippet-popups.pt:508
+#: ./dbas/templates/snippet-popups.pt:546
+msgid "Okay"
+msgstr ""
+
+#. Default: Abort
+#: ./dbas/templates/snippet-popups.pt:509
+#: ./dbas/templates/snippet-popups.pt:547
+msgid "abort"
+msgstr ""
+
+#. Default: How to set premisse groups
+#: ./dbas/templates/snippet-popups.pt:522
+msgid "how-to-set-premissegroups-header"
+msgstr ""
+
+#. Default: There are a few simple tricks for setting premisse groups:
+#: ./dbas/templates/snippet-popups.pt:525
+msgid "how-to-set-premissegroups-header-body-title"
+msgstr ""
+
+#. Default: Sometimes you want to state more than one statement, but they are
+#. connected...in some way. These statements can be connected in one premisse
+#. group
+#: ./dbas/templates/snippet-popups.pt:527
+msgid "how-to-set-premissegroups-header-body"
+msgstr ""
+
+#. Default: Normally, each statement of you is independent of the others.
+#: ./dbas/templates/snippet-popups.pt:531
+msgid "set-premissegroups1"
+msgstr ""
+
+#. Default: If you want to add an 'and' in your statement, please do not do it!
+#: ./dbas/templates/snippet-popups.pt:532
+msgid "set-premissegroups2"
+msgstr ""
+
+#. Default: Sometimes you have dependent statemens, like:
+#: ./dbas/templates/snippet-popups.pt:533
+msgid "set-premissegroups3"
+msgstr ""
+
+#. Default: Let's say, you argument, that you want to have a cat, but if and
+#. only iff she is small and fluffy. Then you have two statements for your
+#. position:
+#: ./dbas/templates/snippet-popups.pt:535
+msgid "set-premissegroups4"
+msgstr ""
+
+#. Default: I want a cat, because:
+#: ./dbas/templates/snippet-popups.pt:536
+msgid "set-premissegroups5"
+msgstr ""
+
+#. Default: She is fluffy
+#: ./dbas/templates/snippet-popups.pt:537
+msgid "set-premissegroups6"
+msgstr ""
+
+#. Default: She is small
+#: ./dbas/templates/snippet-popups.pt:538
+msgid "set-premissegroups7"
+msgstr ""
+
+#. Default: Then you have to check the box!
+#: ./dbas/templates/snippet-popups.pt:539
+msgid "set-premissegroups8"
+msgstr ""
+
+#. Default: Otherwise you do not need this checkbox.
+#: ./dbas/templates/snippet-popups.pt:542
+msgid "set-premissegroups9"
+msgstr ""
+
+#. Default: Writing a new message
+#: ./dbas/templates/news.pt:21
+msgid "writing_message"
+msgstr ""
+
+#. Default: Error:
+#: ./dbas/templates/news.pt:25 ./dbas/templates/settings.pt:83
+#: ./dbas/templates/settings.pt:114 ./dbas/templates/content_old.pt:146
+#: ./dbas/templates/content.pt:293 ./dbas/templates/content.pt:318
+msgid "error:"
+msgstr ""
+
+#. Default: Success:
+#: ./dbas/templates/news.pt:30
+msgid "success:"
+msgstr ""
+
+#. Default: Date
+#: ./dbas/templates/news.pt:41
+msgid "date"
+msgstr ""
+
+#. Default: Information about yourself
+#: ./dbas/templates/settings.pt:15
+msgid "info_about_yourself"
+msgstr ""
+
+#. Default: Firstname
+#: ./dbas/templates/settings.pt:24
+msgid "firstname"
+msgstr ""
+
+#. Default: Surname
+#: ./dbas/templates/settings.pt:31
+msgid "surname"
+msgstr ""
+
+#. Default: Group
+#: ./dbas/templates/settings.pt:52
+msgid "group"
+msgstr ""
+
+#. Default: Profile Picture
+#: ./dbas/templates/settings.pt:61
+msgid "profile_picture"
+msgstr ""
+
+#. Default: Your decisions
+#: ./dbas/templates/settings.pt:69
+msgid "decisions"
+msgstr ""
+
+#. Default: Your last history
+#: ./dbas/templates/settings.pt:99
+msgid "history"
+msgstr ""
+
+#. Default: Change your password
+#: ./dbas/templates/settings.pt:132
+msgid "change_password"
+msgstr ""
+
+#. Default: Old password
+#: ./dbas/templates/settings.pt:136
+msgid "old_password"
+msgstr ""
+
+#. Default: New Password
+#: ./dbas/templates/settings.pt:143
+msgid "new_password"
+msgstr ""
+
+#. Default: Strength
+#: ./dbas/templates/settings.pt:150
+msgid "strength"
+msgstr ""
+
+#. Default: New Password (confirm)
+#: ./dbas/templates/settings.pt:158
+msgid "new_password_confirm"
+msgstr ""
+
+#. Default: Great:
+#: ./dbas/templates/settings.pt:177
+msgid "great:"
+msgstr ""
+
+#. Default: Your password was changed
+#: ./dbas/templates/settings.pt:177
+msgid "password_changed"
+msgstr ""
+
+#. Default: Get In Touch With Us
+#: ./dbas/templates/contact.pt:7
+msgid "contact_header_1"
+msgstr ""
+
+#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
+#. hours max!
+#: ./dbas/templates/contact.pt:8
+msgid "contact_header_2"
+msgstr ""
+
+#. Default: Your Name (required)
+#: ./dbas/templates/contact.pt:14
+msgid "name_req"
+msgstr ""
+
+#. Default: Your E-Mail (required)
+#: ./dbas/templates/contact.pt:21
+msgid "mail_req"
+msgstr ""
+
+#. Default: Your Phone Number
+#: ./dbas/templates/contact.pt:28
+msgid "phone_no"
+msgstr ""
+
+#. Default: Your Message (required)
+#: ./dbas/templates/contact.pt:35
+msgid "message_req"
+msgstr ""
+
+#. Default: Anti-Spam (required)
+#: ./dbas/templates/contact.pt:42
+msgid "spam_req"
+msgstr ""
+
+#. Default: Great:
+#: ./dbas/templates/contact.pt:67
+msgid "great"
+msgstr ""
+
+#. Default: Your message was sent.
+#: ./dbas/templates/contact.pt:67
+msgid "message_sent"
+msgstr ""
+
+#. Default: List of participants
+#: ./dbas/templates/admin.pt:19
+msgid "participant_list"
+msgstr ""
+
+#. Default: Some additional options for the administrator.
+#: ./dbas/templates/admin.pt:20 ./dbas/templates/admin.pt:35
+msgid "admin_only"
+msgstr ""
+
+#. Default: List of attacks, clicked by the participants
+#: ./dbas/templates/admin.pt:34
+msgid "list_attacks"
+msgstr ""
+
+#. Default: Current discussion is about
+#: ./dbas/templates/content_old.pt:27 ./dbas/templates/content.pt:23
+msgid "current_discussion"
+msgstr ""
+
+#. Default: The discussion was started at
+#: ./dbas/templates/content_old.pt:34 ./dbas/templates/content.pt:27
+msgid "startet_at"
+msgstr ""
+
+#. Default: and already has
+#: ./dbas/templates/content_old.pt:36 ./dbas/templates/content.pt:30
+msgid "already_has"
+msgstr ""
+
+#. Default: arguments
+#: ./dbas/templates/content_old.pt:38 ./dbas/templates/content.pt:32
+msgid "arguments"
+msgstr ""
+
+#. Default: Report
+#: ./dbas/templates/content_old.pt:102
+msgid "report"
+msgstr ""
+
+#. Default: Please insert a new Argument
+#: ./dbas/templates/content_old.pt:142
+msgid "insert-argument"
+msgstr ""
+
+#. Default: Pro
+#: ./dbas/templates/content_old.pt:154
+msgid "pro"
+msgstr ""
+
+#. Default: Add a textfield
+#: ./dbas/templates/content_old.pt:160 ./dbas/templates/content_old.pt:178
+msgid "add_textfield"
+msgstr ""
+
+#. Default: Statements are connected
+#: ./dbas/templates/content_old.pt:167 ./dbas/templates/content_old.pt:185
+msgid "statements_connected"
+msgstr ""
+
+#. Default: Contra
+#: ./dbas/templates/content_old.pt:173
+msgid "contra"
+msgstr ""
+
+#. Default: Change display style
+#: ./dbas/templates/content_old.pt:202 ./dbas/templates/content_old.pt:229
+#: ./dbas/templates/content.pt:343
+msgid "change_style"
+msgstr ""
+
+#. Default: Dialog View
+#. Default: Dialog<dynamic element>View
+#: ./dbas/templates/content_old.pt:206 ./dbas/templates/content_old.pt:233
+#: ./dbas/templates/content.pt:116 ./dbas/templates/content.pt:347
+msgid "dialog_view"
+msgstr ""
+
+#. Default: Complete View
+#. Default: Complete<dynamic element>View
+#: ./dbas/templates/content_old.pt:220 ./dbas/templates/content_old.pt:247
+#: ./dbas/templates/content.pt:130 ./dbas/templates/content.pt:363
+msgid "complete_view"
+msgstr ""
+
+#. Default: JavaScript is not enabled:
+#: ./dbas/templates/basetemplate.pt:30
+msgid "js_disabled1"
+msgstr ""
+
+#. Default: Please enable JavaScript!
+#: ./dbas/templates/basetemplate.pt:32
+msgid "js_disabled2"
+msgstr ""
+
+#. Default: AdBlocker is enabled:
+#: ./dbas/templates/basetemplate.pt:36
+msgid "adblock_enabled1"
+msgstr ""
+
+#. Default: Please disable your AdBlocker!
+#: ./dbas/templates/basetemplate.pt:38
+msgid "adblock_enabled2"
+msgstr ""
+
+#. Default: Restart Discussion
+#: ./dbas/templates/content.pt:36
+msgid "restart_discussion"
+msgstr ""
+
+#. Default: Topics
+#: ./dbas/templates/content.pt:45
+msgid "topics"
+msgstr ""
+
+#. Default: Because:
+#: ./dbas/templates/content.pt:89
+msgid "Because:"
+msgstr ""
+
+#. Default: and
+#: ./dbas/templates/content.pt:89
+msgid "and"
+msgstr ""
+
+#. Default: Opinion<dynamic element>Barometer
+#: ./dbas/templates/content.pt:109
+msgid "opinion_barometer"
+msgstr ""
+
+#. Default: Add statement
+#: ./dbas/templates/content.pt:266
+msgid "add_statement"
+msgstr ""
+
+#. Default: What is your idea? What should we do?
+#: ./dbas/templates/content.pt:287
+msgid "what_is_your_idea"
+msgstr ""
+
+#. Default: Let me enter my reason!
+#: ./dbas/templates/content.pt:312
+msgid "let_me_enter_my_reason"
+msgstr ""
+
+#. Default: I
+#: ./dbas/templates/content.pt:322 ./dbas/templates/content.pt:323
+msgid "I"
+msgstr ""
+
+#. Default: agree
+#: ./dbas/templates/content.pt:322
+msgid "agree"
+msgstr ""
+
+#. Default: with
+#: ./dbas/templates/content.pt:322 ./dbas/templates/content.pt:323
+msgid "with"
+msgstr ""
+
+#. Default: disagree
+#: ./dbas/templates/content.pt:323
+msgid "disagree"
+msgstr ""
+
+#. Default: Because
+#: ./dbas/templates/content.pt:328
+msgid "Because"
+msgstr ""

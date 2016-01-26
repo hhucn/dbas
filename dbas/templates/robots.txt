@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /content
+Disallow: /static
+Disallow: /database
+Disallow: /discussion/*
+Allow: /
+
+#Baiduspider
+User-agent: Baiduspider
+Disallow: /
+
+#Yandex
+User-agent: Yandex
+Disallow: /

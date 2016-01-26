@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="dialog based discussion online participation">
+	<meta name="author" content="Tobias Krauthoff">
+	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
+	<title>${project} - ${title}</title>
+	<!-- Bootstrap core CSS -->
+	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5-paper.min.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-toggle.min.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.css')}" rel="stylesheet">
+	<title>${project} - ${title}</title>
+</head>
+
+<body>
+	<input type="hidden" id="hidden_language" value="${language}">
+
+	<!-- Inlcuding this at top for references -->
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.1.4.min.js')}"></script>
+
+	<!-- JS DISABLED -->
+	<noscript>
+		<div class="blocked jsdisabled">
+			<strong i18n:translate="js_disabled1">JavaScript is not enabled:</strong>
+			<br>
+			<strong i18n:translate="js_disabled2">Please enable JavaScript!</strong>
+		</div>
+	</noscript>
+	<div id="adblocker_message" class="blocked adblockenabled" style="display:none">
+		<strong i18n:translate="adblock_enabled1">AdBlocker is enabled:</strong>
+		<br>
+		<strong i18n:translate="adblock_enabled2">Please disable your AdBlocker!</strong>
+	</div>
+
+	<script type="text/javascript">
+		var adblock = true;
+	</script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/adframe.js')}"></script>
+	<script type="text/javascript">
+		if (adblock && false) {
+			document.getElementById('adblocker_message').style.display = 'inline';
+		}
+	</script>
+
+
+
+	<div id="additional-wrapper">
+		<div id="wrapper-header">
+			<div metal:use-macro="load: snippet-header.pt" />
+			<div metal:use-macro="load: snippet-popups.pt" />
+
+			<div id="wrapper-content">
+				<div metal:define-slot="content_page"></div>
+			</div>
+
+			<div id="wrapper-footer">
+				<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" src="${request.static_url('dbas:static/images/home.png')}"></a>
+
+				<div metal:use-macro="load: snippet-footer.pt" />
+			</div>
+
+			<div class="ajaxloader"></div>
+		</div>
+	</div>
+
+	<div class="eupopup eupopup-fixedtop"></div>
+
+	<!-- Bootstrap core, JavaScript, jquery
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.5.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
+	
+	<!-- TODO KILL THIS-->
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-en.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-de.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
+	
+
+	<!-- Piwik -->
+	<script type="text/javascript">
+		var _paq = _paq || [];
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function () {
+			var u = "//dbas.cs.uni-duesseldorf.de/piwik/";
+			_paq.push(['setTrackerUrl', u + 'piwik.php']);
+			_paq.push(['setSiteId', 1]);
+			var d = document,
+				g = d.createElement('script'),
+				s = d.getElementsByTagName('script')[0];
+			g.type = 'text/javascript';
+			g.async = true;
+			g.defer = true;
+			g.src = u + 'piwik.js';
+			s.parentNode.insertBefore(g, s);
+		})();
+	</script>
+	<noscript>
+		<p><img src="//dbas.cs.uni-duesseldorf.de/piwik/piwik.php?idsite=1" style="border:0;" alt="" /></p>
+	</noscript>
+	<!-- End Piwik Code -->
+</body>
+
+</html>

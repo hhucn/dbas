@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<head>
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
+		</head>
+
+		<div class="container first-container colored_container" style="display: none;">
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0px;">
+					</ol>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="container colored_container">
+			<div class="row">
+				<div class="col-md-7 center text-center">
+					<!--
+					<h3><span class="lead" i18n:translate="dbas_long">Dialog-Based Argumentation System</span></h3>
+					-->
+					<p i18n:translate="current_discussion">Current discussion is about</p>
+					<h5 id="issue_info"></h5>
+				</div>
+				<!--
+				<div class="col-md-1"></div>
+				-->
+				<div class="col-md-5 center text-center">
+					<span i18n:translate="startet_at">The discussion was started at</span> 
+						<span id="issue-date"></span><br>
+						<span i18n:translate="already_has">and already has</span> 
+						<span id="issue-count"></span> 
+						<span i18n:translate="arguments">arguments</span>.<br>
+					<!--
+					<h6>
+					<span i18n:translate="your_opinion_matters">Now your opinion matters!</span>
+					</h6>
+					-->
+					<input id="restart-discussion" type="button" value="Restart Discussion" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;"/>
+					<br>
+					<div class="dropdown">
+						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							<span id="issue-dropdown-text"></span>&#160;&#160;&#160;<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
+							<li><a href="#">Action</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container colored_container" id="discussion-container">
+			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
+			<div class="row">
+				<div class="col-md-2">
+					<div id="argument-blogging-sidebar">
+						<a class="share-icon share-def" id="share-url" title="Share your url"></a>
+					</div>
+				</div>
+				<div class="col-md-8">
+
+					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span id="discussion-error-description"></span>
+					</div>
+
+					<div id="discussion-success-description-space" class="alert alert-success alert-dismissible" style="display: none;">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong i18n:translate="success">Success</strong>
+						<span id="discussion-success-description"></span>
+					</div>
+
+					<h4><p id="discussions-description"></p></h4>
+					<div id="discussions-space"> </div>
+					<div id="discussions-attack-space">
+						<!--
+							<h5>
+						<p id="discussions-attack-description" i18n:translate="argueAgainstPositionToggleButton">
+						Or if you want to argue against a position, mentioned above, please toggle this button:
+						</p>
+							</h5>
+							<input id="discussion-attack-toggle-start" type="checkbox" data-toggle="toggle" data-size="small" data-on="attack Positions" data-off="support Positions" data-onstyle="danger" data-width="175">
+-->
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div id="discussion-sidebar">
+						<input tal:condition="extras.logged_in" id="edit-statement" type="button" i18n:translate="edit" value="Edit" class="button button-block btn-sm btn" data-dismiss="modal" title="Click for editing the displayed sentences or for viewing the trace of edits." />
+						<br>
+						<br>
+						<button id="report-button" type="button" class="button button-block btn-sm btn" aria-label="Left Align">
+							<span class="glyphicon glyphicon-align-left glyphicon glyphicon-exclamation-sign"></span>&thinsp;&thinsp;<span aria-hidden="true" i18n:translate="report">Report</span>
+						</button>
+						<br>
+						<br>
+						
+						<img id="opinion-barometer-img" style="display:none" class="icon-badge" alt="icon-bars" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="Opinion Barometer"/>
+					</div>
+				</div>
+			</div>
+			<div class="row" id="discussion-failure-row" style="display:none">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
+					<div class="alert alert-danger" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span i18n:translate="error">Error:</span>
+						<span id="discussion-failure-msg"></span>
+					</div>
+					<div class="col-md-3"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container colored_container" id="island-view-container" style="display:none">
+			<button id="close-island-view-ontainer" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+			</button>
+			<div class="row" id="island-view-container-space">
+				
+			</div>
+		</div>
+
+		<div class="container colored_container" id="graph-view-container" style="display:none"></div>
+
+		<div class="container colored_container" id="add-statement-container" style="display:none">
+			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+			</button>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-10">
+
+					<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
+						<h4 id="add-statement-container-title" i18n:translate="insert-argument">Please insert a new Argument</h4>
+
+						<div id="add-statement-error-container" class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span i18n:translate="error:">Error:</span>
+							<span id="add-statement-error-msg"></span>
+						</div>
+
+						<h5><span id="add-statement-container-main-input-intro"></span></h5>
+						<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+
+						<div id="pro-position-column">
+							<h4 id="heading-pro-positions" class="lead" i18n:translate="pro">Pro</h4>
+							<div id="pro-textareas">
+
+							</div>
+							<div id="add-pro-textarea">
+								<a>
+									<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> <span i18n:translate="add_textfield">Add a textfield</span>
+								</a>
+							</div>
+
+							<div id="pro-textarea-premissegroup" class="checkbox" style="display:none">
+								<label>
+									<a>
+										<input id="pro-textarea-premissegroup-checkbox" type="checkbox"><span i18n:translate="statements_connected">Statements are connected</span></a>
+								</label>
+							</div>
+						</div>
+
+						<div id="con-position-column">
+							<h4 id="heading-contra-positions" class="lead" i18n:translate="contra">Contra</h4>
+							<div id="con-textareas">
+							</div>
+							<div id="add-con-textarea">
+								<a>
+									<i class="glyphicon glyphicon-plus icon-muted">&thinsp;</i> <span i18n:translate="add_textfield">Add a textfield</span>
+								</a>
+							</div>
+
+							<div id="con-textarea-premissegroup" class="checkbox" style="display:none">
+								<label>
+									<a>
+										<input id="con-textarea-premissegroup-checkbox" type="checkbox"><span i18n:translate="statements_connected">Statements are connected</span></a>
+								</label>
+							</div>
+						</div>
+
+						<div class="list-group" id="proposal-list-group">
+						</div>
+
+						<input id="send-new-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+					</form>
+				</div>
+				<div class="col-md-1"></div>
+			</div>
+		</div>
+
+		<div class="container colored_container" style="display: none;" id="display-control-container">
+			<div class="row">
+				<h4><p i18n:translate="change_style">Change display style</p></h4>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-1" checked value="Dialog View" >
+					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
+						<h6 i18n:translate="dialog_view">Dialog View</h6>
+					</label><br>
+						<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
+				</div>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-2" value="Island View" >
+					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
+						<h6 i18n:translate="island_view">Island View</h6>
+					</label><br>
+						<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
+				</div>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-3" value="Complete View" >
+					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
+						<h6 i18n:translate="complete_view">Complete View</h6>
+					</label><br>
+						<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
+				</div>
+			</div>
+		</div>
+
+		<div class="container colored_container" style="display: none;" id="display-control-container">
+			<div class="row">
+				<h4><p i18n:translate="change_style">Change display style</p></h4>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-1" checked value="Dialog View" >
+					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
+						<p i18n:translate="dialog_view">Dialog View</p>
+					</label><br>
+						<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
+				</div>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-2" value="Island View" >
+					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
+						<p i18n:translate="island_view">Island View</p>
+					</label><br>
+						<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
+				</div>
+				<div class="col-md-4">
+					<input type="radio" id="sc-style-3" value="Complete View" >
+					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
+						<p i18n:translate="complete_view">Complete View</p>
+					</label><br>
+						<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-navigationhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-graph.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-island.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-barometer.js')}"></script>
+
+	</tal:block>
+</tal:block>
+
+</html>
