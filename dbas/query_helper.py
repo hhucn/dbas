@@ -1135,7 +1135,7 @@ class UrlManager(object):
 		self.slug = slug
 
 	def get_url(self, path):
-		return self.url + path
+		return self.url + path[1:]
 
 	def get_404(self, params):
 		"""

@@ -200,14 +200,13 @@ class Dbas(object):
 		_qh = QueryHelper()
 		slug = self.request.matchdict['slug'][0] if len(self.request.matchdict['slug'])>0 else ''
 
-		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction)
-
-
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		lang            = _qh.get_language(self.request, get_current_registry)
 		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
+
+		# update timestamp and manage breadcrumb
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
 
 		discussion_dict = _qh.prepare_discussion_dict(issue, lang, at_start=True)
 		item_dict       = _qh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang)
@@ -241,14 +240,13 @@ class Dbas(object):
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
-		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction)
-
-
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		lang            = _qh.get_language(self.request, get_current_registry)
 		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
+
+		# update timestamp and manage breadcrumb
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
 
 		discussion_dict = _qh.prepare_discussion_dict(statement_id, lang, at_attitude=True)
 		if not discussion_dict:
@@ -289,14 +287,13 @@ class Dbas(object):
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation'])>0 else ''
 
-		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction)
-
-
 		issue               = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		lang                = _qh.get_language(self.request, get_current_registry)
 		issue_dict          = _qh.prepare_json_of_issue(issue, lang)
+
+		# update timestamp and manage breadcrumb
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
 
 		if [c for c in ('t','f') if c in mode] and relation == '':
 			# justifying position
@@ -373,10 +370,6 @@ class Dbas(object):
 		arg_id_sys      = matchdict['arg_id_sys'][0] if len(matchdict['arg_id_sys'])>0 else ''
 		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().isSupportive
 
-		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction)
-
 		# set votings
 		WeightingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
 
@@ -384,6 +377,10 @@ class Dbas(object):
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		lang            = _qh.get_language(self.request, get_current_registry)
 		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
+
+		# update timestamp and manage breadcrumb
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
 
 		discussion_dict = _qh.prepare_discussion_dict(arg_id_user, lang, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
@@ -639,17 +636,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('delete_user_track', 'def', 'main')
-
-		nickname = 'unknown'
-		try:
-			logger('delete_user_track', 'def', 'read params')
-			nickname = str(self.request.authenticated_userid)
-			logger('delete_user_track', 'def', 'nickname ' + nickname)
-		except KeyError as e:
-			logger('delete_user_track', 'error', repr(e))
-
-		logger('delete_user_track', 'def', 'remove track data')
-		TrackingHelper().del_track_of_user(transaction, nickname)
+		TrackingHelper().del_track_of_user(transaction, self.request.authenticated_userid)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true' # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -668,7 +655,12 @@ class Dbas(object):
 
 		logger('get_user_history', 'def', 'main')
 
-		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid)
+		try:
+			lang = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			lang = get_current_registry().settings['pyramid.default_locale_name']
+
+		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, lang)
 		logger('get_user_history', 'def', str(return_dict))
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -685,17 +677,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('delete_user_history', 'def', 'main')
-
-		nickname = 'unknown'
-		try:
-			logger('delete_user_history', 'def', 'read params')
-			nickname = str(self.request.authenticated_userid)
-			logger('delete_user_history', 'def', 'nickname ' + nickname)
-		except KeyError as e:
-			logger('delete_user_history', 'error', repr(e))
-
-		logger('delete_user_history', 'def', 'remove history data')
-		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, nickname)
+		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true' # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)

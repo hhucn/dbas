@@ -13,7 +13,7 @@ from .query_helper import QueryHelper, UrlManager
 
 class BreadcrumbHelper(object):
 
-	def save_breadcrumb(self, path, user, slug, session_id, transaction):
+	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang):
 		"""
 
 		:param path:
@@ -34,9 +34,9 @@ class BreadcrumbHelper(object):
 			DBDiscussionSession.add(History(user=db_user.uid, url=url, session_id=session_id))
 		transaction.commit()
 
-		return self.get_breadcrumbs(user)
+		return self.get_breadcrumbs(user, lang)
 
-	def get_breadcrumbs(self, user):
+	def get_breadcrumbs(self, user, lang):
 		"""
 
 		:param user:
@@ -60,10 +60,46 @@ class BreadcrumbHelper(object):
 			hist = dict()
 			hist['index']   = str(index)
 			hist['url']     = str(history.url)
-			hist['text']    = 'some text'
+			hist['text']    = self.__get_text_for_url__(history.url, lang)
 			breadcrumbs.append(hist)
 
 		return breadcrumbs
+
+	def __get_text_for_url__(self, url, lang):
+		"""
+
+		:param url:
+		:param lang:
+		:return:
+		"""
+		_t = Translator(lang)
+		_qh = QueryHelper()
+
+		if '/r/' in url:
+			splitted = url.split('/')
+			uid = splitted[len(splitted)-3]
+			conf = splitted[len(splitted)-1]
+			text = _qh.get_text_for_argument_uid(uid, lang)
+			text = text[0:1].lower() + text[1:]
+			return _t.get(_t.otherParticipantDisagree) + ' ' + text + '.'
+
+		elif '/j/' in url:
+			splitted = url.split('/')
+			supportive = splitted[len(splitted)-1] == 't'
+			uid = splitted[len(splitted)-2]
+			text = _qh.get_text_for_statement_uid(uid)
+			text = text[0:1].lower() + text[1:]
+			return _t.get(_t.whyDoYouThinkThat) + ' ' + text + ' ' + (_t.get(_t.isTrue) if supportive else _t.get(_t.isFalse)) + '?'
+
+		elif '/a/' in url:
+			uid = url[url.rfind('/')+1:]
+			text = _qh.get_text_for_statement_uid(uid)
+			text = text[0:1].lower() + text[1:]
+			return _t.get(_t.whatDoYouThinkAbout) + ' ' + text + '?'
+
+		else:
+			return url[url.index('/d/')+3:] if '/d/' in url else 'Start'
+
 
 	# def save_breadcrumb_for_user_with_statement_uid(self, transaction, user, url, statement_uid, was_action_done, is_supportive,
 	#                                                 lang, session_id):

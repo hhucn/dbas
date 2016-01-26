@@ -13,9 +13,10 @@
 				<div class="col-md-12">
 					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0px;">
                         <li tal:repeat="breadcrumb extras.breadcrumbs">
-                            <a href="" tal:attributes="href breadcrumb.url">
+                            <a href="" tal:attributes="href breadcrumb.url" tal:condition="not:repeat.breadcrumb.end">
                                 <span tal:replace="breadcrumb.text">weee :)</span>
                             </a>
+                            <span tal:replace="breadcrumb.text" tal:condition="repeat.breadcrumb.end">weee :)</span>
                         </li>
 					</ol>
 				</div>
