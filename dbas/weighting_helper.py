@@ -20,19 +20,6 @@ class WeightingHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		db_weight, already_voted = self.__check_and_set_vote_uid(db_argument, user)
 
-		# if we vote for the argument, we have to vote the components to
-		# self.__increase_weight_of_statements_in_premissegroup(db_argument.premisesGroup_uid, user)
-		#if db_argument.isSupportive:
-		#	if db_argument.conclusion_uid != 0:
-		#		self.__increase_weight_of_statement(db_argument.conclusion_uid, user)
-		#	else:
-		#		self.add_vote_for_argument(db_argument.argument_uid, user)
-		#else:
-		#	if db_argument.conclusion_uid != 0:
-		#		self.__decrease_weight_of_statement(db_argument.conclusion_uid, user)
-		#	else:
-		#		self.remove_vote_for_argument(db_argument.argument_uid, user)
-
 		if db_argument.conclusion_uid == 0:
 			self.add_vote_for_argument(db_argument.argument_uid, user, transaction)
 
@@ -76,76 +63,10 @@ class WeightingHelper(object):
 		# remove votes
 		DBDiscussionSession.query(Vote).filter(and_(Vote.weight_uid==db_argument.weight_uid,
 		                                            Vote.author_uid==db_user.uid)).set_valid(True)
-		# remove votes of the components
-		#self.__decrease_weight_of_statements_in_premissegroup(db_argument.premisesGroup_uid, user)
-		#if db_argument.conclusion_uid != 0:
-		#	self.__decrease_weight_of_statement(db_argument.conclusion_uid, user)
-		#else:
-		#	self.remove_vote_for_argument(db_argument.argument_uid, user)
 
 		# return count of votes
 		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_argument.weight_uid).all()
 		return len(db_votes)
-
-#	def __increase_weight_of_statement(self, statement_uid, user):
-#		"""
-#		Increses the weight of a given statement
-#		:param statement_uid: id of the statement
-#		:param user: self.request.authenticated_userid
-#		:return: increased weight of the statement
-#		"""
-#		logger('WeightingHelper', '__increase_weight_of_statement', 'increasing statement ' + str(statement_uid) + ' weight')
-#		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-#		db_weight = self.__check_and_set_vote_uid(db_statement, user)
-#
-#		# return count of votes
-#		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_weight.uid).all()
-#		return len(db_votes)
-#
-#	def __decrease_weight_of_statement(self, statement_uid, user):
-#		"""
-#		Increses the weight of a given statement
-#		:param statement_uid: id of the statement
-#		:param user: self.request.authenticated_userid
-#		:return: increased weight of the statement
-#		"""
-#		logger('WeightingHelper', '__decrease_weight_of_statement', 'decreasing statement ' + str(statement_uid) + ' weight')
-#		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-#		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-#
-#		# remove vote
-#		DBDiscussionSession.query(Vote).filter(and_(Vote.weight_uid==db_statement.weight_uid,
-#		                                            Vote.author_uid==db_user.uid)).delete()
-#
-#		# return count of votes
-#		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_statement.weight_uid).all()
-#		return len(db_votes)
-
-#	def __increase_weight_of_statements_in_premissegroup(self, premissegroup_uid, user):
-#		"""
-#		Increses the weight of a given statements in pgroup
-#		:param premissegroup_uid: id of the premissegroup
-#		:param user: self.request.authenticated_userid
-#		:return: None
-#		"""
-#		db_group = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=premissegroup_uid).all()
-#		for premise in db_group:
-#			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
-#			self.__check_and_set_vote_uid(db_statement, user)
-#			logger('WeightingHelper', '__increase_weight_of_statements_in_premissegroup', 'increasing statement ' + str(db_statement.uid) + ' weight')
-#
-#	def __decrease_weight_of_statements_in_premissegroup(self, premissegroup_uid, user):
-#		"""
-#		Increses the weight of a given statements in pgroup
-#		:param premissegroup_uid: id of the premissegroup
-#		:param user: self.request.authenticated_userid
-#		:return: None
-#		"""
-#		db_group = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=premissegroup_uid).all()
-#		for premise in db_group:
-#			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
-#			self.__decrease_weight_of_statement(db_statement.uid, user)
-#			logger('WeightingHelper', 'decrease_weight_of_statement_in_premissegroup', 'decreasing statement ' + str(db_statement.uid) + ' weight')
 
 	def __check_and_set_vote_uid(self, db_argument, user):
 		"""

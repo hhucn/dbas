@@ -26,18 +26,6 @@ function GuiHandler() {
 	/**
 	 *
 	 */
-	this.prepareAddStatementContainer = function() {
-		$('#' + proPositionTextareaId).empty();
-		$('#' + conPositionTextareaId).empty();
-		$('#' + addStatementContainerMainInputIntroId).text('');
-		$('#' + addStatementContainerId).fadeIn('slow');
-		$('#' + addStatementErrorContainer).hide();
-		$('#' + addReasonButtonId).disable = true;
-	};
-
-	/**
-	 *
-	 */
 	this.showAddPositionContainer = function(){
 		$('#' + addStatementContainerId).show();
 	};
@@ -348,35 +336,6 @@ function GuiHandler() {
 		// accept cookie
 		$('#' + popupHowToWriteTextOkayButton).click(function(){
 			$('#' + popupHowToWriteText).modal('hide');
-			new Helper().setCookie(cookie_name);
-		});
-	};
-
-	/**
-	 * Dispalys the 'how to write text '-popup, when the setting is not in the cookies
-	 */
-	this.displayPremiseGroupPopup = function(){
-		var cookie_name = 'HOW_TO_SET_PremiseGROUPS',
-			// show popup, when the user does not accepted the cookie already
-			userAcceptedCookies = new Helper().isCookieSet(cookie_name);
-
-		if (!userAcceptedCookies) {
-			$('#' + popupHowToSetPremiseGroups).modal('show');
-		}
-
-		$('#' + popupHowToSetPremiseGroupsCloseButton).click(function(){
-			$('#' + proTextareaPremisegroupCheckboxId).attr('checked', false).prop('checked', false);
-			$('#' + conTextareaPremisegroupCheckboxId).attr('checked', false).prop('checked', false);
-		});
-
-		$('#' + popupHowToSetPremiseGroupsClose).click(function(){
-			$('#' + proTextareaPremisegroupCheckboxId).attr('checked', false).prop('checked', false);
-			$('#' + conTextareaPremisegroupCheckboxId).attr('checked', false).prop('checked', false);
-		});
-
-		// accept cookie
-		$('#' + popupHowToSetPremiseGroupsOkayButton).click(function(){
-			$('#' + popupHowToSetPremiseGroups).modal('hide');
 			new Helper().setCookie(cookie_name);
 		});
 	};

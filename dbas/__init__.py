@@ -91,8 +91,6 @@ def main(global_config, **settings):
 	config.add_route('ajax_switch_language',                     '{url:.*}ajax_switch_language{params:.*}')
 	config.add_route('ajax_get_everything_for_island_view',      '{url:.*}ajax_get_everything_for_island_view{params:.*}')
 	config.add_route('ajax_get_database_dump',                   '{url:.*}ajax_get_database_dump')
-	config.add_route('ajax_get_user_track',                      'ajax_get_user_track')
-	config.add_route('ajax_delete_user_track',                   'ajax_delete_user_track')
 	config.add_route('ajax_get_user_history',                    'ajax_get_user_history')
 	config.add_route('ajax_delete_user_history',                 'ajax_delete_user_history')
 	config.add_route('ajax_get_news',                            'ajax_get_news')

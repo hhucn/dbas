@@ -23,7 +23,6 @@ from .query_helper import QueryHelper, UrlManager
 from .strings import Translator, TextGenerator
 from .string_matcher import FuzzyStringMatcher
 from .breadcrumb_helper import BreadcrumbHelper
-from .tracking_helper import TrackingHelper
 from .recommender_system import RecommenderHelper, RecommenderHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .weighting_helper import WeightingHelper
@@ -590,55 +589,6 @@ class Dbas(object):
 		logger('get_all_users', 'def', 'main')
 
 		return_dict = UserHandler().get_all_users(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - getting complete track of the user
-	@view_config(route_name='ajax_get_user_track', renderer='json', check_csrf=True)
-	def get_user_track(self):
-		"""
-		Request the complete user track
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		logger('get_user_track', 'def', 'main')
-
-		nickname = 'unknown'
-		try:
-			logger('get_user_track', 'def', 'read params')
-			nickname = str(self.request.authenticated_userid)
-			logger('get_user_track', 'def', 'nickname ' + nickname)
-		except KeyError as e:
-			logger('get_user_track', 'error', repr(e))
-
-		logger('manage_user_track', 'def', 'get track data')
-		return_dict = TrackingHelper().get_track_of_user(nickname, lang)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - deleting complete track of the user
-	@view_config(route_name='ajax_delete_user_track', renderer='json', check_csrf=True)
-	def delete_user_track(self):
-		"""
-		Request the complete user track
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('delete_user_track', 'def', 'main')
-		TrackingHelper().del_track_of_user(transaction, self.request.authenticated_userid)
-		return_dict = dict()
-		return_dict['removed_data'] = 'true' # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json

@@ -66,36 +66,6 @@
 		<div class="container colored_container">
 			<div class="content row">
 				<div class="col-md-12">
-					<h4 i18n:translate="decisions">Your decisions</h4>
-
-					<div style="text-align:center;">
-						<input id="request-track" type="button" value="Request track" class="button button-block btn btn-primary" style="display: inline-block;" />
-						<input id="delete-track" type="button" value="Delete track" class="button button-block btn btn-primary" style="display: inline-block;" />
-					</div>
-
-					<div id="track-table-success" class="alert alert-success" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="lead" i18n:translate="success">Success:</span>
-						<span id="track-success-msg"></span>
-					</div>
-					<div id="track-table-failure" class="alert alert-danger" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="lead" i18n:translate="error:">Error:</span>
-						<span id="track-failure-msg"></span>
-					</div>
-					<div id="track-table-space">
-						<table id="track-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
-							<tr>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="container colored_container">
-			<div class="content row">
-				<div class="col-md-12">
 					<h4 i18n:translate="history">Your last history</h4>
 
 					<div style="text-align:center;">

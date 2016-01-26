@@ -127,21 +127,6 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 			mainpage + "static/images/logo.png");
 	});
 
-	/*
-	 * Display message on premise group checkbox
-	 */
-	$('#' + proTextareaPremisegroupCheckboxId).click(function (){
-		if ($('#' + proTextareaPremisegroupCheckboxId).prop('checked')){
-			guiHandler.displayPremiseGroupPopup();
-		}
-	});
-
-	$('#' + conTextareaPremisegroupCheckboxId).click(function (){
-		if ($('#' + conTextareaPremisegroupCheckboxId).prop('checked')){
-			guiHandler.displayPremiseGroupPopup();
-		}
-	});
-
 	guiHandler.setImageInactive($('#' + displayStyleIconGuidedId));
 	$('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct () { guiHandler.setDisplayStyleAsDiscussion(); });
 	$('#' + displayStyleIconIslandId).click(function displayStyleIconIslandFct () { guiHandler.setDisplayStyleAsIsland(); });

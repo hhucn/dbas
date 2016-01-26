@@ -13,7 +13,6 @@ from .query_helper import QueryHelper
 from .user_management import UserHandler
 from .logger import logger
 from .strings import Translator
-from .tracking_helper import TrackingHelper
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -231,91 +230,6 @@ class DatabaseHelper(object):
 		return_dict = DictionaryHelper().save_statement_row_in_dictionary(db_statement)
 
 		return return_dict
-
-	def get_reply_confrontations_response(self, transaction, user, uid_text, session_id, exception_rebut, issue, lang):
-		"""
-		Returns the answer for a confrontation by the user. We will differentiate between {undermine, support, undercut, overbid, rebut}
-		:param transaction: transaction
-		:param user: string
-		:param uid_text: int
-		:param session_id: id
-		:param exception_rebut: boolean
-		:param issue: int
-		:param lang: string
-		:return: dict()
-		"""
-		qh = QueryHelper()
-		splitted_id = uid_text.split('_')
-		relation = splitted_id[0]
-		argument_uid = splitted_id[2]
-
-		# get argument
-		logger('DatabaseHelper', 'get_reply_confrontations_response', 'get reply confrontations for argument ' + argument_uid + ', issue ' + str(issue))
-		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==int(argument_uid), Argument.issue_uid==issue)).first()
-
-		# get attack
-		key = 'reason'
-
-		status = '1'
-		if 'undermine' in relation.lower():
-			logger('DatabaseHelper', 'get_reply_confrontations_response', 'undermine')
-			return_dict = qh.get_undermines_for_argument_uid(key, argument_uid, issue)
-			return_dict['attack'] = 'undermine'
-			identifier = 'premisesgroup'
-		elif 'support' in relation.lower():
-			logger('DatabaseHelper', 'get_reply_confrontations_response', 'support')
-			return_dict = qh.get_supports_for_argument_uid(key, argument_uid, issue)
-			return_dict['attack'] = 'support'
-			identifier = 'premisesgroup'
-		elif 'undercut' in relation.lower():
-			logger('DatabaseHelper', 'get_reply_confrontations_response', 'undercut')
-			return_dict = qh.get_undercuts_for_argument_uid(key, argument_uid, issue)
-			return_dict['attack'] = 'undercut'
-			identifier = 'statement'
-		elif 'overbid' in relation.lower():
-			logger('DatabaseHelper', 'get_reply_confrontations_response', 'overbid')
-			return_dict = qh.get_overbids_for_argument_uid(key, argument_uid, issue)
-			return_dict['attack'] = 'overbid'
-			identifier = 'statement'
-		elif 'rebut' in relation.lower():
-			logger('DatabaseHelper', 'get_reply_confrontations_response', 'rebut')
-			#return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid)
-			if exception_rebut:
-				return_dict = qh.get_rebuts_for_argument_uid(key, argument_uid, issue)
-			else:
-				return_dict = qh.get_supports_for_argument_uid(key, argument_uid, issue)
-			identifier = 'premisesgroup'
-			return_dict['attack'] = 'rebut'
-		else:
-			return_dict = dict()
-			identifier = 'none'
-			status = '-1'
-
-		logger('DatabaseHelper', 'get_reply_confrontations_response', 'attack (' + relation + ') was fetched for ' + str(argument_uid))
-
-		# check return value
-		if not return_dict:
-			return_dict = dict()
-		if len(return_dict) == 0:
-			return_dict[key] = '0'
-
-		return_dict['premisegroup'], uids = qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
-		# Todo: what is with an conclusion as premise group?
-		return_dict['relation'] = splitted_id[0]
-		return_dict['argument_uid'] = argument_uid
-		return_dict['premisegroup_uid'] = db_argument.premisesGroup_uid
-		return_dict['type'] = identifier
-
-		if db_argument.conclusion_uid is None or db_argument.conclusion_uid == 0:
-			return_dict['conclusion_text'] = qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
-			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
-		else:
-			return_dict['conclusion_text'] = qh.get_text_for_statement_uid(db_argument.conclusion_uid)
-			logger('DatabaseHelper', 'get_reply_confrontations_response', return_dict['conclusion_text'])
-
-		TrackingHelper().save_track_for_user(transaction, user, 0, 0, argument_uid, 0, qh.get_relation_uid_by_name(relation.lower()), session_id)
-
-		return return_dict, status
 
 	def get_logfile_for_statement(self, uid):
 		"""
