@@ -375,9 +375,7 @@
 		</div>
 
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-jsonguihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-navigationhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-interactionhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-ajaxhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
@@ -385,7 +383,6 @@
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-graph.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-island.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-barometer.js')}"></script>
 
 	</tal:block>

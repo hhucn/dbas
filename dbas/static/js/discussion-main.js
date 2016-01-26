@@ -11,9 +11,6 @@
  */
 startDiscussion = function () {
 	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
-
-	// on success we will get the start statements
-	new AjaxSiteHandler().getIssueList();
 };
 
 /**
@@ -99,13 +96,6 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 			$(this).attr('short_url', '0').text(_t(fetchShortUrl));
 		}
 	});
-
-	/*
-	// managed in the html file
-	$('#' + scStyleDialogId).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	$('#' + scStyleIslandId).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	$('#' + scStyleCompleteId).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	*/
 
 	/**
 	 * Sharing shortened url with mail

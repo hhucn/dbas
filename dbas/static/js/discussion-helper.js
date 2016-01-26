@@ -53,20 +53,6 @@ function Helper() {
 	};
 
 	/**
-	 * Cuts off each punctuation at the end
-	 * @param text
-	 * @returns {*} text without {.,?,!} at the end
-	 */
-	this.cutOffPunctiation = function (text){
-		if (text.indexOf('.') == text.length-1
-				|| text.indexOf('?') == text.length-1
-				|| text.indexOf('!') == text.length-1){
-			text = text.substr(0, text.length-1);
-		}
-		return text;
-	};
-
-	/**
 	 * Returns today as date
 	 * @returns {string} date as dd.mm.yyy
 	 */
@@ -100,17 +86,6 @@ function Helper() {
 		var p = $('<p>');
     	p.html(text);
     	return p.text();
-	};
-
-	/**
-	 * Checks if the string contains one of the keyword undercut, rebut or undermine
-	 * @param text to check
-	 * @returns {boolean} if the string contains a keyword
-	 */
-	this.stringContainsAnAttack = function (text){
-		return (text.indexOf('undermine') != -1
-				|| text.indexOf('rebut') != -1
-				|| text.indexOf('undercut') != -1);
 	};
 
 	/**
@@ -155,107 +130,6 @@ function Helper() {
 	 */
 	this.startWithUpperCase = function (text){
 		return text.substr(0, 1).toLocaleUpperCase() + text.substr(1);
-	};
-
-	/**
-	 * Creates an input element tih key as id and val as value. This is embedded in an li element
-	 * @param key will be used as id
-	 * @param val will be used as value
-	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
-	 * @param isPremise
-	 * @param isRelation
-	 * @param mouseover
-	 * @returns {Element|*} a type-input element in a li tag
-	 */
-	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremise, isRelation, mouseover) {
-		return this.getKeyValAsInputInLiWithType(key, val, isStartStatement, isPremise, isRelation, mouseover, {'text_count':'0'});
-	};
-
-	/**
-	 * Creates an input element tih key as id and val as value. This is embedded in an li element
-	 * @param key will be used as id
-	 * @param val will be used as value
-	 * @param isStartStatement if true, argumentButtonWasClicked is used, otherwise
-	 * @param isPremise
-	 * @param isRelation
-	 * @param mouseover
-	 * @param additionalAttributesAsDict
-	 * @returns {Element|*} a type-input element in a li tag
-	 */
-	this.getKeyValAsInputInLiWithType = function (key, val, isStartStatement, isPremise, isRelation, mouseover, additionalAttributesAsDict) {
-		var liElement, inputElement, labelElement, extras = '', tmp;
-		liElement = $('<li>').attr({id: 'li_' + key});
-
-		inputElement = $('<input>').attr({id: key, type: 'radio', value: val, name: radioButtonGroup, onclick: 'new InteractionHandler().radioButtonChanged();'});
-		//inputElement.attr({data-dismiss: 'modal'});
-
-		if (typeof additionalAttributesAsDict !== 'undefined')
-			$.each(additionalAttributesAsDict, function getKeyValAsInputInLiWithTypeEach(key, val) {
-				extras += ' ' + key + '="' + val + '"';
-			});
-
-		// adding label for the value
-		labelElement = '<label title="' + mouseover + '" for="' + key + '">' + val + '</label>';
-
-		if (isStartStatement){ inputElement.addClass('start'); }
-		if (isPremise){ inputElement.addClass('premise'); }
-		if (isRelation){ inputElement.addClass('relation'); }
-		if (!isStartStatement && !isPremise && !isRelation){ inputElement.addClass('add'); }
-
-		tmp = new Helper().getFullHtmlTextOf(inputElement);
-		tmp = tmp.substr(0,tmp.length-1) + extras + '>';
-		liElement.html(tmp + labelElement);
-
-		return liElement;
-	};
-
-	/**
-	 * Creates an input element tih key as id and val as value. This is embedded in an li element
-	 * @param key will be used as id
-	 * @param val will be used as value
-	 * @param mouseover
-	 * @param classes all classes
-	 * @returns {Element|*} a type-input element in a li tag
-	 */
-	this.getExtraInputInLiWithType = function (key, val, mouseover, classes) {
-		var liElement, inputElement, labelElement, extras = '', tmp;
-		liElement = $('<li>');
-		liElement.attr({id: 'li_' + key});
-
-		inputElement = $('<input>');
-		inputElement.attr({id: key + '_' + classes[0], type: 'radio', value: val});
-		//inputElement.attr({data-dismiss: 'modal'});
-
-		inputElement.attr({name: radioButtonGroup}).attr({onclick: 'new InteractionHandler().radioButtonChanged();'});
-		for (var i = 0; i < classes.length; i++) {
-			inputElement.addClass(classes[i]);
-		}
-		// adding label for the value
-		labelElement = '<label title="' + mouseover + '" for="' + key + '_' + classes[0] + '">' + val + '</label>';
-
-		tmp = new Helper().getFullHtmlTextOf(inputElement);
-		tmp = tmp.substr(0,tmp.length-1) + extras + '>';
-		liElement.html(tmp + labelElement);
-
-		return liElement;
-	};
-
-	/**
-	 * Returns an unsorted list with all values, which key has a specific prefix
-	 * @param dict dictionary
-	 * @param prefix string
-	 * @returns {jQuery|HTMLElement}
-	 */
-	this.getValuesOfDictWithPrefixAsUL = function(dict, prefix){
-		var li, label, ul = $('<ul>'), no = dict[prefix], i = 0;
-		for (i; i<no; i++){
-			li = $('<li>');
-			label = $('<label>');
-			label.text(this.startWithUpperCase(dict[prefix + i]));
-			li.append(label);
-			ul.append(li);
-		}
-		return ul;
 	};
 
 	/**
