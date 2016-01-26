@@ -240,7 +240,7 @@ function HistoryHandler(){
 	this.setDataInHistoryTable = function (jsonData) {
 		'use strict';
 		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url, helper = new Helper();
-		tElement = ['', '', '', ''];
+		tElement = ['', ''];
 		tableElement = $('<table>');
 		tableElement.attr({
 			class: 'table table-striped table-hover',
@@ -258,10 +258,7 @@ function HistoryHandler(){
 
 		// add header row
 		tElement[0] = $('<th>').text('#');
-		tElement[1] = $('<th>').text('ID');
-		tElement[2] = $('<th>').text('URL');
-		tElement[3] = $('<th>').text(_t(keyword));
-		tElement[4] = $('<th>').text(_t(dateString));
+		tElement[1] = $('<th>').text('URL');
 
 		for (i = 0; i < tElement.length; i += 1) {
 			trElement.append(tElement[i]);
@@ -269,18 +266,18 @@ function HistoryHandler(){
 		thead.append(trElement);
 		tableElement.append(thead);
 
+		$.each($.parseJSON(jsonData), function setDataInHistoryTableEach(index, breadcrumb) {
+			alert(index + " " + breadcrumb.text + " " + breadcrumb.url);
+		});
+
 		// adding the historys
 		var has_data = false;
 		parsedData = $.parseJSON(jsonData);
-		$.each(parsedData, function setDataInHistoryTableEach(history_index, history) {
+		$.each(parsedData, function setDataInHistoryTableEach(index, breadcrumb) {
 			has_data = true;
-			keyword = history.keyword_after_decission.length == 0 ? _t(noDecisionDone) : history.keyword_after_decission;
-			breaked_url = helper.cutTextOnChar(history.url, 60, '/');
-			tElement[0] = $('<td>').text(history_index).attr('title', 'No: ' + history_index);
-			tElement[1] = $('<td>').text(history.uid).attr('title', 'History ID: ' + history.uid);
-			tElement[2] = $('<td>').html('<a href="' + history.url + '">' + breaked_url + '</a>').attr('title', 'URL: ' + history.url);
-			tElement[3] = $('<td>').text(keyword).attr('title', _t(keyword) + ': ' + keyword);
-			tElement[4] = $('<td>').text(history.timestamp).attr('title', 'Date: ' + history.timestamp);
+			breaked_url = helper.cutTextOnChar(breadcrumb.url, 120, '/');
+			tElement[0] = $('<td>').text(index);
+			tElement[1] = $('<td>').html('<a href="' + breadcrumb.url + '">' + breadcrumb.text + '</a>');
 
 			trElement = $('<tr>');
 			for (i = 0; i < tElement.length; i += 1) {

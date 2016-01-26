@@ -5,7 +5,7 @@ from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, User, TextVersion, History
 from .logger import logger
 from .strings import Translator
-from .query_helper import QueryHelper
+from .query_helper import QueryHelper, UrlManager
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -13,23 +13,26 @@ from .query_helper import QueryHelper
 
 class BreadcrumbHelper(object):
 
-	def save_breadcrumb(self, url, user, session_id):
+	def save_breadcrumb(self, path, user, slug, session_id, transaction):
 		"""
 
-		:param url:
+		:param path:
 		:param user:
+		:param slug:
 		:param session_id:
 		:return:
 		"""
-		logger('BreadcrumbHelper', 'get_breadcrumbs', 'url ' + url + ', user ' + str(user))
+		logger('BreadcrumbHelper', 'get_breadcrumbs', 'path ' + path + ', user ' + str(user))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+		url = UrlManager(slug).get_url(path)
 
 		db_already_in = DBDiscussionSession.query(History).filter_by(url=url).first()
 		if db_already_in:
 			DBDiscussionSession.query(History).filter(and_(History.author_uid==db_user.uid, History.uid>db_already_in.uid)).delete()
 		else:
 			DBDiscussionSession.add(History(user=db_user.uid, url=url, session_id=session_id))
-			transaction.commit()
+		transaction.commit()
 
 		return self.get_breadcrumbs(user)
 
@@ -55,6 +58,7 @@ class BreadcrumbHelper(object):
 		breadcrumbs = []
 		for index, history in enumerate(db_history):
 			hist = dict()
+			hist['index']   = str(index)
 			hist['url']     = str(history.url)
 			hist['text']    = 'some text'
 			breadcrumbs.append(hist)

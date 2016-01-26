@@ -955,7 +955,7 @@ class QueryHelper(object):
 		else:
 			discussion_dict['heading'] += (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText)) if logged_in else _t.get(_t.discussionEndFeelFreeToLogin)
 
-	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang, authenticated_userid, add_premise_supportive=False, argument_id=0):
+	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang, authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs=[]):
 		"""
 
 		:param current_slug:
@@ -980,6 +980,7 @@ class QueryHelper(object):
 		return_dict['add_premise_supportive']        =  add_premise_supportive
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'
+		return_dict['breadcrumbs']                   = breadcrumbs
 		return_dict['title']                         = {'barometer': _tn.get(_tn.opinionBarometer),
 													 	 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 													 	 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
@@ -1132,6 +1133,9 @@ class UrlManager(object):
 		self.url = 'http://localhost:4284/'
 		self.discussion_url = self.url + 'd/'
 		self.slug = slug
+
+	def get_url(self, path):
+		return self.url + path
 
 	def get_404(self, params):
 		"""
