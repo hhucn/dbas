@@ -324,7 +324,7 @@ $(function () {
 	'use strict';
 	var guiHandler = new GuiHandler(),
 		ajaxHandler = new AjaxSiteHandler(),
-		interactionHandler = new InteractionHandler();
+		interactionHandler = new InteractionHandler(), tmp;
 
 	guiHandler.setHandler(interactionHandler);
 	setClickFunctions(guiHandler, ajaxHandler);
@@ -341,6 +341,12 @@ $(function () {
 	$.each($('.panel-heading h5'), function () {
 		replaceHtmlTags($(this));
 	});
+
+	// some extras
+	// get restart url and cut the quotes
+	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
+	tmp = tmp.substr(1, tmp.length-2);
+	$('#' + discussionEndRestart).attr('href', tmp);
 });
 
 // new

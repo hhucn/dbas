@@ -208,6 +208,7 @@ var dbas_de = {
 	'notInsertedErrorBecauseDuplicate': 'Ihre Idee wurde nicht gespeichert, da Ihre Idee ein Duplikat ist.',
 	'notInsertedErrorBecauseUnknown': 'Ihre Idee wurde aufgrund eines unbekannten Fehlers nicht gespeichert.',
 	'notInsertedErrorBecauseInternal': 'Ihre Idee wurde aufgrund eines internen Fehlers nicht gespeichert.',
+	'notInsertedErrorBecauseTooShort': 'Ihre Idee wurde aufgrund der Kürze nicht gespeichert.',
 	'noEntries': 'Keine Einträge vorhanden',
 	'noTrackedData': 'Keine Daten wurden gespeichert.',
 	'number': 'Nr',

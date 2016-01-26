@@ -15,8 +15,8 @@
 						<strong>${page_notfound_viewname}</strong>&quot; 
 						<span i18n:translate="404_text_part2">for could not be found.</span>
 					</p>
-					<br>
-					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" i18n:translate="lets_go_home" />
+					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" i18n:translate="lets_go_home" style="margin: 10px;"/>
+					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="window.history.back();" value="Let's go back!" i18n:translate="lets_go_back" style="margin: 10px;"/>
 				</div>
 					</div>
 				<div class="col-md-3"></div>

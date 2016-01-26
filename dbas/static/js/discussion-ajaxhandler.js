@@ -332,9 +332,9 @@ function AjaxSiteHandler() {
 			headers: {
 				'X-CSRF-Token': csrfToken
 			}
-		}).done(function ajaxSendNewPremisesForXDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewPremisesX(data);
-		}).fail(function ajaxSendNewPremisesForXFail() {
+		}).done(function ajaxSendNewPremisesForArgumentDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewPremisesArgument(data);
+		}).fail(function ajaxSendNewPremisesForArgumentFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 6). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');

@@ -257,6 +257,7 @@ var notInsertedErrorBecauseEmpty 					= 'notInsertedErrorBecauseEmpty';
 var notInsertedErrorBecauseDuplicate 				= 'notInsertedErrorBecauseDuplicate';
 var notInsertedErrorBecauseUnknown 					= 'notInsertedErrorBecauseUnknown';
 var notInsertedErrorBecauseInternal					= 'notInsertedErrorBecauseInternal';
+var notInsertedErrorBecauseTooShort					= 'notInsertedErrorBecauseTooShort';
 var noTrackedData 									= 'noTrackedData';
 var noEntries                                       = 'noEntries';
 var note 											= 'note';

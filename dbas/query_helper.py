@@ -658,11 +658,15 @@ class QueryHelper(object):
 		elif at_attitude:
 			logger('QueryHelper', 'prepare_discussion_dict', 'at_attitude')
 			text                = self.get_text_for_statement_uid(uid)
+			if not text:
+				return None
 			heading             = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
 
 		elif at_justify:
 			logger('QueryHelper', 'prepare_discussion_dict', 'at_justify')
 			text                = self.get_text_for_statement_uid(uid)
+			if not text:
+				return None
 			heading             = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
 			                        + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
 			add_premise_text    = text
@@ -681,8 +685,11 @@ class QueryHelper(object):
 		elif at_dont_know:
 			logger('QueryHelper', 'prepare_discussion_dict', 'at_dont_know')
 			text                = self.get_text_for_argument_uid(uid, lang)
-			heading             = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
+			if text:
+				heading         = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
 			                     + '</strong>. ' + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
+			else:
+				heading         = _tn.get(_tn.firstOneText) + ' <strong>' + self.get_text_for_statement_uid(additional_id) + '</strong>.'
 
 		elif at_argumentation:
 			logger('QueryHelper', 'prepare_discussion_dict', 'at_argumentation')
@@ -896,29 +903,30 @@ class QueryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-
-		if db_argument.argument_uid == 0:
-			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
-		else:
-			conclusion = self.get_text_for_argument_uid(db_argument.argument_uid, lang)
-
-		premise, tmp     = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
-		conclusion       = conclusion[0:1].lower() + conclusion[1:]
-		premise          = premise[0:1].lower() + premise[1:]
-		ret_dict         = _tg.get_relation_text_dict_without_confrontation(conclusion, premise, False, True)
-		mode             = 't' if isSupportive else 't'
 		statements_array = []
-		_um              = UrlManager(slug)
 
-		types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
-		for t in types:
-			# special case, when the user selectes the support, because this does not need to be justified!
-			if t == 'support':
-				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self)
-				url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
+		if db_argument:
+			if db_argument.argument_uid == 0:
+				conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
 			else:
-				url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else 'window.history.go(-1)'
-			statements_array.append(self.get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url, False))
+				conclusion = self.get_text_for_argument_uid(db_argument.argument_uid, lang)
+
+			premise, tmp     = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
+			conclusion       = conclusion[0:1].lower() + conclusion[1:]
+			premise          = premise[0:1].lower() + premise[1:]
+			ret_dict         = _tg.get_relation_text_dict_without_confrontation(conclusion, premise, False, True)
+			mode             = 't' if isSupportive else 't'
+			_um              = UrlManager(slug)
+
+			types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
+			for t in types:
+				# special case, when the user selectes the support, because this does not need to be justified!
+				if t == 'support':
+					arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self)
+					url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
+				else:
+					url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else 'window.history.go(-1)'
+				statements_array.append(self.get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url, False))
 
 		return statements_array
 
@@ -974,13 +982,27 @@ class QueryHelper(object):
 
 		# add everything for the island view
 		if show_display_styles:
-			island_dict = self.get_everything_for_island_view(argument_id, lang)
-			island_dict['premise'] = island_dict['premise'][0:1].lower() + island_dict['premise'][1:]
-			island_dict['conclusion'] = island_dict['conclusion'][0:1].lower() + island_dict['conclusion'][1:]
-			island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
-			                                                                                    island_dict['conclusion'],
-			                                                                                    False, False))
-			return_dict['island'] = island_dict
+			# does an argumente exists?
+			if (DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()):
+				island_dict = self.get_everything_for_island_view(argument_id, lang)
+				island_dict['premise'] = island_dict['premise'][0:1].lower() + island_dict['premise'][1:]
+				island_dict['conclusion'] = island_dict['conclusion'][0:1].lower() + island_dict['conclusion'][1:]
+				island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
+				                                                                                    island_dict['conclusion'],
+				                                                                                    False, False))
+				return_dict['island'] = island_dict
+			else:
+				return_dict['is_editable']            =  False
+				return_dict['is_reportable']          =  False
+				return_dict['show_bar_icon']          =  False
+				return_dict['show_display_style']     =  False
+				return_dict['title']                  = {'barometer': _tn.get(_tn.opinionBarometer),
+												        'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
+												        'island_view': _tn.get(_tn.displayControlDialogIslandBody),
+												        'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
+		                                                'edit_statement': _tn.get(_tn.editTitle),
+		                                                'report_statement': _tn.get(_tn.reportTitle)}
+
 
 		return return_dict
 
@@ -1102,6 +1124,18 @@ class UrlManager(object):
 		self.url = 'http://localhost:4284/'
 		self.discussion_url = self.url + 'd/'
 		self.slug = slug
+
+	def get_404(self, params):
+		"""
+
+		:param params:
+		:return:
+		"""
+		url = self.url + '404'
+		for p in params:
+			if p != '':
+				url += '/' + p
+		return url
 
 	def get_slug_url(self, as_location_href):
 		"""

@@ -1,4 +1,5 @@
 import collections
+import difflib
 
 from sqlalchemy import and_
 from Levenshtein import distance
@@ -32,10 +33,8 @@ class FuzzyStringMatcher(object):
 		for index, statement in enumerate(db_statements):
 			db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
 			if value.lower() in db_textversion.content.lower():
-				lev = distance(value.lower(), db_textversion.content.lower())
-				logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textversion.content)
-				lev  = str(lev).zfill(self.max_count_zeros)
-				tmp_dict[str(lev) + '_' + str(index)] = db_textversion.content
+				dist = self.__get_distance__(value, db_textversion.content)
+				tmp_dict[str(dist) + '_' + str(index)] = db_textversion.content
 
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 
@@ -63,10 +62,8 @@ class FuzzyStringMatcher(object):
 		tmp_dict = dict()
 		for index, textversion in enumerate(db_textversions):
 			if value.lower() in textversion.content.lower():
-				lev = distance(value.lower(), textversion.content.lower())
-				logger('FuzzyStringMatcher', 'get_fuzzy_string_for_edits', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' + textversion.content.lower())
-				lev  = str(lev).zfill(self.max_count_zeros)
-				tmp_dict[str(lev) + '_' + str(index)] = textversion.content
+				dist = self.__get_distance__(value, textversion.content)
+				tmp_dict[str(dist) + '_' + str(index)] = textversion.content
 
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 
@@ -92,10 +89,8 @@ class FuzzyStringMatcher(object):
 		for index, statement in enumerate(db_statements):
 			db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
 			if value.lower() in db_textversion.content.lower():
-				lev = distance(value.lower(), db_textversion.content.lower())
-				logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'lev: ' + str(lev) + ', value: ' + value.lower() + ' in: ' +  db_textversion.content)
-				lev  = str(lev).zfill(self.max_count_zeros)
-				tmp_dict[str(lev) + '_' + str(index)] = db_textversion.content
+				dist = self.__get_distance__(value, db_textversion.content)
+				tmp_dict[str(dist) + '_' + str(index)] = db_textversion.content
 
 		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
 
@@ -106,3 +101,19 @@ class FuzzyStringMatcher(object):
 		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_reasons', 'dictionary length: ' + str(len(return_dict.keys())))
 
 		return return_dict
+
+	def __get_distance__(self, string_a, string_b):
+		"""
+
+		:param string_a:
+		:param string_b:
+		:return:
+		"""
+		dist = distance(string_a.lower(), string_b.lower())
+		logger('FuzzyStringMatcher', '__get_distance__', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' +  string_b.lower())
+
+		# matcher = difflib.SequenceMatcher(lambda x: x == " ", string_a.lower(), string_b.lower())
+		# dist = round(matcher.ratio()*100,1)
+		# logger('FuzzyStringMatcher', '__get_distance__', 'SequenceMatcher: ' + str(matcher.ratio()) + ', value: ' + string_a.lower() + ' in: ' +  string_b.lower())
+
+		return str(dist).zfill(self.max_count_zeros)

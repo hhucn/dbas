@@ -32,7 +32,7 @@
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 
-					<button class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
+					<button id ="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart Discussion</span>
 					</button>
 
@@ -101,7 +101,7 @@
 						<img tal:condition="extras.is_editable" id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.title.edit_statement"/>
 						<br tal:condition="extras.is_editable">
 						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="title extras.title.report_statement"/>
-						<div id="display-style-menu-icon">
+						<div id="display-style-menu-icon" tal:condition="extras.show_display_style or extras.show_bar_icon">
 							<img id="" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" />
 							<nav id="site-navigation">
 								<div class="display-style-menu" tal:condition="extras.show_bar_icon">

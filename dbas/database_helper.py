@@ -364,11 +364,14 @@ class DatabaseHelper(object):
 		:param user: given user
 		:param is_start: if it is a start statement
 		:param issue:
-		:return: '1'
+		:return: Statement, is_duplicate or -1, False on error
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		logger('DatabaseHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) + ', statement: ' + str(
 			statement) + ', issue: ' + str(issue))
+
+		if len(statement) < 5: # TODO IMPROVE
+			return -1, False
 
 		# check for dot at the end
 		if not statement.endswith(('.','?','!')):
@@ -425,6 +428,8 @@ class DatabaseHelper(object):
 
 		# first, save the premise as statement
 		new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
+		if new_statement == -1:
+			return -1, False
 		# duplicates do not count, because they will be fetched in set_statement_as_new_premise
 
 		# second, set the new statement as premise
@@ -450,6 +455,8 @@ class DatabaseHelper(object):
 
 		#insert text as premise
 		new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
+		if new_statement == -1:
+			return 0
 		new_premisegroup_uid = QueryHelper().set_statement_as_new_premise(new_statement, user, issue)
 
 		# current argument
@@ -472,13 +479,7 @@ class DatabaseHelper(object):
 
 				if db_argument:
 					already_in.append(db_argument.uid)
-					logger('---', '---', 'OLD ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
-					logger('---', '---', 'OLD ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
-					logger('---', '---', 'OLD ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
 				else:
-					logger('---', '---', 'NEW ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
-					logger('---', '---', 'NEW ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
-					logger('---', '---', 'NEW ' + str(new_premisegroup_uid) + " " + str(current_attack == 'support') + " " + str(premise.statement_uid))
 					new_argument = Argument(premisegroup=new_premisegroup_uid,
 				                            issupportive=current_attack == 'support',
 				                            author=db_user.uid,
@@ -549,290 +550,289 @@ class DatabaseHelper(object):
 		logger('DatabaseHelper', 'handle_insert_new_premise_for_argument', 'return d ' + str(new_argument.uid if new_argument else 0))
 		return new_argument.uid if new_argument else 0
 
-	def handle_inserting_new_statements(self, user, pro_dict, con_dict, transaction, argument_id, premisegroup_id,
-	                                    current_attack, last_attack, premisegroup_con, premisegroup_pro, exception_rebut, issue):
-		"""
-		Highly complex stuff! Please ask the author!
-		:param user: string
-		:param pro_dict: dict()
-		:param con_dict: dict()
-		:param transaction: transactiom
-		:param argument_id: int
-		:param premisegroup_id: int
-		:param current_attack: string
-		:param last_attack: string
-		:param premisegroup_con: boolean
-		:param premisegroup_pro: boolean
-		:param exception_rebut: boolean
-		:param issue: int
-		:return: dict()
-		"""
-		# Interpretation of the parameters
-		# User says: E => A             | #argument_id
-		# System says:
-		#   undermine:  F => !E         | #premisegroup_id => (part of argument_id)
-		#   undercut:   D => !(E=>A)    | #premisegroup_id => (part of argument_id)
-		#   rebut:      B => !A         | #premisegroup_id => (part of argument_id)
-		# Handle it, based on current and last attack
-
-		return_dict = dict()
-		logger('DatabaseHelper', 'handle_inserting_new_statements', 'length of pro dict: ' + str(len(pro_dict)))
-		logger('DatabaseHelper', 'handle_inserting_new_statements', 'length of con dict: ' + str(len(con_dict)))
-
-		# id of user
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		logger('DatabaseHelper', 'handle_inserting_new_statements', 'users nick: ' + user + ', id ' + str(db_user.uid))
-
-		logger('DatabaseHelper', 'handle_inserting_new_statements', 'db_premises_of_current_attack premisesGroup_uid=' + str(premisegroup_id))
-		db_premises_of_current_attack = DBDiscussionSession.query(Premise).filter(and_(
-			Premise.premisesGroup_uid==premisegroup_id, Premise.issue_uid==issue)).all()
-
-		for premise in db_premises_of_current_attack:
-			logger('DatabaseHelper', 'handle_inserting_new_statements', 'db_premises_of_current_attack premise.statement_uid ' + str(premise.statement_uid))
-
-		logger('DatabaseHelper', 'handle_inserting_new_statements', 'db_argument_of_current_attack: '
-		       + ' premisesGroup_uid=' + str(premisegroup_id)
-		       + ', argument_id=' + str(argument_id))
-		db_argument_of_current_attack = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==premisegroup_id,
-		                                                                                Argument.uid==argument_id,
-		                                                                                Argument.issue_uid==issue)).first()
-		new_premisegroup_uid = None
-		is_inserted = False
-		qh = QueryHelper()
-
-		#############
-		# UNDERMINE #
-		#############
-		if current_attack == 'undermine':
-			return_dict['same_group'] = '1' if premisegroup_con else '0'
-			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine')
-			argument_list = []
-			# for every statement in current dictionary
-			for index, con in enumerate(con_dict):
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: ' + con_dict[con] + ', with same pgroup: ' + str(premisegroup_con))
-				# every entry of the dict will be a new statement with a new premisegroup
-				new_statement, is_duplicate = self.set_statement(transaction, con_dict[con], user, False, issue)
-				if premisegroup_con:
-					# Todo handle duplicats in pgroups
-					if new_premisegroup_uid is None:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: new pgroup, but this one will be for all')
-						new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-					else:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: old pgroup')
-						qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
-				else:
-					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: every round, new pgroup')
-					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: new_premisegroup_uid is ' + str(new_premisegroup_uid))
-				# now, every new statement will attack the attack of the system, which is as confrontation_uid
-				for premise in db_premises_of_current_attack:
-					# now, every new statement will be inserted, because groups will be added once only
-					if (premisegroup_con):
-						if (not is_inserted):
-							new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
-							argument_list.append(new_argument)
-							is_inserted = True
-					else:
-						new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
-						argument_list.append(new_argument)
-				key = 'con_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
-				return_dict[key]['duplicate'] = str(is_duplicate)
-			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
-
-		###########
-		# SUPPORT #
-		###########
-		elif current_attack == 'support':
-			return_dict['same_group'] = '1' if premisegroup_pro else '0'
-			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support')
-			argument_list = []
-			# for every statement in current dictionary
-			for index, pro in enumerate(pro_dict):
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: ' + pro_dict[pro] + ', with same pgroup: ' + str(premisegroup_pro))
-				# every entry of the dict will be a new statement with a new premisegroup
-				new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
-				# new pgroup only if they should be new
-				if premisegroup_pro:
-					# Todo handle duplicats in pgroups
-					if new_premisegroup_uid is None:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: new pgroup, but this one will be for all')
-						new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-					else:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: old pgroup')
-						qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
-				else:
-					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: every round, new pgroup')
-					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: new_premisegroup_uid is ' + str(new_premisegroup_uid))
-				# now, every new statement will attack the attack of the system, which is as confrontation_uid
-				for premise in db_premises_of_current_attack:
-					# now, every new statement will be inserted, because groups will be added once only
-					if (premisegroup_pro):
-						if (not is_inserted):
-							new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
-							argument_list.append(new_argument)
-							is_inserted = True
-					else:
-						new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
-						argument_list.append(new_argument)
-				key = 'pro_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
-				return_dict[key]['duplicate'] = str(is_duplicate)
-			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
-
-		############
-		# UNDERCUT #
-		############
-		elif current_attack == 'undercut':
-			return_dict['same_group'] = '1' if premisegroup_con else '0'
-			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut')
-			argument_list = []
-			# for every statement in current dictionary
-			for index, con in enumerate(con_dict):
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: ' + con_dict[con] + ', with same pgroup: ' + str(premisegroup_con))
-				new_statement, is_duplicate = self.set_statement(transaction, con_dict[con], user, False, issue)
-				if premisegroup_con:
-					# Todo handle duplicats in pgroups
-					if new_premisegroup_uid is None:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: new pgroup, but this one will be for all')
-						new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-					else:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: old pgroup')
-						qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
-				else:
-					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: every round, new pgroup')
-					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: new_premisegroup_uid is ' + str(new_premisegroup_uid))
-				# now, every new statement will be inserted, because groups will be added once only
-				if (premisegroup_con):
-					if (not is_inserted):
-						new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=0, issue=issue)
-						new_argument.conclusions_argument(db_argument_of_current_attack.uid)
-						argument_list.append(new_argument)
-						is_inserted = True
-				else:
-					new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=0, issue=issue)
-					new_argument.conclusions_argument(db_argument_of_current_attack.uid)
-					argument_list.append(new_argument)
-				key = 'con_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
-				return_dict[key]['duplicate'] = str(is_duplicate)
-			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
-
-		###########
-		# OVERBID #
-		###########
-		elif current_attack == 'overbid':
-			return_dict['same_group'] = '1' if premisegroup_pro else '0'
-			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid')
-			argument_list = []
-			# for every statement in current dictionary
-			for index, pro in enumerate(pro_dict):
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: ' + pro_dict[pro] + ', with same pgroup: ' + str(premisegroup_pro))
-				new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
-				if premisegroup_pro:
-					# Todo handle duplicats in pgroups
-					if new_premisegroup_uid is None:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: new pgroup, but this one will be for all')
-						new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-					else:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: old pgroup')
-						qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
-				else:
-					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: every round, new pgroup')
-					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: new_premisegroup_uid is ' + str(new_premisegroup_uid))
-				# now, every new statement will be inserted, because groups will be added once only
-				if (premisegroup_pro):
-					if (not is_inserted):
-						new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=0, issue=issue)
-						new_argument.conclusions_argument(db_argument_of_current_attack.uid)
-						argument_list.append(new_argument)
-						is_inserted = True
-				else:
-					new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=0, issue=issue)
-					new_argument.conclusions_argument(db_argument_of_current_attack.uid)
-					argument_list.append(new_argument)
-				key = 'pro_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
-				return_dict[key]['duplicate'] = str(is_duplicate)
-			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
-
-		#########
-		# REBUT #
-		#########
-		elif current_attack == 'rebut':
-			return_dict['same_group'] = '1' if premisegroup_pro else '0'
-			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut')
-			# getting premise of users argument
-			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==argument_id,
-			                                                              Argument.issue_uid==issue)).first()
-			db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==db_argument.premisesGroup_uid,
-			                                                             Premise.issue_uid==issue)).all()
-			db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==db_argument.conclusion_uid,
-			                                                                 Statement.issue_uid==issue)).first()
-			argument_list = []
-			# for every statement in current dictionary
-			used_dict = con_dict if exception_rebut else pro_dict
-			supportive = False if exception_rebut else True
-			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: using ' + ('con' if exception_rebut else 'pro') + '_dict because ' + str(exception_rebut))
-
-			for index, pro in enumerate(used_dict):
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: ' + used_dict[pro] + ', with same pgroup: ' + str(premisegroup_pro))
-				# every entry of the dict will be a new statement with a new premisegroup
-				new_statement, is_duplicate = self.set_statement(transaction, used_dict[pro], user, False, issue)
-				if premisegroup_pro:
-					# Todo handle duplicats in pgroups
-					if new_premisegroup_uid is None:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: new pgroup, but this one will be for all')
-						new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-					else:
-						logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: old pgroup')
-						qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
-				else:
-					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: every round, new pgroup')
-					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: new_premisegroup_uid is ' + str(new_premisegroup_uid))
-				# now, every new statement will ...
-				###
-				###
-				#for premise in db_premises:
-				# now, every new statement will be inserted, because groups will be added once only
-				if (premisegroup_pro):
-					if (not is_inserted):
-						new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=supportive, author=db_user.uid, weight=0, conclusion=db_conclusion.uid, issue=issue)
-							# differentiate between the attacks
-						if last_attack == 'undermine':
-							new_argument.conclusion = db_conclusion.uid
-						elif last_attack == 'undercut':
-							new_argument.conclusion = 0
-							new_argument.conclusions_argument(argument_id)
-						elif last_attack == 'rebut':
-							new_argument.conclusion = db_argument.conclusion_uid
-
-						argument_list.append(new_argument)
-						is_inserted = True
-				else:
-					new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=supportive, author=db_user.uid, weight=0, conclusion=db_conclusion.uid, issue=issue)
-					# if last_attack == 'undermine':
-					# elif last_attack == 'undercut':
-					# elif last_attack == 'rebut':
-					argument_list.append(new_argument)
-				###
-				###
-				key = 'pro_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
-				return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
-				return_dict[key]['duplicate'] = str(is_duplicate)
-			return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
-
-		else:
-			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch error')
-			return_dict['status'] = '-1'
-			return return_dict
-
-
-		return return_dict
+	# def handle_inserting_new_statements(self, user, pro_dict, con_dict, transaction, argument_id, premisegroup_id,
+	#                                     current_attack, last_attack, premisegroup_con, premisegroup_pro, exception_rebut, issue):
+	# 	"""
+	# 	Highly complex stuff! Please ask the author!
+	# 	:param user: string
+	# 	:param pro_dict: dict()
+	# 	:param con_dict: dict()
+	# 	:param transaction: transactiom
+	# 	:param argument_id: int
+	# 	:param premisegroup_id: int
+	# 	:param current_attack: string
+	# 	:param last_attack: string
+	# 	:param premisegroup_con: boolean
+	# 	:param premisegroup_pro: boolean
+	# 	:param exception_rebut: boolean
+	# 	:param issue: int
+	# 	:return: dict()
+	# 	"""
+	# 	# Interpretation of the parameters
+	# 	# User says: E => A             | #argument_id
+	# 	# System says:
+	# 	#   undermine:  F => !E         | #premisegroup_id => (part of argument_id)
+	# 	#   undercut:   D => !(E=>A)    | #premisegroup_id => (part of argument_id)
+	# 	#   rebut:      B => !A         | #premisegroup_id => (part of argument_id)
+	# 	# Handle it, based on current and last attack
+	#
+	# 	return_dict = dict()
+	# 	logger('DatabaseHelper', 'handle_inserting_new_statements', 'length of pro dict: ' + str(len(pro_dict)))
+	# 	logger('DatabaseHelper', 'handle_inserting_new_statements', 'length of con dict: ' + str(len(con_dict)))
+	#
+	# 	# id of user
+	# 	db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+	# 	logger('DatabaseHelper', 'handle_inserting_new_statements', 'users nick: ' + user + ', id ' + str(db_user.uid))
+	#
+	# 	logger('DatabaseHelper', 'handle_inserting_new_statements', 'db_premises_of_current_attack premisesGroup_uid=' + str(premisegroup_id))
+	# 	db_premises_of_current_attack = DBDiscussionSession.query(Premise).filter(and_(
+	# 		Premise.premisesGroup_uid==premisegroup_id, Premise.issue_uid==issue)).all()
+	#
+	# 	for premise in db_premises_of_current_attack:
+	# 		logger('DatabaseHelper', 'handle_inserting_new_statements', 'db_premises_of_current_attack premise.statement_uid ' + str(premise.statement_uid))
+	#
+	# 	logger('DatabaseHelper', 'handle_inserting_new_statements', 'db_argument_of_current_attack: '
+	# 	       + ' premisesGroup_uid=' + str(premisegroup_id)
+	# 	       + ', argument_id=' + str(argument_id))
+	# 	db_argument_of_current_attack = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid==premisegroup_id,
+	# 	                                                                                Argument.uid==argument_id,
+	# 	                                                                                Argument.issue_uid==issue)).first()
+	# 	new_premisegroup_uid = None
+	# 	is_inserted = False
+	# 	qh = QueryHelper()
+	#
+	# 	#############
+	# 	# UNDERMINE #
+	# 	#############
+	# 	if current_attack == 'undermine':
+	# 		return_dict['same_group'] = '1' if premisegroup_con else '0'
+	# 		logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine')
+	# 		argument_list = []
+	# 		# for every statement in current dictionary
+	# 		for index, con in enumerate(con_dict):
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: ' + con_dict[con] + ', with same pgroup: ' + str(premisegroup_con))
+	# 			# every entry of the dict will be a new statement with a new premisegroup
+	# 			new_statement, is_duplicate = self.set_statement(transaction, con_dict[con], user, False, issue)
+	# 			if premisegroup_con:
+	# 				# Todo handle duplicats in pgroups
+	# 				if new_premisegroup_uid is None:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: new pgroup, but this one will be for all')
+	# 					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 				else:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: old pgroup')
+	# 					qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
+	# 			else:
+	# 				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: every round, new pgroup')
+	# 				new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undermine: new_premisegroup_uid is ' + str(new_premisegroup_uid))
+	# 			# now, every new statement will attack the attack of the system, which is as confrontation_uid
+	# 			for premise in db_premises_of_current_attack:
+	# 				# now, every new statement will be inserted, because groups will be added once only
+	# 				if (premisegroup_con):
+	# 					if (not is_inserted):
+	# 						new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
+	# 						argument_list.append(new_argument)
+	# 						is_inserted = True
+	# 				else:
+	# 					new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
+	# 					argument_list.append(new_argument)
+	# 			key = 'con_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
+	# 			return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+	# 			return_dict[key]['duplicate'] = str(is_duplicate)
+	# 		return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
+	#
+	# 	###########
+	# 	# SUPPORT #
+	# 	###########
+	# 	elif current_attack == 'support':
+	# 		return_dict['same_group'] = '1' if premisegroup_pro else '0'
+	# 		logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support')
+	# 		argument_list = []
+	# 		# for every statement in current dictionary
+	# 		for index, pro in enumerate(pro_dict):
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: ' + pro_dict[pro] + ', with same pgroup: ' + str(premisegroup_pro))
+	# 			# every entry of the dict will be a new statement with a new premisegroup
+	# 			new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
+	# 			# new pgroup only if they should be new
+	# 			if premisegroup_pro:
+	# 				# Todo handle duplicats in pgroups
+	# 				if new_premisegroup_uid is None:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: new pgroup, but this one will be for all')
+	# 					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 				else:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: old pgroup')
+	# 					qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
+	# 			else:
+	# 				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: every round, new pgroup')
+	# 				new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch support: new_premisegroup_uid is ' + str(new_premisegroup_uid))
+	# 			# now, every new statement will attack the attack of the system, which is as confrontation_uid
+	# 			for premise in db_premises_of_current_attack:
+	# 				# now, every new statement will be inserted, because groups will be added once only
+	# 				if (premisegroup_pro):
+	# 					if (not is_inserted):
+	# 						new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
+	# 						argument_list.append(new_argument)
+	# 						is_inserted = True
+	# 				else:
+	# 					new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=premise.statement_uid, issue=issue)
+	# 					argument_list.append(new_argument)
+	# 			key = 'pro_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
+	# 			return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+	# 			return_dict[key]['duplicate'] = str(is_duplicate)
+	# 		return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
+	#
+	# 	############
+	# 	# UNDERCUT #
+	# 	############
+	# 	elif current_attack == 'undercut':
+	# 		return_dict['same_group'] = '1' if premisegroup_con else '0'
+	# 		logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut')
+	# 		argument_list = []
+	# 		# for every statement in current dictionary
+	# 		for index, con in enumerate(con_dict):
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: ' + con_dict[con] + ', with same pgroup: ' + str(premisegroup_con))
+	# 			new_statement, is_duplicate = self.set_statement(transaction, con_dict[con], user, False, issue)
+	# 			if premisegroup_con:
+	# 				# Todo handle duplicats in pgroups
+	# 				if new_premisegroup_uid is None:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: new pgroup, but this one will be for all')
+	# 					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 				else:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: old pgroup')
+	# 					qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
+	# 			else:
+	# 				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: every round, new pgroup')
+	# 				new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch undercut: new_premisegroup_uid is ' + str(new_premisegroup_uid))
+	# 			# now, every new statement will be inserted, because groups will be added once only
+	# 			if (premisegroup_con):
+	# 				if (not is_inserted):
+	# 					new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=0, issue=issue)
+	# 					new_argument.conclusions_argument(db_argument_of_current_attack.uid)
+	# 					argument_list.append(new_argument)
+	# 					is_inserted = True
+	# 			else:
+	# 				new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=False, author=db_user.uid, weight=0, conclusion=0, issue=issue)
+	# 				new_argument.conclusions_argument(db_argument_of_current_attack.uid)
+	# 				argument_list.append(new_argument)
+	# 			key = 'con_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
+	# 			return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+	# 			return_dict[key]['duplicate'] = str(is_duplicate)
+	# 		return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
+	#
+	# 	###########
+	# 	# OVERBID #
+	# 	###########
+	# 	elif current_attack == 'overbid':
+	# 		return_dict['same_group'] = '1' if premisegroup_pro else '0'
+	# 		logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid')
+	# 		argument_list = []
+	# 		# for every statement in current dictionary
+	# 		for index, pro in enumerate(pro_dict):
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: ' + pro_dict[pro] + ', with same pgroup: ' + str(premisegroup_pro))
+	# 			new_statement, is_duplicate = self.set_statement(transaction, pro_dict[pro], user, False, issue)
+	# 			if premisegroup_pro:
+	# 				# Todo handle duplicats in pgroups
+	# 				if new_premisegroup_uid is None:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: new pgroup, but this one will be for all')
+	# 					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 				else:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: old pgroup')
+	# 					qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
+	# 			else:
+	# 				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: every round, new pgroup')
+	# 				new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch overbid: new_premisegroup_uid is ' + str(new_premisegroup_uid))
+	# 			# now, every new statement will be inserted, because groups will be added once only
+	# 			if (premisegroup_pro):
+	# 				if (not is_inserted):
+	# 					new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=0, issue=issue)
+	# 					new_argument.conclusions_argument(db_argument_of_current_attack.uid)
+	# 					argument_list.append(new_argument)
+	# 					is_inserted = True
+	# 			else:
+	# 				new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=True, author=db_user.uid, weight=0, conclusion=0, issue=issue)
+	# 				new_argument.conclusions_argument(db_argument_of_current_attack.uid)
+	# 				argument_list.append(new_argument)
+	# 			key = 'pro_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
+	# 			return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+	# 			return_dict[key]['duplicate'] = str(is_duplicate)
+	# 		return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
+	#
+	# 	#########
+	# 	# REBUT #
+	# 	#########
+	# 	elif current_attack == 'rebut':
+	# 		return_dict['same_group'] = '1' if premisegroup_pro else '0'
+	# 		logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut')
+	# 		# getting premise of users argument
+	# 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid==argument_id,
+	# 		                                                              Argument.issue_uid==issue)).first()
+	# 		db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.premisesGroup_uid==db_argument.premisesGroup_uid,
+	# 		                                                             Premise.issue_uid==issue)).all()
+	# 		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==db_argument.conclusion_uid,
+	# 		                                                                 Statement.issue_uid==issue)).first()
+	# 		argument_list = []
+	# 		# for every statement in current dictionary
+	# 		used_dict = con_dict if exception_rebut else pro_dict
+	# 		supportive = False if exception_rebut else True
+	# 		logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: using ' + ('con' if exception_rebut else 'pro') + '_dict because ' + str(exception_rebut))
+	#
+	# 		for index, pro in enumerate(used_dict):
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: ' + used_dict[pro] + ', with same pgroup: ' + str(premisegroup_pro))
+	# 			# every entry of the dict will be a new statement with a new premisegroup
+	# 			new_statement, is_duplicate = self.set_statement(transaction, used_dict[pro], user, False, issue)
+	# 			if premisegroup_pro:
+	# 				# Todo handle duplicats in pgroups
+	# 				if new_premisegroup_uid is None:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: new pgroup, but this one will be for all')
+	# 					new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 				else:
+	# 					logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: old pgroup')
+	# 					qh.set_statement_as_premise(new_statement, user, new_premisegroup_uid, issue)
+	# 			else:
+	# 				logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: every round, new pgroup')
+	# 				new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
+	# 			logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch rebut: new_premisegroup_uid is ' + str(new_premisegroup_uid))
+	# 			# now, every new statement will ...
+	# 			###
+	# 			###
+	# 			#for premise in db_premises:
+	# 			# now, every new statement will be inserted, because groups will be added once only
+	# 			if (premisegroup_pro):
+	# 				if (not is_inserted):
+	# 					new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=supportive, author=db_user.uid, weight=0, conclusion=db_conclusion.uid, issue=issue)
+	# 						# differentiate between the attacks
+	# 					if last_attack == 'undermine':
+	# 						new_argument.conclusion = db_conclusion.uid
+	# 					elif last_attack == 'undercut':
+	# 						new_argument.conclusion = 0
+	# 						new_argument.conclusions_argument(argument_id)
+	# 					elif last_attack == 'rebut':
+	# 						new_argument.conclusion = db_argument.conclusion_uid
+	#
+	# 					argument_list.append(new_argument)
+	# 					is_inserted = True
+	# 			else:
+	# 				new_argument = Argument(premisegroup=new_premisegroup_uid, issupportive=supportive, author=db_user.uid, weight=0, conclusion=db_conclusion.uid, issue=issue)
+	# 				# if last_attack == 'undermine':
+	# 				# elif last_attack == 'undercut':
+	# 				# elif last_attack == 'rebut':
+	# 				argument_list.append(new_argument)
+	# 			###
+	# 			###
+	# 			key = 'pro_' + current_attack + '_premisegroup_' + str(new_premisegroup_uid) + '_index_' + str(index)
+	# 			return_dict[key] = DictionaryHelper().save_statement_row_in_dictionary(new_statement)
+	# 			return_dict[key]['duplicate'] = str(is_duplicate)
+	# 		return_dict['duplicates'] = qh.add_arguments(transaction, argument_list)
+	#
+	# 	else:
+	# 		logger('DatabaseHelper', 'handle_inserting_new_statements', 'branch error')
+	# 		return_dict['status'] = '-1'
+	# 		return return_dict
+	#
+	# 	return return_dict
 
 	def get_dump(self, issue):
 		"""

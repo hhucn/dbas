@@ -75,7 +75,7 @@ class WeightingHelper(object):
 
 		# remove votes
 		DBDiscussionSession.query(Vote).filter(and_(Vote.weight_uid==db_argument.weight_uid,
-		                                            Vote.author_uid==db_user.uid)).delete()
+		                                            Vote.author_uid==db_user.uid)).set_valid(True)
 		# remove votes of the components
 		#self.__decrease_weight_of_statements_in_premissegroup(db_argument.premisesGroup_uid, user)
 		#if db_argument.conclusion_uid != 0:
@@ -164,7 +164,7 @@ class WeightingHelper(object):
 			DBDiscussionSession.flush()
 			# get new weight and create vote with weight uid and user uid; add the vote
 			db_weight = DBDiscussionSession.query(Weight).order_by(Weight.uid.desc()).first()
-			vote = Vote(weight_uid=db_weight.uid, author_uid=db_user.uid)
+			vote = Vote(weight_uid=db_weight.uid, author_uid=db_user.uid, isValid=True)
 			DBDiscussionSession.add(vote)
 			DBDiscussionSession.flush()
 			# set the weight as arguments weight
@@ -173,13 +173,15 @@ class WeightingHelper(object):
 			# get weight and vote
 			db_weight = DBDiscussionSession.query(Weight).filter_by(uid=db_argument.weight_uid).first()
 			db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.weight_uid==db_weight.uid,
-			                                                      Vote.author_uid==db_user.uid)).all()
+			                                                      Vote.author_uid==db_user.uid)).first()
 			# add a vote, if there is no vote
 			if not db_vote:
 				vote = Vote(weight_uid=db_weight.uid, author_uid=db_user.uid)
 				DBDiscussionSession.add(vote)
 				DBDiscussionSession.flush()
 			else:
+				db_vote.set_valid(True)
+				db_vote.update_timestamp()
 				already_voted = True
 
 		return db_weight, already_voted

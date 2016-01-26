@@ -239,7 +239,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		_qh = QueryHelper()
-		slug            = matchdict['slug'] if 'slug' in matchdict['slug'] else ''
+		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
@@ -247,6 +247,9 @@ class Dbas(object):
 		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
 
 		discussion_dict = _qh.prepare_discussion_dict(statement_id, lang, at_attitude=True)
+		if not discussion_dict:
+			return HTTPFound(location=UrlManager().get_404([slug, statement_id]))
+
 		item_dict       = _qh.prepare_item_dict_for_attitude(statement_id, issue, lang)
 		extras_dict     = _qh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, lang, self.request.authenticated_userid)
 
@@ -293,6 +296,9 @@ class Dbas(object):
 			# justifying position
 			logger('discussion_justify', 'def', 'justifying position')
 			discussion_dict = _qh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify=True, is_supportive=supportive)
+			if not discussion_dict:
+				return HTTPFound(location=UrlManager().get_404([slug, statement_id]))
+
 			item_dict       = _qh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, lang)
 			extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, mode=='t')
 
@@ -305,8 +311,8 @@ class Dbas(object):
 		elif 'd' in mode and relation == '':
 			# dont know
 			logger('discussion_justify', 'def', 'dont know position')
-			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive) # todo empty uid
-			discussion_dict = _qh.prepare_discussion_dict(argument_uid, lang, at_dont_know=True, is_supportive=supportive)
+			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
+			discussion_dict = _qh.prepare_discussion_dict(argument_uid, lang, at_dont_know=True, is_supportive=supportive, additional_id=statement_or_arg_id)
 			item_dict       = _qh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, lang)
 			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=argument_uid)
 
@@ -315,7 +321,7 @@ class Dbas(object):
 				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_dont_know=True)
 
 
-		else:
+		elif [c for c in ('undermine','rebut','undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
 			logger('discussion_justify', 'def', 'argument stuff')
 			is_attack = True if [c for c in ('undermine','rebut','undercut') if c in relation] else False
@@ -328,10 +334,8 @@ class Dbas(object):
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
-
-		# TODO PRO PREMISEGROUP EIN LABEL UND DARÜBER ITERIEREN
-		# TODO PRO PREMISEGROUP EIN LABEL UND DARÜBER ITERIEREN
-		# TODO PRO PREMISEGROUP EIN LABEL UND DARÜBER ITERIEREN
+		else:
+			return HTTPFound(location=UrlManager().get_404([slug ,'j', statement_or_arg_id, mode, relation]))
 
 		return {
 			'layout': self.base_layout(),
@@ -564,7 +568,7 @@ class Dbas(object):
 			'language': str(lang),
 			'title': 'Error',
 			'project': header,
-			'page_notfound_viewname': self.request.view_name,
+			'page_notfound_viewname': self.request.path[4:],
 			'extras': {'logged_in': self.request.authenticated_userid}
 		}
 
@@ -974,9 +978,12 @@ class Dbas(object):
 			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
 			new_statement, is_duplicate = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
-			url = UrlManager(slug).get_url_for_statement_attitude(False, new_statement.uid)
-			return_dict['url'] = url
-			logger('set_new_start_statement', 'def', 'return url ' + url)
+			if new_statement == -1:
+				return_dict['status'] = 0
+			else:
+				url = UrlManager(slug).get_url_for_statement_attitude(False, new_statement.uid)
+				return_dict['url'] = url
+				logger('set_new_start_statement', 'def', 'return url ' + url)
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -1011,14 +1018,15 @@ class Dbas(object):
 			       str(support) + ', issue: ' + str(issue))
 
 			new_argument_uid, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
+			if new_statement == -1:
+				return_dict['status'] = 0
+			else:
+				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
-			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
-
-			url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-			return_dict['url'] = url
-
-			return_dict['status'] = '1'
+				url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+				return_dict['url'] = url
+				return_dict['status'] = '1'
 		except KeyError as e:
 			logger('set_new_start_premise', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -1063,14 +1071,16 @@ class Dbas(object):
 			                                                                           issue,
 			                                                                           self.request.authenticated_userid,
 			                                                                           transaction)
-			logger('ajax_set_new_premises_for_argument', 'def', 'new_argument_uid ' + str(new_argument_uid))
+			if new_statement == -1:
+				return_dict['status'] = 0
+			else:
+				logger('ajax_set_new_premises_for_argument', 'def', 'new_argument_uid ' + str(new_argument_uid))
 
-			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
-			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
-			url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-			return_dict['url'] = url
-
-			return_dict['status'] = '0'
+				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+				url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+				return_dict['url'] = url
+				return_dict['status'] = '1'
 		except KeyError as e:
 			logger('ajax_set_new_premises_for_argument', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -1453,18 +1463,20 @@ class Dbas(object):
 				else issue_fallback
 
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
+			return_dict = dict()
+			# return_dict['distance_name'] = 'SequenceMatcher' # TODO IMPROVE
+			return_dict['distance_name'] = 'Levensthein'
 			if mode == '0': # start statement
-				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
+				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
 			elif mode == '1': # edit statement popup
 				statement_uid = self.request.params['extra']
-				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid, issue)
+				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid, issue)
 			elif mode == '2':  # start premise
-				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
+				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
 			elif mode == '3':  # adding reasons
-				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_reasons(value, issue)
+				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_reasons(value, issue)
 			else:
 				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
-				return_dict = dict()
 		except KeyError as e:
 			return_dict = dict()
 			logger('fuzzy_search', 'error', repr(e))

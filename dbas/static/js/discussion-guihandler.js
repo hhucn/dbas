@@ -587,7 +587,7 @@ function GuiHandler() {
 		var params, token, button, span_dist, span_text, distance, index;
 		callback.focus();
 
-		$.each(parsedData, function (key, val) {
+		$.each(parsedData.values, function (key, val) {
 			params = key.split('_');
 			distance = parseInt(params[0]);
 			index = params[1];
@@ -599,21 +599,13 @@ function GuiHandler() {
 			uneditted_value = val;
 			val = '<b>' + val.replace(token, '</b>' + token + '<b>').replace(token.toLocaleLowerCase(), '</b>' + token.toLocaleLowerCase() + '<b>') + '</b>';
 
-			//while (token.length>0 && newpos != -1){//val.length) {
-			//	val = val.substr(0, pos) + '<b>' + val.substr(pos, token.length) + '</b>' + val.substr(pos + token.length);
-			//	start = pos + token.length + 7;
-			//	newpos = val.toLocaleLowerCase().substr(start).indexOf(token.toLocaleLowerCase());
-			//	pos = start + (newpos > -1 ? val.toLocaleLowerCase().substr(start).indexOf(token.toLocaleLowerCase()) : 0);
-			//	// val = val.replace(token, '<b>' + token + '</b>');
-			//}
-
 			button = $('<button>').attr({type : 'button',
 				class : 'list-group-item',
 				id : 'proposal_' + index,
 				text: uneditted_value})
 				.hover(function(){$(this).addClass('active');},
 					   function(){ $(this).removeClass('active');});
-			span_dist = $('<span>').attr({class : 'badge'}).text(_t(levenshteinDistance) + ' ' + distance);
+			span_dist = $('<span>').attr({class : 'badge'}).text(parsedData.distance_name + ' ' + distance);
 			span_text = $('<span>').attr({id : 'proposal_' + index + '_text'}).html(val);
 			button.append(span_dist).append(span_text).click(function(){
 				callback.val($(this).attr('text'));

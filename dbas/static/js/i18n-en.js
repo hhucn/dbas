@@ -208,6 +208,7 @@ var dbas_en = {
 	'notInsertedErrorBecauseDuplicate': 'Your idea was not inserted, because your idea is a duplicate.',
 	'notInsertedErrorBecauseUnknown': 'Your idea was not inserted due to an unkown error.',
 	'notInsertedErrorBecauseInternal': 'Your idea was not inserted due to an internal error.',
+	'notInsertedErrorBecauseTooShort': 'Your idea was not inserted due to the shortness.',
 	'noEntries': 'No entries',
 	'noTrackedData': 'No data was tracked.',
 	'number': 'No',

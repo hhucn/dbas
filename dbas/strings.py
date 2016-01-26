@@ -510,7 +510,7 @@ class Translator(object):
 		en_lang[self.displayControlDialogIslandBody] =  'Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.'
 		en_lang[self.displayControlDialogExpertTitle] =  'Expert View'   
 		en_lang[self.displayControlDialogExpertBody] =  'So, you think you are an expert? Okay, you can have a view of the complete argumentation map'
-		en_lang[self.discussionEndText] =  'You can click <a id="discussionEndStepBack" href="#">here</a> to go one step back or you can use the button above or <a id="discussionEndRestart" href="">this link</a> to restart the discussion.'
+		en_lang[self.discussionEndText] =  'You can click <a id="discussionEndStepBack" onclick="window.history.back();" style="cursor: pointer;">here</a> to go one step back or you can use the button above or <a id="discussionEndRestart" href="#">this link</a> to restart the discussion.'
 		en_lang[self.discussionEndFeelFreeToLogin] =  'The discussion ends here. If you want to proceed, please feel free to login yourself :)'
 		en_lang[self.duplicateDialog] =  'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version as the current one once again?'
 		en_lang[self.doesNotHold] =  'does not hold'

@@ -479,7 +479,11 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendNewStartStatement = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
-			alert('success -1 in callbackIfDoneForSendNewStartStatement');
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
+		} else if (parsedData.status == '0') {
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseTooShort));
 		} else {
 			 $('#' + discussionSpaceId + 'input:last-child').attr('checked', false).prop('checked', false);
 			window.location.href = parsedData.url;
@@ -490,11 +494,14 @@ function InteractionHandler() {
 	 * Callback, when new statements were send
 	 * @param data returned data
 	 */
-	this.callbackIfDoneForSendNewPremisesX = function (data) {
+	this.callbackIfDoneForSendNewPremisesArgument = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.status == '-1') {
 			$('#' + addStatementErrorContainer).show();
 			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
+		} else if (parsedData.status == '0') {
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseTooShort));
 		} else {
 			window.location.href = parsedData.url;
 		}
@@ -508,7 +515,11 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendNewStartPremise = function (data, isSupportive) {
 		var parsedData = $.parseJSON(data);
 		 if (parsedData.status == '0') {
-			 new InteractionHandler().premiseButtonWasClicked(parsedData.premisegroup_uid, $('#' + discussionsDescriptionId).attr('conclusion_id'), isSupportive)
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
+		 } else if (parsedData.status == '0') {
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseTooShort));
 		 } else {
 			window.location.href = parsedData.url;
 		 }
