@@ -266,10 +266,6 @@ function HistoryHandler(){
 		thead.append(trElement);
 		tableElement.append(thead);
 
-		$.each($.parseJSON(jsonData), function setDataInHistoryTableEach(index, breadcrumb) {
-			alert(index + " " + breadcrumb.text + " " + breadcrumb.url);
-		});
-
 		// adding the historys
 		var has_data = false;
 		parsedData = $.parseJSON(jsonData);
