@@ -268,6 +268,16 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 		$(this).attr('checked', false).prop('checked', false);
 	});
 
+	// default function
+	$('#' + sendNewPremiseId).click(function(){
+		splits = window.location.href.split('/');
+		text = $('#' + addPremiseContainerMainInputId).val();
+		arg = splits[splits.length - 3];
+		supportive = splits[splits.length - 2] == 't';
+		relation = splits[splits.length - 1];
+		ajaxHandler.sendNewPremiseForArgument(arg, relation, supportive, text)
+	});
+
 	input.change(function () {
 		if (input.prop('checked')){
 			// new position at start

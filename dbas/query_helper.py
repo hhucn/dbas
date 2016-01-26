@@ -695,17 +695,22 @@ class QueryHelper(object):
 			logger('QueryHelper', 'prepare_discussion_dict', 'at_argumentation')
 			_tg                 = TextGenerator(lang)
 			db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-			premise, tmp        = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
-			conclusion          = self.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
-				else self.get_text_for_argument_uid(db_argument.argument_uid)
-			confrontation       = self.get_text_for_argument_uid(additional_id, lang)
-			logger('QueryHelper', 'prepare_discussion_dict', 'additional_id ' + str(additional_id))
-			logger('QueryHelper', 'prepare_discussion_dict', 'confrontation ' + str(confrontation))
-			logger('QueryHelper', 'prepare_discussion_dict', 'attack ' + str(attack))
+			if attack == 'end':
+				heading             = _tn.get(_tn.sentencesOpenersForArguments[0])\
+				                      + ': <strong>' + self.get_text_for_argument_uid(uid, lang) + '</strong>.'\
+				                      + '<br><br>' + _tn.get(_tn.otherParticipantsDontHaveCounterForThat)\
+				                      + '.<br><br>' + _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndText)
+			else:
+				premise, tmp        = self.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
+				conclusion          = self.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
+					else self.get_text_for_argument_uid(db_argument.argument_uid)
+				confrontation       = self.get_text_for_argument_uid(additional_id, lang)
+				logger('QueryHelper', 'prepare_discussion_dict', 'additional_id ' + str(additional_id) + ', confrontation '
+				       + str(confrontation) + ', attack ' + str(attack))
 
-			reply_for_argument  = True
-			current_argument    = self.get_text_for_argument_uid(uid, lang)
-			heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
+				reply_for_argument  = True
+				current_argument    = self.get_text_for_argument_uid(uid, lang)
+				heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
 			                                                     confrontation, reply_for_argument, current_argument)
 
 		return {'heading': heading, 'add_premise_text': add_premise_text}

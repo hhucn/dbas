@@ -104,6 +104,7 @@ class Translator(object):
 		self.breadcrumbsReplyForResponseOfConfrontation = 'breadcrumbsReplyForResponseOfConfrontation'
 		self.breadcrumbsReplyForArgument = 'breadcrumbsReplyForArgument'
 		self.butOtherParticipantsDontHaveArgument = 'butOtherParticipantsDontHaveArgument'
+		self.butOtherParticipantsDontHaveCounterArgument = 'butOtherParticipantsDontHaveCounterArgument'
 		self.butIDoNotBelieveCounter = 'butIDoNotBelieveCounter'
 		self.butIDoNotBelieveArgument = 'butIDoNotBelieveArgument'
 		self.butTheyDoNotBelieveCounter = 'butTheyDoNotBelieveCounter'
@@ -274,6 +275,7 @@ class Translator(object):
 		self.no_entry = 'no_entry'
 		self.otherParticipantsThinkThat = 'otherParticipantsThinkThat'
 		self.otherParticipantsDontHaveCounter = 'otherParticipantsDontHaveCounter'
+		self.otherParticipantsDontHaveCounterForThat = 'otherParticipantsDontHaveCounterForThat'
 		self.otherParticipantsDontHaveOpinion = 'otherParticipantsDontHaveOpinion'
 		self.otherParticipantsDontHaveArgument = 'otherParticipantsDontHaveArgument'
 		self.otherParticipantsAcceptBut = 'otherParticipantsAcceptBut'
@@ -465,6 +467,7 @@ class Translator(object):
 		en_lang[self.butTheyDoNotBelieveCounter] =  'but they do not believe that this is a good counter-argument for'
 		en_lang[self.butTheyDoNotBelieveArgument] =  'but they do not believe that this is a good argument for'
 		en_lang[self.butOtherParticipantsDontHaveArgument] =  'but other partcipants do not have any argument for that.'
+		en_lang[self.butOtherParticipantsDontHaveCounterArgument] =  'but other partcipants do not have any counter argument for that.'
 		en_lang[self.because] =  'Because'
 		en_lang[self.butWhich] =  'but which one'
 		en_lang[self.canYouGiveAReason] =  'Can you give a reason?'
@@ -631,6 +634,7 @@ class Translator(object):
 		en_lang[self.no_entry] = 'No entry'
 		en_lang[self.otherParticipantsThinkThat] =  'Other partcipants think that'
 		en_lang[self.otherParticipantsDontHaveOpinion] =  'Other partcipants do not have any opinion regarding your selection.'
+		en_lang[self.otherParticipantsDontHaveCounterForThat] =  'Other partcipants do not have any counter-argument for for that'
 		en_lang[self.otherParticipantsDontHaveCounter] =  'Other partcipants do not have any counter-argument for '
 		en_lang[self.otherParticipantsDontHaveArgument] =  'Other partcipants do not have any argument for '
 		en_lang[self.otherParticipantsAcceptBut] =  'Other partcipants accept your argument, but'
@@ -812,7 +816,8 @@ class Translator(object):
 		de_lang[self.breadcrumbsReplyForPremisegroup] = 'Antwort für Gruppe',
 		de_lang[self.breadcrumbsReplyForResponseOfConfrontation] = 'Antwort für die Konfrontation',
 		de_lang[self.breadcrumbsReplyForArgument] = 'Antwort fürs Argument',
-		de_lang[self.butOtherParticipantsDontHaveArgument] = 'aber andere Teilnehmer haben keine begründung für dafür',
+		de_lang[self.butOtherParticipantsDontHaveArgument] = 'aber andere Teilnehmer haben keine Begründung für dafür',
+		de_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'aber andere Teilnehmer haben kein Gegenargument.',
 		de_lang[self.butIDoNotBelieveCounter] = 'aber ich glaube, dass ist kein gutes Gegenargument für',
 		de_lang[self.butIDoNotBelieveArgument] = 'aber ich glaube, dass ist kein gutes Argument für',
 		de_lang[self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass ist kein gutes Gegenargument für',
@@ -984,6 +989,7 @@ class Translator(object):
 		de_lang[self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass',
 		de_lang[self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
 		de_lang[self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für ',
+		de_lang[self.otherParticipantsDontHaveCounterForThat] = 'Andere Teilnehmer haben kein Gegenargument dafür.',
 		de_lang[self.otherParticipantsDontHaveArgument] = 'Andere Teilnehmer haben kein Argument für ',
 		de_lang[self.otherParticipantsAcceptBut] = 'Andere Teilnehmer akzeptieren Ihr Argument, aber',
 		de_lang[self.otherParticipantAgree] = 'Andere Teilnehmer stimmen zu, dass ',

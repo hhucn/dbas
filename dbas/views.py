@@ -1071,12 +1071,14 @@ class Dbas(object):
 			                                                                           issue,
 			                                                                           self.request.authenticated_userid,
 			                                                                           transaction)
-			if new_statement == -1:
+			if new_argument_uid == -1:
 				return_dict['status'] = 0
 			else:
 				logger('ajax_set_new_premises_for_argument', 'def', 'new_argument_uid ' + str(new_argument_uid))
 
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+				if arg_id_sys == 0:
+					attack = 'end'
 				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 				url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 				return_dict['url'] = url
