@@ -276,7 +276,7 @@
 			<div id="graph-view-container-space"></div>
 		</div>
 
-		<div class="container colored_container" id="add-statement-container" style="display:none">
+		<div class="container colored_container" id="add-statement-container" style="display:none" tal:attributes="style extras.add_statement_container_style">
 			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -301,7 +301,7 @@
 			<div class="col-md-1"></div>
 		</div>
 
-		<div class="container colored_container" id="add-premise-container" style="display:none">
+		<div class="container colored_container" id="add-premise-container" style="display:none" tal:attributes="style extras.add_premise_container_style">
 			<button id="close-premise-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -309,8 +309,8 @@
 			<div class="col-md-10">
 				<form id="insert-premise-form" action="/not_implemented" method="post" class="text-center">
 					<h4>
-						<span i18n:translate="want_to_state_own_reason">
-							You want to state your own reason?
+						<span i18n:translate="let_me_enter_my_reason">
+							Let me enter my reason!
 						</span>
 					</h4>
 					<div id="add-premisen-error-container" class="alert alert-danger" role="alert" style="display:none">

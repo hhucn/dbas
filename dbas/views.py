@@ -305,7 +305,7 @@ class Dbas(object):
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				# TODO HANDLE DISCUSSION END ; NO PREMISE
-				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify=True)
+				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_justify=True)
 
 
 		elif 'd' in mode and relation == '':
@@ -318,7 +318,7 @@ class Dbas(object):
 
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_dont_know=True)
+				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_dont_know=True)
 
 
 		elif [c for c in ('undermine','rebut','undercut', 'support', 'overbid') if c in relation]:
@@ -333,7 +333,7 @@ class Dbas(object):
 
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
+				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
 		else:
 			return HTTPFound(location=UrlManager().get_404([slug ,'j', statement_or_arg_id, mode, relation]))
 

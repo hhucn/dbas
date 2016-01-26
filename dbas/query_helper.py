@@ -930,7 +930,7 @@ class QueryHelper(object):
 
 		return statements_array
 
-	def add_discussion_end_text(self, discussion_dict, logged_in, lang, at_dont_know=False, at_justify_argumentation=False, at_justify=False):
+	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_dont_know=False, at_justify_argumentation=False, at_justify=False):
 		"""
 
 		:param discussion_dict:
@@ -941,7 +941,8 @@ class QueryHelper(object):
 		_t = Translator(lang)
 		discussion_dict['heading'] += '<br><br>'
 		if at_justify_argumentation:
-			discussion_dict['heading'] += 'SHOW ADD PREMISE CONTAINER!!!'
+			extras_dict['add_premise_container_style'] = '' # this will remove the 'display: none;'-style
+			extras_dict['show_display_style'] = False
 		elif at_dont_know:
 			discussion_dict['heading'] += _t.get(_t.otherParticipantsDontHaveOpinion) + '<br><br>' + (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText))
 		elif at_justify:
@@ -964,20 +965,22 @@ class QueryHelper(object):
 		_uh = UserHandler()
 		_tn = Translator(lang)
 		return_dict = dict()
-		return_dict['restart_url']            =  UrlManager(current_slug).get_slug_url(True)
-		return_dict['is_editable']            =  is_editable and _uh.is_user_logged_in(authenticated_userid)
-		return_dict['is_reportable']          =  is_reportable
-		return_dict['is_admin']               =  _uh.is_user_admin(authenticated_userid)
-		return_dict['logged_in']              =  authenticated_userid
-		return_dict['show_bar_icon']          =  show_bar_icon
-		return_dict['show_display_style']     =  show_display_styles
-		return_dict['add_premise_supportive'] =  add_premise_supportive
-		return_dict['title']                  = {'barometer': _tn.get(_tn.opinionBarometer),
-												 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
-												 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
-												 'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
-		                                         'edit_statement': _tn.get(_tn.editTitle),
-		                                         'report_statement': _tn.get(_tn.reportTitle)}
+		return_dict['restart_url']                   =  UrlManager(current_slug).get_slug_url(True)
+		return_dict['is_editable']                   =  is_editable and _uh.is_user_logged_in(authenticated_userid)
+		return_dict['is_reportable']                 =  is_reportable
+		return_dict['is_admin']                      =  _uh.is_user_admin(authenticated_userid)
+		return_dict['logged_in']                     =  authenticated_userid
+		return_dict['show_bar_icon']                 =  show_bar_icon
+		return_dict['show_display_style']            =  show_display_styles
+		return_dict['add_premise_supportive']        =  add_premise_supportive
+		return_dict['add_premise_container_style']   = 'display: none'
+		return_dict['add_statement_container_style'] = 'display: none'
+		return_dict['title']                         = {'barometer': _tn.get(_tn.opinionBarometer),
+													 	 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
+													 	 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
+													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
+		                                                 'edit_statement': _tn.get(_tn.editTitle),
+		                                                 'report_statement': _tn.get(_tn.reportTitle)}
 
 
 		# add everything for the island view
