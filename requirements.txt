@@ -5,7 +5,6 @@ Chameleon==2.24
 chardet==2.3.0
 colorama==0.3.6
 cryptacular==1.4.1
--e git+gitolite:project/dbas@e060ed25ef93c8115a28078ad5a57d4ebb05ba0f#egg=dbas
 docutils==0.12
 html5lib==0.9999999
 lingua==4.7
@@ -26,7 +25,7 @@ pyramid-mailer==0.14.1
 pyramid-mako==1.0.2
 pyramid-redis-sessions==1.0.1
 pyramid-tm==0.12.1
-pyshorteners==0.5.3
+pyshorteners==0.5.8
 python-Levenshtein==0.12.0
 python-slugify==1.2.0
 pytz==2015.7
