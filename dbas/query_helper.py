@@ -508,7 +508,7 @@ class QueryHelper(object):
 
 		return {'slug': slug, 'info': info, 'title': title, 'id': id, 'arg_count': arg_count, 'date': date, 'all': all_array}
 
-	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_dont_know=False, at_justify_argumentation=False, at_justify=False):
+	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False, at_justify_argumentation=False, at_justify=False):
 		"""
 
 		:param discussion_dict:
@@ -518,13 +518,25 @@ class QueryHelper(object):
 		"""
 		_t = Translator(lang)
 		discussion_dict['heading'] += '<br><br>'
-		if at_justify_argumentation:
+
+		if at_start:
+			discussion_dict['heading'] = _t.get(_t.firstPositionText)
+			extras_dict['add_statement_container_style'] = '' # this will remove the 'display: none;'-style
+			extras_dict['show_display_style'] = False
+			extras_dict['show_bar_icon'] = False
+			extras_dict['is_editable'] = False
+			extras_dict['is_reportable'] = False
+
+		elif at_justify_argumentation:
 			extras_dict['add_premise_container_style'] = '' # this will remove the 'display: none;'-style
 			extras_dict['show_display_style'] = False
+
 		elif at_dont_know:
 			discussion_dict['heading'] += _t.get(_t.otherParticipantsDontHaveOpinion) + '<br><br>' + (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText))
+
 		elif at_justify:
 			discussion_dict['heading'] += '?????'
+
 		else:
 			discussion_dict['heading'] += (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText)) if logged_in else _t.get(_t.discussionEndFeelFreeToLogin)
 

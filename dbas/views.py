@@ -212,6 +212,9 @@ class Dbas(object):
 		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang)
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, breadcrumbs=breadcrumbs)
 
+		if len(item_dict) == 0:
+			_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_start=True)
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),

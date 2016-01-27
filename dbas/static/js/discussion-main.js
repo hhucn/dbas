@@ -212,9 +212,7 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
  * @param guiHandler
  */
 setStyleOptions = function (guiHandler){
-	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
-	$('#' + islandViewContainerId).hide(); // hidding the islandView
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
@@ -337,6 +335,7 @@ $(function () {
 	$.each($('.panel-heading h5'), function () {
 		replaceHtmlTags($(this));
 	});
+	replaceHtmlTags($('#' + issueInfoId));
 
 	// some extras
 	// get restart url and cut the quotes

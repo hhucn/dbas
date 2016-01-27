@@ -217,7 +217,7 @@
 				<div id="popup-url-sharing-content">
 				</div>
 				<p id="popup-url-sharing-description-p" i18n:translate="url-sharing-description">Please feel free to share this url:</p>
-				<input id="popup-url-sharing-input" type="text" placeholder="URL">
+				<input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL">
 			</div>
 			<div class="modal-footer">
 

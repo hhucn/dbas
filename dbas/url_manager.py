@@ -6,7 +6,7 @@ class UrlManager(object):
 
 	def __init__(self, slug=''):
 		self.url = 'http://localhost:4284/' # TODO fix this
-		self.url = 'https://dbas.cs.uni-duesseldorf.de' # TODO fix this
+		# self.url = 'https://dbas.cs.uni-duesseldorf.de/' # TODO fix this
 		self.discussion_url = self.url + 'd/'
 		self.slug = slug
 
