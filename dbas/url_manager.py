@@ -1,12 +1,28 @@
+from .logger import logger
+
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
 class UrlManager(object):
 
-	def __init__(self, slug=''):
-		self.url = 'http://localhost:4284/' # TODO fix this
-		# self.url = 'https://dbas.cs.uni-duesseldorf.de/' # TODO fix this
+	def __init__(self, application_url, slug=''):
+		"""
+
+		:param application_url:
+		:param slug:
+		:return:
+		"""
+		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
+		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
+		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
+		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
+		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
+		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
+		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
+		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
+		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
+		self.url = application_url + '/'
 		self.discussion_url = self.url + 'd/'
 		self.slug = slug
 

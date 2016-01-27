@@ -77,7 +77,7 @@ class VotingHelper(object):
 		:param user: self.request.authenticated_userid
 		:return: Vote, boolean for already voted
 		"""
-		
+
 		# get vote
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==db_argument.uid,

@@ -179,7 +179,7 @@ class DictionaryHelper(object):
 
 		return {'heading': heading, 'add_premise_text': add_premise_text}
 
-	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang):
+	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang, application_url):
 		"""
 
 		:param issue_uid:
@@ -193,7 +193,7 @@ class DictionaryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
 		statements_array = []
-		_um = UrlManager(slug)
+		_um = UrlManager(application_url, slug)
 		_qh = QueryHelper()
 
 		if db_statements:
@@ -216,7 +216,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_attitude(self, statement_uid, issue_uid, lang):
+	def prepare_item_dict_for_attitude(self, statement_uid, issue_uid, lang, application_url):
 		"""
 
 		:param statement_uid:
@@ -232,7 +232,7 @@ class DictionaryHelper(object):
 		text = _qh.get_text_for_statement_uid(statement_uid)
 		statements_array = []
 
-		_um = UrlManager(slug)
+		_um = UrlManager(application_url, slug)
 
 		statements_array.append(_qh.get_statement_dict('agree',
 		                                                _tn.get(_tn.iAgreeWithInColor) + ': ' + text,
@@ -252,7 +252,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, isSupportive, lang):
+	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, isSupportive, lang, application_url):
 		"""
 
 		:param statement_uid:
@@ -268,7 +268,7 @@ class DictionaryHelper(object):
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
 		                                                               Argument.conclusion_uid==statement_uid)).all()
 
-		_um = UrlManager(slug)
+		_um = UrlManager(application_url, slug)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -298,7 +298,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, isSupportive, lang):
+	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, isSupportive, lang, application_url):
 		"""
 
 		:param argument_uid:
@@ -329,7 +329,7 @@ class DictionaryHelper(object):
 		elif attack_type == 'rebut':
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_argument.conclusion_uid, Argument.isSupportive==False)).all()
 
-		_um = UrlManager(slug)
+		_um = UrlManager(application_url, slug)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -364,7 +364,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, lang):
+	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, lang, application_url):
 		"""
 
 		:param argument_uid:
@@ -392,7 +392,7 @@ class DictionaryHelper(object):
 
 			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True)
 			mode             = 't' if isSupportive else 't'
-			_um              = UrlManager(slug)
+			_um              = UrlManager(application_url, slug)
 
 			types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
 			for t in types:
@@ -406,7 +406,8 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang, authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs=[]):
+	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang,
+	                        authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs=[], application_url=''):
 		"""
 
 		:param current_slug:
@@ -426,7 +427,7 @@ class DictionaryHelper(object):
 		_qh = QueryHelper()
 
 		return_dict = dict()
-		return_dict['restart_url']                   =  UrlManager(current_slug).get_slug_url(True)
+		return_dict['restart_url']                   =  UrlManager(application_url, current_slug).get_slug_url(True)
 		return_dict['is_editable']                   =  is_editable and _uh.is_user_logged_in(authenticated_userid)
 		return_dict['is_reportable']                 =  is_reportable
 		return_dict['is_admin']                      =  _uh.is_user_admin(authenticated_userid)

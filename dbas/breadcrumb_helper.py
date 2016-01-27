@@ -16,13 +16,16 @@ from .url_manager import UrlManager
 
 class BreadcrumbHelper(object):
 
-	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang):
+	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url):
 		"""
 
 		:param path:
 		:param user:
 		:param slug:
 		:param session_id:
+		:param transaction:
+		:param lang:
+		:param application_url:
 		:return:
 		"""
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'path ' + path + ', user ' + str(user))
@@ -30,7 +33,7 @@ class BreadcrumbHelper(object):
 		if not db_user:
 			return []
 
-		url = UrlManager(slug).get_url(path)
+		url = UrlManager(application_url, slug).get_url(path)
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'url ' + url)
 
 		group0 = re.search(re.compile(r"d/?[a-z,A-Z,0-9,-]*"), url).group(0)

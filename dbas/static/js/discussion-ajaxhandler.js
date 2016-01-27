@@ -38,7 +38,7 @@ function AjaxSiteHandler() {
 		$.ajax({
 			url: 'ajax_set_new_premises_for_argument',
 			method: 'POST',
-			data: {arg_uid: arg_uid, relation: relation, text: text, supportive: supportive},
+			data: {arg_uid: arg_uid, relation: relation, text: text, supportive: supportive, url: mainpage},
 			dataType: 'json',
 			async: true,
 			headers: {
@@ -61,7 +61,6 @@ function AjaxSiteHandler() {
 	 */
 	this.sendNewStartPremise = function (text, conclusion_id, supportive) {
 		var url = window.location.href;
-		url = url.substr(url.indexOf('issue=') + 'issue='.length);
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
@@ -69,7 +68,8 @@ function AjaxSiteHandler() {
 			data: {
 				'text':text,
 				'conclusion_id': conclusion_id,
-				'support': supportive
+				'support': supportive,
+				url: mainpage
 			},
 			dataType: 'json',
 			async: true,
@@ -95,7 +95,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_set_new_start_statement',
 			method: 'POST',
 			data: {
-				statement: statement
+				statement: statement, url: mainpage
 			},
 			dataType: 'json',
 			async: true,
