@@ -45,7 +45,7 @@ class Dbas(object):
 		"""
 		self.request = request
 		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
-		logger('DBAS', 'MAIN', 'issue_fallback ' + str(issue_fallback))
+
 
 	def escape_string(self, text):
 		"""

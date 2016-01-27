@@ -4,8 +4,9 @@ import collections
 from sqlalchemy import and_
 from slugify import slugify
 
-from .database import DBDiscussionSession
+from .database import DBDiscussionSession, DBNewsSession
 from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History, Vote, Issue
+from .database.news_model import News
 from .logger import logger
 from .strings import Translator, TextGenerator
 from .user_management import UserHandler
@@ -496,13 +497,13 @@ class QueryHelper(object):
 		all_array = []
 		for issue in db_issues:
 			issue_dict = dict()
-			issue_dict['slug']      = issue.get_slug()
-			issue_dict['title']     = issue.title
-			issue_dict['url']       = UrlManager(issue.get_slug()).get_slug_url(True)
-			issue_dict['info']      = issue.info
-			issue_dict['arg_count'] = self.get_number_of_arguments(issue.uid)
-			issue_dict['date']      = self.sql_timestamp_pretty_print(str(issue.date), lang)
-			issue_dict['enabled']   = 'disabled' if str(id) == str(issue.uid) else 'enabled'
+			issue_dict['slug']              = issue.get_slug()
+			issue_dict['title']             = issue.title
+			issue_dict['url']               = UrlManager(issue.get_slug()).get_slug_url(False) if str(id) != str(issue.uid) else '#'
+			issue_dict['info']              = issue.info
+			issue_dict['arg_count']         = self.get_number_of_arguments(issue.uid)
+			issue_dict['date']              = self.sql_timestamp_pretty_print(str(issue.date), lang)
+			issue_dict['enabled']           = 'disabled' if str(id) == str(issue.uid) else 'enabled'
 			all_array.append(issue_dict)
 
 		return {'slug': slug, 'info': info, 'title': title, 'id': id, 'arg_count': arg_count, 'date': date, 'all': all_array}
@@ -700,9 +701,9 @@ class QueryHelper(object):
 			news_dict['news'] = news.news
 			news_dict['uid'] = str(news.uid)
 			# string date into date
-			date_object = datetime.strptime(str(news.date), '%d.%m.%Y')
+			date_object = datetime.datetime.strptime(str(news.date), '%d.%m.%Y')
 			# add index on the seconds for unique id's
-			sec = (date_object - datetime(1970,1,1)).total_seconds() + index
+			sec = (date_object - datetime.datetime(1970,1,1)).total_seconds() + index
 			logger('QueryHelper', 'get_news', 'news from  ' + str(news.date) + ', ' + str(sec))
 			ret_dict[str(sec)] = news_dict
 

@@ -4,8 +4,11 @@
  * @copyright Krauthoff 2015
  */
 
-var mainpage = 'http://localhost:4284/';
-//var mainpage = 'https://dbas.cs.uni-duesseldorf.de/';
+function get_hostname(url) {
+	var m = url.match(/^http:\/\/[^/]+/);
+	return m ? m[0] + '/' : null;
+}
+var mainpage = location.origin + '/'; //get_hostname(window.location.href);
 
 /**
  * Returns a translated string
