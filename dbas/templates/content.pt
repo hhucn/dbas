@@ -50,9 +50,7 @@
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
 							<li tal:repeat="issue issue.all" tal:attributes="class issue.enabled">
-								<a href="#" tal:attributes="href issue.url">
-									<span tal:replace="issue.title"></span><span class="badge" style="float: right"><span tal:replace="issue.arg_count"></span></span>
-								</a>
+								<a href="#" tal:attributes="href issue.url; value issue.title"><span tal:replace="issue.title"></span><span class="badge" style="float: right"><span tal:replace="issue.arg_count"></span></span></a>
 							</li>
 						</ul>
 					</div>

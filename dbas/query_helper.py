@@ -4,8 +4,9 @@ import collections
 from sqlalchemy import and_
 from slugify import slugify
 
-from .database import DBDiscussionSession
+from .database import DBDiscussionSession, DBNewsSession
 from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History, Vote, Issue
+from .database.news_model import News
 from .logger import logger
 from .strings import Translator, TextGenerator
 from .user_management import UserHandler
@@ -496,18 +497,18 @@ class QueryHelper(object):
 		all_array = []
 		for issue in db_issues:
 			issue_dict = dict()
-			issue_dict['slug']      = issue.get_slug()
-			issue_dict['title']     = issue.title
-			issue_dict['url']       = UrlManager(issue.get_slug()).get_slug_url(True)
-			issue_dict['info']      = issue.info
-			issue_dict['arg_count'] = self.get_number_of_arguments(issue.uid)
-			issue_dict['date']      = self.sql_timestamp_pretty_print(str(issue.date), lang)
-			issue_dict['enabled']   = 'disabled' if str(id) == str(issue.uid) else 'enabled'
+			issue_dict['slug']              = issue.get_slug()
+			issue_dict['title']             = issue.title
+			issue_dict['url']               = UrlManager(issue.get_slug()).get_slug_url(False) if str(id) != str(issue.uid) else '#'
+			issue_dict['info']              = issue.info
+			issue_dict['arg_count']         = self.get_number_of_arguments(issue.uid)
+			issue_dict['date']              = self.sql_timestamp_pretty_print(str(issue.date), lang)
+			issue_dict['enabled']           = 'disabled' if str(id) == str(issue.uid) else 'enabled'
 			all_array.append(issue_dict)
 
 		return {'slug': slug, 'info': info, 'title': title, 'id': id, 'arg_count': arg_count, 'date': date, 'all': all_array}
 
-	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_dont_know=False, at_justify_argumentation=False, at_justify=False):
+	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False, at_justify_argumentation=False, at_justify=False):
 		"""
 
 		:param discussion_dict:
@@ -517,13 +518,25 @@ class QueryHelper(object):
 		"""
 		_t = Translator(lang)
 		discussion_dict['heading'] += '<br><br>'
-		if at_justify_argumentation:
+
+		if at_start:
+			discussion_dict['heading'] = _t.get(_t.firstPositionText)
+			extras_dict['add_statement_container_style'] = '' # this will remove the 'display: none;'-style
+			extras_dict['show_display_style'] = False
+			extras_dict['show_bar_icon'] = False
+			extras_dict['is_editable'] = False
+			extras_dict['is_reportable'] = False
+
+		elif at_justify_argumentation:
 			extras_dict['add_premise_container_style'] = '' # this will remove the 'display: none;'-style
 			extras_dict['show_display_style'] = False
+
 		elif at_dont_know:
 			discussion_dict['heading'] += _t.get(_t.otherParticipantsDontHaveOpinion) + '<br><br>' + (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText))
+
 		elif at_justify:
 			discussion_dict['heading'] += '?????'
+
 		else:
 			discussion_dict['heading'] += (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText)) if logged_in else _t.get(_t.discussionEndFeelFreeToLogin)
 
@@ -700,9 +713,9 @@ class QueryHelper(object):
 			news_dict['news'] = news.news
 			news_dict['uid'] = str(news.uid)
 			# string date into date
-			date_object = datetime.strptime(str(news.date), '%d.%m.%Y')
+			date_object = datetime.datetime.strptime(str(news.date), '%d.%m.%Y')
 			# add index on the seconds for unique id's
-			sec = (date_object - datetime(1970,1,1)).total_seconds() + index
+			sec = (date_object - datetime.datetime(1970,1,1)).total_seconds() + index
 			logger('QueryHelper', 'get_news', 'news from  ' + str(news.date) + ', ' + str(sec))
 			ret_dict[str(sec)] = news_dict
 

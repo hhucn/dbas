@@ -45,7 +45,7 @@ class Dbas(object):
 		"""
 		self.request = request
 		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
-		logger('DBAS', 'MAIN', 'issue_fallback ' + str(issue_fallback))
+
 
 	def escape_string(self, text):
 		"""
@@ -211,6 +211,9 @@ class Dbas(object):
 		discussion_dict = _dh.prepare_discussion_dict(issue, lang, at_start=True)
 		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang)
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, breadcrumbs=breadcrumbs)
+
+		if len(item_dict) == 0:
+			_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_start=True)
 
 		return {
 			'layout': self.base_layout(),

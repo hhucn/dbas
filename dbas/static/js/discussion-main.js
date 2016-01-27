@@ -152,6 +152,17 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		new DiscussionBarometer().showBarometer()
 	});
 
+	$('#' + issueDropdownListID + ' .enabled').each(function() {
+		if ($(this).children().length > 0){
+			$(this).children().click(function() {
+				var href = $(this).attr('href'),
+					text = _t(switchDiscussionText1) + ' <strong>' + $(this).attr('value') + '</strong> ' + _t(switchDiscussionText2);
+				$(this).attr('href','#');
+				displayConfirmationDialogWithCheckbox(_t(switchDiscussion), text, _t.keepSetting, href, true);
+			});
+		}
+	});
+
 };
 
 /**
@@ -201,9 +212,7 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
  * @param guiHandler
  */
 setStyleOptions = function (guiHandler){
-	$('#' + addStatementContainerId).hide(); // hiding container for adding arguments
 	$('#' + discussionFailureRowId).hide(); // hiding error message at start
-	$('#' + islandViewContainerId).hide(); // hidding the islandView
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
@@ -326,6 +335,7 @@ $(function () {
 	$.each($('.panel-heading h5'), function () {
 		replaceHtmlTags($(this));
 	});
+	replaceHtmlTags($('#' + issueInfoId));
 
 	// some extras
 	// get restart url and cut the quotes

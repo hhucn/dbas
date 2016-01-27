@@ -121,7 +121,7 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, isRes
 	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
 		if (isRestartingDiscussion)
-			window.location.href = mainpage + 'discussion/start/issue=' + functionForAccept;
+			window.location.href = functionForAccept;
 		else
 			functionForAccept();
 	});
@@ -171,7 +171,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 			}
 
 			if (isRestartingDiscussion)
-				window.location.href = mainpage + 'discussion/start/issue=' + functionForAccept;
+			window.location.href = functionForAccept;
 			else
 				functionForAccept();
 
