@@ -1,11 +1,14 @@
 import collections
-from sqlalchemy import and_
+import re
+from sqlalchemy import and_, func
+from slugify import slugify
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, History
+from .database.discussion_model import Argument, Statement, User, TextVersion, History, Issue
 from .logger import logger
 from .strings import Translator
-from .query_helper import QueryHelper, UrlManager
+from .query_helper import QueryHelper
+from .url_manager import UrlManager
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -28,6 +31,12 @@ class BreadcrumbHelper(object):
 			return []
 
 		url = UrlManager(slug).get_url(path)
+		logger('BreadcrumbHelper', 'get_breadcrumbs', 'url ' + url)
+
+		group0 = re.search(re.compile(r"d/?[a-z,A-Z,0-9,-]*"), url).group(0)
+		logger('BreadcrumbHelper', 'get_breadcrumbs', 'group0 ' + str(group0))
+		if group0 and url.endswith(group0):
+			self.del_breadcrumbs_of_user(transaction, user)
 
 		db_already_in = DBDiscussionSession.query(History).filter_by(url=url).first()
 		if db_already_in:
@@ -60,9 +69,10 @@ class BreadcrumbHelper(object):
 		breadcrumbs = []
 		for index, history in enumerate(db_history):
 			hist = dict()
-			hist['index']   = str(index)
-			hist['url']     = str(history.url)
-			hist['text']    = self.__get_text_for_url__(history.url, lang)
+			hist['index']       = str(index)
+			hist['url']         = str(history.url)
+			hist['text']        = self.__get_text_for_url__(history.url, lang)
+			hist['shorttext']   = hist['text'][0:30] + '...' if len(hist['text']) > 30 else hist['text']
 			breadcrumbs.append(hist)
 
 		return breadcrumbs
@@ -79,28 +89,39 @@ class BreadcrumbHelper(object):
 
 		if '/r/' in url:
 			splitted = url.split('/')
-			uid = splitted[len(splitted)-3]
-			conf = splitted[len(splitted)-1]
+			uid  = splitted[6]
 			text = _qh.get_text_for_argument_uid(uid, lang)
 			text = text[0:1].lower() + text[1:]
+
+			#for index, s in enumerate(splitted):
+			#	logger('-',str(index), s)
+
 			return _t.get(_t.otherParticipantDisagree) + ' ' + text + '.'
 
 		elif '/j/' in url:
 			splitted = url.split('/')
-			supportive = splitted[len(splitted)-1] == 't'
-			uid = splitted[len(splitted)-2]
-			text = _qh.get_text_for_statement_uid(uid)
+			uid  = splitted[6]
+			text = _qh.get_text_for_statement_uid(uid) if len(splitted) == 7 else _qh.get_text_for_argument_uid(uid, lang)
 			text = text[0:1].lower() + text[1:]
-			return _t.get(_t.whyDoYouThinkThat) + ' ' + text + ' ' + (_t.get(_t.isTrue) if supportive else _t.get(_t.isFalse)) + '?'
+			# 7 choose action for start statemens
+			# 8 choose justification for a relation
+			return ( _t.get(_t.breadcrumbsChooseActionForStatement) if len(splitted) == 7 else _t.get(_t.breadcrumbsReplyForResponseOfConfrontation)) + ' ' + text
 
 		elif '/a/' in url:
-			uid = url[url.rfind('/')+1:]
+			uid  = url[url.rfind('/')+1:]
 			text = _qh.get_text_for_statement_uid(uid)
 			text = text[0:1].lower() + text[1:]
 			return _t.get(_t.whatDoYouThinkAbout) + ' ' + text + '?'
 
 		else:
-			return url[url.index('/d/')+3:] if '/d/' in url else 'Start'
+			slug = url[url.index('/d/')+3:] if '/d/' in url else None
+			if slug:
+				issues = DBDiscussionSession.query(Issue).all()
+				for issue in issues:
+					if slugify(issue.title) == slug:
+						slug = issue.title
+						break
+			return slug if slug else _t.get(_t.breadcrumbsStart)
 
 	def del_breadcrumbs_of_user(self, transaction, user):
 		"""

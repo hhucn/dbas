@@ -19,12 +19,9 @@ _t = function(id){
 		if ($(this).hasClass('active')){
 			this_id = $(this).children().first().attr('id');
 
-			if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){
-				value= dbas_en[id];
-			} else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){
-				value = dbas_de[id];
-			} else {
-				value = 'unknown value';
+			if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){				value= dbas_en[id];
+			} else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){		value = dbas_de[id];
+			} else {                                                    				value = 'unknown value';
 			}
 		}
 	});
@@ -56,7 +53,6 @@ getLanguage = function(){
 var checkmark                                       = '&#x2713;'; // ✓
 var ballot                                          = '&#x2717;'; // ✗
 
-var and 											= 'and';
 var addedEverything 								= 'addedEverything';
 var alreadyInserted									= 'alreadyInserted';
 var addPremisesRadioButtonText 						= 'addPremisesRadioButtonText';
@@ -85,26 +81,8 @@ var addStatements 									= 'addStatements';
 var acceptIt 										= 'acceptIt';
 var addArgumentsTitle 								= 'addArgumentsTitle';
 var acceptItTitle 									= 'acceptItTitle';
-var breadcrumbsStart 								= 'breadcrumbsStart'; //start
-var breadcrumbsChooseActionForStatement 			= 'breadcrumbsChooseActionForStatement'; //choose action
-var breadcrumbsGetPremisesForStatement 				= 'breadcrumbsGetPremisesForStatement'; //get premisses
-var breadcrumbsMoreAboutArgument 					= 'breadcrumbsMoreAboutArgument'; //more about
-var breadcrumbsReplyForPremisegroup 				= 'breadcrumbsReplyForPremisegroup'; //reply for group
-var breadcrumbsReplyForResponseOfConfrontation 		= 'breadcrumbsReplyForResponseOfConfrontation'; //reply for confrontation
-var breadcrumbsReplyForArgument 					= 'breadcrumbsReplyForArgument'; //reply for argument
-var butIDoNotBelieveCounter							= 'butIDoNotBelieveCounter';
-var butIDoNotBelieveArgument						= 'butIDoNotBelieveArgument';
-var butTheyDoNotBelieveCounter						= 'butTheyDoNotBelieveCounter';
-var butTheyDoNotBelieveArgument						= 'butTheyDoNotBelieveArgument';
 var because 										= 'because';
 var butWhich 										= 'butWhich';
-var butOtherParticipantsDontHaveArgument			= 'butOtherParticipantsDontHaveArgument';
-var canYouGiveAReason 								= 'canYouGiveAReason';
-var canYouGiveAReasonFor 							= 'canYouGiveAReasonFor';
-var canYouGiveACounterArgumentWhy1					= 'canYouGiveACounterArgumentWhy1';
-var canYouGiveACounterArgumentWhy2					= 'canYouGiveACounterArgumentWhy2';
-var canYouGiveACounter								= 'canYouGiveACounter';
-var canYouGiveAReasonForThat 						= 'canYouGiveAReasonForThat';
 var contactSubmit									= 'contactSubmit';
 var clickHereForRegistration 						= 'clickHereForRegistration';
 var confirmation 									= 'confirmation';
@@ -137,12 +115,6 @@ var discussionEnd									= 'discussionEnd';
 var discussionEndText								= 'discussionEndText';
 var discussionEndFeelFreeToLogin					= 'discussionEndFeelFreeToLogin';
 var duplicateDialog									= 'duplicateDialog';
-var displayControlDialogGuidedTitle                 = 'displayControlDialogGuidedTitle';
-var displayControlDialogGuidedBody                  = 'displayControlDialogGuidedBody';
-var displayControlDialogIslandTitle                 = 'displayControlDialogIslandTitle';
-var displayControlDialogIslandBody                  = 'displayControlDialogIslandBody';
-var displayControlDialogExpertTitle                 = 'displayControlDialogExpertTitle';
-var displayControlDialogExpertBody                  = 'displayControlDialogExpertBody';
 var doesNotHold 									= 'doesNotHold';
 var doesNotHoldBecause 								= 'doesNotHoldBecause';
 var doesJustify 									= 'doesJustify';
@@ -184,10 +156,6 @@ var goodPointTakeMeBackButtonText 					= 'goodPointTakeMeBackButtonText';
 var group_uid 										= 'group_uid';
 var history 										= 'history';
 var haveALookAt 									= 'haveALookAt';
-var howeverIHaveMuchStrongerArgumentRejecting		= 'howeverIHaveMuchStrongerArgumentRejecting';
-var howeverIHaveEvenStrongerArgumentRejecting		= 'howeverIHaveEvenStrongerArgumentRejecting';
-var howeverIHaveMuchStrongerArgumentAccepting		= 'howeverIHaveMuchStrongerArgumentAccepting';
-var howeverIHaveEvenStrongerArgumentAccepting		= 'howeverIHaveEvenStrongerArgumentAccepting';
 var hidePasswordRequest 							= 'hidePasswordRequest';
 var hideGenerator 									= 'hideGenerator';
 var iAgreeWithInColor 								= 'iAgreeWithInColor';

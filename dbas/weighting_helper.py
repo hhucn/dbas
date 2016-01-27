@@ -62,7 +62,7 @@ class WeightingHelper(object):
 
 		# remove votes
 		DBDiscussionSession.query(Vote).filter(and_(Vote.weight_uid==db_argument.weight_uid,
-		                                            Vote.author_uid==db_user.uid)).set_valid(True)
+		                                            Vote.author_uid==db_user.uid)).first().set_valid(True)
 
 		# return count of votes
 		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_argument.weight_uid).all()

@@ -13,8 +13,8 @@
 				<div class="col-md-12">
 					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0px;">
                         <li tal:repeat="breadcrumb extras.breadcrumbs">
-                            <a href="" tal:attributes="href breadcrumb.url" tal:condition="not:repeat.breadcrumb.end">
-                                <span tal:replace="breadcrumb.text">weee :)</span>
+                            <a href="" tal:attributes="href breadcrumb.url; title breadcrumb.text" tal:condition="not:repeat.breadcrumb.end">
+                                <span tal:replace="breadcrumb.shorttext">weee :)</span>
                             </a>
                             <span tal:replace="breadcrumb.text" tal:condition="repeat.breadcrumb.end">weee :)</span>
                         </li>
@@ -27,14 +27,14 @@
 			<div class="row">
 				<div class="col-md-7 center text-center">
 					<p i18n:translate="current_discussion">Current discussion is about</p>
-					<h5 id="issue_info" tal:content="issue.info"></h5>
+					<h5 id="issue_info">${issue.info}</h5>
 				</div>
 				<div class="col-md-5 center text-center">
 					<span i18n:translate="startet_at">The discussion was started at</span>
-					<span id="issue-date" tal:content=issue.date></span>
+					<span id="issue-date">${issue.date}</span>
 					<br>
 					<span i18n:translate="already_has">and already has</span>
-					<span id="issue-count" tal:content=issue.arg_count></span>
+					<span id="issue-count">${issue.arg_count}</span>
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 
@@ -85,21 +85,17 @@
 						<span id="discussion-success-description"></span>
 					</div>
 
-					<h4 id="discussions-header" tal:content="discussion.heading">
-                    </h4>
+					<h4 id="discussions-header">${discussion.heading}</h4>
 					<div id="discussions-space">
 
 						<ul>
 							<li tal:repeat="item items">
 								<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-								<label tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id" tal:content="premise.title">premise</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
+								<label tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
 							</li>
 						</ul>
 
 					</div>
-					<div id="discussions-attack-space">
-					</div>
-
 				</div>
 
 				<div class="col-md-2">
@@ -185,7 +181,7 @@
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
-									<label tal:attributes="for undermine.id" tal:content="undermine.text">No entries</label>
+									<label tal:attributes="for undermine.id">${undermine.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -202,7 +198,7 @@
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="support extras.island.support" tal:attributes="id support.id">
-									<label tal:attributes="for support.id" tal:content="support.text">No entries</label>
+									<label tal:attributes="for support.id">${support.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -222,7 +218,7 @@
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="undercut extras.island.undercut" tal:attributes="id undercut.id">
-									<label tal:attributes="for undercut.id" tal:content="undercut.text">No entries</label>
+									<label tal:attributes="for undercut.id">${undercut.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -239,7 +235,7 @@
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="overbid extras.island.overbid" tal:attributes="id overbid.id">
-									<label tal:attributes="for overbid.id" tal:content="overbid.text">No entries</label>
+									<label tal:attributes="for overbid.id">${overbid.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -259,7 +255,7 @@
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
-									<label tal:attributes="for rebut.id" tal:content="rebut.text">No entries</label>
+									<label tal:attributes="for rebut.id">${rebut.text}</label>
 								</li>
 							</ul>
 						</div>
