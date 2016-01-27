@@ -24,7 +24,7 @@ from .string_matcher import FuzzyStringMatcher
 from .breadcrumb_helper import BreadcrumbHelper
 from .recommender_system import RecommenderHelper, RecommenderHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
-from .weighting_helper import WeightingHelper
+from .voting_helper import VotingHelper
 from .url_manager import UrlManager
 
 name = 'D-BAS'
@@ -376,7 +376,7 @@ class Dbas(object):
 		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().isSupportive
 
 		# set votings
-		WeightingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
+		VotingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
@@ -387,12 +387,14 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
+		                                                 self.request.session.id, transaction, lang)
 
 		discussion_dict = _dh.prepare_discussion_dict(arg_id_user, lang, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
 		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, lang)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=arg_id_user, breadcrumbs=breadcrumbs)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid,
+		                                          argument_id=arg_id_user, breadcrumbs=breadcrumbs)
 
 		return {
 			'layout': self.base_layout(),

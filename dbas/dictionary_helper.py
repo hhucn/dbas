@@ -389,7 +389,8 @@ class DictionaryHelper(object):
 			premise, tmp     = _qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 			conclusion       = conclusion[0:1].lower() + conclusion[1:]
 			premise          = premise[0:1].lower() + premise[1:]
-			ret_dict         = _tg.get_relation_text_dict_without_confrontation(conclusion, premise, False, True)
+
+			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True)
 			mode             = 't' if isSupportive else 't'
 			_um              = UrlManager(slug)
 
