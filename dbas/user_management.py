@@ -174,7 +174,7 @@ class UserHandler(object):
 		:param lang: current language
 		:return: an message and boolean for error and success
 		"""
-		logger('DatabaseHelper', 'change_password', 'def')
+		logger('UserHandler', 'change_password', 'def')
 		_t = Translator(lang)
 
 		error = False
@@ -182,50 +182,50 @@ class UserHandler(object):
 
 		# is the old password given?
 		if not old_pw:
-			logger('DatabaseHelper', 'change_password', 'old pwd is empty')
+			logger('UserHandler', 'change_password', 'old pwd is empty')
 			message = _t.get(_t.oldPwdEmpty) # 'The old password field is empty.'
 			error = True
 		# is the new password given?
 		elif not new_pw:
-			logger('DatabaseHelper', 'change_password', 'new pwd is empty')
+			logger('UserHandler', 'change_password', 'new pwd is empty')
 			message = _t.get(_t.newPwdEmtpy) # 'The new password field is empty.'
 			error = True
 		# is the cofnrimation password given?
 		elif not confirm_pw:
-			logger('DatabaseHelper', 'change_password', 'confirm pwd is empty')
+			logger('UserHandler', 'change_password', 'confirm pwd is empty')
 			message = _t.get(_t.confPwdEmpty) # 'The password confirmation field is empty.'
 			error = True
 		# is new password equals the confirmation?
 		elif not new_pw == confirm_pw:
-			logger('DatabaseHelper', 'change_password', 'new pwds not equal')
+			logger('UserHandler', 'change_password', 'new pwds not equal')
 			message = _t.get(_t.newPwdNotEqual) # 'The new passwords are not equal'
 			error = True
 		# is new old password equals the new one?
 		elif old_pw == new_pw:
-			logger('DatabaseHelper', 'change_password', 'pwds are the same')
+			logger('UserHandler', 'change_password', 'pwds are the same')
 			message = _t.get(_t.pwdsSame) # 'The new and old password are the same'
 			error = True
 		else:
 			# is the old password valid?
 			if not user.validate_password(old_pw):
-				logger('DatabaseHelper', 'change_password', 'old password is wrong')
-				logger('DatabaseHelper', 'old', old_pw + " " + PasswordHandler().get_hashed_password(old_pw))
-				logger('DatabaseHelper', 'new', new_pw + " " + PasswordHandler().get_hashed_password(new_pw))
-				logger('DatabaseHelper', 'current', user.password)
+				logger('UserHandler', 'change_password', 'old password is wrong')
+				logger('UserHandler', 'old', old_pw + " " + PasswordHandler().get_hashed_password(old_pw))
+				logger('UserHandler', 'new', new_pw + " " + PasswordHandler().get_hashed_password(new_pw))
+				logger('UserHandler', 'current', user.password)
 				message = _t.get(_t.oldPwdWrong) # 'Your old password is wrong.'
 				error = True
 			else:
-				logger('DatabaseHelper', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
+				logger('UserHandler', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
 				password_handler = PasswordHandler()
 				hashed_pw = password_handler.get_hashed_password(new_pw)
-				logger('DatabaseHelper', 'form.passwordrequest.submitted', 'New hashed password is ' + hashed_pw)
+				logger('UserHandler', 'form.passwordrequest.submitted', 'New hashed password is ' + hashed_pw)
 
 				# set the hased one
 				user.password = hashed_pw
 				DBDiscussionSession.add(user)
 				transaction.commit()
 
-				logger('DatabaseHelper', 'change_password', 'password was changed')
+				logger('UserHandler', 'change_password', 'password was changed')
 				message = _t.get(_t.pwdChanged) # 'Your password was changed'
 				success = True
 
@@ -238,18 +238,18 @@ class UserHandler(object):
 		:return: dictionary
 		"""
 		is_admin = UserHandler().is_user_admin(user)
-		logger('DatabaseHelper', 'get_all_users', 'is_admin ' + str(is_admin))
+		logger('UserHandler', 'get_all_users', 'is_admin ' + str(is_admin))
 		if not is_admin:
 			return_dict = dict()
 		else:
-			logger('DatabaseHelper', 'get_all_users', 'get all users')
+			logger('UserHandler', 'get_all_users', 'get all users')
 			db_users = DBDiscussionSession.query(User).join(Group).all()
-			logger('DatabaseHelper', 'get_all_users', 'get all groups')
+			logger('UserHandler', 'get_all_users', 'get all groups')
 
 			return_dict = dict()
 
 			if db_users:
-				logger('DatabaseHelper', 'get_all_users', 'iterate all users')
+				logger('UserHandler', 'get_all_users', 'iterate all users')
 				for user in db_users:
 					return_user = dict()
 					return_user['uid'] = user.uid
@@ -262,7 +262,7 @@ class UserHandler(object):
 					return_user['last_action'] = str(user.last_action)
 					return_user['registered'] = str(user.registered)
 					return_user['gender'] = str(user.gender)
-					logger('DatabaseHelper', 'get_all_users ' + str(user.uid) + ' of ' + str(len(db_users)),
+					logger('UserHandler', 'get_all_users ' + str(user.uid) + ' of ' + str(len(db_users)),
 						"uid: " + str(user.uid)
 						+ ", firstname: " + user.firstname
 						+ ", surname: " + user.surname

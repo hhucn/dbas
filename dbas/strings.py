@@ -1,5 +1,4 @@
 from .logger import logger
-from .database_helper import DBDiscussionSession
 from .database.discussion_model import User
 
 # @author Tobias Krauthoff
@@ -456,11 +455,11 @@ class Translator(object):
 		en_lang[self.agreeBecause] =  'I agree because '
 		en_lang[self.andIDoBelieve] =  'and I do believe that this is a good counter-argument for'
 		en_lang[self.breadcrumbsStart] =  'Start'
-		en_lang[self.breadcrumbsChooseActionForStatement] =  'Choose action'
+		en_lang[self.breadcrumbsChooseActionForStatement] =  'Choose action for'
 		en_lang[self.breadcrumbsGetPremisesForStatement] =  'Get premisses'
 		en_lang[self.breadcrumbsMoreAboutArgument] =  'More about'
 		en_lang[self.breadcrumbsReplyForPremisegroup] =  'Reply for group'
-		en_lang[self.breadcrumbsReplyForResponseOfConfrontation] =  'Reply for confrontation'
+		en_lang[self.breadcrumbsReplyForResponseOfConfrontation] =  'Justification of' # 'Reply for confrontation'
 		en_lang[self.breadcrumbsReplyForArgument] =  'Reply for argument'
 		en_lang[self.butIDoNotBelieveCounter] =  'but I do not believe that this is a good counter-argument for'
 		en_lang[self.butIDoNotBelieveArgument] =  'but I do not believe that this is a good argument for'
@@ -812,9 +811,9 @@ class Translator(object):
 		de_lang[self.breadcrumbsStart] = 'Start',
 		de_lang[self.breadcrumbsChooseActionForStatement] = 'Aktion wählen',
 		de_lang[self.breadcrumbsGetPremisesForStatement] = 'Prämissen',
-		de_lang[self.breadcrumbsMoreAboutArgument] = 'mehr Über',
+		de_lang[self.breadcrumbsMoreAboutArgument] = 'Mehr Über',
 		de_lang[self.breadcrumbsReplyForPremisegroup] = 'Antwort für Gruppe',
-		de_lang[self.breadcrumbsReplyForResponseOfConfrontation] = 'Antwort für die Konfrontation',
+		de_lang[self.breadcrumbsReplyForResponseOfConfrontation] = 'Begründung von'#Antwort für die Konfrontation',
 		de_lang[self.breadcrumbsReplyForArgument] = 'Antwort fürs Argument',
 		de_lang[self.butOtherParticipantsDontHaveArgument] = 'aber andere Teilnehmer haben keine Begründung für dafür',
 		de_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'aber andere Teilnehmer haben kein Gegenargument.',
@@ -1146,7 +1145,7 @@ class TextGenerator(object):
 
 		return ret_text
 
-	def get_header_for_confrontation_response(self, confrontation, premise, attackType, conclusion, startLowerCase, isSupportive, user):
+	def get_header_for_confrontation_response(self, confrontation, premise, attackType, conclusion, startLowerCase, isSupportive, is_logged_in):
 		"""
 		Based on the users reaction, text will be build.
 		:param confrontation: choosen confrontation
@@ -1155,7 +1154,7 @@ class TextGenerator(object):
 		:param conclusion: current conclusion
 		:param startLowerCase: boolean
 		:param isSupportive: boolean
-		:param user: nickname
+		:param is_logged_in: boolean
 		:return: string
 		"""
 		_t = Translator(self.lang)
@@ -1200,8 +1199,7 @@ class TextGenerator(object):
 
 
 		# is logged in?
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		if db_user:
+		if is_logged_in:
 			ret_text += '<br><br>' + _t.get(_t.canYouGiveAReasonForThat)
 
 		return ret_text
@@ -1514,13 +1512,14 @@ class TextGenerator(object):
 			                                                         supportive))
 		else:
 			logger('reply_for_response_of_confrontation', 'def', 'path b2')
+			logged_in = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			ret_dict['header_text'] = _tg.get_header_for_confrontation_response(attack_or_confrontation,
 			                                                                    premise,
 			                                                                    relation,
 			                                                                    conclusion,
 			                                                                    True,
 			                                                                    supportive,
-			                                                                    user)
+			                                                                    logged_in)
 
 		if supportive_argument and int(status) == 0:
 			logger('reply_for_response_of_confrontation', 'def', 'path c1')

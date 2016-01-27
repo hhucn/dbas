@@ -11,9 +11,6 @@
  */
 startDiscussion = function () {
 	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
-
-	// on success we will get the start statements
-	new AjaxSiteHandler().getIssueList();
 };
 
 /**
@@ -100,13 +97,6 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		}
 	});
 
-	/*
-	// managed in the html file
-	$('#' + scStyleDialogId).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	$('#' + scStyleIslandId).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	$('#' + scStyleCompleteId).click(function () {	interactionHandler.styleButtonChanged(this.id);	});
-	*/
-
 	/**
 	 * Sharing shortened url with mail
 	 */
@@ -135,21 +125,6 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		var val = $('#' + popupUrlSharingInputId).val();
 		new Sharing().facebookShare(val, "FB Sharing", _t(haveALookAt) + ' ' + val,
 			mainpage + "static/images/logo.png");
-	});
-
-	/*
-	 * Display message on premise group checkbox
-	 */
-	$('#' + proTextareaPremisegroupCheckboxId).click(function (){
-		if ($('#' + proTextareaPremisegroupCheckboxId).prop('checked')){
-			guiHandler.displayPremiseGroupPopup();
-		}
-	});
-
-	$('#' + conTextareaPremisegroupCheckboxId).click(function (){
-		if ($('#' + conTextareaPremisegroupCheckboxId).prop('checked')){
-			guiHandler.displayPremiseGroupPopup();
-		}
 	});
 
 	guiHandler.setImageInactive($('#' + displayStyleIconGuidedId));

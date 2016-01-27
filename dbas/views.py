@@ -15,7 +15,6 @@ from pyshorteners.shorteners import Shortener
 
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument
-from .database_helper import DatabaseHelper
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
@@ -23,10 +22,10 @@ from .query_helper import QueryHelper, UrlManager
 from .strings import Translator, TextGenerator
 from .string_matcher import FuzzyStringMatcher
 from .breadcrumb_helper import BreadcrumbHelper
-from .tracking_helper import TrackingHelper
 from .recommender_system import RecommenderHelper, RecommenderHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .weighting_helper import WeightingHelper
+from .url_manager import UrlManager
 
 name = 'D-BAS'
 version = '0.5.0'
@@ -198,6 +197,7 @@ class Dbas(object):
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
 		_qh = QueryHelper()
+		_dh = DictionaryHelper()
 		slug = self.request.matchdict['slug'][0] if len(self.request.matchdict['slug'])>0 else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
@@ -208,9 +208,9 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
 
-		discussion_dict = _qh.prepare_discussion_dict(issue, lang, at_start=True)
-		item_dict       = _qh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang)
-		extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, breadcrumbs=breadcrumbs)
+		discussion_dict = _dh.prepare_discussion_dict(issue, lang, at_start=True)
+		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang)
+		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, breadcrumbs=breadcrumbs)
 
 		return {
 			'layout': self.base_layout(),
@@ -237,6 +237,7 @@ class Dbas(object):
 		matchdict = self.request.matchdict
 
 		_qh = QueryHelper()
+		_dh = DictionaryHelper()
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
@@ -248,12 +249,12 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
 
-		discussion_dict = _qh.prepare_discussion_dict(statement_id, lang, at_attitude=True)
+		discussion_dict = _dh.prepare_discussion_dict(statement_id, lang, at_attitude=True)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager().get_404([slug, statement_id]))
 
-		item_dict       = _qh.prepare_item_dict_for_attitude(statement_id, issue, lang)
-		extras_dict     = _qh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, lang, self.request.authenticated_userid, breadcrumbs=breadcrumbs)
+		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, lang)
+		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, lang, self.request.authenticated_userid, breadcrumbs=breadcrumbs)
 
 		return {
 			'layout': self.base_layout(),
@@ -280,6 +281,7 @@ class Dbas(object):
 		matchdict = self.request.matchdict
 
 		_qh = QueryHelper()
+		_dh = DictionaryHelper()
 
 		slug                = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_or_arg_id = matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in matchdict else ''
@@ -298,12 +300,12 @@ class Dbas(object):
 		if [c for c in ('t','f') if c in mode] and relation == '':
 			# justifying position
 			logger('discussion_justify', 'def', 'justifying position')
-			discussion_dict = _qh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify=True, is_supportive=supportive)
+			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify=True, is_supportive=supportive)
 			if not discussion_dict:
 				return HTTPFound(location=UrlManager().get_404([slug, statement_id]))
 
-			item_dict       = _qh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, lang)
-			extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, mode=='t', breadcrumbs=breadcrumbs)
+			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, lang)
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, mode=='t', breadcrumbs=breadcrumbs)
 
 			# is the discussion at the end?
 			if len(item_dict) == 0:
@@ -315,9 +317,9 @@ class Dbas(object):
 			# dont know
 			logger('discussion_justify', 'def', 'dont know position')
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
-			discussion_dict = _qh.prepare_discussion_dict(argument_uid, lang, at_dont_know=True, is_supportive=supportive, additional_id=statement_or_arg_id)
-			item_dict       = _qh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, lang)
-			extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=argument_uid, breadcrumbs=breadcrumbs)
+			discussion_dict = _dh.prepare_discussion_dict(argument_uid, lang, at_dont_know=True, is_supportive=supportive, additional_id=statement_or_arg_id)
+			item_dict       = _dh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, lang)
+			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=argument_uid, breadcrumbs=breadcrumbs)
 
 			# is the discussion at the end?
 			if len(item_dict) == 0:
@@ -328,11 +330,11 @@ class Dbas(object):
 			# justifying argument
 			logger('discussion_justify', 'def', 'argument stuff')
 			is_attack = True if [c for c in ('undermine','rebut','undercut') if c in relation] else False
-			discussion_dict = _qh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify_argumentation=True,
+			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid)
-			item_dict       = _qh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, lang)
-			extras_dict     = _qh.prepare_extras_dict(slug, True, True, True, True, lang, self.request.authenticated_userid, not is_attack, argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs)
+			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, lang)
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, lang, self.request.authenticated_userid, not is_attack, argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs)
 
 			# is the discussion at the end?
 			if len(item_dict) == 0:
@@ -374,6 +376,8 @@ class Dbas(object):
 		WeightingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
 
 		_qh = QueryHelper()
+		_dh = DictionaryHelper()
+		
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		lang            = _qh.get_language(self.request, get_current_registry)
 		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
@@ -382,10 +386,10 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
 
-		discussion_dict = _qh.prepare_discussion_dict(arg_id_user, lang, at_argumentation=True, is_supportive=supportive,
+		discussion_dict = _dh.prepare_discussion_dict(arg_id_user, lang, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
-		item_dict       = _qh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, lang)
-		extras_dict     = _qh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=arg_id_user, breadcrumbs=breadcrumbs)
+		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, lang)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=arg_id_user, breadcrumbs=breadcrumbs)
 
 		return {
 			'layout': self.base_layout(),
@@ -590,55 +594,6 @@ class Dbas(object):
 		logger('get_all_users', 'def', 'main')
 
 		return_dict = UserHandler().get_all_users(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - getting complete track of the user
-	@view_config(route_name='ajax_get_user_track', renderer='json', check_csrf=True)
-	def get_user_track(self):
-		"""
-		Request the complete user track
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		logger('get_user_track', 'def', 'main')
-
-		nickname = 'unknown'
-		try:
-			logger('get_user_track', 'def', 'read params')
-			nickname = str(self.request.authenticated_userid)
-			logger('get_user_track', 'def', 'nickname ' + nickname)
-		except KeyError as e:
-			logger('get_user_track', 'error', repr(e))
-
-		logger('manage_user_track', 'def', 'get track data')
-		return_dict = TrackingHelper().get_track_of_user(nickname, lang)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - deleting complete track of the user
-	@view_config(route_name='ajax_delete_user_track', renderer='json', check_csrf=True)
-	def delete_user_track(self):
-		"""
-		Request the complete user track
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('delete_user_track', 'def', 'main')
-		TrackingHelper().del_track_of_user(transaction, self.request.authenticated_userid)
-		return_dict = dict()
-		return_dict['removed_data'] = 'true' # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -956,7 +911,7 @@ class Dbas(object):
 			issue = issue_fallback if issue == 'undefined' else issue
 			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
-			new_statement, is_duplicate = DatabaseHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
+			new_statement, is_duplicate = QueryHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
 			if new_statement == -1:
 				return_dict['status'] = 0
 			else:
@@ -996,8 +951,8 @@ class Dbas(object):
 			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', supportive: ' +
 			       str(support) + ', issue: ' + str(issue))
 
-			new_argument_uid, is_duplicate = DatabaseHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
-			if new_statement == -1:
+			new_argument_uid, is_duplicate = QueryHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
+			if new_argument_uid == -1:
 				return_dict['status'] = 0
 			else:
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
@@ -1013,8 +968,6 @@ class Dbas(object):
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
-
-
 
 	# ajax - send new premises
 	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json', check_csrf=True)
@@ -1043,7 +996,7 @@ class Dbas(object):
 			logger('ajax_set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', text: ' + text + ', relation: ' +
 			       str(relation) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
 
-			new_argument_uid = DatabaseHelper().handle_insert_new_premise_for_argument(text,
+			new_argument_uid = QueryHelper().handle_insert_new_premise_for_argument(text,
 			                                                                           relation,
 			                                                                           arg_uid,
 			                                                                           supportive,
@@ -1071,96 +1024,6 @@ class Dbas(object):
 		logger('ajax_set_new_premises_for_argument', 'def', 'returning')
 		return return_json
 
-
-	# # ajax - send new premises
-	# @view_config(route_name='ajax_set_new_premises_for_x', renderer='json', check_csrf=True)
-	# def set_new_premises_for_x(self):
-	# 	"""
-	# 	Sets a new premisse for statement, argument, ? Everything is possible
-	# 	:return: json-dict()
-	# 	"""
-	# 	user_id = self.request.authenticated_userid
-	# 	UserHandler().update_last_action(transaction, user_id)
-	# 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-	#
-	# 	logger('set_new_premises_for_x', 'def', 'main')
-	#
-	# 	return_dict = dict()
-	# 	try:
-	# 		logger('set_new_premises_for_x', 'def', 'getting params')
-	# 		pro_dict = dict()
-	# 		con_dict = dict()
-	#
-	# 		related_argument  = self.request.params['related_argument'] if 'related_argument' in self.request.params else -1
-	# 		premisegroup_id   = self.request.params['premisegroup_id'] if 'premisegroup_id' in self.request.params else -1
-	# 		current_attack    = self.request.params['current_attack'] if 'current_attack' in self.request.params else -1
-	# 		last_attack       = self.request.params['last_attack'] if 'last_attack' in self.request.params else -1
-	# 		confrontation_uid = self.request.params['confrontation_uid'] if 'confrontation_uid' in self.request.params else -1
-	# 		premisegroup_con  = self.request.params['premisegroup_con'] if 'premisegroup_con' in self.request.params else '0'
-	# 		premisegroup_pro  = self.request.params['premisegroup_pro'] if 'premisegroup_pro' in self.request.params else '0'
-	# 		exception_rebut   = self.request.params['exceptionForRebut'] if 'exceptionForRebut' in self.request.params else '0'
-	# 		issue = self.request.params['issue'] if 'issue' in self.request.params \
-	# 			else self.request.session['issue'] if 'issue' in self.request.session \
-	# 			else issue_fallback
-	# 		issue = issue_fallback if issue == 'undefined' else issue
-	#
-	# 		premisegroup_con = True if premisegroup_con.lower() == 'true' else False
-	# 		premisegroup_pro = True if premisegroup_pro.lower() == 'true' else False
-	# 		exception_rebut  = True if exception_rebut.lower() == 'true' else False
-	#
-	# 		logger('set_new_premises_for_x', 'def', 'param related_argument: ' + str(related_argument)
-	# 		       + ', param premisegroup_id: ' + str(premisegroup_id)
-	# 		       + ', param current_attack: ' + str(current_attack)
-	# 		       + ', param last_attack: ' + str(last_attack)
-	# 		       + ', param confrontation_uid: ' + str(confrontation_uid)
-	# 		       + ', param premisegroup_con: ' + str(premisegroup_con)
-	# 		       + ', param premisegroup_pro: ' + str(premisegroup_pro)
-	# 		       + ', param issue: ' + str(issue)
-	# 		       + ', param exception_rebut: ' + str(exception_rebut))
-	#
-	# 		# confrontation_uid is a premise group
-	#
-	# 		# Interpretation of the parameters
-	# 		# User says: E => A             | #related_argument
-	# 		# System says:
-	# 		#   undermine:  F => !E         | #premisegroup_id  =>  !premisegroup of #related_argument
-	# 		#   undercut:   D => !(E=>A)    | #premisegroup_id  =>  !#related_argument
-	# 		#   rebut:      B => !A         | #premisegroup_id  =>  !conclusion of #related_argument
-	# 		# Handle it, based on current and last attack
-	#
-	# 		# getting all arguments
-	# 		for key in self.request.params:
-	# 			logger('set_new_premises_for_x', key, self.request.params[key])
-	# 			if 'pro_' in key:
-	# 				pro_dict[key] = self.escape_string(self.request.params[key])
-	# 			if 'con_' in key:
-	# 				con_dict[key] = self.escape_string(self.request.params[key])
-	#
-	# 		return_dict['status'] = '1'
-	# 		return_dict.update(DatabaseHelper().handle_inserting_new_statements(
-	# 			user = user_id,
-	# 			pro_dict = pro_dict,
-	# 			con_dict = con_dict,
-	# 			transaction = transaction,
-	# 			argument_id = related_argument,
-	# 			premisegroup_id = premisegroup_id,
-	# 			current_attack = current_attack,
-	# 			last_attack = last_attack,
-	# 			premisegroup_con = premisegroup_con,
-	# 			premisegroup_pro = premisegroup_pro,
-	# 			issue = issue,
-	# 			exception_rebut = exception_rebut
-	# 		))
-	#
-	# 	except KeyError as e:
-	# 		logger('set_new_premises_for_x', 'error', repr(e))
-	# 		return_dict['status'] = '-1'
-	#
-	# 	return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-	#
-	# 	logger('set_new_premises_for_x', 'def', 'returning')
-	# 	return return_json
-
 	# ajax - set new textvalue for a statement
 	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
 	def set_correcture_of_statement(self):
@@ -1177,7 +1040,7 @@ class Dbas(object):
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
 			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text))
-			return_dict = DatabaseHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
+			return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
 		except KeyError as e:
 			return_dict = dict()
 			logger('set_correcture_of_statement', 'error', repr(e))
@@ -1207,49 +1070,16 @@ class Dbas(object):
 			uid = self.request.params['uid']
 
 			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
-			return_dict = DatabaseHelper().get_logfile_for_statement(uid)
+			return_dict = QueryHelper().get_logfile_for_statement(uid)
 			return_dict['status'] = 1
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
 			return_dict['status'] = 0
 
-		# return_dict = DatabaseHelper().get_logfile_for_premisegroup(uid)
+		# return_dict = QueryHelper().get_logfile_for_premisegroup(uid)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
-
-#	# ajax - for shorten url
-#	@view_config(route_name='ajax_get_everything_for_island_view', renderer='json')
-#	def get_everything_for_island_view(self):
-#		"""
-#		Everthing for the island view
-#		:return: json-dict()
-#		"""
-#		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-#		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-#
-#		logger('get_everything_for_island_view', 'def', 'main')
-#
-#		return_dict = {}
-#		try:
-#			arg_uid = self.request.params['arg_uid']
-#			lang = self.request.params['lang']
-#			logger('get_everything_for_island_view', 'def', 'params arg_uid ' + str(arg_uid))
-#
-#			return_dict = DatabaseHelper().get_everything_for_island_view(arg_uid, lang)
-#			return_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(return_dict['premise'],
-#			                                                                                    return_dict['conclusion'],
-#			                                                                                    False))
-#
-#			return_dict['status'] = '1'
-#			logger('get_everything_for_island_view', 'return', str(return_dict))
-#
-#		except KeyError as e:
-#			logger('swich_language', 'error', repr(e))
-#			return_dict['status'] = '0'
-#
-#		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-#		return return_json
 
 	# ajax - for shorten url
 	@view_config(route_name='ajax_get_shortened_url', renderer='json')
@@ -1312,7 +1142,7 @@ class Dbas(object):
 		issue = self.request.params['issue'] if 'issue' in self.request.params \
 			else self.request.session['issue'] if 'issue' in self.request.session \
 			else issue_fallback
-		return_dict = DatabaseHelper().get_attack_overview(self.request.authenticated_userid, issue, lang)
+		return_dict = QueryHelper().get_attack_overview(self.request.authenticated_userid, issue, lang)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -1333,7 +1163,7 @@ class Dbas(object):
 		except KeyError:
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
-		return_dict = DatabaseHelper().get_issue_list(lang)
+		return_dict = QueryHelper().get_issue_list(lang)
 		issue = self.request.params['issue'] if 'issue' in self.request.params \
 			else self.request.session['issue'] if 'issue' in self.request.session \
 			else issue_fallback
@@ -1352,7 +1182,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_news', 'def', 'main')
-		return_dict = DatabaseHelper().get_news()
+		return_dict = QueryHelper().get_news()
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -1369,7 +1199,7 @@ class Dbas(object):
 		issue = self.request.params['issue'] if 'issue' in self.request.params \
 			else self.request.session['issue'] if 'issue' in self.request.session \
 			else issue_fallback
-		return_dict = DatabaseHelper().get_dump(issue)
+		return_dict = QueryHelper().get_dump(issue)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -1416,7 +1246,7 @@ class Dbas(object):
 		try:
 			title = self.escape_string(self.request.params['title'])
 			text = self.escape_string(self.request.params['text'])
-			return_dict = DatabaseHelper().set_news(transaction, title, text, self.request.authenticated_userid)
+			return_dict = QueryHelper().set_news(transaction, title, text, self.request.authenticated_userid)
 		except KeyError as e:
 			return_dict = dict()
 			logger('ajax_send_news', 'error', repr(e))
