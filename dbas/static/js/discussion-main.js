@@ -217,13 +217,13 @@ setStyleOptions = function (guiHandler){
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
 
-	var w1 = $('#discussion-restart-btn').width(),
-		w2 = $('#issue-dropdown').width();
-
-	if (w1>w2)
-		$('#issue-dropdown').attr('style', 'width: ' + w1 + ' px;');
-	else
-		$('#discussion-restart-btn').attr('style', 'width: ' + w2 + ' px;');
+	var w1 = $('#discussion-restart-btn').outerWidth(),
+		w2 = $('#' + issueDropdownButtonID).outerWidth();
+	if (w1>w2){
+		$('#' + issueDropdownButtonID).attr('style', 'width: ' + w1 + 'px;');
+	} else {
+		$('#discussion-restart-btn').attr('style', 'width: ' + w2 + 'px;');
+	}
 
 	// focus text of input elements
 	$("input[type='text']").on("click", function () {

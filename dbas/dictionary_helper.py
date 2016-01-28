@@ -142,9 +142,9 @@ class DictionaryHelper(object):
 			confrontation       = _qh.get_text_for_argument_uid(uid, lang)
 			premise, tmp        = _qh.get_text_for_premisesGroup_uid(uid)
 			conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
-				else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
 			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
-			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, is_supportive)
+			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, db_argument.isSupportive)
 
 		elif at_dont_know:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_dont_know')
@@ -168,7 +168,9 @@ class DictionaryHelper(object):
 				premise, tmp        = _qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 				conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 										else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
-				confrontation       = _qh.get_text_for_argument_uid(additional_id, lang)
+				db_confrontation    = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
+				confrontation, tmp  = _qh.get_text_for_premisesGroup_uid(db_confrontation.premisesGroup_uid)
+				# confrontation       = _qh.get_text_for_argument_uid(additional_id, lang)
 				logger('DictionaryHelper', 'prepare_discussion_dict', 'additional_id ' + str(additional_id) + ', confrontation '
 				       + str(confrontation) + ', attack ' + str(attack))
 
@@ -329,7 +331,9 @@ class DictionaryHelper(object):
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid==argument_uid, Argument.isSupportive==True)).all()
 
 		elif attack_type == 'rebut':
-			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_argument.conclusion_uid, Argument.isSupportive==False)).all()
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_argument.conclusion_uid,
+			                                                               Argument.argument_uid == db_argument.argument_uid,
+			                                                               Argument.isSupportive==(not db_argument.isSupportive))).all()
 
 		_um = UrlManager(application_url, slug)
 
@@ -392,7 +396,7 @@ class DictionaryHelper(object):
 			conclusion       = conclusion[0:1].lower() + conclusion[1:]
 			premise          = premise[0:1].lower() + premise[1:]
 
-			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True)
+			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True, not db_argument.isSupportive)
 			mode             = 't' if isSupportive else 't'
 			_um              = UrlManager(application_url, slug)
 
@@ -451,13 +455,14 @@ class DictionaryHelper(object):
 		# add everything for the island view
 		if show_display_styles:
 			# does an argumente exists?
-			if (DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()):
+			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
+			if db_argument:
 				island_dict = _qh.get_everything_for_island_view(argument_id, lang)
 				island_dict['premise'] = island_dict['premise'][0:1].lower() + island_dict['premise'][1:]
 				island_dict['conclusion'] = island_dict['conclusion'][0:1].lower() + island_dict['conclusion'][1:]
 				island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
 				                                                                                    island_dict['conclusion'],
-				                                                                                    False, False))
+				                                                                                    False, False, not db_argument.isSupportive))
 				return_dict['island'] = island_dict
 			else:
 				return_dict['is_editable']            =  False

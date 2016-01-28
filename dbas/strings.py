@@ -1137,7 +1137,9 @@ class TextGenerator(object):
 			ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieve) + ' ' + conclusion
 			           #+ '.<br><br>' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
 		if attackType == 'rebut':
-			ret_text = confrontation + ' ' + _t.get(_t.iAcceptCounter) + ' ' + conclusion# + '.<br><br>'
+			ret_text = confrontation + ' ' \
+			           + (_t.get(_t.iAcceptCounter) if isSupportive else _t.get(_t.iAcceptArgument)) \
+			           + ' ' + conclusion
 			# if isSupportive:
 			# 	ret_text += _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) + ' ' + conclusion + '.'
 			# else:
@@ -1250,7 +1252,7 @@ class TextGenerator(object):
 
 		return ret_dict
 
-	def get_relation_text_dict_without_confrontation(self, premises, conclusion, startLowerCase, withNoOpinionText):
+	def get_relation_text_dict_without_confrontation(self, premises, conclusion, startLowerCase, withNoOpinionText, isAttacking):
 		"""
 
 		:param premise:
@@ -1279,8 +1281,11 @@ class TextGenerator(object):
 		ret_dict['support_text'] = r + ', ' + _t.get(_t.itIsTrue) + ' <strong>' + premise + '</strong>.'
 		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveArgument) + ' <strong>' + conclusion + '</strong>.'
 		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' <strong>' + conclusion + '</strong>.'
-		ret_dict['rebut_text'] = r + ', <strong>' + premise + '</strong> ' + _t.get(_t.iAcceptArgument) + ' <strong>' + conclusion + '</strong>. '\
-		                         + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' <strong>' + conclusion + '</strong>.'
+		ret_dict['rebut_text'] = r + ', <strong>' + premise + '</strong> ' \
+		                         + (_t.get(_t.iAcceptCounter) if isAttacking else _t.get(_t.iAcceptArgument)) \
+		                         + ' <strong>' + conclusion + '</strong>. '\
+		                         + (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if isAttacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))\
+		                         + ' <strong>' + conclusion + '</strong>.'
 		if withNoOpinionText:
 			ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': <strong>' + conclusion + ', ' + _t.get(_t.because).lower() \
 			                               + ' ' + premise + '</strong>. ' + _t.get(_t.goStepBack) + '.'
@@ -1356,7 +1361,7 @@ class TextGenerator(object):
 
 		elif attack == 'undercut':
 			confrontationText = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + premise + '</strong> ' \
-			                    + (_t.get(_t.andTheyDoNotBelieveCounter)
+			                    + (_t.get(_t.andTheyDoNotBelieveArgument)
 			                       if supportive else _t.get(_t.andTheyDoNotBelieveCounter)) \
 			                    + ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' ' + confrontation
 
