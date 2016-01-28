@@ -29,10 +29,10 @@
 				</div>
 				<div class="col-md-5 center text-center">
 					<span i18n:translate="startet_at">The discussion was started at</span>
-					<span id="issue-date">${issue.date}</span>
+					<span id="issue-date" class="text-info">${issue.date}</span>
 					<br>
 					<span i18n:translate="already_has">and already has</span>
-					<span id="issue-count">${issue.arg_count}</span>
+					<span id="issue-count" class="text-info">${issue.arg_count}</span>
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 
