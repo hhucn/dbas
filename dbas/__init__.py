@@ -97,10 +97,10 @@ def main(global_config, **settings):
 	config.add_route('ajax_additional_service',                  '{stuff:.*}additional_service')
 
 	# ajax for navigation logic at the end, otherwise the * pattern will do shit
-	config.add_route('discussion_reaction',   '/d/{slug}/r/{arg_id_user}/{mode}*arg_id_sys')
-	config.add_route('discussion_justify',    '/d/{slug}/j/{statement_or_arg_id}/{mode}*relation')
-	config.add_route('discussion_attitude',   '/d/{slug}/a/*statement_id')
-	config.add_route('discussion_init',       '/d*slug')
+	config.add_route('discussion_reaction',   '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys')
+	config.add_route('discussion_justify',    '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
+	config.add_route('discussion_attitude',   '/discuss/{slug}/attitude/*statement_id')
+	config.add_route('discussion_init',       '/discuss*slug')
 
 	# read the input and start
 	config.scan()

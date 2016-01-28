@@ -20,26 +20,26 @@ class VotingHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		db_vote, already_voted = self.__check_and_set_vote_uid(db_argument, user)
 
-		# some logical assumptions
-		#if db_argument.conclusion_uid == 0:
-		#	self.add_vote_for_argument(db_argument.argument_uid, user, transaction)
+		# some logical assumptions, where the conclusion is an argument
+		if db_argument.conclusion_uid == 0:
+			#self.add_vote_for_argument(db_argument.argument_uid, user, transaction)
+
+			# check for inconsequences
+			db_conclusion_arguments = DBDiscussionSession.query(Argument).filter_by(argument_uid=db_argument.argument_uid).all()
+			for conclusion_argument in db_conclusion_arguments:
+				# our argument is supportive, so let's have a look at arguments, which  attacks our conclusion argument OR
+				# our argument is  attacking, so let's have a look at arguments, which supports our conclusion argument
+				if db_argument.isSupportive and not conclusion_argument.isSupportive \
+						or not db_argument.isSupportive and not conclusion_argument.isSupportive:
+					self.remove_vote_for_argument(conclusion_argument.uid, user)
 #
-		#	# check for inconsequences
-		#	db_relevance_arguments = DBDiscussionSession.query(Argument).filter_by(argument_uid=db_argument.argument_uid).all()
-		#	for argument in db_relevance_arguments:
-		#		# our argument is supportive, so let's have a look at arguments, which attacks our conclusion argument OR
-		#		# our argument is attacking, so let's have a look at arguments, which supports our conclusion argument
-		#		if db_argument.isSupportive and not argument.isSupportive \
-		#				or not db_argument.isSupportive and not argument.isSupportive:
-		#			self.remove_vote_for_argument(argument.uid, user)
-#
-		## let's check, if the user voted for the oposite
-		#db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid == db_argument.premisesGroup_uid,
-		#                                                              Argument.conclusion_uid == db_argument.conclusion_uid,
-		#                                                              Argument.argument_uid == db_argument.argument_uid,
-		#                                                              Argument.isSupportive != db_argument.isSupportive)).first()
-		#if db_argument:
-		#	self.remove_vote_for_argument(db_argument.uid, user)
+		# let's check, if the user voted for the oposite
+		db_opposite_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid == db_argument.premisesGroup_uid,
+		                                                                       Argument.conclusion_uid == db_argument.conclusion_uid,
+		                                                                       Argument.argument_uid == db_argument.argument_uid,
+		                                                                       Argument.isSupportive != db_argument.isSupportive)).first()
+		if db_opposite_argument:
+			self.remove_vote_for_argument(db_opposite_argument.uid, user)
 
 
 		# return count of votes

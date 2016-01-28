@@ -36,7 +36,7 @@ class BreadcrumbHelper(object):
 		url = UrlManager(application_url, slug).get_url(path)
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'url ' + url)
 
-		group0 = re.search(re.compile(r"d/?[a-z,A-Z,0-9,-]*"), url).group(0)
+		group0 = re.search(re.compile(r"discuss/?[a-z,A-Z,0-9,-]*"), url).group(0)
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'group0 ' + str(group0))
 		if group0 and url.endswith(group0):
 			self.del_breadcrumbs_of_user(transaction, user)
@@ -90,7 +90,7 @@ class BreadcrumbHelper(object):
 		_t = Translator(lang)
 		_qh = QueryHelper()
 
-		if '/r/' in url:
+		if '/reaction/' in url:
 			splitted = url.split('/')
 			uid  = splitted[6]
 			text = _qh.get_text_for_argument_uid(uid, lang)
@@ -101,7 +101,7 @@ class BreadcrumbHelper(object):
 
 			return _t.get(_t.otherParticipantDisagree) + ' ' + text + '.'
 
-		elif '/j/' in url:
+		elif '/justify/' in url:
 			splitted = url.split('/')
 			uid  = splitted[6]
 			text = _qh.get_text_for_statement_uid(uid) if len(splitted) == 8 else _qh.get_text_for_argument_uid(uid, lang)
@@ -110,7 +110,7 @@ class BreadcrumbHelper(object):
 			# 8 choose justification for a relation
 			return ( _t.get(_t.breadcrumbsChooseActionForStatement) if len(splitted) == 8 else _t.get(_t.breadcrumbsReplyForResponseOfConfrontation)) + ' ' + text
 
-		elif '/a/' in url:
+		elif '/attitude/' in url:
 			uid  = url[url.rfind('/')+1:]
 			text = _qh.get_text_for_statement_uid(uid)
 			text = text[0:1].lower() + text[1:]

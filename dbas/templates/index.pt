@@ -26,7 +26,7 @@
 								</h2>
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
 						<br>
-						<form action="/d" method="get" class="text-center">
+						<form action="/discuss" method="get" class="text-center" tal:attributes="action extras.restart_url">
 							<input class="button button-block btn btn-lg btn-primary" type="submit" value="Click here to start now!" name="Submit" id="start-discussion-button" />
 						</form>
 						<br>

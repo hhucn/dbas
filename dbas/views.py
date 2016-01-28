@@ -49,7 +49,6 @@ class Dbas(object):
 		mainpage = request.application_url
 		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
 
-
 	def escape_string(self, text):
 		"""
 
@@ -79,7 +78,7 @@ class Dbas(object):
 		except KeyError:
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
-		extras_dict =  {'logged_in': self.request.authenticated_userid}
+		extras_dict =  {'logged_in': self.request.authenticated_userid, 'restart_url': UrlManager(mainpage).discussion_url}
 		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, lang)
 
 		return {
