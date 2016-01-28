@@ -20,39 +20,24 @@
 
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
-							<td>
-								<spand class="lead" i18n:translate="firstname">Firstname</spand>
-							</td>
-							<td><span tal:replace="db_firstname" />
-							</td>
+							<td><span class="lead" i18n:translate="firstname">Firstname</span></td>
+							<td><span tal:replace="db_firstname"></span></td>
 						</tr>
 						<tr>
-							<td>
-								<spand class="lead" i18n:translate="surname">Surname</spand>
-							</td>
-							<td><span tal:replace="db_surname" />
-							</td>
+							<td><span class="lead" i18n:translate="surname">Surname</span></td>
+							<td><span tal:replace="db_surname"></span></td>
 						</tr>
 						<tr>
-							<td>
-								<spand class="lead" i18n:translate="nickname">Nickname</spand>
-							</td>
-							<td id='table_nickname'><span tal:replace="db_nickname" />
-							</td>
+							<td><span class="lead" i18n:translate="nickname">Nickname</span></td>
+							<td id='table_nickname'><span tal:replace="db_nickname"></span></td>
 						</tr>
 						<tr>
-							<td>
-								<spand class="lead">E-Mail</spand>
-							</td>
-							<td><span tal:replace="db_mail" />
-							</td>
+							<td><span class="lead">E-Mail</span></td>
+							<td><span tal:replace="db_mail"></span></td>
 						</tr>
 						<tr>
-							<td>
-								<spand class="lead" i18n:translate="group">Group</spand>
-							</td>
-							<td><span tal:replace="db_group" />
-							</td>
+							<td><span class="lead" i18n:translate="group">Group</span></td>
+							<td><span tal:replace="db_group"></span></td>
 						</tr>
 					</table>
 				</div>
@@ -73,15 +58,21 @@
 						<input id="delete-history" type="button" value="Delete history" class="button button-block btn btn-primary" style="display: inline-block;" />
 					</div>
 
-					<div id="history-table-success" class="alert alert-success" role="alert">
+					<div id="history-table-success" class="alert alert-success" role="alert" style="display: none;">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="lead" i18n:translate="success">Success:</span>
+						<span class="lead" i18n:translate="success" style="color: white;">Success:</span>
 						<span id="history-success-msg"></span>
 					</div>
 
-					<div id="history-table-failure" class="alert alert-danger" role="alert">
+					<div id="history-table-failure" class="alert alert-danger" role="alert" style="display: none;">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="lead" i18n:translate="error:">Error:</span>
+						<span class="lead" i18n:translate="error:" style="color: white;">Error:</span>
 						<span id="history-failure-msg"></span>
 					</div>
 
@@ -105,17 +96,17 @@
 						<div class="form-group">
 							<p class="col-md-5 control-label" i18n:translate="old_password">Old password</p>
 							<div class="col-md-7">
-								<input class="form-control" id="settings-password-old-input" type="password" name="passwordold" class="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
+								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
 							</div>
 						</div>
 
 						<div class="form-group">
 							<p class="col-md-5 control-label" i18n:translate="new_password">New Password</p>
 							<div class="col-md-7">
-								<input class="form-control" id="settings-password-input" type="password" name="password" class="password" autocomplete="off" placeholder="example: ******" value="${password}">
+								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}">
 							</div>
 
-							<div id="settings-password-extras">
+							<div id="settings-password-extras" style="display: none;">
 								<div id="settings-password-meter" class="veryweak"></div>
 								<h5 id="settings-password-strength" i18n:translate="strength">Strength</h5>
 								<a id="settings-password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
@@ -127,7 +118,7 @@
 						<div class="form-group">
 							<p class="col-md-5 control-label" i18n:translate="new_password_confirm">New Password (confirm)</p>
 							<div class="col-md-7">
-								<input class="form-control" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" class="password" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
 							</div>
 						</div>
 
@@ -136,13 +127,14 @@
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">
-					<span tal:replace="message" />
-					</span>
+                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span tal:replace="message">message</span>
 							</div>
 						</div>
 
 						<div tal:condition="change_success" id="settings-success-message" class="alert alert-success" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						    	<span aria-hidden="true">&times;</span>
+						    </button>
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 							<span class="lead" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
 						</div>

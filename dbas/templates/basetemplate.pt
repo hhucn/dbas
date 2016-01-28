@@ -41,12 +41,6 @@
 	<script type="text/javascript">
 		var adblock = true;
 	</script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/adframe.js')}"></script>
-	<script type="text/javascript">
-		if (adblock && false) {
-			document.getElementById('adblocker_message').style.display = 'inline';
-		}
-	</script>
 
 
 
@@ -54,6 +48,7 @@
 		<div id="wrapper-header">
 			<div metal:use-macro="load: snippet-header.pt" />
 			<div metal:use-macro="load: snippet-popups.pt" />
+		</div>
 
 			<div id="wrapper-content">
 				<div metal:define-slot="content_page"></div>
@@ -66,7 +61,6 @@
 			</div>
 
 			<div class="ajaxloader"></div>
-		</div>
 	</div>
 
 	<div class="eupopup eupopup-fixedtop"></div>

@@ -105,15 +105,13 @@ class RecommenderHelper(object):
 			attack = random.choice(attack_list)
 			attack_list.remove(attack)
 			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
-			if attack == 1:
-				return_dict = _qh.get_undermines_for_argument_uid(argument_uid)
-				key = 'undermine'
-			elif attack == 5:
-				return_dict = _qh.get_rebuts_for_argument_uid(argument_uid)
-				key = 'rebut'
-			else:
-				return_dict = _qh.get_undercuts_for_argument_uid(argument_uid)
-				key = 'undercut'
+
+			return_dict = _qh.get_undermines_for_argument_uid(argument_uid) if attack == 1 \
+				else (_qh.get_rebuts_for_argument_uid(argument_uid)  if attack == 5
+				      else _qh.get_undercuts_for_argument_uid(argument_uid))
+			key = 'undermine' if attack == 1 \
+				else ('rebut' if attack == 5
+				      else 'undercut')
 
 			if return_dict and len(return_dict) != 0:
 				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack found')
@@ -130,14 +128,37 @@ class RecommenderHelper(object):
 
 		return return_dict, key
 
+	def __get_best_argument(self, argument_list):
+		"""
+
+		:param argument_list: Argument[]
+		:return: Argument
+		"""
+		logger('RecommenderHelper', '__get_best_argument', 'main')
+		evaluations = []
+		for argument in argument_list:
+			evaluations.append(self.__evaluate_argument(argument.uid))
+
+		best = max(evaluations)
+		index = [i for i, j in enumerate(evaluations) if j == best]
+		logger('RecommenderHelper', '__get_best_argument', 'index ' + str(index))
+		return index[0]
+
 	def __evaluate_argument(self, argument_uid):
 		"""
 
-		:param argument_uid:
+		:param argument_uid: Argument.uid
 		:return:
 		"""
 		logger('RecommenderHelper', '__evaluate_argument', 'argument ' + str(argument_uid))
 
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		# db_weight =
-		# todo this
+		db_votes = DBDiscussionSession.query(Vote).filter_by(argument_uid=argument_uid).all()
+		db_valid_votes   = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==argument_uid,
+		                                                               Vote.isValid==true)).all()
+		db_valid_upvotes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==argument_uid,
+		                                                               Vote.isValid==True,
+		                                                               Vote.isUpVote==True)).all()
+		index_up_vs_down = len(db_valid_upvotes) / len(db_valid_votes)
+		index_participation = len(db_votes) / len(DBDiscussionSession.query(User).all())
+
+		return index_participation, index_up_vs_down

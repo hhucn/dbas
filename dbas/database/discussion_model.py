@@ -250,16 +250,14 @@ class Argument(DiscussionBase):
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
-	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'))
 
 	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesGroup_uid])
 	statements = relationship('Statement', foreign_keys=[conclusion_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
 	issues = relationship('Issue', foreign_keys=[issue_uid])
-	weights = relationship('Weight', foreign_keys=[weight_uid])
 
-	def __init__(self, premisegroup, issupportive, author, issue, conclusion=0, weight=0):
+	def __init__(self, premisegroup, issupportive, author, issue, conclusion=0):
 		"""
 		Initializes a row in current argument-table
 		:param premisegroup:
@@ -276,13 +274,9 @@ class Argument(DiscussionBase):
 		self.author_uid = author
 		self.argument_uid = 0
 		self.issue_uid = issue
-		self.weight_uid = weight
 
 	def conclusions_argument(self, argument):
 		self.argument_uid = argument
-
-	def set_weight_uid(self, weight_uid):
-		self.weight_uid = weight_uid
 
 
 class Track(DiscussionBase):
@@ -390,38 +384,29 @@ class Relation(DiscussionBase): # TODO IS THIS NECESSARY ?
 		self.name = name
 
 
-class Weight(DiscussionBase):
-	"""
-	Weight-table with several columns.
-	Each weight uid is mapped with a vote.
-	"""
-	__tablename__ = 'weights'
-	uid = sa.Column(sa.Integer, primary_key=True)
-
-
 class Vote(DiscussionBase):
 	"""
 	Vote-table with several columns.
 	The combination of the both FK is a PK
 	"""
 	__tablename__ = 'votes'
-	weight_uid = sa.Column(sa.Integer, sa.ForeignKey('weights.uid'), primary_key=True)
+	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'), primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), primary_key=True)
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	isUpVote = sa.Column(sa.Boolean, nullable=False)
 	isValid = sa.Column(sa.Boolean, nullable=False)
 
-	weights = relationship('Weight', foreign_keys=[weight_uid])
+	arguments = relationship('Argument', foreign_keys=[argument_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, weight_uid=0, author_uid=0, isUpVote=False, isValid=True):
+	def __init__(self, argument_uid=0, author_uid=0, isUpVote=True, isValid=True):
 		"""
 		Initializes a row
 		:param weight_uid:
 		:param author_uid:
 		:return:
 		"""
-		self.weight_uid = weight_uid
+		self.argument_uid = argument_uid
 		self.author_uid = author_uid
 		self.isUpVote = isUpVote
 		self.timestamp = func.now()

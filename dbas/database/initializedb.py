@@ -219,11 +219,17 @@ def setupNewsDatabase():
 				       'a new view was published - the island view. Do not be shy and try it in discussions ;-) Last '
 				       'improvement just collects the attacks and supports for arguments...this is needed for our next big '
 				       'thing :) Stay tuned!')
+	news39 = News(title='Refactoring',
+				  date='27.01.2016',
+				  author='Tobias Krauthoff',
+				  news='DBAS refactored the last two weeks. During this time, a lot of JavaScript was removed. Therefore '
+				       'DBAS uses Chameleon with TAL in the Pyramid-Framework. So DBAS will be more stable and faster. '
+				       'The next period all functions will be tested and recovered.')
 
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
-	              news32, news33, news34, news35, news36, news37, news38]
+	              news32, news33, news34, news35, news36, news37, news38, news39]
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 

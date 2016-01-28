@@ -232,12 +232,6 @@ $(function () {
 		new PasswordHandler().generate_password($('#' + popupPasswordGeneratorOutput));
 	});
 
-	$('#' + settingsPasswordExtrasId).hide();
-	$('#' + trackTableSuccessId).hide();
-	$('#' + trackTableFailureId).hide();
-	$('#' + historyTableSuccessId).hide();
-	$('#' + historyTableFailureId).hide();
-
 	// ajax loading animation
 	$(document).on({
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a

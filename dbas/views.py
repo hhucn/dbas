@@ -24,13 +24,14 @@ from .string_matcher import FuzzyStringMatcher
 from .breadcrumb_helper import BreadcrumbHelper
 from .recommender_system import RecommenderHelper, RecommenderHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
-from .weighting_helper import WeightingHelper
+from .voting_helper import VotingHelper
 from .url_manager import UrlManager
 
 name = 'D-BAS'
 version = '0.5.0'
 header = name + ' ' + version
 issue_fallback = 1
+mainpage = ''
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -44,8 +45,9 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		self.request = request
+		global mainpage
+		mainpage = request.application_url
 		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
-
 
 	def escape_string(self, text):
 		"""
@@ -76,12 +78,15 @@ class Dbas(object):
 		except KeyError:
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
+		extras_dict =  {'logged_in': self.request.authenticated_userid, 'restart_url': UrlManager(mainpage).discussion_url}
+		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, lang)
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
 			'title': 'Main',
 			'project': header,
-			'extras': {'logged_in': self.request.authenticated_userid},
+			'extras': extras_dict
 		}
 
 	# contact page
@@ -206,11 +211,15 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
+		                                                 self.request.session.id, transaction, lang,
+		                                                 mainpage)
 
 		discussion_dict = _dh.prepare_discussion_dict(issue, lang, at_start=True)
-		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang)
-		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, breadcrumbs=breadcrumbs)
+		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang, mainpage)
+		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang,
+		                                          self.request.authenticated_userid, breadcrumbs=breadcrumbs,
+		                                          application_url=mainpage)
 
 		if len(item_dict) == 0:
 			_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_start=True)
@@ -250,14 +259,18 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
+		                                                 self.request.session.id, transaction, lang,
+		                                                 mainpage)
 
 		discussion_dict = _dh.prepare_discussion_dict(statement_id, lang, at_attitude=True)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager().get_404([slug, statement_id]))
 
-		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, lang)
-		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, lang, self.request.authenticated_userid, breadcrumbs=breadcrumbs)
+		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, lang, mainpage)
+		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, lang,
+		                                          self.request.authenticated_userid, breadcrumbs=breadcrumbs,
+		                                          application_url=mainpage)
 
 		return {
 			'layout': self.base_layout(),
@@ -298,21 +311,23 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
+		                                                 self.request.session.id, transaction, lang,
+		                                                 mainpage)
 
 		if [c for c in ('t','f') if c in mode] and relation == '':
 			# justifying position
 			logger('discussion_justify', 'def', 'justifying position')
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify=True, is_supportive=supportive)
 			if not discussion_dict:
-				return HTTPFound(location=UrlManager().get_404([slug, statement_id]))
+				return HTTPFound(location=UrlManager(mainpage).get_404([slug, statement_id]))
 
-			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, lang)
-			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang, self.request.authenticated_userid, mode=='t', breadcrumbs=breadcrumbs)
-
+			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, lang, mainpage)
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang,
+			                                          self.request.authenticated_userid, mode=='t', breadcrumbs=breadcrumbs,
+			                                          application_url=mainpage)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				# TODO HANDLE DISCUSSION END ; NO PREMISE
 				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_justify=True)
 
 
@@ -321,9 +336,9 @@ class Dbas(object):
 			logger('discussion_justify', 'def', 'dont know position')
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _dh.prepare_discussion_dict(argument_uid, lang, at_dont_know=True, is_supportive=supportive, additional_id=statement_or_arg_id)
-			item_dict       = _dh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, lang)
-			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=argument_uid, breadcrumbs=breadcrumbs)
-
+			item_dict       = _dh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, lang, mainpage)
+			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid,
+			                                          argument_id=argument_uid, breadcrumbs=breadcrumbs, application_url=mainpage)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_dont_know=True)
@@ -336,14 +351,15 @@ class Dbas(object):
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid)
-			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, lang)
-			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, lang, self.request.authenticated_userid, not is_attack, argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs)
-
+			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, lang, mainpage)
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, lang, self.request.authenticated_userid,
+			                                          not is_attack, argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs,
+			                                          application_url=mainpage)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
 		else:
-			return HTTPFound(location=UrlManager().get_404([slug ,'j', statement_or_arg_id, mode, relation]))
+			return HTTPFound(location=UrlManager(mainpage).get_404([slug ,'j', statement_or_arg_id, mode, relation]))
 
 		return {
 			'layout': self.base_layout(),
@@ -376,7 +392,7 @@ class Dbas(object):
 		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().isSupportive
 
 		# set votings
-		WeightingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
+		VotingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
@@ -387,12 +403,16 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug, self.request.session.id, transaction, lang)
+		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
+		                                                 self.request.session.id, transaction, lang,
+		                                                 mainpage)
 
 		discussion_dict = _dh.prepare_discussion_dict(arg_id_user, lang, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
-		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, lang)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid, argument_id=arg_id_user, breadcrumbs=breadcrumbs)
+		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, lang, mainpage)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid,
+		                                          argument_id=arg_id_user, breadcrumbs=breadcrumbs,
+		                                          application_url=mainpage)
 
 		return {
 			'layout': self.base_layout(),
@@ -586,21 +606,6 @@ class Dbas(object):
 	## ADDTIONAL AJAX STUFF # USER THINGS #
 	#######################################
 
-	# ajax - getting every user, and returns dicts with name <-> group
-	@view_config(route_name='ajax_all_users', renderer='json', check_csrf=False)
-	def get_all_users(self):
-		"""
-		Returns all users as dictionary with name <-> group
-		:return: json-dict() of all users
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_all_users', 'def', 'main')
-
-		return_dict = UserHandler().get_all_users(self.request.authenticated_userid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
 	# ajax - getting complete track of the user
 	@view_config(route_name='ajax_get_user_history', renderer='json', check_csrf=True)
 	def get_user_history(self):
@@ -705,10 +710,9 @@ class Dbas(object):
 		logger('user_logout', 'def', 'main')
 
 		url = self.request.params['url']
-		logger('user_logout', 'def', 'url: ' + url)
 
 		if 'setting' in url:
-			url = self.request.application_url
+			url = mainpage
 			logger('user_logout', 'def', 'redirect: ' + url)
 
 		headers = forget(self.request)
@@ -909,6 +913,7 @@ class Dbas(object):
 		return_dict['status'] = '1'
 		try:
 			statement = self.request.params['statement']
+			url = self.request.params['url']
 			issue = self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
 			issue = issue_fallback if issue == 'undefined' else issue
@@ -918,7 +923,7 @@ class Dbas(object):
 			if new_statement == -1:
 				return_dict['status'] = 0
 			else:
-				url = UrlManager(slug).get_url_for_statement_attitude(False, new_statement.uid)
+				url = UrlManager(url, slug).get_url_for_statement_attitude(False, new_statement.uid)
 				return_dict['url'] = url
 				logger('set_new_start_statement', 'def', 'return url ' + url)
 		except KeyError as e:
@@ -947,6 +952,7 @@ class Dbas(object):
 			logger('set_new_start_premise', 'def', 'getting params')
 			text = self.escape_string(self.request.params['text'])
 			conclusion_id = self.request.params['conclusion_id']
+			url = self.request.params['url']
 			support = True if self.request.params['support'].lower() == 'true' else False
 			issue = self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
@@ -961,7 +967,7 @@ class Dbas(object):
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
 				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-				url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+				url = UrlManager(url, slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 				return_dict['url'] = url
 				return_dict['status'] = '1'
 		except KeyError as e:
@@ -992,6 +998,7 @@ class Dbas(object):
 			relation    = self.request.params['relation']
 			text        = self.request.params['text']
 			supportive  = self.request.params['supportive']
+			url         = self.request.params['url']
 
 			issue = self.request.session['issue'] if 'issue' in self.request.session \
 				else issue_fallback
@@ -1015,7 +1022,7 @@ class Dbas(object):
 				if arg_id_sys == 0:
 					attack = 'end'
 				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
-				url = UrlManager(slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+				url = UrlManager(url, slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 				return_dict['url'] = url
 				return_dict['status'] = '1'
 		except KeyError as e:
@@ -1146,32 +1153,6 @@ class Dbas(object):
 			else self.request.session['issue'] if 'issue' in self.request.session \
 			else issue_fallback
 		return_dict = QueryHelper().get_attack_overview(self.request.authenticated_userid, issue, lang)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
-
-	# ajax - for attack overview
-	@view_config(route_name='ajax_get_issue_list', renderer='json')
-	def get_issue_list(self):
-		"""
-		Returns all issues
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-
-		logger('get_issue_list', 'def', 'main')
-
-		try:
-			lang = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-
-		return_dict = QueryHelper().get_issue_list(lang)
-		issue = self.request.params['issue'] if 'issue' in self.request.params \
-			else self.request.session['issue'] if 'issue' in self.request.session \
-			else issue_fallback
-		return_dict['current_issue'] = issue
-		return_dict['current_issue_arg_count'] = QueryHelper().get_number_of_arguments(issue)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json

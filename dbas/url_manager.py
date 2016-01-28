@@ -1,13 +1,21 @@
+from .logger import logger
+
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
 class UrlManager(object):
 
-	def __init__(self, slug=''):
-		# self.url = 'http://localhost:4284/' # TODO fix this
-		self.url = 'https://dbas.cs.uni-duesseldorf.de/' # TODO fix this
-		self.discussion_url = self.url + 'd/'
+
+	def __init__(self, application_url, slug=''):
+		"""
+
+		:param application_url:
+		:param slug:
+		:return:
+		"""
+		self.url = application_url + '/'
+		self.discussion_url = self.url + 'discuss/'
 		self.slug = slug
 
 	def get_url(self, path):
@@ -41,7 +49,7 @@ class UrlManager(object):
 		:param statement_uid:
 		:return: discussion_url/slug/a/statement_uid
 		"""
-		url = self.discussion_url +  self.slug + '/a/' + str(statement_uid)
+		url = self.discussion_url +  self.slug + '/attitude/' + str(statement_uid)
 		return 'location.href="' + url + '"' if as_location_href else url
 
 	def get_url_for_justifying_statement(self, as_location_href, statement_uid, mode):
@@ -52,7 +60,7 @@ class UrlManager(object):
 		:param mode:
 		:return:
 		"""
-		url = self.discussion_url +  self.slug + '/j/' + str(statement_uid) + '/' + mode
+		url = self.discussion_url +  self.slug + '/justify/' + str(statement_uid) + '/' + mode
 		return 'location.href="' + url + '"' if as_location_href else url
 
 	def get_url_for_justifying_argument(self, as_location_href, argument_uid, mode, attitude):
@@ -64,7 +72,7 @@ class UrlManager(object):
 		:param attitude:
 		:return:
 		"""
-		url = self.discussion_url +  self.slug + '/j/' + str(argument_uid) + '/' + mode + '/' + attitude
+		url = self.discussion_url +  self.slug + '/justify/' + str(argument_uid) + '/' + mode + '/' + attitude
 		return 'location.href="' + url + '"' if as_location_href else url
 
 	def get_url_for_reaction_on_argument(self, as_location_href, argument_uid, mode, confrontation_argument):
@@ -76,7 +84,7 @@ class UrlManager(object):
 		:param confrontation_argument:
 		:return:
 		"""
-		url = self.discussion_url + self.slug + '/r/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
+		url = self.discussion_url + self.slug + '/reaction/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
 		return 'location.href="' + url + '"' if as_location_href else url
 
 

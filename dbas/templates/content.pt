@@ -8,14 +8,12 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
 
-		<div class="container first-container colored_container">
+		<div class="container first-container colored_container" tal:condition="extras.logged_in">
 			<div class="row">
 				<div class="col-md-12">
 					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0px;">
                         <li tal:repeat="breadcrumb extras.breadcrumbs">
-                            <a href="" tal:attributes="href breadcrumb.url; title breadcrumb.text" tal:condition="not:repeat.breadcrumb.end">
-                                <span tal:replace="breadcrumb.shorttext">weee :)</span>
-                            </a>
+                            <a href="" tal:attributes="href breadcrumb.url; title breadcrumb.text" tal:condition="not:repeat.breadcrumb.end"><span tal:replace="breadcrumb.shorttext">weee :)</span></a>
                             <span tal:replace="breadcrumb.text" tal:condition="repeat.breadcrumb.end">weee :)</span>
                         </li>
 					</ol>
@@ -31,10 +29,10 @@
 				</div>
 				<div class="col-md-5 center text-center">
 					<span i18n:translate="startet_at">The discussion was started at</span>
-					<span id="issue-date">${issue.date}</span>
+					<span id="issue-date" class="text-info">${issue.date}</span>
 					<br>
 					<span i18n:translate="already_has">and already has</span>
-					<span id="issue-count">${issue.arg_count}</span>
+					<span id="issue-count" class="text-info">${issue.arg_count}</span>
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 

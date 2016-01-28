@@ -13,7 +13,8 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="content">
-						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo">
+						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en">
+						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.png')}" alt="dbas logo" tal:condition="extras.lang_is_de">
 						<br>
 						<h2><span i18n:translate="welcome">Welcome</span>
 								<span i18n:translate="to_the_dbas">to the</span>
@@ -25,7 +26,7 @@
 								</h2>
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
 						<br>
-						<form action="/d" method="get" class="text-center">
+						<form action="/discuss" method="get" class="text-center" tal:attributes="action extras.restart_url">
 							<input class="button button-block btn btn-lg btn-primary" type="submit" value="Click here to start now!" name="Submit" id="start-discussion-button" />
 						</form>
 						<br>

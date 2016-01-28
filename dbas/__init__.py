@@ -90,9 +90,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_user_registration',                   '{url:.*}ajax_user_registration')
 	config.add_route('ajax_user_password_request',               '{url:.*}ajax_user_password_request')
 	config.add_route('ajax_fuzzy_search',                        '{url:.*}ajax_fuzzy_search')
-	config.add_route('ajax_get_issue_list',                      '{url:.*}ajax_get_issue_list')
 	config.add_route('ajax_switch_language',                     '{url:.*}ajax_switch_language{params:.*}')
-	config.add_route('ajax_get_everything_for_island_view',      '{url:.*}ajax_get_everything_for_island_view{params:.*}')
 	config.add_route('ajax_get_database_dump',                   '{url:.*}ajax_get_database_dump')
 	config.add_route('ajax_get_user_history',                    'ajax_get_user_history')
 	config.add_route('ajax_delete_user_history',                 'ajax_delete_user_history')
@@ -102,10 +100,10 @@ def main(global_config, **settings):
 	config.add_route('ajax_additional_service',                  '{stuff:.*}additional_service')
 
 	# ajax for navigation logic at the end, otherwise the * pattern will do shit
-	config.add_route('discussion_reaction',   '/d/{slug}/r/{arg_id_user}/{mode}*arg_id_sys')
-	config.add_route('discussion_justify',    '/d/{slug}/j/{statement_or_arg_id}/{mode}*relation')
-	config.add_route('discussion_attitude',   '/d/{slug}/a/*statement_id')
-	config.add_route('discussion_init',       '/d*slug')
+	config.add_route('discussion_reaction',   '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys')
+	config.add_route('discussion_justify',    '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
+	config.add_route('discussion_attitude',   '/discuss/{slug}/attitude/*statement_id')
+	config.add_route('discussion_init',       '/discuss*slug')
 
 	# read the input and start
 	config.scan()

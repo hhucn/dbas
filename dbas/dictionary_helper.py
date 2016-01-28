@@ -142,9 +142,9 @@ class DictionaryHelper(object):
 			confrontation       = _qh.get_text_for_argument_uid(uid, lang)
 			premise, tmp        = _qh.get_text_for_premisesGroup_uid(uid)
 			conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
-				else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
 			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
-			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, is_supportive)
+			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, db_argument.isSupportive)
 
 		elif at_dont_know:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_dont_know')
@@ -168,18 +168,22 @@ class DictionaryHelper(object):
 				premise, tmp        = _qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 				conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 										else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
-				confrontation       = _qh.get_text_for_argument_uid(additional_id, lang)
+				db_confrontation    = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
+				confrontation, tmp  = _qh.get_text_for_premisesGroup_uid(db_confrontation.premisesGroup_uid)
+				# confrontation       = _qh.get_text_for_argument_uid(additional_id, lang)
 				logger('DictionaryHelper', 'prepare_discussion_dict', 'additional_id ' + str(additional_id) + ', confrontation '
 				       + str(confrontation) + ', attack ' + str(attack))
 
 				reply_for_argument  = True
 				current_argument    = _qh.get_text_for_argument_uid(uid, lang)
+				user_is_attacking   = not db_argument.isSupportive
 				heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
-			                                                     confrontation, reply_for_argument, current_argument)
+				                                                     confrontation, reply_for_argument, user_is_attacking,
+			                                                         current_argument)
 
 		return {'heading': heading, 'add_premise_text': add_premise_text}
 
-	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang):
+	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang, application_url):
 		"""
 
 		:param issue_uid:
@@ -193,7 +197,7 @@ class DictionaryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
 		statements_array = []
-		_um = UrlManager(slug)
+		_um = UrlManager(application_url, slug)
 		_qh = QueryHelper()
 
 		if db_statements:
@@ -216,7 +220,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_attitude(self, statement_uid, issue_uid, lang):
+	def prepare_item_dict_for_attitude(self, statement_uid, issue_uid, lang, application_url):
 		"""
 
 		:param statement_uid:
@@ -232,7 +236,7 @@ class DictionaryHelper(object):
 		text = _qh.get_text_for_statement_uid(statement_uid)
 		statements_array = []
 
-		_um = UrlManager(slug)
+		_um = UrlManager(application_url, slug)
 
 		statements_array.append(_qh.get_statement_dict('agree',
 		                                                _tn.get(_tn.iAgreeWithInColor) + ': ' + text,
@@ -252,7 +256,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, isSupportive, lang):
+	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, isSupportive, lang, application_url):
 		"""
 
 		:param statement_uid:
@@ -268,7 +272,7 @@ class DictionaryHelper(object):
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
 		                                                               Argument.conclusion_uid==statement_uid)).all()
 
-		_um = UrlManager(slug)
+		_um = UrlManager(application_url, slug)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -298,7 +302,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, isSupportive, lang):
+	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, isSupportive, lang, application_url):
 		"""
 
 		:param argument_uid:
@@ -327,9 +331,11 @@ class DictionaryHelper(object):
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid==argument_uid, Argument.isSupportive==True)).all()
 
 		elif attack_type == 'rebut':
-			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_argument.conclusion_uid, Argument.isSupportive==False)).all()
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_argument.conclusion_uid,
+			                                                               Argument.argument_uid == db_argument.argument_uid,
+			                                                               Argument.isSupportive==(not db_argument.isSupportive))).all()
 
-		_um = UrlManager(slug)
+		_um = UrlManager(application_url, slug)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -364,7 +370,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, lang):
+	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, lang, application_url):
 		"""
 
 		:param argument_uid:
@@ -389,9 +395,10 @@ class DictionaryHelper(object):
 			premise, tmp     = _qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
 			conclusion       = conclusion[0:1].lower() + conclusion[1:]
 			premise          = premise[0:1].lower() + premise[1:]
-			ret_dict         = _tg.get_relation_text_dict_without_confrontation(conclusion, premise, False, True)
+
+			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True, not db_argument.isSupportive)
 			mode             = 't' if isSupportive else 't'
-			_um              = UrlManager(slug)
+			_um              = UrlManager(application_url, slug)
 
 			types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
 			for t in types:
@@ -405,7 +412,8 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang, authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs=[]):
+	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang,
+	                        authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs=[], application_url=''):
 		"""
 
 		:param current_slug:
@@ -425,7 +433,7 @@ class DictionaryHelper(object):
 		_qh = QueryHelper()
 
 		return_dict = dict()
-		return_dict['restart_url']                   =  UrlManager(current_slug).get_slug_url(True)
+		return_dict['restart_url']                   =  UrlManager(application_url, current_slug).get_slug_url(True)
 		return_dict['is_editable']                   =  is_editable and _uh.is_user_logged_in(authenticated_userid)
 		return_dict['is_reportable']                 =  is_reportable
 		return_dict['is_admin']                      =  _uh.is_user_admin(authenticated_userid)
@@ -442,18 +450,19 @@ class DictionaryHelper(object):
 													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
 		                                                 'edit_statement': _tn.get(_tn.editTitle),
 		                                                 'report_statement': _tn.get(_tn.reportTitle)}
-
+		self.add_language_options_for_extra_dict(return_dict, lang)
 
 		# add everything for the island view
 		if show_display_styles:
 			# does an argumente exists?
-			if (DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()):
+			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
+			if db_argument:
 				island_dict = _qh.get_everything_for_island_view(argument_id, lang)
 				island_dict['premise'] = island_dict['premise'][0:1].lower() + island_dict['premise'][1:]
 				island_dict['conclusion'] = island_dict['conclusion'][0:1].lower() + island_dict['conclusion'][1:]
 				island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
 				                                                                                    island_dict['conclusion'],
-				                                                                                    False, False))
+				                                                                                    False, False, not db_argument.isSupportive))
 				return_dict['island'] = island_dict
 			else:
 				return_dict['is_editable']            =  False
@@ -466,7 +475,22 @@ class DictionaryHelper(object):
 												        'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
 		                                                'edit_statement': _tn.get(_tn.editTitle),
 		                                                'report_statement': _tn.get(_tn.reportTitle)}
-
-
 		return return_dict
+
+	def add_language_options_for_extra_dict(self, extras_dict, lang):
+		"""
+
+		:param extras_dict:
+		:param lang:
+		:return:
+		"""
+		lang_is_en = (lang != 'de')
+		lang_is_de = (lang == 'de')
+		extras_dict.update({
+			'lang_is_de': lang_is_de,
+			'lang_is_en': lang_is_en,
+			'link_de_class': ('active' if lang_is_de else ''),
+			'link_en_class': ('active' if lang_is_en else '')
+		})
+
 	
