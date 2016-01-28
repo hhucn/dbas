@@ -1320,7 +1320,7 @@ class TextGenerator(object):
 		return ret_dict
 
 	def get_text_for_confrontation(self, premise, conclusion, supportive, attack, confrontation, reply_for_argument,
-	                               current_argument=''):
+	                               user_is_attacking, current_argument=''):
 		"""
 
 		:param premise:
@@ -1329,6 +1329,7 @@ class TextGenerator(object):
 		:param attack:
 		:param confrontation:
 		:param reply_for_argument:
+		:param user_is_attacking:
 		:param current_argument:
 		:return:
 		"""
@@ -1348,7 +1349,7 @@ class TextGenerator(object):
 		elif attack == 'rebut':
 			# distinguish between reply for argument and reply for premise group
 			if reply_for_argument:	# reply for argument
-				confrontationText = _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
+				confrontationText = _t.get(_t.otherUsersClaimStrongerArgumentAccepting) if user_is_attacking else _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
 			else:		# reply for premise group
 				confrontationText = _t.get(_t.otherParticipantsAcceptBut) + ' ' + _t.get(_t.strongerStatementForRecjecting)
 			confrontationText += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation

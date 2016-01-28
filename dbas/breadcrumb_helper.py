@@ -104,11 +104,11 @@ class BreadcrumbHelper(object):
 		elif '/j/' in url:
 			splitted = url.split('/')
 			uid  = splitted[6]
-			text = _qh.get_text_for_statement_uid(uid) if len(splitted) == 7 else _qh.get_text_for_argument_uid(uid, lang)
+			text = _qh.get_text_for_statement_uid(uid) if len(splitted) == 8 else _qh.get_text_for_argument_uid(uid, lang)
 			text = text[0:1].lower() + text[1:]
 			# 7 choose action for start statemens
 			# 8 choose justification for a relation
-			return ( _t.get(_t.breadcrumbsChooseActionForStatement) if len(splitted) == 7 else _t.get(_t.breadcrumbsReplyForResponseOfConfrontation)) + ' ' + text
+			return ( _t.get(_t.breadcrumbsChooseActionForStatement) if len(splitted) == 8 else _t.get(_t.breadcrumbsReplyForResponseOfConfrontation)) + ' ' + text
 
 		elif '/a/' in url:
 			uid  = url[url.rfind('/')+1:]

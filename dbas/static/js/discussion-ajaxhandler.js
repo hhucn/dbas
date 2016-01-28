@@ -8,23 +8,6 @@
 
 function AjaxSiteHandler() {
 	'use strict';
-	var push=0,
-			loca=0,
-			hash=0,
-			aler= 0;
-
-	/**
-	 *
-	 * @param data
-	 * @param url
-	 * @param settings_data
-	 */
-	this.debugger = function (data, url, settings_data) {
-		if (hash==1) window.location = '/' + url + '?' + settings_data;
-		if (loca==1) window.location = '/content/' + url + '?' + settings_data;
-		if (push==1) history.pushState(data, '', document.location);
-		if (aler==1) alert('AJAX\n' + url + '/' + settings_data);
-	};
 
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
@@ -134,7 +117,6 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxGetLogfileForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
-			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetLogfileForStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
@@ -169,7 +151,6 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, element);
-			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
@@ -198,7 +179,6 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxGetShortenUrlDone(data) {
 			new InteractionHandler().callbackIfDoneForShortenUrl(data);
-			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetShortenUrl() {
 			$('#' + popupUrlSharingInputId).val(long_url);
 		});
@@ -234,7 +214,6 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
-			new AjaxSiteHandler().debugger(data, url, settings_data);
 		}).fail(function ajaxGetAllUsersFail() {
 			new Helper().delay(function ajaxGetAllUsersFailDelay() {
 				new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 11). '

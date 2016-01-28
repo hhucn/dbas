@@ -79,19 +79,15 @@ class Dbas(object):
 		except KeyError:
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
-		lang_is_en = (lang != 'de')
-		lang_is_de = (lang == 'de')
+		extras_dict =  {'logged_in': self.request.authenticated_userid}
+		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, lang)
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(lang),
 			'title': 'Main',
 			'project': header,
-			'extras': {'logged_in': self.request.authenticated_userid,
-			           'lang_is_de': lang_is_de,
-			           'lang_is_en': lang_is_en,
-			           'link_de_class': ('active' if lang_is_de else ''),
-			           'link_en_class': ('active' if lang_is_en else '')},
+			'extras': extras_dict
 		}
 
 	# contact page

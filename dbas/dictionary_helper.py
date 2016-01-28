@@ -174,8 +174,10 @@ class DictionaryHelper(object):
 
 				reply_for_argument  = True
 				current_argument    = _qh.get_text_for_argument_uid(uid, lang)
+				user_is_attacking   = not db_argument.isSupportive
 				heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
-			                                                     confrontation, reply_for_argument, current_argument)
+				                                                     confrontation, reply_for_argument, user_is_attacking,
+			                                                         current_argument)
 
 		return {'heading': heading, 'add_premise_text': add_premise_text}
 
@@ -444,7 +446,7 @@ class DictionaryHelper(object):
 													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
 		                                                 'edit_statement': _tn.get(_tn.editTitle),
 		                                                 'report_statement': _tn.get(_tn.reportTitle)}
-
+		self.add_language_options_for_extra_dict(return_dict, lang)
 
 		# add everything for the island view
 		if show_display_styles:
@@ -468,7 +470,22 @@ class DictionaryHelper(object):
 												        'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
 		                                                'edit_statement': _tn.get(_tn.editTitle),
 		                                                'report_statement': _tn.get(_tn.reportTitle)}
-
-
 		return return_dict
+
+	def add_language_options_for_extra_dict(self, extras_dict, lang):
+		"""
+
+		:param extras_dict:
+		:param lang:
+		:return:
+		"""
+		lang_is_en = (lang != 'de')
+		lang_is_de = (lang == 'de')
+		extras_dict.update({
+			'lang_is_de': lang_is_de,
+			'lang_is_en': lang_is_en,
+			'link_de_class': ('active' if lang_is_de else ''),
+			'link_en_class': ('active' if lang_is_en else '')
+		})
+
 	

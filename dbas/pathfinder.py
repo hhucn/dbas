@@ -1,6 +1,8 @@
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, Premise
 
+# TODO: PathFinder ... BUT WHY?
+
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
