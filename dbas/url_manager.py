@@ -13,15 +13,6 @@ class UrlManager(object):
 		:param slug:
 		:return:
 		"""
-		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
-		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
-		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
-		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
-		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
-		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
-		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
-		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
-		logger('UrlManager','__init__', 'url ' + application_url + ', slug ' + slug)
 		self.url = application_url + '/'
 		self.discussion_url = self.url + 'd/'
 		self.slug = slug

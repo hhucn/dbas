@@ -736,9 +736,9 @@ class QueryHelper(object):
 		user_dict = dict()
 		for index, user in enumerate(db_users):
 			tmp_dict = dict()
-			tmp_dict['uid'] = user.uid
-			tmp_dict['nickname'] = user.nickname
-			user_dict[str(index)] = tmp_dict
+			tmp_dict['uid']         = user.uid
+			tmp_dict['nickname']    = user.nickname
+			user_dict[str(index)]   = tmp_dict
 		ret_dict['user'] = user_dict
 
 		# getting all statements
@@ -746,11 +746,11 @@ class QueryHelper(object):
 		statement_dict = dict()
 		for index, statement in enumerate(db_statements):
 			tmp_dict = dict()
-			tmp_dict['uid'] = statement.uid
+			tmp_dict['uid']             = statement.uid
 			tmp_dict['textversion_uid'] = statement.textversion_uid
-			tmp_dict['isStartpoint'] = statement.isStartpoint
-			tmp_dict['weight_uid'] = statement.weight_uid
-			statement_dict[str(index)] = tmp_dict
+			tmp_dict['isStartpoint']    = statement.isStartpoint
+			tmp_dict['weight_uid']      = statement.weight_uid
+			statement_dict[str(index)]  = tmp_dict
 		ret_dict['statement'] = statement_dict
 
 		# getting all textversions
@@ -758,11 +758,11 @@ class QueryHelper(object):
 		textversion_dict = dict()
 		for index, textversion in enumerate(db_textversions):
 			tmp_dict = dict()
-			tmp_dict['uid'] = textversion.uid
-			tmp_dict['statement_uid'] = textversion.statement_uid
-			tmp_dict['content'] = textversion.content
-			tmp_dict['author_uid'] = textversion.author_uid
-			tmp_dict['timestamp'] = textversion.timestamp
+			tmp_dict['uid']              = textversion.uid
+			tmp_dict['statement_uid']    = textversion.statement_uid
+			tmp_dict['content']          = textversion.content
+			tmp_dict['author_uid']       = textversion.author_uid
+			tmp_dict['timestamp']        = textversion.timestamp
 			textversion_dict[str(index)] = tmp_dict
 		ret_dict['textversion'] = textversion_dict
 
@@ -771,9 +771,9 @@ class QueryHelper(object):
 		premisegroup_dict = dict()
 		for index, premisegroup in enumerate(db_premisegroups):
 			tmp_dict = dict()
-			tmp_dict['uid'] = premisegroup.uid
-			tmp_dict['author_uid'] = premise.author_uid
-			premisegroup_dict[str(index)] = tmp_dict
+			tmp_dict['uid']                 = premisegroup.uid
+			tmp_dict['author_uid']          = premise.author_uid
+			premisegroup_dict[str(index)]   = tmp_dict
 		ret_dict['premisegroup'] = premisegroup_dict
 
 		# getting all premises
@@ -782,11 +782,11 @@ class QueryHelper(object):
 		for index, premise in enumerate(db_premises):
 			tmp_dict = dict()
 			tmp_dict['premisesGroup_uid'] = premise.premisesGroup_uid
-			tmp_dict['statement_uid'] = premise.statement_uid
-			tmp_dict['isNegated'] = premise.isNegated
-			tmp_dict['author_uid'] = premise.author_uid
-			tmp_dict['timestamp'] = premise.timestamp
-			premise_dict[str(index)] = tmp_dict
+			tmp_dict['statement_uid']     = premise.statement_uid
+			tmp_dict['isNegated']         = premise.isNegated
+			tmp_dict['author_uid']        = premise.author_uid
+			tmp_dict['timestamp']         = premise.timestamp
+			premise_dict[str(index)]      = tmp_dict
 		ret_dict['premise'] = premise_dict
 
 		# getting all arguments
@@ -794,61 +794,30 @@ class QueryHelper(object):
 		argument_dict = dict()
 		for index, argument in enumerate(db_arguments):
 			tmp_dict = dict()
-			tmp_dict['uid'] = argument.uid
-			tmp_dict['premisesGroup_uid'] = argument.premisesGroup_uid
-			tmp_dict['conclusion_uid'] = argument.conclusion_uid
-			tmp_dict['argument_uid'] = argument.argument_uid
-			tmp_dict['isSupportive'] = argument.isSupportive
-			tmp_dict['author_uid'] = argument.author_uid
-			tmp_dict['timestamp'] = argument.timestamp
-			tmp_dict['weight_uid'] = argument.weight_uid
-			argument_dict[str(index)] = tmp_dict
+			tmp_dict['uid']                 =    argument.uid
+			tmp_dict['premisesGroup_uid']   = argument.premisesGroup_uid
+			tmp_dict['conclusion_uid']      = argument.conclusion_uid
+			tmp_dict['argument_uid']        = argument.argument_uid
+			tmp_dict['isSupportive']        = argument.isSupportive
+			tmp_dict['author_uid']          = argument.author_uid
+			tmp_dict['timestamp']           = argument.timestamp
+			tmp_dict['weight_uid']          = argument.weight_uid
+			argument_dict[str(index)]       = tmp_dict
 		ret_dict['argument'] = argument_dict
-
-		# getting all weights
-		db_weights = DBDiscussionSession.query(Weight).all()
-		weight_dict = dict()
-		for index, weight in enumerate(db_weights):
-			tmp_dict = dict()
-			tmp_dict['uid'] = weight.uid
-			weight_dict[str(index)] = tmp_dict
-		ret_dict['weight'] = weight_dict
 
 		# getting all votes
 		db_votes = DBDiscussionSession.query(Vote).all()
 		vote_dict = dict()
 		for index, vote in enumerate(db_votes):
 			tmp_dict = dict()
-			tmp_dict['weight_uid'] = vote.weight_uid
-			tmp_dict['author_uid'] = vote.author_uid
-			vote_dict[str(index)] = tmp_dict
+			tmp_dict['argument_uid'] = vote.argument_uid
+			tmp_dict['author_uid']   = vote.author_uid
+			tmp_dict['isUpVote']     = vote.isUpVote
+			tmp_dict['isValid']      = vote.isValid
+			vote_dict[str(index)]    = tmp_dict
 		ret_dict['vote'] = vote_dict
 
 		return ret_dict
-
-	def get_issue_list(self, lang):
-		"""
-		Returns all isuees as dictionary
-		:param lang: dict() with {uid, text, date}
-		:return:
-		"""
-		logger('QueryHelper', 'get_issue_list', 'main')
-		db_issues = DBDiscussionSession.query(Issue).all()
-		return_dict = dict()
-		for issue in db_issues:
-			logger('QueryHelper', 'get_issue_list', 'issue no ' + str(issue.uid) + ': ' + issue.title)
-			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).all()
-			return_dict[str(issue.uid)] = {'uid': str(issue.uid),
-										   'title': issue.title,
-										   'info': issue.info,
-										   'date': QueryHelper().sql_timestamp_pretty_print(str(issue.date), lang),
-										   'arguments': str(len(db_arguments))}
-
-		if not db_issues:
-			logger('QueryHelper', 'get_issue_list', 'no issues')
-
-		return_dict = collections.OrderedDict(sorted(return_dict.items()))
-		return return_dict
 
 	def get_attack_overview(self, user, issue, lang):
 		"""
