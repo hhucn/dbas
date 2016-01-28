@@ -37,7 +37,9 @@ mainpage = ''
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
+
 class Dbas(object):
+
 	def __init__(self, request):
 		"""
 		Object initialization
@@ -55,8 +57,8 @@ class Dbas(object):
 		:param text:
 		:return: json-dict()
 		"""
-		return text # todo escaping string correctly
-		#return re.escape(text)
+		return text  # todo escaping string correctly
+		# return re.escape(text)
 
 	def base_layout(self):
 		renderer = get_renderer('templates/basetemplate.pt')
@@ -78,7 +80,7 @@ class Dbas(object):
 		except KeyError:
 			lang = get_current_registry().settings['pyramid.default_locale_name']
 
-		extras_dict =  {'logged_in': self.request.authenticated_userid, 'restart_url': UrlManager(mainpage).discussion_url}
+		extras_dict = {'logged_in': self.request.authenticated_userid, 'restart_url': UrlManager(mainpage).discussion_url}
 		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, lang)
 
 		return {
@@ -203,7 +205,7 @@ class Dbas(object):
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
-		slug = self.request.matchdict['slug'][0] if len(self.request.matchdict['slug'])>0 else ''
+		slug = self.request.matchdict['slug'][0] if len(self.request.matchdict['slug']) > 0 else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		lang            = _qh.get_language(self.request, get_current_registry)

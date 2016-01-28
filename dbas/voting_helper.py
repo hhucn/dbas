@@ -7,6 +7,7 @@ from .logger import logger
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015-2016
 
+
 class VotingHelper(object):
 
 	def add_vote_for_argument(self, argument_uid, user, transaction):
@@ -14,15 +15,17 @@ class VotingHelper(object):
 		Increses the votes of a given argument
 		:param argument_uid: id of the argument
 		:param user: self.request.authenticated_userid
+		:param transaction: transaction
 		:return: increased votes of the argument
 		"""
 		logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		db_vote, already_voted = self.__check_and_set_vote_uid(db_argument, user)
+		# db_vote, already_voted = self.__check_and_set_vote_uid(db_argument, user)
+		self.__check_and_set_vote_uid(db_argument, user)
 
 		# some logical assumptions, where the conclusion is an argument
 		if db_argument.conclusion_uid == 0:
-			#self.add_vote_for_argument(db_argument.argument_uid, user, transaction)
+			# self.add_vote_for_argument(db_argument.argument_uid, user, transaction)
 
 			# check for inconsequences
 			db_conclusion_arguments = DBDiscussionSession.query(Argument).filter_by(argument_uid=db_argument.argument_uid).all()
@@ -40,7 +43,6 @@ class VotingHelper(object):
 		                                                                       Argument.isSupportive != db_argument.isSupportive)).first()
 		if db_opposite_argument:
 			self.remove_vote_for_argument(db_opposite_argument.uid, user)
-
 
 		# return count of votes
 		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==db_argument.uid, Vote.isValid==True)).all()
@@ -79,12 +81,14 @@ class VotingHelper(object):
 
 		# get vote
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if not db_user:
+			return None, None
 		db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==db_argument.uid,
 		                                                      Vote.author_uid==db_user.uid)).first()
 		already_voted = False
 		# do we have a vote?
 		if not db_vote:
-			db_vote = Vote(argument_uid=db_argument.uid, author_uid=db_user.uid, isUpVote=True, isValid=True)
+			db_vote = Vote(argument_uid=db_argument.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True)
 			DBDiscussionSession.add(db_vote)
 			DBDiscussionSession.flush()
 		else:

@@ -11,6 +11,7 @@ from dbas.database import DBDiscussionSession, DiscussionBase
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015-2016
 
+
 class Issue(DiscussionBase):
 	"""
 	issue-table with several column.
@@ -57,9 +58,6 @@ class Group(DiscussionBase):
 	def by_name(cls):
 		"""Return a query of positions sorted by text."""
 		return DBDiscussionSession.query(Group).order_by(Group.name)
-
-	def group_by_id(group):
-		return DBDiscussionSession.query(Group).filter(Group.name == group).first()
 
 
 class User(DiscussionBase):
@@ -349,24 +347,8 @@ class History(DiscussionBase):
 		self.timestamp = func.now()
 		self.session_id = session_id
 
-	def set_keyword_after_decission(self, keyword_after_decission):
-		"""
-		Refrehses the value
-		:param keyword_after_decission: current keyword
-		:return:
-		"""
-		self.keyword_after_decission = keyword_after_decission
 
-	def set_keyword_before_decission(self, keyword_before_decission):
-		"""
-		Refrehses the value
-		:param keyword_before_decission: current keyword
-		:return:
-		"""
-		self.keyword_before_decission = keyword_before_decission
-
-
-class Relation(DiscussionBase): # TODO IS THIS NECESSARY ?
+class Relation(DiscussionBase):  # TODO IS THIS NECESSARY ?
 	"""
 	Relation-table with several columns.
 	Each user will be tracked
@@ -399,7 +381,7 @@ class Vote(DiscussionBase):
 	arguments = relationship('Argument', foreign_keys=[argument_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, argument_uid=0, author_uid=0, isUpVote=True, isValid=True):
+	def __init__(self, argument_uid=0, author_uid=0, is_up_vote=True, is_valid=True):
 		"""
 		Initializes a row
 		:param weight_uid:
@@ -408,25 +390,25 @@ class Vote(DiscussionBase):
 		"""
 		self.argument_uid = argument_uid
 		self.author_uid = author_uid
-		self.isUpVote = isUpVote
+		self.isUpVote = is_up_vote
 		self.timestamp = func.now()
-		self.isValid = isValid
+		self.isValid = is_valid
 
-	def set_up_vote(self, isUpVote):
+	def set_up_vote(self, is_up_vote):
 		"""
 		Sets up/down vote of this record
-		:param isUpVote: boolean
+		:param is_up_vote: boolean
 		:return: None
 		"""
-		self.isUpVote = isUpVote
+		self.isUpVote = is_up_vote
 
-	def set_valid(self, isValid):
+	def set_valid(self, is_valid):
 		"""
 		Sets validity of this record
-		:param isValid: boolean
+		:param is_valid: boolean
 		:return: None
 		"""
-		self.isValid = isValid
+		self.isValid = is_valid
 
 	def update_timestamp(self):
 		"""
