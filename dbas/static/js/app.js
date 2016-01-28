@@ -6,35 +6,6 @@
  * @copyright Krauthoff 2015
  */
 
-// just a countdowntimer by http://stackoverflow.com/a/1192001/2648872
-function Countdown(options) {
-	'use strict';
-	var timer,
-		instance = this,
-		seconds = options.seconds || 10,
-		updateStatus = options.onUpdateStatus || function () {},
-		counterEnd = options.onCounterEnd || function () {};
-
-	function decrementCounter() {
-		updateStatus(seconds);
-		if (seconds === 0) {
-			counterEnd();
-			instance.stop();
-		}
-		seconds = seconds - 1;
-	}
-
-	this.start = function () {
-		clearInterval(timer);
-		seconds = options.seconds;
-		timer = setInterval(decrementCounter, 1000);
-	};
-
-	this.stop = function () {
-		clearInterval(timer);
-	};
-}
-
 /**
  *
  * @param linkname
@@ -183,30 +154,9 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 }
 
 /**
- * DOM manipulation for the active class
- * @param lang current language code
- */
-function setActiveLanguage(lang){
-	if (lang === 'en'){
-		$('#' + translationLinkDe).parent().removeClass('active');
-		$('#' + translationLinkEn).parent().addClass('active');
-		$('.logo').attr('src','../static/images/logo.png');
-		$('#' + switchLangIndicatorEnId).show();
-		$('#' + switchLangIndicatorDeId).hide();
-		// Buttons
-	} else {
-		$('#' + translationLinkEn).parent().removeClass('active');
-		$('#' + translationLinkDe).parent().addClass('active');
-		$('.logo').attr('src','../static/images/logo_de.png');
-		$('#' + switchLangIndicatorEnId).hide();
-		$('#' + switchLangIndicatorDeId).show();
-	}
-}
-
-/**
  * Changes the value and title of every button
  */
-function setButtonLanguage(){
+function setButtonLanguage(){ // TODO USE TAL
 	var tmp;
 	$('#' + reportButtonId).prop('value', _t(report)).prop('title', _t(reportTitle));
 	$('#' + sendNewStatementId).prop('value', _t(acceptIt)).prop('title', _t(acceptItTitle));
@@ -226,6 +176,10 @@ function setButtonLanguage(){
 	$('#' + opinionBarometerImageId).prop('title', _t(opinionBarometer));
 }
 
+/**
+ *
+ * @param lang
+ */
 function setPiwikOptOutLink(lang){
 	var src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=';
 	if (lang === 'de')	src += 'de';
@@ -233,6 +187,9 @@ function setPiwikOptOutLink(lang){
 	$('#piwik-opt-out-iframe').attr('src',src);
 }
 
+/**
+ *
+ */
 function setEasterEggs(){
 	$('#roundhousekick').click(function(){ ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ ajaxMama(); });
@@ -571,7 +528,6 @@ function ajaxMama(){
  */
 function callbackIfDoneForSwitchDisplayLanguage (new_lang) {
 	location.reload(true);
-	setActiveLanguage(new_lang);
 	setButtonLanguage();
 	setPiwikOptOutLink(new_lang);
 }
@@ -637,7 +593,6 @@ $(document).ready(function () {
 
 	jmpToChapter();
 	goBackToTop();
-	setActiveLanguage(lang);
 	setButtonLanguage();
 	setPiwikOptOutLink(lang);
 	setEasterEggs();
