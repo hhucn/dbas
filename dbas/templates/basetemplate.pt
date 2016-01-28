@@ -46,8 +46,8 @@
 
 	<div id="additional-wrapper">
 		<div id="wrapper-header">
-			<div metal:use-macro="load: snippet-header.pt" />
-			<div metal:use-macro="load: snippet-popups.pt" />
+			<div metal:use-macro="load: snippet-header.pt"></div>
+			<div metal:use-macro="load: snippet-popups.pt"></div>
 		</div>
 
 			<div id="wrapper-content">
@@ -57,7 +57,7 @@
 			<div id="wrapper-footer">
 				<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" src="${request.static_url('dbas:static/images/home.png')}"></a>
 
-				<div metal:use-macro="load: snippet-footer.pt" />
+				<div metal:use-macro="load: snippet-footer.pt"></div>
 			</div>
 
 			<div class="ajaxloader"></div>
