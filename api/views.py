@@ -2,13 +2,12 @@
 """
 from cornice import Service
 
-_PREFIX = '/api'
-
 # =============================================================================
 # HELLO WORLD - exemplary implementation, see http://0.0.0.0:6543/api/hello
 # =============================================================================
 
-hello = Service(name='hello', path=_PREFIX + '/hello', description="Simplest app")
+hello = Service(name='api', path='/hello', description="Simplest app")
+
 
 @hello.get()
 def get_info(request):
@@ -20,7 +19,7 @@ def get_info(request):
 # POST / GET EXAMPLE
 # =============================================================================
 
-values = Service(name='foo', path=_PREFIX+'/values/{value}', description="Cornice Demo")
+values = Service(name='foo', path='/values/{value}', description="Cornice Demo")
 
 _VALUES = {}
 

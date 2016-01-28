@@ -2,9 +2,11 @@
 Main entry point
 """
 from pyramid.config import Configurator
+from dbas.logger import logger
 
 
 def init(config):
+	logger("foo", "bar", "baz")
 	config.include("cornice")
 	config.scan("api.views")
 
@@ -17,3 +19,7 @@ def main(global_config, **settings):
 
 def includeme(config):
 	init(config)
+
+
+if __name__ == "__main__":
+	logger("i", "want", "in")
