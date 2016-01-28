@@ -33,7 +33,6 @@ class VotingHelper(object):
 		#				or not db_argument.isSupportive and not argument.isSupportive:
 		#			self.remove_vote_for_argument(argument.uid, user)
 #
-#
 		## let's check, if the user voted for the oposite
 		#db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid == db_argument.premisesGroup_uid,
 		#                                                              Argument.conclusion_uid == db_argument.conclusion_uid,
