@@ -61,6 +61,9 @@ def main(global_config, **settings):
 	config.include('pyramid_mailer')
 	config.include('pyramid_beaker')
 
+	# Include apps
+	config.include('api')
+
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)
 	config.add_route('main_page',               '/')
