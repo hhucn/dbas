@@ -69,7 +69,6 @@ def main(global_config, **settings):
 	config.add_route('main_admin',              '/admin')
 	config.add_route('main_news',               '/news')
 	config.add_route('main_imprint',            '/imprint')
-	config.add_route('404',                     '/404')
 
 	# ajax for navigation logic, administraion, settigs and editing/viewing log
 	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')

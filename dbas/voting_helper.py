@@ -32,20 +32,20 @@ class VotingHelper(object):
 			for conclusion_argument in db_conclusion_arguments:
 				# our argument is supportive, so let's have a look at arguments, which  attacks our conclusion argument OR
 				# our argument is  attacking, so let's have a look at arguments, which supports our conclusion argument
-				if db_argument.isSupportive and not conclusion_argument.isSupportive \
-						or not db_argument.isSupportive and not conclusion_argument.isSupportive:
+				if db_argument.is_supportive and not conclusion_argument.is_supportive \
+						or not db_argument.is_supportive and not conclusion_argument.is_supportive:
 					self.remove_vote_for_argument(conclusion_argument.uid, user)
 #
 		# let's check, if the user voted for the oposite
-		db_opposite_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesGroup_uid == db_argument.premisesGroup_uid,
+		db_opposite_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == db_argument.premisesgroup_uid,
 		                                                                       Argument.conclusion_uid == db_argument.conclusion_uid,
 		                                                                       Argument.argument_uid == db_argument.argument_uid,
-		                                                                       Argument.isSupportive != db_argument.isSupportive)).first()
+		                                                                       Argument.is_supportive != db_argument.is_supportive)).first()
 		if db_opposite_argument:
 			self.remove_vote_for_argument(db_opposite_argument.uid, user)
 
 		# return count of votes
-		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==db_argument.uid, Vote.isValid==True)).all()
+		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid, True if Vote.is_valid else False)).all()
 
 		transaction.commit()
 
@@ -63,11 +63,11 @@ class VotingHelper(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		# remove votes
-		DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==db_argument.uid,
-		                                            Vote.author_uid==db_user.uid)).first().set_valid(False)
+		DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid,
+		                                            Vote.author_uid == db_user.uid)).first().set_valid(False)
 
 		# return count of votes
-		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==db_argument.uid, Vote.isValid==True)).all()
+		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid, True if Vote.is_valid else False)).all()
 
 		return len(db_votes)
 
@@ -83,8 +83,8 @@ class VotingHelper(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if not db_user:
 			return None, None
-		db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==db_argument.uid,
-		                                                      Vote.author_uid==db_user.uid)).first()
+		db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid,
+		                                                      Vote.author_uid == db_user.uid)).first()
 		already_voted = False
 		# do we have a vote?
 		if not db_vote:

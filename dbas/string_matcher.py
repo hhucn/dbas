@@ -28,7 +28,7 @@ class FuzzyStringMatcher(object):
 		:return: dict()
 		"""
 		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'string: ' + value + ', isStatement: ' + str(isStatement))
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.isStartpoint==isStatement, Statement.issue_uid==issue)).all()
+		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.is_startpoint == isStatement, Statement.issue_uid == issue)).all()
 		tmp_dict = dict()
 		for index, statement in enumerate(db_statements):
 			db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()

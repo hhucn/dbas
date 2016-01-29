@@ -127,7 +127,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 			mainpage + "static/images/logo.png");
 	});
 
-	guiHandler.setImageInactive($('#' + displayStyleIconGuidedId));
+	guiHandler.setDisplayStyleAsDiscussion();
 	$('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct () { guiHandler.setDisplayStyleAsDiscussion(); });
 	$('#' + displayStyleIconIslandId).click(function displayStyleIconIslandFct () { guiHandler.setDisplayStyleAsIsland(); });
 	$('#' + displayStyleIconExpertId).click(function displayStyleIconExpertFct () { guiHandler.setDisplayStyleAsGraphView(); });

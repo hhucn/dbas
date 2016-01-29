@@ -36,6 +36,10 @@
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 
+                    <form action="/discuss" method="get" class="text-center" tal:attributes="action extras.restart_url">
+						<input class="button button-block btn btn-primary" type="submit" value="test restart" name="Submit" />
+					</form>
+
 					<button id ="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart Discussion</span>
 					</button>

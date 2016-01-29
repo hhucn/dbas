@@ -76,16 +76,16 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_page', 'def', 'main page')
 		try:
-			lang = str(self.request.cookies['_LOCALE_'])
+			ui_locales = str(self.request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
-		extras_dict = {'logged_in': self.request.authenticated_userid, 'restart_url': UrlManager(mainpage).discussion_url}
-		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, lang)
+		extras_dict = {'logged_in': self.request.authenticated_userid}
+		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
 
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': 'Main',
 			'project': header,
 			'extras': extras_dict
@@ -109,9 +109,9 @@ class Dbas(object):
 		message = ''
 
 		try:
-			lang = str(self.request.cookies['_LOCALE_'])
+			ui_locales = str(self.request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
 		logger('main_contact', 'form.contact.submitted', 'requesting params')
 		username        = self.request.params['name'] if 'name' in self.request.params else ''
@@ -123,17 +123,17 @@ class Dbas(object):
 		logger('main_contact', 'form.contact.submitted', 'name: ' + name + ', mail: ' + email + ', phone: ' + phone + ', content: ' + content + ', spam: ' + spam + ', csrf_token: ' + request_token)
 
 		# get anti-spam-question
-		spamquestion, answer = UserHandler().get_random_anti_spam_question(lang)
+		spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
 		# save answer in session
 		self.request.session['antispamanswer'] = answer
 
 		if 'form.contact.submitted' in self.request.params:
-			_t = Translator(lang)
+			_t = Translator(ui_locales)
 
 			logger('main_contact', 'form.contact.submitted', 'validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
 
-			## sanity checks
+			# sanity checks
 			# check for empty username
 			if not username:
 				logger('main_contact', 'form.contact.submitted', 'username empty')
@@ -170,13 +170,13 @@ class Dbas(object):
 				       + _t.get(_t.mail) + ': ' + email + '\n'\
 				       + _t.get(_t.phone) + ': ' + phone + '\n'\
 				       + _t.get(_t.message) + ':\n' + content
-				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, lang)
+				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
 
 		logger('main_contact', 'form.contact.submitted', 'content: ' + content)
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': 'Contact',
 			'project': header,
 			'extras': {'logged_in': self.request.authenticated_userid},
@@ -199,7 +199,7 @@ class Dbas(object):
 		View configuration for the content view.
 		:return: dictionary
 		"""
-		#'/a*slug'
+		# '/a*slug'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
@@ -208,27 +208,27 @@ class Dbas(object):
 		slug = self.request.matchdict['slug'][0] if len(self.request.matchdict['slug']) > 0 else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		lang            = _qh.get_language(self.request, get_current_registry)
-		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
+		ui_locales           = _qh.get_language(self.request, get_current_registry)
+		issue_dict      = _qh.prepare_json_of_issue(issue, ui_locales)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
-		                                                 self.request.session.id, transaction, lang,
+		                                                 self.request.session.id, transaction, ui_locales,
 		                                                 mainpage)
 
-		discussion_dict = _dh.prepare_discussion_dict(issue, lang, at_start=True)
-		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, lang, mainpage)
-		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang,
+		discussion_dict = _dh.prepare_discussion_dict(issue, ui_locales, at_start=True)
+		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, ui_locales, mainpage)
+		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, ui_locales,
 		                                          self.request.authenticated_userid, breadcrumbs=breadcrumbs,
 		                                          application_url=mainpage)
 
 		if len(item_dict) == 0:
-			_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_start=True)
+			_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_start=True)
 
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': issue_dict['title'],
 			'project': header,
 
@@ -256,27 +256,27 @@ class Dbas(object):
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		lang            = _qh.get_language(self.request, get_current_registry)
-		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
+		ui_locales            = _qh.get_language(self.request, get_current_registry)
+		issue_dict      = _qh.prepare_json_of_issue(issue, ui_locales)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
-		                                                 self.request.session.id, transaction, lang,
+		                                                 self.request.session.id, transaction, ui_locales,
 		                                                 mainpage)
 
-		discussion_dict = _dh.prepare_discussion_dict(statement_id, lang, at_attitude=True)
+		discussion_dict = _dh.prepare_discussion_dict(statement_id, ui_locales, at_attitude=True)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager().get_404([slug, statement_id]))
 
-		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, lang, mainpage)
-		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, lang,
+		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage)
+		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, ui_locales,
 		                                          self.request.authenticated_userid, breadcrumbs=breadcrumbs,
 		                                          application_url=mainpage)
 
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': issue_dict['title'],
 			'project': header,
 
@@ -305,67 +305,65 @@ class Dbas(object):
 		statement_or_arg_id = matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in matchdict else ''
 		mode                = matchdict['mode'] if 'mode' in matchdict else ''
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
-		relation            = matchdict['relation'][0] if len(matchdict['relation'])>0 else ''
+		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
 		issue               = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		lang                = _qh.get_language(self.request, get_current_registry)
-		issue_dict          = _qh.prepare_json_of_issue(issue, lang)
+		ui_locales          = _qh.get_language(self.request, get_current_registry)
+		issue_dict          = _qh.prepare_json_of_issue(issue, ui_locales)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
-		                                                 self.request.session.id, transaction, lang,
+		                                                 self.request.session.id, transaction, ui_locales,
 		                                                 mainpage)
 
-		if [c for c in ('t','f') if c in mode] and relation == '':
+		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			# justifying position
 			logger('discussion_justify', 'def', 'justifying position')
-			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify=True, is_supportive=supportive)
+			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify=True, is_supportive=supportive)
 			if not discussion_dict:
 				return HTTPFound(location=UrlManager(mainpage).get_404([slug, statement_id]))
 
-			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, lang, mainpage)
-			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, lang,
-			                                          self.request.authenticated_userid, mode=='t', breadcrumbs=breadcrumbs,
+			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, ui_locales, mainpage)
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, ui_locales,
+			                                          self.request.authenticated_userid, mode == 't', breadcrumbs=breadcrumbs,
 			                                          application_url=mainpage)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_justify=True)
-
+				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_justify=True)
 
 		elif 'd' in mode and relation == '':
 			# dont know
 			logger('discussion_justify', 'def', 'dont know position')
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
-			discussion_dict = _dh.prepare_discussion_dict(argument_uid, lang, at_dont_know=True, is_supportive=supportive, additional_id=statement_or_arg_id)
-			item_dict       = _dh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, lang, mainpage)
-			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid,
+			discussion_dict = _dh.prepare_discussion_dict(argument_uid, ui_locales, at_dont_know=True, is_supportive=supportive, additional_id=statement_or_arg_id)
+			item_dict       = _dh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, ui_locales, mainpage)
+			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, ui_locales, self.request.authenticated_userid,
 			                                          argument_id=argument_uid, breadcrumbs=breadcrumbs, application_url=mainpage)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_dont_know=True)
+				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_dont_know=True)
 
-
-		elif [c for c in ('undermine','rebut','undercut', 'support', 'overbid') if c in relation]:
+		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
 			logger('discussion_justify', 'def', 'argument stuff')
-			is_attack = True if [c for c in ('undermine','rebut','undercut') if c in relation] else False
-			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, lang, at_justify_argumentation=True,
+			is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
+			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid)
-			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, lang, mainpage)
-			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, lang, self.request.authenticated_userid,
+			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, ui_locales, mainpage)
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, ui_locales, self.request.authenticated_userid,
 			                                          not is_attack, argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs,
 			                                          application_url=mainpage)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, lang, at_justify_argumentation=True)
+				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_justify_argumentation=True)
 		else:
-			return HTTPFound(location=UrlManager(mainpage).get_404([slug ,'j', statement_or_arg_id, mode, relation]))
+			return HTTPFound(location=UrlManager(mainpage).get_404([slug, 'j', statement_or_arg_id, mode, relation]))
 
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': issue_dict['title'],
 			'project': header,
 
@@ -390,8 +388,8 @@ class Dbas(object):
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
 		attack          = matchdict['mode'] if 'mode' in matchdict else ''
-		arg_id_sys      = matchdict['arg_id_sys'][0] if len(matchdict['arg_id_sys'])>0 else ''
-		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().isSupportive
+		arg_id_sys      = matchdict['arg_id_sys'][0] if len(matchdict['arg_id_sys']) > 0 else ''
+		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().is_supportive
 
 		# set votings
 		VotingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
@@ -400,25 +398,25 @@ class Dbas(object):
 		_dh = DictionaryHelper()
 		
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		lang            = _qh.get_language(self.request, get_current_registry)
-		issue_dict      = _qh.prepare_json_of_issue(issue, lang)
+		ui_locales            = _qh.get_language(self.request, get_current_registry)
+		issue_dict      = _qh.prepare_json_of_issue(issue, ui_locales)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
-		                                                 self.request.session.id, transaction, lang,
+		                                                 self.request.session.id, transaction, ui_locales,
 		                                                 mainpage)
 
-		discussion_dict = _dh.prepare_discussion_dict(arg_id_user, lang, at_argumentation=True, is_supportive=supportive,
+		discussion_dict = _dh.prepare_discussion_dict(arg_id_user, ui_locales, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
-		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, lang, mainpage)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, lang, self.request.authenticated_userid,
+		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, ui_locales, mainpage)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, ui_locales, self.request.authenticated_userid,
 		                                          argument_id=arg_id_user, breadcrumbs=breadcrumbs,
 		                                          application_url=mainpage)
 
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': issue_dict['title'],
 			'project': header,
 
@@ -442,10 +440,10 @@ class Dbas(object):
 		logger('main_settings', 'new token', str(token))
 
 		try:
-			lang = str(self.request.cookies['_LOCALE_'])
+			ui_locales = str(self.request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
-		logger('main_settings', 'language', lang)
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+		logger('main_settings', 'language', ui_locales)
 
 		old_pw = ''
 		new_pw = ''
@@ -463,7 +461,7 @@ class Dbas(object):
 			new_pw = self.request.params['password']
 			confirm_pw = self.request.params['passwordconfirm']
 
-			message, error, success = uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, lang)
+			message, error, success = uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
 		# get gravater profile picture
 		gravatar_url = uh.get_profile_picture(db_user)
@@ -471,7 +469,7 @@ class Dbas(object):
 		logger('main_settings', 'return change_error', str(error) + ', change_success' + str(success) + ', message' + str(message))
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': 'Settings',
 			'project': header,
 			'extras': {'logged_in': self.request.authenticated_userid},
@@ -501,20 +499,24 @@ class Dbas(object):
 		logger('main_admin', 'def', 'main')
 
 		try:
-			lang = str(self.request.cookies['_LOCALE_'])
+			ui_locales = str(self.request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
 		# checks whether the current user is admin
 		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
 
+		extras_dict = {'logged_in': self.request.authenticated_userid}
+		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
+
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': 'Settings',
 			'project': header,
 			'logged_in': self.request.authenticated_userid,
 			'is_admin': is_admin,
+			'extras': extras_dict
 		}
 
 	# news page for everybody
@@ -527,9 +529,9 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_news', 'def', 'main')
 		try:
-			lang = str(self.request.cookies['_LOCALE_'])
+			ui_locales = str(self.request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
 		is_author = UserHandler().is_user_author(self.request.authenticated_userid)
 
@@ -540,13 +542,16 @@ class Dbas(object):
 		dd = str(now.day) if now.day > 9 else '0' + str(now.day)
 		date = dd + "." + mm + "." + yyyy
 
+		extras_dict = {'logged_in': self.request.authenticated_userid}
+		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
+
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': 'News',
 			'project': header,
-			'extras': {'logged_in': self.request.authenticated_userid},
-			'date':date,
+			'extras': extras_dict,
+			'date': date,
 			'is_author': is_author
 		}
 
@@ -560,13 +565,13 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_imprint', 'def', 'main')
 		try:
-			lang = str(self.request.cookies['_LOCALE_'])
+			ui_locales = str(self.request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': 'Imprint',
 			'project': header,
 			'extras': {'logged_in': self.request.authenticated_userid}
@@ -591,22 +596,25 @@ class Dbas(object):
 
 		self.request.response.status = 404
 		try:
-			lang = str(self.request.cookies['_LOCALE_'])
+			ui_locales = str(self.request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+
+		extras_dict = {'logged_in': self.request.authenticated_userid}
+		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
 
 		return {
 			'layout': self.base_layout(),
-			'language': str(lang),
+			'language': str(ui_locales),
 			'title': 'Error',
 			'project': header,
-			'page_notfound_viewname': self.request.path[4:],
-			'extras': {'logged_in': self.request.authenticated_userid}
+			'page_notfound_viewname': self.request.path,
+			'extras': extras_dict
 		}
 
-	#######################################
-	## ADDTIONAL AJAX STUFF # USER THINGS #
-	#######################################
+	######################################
+	# ADDTIONAL AJAX STUFF # USER THINGS #
+	######################################
 
 	# ajax - getting complete track of the user
 	@view_config(route_name='ajax_get_user_history', renderer='json', check_csrf=True)
@@ -621,11 +629,11 @@ class Dbas(object):
 		logger('get_user_history', 'def', 'main')
 
 		try:
-			lang = str(self.request.cookies['_LOCALE_'])
+			ui_locales = str(self.request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = get_current_registry().settings['pyramid.default_locale_name']
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
-		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, lang)
+		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, ui_locales)
 		logger('get_user_history', 'def', str(return_dict))
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -644,7 +652,7 @@ class Dbas(object):
 		logger('delete_user_history', 'def', 'main')
 		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
 		return_dict = dict()
-		return_dict['removed_data'] = 'true' # necessary
+		return_dict['removed_data'] = 'true'  # necessary
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -661,7 +669,7 @@ class Dbas(object):
 
 		success = '0'
 		message = ''
-		return_dict = {}
+		return_dict = dict()
 
 		try:
 			nickname = self.escape_string(self.request.params['user'])
@@ -736,7 +744,7 @@ class Dbas(object):
 		# default values
 		success = '0'
 		message = ''
-		return_dict = {}
+		return_dict = dict()
 
 		# getting params
 		try:
@@ -748,16 +756,16 @@ class Dbas(object):
 			gender          = self.escape_string(params['gender'])
 			password        = self.escape_string(params['password'])
 			passwordconfirm = self.escape_string(params['passwordconfirm'])
-			lang            = self.request.params['lang']
+			ui_locales      = self.request.params['lang']
 			logger('user_registration', 'def', 'params firstname: ' + str(firstname)
 			       + ', lastname: ' + str(lastname)
 			       + ', nickname: ' + str(nickname)
 			       + ', email: ' + str(email)
 			       + ', password: ' + str(password)
 			       + ', passwordconfirm: ' + str(passwordconfirm)
-			       + ', lang: ' + lang)
+			       + ', lang: ' + ui_locales)
 
-			_t = Translator(lang)
+			_t = Translator(ui_locales)
 
 			# database queries mail verification
 			db_nick = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -798,12 +806,12 @@ class Dbas(object):
 				else:
 					# creating a new user with hased password
 					logger('user_registration', 'main', 'Adding user')
-					hashedPassword = PasswordHandler().get_hashed_password(password)
+					hashed_password = PasswordHandler().get_hashed_password(password)
 					newuser = User(firstname=firstname,
 					               surname=lastname,
 					               email=email,
 					               nickname=nickname,
-					               password=hashedPassword,
+					               password=hashed_password,
 					               gender=gender,
 					               group=db_group.uid)
 					DBDiscussionSession.add(newuser)
@@ -819,7 +827,7 @@ class Dbas(object):
 						# sending an email
 						subject = 'D-BAS Account Registration'
 						body = _t.get(_t.accountWasRegistered)
-						EmailHelper().send_mail(self.request, subject, body, email, lang)
+						EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
 
 					else:
 						logger('user_registration', 'main', 'New data was not added')
@@ -846,14 +854,14 @@ class Dbas(object):
 
 		success = '0'
 		message = ''
-		return_dict = {}
+		return_dict = dict()
 
 		try:
 			email = self.escape_string(self.request.params['email'])
-			lang = self.request.params['lang']
-			logger('user_password_request', 'def', 'params email: ' + str(email) + ', lang ' + lang)
+			ui_locales = self.request.params['lang']
+			logger('user_password_request', 'def', 'params email: ' + str(email) + ', ui_locales ' + ui_locales)
 			success = '1'
-			_t = Translator(lang)
+			_t = Translator(ui_locales)
 
 			db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
 
@@ -873,7 +881,7 @@ class Dbas(object):
 				body = _t.get(_t.nicknameIs) + db_user.nickname + '\n'
 				body += _t.get(_t.newPwdIs) + pwd
 				subject = _t.get(_t.dbasPwdRequest)
-				reg_success, message= EmailHelper().send_mail(self.request, subject, body, email, lang)
+				reg_success, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
 
 				# logger
 				if reg_success:
@@ -885,7 +893,6 @@ class Dbas(object):
 				logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
 				message = 'emailUnknown'
 
-
 		except KeyError as e:
 			logger('user_password_request', 'error', repr(e))
 
@@ -895,9 +902,9 @@ class Dbas(object):
 
 		return return_json
 
-	##########################################
-	## ADDTIONAL AJAX STUFF # SET NEW THINGS #
-	##########################################
+	#########################################
+	# ADDTIONAL AJAX STUFF # SET NEW THINGS #
+	#########################################
 
 	# ajax - send new start statement
 	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
@@ -911,7 +918,7 @@ class Dbas(object):
 
 		logger('set_new_start_statement', 'def', 'main')
 
-		return_dict = {}
+		return_dict = dict()
 		return_dict['status'] = '1'
 		try:
 			statement = self.request.params['statement']
@@ -1061,9 +1068,9 @@ class Dbas(object):
 
 		return return_json
 
-	######################################
-	## ADDTIONAL AJAX STUFF # GET THINGS #
-	######################################
+	#####################################
+	# ADDTIONAL AJAX STUFF # GET THINGS #
+	#####################################
 
 	# ajax - getting changelog of a statement
 	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=False)
@@ -1105,7 +1112,7 @@ class Dbas(object):
 
 		logger('get_shortened_url', 'def', 'main')
 
-		return_dict = {}
+		return_dict = dict()
 		# google_api_key = 'AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0' # browser is
 		# google_api_key = 'AIzaSyDneaEJN9FNGUpXHDZahe9Rhb21FsFNS14' # server id
 		# bitly_login = 'dbashhu'
@@ -1150,11 +1157,11 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
 		logger('get_attack_overview', 'def', 'main')
-		lang = self.request.params['lang']
+		ui_locales = self.request.params['lang']
 		issue = self.request.params['issue'] if 'issue' in self.request.params \
 			else self.request.session['issue'] if 'issue' in self.request.session \
 			else issue_fallback
-		return_dict = QueryHelper().get_attack_overview(self.request.authenticated_userid, issue, lang)
+		return_dict = QueryHelper().get_attack_overview(self.request.authenticated_userid, issue, ui_locales)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
@@ -1190,10 +1197,9 @@ class Dbas(object):
 
 		return return_json
 
-
-	###########################################
-	## ADDTIONAL AJAX STUFF # ADDITION THINGS #
-	###########################################
+	##########################################
+	# ADDTIONAL AJAX STUFF # ADDITION THINGS #
+	##########################################
 
 	# ajax - for language switch
 	@view_config(route_name='ajax_switch_language', renderer='json')
@@ -1207,11 +1213,11 @@ class Dbas(object):
 
 		logger('switch_language', 'def', 'main')
 
-		return_dict = {}
+		return_dict = dict()
 		try:
-			lang = self.request.params['lang']
-			logger('switch_language', 'def', 'params uid: ' + str(lang))
-			self.request.response.set_cookie('_LOCALE_', str(lang))
+			ui_locales = self.request.params['lang']
+			logger('switch_language', 'def', 'params uid: ' + str(ui_locales))
+			self.request.response.set_cookie('_LOCALE_', str(ui_locales))
 			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('swich_language', 'error', repr(e))
@@ -1261,11 +1267,11 @@ class Dbas(object):
 
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			return_dict = dict()
-			# return_dict['distance_name'] = 'SequenceMatcher' # TODO IMPROVE
+			# return_dict['distance_name'] = 'SequenceMatcher'  # TODO IMPROVE
 			return_dict['distance_name'] = 'Levensthein'
-			if mode == '0': # start statement
+			if mode == '0':  # start statement
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
-			elif mode == '1': # edit statement popup
+			elif mode == '1':  # edit statement popup
 				statement_uid = self.request.params['extra']
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid, issue)
 			elif mode == '2':  # start premise
