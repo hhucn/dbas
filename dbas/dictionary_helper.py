@@ -432,15 +432,17 @@ class DictionaryHelper(object):
 		_uh = UserHandler()
 		_tn = Translator(lang)
 		_qh = QueryHelper()
+		is_logged_in = _uh.is_user_logged_in(authenticated_userid)
 
 		return_dict = dict()
 		return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
-		return_dict['is_editable']                   = is_editable and _uh.is_user_logged_in(authenticated_userid)
+		return_dict['is_editable']                   = is_editable and is_logged_in
 		return_dict['is_reportable']                 = is_reportable
 		return_dict['is_admin']                      = _uh.is_user_admin(authenticated_userid)
-		return_dict['logged_in']                     = _uh.is_user_logged_in(authenticated_userid)
+		return_dict['logged_in']                     = is_logged_in
 		return_dict['show_bar_icon']                 = show_bar_icon
 		return_dict['show_display_style']            = show_display_styles
+		return_dict['users_name']                    = str(authenticated_userid)
 		return_dict['add_premise_supportive']        = add_premise_supportive
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'
