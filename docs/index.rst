@@ -10,27 +10,27 @@ Welcome to D-BAS's documentation!
 
 Installation
 ------------
+.. toctree::
+  installation
 
 Core Documentation
 ------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
 
    dbas/index
-   dbas/*
 
 
 API Documentation
 -----------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
 
    api/index
-   api/*
 
 
 Indices and tables
