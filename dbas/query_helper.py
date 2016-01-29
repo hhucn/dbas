@@ -302,33 +302,6 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_undercuts_for_argument_uid', 'main')
 		return self.get_attack_or_support_for_justification_of_argument_uid(argument_uid, False)
 
-	def get_rebuts_for_arguments_conclusion_uid(self, conclusion_statements_uid, is_current_argument_supportive):
-		"""
-
-		:param conclusion_statements_uid:
-		:param is_current_argument_supportive:
-		:param issue:
-		:return:
-		"""
-		return_array = []
-		given_rebuts = set()
-		index = 0
-		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' + str(conclusion_statements_uid)
-		       + ', is_current_argument_supportive ' + str(is_current_argument_supportive) + ' (searching for the opposite)')
-		db_rebut = DBDiscussionSession.query(Argument).filter(Argument.is_supportive == (not is_current_argument_supportive),
-                                                              Argument.conclusion_uid == conclusion_statements_uid).all()
-		for rebut in db_rebut:
-			if rebut.premisesgroup_uid not in given_rebuts:
-				given_rebuts.add(rebut.premisesgroup_uid)
-				logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
-				tmp_dict = dict()
-				tmp_dict['id'] = rebut.uid
-				tmp_dict['text'], trash = self.get_text_for_premisesgroup_uid(rebut.premisesgroup_uid)
-				return_array.append(tmp_dict)
-				index += 1
-
-		return return_array
-
 	def get_rebuts_for_argument_uid(self, argument_uid):
 		"""
 		Calls self.get_rebuts_for_arguments_conclusion_uid('reason', Argument.conclusion_uid)
@@ -339,7 +312,33 @@ class QueryHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 		if not db_argument:
 			return None
-		return self.get_rebuts_for_arguments_conclusion_uid(db_argument.conclusion_uid, db_argument.is_supportive)
+		return self.get_rebuts_for_arguments_conclusion_uid(db_argument)
+
+	def get_rebuts_for_arguments_conclusion_uid(self, db_argument):
+		"""
+
+		:param db_argument:
+		:return:
+		"""
+		return_array = []
+		given_rebuts = set()
+		index = 0
+		logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' + str(db_argument.conclusion_uid)
+		       + ', is_current_argument_supportive ' + str(db_argument.is_supportive) + ' (searching for the opposite)')
+		db_rebut = DBDiscussionSession.query(Argument).filter(Argument.is_supportive == (not db_argument.is_supportive),
+                                                              Argument.conclusion_uid == db_argument.conclusion_uid).all()
+		for rebut in db_rebut:
+			if rebut.premisesgroup_uid not in given_rebuts:
+				given_rebuts.add(rebut.premisesgroup_uid)
+				logger('QueryHelper', 'get_rebuts_for_arguments_conclusion_uid', 'found db_rebut ' + str(rebut.uid))
+				tmp_dict = dict()
+				tmp_dict['id'] = rebut.uid
+				text, trash = self.get_text_for_premisesgroup_uid(rebut.premisesgroup_uid)
+				tmp_dict['text'] = text[0:1].upper() + text[1:]
+				return_array.append(tmp_dict)
+				index += 1
+
+		return return_array
 
 	def get_supports_for_argument_uid(self, argument_uid):
 		"""
