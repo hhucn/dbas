@@ -11,6 +11,7 @@ from dbas.database import DBDiscussionSession, DiscussionBase
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015-2016
 
+
 class Issue(DiscussionBase):
 	"""
 	issue-table with several column.
@@ -57,9 +58,6 @@ class Group(DiscussionBase):
 	def by_name(cls):
 		"""Return a query of positions sorted by text."""
 		return DBDiscussionSession.query(Group).order_by(Group.name)
-
-	def group_by_id(group):
-		return DBDiscussionSession.query(Group).filter(Group.name == group).first()
 
 
 class User(DiscussionBase):
@@ -121,7 +119,7 @@ class Statement(DiscussionBase):
 	__tablename__ = 'statements'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	textversion_uid = sa.Column(sa.Integer, sa.ForeignKey('textversions.uid'))
-	isStartpoint = sa.Column(sa.Boolean, nullable=False)
+	is_startpoint = sa.Column(sa.Boolean, nullable=False)
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
 	textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
@@ -136,7 +134,7 @@ class Statement(DiscussionBase):
 		:return:
 		"""
 		self.textversion_uid = textversion
-		self.isStartpoint = isstartpoint
+		self.is_startpoint = isstartpoint
 		self.issue_uid = issue
 		self.weight_uid = 0
 
@@ -205,14 +203,14 @@ class Premise(DiscussionBase):
 	Each premises has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
 	"""
 	__tablename__ = 'premises'
-	premisesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'), primary_key=True)
+	premisesgroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'), primary_key=True)
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'), primary_key=True)
-	isNegated = sa.Column(sa.Boolean, nullable=False)
+	is_negated = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
-	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesGroup_uid])
+	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
@@ -227,9 +225,9 @@ class Premise(DiscussionBase):
 		:param issue:
 		:return:
 		"""
-		self.premisesGroup_uid = premisesgroup
+		self.premisesgroup_uid = premisesgroup
 		self.statement_uid = statement
-		self.isNegated = isnegated
+		self.is_negated = isnegated
 		self.author_uid = author
 		self.timestamp = func.now()
 		self.issue_uid = issue
@@ -243,15 +241,15 @@ class Argument(DiscussionBase):
 	"""
 	__tablename__ = 'arguments'
 	uid = sa.Column(sa.Integer, primary_key=True)
-	premisesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'))
+	premisesgroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'))
 	conclusion_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
 	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
-	isSupportive = sa.Column(sa.Boolean, nullable=False)
+	is_supportive = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
-	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesGroup_uid])
+	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
 	statements = relationship('Statement', foreign_keys=[conclusion_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
@@ -267,61 +265,16 @@ class Argument(DiscussionBase):
 		:param conclusion:
 		:return:
 		"""
-		self.premisesGroup_uid = premisegroup
+		self.premisesgroup_uid = premisegroup
 		self.conclusion_uid = conclusion
 		self.argument_uid = None
-		self.isSupportive = issupportive
+		self.is_supportive = issupportive
 		self.author_uid = author
 		self.argument_uid = 0
 		self.issue_uid = issue
 
 	def conclusions_argument(self, argument):
 		self.argument_uid = argument
-
-
-class Track(DiscussionBase):
-	"""
-	Track-table with several columns.
-	Each user will be tracked
-	"""
-	__tablename__ = 'track'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
-	premisesGroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'))
-	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
-	attacked_by_relation = sa.Column(sa.Integer, sa.ForeignKey('relation.uid'))
-	attacked_with_relation = sa.Column(sa.Integer, sa.ForeignKey('relation.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	session_id = sa.Column(sa.Integer)
-
-	users = relationship('User', foreign_keys=[author_uid])
-	statements = relationship('Statement', foreign_keys=[statement_uid])
-	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesGroup_uid])
-	arguments = relationship('Argument', foreign_keys=[argument_uid])
-	attacked_by = relationship('Relation', foreign_keys=[attacked_by_relation])
-	attacked_with = relationship('Relation', foreign_keys=[attacked_with_relation])
-
-	def __init__(self, user, statement, premisegroup=0, argument=0, attacked_by=0, attacked_with=0, session_id=0):
-		"""
-		Initializes a row in current track-table
-		:param user:
-		:param statement:
-		:param premisegroup:
-		:param argument:
-		:param attacked_by:
-		:param attacked_with:
-		:param session_id:
-		:return:
-		"""
-		self.author_uid = user
-		self.statement_uid = statement
-		self.premisesGroup_uid = premisegroup
-		self.argument_uid = argument
-		self.attacked_by_relation = attacked_by
-		self.attacked_with_relation = attacked_with
-		self.timestamp = func.now()
-		self.session_id = session_id
 
 
 class History(DiscussionBase):
@@ -349,24 +302,8 @@ class History(DiscussionBase):
 		self.timestamp = func.now()
 		self.session_id = session_id
 
-	def set_keyword_after_decission(self, keyword_after_decission):
-		"""
-		Refrehses the value
-		:param keyword_after_decission: current keyword
-		:return:
-		"""
-		self.keyword_after_decission = keyword_after_decission
 
-	def set_keyword_before_decission(self, keyword_before_decission):
-		"""
-		Refrehses the value
-		:param keyword_before_decission: current keyword
-		:return:
-		"""
-		self.keyword_before_decission = keyword_before_decission
-
-
-class Relation(DiscussionBase): # TODO IS THIS NECESSARY ?
+class Relation(DiscussionBase):  # TODO IS THIS NECESSARY ?
 	"""
 	Relation-table with several columns.
 	Each user will be tracked
@@ -393,13 +330,13 @@ class Vote(DiscussionBase):
 	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'), primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), primary_key=True)
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	isUpVote = sa.Column(sa.Boolean, nullable=False)
-	isValid = sa.Column(sa.Boolean, nullable=False)
+	is_up_vote = sa.Column(sa.Boolean, nullable=False)
+	is_valid = sa.Column(sa.Boolean, nullable=False)
 
 	arguments = relationship('Argument', foreign_keys=[argument_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, argument_uid=0, author_uid=0, isUpVote=True, isValid=True):
+	def __init__(self, argument_uid=0, author_uid=0, is_up_vote=True, is_valid=True):
 		"""
 		Initializes a row
 		:param weight_uid:
@@ -408,25 +345,25 @@ class Vote(DiscussionBase):
 		"""
 		self.argument_uid = argument_uid
 		self.author_uid = author_uid
-		self.isUpVote = isUpVote
+		self.is_up_vote = is_up_vote
 		self.timestamp = func.now()
-		self.isValid = isValid
+		self.is_valid = is_valid
 
-	def set_up_vote(self, isUpVote):
+	def set_up_vote(self, is_up_vote):
 		"""
 		Sets up/down vote of this record
-		:param isUpVote: boolean
+		:param is_up_vote: boolean
 		:return: None
 		"""
-		self.isUpVote = isUpVote
+		self.is_up_vote = is_up_vote
 
-	def set_valid(self, isValid):
+	def set_valid(self, is_valid):
 		"""
 		Sets validity of this record
-		:param isValid: boolean
+		:param is_valid: boolean
 		:return: None
 		"""
-		self.isValid = isValid
+		self.is_valid = is_valid
 
 	def update_timestamp(self):
 		"""

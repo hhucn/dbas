@@ -56,6 +56,9 @@ def main(global_config, **settings):
 	config.set_authorization_policy(authz_policy)
 	config.set_session_factory(session_factory)
 
+	# Include apps
+	config.include('api', route_prefix='/api')
+
 	# includings for the config
 	config.include('pyramid_chameleon')
 	config.include('pyramid_mailer')
@@ -69,7 +72,6 @@ def main(global_config, **settings):
 	config.add_route('main_admin',              '/admin')
 	config.add_route('main_news',               '/news')
 	config.add_route('main_imprint',            '/imprint')
-	config.add_route('404',                     '/404')
 
 	# ajax for navigation logic, administraion, settigs and editing/viewing log
 	config.add_route('ajax_user_login',                          '{url:.*}ajax_user_login')

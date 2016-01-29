@@ -71,7 +71,7 @@ function InteractionHandler() {
 			$('#' + popupEditStatementLogfileSpaceId).text(_t(noCorrections));
 		} else {
 			$('#' + popupEditStatementLogfileSpaceId).text('');
-			new GuiHandler().displayStatementCorrectionsInPopup(parsedData.content);
+			new GuiHandler().showStatementCorrectionsInPopup(parsedData.content);
 		}
 	};
 

@@ -6,20 +6,6 @@
  * @copyright Krauthoff 2015
  */
 
-/**
- * Discussion will be started: Resstart button and discussion container are visible, issue list will be fetched
- */
-startDiscussion = function () {
-	$('#' + discussionContainerId).fadeIn('fast'); // hiding retry button
-};
-
-/**
- * Restarts discussion by redirecting to "mainpage + 'discussion/start/issue=' + issue_id"
- */
-resetDiscussion = function () {
-	var issue_id = new Helper().getCurrentIssueId();
-	window.location.href = mainpage + 'discussion/start/issue=' + issue_id;
-};
 
 /**
  * Sets all click functions
@@ -73,10 +59,10 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 	});
 
 	// close popups
-	$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId(){	guiHandler.hideEditStatementsPopup(); });
-	$('#' + popupEditStatementCloseButtonId).click(function popupEditStatementCloseButtonId(){		guiHandler.hideEditStatementsPopup(); });
-	$('#' + popupUrlSharingCloseButtonXId).click(function popupUrlSharingCloseButtonXId(){			guiHandler.hideUrlSharingPopup(); });
-	$('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId(){			guiHandler.hideUrlSharingPopup(); });
+	$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId(){	guiHandler.hideandClearEditStatementsPopup(); });
+	$('#' + popupEditStatementCloseButtonId).click(function popupEditStatementCloseButtonId(){		guiHandler.hideandClearEditStatementsPopup(); });
+	$('#' + popupUrlSharingCloseButtonXId).click(function popupUrlSharingCloseButtonXId(){			guiHandler.hideAndClearUrlSharingPopup(); });
+	$('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId(){			guiHandler.hideAndClearUrlSharingPopup(); });
 
 	// share url for argument blogging
 	$('#' + shareUrlId).click(function shareurlClick (){
@@ -127,7 +113,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 			mainpage + "static/images/logo.png");
 	});
 
-	guiHandler.setImageInactive($('#' + displayStyleIconGuidedId));
+	guiHandler.setDisplayStyleAsDiscussion();
 	$('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct () { guiHandler.setDisplayStyleAsDiscussion(); });
 	$('#' + displayStyleIconIslandId).click(function displayStyleIconIslandFct () { guiHandler.setDisplayStyleAsIsland(); });
 	$('#' + displayStyleIconExpertId).click(function displayStyleIconExpertFct () { guiHandler.setDisplayStyleAsGraphView(); });
@@ -212,23 +198,32 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
  * @param guiHandler
  */
 setStyleOptions = function (guiHandler){
-	$('#' + discussionFailureRowId).hide(); // hiding error message at start
+	var tmp1, tmp2, w1, w2;
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
 
-	var w1 = $('#discussion-restart-btn').outerWidth(),
-		w2 = $('#' + issueDropdownButtonID).outerWidth();
-	if (w1>w2){
-		$('#' + issueDropdownButtonID).attr('style', 'width: ' + w1 + 'px;');
-	} else {
-		$('#discussion-restart-btn').attr('style', 'width: ' + w2 + 'px;');
-	}
+	tmp1 = $('#discussion-restart-btn');
+	tmp2 = $('#' + issueDropdownButtonID);
+	w1 = tmp1.outerWidth();
+	w2 = tmp2.outerWidth();
+	tmp1.attr('style', w1<w2 ? 'width: ' + w2 + 'px;' : '');
+	tmp2.attr('style', w1>w2 ? 'width: ' + w1 + 'px;' : '');
 
 	// focus text of input elements
 	$("input[type='text']").on("click", function () {
 		$(this).select();
 	});
+
+	// render html tags
+	replaceHtmlTags($('#discussions-header'));
+	$.each($('#' + discussionSpaceId + ' label'), function () {
+		replaceHtmlTags($(this));
+	});
+	$.each($('#' + islandViewContainerId + ' h5'), function () {
+		replaceHtmlTags($(this));
+	});
+	replaceHtmlTags($('#' + issueInfoId));
 };
 
 /**
@@ -270,11 +265,12 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 		ajaxHandler.sendNewPremiseForArgument(arg, relation, supportive, text)
 	});
 
+	// options for the extra buttons, where the user can add input!
 	input.change(function () {
 		if (input.prop('checked')){
 			// new position at start
 			if (input.attr('id').indexOf('start_statement') != -1){
-				guiHandler.displayHowToWriteTextPopup();
+				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPositionContainer();
 				$('#' + sendNewStatementId).click(function(){
 					text = $('#' + addStatementContainerMainInputId).val();
@@ -287,7 +283,7 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 			}
 			// new premise for the start
 			else if (input.attr('id').indexOf('start_premise') != -1){
-				guiHandler.displayHowToWriteTextPopup();
+				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
 				$('#' + sendNewPremiseId).click(function(){
 					splits = window.location.href.split('/');
@@ -304,7 +300,7 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 			// new premise while judging
 
 			else if (input.attr('id').indexOf('justify_premise') != -1){
-				guiHandler.displayHowToWriteTextPopup();
+				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
 				$('#' + sendNewPremiseId).click(function(){
 					splits = window.location.href.split('/');
@@ -334,16 +330,6 @@ $(function () {
 	setStyleOptions(guiHandler);
 	setWindowOptions();
 	setInputExtraOptions(guiHandler, ajaxHandler);
-
-	// render html tags
-	replaceHtmlTags($('#discussions-header'));
-	$.each($('#discussions-space label'), function () {
-		replaceHtmlTags($(this));
-	});
-	$.each($('.panel-heading h5'), function () {
-		replaceHtmlTags($(this));
-	});
-	replaceHtmlTags($('#' + issueInfoId));
 
 	// some extras
 	// get restart url and cut the quotes

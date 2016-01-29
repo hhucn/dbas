@@ -14,6 +14,7 @@ from .url_manager import UrlManager
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
+
 class BreadcrumbHelper(object):
 
 	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url):
@@ -36,14 +37,14 @@ class BreadcrumbHelper(object):
 		url = UrlManager(application_url, slug).get_url(path)
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'url ' + url)
 
-		group0 = re.search(re.compile(r"discuss/?[a-z,A-Z,0-9,-]*"), url).group(0)
+		group0 = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url).group(0)
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'group0 ' + str(group0))
 		if group0 and url.endswith(group0):
 			self.del_breadcrumbs_of_user(transaction, user)
 
 		db_already_in = DBDiscussionSession.query(History).filter_by(url=url).first()
 		if db_already_in:
-			DBDiscussionSession.query(History).filter(and_(History.author_uid==db_user.uid, History.uid>db_already_in.uid)).delete()
+			DBDiscussionSession.query(History).filter(and_(History.author_uid == db_user.uid, History.uid > db_already_in.uid)).delete()
 		else:
 			DBDiscussionSession.add(History(user=db_user.uid, url=url, session_id=session_id))
 		transaction.commit()
@@ -54,6 +55,7 @@ class BreadcrumbHelper(object):
 		"""
 
 		:param user:
+		:param lang:
 		:return:
 		"""
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'user ' + str(user))
@@ -96,8 +98,8 @@ class BreadcrumbHelper(object):
 			text = _qh.get_text_for_argument_uid(uid, lang)
 			text = text[0:1].lower() + text[1:]
 
-			#for index, s in enumerate(splitted):
-			#	logger('-',str(index), s)
+			# for index, s in enumerate(splitted):
+			#   logger('-',str(index), s)
 
 			return _t.get(_t.otherParticipantDisagree) + ' ' + text + '.'
 
@@ -108,16 +110,16 @@ class BreadcrumbHelper(object):
 			text = text[0:1].lower() + text[1:]
 			# 7 choose action for start statemens
 			# 8 choose justification for a relation
-			return ( _t.get(_t.breadcrumbsChooseActionForStatement) if len(splitted) == 8 else _t.get(_t.breadcrumbsReplyForResponseOfConfrontation)) + ' ' + text
+			return (_t.get(_t.breadcrumbsChooseActionForStatement) if len(splitted) == 8 else _t.get(_t.breadcrumbsReplyForResponseOfConfrontation)) + ' ' + text
 
 		elif '/attitude/' in url:
-			uid  = url[url.rfind('/')+1:]
+			uid  = url[url.rfind('/') + 1:]
 			text = _qh.get_text_for_statement_uid(uid)
 			text = text[0:1].lower() + text[1:]
 			return _t.get(_t.whatDoYouThinkAbout) + ' ' + text + '?'
 
 		else:
-			slug = url[url.index('/d/')+3:] if '/d/' in url else None
+			slug = url[url.index('/d/') + 3:] if '/d/' in url else None
 			if slug:
 				issues = DBDiscussionSession.query(Issue).all()
 				for issue in issues:
@@ -136,6 +138,6 @@ class BreadcrumbHelper(object):
 		# maybe we are anonymous
 		if user:
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user','user ' + str(db_user.uid))
+			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user', 'user ' + str(db_user.uid))
 			DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
 			transaction.commit()

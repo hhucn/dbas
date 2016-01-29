@@ -24,6 +24,58 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Dialog based discussion modi
+	 */
+	this.setDisplayStyleAsDiscussion = function () {
+		this.setImageInactive($('#' + displayStyleIconGuidedId));
+		this.setImageActive($('#' + displayStyleIconIslandId));
+		this.setImageActive($('#' + displayStyleIconExpertId));
+		$('#' + islandViewContainerId).hide();
+		$('#' + graphViewContainerId).hide();
+		$('#' + discussionContainerId).show();
+	};
+
+	/**
+	 * Some kind of pro contra list, but how?
+	 */
+	this.setDisplayStyleAsIsland = function () {
+		this.setImageActive($('#' + displayStyleIconGuidedId));
+		this.setImageInactive($('#' + displayStyleIconIslandId));
+		this.setImageActive($('#' + displayStyleIconExpertId));
+		$('#' + islandViewContainerId).fadeIn('slow');
+		$('#' + graphViewContainerId).hide();
+	};
+
+	/**
+	 * Full view, full interaction range for the graph
+	 */
+	this.setDisplayStyleAsGraphView = function () {
+		this.setImageActive($('#' + displayStyleIconGuidedId));
+		this.setImageActive($('#' + displayStyleIconIslandId));
+		this.setImageInactive($('#' + displayStyleIconExpertId));
+		$('#' + islandViewContainerId).hide();
+		$('#' + discussionContainerId).hide();
+		new GuiHandler().hideDiscussionError();
+		new DiscussionGraph().showGraph();
+	};
+
+	/**
+	 * Adds the inactive-image-class, which includes a grayfilter and blur
+	 * @param imageElement <img>-Element
+	 */
+	this.setImageInactive = function(imageElement){
+		imageElement.addClass('inactive-image');
+	};
+
+	/**
+	 * Removes the inactive-image-class, which includes a grayfilter and blur
+	 * @param imageElement <img>-Element
+	 */
+	this.setImageActive = function(imageElement){
+		imageElement.removeClass('inactive-image');
+	};
+
+	/**
 	 *
 	 */
 	this.showAddPositionContainer = function(){
@@ -41,6 +93,7 @@ function GuiHandler() {
 	 *
 	 * @param parsedData
 	 * @param callbackid
+	 * @param type
 	 */
 	this.setStatementsAsProposal = function (parsedData, callbackid, type){
 		var callback = $('#' + callbackid), uneditted_value;
@@ -89,7 +142,6 @@ function GuiHandler() {
 			else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).append(button);
 			else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).append(button);
 		});
-		//$('#' + statementListGroupId).prepend('<h4>' + didYouMean + '</h4>');
 	};
 
 	/**
@@ -107,48 +159,6 @@ function GuiHandler() {
 				'name': $('#header_user').parent().text().replace(/\s/g,'')};
 			new Helper().redirectInNewTabForContact(params);
 		})
-	};
-
-	/**
-	 * Hides the error field
-	 */
-	this.hideDiscussionError = function () {
-		$('#' + discussionFailureRowId).hide();
-	};
-
-	/**
-	 * Check whether the edit button should be visible or not
-	 */
-	this.resetEditAndRefactorButton = function (optionalEditable) {
-		if (typeof optionalEditable === 'undefined') { optionalEditable = true; }
-
-		var is_editable = false, statement, uid, is_premise, is_start;
-		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
-			statement = $(this).val();
-			uid = $(this).attr('id');
-			is_premise = $(this).hasClass('premise');
-			is_start = $(this).hasClass('start');
-			// do we have a child with input or just the label?
-			if (optionalEditable) {
-				if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1
-						&& statement.length > 0
-						&& $.isNumeric(uid)
-						|| is_premise
-						|| is_start) {
-					is_editable = true;
-					return false; // break
-				}
-			}
-		});
-
-		// do we have an statement there?
-		if (is_editable) {
-			$('#' + editStatementButtonId).show();
-			$('#' + reportButtonId).show();
-		} else {
-			$('#' + editStatementButtonId).hide();
-			$('#' + reportButtonId).hide();
-		}
 	};
 
 	/**
@@ -170,8 +180,8 @@ function GuiHandler() {
 		table.append($('<tr>').append(td_text).append(td_buttons));
 
 		// append a row for each statement
-		$('#' + discussionSpaceId + ' li:not(:last-child) label:nth-child(odd)').each(function () {
-			tr = helper.createRowInEditDialog($(this).text(), $(this).attr('for'), $(this).attr('id'));
+		$('#' + discussionSpaceId + ' li:not(:last-child) label').each(function () {
+			tr = helper.createRowInEditDialog($(this).text(), $(this).attr('for').substr('item_'.length), $(this).attr('id'));
 			table.append(tr);
 
 		});
@@ -215,71 +225,10 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Hides the url sharing text field
-	 */
-	this.hideEditFieldsInEditPopup = function () {
-		$('#' + popupEditStatementSubmitButtonId).hide();
-		$('#' + popupEditStatementTextareaId).hide();
-		$('#' + popupEditStatementDescriptionId).hide();
-	};
-
-	/**
-	 * Hides the logfiles
-	 */
-	this.hideLogfileInEditPopup = function () {
-		$('#' + popupEditStatementLogfileSpaceId).empty();
-		$('#' + popupEditStatementLogfileHeaderId).html('');
-	};
-
-	/**
-	 * Closes the popup and deletes all of its content
-	 */
-	this.hideEditStatementsPopup = function () {
-		$('#' + popupEditStatementId).modal('hide');
-		$('#' + popupEditStatementContentId).empty();
-		$('#' + popupEditStatementLogfileSpaceId).text('');
-		$('#' + popupEditStatementLogfileHeaderId).text('');
-		$('#' + popupEditStatementTextareaId).text('');
-		$('#' + popupEditStatementErrorDescriptionId).text('');
-		$('#' + popupEditStatementSuccessDescriptionId).text('');
-	};
-
-	/**
-	 * Closes the popup and deletes all of its content
-	 */
-	this.hideUrlSharingPopup = function () {
-		$('#' + popupUrlSharingId).modal('hide');
-		$('#' + popupUrlSharingInputId).val('');
-	};
-
-	/**
-	 * Hides error description
-	 */
-	this.hideErrorDescription = function(){
-		$('#' + discussionErrorDescriptionId).html('');
-		$('#' + discussionErrorDescriptionSpaceId).hide();
-	};
-
-	/**
-	 * Hides success description
-	 */
-	this.hideSuccessDescription = function(){
-		$('#' + discussionSuccessDescriptionId).html('');
-		$('#' + discussionSuccessDescriptionSpaceId).hide();
-	};
-
-	/**
-	 * Hide some element for getting more space (hides last col-md-2)
-	 */
-	this.hideDiscussionDescriptionsNextElement = function() {
-		$('#' + discussionsDescriptionId).attr('style', 'margin-bottom: 0px;').parent().parent().next().hide();
-	};
-
-	/**
 	 * Displays all corrections in the popup
 	 * @param jsonData json encoded return data
 	 */
-	this.displayStatementCorrectionsInPopup = function (jsonData) {
+	this.showStatementCorrectionsInPopup = function (jsonData) {
 		var table, tr, td_text, td_date, td_author;
 
 		// top row
@@ -325,7 +274,7 @@ function GuiHandler() {
 	/**
 	 * Dispalys the 'how to write text '-popup, when the setting is not in the cookies
 	 */
-	this.displayHowToWriteTextPopup = function(){
+	this.showHowToWriteTextPopup = function(){
 		var cookie_name = 'HOW_TO_WRITE_TEXT',
 			// show popup, when the user does not accepted the cookie already
 			userAcceptedCookies = new Helper().isCookieSet(cookie_name);
@@ -341,48 +290,80 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Hides the url sharing text field
+	 */
+	this.hideEditFieldsInEditPopup = function () {
+		$('#' + popupEditStatementSubmitButtonId).hide();
+		$('#' + popupEditStatementTextareaId).hide();
+		$('#' + popupEditStatementDescriptionId).hide();
+	};
+
+	/**
+	 * Hides the logfiles
+	 */
+	this.hideLogfileInEditPopup = function () {
+		$('#' + popupEditStatementLogfileSpaceId).empty();
+		$('#' + popupEditStatementLogfileHeaderId).html('');
+	};
+
+	/**
+	 * Closes the popup and deletes all of its content
+	 */
+	this.hideandClearEditStatementsPopup = function () {
+		$('#' + popupEditStatementId).modal('hide');
+		$('#' + popupEditStatementContentId).empty();
+		$('#' + popupEditStatementLogfileSpaceId).text('');
+		$('#' + popupEditStatementLogfileHeaderId).text('');
+		$('#' + popupEditStatementTextareaId).text('');
+		$('#' + popupEditStatementErrorDescriptionId).text('');
+		$('#' + popupEditStatementSuccessDescriptionId).text('');
+	};
+
+	/**
+	 * Closes the popup and deletes all of its content
+	 */
+	this.hideAndClearUrlSharingPopup = function () {
+		$('#' + popupUrlSharingId).modal('hide');
+		$('#' + popupUrlSharingInputId).val('');
+	};
+
+	/**
+	 * Hides error description
+	 */
+	this.hideErrorDescription = function(){
+		$('#' + discussionErrorDescriptionId).html('');
+		$('#' + discussionErrorDescriptionSpaceId).hide();
+	};
+
+	/**
+	 * Hides success description
+	 */
+	this.hideSuccessDescription = function(){
+		$('#' + discussionSuccessDescriptionId).html('');
+		$('#' + discussionSuccessDescriptionSpaceId).hide();
+	};
+
+	/**
+	 * Hides the error field
+	 */
+	this.hideDiscussionError = function () {
+		$('#' + discussionFailureRowId).hide();
+	};
+
+	/**
+	 * Hide some element for getting more space (hides last col-md-2)
+	 */
+	this.hideDiscussionDescriptionsNextElement = function() {
+		$('#' + discussionsDescriptionId).attr('style', 'margin-bottom: 0px;').parent().parent().next().hide();
+	};
+
+	/**
 	 * Updates an statement in the discussions list
 	 * @param jsonData
 	 */
 	this.updateOfStatementInDiscussion = function (jsonData) {
 		$('#td_' + jsonData.uid).text(jsonData.text);
 		$('#' + jsonData.uid).text(jsonData.text);
-	};
-
-	/**
-	 * Dialog based discussion modi
-	 */
-	this.setDisplayStyleAsDiscussion = function () {
-		this.setImageInactive($('#' + displayStyleIconGuidedId));
-		this.setImageActive($('#' + displayStyleIconIslandId));
-		this.setImageActive($('#' + displayStyleIconExpertId));
-		$('#' + islandViewContainerId).hide();
-		$('#' + graphViewContainerId).hide();
-		$('#' + discussionContainerId).show();
-	};
-
-	/**
-	 * Some kind of pro contra list, but how?
-	 */
-	this.setDisplayStyleAsIsland = function () {
-		this.setImageActive($('#' + displayStyleIconGuidedId));
-		this.setImageInactive($('#' + displayStyleIconIslandId));
-		this.setImageActive($('#' + displayStyleIconExpertId));
-		$('#' + islandViewContainerId).fadeIn('slow');
-		$('#' + graphViewContainerId).hide();
-	};
-
-	/**
-	 * Full view, full interaction range for the graph
-	 */
-	this.setDisplayStyleAsGraphView = function () {
-		this.setImageActive($('#' + displayStyleIconGuidedId));
-		this.setImageActive($('#' + displayStyleIconIslandId));
-		this.setImageInactive($('#' + displayStyleIconExpertId));
-		$('#' + islandViewContainerId).hide();
-		$('#' + discussionContainerId).hide();
-		new GuiHandler().hideDiscussionError();
-		new DiscussionGraph().showGraph();
 	};
 
 	/**
@@ -393,18 +374,37 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Adds the inactive-image-class, which includes a grayfilter and blur
-	 * @param imageElement <img>-Element
+	 * Check whether the edit button should be visible or not
 	 */
-	this.setImageInactive = function(imageElement){
-		imageElement.addClass('inactive-image');
-	};
+	this.resetEditAndRefactorButton = function (optionalEditable) {
+		if (typeof optionalEditable === 'undefined') { optionalEditable = true; }
 
-	/**
-	 * Removes the inactive-image-class, which includes a grayfilter and blur
-	 * @param imageElement <img>-Element
-	 */
-	this.setImageActive = function(imageElement){
-		imageElement.removeClass('inactive-image');
+		var is_editable = false, statement, uid, is_premise, is_start;
+		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
+			statement = $(this).val();
+			uid = $(this).attr('id');
+			is_premise = $(this).hasClass('premise');
+			is_start = $(this).hasClass('start');
+			// do we have a child with input or just the label?
+			if (optionalEditable) {
+				if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1
+						&& statement.length > 0
+						&& $.isNumeric(uid)
+						|| is_premise
+						|| is_start) {
+					is_editable = true;
+					return false; // break
+				}
+			}
+		});
+
+		// do we have an statement there?
+		if (is_editable) {
+			$('#' + editStatementButtonId).show();
+			$('#' + reportButtonId).show();
+		} else {
+			$('#' + editStatementButtonId).hide();
+			$('#' + reportButtonId).hide();
+		}
 	};
 }

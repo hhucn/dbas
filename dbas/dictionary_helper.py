@@ -72,19 +72,19 @@ class DictionaryHelper(object):
 		:return: dictionary
 		"""
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'statement uid ' + str(statement_row.uid))
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_row.uid,
-		                                                                Statement.issue_uid==issue)).first()
-		db_premise = DBDiscussionSession.query(Premise).filter(and_(Premise.statement_uid==db_statement.uid,
-		                                                            Premise.issue_uid==issue)).first()
+		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_row.uid,
+		                                                                Statement.issue_uid == issue)).first()
+		db_premise = DBDiscussionSession.query(Premise).filter(and_(Premise.statement_uid == db_statement.uid,
+		                                                            Premise.issue_uid == issue)).first()
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'premise uid ' +
-			       ((str(db_premise.premisesGroup_uid) + '.' + str(db_premise.statement_uid)) if db_premise else 'null'))
+			       ((str(db_premise.premisesgroup_uid) + '.' + str(db_premise.statement_uid)) if db_premise else 'null'))
 		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).first()
 
 		uid    = str(db_statement.uid)
 		text   = db_textversion.content
 		date   = str(db_textversion.timestamp)
 		author = db_textversion.users.nickname
-		pgroup = str(db_premise.premisesGroup_uid) if db_premise else '0'
+		pgroup = str(db_premise.premisesgroup_uid) if db_premise else '0'
 
 		while text.endswith('.'):
 			text = text[:-1]
@@ -140,11 +140,11 @@ class DictionaryHelper(object):
 			_tg = TextGenerator(lang)
 			db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 			confrontation       = _qh.get_text_for_argument_uid(uid, lang)
-			premise, tmp        = _qh.get_text_for_premisesGroup_uid(uid)
+			premise, tmp        = _qh.get_text_for_premisesgroup_uid(uid)
 			conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
 			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
-			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, db_argument.isSupportive)
+			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, db_argument.is_supportive)
 
 		elif at_dont_know:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_dont_know')
@@ -165,18 +165,18 @@ class DictionaryHelper(object):
 				                      + '<br><br>' + _tn.get(_tn.otherParticipantsDontHaveCounterForThat)\
 				                      + '.<br><br>' + _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndText)
 			else:
-				premise, tmp        = _qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
+				premise, tmp        = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 				conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 										else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
 				db_confrontation    = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
-				confrontation, tmp  = _qh.get_text_for_premisesGroup_uid(db_confrontation.premisesGroup_uid)
+				confrontation, tmp  = _qh.get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
 				# confrontation       = _qh.get_text_for_argument_uid(additional_id, lang)
 				logger('DictionaryHelper', 'prepare_discussion_dict', 'additional_id ' + str(additional_id) + ', confrontation '
 				       + str(confrontation) + ', attack ' + str(attack))
 
 				reply_for_argument  = True
 				current_argument    = _qh.get_text_for_argument_uid(uid, lang)
-				user_is_attacking   = not db_argument.isSupportive
+				user_is_attacking   = not db_argument.is_supportive
 				heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
 				                                                     confrontation, reply_for_argument, user_is_attacking,
 			                                                         current_argument)
@@ -192,8 +192,8 @@ class DictionaryHelper(object):
 		:return:
 		"""
 		db_statements = DBDiscussionSession.query(Statement)\
-			.filter(and_(Statement.isStartpoint==True, Statement.issue_uid==issue_uid))\
-			.join(TextVersion, TextVersion.uid==Statement.textversion_uid).all()
+			.filter(and_(Statement.is_startpoint == True, Statement.issue_uid == issue_uid))\
+			.join(TextVersion, TextVersion.uid == Statement.textversion_uid).all()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
 		statements_array = []
@@ -256,12 +256,12 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, isSupportive, lang, application_url):
+	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, is_supportive, lang, application_url):
 		"""
 
 		:param statement_uid:
 		:param issue_uid:
-		:param isSupportive:
+		:param is_supportive:
 		:param lang:
 		:return:
 		"""
@@ -269,21 +269,21 @@ class DictionaryHelper(object):
 		_tn = Translator(lang)
 		_qh = QueryHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
-		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
-		                                                               Argument.conclusion_uid==statement_uid)).all()
+		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
+                                                                       Argument.conclusion_uid == statement_uid)).all()
 
 		_um = UrlManager(application_url, slug)
 
 		if db_arguments:
 			for argument in db_arguments:
 				# get all premises in the premisegroup of this argument
-				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=argument.premisesGroup_uid).all()
+				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 				premise_array = []
 				for premise in db_premises:
 					text = _qh.get_text_for_statement_uid(premise.statement_uid)
 					premise_array.append({'title': text, 'id': premise.statement_uid})
 
-				text, uid = _qh.get_text_for_premisesGroup_uid(argument.premisesGroup_uid)
+				text, uid = _qh.get_text_for_premisesgroup_uid(argument.premisesgroup_uid)
 
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument.uid, issue_uid)
@@ -302,7 +302,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, isSupportive, lang, application_url):
+	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, is_supportive, lang, application_url):
 		"""
 
 		:param argument_uid:
@@ -319,30 +319,30 @@ class DictionaryHelper(object):
 
 		db_arguments = []
 		if attack_type == 'undermine':
-			db_premisses = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=db_argument.premisesGroup_uid).all()
+			db_premisses = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 			for premise in db_premisses:
-				arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==premise.statement_uid, Argument.isSupportive==False)).all()
+				arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == premise.statement_uid, Argument.is_supportive == False)).all()
 				db_arguments = db_arguments + arguments
 
 		elif attack_type == 'undercut':
-			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid==argument_uid, Argument.isSupportive==False)).all()
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid, Argument.is_supportive == False)).all()
 
 		elif attack_type == 'overbid':
-			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid==argument_uid, Argument.isSupportive==True)).all()
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid, Argument.is_supportive == True)).all()
 
 		elif attack_type == 'rebut':
-			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid==db_argument.conclusion_uid,
-			                                                               Argument.argument_uid == db_argument.argument_uid,
-			                                                               Argument.isSupportive==(not db_argument.isSupportive))).all()
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
+                                                                           Argument.argument_uid == db_argument.argument_uid,
+                                                                           Argument.is_supportive == (not db_argument.is_supportive))).all()
 
 		_um = UrlManager(application_url, slug)
 
 		if db_arguments:
 			for argument in db_arguments:
-				text, tmp = _qh.get_text_for_premisesGroup_uid(argument.premisesGroup_uid)
+				text, tmp = _qh.get_text_for_premisesgroup_uid(argument.premisesgroup_uid)
 
 				# get alles premises in this group
-				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesGroup_uid=argument.premisesGroup_uid).all()
+				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 				premises_array = []
 				for premise in db_premises:
 					premise_dict = dict()
@@ -370,11 +370,11 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_reaction(self, argument_uid, isSupportive, issue_uid, lang, application_url):
+	def prepare_item_dict_for_reaction(self, argument_uid, is_supportive, issue_uid, lang, application_url):
 		"""
 
 		:param argument_uid:
-		:param isSupportive:
+		:param is_supportive:
 		:param issue_uid:
 		:param lang:
 		:return:
@@ -392,12 +392,12 @@ class DictionaryHelper(object):
 			else:
 				conclusion = _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
 
-			premise, tmp     = _qh.get_text_for_premisesGroup_uid(db_argument.premisesGroup_uid)
+			premise, tmp     = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 			conclusion       = conclusion[0:1].lower() + conclusion[1:]
 			premise          = premise[0:1].lower() + premise[1:]
 
-			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True, not db_argument.isSupportive)
-			mode             = 't' if isSupportive else 't'
+			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True, not db_argument.is_supportive)
+			mode             = 't' if is_supportive else 't'
 			_um              = UrlManager(application_url, slug)
 
 			types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
@@ -462,7 +462,7 @@ class DictionaryHelper(object):
 				island_dict['conclusion'] = island_dict['conclusion'][0:1].lower() + island_dict['conclusion'][1:]
 				island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
 				                                                                                    island_dict['conclusion'],
-				                                                                                    False, False, not db_argument.isSupportive))
+				                                                                                    False, False, not db_argument.is_supportive))
 				return_dict['island'] = island_dict
 			else:
 				return_dict['is_editable']            =  False

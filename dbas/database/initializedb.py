@@ -14,10 +14,10 @@ from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsS
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
+
 def usage(argv):
 	cmd = os.path.basename(argv[0])
-	print('usage: %s <config_uri>\n'
-		  '(example: "%s development.ini")' % (cmd, cmd))
+	print('usage: %s <config_uri>\n(example: "%s development.ini")' % (cmd, cmd))
 	sys.exit(1)
 
 
@@ -28,16 +28,16 @@ def main(argv=sys.argv):
 	setup_logging(config_uri)
 	settings = get_appsettings(config_uri)
 
-	discussionEngine = engine_from_config(settings, 'sqlalchemy-discussion.')
-	DBDiscussionSession.configure(bind=discussionEngine)
-	DiscussionBase.metadata.create_all(discussionEngine)
+	discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+	DBDiscussionSession.configure(bind=discussion_engine)
+	DiscussionBase.metadata.create_all(discussion_engine)
 
-	newsEngine = engine_from_config(settings, 'sqlalchemy-news.')
-	DBNewsSession.configure(bind=newsEngine)
-	NewsBase.metadata.create_all(newsEngine)
+	news_engine = engine_from_config(settings, 'sqlalchemy-news.')
+	DBNewsSession.configure(bind=news_engine)
+	NewsBase.metadata.create_all(news_engine)
 
 	with transaction.manager:
-		setupDiscussionDatabase()
+		setup_discussion_database()
 		transaction.commit()
 		setupNewsDatabase()
 		transaction.commit()
@@ -233,7 +233,8 @@ def setupNewsDatabase():
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 
-def setupDiscussionDatabase():
+
+def setup_discussion_database():
 	# adding our main issue
 	issue1 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!')
 	issue2 = Issue(title='Town cuts spending', info='Our town needs to cut spending. Please discuss ideas how this should be done.')
@@ -260,35 +261,35 @@ def setupDiscussionDatabase():
 	DBDiscussionSession.flush()
 
 	# adding some dummy users
-	pwHandler = PasswordHandler()
-	pw0 = pwHandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-	pw1 = pwHandler.get_hashed_password('admin')
-	pw2 = pwHandler.get_hashed_password('tobias')
-	pw3 = pwHandler.get_hashed_password('martin')
-	pw4 = pwHandler.get_hashed_password('kalman')
-	pw5 = pwHandler.get_hashed_password('mladen')
-	pw6 = pwHandler.get_hashed_password('drtobias')
-	pw7 = pwHandler.get_hashed_password('michael')
-	pw8 = pwHandler.get_hashed_password('gregor')
-	pw9 = pwHandler.get_hashed_password('christian')
-	pw10 = pwHandler.get_hashed_password('alexander')
-	pw11 = pwHandler.get_hashed_password('raphael')
-	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='',password=pw0, group=group3.uid, gender='m')
-	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com',password=pw1, group=group0.uid, gender='m')
-	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de',password=pw2, group=group1.uid, gender='m')
-	user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf',password=pw3, group=group2.uid, gender='m')
-	user4 = User(firstname='Kalman', surname='Graffi', nickname='kalman', email='graffi@cs.uni-duesseldorf.de',password=pw4, group=group2.uid, gender='m')
-	user5 = User(firstname='Mladen', surname='Topic', nickname='mladen', email='mladen.topic@hhu.de',password=pw5, group=group2.uid, gender='m')
-	user6 = User(firstname='Tobias', surname='Escher', nickname='drtobias', email='tobias.escher@hhu.de',password=pw6, group=group2.uid, gender='m')
-	user7 = User(firstname='Michael', surname='Baurmann', nickname='michael', email='baurmann@hhu.de',password=pw7, group=group2.uid, gender='m')
-	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu',password=pw8, group=group2.uid, gender='m')
+	pwhandler = PasswordHandler()
+	pw0 = pwhandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
+	pw1 = pwhandler.get_hashed_password('admin')
+	pw2 = pwhandler.get_hashed_password('tobias')
+	pw3 = pwhandler.get_hashed_password('martin')
+	pw4 = pwhandler.get_hashed_password('kalman')
+	pw5 = pwhandler.get_hashed_password('mladen')
+	pw6 = pwhandler.get_hashed_password('drtobias')
+	pw7 = pwhandler.get_hashed_password('michael')
+	pw8 = pwhandler.get_hashed_password('gregor')
+	pw9 = pwhandler.get_hashed_password('christian')
+	pw10 = pwhandler.get_hashed_password('alexander')
+	pw11 = pwhandler.get_hashed_password('raphael')
+	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group3.uid, gender='m')
+	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
+	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group1.uid, gender='m')
+	user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3, group=group2.uid, gender='m')
+	user4 = User(firstname='Kalman', surname='Graffi', nickname='kalman', email='graffi@cs.uni-duesseldorf.de', password=pw4, group=group2.uid, gender='m')
+	user5 = User(firstname='Mladen', surname='Topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw5, group=group2.uid, gender='m')
+	user6 = User(firstname='Tobias', surname='Escher', nickname='drtobias', email='tobias.escher@hhu.de', password=pw6, group=group2.uid, gender='m')
+	user7 = User(firstname='Michael', surname='Baurmann', nickname='michael', email='baurmann@hhu.de', password=pw7, group=group2.uid, gender='m')
+	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group2.uid, gender='m')
 	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group2.uid, gender='m')
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='schneider@cs.uni-duesseldorf.de', password=pw10, group=group2.uid, gender='m')
 	user11 = User(firstname='Raphael', surname='Bialon', nickname='raphael', email='bialon@cs.uni-duesseldorf.de', password=pw11, group=group2.uid, gender='m')
 	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11])
 	DBDiscussionSession.flush()
 
-	#Adding all textversions
+	# Adding all textversions
 	textversion1 = TextVersion(content="We should get a cat.", author=user2.uid)
 	textversion2 = TextVersion(content="We should get a dog.", author=user2.uid)
 	textversion3 = TextVersion(content="We could get both, a cat and a dog.", author=user2.uid)
@@ -415,10 +416,10 @@ def setupDiscussionDatabase():
 	                             textversion86, textversion87, textversion88, textversion89, textversion90, textversion91, textversion92,
 	                             textversion93, textversion94, textversion95, textversion96, textversion97, textversion98, textversion99,
 	                             textversion100, textversion101, textversion102, textversion103, textversion104, textversion105,
-	                             textversion106, textversion107, textversion108, textversion109] )
+	                             textversion106, textversion107, textversion108, textversion109])
 	DBDiscussionSession.flush()
 
-	#Adding all statements
+	# adding all statements
 	statement1 = Statement(textversion=textversion1.uid, isstartpoint=True, issue=issue1.uid)
 	statement2 = Statement(textversion=textversion2.uid, isstartpoint=True, issue=issue1.uid)
 	statement3 = Statement(textversion=textversion3.uid, isstartpoint=True, issue=issue1.uid)
@@ -546,7 +547,7 @@ def setupDiscussionDatabase():
 	                             statement105, statement106, statement107, statement108, statement109])
 	DBDiscussionSession.flush()
 
-	#Set statements
+	# set statements
 	textversion1.set_statement(statement1.uid)
 	textversion2.set_statement(statement2.uid)
 	textversion3.set_statement(statement3.uid)
@@ -660,7 +661,7 @@ def setupDiscussionDatabase():
 
 	DBDiscussionSession.flush()
 
-	#Adding all premisegroups
+	# adding all premisegroups
 	premisegroup1 = PremiseGroup(author=user2.uid)
 	premisegroup2 = PremiseGroup(author=user2.uid)
 	premisegroup3 = PremiseGroup(author=user2.uid)
@@ -886,15 +887,15 @@ def setupDiscussionDatabase():
 	premise96 = Premise(premisesgroup=premisegroup95.uid, statement=statement100.uid, isnegated=False, author=user2.uid, issue=issue1.uid)
 	premise97 = Premise(premisesgroup=premisegroup96.uid, statement=statement101.uid, isnegated=False, author=user2.uid, issue=issue1.uid)
 
-	premise98 = Premise(premisesgroup=premisegroup97.uid, statement=statement102.uid,  isnegated=False, author=user2.uid, issue=issue2.uid)
-	premise99 = Premise(premisesgroup=premisegroup98.uid, statement=statement103.uid,  isnegated=False, author=user2.uid, issue=issue2.uid)
-	premise100 = Premise(premisesgroup=premisegroup99.uid, statement=statement104.uid,  isnegated=False, author=user2.uid, issue=issue2.uid)
-	premise101 = Premise(premisesgroup=premisegroup100.uid, statement=statement105.uid,  isnegated=False, author=user2.uid, issue=issue2.uid)
-	premise102 = Premise(premisesgroup=premisegroup101.uid, statement=statement106.uid,  isnegated=False, author=user2.uid, issue=issue2.uid)
-	premise103 = Premise(premisesgroup=premisegroup102.uid, statement=statement107.uid,  isnegated=False, author=user2.uid, issue=issue2.uid)
-	premise104 = Premise(premisesgroup=premisegroup103.uid, statement=statement108.uid,  isnegated=False, author=user2.uid, issue=issue2.uid)
+	premise98 = Premise(premisesgroup=premisegroup97.uid, statement=statement102.uid, isnegated=False, author=user2.uid, issue=issue2.uid)
+	premise99 = Premise(premisesgroup=premisegroup98.uid, statement=statement103.uid, isnegated=False, author=user2.uid, issue=issue2.uid)
+	premise100 = Premise(premisesgroup=premisegroup99.uid, statement=statement104.uid, isnegated=False, author=user2.uid, issue=issue2.uid)
+	premise101 = Premise(premisesgroup=premisegroup100.uid, statement=statement105.uid, isnegated=False, author=user2.uid, issue=issue2.uid)
+	premise102 = Premise(premisesgroup=premisegroup101.uid, statement=statement106.uid, isnegated=False, author=user2.uid, issue=issue2.uid)
+	premise103 = Premise(premisesgroup=premisegroup102.uid, statement=statement107.uid, isnegated=False, author=user2.uid, issue=issue2.uid)
+	premise104 = Premise(premisesgroup=premisegroup103.uid, statement=statement108.uid, isnegated=False, author=user2.uid, issue=issue2.uid)
 
-	premise105 = Premise(premisesgroup=premisegroup104.uid, statement=statement109.uid,  isnegated=False, author=user2.uid, issue=issue1.uid)
+	premise105 = Premise(premisesgroup=premisegroup104.uid, statement=statement109.uid, isnegated=False, author=user2.uid, issue=issue1.uid)
 
 	DBDiscussionSession.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9,
 	                             premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17, premise18,
@@ -910,7 +911,7 @@ def setupDiscussionDatabase():
 	                             premise100, premise101, premise102, premise103, premise104, premise105])
 	DBDiscussionSession.flush()
 
-	#Adding all arguments and set the adjacency list
+	# adding all arguments and set the adjacency list
 	argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=user2.uid, conclusion=statement1.uid, issue=issue1.uid)
 	argument2 = Argument(premisegroup=premisegroup2.uid, issupportive=False, author=user2.uid, conclusion=statement1.uid, issue=issue1.uid)
 	argument3 = Argument(premisegroup=premisegroup3.uid, issupportive=True, author=user2.uid, conclusion=statement2.uid, issue=issue1.uid)
@@ -1012,12 +1013,11 @@ def setupDiscussionDatabase():
 	argument97 = Argument(premisegroup=premisegroup95.uid, issupportive=True, author=user2.uid, conclusion=statement32.uid, issue=issue1.uid)
 	argument98 = Argument(premisegroup=premisegroup96.uid, issupportive=True, author=user2.uid, conclusion=statement33.uid, issue=issue1.uid)
 
-# todo
 	argument99 = Argument(premisegroup=premisegroup98.uid, issupportive=True, author=user2.uid, conclusion=statement102.uid, issue=issue2.uid)
 	argument100 = Argument(premisegroup=premisegroup99.uid, issupportive=True, author=user2.uid, conclusion=statement102.uid, issue=issue2.uid)
 	argument101 = Argument(premisegroup=premisegroup100.uid, issupportive=False, author=user2.uid, issue=issue2.uid)
 	argument102 = Argument(premisegroup=premisegroup103.uid, issupportive=False, author=user2.uid, issue=issue2.uid)
-	#premise104 = Premise(premisesgroup=premisegroup103.uid, statement=statement108.uid,  isnegated=False, author=user2.uid,  issue=issue2.uid)
+	# premise104 = Premise(premisesgroup=premisegroup103.uid, statement=statement108.uid,  isnegated=False, author=user2.uid,  issue=issue2.uid)
 
 	argument105 = Argument(premisegroup=premisegroup104.uid, issupportive=False, author=user2.uid, conclusion=statement10.uid,
 	                       issue=issue1.uid)
