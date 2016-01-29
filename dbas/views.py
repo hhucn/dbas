@@ -174,12 +174,13 @@ class Dbas(object):
 				contact_error = not send_message
 
 		logger('main_contact', 'form.contact.submitted', 'content: ' + content)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Contact',
 			'project': header,
-			'extras': {'logged_in': self.request.authenticated_userid},
+			'extras': extras_dict,
 			'was_message_send': send_message,
 			'contact_error': contact_error,
 			'message': message,
@@ -483,12 +484,13 @@ class Dbas(object):
 		gravatar_url = uh.get_profile_picture(db_user)
 
 		logger('main_settings', 'return change_error', str(error) + ', change_success' + str(success) + ', message' + str(message))
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Settings',
 			'project': header,
-			'extras': {'logged_in': self.request.authenticated_userid},
+			'extras': extras_dict,
 			'passwordold': '' if success else old_pw,
 			'password': '' if success else new_pw,
 			'passwordconfirm': '' if success else confirm_pw,
@@ -519,19 +521,13 @@ class Dbas(object):
 		except KeyError:
 			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
-		# checks whether the current user is admin
-		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
-
-		extras_dict = {'logged_in': self.request.authenticated_userid}
-		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Settings',
 			'project': header,
-			'logged_in': self.request.authenticated_userid,
-			'is_admin': is_admin,
 			'extras': extras_dict
 		}
 
@@ -585,12 +581,14 @@ class Dbas(object):
 		except KeyError:
 			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Imprint',
 			'project': header,
-			'extras': {'logged_in': self.request.authenticated_userid}
+			'extras': extras_dict
 		}
 
 	# 404 page

@@ -8,11 +8,11 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
 		
-		<div class="container colored_container" tal:condition="not:is_admin" style="width: 578px;">
+		<div class="container colored_container" tal:condition="not:extras.is_admin" style="width: 578px;">
 				<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
 		</div>
 
-		<div class="container colored_container" tal:condition="is_admin">
+		<div class="container colored_container" tal:condition="extras.is_admin">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
@@ -27,7 +27,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" tal:condition="is_admin">
+		<div class="container colored_container" tal:condition="extras.is_admin">
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
