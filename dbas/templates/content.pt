@@ -377,7 +377,6 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-main.js')}"></script>
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-graph.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-barometer.js')}"></script>
 

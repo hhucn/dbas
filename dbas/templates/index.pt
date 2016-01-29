@@ -225,17 +225,6 @@
 		
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/eu-cookie-law-popup.js')}"></script>
-		<!--
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/lights_left.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/lights_right.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/fireworks.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/snowstorm-min.js')}"></script>
-		<script>
-			snowStorm.snowColor = '#006ab3'; // blue-ish snow!?
-			snowStorm.flakesMaxActive = 128; // show more snow on screen at once
-			snowStorm.useTwinkleEffect = false; // let the snow flicker in and out of view
-		</script>
-		-->
 
 	</tal:block>
 </tal:block>
