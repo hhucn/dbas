@@ -210,19 +210,19 @@ class Dbas(object):
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry)
-		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales)
+		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 		                                                 self.request.session.id, transaction, ui_locales,
-		                                                 mainpage)
+		                                                 mainpage, for_api)
 
 		discussion_dict = _dh.prepare_discussion_dict(issue, ui_locales, at_start=True)
-		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, ui_locales, mainpage)
+		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, ui_locales,
 		                                          self.request.authenticated_userid, breadcrumbs=breadcrumbs,
-		                                          application_url=mainpage)
+		                                          application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
 			_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_start=True)
@@ -262,22 +262,22 @@ class Dbas(object):
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		ui_locales            = _qh.get_language(self.request, get_current_registry)
-		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales)
+		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 		                                                 self.request.session.id, transaction, ui_locales,
-		                                                 mainpage)
+		                                                 mainpage, for_api)
 
 		discussion_dict = _dh.prepare_discussion_dict(statement_id, ui_locales, at_attitude=True)
 		if not discussion_dict:
-			return HTTPFound(location=UrlManager().get_404([slug, statement_id]))
+			return HTTPFound(location=UrlManager(for_api=for_api).get_404([slug, statement_id]))
 
-		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage)
+		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, ui_locales,
 		                                          self.request.authenticated_userid, breadcrumbs=breadcrumbs,
-		                                          application_url=mainpage)
+		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issue'] = issue_dict
@@ -318,25 +318,25 @@ class Dbas(object):
 
 		issue               = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		ui_locales          = _qh.get_language(self.request, get_current_registry)
-		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales)
+		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 		                                                 self.request.session.id, transaction, ui_locales,
-		                                                 mainpage)
+		                                                 mainpage, for_api)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			# justifying position
 			logger('discussion_justify', 'def', 'justifying position')
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify=True, is_supportive=supportive)
 			if not discussion_dict:
-				return HTTPFound(location=UrlManager(mainpage).get_404([slug, statement_id]))
+				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
-			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, ui_locales, mainpage)
+			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, ui_locales,
 			                                          self.request.authenticated_userid, mode == 't', breadcrumbs=breadcrumbs,
-			                                          application_url=mainpage)
+			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_justify=True)
@@ -346,9 +346,9 @@ class Dbas(object):
 			logger('discussion_justify', 'def', 'dont know position')
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _dh.prepare_discussion_dict(argument_uid, ui_locales, at_dont_know=True, is_supportive=supportive, additional_id=statement_or_arg_id)
-			item_dict       = _dh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, ui_locales, mainpage)
+			item_dict       = _dh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, ui_locales, self.request.authenticated_userid,
-			                                          argument_id=argument_uid, breadcrumbs=breadcrumbs, application_url=mainpage)
+			                                          argument_id=argument_uid, breadcrumbs=breadcrumbs, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_dont_know=True)
@@ -360,15 +360,15 @@ class Dbas(object):
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid)
-			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, ui_locales, mainpage)
+			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, ui_locales, self.request.authenticated_userid,
 			                                          not is_attack, argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs,
-			                                          application_url=mainpage)
+			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_justify_argumentation=True)
 		else:
-			return HTTPFound(location=UrlManager(mainpage).get_404([slug, 'j', statement_or_arg_id, mode, relation]))
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'j', statement_or_arg_id, mode, relation]))
 
 		return_dict = dict()
 		return_dict['issue'] = issue_dict
@@ -412,20 +412,20 @@ class Dbas(object):
 		
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		ui_locales            = _qh.get_language(self.request, get_current_registry)
-		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales)
+		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 		                                                 self.request.session.id, transaction, ui_locales,
-		                                                 mainpage)
+		                                                 mainpage, for_api)
 
 		discussion_dict = _dh.prepare_discussion_dict(arg_id_user, ui_locales, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
-		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, ui_locales, mainpage)
+		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, ui_locales, self.request.authenticated_userid,
 		                                          argument_id=arg_id_user, breadcrumbs=breadcrumbs,
-		                                          application_url=mainpage)
+		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issue'] = issue_dict
@@ -924,9 +924,10 @@ class Dbas(object):
 
 	# ajax - send new start statement
 	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
-	def set_new_start_statement(self):
+	def set_new_start_statement(self, for_api):
 		"""
 		Inserts a new statement into the database, which should be available at the beginning
+		:param for_api: boolean
 		:return: a status code, if everything was successfull
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -948,7 +949,7 @@ class Dbas(object):
 			if new_statement == -1:
 				return_dict['status'] = 0
 			else:
-				url = UrlManager(url, slug).get_url_for_statement_attitude(False, new_statement.uid)
+				url = UrlManager(url, slug, for_api).get_url_for_statement_attitude(False, new_statement.uid)
 				return_dict['url'] = url
 				logger('set_new_start_statement', 'def', 'return url ' + url)
 		except KeyError as e:
@@ -961,9 +962,10 @@ class Dbas(object):
 
 	# ajax - send new start premise
 	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
-	def set_new_start_premise(self):
+	def set_new_start_premise(self, for_api):
 		"""
 		Sets new premise for the start
+		:param for_api: boolean
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -992,7 +994,7 @@ class Dbas(object):
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
 				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-				url = UrlManager(url, slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+				url = UrlManager(url, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 				return_dict['url'] = url
 				return_dict['status'] = '1'
 		except KeyError as e:
@@ -1005,9 +1007,10 @@ class Dbas(object):
 
 	# ajax - send new premises
 	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json', check_csrf=True)
-	def set_new_premises_for_argument(self):
+	def set_new_premises_for_argument(self, for_api):
 		"""
 		Sets a new premisse for an argument
+		:param for_api: boolean
 		:return: json-dict()
 		"""
 		user_id = self.request.authenticated_userid
@@ -1047,7 +1050,7 @@ class Dbas(object):
 				if arg_id_sys == 0:
 					attack = 'end'
 				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
-				url = UrlManager(url, slug).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+				url = UrlManager(url, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 				return_dict['url'] = url
 				return_dict['status'] = '1'
 		except KeyError as e:

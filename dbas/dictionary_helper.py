@@ -182,12 +182,14 @@ class DictionaryHelper(object):
 
 		return {'heading': heading, 'add_premise_text': add_premise_text}
 
-	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang, application_url):
+	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang, application_url, for_api):
 		"""
 
 		:param issue_uid:
 		:param logged_in:
 		:param lang:
+		:param application_url:
+		:param for_api:
 		:return:
 		"""
 		db_statements = DBDiscussionSession.query(Statement)\
@@ -196,7 +198,7 @@ class DictionaryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
 		statements_array = []
-		_um = UrlManager(application_url, slug)
+		_um = UrlManager(application_url, slug, for_api)
 		_qh = QueryHelper()
 
 		if db_statements:
@@ -219,7 +221,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_attitude(self, statement_uid, issue_uid, lang, application_url):
+	def prepare_item_dict_for_attitude(self, statement_uid, issue_uid, lang, application_url, for_api):
 		"""
 
 		:param statement_uid:
@@ -235,7 +237,7 @@ class DictionaryHelper(object):
 		text = _qh.get_text_for_statement_uid(statement_uid)
 		statements_array = []
 
-		_um = UrlManager(application_url, slug)
+		_um = UrlManager(application_url, slug, for_api)
 
 		statements_array.append(_qh.get_statement_dict('agree',
 		                                                _tn.get(_tn.iAgreeWithInColor) + ': ' + text,
@@ -255,7 +257,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, is_supportive, lang, application_url):
+	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, is_supportive, lang, application_url, for_api):
 		"""
 
 		:param statement_uid:
@@ -271,7 +273,7 @@ class DictionaryHelper(object):
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
                                                                        Argument.conclusion_uid == statement_uid)).all()
 
-		_um = UrlManager(application_url, slug)
+		_um = UrlManager(application_url, slug, for_api)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -301,7 +303,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, is_supportive, lang, application_url):
+	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, is_supportive, lang, application_url, for_api):
 		"""
 
 		:param argument_uid:
@@ -334,7 +336,7 @@ class DictionaryHelper(object):
                                                                            Argument.argument_uid == db_argument.argument_uid,
                                                                            Argument.is_supportive == (not db_argument.is_supportive))).all()
 
-		_um = UrlManager(application_url, slug)
+		_um = UrlManager(application_url, slug, for_api)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -369,7 +371,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_reaction(self, argument_uid, is_supportive, issue_uid, lang, application_url):
+	def prepare_item_dict_for_reaction(self, argument_uid, is_supportive, issue_uid, lang, application_url, for_api):
 		"""
 
 		:param argument_uid:
@@ -397,7 +399,7 @@ class DictionaryHelper(object):
 
 			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True, not db_argument.is_supportive)
 			mode             = 't' if is_supportive else 't'
-			_um              = UrlManager(application_url, slug)
+			_um              = UrlManager(application_url, slug, for_api)
 
 			types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
 			for t in types:
@@ -412,7 +414,7 @@ class DictionaryHelper(object):
 		return statements_array
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang,
-	                        authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs='', application_url=''):
+	                        authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs='', application_url='', for_api=False):
 		"""
 
 		:param current_slug:
@@ -432,7 +434,7 @@ class DictionaryHelper(object):
 		_qh = QueryHelper()
 
 		return_dict = dict()
-		return_dict['restart_url']                   = UrlManager(application_url, current_slug).get_slug_url(True)
+		return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
 		return_dict['is_editable']                   = is_editable and _uh.is_user_logged_in(authenticated_userid)
 		return_dict['is_reportable']                 = is_reportable
 		return_dict['is_admin']                      = _uh.is_user_admin(authenticated_userid)
@@ -442,7 +444,8 @@ class DictionaryHelper(object):
 		return_dict['add_premise_supportive']        = add_premise_supportive
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'
-		return_dict['breadcrumbs']                   = breadcrumbs
+		if not for_api:
+			return_dict['breadcrumbs']               = breadcrumbs
 		return_dict['title']                         = {'barometer': _tn.get(_tn.opinionBarometer),
 													 	 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 													 	 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
