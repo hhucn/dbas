@@ -521,19 +521,13 @@ class Dbas(object):
 		except KeyError:
 			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
-		# checks whether the current user is admin
-		is_admin = UserHandler().is_user_admin(self.request.authenticated_userid)
-
-		extras_dict = {'logged_in': self.request.authenticated_userid}
-		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Settings',
 			'project': header,
-			'logged_in': self.request.authenticated_userid,
-			'is_admin': is_admin,
 			'extras': extras_dict
 		}
 
@@ -587,12 +581,14 @@ class Dbas(object):
 		except KeyError:
 			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Imprint',
 			'project': header,
-			'extras': {'logged_in': self.request.authenticated_userid}
+			'extras': extras_dict
 		}
 
 	# 404 page
