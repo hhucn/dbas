@@ -39,7 +39,7 @@
 					<button id ="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart Discussion</span>
 					</button>
-
+                    <br>
 					<br>
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

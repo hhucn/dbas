@@ -31,6 +31,8 @@ requires = [
 	'lingua',
 	'requests',
 	'pyshorteners',
+	'slugify',
+	'validate_email'
 ]
 
 setup(name='dbas',

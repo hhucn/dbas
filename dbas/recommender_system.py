@@ -3,7 +3,7 @@ import random
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, User, Track, Statement
+from .database.discussion_model import Argument, Premise, User, Statement
 from .logger import logger
 from .query_helper import QueryHelper
 
@@ -35,8 +35,8 @@ class RecommenderHelper(object):
 		:return:
 		"""
 		logger('RecommenderHelper', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' + str(isSupportive))
-		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.isSupportive==isSupportive,
-																Argument.conclusion_uid==statement_uid)).all()
+		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == isSupportive,
+		                                                               Argument.conclusion_uid == statement_uid)).all()
 		logger('RecommenderHelper', 'get_argument_by_conclusion', 'found ' + str(len(db_arguments)) + ' arguments')
 		if db_arguments:
 			arguments = []
