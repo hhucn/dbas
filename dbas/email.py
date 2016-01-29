@@ -11,6 +11,7 @@ from .strings import Translator
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
+
 class EmailHelper(object):
 
 	def send_mail(self, request, subject, body, recipient, lang):

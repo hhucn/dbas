@@ -37,10 +37,12 @@ class BreadcrumbHelper(object):
 		url = UrlManager(application_url, slug).get_url(path)
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'url ' + url)
 
-		group0 = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url).group(0)
-		logger('BreadcrumbHelper', 'get_breadcrumbs', 'group0 ' + str(group0))
-		if group0 and url.endswith(group0):
-			self.del_breadcrumbs_of_user(transaction, user)
+		expr = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)
+		if expr:
+			group0 = expr.group(0)
+			logger('BreadcrumbHelper', 'get_breadcrumbs', 'group0 ' + str(group0))
+			if group0 and url.endswith(group0):
+				self.del_breadcrumbs_of_user(transaction, user)
 
 		db_already_in = DBDiscussionSession.query(History).filter_by(url=url).first()
 		if db_already_in:

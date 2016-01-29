@@ -194,9 +194,10 @@ class Dbas(object):
 
 	# content page
 	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
-	def discussion_init(self):
+	def discussion_init(self, for_api=False):
 		"""
 		View configuration for the content view.
+		:param for_api: Boolean
 		:return: dictionary
 		"""
 		# '/a*slug'
@@ -205,11 +206,11 @@ class Dbas(object):
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
-		slug = self.request.matchdict['slug'][0] if len(self.request.matchdict['slug']) > 0 else ''
+		slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		ui_locales           = _qh.get_language(self.request, get_current_registry)
-		issue_dict      = _qh.prepare_json_of_issue(issue, ui_locales)
+		ui_locales      = _qh.get_language(self.request, get_current_registry)
+		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -226,23 +227,27 @@ class Dbas(object):
 		if len(item_dict) == 0:
 			_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_start=True)
 
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': issue_dict['title'],
-			'project': header,
+		return_dict = dict()
+		return_dict['issue'] = issue_dict
+		return_dict['discussion'] = discussion_dict
+		return_dict['items'] = item_dict
+		return_dict['extras'] = extras_dict
 
-			'issue': issue_dict,
-			'discussion': discussion_dict,
-			'items': item_dict,
-			'extras': extras_dict
-		}
+		if for_api:
+			return return_dict
+		else:
+			return_dict['layout'] = self.base_layout()
+			return_dict['language'] = str(ui_locales)
+			return_dict['title'] = issue_dict['title']
+			return_dict['project'] = header
+			return return_dict
 
 	# attitude page
 	@view_config(route_name='discussion_attitude', renderer='templates/content.pt', permission='everybody')
-	def discussion_attitude(self):
+	def discussion_attitude(self, for_api=False):
 		"""
 		View configuration for the content view.
+		:param for_api: Boolean
 		:return: dictionary
 		"""
 		# '/d/{slug}/a/{statement_id}'
@@ -257,7 +262,7 @@ class Dbas(object):
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		ui_locales            = _qh.get_language(self.request, get_current_registry)
-		issue_dict      = _qh.prepare_json_of_issue(issue, ui_locales)
+		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -274,23 +279,27 @@ class Dbas(object):
 		                                          self.request.authenticated_userid, breadcrumbs=breadcrumbs,
 		                                          application_url=mainpage)
 
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': issue_dict['title'],
-			'project': header,
+		return_dict = dict()
+		return_dict['issue'] = issue_dict
+		return_dict['discussion'] = discussion_dict
+		return_dict['items'] = item_dict
+		return_dict['extras'] = extras_dict
 
-			'issue': issue_dict,
-			'discussion': discussion_dict,
-			'items': item_dict,
-			'extras': extras_dict
-		}
+		if for_api:
+			return return_dict
+		else:
+			return_dict['layout'] = self.base_layout()
+			return_dict['language'] = str(ui_locales)
+			return_dict['title'] = issue_dict['title']
+			return_dict['project'] = header
+			return return_dict
 
 	# justify page
 	@view_config(route_name='discussion_justify', renderer='templates/content.pt', permission='everybody')
-	def discussion_justify(self):
+	def discussion_justify(self, for_api=False):
 		"""
 		View configuration for the content view.
+		:param for_api: Boolean
 		:return: dictionary
 		"""
 		# '/d/{slug}/j/{statement_or_arg_id}/{mode}*relation'
@@ -309,7 +318,7 @@ class Dbas(object):
 
 		issue               = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		ui_locales          = _qh.get_language(self.request, get_current_registry)
-		issue_dict          = _qh.prepare_json_of_issue(issue, ui_locales)
+		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -361,23 +370,27 @@ class Dbas(object):
 		else:
 			return HTTPFound(location=UrlManager(mainpage).get_404([slug, 'j', statement_or_arg_id, mode, relation]))
 
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': issue_dict['title'],
-			'project': header,
+		return_dict = dict()
+		return_dict['issue'] = issue_dict
+		return_dict['discussion'] = discussion_dict
+		return_dict['items'] = item_dict
+		return_dict['extras'] = extras_dict
 
-			'issue': issue_dict,
-			'discussion': discussion_dict,
-			'items': item_dict,
-			'extras': extras_dict
-		}
+		if for_api:
+			return return_dict
+		else:
+			return_dict['layout'] = self.base_layout()
+			return_dict['language'] = str(ui_locales)
+			return_dict['title'] = issue_dict['title']
+			return_dict['project'] = header
+			return return_dict
 
 	# reaction page
 	@view_config(route_name='discussion_reaction', renderer='templates/content.pt', permission='everybody')
-	def discussion_reaction(self):
+	def discussion_reaction(self, for_api=False):
 		"""
 		View configuration for the content view.
+		:param for_api: Boolean
 		:return: dictionary
 		"""
 		# '/d/{slug}/r/{arg_id_user}/{mode}*arg_id_sys'
@@ -399,7 +412,7 @@ class Dbas(object):
 		
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		ui_locales            = _qh.get_language(self.request, get_current_registry)
-		issue_dict      = _qh.prepare_json_of_issue(issue, ui_locales)
+		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -414,17 +427,20 @@ class Dbas(object):
 		                                          argument_id=arg_id_user, breadcrumbs=breadcrumbs,
 		                                          application_url=mainpage)
 
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': issue_dict['title'],
-			'project': header,
+		return_dict = dict()
+		return_dict['issue'] = issue_dict
+		return_dict['discussion'] = discussion_dict
+		return_dict['items'] = item_dict
+		return_dict['extras'] = extras_dict
 
-			'issue': issue_dict,
-			'discussion': discussion_dict,
-			'items': item_dict,
-			'extras': extras_dict
-		}
+		if for_api:
+			return return_dict
+		else:
+			return_dict['layout'] = self.base_layout()
+			return_dict['language'] = str(ui_locales)
+			return_dict['title'] = issue_dict['title']
+			return_dict['project'] = header
+			return return_dict
 
 	# settings page, when logged in
 	@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')

@@ -121,7 +121,7 @@ class UserHandler(object):
 		:param user: current user name
 		:return: user or None
 		"""
-		return DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
+		return True if DBDiscussionSession.query(User).filter_by(nickname=str(user)).first() else False
 
 
 	def get_random_anti_spam_question(self, lang):

@@ -479,10 +479,11 @@ class QueryHelper(object):
 		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
 		return self.sql_timestamp_pretty_print(str(db_issue.date), lang) if db_issue else 'none'
 
-	def prepare_json_of_issue(self, uid, lang):
+	def prepare_json_of_issue(self, uid, application_url, lang):
 		"""
 		Prepares slug, info, argument count and the date of the issue as dict
 		:param uid: Issue.uid
+		:param application_url:
 		:param lang: String
 		:return: dict()
 		"""
@@ -498,7 +499,7 @@ class QueryHelper(object):
 			issue_dict = dict()
 			issue_dict['slug']              = issue.get_slug()
 			issue_dict['title']             = issue.title
-			issue_dict['url']               = UrlManager(issue.get_slug()).get_slug_url(False) if str(uid) != str(issue.uid) else '#'
+			issue_dict['url']               = UrlManager(application_url, issue.get_slug()).get_slug_url(False) if str(uid) != str(issue.uid) else ''
 			issue_dict['info']              = issue.info
 			issue_dict['arg_count']         = self.get_number_of_arguments(issue.uid)
 			issue_dict['date']              = self.sql_timestamp_pretty_print(str(issue.date), lang)

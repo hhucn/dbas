@@ -6,6 +6,7 @@ log = logging.getLogger(__name__)
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
+
 def logger(who, when, what):
 	"""
 	Log for the console and logfile on disk. Logged format: [who.upper()] when <what>
@@ -14,4 +15,5 @@ def logger(who, when, what):
 	:param what: what mesage
 	:return: None
 	"""
+	#  if who == '-':
 	log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')

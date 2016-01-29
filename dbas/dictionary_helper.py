@@ -92,7 +92,6 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + author +
 		       ', ' + pgroup)
 		return {'uid':uid, 'text':text, 'date':date, 'author':author, 'premisegroup_uid':pgroup}
-	
 
 	def prepare_discussion_dict(self, uid, lang, at_start=False, at_attitude=False, at_justify=False,
 	                            is_supportive=False, at_dont_know=False, at_argumentation=False,
@@ -413,7 +412,7 @@ class DictionaryHelper(object):
 		return statements_array
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang,
-	                        authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs=[], application_url=''):
+	                        authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs='', application_url=''):
 		"""
 
 		:param current_slug:
@@ -433,14 +432,14 @@ class DictionaryHelper(object):
 		_qh = QueryHelper()
 
 		return_dict = dict()
-		return_dict['restart_url']                   =  UrlManager(application_url, current_slug).get_slug_url(True)
-		return_dict['is_editable']                   =  is_editable and _uh.is_user_logged_in(authenticated_userid)
-		return_dict['is_reportable']                 =  is_reportable
-		return_dict['is_admin']                      =  _uh.is_user_admin(authenticated_userid)
-		return_dict['logged_in']                     =  authenticated_userid
-		return_dict['show_bar_icon']                 =  show_bar_icon
-		return_dict['show_display_style']            =  show_display_styles
-		return_dict['add_premise_supportive']        =  add_premise_supportive
+		return_dict['restart_url']                   = UrlManager(application_url, current_slug).get_slug_url(True)
+		return_dict['is_editable']                   = is_editable and _uh.is_user_logged_in(authenticated_userid)
+		return_dict['is_reportable']                 = is_reportable
+		return_dict['is_admin']                      = _uh.is_user_admin(authenticated_userid)
+		return_dict['logged_in']                     = _uh.is_user_logged_in(authenticated_userid)
+		return_dict['show_bar_icon']                 = show_bar_icon
+		return_dict['show_display_style']            = show_display_styles
+		return_dict['add_premise_supportive']        = add_premise_supportive
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'
 		return_dict['breadcrumbs']                   = breadcrumbs
