@@ -80,7 +80,7 @@ class Dbas(object):
 		except KeyError:
 			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
-		extras_dict = {'logged_in': self.request.authenticated_userid}
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
 
 		return {
