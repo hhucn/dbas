@@ -161,21 +161,21 @@ class QueryHelper(object):
 
 		return tmp
 
-	def get_text_for_argument_uid(self, id, lang):
+	def get_text_for_argument_uid(self, uid, lang):
 		"""
 		Returns current argument as string like conclusion, because premise1 and premise2
-		:param id: int
+		:param uid: int
 		:param lang: str
 		:return: str
 		"""
-		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(id) )
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=id).first()
+		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid))
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		retValue = ''
 		_t = Translator(lang)
 
 		# catch error
 		if not db_argument:
-			logger('QueryHelper', 'get_text_for_argument_uid', 'Error: no argument for id: ' + str(id))
+			logger('QueryHelper', 'get_text_for_argument_uid', 'Error: no argument for uid: ' + str(uid))
 			return None
 
 		# basecase
@@ -184,10 +184,10 @@ class QueryHelper(object):
 			       + ', in argument: ' + str(db_argument.uid))
 			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
-			premises = premises[:-1] if premises.endswith('.') else premises # pretty print
+			premises = premises[:-1] if premises.endswith('.') else premises  # pretty print
 			if not conclusion:
 				return None
-			conclusion = conclusion[0:1].lower() + conclusion[1:] # pretty print
+			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
 			if db_argument.is_supportive:
 				argument = conclusion + ' ' + _t.get(_t.because).lower() + ' ' + premises
 			else:
@@ -443,54 +443,54 @@ class QueryHelper(object):
 				return issue.uid
 		return self.get_issue(request)
 
-	def get_title_for_issue_uid(self, id):
+	def get_title_for_issue_uid(self, uid):
 		"""
-		Returns the title or none for the issue id
-		:param id: Issue.uid
+		Returns the title or none for the issue uid
+		:param uid: Issue.uid
 		:return: String
 		"""
-		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=id).first()
+		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
 		return db_issue.title if db_issue else 'none'
 
-	def get_slug_for_issue_uid(self, id):
+	def get_slug_for_issue_uid(self, uid):
 		"""
-		Returns the slug of the title or none for the issue id
-		:param id: Issue.uid
+		Returns the slug of the title or none for the issue uid
+		:param uid: Issue.uid
 		:return: String
 		"""
-		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=id).first()
+		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
 		return slugify(db_issue.title) if db_issue else 'none'
 
-	def get_info_for_issue_uid(self, id):
+	def get_info_for_issue_uid(self, uid):
 		"""
-		Returns the slug or none for the issue id
-		:param id: Issue.uid
+		Returns the slug or none for the issue uid
+		:param uid: Issue.uid
 		:return: String
 		"""
-		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=id).first()
+		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
 		return db_issue.info if db_issue else 'none'
 
-	def get_date_for_issue_uid(self, id, lang):
+	def get_date_for_issue_uid(self, uid, lang):
 		"""
-		Returns the date or none for the issue id
-		:param id: Issue.uid
+		Returns the date or none for the issue uid
+		:param uid: Issue.uid
 		:return: String
 		"""
-		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=id).first()
+		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
 		return self.sql_timestamp_pretty_print(str(db_issue.date), lang) if db_issue else 'none'
 
-	def prepare_json_of_issue(self, id, lang):
+	def prepare_json_of_issue(self, uid, lang):
 		"""
 		Prepares slug, info, argument count and the date of the issue as dict
-		:param id: Issue.uid
+		:param uid: Issue.uid
 		:param lang: String
 		:return: dict()
 		"""
-		slug = self.get_slug_for_issue_uid(id)
-		title = self.get_title_for_issue_uid(id)
-		info = self.get_info_for_issue_uid(id)
-		arg_count = self.get_number_of_arguments(id)
-		date = self.get_date_for_issue_uid(id, lang)
+		slug = self.get_slug_for_issue_uid(uid)
+		title = self.get_title_for_issue_uid(uid)
+		info = self.get_info_for_issue_uid(uid)
+		arg_count = self.get_number_of_arguments(uid)
+		date = self.get_date_for_issue_uid(uid, lang)
 
 		db_issues = DBDiscussionSession.query(Issue).all()
 		all_array = []
@@ -498,14 +498,14 @@ class QueryHelper(object):
 			issue_dict = dict()
 			issue_dict['slug']              = issue.get_slug()
 			issue_dict['title']             = issue.title
-			issue_dict['url']               = UrlManager(issue.get_slug()).get_slug_url(False) if str(id) != str(issue.uid) else '#'
+			issue_dict['url']               = UrlManager(issue.get_slug()).get_slug_url(False) if str(uid) != str(issue.uid) else '#'
 			issue_dict['info']              = issue.info
 			issue_dict['arg_count']         = self.get_number_of_arguments(issue.uid)
 			issue_dict['date']              = self.sql_timestamp_pretty_print(str(issue.date), lang)
-			issue_dict['enabled']           = 'disabled' if str(id) == str(issue.uid) else 'enabled'
+			issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
 			all_array.append(issue_dict)
 
-		return {'slug': slug, 'info': info, 'title': title, 'id': id, 'arg_count': arg_count, 'date': date, 'all': all_array}
+		return {'slug': slug, 'info': info, 'title': title, 'uid': uid, 'arg_count': arg_count, 'date': date, 'all': all_array}
 
 	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False, at_justify_argumentation=False, at_justify=False):
 		"""
