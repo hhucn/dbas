@@ -624,7 +624,7 @@ class QueryHelper(object):
 		if leading_because:
 			title = title[0:1].lower() + title[1:]
 
-		return {'id': id,
+		return {'id': 'item_' + str(id),
 		        'title': title,
 		        'premises': premises,
 		        'attitude': attitude,

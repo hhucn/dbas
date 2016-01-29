@@ -180,8 +180,8 @@ function GuiHandler() {
 		table.append($('<tr>').append(td_text).append(td_buttons));
 
 		// append a row for each statement
-		$('#' + discussionSpaceId + ' li:not(:last-child) label:nth-child(odd)').each(function () {
-			tr = helper.createRowInEditDialog($(this).text(), $(this).attr('for'), $(this).attr('id'));
+		$('#' + discussionSpaceId + ' li:not(:last-child) label').each(function () {
+			tr = helper.createRowInEditDialog($(this).text(), $(this).attr('for').substr('item_'.length), $(this).attr('id'));
 			table.append(tr);
 
 		});
