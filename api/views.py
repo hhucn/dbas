@@ -5,29 +5,22 @@ from dbas.views import Dbas
 
 # CORS configuration
 cors_policy = dict(enabled=True,
-              headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
-              origins=('*',),
-              credentials=True,
-              max_age=42)
+                   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
+                   origins=('*',),
+                   credentials=True,
+                   max_age=42)
 
 
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
-hello = Service(name='api', path='/hello', description="Simplest app")
 news = Service(name='api_news', path='/get_news', description="News app")
 
 reaction = Service(name='api_reaction', path='/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys', description="Discussion Reaction")
 justify  = Service(name='api_justify', path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation', description="Discussion Justify")
 attitude = Service(name='api_attitude', path='/{slug}/attitude/*statement_id', description="Discussion Attitude")
 init     = Service(name='api_init', path='/*slug', description="Discussion Init", cors_policy=cors_policy)
-
-
-@hello.get()
-def get_info(request):
-	"""Returns Hello in JSON."""
-	return {'Hello': 'World'}
 
 
 @news.get()
@@ -64,9 +57,16 @@ def discussion_init(request):
 # POST / GET EXAMPLE
 # =============================================================================
 
+hello = Service(name='api', path='/hello', description="Simplest app")
 values = Service(name='foo', path='/values/{value}', description="Cornice Demo")
 
 _VALUES = {}
+
+
+@hello.get()
+def get_info(request):
+	"""Returns Hello in JSON."""
+	return {'Hello': 'World'}
 
 
 @values.get()
