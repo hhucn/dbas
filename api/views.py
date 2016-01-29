@@ -30,25 +30,25 @@ def get_news(request):
 
 @reaction.get()
 def discussion_reaction(request):
-	"""Return data drom DBas discussion_reaction page"""
+	"""Return data from DBas discussion_reaction page"""
 	return Dbas(request).discussion_reaction(True)
 
 
 @justify.get()
 def discussion_justify(request):
-	"""Return data drom DBas discussion_justify page"""
+	"""Return data from DBas discussion_justify page"""
 	return Dbas(request).discussion_justify(True)
 
 
 @attitude.get()
 def discussion_attitude(request):
-	"""Return data drom DBas discussion_attitude page"""
+	"""Return data from DBas discussion_attitude page"""
 	return Dbas(request).discussion_attitude(True)
 
 
 @init.get()
 def discussion_init(request):
-	"""Return data drom DBas discussion_init page"""
+	"""Return data from DBas discussion_init page"""
 	return Dbas(request).discussion_init(True)
 
 
