@@ -3,24 +3,24 @@
 from cornice import Service
 from dbas.views import Dbas
 
+# CORS configuration
+cors_policy = dict(enabled=True,
+                   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
+                   origins=('*',),
+                   credentials=True,
+                   max_age=42)
+
+
 # =============================================================================
-# HELLO WORLD - exemplary implementation, see http://0.0.0.0:6543/api/hello
+# SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
-hello = Service(name='api', path='/hello', description="Simplest app")
-news = Service(name='api_news', path='/get_news', description="News app")
+news = Service(name='api_news', path='/get_news', description="News app", cors_policy=cors_policy)
 
-reaction = Service(name='api_reaction', path='/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys', description="Discussion Reaction")
-justify  = Service(name='api_justify', path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation', description="Discussion Justify")
-attitude = Service(name='api_attitude', path='/{slug}/attitude/*statement_id', description="Discussion Attitude")
-init     = Service(name='api_init', path='/*slug', description="Discussion Init")
-empty    = Service(name='api_empty', path='', description="Discussion Empty Init")
-
-
-@hello.get()
-def get_info(request):
-	"""Returns Hello in JSON."""
-	return {'Hello': 'World'}
+reaction = Service(name='api_reaction', path='/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys', description="Discussion Reaction", cors_policy=cors_policy)
+justify  = Service(name='api_justify', path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation', description="Discussion Justify", cors_policy=cors_policy)
+attitude = Service(name='api_attitude', path='/{slug}/attitude/*statement_id', description="Discussion Attitude", cors_policy=cors_policy)
+init     = Service(name='api_init', path='/*slug', description="Discussion Init", cors_policy=cors_policy)
 
 
 @news.get()
@@ -53,20 +53,20 @@ def discussion_init(request):
 	return Dbas(request).discussion_init(True)
 
 
-@empty.get()
-def discussion_init(request):
-	"""Return data drom DBas discussion_init page"""
-	return Dbas(request).discussion_init(True)
-
-
-
 # =============================================================================
 # POST / GET EXAMPLE
 # =============================================================================
 
+hello = Service(name='api', path='/hello', description="Simplest app")
 values = Service(name='foo', path='/values/{value}', description="Cornice Demo")
 
 _VALUES = {}
+
+
+@hello.get()
+def get_info(request):
+	"""Returns Hello in JSON."""
+	return {'Hello': 'World'}
 
 
 @values.get()
