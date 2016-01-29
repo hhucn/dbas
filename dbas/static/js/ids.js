@@ -31,7 +31,6 @@ var contactOnErrorId 							= 'contact_on_error';
 var deleteTrackButtonId 						= 'delete-track';
 var deleteHistoryButtonId 						= 'delete-history';
 var discussionsDescriptionId 					= 'discussions-header';
-var discussionStartToggleButtonId 				= 'discussion-attack-toggle-start';
 var discussionContainerId 						= 'discussion-container';
 var discussionEndStepBack 						= 'discussionEndStepBack';
 var discussionEndRestart 						= 'discussionEndRestart';

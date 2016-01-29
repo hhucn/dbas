@@ -170,9 +170,6 @@ function setButtonLanguage(){ // TODO USE TAL
 	// $('#' + popupEditStatementShowLogButtonId).prop('value', _t(changelog)).prop('title', _t(changelog));
 	$('#' + contactSubmitButtonId).prop('value', _t(contactSubmit)).prop('title', _t(contactSubmit));
 	$('#' + startDiscussionButtonId).prop('value', _t(letsGo)).prop('title', _t(letsGo));
-	tmp = $('#' + discussionStartToggleButtonId).next().children();
-	tmp.eq(0).text(_t(attackPosition));
-	tmp.eq(1).text(_t(supportPosition));
 	$('#' + opinionBarometerImageId).prop('title', _t(opinionBarometer));
 }
 
