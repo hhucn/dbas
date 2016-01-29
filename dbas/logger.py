@@ -15,5 +15,4 @@ def logger(who, when, what):
 	:param what: what mesage
 	:return: None
 	"""
-	if who == 'UrlManager':
-		log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')
+	log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')

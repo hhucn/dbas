@@ -14,6 +14,7 @@ reaction = Service(name='api_reaction', path='/{slug}/reaction/{arg_id_user}/{mo
 justify  = Service(name='api_justify', path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation', description="Discussion Justify")
 attitude = Service(name='api_attitude', path='/{slug}/attitude/*statement_id', description="Discussion Attitude")
 init     = Service(name='api_init', path='/*slug', description="Discussion Init")
+empty    = Service(name='api_empty', path='', description="Discussion Empty Init")
 
 
 @hello.get()
@@ -47,6 +48,12 @@ def discussion_attitude(request):
 
 
 @init.get()
+def discussion_init(request):
+	"""Return data drom DBas discussion_init page"""
+	return Dbas(request).discussion_init(True)
+
+
+@empty.get()
 def discussion_init(request):
 	"""Return data drom DBas discussion_init page"""
 	return Dbas(request).discussion_init(True)
