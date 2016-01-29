@@ -451,9 +451,8 @@ class DictionaryHelper(object):
 		return_dict['title']                         = {'barometer': _tn.get(_tn.opinionBarometer),
 													 	 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 													 	 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
-													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
-		                                                 'edit_statement': _tn.get(_tn.editTitle),
-		                                                 'report_statement': _tn.get(_tn.reportTitle)}
+													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody)
+		                                                }
 		self.add_language_options_for_extra_dict(return_dict, lang)
 
 		# add everything for the island view
@@ -490,11 +489,28 @@ class DictionaryHelper(object):
 		"""
 		lang_is_en = (lang != 'de')
 		lang_is_de = (lang == 'de')
+		_t = Translator(lang)
 		extras_dict.update({
 			'lang_is_de': lang_is_de,
 			'lang_is_en': lang_is_en,
 			'link_de_class': ('active' if lang_is_de else ''),
-			'link_en_class': ('active' if lang_is_en else '')
+			'link_en_class': ('active' if lang_is_en else ''),
+			'button':{
+				'report' : _t.get(_t.report),
+				'report_title': _t.get(_t.reportTitle),
+				'acceptIt' : _t.get(_t.acceptIt),
+				'showAllAttacks' : _t.get(_t.showAllAttacks),
+				'showAllUsers' : _t.get(_t.showAllUsers),
+				'deleteTrack' : _t.get(_t.deleteTrack),
+				'requestTrack' : _t.get(_t.requestTrack),
+				'deleteHistory' : _t.get(_t.deleteHistory),
+				'requestHistory' : _t.get(_t.requestHistory),
+				'passwordSubmit' : _t.get(_t.passwordSubmit),
+				'contactSubmit' : _t.get(_t.contactSubmit),
+				'letsGo' : _t.get(_t.letsGo),
+				'opinionBarometer' : _t.get(_t.opinionBarometer),
+				'edit_statement': _t.get(_t.editTitle)
+			}
 		})
 
 	

@@ -96,9 +96,9 @@
 
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
-						<img tal:condition="extras.is_editable" id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.title.edit_statement"/>
+						<img tal:condition="extras.is_editable" id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.button.edit_statement; value extras.button.edit_statement"/>
 						<br tal:condition="extras.is_editable">
-						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="title extras.title.report_statement"/>
+						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="value extras.button.report; title extras.button.report_title"/>
 						<div id="display-style-menu-icon" tal:condition="extras.show_display_style or extras.show_bar_icon">
 							<img id="" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" />
 							<nav id="site-navigation">

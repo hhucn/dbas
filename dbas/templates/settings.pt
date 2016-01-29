@@ -54,8 +54,8 @@
 					<h4 i18n:translate="history">Your last history</h4>
 
 					<div style="text-align:center;">
-						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" />
-						<input id="delete-history" type="button" value="Delete history" class="button button-block btn btn-primary" style="display: inline-block;" />
+						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.button.requestHistory"/>
+						<input id="delete-history" type="button" value="Delete history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.button.deleteHistory"/>
 					</div>
 
 					<div id="history-table-success" class="alert alert-success" role="alert" style="display: none;">
@@ -138,7 +138,7 @@
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 							<span class="lead" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
 						</div>
-						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" />
+						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.button.passwordSubmit"/>
 					</form>
 				</div>
 				<div class="col-md-2"></div>

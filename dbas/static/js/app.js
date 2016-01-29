@@ -154,26 +154,6 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 }
 
 /**
- * Changes the value and title of every button
- */
-function setButtonLanguage(){ // TODO USE TAL
-	var tmp;
-	$('#' + reportButtonId).prop('value', _t(report)).prop('title', _t(reportTitle));
-	$('#' + sendNewStatementId).prop('value', _t(acceptIt)).prop('title', _t(acceptItTitle));
-	$('#' + listAllUsersAttacksId).prop('value', _t(showAllAttacks)).prop('title', _t(showAllAttacks));
-	$('#' + listAllUsersButtonId).prop('value', _t(showAllUsers)).prop('title', _t(showAllUsers));
-	$('#' + deleteTrackButtonId).prop('value', _t(deleteTrack)).prop('title', _t(deleteTrack));
-	$('#' + requestTrackButtonId).prop('value', _t(requestTrack)).prop('title', _t(requestTrack));
-	$('#' + deleteHistoryButtonId).prop('value', _t(deleteHistory)).prop('title', _t(deleteHistory));
-	$('#' + requestHistoryButtonId).prop('value', _t(requestHistory)).prop('title', _t(requestHistory));
-	$('#' + settingsPasswordSubmitButtonId).prop('value', _t(passwordSubmit)).prop('title', _t(passwordSubmit));
-	// $('#' + popupEditStatementShowLogButtonId).prop('value', _t(changelog)).prop('title', _t(changelog));
-	$('#' + contactSubmitButtonId).prop('value', _t(contactSubmit)).prop('title', _t(contactSubmit));
-	$('#' + startDiscussionButtonId).prop('value', _t(letsGo)).prop('title', _t(letsGo));
-	$('#' + opinionBarometerImageId).prop('title', _t(opinionBarometer));
-}
-
-/**
  *
  * @param lang
  */
@@ -525,7 +505,6 @@ function ajaxMama(){
  */
 function callbackIfDoneForSwitchDisplayLanguage (new_lang) {
 	location.reload(true);
-	setButtonLanguage();
 	setPiwikOptOutLink(new_lang);
 }
 
@@ -590,7 +569,6 @@ $(document).ready(function () {
 
 	jmpToChapter();
 	goBackToTop();
-	setButtonLanguage();
 	setPiwikOptOutLink(lang);
 	setEasterEggs();
 
