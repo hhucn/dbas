@@ -8,8 +8,11 @@
 Welcome to D-BAS's documentation!
 =================================
 
-Core
-----
+Installation
+------------
+
+Core Documentation
+------------------
 
 .. toctree::
    :maxdepth: 1
@@ -29,9 +32,18 @@ API Documentation
    api/index
    api/*
 
+
 Indices and tables
 ------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+External Links
+--------------
+
+* Useful `sphinx slides`_
+
+.. _sphinx slides: http://www.slideshare.net/shimizukawa/sphinx-autodoc-automated-api-documentation-europython-2015-in-bilbao
