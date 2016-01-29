@@ -7,20 +7,30 @@ from .logger import logger
 
 class UrlManager(object):
 
-	def __init__(self, application_url, slug=''):
+	def __init__(self, application_url, slug='', for_api=False):
 		"""
 
 		:param application_url:
 		:param slug:
+		:param for_api:
 		:return:
 		"""
 		logger('UrlManager','__init__', 'application_url: ' + application_url)
+		logger('UrlManager','__init__', 'slug: ' + slug)
+		logger('UrlManager','__init__', 'for_api: ' + str(for_api))
 		self.url = application_url + '/'
 		self.discussion_url = self.url + 'discuss/'
+		self.api_url = 'api/'
 		self.slug = slug
+		self.for_api = for_api
 
 	def get_url(self, path):
-		return self.url + path[1:]
+		"""
+		
+		:param path:
+		:return:
+		"""
+		return self.api_url if self.for_api else self.url + path[1:]
 
 	def get_404(self, params):
 		"""
@@ -41,7 +51,10 @@ class UrlManager(object):
 		:return:
 		"""
 		url = self.discussion_url + self.slug
-		return ('location.href="' + url + '"') if as_location_href else url
+		if self.for_api:
+			return self.api_url + self.slug
+		else:
+			return ('location.href="' + url + '"') if as_location_href else url
 
 	def get_url_for_statement_attitude(self, as_location_href, statement_uid):
 		"""
@@ -51,7 +64,10 @@ class UrlManager(object):
 		:return: discussion_url/slug/a/statement_uid
 		"""
 		url = self.discussion_url + self.slug + '/attitude/' + str(statement_uid)
-		return ('location.href="' + url + '"') if as_location_href else url
+		if self.for_api:
+			return self.api_url + self.slug + '/attitude/' + str(statement_uid)
+		else:
+			return ('location.href="' + url + '"') if as_location_href else url
 
 	def get_url_for_justifying_statement(self, as_location_href, statement_uid, mode):
 		"""
@@ -62,7 +78,10 @@ class UrlManager(object):
 		:return:
 		"""
 		url = self.discussion_url + self.slug + '/justify/' + str(statement_uid) + '/' + mode
-		return ('location.href="' + url + '"') if as_location_href else url
+		if self.for_api:
+			return self.api_url + self.slug + '/justify/' + str(statement_uid) + '/' + mode
+		else:
+			return ('location.href="' + url + '"') if as_location_href else url
 
 	def get_url_for_justifying_argument(self, as_location_href, argument_uid, mode, attitude):
 		"""
@@ -74,7 +93,10 @@ class UrlManager(object):
 		:return:
 		"""
 		url = self.discussion_url + self.slug + '/justify/' + str(argument_uid) + '/' + mode + '/' + attitude
-		return ('location.href="' + url + '"') if as_location_href else url
+		if self.for_api:
+			return self.api_url + self.slug + '/justify/' + str(argument_uid) + '/' + mode + '/' + attitude
+		else:
+			return ('location.href="' + url + '"') if as_location_href else url
 
 	def get_url_for_reaction_on_argument(self, as_location_href, argument_uid, mode, confrontation_argument):
 		"""
@@ -86,4 +108,7 @@ class UrlManager(object):
 		:return:
 		"""
 		url = self.discussion_url + self.slug + '/reaction/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
-		return ('location.href="' + url + '"') if as_location_href else url
+		if self.for_api:
+			return self.api_url + self.slug + '/reaction/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
+		else:
+			return ('location.href="' + url + '"') if as_location_href else url

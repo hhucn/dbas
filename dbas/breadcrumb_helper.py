@@ -17,7 +17,7 @@ from .url_manager import UrlManager
 
 class BreadcrumbHelper(object):
 
-	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url):
+	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, for_api):
 		"""
 
 		:param path:
@@ -27,14 +27,15 @@ class BreadcrumbHelper(object):
 		:param transaction:
 		:param lang:
 		:param application_url:
+		:param for_api:
 		:return:
 		"""
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'path ' + path + ', user ' + str(user))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		if not db_user:
+		if not db_user or for_api:
 			return []
 
-		url = UrlManager(application_url, slug).get_url(path)
+		url = UrlManager(application_url, slug, for_api).get_url(path)
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'url ' + url)
 
 		expr = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)
