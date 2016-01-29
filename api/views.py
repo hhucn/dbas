@@ -15,11 +15,11 @@ cors_policy = dict(enabled=True,
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
-news = Service(name='api_news', path='/get_news', description="News app")
+news = Service(name='api_news', path='/get_news', description="News app", cors_policy=cors_policy)
 
-reaction = Service(name='api_reaction', path='/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys', description="Discussion Reaction")
-justify  = Service(name='api_justify', path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation', description="Discussion Justify")
-attitude = Service(name='api_attitude', path='/{slug}/attitude/*statement_id', description="Discussion Attitude")
+reaction = Service(name='api_reaction', path='/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys', description="Discussion Reaction", cors_policy=cors_policy)
+justify  = Service(name='api_justify', path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation', description="Discussion Justify", cors_policy=cors_policy)
+attitude = Service(name='api_attitude', path='/{slug}/attitude/*statement_id', description="Discussion Attitude", cors_policy=cors_policy)
 init     = Service(name='api_init', path='/*slug', description="Discussion Init", cors_policy=cors_policy)
 
 
