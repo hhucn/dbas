@@ -193,6 +193,17 @@ class Dbas(object):
 			'csrf_token': token
 		}
 
+	# content page for api
+	@view_config(route_name='discussion_init_api', renderer='json', permission='everybody')
+	def discussion_init_api(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('discussion_init_api', 'def', 'main')
+		return self.discussion_init(True)
+
 	# content page
 	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
 	def discussion_init(self, for_api=False):
@@ -507,7 +518,7 @@ class Dbas(object):
 		}
 
 	# admin page, when logged in
-	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='use')
+	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='admin')  # or permission='use'
 	def main_admin(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
@@ -526,7 +537,7 @@ class Dbas(object):
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
-			'title': 'Settings',
+			'title': 'Admin',
 			'project': header,
 			'extras': extras_dict
 		}
@@ -614,8 +625,7 @@ class Dbas(object):
 		except KeyError:
 			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
-		extras_dict = {'logged_in': self.request.authenticated_userid}
-		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -626,9 +636,9 @@ class Dbas(object):
 			'extras': extras_dict
 		}
 
-	######################################
-	# ADDTIONAL AJAX STUFF # USER THINGS #
-	######################################
+# ####################################
+# ADDTIONAL AJAX STUFF # USER THINGS #
+# ####################################
 
 	# ajax - getting complete track of the user
 	@view_config(route_name='ajax_get_user_history', renderer='json', check_csrf=True)
@@ -916,9 +926,9 @@ class Dbas(object):
 
 		return return_json
 
-	#########################################
-	# ADDTIONAL AJAX STUFF # SET NEW THINGS #
-	#########################################
+# #######################################
+# ADDTIONAL AJAX STUFF # SET NEW THINGS #
+# #######################################
 
 	# ajax - send new start statement
 	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
@@ -1085,9 +1095,9 @@ class Dbas(object):
 
 		return return_json
 
-	#####################################
-	# ADDTIONAL AJAX STUFF # GET THINGS #
-	#####################################
+# ###################################
+# ADDTIONAL AJAX STUFF # GET THINGS #
+# ###################################
 
 	# ajax - getting changelog of a statement
 	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=False)
@@ -1174,7 +1184,10 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
 		logger('get_attack_overview', 'def', 'main')
-		ui_locales = self.request.params['lang']
+		try:
+			ui_locales = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 		issue = self.request.params['issue'] if 'issue' in self.request.params \
 			else self.request.session['issue'] if 'issue' in self.request.session \
 			else issue_fallback
@@ -1214,9 +1227,32 @@ class Dbas(object):
 
 		return return_json
 
-	##########################################
-	# ADDTIONAL AJAX STUFF # ADDITION THINGS #
-	##########################################
+
+	# ajax - for getting all users
+	@view_config(route_name='ajax_all_users', renderer='json')
+	def get_all_users(self):
+		"""
+		ajax interface for getting a dump
+		:return: json-set with everything
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('get_all_users', 'def', 'main')
+
+		try:
+			ui_locales = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+
+		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
+		logger('get_all_users', 'def', 'user count ' + str(len(return_dict)))
+		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+		return return_json
+
+
+# ########################################
+# ADDTIONAL AJAX STUFF # ADDITION THINGS #
+# ########################################
 
 	# ajax - for language switch
 	@view_config(route_name='ajax_switch_language', renderer='json')

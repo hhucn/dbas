@@ -67,6 +67,11 @@
 									<img id="header_settings" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="settings">Settings</span>
 								</a>
 							</li>
+							<li tal:condition="extras.is_admin">
+								<a href="${request.application_url}/admin" title="Admin">
+									<img id="header_admin" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="Admin">Admin</span>
+								</a>
+							</li>
 							<li>
 								<a id="logout-link" href="" title="Logout the user">
 									<img id="header_logout" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="logout">Logout</span>

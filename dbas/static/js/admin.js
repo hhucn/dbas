@@ -10,7 +10,7 @@ function AdminInterface(){
 	 * Requests all users
 	 */
 	this.getUsersOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, _this = this;
 		$.ajax({
 			url: 'ajax_all_users',
 			method: 'GET',
@@ -24,7 +24,7 @@ function AdminInterface(){
 				url = this.url;
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
-			new InteractionHandler().callbackIfDoneGetUsersOverview(data);
+			_this.setJsonUserDataToAdminContent($.parseJSON(data));
 		}).fail(function ajaxGetAllUsersFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
@@ -36,12 +36,12 @@ function AdminInterface(){
 	 * Requests all attacks
 	 */
 	this.getAttackOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, _this = this;
 		$.ajax({
 			url: 'ajax_get_attack_overview',
 			method: 'GET',
 			dataType: 'json',
-			data: { issue: new Helper().getCurrentIssueId(), lang: getLanguage() },
+			data: { issue: new Helper().getCurrentIssueId() },
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
@@ -51,7 +51,7 @@ function AdminInterface(){
 				url = this.url;
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
-			new InteractionHandler().callbackIfDoneAttackOverview(data);
+			_this.setJsonAttackDataToAdminContent($.parseJSON(data));
 			$('#' + listAllUsersAttacksId).val(_t(hideAllAttacks));
 			new GuiHandler().hideErrorDescription();
 		}).fail(function ajaxGetAllUsersFail() {
@@ -60,24 +60,6 @@ function AdminInterface(){
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 			$('#' + listAllUsersAttacksId).val(_t(showAllAttacks));
 		});
-	};
-
-	/**
-	 *
-	 * @param data
-	 */
-	this.callbackIfDoneGetUsersOverview = function (data){
-		var parsedData = $.parseJSON(data);
-		new JsonGuiHandler().setJsonUserDataToAdminContent(parsedData);
-	};
-
-	/**
-	 *
-	 * @param data
-	 */
-	this.callbackIfDoneAttackOverview = function (data){
-		var parsedData = $.parseJSON(data);
-		new JsonGuiHandler().setJsonAttackDataToAdminContent(parsedData);
 	};
 
 	/**

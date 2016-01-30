@@ -347,7 +347,8 @@ function ajaxSwitchDisplayLanguage (new_lang){
 		dataType: 'json',
 		async: true
 	}).done(function ajaxSwitchDisplayLanguageDone() {
-		callbackIfDoneForSwitchDisplayLanguage(new_lang);
+		location.reload(true);
+		setPiwikOptOutLink(new_lang);
 	}).fail(function ajaxSwitchDisplayLanguageFail() {
 		alert(_t(languageCouldNotBeSwitched));
 	});
@@ -499,14 +500,6 @@ function ajaxMama(){
 // *********************
 //	CALLBACKS
 // *********************
-
-/**
- * Callback, when language is switched
- */
-function callbackIfDoneForSwitchDisplayLanguage (new_lang) {
-	location.reload(true);
-	setPiwikOptOutLink(new_lang);
-}
 
 /**
  *

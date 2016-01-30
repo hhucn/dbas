@@ -93,6 +93,7 @@ var dbas_en = {
 	'supportPosition': 'support position',
 	'strength': 'Strength',
 	'strong': 'strong',
+	'surname' : 'Surname',
 	'shortenedBy': 'which was shortened with',
 	'switchDiscussion': 'Change of discussion\'s topic',
 	'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
