@@ -186,6 +186,11 @@ bootstrap-paper hover #eeeeee
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-281-settings.png) no-repeat;
 }
 
+.info-glyphicon {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-196-circle-info.png) no-repeat;
+	width: 80%;
+}
+
 #header_admin {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-140-adjust-alt.png) no-repeat;
 }

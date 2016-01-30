@@ -303,24 +303,6 @@ class History(DiscussionBase):
 		self.session_id = session_id
 
 
-class Relation(DiscussionBase):  # TODO IS THIS NECESSARY ?
-	"""
-	Relation-table with several columns.
-	Each user will be tracked
-	"""
-	__tablename__ = 'relation'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	name = sa.Column(sa.Text, nullable=False)
-
-	def __init__(self, name):
-		"""
-		Initializes a row in current relation-table
-		:param name:
-		:return:
-		"""
-		self.name = name
-
-
 class Vote(DiscussionBase):
 	"""
 	Vote-table with several columns.

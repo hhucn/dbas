@@ -8,7 +8,7 @@ from sqlalchemy import and_
 from slugify import slugify
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History, Vote, Issue
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, History, Vote, Issue
 from .logger import logger
 from .recommender_system import RecommenderHelper
 from .query_helper import QueryHelper
@@ -499,7 +499,7 @@ class DictionaryHelper(object):
 				'report' : _t.get(_t.report),
 				'report_title': _t.get(_t.reportTitle),
 				'acceptIt' : _t.get(_t.acceptIt),
-				'showAllAttacks' : _t.get(_t.showAllAttacks),
+				'showAllArguments' : _t.get(_t.showAllArguments),
 				'showAllUsers' : _t.get(_t.showAllUsers),
 				'deleteTrack' : _t.get(_t.deleteTrack),
 				'requestTrack' : _t.get(_t.requestTrack),

@@ -25,11 +25,11 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 	});
 
 	// admin list all attacks button
-	$('#' + listAllUsersAttacksId).click(function listAllUsersAttacksId() {
+	$('#' + listAllUsersArgumentId).click(function listAllUsersAttacksId() {
 		if ($(this).val() === _t(showAllAttacks)) {
-			ajaxHandler.getAttackOverview();
+			ajaxHandler.getArgumentOverview();
 		} else {
-			$('#' + adminsSpaceForAttacksId).empty();
+			$('#' + adminsSpaceForArgumentsId).empty();
 		}
 	});
 

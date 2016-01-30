@@ -300,8 +300,8 @@ class Translator(object):
 		self.restartOnError = 'restartOnError'
 		self.selectStatement = 'selectStatement'
 		self.showAllUsers = 'showAllUsers'
-		self.showAllAttacks = 'showAllAttacks'
-		self.showAllAttacksTitle = 'showAllAttacksTitle'
+		self.showAllArguments = 'showAllArguments'
+		self.showAllArgumentsTitle = 'showAllArgumentsTitle'
 		self.showAllUsersTitle = 'showAllUsersTitle'
 		self.strength = 'strength'
 		self.strong = 'strong'
@@ -659,8 +659,8 @@ class Translator(object):
 		en_lang[self.requestFailed] = 'Request failed'
 		en_lang[self.selectStatement] = 'Please select a statement!'
 		en_lang[self.showAllUsers] = 'Show all users'
-		en_lang[self.showAllAttacks] = 'Show all attacks'
-		en_lang[self.showAllAttacksTitle] = 'Show all attacks, done by users'
+		en_lang[self.showAllArguments] = 'Show all arguments'
+		en_lang[self.showAllArgumentsTitle] = 'Show all arguments, done by users'
 		en_lang[self.showAllUsersTitle] = 'Show all users, which are registered'
 		en_lang[self.supportPosition] = 'support position'
 		en_lang[self.strength] = 'Strength'
@@ -1012,8 +1012,8 @@ class Translator(object):
 		de_lang[self.restartOnError] = 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.',
 		de_lang[self.selectStatement] = 'Bitte Wählen Sie eine Aussage!',
 		de_lang[self.showAllUsers] = 'Zeig\' alle Benutzer',
-		de_lang[self.showAllAttacks] = 'Zeig\' alle Angriffe',
-		de_lang[self.showAllAttacksTitle] = 'Zeige alle Attacken',
+		de_lang[self.showAllArguments] = 'Zeig\' alle Argumente',
+		de_lang[self.showAllArgumentsTitle] = 'Zeigt alle Argumente',
 		de_lang[self.showAllUsersTitle] = 'Zeige alle Nutzer',
 		de_lang[self.strength] = 'Stärke',
 		de_lang[self.strong] = 'stark',

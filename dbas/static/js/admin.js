@@ -24,7 +24,7 @@ function AdminInterface(){
 				url = this.url;
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
-			_this.setJsonUserDataToAdminContent($.parseJSON(data));
+			_this.setDataToContent($.parseJSON(data));
 		}).fail(function ajaxGetAllUsersFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
@@ -35,10 +35,10 @@ function AdminInterface(){
 	/**
 	 * Requests all attacks
 	 */
-	this.getAttackOverview = function () {
+	this.getArgumentOverview = function () {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, _this = this;
 		$.ajax({
-			url: 'ajax_get_attack_overview',
+			url: 'ajax_get_argument_overview',
 			method: 'GET',
 			dataType: 'json',
 			data: { issue: new Helper().getCurrentIssueId() },
@@ -50,15 +50,15 @@ function AdminInterface(){
 				settings_data = settings.data;
 				url = this.url;
 			}
-		}).done(function ajaxGetAllUsersDone(data) {
-			_this.setJsonAttackDataToAdminContent($.parseJSON(data));
-			$('#' + listAllUsersAttacksId).val(_t(hideAllAttacks));
+		}).done(function getArgumentOverviewDone(data) {
+			_this.setArgumentOverviewDataContent($.parseJSON(data));
+			$('#' + listAllUsersArgumentId).val(_t(hideAllArguments));
 			new GuiHandler().hideErrorDescription();
-		}).fail(function ajaxGetAllUsersFail() {
+		}).fail(function getArgumentOverviewFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			$('#' + listAllUsersAttacksId).val(_t(showAllAttacks));
+			$('#' + listAllUsersArgumentId).val(_t(showAllArguments));
 		});
 	};
 
@@ -66,7 +66,7 @@ function AdminInterface(){
 	 * Sets given json data to admins content
 	 * @param jsonData
 	 */
-	this.setJsonUserDataToAdminContent = function (jsonData) {
+	this.setDataToContent = function (jsonData) {
 		//var tableElement, trElement, tbody, thead, tdElement, spanElement, i;
 		var tableElement, trElement, tElement, i, thead, tbody;
 		tElement = ['', '', '', '', '', '', '', '', '', ''];
@@ -129,11 +129,11 @@ function AdminInterface(){
 	 * Sets given json data to admins content
 	 * @param jsonData
 	 */
-	this.setJsonAttackDataToAdminContent = function (jsonData) {
-		var tableElement, trElement, tdElement, tbody, thead, spanElement, i, attacks = [], counter;
+	this.setArgumentOverviewDataContent = function (jsonData) {
+		var tableElement, trElement, tdElement, tbody, thead, spanElement, i, img;
 
-		tdElement = ['', '', '', '', '', '', ''];
-		spanElement = ['', '', '', '', '', '', ''];
+		tdElement   = ['', '', '', '', '', ''];
+		spanElement = ['', '', '', '', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr({class: 'table table-condensed tablesorter',
 						border: '0',
@@ -150,14 +150,12 @@ function AdminInterface(){
 		}
 
 		// add header row
-		spanElement[0].text(_t(uid));
+		spanElement[0].text('#');
 		spanElement[1].text(_t(text));
-		counter = 2;
-		$.each(jsonData.attacks, function setJsonAttackDataToAdminContentEach(key, value) {
-			spanElement[counter].text(value);
-			attacks[(counter-2)] = value;
-			counter += 1;
-		});
+		spanElement[2].text('#Votes');
+		spanElement[3].text('#Upvotes');
+		spanElement[4].text('#Valid Upotes');
+		spanElement[4].text('');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);
@@ -173,13 +171,18 @@ function AdminInterface(){
 				tdElement[i] = $('<td>');
 			}
 
-			tdElement[0].text(value.id);
+			img = $('<img>').addClass('glyphicon-local center info-glyphicon');
+			img.attr('id', 'info_' + value.uid).attr('src', mainpage + "static/images/transparent.gif");
+			img.click(function(){
+				alert('todo infos about argument ' + value.uid);
+			});
+
+			tdElement[0].text(key).attr('argument_' + value.uid);
 			tdElement[1].text(value.text);
-			tdElement[2].text(value[attacks[0]]);
-			tdElement[3].text(value[attacks[1]]);
-			tdElement[4].text(value[attacks[2]]);
-			tdElement[5].text(value[attacks[3]]);
-			tdElement[6].text(value[attacks[4]]);
+			tdElement[2].text(value.votes);
+			tdElement[3].text(value.valid_votes);
+			tdElement[4].text(value.valid_upvotes);
+			tdElement[5].append(img);
 
 			for (i = 0; i < tdElement.length; i += 1) {
 				trElement.append(tdElement[i]);
@@ -191,7 +194,7 @@ function AdminInterface(){
 		});
 		tableElement.append(tbody);
 
-		$('#' + adminsSpaceForAttacksId).empty().append(tableElement);
+		$('#' + adminsSpaceForArgumentsId).empty().append(tableElement);
 	};
 
 }
@@ -211,11 +214,12 @@ $(function () {
 	});
 
 	// admin list all attacks button
-	$('#' + listAllUsersAttacksId).click(function listAllUsersAttacksId() {
-		if ($(this).val() === _t(showAllAttacks)) {
-			ai.getAttackOverview();
+	$('#' + listAllUsersArgumentId).click(function listAllUsersAttacksId() {
+		if ($(this).val() === _t(showAllArguments)) {
+			ai.getArgumentOverview();
 		} else {
-			$('#' + adminsSpaceForAttacksId).empty();
+			$('#' + adminsSpaceForArgumentsId).empty();
+			$('#' + listAllUsersArgumentId).val(_t(showAllArguments));
 		}
 	});
 });

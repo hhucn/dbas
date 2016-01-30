@@ -5,7 +5,7 @@ from sqlalchemy import and_
 from slugify import slugify
 
 from .database import DBDiscussionSession, DBNewsSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Relation, History, Vote, Issue, Group
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, History, Vote, Issue, Group
 from .database.news_model import News
 from .logger import logger
 from .strings import Translator, TextGenerator
@@ -849,7 +849,6 @@ class QueryHelper(object):
 
 		return return_dict
 
-
 	def get_attack_overview(self, user, issue, lang):  # TODO
 		"""
 		Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
@@ -861,29 +860,29 @@ class QueryHelper(object):
 		is_admin = UserHandler().is_user_admin(user)
 		logger('QueryHelper', 'get_attack_overview', 'is_admin ' + str(is_admin) + ', issue ' + str(issue))
 		return_dict = dict()
-		if is_admin:
-			return_dict = dict()
-			logger('QueryHelper', 'get_attack_overview', 'get all attacks for each argument')
-			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
-			db_relations = DBDiscussionSession.query(Relation).all()
+		if not is_admin:
+			return return_dict
 
-			relations_dict = dict()
-			for relation in db_relations:
-				relations_dict[str(relation.uid)] = relation.name
-			return_dict['attacks'] = relations_dict
+		db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
+		_qh = QueryHelper()
 
-			for argument in db_arguments:
-				logger('QueryHelper', 'get_attack_overview', 'argument with uid ' + str(argument.uid) + ', issue ' + str(issue))
-				text = QueryHelper().get_text_for_argument_uid(argument.uid, lang)
-				if text:
-					argument_dict = {'id': str(argument.uid), 'text': text}
+		for index, argument in enumerate(db_arguments):
+			logger('QueryHelper', 'get_attack_overview', 'argument with uid ' + str(argument.uid))
+			tmp_dict = dict()
+			tmp_dict['uid'] = str(argument.uid)
+			tmp_dict['text'] = _qh.get_text_for_argument_uid(argument.uid, lang)
+			db_votes = DBDiscussionSession.query(Vote).filter_by(argument_uid=argument.uid).all()
+			db_valid_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==argument.uid,
+			                                                             Vote.is_valid==True)).all()
+			db_valid_upvotes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==argument.uid,
+			                                                               Vote.is_valid==True,
+			                                                               Vote.is_up_vote)).all()
+			tmp_dict['votes'] = len(db_votes)
+			tmp_dict['valid_votes'] = len(db_valid_votes)
+			tmp_dict['valid_upvotes'] = len(db_valid_upvotes)
 
-				for relation in db_relations:
-					db_tracks = DBDiscussionSession.query(Track).filter(and_(Track.argument_uid == argument.uid,
-					                                               Track.attacked_by_relation == relation.uid)).all()
-					argument_dict[relation.name] = str(len(db_tracks)) if len(db_tracks) != 0 else '-'
 
-				return_dict[str(argument.uid)] = argument_dict
+			return_dict[str(index)] = tmp_dict
 
 		return return_dict
 

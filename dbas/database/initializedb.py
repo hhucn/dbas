@@ -6,7 +6,7 @@ from dbas.user_management import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, \
-	PremiseGroup, Premise, Group, Relation, Issue
+	PremiseGroup, Premise, Group, Issue
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 
@@ -249,15 +249,6 @@ def setup_discussion_database():
 	group2 = Group(name='editors')
 	group3 = Group(name='users')
 	DBDiscussionSession.add_all([group0, group1, group2, group3])
-	DBDiscussionSession.flush()
-
-	# adding relation
-	relation0 = Relation(name='undermine')
-	relation1 = Relation(name='support')
-	relation2 = Relation(name='undercut')
-	relation3 = Relation(name='overbid')
-	relation4 = Relation(name='rebut')
-	DBDiscussionSession.add_all([relation0, relation1, relation2, relation3, relation4])
 	DBDiscussionSession.flush()
 
 	# adding some dummy users

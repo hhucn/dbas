@@ -1175,15 +1175,15 @@ class Dbas(object):
 		return return_json
 
 	# ajax - for attack overview
-	@view_config(route_name='ajax_get_attack_overview', renderer='json', check_csrf=True)
-	def get_attack_overview(self):
+	@view_config(route_name='ajax_get_argument_overview', renderer='json')
+	def get_argument_overview(self):
 		"""
 		Returns all attacks, done by the users
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
-		logger('get_attack_overview', 'def', 'main')
+		logger('get_argument_overview', 'def', 'main')
 		try:
 			ui_locales = str(self.request.cookies['_LOCALE_'])
 		except KeyError:

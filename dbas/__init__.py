@@ -84,7 +84,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_get_logfile_for_statement',           '/{url:.*}ajax_get_logfile_for_statement')
 	config.add_route('ajax_get_shortened_url',                   '/{url:.*}ajax_get_shortened_url')
 	config.add_route('ajax_all_users',                           '{url:.*}ajax_all_users')
-	config.add_route('ajax_get_attack_overview',                 '{url:.*}ajax_get_attack_overview')
+	config.add_route('ajax_get_argument_overview',               '{url:.*}ajax_get_argument_overview')
 
 	config.add_route('ajax_user_registration',                   '{url:.*}ajax_user_registration')
 	config.add_route('ajax_user_password_request',               '{url:.*}ajax_user_password_request')
