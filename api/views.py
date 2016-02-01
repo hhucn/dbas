@@ -9,10 +9,10 @@ from dbas.views import Dbas
 
 # CORS configuration
 cors_policy = dict(enabled=True,
-                   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
-                   origins=('*',),
-                   credentials=True,
-                   max_age=42)
+				   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
+				   origins=('*',),
+				   credentials=True,
+				   max_age=42)
 
 
 # =============================================================================
@@ -20,29 +20,29 @@ cors_policy = dict(enabled=True,
 # =============================================================================
 
 dump     = Service(name='api_dump',
-                   path='/dump',
-                   description="Database Dump",
-                   cors_policy=cors_policy)
+				   path='/dump',
+				   description="Database Dump",
+				   cors_policy=cors_policy)
 news     = Service(name='api_news',
-                   path='/get_news',
-                   description="News app",
-                   cors_policy=cors_policy)
+				   path='/get_news',
+				   description="News app",
+				   cors_policy=cors_policy)
 reaction = Service(name='api_reaction',
-                   path='/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys',
-                   description="Discussion Reaction",
-                   cors_policy=cors_policy)
+				   path='/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys',
+				   description="Discussion Reaction",
+				   cors_policy=cors_policy)
 justify  = Service(name='api_justify',
-                   path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation',
-                   description="Discussion Justify",
-                   cors_policy=cors_policy)
+				   path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation',
+				   description="Discussion Justify",
+				   cors_policy=cors_policy)
 attitude = Service(name='api_attitude',
-                   path='/{slug}/attitude/*statement_id',
-                   description="Discussion Attitude",
-                   cors_policy=cors_policy)
+				   path='/{slug}/attitude/*statement_id',
+				   description="Discussion Attitude",
+				   cors_policy=cors_policy)
 init     = Service(name='api_init',
-                   path='/*slug',
-                   description="Discussion Init",
-                   cors_policy=cors_policy)
+				   path='/*slug',
+				   description="Discussion Init",
+				   cors_policy=cors_policy)
 
 
 @news.get()
