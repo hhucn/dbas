@@ -411,7 +411,7 @@ class Dbas(object):
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
-		
+
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry)
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)

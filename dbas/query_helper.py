@@ -16,6 +16,7 @@ from .url_manager import UrlManager
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
+
 class QueryHelper(object):
 	"""
 
@@ -253,7 +254,7 @@ class QueryHelper(object):
 					logger('QueryHelper', 'get_undermines_for_premises', 'found db_undermine ' + str(undermine.uid))
 					tmp_dict = dict()
 					tmp_dict['id'] = undermine.uid
-					tmp_dict['text'], uids = QueryHelper().get_text_for_premisesgroup_uid(undermine.premisesgroup_uid)
+					tmp_dict['text'], uids = self.get_text_for_premisesgroup_uid(undermine.premisesgroup_uid)
 					return_array.append(tmp_dict)
 					index += 1
 		return return_array
@@ -869,13 +870,12 @@ class QueryHelper(object):
 			return return_dict
 
 		db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
-		_qh = QueryHelper()
 
 		for index, argument in enumerate(db_arguments):
 			logger('QueryHelper', 'get_attack_overview', 'argument with uid ' + str(argument.uid))
 			tmp_dict = dict()
 			tmp_dict['uid'] = str(argument.uid)
-			tmp_dict['text'] = _qh.get_text_for_argument_uid(argument.uid, lang)
+			tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
 			db_votes = DBDiscussionSession.query(Vote).filter_by(argument_uid=argument.uid).all()
 			db_valid_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==argument.uid,
 			                                                             Vote.is_valid==True)).all()
@@ -927,10 +927,10 @@ class QueryHelper(object):
 		logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'def')
 
 		# insert text as premise
-		new_statement, is_duplicate = QueryHelper().set_statement(transaction, text, user, False, issue)
+		new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
 		if new_statement == -1:
 			return 0
-		new_premisegroup_uid = QueryHelper().set_statement_as_new_premise(new_statement, user, issue)
+		new_premisegroup_uid = self.set_statement_as_new_premise(new_statement, user, issue)
 
 		# current argument
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -1127,16 +1127,12 @@ class QueryHelper(object):
 		:return: dict
 		"""
 		logger('QueryHelper', 'set_premises_for_conclusion', 'main')
-
-		# insert the premises as statements
-		qh = QueryHelper()
-
 		# current conclusion
 		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                          Statement.issue_uid == issue)).first()
 
 		# first, save the premise as statement
-		new_statement, is_duplicate = QueryHelper().set_statement(transaction, text, user, False, issue)
+		new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
 		if new_statement == -1:
 			return -1, False
 		# duplicates do not count, because they will be fetched in set_statement_as_new_premise
