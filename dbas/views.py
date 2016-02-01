@@ -75,11 +75,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_page', 'def', 'main page')
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
-
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
 
@@ -456,11 +452,7 @@ class Dbas(object):
 
 		token = self.request.session.get_csrf_token()
 		logger('main_settings', 'new token', str(token))
-
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		logger('main_settings', 'language', ui_locales)
 
 		old_pw = ''
@@ -516,12 +508,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_admin', 'def', 'main')
-
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
-
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
@@ -541,10 +528,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_news', 'def', 'main')
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		is_author = UserHandler().is_user_author(self.request.authenticated_userid)
 
@@ -555,8 +539,7 @@ class Dbas(object):
 		dd = str(now.day) if now.day > 9 else '0' + str(now.day)
 		date = dd + "." + mm + "." + yyyy
 
-		extras_dict = {'logged_in': self.request.authenticated_userid}
-		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -577,10 +560,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_imprint', 'def', 'main')
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 
@@ -610,10 +590,7 @@ class Dbas(object):
 			logger('notfound', 'def', '    ' + param + ' -> ' + self.request.params[param])
 
 		self.request.response.status = 404
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 
@@ -641,11 +618,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('get_user_history', 'def', 'main')
-
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, ui_locales)
 		logger('get_user_history', 'def', str(return_dict))
@@ -770,7 +743,9 @@ class Dbas(object):
 			gender          = self.escape_string(params['gender'])
 			password        = self.escape_string(params['password'])
 			passwordconfirm = self.escape_string(params['passwordconfirm'])
-			ui_locales      = self.request.params['lang']
+			ui_locales      = self.request.params['lang'] if 'lang' in self.request.params else None
+			if not ui_locales:
+				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 			logger('user_registration', 'def', 'params firstname: ' + str(firstname)
 			       + ', lastname: ' + str(lastname)
 			       + ', nickname: ' + str(nickname)
@@ -872,7 +847,9 @@ class Dbas(object):
 
 		try:
 			email = self.escape_string(self.request.params['email'])
-			ui_locales = self.request.params['lang']
+			ui_locales      = self.request.params['lang'] if 'lang' in self.request.params else None
+			if not ui_locales:
+				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 			logger('user_password_request', 'def', 'params email: ' + str(email) + ', ui_locales ' + ui_locales)
 			success = '1'
 			_t = Translator(ui_locales)
@@ -938,9 +915,7 @@ class Dbas(object):
 		try:
 			statement = self.request.params['statement']
 			url = self.request.params['url']
-			issue = self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
+			issue = QueryHelper().get_issue(self.request)
 			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
 			new_statement, is_duplicate = QueryHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
@@ -979,9 +954,7 @@ class Dbas(object):
 			conclusion_id = self.request.params['conclusion_id']
 			url = self.request.params['url']
 			support = True if self.request.params['support'].lower() == 'true' else False
-			issue = self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
+			issue = QueryHelper().get_issue(self.request)
 			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', supportive: ' +
 			       str(support) + ', issue: ' + str(issue))
 
@@ -1026,9 +999,7 @@ class Dbas(object):
 			supportive  = self.request.params['supportive']
 			url         = self.request.params['url']
 
-			issue = self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
-			issue = issue_fallback if issue == 'undefined' else issue
+			issue = QueryHelper().get_issue(self.request)
 			logger('ajax_set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', text: ' + text + ', relation: ' +
 			       str(relation) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
 
@@ -1174,13 +1145,8 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 
 		logger('get_argument_overview', 'def', 'main')
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
-		issue = self.request.params['issue'] if 'issue' in self.request.params \
-			else self.request.session['issue'] if 'issue' in self.request.session \
-			else issue_fallback
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		issue = QueryHelper().get_issue(self.request)
 		return_dict = QueryHelper().get_attack_overview(self.request.authenticated_userid, issue, ui_locales)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -1209,13 +1175,8 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_database_dump', 'def', 'main')
-		issue = self.request.params['issue'] if 'issue' in self.request.params \
-			else self.request.session['issue'] if 'issue' in self.request.session \
-			else issue_fallback
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+		issue = QueryHelper().get_issue(self.request)
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		return_dict = QueryHelper().get_dump(issue, ui_locales)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -1231,11 +1192,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_all_users', 'def', 'main')
-
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
 		logger('get_all_users', 'def', 'user count ' + str(len(return_dict)))
@@ -1262,7 +1219,9 @@ class Dbas(object):
 
 		return_dict = dict()
 		try:
-			ui_locales = self.request.params['lang']
+			ui_locales      = self.request.params['lang'] if 'lang' in self.request.params else None
+			if not ui_locales:
+				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 			logger('switch_language', 'def', 'params uid: ' + str(ui_locales))
 			self.request.response.set_cookie('_LOCALE_', str(ui_locales))
 			return_dict['status'] = '1'
@@ -1308,9 +1267,7 @@ class Dbas(object):
 		try:
 			value = self.request.params['value']
 			mode = str(self.request.params['type'])
-			issue = self.request.params['issue'] if 'issue' in self.request.params \
-				else self.request.session['issue'] if 'issue' in self.request.session \
-				else issue_fallback
+			issue = QueryHelper().get_issue(self.request)
 
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			return_dict = dict()

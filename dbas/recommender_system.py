@@ -1,9 +1,10 @@
 import random
+import collections
 
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, User, Statement
+from .database.discussion_model import Argument, Premise, User, Statement, Vote
 from .logger import logger
 from .query_helper import QueryHelper
 
@@ -17,7 +18,7 @@ class RecommenderHelper(object):
 
 	def get_attack_for_argument(self, argument_uid, issue):
 		# getting undermines or undercuts or rebuts
-		attacks, key = self.__get_attack_for_argument_by_random(argument_uid, issue)
+		attacks, key = self.__get_attack_for_argument(argument_uid, issue)
 
 		if not attacks or len(attacks) == 0:
 			logger('RecommenderHelper', 'get_attack_for_argument_old', 'there is no attack!')
@@ -42,6 +43,17 @@ class RecommenderHelper(object):
 			arguments = []
 			for argument in db_arguments:
 				arguments.append(argument.uid)
+
+			#  # sort argument by index
+			#  tmp_arguments = dict()
+			#  for argument in db_arguments:
+			#  	index_participation, index_up_vs_down = self.__evaluate_argument(argument.uid)
+			#  	tmp_arguments[str(argument.uid)] = str(index_participation)
+			#  # create tuples with [(uid, vote_index),...]
+			#  od_arguments = sorted(tmp_arguments.items(), key=lambda x: x[1])
+			#  for tuple in od_arguments:
+			#  	logger('---',str(tuple[1]), QueryHelper().get_text_for_argument_uid(tuple[0], 'en'))
+
 			# get one random premise todo fix random
 			rnd = random.randint(0, len(arguments) - 1)
 			logger('RecommenderHelper', 'get_argument_by_conclusion', 'rnd ' + str(rnd))
@@ -50,7 +62,7 @@ class RecommenderHelper(object):
 		else:
 			return 0
 
-	def __get_attack_for_argument_by_random(self, argument_uid, issue):
+	def __get_attack_for_argument(self, argument_uid, issue):
 		"""
 		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
 		Additionally returns id's of premises groups with [key + str(index) + 'id']
@@ -94,11 +106,10 @@ class RecommenderHelper(object):
 		key = ''
 		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
 		attack_found = False
-		_qh = QueryHelper
+		_qh = QueryHelper()
 
-		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack_list : ' + str(attack_list))
-		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'complete_list_of_attacks : ' + str(complete_list_of_attacks))
-		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'left_attacks : ' + str(left_attacks))
+		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack_list : ' + str(attack_list)
+		       +', complete_list_of_attacks : ' + str(complete_list_of_attacks) +', left_attacks : ' + str(left_attacks))
 
 		# randomize at least 1, maximal 3 times for getting an attack
 		while len(attack_list) > 0:
@@ -154,11 +165,16 @@ class RecommenderHelper(object):
 
 		db_votes = DBDiscussionSession.query(Vote).filter_by(argument_uid=argument_uid).all()
 		db_valid_votes   = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==argument_uid,
-		                                                               Vote.isValid==true)).all()
+		                                                               Vote.is_valid==True)).all()
 		db_valid_upvotes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==argument_uid,
-		                                                               Vote.isValid==True,
-		                                                               Vote.isUpVote==True)).all()
-		index_up_vs_down = len(db_valid_upvotes) / len(db_valid_votes)
-		index_participation = len(db_votes) / len(DBDiscussionSession.query(User).all())
+		                                                               Vote.is_valid==True,
+		                                                               Vote.is_up_vote==True)).all()
+		votes = len(db_votes)
+		valid_votes = len(db_valid_votes)
+		valid_upvotes = len(db_valid_upvotes)
+		all = len(DBDiscussionSession.query(User).all())
+
+		index_up_vs_down = valid_upvotes / (1 if valid_votes == 0 else valid_votes)
+		index_participation = votes / (1 if all == 0 else all)
 
 		return index_participation, index_up_vs_down

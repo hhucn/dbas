@@ -11,7 +11,7 @@
 		<div class="container first-container colored_container" tal:condition="extras.logged_in">
 			<div class="row">
 				<div class="col-md-12">
-					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0px;">
+					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0;">
                         <li tal:repeat="breadcrumb extras.breadcrumbs">
                             <a href="" tal:attributes="href breadcrumb.url; title breadcrumb.text" tal:condition="not:repeat.breadcrumb.end"><span tal:replace="breadcrumb.shorttext">weee :)</span></a>
                             <span tal:replace="breadcrumb.text" tal:condition="repeat.breadcrumb.end">weee :)</span>
@@ -35,12 +35,6 @@
 					<span id="issue-count" class="text-info">${issues.arg_count}</span>
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
-
-					<button id ="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
-						<span i18n:translate="restart_discussion">Restart Discussion</span>
-					</button>
-                    <br>
-					<br>
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<span tal:replace="issues.title"></span>&#160;&#160;&#160;<span class="caret"></span>
@@ -52,6 +46,10 @@
 							</li>
 						</ul>
 					</div>
+					<br>
+					<button id ="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
+						<span i18n:translate="restart_discussion">Restart Discussion</span>
+					</button>
 				</div>
 			</div>
 		</div>
@@ -59,12 +57,12 @@
 		<div class="container colored_container" id="discussion-container">
 			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<div id="argument-blogging-sidebar">
 						<a class="share-icon share-def" id="share-url" title="Share your url"></a>
 					</div>
 				</div>
-				<div class="col-md-8">
+				<div class="col-md-9">
 
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -86,10 +84,10 @@
 
 						<ul>
 							<li tal:repeat="item items">
-								<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-                                    <label tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label>
-                                    <span tal:repeat="premise item.premises" tal:omit-tag="" tal:condition="item.leading_because"><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
-                                    <label tal:attributes="for item.id" tal:condition="not:item.leading_because" style="width: 95%"><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span></label>
+								<input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
+                                <label for="tmp" tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label>
+                                <span tal:repeat="premise item.premises" tal:omit-tag="" tal:condition="item.leading_because"><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
+                                <label tal:attributes="for item.id" tal:condition="not:item.leading_because" style="width: 95%"><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span></label>
 							</li>
 						</ul>
 
@@ -282,21 +280,19 @@
 			</button>
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
-				<form id="insert-statement-form" action="/not_implemented" method="post" class="text-center">
-					<h4>
-						<span i18n:translate="what_is_your_idea">
-							What is your idea? What should we do?
-						</span>
-					</h4>
-					<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span i18n:translate="error:">Error:</span>
-						<span id="add-statement-error-msg"></span>
-					</div>
-					<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
-					<div class="list-group" id="proposal-statement-list-group"></div>
-					<input id="send-new-statement" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
-				</form>
+				<h4>
+					<span i18n:translate="what_is_your_idea">
+						What is your idea? What should we do?
+					</span>
+				</h4>
+				<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span i18n:translate="error:">Error:</span>
+					<span id="add-statement-error-msg"></span>
+				</div>
+				<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+				<div class="list-group" id="proposal-statement-list-group"></div>
+				<input id="send-new-statement" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 			</div>
 			<div class="col-md-1"></div>
 		</div>
@@ -306,62 +302,54 @@
 				<span aria-hidden="true">&times;</span>
 			</button>
 			<div class="col-md-1"></div>
-			<div class="col-md-10">
-				<form id="insert-premise-form" action="/not_implemented" method="post" class="text-center">
-					<h4>
-						<span i18n:translate="let_me_enter_my_reason">
-							Let me enter my reason!
-						</span>
-					</h4>
-					<div id="add-premisen-error-container" class="alert alert-danger" role="alert" style="display:none">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span i18n:translate="error:">Error:</span>
-						<span id="add-premise-error-msg"></span>
-					</div>
-					<h5>
-						<span tal:condition="extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-success" i18n:translate="agree">agree</span> <span i18n:translate="with">with</span>: </span>
-						<span tal:condition="not:extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-danger" i18n:translate="disagree">disagree</span> <span i18n:translate="with">with</span>: </span>
-						<span id="add-premise-container-main-input-intro" tal:replace=discussion.add_premise_text>
-						</span>
-					</h5>
-					<span style="float:left; line-height:60px; text-align:center;">
-						<h5><span i18n:translate="Because">Because</span>...</h5>
+			<div class="col-md-10 text-center">
+				<h4>
+					<span i18n:translate="let_me_enter_my_reason">
+						Let me enter my reason!
 					</span>
-					<!--
-					<textarea id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" ></textarea>
-					-->
-					<input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" >
-					<div class="list-group" id="proposal-premise-list-group"></div>
-					<input id="send-new-premise" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
-				</form>
+				</h4>
+				<div id="add-premisen-error-container" class="alert alert-danger" role="alert" style="display:none">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span i18n:translate="error:">Error:</span>
+					<span id="add-premise-error-msg"></span>
+				</div>
+				<h5>
+					<span tal:condition="extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-success" i18n:translate="agree">agree</span> <span i18n:translate="with">with</span>: </span>
+					<span tal:condition="not:extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-danger" i18n:translate="disagree">disagree</span> <span i18n:translate="with">with</span>: </span>
+					<span id="add-premise-container-main-input-intro" tal:replace=discussion.add_premise_text>
+					</span>
+				</h5>
+				<span style="float:left; line-height:60px; text-align:center;">
+					<h5><span i18n:translate="Because">Because</span>...</h5>
+				</span>
+				<!--
+				<textarea id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" ></textarea>
+				-->
+				<input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" >
+				<div class="list-group" id="proposal-premise-list-group"></div>
+				<input id="send-new-premise" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 			</div>
 			<div class="col-md-1"></div>
 		</div>
 
 		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style" style="display:none">
 			<div class="row">
-				<h4><p i18n:translate="change_style">Change display style</p></h4>
+				<h4 i18n:translate="change_style">Change display style</h4>
 				<div class="col-md-4">
 					<input type="radio" id="sc-style-1" checked value="Dialog View">
-					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View">
-						<p i18n:translate="dialog_view">Dialog View</p>
-					</label>
+					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View" i18n:translate="dialog_view">Dialog View	</label>
 					<br>
 					<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
 				</div>
 				<div class="col-md-4">
 					<input type="radio" id="sc-style-2" value="Island View">
-					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View">
-						<p i18n:translate="island_view">Island View</p>
-					</label>
+					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View"  i18n:translate="island_view">Island View</label>
 					<br>
 					<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
 				</div>
 				<div class="col-md-4">
 					<input type="radio" id="sc-style-3" value="Complete View">
-					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View">
-						<p i18n:translate="complete_view">Complete View</p>
-					</label>
+					<label id="label-sc-style-3" for="sc-style-3" data-value="Complete View" i18n:translate="complete_view">Complete View</label>
 					<br>
 					<img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
 				</div>

@@ -22,6 +22,7 @@ class VotingHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		# db_vote, already_voted = self.__check_and_set_vote_uid(db_argument, user)
 		self.__check_and_set_vote_uid(db_argument, user)
+		# TODO: WHATS WITH THE TRAIL?
 
 		# some logical assumptions, where the conclusion is an argument
 		if db_argument.conclusion_uid == 0:
@@ -65,6 +66,7 @@ class VotingHelper(object):
 		# remove votes
 		DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid,
 		                                            Vote.author_uid == db_user.uid)).first().set_valid(False)
+		# TODO: WHATS WITH THE TRAIL?
 
 		# return count of votes
 		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid, True if Vote.is_valid else False)).all()
@@ -85,6 +87,8 @@ class VotingHelper(object):
 			return None, None
 		db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid,
 		                                                      Vote.author_uid == db_user.uid)).first()
+		# TODO: INVALID AND CREATE NEW ENTRY?
+
 		already_voted = False
 		# do we have a vote?
 		if not db_vote:
