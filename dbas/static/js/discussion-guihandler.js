@@ -176,11 +176,11 @@ function GuiHandler() {
 			style: 'border-collapse: separate; border-spacing: 5px 5px;'
 		});
 		td_text = $('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
-		td_buttons = $('<td>').html('<strong>' + _t(options) + '</strong>').css('text-align', 'center');
+		td_buttons = $('<td>').html('<strong>' + _t(options) + '</strong>').css('text-align', 'right');
 		table.append($('<tr>').append(td_text).append(td_buttons));
 
 		// append a row for each statement
-		$('#' + discussionSpaceId + ' li:not(:last-child) label').each(function () {
+		$('#' + discussionSpaceId + ' li:not(:last-child) label:nth-child(odd)').each(function () {
 			tr = helper.createRowInEditDialog($(this).text(), $(this).attr('for').substr('item_'.length), $(this).attr('id'));
 			table.append(tr);
 

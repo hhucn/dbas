@@ -19,6 +19,10 @@ cors_policy = dict(enabled=True,
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
+dump     = Service(name='api_dump',
+                   path='/dump',
+                   description="Database Dump",
+                   cors_policy=cors_policy)
 news     = Service(name='api_news',
                    path='/get_news',
                    description="News app",
@@ -89,6 +93,16 @@ def discussion_init(request):
 	:return: Dbas(request).discussion_init(True)
 	"""
 	return Dbas(request).discussion_init(True)
+
+
+@dump.get()
+def discussion_init(request):
+	"""
+	Return database dump
+	:param request: request
+	:return: Dbas(request).get_database_dump(True)
+	"""
+	return Dbas(request).get_database_dump()
 
 
 # =============================================================================

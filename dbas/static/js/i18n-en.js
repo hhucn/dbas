@@ -51,6 +51,7 @@ var dbas_en = {
 	'hideGenerator': 'Hide Generator',
 	'internalError': '<strong>Internal Error:</strong> Maybe the server is offline or your session run out.',
 	'inputEmpty': 'Input is empty!',
+	'initialPositionInterest': 'What is the initial position you are interested in?',
 	'interestingOnDBAS': 'Interesting discussion on DBAS',
 	'keepSetting': 'Keep this',
 	'hideAllUsers': 'Hide all users',

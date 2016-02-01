@@ -146,7 +146,7 @@ function Helper() {
 		// table items
 		tr = $('<tr>');
 		td_text = $('<td>').text(text).attr({id: 'td_' + id_id, for: for_id});
-		td_buttons = $('<td>').css('text-align', 'center');
+		td_buttons = $('<td>').css('text-align', 'right');
 
 		// buttons
 		edit_button = $('<input>').css('margin', '2px').attr({

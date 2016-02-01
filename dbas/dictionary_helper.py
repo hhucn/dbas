@@ -250,8 +250,8 @@ class DictionaryHelper(object):
 		                                                'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f'),
 		                                                False))
 		statements_array.append(_qh.get_statement_dict('dontknow',
-		                                                _tn.get(_tn.iDoNotKnowInColor) + ': ' + text,
-		                                                [{'title': _tn.get(_tn.iDoNotKnowInColor) + ': ' + text, 'id': 'dontknow'}],
+		                                                _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text,
+		                                                [{'title': _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text, 'id': 'dontknow'}],
 		                                                'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd'),
 		                                                False))
 

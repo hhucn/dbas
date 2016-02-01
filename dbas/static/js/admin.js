@@ -155,7 +155,7 @@ function AdminInterface(){
 		spanElement[2].text('#Votes');
 		spanElement[3].text('#Upvotes');
 		spanElement[4].text('#Valid Upotes');
-		spanElement[4].text('');
+		spanElement[5].text('');
 
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i].append(spanElement[i]);

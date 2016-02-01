@@ -18,14 +18,13 @@ class UrlManager(object):
 		:param for_api: Boolean
 		:return: None
 		"""
-		logger('UrlManager','__init__', 'application_url: ' + application_url)
-		logger('UrlManager','__init__', 'slug: ' + slug)
-		logger('UrlManager','__init__', 'for_api: ' + str(for_api))
-		self.url = application_url + '/'
+		logger('UrlManager', '__init__', 'application_url: ' + application_url + ', slug: ' + slug + ', for_api: ' + str(for_api))
+		self.url = application_url + ('' if application_url.endswith('/') else '/')
 		self.discussion_url = self.url + 'discuss/'
 		self.api_url = 'api/'
 		self.slug = slug
 		self.for_api = for_api
+		logger('UrlManager', '__init__', 'discussion_url: ' + self.discussion_url)
 
 	def get_url(self, path):
 		"""

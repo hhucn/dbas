@@ -496,6 +496,7 @@
 					<li i18n:translate="how-to-write-text-short">Write short!</li>
 					<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per field!</li>
 				</ul>
+                <!--
 				<br>
 				<b class="text-danger" i18n:translate="donts">Don'ts:</b>
 				<ul id="how-to-write-text-dont-list">
@@ -503,10 +504,10 @@
 					<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per field!</li>
 					<li i18n:translate="how-to-write-text-negations">Do never ever use negations! Every negation will be set extra! This is highly important!</li>
 				</ul>
+				-->
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default btn-primary" id="popup-write-text-okay-button" i18n:translate="Okay">Okay</button>
-				<button type="button" class="btn btn-default" id="popup-write-text-close-button" data-dismiss="modal" i18n:translate="abort">Abort</button>
 			</div>
 		</div>
 	</div>

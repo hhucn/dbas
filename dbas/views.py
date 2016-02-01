@@ -273,7 +273,7 @@ class Dbas(object):
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		ui_locales            = _qh.get_language(self.request, get_current_registry)
+		ui_locales      = _qh.get_language(self.request, get_current_registry)
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
@@ -351,7 +351,8 @@ class Dbas(object):
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_justify=True)
+				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_justify=True,
+				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
 		elif 'd' in mode and relation == '':
 			# dont know
@@ -423,7 +424,7 @@ class Dbas(object):
 		_dh = DictionaryHelper()
 		
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		ui_locales            = _qh.get_language(self.request, get_current_registry)
+		ui_locales      = _qh.get_language(self.request, get_current_registry)
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
@@ -932,7 +933,7 @@ class Dbas(object):
 
 	# ajax - send new start statement
 	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
-	def set_new_start_statement(self, for_api):
+	def set_new_start_statement(self, for_api=False):
 		"""
 		Inserts a new statement into the database, which should be available at the beginning
 		:param for_api: boolean
@@ -970,7 +971,7 @@ class Dbas(object):
 
 	# ajax - send new start premise
 	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
-	def set_new_start_premise(self, for_api):
+	def set_new_start_premise(self, for_api=False):
 		"""
 		Sets new premise for the start
 		:param for_api: boolean
@@ -1015,7 +1016,7 @@ class Dbas(object):
 
 	# ajax - send new premises
 	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json', check_csrf=True)
-	def set_new_premises_for_argument(self, for_api):
+	def set_new_premises_for_argument(self, for_api=False):
 		"""
 		Sets a new premisse for an argument
 		:param for_api: boolean
@@ -1222,11 +1223,15 @@ class Dbas(object):
 		issue = self.request.params['issue'] if 'issue' in self.request.params \
 			else self.request.session['issue'] if 'issue' in self.request.session \
 			else issue_fallback
-		return_dict = QueryHelper().get_dump(issue)
+		try:
+			ui_locales = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+
+		return_dict = QueryHelper().get_dump(issue, ui_locales)
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 		return return_json
-
 
 	# ajax - for getting all users
 	@view_config(route_name='ajax_all_users', renderer='json')

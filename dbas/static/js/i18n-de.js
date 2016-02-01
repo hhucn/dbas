@@ -51,6 +51,7 @@ var dbas_de = {
 	'hideGenerator': 'Verstecke Generator',
 	'internalError': '<strong>Interner Fehler:</strong> Wahrscheinlich ist Ihre Sitzung abgelaufen. Bitte laden Sie die Seite erneut!.',
 	'inputEmpty': 'Ihre Eingabe ist leer!',
+	'initialPositionInterest': 'An welcher Aussage sind Sie interessiert?',
 	'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
 	'keepSetting': 'Entscheidung merken',
 	'hideAllUsers': 'Verstecke alle Benutzer',

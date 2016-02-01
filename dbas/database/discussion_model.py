@@ -125,16 +125,16 @@ class Statement(DiscussionBase):
 	textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, textversion, isstartpoint, issue=0):
+	def __init__(self, textversion, is_startpoint, issue=0):
 		"""
 		Initializes a row in current statement-table
 		:param text:
-		:param isstartpoint:
+		:param is_startpoint:
 		:param issue:
 		:return:
 		"""
 		self.textversion_uid = textversion
-		self.is_startpoint = isstartpoint
+		self.is_startpoint = is_startpoint
 		self.issue_uid = issue
 		self.weight_uid = 0
 

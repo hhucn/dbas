@@ -87,7 +87,9 @@
 						<ul>
 							<li tal:repeat="item items">
 								<input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-								<label tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
+                                    <label tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label>
+                                    <span tal:repeat="premise item.premises" tal:omit-tag="" tal:condition="item.leading_because"><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
+                                    <label tal:attributes="for item.id" tal:condition="not:item.leading_because" style="width: 95%"><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span></label>
 							</li>
 						</ul>
 
@@ -293,7 +295,7 @@
 					</div>
 					<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 					<div class="list-group" id="proposal-statement-list-group"></div>
-					<input id="send-new-statement" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+					<input id="send-new-statement" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 				</form>
 			</div>
 			<div class="col-md-1"></div>
@@ -330,7 +332,7 @@
 					-->
 					<input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" >
 					<div class="list-group" id="proposal-premise-list-group"></div>
-					<input id="send-new-premise" type="button" name="" value="Accept it..." i18n:translate="accept_it" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+					<input id="send-new-premise" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 				</form>
 			</div>
 			<div class="col-md-1"></div>

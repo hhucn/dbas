@@ -164,7 +164,7 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
 			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
 				// here we have our start statement
 				// todo: currently not needed
-				// ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {
 				// some trick: here we have a premise for our start statement
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premise, '');
@@ -336,6 +336,7 @@ $(function () {
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
 	tmp = tmp.substr(1, tmp.length-2);
 	$('#' + discussionEndRestart).attr('href', tmp);
+
 });
 
 // new

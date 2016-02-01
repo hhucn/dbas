@@ -226,6 +226,8 @@ class Translator(object):
 		self.iDisagreeWithInColor = 'iDisagreeWithInColor'
 		self.iDoNotKnow = 'iDoNotKnow'
 		self.iDoNotKnowInColor = 'iDoNotKnowInColor'
+		self.iHaveNoOpinionYet = 'iHaveNoOpinionYet'
+		self.iHaveNoOpinionYetInColor = 'iHaveNoOpinionYetInColor'
 		self.iDisagreeWith = 'iDisagreeWith'
 		self.iHaveMuchStrongerArgumentRejecting = 'iHaveMuchStrongerArgumentRejecting'
 		self.iHaveMuchEvenArgumentRejecting = 'iHaveMuchEvenArgumentRejecting'
@@ -566,6 +568,8 @@ class Translator(object):
 		en_lang[self.iDisagreeWith] = 'I disagree with'
 		en_lang[self.iDoNotKnow] = 'I do not know'
 		en_lang[self.iDoNotKnowInColor] = 'I <span class=\'text-info\'>do not know</span>'
+		en_lang[self.iHaveNoOpinionYet] = 'I have no opinion yet about'
+		en_lang[self.iHaveNoOpinionYetInColor] = 'I have <span class=\'text-info\'>no opinion yet</span>, show me an argument for'
 		en_lang[self.informationForExperts] = 'Infos for experts'
 		en_lang[self.internalFailureWhileDeletingTrack] = 'Internal failure, please try again or did you have deleted your track recently?'
 		en_lang[self.internalFailureWhileDeletingHistory] = 'Internal failure, please try again or did you have deleted your history recently?'
@@ -648,7 +652,7 @@ class Translator(object):
 		en_lang[self.registered] = 'Registered'
 		en_lang[self.restartDiscussion] = 'Restart Discussion'
 		en_lang[self.restartDiscussionTitle] = 'Restart Discussion'
-		en_lang[self.restartOnError] = 'Please try to reload this page or restart the discussion when the error stays'
+		en_lang[self.restartOnError] = 'Please try to reload this page or restart the discussion, if reloading does not fix the problem.'
 		en_lang[self.report] = 'Report'
 		en_lang[self.reportTitle] = 'Opens the contact for reporting!'
 		en_lang[self.right] = 'Right'
@@ -938,6 +942,8 @@ class Translator(object):
 		de_lang[self.iDisagreeWithInColor] = 'Ich <span class=\'text-danger\'>widerspreche</span> der Aussage',
 		de_lang[self.iDoNotKnow] = 'Ich weiß es nicht',
 		de_lang[self.iDoNotKnowInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>',
+		de_lang[self.iHaveNoOpinionYet] = 'Ich weiß es nicht',
+		de_lang[self.iHaveNoOpinionYetInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>',
 		de_lang[self.iDisagreeWith] = 'Ich widerspreche die Aussage',
 		de_lang[self.iHaveMuchStrongerArgumentRejecting] = 'Ich habe ein viel stärkeres Argument zum Ablehnen von',
 		de_lang[self.iHaveMuchEvenArgumentRejecting] = 'Ich habe ein stärkeres Argument zum Ablehnen von',
@@ -1170,8 +1176,8 @@ class TextGenerator(object):
 				long_conclusion = premise + ', ' + _t.get(_t.doesNotJustify).lower() + ' ' + conclusion
 
 		# pretty print
-		w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:] + ', '
-		r = (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:] + ', '
+		w = '' #  (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:] + ', '
+		r = '' #  (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:] + ', '
 
 		# different cases
 		if attack_type == 'undermine':
@@ -1272,7 +1278,7 @@ class TextGenerator(object):
 
 		ret_dict['undermine_text'] = w + ', ' + _t.get(_t.itIsFalse) + ' <strong>' + premise + '</strong>.'
 		ret_dict['support_text'] = r + ', ' + _t.get(_t.itIsTrue) + ' <strong>' + premise + '</strong>.'
-		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveArgument) + ' <strong>' + conclusion + '</strong>.'
+		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounter) + ' <strong>' + conclusion + '</strong>.'
 		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' <strong>' + conclusion + '</strong>.'
 		ret_dict['rebut_text'] = r + ', <strong>' + premise + '</strong> ' \
 		                         + (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument)) \

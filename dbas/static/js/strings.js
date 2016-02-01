@@ -105,6 +105,7 @@ var hideGenerator 									= 'hideGenerator';
 var inputEmpty 									    = 'inputEmpty';
 var internalError 									= 'internalError';
 var interestingOnDBAS 								= 'interestingOnDBAS';
+var initialPositionInterest                         = 'initialPositionInterest';
 var keepSetting										= 'keepSetting';
 var hideAllUsers 									= 'hideAllUsers';
 var hideAllArguments								= 'hideAllArguments';

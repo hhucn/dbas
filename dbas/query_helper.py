@@ -1,7 +1,7 @@
 import datetime
 import locale
 import collections
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from slugify import slugify
 
 from .database import DBDiscussionSession, DBNewsSession
@@ -509,12 +509,18 @@ class QueryHelper(object):
 
 		return {'slug': slug, 'info': info, 'title': title, 'uid': uid, 'arg_count': arg_count, 'date': date, 'all': all_array}
 
-	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False, at_justify_argumentation=False, at_justify=False):
+	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False, at_justify_argumentation=False, at_justify=False, current_premise=''):
 		"""
 
 		:param discussion_dict:
+		:param extras_dict:
 		:param logged_in:
 		:param lang:
+		:param at_start:
+		:param at_dont_know:
+		:param at_justify_argumentation:
+		:param at_justify:
+		:param current_premise:
 		:return:
 		"""
 		_t = Translator(lang)
@@ -536,7 +542,12 @@ class QueryHelper(object):
 			discussion_dict['heading'] += _t.get(_t.otherParticipantsDontHaveOpinion) + '<br><br>' + (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText))
 
 		elif at_justify:
-			discussion_dict['heading'] += '?????'
+			discussion_dict['heading'] = _t.get(_t.firstPremiseText1) + ' <strong>' + current_premise + '</strong>.<br><br>' + _t.get(_t.whyDoYouThinkThat) + '?'
+			extras_dict['add_premise_container_style'] = '' # this will remove the 'display: none;'-style
+			extras_dict['show_display_style'] = False
+			extras_dict['show_bar_icon'] = False
+			extras_dict['is_editable'] = False
+			extras_dict['is_reportable'] = False
 
 		else:
 			discussion_dict['heading'] += (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText)) if logged_in else _t.get(_t.discussionEndFeelFreeToLogin)
@@ -724,7 +735,7 @@ class QueryHelper(object):
 
 		return ret_dict
 
-	def get_dump(self, issue):
+	def get_dump(self, issue, lang):
 		"""
 
 		:param issue: current issue
@@ -749,8 +760,7 @@ class QueryHelper(object):
 			tmp_dict = dict()
 			tmp_dict['uid']             = statement.uid
 			tmp_dict['textversion_uid'] = statement.textversion_uid
-			tmp_dict['is_startpoint']    = statement.isStartpoint
-			tmp_dict['weight_uid']      = statement.weight_uid
+			tmp_dict['is_startpoint']   = statement.is_startpoint
 			statement_dict[str(index)]  = tmp_dict
 		ret_dict['statement'] = statement_dict
 
@@ -763,7 +773,7 @@ class QueryHelper(object):
 			tmp_dict['statement_uid']    = textversion.statement_uid
 			tmp_dict['content']          = textversion.content
 			tmp_dict['author_uid']       = textversion.author_uid
-			tmp_dict['timestamp']        = textversion.timestamp
+			tmp_dict['timestamp']        = self.sql_timestamp_pretty_print(str(textversion.timestamp), lang)
 			textversion_dict[str(index)] = tmp_dict
 		ret_dict['textversion'] = textversion_dict
 
@@ -773,7 +783,7 @@ class QueryHelper(object):
 		for index, premisegroup in enumerate(db_premisegroups):
 			tmp_dict = dict()
 			tmp_dict['uid']                 = premisegroup.uid
-			tmp_dict['author_uid']          = premise.author_uid
+			tmp_dict['author_uid']          = premisegroup.author_uid
 			premisegroup_dict[str(index)]   = tmp_dict
 		ret_dict['premisegroup'] = premisegroup_dict
 
@@ -784,9 +794,9 @@ class QueryHelper(object):
 			tmp_dict = dict()
 			tmp_dict['premisesgroup_uid'] = premise.premisesgroup_uid
 			tmp_dict['statement_uid']     = premise.statement_uid
-			tmp_dict['is_negated']         = premise.isNegated
+			tmp_dict['is_negated']        = premise.is_negated
 			tmp_dict['author_uid']        = premise.author_uid
-			tmp_dict['timestamp']         = premise.timestamp
+			tmp_dict['timestamp']         = self.sql_timestamp_pretty_print(str(premise.timestamp), lang)
 			premise_dict[str(index)]      = tmp_dict
 		ret_dict['premise'] = premise_dict
 
@@ -795,14 +805,13 @@ class QueryHelper(object):
 		argument_dict = dict()
 		for index, argument in enumerate(db_arguments):
 			tmp_dict = dict()
-			tmp_dict['uid']                 =    argument.uid
+			tmp_dict['uid']                 = argument.uid
 			tmp_dict['premisesgroup_uid']   = argument.premisesgroup_uid
 			tmp_dict['conclusion_uid']      = argument.conclusion_uid
 			tmp_dict['argument_uid']        = argument.argument_uid
-			tmp_dict['is_supportive']        = argument.is_supportive
+			tmp_dict['is_supportive']       = argument.is_supportive
 			tmp_dict['author_uid']          = argument.author_uid
-			tmp_dict['timestamp']           = argument.timestamp
-			tmp_dict['weight_uid']          = argument.weight_uid
+			tmp_dict['timestamp']           = self.sql_timestamp_pretty_print(str(argument.timestamp), lang)
 			argument_dict[str(index)]       = tmp_dict
 		ret_dict['argument'] = argument_dict
 
@@ -813,8 +822,8 @@ class QueryHelper(object):
 			tmp_dict = dict()
 			tmp_dict['argument_uid'] = vote.argument_uid
 			tmp_dict['author_uid']   = vote.author_uid
-			tmp_dict['is_up_vote']     = vote.isUpVote
-			tmp_dict['is_valid']      = vote.isValid
+			tmp_dict['is_up_vote']   = vote.is_up_vote
+			tmp_dict['is_valid']     = vote.is_valid
 			vote_dict[str(index)]    = tmp_dict
 		ret_dict['vote'] = vote_dict
 
@@ -1097,7 +1106,7 @@ class QueryHelper(object):
 		DBDiscussionSession.flush()
 
 		# add the statement
-		statement = Statement(textversion=textversion.uid, isstartpoint=is_start, issue=issue)
+		statement = Statement(textversion=textversion.uid, is_startpoint=is_start, issue=issue)
 		DBDiscussionSession.add(statement)
 		DBDiscussionSession.flush()
 
