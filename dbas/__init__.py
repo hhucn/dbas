@@ -103,7 +103,6 @@ def main(global_config, **settings):
 	config.add_route('discussion_justify',    '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
 	config.add_route('discussion_attitude',   '/discuss/{slug}/attitude/*statement_id')
 	config.add_route('discussion_init',       '/discuss*slug')
-	config.add_route('discussion_init_api',   '/api')
 
 	# read the input and start
 	config.scan()

@@ -428,8 +428,6 @@ class QueryHelper(object):
 			                                 'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 		return ret_dict
 
-	# new part
-
 	def get_id_of_slug(self, slug, request):
 		"""
 		Returns the uid
@@ -512,16 +510,16 @@ class QueryHelper(object):
 	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False, at_justify_argumentation=False, at_justify=False, current_premise=''):
 		"""
 
-		:param discussion_dict:
-		:param extras_dict:
-		:param logged_in:
-		:param lang:
-		:param at_start:
-		:param at_dont_know:
-		:param at_justify_argumentation:
-		:param at_justify:
-		:param current_premise:
-		:return:
+		:param discussion_dict: dict()
+		:param extras_dict: dict()
+		:param logged_in: Boolean
+		:param lang: String
+		:param at_start: Boolean
+		:param at_dont_know: Boolean
+		:param at_justify_argumentation: Boolean
+		:param at_justify: Boolean
+		:param current_premise: id
+		:return: None
 		"""
 		_t = Translator(lang)
 		discussion_dict['heading'] += '<br><br>'
@@ -662,8 +660,6 @@ class QueryHelper(object):
 		time = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
 
 		return time.strftime(format)
-
-	# old DatabaseHelper
 
 	def correct_statement(self, transaction, user, uid, corrected_text):
 		"""

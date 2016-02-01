@@ -53,6 +53,12 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		$('#li_' + addReasonButtonId).attr('checked', true).prop('checked', true);
 	});
 
+	// hiding the island view, when the X button is clicked
+	$('#' + closeGraphViewContainerId).click(function () {
+		$('#' + graphViewContainerId).hide();
+		guiHandler.resetChangeDisplayStyleBox();
+	});
+
 	// open edit statement
 	$('#' + editStatementButtonId).click(function(){
 		guiHandler.showEditStatementsPopup();

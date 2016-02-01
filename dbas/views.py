@@ -193,17 +193,6 @@ class Dbas(object):
 			'csrf_token': token
 		}
 
-	# content page for api
-	@view_config(route_name='discussion_init_api', renderer='json', permission='everybody')
-	def discussion_init_api(self):
-		"""
-
-		:return:
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_init_api', 'def', 'main')
-		return self.discussion_init(True)
-
 	# content page
 	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
 	def discussion_init(self, for_api=False):
@@ -240,7 +229,7 @@ class Dbas(object):
 			_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_start=True)
 
 		return_dict = dict()
-		return_dict['issue'] = issue_dict
+		return_dict['issues'] = issue_dict
 		return_dict['discussion'] = discussion_dict
 		return_dict['items'] = item_dict
 		return_dict['extras'] = extras_dict
@@ -292,7 +281,7 @@ class Dbas(object):
 		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
-		return_dict['issue'] = issue_dict
+		return_dict['issues'] = issue_dict
 		return_dict['discussion'] = discussion_dict
 		return_dict['items'] = item_dict
 		return_dict['extras'] = extras_dict
@@ -384,7 +373,7 @@ class Dbas(object):
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'j', statement_or_arg_id, mode, relation]))
 
 		return_dict = dict()
-		return_dict['issue'] = issue_dict
+		return_dict['issues'] = issue_dict
 		return_dict['discussion'] = discussion_dict
 		return_dict['items'] = item_dict
 		return_dict['extras'] = extras_dict
@@ -441,7 +430,7 @@ class Dbas(object):
 		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
-		return_dict['issue'] = issue_dict
+		return_dict['issues'] = issue_dict
 		return_dict['discussion'] = discussion_dict
 		return_dict['items'] = item_dict
 		return_dict['extras'] = extras_dict

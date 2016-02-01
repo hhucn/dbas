@@ -1,7 +1,7 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
- * @copyright Krauthoff 05.01.16
+ * @author Tobias Krauthoff, Abdullah Polat
+ * @email krauthoff@cs.uni-duesseldorf.de, abdullah.polat@hhu.de
+ * @copyright Krauthoff, Polat 2016
  */
 
 function DiscussionGraph(){
@@ -11,7 +11,7 @@ function DiscussionGraph(){
 	this.showGraph = function(){
 		var space = $('#' + graphViewContainerSpaceId),
 			image = 'http://cdno.gettingsmart.com/wp-content/uploads/2013/09/Complex-Mind-Map.png';
-		space.show().empty().append('<img style="width: ' + space.width()+ 'px" src="' + image + '">');
+		space.show().empty().append('<img src="' + image + '">');
 		$('#' + graphViewContainerId).show();
 	};
 }

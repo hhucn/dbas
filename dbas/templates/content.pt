@@ -25,14 +25,14 @@
 			<div class="row">
 				<div class="col-md-7 center text-center">
 					<p i18n:translate="current_discussion">Current discussion is about</p>
-					<h5 id="issue_info">${issue.info}</h5>
+					<h5 id="issue_info">${issues.info}</h5>
 				</div>
 				<div class="col-md-5 center text-center">
 					<span i18n:translate="startet_at">The discussion was started at</span>
-					<span id="issue-date" class="text-info">${issue.date}</span>
+					<span id="issue-date" class="text-info">${issues.date}</span>
 					<br>
 					<span i18n:translate="already_has">and already has</span>
-					<span id="issue-count" class="text-info">${issue.arg_count}</span>
+					<span id="issue-count" class="text-info">${issues.arg_count}</span>
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 
@@ -43,11 +43,11 @@
 					<br>
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-							<span tal:replace="issue.title"></span>&#160;&#160;&#160;<span class="caret"></span>
+							<span tal:replace="issues.title"></span>&#160;&#160;&#160;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
-							<li tal:repeat="issue issue.all" tal:attributes="class issue.enabled">
+							<li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
 								<a href="#" tal:attributes="href issue.url; value issue.title"><span tal:replace="issue.title"></span><span class="badge" style="float: right"><span tal:replace="issue.arg_count"></span></span></a>
 							</li>
 						</ul>
