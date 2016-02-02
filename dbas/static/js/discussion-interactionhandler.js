@@ -117,6 +117,7 @@ function InteractionHandler() {
 	 * Callback for Fuzzy Search
 	 * @param data
 	 * @param callbackid
+	 * @param type
 	 */
 	this.callbackIfDoneFuzzySearch = function (data, callbackid, type){
 		var parsedData = $.parseJSON(data);

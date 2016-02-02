@@ -1,7 +1,7 @@
 import os
 import unittest
 
-# done with the help of: https://gist.github.com/sontek/1420255
+# TODO DEPRECATED
 
 from webtest import TestApp
 from dbas.views import Dbas

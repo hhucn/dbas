@@ -138,10 +138,10 @@ class DictionaryHelper(object):
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_justify_argumentation')
 			_tg = TextGenerator(lang)
 			db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-			confrontation       = _qh.get_text_for_argument_uid(uid, lang)
+			confrontation       = _qh.get_text_for_argument_uid(uid, lang, True)
 			premise, tmp        = _qh.get_text_for_premisesgroup_uid(uid)
 			conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
-									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
 			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
 			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, db_argument.is_supportive)
 
@@ -160,13 +160,13 @@ class DictionaryHelper(object):
 			db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 			if attack == 'end':
 				heading             = _tn.get(_tn.sentencesOpenersForArguments[0])\
-				                      + ': <strong>' + _qh.get_text_for_argument_uid(uid, lang) + '</strong>.'\
+				                      + ': <strong>' + _qh.get_text_for_argument_uid(uid, lang, True) + '</strong>.'\
 				                      + '<br><br>' + _tn.get(_tn.otherParticipantsDontHaveCounterForThat)\
 				                      + '.<br><br>' + _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndText)
 			else:
 				premise, tmp        = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 				conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
-										else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+										else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
 				db_confrontation    = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
 				confrontation, tmp  = _qh.get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
 				# confrontation       = _qh.get_text_for_argument_uid(additional_id, lang)
@@ -174,7 +174,7 @@ class DictionaryHelper(object):
 				       + str(confrontation) + ', attack ' + str(attack))
 
 				reply_for_argument  = True
-				current_argument    = _qh.get_text_for_argument_uid(uid, lang)
+				current_argument    = _qh.get_text_for_argument_uid(uid, lang, True)
 				user_is_attacking   = not db_argument.is_supportive
 				heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
 				                                                     confrontation, reply_for_argument, user_is_attacking,

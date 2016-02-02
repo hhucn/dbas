@@ -228,6 +228,7 @@ class Translator(object):
 		self.iDoNotKnowInColor = 'iDoNotKnowInColor'
 		self.iHaveNoOpinionYet = 'iHaveNoOpinionYet'
 		self.iHaveNoOpinionYetInColor = 'iHaveNoOpinionYetInColor'
+		self.iHaveNoOpinion = 'iHaveNoOpinion'
 		self.iDisagreeWith = 'iDisagreeWith'
 		self.iHaveMuchStrongerArgumentRejecting = 'iHaveMuchStrongerArgumentRejecting'
 		self.iHaveMuchEvenArgumentRejecting = 'iHaveMuchEvenArgumentRejecting'
@@ -276,6 +277,7 @@ class Translator(object):
 		self.note = 'note'
 		self.no_entry = 'no_entry'
 		self.otherParticipantsThinkThat = 'otherParticipantsThinkThat'
+		self.otherParticipantsAgreeThat = 'otherParticipantsAgreeThat'
 		self.otherParticipantsDontHaveCounter = 'otherParticipantsDontHaveCounter'
 		self.otherParticipantsDontHaveCounterForThat = 'otherParticipantsDontHaveCounterForThat'
 		self.otherParticipantsDontHaveOpinion = 'otherParticipantsDontHaveOpinion'
@@ -329,6 +331,7 @@ class Translator(object):
 		self.topicString = 'topicString'
 		self.text = 'text'
 		self.theySay = 'theySay'
+		self.theyThink = 'theyThink'
 		self.veryweak = 'veryweak'
 		self.weak = 'weak'
 		self.wrong = 'wrong'
@@ -468,8 +471,8 @@ class Translator(object):
 		en_lang[self.butIDoNotBelieveArgument] = 'but I do not believe that this is a good argument for'
 		en_lang[self.butTheyDoNotBelieveCounter] = 'but they do not believe that this is a good counter-argument for'
 		en_lang[self.butTheyDoNotBelieveArgument] = 'but they do not believe that this is a good argument for'
-		en_lang[self.butOtherParticipantsDontHaveArgument] = 'but other partcipants do not have any argument for that.'
-		en_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'but other partcipants do not have any counter argument for that.'
+		en_lang[self.butOtherParticipantsDontHaveArgument] = 'but other participants do not have any argument for that.'
+		en_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'but other participants do not have any counter argument for that.'
 		en_lang[self.because] = 'Because'
 		en_lang[self.butWhich] = 'but which one'
 		en_lang[self.canYouGiveAReason] = 'Can you give a reason?'
@@ -569,6 +572,7 @@ class Translator(object):
 		en_lang[self.iDoNotKnow] = 'I do not know'
 		en_lang[self.iDoNotKnowInColor] = 'I <span class=\'text-info\'>do not know</span>'
 		en_lang[self.iHaveNoOpinionYet] = 'I have no opinion yet about'
+		en_lang[self.iHaveNoOpinion] = 'I have no opinion'
 		en_lang[self.iHaveNoOpinionYetInColor] = 'I have <span class=\'text-info\'>no opinion yet</span>, show me an argument for'
 		en_lang[self.informationForExperts] = 'Infos for experts'
 		en_lang[self.internalFailureWhileDeletingTrack] = 'Internal failure, please try again or did you have deleted your track recently?'
@@ -636,14 +640,15 @@ class Translator(object):
 		en_lang[self.number] = 'No'
 		en_lang[self.note] = 'Note'
 		en_lang[self.no_entry] = 'No entry'
-		en_lang[self.otherParticipantsThinkThat] = 'Other partcipants think that'
-		en_lang[self.otherParticipantsDontHaveOpinion] = 'Other partcipants do not have any opinion regarding your selection.'
-		en_lang[self.otherParticipantsDontHaveCounterForThat] = 'Other partcipants do not have any counter-argument for for that'
-		en_lang[self.otherParticipantsDontHaveCounter] = 'Other partcipants do not have any counter-argument for '
-		en_lang[self.otherParticipantsDontHaveArgument] = 'Other partcipants do not have any argument for '
-		en_lang[self.otherParticipantsAcceptBut] = 'Other partcipants accept your argument, but'
-		en_lang[self.otherParticipantAgree] = 'Other partcipants agree, that '
-		en_lang[self.otherParticipantDisagree] = 'Other partcipants disagree, that '
+		en_lang[self.otherParticipantsThinkThat] = 'Other participants think that'
+		en_lang[self.otherParticipantsAgreeThat] = 'Other participants agree that'
+		en_lang[self.otherParticipantsDontHaveOpinion] = 'Other participants do not have any opinion regarding your selection.'
+		en_lang[self.otherParticipantsDontHaveCounterForThat] = 'Other participants do not have any counter-argument for for that'
+		en_lang[self.otherParticipantsDontHaveCounter] = 'Other participants do not have any counter-argument for '
+		en_lang[self.otherParticipantsDontHaveArgument] = 'Other participants do not have any argument for '
+		en_lang[self.otherParticipantsAcceptBut] = 'Other participants accept your argument, but'
+		en_lang[self.otherParticipantAgree] = 'Other participants agree, that '
+		en_lang[self.otherParticipantDisagree] = 'Other participants disagree, that '
 		en_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Other users claim to have a stronger statement for rejecting'
 		en_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Other users claim to have a stronger statement for accepting'
 		en_lang[self.opinionBarometer] = 'Opinion Barometer'
@@ -689,6 +694,7 @@ class Translator(object):
 		en_lang[self.topicString] = 'Topic'
 		en_lang[self.text] = 'Text'
 		en_lang[self.theySay] = 'They say'
+		en_lang[self.theyThink] = 'They think'
 		en_lang[self.thisConfrontationIs] = 'This confrontation is a'
 		en_lang[self.veryweak] = 'very weak'
 		en_lang[self.weak] = 'weak'
@@ -943,6 +949,7 @@ class Translator(object):
 		de_lang[self.iDoNotKnow] = 'Ich weiß es nicht',
 		de_lang[self.iDoNotKnowInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>',
 		de_lang[self.iHaveNoOpinionYet] = 'Ich weiß es nicht',
+		de_lang[self.iHaveNoOpinion] = 'Ich weiß es nicht',
 		de_lang[self.iHaveNoOpinionYetInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>',
 		de_lang[self.iDisagreeWith] = 'Ich widerspreche die Aussage',
 		de_lang[self.iHaveMuchStrongerArgumentRejecting] = 'Ich habe ein viel stärkeres Argument zum Ablehnen von',
@@ -992,6 +999,7 @@ class Translator(object):
 		de_lang[self.note] = 'Hinweis',
 		de_lang[self.no_entry] = 'Kein Eintrag'
 		de_lang[self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass',
+		de_lang[self.otherParticipantsAgreeThat] = 'Andere Teilnehmer denken, dass',
 		de_lang[self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
 		de_lang[self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für ',
 		de_lang[self.otherParticipantsDontHaveCounterForThat] = 'Andere Teilnehmer haben kein Gegenargument dafür.',
@@ -1045,6 +1053,7 @@ class Translator(object):
 		de_lang[self.topicString] = 'Thema',
 		de_lang[self.text] = 'Text',
 		de_lang[self.theySay] = 'Sie sagen',
+		de_lang[self.theyThink] = 'Sie denken',
 		de_lang[self.veryweak] = 'sehr schwach',
 		de_lang[self.weak] = 'schwach',
 		de_lang[self.wrong] = 'Nein',
@@ -1118,13 +1127,6 @@ class TextGenerator(object):
 		if conclusion[-1] == '.':
 			conclusion = premise[:-1]
 
-		# longConclusion = ''
-		# if attackType == 'overbid':
-		# 	if (is_supportive):
-		# 		longConclusion = conclusion + ', ' + _t.get(_t.because).lower() + ' ' + premise
-		# 	else:
-		# 		longConclusion = premise + ', ' + _t.get(_t.doesNotJustify).lower() + ' ' + conclusion
-
 		# different cases
 		ret_text = ''
 		if attack_type == 'undermine':
@@ -1135,15 +1137,11 @@ class TextGenerator(object):
 			ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounter) + ' ' + conclusion + '.'
 		if attack_type == 'overbid':
 			ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieve) + ' ' + conclusion
-			           # + '.<br><br>' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
+						# + '.<br><br>' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
 		if attack_type == 'rebut':
 			ret_text = confrontation + ' ' \
-			           + (_t.get(_t.iAcceptCounter) if is_supportive else _t.get(_t.iAcceptArgument)) \
-			           + ' ' + conclusion
-			# if is_supportive:
-			# 	ret_text += _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) + ' ' + conclusion + '.'
-			# else:
-			# 	ret_text += _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' ' + conclusion + '.'
+					   + (_t.get(_t.iAcceptCounter) if is_supportive else _t.get(_t.iAcceptArgument)) \
+					   + ' ' + conclusion
 
 		return ret_text
 
@@ -1161,6 +1159,9 @@ class TextGenerator(object):
 		"""
 		_t = Translator(self.lang)
 		ret_text = _t.get(_t.sentencesOpenersForArguments[0])  + ': '
+		confrontation = confrontation[0:1].lower() + confrontation[1:]
+		premise = premise[0:1].lower() + premise[1:]
+		conclusion = conclusion[0:1].lower() + conclusion[1:]
 
 		if premise[-1] == '.':
 			premise = premise[:-1]
@@ -1186,19 +1187,18 @@ class TextGenerator(object):
 			ret_text += r + _t.get(_t.itIsTrue) + ' <strong>' + confrontation + '</strong>.'
 		if attack_type == 'undercut':
 			ret_text += r + '<strong>' + confrontation + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounter) + ' <strong>' \
-			           + conclusion + '</strong>.'
+					   + conclusion + '</strong>.'
 		if attack_type == 'overbid':
 			ret_text += r + '<strong>' + confrontation + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' <strong>' \
-			           + conclusion + '</strong>.<br><br>' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) \
-			           + ' <strong>' + long_conclusion + '</strong>.'
+					   + conclusion + '</strong>.<br><br>' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) \
+					   + ' <strong>' + long_conclusion + '</strong>.'
 		if attack_type == 'rebut':
 			ret_text += r + '<strong>' + confrontation + '</strong> ' + _t.get(_t.iAcceptCounter) + ' <strong>' \
-			           + conclusion + '</strong>.<br><br>'
+					   + conclusion + '</strong>.<br><br>'
 			if is_supportive:
 				ret_text += _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) + ' <strong>' + conclusion + '</strong>.'
 			else:
 				ret_text += _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' <strong>' + conclusion + '</strong>.'
-
 
 		# is logged in?
 		if is_logged_in:
@@ -1220,9 +1220,9 @@ class TextGenerator(object):
 		ret_dict = dict()
 
 		if is_supportive:
-			counterJusti = ' <strong>' + conclusion + ', ' + _t.get(_t.because).lower() + ' ' + premise + '</strong>'
+			counter_justification = ' <strong>' + conclusion + ', ' + _t.get(_t.because).lower() + ' ' + premise + '</strong>'
 		else:
-			counterJusti = ' <strong>' + premise + ', ' + _t.get(_t.doesNotJustify).lower() + ' ' + conclusion + '</strong>'
+			counter_justification = ' <strong>' + premise + ', ' + _t.get(_t.doesNotJustify).lower() + ' ' + conclusion + '</strong>'
 
 		if conclusion[-1] == '.':
 			conclusion = premise[:-1]
@@ -1232,15 +1232,15 @@ class TextGenerator(object):
 
 		undermine = w + ', ' + _t.get(_t.itIsFalse) + ' <strong>' + confrontation + '</strong>.'
 		support	  = r + ', ' + _t.get(_t.itIsTrue) + ' <strong>' + confrontation + '</strong>.'
-		undercut  = r + ', <strong>' + confrontation + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounter) + ' ' + counterJusti + '.'
-		overbid	  = r + ', <strong>' + confrontation + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' ' + counterJusti + '.<br>' +\
-		               (_t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else
-		                  _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)) + ' <strong>' + premise + '</strong>.'
+		undercut  = r + ', <strong>' + confrontation + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounter) + ' ' + counter_justification + '.'
+		overbid	  = r + ', <strong>' + confrontation + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' ' + counter_justification + '.<br>' +\
+					   (_t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else
+						  _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)) + ' <strong>' + premise + '</strong>.'
 		rebut	  = r + ', <strong>' + confrontation + '</strong> ' + _t.get(_t.iAcceptCounter) + ' <strong>' + conclusion + '</strong>.<br>' \
 					+ (_t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else
 					   _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)) \
 					+ ' <strong>' + premise + '</strong>.'
-		noopinion  = _t.get(_t.iNoOpinion) + ': <strong>' + confrontation + '</strong>. ' + _t.get(_t.goStepBack) + '.'
+		noopinion  = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
 
 		ret_dict['undermine_text'] = undermine
 		ret_dict['support_text'] = support
@@ -1254,9 +1254,11 @@ class TextGenerator(object):
 	def get_relation_text_dict_without_confrontation(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking):
 		"""
 
-		:param premise:
+		:param premises:
 		:param conclusion:
 		:param start_lower_case:
+		:param with_no_opinion_text:
+		:param is_attacking:
 		:return:
 		"""
 		_t = Translator(self.lang)
@@ -1279,19 +1281,20 @@ class TextGenerator(object):
 		ret_dict['undermine_text'] = w + ', ' + _t.get(_t.itIsFalse) + ' <strong>' + premise + '</strong>.'
 		ret_dict['support_text'] = r + ', ' + _t.get(_t.itIsTrue) + ' <strong>' + premise + '</strong>.'
 		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounter) + ' <strong>' + conclusion + '</strong>.'
-		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' <strong>' + conclusion + '</strong>.'
+		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.andIDoBelieve) + ' <strong>' + conclusion + '</strong>. ' +\
+								   (_t.get(_t.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else
+									_t.get(_t.howeverIHaveEvenStrongerArgumentAccepting)) + ' <strong>' + premise + '</strong>.'
 		ret_dict['rebut_text'] = r + ', <strong>' + premise + '</strong> ' \
-		                         + (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument)) \
-		                         + ' <strong>' + conclusion + '</strong>. '\
-		                         + (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))\
-		                         + ' <strong>' + conclusion + '</strong>.'
+								 + (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument)) \
+								 + ' <strong>' + conclusion + '</strong>. '\
+								 + (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))\
+								 + ' <strong>' + conclusion + '</strong>.'
 		if with_no_opinion_text:
-			ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': <strong>' + conclusion + ', ' + _t.get(_t.because).lower() \
-			                               + ' ' + premise + '</strong>. ' + _t.get(_t.goStepBack) + '.'
+			ret_dict['no_opinion_text'] = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
 
 		return ret_dict
 
-	def get_text_dict_for_attacks_only (self, premises, conclusion, start_lower_case):
+	def get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
 		"""
 
 		:param premises:
@@ -1317,14 +1320,14 @@ class TextGenerator(object):
 		ret_dict['undermine_text'] = w + ', <strong>' + premise + '</strong>.'
 		ret_dict['undercut_text'] = r + ', <strong>' + conclusion + '</strong>, ' + _t.get(_t.butIDoNotBelieveArgument) + ' ' + counter_justi + '.'
 		ret_dict['rebut_text'] = r + ', <strong>' + premise + '</strong> ' + _t.get(_t.iAcceptArgument) + ' <strong>' + conclusion + '</strong>. '\
-		                         + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' <strong>' + conclusion + '</strong>.'
+								 + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' <strong>' + conclusion + '</strong>.'
 		ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': <strong>' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() \
-		                              + ' ' + premise + '</strong>. ' + _t.get(_t.goStepBack) + '.'
+									  + ' ' + premise + '</strong>. ' + _t.get(_t.goStepBack) + '.'
 
 		return ret_dict
 
 	def get_text_for_confrontation(self, premise, conclusion, supportive, attack, confrontation, reply_for_argument,
-	                               user_is_attacking, current_argument=''):
+								   user_is_attacking, current_argument=''):
 		"""
 
 		:param premise:
@@ -1339,37 +1342,41 @@ class TextGenerator(object):
 		"""
 		_t = Translator(self.lang)
 		opinion = '<strong>' + current_argument + '</strong>' if current_argument != '' else '<strong>' + premise + '</strong> ' \
-		                                    + _t.get('relation_' + relation) + ' ' + '<strong>' + conclusion + '</strong>'
+											+ _t.get('relation_' + attack) + ' ' + '<strong>' + conclusion + '</strong>'
 
 		#  build some confrontation text
+		confrontation = confrontation[0:1].lower() + confrontation[1:]
+		premise = premise[0:1].lower() + premise[1:]
+		conclusion = conclusion[0:1].lower() + conclusion[1:]
+
 		confrontation_text = ''
 		confrontation = '<strong>' + confrontation + '</strong>'
 
 		# build some confrontation text
 		if attack == 'undermine':
 			confrontation_text = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + premise + '</strong> ' \
-			                    + _t.get(_t.doesNotHoldBecause) + ' ' + confrontation
+								+ _t.get(_t.doesNotHoldBecause) + ' ' + confrontation
 
 		elif attack == 'rebut':
 			# distinguish between reply for argument and reply for premise group
 			if reply_for_argument:	# reply for argument
 				confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting) if user_is_attacking else _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
 			else:		# reply for premise group
-				confrontation_text = _t.get(_t.otherParticipantsAcceptBut) + ' ' + _t.get(_t.strongerStatementForRecjecting)
+				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' ' + _t.get(_t.strongerStatementForRecjecting)
 			confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 
 		elif attack == 'undercut':
-			confrontation_text = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + premise + '</strong> ' \
-			                    + (_t.get(_t.andTheyDoNotBelieveArgument)
-			                       if supportive else _t.get(_t.andTheyDoNotBelieveCounter)) \
-			                    + ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' ' + confrontation
+			confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong> ' \
+								 + (_t.get(_t.butTheyDoNotBelieveCounter)
+								   if supportive else _t.get(_t.butTheyDoNotBelieveArgument)) \
+								 + ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' '\
+								 + _t.get(_t.theyThink).lower() + ': '  + confrontation
 
 		return _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>' + confrontation_text \
-		       + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
-
+			   + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
 
 	def get_text_for_status_one_in_confrontation(self, premise, conclusion, relation, supportive, attack,
-	                                             url, confrontation, reply_for_argument, current_argument=''):
+												 url, confrontation, reply_for_argument, current_argument=''):
 		"""
 
 		:param premise:
@@ -1397,33 +1404,34 @@ class TextGenerator(object):
 		# does we have an attack for an attack? if true, we have to pretty print a little bit
 		attacks = ['undermine','rebut','undercut']
 		double_attack = ([s for s in attacks if s in url] or ('supportive=false' in url)) \
-		                and [s for s in attacks if s in attack]
+						and [s for s in attacks if s in attack]
 
 		# build some confrontation text
 		if attack == 'undermine':
 			confrontationText = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + premise + '</strong> ' \
-			                    + _t.get(_t.doesNotHoldBecause) + ' ' + confrontation
+								+ _t.get(_t.doesNotHoldBecause) + ' ' + confrontation
 
 		elif attack == 'rebut':
 			# distinguish between reply for argument and reply for premise group
 			if reply_for_argument:
 				# reply for argument
 				confrontationText = (_t.get(_t.otherUsersClaimStrongerArgumentAccepting)
-				                     if double_attack else _t.get(_t.otherUsersClaimStrongerArgumentRejecting))
+									 if double_attack else _t.get(_t.otherUsersClaimStrongerArgumentRejecting))
 			else:
 				# reply for premise group
 				confrontationText = _t.get(_t.otherParticipantsAcceptBut) + ' ' \
-				                    + _t.get(_t.strongerStatementForRecjecting)
+									+ _t.get(_t.strongerStatementForRecjecting)
 			confrontationText += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 
 		elif attack == 'undercut':
 			confrontationText = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + premise + '</strong> ' \
-			                    + (_t.get(_t.andTheyDoNotBelieveCounter)
-			                       if supportive else _t.get(_t.andTheyDoNotBelieveCounter)) \
-			                    + ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' ' + confrontation
+								+ (_t.get(_t.andTheyDoNotBelieveCounter)
+								   if supportive else _t.get(_t.andTheyDoNotBelieveCounter)) \
+								+ ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' ' \
+								+ _t.get(_t.theyThink).lower() + ': ' + confrontation
 
 		return _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>' + confrontationText \
-		       + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
+			   + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
 
 	def get_text_for_status_zero_in_confrontation(self, premise, conclusion, relation):
 		"""
@@ -1441,8 +1449,8 @@ class TextGenerator(object):
 			opinion = '<strong>' + premise + '</strong> ' + _t.get('relation_' + return_dict['relation']) + ' ' + '<strong>' + conclusion + '</strong>'
 
 		return _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>' \
-		       + _t.get(_t.otherParticipantsDontHaveCounter) + ' <strong>' + premise + '</strong>' + '.<br><br>' \
-		       + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText), _t.get(_t.discussionEnd)
+			   + _t.get(_t.otherParticipantsDontHaveCounter) + ' <strong>' + premise + '</strong>' + '.<br><br>' \
+			   + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText), _t.get(_t.discussionEnd)
 
 	def get_text_for_premise_for_statement(self, conclusion, premises, supportive, logged_in):
 		"""
@@ -1460,12 +1468,12 @@ class TextGenerator(object):
 			text_add_on = '' if logged_in else ('<br><br>'  + _t.get(_t.discussionEndFeelFreeToLogin))
 			if supportive:
 				ret_dict['discussion_description'] = _t.get(_t.unfortunatelyNoMoreArgument) + ' ' + argument \
-				                                     + '.<br><br>' + _t.get(_t.canYouGiveAReason) + '<br><br>' \
-				                                     + _t.get(_t.alternatively) + ': ' + _t.get(_t.discussionEndText) \
-				                                     + text_add_on
+													 + '.<br><br>' + _t.get(_t.canYouGiveAReason) + '<br><br>' \
+													 + _t.get(_t.alternatively) + ': ' + _t.get(_t.discussionEndText) \
+													 + text_add_on
 			else:
 				ret_dict['discussion_description'] = _t.get(_t.soYouWantToArgueAgainst) + ' ' + argument + ', ' \
-				                                     + _t.get(_t.butOtherParticipantsDontHaveArgument) + text_add_on
+													 + _t.get(_t.butOtherParticipantsDontHaveArgument) + text_add_on
 			ret_dict['argument'] = '<strong>' + conclusion + '</strong>'
 
 		else:
@@ -1473,10 +1481,10 @@ class TextGenerator(object):
 			for p in premises:
 				premise += ('' if premise == '' else (' ' + _t.get(_t.aand) + ' ')) + premises[p]['text'][0:1].lower() + premises[p]['text'][1:]
 			ret_dict['discussion_description'] = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + conclusion + '</strong>, ' \
-			                                     + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] \
-			                                     + ' <strong>' + premise + '</strong>.<br><br>' \
-			                                     + ((_t.get(_t.whatDoYouThinkAboutThat) + '?')
-			                                        if supportive else _t.get(_t.whyAreYouDisagreeing))
+												 + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] \
+												 + ' <strong>' + premise + '</strong>.<br><br>' \
+												 + ((_t.get(_t.whatDoYouThinkAboutThat) + '?')
+													if supportive else _t.get(_t.whyAreYouDisagreeing))
 			ret_dict['argument'] = conclusion + ' ' + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] + ' ' + premise
 
 		if supportive:
@@ -1487,8 +1495,8 @@ class TextGenerator(object):
 		return ret_dict
 
 	def get_text_for_response_of_confrontation(self, current_argument, conclusion, relation, premise, attack,
-	                                           attack_or_confrontation, supportive, is_support, supportive_argument,
-	                                           user, url, status):
+											   attack_or_confrontation, supportive, is_support, supportive_argument,
+											   user, url, status):
 		"""
 
 		:param current_argument:
@@ -1511,35 +1519,35 @@ class TextGenerator(object):
 		if is_support and int(status) != 0:
 			logger('reply_for_response_of_confrontation', 'def', 'path b1')
 			ret_dict.update(_tg.get_confrontation_relation_text_dict(attack_or_confrontation,
-			                                                         conclusion,
-			                                                         premise,
-			                                                         False,
-			                                                         supportive))
+																	 conclusion,
+																	 premise,
+																	 False,
+																	 supportive))
 		else:
 			logger('reply_for_response_of_confrontation', 'def', 'path b2')
 			logged_in = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			ret_dict['header_text'] = _tg.get_header_for_confrontation_response(attack_or_confrontation,
-			                                                                    premise,
-			                                                                    relation,
-			                                                                    conclusion,
-			                                                                    True,
-			                                                                    supportive,
-			                                                                    logged_in)
+																				premise,
+																				relation,
+																				conclusion,
+																				True,
+																				supportive,
+																				logged_in)
 
 		if supportive_argument and int(status) == 0:
 			logger('reply_for_response_of_confrontation', 'def', 'path c1')
 			ret_dict['discussion_description'] = _tg.get_text_for_status_zero_in_confrontation(premise,
-			                                                                                   conclusion,
-			                                                                                   relation)
+																							   conclusion,
+																							   relation)
 		elif int(status) == 1:
 			logger('reply_for_response_of_confrontation', 'def', 'path c2')
 			ret_dict['discussion_description'] = _tg.get_text_for_status_one_in_confrontation(premise,
-			                                                                                  conclusion,
-			                                                                                  relation,
-			                                                                                  supportive,
-			                                                                                  attack,
-			                                                                                  url,
-			                                                                                  attack_or_confrontation,
-			                                                                                  False,
-			                                                                                  current_argument)
+																							  conclusion,
+																							  relation,
+																							  supportive,
+																							  attack,
+																							  url,
+																							  attack_or_confrontation,
+																							  False,
+																							  current_argument)
 		return ret_dict

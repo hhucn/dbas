@@ -34,8 +34,8 @@ class VotingHelper(object):
 				# our argument is  attacking, so let's have a look at arguments, which supports our conclusion argument
 				if db_argument.is_supportive and not conclusion_argument.is_supportive \
 						or not db_argument.is_supportive and not conclusion_argument.is_supportive:
-					self.remove_vote_for_argument(conclusion_argument.uid, user)
-#
+					self.remove_vote_for_argument(conclusion_argument, user)
+
 		# let's check, if the user voted for the oposite
 		db_opposite_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == db_argument.premisesgroup_uid,
 		                                                                       Argument.conclusion_uid == db_argument.conclusion_uid,
@@ -51,20 +51,25 @@ class VotingHelper(object):
 
 		return len(db_votes)
 
-	def remove_vote_for_argument(self, argument_uid, user):
+	def remove_vote_for_argument(self, argument):
 		"""
 		Decreses the vote of a given argument
-		:param argument_uid: id of the argument
-		:param user: self.request.authenticated_userid
+		:param argument: Argument
 		:return: decreased vote of the argument
 		"""
-		logger('VotingHelper', 'remove_vote_for_argument', 'decreasing argument ' + str(argument_uid) + ' vote')
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		logger('VotingHelper', 'remove_vote_for_argument', 'decreasing votes of argument ' + str(argument.uid))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
-		# remove votes
-		DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid,
-		                                            Vote.author_uid == db_user.uid)).first().set_valid(False)
+		# set vote to invalid
+		db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == argument.uid,
+		                                                      Vote.author_uid == db_user.uid)).first()
+		db_vote.set_valid(False)
+		db_vote.update_timestamp()
+
+		# creating down vote for this argument
+		db_vote = Vote(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=False, is_valid=True)
+		DBDiscussionSession.add(db_vote)
+		DBDiscussionSession.flush()
 
 		# return count of votes
 		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid, True if Vote.is_valid else False)).all()
@@ -73,7 +78,8 @@ class VotingHelper(object):
 
 	def __check_and_set_vote_uid(self, db_argument, user):
 		"""
-		Check if the given argument has a voteing uid
+		Check if there is a vote for the argument. If not, we will create a new one, otherwise the current one will be
+		invalid an we will create a new entry
 		:param db_argument: Argument
 		:param user: self.request.authenticated_userid
 		:return: Vote, boolean for already voted
@@ -85,15 +91,14 @@ class VotingHelper(object):
 			return None, None
 		db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid,
 		                                                      Vote.author_uid == db_user.uid)).first()
-		already_voted = False
-		# do we have a vote?
-		if not db_vote:
-			db_vote = Vote(argument_uid=db_argument.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True)
-			DBDiscussionSession.add(db_vote)
-			DBDiscussionSession.flush()
-		else:
-			db_vote.set_valid(True)
-			db_vote.update_timestamp()
-			already_voted = True
 
-		return db_vote, already_voted
+		# do we have a vote?
+		if db_vote:
+			db_vote.set_valid(False)
+			db_vote.update_timestamp()
+
+		db_vote = Vote(argument_uid=db_argument.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True)
+		DBDiscussionSession.add(db_vote)
+		DBDiscussionSession.flush()
+
+		return db_vote
