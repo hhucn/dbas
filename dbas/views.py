@@ -336,14 +336,15 @@ class Dbas(object):
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_justify=True,
-				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
+				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
+				                            at_justify=True, current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
 		elif 'd' in mode and relation == '':
 			# dont know
 			logger('discussion_justify', 'def', 'dont know position')
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
-			discussion_dict = _dh.prepare_discussion_dict(argument_uid, ui_locales, at_dont_know=True, is_supportive=supportive, additional_id=statement_or_arg_id)
+			discussion_dict = _dh.prepare_discussion_dict(argument_uid, ui_locales, at_dont_know=True,
+			                                              is_supportive=supportive, additional_id=statement_or_arg_id)
 			item_dict       = _dh.prepare_item_dict_for_reaction(argument_uid, supportive, issue, ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, ui_locales, self.request.authenticated_userid,
 			                                          argument_id=argument_uid, breadcrumbs=breadcrumbs, application_url=mainpage, for_api=for_api)
@@ -358,13 +359,15 @@ class Dbas(object):
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid)
-			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive, ui_locales, mainpage, for_api)
+			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive,
+			                                                             ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, ui_locales, self.request.authenticated_userid,
 			                                          not is_attack, argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs,
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_justify_argumentation=True)
+				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
+				                            at_justify_argumentation=True)
 		else:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'j', statement_or_arg_id, mode, relation]))
 
@@ -393,7 +396,7 @@ class Dbas(object):
 		"""
 		# '/d/{slug}/r/{arg_id_user}/{mode}*arg_id_sys'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
 
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''

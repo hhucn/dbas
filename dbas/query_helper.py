@@ -25,7 +25,7 @@ class QueryHelper(object):
 	# ARGUMENTS
 	# ########################################
 
-	def get_text_for_argument_uid(self, uid, lang):
+	def get_text_for_argument_uid(self, uid, lang, withStrongHtmlTags=False):
 		"""
 		Returns current argument as string like conclusion, because premise1 and premise2
 		:param uid: int
@@ -36,6 +36,8 @@ class QueryHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		retValue = ''
 		_t = Translator(lang)
+		because = (' </strong>' if withStrongHtmlTags else ' ') + _t.get(_t.because).lower() + (' <strong>' if withStrongHtmlTags else ' ')
+		doesNotHoldBecause = (' </strong>' if withStrongHtmlTags else ' ') + _t.get(_t.doesNotHoldBecause).lower() + (' <strong>' if withStrongHtmlTags else ' ')
 
 		# catch error
 		if not db_argument:
@@ -53,9 +55,9 @@ class QueryHelper(object):
 				return None
 			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
 			if db_argument.is_supportive:
-				argument = conclusion + ' ' + _t.get(_t.because).lower() + ' ' + premises
+				argument = conclusion + because + premises
 			else:
-				argument = conclusion + ' ' + _t.get(_t.doesNotHoldBecause).lower() + ' ' + premises
+				argument = conclusion + doesNotHoldBecause + premises
 			# argument = premises + (' supports ' if db_argument.is_supportive else ' attacks ') + conclusion
 			return argument
 
@@ -63,14 +65,14 @@ class QueryHelper(object):
 		if db_argument.conclusion_uid == 0:
 			logger('QueryHelper', 'get_text_for_argument_uid', 'recursion with conclusion_uid: ' + str(db_argument.conclusion_uid)
 			       + ', in argument: ' + str(db_argument.uid))
-			argument = self.get_text_for_argument_uid(db_argument.argument_uid, lang)
+			argument = self.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
 			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 			if not premises:
 				return None
 			if db_argument.is_supportive:
-				retValue = argument + ', ' + _t.get(_t.because).lower() + ' ' + premises
+				retValue = argument + ',' + because + premises
 			else:
-				retValue = argument + ' ' + _t.get(_t.doesNotHoldBecause).lower() + ' ' + premises
+				retValue = argument + doesNotHoldBecause + premises
 			# retValue = premises + (' supports ' if db_argument.is_supportive else ' attacks ') + argument
 
 		return retValue
@@ -637,15 +639,15 @@ class QueryHelper(object):
 		return_array = []
 		logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
 		       'db_undercut against Argument.argument_uid=='+str(argument_uid))
-		db_relation = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
-                                                                      Argument.argument_uid == argument_uid)).all()
+		db_related_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
+		                                                                       Argument.argument_uid == argument_uid)).all()
 		given_relations = set()
 		index = 0
 
-		if not db_relation:
+		if not db_related_arguments:
 			return None
 
-		for relation in db_relation:
+		for relation in db_related_arguments:
 			if relation.premisesgroup_uid not in given_relations:
 				given_relations.add(relation.premisesgroup_uid)
 				logger('QueryHelper', 'get_attack_or_support_for_justification_of_argument_uid',
@@ -741,10 +743,10 @@ class QueryHelper(object):
 
 	def get_language(self, request, current_registry):
 		"""
-
+		Returns current ui locales code which is saved in current cookie or the registry
 		:param request: self.request
 		:param current_registry: get_current_registry()
-		:return: language abr
+		:return: language abrreviation
 		"""
 		try:
 			lang = str(request.cookies['_LOCALE_'])
