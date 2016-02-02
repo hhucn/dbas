@@ -63,8 +63,9 @@ class VotingHelper(object):
 		# set vote to invalid
 		db_vote = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == argument.uid,
 		                                                      Vote.author_uid == db_user.uid)).first()
-		db_vote.set_valid(False)
-		db_vote.update_timestamp()
+		if db_vote:
+			db_vote.set_valid(False)
+			db_vote.update_timestamp()
 
 		# creating down vote for this argument
 		db_vote = Vote(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=False, is_valid=True)
@@ -72,7 +73,7 @@ class VotingHelper(object):
 		DBDiscussionSession.flush()
 
 		# return count of votes
-		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == db_argument.uid, True if Vote.is_valid else False)).all()
+		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == argument.uid, True if Vote.is_valid else False)).all()
 
 		return len(db_votes)
 
