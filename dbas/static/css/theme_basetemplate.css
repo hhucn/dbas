@@ -28,18 +28,12 @@
 	font-weight: normal;
 	font-style: normal;
 }
-@font-face {
-	font-family: 'RobotoCondensed';
-	src: url('../fonts/roboto/RobotoCondensed-Regular.ttf');
-	font-weight: normal;
-	font-style: normal;
-}
+
 
 body {
 	/* font-family: "DroidSans", "OpenSans", Helvetica, Arial, sans-serif; */
 	font-weight: 300;
 	color: #000;
-	/*background: url('../images/blur-03.jpg') repeat fixed center;*/
 	background: #EBEBEB;
 	font-size: 14px;
 }
