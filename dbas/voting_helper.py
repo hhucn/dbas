@@ -51,7 +51,7 @@ class VotingHelper(object):
 
 		return len(db_votes)
 
-	def remove_vote_for_argument(self, argument):
+	def remove_vote_for_argument(self, argument, user):
 		"""
 		Decreses the vote of a given argument
 		:param argument: Argument
