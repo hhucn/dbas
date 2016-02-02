@@ -206,7 +206,7 @@ class Dbas(object):
 		slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		ui_locales      = _qh.get_language(self.request, get_current_registry)
+		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
@@ -258,7 +258,7 @@ class Dbas(object):
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		ui_locales      = _qh.get_language(self.request, get_current_registry)
+		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
@@ -314,7 +314,7 @@ class Dbas(object):
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
 		issue               = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		ui_locales          = _qh.get_language(self.request, get_current_registry)
+		ui_locales          = _qh.get_language(self.request, get_current_registry())
 		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
@@ -412,7 +412,7 @@ class Dbas(object):
 		_dh = DictionaryHelper()
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
-		ui_locales      = _qh.get_language(self.request, get_current_registry)
+		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
