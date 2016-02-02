@@ -884,6 +884,7 @@ class QueryHelper(object):
 		for index, vote in enumerate(db_votes):
 			if vote.argument_uid in argument_uid_set:
 				tmp_dict = dict()
+				tmp_dict['uid']          = vote.uid
 				tmp_dict['argument_uid'] = vote.argument_uid
 				tmp_dict['author_uid']   = vote.author_uid
 				tmp_dict['is_up_vote']   = vote.is_up_vote
