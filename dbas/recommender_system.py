@@ -71,12 +71,7 @@ class RecommenderHelper(object):
 		:return: dict, key
 		"""
 
-		# 1 = undermine
-		# 2 = support
-		# 3 = undercut
-		# 4 = overbid
-		# 5 = rebut
-		# all possible attacks
+		# 1 = undermine, 2 = support, 3 = undercut, 4 = overbid, 5 = rebut, all possible attacks
 
 		complete_list_of_attacks = [1, 3, 5]  # todo fix this, when overbid is killed
 		attacks = [1, 3, 5]
