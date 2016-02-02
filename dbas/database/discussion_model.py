@@ -309,8 +309,9 @@ class Vote(DiscussionBase):
 	The combination of the both FK is a PK
 	"""
 	__tablename__ = 'votes'
-	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'), primary_key=True)
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), primary_key=True)
+	uid = sa.Column(sa.Integer, primary_key=True)
+	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	is_up_vote = sa.Column(sa.Boolean, nullable=False)
 	is_valid = sa.Column(sa.Boolean, nullable=False)
