@@ -130,4 +130,74 @@ function InteractionHandler() {
 			new GuiHandler().setStatementsAsProposal(parsedData, callbackid, type);
 		}
 	};
+
+	/**
+	 *
+	 * @param text
+	 * @param conclusion
+	 * @param supportive
+	 * @param arg
+	 * @param relation
+	 * @param type
+	 */
+	this.sendStatement = function (text, conclusion, supportive, arg, relation, type){
+		if (text.length == 0){
+			new GuiHandler().setErrorDescription(_t(inputEmpty));
+		} else{
+			// handle case 'hello and '
+			if ((type == 0 || type == 1) && text.toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1){
+				var splitted = text.split(' ' + _t(and) + ' '),
+					list = $('<ul>').attr({'id': 'insert_statements_options', 'style': 'list-style-type: none;'}),
+					input, label, li, i;
+				for (i=0; i<splitted.length; i++) {
+					if (splitted[i].replace(' ','').length() > 0) {
+						li = $('<li>');
+						input = $('<input>').attr({
+							'id': 'insert_st_' + i,
+							'type': 'radio',
+							'name': 'insert_something_group'
+						});
+						label = $('<label>').attr('for', 'insert_st_' + i).text(splitted[i]);
+						li.append(input);
+						li.append(label);
+						list.append(li);
+					}
+				}
+
+				list = '... but you have used the word and.<br><br>' + new Helper().getFullHtmlTextOf(list);
+				displayConfirmationDialogWithoutCancelAndFunction('It may seems not obvious...', list);
+
+				$('#' + popupConfirmDialogAcceptBtn).text('Cancel');
+				$('#' + popupConfirmDialogId + ' .modal-body').addClass('lead');
+				$('#insert_statements_options' + ' li').hover(function(){$(this).toggleClass('text-hover')});
+				$('#insert_statements_options' + ' input').click(function() {
+					alert('send ' + $(this).next().text());
+				});
+
+			} else if (type==0){
+				new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, text);
+			} else if (type==1){
+				new AjaxSiteHandler().sendNewStartStatement(text);
+			} else if (type==2){
+				new AjaxSiteHandler().sendNewStartPremise(text, conclusion, supportive);
+			}
+		}
+	};
+
+	this.appendAddPremiseRow = function(image){
+		var div = $('<div>'),
+		h5 = $('<h5>').attr({'stlye': 'float:left; line-height:60px; text-align:center;'}).text('Because...'),
+		input = $('<input>').attr({'type': 'text', 'class': 'form-control', 'autocomplete': 'off', 'placeholder':'example: There is some reason!'}),
+		img = $('<img>').attr({'class': 'icon-add-premise icon-badge', 'alt': 'icon-add', 'src': mainpage + 'static/images/icon_pplus.png', 'style': 'height: 30px; padding-left: 1em'}),
+		br = $('<br>');
+		div.append(h5).append(input).append(img);
+		$('#add-premise-container-body').append(br).append(div);
+		img.click(function(){
+			new InteractionHandler().appendAddPremiseRow($(this));
+		});
+		image.attr('src', mainpage + 'static/images/icon_pminus.png');
+		image.off('click').click(function(){
+			$(this).parent().remove();
+		});
+	}
 }

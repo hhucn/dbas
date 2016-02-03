@@ -81,6 +81,7 @@
 }
 #add-premise-container-main-input{
 	width: 85%;
+	float: left;
 }
 #add-statement-container-main-input,
 #add-premise-container-main-input{

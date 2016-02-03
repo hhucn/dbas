@@ -11,8 +11,16 @@
  * Sets all click functions
  * @param guiHandler
  * @param ajaxHandler
+ * @param interactionHandler
  */
-setClickFunctions = function (guiHandler, ajaxHandler){
+setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
+
+	$('.icon-add-premise').each(function() {
+		$(this).click(function() {
+			interactionHandler.appendAddPremiseRow($(this));
+		});
+	});
+
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 		if ($(this).val() === _t(showAllUsers)) {
@@ -223,13 +231,14 @@ setStyleOptions = function (guiHandler){
 
 	// render html tags
 	replaceHtmlTags($('#discussions-header'));
-	$.each($('#' + discussionSpaceId + ' label'), function () {
+	$.each($('#' + discussionSpaceId + ' label'), function replaceHtmlTagInHeader() {
 		replaceHtmlTags($(this));
 	});
-	$.each($('#' + islandViewContainerId + ' h5'), function () {
+	$.each($('#' + islandViewContainerId + ' h5'), function replaceHtmlTagInIsland() {
 		replaceHtmlTags($(this));
 	});
 	replaceHtmlTags($('#' + issueInfoId));
+	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
 };
 
 /**
@@ -255,7 +264,7 @@ setWindowOptions = function(){
 setGuiOptions = function(){
 	if (window.location.href.indexOf('/reaction/') != -1){
 		var cl = 'icon-badge',
-			style = 'height: 30px; width:30px;',
+			style = 'height: 30px; width:30px; padding-rigth: 1em;',
 			src = mainpage + 'static/images/icon_discussion_',
 			item_undermine = $('#item_undermine'),
 			item_support = $('#item_support'),
@@ -278,7 +287,7 @@ setGuiOptions = function(){
 	}
 };
 
-setInputExtraOptions = function(guiHandler, ajaxHandler){
+setInputExtraOptions = function(guiHandler, interactionHandler){
 	var input = $('#' + discussionSpaceId + ' li:last-child input'), text, splits, conclusion, supportive, arg, relation;
 	if (window.location.href.indexOf('/r/') != -1){
 		$('#' + discussionSpaceId + ' label').each(function(){
@@ -297,7 +306,7 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 		arg = splits[splits.length - 3];
 		supportive = splits[splits.length - 2] == 't';
 		relation = splits[splits.length - 1];
-		ajaxHandler.sendNewPremiseForArgument(arg, relation, supportive, text)
+		interactionHandler.sendStatement(text, '', supportive, arg, relation, 0);
 	});
 
 	// options for the extra buttons, where the user can add input!
@@ -309,11 +318,7 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 				guiHandler.showAddPositionContainer();
 				$('#' + sendNewStatementId).click(function(){
 					text = $('#' + addStatementContainerMainInputId).val();
-					if (text.length == 0){
-						guiHandler.setErrorDescription(_t(inputEmpty));
-					} else {
-						ajaxHandler.sendNewStartStatement(text);
-					}
+					interactionHandler.sendStatement(text, '', '', '', '', 1);
 				});
 			}
 			// new premise for the start
@@ -325,26 +330,14 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 					conclusion = splits[splits.length - 2];
 					supportive = splits[splits.length - 1] == 't';
 					text = $('#' + addPremiseContainerMainInputId).val();
-					if (text.length == 0){
-						guiHandler.setErrorDescription(_t(inputEmpty));
-					} else {
-						ajaxHandler.sendNewStartPremise(text, conclusion, supportive)
-					}
+					interactionHandler.sendStatement(text, conclusion, supportive, '', '', 2);
 				});
 			}
 			// new premise while judging
-
 			else if (input.attr('id').indexOf('justify_premise') != -1){
 				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
-				$('#' + sendNewPremiseId).click(function(){
-					splits = window.location.href.split('/');
-					text = $('#' + addPremiseContainerMainInputId).val();
-					arg = splits[splits.length - 3];
-					supportive = splits[splits.length - 2] == 't';
-					relation = splits[splits.length - 1];
-					ajaxHandler.sendNewPremiseForArgument(arg, relation, supportive, text)
-				});
+				// click like the default
 			}
 		}
 	});
@@ -360,12 +353,12 @@ $(function () {
 		interactionHandler = new InteractionHandler(), tmp;
 
 	guiHandler.setHandler(interactionHandler);
-	setClickFunctions(guiHandler, ajaxHandler);
+	setClickFunctions(guiHandler, ajaxHandler, interactionHandler);
 	setKeyUpFunctions(guiHandler, ajaxHandler);
 	setStyleOptions(guiHandler);
 	setWindowOptions();
-	// setGuiOptions();
-	setInputExtraOptions(guiHandler, ajaxHandler);
+	setGuiOptions();
+	setInputExtraOptions(guiHandler, interactionHandler);
 
 	// some extras
 	// get restart url and cut the quotes

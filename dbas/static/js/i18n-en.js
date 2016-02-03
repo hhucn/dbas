@@ -5,6 +5,7 @@
  */
 
 var dbas_en = {
+	'and': 'and',
 	'addedEverything': 'Everything was added.',
 	'acceptIt': 'Accept it...',
 	'acceptItTitle': 'Accept it...',

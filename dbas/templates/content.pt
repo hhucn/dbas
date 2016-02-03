@@ -316,16 +316,17 @@
 				<h5>
 					<span tal:condition="extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-success" i18n:translate="agree">agree</span> <span i18n:translate="with">with</span>: </span>
 					<span tal:condition="not:extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-danger" i18n:translate="disagree">disagree</span> <span i18n:translate="with">with</span>: </span>
-					<span id="add-premise-container-main-input-intro" tal:replace=discussion.add_premise_text>
-					</span>
+					<span id="add-premise-container-main-input-intro">${discussion.add_premise_text}</span>
 				</h5>
-				<span style="float:left; line-height:60px; text-align:center;">
-					<h5><span i18n:translate="Because">Because</span>...</h5>
-				</span>
-				<!--
-				<textarea id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" ></textarea>
-				-->
-				<input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" >
+                <div id="add-premise-container-body">
+                <div>
+				    <span style="float:left; line-height:60px; text-align:center;">
+				    	<h5><span i18n:translate="Because">Because</span>...</h5>
+				    </span>
+				    <input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" >
+                    <img class="icon-add-premise icon-badge" alt="icon-add" src="${request.static_url('dbas:static/images/icon_pplus.png')}" style="height: 30px; padding-left: 1em" />
+                </div>
+				</div>
 				<div class="list-group" id="proposal-premise-list-group"></div>
 				<input id="send-new-premise" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 			</div>

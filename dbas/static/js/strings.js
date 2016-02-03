@@ -56,6 +56,7 @@ getLanguage = function(){
 var checkmark                                       = '&#x2713;'; // ✓
 var ballot                                          = '&#x2717;'; // ✗
 
+var and 						            		= 'and';
 var addedEverything 								= 'addedEverything';
 var acceptIt 										= 'acceptIt';
 var acceptItTitle 									= 'acceptItTitle';

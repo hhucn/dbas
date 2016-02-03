@@ -13,6 +13,7 @@ var addStatementContainerId 					= 'add-statement-container';
 var addStatementContainerMainInputId 			= 'add-statement-container-main-input';
 var addPremiseContainerId 					    = 'add-premise-container';
 var addPremiseContainerMainInputId 			    = 'add-premise-container-main-input';
+var addPremiseContainerMainInputIntroId         = 'add-premise-container-main-input-intro';
 var adminsSpaceForUsersId 						= 'admins-space-users';
 var adminsSpaceForArgumentsId 					= 'admins-space-argument';
 var addStatementErrorContainer 					= 'add-statement-error-container';
