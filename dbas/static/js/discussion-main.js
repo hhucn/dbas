@@ -249,6 +249,35 @@ setWindowOptions = function(){
 	});
 };
 
+/**
+ *
+ */
+setGuiOptions = function(){
+	if (window.location.href.indexOf('/reaction/') != -1){
+		var cl = 'icon-badge',
+			style = 'height: 30px; width:30px;',
+			src = mainpage + 'static/images/icon_discussion_',
+			item_undermine = $('#item_undermine'),
+			item_support = $('#item_support'),
+			item_undercut = $('#item_undercut'),
+			item_overbid = $('#item_overbid'),
+			item_rebut = $('#item_rebut'),
+			item_no_opinion = $('#item_no_opinion'),
+			undermine = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'undermine.png', 'onclick': item_undermine.attr('onclick')}),
+			support = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'support.png', 'onclick': item_support.attr('onclick')}),
+			undercut = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'undercut.png', 'onclick': item_undercut.attr('onclick')}),
+			overbid = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'overbid.png', 'onclick': item_overbid.attr('onclick')}),
+			rebut = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'rebut.png', 'onclick': item_rebut.attr('onclick')}),
+			no_opinion = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'no_opinion.png', 'onclick': item_no_opinion.attr('onclick')});
+		item_undermine.next().prepend(undermine ); item_undermine.hide();
+		item_support.next().prepend(support ); item_support.hide();
+		item_undercut.next().prepend(undercut ); item_undercut.hide();
+		item_overbid.next().prepend(overbid ); item_overbid.hide();
+		item_rebut.next().prepend(rebut ); item_rebut.hide();
+		item_no_opinion.next().prepend(no_opinion); item_no_opinion.hide();
+	}
+};
+
 setInputExtraOptions = function(guiHandler, ajaxHandler){
 	var input = $('#' + discussionSpaceId + ' li:last-child input'), text, splits, conclusion, supportive, arg, relation;
 	if (window.location.href.indexOf('/r/') != -1){
@@ -335,6 +364,7 @@ $(function () {
 	setKeyUpFunctions(guiHandler, ajaxHandler);
 	setStyleOptions(guiHandler);
 	setWindowOptions();
+	// setGuiOptions();
 	setInputExtraOptions(guiHandler, ajaxHandler);
 
 	// some extras
@@ -342,7 +372,6 @@ $(function () {
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
 	tmp = tmp.substr(1, tmp.length-2);
 	$('#' + discussionEndRestart).attr('href', tmp);
-
 });
 
 // new

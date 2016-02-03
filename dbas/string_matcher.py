@@ -12,23 +12,23 @@ from .logger import logger
 # @email krauthoff@cs.uni-duesseldorf.de
 # @copyright Krauthoff 2015
 
-# This class handles string search requests
+
 class FuzzyStringMatcher(object):
 
 	def __init__(self):
 		self.max_count_zeros = 5
-		self.return_count = 10 # same number as in googles suggest list (16.12.2015)
+		self.return_count = 10  # same number as in googles suggest list (16.12.2015)
 
-	def get_fuzzy_string_for_start(self, value, issue, isStatement):
+	def get_fuzzy_string_for_start(self, value, issue, is_startpoint):
 		"""
 		Levenshtein FTW: checks different start-position-strings for a match with given value
 		:param value: string
 		:param issue: int
-		:param isStatement: boolean
+		:param is_startpoint: boolean
 		:return: dict()
 		"""
-		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'string: ' + value + ', isStatement: ' + str(isStatement))
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.is_startpoint == isStatement, Statement.issue_uid == issue)).all()
+		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'string: ' + value + ', is_startpoint: ' + str(is_startpoint))
+		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.is_startpoint == is_startpoint, Statement.issue_uid == issue)).all()
 		tmp_dict = dict()
 		for index, statement in enumerate(db_statements):
 			db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
@@ -56,7 +56,8 @@ class FuzzyStringMatcher(object):
 		"""
 		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_edits', 'string: ' + value + ', statement uid: ' + str(statement_uid))
 
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid==statement_uid, Statement.issue_uid==issue)).first()
+		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_uid,
+		                                                                Statement.issue_uid == issue)).first()
 		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
 
 		tmp_dict = dict()
@@ -110,7 +111,7 @@ class FuzzyStringMatcher(object):
 		:return:
 		"""
 		dist = distance(string_a.lower(), string_b.lower())
-		logger('FuzzyStringMatcher', '__get_distance__', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' +  string_b.lower())
+		logger('FuzzyStringMatcher', '__get_distance__', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' + string_b.lower())
 
 		# matcher = difflib.SequenceMatcher(lambda x: x == " ", string_a.lower(), string_b.lower())
 		# dist = round(matcher.ratio()*100,1)
