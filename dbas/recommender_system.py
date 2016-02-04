@@ -4,7 +4,7 @@ import collections
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, User, Statement, Vote
+from .database.discussion_model import Argument, Premise, User, Statement, VoteArgument
 from .logger import logger
 from .query_helper import QueryHelper
 
@@ -157,12 +157,12 @@ class RecommenderHelper(object):
 		"""
 		logger('RecommenderHelper', '__evaluate_argument', 'argument ' + str(argument_uid))
 
-		db_votes = DBDiscussionSession.query(Vote).filter_by(argument_uid=argument_uid).all()
-		db_valid_votes   = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == argument_uid,
-		                                                               Vote.is_valid == True)).all()
-		db_valid_upvotes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == argument_uid,
-		                                                               Vote.is_valid == True,
-		                                                               Vote.is_up_vote == True)).all()
+		db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument_uid).all()
+		db_valid_votes   = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
+		                                                                       VoteArgument.is_valid == True)).all()
+		db_valid_upvotes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
+		                                                                       VoteArgument.is_valid == True,
+		                                                                       VoteArgument.is_up_vote == True)).all()
 		votes = len(db_votes)
 		valid_votes = len(db_valid_votes)
 		valid_upvotes = len(db_valid_upvotes)

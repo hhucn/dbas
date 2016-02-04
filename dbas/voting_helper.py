@@ -1,6 +1,6 @@
 from sqlalchemy import and_
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, Premise, Vote, User
+from .database.discussion_model import Argument, Statement, Premise, VoteArgument, VoteStatement, User
 from .logger import logger
 from .user_management import UserHandler
 
@@ -20,6 +20,8 @@ class VotingHelper(object):
 		:return: increased votes of the argument
 		"""
 		if not UserHandler().is_user_logged_in(user):
+			return None
+		else:
 			return None
 
 		logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
