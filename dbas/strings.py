@@ -67,6 +67,7 @@ class Translator(object):
 
 		self.aand = 'and'
 		self.addedEverything = 'addedEverything'
+		self.addStatementRow = 'addStatementRow'
 		self.alreadyInserted = 'alreadyInserted'
 		self.addPremisesRadioButtonText = 'addPremisesRadioButtonText'
 		self.addArgumentsRadioButtonText = 'addArgumentsRadioButtonText'
@@ -299,6 +300,7 @@ class Translator(object):
 		self.requestHistory = 'requestHistory'
 		self.refreshHistory = 'refreshHistory'
 		self.requestFailed = 'requestFailed'
+		self.remStatementRow = 'remStatementRow',
 		self.restartDiscussion = 'restartDiscussion'
 		self.restartDiscussionTitle = 'restartDiscussionTitle'
 		self.restartOnError = 'restartOnError'
@@ -431,6 +433,7 @@ class Translator(object):
 
 		en_lang[self.aand] = 'and'
 		en_lang[self.addedEverything] = 'Everything was added.'
+		en_lang[self.addStatementRow] = 'Adds another row for adding a new statemtent.'
 		en_lang[self.alreadyInserted] = 'This is a duplicate and already there.'
 		en_lang[self.addPremisesRadioButtonText] = 'Let me enter my reasons!'
 		en_lang[self.addArgumentsRadioButtonText] = 'Let me enter my own statements!'
@@ -666,6 +669,7 @@ class Translator(object):
 		en_lang[self.requestHistory] = 'Request history'
 		en_lang[self.refreshHistory] = 'Refresh history'
 		en_lang[self.requestFailed] = 'Request failed'
+		en_lang[self.remStatementRow] = 'Removes this row.'
 		en_lang[self.selectStatement] = 'Please select a statement!'
 		en_lang[self.showAllUsers] = 'Show all users'
 		en_lang[self.showAllArguments] = 'Show all arguments'
@@ -788,6 +792,7 @@ class Translator(object):
 		de_lang['/'] = 'durch'
 
 		de_lang[self.aand] = 'und',
+		de_lang[self.addStatementRow] = 'Fügt eine neue Reihe hinzu.'
 		de_lang[self.addedEverything] = 'Alles wurde hinzugefügt.',
 		de_lang[self.alreadyInserted] = 'Dies ist ein Duplikat und schon vorhanden.',
 		de_lang[self.addPremisesRadioButtonText] = 'Lass\' mich meine eigenen Gründe angeben!',
@@ -1014,6 +1019,7 @@ class Translator(object):
 		de_lang[self.passwordSubmit] = 'Passwort ändern',
 		de_lang[self.report] = 'Melden',
 		de_lang[self.reportTitle] = 'Öffnet die Kontaktseite, damit etwas gemeldet werden kann.',
+		de_lang[self.remStatementRow] = 'Entfernt diese Reihe.'
 		de_lang[self.registered] = 'Registriert',
 		de_lang[self.right] = 'Wahr',
 		de_lang[self.requestTrack] = 'Track anfragen',

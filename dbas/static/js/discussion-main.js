@@ -276,9 +276,9 @@ setWindowOptions = function(){
  *
  */
 setGuiOptions = function(){
-	if (window.location.href.indexOf('/reaction/') != -1){
+	if (window.location.href.indexOf('/reaction/') != -1){ // TODO SET ICONS IN HTML
 		var cl = 'icon-badge',
-			style = 'height: 30px; width:30px; padding-rigth: 1em;',
+			style = 'height: 30px; width:30px; margin-right: 0.5em;',
 			src = mainpage + 'static/images/icon_discussion_',
 			item_undermine = $('#item_undermine'),
 			item_support = $('#item_support'),
@@ -313,17 +313,9 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 		$(this).attr('checked', false).prop('checked', false);
 	});
 
-	// default function
-	$('#' + sendNewPremiseId).click(function(){
-		splits = window.location.href.split('/');
-		text = [];
-		$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
-		arg = splits[splits.length - 3];
-		supportive = splits[splits.length - 2] == 't';
-		relation = splits[splits.length - 1];
-		interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
-	});
-
+	// TODO CLEAR DESIGN
+	// TODO CLEAR DESIGN
+	// TODO CLEAR DESIGN
 	// options for the extra buttons, where the user can add input!
 	input.change(function () {
 			if (input.prop('checked')){
@@ -354,7 +346,13 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 			else if (input.attr('id').indexOf('justify_premise') != -1){
 				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
-				// click like the default
+		splits = window.location.href.split('/');
+		text = [];
+		$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
+		arg = splits[splits.length - 3];
+		supportive = splits[splits.length - 2] == 't';
+		relation = splits[splits.length - 1];
+		interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
 			}
 		}
 	});

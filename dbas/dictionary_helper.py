@@ -446,13 +446,15 @@ class DictionaryHelper(object):
 		return_dict['add_premise_supportive']        = add_premise_supportive
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'
-		if not for_api:
-			return_dict['breadcrumbs']               = breadcrumbs
 		return_dict['title']                         = {'barometer': _tn.get(_tn.opinionBarometer),
 													 	 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 													 	 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
-													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody)
+													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
+		                                                 'add_statement_row_title': _tn.get(_tn.addStatementRow),
+		                                                 'rem_statement_row_title': _tn.get(_tn.remStatementRow)
 		                                                }
+		if not for_api:
+			return_dict['breadcrumbs']               = breadcrumbs
 		self.add_language_options_for_extra_dict(return_dict, lang)
 
 		# add everything for the island view

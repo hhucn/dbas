@@ -19,10 +19,21 @@ function GuiHandler() {
 	 */
 	this.appendAddPremiseRow = function(){
 		var div = $('<div>').attr('style', 'padding-bottom: 2em'),
-			h5 = $('<h5>').attr({'style': 'float:left; line-height:20px; text-align:center;'}).text('Because...'),
-			input = $('<input>').attr({'type': 'text', 'class': 'form-control add-premise-container-input', 'autocomplete': 'off', 'placeholder':'example: There is some reason!'}),
-			imgm = $('<img>').attr({'class': 'icon-rem-premise', 'alt': 'icon-rem', 'src': mainpage + 'static/images/icon_minus2.png', 'style': 'height: 30px; padding-right: 0.5em;'}),
-			imgp = $('<img>').attr({'class': 'icon-add-premise', 'alt': 'icon-add', 'src': mainpage + 'static/images/icon_plus2.png', 'style': 'height: 30px;'});
+			h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
+			input = $('<input>').attr('type', 'text')
+				.attr('class', 'form-control add-premise-container-input')
+				.attr('autocomplete', 'off')
+				.attr('placeholder', 'example: There is some reason!'),
+			imgm = $('<img>').attr('class', 'icon-rem-premise')
+				.attr('alt', 'icon-rem')
+				.attr('src', mainpage + 'static/images/icon_minus2.png')
+				.attr('style', 'height: 30px; padding-right: 0.5em;')
+				.attr('title', $('#' + addPremiseContainerBodyId + ' .icon-rem-premise').first().attr('title')),
+			imgp = $('<img>').attr('class', 'icon-add-premise')
+				.attr('alt', 'icon-add')
+				.attr('src', mainpage + 'static/images/icon_plus2.png')
+				.attr('style', 'height: 30px;')
+				.attr('title', $('#' + addPremiseContainerBodyId + ' .icon-add-premise').first().attr('title'));
 		div.append(h5).append(input).append(imgm).append(imgp);
 		$('#' + addPremiseContainerBodyId).append(div);
 		imgp.click(function(){
