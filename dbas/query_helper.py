@@ -219,7 +219,7 @@ class QueryHelper(object):
 		current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
 
 		new_argument = None
-		if current_attack == 'undermine' or current_attack == 'support': # TODO handle premise groups
+		if current_attack == 'undermine' or current_attack == 'support':
 			new_arguments = []
 			already_in = []
 			# duplicate?
@@ -937,7 +937,7 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def get_attack_overview(self, user, issue, lang):  # TODO
+	def get_attack_overview(self, user, issue, lang):
 		"""
 		Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
 		:param user: current user

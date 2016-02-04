@@ -24,8 +24,6 @@ from sqlalchemy.orm import sessionmaker
 here = os.path.dirname(__file__)
 settings = appconfig('config:' + os.path.join(here, '../', 'production.ini'))
 
-# todo refresh
-
 class Setup:
 	def __init__(self):
 		print("Setup __init__")

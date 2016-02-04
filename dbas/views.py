@@ -1274,7 +1274,7 @@ class Dbas(object):
 
 			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			return_dict = dict()
-			# return_dict['distance_name'] = 'SequenceMatcher'  # TODO IMPROVE
+			# return_dict['distance_name'] = 'SequenceMatcher'  # TODO improve fuzzy search
 			return_dict['distance_name'] = 'Levensthein'
 			if mode == '0':  # start statement
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)

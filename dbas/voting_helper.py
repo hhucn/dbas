@@ -26,8 +26,9 @@ class VotingHelper(object):
 
 		logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		# db_vote, already_voted = self.__check_and_set_vote_uid(db_argument, user)
-		self.__check_and_set_vote_uid(db_argument, user)
+		# db_vote, already_voted = self.__check_and_set_vote_argument(db_argument, user)
+		self.__check_and_set_vote_argument(db_argument, user)
+		# todo handle premise and conlcusion
 
 		# some logical assumptions, where the conclusion is an argument
 		if db_argument.conclusion_uid == 0:
@@ -41,6 +42,7 @@ class VotingHelper(object):
 				if db_argument.is_supportive and not conclusion_argument.is_supportive \
 						or not db_argument.is_supportive and not conclusion_argument.is_supportive:
 					self.__vote_argument_down(conclusion_argument, user)
+					# todo handle premise and conlcusion
 
 		# let's check, if the user voted for the oposite
 		db_opposite_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == db_argument.premisesgroup_uid,
@@ -67,44 +69,124 @@ class VotingHelper(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		# set vote to invalid
-		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == argument.uid,
-		                                                       Vote.author_uid == db_user.uid)).all()
+		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+		                                                               VoteArgument.author_uid == db_user.uid)).all()
+		for vote in db_votes:
+			vote.set_valid(False)
+			# todo handle old premise and old conlcusions
+			vote.update_timestamp()
+
+		# creating down vote for this argument
+		db_vote = VoteArgument(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=False, is_valid=True)
+		DBDiscussionSession.add(db_vote)
+		DBDiscussionSession.flush()
+
+		# return count of votes
+		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+		                                                               True if Vote.is_valid else False)).all()
+
+		# todo handle new premise and new conlcusions
+
+		return len(db_votes)
+
+	def __vote_statement_down(self, statement, user):
+		"""
+		Decreses the vote of a given statement
+		:param argument: Statement
+		:return: decreased vote of the argument
+		"""
+		logger('VotingHelper', '__vote_statement_down', 'decreasing votes of statement ' + str(statement.uid))
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+		# set vote to invalid
+		db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
+		                                                                VoteStatement.author_uid == db_user.uid)).all()
 		for vote in db_votes:
 			vote.set_valid(False)
 			vote.update_timestamp()
 
 		# creating down vote for this argument
-		db_vote = Vote(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=False, is_valid=True)
+		db_vote = VoteStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=False, is_valid=True)
 		DBDiscussionSession.add(db_vote)
 		DBDiscussionSession.flush()
 
 		# return count of votes
-		db_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == argument.uid, True if Vote.is_valid else False)).all()
+		db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.argument_uid == statement.uid,
+		                                                                True if Vote.is_valid else False)).all()
 
 		return len(db_votes)
 
-	def __check_and_set_vote_uid(self, argument, user):
+	def __vote_premisegroup_down(self, premisegroup_uid, user):
+		"""
+
+		:param premisegroup_uid:
+		:param user:
+		:return:
+		"""
+		db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
+		for premise in db_premises:
+			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
+			self.__vote_statement_down(db_statement, user)
+
+	def __check_and_set_vote_argument(self, argument, user):
 		"""
 		Check if there is a vote for the argument. If not, we will create a new one, otherwise the current one will be
-		invalid an we will create a new entry
+		invalid an we will create a new entry.
 		:param argument: Argument
 		:param user: self.request.authenticated_userid
-		:return: Vote, boolean for already voted
+		:return: None
 		"""
-		logger('VotingHelper', '__check_and_set_vote_uid', 'argument ' + str(argument.uid) + ', user ' + user)
+		logger('VotingHelper', '__check_and_set_vote_argument', 'argument ' + str(argument.uid) + ', user ' + user)
 
 		# old one will be invalid
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		db_old_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid == argument.uid,
-		                                                           Vote.author_uid == db_user.uid,
-		                                                           Vote.is_valid == True)).all()
+		db_old_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+		                                                                   VoteArgument.author_uid == db_user.uid,
+		                                                                   True if VoteArgument.is_valid else False)).all()
+		for vote in db_old_votes:
+			vote.set_valid(False)
+			vote.update_timestamp()
+			# todo handle old premise and old conlcusions
+		DBDiscussionSession.flush()
+
+		db_new_vote = VoteArgument(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True)
+		DBDiscussionSession.add(db_new_vote)
+		DBDiscussionSession.flush()
+
+		# todo handle new premise and new conlcusions
+
+	def __check_and_set_vote_statement(self, statement, user):
+		"""
+		Check if there is a vote for the statement. If not, we will create a new one, otherwise the current one will be
+		invalid an we will create a new entry.
+		:param argument: Statement
+		:param user: self.request.authenticated_userid
+		:return: None
+		"""
+		logger('VotingHelper', '__check_and_set_vote_statement', 'argument ' + str(statement.uid) + ', user ' + user)
+
+		# old one will be invalid
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		db_old_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
+		                                                                    VoteStatement.author_uid == db_user.uid,
+		                                                                    True if VoteStatement.is_valid else False)).all()
 		for vote in db_old_votes:
 			vote.set_valid(False)
 			vote.update_timestamp()
 		DBDiscussionSession.flush()
 
-		db_new_vote = Vote(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True)
+		db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True)
 		DBDiscussionSession.add(db_new_vote)
 		DBDiscussionSession.flush()
 
-		return db_new_vote
+	def __check_and_set_premisegroup(self, premisegroup_uid, user):
+		"""
+
+		:param premisegroup_uid:
+		:param user:
+		:return:
+		"""
+		db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
+		for premise in db_premises:
+			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
+			self.__check_and_set_vote_statement(db_statement, user)

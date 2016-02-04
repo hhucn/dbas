@@ -63,7 +63,7 @@ class UserHandler(object):
 		:param nick:
 		:return:
 		"""
-		if nick is not None: # todo: catch none user
+		if nick is not None:
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
 			db_user.update_last_action()
 			transaction.commit()

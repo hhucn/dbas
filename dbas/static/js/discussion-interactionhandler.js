@@ -172,6 +172,7 @@ function InteractionHandler() {
 					for(i=0; i<splitted.length; i++){
 						listB.append($('<li>').append($('<span>').text(splitted[i])).append($('<em>').text(' or ')));
 					}
+					// TODO MAKE THIS AS ONE POPUP
 					listA.children().last().children().last().remove();
 					listB.children().last().children().last().remove();
 
