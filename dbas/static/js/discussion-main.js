@@ -11,13 +11,27 @@
  * Sets all click functions
  * @param guiHandler
  * @param ajaxHandler
- * @param interactionHandler
  */
-setClickFunctions = function (guiHandler, ajaxHandler, interactionHandler){
+setClickFunctions = function (guiHandler, ajaxHandler){
 
 	$('.icon-add-premise').each(function() {
 		$(this).click(function() {
-			interactionHandler.appendAddPremiseRow($(this));
+			guiHandler.appendAddPremiseRow($(this));
+			$(this).hide().prev().show();
+		});
+	});
+
+	$('.icon-rem-premise').each(function() {
+		var _this = this;
+		$(this).click(function() {
+			$(_this).parent().remove();
+			$('#add-premise-container-body div').children().last().show();
+			// hide minus icon, when there is only one child
+			if ($('#add-premise-container-body div').length == 1) {
+				$('#add-premise-container-body .icon-rem-premise').hide();
+			} else {
+				$('#add-premise-container-body .icon-rem-premise').show();
+			}
 		});
 	});
 
@@ -288,7 +302,7 @@ setGuiOptions = function(){
 };
 
 setInputExtraOptions = function(guiHandler, interactionHandler){
-	var input = $('#' + discussionSpaceId + ' li:last-child input'), text, splits, conclusion, supportive, arg, relation;
+	var input = $('#' + discussionSpaceId + ' li:last-child input'), text = [], splits, conclusion, supportive, arg, relation;
 	if (window.location.href.indexOf('/r/') != -1){
 		$('#' + discussionSpaceId + ' label').each(function(){
 			$(this).css('width', '95%');
@@ -302,23 +316,25 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 	// default function
 	$('#' + sendNewPremiseId).click(function(){
 		splits = window.location.href.split('/');
-		text = $('#' + addPremiseContainerMainInputId).val();
+		text = [];
+		$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
 		arg = splits[splits.length - 3];
 		supportive = splits[splits.length - 2] == 't';
 		relation = splits[splits.length - 1];
-		interactionHandler.sendStatement(text, '', supportive, arg, relation, 0);
+		interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
 	});
 
 	// options for the extra buttons, where the user can add input!
 	input.change(function () {
-		if (input.prop('checked')){
+			if (input.prop('checked')){
 			// new position at start
 			if (input.attr('id').indexOf('start_statement') != -1){
 				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPositionContainer();
 				$('#' + sendNewStatementId).click(function(){
-					text = $('#' + addStatementContainerMainInputId).val();
-					interactionHandler.sendStatement(text, '', '', '', '', 1);
+					text = [];
+					$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
+					interactionHandler.sendStatement(text, '', '', '', '', fuzzy_start_statement);
 				});
 			}
 			// new premise for the start
@@ -329,8 +345,9 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 					splits = window.location.href.split('/');
 					conclusion = splits[splits.length - 2];
 					supportive = splits[splits.length - 1] == 't';
-					text = $('#' + addPremiseContainerMainInputId).val();
-					interactionHandler.sendStatement(text, conclusion, supportive, '', '', 2);
+					text = [];
+					$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
+					interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
 				});
 			}
 			// new premise while judging
@@ -353,7 +370,7 @@ $(function () {
 		interactionHandler = new InteractionHandler(), tmp;
 
 	guiHandler.setHandler(interactionHandler);
-	setClickFunctions(guiHandler, ajaxHandler, interactionHandler);
+	setClickFunctions(guiHandler, ajaxHandler);
 	setKeyUpFunctions(guiHandler, ajaxHandler);
 	setStyleOptions(guiHandler);
 	setWindowOptions();

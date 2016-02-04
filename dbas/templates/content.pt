@@ -12,10 +12,10 @@
 			<div class="row">
 				<div class="col-md-12">
 					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0;">
-                        <li tal:repeat="breadcrumb extras.breadcrumbs">
-                            <a href="" tal:attributes="href breadcrumb.url; title breadcrumb.text" tal:condition="not:repeat.breadcrumb.end"><span tal:replace="breadcrumb.shorttext">weee :)</span></a>
-                            <span tal:replace="breadcrumb.text" tal:condition="repeat.breadcrumb.end">weee :)</span>
-                        </li>
+						<li tal:repeat="breadcrumb extras.breadcrumbs">
+							<a href="" tal:attributes="href breadcrumb.url; title breadcrumb.text" tal:condition="not:repeat.breadcrumb.end"><span tal:replace="breadcrumb.shorttext">weee :)</span></a>
+							<span tal:replace="breadcrumb.text" tal:condition="repeat.breadcrumb.end">weee :)</span>
+						</li>
 					</ol>
 				</div>
 			</div>
@@ -47,7 +47,7 @@
 						</ul>
 					</div>
 					<br>
-					<button id ="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
+					<button id="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart Discussion</span>
 					</button>
 				</div>
@@ -85,9 +85,9 @@
 						<ul>
 							<li tal:repeat="item items">
 								<input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-                                <label for="tmp" tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label>
-                                <span tal:repeat="premise item.premises" tal:omit-tag="" tal:condition="item.leading_because"><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
-                                <label tal:attributes="for item.id" tal:condition="not:item.leading_because" style="width: 95%"><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span></label>
+								<label for="tmp" tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label>
+								<span tal:repeat="premise item.premises" tal:omit-tag="" tal:condition="item.leading_because"><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
+								<label tal:attributes="for item.id" tal:condition="not:item.leading_because" style="width: 95%"><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span></label>
 							</li>
 						</ul>
 
@@ -96,9 +96,9 @@
 
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
-						<img tal:condition="extras.is_editable" id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.button.edit_statement; value extras.button.edit_statement"/>
+						<img tal:condition="extras.is_editable" id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.button.edit_statement; value extras.button.edit_statement" />
 						<br tal:condition="extras.is_editable">
-						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="value extras.button.report; title extras.button.report_title"/>
+						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="value extras.button.report; title extras.button.report_title" />
 						<div id="display-style-menu-icon" tal:condition="extras.show_display_style or extras.show_bar_icon">
 							<img id="" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" />
 							<nav id="site-navigation">
@@ -280,17 +280,15 @@
 			</button>
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
-				<h4>
-					<span i18n:translate="what_is_your_idea">
-						What is your idea? What should we do?
-					</span>
-				</h4>
+				<h4><span i18n:translate="what_is_your_idea">What is your idea? What should we do?</span></h4>
 				<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 					<span i18n:translate="error:">Error:</span>
 					<span id="add-statement-error-msg"></span>
 				</div>
-				<input id="add-statement-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+				<div id="add-statement-container-body">
+					<input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+				</div>
 				<div class="list-group" id="proposal-statement-list-group"></div>
 				<input id="send-new-statement" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
 			</div>
@@ -318,14 +316,13 @@
 					<span tal:condition="not:extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-danger" i18n:translate="disagree">disagree</span> <span i18n:translate="with">with</span>: </span>
 					<span id="add-premise-container-main-input-intro">${discussion.add_premise_text}</span>
 				</h5>
-                <div id="add-premise-container-body">
-                <div>
-				    <span style="float:left; line-height:60px; text-align:center;">
-				    	<h5><span i18n:translate="Because">Because</span>...</h5>
-				    </span>
-				    <input id="add-premise-container-main-input" type="text" class="form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="" >
-                    <img class="icon-add-premise icon-badge" alt="icon-add" src="${request.static_url('dbas:static/images/icon_pplus.png')}" style="height: 30px; padding-left: 1em" />
-                </div>
+				<div id="add-premise-container-body">
+					<div style="padding-bottom: 2em;">
+						<h5 style="float: left; line-height: 20px; text-align: center;" i18n:translate="Because...">Because...</h5>
+						<input id="add-premise-container-main-input" type="text" class="add-premise-container-input form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="">
+						<img class="icon-badge icon-rem-premise" alt="icon-rem" src="${request.static_url('dbas:static/images/icon_minus2.png')}" style="height: 30px; display:none; padding-right: 0.5em;" />
+						<img class="icon-badge icon-add-premise" alt="icon-add" src="${request.static_url('dbas:static/images/icon_plus2.png')}" style="height: 30px;" />
+					</div>
 				</div>
 				<div class="list-group" id="proposal-premise-list-group"></div>
 				<input id="send-new-premise" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
@@ -338,13 +335,13 @@
 				<h4 i18n:translate="change_style">Change display style</h4>
 				<div class="col-md-4">
 					<input type="radio" id="sc-style-1" checked value="Dialog View">
-					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View" i18n:translate="dialog_view">Dialog View	</label>
+					<label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View" i18n:translate="dialog_view">Dialog View </label>
 					<br>
 					<img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
 				</div>
 				<div class="col-md-4">
 					<input type="radio" id="sc-style-2" value="Island View">
-					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View"  i18n:translate="island_view">Island View</label>
+					<label id="label-sc-style-2" for="sc-style-2" data-value="Island View" i18n:translate="island_view">Island View</label>
 					<br>
 					<img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
 				</div>

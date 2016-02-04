@@ -12,6 +12,7 @@ var addReasonButtonId 							= 'add-reason';
 var addStatementContainerId 					= 'add-statement-container';
 var addStatementContainerMainInputId 			= 'add-statement-container-main-input';
 var addPremiseContainerId 					    = 'add-premise-container';
+var addPremiseContainerBodyId                   = 'add-premise-container-body';
 var addPremiseContainerMainInputId 			    = 'add-premise-container-main-input';
 var addPremiseContainerMainInputIntroId         = 'add-premise-container-main-input-intro';
 var adminsSpaceForUsersId 						= 'admins-space-users';
@@ -230,5 +231,3 @@ var attr_undercut 				= 'undercut';
 
 var id_pro 						= 'pro';
 var id_con 						= 'con';
-var id_premisses				= '0';
-var id_premisse					= '1';

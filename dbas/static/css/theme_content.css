@@ -76,16 +76,15 @@
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-547-quote.png) no-repeat 12px 10px;
 }
 
-#add-statement-container-main-input{
+.add-statement-container-input{
 	width: 100%;
 }
-#add-premise-container-main-input{
-	width: 85%;
+.add-premise-container-input{
+	width: 80%;
 	float: left;
 }
-#add-statement-container-main-input,
-#add-premise-container-main-input{
-	padding: 12px 10px 0px 50px;
+#add-statement-container-body input,
+#add-premise-container-body input{
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 5px;
 	-o-border-radius: 5px;
@@ -93,6 +92,7 @@
 	-webkit-appearance: none;
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-547-quote.png) no-repeat 12px 10px;
 	margin-bottom: 0px;
+	padding: 12px 10px 0px 50px;
 }
 
 #add-statement-container-main-input-intro{
