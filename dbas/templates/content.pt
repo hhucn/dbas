@@ -321,7 +321,7 @@
 						<h5 style="float: left; line-height: 20px; text-align: center;" i18n:translate="Because...">Because...</h5>
 						<input id="add-premise-container-main-input" type="text" class="add-premise-container-input form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="">
 						<img class="icon-badge icon-rem-premise" alt="icon-rem" src="${request.static_url('dbas:static/images/icon_minus2.png')}" style="height: 30px; display:none; padding-right: 0.5em;" />
-						<img class="icon-badge icon-add-premise" alt="icon-add" src="${request.static_url('dbas:static/images/icon_plus2.png')}" style="height: 30px;" />
+						<img class="icon-badge icon-add-premise" alt="icon-add" src="${request.static_url('dbas:static/images/icon_plus2.png')}" style="height: 30px; display:none;" />
 					</div>
 				</div>
 				<div class="list-group" id="proposal-premise-list-group"></div>
