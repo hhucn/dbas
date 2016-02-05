@@ -144,6 +144,7 @@ var popupLoginWarningMessageText 				= 'popup-login-warning-message-text';
 var popupLoginInlineRadioGenderN 				= 'inlineRadioGender1';
 var popupLoginInlineRadioGenderF 				= 'inlineRadioGender2';
 var popupLoginInlineRadioGenderM 				= 'inlineRadioGender3';
+
 var popupUrlSharingLongUrlButtonID 				= 'popup-url-sharing-long-url-button';
 var popupUrlSharingId 							= 'popup-url-sharing';
 var popupUrlSharingCloseButtonXId 				= 'popup-url-sharing-close';

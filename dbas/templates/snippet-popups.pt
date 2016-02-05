@@ -520,30 +520,25 @@
 				</button>
 				<h4 class="modal-title" id="myModalLabel" i18n:translate="how-to-set-premissegroups-header">How to set premisse groups</h4>
 			</div>
-			<div id="popup-set-premissegroups-body">
-				<h4><span i18n:translate="how-to-set-premissegroups-header-body-title">There are a few simple tricks for setting premisse groups:</span></h4>
-				<br>
-				<span i18n:translate="how-to-set-premissegroups-header-body">Sometimes you want to state more than one statement, but they are connected...in some way. These statements can be connected in one premisse group</span>
-				<br>
-				<br>
-				<ol>
-					<li i18n:translate="set-premissegroups1">Normally, each statement of you is independent of the others.</li>
-					<li i18n:translate="set-premissegroups2">If you want to add an 'and' in your statement, please do not do it!</li>
-					<li><span i18n:translate="set-premissegroups3">Sometimes you have dependent statemens, like:</span>
-						<ul type="a">
-							<li i18n:translate="set-premissegroups4">Let's say, you argument, that you want to have a cat, but if and only iff she is small and fluffy. Then you have two statements for your position:</li>
-							<li i18n:translate="set-premissegroups5">I want a cat, because:</li>
-							<li i18n:translate="set-premissegroups6">She is fluffy</li>
-							<li i18n:translate="set-premissegroups7">She is small</li>
-							<li i18n:translate="set-premissegroups8">Then you have to check the box!</li>
-						</ul>
-					</li>
-					<li i18n:translate="set-premissegroups9">Otherwise you do not need this checkbox.</li>
-				</ol>
+			<div id="popup-set-premissegroups-body" class="lead">
+                <div id="popup-set-premissegroups-body-intro">
+
+                </div>
+                <div id="popup-set-premissegroups-body-content">
+
+                </div>
+
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default btn-primary" id="popup-set-premissegroups-okay-button" i18n:translate="Okay">Okay</button>
-				<button type="button" class="btn btn-default" id="popup-set-premissegroups-close-button" data-dismiss="modal" i18n:translate="abort">Abort</button>
+                <ul class="pager" style="margin: 0;">
+                    <li class="next">
+                        <a href="#">Next →</a>
+                    </li>
+                    <li class="previous">
+                        <a href="#">← previous</a>
+                    </li>
+                </ul>
+				<button type="button" class="btn btn-default" id="popup-set-premissegroups-close-button" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
 			</div>
 		</div>
 	</div>
