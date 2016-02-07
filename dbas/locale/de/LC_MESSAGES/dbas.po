@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-02-01 08:59+0100\n"
+"POT-Creation-Date: 2016-02-05 13:36+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -274,8 +274,8 @@ msgstr "für dich."
 
 #. Default: Island View
 #. Default: Island<dynamic element>View
-#: dbas/templates/index.pt:148 dbas/templates/content.pt:123
-#: dbas/templates/content.pt:355
+#: dbas/templates/index.pt:148 dbas/templates/content.pt:121
+#: dbas/templates/content.pt:348
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
@@ -957,6 +957,7 @@ msgstr "Okay"
 
 #. Default: Cancel
 #: dbas/templates/snippet-popups.pt:176 dbas/templates/snippet-popups.pt:201
+#: dbas/templates/snippet-popups.pt:565
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -1005,14 +1006,14 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:292 dbas/templates/snippet-popups.pt:394
-#: dbas/templates/content.pt:149
+#: dbas/templates/content.pt:147
 msgid "error"
 msgstr "Fehler:"
 
 #. Default: Success:
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:386
-#: dbas/templates/settings.pt:66 dbas/templates/content.pt:80
+#: dbas/templates/settings.pt:66 dbas/templates/content.pt:78
 msgid "success"
 msgstr "Erfolg:"
 
@@ -1166,15 +1167,10 @@ msgstr ""
 msgid "how-to-write-text-header"
 msgstr "Wie schreibe ich Texte"
 
-#. Default: There are a few simple rules for writing good arguments:
-#: dbas/templates/snippet-popups.pt:489
-msgid "how-to-write-text-header-body-title"
-msgstr "Es gibt ein paar einfache Regeln um gute Argumente zu schreiben:"
-
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: dbas/templates/snippet-popups.pt:491
+#: dbas/templates/snippet-popups.pt:489
 msgid "how-to-write-text-header-body"
 msgstr ""
 "Gut zu schreiben ist ein Herausforderung und notwendig für die Benutzung von "
@@ -1182,101 +1178,54 @@ msgstr ""
 "paar Regeln gelistet, was gut und was schlecht ist."
 
 #. Default: Do's:
-#: dbas/templates/snippet-popups.pt:494
+#: dbas/templates/snippet-popups.pt:492
 msgid "dos"
 msgstr "Gut:"
 
 #. Default: Write short!
-#: dbas/templates/snippet-popups.pt:496
+#: dbas/templates/snippet-popups.pt:494
 msgid "how-to-write-text-short"
 msgstr "Schreiben Sie kurz!"
 
 #. Default: Only one statement/argument/point per field!
-#: dbas/templates/snippet-popups.pt:497
+#: dbas/templates/snippet-popups.pt:495
 msgid "how-to-write-text-one-point"
 msgstr "Immer nur eine Aussage/Argumete/Punkt pro Feld!"
 
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:510 dbas/templates/snippet-popups.pt:547
+#: dbas/templates/snippet-popups.pt:508
 msgid "Okay"
 msgstr "Okay"
 
-#. Default: How to set premisse groups
-#: dbas/templates/snippet-popups.pt:523
-msgid "how-to-set-premissegroups-header"
-msgstr "Wie markiere ich Gruppen von Aussagen"
+#. Default: We need your help to understand your statement!
+#: dbas/templates/snippet-popups.pt:521
+msgid "need-help-to-understand-statement"
+msgstr "Wir brauchen Hilfe zum Verständniss Ihrer Aussage!"
 
-#. Default: There are a few simple tricks for setting premisse groups:
-#: dbas/templates/snippet-popups.pt:526
-msgid "how-to-set-premissegroups-header-body-title"
-msgstr "Es gibt ein paar einfache Regeln um Argumentgruppen zu setzen:"
-
-#. Default: Sometimes you want to state more than one statement, but they are
-#. connected...in some way. These statements can be connected in one premisse
-#. group
-#: dbas/templates/snippet-popups.pt:528
-msgid "how-to-set-premissegroups-header-body"
+#. Default: You have used 'and' in your statement. As a result there are two
+#. ways it could be interpreted. Please help us by selecting the right
+#. interpretation:
+#: dbas/templates/snippet-popups.pt:524
+msgid "set_premisegroups_intro"
 msgstr ""
-"Manchmal möchten Sie mehr als nur eine Aussage angeben, aber die Aussagen "
-"sind irgendwie voneinander abhängig. Wenn das so ist,  können die Aussagen "
-"als Gruppe markeirt werden."
+"Sie haben 'und' in Ihrer Aussage benutzt. Daher existeiren zwei mögliche "
+"Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen"
 
-#. Default: Normally, each statement of you is independent of the others.
-#: dbas/templates/snippet-popups.pt:532
-msgid "set-premissegroups1"
-msgstr "Normalerweise ist jede Aussagen unabhängig von den anderen."
-
-#. Default: If you want to add an 'and' in your statement, please do not do it!
-#: dbas/templates/snippet-popups.pt:533
-msgid "set-premissegroups2"
-msgstr ""
-"Wenn Sie ein 'und' in Ihrer Aussage hinzufügen möchten, lassen Sie es. Es "
-"sind meistens zwei unabhängige Aussagen."
-
-#. Default: Sometimes you have dependent statemens, like:
+#. Default: I actually have
 #: dbas/templates/snippet-popups.pt:534
-msgid "set-premissegroups3"
-msgstr "Manchmal haben Sie abhängige Aussagen, wie:"
+msgid "i_actually_have"
+msgstr "Aktuell habe ich"
 
-#. Default: Let's say, you argument, that you want to have a cat, but if and
-#. only iff she is small and fluffy. Then you have two statements for your
-#. position:
-#: dbas/templates/snippet-popups.pt:536
-msgid "set-premissegroups4"
-msgstr ""
-"Sagen wir, Sie argumentieren, dass Sie eine Katze haben möchten, aber nur "
-"wenn sie klein und flauschig ist. Dann haben Sie zwei  Aussagen für Ihre "
-"Position:"
+#. Default: arguments:
+#. Default: arguments
+#: dbas/templates/snippet-popups.pt:534 dbas/templates/content.pt:36
+msgid "arguments"
+msgstr "Argumente"
 
-#. Default: I want a cat, because:
-#: dbas/templates/snippet-popups.pt:537
-msgid "set-premissegroups5"
-msgstr "Ich möchte eine Katze, weil:"
-
-#. Default: She is fluffy
-#: dbas/templates/snippet-popups.pt:538
-msgid "set-premissegroups6"
-msgstr "Sie flauschig ist."
-
-#. Default: She is small
-#: dbas/templates/snippet-popups.pt:539
-msgid "set-premissegroups7"
-msgstr "Weil Sie klein ist."
-
-#. Default: Then you have to check the box!
-#: dbas/templates/snippet-popups.pt:540
-msgid "set-premissegroups8"
-msgstr "Dann sollten Sie die Box markieren."
-
-#. Default: Otherwise you do not need this checkbox.
-#: dbas/templates/snippet-popups.pt:543
-msgid "set-premissegroups9"
-msgstr "Andernfalls brauchen Sie die Checkbox nicht."
-
-#. Default: Abort
-#: dbas/templates/snippet-popups.pt:548
-msgid "abort"
-msgstr "Abbrechen"
+#. Default: Save my Statement!
+#: dbas/templates/snippet-popups.pt:570
+msgid "save_my_statement"
+msgstr "Aussage speichern"
 
 #. Default: Writing a new message
 #: dbas/templates/news.pt:21
@@ -1285,7 +1234,7 @@ msgstr "Neue Nachricht schreiben"
 
 #. Default: Error:
 #: dbas/templates/news.pt:25 dbas/templates/settings.pt:75
-#: dbas/templates/content.pt:293 dbas/templates/content.pt:318
+#: dbas/templates/content.pt:285 dbas/templates/content.pt:308
 msgid "error:"
 msgstr "Fehler:"
 
@@ -1462,92 +1411,134 @@ msgstr "Die Diskussion wurde gestartet: "
 msgid "already_has"
 msgstr "und verfügt über "
 
-#. Default: arguments
-#: dbas/templates/content.pt:36
-msgid "arguments"
-msgstr "Argumente"
-
-#. Default: Restart Discussion
-#: dbas/templates/content.pt:40
-msgid "restart_discussion"
-msgstr "Restart Discussion"
-
 #. Default: Topics
-#: dbas/templates/content.pt:49
+#: dbas/templates/content.pt:43
 msgid "topics"
 msgstr "Themen"
 
+#. Default: Restart Discussion
+#: dbas/templates/content.pt:51
+msgid "restart_discussion"
+msgstr "Restart Discussion"
+
 #. Default: Because:
-#: dbas/templates/content.pt:90
+#: dbas/templates/content.pt:88
 msgid "Because:"
 msgstr "Weil:"
 
 #. Default: and
-#: dbas/templates/content.pt:91 dbas/templates/content.pt:92
+#: dbas/templates/content.pt:89 dbas/templates/content.pt:90
 msgid "and"
 msgstr "und"
 
 #. Default: Opinion<dynamic element>Barometer
-#: dbas/templates/content.pt:109
+#: dbas/templates/content.pt:107
 msgid "opinion_barometer"
 msgstr "Meinungsbarometer"
 
 #. Default: Dialog<dynamic element>View
 #. Default: Dialog View
-#: dbas/templates/content.pt:116 dbas/templates/content.pt:347
+#: dbas/templates/content.pt:114 dbas/templates/content.pt:342
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Complete<dynamic element>View
 #. Default: Complete View
-#: dbas/templates/content.pt:130 dbas/templates/content.pt:363
+#: dbas/templates/content.pt:128 dbas/templates/content.pt:354
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Add statement
-#: dbas/templates/content.pt:266
+#: dbas/templates/content.pt:264
 msgid "add_statement"
 msgstr "Aussage hinzufügen"
 
 #. Default: What is your idea? What should we do?
-#: dbas/templates/content.pt:287
+#: dbas/templates/content.pt:282
 msgid "what_is_your_idea"
 msgstr "Was ist Ihre Idee? Was sollten wir machen?"
 
 #. Default: Let me enter my reason!
-#: dbas/templates/content.pt:312
+#: dbas/templates/content.pt:302
 msgid "let_me_enter_my_reason"
 msgstr "Lass' mich meinen Grund angeben!"
 
 #. Default: I
-#: dbas/templates/content.pt:322 dbas/templates/content.pt:323
+#: dbas/templates/content.pt:312 dbas/templates/content.pt:313
 msgid "I"
 msgstr "Ich"
 
 #. Default: agree
-#: dbas/templates/content.pt:322
+#: dbas/templates/content.pt:312
 msgid "agree"
 msgstr "stimme"
 
 #. Default: with
-#: dbas/templates/content.pt:322 dbas/templates/content.pt:323
+#: dbas/templates/content.pt:312 dbas/templates/content.pt:313
 msgid "with"
 msgstr "zu"
 
 #. Default: disagree
-#: dbas/templates/content.pt:323
+#: dbas/templates/content.pt:313
 msgid "disagree"
 msgstr "stimme nicht"
 
-#. Default: Because
-#: dbas/templates/content.pt:328
-msgid "Because"
-msgstr "Weil"
+#. Default: Because...
+#: dbas/templates/content.pt:318
+msgid "Because..."
+msgstr "Weil..."
 
 #. Default: Change display style
-#: dbas/templates/content.pt:343
+#: dbas/templates/content.pt:339
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
+
+#~ msgid "how-to-write-text-header-body-title"
+#~ msgstr "Es gibt ein paar einfache Regeln um gute Argumente zu schreiben:"
+
+#~ msgid "how-to-set-premissegroups-header"
+#~ msgstr "Wie markiere ich Gruppen von Aussagen"
+
+#~ msgid "how-to-set-premissegroups-header-body-title"
+#~ msgstr "Es gibt ein paar einfache Regeln um Argumentgruppen zu setzen:"
+
+#~ msgid "how-to-set-premissegroups-header-body"
+#~ msgstr ""
+#~ "Manchmal möchten Sie mehr als nur eine Aussage angeben, aber die Aussagen "
+#~ "sind irgendwie voneinander abhängig. Wenn das so ist,  können die "
+#~ "Aussagen als Gruppe markeirt werden."
+
+#~ msgid "set-premissegroups2"
+#~ msgstr ""
+#~ "Wenn Sie ein 'und' in Ihrer Aussage hinzufügen möchten, lassen Sie es. Es "
+#~ "sind meistens zwei unabhängige Aussagen."
+
+#~ msgid "set-premissegroups3"
+#~ msgstr "Manchmal haben Sie abhängige Aussagen, wie:"
+
+#~ msgid "set-premissegroups4"
+#~ msgstr ""
+#~ "Sagen wir, Sie argumentieren, dass Sie eine Katze haben möchten, aber nur "
+#~ "wenn sie klein und flauschig ist. Dann haben Sie zwei  Aussagen für Ihre "
+#~ "Position:"
+
+#~ msgid "set-premissegroups5"
+#~ msgstr "Ich möchte eine Katze, weil:"
+
+#~ msgid "set-premissegroups6"
+#~ msgstr "Sie flauschig ist."
+
+#~ msgid "set-premissegroups7"
+#~ msgstr "Weil Sie klein ist."
+
+#~ msgid "set-premissegroups8"
+#~ msgstr "Dann sollten Sie die Box markieren."
+
+#~ msgid "set-premissegroups9"
+#~ msgstr "Andernfalls brauchen Sie die Checkbox nicht."
+
+#~ msgid "abort"
+#~ msgstr "Abbrechen"
 
 #~ msgid "donts"
 #~ msgstr "Schlecht:"

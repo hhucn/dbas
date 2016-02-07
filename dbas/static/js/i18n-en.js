@@ -6,9 +6,11 @@
 
 var dbas_en = {
 	'and': 'and',
+	'andAtTheSameTime': 'and at the same time',
 	'addedEverything': 'Everything was added.',
 	'acceptIt': 'Accept it...',
 	'acceptItTitle': 'Accept it...',
+	'because': 'because',
 	'countOfArguments': 'Count of arguments',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
 	'correctionsSet': 'Your correction was set.',
@@ -54,6 +56,8 @@ var dbas_en = {
 	'inputEmpty': 'Input is empty!',
 	'initialPositionInterest': 'What is the initial position you are interested in?',
 	'interestingOnDBAS': 'Interesting discussion on DBAS',
+	'itIsTrueThat': 'it is true that',
+	'itIsFalseThat': 'it is false that',
 	'keepSetting': 'Keep this',
 	'hideAllUsers': 'Hide all users',
 	'hideAllArguments': 'Hide all attacks',
