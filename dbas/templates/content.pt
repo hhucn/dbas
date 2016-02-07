@@ -289,7 +289,7 @@
 					<input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 				</div>
 				<div class="list-group" id="proposal-statement-list-group"></div>
-				<input id="send-new-statement" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+				<input id="send-new-statement" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.title.save_my_statement"/>
 			</div>
 		</div>
 
@@ -330,7 +330,7 @@
 					</div>
 				</div>
 				<div class="list-group" id="proposal-premise-list-group"></div>
-				<input id="send-new-premise" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+				<input id="send-new-premise" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.title.save_my_statement"/>
 			</div>
 		</div>
 

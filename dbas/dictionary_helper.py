@@ -451,7 +451,10 @@ class DictionaryHelper(object):
 													 	 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
 													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
 		                                                 'add_statement_row_title': _tn.get(_tn.addStatementRow),
-		                                                 'rem_statement_row_title': _tn.get(_tn.remStatementRow)
+		                                                 'rem_statement_row_title': _tn.get(_tn.remStatementRow),
+		                                                 'save_my_statement': _tn.get(_tn.saveMyStatement),
+		                                                 'previous':  _tn.get(_tn.previous),
+		                                                 'next':  _tn.get(_tn.next),
 		                                                }
 		if not for_api:
 			return_dict['breadcrumbs']               = breadcrumbs

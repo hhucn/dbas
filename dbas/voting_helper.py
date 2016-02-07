@@ -27,12 +27,12 @@ class VotingHelper(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		# set vote for the argument (relation), its premisegroup and conclusion
-		self.__accept_argument(db_argument, db_user)
-		self.__accept_premisegroup(db_argument.premisesgroup_uid)
+		self.__vote_argument(db_argument, db_user, True)
+		self.__vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
 
 		if db_argument.argument_uid == 0:
 			db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
-			self.__accept_statement(db_conclusion, db_user)
+			self.__vote_statement(db_conclusion, db_user, True)
 		else:
 			# check for inconsequences
 			db_conclusion_argument = DBDiscussionSession.query(Argument).filter_by(argument_uid=db_argument.argument_uid).first()
@@ -41,23 +41,23 @@ class VotingHelper(object):
 				if db_conclusion_argument.is_supportive:
 					# argument supportive -> conclusion supportive
 					self.__vote_argument(db_conclusion_argument, db_user, True)
-					self.__vote_premisegroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+					self.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
 					self.__vote_statement(db_conclusion_conclusion, db_user, True)
 				else:
 					# argument supportive -> conclusion attacking
 					self.__vote_argument(db_conclusion_argument, db_user, True)
-					self.__vote_premisegroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+					self.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
 					self.__vote_statement(db_conclusion_conclusion, db_user, False)
 			else:
 				if db_conclusion_argument.is_supportive:
 					# argument attacking -> conclusion supportive
 					self.__vote_argument(db_conclusion_argument, db_user, False)
-					self.__vote_premisegroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+					self.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
 					self.__vote_statement(db_conclusion_conclusion, db_user, False)
 				else:
 					# argument attacking -> conclusion attacking
 					self.__vote_argument(db_conclusion_argument, db_user, False)
-					self.__vote_premisegroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+					self.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
 					self.__vote_statement(db_conclusion_conclusion, db_user, True)
 
 		# votes redundance will be handled in the accept and decline methods!
@@ -80,7 +80,7 @@ class VotingHelper(object):
 		:param is_accept: Boolean
 		:return: None
 		"""
-		if statement is None:
+		if argument is None:
 			logger('VotingHelper', '__vote_argument', 'argument is None')
 			return
 
@@ -127,7 +127,7 @@ class VotingHelper(object):
 		DBDiscussionSession.add(db_new_vote)
 		DBDiscussionSession.flush()
 
-	def __vote_premisegroup(self, premisegroup_uid, user, is_accept):
+	def __vote_premisesgroup(self, premisesgroup_uid, user, is_accept):
 		"""
 		Calls statemens-methods for every premise
 		:param premisegroup_uid: PremiseGroup.uid
@@ -135,13 +135,13 @@ class VotingHelper(object):
 		:param is_accept: Boolean
 		:return:
 		"""
-		if premisegroup_uid is None or premisegroup_uid == 0:
-			logger('VotingHelper', '__vote_premisegroup', 'premisegroup_uid is None')
+		if premisesgroup_uid is None or premisesgroup_uid == 0:
+			logger('VotingHelper', '__vote_premisesgroup', 'premisegroup_uid is None')
 			return
 
-		logger('VotingHelper', '__vote_premisegroup', 'premisegroup_uid ' + str(premisegroup_uid) + ', user ' + user.nickname)
+		logger('VotingHelper', '__vote_premisesgroup', 'premisegroup_uid ' + str(premisesgroup_uid) + ', user ' + user.nickname)
 
-		db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
+		db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
 		for premise in db_premises:
 			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
-			self.__accept_statement(db_statement, user, is_accept)
+			self.__vote_statement(db_statement, user, is_accept)

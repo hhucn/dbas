@@ -392,3 +392,14 @@ replaceHtmlTags = function(element){
 	text = text.replace('&lt;br&gt;', '<br>');
 	element.html(text);
 };
+
+// new
+clearHtmlTags = function(element) {
+	var text = element.text();
+	text = text.replace('&lt;strong&gt;', '');
+	text = text.replace('&lt;/strong&gt;', '');
+	text = text.replace('&lt;a', '');
+	text = text.replace('&lt;/a', '');
+	text = text.replace('&lt;br&gt;', '');
+	element.html(text);
+};

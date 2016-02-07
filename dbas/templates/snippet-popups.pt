@@ -512,33 +512,63 @@
 </div>
 
 <!-- HOW TO SET PREMISSEGROUPS POPUP -->
-<div class="modal fade" id="popup-set-premissegroups" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="popup-set-premisegroups" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" id="popup-set-premissegroups-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				<button type="button" id="popup-set-premisegroups-close" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myModalLabel" i18n:translate="how-to-set-premissegroups-header">How to set premisse groups</h4>
+                <span id="popup-set-premisegroups-counter" class="lead" style="float:right; margin: 1em;">1/4</span>
+				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">We need your help to understand your statement!</h4>
 			</div>
-			<div id="popup-set-premissegroups-body" class="lead">
-                <div id="popup-set-premissegroups-body-intro">
-
+			<div id="popup-set-premisegroups-body" class="lead">
+                <span id="popup-set-premisegroups-body-intro" i18n:translate="set_premisegroups_intro">
+                    You have used 'and' in your statement. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:
+                </span>
+                <br><br>
+                <div id="popup-set-premisegroups-body-content">
+                    <div id="insert_statements_page_" style="display: none;">
+                        <ul id="insert_statements_options">
+                            <li id="insert_statements_option_1">
+                                <label for="insert_more_arguments">
+                                    <input type="radio" name="insert_statements" id="insert_more_arguments">
+                                    <span i18n:translate="i_actually_have">I actually have</span>&#160;<span id="insert_statements_count"></span>&#160;<span i18n:translate="arguments">arguments:</span>
+                                </label>
+                                <ul id="insert_statements_list_more_arguments">
+                                </ul>
+                            </li>
+                            <li id="insert_statements_option_2">
+                                <label for="insert_one_argument">
+                                    <input type="radio" name="insert_statements" id="insert_one_arguments" i18n:translate="insert_one_arguments">I have one argument:
+                                </label>
+                                <br>
+                                <span id="insert_statements_one_argument"></span>
+                            </li>
+                            <li id="insert_statements_option_3">
+                                <label for="insert_dont_care">
+                                    <input type="radio" name="insert_statements" id="insert_dont_care" i18n:translate="insert_dont_care">I don’t care about this, leave me alone and take my statement as it is!
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div id="popup-set-premissegroups-body-content">
-
-                </div>
-
 			</div>
 			<div class="modal-footer">
                 <ul class="pager" style="margin: 0;">
-                    <li class="next">
-                        <a href="#">Next →</a>
+                    <li>
+                        <button type="button" class="btn btn-info" id="popup-set-premisegroups-previous-button" style="float: left;" tal:attributes="title extras.title.previous">←</button>
                     </li>
-                    <li class="previous">
-                        <a href="#">← previous</a>
+                    <li>
+                        <button type="button" data-dismiss="modal" class="btn btn-danger" id="popup-set-premisegroups-close-button" i18n:translate="cancel">Cancel</button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" i18n:translate="save_my_statement">Save my Statement!</button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-info" id="popup-set-premisegroups-next-button" style="float: right;" tal:attributes="title extras.title.next">→</button>
                     </li>
                 </ul>
-				<button type="button" class="btn btn-default" id="popup-set-premissegroups-close-button" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
 			</div>
 		</div>
 	</div>

@@ -256,6 +256,7 @@ class Translator(object):
 		self.logfile = 'logfile'
 		self.letsGo = 'letsGo'
 		self.medium = 'medium'
+		self.next = 'next'
 		self.newPremisesRadioButtonText = 'newPremisesRadioButtonText'
 		self.newPremisesRadioButtonTextAsFirstOne = 'newPremisesRadioButtonTextAsFirstOne'
 		self.newStatementsRadioButtonTextAsFirstOne = 'newStatementsRadioButtonTextAsFirstOne'
@@ -290,6 +291,7 @@ class Translator(object):
 		self.otherUsersClaimStrongerArgumentAccepting = 'otherUsersClaimStrongerArgumentAccepting'
 		self.opinionBarometer = 'opinionBarometer'
 		self.premiseGroup = 'premiseGroup'
+		self.previous = 'previous'
 		self.passwordSubmit = 'passwordSubmit'
 		self.report = 'report'
 		self.reportTitle = 'reportTitle'
@@ -309,6 +311,7 @@ class Translator(object):
 		self.showAllArguments = 'showAllArguments'
 		self.showAllArgumentsTitle = 'showAllArgumentsTitle'
 		self.showAllUsersTitle = 'showAllUsersTitle'
+		self.saveMyStatement = 'saveMyStatement'
 		self.strength = 'strength'
 		self.strong = 'strong'
 		self.strongerStatementForRecjecting = 'strongerStatementForRecjecting'
@@ -622,6 +625,7 @@ class Translator(object):
 		en_lang[self.logfile] = 'Logfile for'
 		en_lang[self.letsGo] = 'Click here to start now!'
 		en_lang[self.medium] = 'medium'
+		en_lang[self.next] = 'Next Entry'
 		en_lang[self.newPremisesRadioButtonText] = 'None of the above! Let me state my own reason(s)!'
 		en_lang[self.newPremisesRadioButtonTextAsFirstOne] = 'Yes, let me state my own reason(s)!'
 		en_lang[self.newStatementsRadioButtonTextAsFirstOne] = 'Yes, let me state my own statement(s)!'
@@ -656,6 +660,7 @@ class Translator(object):
 		en_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Other users claim to have a stronger statement for accepting'
 		en_lang[self.opinionBarometer] = 'Opinion Barometer'
 		en_lang[self.premiseGroup] = 'PremiseGroup'
+		en_lang[self.previous] = 'Previous Entry'
 		en_lang[self.passwordSubmit] = 'Change Password'
 		en_lang[self.registered] = 'Registered'
 		en_lang[self.restartDiscussion] = 'Restart Discussion'
@@ -670,6 +675,7 @@ class Translator(object):
 		en_lang[self.refreshHistory] = 'Refresh history'
 		en_lang[self.requestFailed] = 'Request failed'
 		en_lang[self.remStatementRow] = 'Removes this row.'
+		en_lang[self.saveMyStatement] = 'Save my Statement!'
 		en_lang[self.selectStatement] = 'Please select a statement!'
 		en_lang[self.showAllUsers] = 'Show all users'
 		en_lang[self.showAllArguments] = 'Show all arguments'
@@ -989,6 +995,7 @@ class Translator(object):
 		de_lang[self.newPremiseRadioButtonTextAsFirstOne] = 'Ja, ich möchte einen neuen Grunde angeben!',
 		de_lang[self.newStatementRadioButtonTextAsFirstOne] = 'Ja, ich möchte eine neue Aussage angeben!',
 		de_lang[self.newConclusionRadioButtonText] = 'Nichts von alldem. Ich habe eine andere Idee!',
+		de_lang[self.next] = 'Nächster Eintrag',
 		de_lang[self.nickname] = 'Spitzname',
 		de_lang[self.noIslandView] = 'Daten für die Island View konnten nicht geladen werden. Tschuldigung!',
 		de_lang[self.noCorrections] = 'Keinte Korreturen für die aktuelle Aussage.',
@@ -1015,6 +1022,7 @@ class Translator(object):
 		de_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung von',
 		de_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme von',
 		de_lang[self.opinionBarometer] = 'Meinungsbarometer',
+		de_lang[self.previous] = 'Vorheriger Eintrag',
 		de_lang[self.premiseGroup] = 'Gruppe von Voraussetzung(en)',
 		de_lang[self.passwordSubmit] = 'Passwort ändern',
 		de_lang[self.report] = 'Melden',
@@ -1030,6 +1038,7 @@ class Translator(object):
 		de_lang[self.restartDiscussion] = 'Diskussion neustarten',
 		de_lang[self.restartDiscussionTitle] = 'Diskussion neustarten',
 		de_lang[self.restartOnError] = 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.',
+		de_lang[self.saveMyStatement] = 'Aussage speichern!'
 		de_lang[self.selectStatement] = 'Bitte Wählen Sie eine Aussage!',
 		de_lang[self.showAllUsers] = 'Zeig\' alle Benutzer',
 		de_lang[self.showAllArguments] = 'Zeig\' alle Argumente',

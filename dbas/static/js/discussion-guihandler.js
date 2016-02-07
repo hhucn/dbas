@@ -130,6 +130,70 @@ function GuiHandler() {
 
 	/**
 	 *
+	 * @param undecided_texts
+	 * @param decided_texts
+	 * @param supportive
+	 */
+	this.showSetStatementContainer = function(undecided_texts, decided_texts, supportive) {
+		// TODO handle case 'hello and '
+		$('#' + popupSetPremiseGroups).modal('show');
+
+		if (undecided_texts.length() == 1){
+			$('#' + popupSetPremiseGroupsPreviousButton).hide();
+			$('#' + popupSetPremiseGroupsNextButton).hide();
+
+			// new GuiHandler().getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
+
+			/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+			var splitted = undecided_texts[0].split(' ' + _t(and) + ' '),
+				list = $('#' + popupSetPremiseGroupsListMoreArguments),
+				topic = $('#' + addPremiseContainerMainInputIntroId).text(),
+				bigText, page, connection;
+
+			$('#' + popupSetPremiseGroupsStatementCount).hide().text('');
+
+			connection = supportive ? _t(itIsTrueThat) : _t(itIsFalseThat);
+			bigText = topic + ' ' + _t(because) + ' ' + connection;
+			for (i = 0; i < splitted.length; i++) {
+				list.append($('<li>').text(topic + ' ' + _t(because) + ' ' + splitted[i] + '.'));
+				bigText += ' ' + i == 0 ? splitted[i] : (_t(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
+			}
+			$('#' + popupSetPremiseGroupsOneBigStatement).text(bigText + '.');
+			/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+		} else {
+			$('#' + popupSetPremiseGroupsPreviousButton).show().addClass('disabled');
+			$('#' + popupSetPremiseGroupsNextButton).show();
+			$('#' + popupSetPremiseGroupsCounter).show().text('1/' + undecided_texts.length());
+
+			var gh = new GuiHandler(), div;
+			for (page = 0; page < undecided_texts.length; i++) {
+				div = gh.getPageOfSetStatementContainer(page, undecided_texts[0], supportive);
+			}
+		}
+
+		/*
+		$('#' + popupSetPremiseGroupsPreviousButton).click(function(){
+
+		});
+		$('#' + popupSetPremiseGroupsNextButton).click(function(){
+
+		});
+		$('#' + popupSetPremiseGroupsSendButton).click(function(){
+
+		});
+		*/
+	};
+
+	this.getPageOfSetStatementContainer = function(page_no, text, supportive){
+		var div_page = $('insert_statements_page_').clone();
+		div_page.attr({'id': div_page.attr('id') + page_no, 'page': page_no});
+
+		return div_page;
+	};
+
+	/**
+	 *
 	 * @param parsedData
 	 * @param callbackid
 	 * @param type
