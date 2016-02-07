@@ -113,7 +113,9 @@ class BreadcrumbHelper(object):
 			text = text[0:1].lower() + text[1:]
 			# 7 choose action for start statemens
 			# 8 choose justification for a relation
-			return (_t.get(_t.breadcrumbsChooseActionForStatement) if len(splitted) == 8 else _t.get(_t.breadcrumbsReplyForResponseOfConfrontation)) + ' ' + text
+			return (_t.get(_t.breadcrumbsChooseActionForStatement)
+			        if len(splitted) == 8 else
+			        _t.get(_t.breadcrumbsReplyForResponseOfConfrontation)) + ' ' + text
 
 		elif '/attitude/' in url:
 			uid  = url[url.rfind('/') + 1:]

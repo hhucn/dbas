@@ -30,14 +30,19 @@ class QueryHelper(object):
 		Returns current argument as string like conclusion, because premise1 and premise2
 		:param uid: int
 		:param lang: str
+		:param withStrongHtmlTags: Boolean
 		:return: str
 		"""
 		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid))
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		retValue = ''
 		_t = Translator(lang)
-		because = (' </strong>' if withStrongHtmlTags else ' ') + _t.get(_t.because).lower() + (' <strong>' if withStrongHtmlTags else ' ')
-		doesNotHoldBecause = (' </strong>' if withStrongHtmlTags else ' ') + _t.get(_t.doesNotHoldBecause).lower() + (' <strong>' if withStrongHtmlTags else ' ')
+		because = (' </strong>' if withStrongHtmlTags else ' ')\
+		          + _t.get(_t.because).lower()\
+		          + (' <strong>' if withStrongHtmlTags else ' ')
+		doesNotHoldBecause = (' </strong>' if withStrongHtmlTags else ' ')\
+		                     + _t.get(_t.doesNotHoldBecause).lower()\
+		                     + (' <strong>' if withStrongHtmlTags else ' ')
 
 		# catch error
 		if not db_argument:
@@ -65,7 +70,7 @@ class QueryHelper(object):
 		if db_argument.conclusion_uid == 0:
 			logger('QueryHelper', 'get_text_for_argument_uid', 'recursion with conclusion_uid: ' + str(db_argument.conclusion_uid)
 			       + ', in argument: ' + str(db_argument.uid))
-			argument = self.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
+			argument = self.get_text_for_argument_uid(db_argument.argument_uid, lang, withStrongHtmlTags)
 			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 			if not premises:
 				return None
