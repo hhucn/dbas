@@ -15,8 +15,8 @@
    id="svg17299"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="icon_discussion_back.svg"
-   inkscape:export-filename="/home/tobias/Dokumente/git/dbas/dbas/static/images/icon_discussion_back.png"
+   sodipodi:docname="icon_discussion_no_opinion.svg"
+   inkscape:export-filename="/home/tobias/Dokumente/git/dbas/dbas/static/images/icon_discussion_no_opinion.png"
    inkscape:export-xdpi="12.928042"
    inkscape:export-ydpi="12.928042">
   <defs
@@ -28,16 +28,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35355339"
-     inkscape:cx="280.79002"
-     inkscape:cy="219.70808"
+     inkscape:zoom="0.5"
+     inkscape:cx="129.10105"
+     inkscape:cy="200.84863"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="936"
-     inkscape:window-height="560"
-     inkscape:window-x="3889"
-     inkscape:window-y="612"
+     inkscape:window-width="1256"
+     inkscape:window-height="500"
+     inkscape:window-x="49"
+     inkscape:window-y="24"
      inkscape:window-maximized="0"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -47,8 +47,8 @@
     <inkscape:grid
        type="xygrid"
        id="grid26261"
-       originx="-2.2284497"
-       originy="-2.2284447" />
+       originx="-2.2284498"
+       originy="-2.2284443" />
   </sodipodi:namedview>
   <metadata
      id="metadata17304">
@@ -68,7 +68,7 @@
      id="layer1"
      transform="translate(-2.2284496,-604.59063)">
     <circle
-       style="fill:#3abbc9;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path8068"
        cx="225"
        cy="827.36218"

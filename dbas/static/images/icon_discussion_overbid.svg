@@ -38,14 +38,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.49497475"
-     inkscape:cx="98.892601"
+     inkscape:cx="100.91291"
      inkscape:cy="247.94088"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="936"
-     inkscape:window-height="560"
-     inkscape:window-x="4824"
+     inkscape:window-width="1256"
+     inkscape:window-height="1028"
+     inkscape:window-x="1304"
      inkscape:window-y="24"
      inkscape:window-maximized="0"
      fit-margin-top="0"
@@ -66,7 +66,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -76,7 +76,7 @@
      id="layer1"
      transform="translate(-2.2284496,-604.59063)">
     <circle
-       style="opacity:0.98000004;fill:#feeb3c;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:0.98000004;fill:#ff9800;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path8068"
        cx="225"
        cy="827.36218"
@@ -118,7 +118,7 @@
        ry="7.8116665"
        transform="matrix(0,1,-1,0,0,0)" />
     <circle
-       style="fill:#feeb51;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.75;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#ff9800;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.75;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path8130-7-5"
        cx="703.99384"
        cy="-117.0761"
@@ -132,7 +132,7 @@
        transform="matrix(0,1,-1,0,0,0)"
        r="35.8871" />
     <circle
-       style="fill:#feeb51;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.75;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#ff9800;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.75;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path8130-7-2-5"
        cx="867.02545"
        cy="-116.67423"
@@ -165,7 +165,7 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccscc" />
     <circle
-       style="fill:#feeb51;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.75;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#ff9800;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.75;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path8130-7-5-2"
        cx="788.36444"
        cy="-223.18808"
