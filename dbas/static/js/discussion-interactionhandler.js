@@ -148,8 +148,24 @@ function InteractionHandler() {
 			// check, if the user wants to at least two statements
 			if ((type == fuzzy_add_reason || type == fuzzy_start_premise) && text.length > 0) { // TODO > 1
 				var undecided_texts= [], decided_texts= [];
-				// sorting the statements, whether they include the keyword 'AND'
 				for (var i = 0; i < text.length; i++) {
+					// replace multiple whitespaces
+					text[i] = text[i].replace(/\s\s+/g, ' ');
+
+					// cutting all 'and ' and 'and'
+					while (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1 ||
+						text[i].indexOf((_t(and)), text[i].length - (_t(and) ).length) !== -1 ){
+						if (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1)
+							text[i] = text[i].substr(0, text[i].length - (_t(and) + ' ').length);
+						else
+							text[i] = text[i].substr(0, text[i].length - (_t(and)).length);
+					}
+
+					// whitespace at the end
+					while (text[i].indexOf((' '), text[i].length - (' ').length) !== -1)
+						text[i] = text[i].substr(0, text[i].length - (' ').length);
+
+					// sorting the statements, whether they include the keyword 'AND'
 					if (text[i].toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1)
 						undecided_texts.push(text[i]);
 					else
