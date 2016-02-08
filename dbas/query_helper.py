@@ -570,16 +570,21 @@ class QueryHelper(object):
 
 		return tmp
 
-	def get_statement_dict(self, id, title, premises, attitude, url, leading_because):
-		if leading_because:
-			title = title[0:1].lower() + title[1:]
+	def get_statement_dict(self, id, title, premises, attitude, url):
+		"""
 
+		:param id:
+		:param title:
+		:param premises:
+		:param attitude:
+		:param url:
+		:return:
+		"""
 		return {'id': 'item_' + str(id),
 		        'title': title,
 		        'premises': premises,
 		        'attitude': attitude,
-		        'url': url,
-		        'leading_because': leading_because}
+		        'url': url}
 
 	# ########################################
 	# OTHER - GETTER

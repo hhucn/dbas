@@ -22,6 +22,9 @@
 #discussions-space{
 	margin-top: 25px;
 }
+#discussions-space label{
+	max-width: 90%;
+}
 
 #discussions-space ul{
 	display: inline-block;

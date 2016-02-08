@@ -106,8 +106,10 @@ class DictionaryHelper(object):
 		:param is_supportive:
 		:param at_dont_know:
 		:param at_argumentation:
+		:param at_justify_argumentation:
 		:param additional_id:
 		:param attack:
+		:param logged_in:
 		:return:
 		"""
 		_tn              = Translator(lang)
@@ -131,7 +133,9 @@ class DictionaryHelper(object):
 			if not text:
 				return None
 			heading             = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
-			                        + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
+			                        + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?<br><br>'
+			because             = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
+			heading             += because
 			add_premise_text    = text
 
 		elif at_justify_argumentation:
@@ -143,8 +147,10 @@ class DictionaryHelper(object):
 			conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
 			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
-			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion, db_argument.is_supportive)
-
+			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
+			                                                             db_argument.is_supportive)
+			because             = ' ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
+			heading             += because
 		elif at_dont_know:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_dont_know')
 			text                = _qh.get_text_for_argument_uid(uid, lang)
@@ -207,8 +213,7 @@ class DictionaryHelper(object):
 				                                                _qh.get_text_for_statement_uid(statement.uid),
 				                                                [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
 				                                                '',
-				                                                _um.get_url_for_statement_attitude(True, statement.uid),
-				                                                False))
+				                                                _um.get_url_for_statement_attitude(True, statement.uid)))
 
 			if logged_in:
 				_tn = Translator(lang)
@@ -216,8 +221,7 @@ class DictionaryHelper(object):
 				                                                _tn.get(_tn.newConclusionRadioButtonText),
 				                                                [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
 				                                                'null',
-				                                                'null',
-				                                                False))
+				                                                'null'))
 
 		return statements_array
 
@@ -242,18 +246,15 @@ class DictionaryHelper(object):
 		statements_array.append(_qh.get_statement_dict('agree',
 		                                                _tn.get(_tn.iAgreeWithInColor) + ': ' + text,
 		                                                [{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
-		                                                'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't'),
-		                                                False))
+		                                                'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't')))
 		statements_array.append(_qh.get_statement_dict('disagree',
 		                                                _tn.get(_tn.iDisagreeWithInColor) + ': ' + text,
 		                                                [{'title': _tn.get(_tn.iDisagreeWithInColor) + ': ' + text, 'id': 'disagree'}],
-		                                                'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f'),
-		                                                False))
+		                                                'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f')))
 		statements_array.append(_qh.get_statement_dict('dontknow',
 		                                                _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text,
 		                                                [{'title': _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text, 'id': 'dontknow'}],
-		                                                'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd'),
-		                                                False))
+		                                                'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd')))
 
 		return statements_array
 
@@ -291,15 +292,13 @@ class DictionaryHelper(object):
 				statements_array.append(_qh.get_statement_dict(str(argument.uid),
 				                                                text,
 				                                                premise_array, 'justify',
-				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
-				                                                True))
+				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
 			statements_array.append(_qh.get_statement_dict('start_premise',
 			                                                _tn.get(_tn.newPremiseRadioButtonText),
 			                                                [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id':0}],
 			                                                'null',
-			                                                'null',
-			                                                False))
+			                                                'null'))
 
 		return statements_array
 
@@ -358,15 +357,13 @@ class DictionaryHelper(object):
 				                                                text,
 				                                                premises_array,
 				                                                'justify',
-				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
-				                                                True))
+				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
 			statements_array.append(_qh.get_statement_dict('justify_premise',
 			                                                _tn.get(_tn.newPremiseRadioButtonText),
 			                                                [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
 			                                                'null',
-			                                                'null',
-			                                                False))
+			                                                'null'))
 
 
 		return statements_array
@@ -409,12 +406,13 @@ class DictionaryHelper(object):
 					url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
 				else:
 					url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else 'window.history.go(-1)'
-				statements_array.append(_qh.get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url, False))
+				statements_array.append(_qh.get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url))
 
 		return statements_array
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang,
-	                        authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs='', application_url='', for_api=False):
+	                        authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs='',
+	                        application_url='', for_api=False):
 		"""
 
 		:param current_slug:

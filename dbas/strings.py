@@ -726,6 +726,7 @@ class Translator(object):
 		en_lang[self.unfortunatelyNoMoreArgument] = 'Unfortunately there are no more arguments about'
 
 		logger('Translator', 'set_up_en_dict', 'length ' + str(len(en_lang)))
+
 		return en_lang
 
 	def set_up_de_dict(self):
