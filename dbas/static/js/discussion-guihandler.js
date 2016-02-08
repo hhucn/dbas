@@ -22,7 +22,8 @@ function GuiHandler() {
 			uid = new Date().getTime(),
 			div = $('<div>').attr('style', 'padding-bottom: 2em'),
 			h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
-			input = $('<input>').attr('id', 'add-premise-container-main-input-' + uid).val(uid+'a and '+uid+'b')
+			id = 'add-premise-container-main-input-' + uid,
+			input = $('<input>').attr('id', id).val(uid+'a and '+uid+'b')
 				.attr('type', 'text')
 				.attr('class', 'form-control add-premise-container-input')
 				.attr('autocomplete', 'off')
@@ -54,6 +55,14 @@ function GuiHandler() {
 			}
 
 		});
+
+		// add fuzzy search
+		new Helper().delay(function() {
+			var escapedText = new Helper().escapeHtml($('#' + id).val());
+			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
+				new AjaxSiteHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
+			}
+		},200);
 	};
 
 	/**
@@ -138,7 +147,6 @@ function GuiHandler() {
 	 * @param supportive
 	 */
 	this.showSetStatementContainer = function(undecided_texts, decided_texts, supportive) {
-		// TODO handle case 'hello and '
 		$('#' + popupSetPremiseGroups).modal('show');
 		var gh = new GuiHandler(), page, page_no,
 			body = $('#' + popupSetPremiseGroupsBodyContent).empty(),
@@ -150,6 +158,7 @@ function GuiHandler() {
 
 		send.addClass('disabled');
 
+		// first case, we only need one page div
 		if (undecided_texts.length == 1){
 			prev.hide();
 			next.hide();
@@ -163,6 +172,7 @@ function GuiHandler() {
 			next.show().attr('max', undecided_texts.length);
 			counter.show().text('1/' + undecided_texts.length);
 
+			// for each statement a new page div will be added
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {
 				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no], supportive);
 				if (page_no > 0)
@@ -187,6 +197,9 @@ function GuiHandler() {
 			});
 			send.click(function sendClick(){
 				alert('todo');
+				// TODO check all inputs
+				// TODO create dict
+				// TODO send this dict
 			});
 		}
 	};
@@ -357,7 +370,7 @@ function GuiHandler() {
 		table.append($('<tr>').append(td_text).append(td_buttons));
 
 		// append a row for each statement
-		$('#' + discussionSpaceId + ' li:not(:last-child) label:nth-child(odd)').each(function () {
+		$('#' + discussionSpaceId + ' li:not(:last-child) label:nth-child(even)').each(function () {
 			tr = helper.createRowInEditDialog($(this).text(), $(this).attr('for').substr('item_'.length), $(this).attr('id'));
 			table.append(tr);
 

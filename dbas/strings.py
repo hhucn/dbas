@@ -98,7 +98,7 @@ class Translator(object):
 		self.acceptItTitle = 'acceptItTitle'
 		self.acceptIt = 'acceptIt'
 		self.breadcrumbsStart = 'breadcrumbsStart'
-		self.breadcrumbsChooseActionForStatement = 'breadcrumbsChooseActionForStatement'
+		self.breadcrumbsJustifyStatement = 'breadcrumbsJustifyStatement'
 		self.breadcrumbsGetPremisesForStatement = 'breadcrumbsGetPremisesForStatement'
 		self.breadcrumbsMoreAboutArgument = 'breadcrumbsMoreAboutArgument'
 		self.breadcrumbsReplyForPremisegroup = 'breadcrumbsReplyForPremisegroup'
@@ -198,6 +198,7 @@ class Translator(object):
 		self.haveALookAt = 'haveALookAt'
 		self.hidePasswordRequest = 'hidePasswordRequest'
 		self.hideGenerator = 'hideGenerator'
+		self.hold = 'hold'
 		self.howeverIHaveMuchStrongerArgumentRejecting = 'howeverIHaveMuchStrongerArgumentRejecting'
 		self.howeverIHaveEvenStrongerArgumentRejecting = 'howeverIHaveEvenStrongerArgumentRejecting'
 		self.howeverIHaveMuchStrongerArgumentAccepting = 'howeverIHaveMuchStrongerArgumentAccepting'
@@ -467,7 +468,7 @@ class Translator(object):
 		en_lang[self.agreeBecause] = 'I agree because '
 		en_lang[self.andIDoBelieve] = 'and I do believe that this is a good counter-argument for'
 		en_lang[self.breadcrumbsStart] = 'Start'
-		en_lang[self.breadcrumbsChooseActionForStatement] = 'Choose action for'
+		en_lang[self.breadcrumbsJustifyStatement] = 'Why do you think that'
 		en_lang[self.breadcrumbsGetPremisesForStatement] = 'Get premisses'
 		en_lang[self.breadcrumbsMoreAboutArgument] = 'More about'
 		en_lang[self.breadcrumbsReplyForPremisegroup] = 'Reply for group'
@@ -567,6 +568,7 @@ class Translator(object):
 		en_lang[self.haveALookAt] = 'Hey, please have a look at '
 		en_lang[self.hidePasswordRequest] = 'Hide Password Request'
 		en_lang[self.hideGenerator] = 'Hide Generator'
+		en_lang[self.hold] = 'hold'
 		en_lang[self.howeverIHaveMuchStrongerArgumentRejecting] = 'However, I have a much stronger argument for rejecting that'
 		en_lang[self.howeverIHaveEvenStrongerArgumentRejecting] = 'However, I have a even stronger argument for rejecting that'
 		en_lang[self.howeverIHaveMuchStrongerArgumentAccepting] = 'However, I have a much stronger argument for accepting that'
@@ -831,7 +833,7 @@ class Translator(object):
 		de_lang[self.acceptItTitle] = 'Einsenden...',
 		de_lang[self.acceptIt] = 'Eintragen...',
 		de_lang[self.breadcrumbsStart] = 'Start',
-		de_lang[self.breadcrumbsChooseActionForStatement] = 'Aktion wählen',
+		de_lang[self.breadcrumbsJustifyStatement] = 'Wieso denken Sie das',
 		de_lang[self.breadcrumbsGetPremisesForStatement] = 'Prämissen',
 		de_lang[self.breadcrumbsMoreAboutArgument] = 'Mehr Über',
 		de_lang[self.breadcrumbsReplyForPremisegroup] = 'Antwort für Gruppe',
@@ -923,6 +925,7 @@ class Translator(object):
 		de_lang[self.firstPremiseText1] = 'Sie sind der erste, der sagt, dass ',
 		de_lang[self.firstPremiseText2] = 'Bitte begründen Sie Ihre Aussage.',
 		de_lang[self.firstname] = 'Vorname',
+		de_lang[self.hold] = 'stimmt'
 		de_lang[self.gender] = 'Geschlecht',
 		de_lang[self.goStepBack] = 'Einen Schritt zurück',
 		de_lang[self.generateSecurePassword] = 'Generate secure password',
