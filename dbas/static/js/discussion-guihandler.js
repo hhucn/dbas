@@ -18,9 +18,12 @@ function GuiHandler() {
 	 *
 	 */
 	this.appendAddPremiseRow = function(){
-		var div = $('<div>').attr('style', 'padding-bottom: 2em'),
+		var body = $('#add-premise-container-body'),
+			uid = new Date().getTime(),
+			div = $('<div>').attr('style', 'padding-bottom: 2em'),
 			h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
-			input = $('<input>').attr('type', 'text')
+			input = $('<input>').attr('id', 'add-premise-container-main-input-' + uid).val(uid+'a and '+uid+'b')
+				.attr('type', 'text')
 				.attr('class', 'form-control add-premise-container-input')
 				.attr('autocomplete', 'off')
 				.attr('placeholder', 'example: There is some reason!'),
@@ -28,12 +31,12 @@ function GuiHandler() {
 				.attr('alt', 'icon-rem')
 				.attr('src', mainpage + 'static/images/icon_minus2.png')
 				.attr('style', 'height: 30px; padding-right: 0.5em;')
-				.attr('title', $('#' + addPremiseContainerBodyId + ' .icon-rem-premise').first().attr('title')),
+				.attr('title', body.find('.icon-rem-premise').first().attr('title')),
 			imgp = $('<img>').attr('class', 'icon-add-premise')
 				.attr('alt', 'icon-add')
 				.attr('src', mainpage + 'static/images/icon_plus2.png')
 				.attr('style', 'height: 30px;')
-				.attr('title', $('#' + addPremiseContainerBodyId + ' .icon-add-premise').first().attr('title'));
+				.attr('title', body.find('.icon-add-premise').first().attr('title'));
 		div.append(h5).append(input).append(imgm).append(imgp);
 		$('#' + addPremiseContainerBodyId).append(div);
 		imgp.click(function(){
@@ -42,12 +45,12 @@ function GuiHandler() {
 		});
 		imgm.click(function(){
 			$(this).parent().remove();
-			$('#' + addPremiseContainerBodyId + ' div').children().last().show();
+			body.find('div').children().last().show();
 			// hide minus icon, when there is only one child
-			if ($('#' + addPremiseContainerBodyId + ' div').length == 1) {
-				$('#' + addPremiseContainerBodyId + ' .icon-rem-premise').hide();
+			if (body.find('div').length == 1) {
+				body.find('.icon-rem-premise').hide();
 			} else {
-				$('#' + addPremiseContainerBodyId + ' .icon-rem-premise').show();
+				body.find('.icon-rem-premise').show();
 			}
 
 		});
@@ -137,57 +140,128 @@ function GuiHandler() {
 	this.showSetStatementContainer = function(undecided_texts, decided_texts, supportive) {
 		// TODO handle case 'hello and '
 		$('#' + popupSetPremiseGroups).modal('show');
+		var gh = new GuiHandler(), page, page_no,
+			body = $('#' + popupSetPremiseGroupsBodyContent).empty(),
+			prev = $('#' + popupSetPremiseGroupsPreviousButton),
+			next = $('#' + popupSetPremiseGroupsNextButton),
+			send = $('#' + popupSetPremiseGroupsSendButton),
+			counter = $('#' + popupSetPremiseGroupsCounter),
+			prefix = 'insert_statements_page_';
 
-		if (undecided_texts.length() == 1){
-			$('#' + popupSetPremiseGroupsPreviousButton).hide();
-			$('#' + popupSetPremiseGroupsNextButton).hide();
+		send.addClass('disabled');
 
-			// new GuiHandler().getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
+		if (undecided_texts.length == 1){
+			prev.hide();
+			next.hide();
+			counter.hide();
 
-			/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-			var splitted = undecided_texts[0].split(' ' + _t(and) + ' '),
-				list = $('#' + popupSetPremiseGroupsListMoreArguments),
-				topic = $('#' + addPremiseContainerMainInputIntroId).text(),
-				bigText, page, connection;
-
-			$('#' + popupSetPremiseGroupsStatementCount).hide().text('');
-
-			connection = supportive ? _t(itIsTrueThat) : _t(itIsFalseThat);
-			bigText = topic + ' ' + _t(because) + ' ' + connection;
-			for (i = 0; i < splitted.length; i++) {
-				list.append($('<li>').text(topic + ' ' + _t(because) + ' ' + splitted[i] + '.'));
-				bigText += ' ' + i == 0 ? splitted[i] : (_t(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
-			}
-			$('#' + popupSetPremiseGroupsOneBigStatement).text(bigText + '.');
-			/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
+			body.append(page);
 
 		} else {
-			$('#' + popupSetPremiseGroupsPreviousButton).show().addClass('disabled');
-			$('#' + popupSetPremiseGroupsNextButton).show();
-			$('#' + popupSetPremiseGroupsCounter).show().text('1/' + undecided_texts.length());
+			prev.show().removeClass('href').attr('max', undecided_texts.length).parent().addClass('disabled');
+			next.show().attr('max', undecided_texts.length);
+			counter.show().text('1/' + undecided_texts.length);
 
-			var gh = new GuiHandler(), div;
-			for (page = 0; page < undecided_texts.length; i++) {
-				div = gh.getPageOfSetStatementContainer(page, undecided_texts[0], supportive);
+			for (page_no = 0; page_no < undecided_texts.length; page_no++) {
+				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no], supportive);
+				if (page_no > 0)
+					page.hide();
+				body.append(page);
+
+				page.find('input').each(function(){
+					$(this).click(function inputClick (){
+						new GuiHandler().displayNextPageOffSetStatementContainer(body, prev, next, counter, prefix);
+					})
+				});
 			}
+
+			// previous button click
+			prev.click(function prevClick(){
+				new GuiHandler().displayPrevPageOffSetStatementContainer(body, prev, next, counter, prefix);
+			});
+
+			// next button click
+			next.click(function nextClick(){
+				new GuiHandler().displayNextPageOffSetStatementContainer(body, prev, next, counter, prefix);
+			});
+			send.click(function sendClick(){
+				alert('todo');
+			});
 		}
-
-		/*
-		$('#' + popupSetPremiseGroupsPreviousButton).click(function(){
-
-		});
-		$('#' + popupSetPremiseGroupsNextButton).click(function(){
-
-		});
-		$('#' + popupSetPremiseGroupsSendButton).click(function(){
-
-		});
-		*/
 	};
 
+	/**
+	 *
+	 * @param body
+	 * @param prev_btn
+	 * @param next_btn
+	 * @param counter_text
+	 * @param prefix
+	 */
+	this.displayNextPageOffSetStatementContainer = function(body, prev_btn, next_btn, counter_text, prefix){
+		var tmp_el, tmp_id;
+		tmp_el = body.find('div:visible');
+		tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
+
+		if (tmp_id < (parseInt(next_btn.attr('max')) -1 )){
+			tmp_el.hide().next().show();
+			prev_btn.parent().removeClass('disabled');
+			counter_text.show().text((tmp_id+2) + '/' + next_btn.attr('max'));
+
+			if ((tmp_id + 2) == parseInt(next_btn.attr('max')))
+				next_btn.parent().addClass('disabled');
+		}
+	};
+
+	/**
+	 *
+	 * @param body
+	 * @param prev_btn
+	 * @param next_btn
+	 * @param counter_text
+	 * @param prefix
+	 */
+	this.displayPrevPageOffSetStatementContainer = function(body, prev_btn, next_btn, counter_text, prefix){
+		var tmp_el, tmp_id;
+		tmp_el = body.find('div:visible');
+		tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
+
+		if (tmp_id > 0){
+			tmp_el.hide().prev().show();
+			next_btn.parent().removeClass('disabled');
+			counter_text.show().text((tmp_id) + '/' + prev_btn.attr('max'));
+			if (tmp_id == 0)
+				prev_btn.parent().addClass('disabled');
+		}
+	};
+
+	/**
+	 *
+	 * @param page_no
+	 * @param text
+	 * @param supportive
+	 * @returns {*}
+	 */
 	this.getPageOfSetStatementContainer = function(page_no, text, supportive){
-		var div_page = $('insert_statements_page_').clone();
-		div_page.attr({'id': div_page.attr('id') + page_no, 'page': page_no});
+		var src = $('#insert_statements_page_'),
+			div_page = src.clone(),
+			id = src.attr('id'),
+			splitted = text.split(' ' + _t(and) + ' '),
+			topic = $('#' + addPremiseContainerMainInputIntroId).text(),
+			list, bigText, bigTextSpan, connection, i;
+		div_page.attr('id', id + page_no).attr('page', page_no).show();
+		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
+		list        = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
+		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);
+
+		connection = supportive ? _t(itIsTrueThat) : _t(itIsFalseThat);
+		bigText = topic + ' ' + _t(because) + ' ' + connection;
+		for (i = 0; i < splitted.length; i++) {
+			list.append($('<li>').text(topic + ' ' + _t(because) + ' ' + splitted[i] + '.'));
+			bigText += ' ' + i == 0 ? ' ' + splitted[i] : (' ' + _t(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
+		}
+		bigTextSpan.text(bigText + '.');
 
 		return div_page;
 	};

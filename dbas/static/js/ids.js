@@ -142,9 +142,9 @@ var popupLoginInlineRadioGenderF 				= 'inlineRadioGender2';
 var popupLoginInlineRadioGenderM 				= 'inlineRadioGender3';
 
 var popupSetPremiseGroups 			    		= 'popup-set-premisegroups';
+var popupSetPremiseGroupsBodyContent            = 'popup-set-premisegroups-body-content';
 var popupSetPremiseGroupsCounter                = 'popup-set-premisegroups-counter';
 var popupSetPremiseGroupsClose 			        = 'popup-set-premisegroups-close';
-var popupSetPremiseGroupsCloseButton 	    	= 'popup-set-premisegroups-close-button';
 var popupSetPremiseGroupsSendButton 		    = 'popup-set-premisegroups-send-button';
 var popupSetPremiseGroupsPreviousButton		    = 'popup-set-premisegroups-previous-button';
 var popupSetPremiseGroupsNextButton		        = 'popup-set-premisegroups-next-button';

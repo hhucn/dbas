@@ -147,19 +147,22 @@ function InteractionHandler() {
 		} else {
 			// check, if the user wants to at least two statements
 			if ((type == fuzzy_add_reason || type == fuzzy_start_premise) && text.length > 0) { // TODO > 1
-				var undecided_texts= [],
-					decided_texts= [];
+				var undecided_texts= [], decided_texts= [];
 				// sorting the statements, whether they include the keyword 'AND'
 				for (var i = 0; i < text.length; i++) {
-					if (text[i].toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1) {
+					if (text[i].toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1)
 						undecided_texts.push(text[i]);
-					} else {
+					else
 						decided_texts.push(text[i]);
-					}
 				}
 				// check for undecided text
-				if (undecided_texts.empty() && fal){  // TODO > 1
-					alert("no undecided texts!")
+				if (undecided_texts.length == 0 && false){  // TODO > 1
+					alert("no undecided texts!");
+					if (type == fuzzy_add_reason){
+						// new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, text);
+					} else {
+						// new AjaxSiteHandler().sendNewStartPremise(text, conclusion, supportive);
+					}
 				} else {
 					new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive);
 				}

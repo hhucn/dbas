@@ -22,15 +22,15 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 	});
 
 	$('.icon-rem-premise').each(function() {
-		var _this = this;
+		var _this = this, body = $('#add-premise-container-body');
 		$(this).click(function() {
 			$(_this).parent().remove();
-			$('#add-premise-container-body div').children().last().show();
+			body.find('div').children().last().show();
 			// hide minus icon, when there is only one child
-			if ($('#add-premise-container-body div').length == 1) {
-				$('#add-premise-container-body .icon-rem-premise').hide();
+			if (body.find('div').length == 1) {
+				body.find('.icon-rem-premise').hide();
 			} else {
-				$('#add-premise-container-body .icon-rem-premise').show();
+				body.find('.icon-rem-premise').show();
 			}
 		});
 	});
@@ -380,6 +380,8 @@ $(function () {
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
 	tmp = tmp.substr(1, tmp.length-2);
 	$('#' + discussionEndRestart).attr('href', tmp);
+
+	$('#add-premise-container-main-input').val('111 and 222 and 333');
 });
 
 // new
