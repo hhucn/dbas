@@ -94,11 +94,14 @@
 
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
+                        <span tal:condition="extras.is_editable" style="display:none; float: left; width: 72px; text-align: center;">${extras.button.edit_statement}</span>
 						<img tal:condition="extras.is_editable" id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.button.edit_statement; value extras.button.edit_statement" />
 						<br tal:condition="extras.is_editable">
+                        <span tal:condition="extras.is_reportable" style="display:none; float: left; width: 72px; text-align: center;">${extras.button.report_title}</span>
 						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="value extras.button.report; title extras.button.report_title" />
 						<div id="display-style-menu-icon" tal:condition="extras.show_display_style or extras.show_bar_icon">
-							<img id="" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" />
+                            <span tal:condition="extras.show_display_style or extras.show_bar_icon"  style="display:none; float: left; width: 72px; text-align: center;">${extras.button.more_title}</span>
+							<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" tal:attributes="title extras.button.more_title"/>
 							<nav id="site-navigation">
 								<div class="display-style-menu" tal:condition="extras.show_bar_icon">
 									<div>

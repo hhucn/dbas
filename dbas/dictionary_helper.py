@@ -151,6 +151,7 @@ class DictionaryHelper(object):
 			                                                             db_argument.is_supportive)
 			because             = ' ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 			heading             += because
+
 		elif at_dont_know:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_dont_know')
 			text                = _qh.get_text_for_argument_uid(uid, lang)
@@ -230,8 +231,9 @@ class DictionaryHelper(object):
 
 		:param statement_uid:
 		:param issue_uid:
-		:param url:
 		:param lang:
+		:param application_url:
+		:param for_api:
 		:return:
 		"""
 		_qh = QueryHelper()
@@ -265,6 +267,8 @@ class DictionaryHelper(object):
 		:param issue_uid:
 		:param is_supportive:
 		:param lang:
+		:param application_url:
+		:param for_api:
 		:return:
 		"""
 		statements_array = []
@@ -308,7 +312,10 @@ class DictionaryHelper(object):
 		:param argument_uid:
 		:param attack_type:
 		:param issue_uid:
+		:param is_supportive:
 		:param lang:
+		:param application_url:
+		:param for_api:
 		:return:
 		"""
 		statements_array = []
@@ -321,19 +328,22 @@ class DictionaryHelper(object):
 		if attack_type == 'undermine':
 			db_premisses = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 			for premise in db_premisses:
-				arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == premise.statement_uid, Argument.is_supportive == False)).all()
+				arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == premise.statement_uid,
+				                                                            Argument.is_supportive == False)).all()
 				db_arguments = db_arguments + arguments
 
 		elif attack_type == 'undercut':
-			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid, Argument.is_supportive == False)).all()
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid,
+			                                                               Argument.is_supportive == False)).all()
 
 		elif attack_type == 'overbid':
-			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid, Argument.is_supportive == True)).all()
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid,
+			                                                               Argument.is_supportive == True)).all()
 
 		elif attack_type == 'rebut':
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                                            Argument.argument_uid == db_argument.argument_uid,
-                                                                           Argument.is_supportive == (not db_argument.is_supportive))).all()
+                                                                           Argument.is_supportive == False)).all()
 
 		_um = UrlManager(application_url, slug, for_api)
 
@@ -365,7 +375,6 @@ class DictionaryHelper(object):
 			                                                'null',
 			                                                'null'))
 
-
 		return statements_array
 
 	def prepare_item_dict_for_reaction(self, argument_uid, is_supportive, issue_uid, lang, application_url, for_api):
@@ -375,6 +384,8 @@ class DictionaryHelper(object):
 		:param is_supportive:
 		:param issue_uid:
 		:param lang:
+		:param application_url:
+		:param for_api:
 		:return:
 		"""
 		_tg  = TextGenerator(lang)
@@ -404,8 +415,10 @@ class DictionaryHelper(object):
 				if t == 'support':
 					arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid)
 					url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
+					logger('XXX','url',url)
 				else:
-					url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else 'window.history.go(-1)'
+					key = 'back' if for_api else 'window.history.go(-1)'
+					url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else key
 				statements_array.append(_qh.get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url))
 
 		return statements_array
@@ -452,7 +465,7 @@ class DictionaryHelper(object):
 		                                                 'rem_statement_row_title': _tn.get(_tn.remStatementRow),
 		                                                 'save_my_statement': _tn.get(_tn.saveMyStatement),
 		                                                 'previous':  _tn.get(_tn.previous),
-		                                                 'next':  _tn.get(_tn.next),
+		                                                 'next': _tn.get(_tn.next),
 		                                                }
 		if not for_api:
 			return_dict['breadcrumbs']               = breadcrumbs
@@ -512,7 +525,8 @@ class DictionaryHelper(object):
 				'contactSubmit' : _t.get(_t.contactSubmit),
 				'letsGo' : _t.get(_t.letsGo),
 				'opinionBarometer' : _t.get(_t.opinionBarometer),
-				'edit_statement': _t.get(_t.editTitle)
+				'edit_statement': _t.get(_t.editTitle),
+				'more_title': _t.get(_t.more),
 			}
 		})
 

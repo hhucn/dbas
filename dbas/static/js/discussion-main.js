@@ -276,28 +276,33 @@ setWindowOptions = function(){
  *
  */
 setGuiOptions = function(){
-	if (window.location.href.indexOf('/reaction/') != -1){ // TODO SET ICONS IN HTML
+
+	$('#edit-statement').hover(function() { $(this).prev().fadeIn(); }, function() { $(this).prev().fadeOut(); }).prev().hide();
+	$('#report-button').hover(function() { $(this).prev().fadeIn(); }, function() { $(this).prev().fadeOut(); }).prev().hide();
+	$('#more-statement').hover(function() { $(this).prev().fadeIn(); }, function() { $(this).prev().fadeOut(); }).prev().hide();
+
+	if (false && window.location.href.indexOf('/reaction/') != -1){
 		var cl = 'icon-badge',
 			style = 'height: 30px; width:30px; margin-right: 0.5em;',
 			src = mainpage + 'static/images/icon_discussion_',
-			item_undermine = $('#item_undermine'),
-			item_support = $('#item_support'),
-			item_undercut = $('#item_undercut'),
-			item_overbid = $('#item_overbid'),
-			item_rebut = $('#item_rebut'),
+			item_undermine  = $('#item_undermine'),
+			item_support    = $('#item_support'),
+			item_undercut   = $('#item_undercut'),
+			item_overbid    = $('#item_overbid'),
+			item_rebut      = $('#item_rebut'),
 			item_no_opinion = $('#item_no_opinion'),
-			undermine = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'undermine.png', 'onclick': item_undermine.attr('onclick')}),
-			support = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'support.png', 'onclick': item_support.attr('onclick')}),
-			undercut = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'undercut.png', 'onclick': item_undercut.attr('onclick')}),
-			overbid = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'overbid.png', 'onclick': item_overbid.attr('onclick')}),
-			rebut = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'rebut.png', 'onclick': item_rebut.attr('onclick')}),
-			no_opinion = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'no_opinion.png', 'onclick': item_no_opinion.attr('onclick')});
-		item_undermine.next().prepend(undermine ); item_undermine.hide();
-		item_support.next().prepend(support ); item_support.hide();
-		item_undercut.next().prepend(undercut ); item_undercut.hide();
-		item_overbid.next().prepend(overbid ); item_overbid.hide();
-		item_rebut.next().prepend(rebut ); item_rebut.hide();
-		item_no_opinion.next().prepend(no_opinion); item_no_opinion.hide();
+			undermine       = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'undermine.png', 'onclick': item_undermine.attr('onclick')}),
+			support         = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'support.png', 'onclick': item_support.attr('onclick')}),
+			undercut        = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'undercut.png', 'onclick': item_undercut.attr('onclick')}),
+			overbid         = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'overbid.png', 'onclick': item_overbid.attr('onclick')}),
+			rebut           = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'rebut.png', 'onclick': item_rebut.attr('onclick')}),
+			no_opinion      = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'no_opinion.png', 'onclick': item_no_opinion.attr('onclick')});
+		item_undermine.hide().next().prepend(undermine);
+		item_support.hide().next().prepend(support);
+		item_undercut.hide().next().prepend(undercut);
+		item_overbid.hide().next().prepend(overbid);
+		item_rebut.hide().next().prepend(rebut);
+		item_no_opinion.hide().next().prepend(no_opinion);
 	}
 };
 

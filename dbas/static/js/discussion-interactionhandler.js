@@ -172,7 +172,7 @@ function InteractionHandler() {
 			}
 
 			if (undecided_texts.length > 0){
-				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive);
+				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive, type);
 			} else if (decided_texts.length > 0){
 				alert("TODO: more than one decided text")
 			} else {
@@ -180,7 +180,7 @@ function InteractionHandler() {
 				text = text[0];
 				if (type == fuzzy_add_reason) {
 					new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, text);
-				} else if (type == fuzzy_start_premise) {
+				} else if (type == fuzzy_start_statement) {
 					new AjaxSiteHandler().sendNewStartStatement(text);
 				} else if (type == fuzzy_start_premise) {
 					new AjaxSiteHandler().sendNewStartPremise(text, conclusion, supportive);

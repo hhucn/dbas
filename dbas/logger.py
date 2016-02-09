@@ -15,4 +15,5 @@ def logger(who, when, what):
 	:param what: what mesage
 	:return: None
 	"""
-	log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')
+	if who is 'XXX':
+		log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')

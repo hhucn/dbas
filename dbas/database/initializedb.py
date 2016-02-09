@@ -314,7 +314,7 @@ def setup_discussion_database():
 	textversion21 = TextVersion(content="The purpose of a pet is to have something to take care of.", author=user2.uid)
 	textversion22 = TextVersion(content="Several cats of friends of mine are real as*holes.", author=user2.uid)
 	textversion23 = TextVersion(content="The fact, that cats are capricious, is based on the cats race.", author=user2.uid)
-	textversion24 = TextVersion(content="All cats of my friends are capricious.", author=user2.uid)
+	textversion24 = TextVersion(content="Not every cat is capricious.", author=user2.uid)
 	textversion25 = TextVersion(content="This is based on the cats race and a little bit on the breeding.", author=user2.uid)
 	textversion26 = TextVersion(content="Next to the taxes you will need equipment like a dog lead, anti-flea-spray, and so on.", author=user2.uid)
 	textversion27 = TextVersion(content="The equipment for running costs of cats and dogs are nearly the same.", author=user2.uid)
