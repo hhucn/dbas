@@ -38,12 +38,15 @@ function GuiHandler() {
 				.attr('src', mainpage + 'static/images/icon_plus2.png')
 				.attr('style', 'height: 30px;')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
+
 		div.append(h5).append(input).append(imgm).append(imgp);
 		$('#' + addPremiseContainerBodyId).append(div);
+
 		imgp.click(function(){
 			new GuiHandler().appendAddPremiseRow();
 			$(this).hide().prev().show(); // hide +, show -
 		});
+
 		imgm.click(function(){
 			$(this).parent().remove();
 			body.find('div').children().last().show();
@@ -57,12 +60,12 @@ function GuiHandler() {
 		});
 
 		// add fuzzy search
-		new Helper().delay(function() {
-			var escapedText = new Helper().escapeHtml($('#' + id).val());
-			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
+		$('#' + id).keyup(function () {
+			new Helper().delay(function () {
+				var escapedText = new Helper().escapeHtml($('#' + id).val());
 				new AjaxSiteHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
-			}
-		},200);
+			}, 200);
+		});
 	};
 
 	/**
@@ -150,24 +153,24 @@ function GuiHandler() {
 		$('#' + popupSetPremiseGroups).modal('show');
 		var gh = new GuiHandler(), page, page_no,
 			body = $('#' + popupSetPremiseGroupsBodyContent).empty(),
-			prev = $('#' + popupSetPremiseGroupsPreviousButton),
-			next = $('#' + popupSetPremiseGroupsNextButton),
-			send = $('#' + popupSetPremiseGroupsSendButton),
-			counter = $('#' + popupSetPremiseGroupsCounter),
+			prev = $('#' + popupSetPremiseGroupsPreviousButton).hide(),
+			next = $('#' + popupSetPremiseGroupsNextButton).hide(),
+			send = $('#' + popupSetPremiseGroupsSendButton).addClass('disabled'),
+			counter = $('#' + popupSetPremiseGroupsCounter).hide(),
 			prefix = 'insert_statements_page_';
 
-		send.addClass('disabled');
 
-		// first case, we only need one page div
-		if (undecided_texts.length == 1){
-			prev.hide();
-			next.hide();
-			counter.hide();
-
+		if (undecided_texts.length == 1){ // we only need one page div
 			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
 			body.append(page);
 
-		} else {
+			page.find('input').each(function(){
+				$(this).click(function inputClick (){
+					send.removeClass('disabled');
+				});
+			});
+
+		} else { // we need several pages
 			prev.show().removeClass('href').attr('max', undecided_texts.length).parent().addClass('disabled');
 			next.show().attr('max', undecided_texts.length);
 			counter.show().text('1/' + undecided_texts.length);
@@ -196,7 +199,7 @@ function GuiHandler() {
 				new GuiHandler().displayNextPageOffSetStatementContainer(body, prev, next, counter, prefix);
 			});
 			send.click(function sendClick(){
-				alert('todo');
+				alert('TODO more than one undecided text');
 				// TODO check all inputs
 				// TODO create dict
 				// TODO send this dict
@@ -213,17 +216,26 @@ function GuiHandler() {
 	 * @param prefix
 	 */
 	this.displayNextPageOffSetStatementContainer = function(body, prev_btn, next_btn, counter_text, prefix){
-		var tmp_el, tmp_id;
-		tmp_el = body.find('div:visible');
-		tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
+		var tmp_el = body.find('div:visible'),
+			tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length)),
+			input = tmp_el.find('input:checked');
 
-		if (tmp_id < (parseInt(next_btn.attr('max')) -1 )){
-			tmp_el.hide().next().show();
-			prev_btn.parent().removeClass('disabled');
-			counter_text.show().text((tmp_id+2) + '/' + next_btn.attr('max'));
+		// is current page filled?
+		if (input.length == 0){
+			$('#insert_statements_page_error').show();
+		} else {
+			$('#insert_statements_page_error').hide();
 
-			if ((tmp_id + 2) == parseInt(next_btn.attr('max')))
-				next_btn.parent().addClass('disabled');
+			if (tmp_id < (parseInt(next_btn.attr('max')) - 1 )) {
+				tmp_el.hide().next().show();
+				prev_btn.parent().removeClass('disabled');
+				counter_text.show().text((tmp_id + 2) + '/' + next_btn.attr('max'));
+
+				if ((tmp_id + 2) == parseInt(next_btn.attr('max')))
+					next_btn.parent().addClass('disabled');
+			} else {
+				$('#' + popupSetPremiseGroupsSendButton).removeClass('disabled');
+			}
 		}
 	};
 
@@ -236,9 +248,8 @@ function GuiHandler() {
 	 * @param prefix
 	 */
 	this.displayPrevPageOffSetStatementContainer = function(body, prev_btn, next_btn, counter_text, prefix){
-		var tmp_el, tmp_id;
-		tmp_el = body.find('div:visible');
-		tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
+		var tmp_el = body.find('div:visible'),
+			tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
 
 		if (tmp_id > 0){
 			tmp_el.hide().prev().show();
@@ -262,11 +273,18 @@ function GuiHandler() {
 			id = src.attr('id'),
 			splitted = text.split(' ' + _t(and) + ' '),
 			topic = $('#' + addPremiseContainerMainInputIntroId).text(),
-			list, bigText, bigTextSpan, connection, i;
+			input1, input2, input3, list, bigText, bigTextSpan, connection, i;
+
 		div_page.attr('id', id + page_no).attr('page', page_no).show();
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
 		list        = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
 		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);
+		input1      = div_page.find('#insert_more_arguments');
+		input2      = div_page.find('#insert_one_argument');
+		input3      = div_page.find('#insert_dont_care');
+		input1.attr('id', input1.attr('id') + '_' + page_no).parent().attr('for', input1.parent().attr('for') + '_' + page_no);
+		input2.attr('id', input2.attr('id') + '_' + page_no).parent().attr('for', input2.parent().attr('for') + '_' + page_no);
+		input3.attr('id', input3.attr('id') + '_' + page_no).parent().attr('for', input3.parent().attr('for') + '_' + page_no);
 
 		connection = supportive ? _t(itIsTrueThat) : _t(itIsFalseThat);
 		bigText = topic + ' ' + _t(because) + ' ' + connection;
@@ -286,7 +304,7 @@ function GuiHandler() {
 	 * @param type
 	 */
 	this.setStatementsAsProposal = function (parsedData, callbackid, type){
-		var callback = $('#' + callbackid), uneditted_value;
+		var callbackElement = $('#' + callbackid), uneditted_value;
 		if (type == fuzzy_start_premise)        $('#' + proposalPremiseListGroupId).empty();
 		else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).empty();
 		else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).empty();
@@ -298,14 +316,14 @@ function GuiHandler() {
 		}
 
 		var params, token, button, span_dist, span_text, distance, index;
-		callback.focus();
+		callbackElement.focus();
 
 		$.each(parsedData.values, function (key, val) {
 			params = key.split('_');
 			distance = parseInt(params[0]);
 			index = params[1];
 
-			token = callback.val();
+			token = callbackElement.val();
 			//var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0, start = 0;
 
 			// make all tokens bold
@@ -321,7 +339,7 @@ function GuiHandler() {
 			span_dist = $('<span>').attr({class : 'badge'}).text(parsedData.distance_name + ' ' + distance);
 			span_text = $('<span>').attr({id : 'proposal_' + index + '_text'}).html(val);
 			button.append(span_dist).append(span_text).click(function(){
-				callback.val($(this).attr('text'));
+				callbackElement.val($(this).attr('text'));
 				$('#' + proposalStatementListGroupId).empty();
 				$('#' + proposalPremiseListGroupId).empty();
 				$('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker

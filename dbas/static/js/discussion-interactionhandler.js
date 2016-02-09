@@ -145,43 +145,36 @@ function InteractionHandler() {
 		if (text.length == 0) {
 			new GuiHandler().setErrorDescription(_t(inputEmpty));
 		} else {
-			// check, if the user wants to at least two statements
-			if ((type == fuzzy_add_reason || type == fuzzy_start_premise) && text.length > 0) { // TODO > 1
-				var undecided_texts= [], decided_texts= [];
-				for (var i = 0; i < text.length; i++) {
-					// replace multiple whitespaces
-					text[i] = text[i].replace(/\s\s+/g, ' ');
 
-					// cutting all 'and ' and 'and'
-					while (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1 ||
-						text[i].indexOf((_t(and)), text[i].length - (_t(and) ).length) !== -1 ){
-						if (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1)
-							text[i] = text[i].substr(0, text[i].length - (_t(and) + ' ').length);
-						else
-							text[i] = text[i].substr(0, text[i].length - (_t(and)).length);
-					}
+			var undecided_texts= [], decided_texts= [];
+			for (var i = 0; i < text.length; i++) {
+				// replace multiple whitespaces
+				text[i] = text[i].replace(/\s\s+/g, ' ');
 
-					// whitespace at the end
-					while (text[i].indexOf((' '), text[i].length - (' ').length) !== -1)
-						text[i] = text[i].substr(0, text[i].length - (' ').length);
-
-					// sorting the statements, whether they include the keyword 'AND'
-					if (text[i].toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1)
-						undecided_texts.push(text[i]);
+				// cutting all 'and ' and 'and'
+				while (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1 ||
+					text[i].indexOf((_t(and)), text[i].length - (_t(and) ).length) !== -1 ){
+					if (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1)
+						text[i] = text[i].substr(0, text[i].length - (_t(and) + ' ').length);
 					else
-						decided_texts.push(text[i]);
+						text[i] = text[i].substr(0, text[i].length - (_t(and)).length);
 				}
-				// check for undecided text
-				if (undecided_texts.length == 0 && false){  // TODO > 1
-					alert("no undecided texts!");
-					if (type == fuzzy_add_reason){
-						// new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, text);
-					} else {
-						// new AjaxSiteHandler().sendNewStartPremise(text, conclusion, supportive);
-					}
-				} else {
-					new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive);
-				}
+
+				// whitespace at the end
+				while (text[i].indexOf((' '), text[i].length - (' ').length) !== -1)
+					text[i] = text[i].substr(0, text[i].length - (' ').length);
+
+				// sorting the statements, whether they include the keyword 'AND'
+				if (text[i].toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1)
+					undecided_texts.push(text[i]);
+				else
+					decided_texts.push(text[i]);
+			}
+
+			if (undecided_texts.length > 0){
+				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive);
+			} else if (decided_texts.length > 0){
+				alert("TODO: more than one decided text")
 			} else {
 				// normal case
 				text = text[0];

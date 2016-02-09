@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-02-08 19:29+0100\n"
+"POT-Creation-Date: 2016-02-09 08:24+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1205,28 +1205,40 @@ msgstr "Okay"
 msgid "need-help-to-understand-statement"
 msgstr "Wir brauchen Hilfe zum Verständniss Ihrer Aussage!"
 
+#. Default: Error:
+#: dbas/templates/snippet-popups.pt:528 dbas/templates/news.pt:25
+#: dbas/templates/settings.pt:75 dbas/templates/content.pt:283
+#: dbas/templates/content.pt:306
+msgid "error:"
+msgstr "Fehler:"
+
+#. Default: You forgot to choose the right interpretation
+#: dbas/templates/snippet-popups.pt:529
+msgid "forgot_input_radio"
+msgstr "Eingabe vergessen"
+
 #. Default: You have used 'and' in your statement. As a result there are two
 #. ways it could be interpreted. Please help us by selecting the right
 #. interpretation:
-#: dbas/templates/snippet-popups.pt:526
+#: dbas/templates/snippet-popups.pt:531
 msgid "set_premisegroups_intro"
 msgstr ""
 "Sie haben 'und' in Ihrer Aussage benutzt. Daher existeiren zwei mögliche "
 "Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen"
 
 #. Default: I actually have
-#: dbas/templates/snippet-popups.pt:536
+#: dbas/templates/snippet-popups.pt:541
 msgid "i_actually_have"
 msgstr "Aktuell habe ich"
 
 #. Default: arguments:
 #. Default: arguments
-#: dbas/templates/snippet-popups.pt:536 dbas/templates/content.pt:36
+#: dbas/templates/snippet-popups.pt:541 dbas/templates/content.pt:36
 msgid "arguments"
 msgstr "Argumente"
 
 #. Default: Save my Statement!
-#: dbas/templates/snippet-popups.pt:561
+#: dbas/templates/snippet-popups.pt:566
 msgid "save_my_statement"
 msgstr "Aussage speichern"
 
@@ -1234,12 +1246,6 @@ msgstr "Aussage speichern"
 #: dbas/templates/news.pt:21
 msgid "writing_message"
 msgstr "Neue Nachricht schreiben"
-
-#. Default: Error:
-#: dbas/templates/news.pt:25 dbas/templates/settings.pt:75
-#: dbas/templates/content.pt:283 dbas/templates/content.pt:306
-msgid "error:"
-msgstr "Fehler:"
 
 #. Default: Success:
 #: dbas/templates/news.pt:30
@@ -1627,9 +1633,6 @@ msgstr "Wechsel die Darstellung"
 
 #~ msgid "signup_free"
 #~ msgstr "Registrieren Sie sich kostenlos"
-
-#~ msgid "forgot_password"
-#~ msgstr "Passwort vergessen"
 
 #~ msgid "news_intro"
 #~ msgstr "Dies, wird so etwas wie die Nachrichten-Seite"

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-02-08 19:29+0100\n"
+"POT-Creation-Date: 2016-02-09 08:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1038,38 +1038,44 @@ msgstr ""
 msgid "need-help-to-understand-statement"
 msgstr ""
 
+#. Default: Error:
+#: ./dbas/templates/snippet-popups.pt:528 ./dbas/templates/news.pt:25
+#: ./dbas/templates/settings.pt:75 ./dbas/templates/content.pt:283
+#: ./dbas/templates/content.pt:306
+msgid "error:"
+msgstr ""
+
+#. Default: You forgot to choose the right interpretation
+#: ./dbas/templates/snippet-popups.pt:529
+msgid "forgot_input_radio"
+msgstr ""
+
 #. Default: You have used 'and' in your statement. As a result there are two
 #. ways it could be interpreted. Please help us by selecting the right
 #. interpretation:
-#: ./dbas/templates/snippet-popups.pt:526
+#: ./dbas/templates/snippet-popups.pt:531
 msgid "set_premisegroups_intro"
 msgstr ""
 
 #. Default: I actually have
-#: ./dbas/templates/snippet-popups.pt:536
+#: ./dbas/templates/snippet-popups.pt:541
 msgid "i_actually_have"
 msgstr ""
 
 #. Default: arguments:
 #. Default: arguments
-#: ./dbas/templates/snippet-popups.pt:536 ./dbas/templates/content.pt:36
+#: ./dbas/templates/snippet-popups.pt:541 ./dbas/templates/content.pt:36
 msgid "arguments"
 msgstr ""
 
 #. Default: Save my Statement!
-#: ./dbas/templates/snippet-popups.pt:561
+#: ./dbas/templates/snippet-popups.pt:566
 msgid "save_my_statement"
 msgstr ""
 
 #. Default: Writing a new message
 #: ./dbas/templates/news.pt:21
 msgid "writing_message"
-msgstr ""
-
-#. Default: Error:
-#: ./dbas/templates/news.pt:25 ./dbas/templates/settings.pt:75
-#: ./dbas/templates/content.pt:283 ./dbas/templates/content.pt:306
-msgid "error:"
 msgstr ""
 
 #. Default: Success:
