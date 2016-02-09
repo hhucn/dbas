@@ -6,7 +6,6 @@ from dbas.logger import logger
 
 
 def init(config):
-	logger("API", "init", "main")
 	config.include("cornice")
 	config.scan("api.views")
 
