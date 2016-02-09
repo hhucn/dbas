@@ -3,6 +3,7 @@ import datetime
 import requests
 import urllib
 import hashlib
+import random
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
@@ -953,33 +954,31 @@ class Dbas(object):
 		logger('set_new_start_premise', 'def', 'main')
 
 		return_dict = dict()
+		_qh = QueryHelper()
 		try:
 			logger('set_new_start_premise', 'def', 'getting params')
 			text = self.escape_string(self.request.params['text'])
 			conclusion_id = self.request.params['conclusion_id']
 			url = self.request.params['url']
 			support = True if self.request.params['support'].lower() == 'true' else False
-			issue = QueryHelper().get_issue(self.request)
-			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + str(text) + ', supportive: ' +
-			       str(support) + ', issue: ' + str(issue))
+			issue = _qh.get_issue(self.request)
+			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + str(text) +
+			       ', supportive: ' + str(support) + ', issue: ' + str(issue))
 
 			new_arguments = []
 			for t in text:
 				logger('set_new_start_premise', 'def', 'found text: ' + str(t))
-				#  new_argument_uid = self.set_new_premises_for_argument(transaction, user_id, text, conclusion_id, support, issue)
-				#  new_arguments.append(new_argument_uid)
-			return
+				new_argument_uid = _qh.set_premises_as_group_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
+				new_arguments.append(new_argument_uid)
+				logger('set_new_start_premise', 'def', 'new argument created: ' + str(new_argument_uid))
 
-			new_argument_uid, is_duplicate = QueryHelper().set_premise_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
-			if new_argument_uid == -1:
-				return_dict['status'] = 0
-			else:
-				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
-				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+			new_argument_uid = random.choice(new_arguments) #  TODO IMPROVE
+			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-				url = UrlManager(url, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-				return_dict['url'] = url
-				return_dict['status'] = '1'
+			url = UrlManager(url, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+			return_dict['url'] = url
+			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('set_new_start_premise', 'error', repr(e))
 			return_dict['status'] = '-1'
@@ -1016,20 +1015,19 @@ class Dbas(object):
 			logger('set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', text: ' + text + ', relation: ' +
 			       str(relation) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
 
+			new_arguments = []
 			for t in text:
 				logger('set_new_premises_for_argument', 'def', 'found text: ' + str(t))
-			return
 
-			new_argument_uid = QueryHelper().handle_insert_new_premise_for_argument(text,
-			                                                                           relation,
-			                                                                           arg_uid,
-			                                                                           supportive,
-			                                                                           issue,
-			                                                                           self.request.authenticated_userid,
-			                                                                           transaction)
-			if new_argument_uid == -1:
+				new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(t, relation, arg_uid, issue,
+				                                                                         self.request.authenticated_userid,
+				                                                                         transaction)
+				new_arguments.push(new_argument_uid)
+
+			if len(new_arguments) == 0:
 				return_dict['status'] = 0
 			else:
+				new_argument_uid = random.choice(new_arguments) #  TODO IMPROVE
 				logger('set_new_premises_for_argument', 'def', 'new_argument_uid ' + str(new_argument_uid))
 
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)

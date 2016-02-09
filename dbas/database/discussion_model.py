@@ -215,19 +215,19 @@ class Premise(DiscussionBase):
 	users = relationship('User', foreign_keys=[author_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, premisesgroup, statement, isnegated, author, issue):
+	def __init__(self, premisesgroup, statement, is_negated, author, issue):
 		"""
 		Initializes a row in current premises-table
 		:param premisesgroup:
 		:param statement:
-		:param isnegated:
+		:param is_negated:
 		:param author:
 		:param issue:
 		:return:
 		"""
 		self.premisesgroup_uid = premisesgroup
 		self.statement_uid = statement
-		self.is_negated = isnegated
+		self.is_negated = is_negated
 		self.author_uid = author
 		self.timestamp = func.now()
 		self.issue_uid = issue
