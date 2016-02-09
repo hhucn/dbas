@@ -115,7 +115,7 @@ class DictionaryHelper(object):
 		_tn              = Translator(lang)
 		_qh              = QueryHelper()
 		heading          = ''
-		add_premise_text = ''
+		add_premise_text = _tn.get(_tn.iAgreeWithInColor) if is_supportive else _tn.get(_tn.iDisagreeWithInColor) + ': '
 		if at_start:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_start')
 			heading             = _tn.get(_tn.initialPositionInterest)
@@ -136,7 +136,7 @@ class DictionaryHelper(object):
 			                        + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?<br><br>'
 			because             = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 			heading             += because
-			add_premise_text    = text
+			add_premise_text    += text
 
 		elif at_justify_argumentation:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_justify_argumentation')
@@ -147,7 +147,7 @@ class DictionaryHelper(object):
 			conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
 			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
-			add_premise_text    = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
+			add_premise_text    += _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
 			                                                             db_argument.is_supportive)
 			because             = ' ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 			heading             += because
@@ -424,7 +424,7 @@ class DictionaryHelper(object):
 		return statements_array
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang,
-	                        authenticated_userid, add_premise_supportive=False, argument_id=0, breadcrumbs='',
+	                        authenticated_userid, argument_id=0, breadcrumbs='',
 	                        application_url='', for_api=False):
 		"""
 
@@ -435,7 +435,6 @@ class DictionaryHelper(object):
 		:param show_display_styles:
 		:param lang:
 		:param authenticated_userid:
-		:param add_premise_supportive:
 		:param argument_id:
 		:param breadcrumbs:
 		:param application_url:
@@ -456,7 +455,6 @@ class DictionaryHelper(object):
 		return_dict['show_bar_icon']                 = show_bar_icon
 		return_dict['show_display_style']            = show_display_styles
 		return_dict['users_name']                    = str(authenticated_userid)
-		return_dict['add_premise_supportive']        = add_premise_supportive
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'
 		return_dict['title']                         = {'barometer': _tn.get(_tn.opinionBarometer),

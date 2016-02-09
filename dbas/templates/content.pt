@@ -309,11 +309,7 @@
 					<span i18n:translate="error:">Error:</span>
 					<span id="add-premise-error-msg"></span>
 				</div>
-				<h5>
-					<span tal:condition="extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-success" i18n:translate="agree">agree</span> <span i18n:translate="with">with</span>: </span>
-					<span tal:condition="not:extras.add_premise_supportive"><span i18n:translate="I">I</span> <span class="text-danger" i18n:translate="disagree">disagree</span> <span i18n:translate="with">with</span>: </span>
-					<span id="add-premise-container-main-input-intro">${discussion.add_premise_text}</span>
-				</h5>
+				<h5  id="add-premise-container-main-input-intro">${discussion.add_premise_text}</h5>
 				<div id="add-premise-container-body">
 					<div style="padding-bottom: 2em;">
 						<h5 style="float: left; line-height: 20px; text-align: center;" i18n:translate="Because...">Because...</h5>
