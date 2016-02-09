@@ -519,7 +519,7 @@
 				<button type="button" id="popup-set-premisegroups-close" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<span id="popup-set-premisegroups-counter" class="lead" style="float:right; margin: 1em;">1/4</span>
+				<span id="popup-set-premisegroups-counter" class="lead badge" style="float:right; margin: 1em;">1/4</span>
 				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">We need your help to understand your statement!</h4>
 			</div>
 			<div id="popup-set-premisegroups-body" class="lead">
@@ -539,7 +539,8 @@
 							<label for="insert_more_arguments">
 								<input type="radio" name="insert_statements" id="insert_more_arguments">
 								<span i18n:translate="i_actually_have">I actually have</span>&#160;<span id="insert_statements_count"></span>&#160;<span i18n:translate="arguments">arguments:</span>
-							    <ul id="insert_statements_list_more_arguments" style="font-weight: 300;"></ul>
+							    <ul id="insert_statements_list_more_arguments" style="font-weight: 300;">
+							    </ul>
 							</label>
 						</li>
 						<li>
