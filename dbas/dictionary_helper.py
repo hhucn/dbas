@@ -168,7 +168,7 @@ class DictionaryHelper(object):
 				heading             = _tn.get(_tn.sentencesOpenersForArguments[0])\
 				                      + ': <strong>' + _qh.get_text_for_argument_uid(uid, lang, True) + '</strong>.'\
 				                      + '<br><br>' + _tn.get(_tn.otherParticipantsDontHaveCounterForThat)\
-				                      + '.<br><br>' + _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndText)
+				                      + '.<br><br>' + _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 			else:
 				premise, tmp        = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 				conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \

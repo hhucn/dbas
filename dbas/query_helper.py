@@ -1109,29 +1109,33 @@ class QueryHelper(object):
 
 		if at_start:
 			discussion_dict['heading'] = _t.get(_t.firstPositionText)
-			extras_dict['add_statement_container_style'] = '' # this will remove the 'display: none;'-style
-			extras_dict['show_display_style'] = False
-			extras_dict['show_bar_icon'] = False
-			extras_dict['is_editable'] = False
-			extras_dict['is_reportable'] = False
+			if logged_in:
+				extras_dict['add_statement_container_style'] = '' # this will remove the 'display: none;'-style
+				discussion_dict['heading']      += '<br><br>' + _t.get(_t.pleaseAddYourSuggestion)
+			else:
+				discussion_dict['heading']      += '<br><br>' + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin)
+			extras_dict['show_display_style']   = False
+			extras_dict['show_bar_icon']        = False
+			extras_dict['is_editable']          = False
+			extras_dict['is_reportable']        = False
 
 		elif at_justify_argumentation:
 			extras_dict['add_premise_container_style'] = '' # this will remove the 'display: none;'-style
 			extras_dict['show_display_style'] = False
 
 		elif at_dont_know:
-			discussion_dict['heading'] += _t.get(_t.otherParticipantsDontHaveOpinion) + '<br><br>' + (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText))
+			discussion_dict['heading'] += _t.get(_t.otherParticipantsDontHaveOpinion) + '<br><br>' + (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndLinkText))
 
 		elif at_justify:
 			discussion_dict['heading'] = _t.get(_t.firstPremiseText1) + ' <strong>' + current_premise + '</strong>.<br><br>' + _t.get(_t.whyDoYouThinkThat) + '?'
 			extras_dict['add_premise_container_style'] = '' # this will remove the 'display: none;'-style
-			extras_dict['show_display_style'] = False
-			extras_dict['show_bar_icon'] = False
-			extras_dict['is_editable'] = False
-			extras_dict['is_reportable'] = False
+			extras_dict['show_display_style']   = False
+			extras_dict['show_bar_icon']        = False
+			extras_dict['is_editable']          = False
+			extras_dict['is_reportable']        = False
 
 		else:
-			discussion_dict['heading'] += (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText)) if logged_in else _t.get(_t.discussionEndFeelFreeToLogin)
+			discussion_dict['heading'] += _t.get(_t.discussionEnd) + ' ' + (_t.get(_t.discussionEndLinkText) if logged_in else _t.get(_t.feelFreeToLogin))
 
 	def sql_timestamp_pretty_print(self, ts, lang):
 		"""

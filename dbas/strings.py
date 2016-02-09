@@ -147,8 +147,7 @@ class Translator(object):
 		self.dataRemoved = 'dataRemoved'
 		self.didYouMean = 'didYouMean'
 		self.discussionEnd = 'discussionEnd'
-		self.discussionEndText = 'discussionEndText'
-		self.discussionEndFeelFreeToLogin = 'discussionEndFeelFreeToLogin'
+		self.discussionEndLinkText = 'discussionEndLinkText'
 		self.duplicateDialog = 'duplicateDialog'
 		self.displayControlDialogGuidedTitle = 'displayControlDialogGuidedTitle'
 		self.displayControlDialogGuidedBody = 'displayControlDialogGuidedBody'
@@ -176,6 +175,7 @@ class Translator(object):
 		self.edit = 'edit'
 		self.error_code = 'error_code'
 		self.editTitle = 'editTitle'
+		self.feelFreeToLogin = 'feelFreeToLogin'
 		self.forText = 'forText'
 		self.fillLine = 'fillLine'
 		self.firstConclusionRadioButtonText = 'firstConclusionRadioButtonText'
@@ -291,6 +291,7 @@ class Translator(object):
 		self.otherUsersClaimStrongerArgumentRejecting = 'otherUsersClaimStrongerArgumentRejecting'
 		self.otherUsersClaimStrongerArgumentAccepting = 'otherUsersClaimStrongerArgumentAccepting'
 		self.opinionBarometer = 'opinionBarometer'
+		self.pleaseAddYourSuggestion = 'pleaseAddYourSuggestion'
 		self.premiseGroup = 'premiseGroup'
 		self.previous = 'previous'
 		self.passwordSubmit = 'passwordSubmit'
@@ -525,8 +526,7 @@ class Translator(object):
 		en_lang[self.displayControlDialogIslandBody] = 'Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.'
 		en_lang[self.displayControlDialogExpertTitle] = 'Expert View'
 		en_lang[self.displayControlDialogExpertBody] = 'So, you think you are an expert? Okay, you can have a view of the complete argumentation map'
-		en_lang[self.discussionEndText] = 'You can click <a id="discussionEndStepBack" onclick="window.history.back();" style="cursor: pointer;">here</a> to go one step back or you can use the button above or <a id="discussionEndRestart" href="#">this link</a> to restart the discussion.'
-		en_lang[self.discussionEndFeelFreeToLogin] = 'The discussion ends here. If you want to proceed, please feel free to login yourself :)'
+		en_lang[self.discussionEndLinkText] = 'You can click <a id="discussionEndStepBack" onclick="window.history.back();" style="cursor: pointer;">here</a> to go one step back or you can use the button above or <a id="discussionEndRestart" href="#">this link</a> to restart the discussion.'
 		en_lang[self.duplicateDialog] = 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version as the current one once again?'
 		en_lang[self.doesNotHold] = 'does not hold'
 		en_lang[self.doesNotHoldBecause] = 'does not hold, because'
@@ -546,6 +546,7 @@ class Translator(object):
 		en_lang[self.error_code] = 'Error code'
 		en_lang[self.edit] = 'Edit'
 		en_lang[self.editTitle] = 'Editing the statements.'
+		en_lang[self.feelFreeToLogin] = ' If you want to proceed, please feel free to login yourself :)'
 		en_lang[self.forText] = 'for'
 		en_lang[self.firstConclusionRadioButtonText] = 'Let me enter my idea!'
 		en_lang[self.firstArgumentRadioButtonText] = 'Let me enter my own statement(s)!'
@@ -555,7 +556,7 @@ class Translator(object):
 		en_lang[self.forgotPassword] = 'Forgot Password'
 		en_lang[self.firstOneText] = 'You are the first one, who said: '
 		en_lang[self.firstOneReason] = 'You are the first one with this argument, please give a reason.'
-		en_lang[self.firstPositionText] = 'You are the first one in this discussion!<br><br>Please add your suggestion!'
+		en_lang[self.firstPositionText] = 'You are the first one in this discussion!'
 		en_lang[self.firstPremiseText1] = 'You are the first one, who said that'
 		en_lang[self.firstPremiseText2] = 'Please enter your reason for your statement.'
 		en_lang[self.firstname] = 'Firstname'
@@ -661,6 +662,7 @@ class Translator(object):
 		en_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Other users claim to have a stronger statement for rejecting'
 		en_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Other users claim to have a stronger statement for accepting'
 		en_lang[self.opinionBarometer] = 'Opinion Barometer'
+		en_lang[self.pleaseAddYourSuggestion] = 'Please add your suggestion!'
 		en_lang[self.premiseGroup] = 'PremiseGroup'
 		en_lang[self.previous] = 'Previous Entry'
 		en_lang[self.passwordSubmit] = 'Change Password'
@@ -882,8 +884,7 @@ class Translator(object):
 		de_lang[self.dataRemoved] = 'Daten wurden erfolgreich gelöscht.',
 		de_lang[self.didYouMean] = 'Top 10 der Aussagen, die Sie eventuell meinten:',
 		de_lang[self.discussionEnd] = 'Die Diskussion endet hier.',
-		de_lang[self.discussionEndText] = 'Sie können <a id="discussionEndStepBack" href="#">hier</a> klicken, um einen Schritt zurück zugehen oder den oberen Button bzw. <a href="" id="discussionEndRestart">diesen Link</a> nutzen, um die Diskussion neu zustarten.',
-		de_lang[self.discussionEndFeelFreeToLogin] = 'Die Diskussion endet hier. Wenn Sie weiter machen möchten, melden Sie sich bitte an :)',
+		de_lang[self.discussionEndLinkText] = 'Sie können <a id="discussionEndStepBack" href="#">hier</a> klicken, um einen Schritt zurück zugehen oder den oberen Button bzw. <a href="" id="discussionEndRestart">diesen Link</a> nutzen, um die Diskussion neu zustarten.',
 		de_lang[self.duplicateDialog] = 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
 		de_lang[self.displayControlDialogGuidedTitle] = 'geführte Ansicht',
 		de_lang[self.displayControlDialogGuidedBody] = 'Du wirst nie etwas wie eine Argumentationskarte sehen, da das System dich führt. Das System ist daher dynamisch und generisch für dich.',
@@ -911,6 +912,7 @@ class Translator(object):
 		de_lang[self.edit] = 'Bearbeiten',
 		de_lang[self.error_code] = 'Fehler-Code',
 		de_lang[self.editTitle] = 'Aussagen bearbeiten',
+		de_lang[self.feelFreeToLogin] = 'Wenn Sie weiter machen möchten, melden Sie sich bitte an :)',
 		de_lang[self.forText] = 'für',
 		de_lang[self.fillLine] = 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung',
 		de_lang[self.firstConclusionRadioButtonText] = 'Lass mich meine eigenen Ideen einfügen!',
@@ -921,7 +923,7 @@ class Translator(object):
 		de_lang[self.forgotPassword] = 'Passwort vergessen',
 		de_lang[self.firstOneText] = 'Sie sind der Erste, der sagt: ',
 		de_lang[self.firstOneReason] = 'Sie sind der Erste mit diesem Argument. Bitte geben Sie Ihre Begründung an.',
-		de_lang[self.firstPositionText] = 'Sie sind der Erste in dieser Diskussion!<br><br>Bitte geben Sie Ihren Vorschlag an!',
+		de_lang[self.firstPositionText] = 'Sie sind der Erste in dieser Diskussion!',
 		de_lang[self.firstPremiseText1] = 'Sie sind der erste, der sagt, dass ',
 		de_lang[self.firstPremiseText2] = 'Bitte begründen Sie Ihre Aussage.',
 		de_lang[self.firstname] = 'Vorname',
@@ -1026,6 +1028,7 @@ class Translator(object):
 		de_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung von',
 		de_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme von',
 		de_lang[self.opinionBarometer] = 'Meinungsbarometer',
+		de_lang[self.pleaseAddYourSuggestion] = 'Bitte geben Sie Ihren Vorschlag an!'
 		de_lang[self.previous] = 'Vorheriger Eintrag',
 		de_lang[self.premiseGroup] = 'Gruppe von Voraussetzung(en)',
 		de_lang[self.passwordSubmit] = 'Passwort ändern',
@@ -1470,8 +1473,8 @@ class TextGenerator(object):
 			opinion = '<strong>' + premise + '</strong> ' + _t.get('relation_' + return_dict['relation']) + ' ' + '<strong>' + conclusion + '</strong>'
 
 		return _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + opinion + '.<br><br>' \
-			   + _t.get(_t.otherParticipantsDontHaveCounter) + ' <strong>' + premise + '</strong>' + '.<br><br>' \
-			   + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndText), _t.get(_t.discussionEnd)
+		       + _t.get(_t.otherParticipantsDontHaveCounter) + ' <strong>' + premise + '</strong>' + '.<br><br>' \
+		       + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndLinkText), _t.get(_t.discussionEnd)
 
 	def get_text_for_premise_for_statement(self, conclusion, premises, supportive, logged_in):
 		"""
@@ -1486,11 +1489,11 @@ class TextGenerator(object):
 		ret_dict = dict()
 
 		if len(premises) == 0:
-			text_add_on = '' if logged_in else ('<br><br>'  + _t.get(_t.discussionEndFeelFreeToLogin))
+			text_add_on = '' if logged_in else ('<br><br>'  + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin))
 			if supportive:
 				ret_dict['discussion_description'] = _t.get(_t.unfortunatelyNoMoreArgument) + ' ' + argument \
 													 + '.<br><br>' + _t.get(_t.canYouGiveAReason) + '<br><br>' \
-													 + _t.get(_t.alternatively) + ': ' + _t.get(_t.discussionEndText) \
+													 + _t.get(_t.alternatively) + ': ' + _t.get(_t.discussionEndLinkText) \
 													 + text_add_on
 			else:
 				ret_dict['discussion_description'] = _t.get(_t.soYouWantToArgueAgainst) + ' ' + argument + ', ' \
