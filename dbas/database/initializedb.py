@@ -235,11 +235,18 @@ def setupNewsDatabase():
 				  news='Currently we are improving out model of voting for arguments as well as statements. Therefore we are working'
 				       'together with our colleage out of the theoretical computer science...because DBAS datastructure can be '
 				       'formalized to be compatible with frameworks of Dung.')
+	news42 = News(title='Refactoring',
+				  date='09.02.2016',
+				  author='Tobias Krauthoff',
+				  news='Now we have a mechanism for unclear statements. For example the user enters "I want something because '
+				       'A and B". The we do not know, whether A and B must hold at the same time, or if she wants something '
+				       'when A or B holds.')
 
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
-	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41]
+	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41,
+	              news42]
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 

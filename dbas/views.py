@@ -909,6 +909,7 @@ class Dbas(object):
 		:return: a status code, if everything was successfull
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('set_new_start_statement', 'def', 'ajax, self.request.params: ' + str(self.request.params))
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('set_new_start_statement', 'def', 'main')
@@ -945,6 +946,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('set_new_start_premise', 'def', 'ajax, self.request.params: ' + str(self.request.params))
 		user_id = self.request.authenticated_userid
 		UserHandler().update_last_action(transaction, user_id)
 
@@ -958,10 +960,17 @@ class Dbas(object):
 			url = self.request.params['url']
 			support = True if self.request.params['support'].lower() == 'true' else False
 			issue = QueryHelper().get_issue(self.request)
-			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + text + ', supportive: ' +
+			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + str(text) + ', supportive: ' +
 			       str(support) + ', issue: ' + str(issue))
 
-			new_argument_uid, is_duplicate = QueryHelper().set_premises_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
+			new_arguments = []
+			for t in text:
+				logger('set_new_start_premise', 'def', 'found text: ' + str(t))
+				#  new_argument_uid = self.set_new_premises_for_argument(transaction, user_id, text, conclusion_id, support, issue)
+				#  new_arguments.append(new_argument_uid)
+			return
+
+			new_argument_uid, is_duplicate = QueryHelper().set_premise_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
 			if new_argument_uid == -1:
 				return_dict['status'] = 0
 			else:
@@ -990,12 +999,13 @@ class Dbas(object):
 		user_id = self.request.authenticated_userid
 		UserHandler().update_last_action(transaction, user_id)
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('set_new_premises_for_argument', 'def', 'ajax, self.request.params: ' + str(self.request.params))
 
-		logger('ajax_set_new_premises_for_argument', 'def', 'main')
+		logger('set_new_premises_for_argument', 'def', 'main')
 
 		return_dict = dict()
 		try:
-			logger('ajax_set_new_premises_for_argument', 'def', 'getting params')
+			logger('set_new_premises_for_argument', 'def', 'getting params')
 			arg_uid     = self.request.params['arg_uid']
 			relation    = self.request.params['relation']
 			text        = self.request.params['text']
@@ -1003,8 +1013,12 @@ class Dbas(object):
 			url         = self.request.params['url']
 
 			issue = QueryHelper().get_issue(self.request)
-			logger('ajax_set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', text: ' + text + ', relation: ' +
+			logger('set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', text: ' + text + ', relation: ' +
 			       str(relation) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
+
+			for t in text:
+				logger('set_new_premises_for_argument', 'def', 'found text: ' + str(t))
+			return
 
 			new_argument_uid = QueryHelper().handle_insert_new_premise_for_argument(text,
 			                                                                           relation,
@@ -1016,7 +1030,7 @@ class Dbas(object):
 			if new_argument_uid == -1:
 				return_dict['status'] = 0
 			else:
-				logger('ajax_set_new_premises_for_argument', 'def', 'new_argument_uid ' + str(new_argument_uid))
+				logger('set_new_premises_for_argument', 'def', 'new_argument_uid ' + str(new_argument_uid))
 
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
 				if arg_id_sys == 0:
@@ -1026,12 +1040,12 @@ class Dbas(object):
 				return_dict['url'] = url
 				return_dict['status'] = '1'
 		except KeyError as e:
-			logger('ajax_set_new_premises_for_argument', 'error', repr(e))
+			logger('set_new_premises_for_argument', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		logger('ajax_set_new_premises_for_argument', 'def', 'returning')
+		logger('set_new_premises_for_argument', 'def', 'returning')
 		return return_json
 
 	# ajax - set new textvalue for a statement
@@ -1250,7 +1264,7 @@ class Dbas(object):
 			return_dict = QueryHelper().set_news(transaction, title, text, self.request.authenticated_userid)
 		except KeyError as e:
 			return_dict = dict()
-			logger('ajax_send_news', 'error', repr(e))
+			logger('send_news', 'error', repr(e))
 			return_dict['status'] = '-1'
 
 		logger('send_news', 'def', 'main')

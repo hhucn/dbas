@@ -145,45 +145,45 @@ function InteractionHandler() {
 		if (text.length == 0) {
 			new GuiHandler().setErrorDescription(_t(inputEmpty));
 		} else {
+			var undecided_texts = [], decided_texts = [];
+			if ($.isArray(text)) {
+				for (var i = 0; i < text.length; i++) {
+					// replace multiple whitespaces
+					text[i] = text[i].replace(/\s\s+/g, ' ');
 
-			var undecided_texts= [], decided_texts= [];
-			for (var i = 0; i < text.length; i++) {
-				// replace multiple whitespaces
-				text[i] = text[i].replace(/\s\s+/g, ' ');
+					// cutting all 'and ' and 'and'
+					while (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1 ||
+					text[i].indexOf((_t(and)), text[i].length - (_t(and) ).length) !== -1) {
+						if (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1)
+							text[i] = text[i].substr(0, text[i].length - (_t(and) + ' ').length);
+						else
+							text[i] = text[i].substr(0, text[i].length - (_t(and)).length);
+					}
 
-				// cutting all 'and ' and 'and'
-				while (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1 ||
-					text[i].indexOf((_t(and)), text[i].length - (_t(and) ).length) !== -1 ){
-					if (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1)
-						text[i] = text[i].substr(0, text[i].length - (_t(and) + ' ').length);
+					// whitespace at the end
+					while (text[i].indexOf((' '), text[i].length - (' ').length) !== -1)
+						text[i] = text[i].substr(0, text[i].length - (' ').length);
+
+					// sorting the statements, whether they include the keyword 'AND'
+					if (text[i].toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1)
+						undecided_texts.push(text[i]);
 					else
-						text[i] = text[i].substr(0, text[i].length - (_t(and)).length);
+						decided_texts.push(text[i]);
 				}
-
-				// whitespace at the end
-				while (text[i].indexOf((' '), text[i].length - (' ').length) !== -1)
-					text[i] = text[i].substr(0, text[i].length - (' ').length);
-
-				// sorting the statements, whether they include the keyword 'AND'
-				if (text[i].toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1)
-					undecided_texts.push(text[i]);
-				else
-					decided_texts.push(text[i]);
 			}
 
 			if (undecided_texts.length > 0){
-				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive, type);
-			} else if (decided_texts.length > 0){
-				alert("TODO: more than one decided text")
+				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion);
 			} else {
-				// normal case
-				text = text[0];
-				if (type == fuzzy_add_reason) {
-					new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, text);
-				} else if (type == fuzzy_start_statement) {
-					new AjaxSiteHandler().sendNewStartStatement(text);
+				if (type == fuzzy_start_statement) {
+					if (decided_texts.length > 0)
+						alert("TODO: more than one decided text");
+					else
+						new AjaxSiteHandler().sendNewStartStatement(text);
 				} else if (type == fuzzy_start_premise) {
 					new AjaxSiteHandler().sendNewStartPremise(text, conclusion, supportive);
+				} else  if (type == fuzzy_add_reason) {
+					new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, text);
 				}
 			}
 		}

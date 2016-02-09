@@ -327,11 +327,11 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPositionContainer();
 				$('#' + sendNewStatementId).click(function(){
-					text = [];
-					$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
+					text = $('#' + addStatementContainerMainInputId).val();
 					interactionHandler.sendStatement(text, '', '', '', '', fuzzy_start_statement);
 				});
 			}
+
 			// new premise for the start
 			else if (input.attr('id').indexOf('start_premise') != -1){
 				guiHandler.showHowToWriteTextPopup();
@@ -345,6 +345,7 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 					interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
 				});
 			}
+
 			// new premise while judging
 			else if (input.attr('id').indexOf('justify_premise') != -1){
 				guiHandler.showHowToWriteTextPopup();

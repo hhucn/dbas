@@ -148,9 +148,12 @@ function GuiHandler() {
 	 * @param undecided_texts
 	 * @param decided_texts
 	 * @param supportive
-	 * @param type fuzzy_add_reason or fuzzy_start_premise
+	 * @param type
+	 * @param arg
+	 * @param relation
+	 * @param conclusion
 	 */
-	this.showSetStatementContainer = function(undecided_texts, decided_texts, supportive, type) {
+	this.showSetStatementContainer = function(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
 		$('#' + popupSetPremiseGroups).modal('show');
 		var gh = new GuiHandler(), page, page_no,
 			body = $('#' + popupSetPremiseGroupsBodyContent).empty(),
@@ -160,28 +163,28 @@ function GuiHandler() {
 			counter = $('#' + popupSetPremiseGroupsCounter).hide(),
 			prefix = 'insert_statements_page_';
 
-		send.click(function sendClick(){
-			if (type == fuzzy_add_reason){
+		send.off().click(function sendClick(){
+			var selections = body.find('input:checked'), i, splitted;
 
-			} else if (type == fuzzy_start_premise){
-
-			// } else {
-			// 	alert("Todo: unknown type")
-			}
-			var selections = body.find('input:checked'), i, sel,
-				tmp = 'u: ' + undecided_texts.length + ', d:' + decided_texts.length + ', s: ' + selections.length + '\n';
-
+			// merge every text part to one array
 			for (i=0; i<undecided_texts.length; i++){
-				sel = selections[i].id.indexOf(attr_more_args) != -1 ? 'M': selections[i].id.indexOf(attr_one_arg) != -1 ? '1' : '-';
-				tmp += '\nu ' + i + ' (s: ' + sel + '): ' + undecided_texts[i];
+					splitted = undecided_texts[i].split(' ' + _t(and) + ' ');
+				if (selections[i].id.indexOf(attr_more_args) != -1){ // each splitted text part is one argument
+					$.merge(decided_texts, [splitted]);
+				} else if (selections[i].id.indexOf(attr_one_arg) != -1){ // one argument with big premisegroup
+					decided_texts.push([splitted]);
+				} else { // just take it!
+					decided_texts.push([undecided_texts[i]]);
+				}
 			}
-			for (i=0; i<decided_texts.length; i++){
-				tmp += '\nd ' + i + ': ' + decided_texts[i];
+
+			if (type == fuzzy_add_reason){
+				new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, decided_texts);
+			} else if (type == fuzzy_start_premise){
+				new AjaxSiteHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
+			} else {
+			 	alert("Todo: unknown type")
 			}
-			alert('TODO more than one undecided text:\n\n' + tmp);
-			// TODO check all inputs
-			// TODO create dict
-			// TODO send this dict
 		});
 
 		if (undecided_texts.length == 1){ // we only need one page div

@@ -508,11 +508,8 @@ class QueryHelper(object):
 		:return: Statement, is_duplicate or -1, False on error
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) + ', statement: ' + str(
-			statement) + ', issue: ' + str(issue))
-
-		if len(statement) < 5: # TODO IMPROVE
-			return -1, False
+		logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) + ', statement: '
+		       + str(statement) + ', issue: ' + str(issue))
 
 		# check for dot at the end
 		if not statement.endswith(('.','?','!')):
@@ -549,6 +546,25 @@ class QueryHelper(object):
 		logger('QueryHelper', 'set_statement', 'returning new statement with uid ' + str(new_statement.uid))
 		return new_statement, False
 
+	def set_statement_as_new_premisegroup(self, transaction, statements, user, is_start, issue):
+		"""
+
+		:param transaction:
+		:param statement:
+		:param user:
+		:param is_start:
+		:param issue:
+		:return:
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) + ', statement: '
+		       + str(statements) + ', issue: ' + str(issue))
+		# TODO set_statement_as_new_premisegroup
+		# TODO set_statement_as_new_premisegroup
+		# TODO set_statement_as_new_premisegroup
+		return 0
+
+
 	def get_text_for_statement_uid(self, uid):
 		"""
 
@@ -565,7 +581,7 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_text_for_statement_uid', 'text ' + db_textversion.content)
 		tmp = db_textversion.content
 
-		if tmp.endswith(('.','?','!')):
+		if tmp.endswith(('.', '?', '!')):
 			tmp = tmp[:-1]
 
 		return tmp
@@ -669,7 +685,7 @@ class QueryHelper(object):
 				index += 1
 		return return_array
 
-	def get_user_with_same_opinion(self, argument_uid, lang): # TODO USE THIS get_user_with_same_opinion
+	def get_user_with_same_opinion(self, argument_uid, lang):  # TODO USE THIS get_user_with_same_opinion
 		"""
 
 		:param argument_uid:
@@ -795,6 +811,7 @@ class QueryHelper(object):
 		"""
 
 		:param issue: current issue
+		:param lang: current lang
 		:return: dictionary labeled with enumerated integeres, whereby these dicts are named by their table
 		"""
 		ret_dict = dict()
@@ -922,6 +939,7 @@ class QueryHelper(object):
 		"""
 
 		:param user:
+		:param lang:
 		:return:
 		"""
 		is_admin = UserHandler().is_user_admin(user)
@@ -1028,7 +1046,7 @@ class QueryHelper(object):
 		day = str(now.day) if now.day > 9 else ('0' + str(now.day))
 		month = str(now.month) if now.month > 9 else ('0' + str(now.month))
 		date = day + '.' + month + '.' + str(now.year)
-		news = News(title = title, author = author, date = date, news = text)
+		news = News(title=title, author=author, date=date, news=text)
 
 		DBNewsSession.add(news)
 		DBNewsSession.flush()
@@ -1053,7 +1071,7 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def set_premises_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
+	def set_premise_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
 		"""
 		Inserts the given dictionary with premises for an statement or an argument
 		:param transaction: current transaction for the database
@@ -1061,9 +1079,10 @@ class QueryHelper(object):
 		:param text: text
 		:param conclusion_id:
 		:param is_supportive: for the argument
+		:param issue:
 		:return: dict
 		"""
-		logger('QueryHelper', 'set_premises_for_conclusion', 'main')
+		logger('QueryHelper', 'set_premise_for_conclusion', 'main')
 		# current conclusion
 		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                          Statement.issue_uid == issue)).first()
@@ -1075,8 +1094,8 @@ class QueryHelper(object):
 		# duplicates do not count, because they will be fetched in set_statement_as_new_premise
 
 		# second, set the new statement as premise
-		new_premisegroup_uid = qh.set_statement_as_new_premise(new_statement, user, issue)
-		logger('QueryHelper', 'set_premises_for_conclusion', text + ' in new_premisegroup_uid ' + str(new_premisegroup_uid)
+		new_premisegroup_uid = self.set_statement_as_new_premise(new_statement, user, issue)
+		logger('QueryHelper', 'set_premise_for_conclusion', text + ' in new_premisegroup_uid ' + str(new_premisegroup_uid)
 		       + ' to statement ' + str(db_conclusion.uid) + ', ' + ('' if is_supportive else '' ) + 'supportive')
 
 		# third, insert the argument
@@ -1084,6 +1103,25 @@ class QueryHelper(object):
 
 		transaction.commit()
 		return new_argument_uid, is_duplicate
+
+	def set_premises_as_argument_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
+		logger('QueryHelper', 'set_premises_as_argument_for_conclusion', 'main')
+		# current conclusion
+		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
+                                                                         Statement.issue_uid == issue)).first()
+		statements = []
+		for t in text:
+			new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
+			statemens.append(new_statement)
+
+		# second, set the new statements as premisegroup
+		new_premisegroup_uid = self.set_statement_as_new_premisegroup(statements, user, issue)
+
+		# third, insert the argument
+		new_argument_uid = qh.set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
+
+		transaction.commit()
+		return new_argument_uid
 
 	# ########################################
 	# OTHER
@@ -1110,7 +1148,7 @@ class QueryHelper(object):
 		if at_start:
 			discussion_dict['heading'] = _t.get(_t.firstPositionText)
 			if logged_in:
-				extras_dict['add_statement_container_style'] = '' # this will remove the 'display: none;'-style
+				extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
 				discussion_dict['heading']      += '<br><br>' + _t.get(_t.pleaseAddYourSuggestion)
 			else:
 				discussion_dict['heading']      += '<br><br>' + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin)
@@ -1120,7 +1158,7 @@ class QueryHelper(object):
 			extras_dict['is_reportable']        = False
 
 		elif at_justify_argumentation:
-			extras_dict['add_premise_container_style'] = '' # this will remove the 'display: none;'-style
+			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 			extras_dict['show_display_style'] = False
 
 		elif at_dont_know:
@@ -1128,7 +1166,7 @@ class QueryHelper(object):
 
 		elif at_justify:
 			discussion_dict['heading'] = _t.get(_t.firstPremiseText1) + ' <strong>' + current_premise + '</strong>.<br><br>' + _t.get(_t.whyDoYouThinkThat) + '?'
-			extras_dict['add_premise_container_style'] = '' # this will remove the 'display: none;'-style
+			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 			extras_dict['show_display_style']   = False
 			extras_dict['show_bar_icon']        = False
 			extras_dict['is_editable']          = False
@@ -1145,17 +1183,17 @@ class QueryHelper(object):
 		:return:
 		"""
 
-		format = '%-I:%M %p, %d. %b. %Y'
+		formatter = '%-I:%M %p, %d. %b. %Y'
 		if lang == 'de':
 			try:
 				locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
-				format = '%-H:%M Uhr, %d. %b. %Y'
-			except:
+				formatter = '%-H:%M Uhr, %d. %b. %Y'
+			except locale.Error:
 				locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
 
 		time = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
 
-		return time.strftime(format)
+		return time.strftime(formatter)
 
 	def correct_statement(self, transaction, user, uid, corrected_text):
 		"""
@@ -1172,7 +1210,7 @@ class QueryHelper(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
 
-		if corrected_text.endswith(('.','?','!')):
+		if corrected_text.endswith(('.', '?', '!')):
 			corrected_text = corrected_text[:-1]
 
 		# duplicate check
