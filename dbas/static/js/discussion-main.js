@@ -13,6 +13,28 @@
  * @param ajaxHandler
  */
 setClickFunctions = function (guiHandler, ajaxHandler){
+
+	$('.icon-add-premise').each(function() {
+		$(this).click(function() {
+			guiHandler.appendAddPremiseRow($(this));
+			$(this).hide().prev().show();
+		});
+	});
+
+	$('.icon-rem-premise').each(function() {
+		var _this = this;
+		$(this).click(function() {
+			$(_this).parent().remove();
+			$('#add-premise-container-body div').children().last().show();
+			// hide minus icon, when there is only one child
+			if ($('#add-premise-container-body div').length == 1) {
+				$('#add-premise-container-body .icon-rem-premise').hide();
+			} else {
+				$('#add-premise-container-body .icon-rem-premise').show();
+			}
+		});
+	});
+
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 		if ($(this).val() === _t(showAllUsers)) {
@@ -223,13 +245,14 @@ setStyleOptions = function (guiHandler){
 
 	// render html tags
 	replaceHtmlTags($('#discussions-header'));
-	$.each($('#' + discussionSpaceId + ' label'), function () {
+	$.each($('#' + discussionSpaceId + ' label'), function replaceHtmlTagInHeader() {
 		replaceHtmlTags($(this));
 	});
-	$.each($('#' + islandViewContainerId + ' h5'), function () {
+	$.each($('#' + islandViewContainerId + ' h5'), function replaceHtmlTagInIsland() {
 		replaceHtmlTags($(this));
 	});
 	replaceHtmlTags($('#' + issueInfoId));
+	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
 };
 
 /**
@@ -249,8 +272,37 @@ setWindowOptions = function(){
 	});
 };
 
-setInputExtraOptions = function(guiHandler, ajaxHandler){
-	var input = $('#' + discussionSpaceId + ' li:last-child input'), text, splits, conclusion, supportive, arg, relation;
+/**
+ *
+ */
+setGuiOptions = function(){
+	if (window.location.href.indexOf('/reaction/') != -1){
+		var cl = 'icon-badge',
+			style = 'height: 30px; width:30px; padding-rigth: 1em;',
+			src = mainpage + 'static/images/icon_discussion_',
+			item_undermine = $('#item_undermine'),
+			item_support = $('#item_support'),
+			item_undercut = $('#item_undercut'),
+			item_overbid = $('#item_overbid'),
+			item_rebut = $('#item_rebut'),
+			item_no_opinion = $('#item_no_opinion'),
+			undermine = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'undermine.png', 'onclick': item_undermine.attr('onclick')}),
+			support = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'support.png', 'onclick': item_support.attr('onclick')}),
+			undercut = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'undercut.png', 'onclick': item_undercut.attr('onclick')}),
+			overbid = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'overbid.png', 'onclick': item_overbid.attr('onclick')}),
+			rebut = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'rebut.png', 'onclick': item_rebut.attr('onclick')}),
+			no_opinion = $('<img>').addClass(cl).attr({'style': style, 'src': src + 'no_opinion.png', 'onclick': item_no_opinion.attr('onclick')});
+		item_undermine.next().prepend(undermine ); item_undermine.hide();
+		item_support.next().prepend(support ); item_support.hide();
+		item_undercut.next().prepend(undercut ); item_undercut.hide();
+		item_overbid.next().prepend(overbid ); item_overbid.hide();
+		item_rebut.next().prepend(rebut ); item_rebut.hide();
+		item_no_opinion.next().prepend(no_opinion); item_no_opinion.hide();
+	}
+};
+
+setInputExtraOptions = function(guiHandler, interactionHandler){
+	var input = $('#' + discussionSpaceId + ' li:last-child input'), text = [], splits, conclusion, supportive, arg, relation;
 	if (window.location.href.indexOf('/r/') != -1){
 		$('#' + discussionSpaceId + ' label').each(function(){
 			$(this).css('width', '95%');
@@ -264,27 +316,25 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 	// default function
 	$('#' + sendNewPremiseId).click(function(){
 		splits = window.location.href.split('/');
-		text = $('#' + addPremiseContainerMainInputId).val();
+		text = [];
+		$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
 		arg = splits[splits.length - 3];
 		supportive = splits[splits.length - 2] == 't';
 		relation = splits[splits.length - 1];
-		ajaxHandler.sendNewPremiseForArgument(arg, relation, supportive, text)
+		interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
 	});
 
 	// options for the extra buttons, where the user can add input!
 	input.change(function () {
-		if (input.prop('checked')){
+			if (input.prop('checked')){
 			// new position at start
 			if (input.attr('id').indexOf('start_statement') != -1){
 				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPositionContainer();
 				$('#' + sendNewStatementId).click(function(){
-					text = $('#' + addStatementContainerMainInputId).val();
-					if (text.length == 0){
-						guiHandler.setErrorDescription(_t(inputEmpty));
-					} else {
-						ajaxHandler.sendNewStartStatement(text);
-					}
+					text = [];
+					$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
+					interactionHandler.sendStatement(text, '', '', '', '', fuzzy_start_statement);
 				});
 			}
 			// new premise for the start
@@ -295,27 +345,16 @@ setInputExtraOptions = function(guiHandler, ajaxHandler){
 					splits = window.location.href.split('/');
 					conclusion = splits[splits.length - 2];
 					supportive = splits[splits.length - 1] == 't';
-					text = $('#' + addPremiseContainerMainInputId).val();
-					if (text.length == 0){
-						guiHandler.setErrorDescription(_t(inputEmpty));
-					} else {
-						ajaxHandler.sendNewStartPremise(text, conclusion, supportive)
-					}
+					text = [];
+					$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
+					interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
 				});
 			}
 			// new premise while judging
-
 			else if (input.attr('id').indexOf('justify_premise') != -1){
 				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
-				$('#' + sendNewPremiseId).click(function(){
-					splits = window.location.href.split('/');
-					text = $('#' + addPremiseContainerMainInputId).val();
-					arg = splits[splits.length - 3];
-					supportive = splits[splits.length - 2] == 't';
-					relation = splits[splits.length - 1];
-					ajaxHandler.sendNewPremiseForArgument(arg, relation, supportive, text)
-				});
+				// click like the default
 			}
 		}
 	});
@@ -335,14 +374,14 @@ $(function () {
 	setKeyUpFunctions(guiHandler, ajaxHandler);
 	setStyleOptions(guiHandler);
 	setWindowOptions();
-	setInputExtraOptions(guiHandler, ajaxHandler);
+	setGuiOptions();
+	setInputExtraOptions(guiHandler, interactionHandler);
 
 	// some extras
 	// get restart url and cut the quotes
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
 	tmp = tmp.substr(1, tmp.length-2);
 	$('#' + discussionEndRestart).attr('href', tmp);
-
 });
 
 // new

@@ -5,6 +5,7 @@
  */
 
 var dbas_de = {
+	'and': 'und',
 	'addedEverything': 'Alles wurde hinzugefügt.',
 	'acceptItTitle': 'Einsenden...',
 	'acceptIt': 'Eintragen...',

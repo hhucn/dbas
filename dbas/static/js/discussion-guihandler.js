@@ -15,6 +15,34 @@ function GuiHandler() {
 	};
 
 	/**
+	 *
+	 */
+	this.appendAddPremiseRow = function(){
+		var div = $('<div>').attr('style', 'padding-bottom: 2em'),
+			h5 = $('<h5>').attr({'style': 'float:left; line-height:20px; text-align:center;'}).text('Because...'),
+			input = $('<input>').attr({'type': 'text', 'class': 'form-control add-premise-container-input', 'autocomplete': 'off', 'placeholder':'example: There is some reason!'}),
+			imgm = $('<img>').attr({'class': 'icon-rem-premise', 'alt': 'icon-rem', 'src': mainpage + 'static/images/icon_minus2.png', 'style': 'height: 30px; padding-right: 0.5em;'}),
+			imgp = $('<img>').attr({'class': 'icon-add-premise', 'alt': 'icon-add', 'src': mainpage + 'static/images/icon_plus2.png', 'style': 'height: 30px;'});
+		div.append(h5).append(input).append(imgm).append(imgp);
+		$('#' + addPremiseContainerBodyId).append(div);
+		imgp.click(function(){
+			new GuiHandler().appendAddPremiseRow();
+			$(this).hide().prev().show(); // hide +, show -
+		});
+		imgm.click(function(){
+			$(this).parent().remove();
+			$('#' + addPremiseContainerBodyId + ' div').children().last().show();
+			// hide minus icon, when there is only one child
+			if ($('#' + addPremiseContainerBodyId + ' div').length == 1) {
+				$('#' + addPremiseContainerBodyId + ' .icon-rem-premise').hide();
+			} else {
+				$('#' + addPremiseContainerBodyId + ' .icon-rem-premise').show();
+			}
+
+		});
+	};
+
+	/**
 	 * Setting an error description in some p-tag
 	 * @param text to set
 	 */

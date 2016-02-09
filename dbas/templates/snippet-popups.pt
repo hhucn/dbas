@@ -486,8 +486,6 @@
 				<h4 class="modal-title" id="myModalLabel" i18n:translate="how-to-write-text-header">How to write text</h4>
 			</div>
 			<div id="popup-write-text-body">
-				<h4><span i18n:translate="how-to-write-text-header-body-title">There are a few simple rules for writing good arguments:</span></h4>
-				<br>
 				<span i18n:translate="how-to-write-text-header-body">Writing good is a necessary skill for using D-BAS, unless you do not want to persuade other participants. Hereafter a few rules are listed, what should be noted, and what should not.</span>
 				<br>
 				<br>

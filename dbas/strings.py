@@ -1127,6 +1127,8 @@ class TextGenerator(object):
 		if conclusion[-1] == '.':
 			conclusion = premise[:-1]
 
+		confrontation = '<strong>' + confrontation + '</strong>'
+
 		# different cases
 		ret_text = ''
 		if attack_type == 'undermine':
