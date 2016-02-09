@@ -148,8 +148,9 @@ function GuiHandler() {
 	 * @param undecided_texts
 	 * @param decided_texts
 	 * @param supportive
+	 * @param type fuzzy_add_reason or fuzzy_start_premise
 	 */
-	this.showSetStatementContainer = function(undecided_texts, decided_texts, supportive) {
+	this.showSetStatementContainer = function(undecided_texts, decided_texts, supportive, type) {
 		$('#' + popupSetPremiseGroups).modal('show');
 		var gh = new GuiHandler(), page, page_no,
 			body = $('#' + popupSetPremiseGroupsBodyContent).empty(),
@@ -159,6 +160,29 @@ function GuiHandler() {
 			counter = $('#' + popupSetPremiseGroupsCounter).hide(),
 			prefix = 'insert_statements_page_';
 
+		send.click(function sendClick(){
+			if (type == fuzzy_add_reason){
+
+			} else if (type == fuzzy_start_premise){
+
+			// } else {
+			// 	alert("Todo: unknown type")
+			}
+			var selections = body.find('input:checked'), i, sel,
+				tmp = 'u: ' + undecided_texts.length + ', d:' + decided_texts.length + ', s: ' + selections.length + '\n';
+
+			for (i=0; i<undecided_texts.length; i++){
+				sel = selections[i].id.indexOf(attr_more_args) != -1 ? 'M': selections[i].id.indexOf(attr_one_arg) != -1 ? '1' : '-';
+				tmp += '\nu ' + i + ' (s: ' + sel + '): ' + undecided_texts[i];
+			}
+			for (i=0; i<decided_texts.length; i++){
+				tmp += '\nd ' + i + ': ' + decided_texts[i];
+			}
+			alert('TODO more than one undecided text:\n\n' + tmp);
+			// TODO check all inputs
+			// TODO create dict
+			// TODO send this dict
+		});
 
 		if (undecided_texts.length == 1){ // we only need one page div
 			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
@@ -197,12 +221,6 @@ function GuiHandler() {
 			// next button click
 			next.click(function nextClick(){
 				new GuiHandler().displayNextPageOffSetStatementContainer(body, prev, next, counter, prefix);
-			});
-			send.click(function sendClick(){
-				alert('TODO more than one undecided text');
-				// TODO check all inputs
-				// TODO create dict
-				// TODO send this dict
 			});
 		}
 	};
@@ -279,12 +297,19 @@ function GuiHandler() {
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
 		list        = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
 		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);
+		// rename the id-, for- and name-tags of all radio button groups
 		input1      = div_page.find('#insert_more_arguments');
 		input2      = div_page.find('#insert_one_argument');
 		input3      = div_page.find('#insert_dont_care');
-		input1.attr('id', input1.attr('id') + '_' + page_no).parent().attr('for', input1.parent().attr('for') + '_' + page_no);
-		input2.attr('id', input2.attr('id') + '_' + page_no).parent().attr('for', input2.parent().attr('for') + '_' + page_no);
-		input3.attr('id', input3.attr('id') + '_' + page_no).parent().attr('for', input3.parent().attr('for') + '_' + page_no);
+		input1.attr('id', input1.attr('id') + '_' + page_no);
+		input2.attr('id', input2.attr('id') + '_' + page_no);
+		input3.attr('id', input3.attr('id') + '_' + page_no);
+		input1.attr('name', input1.attr('name') + '_' + page_no);
+		input2.attr('name', input2.attr('name') + '_' + page_no);
+		input3.attr('name', input3.attr('name') + '_' + page_no);
+		input1.parent().attr('for', input1.parent().attr('for') + '_' + page_no);
+		input2.parent().attr('for', input2.parent().attr('for') + '_' + page_no);
+		input3.parent().attr('for', input3.parent().attr('for') + '_' + page_no);
 
 		connection = supportive ? _t(itIsTrueThat) : _t(itIsFalseThat);
 		bigText = topic + ' ' + _t(because) + ' ' + connection;

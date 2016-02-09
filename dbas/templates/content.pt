@@ -94,11 +94,14 @@
 
 				<div class="col-md-2">
 					<div id="discussion-sidebar">
+                        <span tal:condition="extras.is_editable" style="display:none; float: left; width: 72px; text-align: center;">${extras.button.edit_statement}</span>
 						<img tal:condition="extras.is_editable" id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.button.edit_statement; value extras.button.edit_statement" />
 						<br tal:condition="extras.is_editable">
+                        <span tal:condition="extras.is_reportable" style="display:none; float: left; width: 72px; text-align: center;">${extras.button.report_title}</span>
 						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="value extras.button.report; title extras.button.report_title" />
 						<div id="display-style-menu-icon" tal:condition="extras.show_display_style or extras.show_bar_icon">
-							<img id="" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" />
+                            <span tal:condition="extras.show_display_style or extras.show_bar_icon"  style="display:none; float: left; width: 72px; text-align: center;">${extras.button.more_title}</span>
+							<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" tal:attributes="title extras.button.more_title"/>
 							<nav id="site-navigation">
 								<div class="display-style-menu" tal:condition="extras.show_bar_icon">
 									<div>
@@ -287,7 +290,7 @@
 					<input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 				</div>
 				<div class="list-group" id="proposal-statement-list-group"></div>
-				<input id="send-new-statement" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.title.save_my_statement"/>
+				<input id="send-new-statement" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.button.save_my_statement"/>
 			</div>
 		</div>
 
@@ -319,16 +322,16 @@
 								 alt="icon-rem"
 								 src="${request.static_url('dbas:static/images/icon_minus2.png')}"
 								 style="height: 30px; display:none; padding-right: 0.5em;"
-								 tal:attributes="title extras.title.add_statement_row_title"/>
+								 tal:attributes="title extras.button.add_statement_row_title"/>
 						<img class="icon-badge icon-add-premise"
 								 alt="icon-add"
 								 src="${request.static_url('dbas:static/images/icon_plus2.png')}"
 								 style="height: 30px;"
-								 tal:attributes="title extras.title.rem_statement_row_title"/>
+								 tal:attributes="title extras.button.rem_statement_row_title"/>
 					</div>
 				</div>
 				<div class="list-group" id="proposal-premise-list-group"></div>
-				<input id="send-new-premise" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.title.save_my_statement"/>
+				<input id="send-new-premise" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.button.save_my_statement"/>
 			</div>
 		</div>
 

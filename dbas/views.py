@@ -28,7 +28,7 @@ from .voting_helper import VotingHelper
 from .url_manager import UrlManager
 
 name = 'D-BAS'
-version = '0.5.1'
+version = '0.5.2'
 header = name + ' ' + version
 issue_fallback = 1
 mainpage = ''

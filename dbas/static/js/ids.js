@@ -239,5 +239,9 @@ var attr_text 					= 'text';
 var attr_undermine 				= 'undermine';
 var attr_undercut 				= 'undercut';
 
+var attr_more_args              = 'insert_more_arguments';
+var attr_one_arg                = 'insert_one_argument';
+var attr_dont_care              = 'insert_dont_care';
+
 var id_pro 						= 'pro';
 var id_con 						= 'con';
