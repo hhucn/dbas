@@ -438,6 +438,8 @@ class DictionaryHelper(object):
 		:param add_premise_supportive:
 		:param argument_id:
 		:param breadcrumbs:
+		:param application_url:
+		:param for_api:
 		:return:
 		"""
 		_uh = UserHandler()
@@ -460,13 +462,27 @@ class DictionaryHelper(object):
 		return_dict['title']                         = {'barometer': _tn.get(_tn.opinionBarometer),
 													 	 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 													 	 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
-													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
+													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody)}
+		return_dict['button']                         = {'report' : _tn.get(_tn.report),
+														 'report_title': _tn.get(_tn.reportTitle),
+														 'acceptIt' : _tn.get(_tn.acceptIt),
+														 'showAllArguments' : _tn.get(_tn.showAllArguments),
+														 'showAllUsers' : _tn.get(_tn.showAllUsers),
+														 'deleteTrack' : _tn.get(_tn.deleteTrack),
+														 'requestTrack' : _tn.get(_tn.requestTrack),
+														 'deleteHistory' : _tn.get(_tn.deleteHistory),
+														 'requestHistory' : _tn.get(_tn.requestHistory),
+														 'passwordSubmit' : _tn.get(_tn.passwordSubmit),
+														 'contactSubmit' : _tn.get(_tn.contactSubmit),
+														 'letsGo' : _tn.get(_tn.letsGo),
+														 'opinionBarometer' : _tn.get(_tn.opinionBarometer),
+														 'edit_statement': _tn.get(_tn.editTitle),
+														 'more_title': _tn.get(_tn.more),
+														 'previous':  _tn.get(_tn.previous),
+														 'next': _tn.get(_tn.next),
+														 'save_my_statement': _tn.get(_tn.saveMyStatement),
 		                                                 'add_statement_row_title': _tn.get(_tn.addStatementRow),
-		                                                 'rem_statement_row_title': _tn.get(_tn.remStatementRow),
-		                                                 'save_my_statement': _tn.get(_tn.saveMyStatement),
-		                                                 'previous':  _tn.get(_tn.previous),
-		                                                 'next': _tn.get(_tn.next),
-		                                                }
+		                                                 'rem_statement_row_title': _tn.get(_tn.remStatementRow)}
 		if not for_api:
 			return_dict['breadcrumbs']               = breadcrumbs
 		self.add_language_options_for_extra_dict(return_dict, lang)
@@ -510,24 +526,7 @@ class DictionaryHelper(object):
 			'lang_is_de': lang_is_de,
 			'lang_is_en': lang_is_en,
 			'link_de_class': ('active' if lang_is_de else ''),
-			'link_en_class': ('active' if lang_is_en else ''),
-			'button':{
-				'report' : _t.get(_t.report),
-				'report_title': _t.get(_t.reportTitle),
-				'acceptIt' : _t.get(_t.acceptIt),
-				'showAllArguments' : _t.get(_t.showAllArguments),
-				'showAllUsers' : _t.get(_t.showAllUsers),
-				'deleteTrack' : _t.get(_t.deleteTrack),
-				'requestTrack' : _t.get(_t.requestTrack),
-				'deleteHistory' : _t.get(_t.deleteHistory),
-				'requestHistory' : _t.get(_t.requestHistory),
-				'passwordSubmit' : _t.get(_t.passwordSubmit),
-				'contactSubmit' : _t.get(_t.contactSubmit),
-				'letsGo' : _t.get(_t.letsGo),
-				'opinionBarometer' : _t.get(_t.opinionBarometer),
-				'edit_statement': _t.get(_t.editTitle),
-				'more_title': _t.get(_t.more),
-			}
+			'link_en_class': ('active' if lang_is_en else '')
 		})
 
 	
