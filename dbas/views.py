@@ -362,7 +362,7 @@ class Dbas(object):
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive,
 			                                                             ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, ui_locales, self.request.authenticated_userid,
-			                                          not is_attack, argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs,
+			                                          argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs,
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:

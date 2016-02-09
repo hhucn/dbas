@@ -1278,11 +1278,11 @@ class TextGenerator(object):
 					+ ' <strong>' + premise + '</strong>.'
 		noopinion  = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
 
-		ret_dict['undermine_text'] = undermine
-		ret_dict['support_text'] = support
-		ret_dict['undercut_text'] = undercut
-		ret_dict['overbid_text'] = overbid
-		ret_dict['rebut_text'] = rebut
+		ret_dict['undermine_text']  = undermine
+		ret_dict['support_text']    = support
+		ret_dict['undercut_text']   = undercut
+		ret_dict['overbid_text']    = overbid
+		ret_dict['rebut_text']      = rebut
 		ret_dict['no_opinion_text'] = noopinion
 
 		return ret_dict

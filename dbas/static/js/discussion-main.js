@@ -319,11 +319,9 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 	});
 
 	// TODO CLEAR DESIGN
-	// TODO CLEAR DESIGN
-	// TODO CLEAR DESIGN
 	// options for the extra buttons, where the user can add input!
 	input.change(function () {
-			if (input.prop('checked')){
+		if (input.prop('checked')){
 			// new position at start
 			if (input.attr('id').indexOf('start_statement') != -1){
 				guiHandler.showHowToWriteTextPopup();
@@ -351,13 +349,13 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 			else if (input.attr('id').indexOf('justify_premise') != -1){
 				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
-		splits = window.location.href.split('/');
-		text = [];
-		$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
-		arg = splits[splits.length - 3];
-		supportive = splits[splits.length - 2] == 't';
-		relation = splits[splits.length - 1];
-		interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
+				splits = window.location.href.split('/');
+				text = [];
+				$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
+				arg = splits[splits.length - 3];
+				supportive = splits[splits.length - 2] == 't';
+				relation = splits[splits.length - 1];
+				interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
 			}
 		}
 	});

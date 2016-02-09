@@ -116,9 +116,11 @@ class DictionaryHelper(object):
 		_qh              = QueryHelper()
 		heading          = ''
 		add_premise_text = _tn.get(_tn.iAgreeWithInColor) if is_supportive else _tn.get(_tn.iDisagreeWithInColor) + ': '
+		save_statement_url = 'ajax_set_new_start_statement'
 		if at_start:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_start')
 			heading             = _tn.get(_tn.initialPositionInterest)
+			save_statement_url  = 'ajax_set_new_start_premise'
 
 		elif at_attitude:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_attitude')
@@ -151,6 +153,7 @@ class DictionaryHelper(object):
 			                                                             db_argument.is_supportive)
 			because             = ' ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 			heading             += because
+			save_statement_url  = 'ajax_set_new_premises_for_argument'
 
 		elif at_dont_know:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_dont_know')
@@ -187,7 +190,7 @@ class DictionaryHelper(object):
 				                                                     confrontation, reply_for_argument, user_is_attacking,
 			                                                         current_argument)
 
-		return {'heading': heading, 'add_premise_text': add_premise_text}
+		return {'heading': heading, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url}
 
 	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang, application_url, for_api):
 		"""
