@@ -403,9 +403,21 @@ comment .container and wrap each container with <div class="coloured-div">
 
 #popup-login-body,
 #popup-write-text-body,
-#popup-set-premissegroups-body,
-#popup-generate-password-body{
+#popup-generate-password-body,
+#popup-set-premisegroups-body{
 	padding: 10px;
+}
+
+#insert_statements_options{
+	list-style-type: none;
+	cursor: pointer;
+}
+#insert_statements_options li:hover{
+	color: #2196f3;
+}
+
+.modal-title{
+	line-height: 1.2em;
 }
 
 #generate-password-body {
@@ -415,6 +427,14 @@ comment .container and wrap each container with <div class="coloured-div">
 #popup-login-header-button-wrapper {
 	width: 100%;
 }
+
+#insert_statements_options > li{
+	margin-bottom: 1em;
+}
+#insert_statements_options li > span{
+	margin-left: 1.5em;
+}
+
 #ppBody {
 	font-size: 11pt;
 	width: 100%;

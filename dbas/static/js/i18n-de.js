@@ -6,9 +6,11 @@
 
 var dbas_de = {
 	'and': 'und',
+	'andAtTheSameTime': 'und zur selben Zeit',
 	'addedEverything': 'Alles wurde hinzugefügt.',
 	'acceptItTitle': 'Einsenden...',
 	'acceptIt': 'Eintragen...',
+	'because':'weil',
 	'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',
@@ -54,6 +56,8 @@ var dbas_de = {
 	'inputEmpty': 'Ihre Eingabe ist leer!',
 	'initialPositionInterest': 'An welcher Aussage sind Sie interessiert?',
 	'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
+	'itIsTrueThat': 'es ist richtig, dass',
+	'itIsFalseThat': 'es ist falsch, dass',
 	'keepSetting': 'Entscheidung merken',
 	'hideAllUsers': 'Verstecke alle Benutzer',
 	'hideAllAttacks': 'Verstecke alle Angriffe',

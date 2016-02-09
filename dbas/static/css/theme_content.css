@@ -21,6 +21,9 @@
 #discussions-space{
 	margin-top: 25px;
 }
+#discussions-space label{
+	max-width: 90%;
+}
 
 #discussions-space ul{
 	display: inline-block;
@@ -79,7 +82,7 @@
 	width: 100%;
 }
 .add-premise-container-input{
-	width: 80%;
+	width: 85%;
 	float: left;
 }
 #add-statement-container-body input,

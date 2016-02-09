@@ -5,7 +5,7 @@ from sqlalchemy import and_, func
 from slugify import slugify
 
 from .database import DBDiscussionSession, DBNewsSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, History, Vote, Issue, Group
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, History, VoteArgument, VoteStatement, Issue, Group
 from .database.news_model import News
 from .logger import logger
 from .strings import Translator, TextGenerator
@@ -30,14 +30,19 @@ class QueryHelper(object):
 		Returns current argument as string like conclusion, because premise1 and premise2
 		:param uid: int
 		:param lang: str
+		:param withStrongHtmlTags: Boolean
 		:return: str
 		"""
 		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid))
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		retValue = ''
 		_t = Translator(lang)
-		because = (' </strong>' if withStrongHtmlTags else ' ') + _t.get(_t.because).lower() + (' <strong>' if withStrongHtmlTags else ' ')
-		doesNotHoldBecause = (' </strong>' if withStrongHtmlTags else ' ') + _t.get(_t.doesNotHoldBecause).lower() + (' <strong>' if withStrongHtmlTags else ' ')
+		because = (' </strong>' if withStrongHtmlTags else ' ')\
+		          + _t.get(_t.because).lower()\
+		          + (' <strong>' if withStrongHtmlTags else ' ')
+		doesNotHoldBecause = (' </strong>' if withStrongHtmlTags else ' ')\
+		                     + _t.get(_t.doesNotHoldBecause).lower()\
+		                     + (' <strong>' if withStrongHtmlTags else ' ')
 
 		# catch error
 		if not db_argument:
@@ -65,7 +70,7 @@ class QueryHelper(object):
 		if db_argument.conclusion_uid == 0:
 			logger('QueryHelper', 'get_text_for_argument_uid', 'recursion with conclusion_uid: ' + str(db_argument.conclusion_uid)
 			       + ', in argument: ' + str(db_argument.uid))
-			argument = self.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
+			argument = self.get_text_for_argument_uid(db_argument.argument_uid, lang, withStrongHtmlTags)
 			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 			if not premises:
 				return None
@@ -219,7 +224,7 @@ class QueryHelper(object):
 		current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
 
 		new_argument = None
-		if current_attack == 'undermine' or current_attack == 'support': # TODO handle premise groups
+		if current_attack == 'undermine' or current_attack == 'support':
 			new_arguments = []
 			already_in = []
 			# duplicate?
@@ -565,16 +570,21 @@ class QueryHelper(object):
 
 		return tmp
 
-	def get_statement_dict(self, id, title, premises, attitude, url, leading_because):
-		if leading_because:
-			title = title[0:1].lower() + title[1:]
+	def get_statement_dict(self, id, title, premises, attitude, url):
+		"""
 
+		:param id:
+		:param title:
+		:param premises:
+		:param attitude:
+		:param url:
+		:return:
+		"""
 		return {'id': 'item_' + str(id),
 		        'title': title,
 		        'premises': premises,
 		        'attitude': attitude,
-		        'url': url,
-		        'leading_because': leading_because}
+		        'url': url}
 
 	# ########################################
 	# OTHER - GETTER
@@ -673,7 +683,7 @@ class QueryHelper(object):
 		if not db_argument:
 			return ret_dict
 
-		db_votes = DBDiscussionSession.query(Vote).filter_by(weight_uid=db_argument.weight_uid).all()
+		db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=db_argument.uid).all()
 		uh = UserHandler()
 		for vote in db_votes:
 			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
@@ -879,7 +889,7 @@ class QueryHelper(object):
 		ret_dict['premise'] = premise_dict
 
 		# getting all votes
-		db_votes = DBDiscussionSession.query(Vote).all()
+		db_votes = DBDiscussionSession.query(VoteArgument).all()
 		vote_dict = dict()
 		for index, vote in enumerate(db_votes):
 			if vote.argument_uid in argument_uid_set:
@@ -890,7 +900,21 @@ class QueryHelper(object):
 				tmp_dict['is_up_vote']   = vote.is_up_vote
 				tmp_dict['is_valid']     = vote.is_valid
 				vote_dict[str(index)]    = tmp_dict
-		ret_dict['vote'] = vote_dict
+		ret_dict['vote_argument'] = vote_dict
+
+		# getting all votes
+		db_votes = DBDiscussionSession.query(VoteStatement).all()
+		vote_dict = dict()
+		for index, vote in enumerate(db_votes):
+			if vote.argument_uid in argument_uid_set:
+				tmp_dict = dict()
+				tmp_dict['uid']           = vote.uid
+				tmp_dict['statement_uid'] = vote.statement_uid
+				tmp_dict['author_uid']    = vote.author_uid
+				tmp_dict['is_up_vote']    = vote.is_up_vote
+				tmp_dict['is_valid']      = vote.is_valid
+				vote_dict[str(index)]     = tmp_dict
+		ret_dict['vote_statement'] = vote_dict
 
 		return ret_dict
 
@@ -923,7 +947,7 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def get_attack_overview(self, user, issue, lang):  # TODO
+	def get_attack_overview(self, user, issue, lang):
 		"""
 		Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
 		:param user: current user
@@ -944,12 +968,12 @@ class QueryHelper(object):
 			tmp_dict = dict()
 			tmp_dict['uid'] = str(argument.uid)
 			tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
-			db_votes = DBDiscussionSession.query(Vote).filter_by(argument_uid=argument.uid).all()
-			db_valid_votes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==argument.uid,
-			                                                             Vote.is_valid==True)).all()
-			db_valid_upvotes = DBDiscussionSession.query(Vote).filter(and_(Vote.argument_uid==argument.uid,
-			                                                               Vote.is_valid==True,
-			                                                               Vote.is_up_vote)).all()
+			db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument.uid).all()
+			db_valid_votes = DBDiscussionSession.query(Vote).filter(and_(VoteArgument.argument_uid==argument.uid,
+			                                                             VoteArgument.is_valid==True)).all()
+			db_valid_upvotes = DBDiscussionSession.query(Vote).filter(and_(VoteArgument.argument_uid==argument.uid,
+			                                                               VoteArgument.is_valid==True,
+			                                                               VoteArgument.is_up_vote)).all()
 			tmp_dict['votes'] = len(db_votes)
 			tmp_dict['valid_votes'] = len(db_valid_votes)
 			tmp_dict['valid_upvotes'] = len(db_valid_upvotes)

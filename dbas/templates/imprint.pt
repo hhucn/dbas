@@ -61,136 +61,141 @@
 					<br>
 					<br>
 					<h5><span>Piwik Opt-Out</span></h5>
-			<iframe id="piwik-opt-out-iframe" style="border: 0; height: 200px; width: 600px;" src="https://dbas.cs.uni-duesseldorf.de/piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
-		</div>
+					<iframe id="piwik-opt-out-iframe" style="border: 0; height: 200px; width: 600px;" src="https://dbas.cs.uni-duesseldorf.de/piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
+			</div>
 
-		<div class="col-md-4">
-			<div class="first-container colored_container imprint-container">
-				<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
-				<ul>
-					<li>
-						<a href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">
+			<div class="col-md-4">
+				<div class="first-container colored_container imprint-container">
+					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
+					<ul>
+						<li>
+							<a href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">
 								EU Cookie Popup
 							</a>
-					</li>
-					<li>
-						Some fonts are from <a href="http://www.fontsquirrel.com/">Font Squirrel</a>
-					</li>
-					<li>
-						<a href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a>
-					</li>
-					<li>
-						<span i18n:translate="icons_by">Icons by</span>
-						<a href="http://glyphicons.com/">glyphicons</a>,&thinsp;
-						<a href="https://www.iconfinder.com/iconsets/ballicons-free">ballicons</a>,&thinsp;
-						<a href="https://www.iconfinder.com/iconsets/ballicons-2-free">ballicons-2</a>,&thinsp;
-						<a href="https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons">keynote-and-powerpoint-icons</a>,&thinsp;,&thinsp;
-						<a href="https://www.iconfinder.com/iconsets/10con">10con</a>,&thinsp;
-						<a href="https://www.iconfinder.com/iconsets/forall">forall</a>
-					</li>
-					<li>Tracking with <a href="http://piwik.org/">Piwik</a></li>
-					<li>
-						Avatare by <a href="http://www.gravatar.com/">Gravatar</a>
-					</li>
-				</ul>
-			</div>
-			<br>
-			<br>
-
-			<div class="first-container colored_container imprint-container row links">
-				<h4><span >Pylons Pyramid</span></h4>
-				<span class="current-version project">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework 1.5.4</span>
+						</li>
+						<li>
+							Some fonts are from <a href="http://www.fontsquirrel.com/">Font Squirrel</a>
+						</li>
+						<li>
+							<a href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a>
+						</li>
+						<li>
+							<span i18n:translate="icons_by">Icons by</span>
+							<a href="http://glyphicons.com/">glyphicons</a>,&thinsp;
+							<a href="https://www.iconfinder.com/iconsets/ballicons-free">ballicons</a>,&thinsp;
+							<a href="https://www.iconfinder.com/iconsets/ballicons-2-free">ballicons-2</a>,&thinsp;
+							<a href="https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons">keynote-and-powerpoint-icons</a>,&thinsp;,&thinsp;
+							<a href="https://www.iconfinder.com/iconsets/10con">10con</a>,&thinsp;
+							<a href="https://www.iconfinder.com/iconsets/forall">forall</a>
+						</li>
+						<li>Tracking with <a href="http://piwik.org/">Piwik</a></li>
+						<li>
+							Avatare by <a href="http://www.gravatar.com/">Gravatar</a>
+						</li>
+					</ul>
+				</div>
 				<br>
-				<ul>
-					<li>
-						<a href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
-							<i class="glyphicon glyphicon-bookmark icon-muted">&thinsp;</i>Docs</a>
-					</li>
-					<li>
-						<a href="https://github.com/Pylons/pyramid">
-							<i class="glyphicon glyphicon-cog icon-muted">&thinsp;</i>Github Project</a>
-					</li>
-					<li>
-						<a href="irc://irc.freenode.net#pyramid">
-							<i class="glyphicon glyphicon-globe icon-muted">&thinsp;</i>IRC Channel</a>
-					</li>
-					<li>
-						<a href="http://pylonsproject.org">
-							<i class="glyphicon glyphicon-home icon-muted">&thinsp;</i>Pylons Project</a>
-					</li>
-				</ul>
-			</div>
+				<br>
 
-			<br>
-			<br>
-			<div class="first-container colored_container imprint-container">
-				<h4><span i18n:translate="changes">Changes</span></h4>
+				<div class="first-container colored_container imprint-container row links">
+					<h4><span >Pylons Pyramid</span></h4>
+					<span class="current-version project">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework 1.5.4</span>
+					<br>
+					<ul>
+						<li>
+							<a href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
+								<i class="glyphicon glyphicon-bookmark icon-muted">&thinsp;</i>Docs</a>
+						</li>
+						<li>
+							<a href="https://github.com/Pylons/pyramid">
+								<i class="glyphicon glyphicon-cog icon-muted">&thinsp;</i>Github Project</a>
+						</li>
+						<li>
+							<a href="irc://irc.freenode.net#pyramid">
+								<i class="glyphicon glyphicon-globe icon-muted">&thinsp;</i>IRC Channel</a>
+						</li>
+						<li>
+							<a href="http://pylonsproject.org">
+								<i class="glyphicon glyphicon-home icon-muted">&thinsp;</i>Pylons Project</a>
+						</li>
+					</ul>
+				</div>
+
+				<br>
+				<br>
+				<div class="first-container colored_container imprint-container">
+					<h4><span i18n:translate="changes">Changes</span></h4>
 
 					<span class="project lead">0.6.0 (unreleased)</span>
-				<ul>
-					<li>Improved recommendation of the next argument/statement</li>
-				</ul>
+					<ul>
+						<li>Improved recommendation of the next argument/statement</li>
+					</ul>
 
-					<span class="project lead">0.5.0 (unreleased)</span>
-				<ul>
-					<li>Refactoring:
-						<ul>
-							<li>Less Ajax, more HTML5</li>
-							<li>Using Chameleon and TAL</li>
-							<li>Reduced loading time</li>
-						</ul>
+					<span class="project lead">0.5.0 (2016-02-05)</span>
+					<ul>
+						<li>Improving voting helper</li>
+					</ul>
+
+					<span class="project lead">0.5.0 (2016-01-28)</span>
+					<ul>
+						<li>Refactoring:
+							<ul>
+								<li>Less Ajax, more HTML5</li>
+								<li>Using Chameleon and TAL</li>
+								<li>Reduced loading time</li>
+							</ul>
 						</li>
-				</ul>
-					
+					</ul>
+
 					<span class="project lead">0.4.8 (2015-01-12)</span>
-				<ul>
-					<li>Moved many string building functions to the server side</li>
-					<li>Improved weighting helper, also called voting helper</li>
-				</ul>
-					
+					<ul>
+						<li>Moved many string building functions to the server side</li>
+						<li>Improved weighting helper, also called voting helper</li>
+					</ul>
+
 					<span class="project lead">0.4.7 (2015-01-06)</span>
-				<ul>
-					<li>Island View</li>
-					<li>Profile Picture based on the MD5-value of the user's mail</li>
-					<li>Improved weighting helper</li>
-				</ul>
-					
+					<ul>
+						<li>Island View</li>
+						<li>Profile Picture based on the MD5-value of the user's mail</li>
+						<li>Improved weighting helper</li>
+					</ul>
+
 					<span class="project lead">0.4.6 (2015-12-16)</span>
-				<ul>
-					<li>Collecting weights for arguments</li>
-					<li>Smaller design improvements like badges for the issues</li>
-				</ul>
+					<ul>
+						<li>Collecting weights for arguments</li>
+						<li>Smaller design improvements like badges for the issues</li>
+					</ul>
 
-				<span class="project lead">0.4.5 (2015-12-01)</span>
-				<ul>
-					<li>Improved session management</li>
-					<li>Improved anti-spam questions</li>
-					<li>Fixes in the GUI for registration</li>
-					<li>Replaced Googel Analytics with Piwik</li>
-				</ul>
+					<span class="project lead">0.4.5 (2015-12-01)</span>
+					<ul>
+						<li>Improved session management</li>
+						<li>Improved anti-spam questions</li>
+						<li>Fixes in the GUI for registration</li>
+						<li>Replaced Googel Analytics with Piwik</li>
+					</ul>
 
-				<span class="project lead">0.4.4 (2015-11-30)</span>
-				<ul>
-					<li>Breadcrumbs hover vs. title</li>
-					<li>Supports will redirect to arguments without any justification</li>
-				</ul>
+					<span class="project lead">0.4.4 (2015-11-30)</span>
+					<ul>
+						<li>Breadcrumbs hover vs. title</li>
+						<li>Supports will redirect to arguments without any justification</li>
+					</ul>
 
-				<span class="project lead">0.4.3 (2015-11-30)</span>
-				<ul>
-					<li>Breadcrumbs</li>
-				</ul>
+					<span class="project lead">0.4.3 (2015-11-30)</span>
+					<ul>
+						<li>Breadcrumbs</li>
+					</ul>
 
-				<span class="project lead">0.4.2 (2015-11-23)</span>
-				<ul>
-					<li>Bug fixes</li>
-				</ul>
+					<span class="project lead">0.4.2 (2015-11-23)</span>
+					<ul>
+						<li>Bug fixes</li>
+					</ul>
 
-				<span class="project lead">0.4.1 (2015-11-16)</span>
-				<ul>
-					<li>Improving bootstraping: It is now a two-step process!</li>
-				</ul>
+					<span class="project lead">0.4.1 (2015-11-16)</span>
+					<ul>
+						<li>Improving bootstraping: It is now a two-step process!</li>
+					</ul>
+				</div>
 			</div>
-		</div>
 		</div>
 
 		<div class="container invisible">

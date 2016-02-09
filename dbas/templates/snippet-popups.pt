@@ -494,7 +494,7 @@
 					<li i18n:translate="how-to-write-text-short">Write short!</li>
 					<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per field!</li>
 				</ul>
-                <!--
+				<!--
 				<br>
 				<b class="text-danger" i18n:translate="donts">Don'ts:</b>
 				<ul id="how-to-write-text-dont-list">
@@ -512,38 +512,60 @@
 </div>
 
 <!-- HOW TO SET PREMISSEGROUPS POPUP -->
-<div class="modal fade" id="popup-set-premissegroups" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="popup-set-premisegroups" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" id="popup-set-premissegroups-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				<button type="button" id="popup-set-premisegroups-close" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myModalLabel" i18n:translate="how-to-set-premissegroups-header">How to set premisse groups</h4>
+				<span id="popup-set-premisegroups-counter" class="lead badge" style="float:right; margin: 1em;">1/4</span>
+				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">We need your help to understand your statement!</h4>
 			</div>
-			<div id="popup-set-premissegroups-body">
-				<h4><span i18n:translate="how-to-set-premissegroups-header-body-title">There are a few simple tricks for setting premisse groups:</span></h4>
-				<br>
-				<span i18n:translate="how-to-set-premissegroups-header-body">Sometimes you want to state more than one statement, but they are connected...in some way. These statements can be connected in one premisse group</span>
-				<br>
-				<br>
-				<ol>
-					<li i18n:translate="set-premissegroups1">Normally, each statement of you is independent of the others.</li>
-					<li i18n:translate="set-premissegroups2">If you want to add an 'and' in your statement, please do not do it!</li>
-					<li><span i18n:translate="set-premissegroups3">Sometimes you have dependent statemens, like:</span>
-						<ul type="a">
-							<li i18n:translate="set-premissegroups4">Let's say, you argument, that you want to have a cat, but if and only iff she is small and fluffy. Then you have two statements for your position:</li>
-							<li i18n:translate="set-premissegroups5">I want a cat, because:</li>
-							<li i18n:translate="set-premissegroups6">She is fluffy</li>
-							<li i18n:translate="set-premissegroups7">She is small</li>
-							<li i18n:translate="set-premissegroups8">Then you have to check the box!</li>
-						</ul>
-					</li>
-					<li i18n:translate="set-premissegroups9">Otherwise you do not need this checkbox.</li>
-				</ol>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default btn-primary" id="popup-set-premissegroups-okay-button" i18n:translate="Okay">Okay</button>
-				<button type="button" class="btn btn-default" id="popup-set-premissegroups-close-button" data-dismiss="modal" i18n:translate="abort">Abort</button>
+			<div id="popup-set-premisegroups-body" class="lead">
+                <div id="insert_statements_page_error" class="alert alert-danger" role="alert" style="display:none">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span i18n:translate="error:">Error:</span>
+					<span i18n:translate="forgot_input_radio">You forgot to choose the right interpretation</span>
+				</div>
+				<span id="popup-set-premisegroups-body-intro" i18n:translate="set_premisegroups_intro">
+					You have used 'and' in your statement. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:
+				</span>
+                <br>
+                <br>
+				<div id="insert_statements_page_" style="display: none;">
+					<ul id="insert_statements_options">
+						<li>
+							<label for="insert_more_arguments">
+								<input type="radio" name="insert_statements" id="insert_more_arguments">
+								<span i18n:translate="i_actually_have">I actually have</span>&#160;<span id="insert_statements_count"></span>&#160;<span i18n:translate="arguments">arguments:</span>
+							    <ul id="insert_statements_list_more_arguments" style="font-weight: 300;">
+							    </ul>
+							</label>
+						</li>
+						<li>
+							<label for="insert_one_argument">
+								<input type="radio" name="insert_statements" id="insert_one_argument" i18n:translate="insert_one_arguments">I have one argument:
+							    <br>
+							    <span id="insert_statements_one_argument" style="font-weight: 300;"></span>
+							</label>
+						</li>
+						<li>
+							<label for="insert_dont_care">
+								<input type="radio" name="insert_statements" id="insert_dont_care" i18n:translate="insert_dont_care">I don’t care about this, leave me alone and take my statement as it is!
+							</label>
+						</li>
+					</ul>
+					</div>
+	    		<div id="popup-set-premisegroups-body-content">
+	    		</div>
+	    		<div class="modal-footer">
+	    			<ul class="pager" style="margin: 0;">
+	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" style="float: left;" tal:attributes="title extras.title.previous">←</a></li>
+	    				<li class="next"><a href="#" id="popup-set-premisegroups-next-button" style="float: left;" tal:attributes="title extras.title.next">→</a></li>
+	    				<li><button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" i18n:translate="save_my_statement" style="float: right;" >Save my Statement!</button></li>
+	    			</ul>
+	    		</div>
 			</div>
 		</div>
 	</div>

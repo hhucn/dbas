@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-02-01 08:59+0100\n"
+"POT-Creation-Date: 2016-02-09 08:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -189,9 +189,8 @@ msgid "dialog_based"
 msgstr ""
 
 #. Default: Based on Science
-#. Default: Simple UI
-#: ./dbas/templates/index.pt:105 ./dbas/templates/index.pt:135
-msgid "simple_ui"
+#: ./dbas/templates/index.pt:105
+msgid "simple_science"
 msgstr ""
 
 #. Default: Features
@@ -225,6 +224,11 @@ msgstr ""
 msgid "dialog_based_content"
 msgstr ""
 
+#. Default: Simple UI
+#: ./dbas/templates/index.pt:135
+msgid "simple_ui"
+msgstr ""
+
 #. Default: The user interface of D-BAS is simple, clear and easy. At any point
 #. during the discussion the choices for the participant are bounded, but not
 #. isolating him/her.
@@ -250,8 +254,8 @@ msgstr ""
 
 #. Default: Island View
 #. Default: Island<dynamic element>View
-#: ./dbas/templates/index.pt:148 ./dbas/templates/content.pt:123
-#: ./dbas/templates/content.pt:355
+#: ./dbas/templates/index.pt:148 ./dbas/templates/content.pt:119
+#: ./dbas/templates/content.pt:346
 msgid "island_view"
 msgstr ""
 
@@ -849,7 +853,7 @@ msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:292
-#: ./dbas/templates/snippet-popups.pt:394 ./dbas/templates/content.pt:149
+#: ./dbas/templates/snippet-popups.pt:394 ./dbas/templates/content.pt:145
 msgid "error"
 msgstr ""
 
@@ -857,7 +861,7 @@ msgstr ""
 #. Default: Success
 #: ./dbas/templates/snippet-popups.pt:299
 #: ./dbas/templates/snippet-popups.pt:386 ./dbas/templates/settings.pt:66
-#: ./dbas/templates/content.pt:80
+#: ./dbas/templates/content.pt:78
 msgid "success"
 msgstr ""
 
@@ -1002,117 +1006,76 @@ msgstr ""
 msgid "how-to-write-text-header"
 msgstr ""
 
-#. Default: There are a few simple rules for writing good arguments:
-#: ./dbas/templates/snippet-popups.pt:489
-msgid "how-to-write-text-header-body-title"
-msgstr ""
-
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: ./dbas/templates/snippet-popups.pt:491
+#: ./dbas/templates/snippet-popups.pt:489
 msgid "how-to-write-text-header-body"
 msgstr ""
 
 #. Default: Do's:
-#: ./dbas/templates/snippet-popups.pt:494
+#: ./dbas/templates/snippet-popups.pt:492
 msgid "dos"
 msgstr ""
 
 #. Default: Write short!
-#: ./dbas/templates/snippet-popups.pt:496
+#: ./dbas/templates/snippet-popups.pt:494
 msgid "how-to-write-text-short"
 msgstr ""
 
 #. Default: Only one statement/argument/point per field!
-#: ./dbas/templates/snippet-popups.pt:497
+#: ./dbas/templates/snippet-popups.pt:495
 msgid "how-to-write-text-one-point"
 msgstr ""
 
 #. Default: Okay
-#: ./dbas/templates/snippet-popups.pt:510
-#: ./dbas/templates/snippet-popups.pt:547
+#: ./dbas/templates/snippet-popups.pt:508
 msgid "Okay"
 msgstr ""
 
-#. Default: How to set premisse groups
+#. Default: We need your help to understand your statement!
 #: ./dbas/templates/snippet-popups.pt:523
-msgid "how-to-set-premissegroups-header"
+msgid "need-help-to-understand-statement"
 msgstr ""
 
-#. Default: There are a few simple tricks for setting premisse groups:
-#: ./dbas/templates/snippet-popups.pt:526
-msgid "how-to-set-premissegroups-header-body-title"
+#. Default: Error:
+#: ./dbas/templates/snippet-popups.pt:528 ./dbas/templates/news.pt:25
+#: ./dbas/templates/settings.pt:75 ./dbas/templates/content.pt:283
+#: ./dbas/templates/content.pt:306
+msgid "error:"
 msgstr ""
 
-#. Default: Sometimes you want to state more than one statement, but they are
-#. connected...in some way. These statements can be connected in one premisse
-#. group
-#: ./dbas/templates/snippet-popups.pt:528
-msgid "how-to-set-premissegroups-header-body"
+#. Default: You forgot to choose the right interpretation
+#: ./dbas/templates/snippet-popups.pt:529
+msgid "forgot_input_radio"
 msgstr ""
 
-#. Default: Normally, each statement of you is independent of the others.
-#: ./dbas/templates/snippet-popups.pt:532
-msgid "set-premissegroups1"
+#. Default: You have used 'and' in your statement. As a result there are two
+#. ways it could be interpreted. Please help us by selecting the right
+#. interpretation:
+#: ./dbas/templates/snippet-popups.pt:531
+msgid "set_premisegroups_intro"
 msgstr ""
 
-#. Default: If you want to add an 'and' in your statement, please do not do it!
-#: ./dbas/templates/snippet-popups.pt:533
-msgid "set-premissegroups2"
+#. Default: I actually have
+#: ./dbas/templates/snippet-popups.pt:541
+msgid "i_actually_have"
 msgstr ""
 
-#. Default: Sometimes you have dependent statemens, like:
-#: ./dbas/templates/snippet-popups.pt:534
-msgid "set-premissegroups3"
+#. Default: arguments:
+#. Default: arguments
+#: ./dbas/templates/snippet-popups.pt:541 ./dbas/templates/content.pt:36
+msgid "arguments"
 msgstr ""
 
-#. Default: Let's say, you argument, that you want to have a cat, but if and
-#. only iff she is small and fluffy. Then you have two statements for your
-#. position:
-#: ./dbas/templates/snippet-popups.pt:536
-msgid "set-premissegroups4"
-msgstr ""
-
-#. Default: I want a cat, because:
-#: ./dbas/templates/snippet-popups.pt:537
-msgid "set-premissegroups5"
-msgstr ""
-
-#. Default: She is fluffy
-#: ./dbas/templates/snippet-popups.pt:538
-msgid "set-premissegroups6"
-msgstr ""
-
-#. Default: She is small
-#: ./dbas/templates/snippet-popups.pt:539
-msgid "set-premissegroups7"
-msgstr ""
-
-#. Default: Then you have to check the box!
-#: ./dbas/templates/snippet-popups.pt:540
-msgid "set-premissegroups8"
-msgstr ""
-
-#. Default: Otherwise you do not need this checkbox.
-#: ./dbas/templates/snippet-popups.pt:543
-msgid "set-premissegroups9"
-msgstr ""
-
-#. Default: Abort
-#: ./dbas/templates/snippet-popups.pt:548
-msgid "abort"
+#. Default: Save my Statement!
+#: ./dbas/templates/snippet-popups.pt:566
+msgid "save_my_statement"
 msgstr ""
 
 #. Default: Writing a new message
 #: ./dbas/templates/news.pt:21
 msgid "writing_message"
-msgstr ""
-
-#. Default: Error:
-#: ./dbas/templates/news.pt:25 ./dbas/templates/settings.pt:75
-#: ./dbas/templates/content.pt:293 ./dbas/templates/content.pt:318
-msgid "error:"
 msgstr ""
 
 #. Default: Success:
@@ -1286,89 +1249,79 @@ msgstr ""
 msgid "already_has"
 msgstr ""
 
-#. Default: arguments
-#: ./dbas/templates/content.pt:36
-msgid "arguments"
-msgstr ""
-
-#. Default: Restart Discussion
-#: ./dbas/templates/content.pt:40
-msgid "restart_discussion"
-msgstr ""
-
 #. Default: Topics
-#: ./dbas/templates/content.pt:49
+#: ./dbas/templates/content.pt:43
 msgid "topics"
 msgstr ""
 
-#. Default: Because:
-#: ./dbas/templates/content.pt:90
-msgid "Because:"
+#. Default: Restart Discussion
+#: ./dbas/templates/content.pt:51
+msgid "restart_discussion"
 msgstr ""
 
 #. Default: and
-#: ./dbas/templates/content.pt:91 ./dbas/templates/content.pt:92
+#: ./dbas/templates/content.pt:88
 msgid "and"
 msgstr ""
 
 #. Default: Opinion<dynamic element>Barometer
-#: ./dbas/templates/content.pt:109
+#: ./dbas/templates/content.pt:105
 msgid "opinion_barometer"
 msgstr ""
 
 #. Default: Dialog<dynamic element>View
 #. Default: Dialog View
-#: ./dbas/templates/content.pt:116 ./dbas/templates/content.pt:347
+#: ./dbas/templates/content.pt:112 ./dbas/templates/content.pt:340
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Complete<dynamic element>View
 #. Default: Complete View
-#: ./dbas/templates/content.pt:130 ./dbas/templates/content.pt:363
+#: ./dbas/templates/content.pt:126 ./dbas/templates/content.pt:352
 msgid "complete_view"
 msgstr ""
 
 #. Default: Add statement
-#: ./dbas/templates/content.pt:266
+#: ./dbas/templates/content.pt:262
 msgid "add_statement"
 msgstr ""
 
 #. Default: What is your idea? What should we do?
-#: ./dbas/templates/content.pt:287
+#: ./dbas/templates/content.pt:280
 msgid "what_is_your_idea"
 msgstr ""
 
 #. Default: Let me enter my reason!
-#: ./dbas/templates/content.pt:312
+#: ./dbas/templates/content.pt:300
 msgid "let_me_enter_my_reason"
 msgstr ""
 
 #. Default: I
-#: ./dbas/templates/content.pt:322 ./dbas/templates/content.pt:323
+#: ./dbas/templates/content.pt:310 ./dbas/templates/content.pt:311
 msgid "I"
 msgstr ""
 
 #. Default: agree
-#: ./dbas/templates/content.pt:322
+#: ./dbas/templates/content.pt:310
 msgid "agree"
 msgstr ""
 
 #. Default: with
-#: ./dbas/templates/content.pt:322 ./dbas/templates/content.pt:323
+#: ./dbas/templates/content.pt:310 ./dbas/templates/content.pt:311
 msgid "with"
 msgstr ""
 
 #. Default: disagree
-#: ./dbas/templates/content.pt:323
+#: ./dbas/templates/content.pt:311
 msgid "disagree"
 msgstr ""
 
-#. Default: Because
-#: ./dbas/templates/content.pt:328
-msgid "Because"
+#. Default: Because...
+#: ./dbas/templates/content.pt:316
+msgid "Because..."
 msgstr ""
 
 #. Default: Change display style
-#: ./dbas/templates/content.pt:343
+#: ./dbas/templates/content.pt:337
 msgid "change_style"
 msgstr ""

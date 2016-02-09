@@ -85,9 +85,7 @@
 						<ul>
 							<li tal:repeat="item items">
 								<input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-								<label for="tmp" tal:attributes="for item.id" tal:condition="item.leading_because"><span tal:omit-tag="" tal:attributes="for item.id" i18n:translate="Because:">Because:</span>&nbsp;</label>
-								<span tal:repeat="premise item.premises" tal:omit-tag="" tal:condition="item.leading_because"><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span>
-								<label tal:attributes="for item.id" tal:condition="not:item.leading_because" style="width: 95%"><span tal:repeat="premise item.premises" tal:omit-tag=""><label tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em>&nbsp;</label></span></label>
+								<span tal:repeat="premise item.premises" tal:omit-tag=""><label for="tmp" tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:attributes="for item.id" tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em></label></span>
 							</li>
 						</ul>
 
@@ -278,8 +276,7 @@
 			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
-			<div class="col-md-1"></div>
-			<div class="col-md-10">
+			<div class="col-md-12">
 				<h4><span i18n:translate="what_is_your_idea">What is your idea? What should we do?</span></h4>
 				<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -290,17 +287,15 @@
 					<input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 				</div>
 				<div class="list-group" id="proposal-statement-list-group"></div>
-				<input id="send-new-statement" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+				<input id="send-new-statement" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.title.save_my_statement"/>
 			</div>
-			<div class="col-md-1"></div>
 		</div>
 
 		<div class="container colored_container" id="add-premise-container" style="display:none" tal:attributes="style extras.add_premise_container_style">
 			<button id="close-premise-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
-			<div class="col-md-1"></div>
-			<div class="col-md-10 text-center">
+			<div class="col-md-12 text-center">
 				<h4>
 					<span i18n:translate="let_me_enter_my_reason">
 						Let me enter my reason!
@@ -320,14 +315,21 @@
 					<div style="padding-bottom: 2em;">
 						<h5 style="float: left; line-height: 20px; text-align: center;" i18n:translate="Because...">Because...</h5>
 						<input id="add-premise-container-main-input" type="text" class="add-premise-container-input form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="">
-						<img class="icon-badge icon-rem-premise" alt="icon-rem" src="${request.static_url('dbas:static/images/icon_minus2.png')}" style="height: 30px; display:none; padding-right: 0.5em;" />
-						<img class="icon-badge icon-add-premise" alt="icon-add" src="${request.static_url('dbas:static/images/icon_plus2.png')}" style="height: 30px; display:none;" />
+						<img class="icon-badge icon-rem-premise"
+								 alt="icon-rem"
+								 src="${request.static_url('dbas:static/images/icon_minus2.png')}"
+								 style="height: 30px; display:none; padding-right: 0.5em;"
+								 tal:attributes="title extras.title.add_statement_row_title"/>
+						<img class="icon-badge icon-add-premise"
+								 alt="icon-add"
+								 src="${request.static_url('dbas:static/images/icon_plus2.png')}"
+								 style="height: 30px;"
+								 tal:attributes="title extras.title.rem_statement_row_title"/>
 					</div>
 				</div>
 				<div class="list-group" id="proposal-premise-list-group"></div>
-				<input id="send-new-premise" type="button" name="" value="Save my Statement!" i18n:translate="save_my_statement" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." />
+				<input id="send-new-premise" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.title.save_my_statement"/>
 			</div>
-			<div class="col-md-1"></div>
 		</div>
 
 		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style" style="display:none">

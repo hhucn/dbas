@@ -303,12 +303,12 @@ class History(DiscussionBase):
 		self.session_id = session_id
 
 
-class Vote(DiscussionBase):
+class VoteArgument(DiscussionBase):
 	"""
-	Vote-table with several columns.
+	Vote-table with several columns for arguments.
 	The combination of the both FK is a PK
 	"""
-	__tablename__ = 'votes'
+	__tablename__ = 'votes_argument'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
@@ -327,6 +327,59 @@ class Vote(DiscussionBase):
 		:return:
 		"""
 		self.argument_uid = argument_uid
+		self.author_uid = author_uid
+		self.is_up_vote = is_up_vote
+		self.timestamp = func.now()
+		self.is_valid = is_valid
+
+	def set_up_vote(self, is_up_vote):
+		"""
+		Sets up/down vote of this record
+		:param is_up_vote: boolean
+		:return: None
+		"""
+		self.is_up_vote = is_up_vote
+
+	def set_valid(self, is_valid):
+		"""
+		Sets validity of this record
+		:param is_valid: boolean
+		:return: None
+		"""
+		self.is_valid = is_valid
+
+	def update_timestamp(self):
+		"""
+		Updates timestamp of this record
+		:return: None
+		"""
+		self.timestamp = func.now()
+
+
+class VoteStatement(DiscussionBase):
+	"""
+	Vote-table with several columns for statements.
+	The combination of the both FK is a PK
+	"""
+	__tablename__ = 'votes'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	is_up_vote = sa.Column(sa.Boolean, nullable=False)
+	is_valid = sa.Column(sa.Boolean, nullable=False)
+
+	statements = relationship('Statement', foreign_keys=[statement_uid])
+	users = relationship('User', foreign_keys=[author_uid])
+
+	def __init__(self, statement_uid=0, author_uid=0, is_up_vote=True, is_valid=True):
+		"""
+		Initializes a row
+		:param weight_uid:
+		:param author_uid:
+		:return:
+		"""
+		self.statement_uid = statement_uid
 		self.author_uid = author_uid
 		self.is_up_vote = is_up_vote
 		self.timestamp = func.now()
