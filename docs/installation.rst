@@ -1,8 +1,20 @@
 .. _installation:
 
+============
 Installation
-------------
-Requirements (Tested on Debian\Ubuntu,  64-Bit is mandatory):
+============
+
+Requirements
+============
+
+Ensure that the following tools are installed:
+
+* Python >= 3.4
+* `pip <https://pip.pypa.io/en/stable/installing/>`_
+* `virtualenv <http://virtualenv.readthedocs.org/en/latest/installation.html>`_
+* `virtualenvwrapper <http://virtualenvwrapper.readthedocs.org/en/latest/install.html>`_
+
+Then follow these steps:
 
 1. Create virtualenv with python3
 
