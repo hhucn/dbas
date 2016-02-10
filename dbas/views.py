@@ -1016,7 +1016,7 @@ class Dbas(object):
 			url         = self.request.params['url']
 
 			issue = QueryHelper().get_issue(self.request)
-			logger('set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', text: ' + text + ', relation: ' +
+			logger('set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', text: ' + str(text) + ', relation: ' +
 			       str(relation) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
 
 			new_arguments = []
@@ -1026,7 +1026,7 @@ class Dbas(object):
 				new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(t, relation, arg_uid, issue,
 				                                                                         self.request.authenticated_userid,
 				                                                                         transaction)
-				new_arguments.push(new_argument_uid)
+				new_arguments.append(new_argument_uid)
 
 			if len(new_arguments) == 0:
 				return_dict['status'] = 0

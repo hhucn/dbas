@@ -1,6 +1,7 @@
 import datetime
 import locale
 import collections
+import random
 from sqlalchemy import and_, func
 from slugify import slugify
 
@@ -214,14 +215,14 @@ class QueryHelper(object):
 		if isinstance(text, list):
 			for t in text:
 				new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
-				statemens.append(new_statement)
+				statements.append(new_statement)
 		else:
 			new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
-			statemens.append(new_statement)
+			statements.append(new_statement)
 
 
 		# second, set the new statements as premisegroup
-		new_premisegroup_uid = self.set_statements_as_new_premisegroup(statements, user, issue)
+		new_premisegroup_uid = self.set_statements_as_new_premisegroup(transaction, statements, user, False, issue)
 
 		# current argument
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -248,10 +249,8 @@ class QueryHelper(object):
 					new_argument = Argument(premisegroup=new_premisegroup_uid,
 				                            issupportive=current_attack == 'support',
 				                            author=db_user.uid,
-				                            weight=0,
 				                            conclusion=premise.statement_uid,
 				                            issue=issue)
-					new_argument.conclusions_argument(0)
 					new_arguments.append(new_argument)
 
 				logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'new_arguments ' + str(new_arguments))
@@ -282,8 +281,6 @@ class QueryHelper(object):
 				new_argument = Argument(premisegroup=new_premisegroup_uid,
 				                        issupportive=current_attack == 'overbid',
 				                        author=db_user.uid,
-				                        weight=0,
-				                        conclusion=0,
 				                        issue=issue)
 				new_argument.conclusions_argument(current_argument.uid)
 				DBDiscussionSession.add(new_argument)
@@ -303,10 +300,8 @@ class QueryHelper(object):
 				new_argument = Argument(premisegroup=new_premisegroup_uid,
 				                        issupportive=False,
 				                        author=db_user.uid,
-				                        weight=0,
 				                        conclusion=current_argument.conclusion_uid,
 				                        issue=issue)
-				new_argument.conclusions_argument(0)
 				DBDiscussionSession.add(new_argument)
 				DBDiscussionSession.flush()
 				transaction.commit()

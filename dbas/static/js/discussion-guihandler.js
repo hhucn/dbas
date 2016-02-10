@@ -225,6 +225,8 @@ function GuiHandler() {
 				new GuiHandler().displayNextPageOffSetStatementContainer(body, prev, next, counter, prefix);
 			});
 		}
+
+		$('#' + popupSetPremiseGroups).modal('show');
 	};
 
 	/**
@@ -294,6 +296,10 @@ function GuiHandler() {
 			splitted = text.split(' ' + _t(and) + ' '),
 			topic = $('#' + addPremiseContainerMainInputIntroId).text(),
 			input1, input2, input3, list, bigText, bigTextSpan, connection, i;
+
+		if (topic.match(/\.$/)){
+			topic = topic.substr(0, topic.length-2) + ', '
+		}
 
 		div_page.attr('id', id + page_no).attr('page', page_no).show();
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
