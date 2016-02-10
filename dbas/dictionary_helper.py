@@ -232,8 +232,8 @@ class DictionaryHelper(object):
 				statements_array.append(_qh.get_statement_dict('start_statement',
 				                                                _tn.get(_tn.newConclusionRadioButtonText),
 				                                                [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
-				                                                'null',
-				                                                'null'))
+				                                                'add',
+				                                                'add'))
 
 		return statements_array
 
