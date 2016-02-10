@@ -10,7 +10,6 @@ from .logger import logger
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015
 
 
 class FuzzyStringMatcher(object):

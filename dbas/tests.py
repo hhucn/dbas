@@ -19,7 +19,6 @@ from sqlalchemy.orm import sessionmaker
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015
 
 here = os.path.dirname(__file__)
 settings = appconfig('config:' + os.path.join(here, '../', 'production.ini'))

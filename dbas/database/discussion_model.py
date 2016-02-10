@@ -9,7 +9,6 @@ from dbas.database import DBDiscussionSession, DiscussionBase
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015-2016
 
 
 class Issue(DiscussionBase):

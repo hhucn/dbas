@@ -5,7 +5,6 @@ from .database.discussion_model import User
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015-2016
 
 
 class Translator(object):

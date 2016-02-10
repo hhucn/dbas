@@ -4,7 +4,6 @@ log = logging.getLogger(__name__)
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015
 
 
 def logger(who, when, what):

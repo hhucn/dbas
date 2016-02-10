@@ -1,7 +1,6 @@
 /**
  * @author Tobias Krauthoff, Abdullah Polat
  * @email krauthoff@cs.uni-duesseldorf.de, abdullah.polat@hhu.de
- * @copyright Krauthoff, Polat 2016
  */
 
 function DiscussionGraph(){

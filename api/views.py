@@ -5,7 +5,6 @@ from dbas.views import Dbas
 
 # @author Christian Meter, Tobias Krauthoff
 # @email {meter, krauthoff}@cs.uni-duesseldorf.de
-# @copyright Meter, Krauthoff 2015
 
 # CORS configuration
 cors_policy = dict(enabled=True,

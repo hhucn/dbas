@@ -6,7 +6,6 @@ from .user_management import UserHandler
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015-2016
 
 
 class VotingHelper(object):

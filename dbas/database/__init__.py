@@ -4,7 +4,6 @@ from zope.sqlalchemy import ZopeTransactionExtension as Zte
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015
 
 
 DBDiscussionSession = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False))

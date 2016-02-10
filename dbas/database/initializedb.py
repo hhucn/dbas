@@ -15,7 +15,6 @@ from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsS
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015
 
 
 def usage(argv):

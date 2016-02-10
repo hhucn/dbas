@@ -1,5 +1,6 @@
 /**
- * Created by tobias on 30.09.15.
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
  */
 
 function News() {

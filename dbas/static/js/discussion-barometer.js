@@ -1,7 +1,6 @@
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
- * @copyright Krauthoff 06.01.16
  */
 
 function DiscussionBarometer(){

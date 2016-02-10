@@ -36,7 +36,6 @@ mainpage = ''
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-# @copyright Krauthoff 2015
 
 
 class Dbas(object):
