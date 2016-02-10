@@ -386,8 +386,6 @@ $(function () {
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
 	tmp = tmp.substr(1, tmp.length-2);
 	$('#' + discussionEndRestart).attr('href', tmp);
-
-	$('#add-premise-container-main-input').val('111 and 222 and 333');
 });
 
 // new

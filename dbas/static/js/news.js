@@ -156,7 +156,7 @@ function News() {
 			$('#' + writingNewsSuccessMessageId).text(_t(addedEverything));
 			$('#' + writingNewNewsTitleId).val('');
 			$('#' + writingNewNewsTextId).val('');
-			$('#' + newsBodyId).prepend(getNewsContainerAsHtml(parsedData.title, parsedData.date, parsedData.author, parsedData.news));
+			$('#' + newsBodyId).prepend(new News().getNewsContainerAsHtml(parsedData.title, parsedData.date, parsedData.author, parsedData.news));
 			new News().setSharingClasses();
 			window.scrollTo(0, 0);
 		} else {

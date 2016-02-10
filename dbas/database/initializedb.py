@@ -239,17 +239,17 @@ def setup_news_db():
 				  news='DBAS refactored the last two weeks. During this time, a lot of JavaScript was removed. Therefore '
 				       'DBAS uses Chameleon with TAL in the Pyramid-Framework. So DBAS will be more stable and faster. '
 				       'The next period all functions will be tested and recovered.')
-	news40 = News(title='Refactoring',
+	news40 = News(title='API',
 				  date='29.01.2016',
 				  author='Tobias Krauthoff',
 				  news='Now DBAS has a API. Just replace the "discuss"-tag in your url with api to get your current steps raw data.')
-	news41 = News(title='Refactoring',
+	news41 = News(title='Voting Model',
 				  date='05.01.2016',
 				  author='Tobias Krauthoff',
 				  news='Currently we are improving out model of voting for arguments as well as statements. Therefore we are working'
 				       'together with our colleage out of the theoretical computer science...because DBAS datastructure can be '
 				       'formalized to be compatible with frameworks of Dung.')
-	news42 = News(title='Refactoring',
+	news42 = News(title='Premisegroups',
 				  date='09.02.2016',
 				  author='Tobias Krauthoff',
 				  news='Now we have a mechanism for unclear statements. For example the user enters "I want something because '

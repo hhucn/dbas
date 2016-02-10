@@ -23,7 +23,7 @@ function GuiHandler() {
 			div = $('<div>').attr('style', 'padding-bottom: 2em'),
 			h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
 			id = 'add-premise-container-main-input-' + uid,
-			input = $('<input>').attr('id', id).val(uid+'a and '+uid+'b')
+			input = $('<input>').attr('id', id)
 				.attr('type', 'text')
 				.attr('class', 'form-control add-premise-container-input')
 				.attr('autocomplete', 'off')

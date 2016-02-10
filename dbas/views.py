@@ -919,7 +919,6 @@ class Dbas(object):
 		return_dict['status'] = '1'
 		try:
 			statement   = self.request.params['statement']
-			url         = self.request.params['url']
 			issue       = QueryHelper().get_issue(self.request)
 			slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
@@ -927,7 +926,7 @@ class Dbas(object):
 			if new_statement == -1:
 				return_dict['status'] = 0
 			else:
-				url = UrlManager(url, slug, for_api).get_url_for_statement_attitude(False, new_statement.uid)
+				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement.uid)
 				return_dict['url'] = url
 				logger('set_new_start_statement', 'def', 'return url ' + url)
 		except KeyError as e:
@@ -959,18 +958,17 @@ class Dbas(object):
 
 		try:
 			logger('set_new_start_premise', 'def', 'getting params')
-			text            = _dh.string_to_json(self.request.params['text'])
+			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			conclusion_id   = self.request.params['conclusion_id']
-			url             = self.request.params['url']
-			support         = True if self.request.params['support'].lower() == 'true' else False
+			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 			issue           = _qh.get_issue(self.request)
 			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + str(text) +
-			       ', supportive: ' + str(support) + ', issue: ' + str(issue))
+			       ', supportive: ' + str(supportive) + ', issue: ' + str(issue))
 
 			new_arguments = []
-			for t in text:
-				logger('set_new_start_premise', 'def', 'found text: ' + str(t))
-				new_argument_uid = _qh.set_premises_as_group_for_conclusion(transaction, user_id, t, conclusion_id, support, issue)
+			for group in premisegroups:
+				logger('set_new_start_premise', 'def', 'found text: ' + str(group))
+				new_argument_uid = _qh.set_premises_as_group_for_conclusion(transaction, user_id, group, conclusion_id, supportive, issue)
 				new_arguments.append(new_argument_uid)
 				logger('set_new_start_premise', 'def', 'new argument created: ' + str(new_argument_uid))
 
@@ -978,7 +976,7 @@ class Dbas(object):
 			arg_id_sys, attack  = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
 			slug                = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-			url = UrlManager(url, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 			return_dict['url']      = url
 			return_dict['status']   = '1'
 		except KeyError as e:
@@ -1009,21 +1007,20 @@ class Dbas(object):
 
 		try:
 			logger('set_new_premises_for_argument', 'def', 'getting params')
-			arg_uid     = self.request.params['arg_uid']
-			relation    = self.request.params['relation']
-			text        = _dh.string_to_json(self.request.params['text'])
-			supportive  = self.request.params['supportive']
-			url         = self.request.params['url']
+			arg_uid         = self.request.params['arg_uid']
+			attack_type     = self.request.params['attack_type']
+			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
+			supportive      = self.request.params['supportive']
 
 			issue = QueryHelper().get_issue(self.request)
 			logger('set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', text: ' + str(text) + ', relation: ' +
-			       str(relation) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
+			       str(attack_type) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
 
 			new_arguments = []
-			for t in text:
-				logger('set_new_premises_for_argument', 'def', 'found text: ' + str(t))
+			for group in premisegroups:
+				logger('set_new_premises_for_argument', 'def', 'found text: ' + str(group))
 
-				new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(t, relation, arg_uid, issue,
+				new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(group, attack_type, arg_uid, issue,
 				                                                                         self.request.authenticated_userid,
 				                                                                         transaction)
 				new_arguments.append(new_argument_uid)
@@ -1039,7 +1036,7 @@ class Dbas(object):
 					attack = 'end'
 
 				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
-				url = UrlManager(url, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+				url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 				return_dict['url']      = url
 				return_dict['status']   = '1'
 		except KeyError as e:

@@ -23,10 +23,9 @@ function AjaxSiteHandler() {
 			method: 'POST',
 			data: {
 				arg_uid: arg_uid,
-				relation: relation,
-				text: JSON.stringify(text),
-				supportive: supportive,
-				url: mainpage
+				attack_type: relation,
+				premisegroups: JSON.stringify(text),
+				supportive: supportive
 			},
 			dataType: 'json',
 			async: true,
@@ -54,10 +53,9 @@ function AjaxSiteHandler() {
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
 			data: {
-				text: JSON.stringify(text),
+				premisegroups: JSON.stringify(text),
 				conclusion_id: conclusion_id,
-				support: supportive,
-				url: mainpage
+				supportive: supportive
 			},
 			dataType: 'json',
 			async: true,
@@ -83,8 +81,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_set_new_start_statement',
 			method: 'POST',
 			data: {
-				statement: statement,
-				url: mainpage
+				statement: statement
 			},
 			dataType: 'json',
 			async: true,

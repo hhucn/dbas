@@ -67,6 +67,9 @@ function goBackToTop() {
 	});
 }
 
+/**
+ *
+ */
 function changeBackgroundOnScroll(){
 	$(window).scroll(function () {
 		if (jQuery(this).scrollTop() > 10) {
@@ -365,7 +368,11 @@ function ajaxLogin (){
 	$.ajax({
 		url: 'ajax_user_login',
 		type: 'POST',
-		data: { user: user, password: password, url: url},
+		data: {
+			user: user,
+			password: password,
+			url: url
+		},
 		dataType: 'json',
 		async: true
 	}).done(function ajaxLoginDone(data) {
@@ -388,7 +395,7 @@ function ajaxLogout (){
 	$.ajax({
 		url: 'ajax_user_logout',
 		type: 'POST',
-		data: { url: url},
+		data: { url: url },
 		dataType: 'json',
 		async: true
 	}).done(function ajaxLogoutDone(data) {

@@ -121,13 +121,21 @@ _VALUES = {}
 
 @hello.get()
 def get_info(request):
-	"""Returns Hello in JSON."""
+	"""
+
+	:param request:
+	:return:
+	"""
 	return {'Hello': 'World'}
 
 
 @values.get()
 def get_value(request):
-	"""Returns the value."""
+	"""
+
+	:param request:
+	:return:
+	"""
 	key = request.matchdict['value']
 	return _VALUES.get(key)
 

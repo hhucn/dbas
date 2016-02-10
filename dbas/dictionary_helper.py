@@ -123,7 +123,7 @@ class DictionaryHelper(object):
 		_tn              = Translator(lang)
 		_qh              = QueryHelper()
 		heading          = ''
-		add_premise_text = _tn.get(_tn.iAgreeWithInColor) if is_supportive else _tn.get(_tn.iDisagreeWithInColor) + ': '
+		add_premise_text = (_tn.get(_tn.iAgreeWithInColor) if is_supportive else _tn.get(_tn.iDisagreeWithInColor)) + ': '
 		save_statement_url = 'ajax_set_new_start_statement'
 		if at_start:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_start')
