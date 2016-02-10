@@ -38,7 +38,8 @@ Then follow these steps:
 
 .. code-block:: console
 
-    $ initialize_sql development.ini
+    $ initialize_news_sql development.ini
+    $ initialize_discussion_sql development.ini
 
 5. Start development webserver
 

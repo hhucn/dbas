@@ -59,6 +59,7 @@ setup(name='dbas',
 	[paste.app_factory]
 	main = dbas:main
 	[console_scripts]
-	initialize_sql = dbas.database.initializedb:main
+	initialize_discussion_sql = dbas.database.initializedb:main_discussion
+	initialize_news_sql = dbas.database.initializedb:main_news
 	""",
 	)

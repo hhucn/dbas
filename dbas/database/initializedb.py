@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 import sys
 import transaction
@@ -21,7 +24,23 @@ def usage(argv):
 	sys.exit(1)
 
 
-def main(argv=sys.argv):
+def main_news(argv=sys.argv):
+	if len(argv) != 2:
+		usage(argv)
+	config_uri = argv[1]
+	setup_logging(config_uri)
+	settings = get_appsettings(config_uri)
+
+	news_engine = engine_from_config(settings, 'sqlalchemy-news.')
+	DBNewsSession.configure(bind=news_engine)
+	NewsBase.metadata.create_all(news_engine)
+
+	with transaction.manager:
+		setup_news_db()
+		transaction.commit()
+
+
+def main_discussion(argv=sys.argv):
 	if len(argv) != 2:
 		usage(argv)
 	config_uri = argv[1]
@@ -32,17 +51,12 @@ def main(argv=sys.argv):
 	DBDiscussionSession.configure(bind=discussion_engine)
 	DiscussionBase.metadata.create_all(discussion_engine)
 
-	news_engine = engine_from_config(settings, 'sqlalchemy-news.')
-	DBNewsSession.configure(bind=news_engine)
-	NewsBase.metadata.create_all(news_engine)
-
 	with transaction.manager:
 		setup_discussion_database()
 		transaction.commit()
-		setupNewsDatabase()
-		transaction.commit()
 
-def setupNewsDatabase():
+
+def setup_news_db():
 	news01 = News(title='Anonymous users after vacation',
 				  date='24.09.2015',
 				  author='Tobias Krauthoff',
@@ -210,7 +224,7 @@ def setupNewsDatabase():
 	news37 = News(title='Happy new Year',
 				  date='01.01.2016',
 				  author='Tobias Krauthoff',
-				  news='Frohes Neues Jahr ... Bonne Année ... Happy New Year ... Feliz Ano Nuevo ... Feliz Ano Novo')
+				  news='Frohes Neues Jahr ... Bonne Annee ... Happy New Year ... Feliz Ano Nuevo ... Feliz Ano Novo')
 	news38 = News(title='Island View and Pictures',
 				  date='06.01.2016',
 				  author='Tobias Krauthoff',
