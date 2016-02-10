@@ -647,7 +647,7 @@ class Translator(object):
 		en_lang[self.noCorrections] = 'No corrections for the given statement.'
 		en_lang[self.noCorrectionsSet] = 'Correction could not be set, because your user was not fount in the database. Are you currently logged in?'
 		en_lang[self.noDecisionDone] = 'No decision was done.'
-		en_lang[self.notInsertedErrorBecauseEmpty] = 'Your idea was not inserted, because your input text is empty.'
+		en_lang[self.notInsertedErrorBecauseEmpty] = 'Your idea was not inserted, because your input text is too short.'
 		en_lang[self.notInsertedErrorBecauseDuplicate] = 'Your idea was not inserted, because your idea is a duplicate.'
 		en_lang[self.notInsertedErrorBecauseUnknown] = 'Your idea was not inserted due to an unkown error.'
 		en_lang[self.notInsertedErrorBecauseInternal] = 'Your idea was not inserted due to an internal error.'
@@ -1375,14 +1375,15 @@ class TextGenerator(object):
 		:return:
 		"""
 		_t = Translator(self.lang)
-		opinion = '<strong>'
-		opinion += current_argument if current_argument != '' else premise
-		opinion += '</strong> ' + _t.get('relation_' + attack) + ' ' + '<strong>' + conclusion + '</strong>'
 
 		#  build some confrontation text
 		confrontation = confrontation[0:1].lower() + confrontation[1:]
 		premise = premise[0:1].lower() + premise[1:]
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
+
+		opinion = '<strong>'
+		opinion += current_argument if current_argument != '' else premise
+		opinion += '</strong> ' + _t.get('relation_' + attack) + ' ' + '<strong>' + conclusion + '</strong>'
 
 		confrontation_text = ''
 		confrontation = '<strong>' + confrontation + '</strong>'

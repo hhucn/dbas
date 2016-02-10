@@ -13,12 +13,10 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendNewStartStatement = function (data) {
 		var parsedData = $.parseJSON(data);
-		if (parsedData.status == '-1') {
+		alert('1: ' + parsedData.error + ' - ' + parsedData.error.length);
+		if (parsedData.error.length > 0) {
 			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
-		} else if (parsedData.status == '0') {
-			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseTooShort));
+			$('#' + addStatementErrorMsg).text(parsedData.error);
 		} else {
 			$('#' + discussionSpaceId + 'input:last-child').attr('checked', false).prop('checked', false);
 			window.location.href = parsedData.url;
@@ -31,12 +29,10 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendNewPremisesArgument = function (data) {
 		var parsedData = $.parseJSON(data);
-		if (parsedData.status == '-1') {
-			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
-		} else if (parsedData.status == '0') {
-			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseTooShort));
+		alert('2: ' + parsedData.error + ' - ' + parsedData.error.length);
+		if (parsedData.error.length > 0) {
+			$('#' + addPremiseErrorContainer).show();
+			$('#' + addPremiseErrorMsg).text(parsedData.error);
 		} else {
 			window.location.href = parsedData.url;
 		}
@@ -49,12 +45,10 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendNewStartPremise = function (data, isSupportive) {
 		var parsedData = $.parseJSON(data);
-		if (parsedData.status == '0') {
-			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseInternal));
-		} else if (parsedData.status == '0') {
-			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(_t(notInsertedErrorBecauseTooShort));
+		alert('3: ' + parsedData.error + ' - ' + parsedData.error.length);
+		if (parsedData.error.length > 0) {
+			$('#' + addPremiseErrorContainer).show();
+			$('#' + addPremiseErrorMsg).text(parsedData.error);
 		} else {
 			window.location.href = parsedData.url;
 		}

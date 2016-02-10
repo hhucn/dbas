@@ -214,8 +214,11 @@ class QueryHelper(object):
 		statements = []
 		if isinstance(text, list):
 			for t in text:
-				new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
-				statements.append(new_statement)
+				if len(t) < 5:  # TODO LENGTH
+					return -1
+				else:
+					new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
+					statements.append(new_statement)
 		else:
 			new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
 			statements.append(new_statement)
@@ -1144,8 +1147,11 @@ class QueryHelper(object):
 		statements = []
 		if isinstance(text, list):
 			for t in text:
-				new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
-				statements.append(new_statement)
+				if len(t) < 5:  # TODO LENGTH
+					return -1
+				else:
+					new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
+					statements.append(new_statement)
 		else:
 			new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
 			statements.append(new_statement)

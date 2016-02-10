@@ -163,17 +163,21 @@ function GuiHandler() {
 			prefix = 'insert_statements_page_';
 
 		send.click(function sendClick(){
-			var selections = body.find('input:checked'), i, splitted;
+			var selections = body.find('input:checked'), i, j, splitted;
 
 			// merge every text part to one array
 			for (i=0; i<undecided_texts.length; i++){
 					splitted = undecided_texts[i].split(' ' + _t(and) + ' ');
+
 				if (selections[i].id.indexOf(attr_more_args) != -1){ // each splitted text part is one argument
-					$.merge(decided_texts, splitted);
+					for (j=0; j<splitted.length; j++)
+						decided_texts.push([splitted[j]]);
+
 				} else if (selections[i].id.indexOf(attr_one_arg) != -1){ // one argument with big premisegroup
 					decided_texts.push(splitted);
+
 				} else { // just take it!
-					decided_texts.push(undecided_texts[i]);
+					decided_texts.push([undecided_texts[i]]);
 				}
 			}
 
@@ -184,6 +188,7 @@ function GuiHandler() {
 			} else {
 			 	alert("Todo: unknown type")
 			}
+			$('#' + popupSetPremiseGroups).modal('hide');
 		});
 
 		if (undecided_texts.length == 1){ // we only need one page div

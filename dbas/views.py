@@ -916,7 +916,7 @@ class Dbas(object):
 		logger('set_new_start_statement', 'def', 'main')
 
 		return_dict = dict()
-		return_dict['status'] = '1'
+		return_dict['error'] = ''
 		try:
 			statement   = self.request.params['statement']
 			issue       = QueryHelper().get_issue(self.request)
@@ -924,14 +924,14 @@ class Dbas(object):
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
 			new_statement, is_duplicate = QueryHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
 			if new_statement == -1:
-				return_dict['status'] = 0
+				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
 				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement.uid)
 				return_dict['url'] = url
 				logger('set_new_start_statement', 'def', 'return url ' + url)
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
-			return_dict['status'] = '-1'
+			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
 		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -955,6 +955,7 @@ class Dbas(object):
 		return_dict = dict()
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
+		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
 
 		try:
 			logger('set_new_start_premise', 'def', 'getting params')
@@ -962,13 +963,18 @@ class Dbas(object):
 			conclusion_id   = self.request.params['conclusion_id']
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 			issue           = _qh.get_issue(self.request)
-			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + str(text) +
+			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', premisegroups: ' + str(premisegroups) +
 			       ', supportive: ' + str(supportive) + ', issue: ' + str(issue))
 
 			new_arguments = []
 			for group in premisegroups:
 				logger('set_new_start_premise', 'def', 'found text: ' + str(group))
 				new_argument_uid = _qh.set_premises_as_group_for_conclusion(transaction, user_id, group, conclusion_id, supportive, issue)
+				if new_argument_uid == -1:
+					return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+					logger('set_new_start_premise', 'def', 'return because input is empty')
+					return _dh.dictionary_to_json_array(return_dict, True)
+					
 				new_arguments.append(new_argument_uid)
 				logger('set_new_start_premise', 'def', 'new argument created: ' + str(new_argument_uid))
 
@@ -978,10 +984,10 @@ class Dbas(object):
 
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 			return_dict['url']      = url
-			return_dict['status']   = '1'
+			return_dict['error']    = ''
 		except KeyError as e:
 			logger('set_new_start_premise', 'error', repr(e))
-			return_dict['status']   = '-1'
+			return_dict['error']    = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
 		return_json = _dh.dictionary_to_json_array(return_dict, True)
 
@@ -1004,6 +1010,7 @@ class Dbas(object):
 
 		return_dict = dict()
 		_dh = DictionaryHelper()
+		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
 
 		try:
 			logger('set_new_premises_for_argument', 'def', 'getting params')
@@ -1013,8 +1020,8 @@ class Dbas(object):
 			supportive      = self.request.params['supportive']
 
 			issue = QueryHelper().get_issue(self.request)
-			logger('set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', text: ' + str(text) + ', relation: ' +
-			       str(attack_type) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
+			logger('set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', premisegroups: ' + str(premisegroups) +
+			       ', relation: ' + str(attack_type) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
 
 			new_arguments = []
 			for group in premisegroups:
@@ -1023,10 +1030,15 @@ class Dbas(object):
 				new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(group, attack_type, arg_uid, issue,
 				                                                                         self.request.authenticated_userid,
 				                                                                         transaction)
+				if new_argument_uid == -1:
+					return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+					logger('set_new_start_premise', 'def', 'return because input is empty')
+					return _dh.dictionary_to_json_array(return_dict, True)
+
 				new_arguments.append(new_argument_uid)
 
 			if len(new_arguments) == 0:
-				return_dict['status'] = 0
+				return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
 				new_argument_uid = random.choice(new_arguments)  # TODO IMPROVE / eliminate random
 				logger('set_new_premises_for_argument', 'def', 'new_argument_uid ' + str(new_argument_uid))
@@ -1038,10 +1050,11 @@ class Dbas(object):
 				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 				url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 				return_dict['url']      = url
-				return_dict['status']   = '1'
+				return_dict['error']    = ''
 		except KeyError as e:
 			logger('set_new_premises_for_argument', 'error', repr(e))
 			return_dict['status'] = '-1'
+			return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
 		return_json = _dh.dictionary_to_json_array(return_dict, True)
 

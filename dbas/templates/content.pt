@@ -304,7 +304,7 @@
 						Let me enter my reason!
 					</span>
 				</h4>
-				<div id="add-premisen-error-container" class="alert alert-danger" role="alert" style="display:none">
+				<div id="add-premise-error-container" class="alert alert-danger" role="alert" style="display:none">
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 					<span i18n:translate="error:">Error:</span>
 					<span id="add-premise-error-msg"></span>
