@@ -411,6 +411,7 @@ comment .container and wrap each container with <div class="coloured-div">
 #insert_statements_options{
 	list-style-type: none;
 	cursor: pointer;
+    padding-left: 1.2em;
 }
 #insert_statements_options li:hover{
 	color: #2196f3;

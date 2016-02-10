@@ -154,7 +154,6 @@ function GuiHandler() {
 	 * @param conclusion
 	 */
 	this.showSetStatementContainer = function(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
-		$('#' + popupSetPremiseGroups).modal('show');
 		var gh = new GuiHandler(), page, page_no,
 			body = $('#' + popupSetPremiseGroupsBodyContent).empty(),
 			prev = $('#' + popupSetPremiseGroupsPreviousButton).hide(),
@@ -163,7 +162,7 @@ function GuiHandler() {
 			counter = $('#' + popupSetPremiseGroupsCounter).hide(),
 			prefix = 'insert_statements_page_';
 
-		send.off().click(function sendClick(){
+		send.click(function sendClick(){
 			var selections = body.find('input:checked'), i, splitted;
 
 			// merge every text part to one array

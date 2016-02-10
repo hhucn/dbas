@@ -350,13 +350,15 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 			else if (input.attr('id').indexOf('justify_premise') != -1){
 				guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
-				splits = window.location.href.split('/');
-				text = [];
-				$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
-				arg = splits[splits.length - 3];
-				supportive = splits[splits.length - 2] == 't';
-				relation = splits[splits.length - 1];
-				interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
+				$('#' + sendNewPremiseId).click(function() {
+					splits = window.location.href.split('/');
+					text = [];
+					$('#' + addPremiseContainerBodyId + ' input').each(function () { text.push($(this).val()); });
+					arg = splits[splits.length - 3];
+					supportive = splits[splits.length - 2] == 't';
+					relation = splits[splits.length - 1];
+					interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
+				});
 			}
 		}
 	});
