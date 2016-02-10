@@ -7,68 +7,77 @@ Todo's
 API
 ===
 
-* Statement beim Start
-   * JSON mit
+.. todo::
+    * Statement beim Start
+       * JSON mit
 
-    .. code-block:: python
+        .. code-block:: python
 
-       'statement': String
-       'issue': int
+           'statement': String
+           'issue': int
 
-    * Rückgabe enthält
+        * Rückgabe enthält
 
-    .. code-block:: python
+        .. code-block:: python
 
-       'url': String
-
-
-* Prämisse beim Start
-   * JSON mit
-
-    .. code-block:: python
-
-       'issue': int
-       'premisegroups': String[[111],[222],[333,444]]
-       'supportive': Boolean
-       'conclusion_id': int
-
-    * Rückgabe enthält
-
-    .. code-block:: python
-
-       'url': String
+           'url': String
 
 
-* Prämisse während der Argumentation
-   * JSON mit
+.. todo::
+    * Prämisse beim Start
+       * JSON mit
 
-    .. code-block:: python
+        .. code-block:: python
 
-       'issue': int
-       'premisegroups': String[[111],[222],[333,444]]
-       'supportive': Boolean
-       'arg_uid': int
-       'attack_type': String
+           'issue': int
+           'premisegroups': String[[111],[222],[333,444]]
+           'supportive': Boolean
+           'conclusion_id': int
 
-    * Rückgabe enthält
+        * Rückgabe enthält
 
-    .. code-block:: python
+        .. code-block:: python
 
-       'url': String
+           'url': String
 
-* Login
+.. todo::
+    * Prämisse während der Argumentation
+       * JSON mit
 
-* Logout
+        .. code-block:: python
+
+           'issue': int
+           'premisegroups': String[[111],[222],[333,444]]
+           'supportive': Boolean
+           'arg_uid': int
+           'attack_type': String
+
+        * Rückgabe enthält
+
+        .. code-block:: python
+
+           'url': String
+
+.. todo::
+
+    **Login und Logout**
+
+    * Login umschreiben und mehr Funktionen von Pyramid zu nutzen
+    * Wie ermöglichen wir die Authentifizierung mit der API...?
+
 
 
 Docs
 ====
 
-* conf.py
-   * sys.path.append('/home/n2o/.virtualenvs/dbas/lib/python3.5/site-packages')
-   * version automatsiert auslesen
-   * language setzen
+.. todo::
+    * conf.py
+       * sys.path.append('/home/n2o/.virtualenvs/dbas/lib/python3.5/site-packages')
+       * version automatsiert auslesen
+       * language setzen
 
 D-BAS
 =====
-* Docs verlinken
+
+.. todo::
+    * Docs verlinken
