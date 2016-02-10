@@ -31,7 +31,7 @@ requires = [
 	'lingua',
 	'requests',
 	'pyshorteners',
-	'slugify',
+	'python-slugify',
 	'validate_email'
 ]
 
