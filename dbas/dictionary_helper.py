@@ -64,6 +64,14 @@ class DictionaryHelper(object):
 		return_dict = json.dumps(raw_dict, ensure_ascii)
 		return return_dict
 
+	def string_to_json(self, string):
+		"""
+
+		:param string:
+		:return:
+		"""
+		return json.loads(string)
+
 	def save_statement_row_in_dictionary(self, statement_row):
 		"""
 		Saved a row in dictionary

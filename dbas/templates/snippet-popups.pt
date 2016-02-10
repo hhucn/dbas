@@ -523,11 +523,6 @@
 				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">We need your help to understand your statement!</h4>
 			</div>
 			<div id="popup-set-premisegroups-body" class="lead">
-                <div id="insert_statements_page_error" class="alert alert-danger" role="alert" style="display:none">
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-					<span i18n:translate="error:">Error:</span>
-					<span i18n:translate="forgot_input_radio">You forgot to choose the right interpretation</span>
-				</div>
 				<span id="popup-set-premisegroups-body-intro" i18n:translate="set_premisegroups_intro">
 					You have used 'and' in your statement. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:
 				</span>
@@ -559,6 +554,11 @@
 					</div>
 	    		<div id="popup-set-premisegroups-body-content">
 	    		</div>
+                <div id="insert_statements_page_error" class="alert alert-danger" role="alert" style="display:none">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span i18n:translate="error:">Error:</span>
+					<span i18n:translate="forgot_input_radio">You forgot to choose the right interpretation</span>
+				</div>
 	    		<div class="modal-footer">
 	    			<ul class="pager" style="margin: 0;">
 	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" style="float: left;" tal:attributes="title extras.button.previous">←</a></li>

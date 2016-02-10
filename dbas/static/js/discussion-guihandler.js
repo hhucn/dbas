@@ -170,11 +170,11 @@ function GuiHandler() {
 			for (i=0; i<undecided_texts.length; i++){
 					splitted = undecided_texts[i].split(' ' + _t(and) + ' ');
 				if (selections[i].id.indexOf(attr_more_args) != -1){ // each splitted text part is one argument
-					$.merge(decided_texts, [splitted]);
+					$.merge(decided_texts, splitted);
 				} else if (selections[i].id.indexOf(attr_one_arg) != -1){ // one argument with big premisegroup
-					decided_texts.push([splitted]);
+					decided_texts.push(splitted);
 				} else { // just take it!
-					decided_texts.push([undecided_texts[i]]);
+					decided_texts.push(undecided_texts[i]);
 				}
 			}
 
@@ -243,12 +243,12 @@ function GuiHandler() {
 
 		// is current page filled?
 		if (input.length == 0){
-			$('#insert_statements_page_error').show();
+			$('#insert_statements_page_error').fadeIn();
 		} else {
-			$('#insert_statements_page_error').hide();
+			$('#insert_statements_page_error').fadeOut();
 
 			if (tmp_id < (parseInt(next_btn.attr('max')) - 1 )) {
-				tmp_el.hide().next().show();
+				tmp_el.hide().next().fadeIn();
 				prev_btn.parent().removeClass('disabled');
 				counter_text.show().text((tmp_id + 2) + '/' + next_btn.attr('max'));
 
@@ -273,7 +273,7 @@ function GuiHandler() {
 			tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
 
 		if (tmp_id > 0){
-			tmp_el.hide().prev().show();
+			tmp_el.hide().prev().fadeIn();
 			next_btn.parent().removeClass('disabled');
 			counter_text.show().text((tmp_id) + '/' + prev_btn.attr('max'));
 			if (tmp_id == 0)

@@ -211,9 +211,14 @@ class QueryHelper(object):
 		logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'def')
 
 		statements = []
-		for t in text:
-			new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
+		if isinstance(text, list):
+			for t in text:
+				new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
+				statemens.append(new_statement)
+		else:
+			new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
 			statemens.append(new_statement)
+
 
 		# second, set the new statements as premisegroup
 		new_premisegroup_uid = self.set_statements_as_new_premisegroup(statements, user, issue)
@@ -334,7 +339,7 @@ class QueryHelper(object):
                                                                        Argument.conclusion_uid == conclusion_uid,
                                                                        Argument.issue_uid == issue)).first()
 		if not new_argument:
-			new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid, weight=0,
+			new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid,
 			                        conclusion=conclusion_uid, issue=issue)
 			new_argument.conclusions_argument(argument_uid)
 
@@ -344,7 +349,6 @@ class QueryHelper(object):
 			new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
                                                                            Argument.is_supportive == is_supportive,
                                                                            Argument.author_uid == db_user.uid,
-                                                                           Argument.weight_uid == 0,
                                                                            Argument.conclusion_uid == conclusion_uid,
                                                                            Argument.argument_uid == argument_uid,
                                                                            Argument.issue_uid == issue)).first()
@@ -528,12 +532,13 @@ class QueryHelper(object):
 					groups.add(group.premisesgroup_uid)
 				all_groups.append(groups)
 		# if every set in this array has one common member, they are all in the same group
-		intersec = set.intersection(*all_groups)
-		for group in intersec:
-			db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group).all()
-			if len(db_premise) == len(statements):
-				logger('QueryHelper', 'set_statements_as_new_premisegroup', 'found duplicate: ' + str(group))
-				return group
+		if len(all_groups) > 0:
+			intersec = set.intersection(*all_groups)
+			for group in intersec:
+				db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group).all()
+				if len(db_premise) == len(statements):
+					logger('QueryHelper', 'set_statements_as_new_premisegroup', 'found duplicate: ' + str(group))
+					return group
 
 		logger('QueryHelper', 'set_statements_as_new_premisegroup', 'no duplicate found')
 
@@ -543,6 +548,7 @@ class QueryHelper(object):
 
 		premise_list = []
 		for statement in statements:
+			logger('QueryHelper', 'set_statements_as_new_premisegroup', 'new premise with group ' + str(premise_group.uid) + ' and statement ' + str(statement.uid))
 			premise = Premise(premisesgroup=premise_group.uid, statement=statement.uid, is_negated=False, author=db_user.uid, issue=issue)
 			premise_list.append(premise)
 
@@ -552,7 +558,6 @@ class QueryHelper(object):
 		db_premisegroup = DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).order_by(PremiseGroup.uid.desc()).first()
 
 		return db_premisegroup.uid
-
 
 	def set_statement(self, transaction, statement, user, is_start, issue): # TODO KILL ?
 		"""
@@ -1131,26 +1136,30 @@ class QueryHelper(object):
 	# 	       str(new_premisegroup_uid) + ' to statement ' + str(db_conclusion.uid) + ', ' + ('' if is_supportive else '' ) + 'supportive')
 	#
 	# 	# third, insert the argument
-	# 	new_argument_uid = qh.set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
+	# 	new_argument_uid = self.set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
 	#
 	# 	transaction.commit()
 	# 	return new_argument_uid, is_duplicate
 
 	def set_premises_as_group_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
-		logger('QueryHelper', 'set_premises_as_group_for_conclusion', 'main')
+		logger('QueryHelper', 'set_premises_as_group_for_conclusion', 'main with text ' + str(text))
 		# current conclusion
 		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                          Statement.issue_uid == issue)).first()
 		statements = []
-		for t in text:
-			new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
-			statemens.append(new_statement)
+		if isinstance(text, list):
+			for t in text:
+				new_statement, is_duplicate = self.set_statement(transaction, t, user, False, issue)
+				statements.append(new_statement)
+		else:
+			new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
+			statements.append(new_statement)
 
 		# second, set the new statements as premisegroup
-		new_premisegroup_uid = self.set_statements_as_new_premisegroup(statements, user, issue)
+		new_premisegroup_uid = self.set_statements_as_new_premisegroup(transaction, statements, user, False, issue)
 
 		# third, insert the argument
-		new_argument_uid = qh.set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
+		new_argument_uid = self.set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
 
 		transaction.commit()
 		return new_argument_uid

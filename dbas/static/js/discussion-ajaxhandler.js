@@ -24,7 +24,7 @@ function AjaxSiteHandler() {
 			data: {
 				arg_uid: arg_uid,
 				relation: relation,
-				text: text,
+				text: JSON.stringify(text),
 				supportive: supportive,
 				url: mainpage
 			},
@@ -54,7 +54,7 @@ function AjaxSiteHandler() {
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
 			data: {
-				text: text,
+				text: JSON.stringify(text),
 				conclusion_id: conclusion_id,
 				support: supportive,
 				url: mainpage

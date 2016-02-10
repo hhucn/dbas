@@ -918,10 +918,10 @@ class Dbas(object):
 		return_dict = dict()
 		return_dict['status'] = '1'
 		try:
-			statement = self.request.params['statement']
-			url = self.request.params['url']
-			issue = QueryHelper().get_issue(self.request)
-			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+			statement   = self.request.params['statement']
+			url         = self.request.params['url']
+			issue       = QueryHelper().get_issue(self.request)
+			slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
 			new_statement, is_duplicate = QueryHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
 			if new_statement == -1:
@@ -955,35 +955,37 @@ class Dbas(object):
 
 		return_dict = dict()
 		_qh = QueryHelper()
+		_dh = DictionaryHelper()
+
 		try:
 			logger('set_new_start_premise', 'def', 'getting params')
-			text = self.escape_string(self.request.params['text'])
-			conclusion_id = self.request.params['conclusion_id']
-			url = self.request.params['url']
-			support = True if self.request.params['support'].lower() == 'true' else False
-			issue = _qh.get_issue(self.request)
+			text            = _dh.string_to_json(self.request.params['text'])
+			conclusion_id   = self.request.params['conclusion_id']
+			url             = self.request.params['url']
+			support         = True if self.request.params['support'].lower() == 'true' else False
+			issue           = _qh.get_issue(self.request)
 			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', text: ' + str(text) +
 			       ', supportive: ' + str(support) + ', issue: ' + str(issue))
 
 			new_arguments = []
 			for t in text:
 				logger('set_new_start_premise', 'def', 'found text: ' + str(t))
-				new_argument_uid = _qh.set_premises_as_group_for_conclusion(transaction, user_id, text, conclusion_id, support, issue)
+				new_argument_uid = _qh.set_premises_as_group_for_conclusion(transaction, user_id, t, conclusion_id, support, issue)
 				new_arguments.append(new_argument_uid)
 				logger('set_new_start_premise', 'def', 'new argument created: ' + str(new_argument_uid))
 
-			new_argument_uid = random.choice(new_arguments) #  TODO IMPROVE
-			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
-			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+			new_argument_uid    = random.choice(new_arguments)  # TODO IMPROVE / eliminate random
+			arg_id_sys, attack  = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+			slug                = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
 			url = UrlManager(url, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-			return_dict['url'] = url
-			return_dict['status'] = '1'
+			return_dict['url']      = url
+			return_dict['status']   = '1'
 		except KeyError as e:
 			logger('set_new_start_premise', 'error', repr(e))
-			return_dict['status'] = '-1'
+			return_dict['status']   = '-1'
 
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return_json = _dh.dictionary_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -1003,11 +1005,13 @@ class Dbas(object):
 		logger('set_new_premises_for_argument', 'def', 'main')
 
 		return_dict = dict()
+		_dh = DictionaryHelper()
+
 		try:
 			logger('set_new_premises_for_argument', 'def', 'getting params')
 			arg_uid     = self.request.params['arg_uid']
 			relation    = self.request.params['relation']
-			text        = self.request.params['text']
+			text        = _dh.string_to_json(self.request.params['text'])
 			supportive  = self.request.params['supportive']
 			url         = self.request.params['url']
 
@@ -1027,21 +1031,22 @@ class Dbas(object):
 			if len(new_arguments) == 0:
 				return_dict['status'] = 0
 			else:
-				new_argument_uid = random.choice(new_arguments) #  TODO IMPROVE
+				new_argument_uid = random.choice(new_arguments)  # TODO IMPROVE / eliminate random
 				logger('set_new_premises_for_argument', 'def', 'new_argument_uid ' + str(new_argument_uid))
 
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
 				if arg_id_sys == 0:
 					attack = 'end'
+
 				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 				url = UrlManager(url, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-				return_dict['url'] = url
-				return_dict['status'] = '1'
+				return_dict['url']      = url
+				return_dict['status']   = '1'
 		except KeyError as e:
 			logger('set_new_premises_for_argument', 'error', repr(e))
 			return_dict['status'] = '-1'
 
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return_json = _dh.dictionary_to_json_array(return_dict, True)
 
 		logger('set_new_premises_for_argument', 'def', 'returning')
 		return return_json
@@ -1234,7 +1239,7 @@ class Dbas(object):
 
 		return_dict = dict()
 		try:
-			ui_locales      = self.request.params['lang'] if 'lang' in self.request.params else None
+			ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
 			if not ui_locales:
 				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 			logger('switch_language', 'def', 'params uid: ' + str(ui_locales))

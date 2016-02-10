@@ -318,12 +318,12 @@
 								 alt="icon-rem"
 								 src="${request.static_url('dbas:static/images/icon_minus2.png')}"
 								 style="height: 30px; display:none; padding-right: 0.5em;"
-								 tal:attributes="title extras.button.add_statement_row_title"/>
+								 tal:attributes="title extras.button.rem_statement_row_title"/>
 						<img class="icon-badge icon-add-premise"
 								 alt="icon-add"
 								 src="${request.static_url('dbas:static/images/icon_plus2.png')}"
 								 style="height: 30px;"
-								 tal:attributes="title extras.button.rem_statement_row_title"/>
+								 tal:attributes="title extras.button.add_statement_row_title"/>
 					</div>
 				</div>
 				<div class="list-group" id="proposal-premise-list-group"></div>

@@ -434,18 +434,6 @@ comment .container and wrap each container with <div class="coloured-div">
 #insert_statements_options li > span{
 	margin-left: 1.5em;
 }
-
-#ppBody {
-	font-size: 11pt;
-	width: 100%;
-	margin: 0 auto;
-	text-align: justify;
-}
-
-.ppConsistencies {
-	display: none;
-}
-
 #how-to-write-text-do-list,
 #how-to-write-text-dont-list{
 	text-indent:2px;

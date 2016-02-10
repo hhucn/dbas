@@ -15,5 +15,4 @@ def logger(who, when, what):
 	:param what: what mesage
 	:return: None
 	"""
-	if who == 'set_new_start_premise' or who == 'set_new_premises_for_argument':
-		log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')
+	log.debug('[' + who.upper() + '] ' + when + ' <' + what + '>')
