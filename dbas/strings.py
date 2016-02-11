@@ -324,6 +324,7 @@ class Translator(object):
 		self.soYouWantToArgueAgainst = 'soYouWantToArgueAgainst'
 		self.shortenedBy = 'shortenedBy'
 		self.switchDiscussion = 'switchDiscussion'
+		self.switchDiscussionTitle = 'switchDiscussionTitle'
 		self.switchDiscussionText1 = 'switchDiscussionText1'
 		self.switchDiscussionText2 = 'switchDiscussionText2'
 		self.supportPosition = 'supportPosition'
@@ -698,6 +699,7 @@ class Translator(object):
 		en_lang[self.soYouWantToArgueAgainst] = 'So you want to counter-argue against'
 		en_lang[self.shortenedBy] = 'which was shortened with'
 		en_lang[self.switchDiscussion] = 'Change the discussion\'s topic'
+		en_lang[self.switchDiscussionTitle] = 'Switch Discussion'
 		en_lang[self.switchDiscussionText1] = 'If you accept, you will change the topic of the discussion to'
 		en_lang[self.switchDiscussionText2] = 'and the discussion will be restarted.'
 		en_lang[self.statement] = 'Statement'
@@ -1063,6 +1065,7 @@ class Translator(object):
 		de_lang[self.soYouWantToArgueAgainst] = 'Sie möchten ein Gegenargument bringen für',
 		de_lang[self.shortenedBy] = 'welche gekürzt wurde mit',
 		de_lang[self.switchDiscussion] = 'Diskussionsthema ändern',
+		de_lang[self.switchDiscussionTitle] = 'Diskussionsthema ändern',
 		de_lang[self.switchDiscussionText1] = 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu',
 		de_lang[self.switchDiscussionText2] = 'und die Diskussion neugestartet.',
 		de_lang[self.supportPosition] = 'Position unterstützen',

@@ -12,4 +12,4 @@ def logger(who, when, what):
 	:param what: what mesage
 	:return: None
 	"""
-	logging.getLogger(__name__).debug('[' + who.upper() + '] ' + when + ' <' + what + '>')
+	logging.getLogger(__name__).debug('[' + who.upper() + '] ' + when + ': ' + what)

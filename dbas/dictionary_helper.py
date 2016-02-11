@@ -484,7 +484,8 @@ class DictionaryHelper(object):
 														 'next': _tn.get(_tn.next),
 														 'save_my_statement': _tn.get(_tn.saveMyStatement),
 		                                                 'add_statement_row_title': _tn.get(_tn.addStatementRow),
-		                                                 'rem_statement_row_title': _tn.get(_tn.remStatementRow)}
+		                                                 'rem_statement_row_title': _tn.get(_tn.remStatementRow),
+		                                                 'switch_discussion': _tn.get(_tn.switchDiscussionTitle)}
 		if not for_api:
 			return_dict['breadcrumbs']               = breadcrumbs
 		self.add_language_options_for_extra_dict(return_dict, lang)

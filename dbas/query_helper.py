@@ -34,7 +34,6 @@ class QueryHelper(object):
 		:param with_strong_html_tag: Boolean
 		:return: str
 		"""
-		logger('QueryHelper', 'get_text_for_argument_uid', 'uid ' + str(uid))
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		ret_value = ''
 		_t = Translator(lang)
@@ -47,7 +46,6 @@ class QueryHelper(object):
 
 		# catch error
 		if not db_argument:
-			logger('QueryHelper', 'get_text_for_argument_uid', 'Error: no argument for uid: ' + str(uid))
 			return None
 
 		# basecase
@@ -593,7 +591,6 @@ class QueryHelper(object):
 		:param uid: id of a statement
 		:return: text of the mapped textvalue for this statement
 		"""
-		logger('QueryHelper', 'get_text_for_statement_uid', 'uid ' + str(uid))
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
 		if not db_statement:
 			return None
@@ -633,7 +630,6 @@ class QueryHelper(object):
 		:param uid: id of a premise group
 		:return: text of all premises in this group and the uids as list
 		"""
-		logger('QueryHelper', 'get_text_for_premisesgroup_uid', 'main group ' + str(uid))
 		db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).join(Statement).all()
 		text = ''
 		uids = []

@@ -37,7 +37,7 @@
 					<br>
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-							<span tal:replace="issues.title"></span>&#160;&#160;&#160;<span class="caret"></span>
+							<span tal:replace="extras.button.switch_discussion"></span>&#160;&#160;&#160;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
