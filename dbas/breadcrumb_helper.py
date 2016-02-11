@@ -120,10 +120,18 @@ class BreadcrumbHelper(object):
 			return _t.get(_t.whatDoYouThinkAbout) + ' ' + text + '?'
 
 		elif '/choose/' in url:
-			uid  = url[url.rfind('/') + 1:]
-			#text = _qh.get_text_for_statement_uid(uid)
-			#text = text[0:1].lower() + text[1:]
-			return 'TODOOO' + '?'
+			splitted = url.split('/')
+			uid = splitted[8]
+			is_argument = splitted[6] == 't'
+			if is_argument:
+				db_argument = DBDiscussionSession.query(Argument).filter_by(uid=splitted[8]).first()
+				if db_argument.argument_uid == 0:
+					text = _qh.get_text_for_statement_uid(db_argument.conclusion_uid)
+				else:
+					text = _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+			else:
+				text = _qh.get_text_for_statement_uid(uid)
+			return _t.get(_t.breadcrumbsChoose) + ' ' + text[0:1].lower() + text[1:]
 
 		else:
 			slug = url[url.index('/d/') + 3:] if '/d/' in url else None
