@@ -320,6 +320,7 @@ class Translator(object):
 		self.strength = 'strength'
 		self.strong = 'strong'
 		self.strongerStatementForRecjecting = 'strongerStatementForRecjecting'
+		self.soYouEnteredMultipleReasons = 'soYouEnteredMultipleReasons'
 		self.soYourOpinionIsThat = 'soYourOpinionIsThat'
 		self.soYouWantToArgueAgainst = 'soYouWantToArgueAgainst'
 		self.shortenedBy = 'shortenedBy'
@@ -351,7 +352,11 @@ class Translator(object):
 		self.whatDoYouThinkAbout = 'whatDoYouThinkAbout'
 		self.whatDoYouThinkAboutThat = 'whatDoYouThinkAboutThat'
 		self.whyDoYouThinkThat = 'whyDoYouThinkThat'
-		self.whyAreYouDisagreeing = 'whyAreYouDisagreeing'
+		self.whyAreYouDisagreeingWith = 'whyAreYouDisagreeingWith'
+		self.whyAreYouAgreeingWith = 'whyAreYouAgreeingWith'
+		self.whyAreYouDisagreeingWithInColor = 'whyAreYouDisagreeingWithInColor'
+		self.whyAreYouAgreeingWithInColor = 'whyAreYouAgreeingWithInColor'
+		self.whyAreYouDisagreeingWithThat = 'whyAreYouDisagreeingWithThat'
 		self.youMadeA = 'youMadeA'
 		self.youMadeAn = 'youMadeAn'
 		self.relation_undermine = 'relation_undermine'
@@ -695,6 +700,7 @@ class Translator(object):
 		en_lang[self.strength] = 'Strength'
 		en_lang[self.strong] = 'strong'
 		en_lang[self.strongerStatementForRecjecting] = 'they claim to have a stronger statement for rejecting'
+		en_lang[self.soYouEnteredMultipleReasons] = 'So you entered multiple reasons'
 		en_lang[self.soYourOpinionIsThat] = 'So your opinion is that'
 		en_lang[self.soYouWantToArgueAgainst] = 'So you want to counter-argue against'
 		en_lang[self.shortenedBy] = 'which was shortened with'
@@ -725,7 +731,11 @@ class Translator(object):
 		en_lang[self.whatDoYouThinkAboutThat] = 'What do you think about that'
 		en_lang[self.whyDoYouThinkThat] = 'Why do you think that'
 		en_lang[self.wrongURL] = 'Your URL seems to be wrong.'
-		en_lang[self.whyAreYouDisagreeing] = 'Why are you disagreeing with that?'
+		en_lang[self.whyAreYouDisagreeingWith] = 'Why are you disagreeing with'
+		en_lang[self.whyAreYouAgreeingWith] = 'Why are you agreeing with'
+		en_lang[self.whyAreYouDisagreeingWithInColor] = 'Why are you <span class=\'text-danger\'>disagreeing</span> with'
+		en_lang[self.whyAreYouAgreeingWithInColor] = 'Why are you <span class=\'text-success\'>agreeing</span> with'
+		en_lang[self.whyAreYouDisagreeingWithThat] = 'Why are you disagreeing with that?'
 		en_lang[self.youMadeA] = 'You made a'
 		en_lang[self.youMadeAn] = 'You made an'
 		en_lang[self.relation_undermine] = 'is a counter-argument for'
@@ -1061,6 +1071,7 @@ class Translator(object):
 		de_lang[self.strength] = 'Stärke',
 		de_lang[self.strong] = 'stark',
 		de_lang[self.strongerStatementForRecjecting] = 'Sie haben eine stärkere Aussage zur Ablehnung von',
+		de_lang[self.soYouEnteredMultipleReasons] = 'Sie haben mehrere Gründe eingegeben'
 		de_lang[self.soYourOpinionIsThat] = 'Ihre Meinung ist, dass',
 		de_lang[self.soYouWantToArgueAgainst] = 'Sie möchten ein Gegenargument bringen für',
 		de_lang[self.shortenedBy] = 'welche gekürzt wurde mit',
@@ -1092,7 +1103,11 @@ class Translator(object):
 		de_lang[self.whatDoYouThinkAbout] = 'Was halten Sie von',
 		de_lang[self.whatDoYouThinkAboutThat] = 'Was halten Sie davon, dass',
 		de_lang[self.whyDoYouThinkThat] = 'Wieso denken Sie, dass',
-		de_lang[self.whyAreYouDisagreeing] = 'Warum sind Sie anderer Meinung?',
+		de_lang[self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
+		de_lang[self.whyAreYouAgreeingWith] = 'Warum sind sie dafür, dass'
+		de_lang[self.whyAreYouDisagreeingWithInColor] = 'Warum sind sie <span class=\'text-danger\'>dagegenen</span>, dass'
+		de_lang[self.whyAreYouAgreeingWithInColor] = 'Warum sind sie <span class=\'text-success\'>dafür</span>, dass'
+		de_lang[self.whyAreYouDisagreeingWithThat] = 'Warum sind Sie anderer Meinung?',
 		de_lang[self.youMadeA] = 'Sie machten ein/e',
 		de_lang[self.youMadeAn] = 'Sie machten ein/e',
 		de_lang[self.relation_undermine] = 'ist ein Gegenargument für',
@@ -1385,7 +1400,9 @@ class TextGenerator(object):
 
 		opinion = '<strong>'
 		opinion += current_argument if current_argument != '' else premise
-		opinion += '</strong> ' + _t.get('relation_' + attack) + ' ' + '<strong>' + conclusion + '</strong>'
+		opinion += '</strong>'
+		#if reply_for_argument:
+		#	opinion += ' ' + _t.get('relation_' + attack) + ' ' + '<strong>' + conclusion + '</strong>'
 
 		confrontation_text = ''
 		confrontation = '<strong>' + confrontation + '</strong>'
@@ -1523,7 +1540,7 @@ class TextGenerator(object):
 												 + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] \
 												 + ' <strong>' + premise + '</strong>.<br><br>' \
 												 + ((_t.get(_t.whatDoYouThinkAboutThat) + '?')
-													if supportive else _t.get(_t.whyAreYouDisagreeing))
+													if supportive else _t.get(_t.whyAreYouDisagreeingWithThat))
 			ret_dict['argument'] = conclusion + ' ' + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] + ' ' + premise
 
 		if supportive:

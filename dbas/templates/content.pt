@@ -42,7 +42,7 @@
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
 							<li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
-								<a href="#" tal:attributes="href issue.url; value issue.title"><span tal:replace="issue.title"></span><span class="badge" style="float: right"><span tal:replace="issue.arg_count"></span></span></a>
+								<a href="#" tal:attributes="href issue.url; value issue.title"><span tal:replace="issue.title"></span><span class="badge" style="float: right; margin-left: 1em"><span tal:replace="issue.arg_count"></span></span></a>
 							</li>
 						</ul>
 					</div>
@@ -279,7 +279,7 @@
 			<button id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
-			<div class="col-md-12">
+			<div class="col-md-12 text-center">
 				<h4><span i18n:translate="what_is_your_idea">What is your idea? What should we do?</span></h4>
 				<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>

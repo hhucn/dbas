@@ -201,7 +201,7 @@ class QueryHelper(object):
 		"""
 		logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'def')
 
-		statements = self.__insert_as_statements(text)
+		statements = self.__insert_as_statements(transaction, text, user, issue)
 
 		# second, set the new statements as premisegroup
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(transaction, statements, user, False, issue)
@@ -430,7 +430,6 @@ class QueryHelper(object):
 
 		# save issue in session
 		request.session['issue'] = issue
-		logger('discussion_init', 'def', 'set session[issue] to ' + str(issue))
 
 		return issue
 
@@ -857,7 +856,7 @@ class QueryHelper(object):
 		db_votes = DBDiscussionSession.query(VoteStatement).all()
 		vote_dict = dict()
 		for index, vote in enumerate(db_votes):
-			if vote.argument_uid in argument_uid_set:
+			if vote.statement_uid in statement_uid_set:
 				tmp_dict = dict()
 				tmp_dict['uid']           = vote.uid
 				tmp_dict['statement_uid'] = vote.statement_uid
@@ -1005,7 +1004,7 @@ class QueryHelper(object):
 		# current conclusion
 		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                          Statement.issue_uid == issue)).first()
-		statements = self.__insert_as_statements(text)
+		statements = self.__insert_as_statements(transaction, text, user, issue)
 
 		# second, set the new statements as premisegroup
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(transaction, statements, user, False, issue)
@@ -1129,11 +1128,17 @@ class QueryHelper(object):
 		return_dict['text'] = corrected_text
 		return return_dict
 
-	def __insert_as_statements(self, text_list):
+	def __insert_as_statements(self, transaction, text_list, user, issue):
+		"""
+
+		:param transaction:
+		:param text_list:
+		:return:
+		"""
 		statements = []
 		if isinstance(text_list, list):
 			for text in text_list:
-				if len(t) < 5:  # TODO LENGTH
+				if len(text) < 5:  # TODO LENGTH
 					return -1
 				else:
 					new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)

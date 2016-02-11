@@ -119,6 +119,12 @@ class BreadcrumbHelper(object):
 			text = text[0:1].lower() + text[1:]
 			return _t.get(_t.whatDoYouThinkAbout) + ' ' + text + '?'
 
+		elif '/choose/' in url:
+			uid  = url[url.rfind('/') + 1:]
+			#text = _qh.get_text_for_statement_uid(uid)
+			#text = text[0:1].lower() + text[1:]
+			return 'TODOOO' + '?'
+
 		else:
 			slug = url[url.index('/d/') + 3:] if '/d/' in url else None
 			if slug:

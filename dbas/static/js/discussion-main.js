@@ -318,6 +318,7 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 
 	// TODO CLEAR DESIGN
 	// options for the extra buttons, where the user can add input!
+	input.attr('onclick', '');
 	input.change(function () {
 		if (input.prop('checked')){
 			// new position at start

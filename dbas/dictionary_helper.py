@@ -95,7 +95,8 @@ class DictionaryHelper(object):
 
 	def prepare_discussion_dict(self, uid, lang, at_start=False, at_attitude=False, at_justify=False,
 	                            is_supportive=False, at_dont_know=False, at_argumentation=False,
-	                            at_justify_argumentation=False, additional_id=0, attack='', logged_in=False):
+	                            at_justify_argumentation=False, at_choosing=False, additional_id=0, attack='',
+	                            is_uid_argument=False, logged_in=False):
 		"""
 
 		:param uid:
@@ -107,6 +108,7 @@ class DictionaryHelper(object):
 		:param at_dont_know:
 		:param at_argumentation:
 		:param at_justify_argumentation:
+		:param at_choosing:
 		:param additional_id:
 		:param attack:
 		:param logged_in:
@@ -187,6 +189,15 @@ class DictionaryHelper(object):
 				heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
 				                                                     confrontation, reply_for_argument, user_is_attacking,
 			                                                         current_argument)
+		elif at_choosing:
+			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
+			heading = _tn.get(_tn.soYouEnteredMultipleReasons) + '.<br><br>'
+			heading += _tn.get(_tn.whyAreYouAgreeingWithInColor) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWithInColor)
+			heading += ': <strong>'
+			heading += '</strong>'
+			heading += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
+			heading += '</strong>'
+			heading += '? ' + _tn.get(_tn.because) + '...'
 
 		return {'heading': heading, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url}
 
@@ -296,15 +307,16 @@ class DictionaryHelper(object):
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument.uid, issue_uid)
 				statements_array.append(self.__get_statement_dict(str(argument.uid),
-				                                                text,
-				                                                premise_array, 'justify',
-				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
+				                                                  text,
+				                                                  premise_array,
+				                                                  'justify',
+				                                                  _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
 			statements_array.append(self.__get_statement_dict('start_premise',
-			                                                _tn.get(_tn.newPremiseRadioButtonText),
-			                                                [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
-			                                                'null',
-			                                                'null'))
+			                                                  _tn.get(_tn.newPremiseRadioButtonText),
+			                                                  [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
+			                                                  'null',
+			                                                  'null'))
 
 		return statements_array
 
@@ -425,6 +437,55 @@ class DictionaryHelper(object):
 
 		return statements_array
 
+	def prepare_item_dict_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive, lang, application_url, issue_uid, for_api):
+		"""
+
+		:param argument_or_statement_id:
+		:param pgroup_ids:
+		:param is_argument:
+		:param is_supportive:
+		:param lang:
+		:param application_url:
+		:param issue_uid:
+		:param for_api:
+		:return:
+		"""
+		logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'def')
+		statements_array = []
+		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
+		_qh = QueryHelper()
+		_um = UrlManager(application_url, slug, for_api)
+		_t = Translator(lang)
+		conclusion = argument_or_statement_id if not is_argument else 0
+		argument = argument_or_statement_id if is_argument else 0
+
+		for group_id in pgroup_ids:
+			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
+			premise_array = []
+			for premise in db_premises:
+				text = _qh.get_text_for_statement_uid(premise.statement_uid)
+				premise_array.append({'title': text, 'id': premise.statement_uid})
+
+			text, uid = _qh.get_text_for_premisesgroup_uid(group_id)
+
+			# get attack for each premise, so the urls will be unique
+			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == group_id,
+			                                                              Argument.conclusion_uid == conclusion,
+			                                                              Argument.argument_uid == argument,
+			                                                              Argument.is_supportive == is_supportive)).first()
+			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(db_argument.uid, issue_uid)
+			url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
+
+			statements_array.append(self.__get_statement_dict(str(db_argument.uid),
+			                                                  text,
+			                                                  premise_array,
+			                                                  'choose',
+			                                                  url))
+		url = 'back' if for_api else 'window.history.go(-1)'
+		text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
+		statements_array.append(self.__get_statement_dict('no_opinion', text, [{'title': text, 'id':'no_opinion'}], 'no_opinion', url))
+		return statements_array
+
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang,
 	                        authenticated_userid, argument_id=0, breadcrumbs='',
 	                        application_url='', for_api=False):
@@ -541,8 +602,9 @@ class DictionaryHelper(object):
 		:param url:
 		:return:
 		"""
-		return {'id': 'item_' + str(uid),
-		        'title': title,
-		        'premises': premises,
-		        'attitude': attitude,
-		        'url': url}
+		return {
+			'id': 'item_' + str(uid),
+		    'title': title,
+		    'premises': premises,
+		    'attitude': attitude,
+		    'url': url}

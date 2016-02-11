@@ -436,6 +436,64 @@ class Dbas(object):
 			return_dict['project'] = header
 			return return_dict
 
+	# choosing page
+	@view_config(route_name='discussion_choose', renderer='templates/content.pt', permission='everybody')
+	def discussion_choose(self, for_api=False):
+		"""
+		View configuration for the choosing view.
+		:param for_api: Boolean
+		:return: dictionary
+		"""
+		# '/d/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		matchdict = self.request.matchdict
+
+		slug            = matchdict['slug'] if 'slug' in matchdict else ''
+		is_argument     = matchdict['is_argument'] if 'is_argument' in matchdict else ''
+		is_supportive   = matchdict['supportive'] if 'supportive' in matchdict else ''
+		id              = matchdict['id'] if 'id' in matchdict else ''
+		pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
+		logger('discussion_reaction', 'def', str(pgroup_ids))
+
+		is_argument = True if is_argument is 't' else False
+		is_supportive = True if is_supportive is 't' else False
+		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
+		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
+		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
+		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
+
+		_qh = QueryHelper()
+		_dh = DictionaryHelper()
+
+		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		ui_locales      = _qh.get_language(self.request, get_current_registry())
+		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+
+		breadcrumbs     = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
+		                                                     self.request.session.id, transaction, ui_locales,
+		                                                     mainpage, for_api)
+
+		discussion_dict = _dh.prepare_discussion_dict(id, ui_locales, at_choosing=True, is_uid_argument=is_argument, is_supportive = is_supportive)
+		item_dict       = _dh.prepare_item_dict_for_choosing(id, pgroup_ids, is_argument, is_supportive, ui_locales, mainpage, issue, for_api)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, False, ui_locales, self.request.authenticated_userid,
+		                                          breadcrumbs=breadcrumbs, application_url=mainpage, for_api=for_api)
+
+		return_dict = dict()
+		return_dict['issues'] = issue_dict
+		return_dict['discussion'] = discussion_dict
+		return_dict['items'] = item_dict
+		return_dict['extras'] = extras_dict
+
+		if for_api:
+			return return_dict
+		else:
+			return_dict['layout'] = self.base_layout()
+			return_dict['language'] = str(ui_locales)
+			return_dict['title'] = issue_dict['title']
+			return_dict['project'] = header
+			return return_dict
+
 	# settings page, when logged in
 	@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
 	def main_settings(self):
@@ -897,7 +955,7 @@ class Dbas(object):
 
 	# ajax - send new start premise
 	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
-	def set_new_start_premise(self, for_api=False):
+	def set_new_start_premise(self, for_api=False): # TODO SORT THIS
 		"""
 		Sets new premise for the start
 		:param for_api: boolean
@@ -928,13 +986,22 @@ class Dbas(object):
 					
 				new_arguments.append(new_argument_uid)
 
-			new_argument_uid    = random.choice(new_arguments)  # TODO eliminate random on choosing one specific pgroup
-			arg_id_sys, attack  = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
-			slug                = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+			url = ''
+			return_dict['error']  = ''
+			if len(new_arguments) > 1:
+				pgroups = []
+				for argument in new_arguments:
+					pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
+				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
+			elif len(new_arguments) == 0:
+				return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+			else:
+				new_argument_uid    = random.choice(new_arguments)
+				arg_id_sys, attack  = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+				url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 
-			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-			return_dict['url']      = url
-			return_dict['error']    = ''
+			return_dict['url']    = url
 		except KeyError as e:
 			logger('set_new_start_premise', 'error', repr(e))
 			return_dict['error']    = _tn.get(_tn.notInsertedErrorBecauseInternal)
@@ -945,7 +1012,7 @@ class Dbas(object):
 
 	# ajax - send new premises
 	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json', check_csrf=True)
-	def set_new_premises_for_argument(self, for_api=False):
+	def set_new_premises_for_argument(self, for_api=False): # TODO SORT THIS
 		"""
 		Sets a new premisse for an argument
 		:param for_api: boolean
@@ -979,19 +1046,26 @@ class Dbas(object):
 
 				new_arguments.append(new_argument_uid)
 
+			return_dict['error'] = ''
+			url = ''
+			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 			if len(new_arguments) == 0:
 				return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-			else:
-				new_argument_uid = random.choice(new_arguments)  # TODO eliminate random on choosing one specific pgroup
+			elif len(new_arguments) == 1:
+				new_argument_uid = random.choice(new_arguments)
 
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
 				if arg_id_sys == 0:
 					attack = 'end'
 
-				slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 				url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-				return_dict['url']      = url
-				return_dict['error']    = ''
+			else:
+				pgroups = []
+				for argument in new_arguments:
+					pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
+				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
+			return_dict['url'] = url
+
 		except KeyError as e:
 			logger('set_new_premises_for_argument', 'error', repr(e))
 			return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseInternal)
@@ -1018,7 +1092,6 @@ class Dbas(object):
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
 			return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
-			#  TODO no check for a dupliacted dialog
 			if return_dict == -1:
 				return_dict = dict()
 				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)

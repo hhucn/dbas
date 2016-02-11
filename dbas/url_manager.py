@@ -50,11 +50,8 @@ class UrlManager(object):
 		:param as_location_href: Boolean
 		:return: discussion_url/slug
 		"""
-		url = self.discussion_url + self.slug
-		if self.for_api:
-			return self.api_url + self.slug
-		else:
-			return ('location.href="' + url + '"') if as_location_href else url
+		url = self.slug
+		return self.__return_url(as_location_href, url)
 
 	def get_url_for_statement_attitude(self, as_location_href, statement_uid):
 		"""
@@ -63,11 +60,8 @@ class UrlManager(object):
 		:param statement_uid: Statement.uid
 		:return: discussion_url/slug/a/statement_uid
 		"""
-		url = self.discussion_url + self.slug + '/attitude/' + str(statement_uid)
-		if self.for_api:
-			return self.api_url + self.slug + '/attitude/' + str(statement_uid)
-		else:
-			return ('location.href="' + url + '"') if as_location_href else url
+		url = self.slug + '/attitude/' + str(statement_uid)
+		return self.__return_url(as_location_href, url)
 
 	def get_url_for_justifying_statement(self, as_location_href, statement_uid, mode):
 		"""
@@ -77,11 +71,8 @@ class UrlManager(object):
 		:param mode: String
 		:return: discuss/{slug}/justify/{statement_or_arg_id}/{mode}
 		"""
-		url = self.discussion_url + self.slug + '/justify/' + str(statement_uid) + '/' + mode
-		if self.for_api:
-			return self.api_url + self.slug + '/justify/' + str(statement_uid) + '/' + mode
-		else:
-			return ('location.href="' + url + '"') if as_location_href else url
+		url = self.slug + '/justify/' + str(statement_uid) + '/' + mode
+		return self.__return_url(as_location_href, url)
 
 	def get_url_for_justifying_argument(self, as_location_href, argument_uid, mode, attitude):
 		"""
@@ -92,11 +83,8 @@ class UrlManager(object):
 		:param attitude: String
 		:return: discuss/{slug}/justify/{statement_or_arg_id}/{mode}*attitude
 		"""
-		url = self.discussion_url + self.slug + '/justify/' + str(argument_uid) + '/' + mode + '/' + attitude
-		if self.for_api:
-			return self.api_url + self.slug + '/justify/' + str(argument_uid) + '/' + mode + '/' + attitude
-		else:
-			return ('location.href="' + url + '"') if as_location_href else url
+		url = self.slug + '/justify/' + str(argument_uid) + '/' + mode + '/' + attitude
+		return self.__return_url(as_location_href, url)
 
 	def get_url_for_reaction_on_argument(self, as_location_href, argument_uid, mode, confrontation_argument):
 		"""
@@ -107,8 +95,29 @@ class UrlManager(object):
 		:param confrontation_argument: Argument.uid
 		:return: discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys
 		"""
-		url = self.discussion_url + self.slug + '/reaction/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
+		url = self.slug + '/reaction/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
+		return self.__return_url(as_location_href, url)
+
+	def get_url_for_choosing_premisegroup(self, as_location_href, is_argument, is_supportive, statement_or_argument_id, pgroup_id_list):
+		"""
+
+		:param as_location_href: Boolean
+		:param is_argument: Boolean
+		:param is_supportive: Boolean
+		:param statement_or_argument_id: Statement.uid or Argument.uid
+		:param pgroup_id_list: int[]
+		:return:
+		"""
+		is_arg = 't' if is_argument else 'f'
+		is_sup = 't' if is_supportive else 'f'
+		pgroups = ('/' + '/'.join(str(x) for x in pgroup_id_list)) if len(pgroup_id_list) > 0 else ''
+		url = self.slug + '/choose/' + is_arg + '/' + is_sup + '/' + statement_or_argument_id + pgroups
+		return self.__return_url(as_location_href, url)
+
+	def __return_url(self, as_location_href, url):
 		if self.for_api:
-			return self.api_url + self.slug + '/reaction/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
+			return self.api_url + url
 		else:
-			return ('location.href="' + url + '"') if as_location_href else url
+			prefix = 'location.href="' if as_location_href else ''
+			suffix = '"' if as_location_href else ''
+			return prefix + self.discussion_url + url + suffix
