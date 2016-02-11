@@ -69,8 +69,7 @@
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.5.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
-	
-	<!-- TODO REFACTORE ALL JS FILES-->
+
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.js')}"></script>

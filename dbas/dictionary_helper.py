@@ -45,7 +45,7 @@ class DictionaryHelper(object):
 		else:
 
 			for i in range(0, count):
-				rnd = random.randint(0, len(items)-1)
+				rnd = random.randint(0, len(items) - 1)
 				return_dict[items[rnd][0]] = items[rnd][1]
 				items.pop(rnd)
 
@@ -91,7 +91,7 @@ class DictionaryHelper(object):
 		while text.endswith('.'):
 			text = text[:-1]
 
-		return {'uid': uid, 'text':text, 'date': date, 'author': author, 'premisegroup_uid': pgroup}
+		return {'uid': uid, 'text': text, 'date': date, 'author': author, 'premisegroup_uid': pgroup}
 
 	def prepare_discussion_dict(self, uid, lang, at_start=False, at_attitude=False, at_justify=False,
 	                            is_supportive=False, at_dont_know=False, at_argumentation=False,
@@ -211,15 +211,15 @@ class DictionaryHelper(object):
 
 		if db_statements:
 			for statement in db_statements:
-				statements_array.append(_qh.get_statement_dict(statement.uid,
-				                                                _qh.get_text_for_statement_uid(statement.uid),
-				                                                [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
-				                                                '',
-				                                                _um.get_url_for_statement_attitude(True, statement.uid)))
+				statements_array.append(self.__get_statement_dict(statement.uid,
+				                                                  _qh.get_text_for_statement_uid(statement.uid),
+				                                                  [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
+				                                                  '',
+				                                                  _um.get_url_for_statement_attitude(True, statement.uid)))
 
 			if logged_in:
 				_tn = Translator(lang)
-				statements_array.append(_qh.get_statement_dict('start_statement',
+				statements_array.append(self.__get_statement_dict('start_statement',
 				                                                _tn.get(_tn.newConclusionRadioButtonText),
 				                                                [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
 				                                                'add',
@@ -247,15 +247,15 @@ class DictionaryHelper(object):
 
 		_um = UrlManager(application_url, slug, for_api)
 
-		statements_array.append(_qh.get_statement_dict('agree',
+		statements_array.append(self.__get_statement_dict('agree',
 		                                                _tn.get(_tn.iAgreeWithInColor) + ': ' + text,
 		                                                [{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
 		                                                'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't')))
-		statements_array.append(_qh.get_statement_dict('disagree',
+		statements_array.append(self.__get_statement_dict('disagree',
 		                                                _tn.get(_tn.iDisagreeWithInColor) + ': ' + text,
 		                                                [{'title': _tn.get(_tn.iDisagreeWithInColor) + ': ' + text, 'id': 'disagree'}],
 		                                                'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f')))
-		statements_array.append(_qh.get_statement_dict('dontknow',
+		statements_array.append(self.__get_statement_dict('dontknow',
 		                                                _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text,
 		                                                [{'title': _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text, 'id': 'dontknow'}],
 		                                                'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd')))
@@ -278,8 +278,7 @@ class DictionaryHelper(object):
 		_tn = Translator(lang)
 		_qh = QueryHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
-		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
-                                                                       Argument.conclusion_uid == statement_uid)).all()
+		db_arguments = RecommenderHelper().get_arguments_by_conclusion(statement_uid, is_supportive)
 
 		_um = UrlManager(application_url, slug, for_api)
 
@@ -296,12 +295,12 @@ class DictionaryHelper(object):
 
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument.uid, issue_uid)
-				statements_array.append(_qh.get_statement_dict(str(argument.uid),
+				statements_array.append(self.__get_statement_dict(str(argument.uid),
 				                                                text,
 				                                                premise_array, 'justify',
 				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
-			statements_array.append(_qh.get_statement_dict('start_premise',
+			statements_array.append(self.__get_statement_dict('start_premise',
 			                                                _tn.get(_tn.newPremiseRadioButtonText),
 			                                                [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
 			                                                'null',
@@ -366,13 +365,13 @@ class DictionaryHelper(object):
 				# for each justifying premise, we need a new confrontation:
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid)
 
-				statements_array.append(_qh.get_statement_dict(argument.uid,
+				statements_array.append(self.__get_statement_dict(argument.uid,
 				                                                text,
 				                                                premises_array,
 				                                                'justify',
 				                                                _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
-			statements_array.append(_qh.get_statement_dict('justify_premise',
+			statements_array.append(self.__get_statement_dict('justify_premise',
 			                                                _tn.get(_tn.newPremiseRadioButtonText),
 			                                                [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
 			                                                'null',
@@ -422,7 +421,7 @@ class DictionaryHelper(object):
 				else:
 					key = 'back' if for_api else 'window.history.go(-1)'
 					url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else key
-				statements_array.append(_qh.get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url))
+				statements_array.append(self.__get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url))
 
 		return statements_array
 
@@ -531,3 +530,19 @@ class DictionaryHelper(object):
 			'link_de_class': ('active' if lang_is_de else ''),
 			'link_en_class': ('active' if lang_is_en else '')
 		})
+		
+	def __get_statement_dict(self, uid, title, premises, attitude, url):
+		"""
+
+		:param uid:
+		:param title:
+		:param premises:
+		:param attitude:
+		:param url:
+		:return:
+		"""
+		return {'id': 'item_' + str(uid),
+		        'title': title,
+		        'premises': premises,
+		        'attitude': attitude,
+		        'url': url}

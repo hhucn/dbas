@@ -644,7 +644,6 @@ class Dbas(object):
 		logger('user_login', 'def', 'main')
 		logger('user_login', 'def', 'main, self.request.params: ' + str(self.request.params))
 
-		success = '0'
 		message = ''
 		return_dict = dict()
 
@@ -679,7 +678,6 @@ class Dbas(object):
 		except KeyError as e:
 			logger('user_login', 'error', repr(e))
 
-		return_dict['success'] = str(success)
 		return_dict['message'] = str(message)
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -930,7 +928,7 @@ class Dbas(object):
 					
 				new_arguments.append(new_argument_uid)
 
-			new_argument_uid    = random.choice(new_arguments)  # TODO IMPROVE / eliminate random
+			new_argument_uid    = random.choice(new_arguments)  # TODO eliminate random on choosing one specific pgroup
 			arg_id_sys, attack  = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
 			slug                = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
@@ -984,7 +982,7 @@ class Dbas(object):
 			if len(new_arguments) == 0:
 				return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
-				new_argument_uid = random.choice(new_arguments)  # TODO IMPROVE / eliminate random
+				new_argument_uid = random.choice(new_arguments)  # TODO eliminate random on choosing one specific pgroup
 
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
 				if arg_id_sys == 0:

@@ -190,7 +190,6 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
 			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
 			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
 				// here we have our start statement
-				// todo: currently not needed
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {
 				// some trick: here we have a premise for our start statement
@@ -323,7 +322,7 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 		if (input.prop('checked')){
 			// new position at start
 			if (input.attr('id').indexOf('start_statement') != -1){
-				guiHandler.showHowToWriteTextPopup();
+				// guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPositionContainer();
 				$('#' + sendNewStatementId).click(function(){
 					text = $('#' + addStatementContainerMainInputId).val();
@@ -333,7 +332,7 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 
 			// new premise for the start
 			else if (input.attr('id').indexOf('start_premise') != -1){
-				guiHandler.showHowToWriteTextPopup();
+				// guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
 				$('#' + sendNewPremiseId).click(function(){
 					splits = window.location.href.split('/');
@@ -347,7 +346,7 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 
 			// new premise while judging
 			else if (input.attr('id').indexOf('justify_premise') != -1){
-				guiHandler.showHowToWriteTextPopup();
+				// guiHandler.showHowToWriteTextPopup();
 				guiHandler.showAddPremiseContainer();
 				$('#' + sendNewPremiseId).click(function() {
 					splits = window.location.href.split('/');

@@ -42,7 +42,7 @@ class RecommenderHelper(object):
 			for argument in db_arguments:
 				arguments.append(argument.uid)
 
-			#  # sort argument by index
+			#  # sort arguments by index
 			#  tmp_arguments = dict()
 			#  for argument in db_arguments:
 			#  	index_participation, index_up_vs_down = self.__evaluate_argument(argument.uid)
@@ -59,6 +59,26 @@ class RecommenderHelper(object):
 		else:
 			return 0
 
+	def get_arguments_by_conclusion(self, statement_uid, is_supportive):
+		"""
+
+		:param statement_uid:
+		:param is_supportive:
+		:return:
+		"""
+		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
+                                                                       Argument.conclusion_uid == statement_uid)).all()
+		logger('RecommenderHelper', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' +
+		       str(is_supportive) + ', found ' + str(len(db_arguments)) + ' arguments')
+
+		if not db_arguments:
+			return None
+
+		# TODO sort arguments and return a subset
+
+		return db_arguments
+
+
 	def __get_attack_for_argument(self, argument_uid, issue):
 		"""
 		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
@@ -71,7 +91,7 @@ class RecommenderHelper(object):
 
 		# 1 = undermine, 2 = support, 3 = undercut, 4 = overbid, 5 = rebut, all possible attacks
 
-		complete_list_of_attacks = [1, 3, 5]  # todo fix this, when overbid is killed
+		complete_list_of_attacks = [1, 3, 5]
 		attacks = [1, 3, 5]
 
 		logger('RecommenderHelper', '__get_attack_for_argument', 'attack_list : ' + str(attacks))

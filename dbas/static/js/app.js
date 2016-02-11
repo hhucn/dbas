@@ -363,7 +363,6 @@ function ajaxLogin (){
 	var user = $('#' + loginUserId).val(),
 		password = $('#' + loginPwId).val(),
 		url = window.location.href;
-		// csrfToken = $('#' + hiddenCSRFTokenId).val(); // Todo CSRF
 	$.ajax({
 		url: 'ajax_user_login',
 		type: 'POST',
@@ -422,11 +421,10 @@ function ajaxRegistration (){
 		password = $('#' + popupLoginPasswordInputId).val(),
 		passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
 		gender = '';
-		// csrfToken = $('#' + hiddenCSRFTokenId).val(); // Todo CSRF
 
-	if ($('#' + popupLoginInlineRadioGenderN).is(':checked'))	gender = 'n';
-	if ($('#' + popupLoginInlineRadioGenderM).is(':checked'))	gender = 'm';
-	if ($('#' + popupLoginInlineRadioGenderF).is(':checked'))	gender = 'f';
+	if ($('#' + popupLoginInlineRadioGenderN).is(':checked')) gender = 'n';
+	if ($('#' + popupLoginInlineRadioGenderM).is(':checked')) gender = 'm';
+	if ($('#' + popupLoginInlineRadioGenderF).is(':checked')) gender = 'f';
 
 	$.ajax({
 		url: 'ajax_user_registration',
@@ -488,7 +486,7 @@ function ajaxRoundhouseKick(){
 }
 
 /**
- * Get your mama with broadband dsl, because she is so ...
+ * Get your mama
  */
 function ajaxMama(){
 	$.ajax({
@@ -513,7 +511,7 @@ function ajaxMama(){
  */
 function callbackIfDoneForLogin(data){
 	var parsedData = $.parseJSON(data);
-	if (parsedData.success == '0') {
+	if (parsedData.message.length != 0) {
 		$('#' + popupLoginFailed).show();
 		$('#' + popupLoginFailed + '-message').text(parsedData.message);
 	} else {

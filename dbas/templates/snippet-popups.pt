@@ -492,7 +492,7 @@
 				<b class="text-success" i18n:translate="dos">Do's:</b>
 				<ul id="how-to-write-text-do-list">
 					<li i18n:translate="how-to-write-text-short">Write short!</li>
-					<li i18n:translate="how-to-write-text-one-point">Only one statement/argument/point per field!</li>
+					<li i18n:translate="how-to-write-text-one-point">Only one statement per field!</li>
 				</ul>
 				<!--
 				<br>
