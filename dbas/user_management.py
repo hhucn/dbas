@@ -75,11 +75,9 @@ class UserHandler(object):
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
 		db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
-		logger('UserHandler', 'is_user_admin', 'check for current user')
+		logger('UserHandler', 'is_user_admin', 'main')
 		if db_user:
-			logger('UserHandler', 'is_user_admin', 'user exists; check for admin')
 			if db_user.group_uid == db_admin_group.uid:
-				logger('UserHandler', 'is_user_admin', 'user is admin')
 				return True
 
 		return False
@@ -105,11 +103,9 @@ class UserHandler(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
 		db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
 		db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
-		logger('UserHandler', 'is_user_author', 'check for current user')
+		logger('UserHandler', 'is_user_author', 'main')
 		if db_user:
-			logger('UserHandler', 'is_user_author', 'user exists; check for author (or admin)')
 			if db_author_group.uid == db_admin_group.uid or db_user.group_uid == db_admin_group.uid:
-				logger('UserHandler', 'is_user_author', 'user is author (or admin)')
 				return True
 
 		return False
@@ -157,8 +153,7 @@ class UserHandler(object):
 			answer = int1 / int2
 
 		question += _t.get(str(int1)) + ' ' + sign + ' '+ _t.get(str(int2)) + '?'
-		logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question)
-		logger('UserHandler', 'get_random_anti_spam_question', 'answer: ' + str(answer))
+		logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question + ', answer: ' + str(answer))
 
 		return question, answer
 
@@ -208,16 +203,11 @@ class UserHandler(object):
 			# is the old password valid?
 			if not user.validate_password(old_pw):
 				logger('UserHandler', 'change_password', 'old password is wrong')
-				logger('UserHandler', 'old', old_pw + " " + PasswordHandler().get_hashed_password(old_pw))
-				logger('UserHandler', 'new', new_pw + " " + PasswordHandler().get_hashed_password(new_pw))
-				logger('UserHandler', 'current', user.password)
 				message = _t.get(_t.oldPwdWrong) # 'Your old password is wrong.'
 				error = True
 			else:
-				logger('UserHandler', 'form.passwordrequest.submitted', 'new password is ' + new_pw)
 				password_handler = PasswordHandler()
 				hashed_pw = password_handler.get_hashed_password(new_pw)
-				logger('UserHandler', 'form.passwordrequest.submitted', 'New hashed password is ' + hashed_pw)
 
 				# set the hased one
 				user.password = hashed_pw
@@ -237,18 +227,15 @@ class UserHandler(object):
 		:return: dictionary
 		"""
 		is_admin = UserHandler().is_user_admin(user)
-		logger('UserHandler', 'get_all_users', 'is_admin ' + str(is_admin))
 		if not is_admin:
 			return_dict = dict()
 		else:
 			logger('UserHandler', 'get_all_users', 'get all users')
 			db_users = DBDiscussionSession.query(User).join(Group).all()
-			logger('UserHandler', 'get_all_users', 'get all groups')
 
 			return_dict = dict()
 
 			if db_users:
-				logger('UserHandler', 'get_all_users', 'iterate all users')
 				for user in db_users:
 					return_user = dict()
 					return_user['uid'] = user.uid
@@ -261,17 +248,5 @@ class UserHandler(object):
 					return_user['last_action'] = str(user.last_action)
 					return_user['registered'] = str(user.registered)
 					return_user['gender'] = str(user.gender)
-					logger('UserHandler', 'get_all_users ' + str(user.uid) + ' of ' + str(len(db_users)),
-						"uid: " + str(user.uid)
-						+ ", firstname: " + user.firstname
-						+ ", surname: " + user.surname
-						+ ", nickname: " + user.nickname
-						+ ", email: " + user.email
-						+ ", group_uid: " + user.groups.name
-						+ ", last_action: " + str(user.last_action)
-						+ ", last_logged: " + str(user.last_login)
-						+ ", registered: " + str(user.registered)
-						+ ", gender: " + str(user.gender)
-					)
 					return_dict[user.uid] = return_user
 		return return_dict

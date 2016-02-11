@@ -95,10 +95,9 @@ class Dbas(object):
 		:return: dictionary with title and project username as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('main_contact', 'def', 'contact page')
+		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		token = self.request.session.new_csrf_token()
-		logger('main_contact', 'new token', str(token))
 
 		contact_error = False
 		send_message = False
@@ -109,14 +108,12 @@ class Dbas(object):
 		except KeyError:
 			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
-		logger('main_contact', 'form.contact.submitted', 'requesting params')
 		username        = self.request.params['name'] if 'name' in self.request.params else ''
 		email           = self.request.params['mail'] if 'mail' in self.request.params else ''
 		phone           = self.request.params['phone'] if 'phone' in self.request.params else ''
 		content         = self.request.params['content'] if 'content' in self.request.params else ''
 		spam            = self.request.params['spam'] if 'spam' in self.request.params else ''
 		request_token   = self.request.params['csrf_token'] if 'csrf_token' in self.request.params else ''
-		logger('main_contact', 'form.contact.submitted', 'name: ' + name + ', mail: ' + email + ', phone: ' + phone + ', content: ' + content + ', spam: ' + spam + ', csrf_token: ' + request_token)
 
 		# get anti-spam-question
 		spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
@@ -169,7 +166,6 @@ class Dbas(object):
 				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
 
-		logger('main_contact', 'form.contact.submitted', 'content: ' + content)
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 		return {
 			'layout': self.base_layout(),
@@ -325,7 +321,6 @@ class Dbas(object):
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			# justifying position
-			logger('discussion_justify', 'def', 'justifying position')
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify=True, is_supportive=supportive)
 			if not discussion_dict:
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
@@ -341,7 +336,6 @@ class Dbas(object):
 
 		elif 'd' in mode and relation == '':
 			# dont know
-			logger('discussion_justify', 'def', 'dont know position')
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _dh.prepare_discussion_dict(argument_uid, ui_locales, at_dont_know=True,
 			                                              is_supportive=supportive, additional_id=statement_or_arg_id)
@@ -354,12 +348,11 @@ class Dbas(object):
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
-			logger('discussion_justify', 'def', 'argument stuff')
 			is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid)
-			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, supportive,
+			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue,
 			                                                             ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, ui_locales, self.request.authenticated_userid,
 			                                          argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs,
@@ -451,12 +444,11 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('main_settings', 'def', 'main')
+		logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		token = self.request.session.get_csrf_token()
-		logger('main_settings', 'new token', str(token))
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		logger('main_settings', 'language', ui_locales)
 
 		old_pw = ''
 		new_pw = ''
@@ -466,10 +458,8 @@ class Dbas(object):
 		success = False
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
-		logger('main_settings', 'db_user', db_user.nickname + ' ' + str(db_user.groups.uid) + ' ' + str(db_user.groups.name))
 		uh = UserHandler()
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
-			logger('main_settings', 'form.changepassword.submitted', 'requesting params')
 			old_pw = self.request.params['passwordold']
 			new_pw = self.request.params['password']
 			confirm_pw = self.request.params['passwordconfirm']
@@ -479,7 +469,6 @@ class Dbas(object):
 		# get gravater profile picture
 		gravatar_url = uh.get_profile_picture(db_user)
 
-		logger('main_settings', 'return change_error', str(error) + ', change_success' + str(success) + ', message' + str(message))
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 		return {
 			'layout': self.base_layout(),
@@ -624,7 +613,6 @@ class Dbas(object):
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, ui_locales)
-		logger('get_user_history', 'def', str(return_dict))
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -644,6 +632,7 @@ class Dbas(object):
 		return_dict['removed_data'] = 'true'  # necessary
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
 	# ajax - user login
 	@view_config(route_name='ajax_user_login', renderer='json')
 	def user_login(self):
@@ -653,6 +642,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_login', 'def', 'main')
+		logger('user_login', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		success = '0'
 		message = ''
@@ -662,7 +652,6 @@ class Dbas(object):
 			nickname = self.escape_string(self.request.params['user'])
 			password = self.escape_string(self.request.params['password'])
 			url = self.request.params['url']
-			logger('user_login', 'def', 'params nickname: ' + str(nickname) + ', password: ' + str(password) + ', url: ' + url)
 
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
@@ -725,7 +714,7 @@ class Dbas(object):
 		:return: dict() with success and message
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('user_registration', 'def', 'main')
+		logger('user_registration', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		# default values
 		success = '0'
@@ -745,20 +734,12 @@ class Dbas(object):
 			ui_locales      = self.request.params['lang'] if 'lang' in self.request.params else None
 			if not ui_locales:
 				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-			logger('user_registration', 'def', 'params firstname: ' + str(firstname)
-			       + ', lastname: ' + str(lastname)
-			       + ', nickname: ' + str(nickname)
-			       + ', email: ' + str(email)
-			       + ', password: ' + str(password)
-			       + ', passwordconfirm: ' + str(passwordconfirm)
-			       + ', lang: ' + ui_locales)
 
 			_t = Translator(ui_locales)
 
 			# database queries mail verification
 			db_nick = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 			db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
-			logger('user_registration', 'main', 'Validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
 
 			# are the password equal?
@@ -777,12 +758,6 @@ class Dbas(object):
 			elif not is_mail_valid:
 				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is not valid')
 				message = _t.get(_t.mailNotValid)
-			# is the token valid?
-			# elif request_token != token :
-			# 	logger('user_registration', 'main', 'token is not valid')
-			# 	logger('user_registration', 'main', 'request_token: ' + str(request_token))
-			# 	logger('user_registration', 'main', 'token: ' + str(token))
-			# 	message = 'CSRF-Token is not valid'
 			else:
 				# getting the editors group
 				db_group = DBDiscussionSession.query(Group).filter_by(name="editors").first()
@@ -837,7 +812,7 @@ class Dbas(object):
 		:return: dict() with success and message
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('user_password_request', 'def', 'main')
+		logger('user_password_request', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		success = '0'
 		message = ''
@@ -848,7 +823,7 @@ class Dbas(object):
 			ui_locales      = self.request.params['lang'] if 'lang' in self.request.params else None
 			if not ui_locales:
 				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-			logger('user_password_request', 'def', 'params email: ' + str(email) + ', ui_locales ' + ui_locales)
+
 			success = '1'
 			_t = Translator(ui_locales)
 
@@ -858,9 +833,7 @@ class Dbas(object):
 			if db_user:
 				# get password and hashed password
 				pwd = PasswordGenerator().get_rnd_passwd()
-				logger('user_password_request', 'form.passwordrequest.submitted', 'New password is ' + pwd)
 				hashedpwd = PasswordHandler().get_hashed_password(pwd)
-				logger('user_password_request', 'form.passwordrequest.submitted', 'New hashed password is ' + hashedpwd)
 
 				# set the hased one
 				db_user.password = hashedpwd
@@ -872,12 +845,8 @@ class Dbas(object):
 				subject = _t.get(_t.dbasPwdRequest)
 				reg_success, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
 
-				# logger
 				if reg_success:
-					logger('user_password_request', 'form.passwordrequest.submitted', 'New password was sent')
 					success = '1'
-				else:
-					logger('user_password_request', 'form.passwordrequest.submitted', 'Error occured')
 			else:
 				logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
 				message = 'emailUnknown'
@@ -914,14 +883,14 @@ class Dbas(object):
 			statement   = self.request.params['statement']
 			issue       = QueryHelper().get_issue(self.request)
 			slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
-			logger('set_new_start_statement', 'def', 'request data: statement ' + str(statement))
+
 			new_statement, is_duplicate = QueryHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
 				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement.uid)
 				return_dict['url'] = url
-				logger('set_new_start_statement', 'def', 'return url ' + url)
+
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
@@ -937,11 +906,9 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('set_new_start_premise', 'def', 'ajax, self.request.params: ' + str(self.request.params))
+		logger('set_new_start_premise', 'def', 'main, self.request.params: ' + str(self.request.params))
 		user_id = self.request.authenticated_userid
 		UserHandler().update_last_action(transaction, user_id)
-
-		logger('set_new_start_premise', 'def', 'main')
 
 		return_dict = dict()
 		_qh = QueryHelper()
@@ -949,25 +916,19 @@ class Dbas(object):
 		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
 
 		try:
-			logger('set_new_start_premise', 'def', 'getting params')
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			conclusion_id   = self.request.params['conclusion_id']
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 			issue           = _qh.get_issue(self.request)
-			logger('set_new_start_premise', 'def', 'conclusion_id: ' + str(conclusion_id) + ', premisegroups: ' + str(premisegroups) +
-			       ', supportive: ' + str(supportive) + ', issue: ' + str(issue))
 
 			new_arguments = []
 			for group in premisegroups:
-				logger('set_new_start_premise', 'def', 'found text: ' + str(group))
 				new_argument_uid = _qh.set_premises_as_group_for_conclusion(transaction, user_id, group, conclusion_id, supportive, issue)
 				if new_argument_uid == -1:
 					return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-					logger('set_new_start_premise', 'def', 'return because input is empty')
 					return _dh.dictionary_to_json_array(return_dict, True)
 					
 				new_arguments.append(new_argument_uid)
-				logger('set_new_start_premise', 'def', 'new argument created: ' + str(new_argument_uid))
 
 			new_argument_uid    = random.choice(new_arguments)  # TODO IMPROVE / eliminate random
 			arg_id_sys, attack  = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
@@ -995,35 +956,27 @@ class Dbas(object):
 		user_id = self.request.authenticated_userid
 		UserHandler().update_last_action(transaction, user_id)
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('set_new_premises_for_argument', 'def', 'ajax, self.request.params: ' + str(self.request.params))
-
-		logger('set_new_premises_for_argument', 'def', 'main')
+		logger('set_new_premises_for_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		return_dict = dict()
 		_dh = DictionaryHelper()
 		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
 
 		try:
-			logger('set_new_premises_for_argument', 'def', 'getting params')
 			arg_uid         = self.request.params['arg_uid']
 			attack_type     = self.request.params['attack_type']
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			supportive      = self.request.params['supportive']
 
 			issue = QueryHelper().get_issue(self.request)
-			logger('set_new_premises_for_argument', 'def', 'arg_uid: ' + str(arg_uid) + ', premisegroups: ' + str(premisegroups) +
-			       ', relation: ' + str(attack_type) + ', supportive ' + str(supportive) + ', issue: ' + str(issue))
 
 			new_arguments = []
 			for group in premisegroups:
-				logger('set_new_premises_for_argument', 'def', 'found text: ' + str(group))
-
 				new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(group, attack_type, arg_uid, issue,
 				                                                                         self.request.authenticated_userid,
 				                                                                         transaction)
 				if new_argument_uid == -1:
 					return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-					logger('set_new_start_premise', 'def', 'return because input is empty')
 					return _dh.dictionary_to_json_array(return_dict, True)
 
 				new_arguments.append(new_argument_uid)
@@ -1032,7 +985,6 @@ class Dbas(object):
 				return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
 				new_argument_uid = random.choice(new_arguments)  # TODO IMPROVE / eliminate random
-				logger('set_new_premises_for_argument', 'def', 'new_argument_uid ' + str(new_argument_uid))
 
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
 				if arg_id_sys == 0:
@@ -1048,7 +1000,7 @@ class Dbas(object):
 
 		return_json = _dh.dictionary_to_json_array(return_dict, True)
 
-		logger('set_new_premises_for_argument', 'def', 'returning')
+		logger('set_new_premises_for_argument', 'def', 'returning ' + str(return_dict))
 		return return_json
 
 	# ajax - set new textvalue for a statement
@@ -1059,15 +1011,14 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		logger('set_correcture_of_statement', 'def', 'main')
 		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
 
 		try:
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
-			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text))
 			return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
 			#  TODO no check for a dupliacted dialog
 			if return_dict == -1:
@@ -1094,15 +1045,12 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('get_logfile_for_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('get_logfile_for_statement', 'def', 'main')
 
 		return_dict = dict()
 		try:
 			uid = self.request.params['uid']
-
-			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
 			return_dict = QueryHelper().get_logfile_for_statement(uid)
 			return_dict['error'] = ''
 		except KeyError as e:
@@ -1141,7 +1089,6 @@ class Dbas(object):
 			# service_url = 'https://goo.gl/'
 			# service_url = 'https://bitly.com/'
 			service_url = 'http://tinyurl.com/'
-			logger('get_shortened_url', 'def', service + ' will shorten ' + str(url))
 
 			# shortener = Shortener(service, api_key=google_api_key)
 			# shortener = Shortener(service, bitly_login=bitly_login, bitly_api_key=bitly_key, bitly_token=bitly_token)
@@ -1151,7 +1098,6 @@ class Dbas(object):
 			return_dict['url'] = short_url
 			return_dict['service'] = service
 			return_dict['service_url'] = service_url
-			logger('get_shortened_url', 'def', 'short url ' + short_url)
 
 			return_dict['error'] = ''
 		except KeyError as e:
@@ -1169,7 +1115,6 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-
 		logger('get_argument_overview', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		issue = QueryHelper().get_issue(self.request)
@@ -1186,7 +1131,8 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_news', 'def', 'main')
-		return DictionaryHelper().dictionary_to_json_array(QueryHelper().get_news(), True)
+		return_dict = QueryHelper().get_news()
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - for getting database
 	@view_config(route_name='ajax_get_database_dump', renderer='json')
@@ -1217,7 +1163,6 @@ class Dbas(object):
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
-		logger('get_all_users', 'def', 'user count ' + str(len(return_dict)))
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -1235,15 +1180,13 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
-		logger('switch_language', 'def', 'main')
+		logger('switch_language', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		return_dict = dict()
 		try:
 			ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
 			if not ui_locales:
 				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-			logger('switch_language', 'def', 'params uid: ' + str(ui_locales))
 			self.request.response.set_cookie('_LOCALE_', str(ui_locales))
 		except KeyError as e:
 			logger('swich_language', 'error', repr(e))
@@ -1258,6 +1201,7 @@ class Dbas(object):
 		:return: json-set with new news
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('send_news', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		try:
 			title = self.escape_string(self.request.params['title'])
@@ -1270,8 +1214,6 @@ class Dbas(object):
 			_tn = Translator(QueryHelper().get_language(self.request), get_current_registry())
 			return_dict['error'] = _tn.get(_tn.internalError)
 
-		logger('send_news', 'def', 'main')
-
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - for fuzzy search
@@ -1282,13 +1224,13 @@ class Dbas(object):
 		:return: json-set with all matched strings
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('fuzzy_search', 'main', 'def')
+		logger('fuzzy_search', 'def', 'main, self.request.params: ' + str(self.request.params))
+
 		try:
 			value = self.request.params['value']
 			mode = str(self.request.params['type'])
 			issue = QueryHelper().get_issue(self.request)
 
-			logger('fuzzy_search', 'main', 'value: ' + str(value) + ', mode: ' + str(mode) + ', issue: ' + str(issue))
 			return_dict = dict()
 			# return_dict['distance_name'] = 'SequenceMatcher'  # TODO improve fuzzy search
 			return_dict['distance_name'] = 'Levensthein'
@@ -1317,7 +1259,8 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('additional_service', 'main', 'def')
+		logger('additional_service', 'def', 'main, self.request.params: ' + str(self.request.params))
+
 		rtype = self.request.params['type']
 
 		if rtype == "chuck":

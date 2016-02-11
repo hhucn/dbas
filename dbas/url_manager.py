@@ -23,7 +23,6 @@ class UrlManager(object):
 		self.api_url = 'api/'
 		self.slug = slug
 		self.for_api = for_api
-		logger('UrlManager', '__init__', 'discussion_url: ' + self.discussion_url)
 
 	def get_url(self, path):
 		"""

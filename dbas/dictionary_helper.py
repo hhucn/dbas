@@ -19,6 +19,7 @@ from .user_management import UserHandler
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
+
 class DictionaryHelper(object):
 
 	def get_random_subdict_out_of_orderer_dict(self, ordered_dict, count):
@@ -32,14 +33,12 @@ class DictionaryHelper(object):
 		return_dict = dict()
 		logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'count: ' + str(count))
 		items = list(ordered_dict.items())
-		for item in items:
-			logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'all items: ' + ''.join(str(item)))
+
 		if count < 0:
 			return ordered_dict
 		elif count == 1:
 			if len(items) > 1:
-				rnd = random.randint(0, len(items)-1)
-				logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'return item at ' + str(rnd))
+				rnd = random.randint(0, len(items) - 1)
 				return_dict[items[rnd][0]] = items[rnd][1]
 			else:
 				return ordered_dict
@@ -47,7 +46,6 @@ class DictionaryHelper(object):
 
 			for i in range(0, count):
 				rnd = random.randint(0, len(items)-1)
-				logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'for loop ' + str(i) + '. add element at ' + str(rnd))
 				return_dict[items[rnd][0]] = items[rnd][1]
 				items.pop(rnd)
 
@@ -75,7 +73,6 @@ class DictionaryHelper(object):
 		"""
 		Saved a row in dictionary
 		:param statement_row: for saving
-		:param issue:
 		:return: dictionary
 		"""
 		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'statement uid ' + str(statement_row.uid))
@@ -83,8 +80,6 @@ class DictionaryHelper(object):
 		                                                                Statement.issue_uid == issue)).first()
 		db_premise = DBDiscussionSession.query(Premise).filter(and_(Premise.statement_uid == db_statement.uid,
 		                                                            Premise.issue_uid == issue)).first()
-		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'premise uid ' +
-			       ((str(db_premise.premisesgroup_uid) + '.' + str(db_premise.statement_uid)) if db_premise else 'null'))
 		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).first()
 
 		uid    = str(db_statement.uid)
@@ -96,9 +91,7 @@ class DictionaryHelper(object):
 		while text.endswith('.'):
 			text = text[:-1]
 
-		logger('DictionaryHelper', 'save_statement_row_in_dictionary', uid + ', ' + text + ', ' + date + ', ' + author +
-		       ', ' + pgroup)
-		return {'uid':uid, 'text':text, 'date':date, 'author':author, 'premisegroup_uid':pgroup}
+		return {'uid': uid, 'text':text, 'date': date, 'author': author, 'premisegroup_uid': pgroup}
 
 	def prepare_discussion_dict(self, uid, lang, at_start=False, at_attitude=False, at_justify=False,
 	                            is_supportive=False, at_dont_know=False, at_argumentation=False,
@@ -187,8 +180,6 @@ class DictionaryHelper(object):
 				db_confrontation    = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
 				confrontation, tmp  = _qh.get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
 				# confrontation       = _qh.get_text_for_argument_uid(additional_id, lang)
-				logger('DictionaryHelper', 'prepare_discussion_dict', 'additional_id ' + str(additional_id) + ', confrontation '
-				       + str(confrontation) + ', attack ' + str(attack))
 
 				reply_for_argument  = True
 				current_argument    = _qh.get_text_for_argument_uid(uid, lang, True)
@@ -246,6 +237,7 @@ class DictionaryHelper(object):
 		:param for_api:
 		:return:
 		"""
+		logger('DictionaryHelper', 'prepare_item_dict_for_attitude', 'def')
 		_qh = QueryHelper()
 		_tn = Translator(lang)
 
@@ -281,6 +273,7 @@ class DictionaryHelper(object):
 		:param for_api:
 		:return:
 		"""
+		logger('DictionaryHelper', 'prepare_item_dict_for_justify_statement', 'def')
 		statements_array = []
 		_tn = Translator(lang)
 		_qh = QueryHelper()
@@ -310,24 +303,24 @@ class DictionaryHelper(object):
 
 			statements_array.append(_qh.get_statement_dict('start_premise',
 			                                                _tn.get(_tn.newPremiseRadioButtonText),
-			                                                [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id':0}],
+			                                                [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
 			                                                'null',
 			                                                'null'))
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, is_supportive, lang, application_url, for_api):
+	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, lang, application_url, for_api):
 		"""
 
 		:param argument_uid:
 		:param attack_type:
 		:param issue_uid:
-		:param is_supportive:
 		:param lang:
 		:param application_url:
 		:param for_api:
 		:return:
 		"""
+		logger('DictionaryHelper', 'prepare_item_dict_for_justify_argument', 'def')
 		statements_array = []
 		_tn = Translator(lang)
 		_qh = QueryHelper()
@@ -398,6 +391,7 @@ class DictionaryHelper(object):
 		:param for_api:
 		:return:
 		"""
+		logger('DictionaryHelper', 'prepare_item_dict_for_reaction', 'def')
 		_tg  = TextGenerator(lang)
 		_qh = QueryHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
@@ -425,7 +419,6 @@ class DictionaryHelper(object):
 				if t == 'support':
 					arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid)
 					url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
-					logger('XXX','url',url)
 				else:
 					key = 'back' if for_api else 'window.history.go(-1)'
 					url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else key
@@ -451,6 +444,7 @@ class DictionaryHelper(object):
 		:param for_api:
 		:return:
 		"""
+		logger('DictionaryHelper', 'prepare_extras_dict', 'def')
 		_uh = UserHandler()
 		_tn = Translator(lang)
 		_qh = QueryHelper()
@@ -471,22 +465,22 @@ class DictionaryHelper(object):
 													 	 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 													 	 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
 													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody)}
-		return_dict['button']                         = {'report' : _tn.get(_tn.report),
+		return_dict['button']                         = {'report': _tn.get(_tn.report),
 														 'report_title': _tn.get(_tn.reportTitle),
-														 'acceptIt' : _tn.get(_tn.acceptIt),
-														 'showAllArguments' : _tn.get(_tn.showAllArguments),
-														 'showAllUsers' : _tn.get(_tn.showAllUsers),
-														 'deleteTrack' : _tn.get(_tn.deleteTrack),
-														 'requestTrack' : _tn.get(_tn.requestTrack),
-														 'deleteHistory' : _tn.get(_tn.deleteHistory),
-														 'requestHistory' : _tn.get(_tn.requestHistory),
-														 'passwordSubmit' : _tn.get(_tn.passwordSubmit),
-														 'contactSubmit' : _tn.get(_tn.contactSubmit),
-														 'letsGo' : _tn.get(_tn.letsGo),
-														 'opinionBarometer' : _tn.get(_tn.opinionBarometer),
+														 'acceptIt': _tn.get(_tn.acceptIt),
+														 'showAllArguments': _tn.get(_tn.showAllArguments),
+														 'showAllUsers': _tn.get(_tn.showAllUsers),
+														 'deleteTrack': _tn.get(_tn.deleteTrack),
+														 'requestTrack': _tn.get(_tn.requestTrack),
+														 'deleteHistory': _tn.get(_tn.deleteHistory),
+														 'requestHistory': _tn.get(_tn.requestHistory),
+														 'passwordSubmit': _tn.get(_tn.passwordSubmit),
+														 'contactSubmit': _tn.get(_tn.contactSubmit),
+														 'letsGo': _tn.get(_tn.letsGo),
+														 'opinionBarometer': _tn.get(_tn.opinionBarometer),
 														 'edit_statement': _tn.get(_tn.editTitle),
 														 'more_title': _tn.get(_tn.more),
-														 'previous':  _tn.get(_tn.previous),
+														 'previous': _tn.get(_tn.previous),
 														 'next': _tn.get(_tn.next),
 														 'save_my_statement': _tn.get(_tn.saveMyStatement),
 		                                                 'add_statement_row_title': _tn.get(_tn.addStatementRow),
@@ -508,10 +502,10 @@ class DictionaryHelper(object):
 				                                                                                    False, False, not db_argument.is_supportive))
 				return_dict['island'] = island_dict
 			else:
-				return_dict['is_editable']            =  False
-				return_dict['is_reportable']          =  False
-				return_dict['show_bar_icon']          =  False
-				return_dict['show_display_style']     =  False
+				return_dict['is_editable']            = False
+				return_dict['is_reportable']          = False
+				return_dict['show_bar_icon']          = False
+				return_dict['show_display_style']     = False
 				return_dict['title']                  = {'barometer': _tn.get(_tn.opinionBarometer),
 												        'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 												        'island_view': _tn.get(_tn.displayControlDialogIslandBody),
@@ -527,14 +521,12 @@ class DictionaryHelper(object):
 		:param lang:
 		:return:
 		"""
+		logger('DictionaryHelper', 'add_language_options_for_extra_dict', 'def')
 		lang_is_en = (lang != 'de')
 		lang_is_de = (lang == 'de')
-		_t = Translator(lang)
 		extras_dict.update({
 			'lang_is_de': lang_is_de,
 			'lang_is_en': lang_is_en,
 			'link_de_class': ('active' if lang_is_de else ''),
 			'link_en_class': ('active' if lang_is_en else '')
 		})
-
-	

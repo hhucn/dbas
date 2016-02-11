@@ -35,12 +35,10 @@ class BreadcrumbHelper(object):
 			return []
 
 		url = UrlManager(application_url, slug, for_api).get_url(path)
-		logger('BreadcrumbHelper', 'get_breadcrumbs', 'url ' + url)
 
 		expr = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)
 		if expr:
 			group0 = expr.group(0)
-			logger('BreadcrumbHelper', 'get_breadcrumbs', 'group0 ' + str(group0))
 			if group0 and url.endswith(group0):
 				self.del_breadcrumbs_of_user(transaction, user)
 
@@ -64,13 +62,11 @@ class BreadcrumbHelper(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		if not db_user:
-			logger('BreadcrumbHelper', 'get_breadcrumbs', 'no user')
 			return dict()
 
 		db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
 
 		if not db_history:
-			logger('BreadcrumbHelper', 'get_breadcrumbs', 'no track')
 			return dict()
 
 		breadcrumbs = []

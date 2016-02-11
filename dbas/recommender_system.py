@@ -17,9 +17,9 @@ class RecommenderHelper(object):
 	def get_attack_for_argument(self, argument_uid, issue):
 		# getting undermines or undercuts or rebuts
 		attacks, key = self.__get_attack_for_argument(argument_uid, issue)
+		logger('RecommenderHelper', 'get_attack_for_argument', 'main')
 
 		if not attacks or len(attacks) == 0:
-			logger('RecommenderHelper', 'get_attack_for_argument_old', 'there is no attack!')
 			return 0, ''
 		else:
 			attack_no = random.randrange(0, len(attacks))  # Todo fix random
@@ -33,10 +33,10 @@ class RecommenderHelper(object):
 		:param is_supportive:
 		:return:
 		"""
-		logger('RecommenderHelper', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
 		                                                               Argument.conclusion_uid == statement_uid)).all()
-		logger('RecommenderHelper', 'get_argument_by_conclusion', 'found ' + str(len(db_arguments)) + ' arguments')
+		logger('RecommenderHelper', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' +
+		       str(is_supportive) + ', found ' + str(len(db_arguments)) + ' arguments')
 		if db_arguments:
 			arguments = []
 			for argument in db_arguments:
@@ -54,7 +54,6 @@ class RecommenderHelper(object):
 
 			# get one random premise todo fix random
 			rnd = random.randint(0, len(arguments) - 1)
-			logger('RecommenderHelper', 'get_argument_by_conclusion', 'rnd ' + str(rnd))
 			return arguments[0 if len(arguments) == 1 else rnd]
 
 		else:
@@ -75,13 +74,12 @@ class RecommenderHelper(object):
 		complete_list_of_attacks = [1, 3, 5]  # todo fix this, when overbid is killed
 		attacks = [1, 3, 5]
 
-		logger('RecommenderHelper', '__get_attack_for_argument_by_random_old', 'attack_list : ' + str(attacks))
+		logger('RecommenderHelper', '__get_attack_for_argument', 'attack_list : ' + str(attacks))
 		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
 		return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks)
 
 		# sanity check if we could not found an attack for a left attack in out set
 		if not return_dict and len(attacks) > 0:
-			logger('RecommenderHelper', '__get_attack_for_argument_by_random_old', 'no attack found, try to find an attack for any other left attack')
 			return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks)
 
 		return return_dict, key
@@ -101,14 +99,13 @@ class RecommenderHelper(object):
 		attack_found = False
 		_qh = QueryHelper()
 
-		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack_list : ' + str(attack_list)
-		       +', complete_list_of_attacks : ' + str(complete_list_of_attacks) +', left_attacks : ' + str(left_attacks))
+		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack_list : ' + str(attack_list)  +
+		       ', complete_list_of_attacks : ' + str(complete_list_of_attacks) + ', left_attacks : ' + str(left_attacks))
 
 		# randomize at least 1, maximal 3 times for getting an attack
 		while len(attack_list) > 0:
 			attack = random.choice(attack_list)
 			attack_list.remove(attack)
-			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', '\'random\' attack is ' + str(attack))
 
 			return_dict = _qh.get_undermines_for_argument_uid(argument_uid) if attack == 1 \
 				else (_qh.get_rebuts_for_argument_uid(argument_uid) if attack == 5
@@ -118,7 +115,6 @@ class RecommenderHelper(object):
 				      else 'undercut')
 
 			if return_dict and len(return_dict) != 0:
-				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack found')
 				attack_found = True
 				break
 			else:
@@ -145,7 +141,6 @@ class RecommenderHelper(object):
 
 		best = max(evaluations)
 		index = [i for i, j in enumerate(evaluations) if j == best]
-		logger('RecommenderHelper', '__get_best_argument', 'index ' + str(index))
 		return index[0]
 
 	def __evaluate_argument(self, argument_uid):
@@ -165,9 +160,9 @@ class RecommenderHelper(object):
 		votes = len(db_votes)
 		valid_votes = len(db_valid_votes)
 		valid_upvotes = len(db_valid_upvotes)
-		all = len(DBDiscussionSession.query(User).all())
+		all_users = len(DBDiscussionSession.query(User).all())
 
 		index_up_vs_down = valid_upvotes / (1 if valid_votes == 0 else valid_votes)
-		index_participation = votes / (1 if all == 0 else all)
+		index_participation = votes / (1 if all_users == 0 else all_users)
 
 		return index_participation, index_up_vs_down

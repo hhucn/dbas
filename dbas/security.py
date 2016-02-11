@@ -32,7 +32,6 @@ def groupfinder(nick, request):
 	user = DBDiscussionSession.query(User).filter_by(nickname=nick).first()
 
 	if user:
-		logger('security', 'groupfinder', 'nick is in group id ' + str(user.group_uid))
 		group = DBDiscussionSession.query(Group).filter_by(uid=user.group_uid).first()
 		if group:
 			logger('security', 'groupfinder', 'return [group:' + group.name + ']')
