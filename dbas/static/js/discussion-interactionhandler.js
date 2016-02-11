@@ -12,7 +12,6 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendNewStartStatement = function (data) {
 		var parsedData = $.parseJSON(data);
-		alert('1: ' + parsedData.error + ' - ' + parsedData.error.length);
 		if (parsedData.error.length > 0) {
 			$('#' + addStatementErrorContainer).show();
 			$('#' + addStatementErrorMsg).text(parsedData.error);
@@ -28,7 +27,6 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendNewPremisesArgument = function (data) {
 		var parsedData = $.parseJSON(data);
-		alert('2: ' + parsedData.error + ' - ' + parsedData.error.length);
 		if (parsedData.error.length > 0) {
 			$('#' + addPremiseErrorContainer).show();
 			$('#' + addPremiseErrorMsg).text(parsedData.error);
@@ -44,7 +42,6 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendNewStartPremise = function (data, isSupportive) {
 		var parsedData = $.parseJSON(data);
-		alert('3: ' + parsedData.error + ' - ' + parsedData.error.length);
 		if (parsedData.error.length > 0) {
 			$('#' + addPremiseErrorContainer).show();
 			$('#' + addPremiseErrorMsg).text(parsedData.error);
