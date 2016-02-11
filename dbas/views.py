@@ -969,7 +969,8 @@ class Dbas(object):
 		return_dict = dict()
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
-		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
+		lang = _qh.get_language(self.request, get_current_registry())
+		_tn = Translator(lang)
 
 		try:
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
@@ -977,7 +978,9 @@ class Dbas(object):
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 			issue           = _qh.get_issue(self.request)
 
-			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id, supportive, issue, user_id)
+			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
+			                                                                 supportive, issue, user_id, for_api,
+			                                                                 mainpage, lang)
 			return_dict['error'] = error
 
 			if url == -1:
@@ -1008,7 +1011,8 @@ class Dbas(object):
 		return_dict = dict()
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
-		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
+		lang = _qh.get_language(self.request, get_current_registry())
+		_tn = Translator(lang)
 
 		try:
 			arg_uid         = self.request.params['arg_uid']
@@ -1017,7 +1021,9 @@ class Dbas(object):
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 			issue           = _qh.get_issue(self.request)
 
-			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type, premisegroups, supportive, issue, user_id)
+			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
+			                                                                         premisegroups, supportive, issue,
+			                                                                         user_id, for_api, mainpage, lang)
 			return_dict['error'] = error
 
 			if url == -1:

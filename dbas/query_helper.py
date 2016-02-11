@@ -1068,7 +1068,7 @@ class QueryHelper(object):
 		else:
 			discussion_dict['heading'] += _t.get(_t.discussionEnd) + ' ' + (_t.get(_t.discussionEndLinkText) if logged_in else _t.get(_t.feelFreeToLogin))
 
-	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive, issue, user_id):
+	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive, issue, user, for_api, mainpage, lang):
 		"""
 
 		:param transaction:
@@ -1076,25 +1076,34 @@ class QueryHelper(object):
 		:param conclusion_id:
 		:param supportive:
 		:param issue:
-		:param user_id:
+		:param user:
+		:param for_api:
+		:param mainpage:
+		:param lang:
 		:return:
 		"""
-		new_arguments = []
-		_tn = Translator(self.get_language(self.request, get_current_registry()))
-		error = ''
+		_tn = Translator(lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+		error = ''
 		url = ''
 
-		for group in premisegroups:
-			new_argument_uid = self.set_premises_as_group_for_conclusion(transaction, user_id, group, conclusion_id, supportive, issue)
-			if new_argument_uid == -1:
+		# insert all premisegroups into our databse
+		# all new arguments are collected in a list
+		new_arguments = []
+		for group in premisegroups:  # premisegroups is a list of lists
+			new_argument_uid = self.set_premises_as_group_for_conclusion(transaction, user, group, conclusion_id, supportive, issue)
+
+			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
 
 			new_arguments.append(new_argument_uid)
 
+		# #arguments=0: empty input
+		# #arguments=1: deliever new url
+		# #arguments>1: deliever url where the user has to choose between her inputs
 		if len(new_arguments) == 0:
-			error  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
 		elif len(new_arguments) == 1:
 			new_argument_uid    = random.choice(new_arguments)
@@ -1109,7 +1118,7 @@ class QueryHelper(object):
 
 		return url, error
 
-	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_uid, attack_type, premisegroups, supportive, issue, user_id):
+	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_uid, attack_type, premisegroups, supportive, issue, user, for_api, mainpage, lang):
 		"""
 
 		:param transaction:
@@ -1118,25 +1127,32 @@ class QueryHelper(object):
 		:param premisegroups:
 		:param supportive:
 		:param issue:
-		:param user_id:
+		:param user:
+		:param for_api:
+		:param mainpage:
+		:param lang:
 		:return:
 		"""
-		new_arguments = []
-		_tn = Translator(self.get_language(self.request, get_current_registry()))
+		_tn = Translator(lang)
+		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 		error = ''
 		url = ''
-		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-		for group in premisegroups:
+		# insert all premisegroups into our databse
+		# all new arguments are collected in a list
+		new_arguments = []
+		for group in premisegroups:  # premisegroups is a list of lists
 			new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(group, attack_type, arg_uid, issue,
-			                                                                         self.request.authenticated_userid,
-			                                                                         transaction)
-			if new_argument_uid == -1:
+			                                                                         user, transaction)
+			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
 
 			new_arguments.append(new_argument_uid)
 
+		# #arguments=0: empty input
+		# #arguments=1: deliever new url
+		# #arguments>1: deliever url where the user has to choose between her inputs
 		if len(new_arguments) == 0:
 			error  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
