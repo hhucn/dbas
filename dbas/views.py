@@ -625,9 +625,8 @@ class Dbas(object):
 
 		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, ui_locales)
 		logger('get_user_history', 'def', str(return_dict))
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - deleting complete history of the user
 	@view_config(route_name='ajax_delete_user_history', renderer='json', check_csrf=True)
@@ -643,10 +642,8 @@ class Dbas(object):
 		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
-
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 	# ajax - user login
 	@view_config(route_name='ajax_user_login', renderer='json')
 	def user_login(self):
@@ -695,9 +692,8 @@ class Dbas(object):
 
 		return_dict['success'] = str(success)
 		return_dict['message'] = str(message)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - user login
 	@view_config(route_name='ajax_user_logout', renderer='json')
@@ -830,9 +826,8 @@ class Dbas(object):
 
 		return_dict['success'] = str(success)
 		return_dict['message'] = str(message)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - password requests
 	@view_config(route_name='ajax_user_password_request', renderer='json')
@@ -892,9 +887,8 @@ class Dbas(object):
 
 		return_dict['success'] = str(success)
 		return_dict['message'] = str(message)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 # #######################################
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
@@ -932,9 +926,7 @@ class Dbas(object):
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - send new start premise
 	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
@@ -1052,7 +1044,6 @@ class Dbas(object):
 				return_dict['error']    = ''
 		except KeyError as e:
 			logger('set_new_premises_for_argument', 'error', repr(e))
-			return_dict['status'] = '-1'
 			return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
 		return_json = _dh.dictionary_to_json_array(return_dict, True)
@@ -1071,19 +1062,25 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('set_correcture_of_statement', 'def', 'main')
+		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
 
 		try:
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
 			logger('set_correcture_of_statement', 'def', 'params uid: ' + str(uid) + ', corrected_text: ' + str(corrected_text))
 			return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
+			#  TODO no check for a dupliacted dialog
+			if return_dict == -1:
+				return_dict = dict()
+				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)
+
+			return_dict['error'] = ''
 		except KeyError as e:
 			return_dict = dict()
+			return_dict['error'] = ''
 			logger('set_correcture_of_statement', 'error', repr(e))
 
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #
@@ -1107,15 +1104,15 @@ class Dbas(object):
 
 			logger('get_logfile_for_statement', 'def', 'params uid: ' + str(uid))
 			return_dict = QueryHelper().get_logfile_for_statement(uid)
-			return_dict['status'] = 1
+			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
-			return_dict['status'] = 0
+			_tn = Translator(self.request, get_current_registry())
+			return_dict['error'] = _tn.get(_tn.noCorrections)
 
 		# return_dict = QueryHelper().get_logfile_for_premisegroup(uid)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - for shorten url
 	@view_config(route_name='ajax_get_shortened_url', renderer='json')
@@ -1156,13 +1153,13 @@ class Dbas(object):
 			return_dict['service_url'] = service_url
 			logger('get_shortened_url', 'def', 'short url ' + short_url)
 
-			return_dict['status'] = '1'
+			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_shortened_url', 'error', repr(e))
-			return_dict['status'] = '0'
+			_tn = Translator(self.request, get_current_registry())
+			return_dict['error'] = _tn.get(_tn.internalError)
 
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - for attack overview
 	@view_config(route_name='ajax_get_argument_overview', renderer='json')
@@ -1177,9 +1174,8 @@ class Dbas(object):
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		issue = QueryHelper().get_issue(self.request)
 		return_dict = QueryHelper().get_attack_overview(self.request.authenticated_userid, issue, ui_locales)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - for getting all news
 	@view_config(route_name='ajax_get_news', renderer='json')
@@ -1190,10 +1186,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_news', 'def', 'main')
-		return_dict = QueryHelper().get_news()
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(QueryHelper().get_news(), True)
 
 	# ajax - for getting database
 	@view_config(route_name='ajax_get_database_dump', renderer='json')
@@ -1204,13 +1197,13 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_database_dump', 'def', 'main')
-		issue = QueryHelper().get_issue(self.request)
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_qh = QueryHelper()
+		issue = _qh.get_issue(self.request)
+		ui_locales = _qh.get_language(self.request, get_current_registry())
 
-		return_dict = QueryHelper().get_dump(issue, ui_locales)
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return_dict = _qh.get_dump(issue, ui_locales)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - for getting all users
 	@view_config(route_name='ajax_all_users', renderer='json')
@@ -1225,9 +1218,8 @@ class Dbas(object):
 
 		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
 		logger('get_all_users', 'def', 'user count ' + str(len(return_dict)))
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 
 # ########################################
@@ -1253,13 +1245,10 @@ class Dbas(object):
 				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 			logger('switch_language', 'def', 'params uid: ' + str(ui_locales))
 			self.request.response.set_cookie('_LOCALE_', str(ui_locales))
-			return_dict['status'] = '1'
 		except KeyError as e:
 			logger('swich_language', 'error', repr(e))
-			return_dict['status'] = '0'
 
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - for sending news
 	@view_config(route_name='ajax_send_news', renderer='json')
@@ -1274,15 +1263,16 @@ class Dbas(object):
 			title = self.escape_string(self.request.params['title'])
 			text = self.escape_string(self.request.params['text'])
 			return_dict = QueryHelper().set_news(transaction, title, text, self.request.authenticated_userid)
+			return_dict['error'] = ''
 		except KeyError as e:
 			return_dict = dict()
 			logger('send_news', 'error', repr(e))
-			return_dict['status'] = '-1'
+			_tn = Translator(QueryHelper().get_language(self.request), get_current_registry())
+			return_dict['error'] = _tn.get(_tn.internalError)
 
 		logger('send_news', 'def', 'main')
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - for fuzzy search
 	@view_config(route_name='ajax_fuzzy_search', renderer='json')
@@ -1316,9 +1306,8 @@ class Dbas(object):
 		except KeyError as e:
 			return_dict = dict()
 			logger('fuzzy_search', 'error', repr(e))
-		return_json = DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-		return return_json
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - for additional service
 	@view_config(route_name='ajax_additional_service', renderer='json')

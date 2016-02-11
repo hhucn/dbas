@@ -643,7 +643,7 @@ class Translator(object):
 		en_lang[self.newConclusionRadioButtonText] = 'Neither of the above, I have a different idea!'
 		en_lang[self.nickname] = 'Nickname'
 		en_lang[self.noIslandView] = 'Could not fetch data for the island view. Sorry!'
-		en_lang[self.noCorrections] = 'No corrections for the given statement.'
+		en_lang[self.noCorrections] = 'No corrections for the given statement could be fetched.'
 		en_lang[self.noCorrectionsSet] = 'Correction could not be set, because your user was not fount in the database. Are you currently logged in?'
 		en_lang[self.noDecisionDone] = 'No decision was done.'
 		en_lang[self.notInsertedErrorBecauseEmpty] = 'Your idea was not inserted, because your input text is too short.'

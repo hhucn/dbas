@@ -1257,23 +1257,21 @@ class QueryHelper(object):
 		# duplicate check
 		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(TextVersion.uid.desc()).first()
 
-		if db_user:
-			logger('QueryHelper', 'correct_statement', 'given user exists and correction will be set')
-			# duplicate or not?
-			if db_textversion:
-				textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversion.uid).first()
-			else:
-				textversion = TextVersion(content=corrected_text, author=db_user.uid)
-				textversion.set_statement(db_statement.uid)
-				DBDiscussionSession.add(textversion)
-				DBDiscussionSession.flush()
+		if not db_user:
+			return -1
 
-			db_statement.set_textversion(textversion.uid)
-			transaction.commit()
-			return_dict['status'] = '1'
+		logger('QueryHelper', 'correct_statement', 'given user exists and correction will be set')
+		# duplicate or not?
+		if db_textversion:
+			textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversion.uid).first()
 		else:
-			logger('QueryHelper', 'correct_statement', 'user not found')
-			return_dict['status'] = '-1'
+			textversion = TextVersion(content=corrected_text, author=db_user.uid)
+			textversion.set_statement(db_statement.uid)
+			DBDiscussionSession.add(textversion)
+			DBDiscussionSession.flush()
+
+		db_statement.set_textversion(textversion.uid)
+		transaction.commit()
 
 		return_dict['uid'] = uid
 		return_dict['text'] = corrected_text

@@ -60,11 +60,11 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingLogfile = function (data) {
 		var parsedData = $.parseJSON(data);
 		// status is the length of the content
-		if (parsedData.status == '0') {
-			$('#' + popupEditStatementLogfileSpaceId).text(_t(noCorrections));
-		} else {
+		if (parsedData.error.length == 0) {
 			$('#' + popupEditStatementLogfileSpaceId).text('');
-			new GuiHandler().showStatementCorrectionsInPopup(parsedData.content);
+			new GuiHandler().showStatementCorrectionsInPopup(parsedData.error);
+		} else {
+			$('#' + popupEditStatementLogfileSpaceId).text(_t(noCorrections));
 		}
 	};
 
@@ -75,13 +75,14 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data, element) {
 		var parsedData = $.parseJSON(data);
-		if (parsedData.status == '-1') {
-			$('#' + popupEditStatementErrorDescriptionId).text(_t(noCorrectionsSet));
-		} else if (parsedData.status == '0') {
+		if (parsedData.error.length != 0) {
+			$('#' + popupEditStatementErrorDescriptionId).text(parsedData.error);
+			/*
 			$('#' + popupEditStatementErrorDescriptionId).text('');
 			$('#' + popupEditStatementSuccessDescriptionId).text('');
 			$('#' + popupEditStatementWarning).show();
 			$('#' + popupEditStatementWarningMessage).text(_t(duplicateDialog));
+			*/
 		} else {
 			new GuiHandler().updateOfStatementInDiscussion(parsedData, element);
 			$('#' + popupEditStatementErrorDescriptionId).text('');
@@ -96,7 +97,7 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForShortenUrl = function (data, long_url) {
 		var parsedData = $.parseJSON(data), service;
-		if (parsedData.status == '1') {
+		if (parsedData.error.length == 0) {
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
 			$('#' + popupUrlSharingDescriptionPId).html(_t(feelFreeToShareUrl) + ', ' + _t(shortenedBy) + ' ' + service + ':');
 			$('#' + popupUrlSharingInputId).val(parsedData.url);

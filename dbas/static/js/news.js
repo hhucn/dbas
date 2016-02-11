@@ -152,7 +152,7 @@ function News() {
 	 */
 	this.callbackIfDoneForSendingNews = function (data) {
 		var parsedData = $.parseJSON(data);
-		if (parsedData.status == '1') {
+		if (parsedData.error.length == 0) {
 			$('#' + writingNewsSuccessId).show();
 			$('#' + writingNewsSuccessMessageId).text(_t(addedEverything));
 			$('#' + writingNewNewsTitleId).val('');
@@ -162,7 +162,7 @@ function News() {
 			window.scrollTo(0, 0);
 		} else {
 			$('#' + writingNewsFailedId).show();
-			$('#' + writingNewsFailedMessageId).text(_t(internalError));
+			$('#' + writingNewsFailedMessageId).text(parsedData.error);
 		}
 
 	};
@@ -196,7 +196,8 @@ function News() {
 	 */
 	this.setPageNavigation = function () {
 		var counter, row = $('#' + newsBodyId).children().length, pagebreak = 2, _this = this,
-			pagecounter = 0, newsNavigator = $('#news-navigation'), html, back, forth, pages='', activeElement;
+			pagecounter = 0, newsNavigator = $('#news-navigation'), html, back, forth, pages='',
+			placeholder = '<li class="disabled"><a hred="#" id="news-placeholder">' + '...' + '</a></li>';
 
 		newsNavigator.empty();
 
@@ -213,9 +214,20 @@ function News() {
 		for (counter = 0; counter <= pagecounter; counter++) {
 			pages += '<li><a href="#" counter="' + counter + '" id="news-' + (counter + 1) + '">' + (counter + 1) + '</a></li>';
 		}
+
 		forth= '<li><a href="#" id="news-forth"><span aria-hidden="true">&raquo;</span></a></li>';
 		html = '<ul class="pagination">' + back + pages + forth + '</ul>';
 		newsNavigator.append(html);
+
+		/*
+		// first try for a pagination limitation
+		if (counter > 4){
+			$('#news-3').parent().after(placeholder);
+			for (counter=3; counter <= pagecounter-2; counter++){
+				$('#news-' + (counter + 1)).parent().hide();
+			}
+		}
+		*/
 
 		// click events
 		for (counter = 0; counter <= pagecounter; counter++) {
