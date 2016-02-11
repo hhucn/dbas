@@ -1068,6 +1068,93 @@ class QueryHelper(object):
 		else:
 			discussion_dict['heading'] += _t.get(_t.discussionEnd) + ' ' + (_t.get(_t.discussionEndLinkText) if logged_in else _t.get(_t.feelFreeToLogin))
 
+	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive, issue, user_id):
+		"""
+
+		:param transaction:
+		:param premisegroups:
+		:param conclusion_id:
+		:param supportive:
+		:param issue:
+		:param user_id:
+		:return:
+		"""
+		new_arguments = []
+		_tn = Translator(self.get_language(self.request, get_current_registry()))
+		error = ''
+		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+		url = ''
+
+		for group in premisegroups:
+			new_argument_uid = self.set_premises_as_group_for_conclusion(transaction, user_id, group, conclusion_id, supportive, issue)
+			if new_argument_uid == -1:
+				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+				return -1, error
+
+			new_arguments.append(new_argument_uid)
+
+		if len(new_arguments) == 0:
+			error  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+
+		elif len(new_arguments) == 1:
+			new_argument_uid    = random.choice(new_arguments)
+			arg_id_sys, attack  = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+
+		else:
+			pgroups = []
+			for argument in new_arguments:
+				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
+			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
+
+		return url, error
+
+	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_uid, attack_type, premisegroups, supportive, issue, user_id):
+		"""
+
+		:param transaction:
+		:param arg_uid:
+		:param attack_type:
+		:param premisegroups:
+		:param supportive:
+		:param issue:
+		:param user_id:
+		:return:
+		"""
+		new_arguments = []
+		_tn = Translator(self.get_language(self.request, get_current_registry()))
+		error = ''
+		url = ''
+		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+
+		for group in premisegroups:
+			new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(group, attack_type, arg_uid, issue,
+			                                                                         self.request.authenticated_userid,
+			                                                                         transaction)
+			if new_argument_uid == -1:
+				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+				return -1, error
+
+			new_arguments.append(new_argument_uid)
+
+		if len(new_arguments) == 0:
+			error  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+
+		elif len(new_arguments) == 1:
+			new_argument_uid = random.choice(new_arguments)
+			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+			if arg_id_sys == 0:
+				attack = 'end'
+
+			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+		else:
+			pgroups = []
+			for argument in new_arguments:
+				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
+			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
+
+		return url, error
+
 	def sql_timestamp_pretty_print(self, ts, lang):
 		"""
 

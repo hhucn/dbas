@@ -122,13 +122,9 @@ class BreadcrumbHelper(object):
 		elif '/choose/' in url:
 			splitted = url.split('/')
 			uid = splitted[8]
-			is_argument = splitted[6] == 't'
-			if is_argument:
-				db_argument = DBDiscussionSession.query(Argument).filter_by(uid=splitted[8]).first()
-				if db_argument.argument_uid == 0:
-					text = _qh.get_text_for_statement_uid(db_argument.conclusion_uid)
-				else:
-					text = _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+			if splitted[6] == 't': # is argument
+				arg = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+				text = _qh.get_text_for_statement_uid(arg.conclusion_uid) if arg.argument_uid == 0 else _qh.get_text_for_argument_uid(arg.argument_uid, lang)
 			else:
 				text = _qh.get_text_for_statement_uid(uid)
 			return _t.get(_t.breadcrumbsChoose) + ' ' + text[0:1].lower() + text[1:]

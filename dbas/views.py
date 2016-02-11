@@ -395,7 +395,7 @@ class Dbas(object):
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
 		attack          = matchdict['mode'] if 'mode' in matchdict else ''
-		arg_id_sys      = matchdict['arg_id_sys'][0] if len(matchdict['arg_id_sys']) > 0 else ''
+		arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
 		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().is_supportive
 
 		# set votings
@@ -955,7 +955,7 @@ class Dbas(object):
 
 	# ajax - send new start premise
 	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
-	def set_new_start_premise(self, for_api=False): # TODO SORT THIS
+	def set_new_start_premise(self, for_api=False):
 		"""
 		Sets new premise for the start
 		:param for_api: boolean
@@ -977,34 +977,16 @@ class Dbas(object):
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 			issue           = _qh.get_issue(self.request)
 
-			new_arguments = []
-			for group in premisegroups:
-				new_argument_uid = _qh.set_premises_as_group_for_conclusion(transaction, user_id, group, conclusion_id, supportive, issue)
-				if new_argument_uid == -1:
-					return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-					return _dh.dictionary_to_json_array(return_dict, True)
-					
-				new_arguments.append(new_argument_uid)
+			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id, supportive, issue, user_id)
+			return_dict['error'] = error
 
-			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
-			url = ''
-			return_dict['error']  = ''
-			if len(new_arguments) > 1:
-				pgroups = []
-				for argument in new_arguments:
-					pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
-				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
-			elif len(new_arguments) == 0:
-				return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-			else:
-				new_argument_uid    = random.choice(new_arguments)
-				arg_id_sys, attack  = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
-				url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+			if url == -1:
+				return _dh.dictionary_to_json_array(return_dict, True)
 
-			return_dict['url']    = url
+			return_dict['url'] = url
 		except KeyError as e:
 			logger('set_new_start_premise', 'error', repr(e))
-			return_dict['error']    = _tn.get(_tn.notInsertedErrorBecauseInternal)
+			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
 		return_json = _dh.dictionary_to_json_array(return_dict, True)
 
@@ -1012,7 +994,7 @@ class Dbas(object):
 
 	# ajax - send new premises
 	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json', check_csrf=True)
-	def set_new_premises_for_argument(self, for_api=False): # TODO SORT THIS
+	def set_new_premises_for_argument(self, for_api=False):
 		"""
 		Sets a new premisse for an argument
 		:param for_api: boolean
@@ -1024,6 +1006,7 @@ class Dbas(object):
 		logger('set_new_premises_for_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		return_dict = dict()
+		_qh = QueryHelper()
 		_dh = DictionaryHelper()
 		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
 
@@ -1031,39 +1014,15 @@ class Dbas(object):
 			arg_uid         = self.request.params['arg_uid']
 			attack_type     = self.request.params['attack_type']
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
-			supportive      = self.request.params['supportive']
+			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
+			issue           = _qh.get_issue(self.request)
 
-			issue = QueryHelper().get_issue(self.request)
+			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type, premisegroups, supportive, issue, user_id)
+			return_dict['error'] = error
 
-			new_arguments = []
-			for group in premisegroups:
-				new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(group, attack_type, arg_uid, issue,
-				                                                                         self.request.authenticated_userid,
-				                                                                         transaction)
-				if new_argument_uid == -1:
-					return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-					return _dh.dictionary_to_json_array(return_dict, True)
+			if url == -1:
+				return _dh.dictionary_to_json_array(return_dict, True)
 
-				new_arguments.append(new_argument_uid)
-
-			return_dict['error'] = ''
-			url = ''
-			slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
-			if len(new_arguments) == 0:
-				return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-			elif len(new_arguments) == 1:
-				new_argument_uid = random.choice(new_arguments)
-
-				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
-				if arg_id_sys == 0:
-					attack = 'end'
-
-				url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-			else:
-				pgroups = []
-				for argument in new_arguments:
-					pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
-				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
 			return_dict['url'] = url
 
 		except KeyError as e:

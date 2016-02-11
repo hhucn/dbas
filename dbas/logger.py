@@ -12,4 +12,5 @@ def logger(who, when, what):
 	:param what: what mesage
 	:return: None
 	"""
-	logging.getLogger(__name__).debug('[' + who.upper() + '] ' + when + ': ' + what)
+	if '- - -' in who:
+		logging.getLogger(__name__).debug('[' + who.upper() + '] ' + when + ': ' + what)
