@@ -112,8 +112,8 @@ def discussion_init(request):
 # POST / GET EXAMPLE
 # =============================================================================
 
-hello = Service(name='api', path='/hello', description="Simplest app")
-values = Service(name='foo', path='/values/{value}', description="Cornice Demo")
+hello = Service(name='api', path='/hello', description="Simplest app", cors_policy=cors_policy)
+values = Service(name='foo', path='/values/{value}', description="Cornice Demo", cors_policy=cors_policy)
 
 _VALUES = {}
 

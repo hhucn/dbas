@@ -72,7 +72,6 @@ Docs
 
 .. todo::
     * conf.py
-       * sys.path.append('/home/n2o/.virtualenvs/dbas/lib/python3.5/site-packages')
        * version automatsiert auslesen
        * language setzen
 

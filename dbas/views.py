@@ -715,10 +715,10 @@ class Dbas(object):
 			# check for user and password validations
 			if not db_user:
 				logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
-				message = 'User does not exists'
+				message = 'User / Password do not match'
 			elif not db_user.validate_password(password):
 				logger('user_login', 'password not valid', 'wrong password')
-				message = 'Wrong password'
+				message = 'User / Password do not match'
 			else:
 				logger('user_login', 'login', 'login successful')
 				headers = remember(self.request, nickname)

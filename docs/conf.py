@@ -23,8 +23,17 @@ import sphinx_rtd_theme
 #sys.path.insert(0, os.path.abspath('.'))
 
 sys.path.insert(0, os.path.abspath('..'))
-sys.path.append('/home/n2o/.virtualenvs/dbas/lib/python3.5/site-packages')
-import pyramid
+
+try:
+    import pyramid
+except ImportError:
+    try:
+        # Find dbas-virtualenv and include it to the path. Then load pyramid for autodocs
+        path_to_virtualenv = os.environ['VIRTUAL_ENV'] + '/lib/python' + sys.version[:3] + '/site-packages'
+        sys.path.append(path_to_virtualenv)
+        import pyramid
+    except ImportError:
+        print("Could not find the location of dbas' virtualenv. Have you activated your environment? For example: $ workon dbas")
 
 # -- General configuration ------------------------------------------------
 
