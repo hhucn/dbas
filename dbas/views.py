@@ -1025,9 +1025,8 @@ class Dbas(object):
 			arg_uid         = self.request.params['arg_uid']
 			attack_type     = self.request.params['attack_type']
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
-			supportive      = True if [c for c in ('support', 'overbid') if c in relation] else False
+			supportive      = attack_type == 'support' or attack_type == 'overbid'
 			issue           = _qh.get_issue_id(self.request)
-
 
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, supportive, issue,
