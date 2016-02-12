@@ -134,7 +134,13 @@ function InteractionHandler() {
 	this.sendStatement = function (text, conclusion, supportive, arg, relation, type) {
 		// error on "no text"
 		if (text.length == 0) {
-			new GuiHandler().setErrorDescription(_t(inputEmpty));
+			if (type==fuzzy_start_statement){
+				$('#' + addStatementErrorContainer).show();
+				$('#' + addStatementErrorMsg).text(_t(inputEmpty));
+			} else {
+				$('#' + addPremiseErrorContainer).show();
+				$('#' + addPremiseErrorMsg).text(_t(inputEmpty));
+			}
 		} else {
 			var undecided_texts = [], decided_texts = [];
 			if ($.isArray(text)) {

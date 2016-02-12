@@ -16,11 +16,13 @@ from .url_manager import UrlManager
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
-
 class QueryHelper(object):
 	"""
 
 	"""
+
+	def __init__(self):
+		self.__statement_min_length = 1
 
 	# ########################################
 	# ARGUMENTS
@@ -187,8 +189,7 @@ class QueryHelper(object):
 
 		return None if len(return_array) == 0 else return_array
 
-	def handle_insert_new_premises_for_argument(self, text, current_attack, arg_uid, issue, user,
-	                                            transaction):
+	def handle_insert_new_premises_for_argument(self, text, current_attack, arg_uid, issue, user, transaction):
 		"""
 
 		:param text:
@@ -220,8 +221,10 @@ class QueryHelper(object):
 		elif current_attack == 'rebut':
 			new_argument, duplicate = self.__set_new_rebut(transaction, new_pgroup_uid, current_argument, db_user, issue)
 
-		logger('---------', 'NEW ARGUMENT IS ' + str(new_argument.uid), 'PGROUP: ' + str(new_pgroup_uid) +
-		       ', TO ' + str(current_argument.conclusion_uid) + '/' + str(current_argument.argument_uid))
+		logger('---------', 'NEW ARGUMENT IS ' + str(new_argument.uid), 'PGROUP: ' + str(new_pgroup_uid) + ', TO ' + str(current_argument.conclusion_uid) + '/' + str(current_argument.argument_uid))
+		logger('---------', 'NEW ARGUMENT IS ' + str(new_argument.uid), 'PGROUP: ' + str(new_pgroup_uid) + ', TO ' + str(current_argument.conclusion_uid) + '/' + str(current_argument.argument_uid))
+		logger('---------', 'NEW ARGUMENT IS ' + str(new_argument.uid), 'PGROUP: ' + str(new_pgroup_uid) + ', TO ' + str(current_argument.conclusion_uid) + '/' + str(current_argument.argument_uid))
+		logger('---------', 'NEW ARGUMENT IS ' + str(new_argument.uid), 'PGROUP: ' + str(new_pgroup_uid) + ', TO ' + str(current_argument.conclusion_uid) + '/' + str(current_argument.argument_uid))
 
 		return new_argument.uid
 
@@ -1111,15 +1114,13 @@ class QueryHelper(object):
 		return url, error
 
 	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_id, attack_type, premisegroups,
-	                                                            supportive, issue, user, for_api, mainpage, lang,
-	                                                            recommenderHelper):
+	                                                            issue, user, for_api, mainpage, lang, recommenderHelper):
 		"""
 
 		:param transaction:
 		:param arg_id:
 		:param attack_type:
 		:param premisegroups:
-		:param supportive:
 		:param issue:
 		:param user:
 		:param for_api:
@@ -1132,6 +1133,7 @@ class QueryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 		error = ''
 		url = ''
+		supportive      = attack_type == 'support' or attack_type == 'overbid'
 
 		# insert all premisegroups into our databse
 		# all new arguments are collected in a list
@@ -1161,7 +1163,25 @@ class QueryHelper(object):
 			pgroups = []
 			for argument in new_arguments:
 				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
-			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, True, supportive, arg_id, pgroups)
+
+			current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_id).first()
+			# relation to the arguments premisegroup
+			if attack_type == 'undermine' or attack_type == 'support':
+				 # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
+				db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).first()
+				db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
+				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
+
+			# relation to the arguments relation
+			elif attack_type == 'undercut' or attack_type == 'overbid':
+				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, True, supportive, arg_id, pgroups)
+
+			# relation to the arguments conclusion
+			elif attack_type == 'rebut':
+				# TODO WHAT IS WITH ARGUMENT ES CONCLUSION?
+				is_argument = current_argument.conclusion_uid == 0
+				uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
+				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
 
 		return url, error
 
@@ -1241,13 +1261,13 @@ class QueryHelper(object):
 		logger('---','---',str(isinstance(text_list, list)))
 		if isinstance(text_list, list):
 			for text in text_list:
-				if len(text) < 5:  # TODO LENGTH
+				if len(text) < self.__statement_min_length:  # TODO LENGTH
 					return -1
 				else:
 					new_statement, is_duplicate = self.set_statement(transaction, text, user, is_start, issue)
 					statements.append(new_statement)
 		else:
-			if len(text_list) < 5:  # TODO LENGTH
+			if len(text_list) < self.__statement_min_length:  # TODO LENGTH
 				return -1
 			else:
 				new_statement, is_duplicate = self.set_statement(transaction, text_list, user, is_start, issue)

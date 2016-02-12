@@ -111,7 +111,7 @@ class UrlManager(object):
 		is_arg = 't' if is_argument else 'f'
 		is_sup = 't' if is_supportive else 'f'
 		pgroups = ('/' + '/'.join(str(x) for x in pgroup_id_list)) if len(pgroup_id_list) > 0 else ''
-		url = self.slug + '/choose/' + is_arg + '/' + is_sup + '/' + statement_or_argument_id + pgroups
+		url = self.slug + '/choose/' + is_arg + '/' + is_sup + '/' + str(statement_or_argument_id) + str(pgroups)
 		return self.__return_url(as_location_href, url)
 
 	def __return_url(self, as_location_href, url):

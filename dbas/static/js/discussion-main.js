@@ -314,13 +314,15 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 			supportive = splits[splits.length - 1] == 't';
 			text = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
-				text.push($(this).val());
+				if ($(this).val().length > 0)
+					text.push($(this).val());
 			});
 			interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
 		}, sendArgumentsPremise = function (){
 			text = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
-				text.push($(this).val());
+				if ($(this).val().length > 0)
+					text.push($(this).val());
 			});
 			arg = splits[splits.length - 3];
 			supportive = splits[splits.length - 2] == 't';

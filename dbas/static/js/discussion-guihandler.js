@@ -302,7 +302,7 @@ function GuiHandler() {
 			input1, input2, input3, list, bigText, bigTextSpan, connection, i;
 
 		if (topic.match(/\.$/)){
-			topic = topic.substr(0, topic.length-2) + ', '
+			topic = topic.substr(0, topic.length-1) + ', '
 		}
 
 		div_page.attr('id', id + page_no).attr('page', page_no).show();
