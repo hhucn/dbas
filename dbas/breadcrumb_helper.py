@@ -75,7 +75,7 @@ class BreadcrumbHelper(object):
 			hist['index']       = str(index)
 			hist['url']         = str(history.url)
 			hist['text']        = self.__get_text_for_url__(history.url, lang)
-			hist['shorttext']   = hist['text'][0:30] + '...' if len(hist['text']) > 30 else hist['text']
+			hist['shorttext']   = hist['text'][0:30] + '...' if len(hist['text']) > 35 else hist['text']
 			breadcrumbs.append(hist)
 
 		return breadcrumbs

@@ -12,7 +12,6 @@
  * @param ajaxHandler
  */
 setClickFunctions = function (guiHandler, ajaxHandler){
-
 	$('.icon-add-premise').each(function() {
 		$(this).click(function() {
 			guiHandler.appendAddPremiseRow($(this));
@@ -305,7 +304,30 @@ setGuiOptions = function(){
 };
 
 setInputExtraOptions = function(guiHandler, interactionHandler){
-	var input = $('#' + discussionSpaceId + ' li:last-child input'), text = [], splits, conclusion, supportive, arg, relation;
+	var input = $('#' + discussionSpaceId + ' li:last-child input'),
+		text = [], splits = window.location.href.split('/'), conclusion, supportive, arg, relation,
+		sendStartStatement = function(){
+			text = $('#' + addStatementContainerMainInputId).val();
+			interactionHandler.sendStatement(text, '', '', '', '', fuzzy_start_statement);
+		}, sendStartPremise = function(){
+			conclusion = splits[splits.length - 2];
+			supportive = splits[splits.length - 1] == 't';
+			text = [];
+			$('#' + addPremiseContainerBodyId + ' input').each(function () {
+				text.push($(this).val());
+			});
+			interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
+		}, sendArgumentsPremise = function (){
+			text = [];
+			$('#' + addPremiseContainerBodyId + ' input').each(function () {
+				text.push($(this).val());
+			});
+			arg = splits[splits.length - 3];
+			supportive = splits[splits.length - 2] == 't';
+			relation = splits[splits.length - 1];
+			interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
+		};
+
 	if (window.location.href.indexOf('/r/') != -1){
 		$('#' + discussionSpaceId + ' label').each(function(){
 			$(this).css('width', '95%');
@@ -316,51 +338,54 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 		$(this).attr('checked', false).prop('checked', false);
 	});
 
-	// TODO CLEAR DESIGN
-	// options for the extra buttons, where the user can add input!
-	input.attr('onclick', '');
-	input.change(function () {
-		if (input.prop('checked')){
-			// new position at start
-			if (input.attr('id').indexOf('start_statement') != -1){
-				// guiHandler.showHowToWriteTextPopup();
-				guiHandler.showAddPositionContainer();
-				$('#' + sendNewStatementId).click(function(){
-					text = $('#' + addStatementContainerMainInputId).val();
-					interactionHandler.sendStatement(text, '', '', '', '', fuzzy_start_statement);
-				});
-			}
-
-			// new premise for the start
-			else if (input.attr('id').indexOf('start_premise') != -1){
-				// guiHandler.showHowToWriteTextPopup();
-				guiHandler.showAddPremiseContainer();
-				$('#' + sendNewPremiseId).click(function(){
-					splits = window.location.href.split('/');
-					conclusion = splits[splits.length - 2];
-					supportive = splits[splits.length - 1] == 't';
-					text = [];
-					$('#' + addPremiseContainerBodyId + ' input').each(function(){ text.push($(this).val()); });
-					interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
-				});
-			}
-
-			// new premise while judging
-			else if (input.attr('id').indexOf('justify_premise') != -1){
-				// guiHandler.showHowToWriteTextPopup();
-				guiHandler.showAddPremiseContainer();
-				$('#' + sendNewPremiseId).click(function() {
-					splits = window.location.href.split('/');
-					text = [];
-					$('#' + addPremiseContainerBodyId + ' input').each(function () { text.push($(this).val()); });
-					arg = splits[splits.length - 3];
-					supportive = splits[splits.length - 2] == 't';
-					relation = splits[splits.length - 1];
-					interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
-				});
-			}
+	$('#' + sendNewStatementId).off("click").click(function(){
+		if ($(this).attr('name').indexOf('start') != -1){
+			sendStartStatement();
 		}
 	});
+	$('#' + sendNewPremiseId).off("click").click(function(){
+		if ($(this).attr('name').indexOf('justify') != -1){
+			sendStartPremise();
+		} else if ($(this).attr('name').indexOf('start') != -1){
+			sendArgumentsPremise();
+		}
+	});
+
+	// TODO CLEAR DESIGN
+	// options for the extra buttons, where the user can add input!
+	if (window.location.href.indexOf('/attitude/') == -1) {
+		input.attr('onclick', '');
+		input.change(function () {
+			if (input.prop('checked')) {
+				// new position at start
+				if (input.attr('id').indexOf('start_statement') != -1) {
+					// guiHandler.showHowToWriteTextPopup();
+					guiHandler.showAddPositionContainer();
+					$('#' + sendNewStatementId).off("click").click(function () {
+						sendStartStatement();
+					});
+				}
+
+				// new premise for the start
+				else if (input.attr('id').indexOf('start_premise') != -1) {
+					// guiHandler.showHowToWriteTextPopup();
+					guiHandler.showAddPremiseContainer();
+					$('#' + sendNewPremiseId).off("click").click(function () {
+						sendStartPremise();
+					});
+				}
+
+				// new premise while judging
+				else if (input.attr('id').indexOf('justify_premise') != -1) {
+					// guiHandler.showHowToWriteTextPopup();
+					guiHandler.showAddPremiseContainer();
+					$('#' + sendNewPremiseId).off("click").click(function () {
+						sendArgumentsPremise();
+					});
+				}
+			}
+		});
+	}
 };
 
 /**

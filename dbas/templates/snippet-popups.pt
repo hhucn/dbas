@@ -561,8 +561,8 @@
 				</div>
 	    		<div class="modal-footer">
 	    			<ul class="pager" style="margin: 0;">
-	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" style="float: left;" tal:attributes="title extras.button.previous">←</a></li>
-	    				<li class="next"><a href="#" id="popup-set-premisegroups-next-button" style="float: left;" tal:attributes="title extras.button.next">→</a></li>
+	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" style="float: left;" tal:attributes="title extras.buttons.previous">←</a></li>
+	    				<li class="next"><a href="#" id="popup-set-premisegroups-next-button" style="float: left;" tal:attributes="title extras.buttons.next">→</a></li>
 	    				<li><button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" i18n:translate="save_my_statement" style="float: right;" >Save my Statement!</button></li>
 	    			</ul>
 	    		</div>

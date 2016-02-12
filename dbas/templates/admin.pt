@@ -18,7 +18,7 @@
 				<div class="col-md-8">
 					<h4><span class="lead" i18n:translate="participant_list">List of participants</span></h4>
 					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
-					<input id="list-all-users" type="button" name="" value="Show all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.button.showAllUsers"/>
+					<input id="list-all-users" type="button" name="" value="Show all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_users"/>
 				</div>
 				<div class="col-md-2"></div>
 				<div class="col-md-12">
@@ -33,7 +33,7 @@
 				<div class="col-md-8">
 					<h4><span class="lead" i18n:translate="list_attacks">List of attacks, clicked by the participants</span></h4>
 					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
-					<input id="list-all-arguments" type="button" name="" value="Show all arguments" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.button.showAllArguments"/>
+					<input id="list-all-arguments" type="button" name="" value="Show all arguments" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_arguments"/>
 				</div>
 				<div class="col-md-2"></div>
 				<div class="col-md-12">

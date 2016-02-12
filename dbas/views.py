@@ -15,7 +15,7 @@ from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
 
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument
+from .database.discussion_model import User, Group, Issue, Argument, Statement
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
@@ -196,8 +196,6 @@ class Dbas(object):
 		# '/a*slug'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
-		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
-		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
@@ -205,11 +203,12 @@ class Dbas(object):
 			slug = self.request.matchdict['slug'] if 'slug' in self.request.matchdict else ''
 		else:
 			slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
-		logger('discussion_init', 'def', slug)
-		logger('discussion_init', 'def', slug)
-		logger('discussion_init', 'def', slug)
+		logger('discussion_init', 'def', 'slug: ' + slug)
+		logger('discussion_init', 'def', 'slug: ' + slug)
+		logger('discussion_init', 'def', 'slug: ' + slug)
 
-		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+
+		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
@@ -226,7 +225,7 @@ class Dbas(object):
 		                                          application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
-			_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_start=True)
+			_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_start=True)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -261,7 +260,7 @@ class Dbas(object):
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
-		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
@@ -317,7 +316,7 @@ class Dbas(object):
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
-		issue               = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales          = _qh.get_language(self.request, get_current_registry())
 		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
@@ -339,7 +338,7 @@ class Dbas(object):
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
 				                            at_justify=True, current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
 		elif 'd' in mode and relation == '':
@@ -352,7 +351,8 @@ class Dbas(object):
 			                                          argument_id=argument_uid, breadcrumbs=breadcrumbs, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_dont_know=True)
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_dont_know=True,
+				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
@@ -367,7 +367,7 @@ class Dbas(object):
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_qh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
 				                            at_justify_argumentation=True)
 		else:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'j', statement_or_arg_id, mode, relation]))
@@ -412,7 +412,7 @@ class Dbas(object):
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
 
-		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
@@ -474,7 +474,7 @@ class Dbas(object):
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
 
-		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
+		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
@@ -941,14 +941,17 @@ class Dbas(object):
 
 		logger('set_new_start_statement', 'def', 'main')
 
+		_qh = QueryHelper()
+		lang = _qh.get_language(self.request, get_current_registry())
+		_tn = Translator(lang)
 		return_dict = dict()
 		return_dict['error'] = ''
 		try:
 			statement   = self.request.params['statement']
-			issue       = QueryHelper().get_issue(self.request)
+			issue       = _qh.get_issue_id(self.request)
 			slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-			new_statement, is_duplicate = QueryHelper().set_statement(transaction, statement, self.request.authenticated_userid, True, issue)
+			new_statement = _qh.insert_as_statements(transaction, statement, self.request.authenticated_userid, issue, is_start=True)
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
@@ -984,11 +987,11 @@ class Dbas(object):
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			conclusion_id   = self.request.params['conclusion_id']
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
-			issue           = _qh.get_issue(self.request)
+			issue           = _qh.get_issue_id(self.request)
 
 			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
 			                                                                 supportive, issue, user_id, for_api,
-			                                                                 mainpage, lang)
+			                                                                 mainpage, lang, RecommenderHelper())
 			return_dict['error'] = error
 
 			if url == -1:
@@ -1027,11 +1030,12 @@ class Dbas(object):
 			attack_type     = self.request.params['attack_type']
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
-			issue           = _qh.get_issue(self.request)
+			issue           = _qh.get_issue_id(self.request)
 
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, supportive, issue,
-			                                                                         user_id, for_api, mainpage, lang)
+			                                                                         user_id, for_api, mainpage, lang,
+			                                                                         recommenderHelper)
 			return_dict['error'] = error
 
 			if url == -1:
@@ -1161,7 +1165,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_argument_overview', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		issue = QueryHelper().get_issue(self.request)
+		issue = QueryHelper().get_issue_id(self.request)
 		return_dict = QueryHelper().get_attack_overview(self.request.authenticated_userid, issue, ui_locales)
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -1188,7 +1192,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_database_dump', 'def', 'main')
 		_qh = QueryHelper()
-		issue = _qh.get_issue(self.request)
+		issue = _qh.get_issue_id(self.request)
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 
 		return_dict = _qh.get_dump(issue, ui_locales)
@@ -1273,7 +1277,7 @@ class Dbas(object):
 		try:
 			value = self.request.params['value']
 			mode = str(self.request.params['type'])
-			issue = QueryHelper().get_issue(self.request)
+			issue = QueryHelper().get_issue_id(self.request)
 
 			return_dict = dict()
 			# return_dict['distance_name'] = 'SequenceMatcher'  # TODO improve fuzzy search

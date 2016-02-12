@@ -130,7 +130,7 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
 function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
 	// display dialog only if the cookie was not set yet
 	if (new Helper().isCookieSet(WARNING_CHANGE_DISCUSSION_POPUP)){
-		window.location.href = mainpage + 'discussion/start/issue=' + functionForAccept;
+		window.location.href = functionForAccept;
 	} else {
 		$('#' + popupConfirmChecbkoxDialogId).modal('show');
 		$('#' + popupConfirmChecbkoxDialogId + ' h4.modal-title').text(titleText);
@@ -143,10 +143,11 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 				new Helper().setCookie(WARNING_CHANGE_DISCUSSION_POPUP);
 			}
 
-			if (isRestartingDiscussion)
-			window.location.href = functionForAccept;
-			else
+			if (isRestartingDiscussion) {
+				window.location.href = functionForAccept;
+			} else {
 				functionForAccept();
+			}
 
 		});
 		$('#' + popupConfirmChecbkoxDialogRefuseBtn).click( function () {

@@ -201,7 +201,7 @@ class QueryHelper(object):
 		"""
 		logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'def')
 
-		statements = self.__insert_as_statements(transaction, text, user, issue)
+		statements = self.insert_as_statements(transaction, text, user, issue)
 
 		# second, set the new statements as premisegroup
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(transaction, statements, user, False, issue)
@@ -412,7 +412,7 @@ class QueryHelper(object):
 		"""
 		return len(DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all())
 
-	def get_issue(self, request):
+	def get_issue_id(self, request):
 		"""
 		Returns issue uid
 		:param request: self.request
@@ -646,7 +646,7 @@ class QueryHelper(object):
 			                                 'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 		return ret_dict
 
-	def get_id_of_slug(self, slug, request):
+	def get_id_of_slug(self, slug, request, save_id_in_session):
 		"""
 		Returns the uid
 		:param slug: slug
@@ -656,8 +656,10 @@ class QueryHelper(object):
 		db_issues = DBDiscussionSession.query(Issue).all()
 		for issue in db_issues:
 			if str(slugify(issue.title)) == str(slug):
+				if save_id_in_session:
+					request.session['issue'] = issue.uid
 				return issue.uid
-		return self.get_issue(request)
+		return self.get_issue_id(request)
 
 	def get_everything_for_island_view(self, arg_uid, lang):
 		"""
@@ -1004,7 +1006,7 @@ class QueryHelper(object):
 		# current conclusion
 		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                          Statement.issue_uid == issue)).first()
-		statements = self.__insert_as_statements(transaction, text, user, issue)
+		statements = self.insert_as_statements(transaction, text, user, issue)
 
 		# second, set the new statements as premisegroup
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(transaction, statements, user, False, issue)
@@ -1019,56 +1021,7 @@ class QueryHelper(object):
 	# OTHER
 	# ########################################
 
-	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False,
-	                            at_justify_argumentation=False, at_justify=False, current_premise=''):
-		"""
-
-		:param discussion_dict: dict()
-		:param extras_dict: dict()
-		:param logged_in: Boolean
-		:param lang: String
-		:param at_start: Boolean
-		:param at_dont_know: Boolean
-		:param at_justify_argumentation: Boolean
-		:param at_justify: Boolean
-		:param current_premise: id
-		:return: None
-		"""
-		logger('QueryHelper', 'add_discussion_end_text', 'main')
-		_t = Translator(lang)
-		discussion_dict['heading'] += '<br><br>'
-
-		if at_start:
-			discussion_dict['heading'] = _t.get(_t.firstPositionText)
-			if logged_in:
-				extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
-				discussion_dict['heading']      += '<br><br>' + _t.get(_t.pleaseAddYourSuggestion)
-			else:
-				discussion_dict['heading']      += '<br><br>' + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin)
-			extras_dict['show_display_style']   = False
-			extras_dict['show_bar_icon']        = False
-			extras_dict['is_editable']          = False
-			extras_dict['is_reportable']        = False
-
-		elif at_justify_argumentation:
-			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
-			extras_dict['show_display_style'] = False
-
-		elif at_dont_know:
-			discussion_dict['heading'] += _t.get(_t.otherParticipantsDontHaveOpinion) + '<br><br>' + (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndLinkText))
-
-		elif at_justify:
-			discussion_dict['heading'] = _t.get(_t.firstPremiseText1) + ' <strong>' + current_premise + '</strong>.<br><br>' + _t.get(_t.whyDoYouThinkThat) + '?'
-			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
-			extras_dict['show_display_style']   = False
-			extras_dict['show_bar_icon']        = False
-			extras_dict['is_editable']          = False
-			extras_dict['is_reportable']        = False
-
-		else:
-			discussion_dict['heading'] += _t.get(_t.discussionEnd) + ' ' + (_t.get(_t.discussionEndLinkText) if logged_in else _t.get(_t.feelFreeToLogin))
-
-	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive, issue, user, for_api, mainpage, lang):
+	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive, issue, user, for_api, mainpage, lang, recommenderHelper):
 		"""
 
 		:param transaction:
@@ -1107,7 +1060,7 @@ class QueryHelper(object):
 
 		elif len(new_arguments) == 1:
 			new_argument_uid    = random.choice(new_arguments)
-			arg_id_sys, attack  = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+			arg_id_sys, attack  = recommenderHelper.get_attack_for_argument(new_argument_uid, issue)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 
 		else:
@@ -1143,7 +1096,7 @@ class QueryHelper(object):
 		new_arguments = []
 		for group in premisegroups:  # premisegroups is a list of lists
 			new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(group, attack_type, arg_uid, issue,
-			                                                                         user, transaction)
+			                                                                         user, transaction, recommenderHelper)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
@@ -1158,7 +1111,7 @@ class QueryHelper(object):
 
 		elif len(new_arguments) == 1:
 			new_argument_uid = random.choice(new_arguments)
-			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(new_argument_uid, issue)
+			arg_id_sys, attack = recommenderHelper.get_attack_for_argument(new_argument_uid, issue)
 			if arg_id_sys == 0:
 				attack = 'end'
 
@@ -1231,22 +1184,30 @@ class QueryHelper(object):
 		return_dict['text'] = corrected_text
 		return return_dict
 
-	def __insert_as_statements(self, transaction, text_list, user, issue):
+	def insert_as_statements(self, transaction, text_list, user, issue, is_start=False):
 		"""
 
 		:param transaction:
 		:param text_list:
+		:param user:
+		:param issue:
+		:param is_start:
 		:return:
 		"""
 		statements = []
+		logger('---','---',str(isinstance(text_list, list)))
+		logger('---','---',str(isinstance(text_list, list)))
+		logger('---','---',str(isinstance(text_list, list)))
 		if isinstance(text_list, list):
 			for text in text_list:
 				if len(text) < 5:  # TODO LENGTH
 					return -1
 				else:
-					new_statement, is_duplicate = self.set_statement(transaction, text, user, False, issue)
+					new_statement, is_duplicate = self.set_statement(transaction, text, user, is_start, issue)
 					statements.append(new_statement)
 		else:
-			new_statement, is_duplicate = self.set_statement(transaction, text_list, user, False, issue)
-			statements.append(new_statement)
+			if len(text_list) < 5:  # TODO LENGTH
+				return -1
+			else:
+				statements, is_duplicate = self.set_statement(transaction, text_list, user, is_start, issue)
 		return statements

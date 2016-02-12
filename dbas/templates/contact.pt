@@ -67,7 +67,7 @@
 					<span class="sr-only" i18n:translate="great">Great:</span> <span i18n:translate="message_sent">Your message was sent.</span>
 				</div>
 				<div class="text-center">
-				<input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" tal:attributes="value extras.button.contactSubmit"/>
+				<input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
 				</div>
 			</form>
 			<!--

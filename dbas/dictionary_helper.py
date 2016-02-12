@@ -163,7 +163,7 @@ class DictionaryHelper(object):
 			if text:
 				heading         = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
 			                     + '</strong>. ' + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
-			else:
+			else: # this will be set in add_discussion_end_text, because if we have no argument, the item_dict will be empty
 				heading         = _tn.get(_tn.firstOneText) + ' <strong>' + _qh.get_text_for_statement_uid(additional_id) + '</strong>.'
 
 		elif at_argumentation:
@@ -201,7 +201,7 @@ class DictionaryHelper(object):
 			heading += '</strong>'
 			heading += '? ' + _tn.get(_tn.because) + '...'
 
-		return {'heading': heading, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url}
+		return {'heading': heading, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
 	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang, application_url, for_api):
 		"""
@@ -523,31 +523,32 @@ class DictionaryHelper(object):
 		return_dict['users_name']                    = str(authenticated_userid)
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'
+		return_dict['close_premise_container']       = True
+		return_dict['close_statement_container']     = True
 		return_dict['title']                         = {'barometer': _tn.get(_tn.opinionBarometer),
 													 	 'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 													 	 'island_view': _tn.get(_tn.displayControlDialogIslandBody),
 													 	 'expert_view': _tn.get(_tn.displayControlDialogExpertBody)}
-		return_dict['button']                         = {'report': _tn.get(_tn.report),
-														 'report_title': _tn.get(_tn.reportTitle),
-														 'acceptIt': _tn.get(_tn.acceptIt),
-														 'showAllArguments': _tn.get(_tn.showAllArguments),
-														 'showAllUsers': _tn.get(_tn.showAllUsers),
-														 'deleteTrack': _tn.get(_tn.deleteTrack),
-														 'requestTrack': _tn.get(_tn.requestTrack),
-														 'deleteHistory': _tn.get(_tn.deleteHistory),
-														 'requestHistory': _tn.get(_tn.requestHistory),
-														 'passwordSubmit': _tn.get(_tn.passwordSubmit),
-														 'contactSubmit': _tn.get(_tn.contactSubmit),
-														 'letsGo': _tn.get(_tn.letsGo),
-														 'opinionBarometer': _tn.get(_tn.opinionBarometer),
-														 'edit_statement': _tn.get(_tn.editTitle),
-														 'more_title': _tn.get(_tn.more),
-														 'previous': _tn.get(_tn.previous),
-														 'next': _tn.get(_tn.next),
-														 'save_my_statement': _tn.get(_tn.saveMyStatement),
-		                                                 'add_statement_row_title': _tn.get(_tn.addStatementRow),
-		                                                 'rem_statement_row_title': _tn.get(_tn.remStatementRow),
-		                                                 'switch_discussion': _tn.get(_tn.switchDiscussionTitle)}
+		return_dict['buttons']                         = {'report': _tn.get(_tn.report),
+		                                                  'report_title': _tn.get(_tn.reportTitle),
+		                                                  'show_all_arguments': _tn.get(_tn.showAllArguments),
+		                                                  'show_all_users': _tn.get(_tn.showAllUsers),
+		                                                  'delete_track': _tn.get(_tn.deleteTrack),
+		                                                  'request_track': _tn.get(_tn.requestTrack),
+		                                                  'delete_history': _tn.get(_tn.deleteHistory),
+		                                                  'request_history': _tn.get(_tn.requestHistory),
+		                                                  'password_submit': _tn.get(_tn.passwordSubmit),
+		                                                  'contact_submit': _tn.get(_tn.contactSubmit),
+		                                                  'lets_go': _tn.get(_tn.letsGo),
+		                                                  'opinion_barometer': _tn.get(_tn.opinionBarometer),
+		                                                  'edit_statement': _tn.get(_tn.editTitle),
+		                                                  'more_title': _tn.get(_tn.more),
+		                                                  'previous': _tn.get(_tn.previous),
+		                                                  'next': _tn.get(_tn.next),
+		                                                  'save_my_statement': _tn.get(_tn.saveMyStatement),
+		                                                  'add_statement_row_title': _tn.get(_tn.addStatementRow),
+		                                                  'rem_statement_row_title': _tn.get(_tn.remStatementRow),
+		                                                  'switch_discussion': _tn.get(_tn.switchDiscussionTitle)}
 		if not for_api:
 			return_dict['breadcrumbs']               = breadcrumbs
 		self.add_language_options_for_extra_dict(return_dict, lang)
@@ -576,6 +577,64 @@ class DictionaryHelper(object):
 		                                                'edit_statement': _tn.get(_tn.editTitle),
 		                                                'report_statement': _tn.get(_tn.reportTitle)}
 		return return_dict
+
+	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False,
+	                            at_justify_argumentation=False, at_justify=False, current_premise=''):
+		"""
+
+		:param discussion_dict: dict()
+		:param extras_dict: dict()
+		:param logged_in: Boolean
+		:param lang: String
+		:param at_start: Boolean
+		:param at_dont_know: Boolean
+		:param at_justify_argumentation: Boolean
+		:param at_justify: Boolean
+		:param current_premise: id
+		:return: None
+		"""
+		logger('QueryHelper', 'add_discussion_end_text', 'main')
+		_t = Translator(lang)
+		discussion_dict['heading'] += '<br><br>'
+
+		if at_start:
+			discussion_dict['mode'] = 'start'
+			discussion_dict['heading'] = _t.get(_t.firstPositionText)
+			if logged_in:
+				extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
+				extras_dict['close_statement_container'] = False
+				discussion_dict['heading']      += '<br><br>' + _t.get(_t.pleaseAddYourSuggestion)
+			else:
+				discussion_dict['heading']      += '<br><br>' + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin)
+			extras_dict['show_display_style']   = False
+			extras_dict['show_bar_icon']        = False
+			extras_dict['is_editable']          = False
+			extras_dict['is_reportable']        = False
+
+		elif at_justify_argumentation:
+			discussion_dict['mode'] = 'justify_argumentation'
+			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
+			extras_dict['close_premise_container'] = False
+			extras_dict['show_display_style'] = False
+
+		elif at_dont_know:
+			discussion_dict['mode'] = 'dont_know'
+			discussion_dict['heading'] = _t.get(_t.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
+			discussion_dict['heading'] += _t.get(_t.butOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '<br><br>'
+			discussion_dict['heading'] +=  _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndLinkText)
+
+		elif at_justify:
+			discussion_dict['mode'] = 'justify'
+			discussion_dict['heading'] = _t.get(_t.firstPremiseText1) + ' <strong>' + current_premise + '</strong>.<br><br>' + _t.get(_t.whyDoYouThinkThat) + '?'
+			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
+			extras_dict['close_premise_container']  = False
+			extras_dict['show_display_style']       = False
+			extras_dict['show_bar_icon']            = False
+			extras_dict['is_editable']              = False
+			extras_dict['is_reportable']            = False
+
+		else:
+			discussion_dict['heading'] += _t.get(_t.discussionEnd) + ' ' + (_t.get(_t.discussionEndLinkText) if logged_in else _t.get(_t.feelFreeToLogin))
 
 	def add_language_options_for_extra_dict(self, extras_dict, lang):
 		"""
