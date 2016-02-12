@@ -353,7 +353,9 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 
 	// TODO CLEAR DESIGN
 	// options for the extra buttons, where the user can add input!
-	if (window.location.href.indexOf('/attitude/') == -1) {
+	if (input.attr('id').indexOf('start_statement') != -1 ||
+		input.attr('id').indexOf('start_premise') != -1 ||
+		input.attr('id').indexOf('justify_premise') != -1) {
 		input.attr('onclick', '');
 		input.change(function () {
 			if (input.prop('checked')) {

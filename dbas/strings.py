@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .database.discussion_model import User
+from .logger import logger
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -1184,9 +1185,9 @@ class TextGenerator(object):
 		# different cases
 		ret_text = ''
 		if attack_type == 'undermine':
-			ret_text = _t.get(_t.itIsFalse) + ' ' + confrontation + '.'
+			ret_text = _t.get(_t.itIsFalse) + ' ' + premise + '.'
 		if attack_type == 'support':
-			ret_text = _t.get(_t.itIsTrue) + ' ' + confrontation + '.'
+			ret_text = _t.get(_t.itIsTrue) + ' ' + premise + '.'
 		if attack_type == 'undercut':
 			ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounter) + ' ' + conclusion + '.'
 		if attack_type == 'overbid':

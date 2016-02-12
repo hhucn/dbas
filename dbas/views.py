@@ -466,10 +466,6 @@ class Dbas(object):
 
 		is_argument = True if is_argument is 't' else False
 		is_supportive = True if is_supportive is 't' else False
-		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
-		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
-		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
-		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
@@ -955,7 +951,7 @@ class Dbas(object):
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
-				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement.uid)
+				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
 				return_dict['url'] = url
 
 		except KeyError as e:
@@ -1029,13 +1025,14 @@ class Dbas(object):
 			arg_uid         = self.request.params['arg_uid']
 			attack_type     = self.request.params['attack_type']
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
-			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
+			supportive      = True if [c for c in ('support', 'overbid') if c in relation] else False
 			issue           = _qh.get_issue_id(self.request)
+
 
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, supportive, issue,
 			                                                                         user_id, for_api, mainpage, lang,
-			                                                                         recommenderHelper)
+			                                                                         RecommenderHelper())
 			return_dict['error'] = error
 
 			if url == -1:

@@ -174,7 +174,7 @@ function InteractionHandler() {
 				} else if (type == fuzzy_start_premise) {
 					new AjaxSiteHandler().sendNewStartPremise(text, conclusion, supportive);
 				} else  if (type == fuzzy_add_reason) {
-					new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, text);
+					new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, text);
 				}
 			}
 		}

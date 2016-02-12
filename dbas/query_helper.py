@@ -202,6 +202,8 @@ class QueryHelper(object):
 		logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'def')
 
 		statements = self.insert_as_statements(transaction, text, user, issue)
+		if statements == -1:
+			return -1
 
 		# second, set the new statements as premisegroup
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(transaction, statements, user, False, issue)
@@ -1071,7 +1073,7 @@ class QueryHelper(object):
 
 		return url, error
 
-	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_uid, attack_type, premisegroups, supportive, issue, user, for_api, mainpage, lang):
+	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_uid, attack_type, premisegroups, supportive, issue, user, for_api, mainpage, lang, recommenderHelper):
 		"""
 
 		:param transaction:
@@ -1084,6 +1086,7 @@ class QueryHelper(object):
 		:param for_api:
 		:param mainpage:
 		:param lang:
+		:param recommenderHelper:
 		:return:
 		"""
 		_tn = Translator(lang)
@@ -1096,7 +1099,7 @@ class QueryHelper(object):
 		new_arguments = []
 		for group in premisegroups:  # premisegroups is a list of lists
 			new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(group, attack_type, arg_uid, issue,
-			                                                                         user, transaction, recommenderHelper)
+			                                                                         user, transaction)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
@@ -1120,7 +1123,7 @@ class QueryHelper(object):
 			pgroups = []
 			for argument in new_arguments:
 				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
-			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
+			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, True, supportive, arg_uid, pgroups)
 
 		return url, error
 
@@ -1209,5 +1212,6 @@ class QueryHelper(object):
 			if len(text_list) < 5:  # TODO LENGTH
 				return -1
 			else:
-				statements, is_duplicate = self.set_statement(transaction, text_list, user, is_start, issue)
+				new_statement, is_duplicate = self.set_statement(transaction, text_list, user, is_start, issue)
+				statements.append(new_statement)
 		return statements

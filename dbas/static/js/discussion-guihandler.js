@@ -181,7 +181,7 @@ function GuiHandler() {
 			}
 
 			if (type == fuzzy_add_reason){
-				new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, decided_texts);
+				new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
 			} else if (type == fuzzy_start_premise){
 				new AjaxSiteHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
 			} else {

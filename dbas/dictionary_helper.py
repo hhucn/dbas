@@ -150,9 +150,15 @@ class DictionaryHelper(object):
 			premise, tmp        = _qh.get_text_for_premisesgroup_uid(uid)
 			conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
-			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion, False, is_supportive, logged_in)
-			add_premise_text    += _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
-			                                                             db_argument.is_supportive)
+			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion,
+			                                                                False, is_supportive, logged_in)
+			if attack == 'undermine':
+				add_premise_text = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
+				                                                          db_argument.is_supportive)
+				add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
+			else:
+				add_premise_text += _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
+				                                                           db_argument.is_supportive)
 			because             = ' ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 			heading             += because
 			save_statement_url  = 'ajax_set_new_premises_for_argument'
@@ -196,7 +202,6 @@ class DictionaryHelper(object):
 			heading = _tn.get(_tn.soYouEnteredMultipleReasons) + '.<br><br>'
 			heading += _tn.get(_tn.whyAreYouAgreeingWithInColor) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWithInColor)
 			heading += ': <strong>'
-			heading += '</strong>'
 			heading += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
 			heading += '</strong>'
 			heading += '? ' + _tn.get(_tn.because) + '...'
@@ -471,6 +476,10 @@ class DictionaryHelper(object):
 			text, uid = _qh.get_text_for_premisesgroup_uid(group_id)
 
 			# get attack for each premise, so the urls will be unique
+			logger('DictionaryHelper', 'prepare_item_dict_for_choosing', str(group_id))
+			logger('DictionaryHelper', 'prepare_item_dict_for_choosing', str(conclusion))
+			logger('DictionaryHelper', 'prepare_item_dict_for_choosing', str(argument))
+			logger('DictionaryHelper', 'prepare_item_dict_for_choosing', str(is_supportive))
 			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == group_id,
 			                                                              Argument.conclusion_uid == conclusion,
 			                                                              Argument.argument_uid == argument,
