@@ -168,8 +168,8 @@ class DictionaryHelper(object):
 
 		elif at_argumentation:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_argumentation')
-			_tg                 = TextGenerator(lang)
-			db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+			_tg                     = TextGenerator(lang)
+			db_argument             = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 			if attack == 'end':
 				heading             = _tn.get(_tn.sentencesOpenersForArguments[0])\
 				                      + ': <strong>' + _qh.get_text_for_argument_uid(uid, lang, True) + '</strong>.'\
@@ -183,7 +183,9 @@ class DictionaryHelper(object):
 				confrontation, tmp  = _qh.get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
 				# confrontation       = _qh.get_text_for_argument_uid(additional_id, lang)
 
-				reply_for_argument  = True
+				# argumentation is a reply for an argument, if the arguments conclusion of the user is no position
+				db_statement        = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+				reply_for_argument  = not (db_statement and db_statement.is_startpoint)
 				current_argument    = _qh.get_text_for_argument_uid(uid, lang, True)
 				user_is_attacking   = not db_argument.is_supportive
 				heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,

@@ -196,10 +196,18 @@ class Dbas(object):
 		# '/a*slug'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
-		slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
+		if for_api:
+			slug = self.request.matchdict['slug'] if 'slug' in self.request.matchdict else ''
+		else:
+			slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
+		logger('discussion_init', 'def', slug)
+		logger('discussion_init', 'def', slug)
+		logger('discussion_init', 'def', slug)
 
 		issue           = _qh.get_id_of_slug(slug, self.request) if len(slug) > 0 else _qh.get_issue(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
@@ -243,7 +251,7 @@ class Dbas(object):
 		:param for_api: Boolean
 		:return: dictionary
 		"""
-		# '/d/{slug}/a/{statement_id}'
+		# '/discuss/{slug}/attitude/{statement_id}'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
@@ -295,7 +303,7 @@ class Dbas(object):
 		:param for_api: Boolean
 		:return: dictionary
 		"""
-		# '/d/{slug}/j/{statement_or_arg_id}/{mode}*relation'
+		# '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
@@ -387,7 +395,7 @@ class Dbas(object):
 		:param for_api: Boolean
 		:return: dictionary
 		"""
-		# '/d/{slug}/r/{arg_id_user}/{mode}*arg_id_sys'
+		# '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
@@ -444,7 +452,7 @@ class Dbas(object):
 		:param for_api: Boolean
 		:return: dictionary
 		"""
-		# '/d/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
+		# '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict

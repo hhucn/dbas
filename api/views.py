@@ -42,7 +42,7 @@ init       = Service(name='api_init',
 				     path='/{slug}',
 				     description="Discussion Init",
 				     cors_policy=cors_policy)
-init_blank = Service(name='api_init',
+init_blank = Service(name='api_init_blank',
 					 path='/',
 					 description="Discussion Init",
 					 cors_policy=cors_policy)
@@ -89,6 +89,16 @@ def discussion_attitude(request):
 
 
 @init.get()
+def discussion_init(request):
+	"""
+	Return data from DBas discussion_init page
+	:param request: request
+	:return: Dbas(request).discussion_init(True)
+	"""
+	return Dbas(request).discussion_init(True)
+
+
+@init_blank.get()
 def discussion_init(request):
 	"""
 	Return data from DBas discussion_init page

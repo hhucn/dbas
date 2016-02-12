@@ -338,7 +338,7 @@ class QueryHelper(object):
 		:param uid: Issue.uid
 		:return: String
 		"""
-		logger('QueryHelper', 'get_title_for_issue_uid', str(uid))
+		#  logger('QueryHelper', 'get_title_for_issue_uid', str(uid))
 		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
 		return db_issue.title if db_issue else 'none'
 
@@ -348,7 +348,7 @@ class QueryHelper(object):
 		:param uid: Issue.uid
 		:return: String
 		"""
-		logger('QueryHelper', 'get_slug_for_issue_uid', str(uid))
+		#  logger('QueryHelper', 'get_slug_for_issue_uid', str(uid))
 		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
 		return slugify(db_issue.title) if db_issue else 'none'
 
@@ -358,7 +358,7 @@ class QueryHelper(object):
 		:param uid: Issue.uid
 		:return: String
 		"""
-		logger('QueryHelper', 'get_info_for_issue_uid', str(uid))
+		#  logger('QueryHelper', 'get_info_for_issue_uid', str(uid))
 		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
 		return db_issue.info if db_issue else 'none'
 
@@ -369,7 +369,7 @@ class QueryHelper(object):
 		:param lang: ui_locales
 		:return: String
 		"""
-		logger('QueryHelper', 'get_date_for_issue_uid', str(uid))
+		#  logger('QueryHelper', 'get_date_for_issue_uid', str(uid))
 		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
 		return self.sql_timestamp_pretty_print(str(db_issue.date), lang) if db_issue else 'none'
 
