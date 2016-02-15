@@ -233,12 +233,13 @@ def set_info(request):
     if request.matchdict["username"] != username:
         raise Forbidden()
     _USERS[username] = request.json_body
+    print("success")
     return {'success': True}
 
 
-#@view_config(route_name="whoami", permission="authenticated", renderer="json")
-#def whoami(request):
-#    """View returning the authenticated user's credentials."""
-#    username = authenticated_userid(request)
-#    principals = effective_principals(request)
-#    return {"username": username, "principals": principals}
+@view_config(route_name="whoami", permission="authenticated", renderer="json")
+def whoami(request):
+    """View returning the authenticated user's credentials."""
+    username = authenticated_userid(request)
+    principals = effective_principals(request)
+    return {"username": username, "principals": principals}
