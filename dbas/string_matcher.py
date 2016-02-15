@@ -69,9 +69,8 @@ class FuzzyStringMatcher(object):
 		for i in list(tmp_dict.keys())[0:self.return_count]:
 			return_dict[i] = tmp_dict[i]
 
-		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_edits', 'string: ' + value + ', is_startpoint: ' +
-		       str(is_startpoint) + ', string: ' + value + ', statement uid: ' + str(statement_uid) +
-		       ', dictionary length: ' + str(len(return_dict.keys())))
+		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_edits', 'string: ' + value + ', string: ' + value +
+		       ', statement uid: ' + str(statement_uid) + ', dictionary length: ' + str(len(return_dict.keys())))
 
 		return return_dict
 

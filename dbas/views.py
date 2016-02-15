@@ -15,7 +15,7 @@ from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
 
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Statement
+from .database.discussion_model import User, Group, Issue, Argument, Statement, VoteArgument, VoteStatement
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
@@ -509,7 +509,6 @@ class Dbas(object):
 		logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		token = self.request.session.get_csrf_token()
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		old_pw = ''
@@ -520,16 +519,19 @@ class Dbas(object):
 		success = False
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
-		uh = UserHandler()
+		_uh = UserHandler()
+		edits = _uh.get_edits_of_user(db_user)
+		arg_vote, stat_vote = _uh.get_votes_of_user(db_user)
+
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			old_pw = self.request.params['passwordold']
 			new_pw = self.request.params['password']
 			confirm_pw = self.request.params['passwordconfirm']
 
-			message, error, success = uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
+			message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
 		# get gravater profile picture
-		gravatar_url = uh.get_profile_picture(db_user)
+		gravatar_url = _uh.get_profile_picture(db_user)
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 		settings_dict = {
@@ -544,7 +546,10 @@ class Dbas(object):
 			'db_nickname': db_user.nickname if db_user else 'unknown',
 			'db_mail': db_user.email if db_user else 'unknown',
 			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
-			'avatar_url': gravatar_url
+			'avatar_url': gravatar_url,
+			'edits_done': edits,
+			'discussion_arg_votes': arg_vote,
+			'discussion_stat_votes': stat_vote
 		}
 		return {
 			'layout': self.base_layout(),
@@ -1059,12 +1064,13 @@ class Dbas(object):
 		logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
+		_qh = QueryHelper()
 		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
 
 		try:
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
-			return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
+			return_dict = _qh.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
 			if return_dict == -1:
 				return_dict = dict()
 				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)

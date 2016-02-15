@@ -59,9 +59,9 @@ function InteractionHandler() {
 		// status is the length of the content
 		if (parsedData.error.length == 0) {
 			$('#' + popupEditStatementLogfileSpaceId).text('');
-			new GuiHandler().showStatementCorrectionsInPopup(parsedData.error);
+			new GuiHandler().showStatementCorrectionsInPopup(parsedData);
 		} else {
-			$('#' + popupEditStatementLogfileSpaceId).text(_t(noCorrections));
+			$('#' + popupEditStatementLogfileSpaceId).text(parsedData.error);
 		}
 	};
 
