@@ -58,7 +58,7 @@
 					<li tal:condition="extras.logged_in" class="dropdown">
 						<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" title="User options">
 							<img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;${extras.users_name}
-                            <span tal:condition="extras.messages.has_unread" class="badge">${extras.messages.count}</span>
+                            <span tal:condition="extras.messages.has_unread" class="label label-primary label-as-badge">${extras.messages.count}</span>
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">

@@ -30,7 +30,7 @@ from .url_manager import UrlManager
 from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
-version = '0.5.2'
+version = '0.5.3'
 header = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
@@ -1122,10 +1122,38 @@ class Dbas(object):
 			transaction.commit()
 			return_dict['unread_messages'] = NotificationHelper().count_of_new_messages(self.request.authenticated_userid)
 			return_dict['error'] = ''
-
 		except KeyError as e:
 			logger('set_message_read', 'error', repr(e))
 			return_dict['error'] = _t.get(_t.internalError)
+
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - deletes a message
+	@view_config(route_name='ajax_message_delete', renderer='json')
+	def set_message_delete(self):
+		"""
+		Request the complete user history
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_message_delete', 'def', 'main ' + str(self.request.params))
+		return_dict = dict()
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_t = Translator(ui_locales)
+
+		try:
+			uid = self.request.params['id']
+			DBDiscussionSession.query(Message).filter_by(uid=uid).delete()
+			transaction.commit()
+			return_dict['unread_messages'] = NotificationHelper().count_of_new_messages(self.request.authenticated_userid)
+			return_dict['error'] = ''
+			return_dict['success'] = _t.get(_t.messageDeleted)
+		except KeyError as e:
+			logger('set_message_read', 'error', repr(e))
+			return_dict['error'] = _t.get(_t.internalError)
+			return_dict['success'] = ''
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 

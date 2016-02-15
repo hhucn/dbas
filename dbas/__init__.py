@@ -96,6 +96,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_get_news',                            'ajax_get_news')
 	config.add_route('ajax_send_news',                           'ajax_send_news')
 	config.add_route('ajax_message_read',                        'ajax_message_read')
+	config.add_route('ajax_message_delete',                      'ajax_message_delete')
 
 	config.add_route('ajax_additional_service',                  '{stuff:.*}additional_service')
 

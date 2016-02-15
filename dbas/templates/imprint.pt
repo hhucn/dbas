@@ -130,6 +130,12 @@
 					<ul>
 						<li>Improved recommendation of the next argument/statement</li>
 					</ul>
+
+                    <span class="project lead">0.5.3 (2016-02-15)</span>
+					<ul>
+						<li>Simple notification system</li>
+					</ul>
+
 					<span class="project lead">0.5.2 (2016-02-09)</span>
 					<ul>
 						<li>Popup for inserting unclear statements</li>

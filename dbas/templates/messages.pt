@@ -19,15 +19,22 @@
 						</button>
 						<span id="error-description"></span>
 					</div>
+					<div id="success-space" class="alert alert-success alert-dismissible" style="display: none; margin-bottom: 1em;">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span id="success-description"></span>
+					</div>
 
                     <div class="panel-group" id="accordion" style="margin-top: 2em;">
 					    <div class="panel panel-default" tal:repeat="msg extras.messages.all" style="margin-bottom: 1em;" tal:attributes="id msg.id">
 						    <div class="panel-heading">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href msg.collapse_link">
-						    	    <h4 class="panel-title">
+                                    <h4 class="panel-title">
                                         <span tal:condition="msg.read">${msg.topic}</span>
                                         <strong tal:condition="not:msg.read">* ${msg.topic}</strong>
-                                        <span style="float: right;">${msg.timestamp}</span>
+                                        <span style="float: right; margin-left: 1.0em;" class="glyphicon center glyphicon-trash" title="Delete"></span>
+                                        <span style="float: right; padding-right: 1em;">${msg.timestamp}</span>
                                     </h4>
                                 </a>
 						    </div>

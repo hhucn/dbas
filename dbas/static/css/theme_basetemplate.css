@@ -69,6 +69,10 @@ body.loading .ajaxloader {
 	color: #bcbcbc;
 }
 
+.label-as-badge{
+	border-radius: 1em;
+}
+
 .row{
 	padding-left: 15px;
 	padding-right: 15px;

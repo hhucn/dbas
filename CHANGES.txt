@@ -120,5 +120,8 @@
 0.5.2 (2016-02-09)
 - Popup for inserting unclear statements
 
+0.5.2 (2016-02-15)
+- Simple notification system
+
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation
