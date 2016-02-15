@@ -18,6 +18,8 @@
 	<title>${project} - ${title}</title>
 </head>
 
+<img src="${request.static_url('dbas:static/images/beta.png')}" alt="beta logo" style="position:fixed; z-index:10; top:65px; width:100px;">
+
 <body>
 	<input type="hidden" id="hidden_language" value="${language}">
 
@@ -50,17 +52,17 @@
 			<div metal:use-macro="load: snippet-popups.pt"></div>
 		</div>
 
-			<div id="wrapper-content">
-				<div metal:define-slot="content_page"></div>
-			</div>
+		<div id="wrapper-content">
+			<div metal:define-slot="content_page"></div>
+		</div>
 
-			<div id="wrapper-footer">
-				<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" src="${request.static_url('dbas:static/images/home.png')}"></a>
+		<div id="wrapper-footer">
+			<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" src="${request.static_url('dbas:static/images/home.png')}"></a>
 
-				<div metal:use-macro="load: snippet-footer.pt"></div>
-			</div>
+			<div metal:use-macro="load: snippet-footer.pt"></div>
+		</div>
 
-			<div class="ajaxloader"></div>
+		<div class="ajaxloader"></div>
 	</div>
 
 	<div class="eupopup eupopup-fixedtop"></div>
@@ -76,7 +78,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-en.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-de.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
-	
+
 
 	<!-- Piwik -->
 	<script type="text/javascript">

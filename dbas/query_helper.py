@@ -221,11 +221,6 @@ class QueryHelper(object):
 		elif current_attack == 'rebut':
 			new_argument, duplicate = self.__set_new_rebut(transaction, new_pgroup_uid, current_argument, db_user, issue)
 
-		logger('---------', 'NEW ARGUMENT IS ' + str(new_argument.uid), 'PGROUP: ' + str(new_pgroup_uid) + ', TO ' + str(current_argument.conclusion_uid) + '/' + str(current_argument.argument_uid))
-		logger('---------', 'NEW ARGUMENT IS ' + str(new_argument.uid), 'PGROUP: ' + str(new_pgroup_uid) + ', TO ' + str(current_argument.conclusion_uid) + '/' + str(current_argument.argument_uid))
-		logger('---------', 'NEW ARGUMENT IS ' + str(new_argument.uid), 'PGROUP: ' + str(new_pgroup_uid) + ', TO ' + str(current_argument.conclusion_uid) + '/' + str(current_argument.argument_uid))
-		logger('---------', 'NEW ARGUMENT IS ' + str(new_argument.uid), 'PGROUP: ' + str(new_pgroup_uid) + ', TO ' + str(current_argument.conclusion_uid) + '/' + str(current_argument.argument_uid))
-
 		return new_argument.uid
 
 	def __set_new_undermine_or_support(self, transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
@@ -1178,7 +1173,7 @@ class QueryHelper(object):
 
 			# relation to the arguments conclusion
 			elif attack_type == 'rebut':
-				# TODO WHAT IS WITH ARGUMENT ES CONCLUSION?
+				# TODO WHAT IS WITH ARGUMENT AS CONCLUSION?
 				is_argument = current_argument.conclusion_uid == 0
 				uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
 				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)

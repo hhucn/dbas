@@ -23,11 +23,11 @@
 
 		<div class="container colored_container">
 			<div class="row">
-				<div class="col-md-7 center text-center">
+				<div class="col-md-8 center text-center">
 					<p i18n:translate="current_discussion">Current discussion is about</p>
 					<h5 id="issue_info">${issues.info}</h5>
 				</div>
-				<div class="col-md-5 center text-center">
+				<div class="col-md-4 center text-center">
 					<span i18n:translate="startet_at">The discussion was started at</span>
 					<span id="issue-date" class="text-info">${issues.date}</span>
 					<br>
@@ -57,7 +57,7 @@
 		<div class="container colored_container" id="discussion-container">
 			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
-				<div class="col-md-10">
+				<div class="col-md-10" style="text-align: justify;">
 
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
