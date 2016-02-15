@@ -33,6 +33,8 @@ class BreadcrumbHelper(object):
 		if not db_user or for_api:
 			return []
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'path ' + path + ', user ' + str(user))
+		logger('BreadcrumbHelper', 'get_breadcrumbs', 'path ' + path + ', user ' + str(user))
+		logger('BreadcrumbHelper', 'get_breadcrumbs', 'path ' + path + ', user ' + str(user))
 
 		url = UrlManager(application_url, slug, for_api).get_url(path)
 
@@ -65,6 +67,9 @@ class BreadcrumbHelper(object):
 			return dict()
 
 		db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
+		logger('BreadcrumbHelper', 'get_breadcrumbs', str(len(db_history)))
+		logger('BreadcrumbHelper', 'get_breadcrumbs', str(len(db_history)))
+		logger('BreadcrumbHelper', 'get_breadcrumbs', str(len(db_history)))
 
 		if not db_history:
 			return dict()

@@ -15,6 +15,7 @@ from .query_helper import QueryHelper
 from .strings import Translator, TextGenerator
 from .url_manager import UrlManager
 from .user_management import UserHandler
+from .notification_helper import NotificationHelper
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -519,6 +520,7 @@ class DictionaryHelper(object):
 		_uh = UserHandler()
 		_tn = Translator(lang)
 		_qh = QueryHelper()
+		_nh = NotificationHelper()
 		is_logged_in = _uh.is_user_logged_in(authenticated_userid)
 
 		return_dict = dict()
@@ -559,7 +561,11 @@ class DictionaryHelper(object):
 		                                                  'rem_statement_row_title': _tn.get(_tn.remStatementRow),
 		                                                  'switch_discussion': _tn.get(_tn.switchDiscussionTitle)}
 		if not for_api:
-			return_dict['breadcrumbs']               = breadcrumbs
+			return_dict['breadcrumbs']  = breadcrumbs
+			return_dict['messages']     = {'count': _nh.count_of_new_messages(authenticated_userid),
+			                               'has_unread': (_nh.count_of_new_messages(authenticated_userid) > 0),
+			                               'all': _nh.get_message_for(authenticated_userid)
+			                               }
 		self.add_language_options_for_extra_dict(return_dict, lang)
 
 		# add everything for the island view

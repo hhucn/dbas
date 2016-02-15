@@ -245,9 +245,6 @@ setStyleOptions = function (guiHandler){
 	$.each($('#' + discussionSpaceId + ' label'), function replaceHtmlTagInHeader() {
 		replaceHtmlTags($(this));
 	});
-	$.each($('#' + islandViewContainerId + ' h5'), function replaceHtmlTagInIsland() {
-		replaceHtmlTags($(this));
-	});
 	replaceHtmlTags($('#' + issueInfoId));
 	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
 };

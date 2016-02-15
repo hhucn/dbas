@@ -15,7 +15,7 @@ from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
 
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Statement, VoteArgument, VoteStatement
+from .database.discussion_model import User, Group, Issue, Argument, Statement, VoteArgument, VoteStatement, Message
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
@@ -27,6 +27,7 @@ from .recommender_system import RecommenderHelper, RecommenderHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .voting_helper import VotingHelper
 from .url_manager import UrlManager
+from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
 version = '0.5.2'
@@ -203,10 +204,6 @@ class Dbas(object):
 			slug = self.request.matchdict['slug'] if 'slug' in self.request.matchdict else ''
 		else:
 			slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
-		logger('discussion_init', 'def', 'slug: ' + slug)
-		logger('discussion_init', 'def', 'slug: ' + slug)
-		logger('discussion_init', 'def', 'slug: ' + slug)
-
 
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
@@ -560,6 +557,26 @@ class Dbas(object):
 			'settings': settings_dict
 		}
 
+	# message page, when logged in
+	@view_config(route_name='main_messages', renderer='templates/messages.pt', permission='use')
+	def main_messages(self):
+		"""
+		View configuration for the content view. Only logged in user can reach this page.
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('main_messages', 'def', 'main')
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'Messages',
+			'project': header,
+			'extras': extras_dict
+		}
+
 	# admin page, when logged in
 	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='admin')  # or permission='use'
 	def main_admin(self):
@@ -577,7 +594,7 @@ class Dbas(object):
 			'language': str(ui_locales),
 			'title': 'Admin',
 			'project': header,
-			'extras': extras_dict
+			'extras': extras_dict,
 		}
 
 	# news page for everybody
@@ -1070,7 +1087,8 @@ class Dbas(object):
 		try:
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
-			return_dict = _qh.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
+			ui_locales = _qh.get_language(self.request, get_current_registry())
+			return_dict = _qh.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
 			if return_dict == -1:
 				return_dict = dict()
 				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)
@@ -1080,6 +1098,34 @@ class Dbas(object):
 			return_dict = dict()
 			return_dict['error'] = ''
 			logger('set_correcture_of_statement', 'error', repr(e))
+
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - set a message as read
+	@view_config(route_name='ajax_message_read', renderer='json')
+	def set_message_read(self):
+		"""
+		Request the complete user history
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_message_read', 'def', 'main ' + str(self.request.params))
+		return_dict = dict()
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_t = Translator(ui_locales)
+
+		try:
+			uid = self.request.params['id']
+			DBDiscussionSession.query(Message).filter_by(uid=uid).first().set_read(True)
+			transaction.commit()
+			return_dict['unread_messages'] = NotificationHelper().count_of_new_messages(self.request.authenticated_userid)
+			return_dict['error'] = ''
+
+		except KeyError as e:
+			logger('set_message_read', 'error', repr(e))
+			return_dict['error'] = _t.get(_t.internalError)
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 

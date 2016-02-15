@@ -9,6 +9,7 @@ from .database import DBDiscussionSession, DBNewsSession
 from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, History, VoteArgument, VoteStatement, Issue, Group
 from .database.news_model import News
 from .logger import logger
+from .notification_helper import NotificationHelper
 from .strings import Translator, TextGenerator
 from .user_management import UserHandler
 from .url_manager import UrlManager
@@ -1200,38 +1201,41 @@ class QueryHelper(object):
 
 		return time.strftime(formatter)
 
-	def correct_statement(self, transaction, user, uid, corrected_text):
+	def correct_statement(self, transaction, user, uid, corrected_text, lang):
 		"""
 		Corrects a statement
 		:param transaction: current transaction
 		:param user: requesting user
 		:param uid: requested statement uid
 		:param corrected_text: new text
+		:param lang: current ui_locales
 		:return: True
 		"""
 		logger('QueryHelper', 'correct_statement', 'def ' + str(uid))
 
-		return_dict = dict()
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+
+		if not db_user:
+			return -1
 
 		if corrected_text.endswith(('.', '?', '!')):
 			corrected_text = corrected_text[:-1]
 
 		# duplicate check
-		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(TextVersion.uid.desc()).first()
-
-		if not db_user:
-			return -1
+		return_dict = dict()
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(TextVersion.uid.desc()).all()
 
 		# duplicate or not?
 		if db_textversion:
-			textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversion.uid).first()
+			textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversion[0].uid).first()
 		else:
 			textversion = TextVersion(content=corrected_text, author=db_user.uid)
 			textversion.set_statement(db_statement.uid)
 			DBDiscussionSession.add(textversion)
 			DBDiscussionSession.flush()
+
+			NotificationHelper().send_edit_text_notification(textversion, lang)
 
 		db_statement.set_textversion(textversion.uid)
 		transaction.commit()
