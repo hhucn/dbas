@@ -532,12 +532,7 @@ class Dbas(object):
 		gravatar_url = uh.get_profile_picture(db_user)
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': 'Settings',
-			'project': header,
-			'extras': extras_dict,
+		settings_dict = {
 			'passwordold': '' if success else old_pw,
 			'password': '' if success else new_pw,
 			'passwordconfirm': '' if success else confirm_pw,
@@ -549,8 +544,15 @@ class Dbas(object):
 			'db_nickname': db_user.nickname if db_user else 'unknown',
 			'db_mail': db_user.email if db_user else 'unknown',
 			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
-			'avatar_url': gravatar_url,
-			'csrf_token': token
+			'avatar_url': gravatar_url
+		}
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'Settings',
+			'project': header,
+			'extras': extras_dict,
+			'settings': settings_dict
 		}
 
 	# admin page, when logged in

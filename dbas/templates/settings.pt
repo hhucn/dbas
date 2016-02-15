@@ -9,40 +9,39 @@
 
 		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
-		<div class="container colored_container">
+		<div class="container">
 			<div class="content row">
 				<div class="col-md-12">
-					<h4 i18n:translate="info_about_yourself">Information about yourself</h4>
+					<h4 i18n:translate="personal_information">Personal Information</h4>
 				</div>
 			</div>
 			<div class="content row">
-				<div class="col-md-8">
-
+				<div class="col-md-8 colored_container">
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="firstname">Firstname</span></td>
-							<td><span tal:replace="db_firstname"></span></td>
+							<td>${settings.db_firstname}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="surname">Surname</span></td>
-							<td><span tal:replace="db_surname"></span></td>
+							<td>${settings.db_surname}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="nickname">Nickname</span></td>
-							<td id='table_nickname'><span tal:replace="db_nickname"></span></td>
+							<td id='table_nickname'>${settings.db_nickname}</td>
 						</tr>
 						<tr>
 							<td><span class="lead">E-Mail</span></td>
-							<td><span tal:replace="db_mail"></span></td>
+							<td>${settings.db_mail}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="group">Group</span></td>
-							<td><span tal:replace="db_group"></span></td>
+							<td>${settings.db_group}</td>
 						</tr>
 					</table>
 				</div>
-				<div class="col-md-4 center text-center">
-					<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src avatar_url">
+				<div class="col-md-4 center text-center colored_container">
+					<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
 					<p i18n:translate="profile_picture">Profile Picture</p>
 				</div>
 			</div>
@@ -96,14 +95,14 @@
 						<div class="form-group">
 							<p class="col-md-5 control-label" i18n:translate="old_password">Old password</p>
 							<div class="col-md-7">
-								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
+								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${settings.passwordold}">
 							</div>
 						</div>
 
 						<div class="form-group">
 							<p class="col-md-5 control-label" i18n:translate="new_password">New Password</p>
 							<div class="col-md-7">
-								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}">
+								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${settings.password}">
 							</div>
 
 							<div id="settings-password-extras" style="display: none;">
@@ -118,20 +117,20 @@
 						<div class="form-group">
 							<p class="col-md-5 control-label" i18n:translate="new_password_confirm">New Password (confirm)</p>
 							<div class="col-md-7">
-								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${settings.passwordconfirm}">
 							</div>
 						</div>
 
-						<div class="col-md-12" tal:condition="change_error">
+						<div class="col-md-12" tal:condition="settings.change_error">
 							<div id="settings-danger-message" class="alert alert-danger alert-dismissible">
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span tal:replace="message">message</span>
+								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>${settings.message}
 							</div>
 						</div>
 
-						<div tal:condition="change_success" id="settings-success-message" class="alert alert-success" role="alert">
+						<div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						    	<span aria-hidden="true">&times;</span>
 						    </button>
