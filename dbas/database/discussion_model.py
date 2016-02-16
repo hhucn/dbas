@@ -408,7 +408,7 @@ class VoteStatement(DiscussionBase):
 		self.timestamp = func.now()
 
 
-class Message(DiscussionBase):
+class Notification(DiscussionBase):
 	"""
 
 	"""

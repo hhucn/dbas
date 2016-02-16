@@ -15,7 +15,7 @@ from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
 
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Statement, VoteArgument, VoteStatement, Message
+from .database.discussion_model import User, Group, Issue, Argument, Statement, VoteArgument, VoteStatement, Notification
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
@@ -558,14 +558,14 @@ class Dbas(object):
 		}
 
 	# message page, when logged in
-	@view_config(route_name='main_messages', renderer='templates/messages.pt', permission='use')
-	def main_messages(self):
+	@view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use')
+	def main_notifications(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('main_messages', 'def', 'main')
+		logger('main_notifications', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
 
@@ -1102,8 +1102,8 @@ class Dbas(object):
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - set a message as read
-	@view_config(route_name='ajax_message_read', renderer='json')
-	def set_message_read(self):
+	@view_config(route_name='ajax_notification_read', renderer='json')
+	def set_notification_read(self):
 		"""
 		Request the complete user history
 		:return: json-dict()
@@ -1111,16 +1111,16 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		logger('set_message_read', 'def', 'main ' + str(self.request.params))
+		logger('set_notification_read', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		_t = Translator(ui_locales)
 
 		try:
 			uid = self.request.params['id']
-			DBDiscussionSession.query(Message).filter_by(uid=uid).first().set_read(True)
+			DBDiscussionSession.query(Notification).filter_by(uid=uid).first().set_read(True)
 			transaction.commit()
-			return_dict['unread_messages'] = NotificationHelper().count_of_new_messages(self.request.authenticated_userid)
+			return_dict['unread_messages'] = NotificationHelper().count_of_new_notifications(self.request.authenticated_userid)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('set_message_read', 'error', repr(e))
@@ -1129,8 +1129,8 @@ class Dbas(object):
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 	# ajax - deletes a message
-	@view_config(route_name='ajax_message_delete', renderer='json')
-	def set_message_delete(self):
+	@view_config(route_name='ajax_notification_delete', renderer='json')
+	def set_notification_delete(self):
 		"""
 		Request the complete user history
 		:return: json-dict()
@@ -1138,16 +1138,16 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		logger('set_message_delete', 'def', 'main ' + str(self.request.params))
+		logger('set_notification_delete', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		_t = Translator(ui_locales)
 
 		try:
 			uid = self.request.params['id']
-			DBDiscussionSession.query(Message).filter_by(uid=uid).delete()
+			DBDiscussionSession.query(Notification).filter_by(uid=uid).delete()
 			transaction.commit()
-			return_dict['unread_messages'] = NotificationHelper().count_of_new_messages(self.request.authenticated_userid)
+			return_dict['unread_messages'] = NotificationHelper().count_of_new_notifications(self.request.authenticated_userid)
 			return_dict['error'] = ''
 			return_dict['success'] = _t.get(_t.messageDeleted)
 		except KeyError as e:

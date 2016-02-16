@@ -182,10 +182,10 @@ bootstrap-paper hover #eeeeee
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-387-log-in.png) no-repeat;
 }
 
-#header_messages {
+#header_notifications {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-11-envelope.png) no-repeat;
 }
-#header_messages_new {
+#header_notifications_new {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-130-message-new.png) no-repeat;
 }
 #header_settings {

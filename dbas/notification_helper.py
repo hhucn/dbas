@@ -1,6 +1,6 @@
 from .logger import logger
 from .database import DBDiscussionSession
-from .database.discussion_model import User, TextVersion, Message
+from .database.discussion_model import User, TextVersion, Notification
 from .strings import Translator
 from sqlalchemy import and_
 
@@ -28,26 +28,26 @@ class NotificationHelper():
 		content += '<br>' + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + textversion.content + '<br>'
 		content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + oem.content
 
-		message = Message(from_author_uid=new_author, to_author_uid=author, topic=topic, content=content)
+		message = Notification(from_author_uid=new_author, to_author_uid=author, topic=topic, content=content)
 		DBDiscussionSession.add(message)
 		DBDiscussionSession.flush()
 
-	def count_of_new_messages(self, user):
+	def count_of_new_notifications(self, user):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
 		if db_user:
-			return len(DBDiscussionSession.query(Message).filter(and_(Message.to_author_uid == db_user.uid,
-			                                                          Message.read == False)).all())
+			return len(DBDiscussionSession.query(Notification).filter(and_(Notification.to_author_uid == db_user.uid,
+			                                                               Notification.read == False)).all())
 		else:
 			return 0
 
-	def get_message_for(self, user):
+	def get_notification_for(self, user):
 		"""
 
 		:param user:
 		:return:
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
-		db_messages = DBDiscussionSession.query(Message).filter_by(to_author_uid=db_user.uid).all()
+		db_messages = DBDiscussionSession.query(Notification).filter_by(to_author_uid=db_user.uid).all()
 
 		message_array = []
 		for message in db_messages:

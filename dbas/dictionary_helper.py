@@ -562,10 +562,12 @@ class DictionaryHelper(object):
 		                                                  'switch_discussion': _tn.get(_tn.switchDiscussionTitle)}
 		if not for_api:
 			return_dict['breadcrumbs']  = breadcrumbs
-			return_dict['messages']     = {'count': _nh.count_of_new_messages(authenticated_userid),
-			                               'has_unread': (_nh.count_of_new_messages(authenticated_userid) > 0),
-			                               'all': _nh.get_message_for(authenticated_userid)
-			                               }
+			message_dict = dict()
+			message_dict['count']       = _nh.count_of_new_notifications(authenticated_userid)
+			message_dict['has_unread']  = (message_dict['count'] > 0)
+			message_dict['all']         = _nh.get_notification_for(authenticated_userid)
+			message_dict['total']       = len(message_dict['all'])
+			return_dict['notifications']= message_dict
 		self.add_language_options_for_extra_dict(return_dict, lang)
 
 		# add everything for the island view
