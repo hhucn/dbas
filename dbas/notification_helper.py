@@ -28,11 +28,30 @@ class NotificationHelper():
 		content += '<br>' + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + textversion.content + '<br>'
 		content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + oem.content
 
-		message = Notification(from_author_uid=new_author, to_author_uid=author, topic=topic, content=content)
-		DBDiscussionSession.add(message)
+		motification = Notification(from_author_uid=new_author, to_author_uid=author, topic=topic, content=content)
+		DBDiscussionSession.add(motification)
 		DBDiscussionSession.flush()
 
+	def send_welcome_message(self, transaction, user, lang='en'):
+		"""
+
+		:param user:
+		:param lang:
+		:return:
+		"""
+		topic = 'Welcome'
+		content = 'Welcome to the novel dialog-based argumentation system...'
+		motification = Notification(from_author_uid=1, to_author_uid=user, topic=topic, content=content)
+		DBDiscussionSession.add(motification)
+		DBDiscussionSession.flush()
+		transaction.commit()
+
 	def count_of_new_notifications(self, user):
+		"""
+
+		:param user:
+		:return:
+		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
 		if db_user:
 			return len(DBDiscussionSession.query(Notification).filter(and_(Notification.to_author_uid == db_user.uid,
@@ -47,6 +66,9 @@ class NotificationHelper():
 		:return:
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
+		if not db_user:
+			return []
+
 		db_messages = DBDiscussionSession.query(Notification).filter_by(to_author_uid=db_user.uid).all()
 
 		message_array = []

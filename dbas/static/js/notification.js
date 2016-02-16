@@ -12,8 +12,10 @@ $(function () {
 
 	$.each($('#message-space .panel-heading a'), function replaceHtmlTagsInMessages() {
 		$(this).click(function(){
-			if ($(this).html().indexOf('<strong>') != -1)
-				sendAjaxForReadMessage($(this).parent().parent().parent().attr('id'));
+			var id = $(this).parent().parent().parent().attr('id');
+			if (new Helper().getFullHtmlTextOf($(this)).indexOf('<strong') != -1) {
+				sendAjaxForReadMessage(id);
+			}
 		});
 	});
 
@@ -52,6 +54,7 @@ setNewBadgeCounter = function(counter){
 		$('#header_messages').next().next().text(counter);
 		$('#header_messages_new').next().next().text(counter);
 	}
+	// $('#message-space > span:nth-child(1)').text(' ' + counter + ' ');
 };
 
 sendAjaxForReadMessage = function(id){
@@ -69,11 +72,11 @@ sendAjaxForReadMessage = function(id){
 			$('#error-space').fadeIn();
 			$('#error-description').text(parsedData.error);
 		} else {
-			var text = $('#' + id + ' .panel-title').html();
-			text = text.replace('<strong>', '');
-			text = text.replace('</strong>', '');
-			text = text.replace('* ', '');
-			$('#' + id + ' .panel-title').html(text);
+			//var text = $('#' + id).find('.title-link').html();
+			//text = text.replace('<span', '');
+			//text = text.replace('</span', '');
+			//text = text.replace('* ', '');
+			//$('#' + id + ' .panel-title a:first-child').html(text);
 			setNewBadgeCounter(parsedData.unread_messages);
 		}
 	}).fail(function sendAjaxForReadMessageFail() {

@@ -875,6 +875,7 @@ class Dbas(object):
 						subject = 'D-BAS Account Registration'
 						body = _t.get(_t.accountWasRegistered)
 						EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
+						NotificationHelper().send_welcome_message(transaction, checknewuser.uid)
 
 					else:
 						logger('user_registration', 'main', 'New data was not added')
@@ -1101,11 +1102,11 @@ class Dbas(object):
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-	# ajax - set a message as read
+	# ajax - set notification as read
 	@view_config(route_name='ajax_notification_read', renderer='json')
 	def set_notification_read(self):
 		"""
-		Request the complete user history
+		Set notification as read
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1117,8 +1118,7 @@ class Dbas(object):
 		_t = Translator(ui_locales)
 
 		try:
-			uid = self.request.params['id']
-			DBDiscussionSession.query(Notification).filter_by(uid=uid).first().set_read(True)
+			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).first().set_read(True)
 			transaction.commit()
 			return_dict['unread_messages'] = NotificationHelper().count_of_new_notifications(self.request.authenticated_userid)
 			return_dict['error'] = ''
@@ -1128,11 +1128,11 @@ class Dbas(object):
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-	# ajax - deletes a message
+	# ajax - deletes a notification
 	@view_config(route_name='ajax_notification_delete', renderer='json')
 	def set_notification_delete(self):
 		"""
-		Request the complete user history
+		Request the removal of a notification
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1144,8 +1144,7 @@ class Dbas(object):
 		_t = Translator(ui_locales)
 
 		try:
-			uid = self.request.params['id']
-			DBDiscussionSession.query(Notification).filter_by(uid=uid).delete()
+			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).delete()
 			transaction.commit()
 			return_dict['unread_messages'] = NotificationHelper().count_of_new_notifications(self.request.authenticated_userid)
 			return_dict['error'] = ''
