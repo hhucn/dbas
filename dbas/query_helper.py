@@ -23,12 +23,13 @@ class QueryHelper(object):
 	"""
 
 	def __init__(self):
-		self.__statement_min_length = 1
+		self.__statement_min_length = 5
 
 	# ########################################
 	# ARGUMENTS
 	# ########################################
 
+	#  TODO BETTER VISUALIZATION
 	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag=False):
 		"""
 		Returns current argument as string like conclusion, because premise1 and premise2
@@ -77,7 +78,6 @@ class QueryHelper(object):
 			else:
 				ret_value = argument + doesnt_hold_because + premises
 			# ret_value = premises + (' supports ' if db_argument.is_supportive else ' attacks ') + argument
-
 		return ret_value
 
 	def get_undermines_for_argument_uid(self, argument_uid):
@@ -208,7 +208,7 @@ class QueryHelper(object):
 			return -1
 
 		# set the new statements as premisegroup and get current user as well as current argument
-		new_pgroup_uid = self.__set_statements_as_new_premisegroup(transaction, statements, user, False, issue)
+		new_pgroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
 
@@ -475,13 +475,11 @@ class QueryHelper(object):
 	# STATEMENTS
 	# ########################################
 
-	def __set_statements_as_new_premisegroup(self, transaction, statements, user, is_start, issue):
+	def __set_statements_as_new_premisegroup(self, statements, user, issue):
 		"""
 
-		:param transaction:
 		:param statements:
 		:param user:
-		:param is_start:
 		:param issue:
 		:return:
 		"""
@@ -689,6 +687,7 @@ class QueryHelper(object):
 		Returns the uid
 		:param slug: slug
 		:param request: self.request for a fallback
+		:param save_id_in_session:
 		:return: uid
 		"""
 		db_issues = DBDiscussionSession.query(Issue).all()
@@ -1047,7 +1046,7 @@ class QueryHelper(object):
 		statements = self.insert_as_statements(transaction, text, user, issue)
 
 		# second, set the new statements as premisegroup
-		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(transaction, statements, user, False, issue)
+		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
 
 		# third, insert the argument
 		new_argument_uid = self.__set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
@@ -1059,7 +1058,7 @@ class QueryHelper(object):
 	# OTHER
 	# ########################################
 
-	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive, issue, user, for_api, mainpage, lang, recommenderHelper):
+	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive, issue, user, for_api, mainpage, lang, recommender_helper):
 		"""
 
 		:param transaction:
@@ -1071,6 +1070,7 @@ class QueryHelper(object):
 		:param for_api:
 		:param mainpage:
 		:param lang:
+		:param recommender_helper:
 		:return:
 		"""
 		_tn = Translator(lang)
@@ -1098,7 +1098,7 @@ class QueryHelper(object):
 
 		elif len(new_arguments) == 1:
 			new_argument_uid    = random.choice(new_arguments)
-			arg_id_sys, attack  = recommenderHelper.get_attack_for_argument(new_argument_uid, issue)
+			arg_id_sys, attack  = recommender_helper.get_attack_for_argument(new_argument_uid, issue)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 
 		else:
@@ -1110,7 +1110,7 @@ class QueryHelper(object):
 		return url, error
 
 	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_id, attack_type, premisegroups,
-	                                                            issue, user, for_api, mainpage, lang, recommenderHelper):
+	                                                            issue, user, for_api, mainpage, lang, recommender_helper):
 		"""
 
 		:param transaction:
@@ -1122,7 +1122,7 @@ class QueryHelper(object):
 		:param for_api:
 		:param mainpage:
 		:param lang:
-		:param recommenderHelper:
+		:param recommender_helper:
 		:return:
 		"""
 		_tn = Translator(lang)
@@ -1150,7 +1150,7 @@ class QueryHelper(object):
 
 		elif len(new_arguments) == 1:
 			new_argument_uid = random.choice(new_arguments)
-			arg_id_sys, attack = recommenderHelper.get_attack_for_argument(new_argument_uid, issue)
+			arg_id_sys, attack = recommender_helper.get_attack_for_argument(new_argument_uid, issue)
 			if arg_id_sys == 0:
 				attack = 'end'
 
@@ -1255,9 +1255,6 @@ class QueryHelper(object):
 		:return:
 		"""
 		statements = []
-		logger('---','---',str(isinstance(text_list, list)))
-		logger('---','---',str(isinstance(text_list, list)))
-		logger('---','---',str(isinstance(text_list, list)))
 		if isinstance(text_list, list):
 			for text in text_list:
 				if len(text) < self.__statement_min_length:  # TODO LENGTH

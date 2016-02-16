@@ -47,12 +47,12 @@ hideInfoSpaces = function() {
 setNewBadgeCounter = function(counter){
 	if (counter == 0){
 		$('#header_user').next().remove();
-		$('#header_messages').next().next().remove();
-		$('#header_messages_new').next().next().remove();
+		$('#header_notifications').next().next().remove();
+		$('#header_notifications_new').next().next().remove();
 	} else {
 		$('#header_user').next().text(counter);
-		$('#header_messages').next().next().text(counter);
-		$('#header_messages_new').next().next().text(counter);
+		$('#header_notifications').next().next().text(counter);
+		$('#header_notifications_new').next().next().text(counter);
 	}
 	$('#unread_counter').text(' ' + counter + ' ');
 };

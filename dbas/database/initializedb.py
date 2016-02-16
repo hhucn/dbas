@@ -309,7 +309,7 @@ def setup_discussion_database():
 	user7 = User(firstname='Michael', surname='Baurmann', nickname='michael', email='baurmann@hhu.de', password=pw7, group=group2.uid, gender='m')
 	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group2.uid, gender='m')
 	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group2.uid, gender='m')
-	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='schneider@cs.uni-duesseldorf.de', password=pw10, group=group2.uid, gender='m')
+	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group2.uid, gender='m')
 	user11 = User(firstname='Raphael', surname='Bialon', nickname='raphael', email='bialon@cs.uni-duesseldorf.de', password=pw11, group=group2.uid, gender='m')
 	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11])
 	DBDiscussionSession.flush()
@@ -325,22 +325,9 @@ def setup_discussion_database():
 	notification7 = Notification(from_author_uid=user1.uid, to_author_uid=user9.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification8 = Notification(from_author_uid=user1.uid, to_author_uid=user10.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification9 = Notification(from_author_uid=user1.uid, to_author_uid=user11.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification10 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification11 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification12 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification13 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification14 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification15 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification16 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification17 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification18 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification19 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	DBDiscussionSession.add_all([notification0, notification1, notification2, notification3, notification4,
-	                             notification5, notification6, notification7, notification8, notification9,
-	                             notification10, notification11, notification12, notification13, notification14,
-	                             notification15, notification16, notification17, notification18, notification19])
+	                             notification5, notification6, notification7, notification8, notification9])
 	DBDiscussionSession.flush()
-
 
 	# Adding all textversions
 	textversion1 = TextVersion(content="We should get a cat.", author=user2.uid)
