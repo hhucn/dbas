@@ -1,7 +1,7 @@
 /**
- * Created by tobias on 15.02.16.
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
  */
-
 
 $(function () {
 	'use strict';

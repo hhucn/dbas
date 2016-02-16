@@ -4,8 +4,8 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<head>
-			<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
-			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.min.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.min.css')}" rel="stylesheet">
 		</head>
 
 		<div class="container first-container colored_container" tal:condition="extras.logged_in">

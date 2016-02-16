@@ -115,6 +115,12 @@ class UrlManager(object):
 		return self.__return_url(as_location_href, url)
 
 	def __return_url(self, as_location_href, url):
+		"""
+
+		:param as_location_href:
+		:param url:
+		:return:
+		"""
 		if self.for_api:
 			return self.api_url + url
 		else:

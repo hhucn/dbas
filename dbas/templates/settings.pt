@@ -4,7 +4,7 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<head>
-			<link type="text/css" href="${request.static_url('dbas:static/css/theme_settings.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_settings.min.css')}" rel="stylesheet">
 		</head>
 
 		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">

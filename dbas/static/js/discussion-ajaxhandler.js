@@ -1,5 +1,3 @@
-/*global $, jQuery, alert, GuiHandler, InteractionHandler, internal_error, popupErrorDescriptionId, _t */
-
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de

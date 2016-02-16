@@ -4,8 +4,8 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<head>
-			<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
-			<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.min.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_news.min.css')}" rel="stylesheet">
 
 			<style>
 
@@ -74,7 +74,7 @@
 			</div>
 		</div>
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.min.js')}"></script>
 
 	</tal:block>
 </tal:block>

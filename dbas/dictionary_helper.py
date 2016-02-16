@@ -433,15 +433,22 @@ class DictionaryHelper(object):
 			_um              = UrlManager(application_url, slug, for_api)
 
 			types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
-			for t in types:
+			for type in types:
 				# special case, when the user selectes the support, because this does not need to be justified!
-				if t == 'support':
+				if type == 'support':
 					arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid)
 					url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
 				else:
 					key = 'back' if for_api else 'window.history.go(-1)'
-					url = _um.get_url_for_justifying_argument(True, argument_uid, mode, t) if t != 'no_opinion' else key
-				statements_array.append(self.__get_statement_dict(t, ret_dict[t + '_text'], [{'title': ret_dict[t + '_text'], 'id':t}], t, url))
+
+					#if type == 'rebut':  # if we are having an rebut, everything seems different TODO IS THIS RIGHT
+					#	is_rebut_supportive = not db_argument.is_supportive
+					#	db_new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
+					#	                                                                  Argument.is_supportive == is_rebut_supportive)).first()
+					#	url = _um.get_url_for_justifying_argument(True, db_new_argument.uid if db_new_argument else 0, mode, 'support')
+					#else:
+					url = key if type == 'no_opinion' else _um.get_url_for_justifying_argument(True, argument_uid, mode, type)
+				statements_array.append(self.__get_statement_dict(type, ret_dict[type + '_text'], [{'title': ret_dict[type + '_text'], 'id':type}], type, url))
 
 		return statements_array
 

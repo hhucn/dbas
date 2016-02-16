@@ -224,12 +224,15 @@ textarea.content {
 	textarea.content {
 		font-size: 13px;
 	}
+
 	input[type="submit"] {
 		font-size: 15px;
 	}
+
 	.contact textarea {
 		font-size: 13px;
 	}
+
 	body {
 		padding: 50px 0px 80px 0px;
 	}

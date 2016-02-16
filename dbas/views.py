@@ -353,7 +353,7 @@ class Dbas(object):
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
-			is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
+			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid)
@@ -362,6 +362,7 @@ class Dbas(object):
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, ui_locales, self.request.authenticated_userid,
 			                                          argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs,
 			                                          application_url=mainpage, for_api=for_api)
+			# TODO SPECIAL CASE REBUT!
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
@@ -457,7 +458,7 @@ class Dbas(object):
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		is_argument     = matchdict['is_argument'] if 'is_argument' in matchdict else ''
 		is_supportive   = matchdict['supportive'] if 'supportive' in matchdict else ''
-		id              = matchdict['id'] if 'id' in matchdict else ''
+		uid             = matchdict['id'] if 'id' in matchdict else ''
 		pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
 		logger('discussion_reaction', 'def', str(pgroup_ids))
 
@@ -475,8 +476,8 @@ class Dbas(object):
 		                                                     self.request.session.id, transaction, ui_locales,
 		                                                     mainpage, for_api)
 
-		discussion_dict = _dh.prepare_discussion_dict(id, ui_locales, at_choosing=True, is_uid_argument=is_argument, is_supportive = is_supportive)
-		item_dict       = _dh.prepare_item_dict_for_choosing(id, pgroup_ids, is_argument, is_supportive, ui_locales, mainpage, issue, for_api)
+		discussion_dict = _dh.prepare_discussion_dict(uid, ui_locales, at_choosing=True, is_uid_argument=is_argument, is_supportive=is_supportive)
+		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales, mainpage, issue, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, False, ui_locales, self.request.authenticated_userid,
 		                                          breadcrumbs=breadcrumbs, application_url=mainpage, for_api=for_api)
 

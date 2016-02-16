@@ -1373,7 +1373,7 @@ class TextGenerator(object):
 		# build some confrontation text
 		if attack == 'undermine':
 			confrontation_text = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + premise + ' ' \
-								+ _t.get(_t.doesNotHold) + '</strong>, ' + _t.get(_t.because) + ' ' + confrontation
+								+ _t.get(_t.doesNotHold) + '</strong>, ' + _t.get(_t.because).lower() + ' ' + confrontation
 
 		elif attack == 'rebut':
 			# distinguish between reply for argument and reply for premise group

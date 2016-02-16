@@ -1,5 +1,3 @@
-/*global $, alert, _t, statement_uid, premisesGroup_uid, argument_uid, attacked_by_relation_uid, attacked_with_relation_uid*/
-
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
@@ -84,11 +82,10 @@ function HistoryHandler(){
 		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url, helper = new Helper();
 		tElement = ['', ''];
 		tableElement = $('<table>');
-		tableElement.attr({
-			class: 'table table-striped table-hover',
-			border: '0',
-			style: 'border-collapse: separate; border-spacing: 0px;'
-		});
+		tableElement
+			.attr('class', 'table table-striped table-hover')
+			.attr('border', '0')
+			.attr('style', 'border-collapse: separate; border-spacing: 0px;');
 
 		trElement = $('<tr>');
 		thead = $('<thead>');
