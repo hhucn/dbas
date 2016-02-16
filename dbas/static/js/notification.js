@@ -10,11 +10,11 @@ $(function () {
 		replaceHtmlTags($(this));
 	});
 
-	$.each($('#message-space .panel-heading a'), function replaceHtmlTagsInMessages() {
+	$.each($('#message-space .panel-title-link'), function replaceHtmlTagsInMessages() {
 		$(this).click(function(){
 			var id = $(this).parent().parent().parent().attr('id');
-			if (new Helper().getFullHtmlTextOf($(this)).indexOf('<strong') != -1) {
-				sendAjaxForReadMessage(id);
+			if ($(this).html().indexOf('<strong') != -1) {
+				sendAjaxForReadMessage(id, this);
 			}
 		});
 	});
@@ -54,10 +54,10 @@ setNewBadgeCounter = function(counter){
 		$('#header_messages').next().next().text(counter);
 		$('#header_messages_new').next().next().text(counter);
 	}
-	// $('#message-space > span:nth-child(1)').text(' ' + counter + ' ');
+	$('#unread_counter').text(' ' + counter + ' ');
 };
 
-sendAjaxForReadMessage = function(id){
+sendAjaxForReadMessage = function(id, _this){
 	hideInfoSpaces();
 	$.ajax({
 		url: 'ajax_notification_read',
@@ -72,11 +72,10 @@ sendAjaxForReadMessage = function(id){
 			$('#error-space').fadeIn();
 			$('#error-description').text(parsedData.error);
 		} else {
-			//var text = $('#' + id).find('.title-link').html();
-			//text = text.replace('<span', '');
-			//text = text.replace('</span', '');
-			//text = text.replace('* ', '');
-			//$('#' + id + ' .panel-title a:first-child').html(text);
+			var text = $(_this).text().replace('* ', ''),
+				spanEl = $('<span>').addClass('text-primary').text($(_this).text().replace('* ', ''));
+			$(_this).empty().html(spanEl);
+			$('#collapse' + id).addClass('in');
 			setNewBadgeCounter(parsedData.unread_messages);
 		}
 	}).fail(function sendAjaxForReadMessageFail() {
@@ -86,7 +85,6 @@ sendAjaxForReadMessage = function(id){
 };
 
 sendAjaxForDeleteMessage = function(id) {
-	alert(id);
 	hideInfoSpaces();
 	$.ajax({
 		url: 'ajax_notification_delete',

@@ -9,7 +9,7 @@ from dbas.user_management import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, \
-	PremiseGroup, Premise, Group, Issue
+	PremiseGroup, Premise, Group, Issue, Notification
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 
@@ -254,12 +254,16 @@ def setup_news_db():
 				  news='Now we have a mechanism for unclear statements. For example the user enters "I want something because '
 				       'A and B". The we do not know, whether A and B must hold at the same time, or if she wants something '
 				       'when A or B holds.')
-
+	news43 = News(title='Notification System',
+				  date='16.02.2016',
+				  author='Tobias Krauthoff',
+				  news='Yesterday we have develope a minimal notification system. This system could send information to every author, '
+				       'if one of their statement was edited. More features are comming soon')
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
 	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41,
-	              news42]
+	              news42, news43]
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 
@@ -309,6 +313,34 @@ def setup_discussion_database():
 	user11 = User(firstname='Raphael', surname='Bialon', nickname='raphael', email='bialon@cs.uni-duesseldorf.de', password=pw11, group=group2.uid, gender='m')
 	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11])
 	DBDiscussionSession.flush()
+
+	# Adding welcome notifications
+	notification0 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification1 = Notification(from_author_uid=user1.uid, to_author_uid=user3.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification2 = Notification(from_author_uid=user1.uid, to_author_uid=user4.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification3 = Notification(from_author_uid=user1.uid, to_author_uid=user5.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification4 = Notification(from_author_uid=user1.uid, to_author_uid=user6.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification5 = Notification(from_author_uid=user1.uid, to_author_uid=user7.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification6 = Notification(from_author_uid=user1.uid, to_author_uid=user8.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification7 = Notification(from_author_uid=user1.uid, to_author_uid=user9.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification8 = Notification(from_author_uid=user1.uid, to_author_uid=user10.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification9 = Notification(from_author_uid=user1.uid, to_author_uid=user11.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification10 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification11 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification12 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification13 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification14 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification15 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification16 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification17 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification18 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification19 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	DBDiscussionSession.add_all([notification0, notification1, notification2, notification3, notification4,
+	                             notification5, notification6, notification7, notification8, notification9,
+	                             notification10, notification11, notification12, notification13, notification14,
+	                             notification15, notification16, notification17, notification18, notification19])
+	DBDiscussionSession.flush()
+
 
 	# Adding all textversions
 	textversion1 = TextVersion(content="We should get a cat.", author=user2.uid)

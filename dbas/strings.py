@@ -599,7 +599,7 @@ class Translator(object):
 		en_lang[self.haveALookAt] = 'Hey, please have a look at '
 		en_lang[self.hidePasswordRequest] = 'Hide Password Request'
 		en_lang[self.hideGenerator] = 'Hide Generator'
-		en_lang[self.hold] = 'hold'
+		en_lang[self.hold] = 'holds'
 		en_lang[self.howeverIHaveMuchStrongerArgumentRejecting] = 'However, I have a much stronger argument for rejecting that'
 		en_lang[self.howeverIHaveEvenStrongerArgumentRejecting] = 'However, I have an even stronger argument for rejecting that'
 		en_lang[self.howeverIHaveMuchStrongerArgumentAccepting] = 'However, I have a much stronger argument for accepting that'
