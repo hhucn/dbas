@@ -113,6 +113,7 @@ function InteractionHandler() {
 	this.callbackIfDoneFuzzySearch = function (data, callbackid, type) {
 		var parsedData = $.parseJSON(data);
 		// if there is no returned data, we will clean the list
+
 		if (Object.keys(parsedData).length == 0) {
 			$('#' + proposalStatementListGroupId).empty();
 			$('#' + proposalPremiseListGroupId).empty();

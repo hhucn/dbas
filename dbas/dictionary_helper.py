@@ -151,12 +151,20 @@ class DictionaryHelper(object):
 			premise, tmp        = _qh.get_text_for_premisesgroup_uid(uid)
 			conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
+			if attack=='support':
+				is_supportive = not is_supportive
 			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion,
 			                                                                False, is_supportive, logged_in)
 			if attack == 'undermine':
 				add_premise_text = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
 				                                                          db_argument.is_supportive)
 				add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
+
+			elif attack=='support':
+				# when the user rebuts a system confrontation, he attacks his own negated premise, therefore he supports
+				# is own premise. so his premise is the conclusion and we need new premises ;-)
+				add_premise_text += _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
+				                                                           is_supportive)
 			else:
 				add_premise_text += _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
 				                                                           db_argument.is_supportive)
@@ -373,6 +381,10 @@ class DictionaryHelper(object):
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                                            Argument.argument_uid == db_argument.argument_uid,
                                                                            Argument.is_supportive == False)).all()
+		elif attack_type == 'support':
+			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
+                                                                           Argument.argument_uid == db_argument.argument_uid,
+                                                                           Argument.is_supportive == db_argument.is_supportive)).all()
 
 		_um = UrlManager(application_url, slug, for_api)
 
@@ -448,13 +460,14 @@ class DictionaryHelper(object):
 				else:
 					key = 'back' if for_api else 'window.history.go(-1)'
 
-					#if type == 'rebut':  # if we are having an rebut, everything seems different TODO IS THIS RIGHT
-					#	is_rebut_supportive = not db_argument.is_supportive
-					#	db_new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
-					#	                                                                  Argument.is_supportive == is_rebut_supportive)).first()
-					#	url = _um.get_url_for_justifying_argument(True, db_new_argument.uid if db_new_argument else 0, mode, 'support')
-					#else:
-					url = key if type == 'no_opinion' else _um.get_url_for_justifying_argument(True, argument_uid, mode, type)
+					if type == 'rebut':  # if we are having an rebut, everything seems different TODO IS THIS RIGHT
+						is_rebut_supportive = not db_argument.is_supportive
+						db_new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
+						                                                                  Argument.argument_uid == db_argument.argument_uid,
+						                                                                  Argument.is_supportive == is_rebut_supportive)).first()
+						url = _um.get_url_for_justifying_argument(True, db_new_argument.uid if db_new_argument else 0, mode, 'support', additional_id=argument_uid)
+					else:
+						url = key if type == 'no_opinion' else _um.get_url_for_justifying_argument(True, argument_uid, mode, type)
 				statements_array.append(self.__get_statement_dict(type, ret_dict[type + '_text'], [{'title': ret_dict[type + '_text'], 'id':type}], type, url))
 
 		return statements_array

@@ -213,8 +213,11 @@ class QueryHelper(object):
 		current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
 
 		new_argument = None
-		if current_attack == 'undermine' or current_attack == 'support':
+		if current_attack == 'undermine':
 			new_argument = self.__set_new_undermine_or_support(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
+
+		elif current_attack == 'support':
+			new_argument, duplicate = self.__set_new_support(transaction, new_pgroup_uid, current_argument, db_user, issue)
 
 		elif current_attack == 'undercut' or current_attack == 'overbid':
 			new_argument, duplicate = self.__set_new_undercut_or_overbid(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
@@ -314,6 +317,33 @@ class QueryHelper(object):
 		else:
 			new_argument = Argument(premisegroup=premisegroup_uid,
 			                        issupportive=False,
+			                        author=db_user.uid,
+			                        conclusion=current_argument.conclusion_uid,
+			                        issue=issue)
+			DBDiscussionSession.add(new_argument)
+			DBDiscussionSession.flush()
+			transaction.commit()
+			return new_argument, False
+
+	def __set_new_support(self, transaction, premisegroup_uid, current_argument, db_user, issue):
+		"""
+
+		:param transaction:
+		:param premisegroup_uid:
+		:param current_argument:
+		:param db_user:
+		:return:
+		"""
+		# duplicate?
+		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
+		                                                              Argument.is_supportive == True,
+		                                                              Argument.conclusion_uid == current_argument.conclusion_uid,
+		                                                              Argument.argument_uid == 0)).first()
+		if db_argument:
+			return db_argument, True
+		else:
+			new_argument = Argument(premisegroup=premisegroup_uid,
+			                        issupportive=True,
 			                        author=db_user.uid,
 			                        conclusion=current_argument.conclusion_uid,
 			                        issue=issue)
@@ -1129,13 +1159,13 @@ class QueryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 		error = ''
 		url = ''
-		supportive      = attack_type == 'support' or attack_type == 'overbid'
+		supportive = attack_type == 'support' or attack_type == 'overbid'
 
 		# insert all premisegroups into our databse
 		# all new arguments are collected in a list
 		new_arguments = []
 		for group in premisegroups:  # premisegroups is a list of lists
-			new_argument_uid = QueryHelper().handle_insert_new_premises_for_argument(group, attack_type, arg_id, issue,
+			new_argument_uid = self.handle_insert_new_premises_for_argument(group, attack_type, arg_id, issue,
 			                                                                         user, transaction)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)

@@ -321,9 +321,10 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 				if ($(this).val().length > 0)
 					text.push($(this).val());
 			});
-			arg = splits[splits.length - 3];
-			supportive = splits[splits.length - 2] == 't';
-			relation = splits[splits.length - 1];
+			var add = window.location.href.indexOf('support') != -1 ? 1 : 0;
+			arg = splits[splits.length - 3 - add];
+			supportive = splits[splits.length - 2 - add] == 't';
+			relation = splits[splits.length - 1 - add];
 			interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
 		};
 

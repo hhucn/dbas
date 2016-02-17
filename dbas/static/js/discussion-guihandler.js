@@ -363,11 +363,12 @@ function GuiHandler() {
 
 			// make all tokens bold
 			uneditted_value = val;
-			val = '<b>' + val.replace(token, '</b>' + token + '<b>').replace(token.toLocaleLowerCase(), '</b>' + token.toLocaleLowerCase() + '<b>') + '</b>';
+			// replacement from http://stackoverflow.com/a/280805/2648872
+			val = '<b>' + val.replace( new RegExp( "(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "</b>$1<b>" ) + '</b>';
 
 			button = $('<button>')
 				.attr('type', 'button')
-				.attr('class ', 'list-group-item')
+				.attr('class', 'list-group-item')
 				.attr('id', 'proposal_' + index)
 				.attr('text', uneditted_value)
 				.hover(function(){$(this).addClass('active');},

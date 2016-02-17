@@ -12,9 +12,9 @@
 	<!-- Bootstrap core CSS -->
 	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5-paper.min.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-toggle.min.css')}" rel="stylesheet">
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.min.css')}" rel="stylesheet">
-	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.min.css')}" rel="stylesheet">
-	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.min.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/customnavbar.css')}" rel="stylesheet">
 	<title>${project} - ${title}</title>
 </head>
 
@@ -72,15 +72,15 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.5.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
 
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-en.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-de.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-en.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-de.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
 
 
 	<!-- Piwik -->

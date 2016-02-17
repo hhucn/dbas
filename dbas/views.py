@@ -312,6 +312,7 @@ class Dbas(object):
 		mode                = matchdict['mode'] if 'mode' in matchdict else ''
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
+		related_arg         = matchdict['relation'][1] if len(matchdict['relation']) > 1 else -1
 
 		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales          = _qh.get_language(self.request, get_current_registry())
@@ -354,15 +355,15 @@ class Dbas(object):
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
+			# TODO SPECIAL CASE REBUT RESPECTIVELY THE SUPPORT
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
-			                                              logged_in=self.request.authenticated_userid)
+			                                              logged_in=self.request.authenticated_userid, additional_id=related_arg)
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue,
 			                                                             ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, ui_locales, self.request.authenticated_userid,
 			                                          argument_id=statement_or_arg_id, breadcrumbs=breadcrumbs,
 			                                          application_url=mainpage, for_api=for_api)
-			# TODO SPECIAL CASE REBUT!
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
@@ -1052,6 +1053,17 @@ class Dbas(object):
 			attack_type     = self.request.params['attack_type']
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			issue           = _qh.get_issue_id(self.request)
+
+			arg = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
+			logger('SET PGROUPS', '---', str(arg_uid))
+			logger('SET PGROUPS', '---', str(arg_uid))
+			logger('SET PGROUPS', '---', str(arg_uid))
+			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
+			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
+			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
+			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
+			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
+			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
 
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, issue, user_id, for_api,

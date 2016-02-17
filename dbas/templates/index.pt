@@ -4,7 +4,7 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<head>
-			<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.min.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
 		</head>
 
 		<div class="container colored_container first-container" id="home-template">
@@ -222,7 +222,7 @@
 		</div>
 		
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/eu-cookie-law-popup.min.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/eu-cookie-law-popup.js')}"></script>
 
 	</tal:block>
 </tal:block>

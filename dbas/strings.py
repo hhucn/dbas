@@ -1215,6 +1215,10 @@ class TextGenerator(object):
 			ret_text = _t.get(_t.itIsFalse) + ' ' + premise + '.'
 		if attack_type == 'support':
 			ret_text = _t.get(_t.itIsTrue) + ' ' + premise + '.'
+			ret_text = _t.get(_t.itIsTrue) if is_supportive else _t.get(_t.itIsFalse)
+			ret_text += ' <strong>' + conclusion + ' '
+			ret_text += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
+			ret_text += '</strong>.'
 		if attack_type == 'undercut':
 			ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounter) + ' ' + conclusion + '.'
 		if attack_type == 'overbid':
@@ -1268,7 +1272,10 @@ class TextGenerator(object):
 			ret_text += _t.get(_t.itIsFalse) + ' <strong>' + premise + '</strong>.'
 
 		if attack_type == 'support':
-			ret_text += _t.get(_t.itIsTrue) + ' <strong>' + premise + '</strong>.'
+			ret_text += _t.get(_t.itIsTrue) if is_supportive else _t.get(_t.itIsFalse)
+			ret_text += ' <strong>' + conclusion + ' '
+			ret_text += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
+			ret_text += '</strong>.'
 
 		if attack_type == 'undercut':
 			ret_text += r + '<strong>' + premise + '</strong>, '
@@ -1334,7 +1341,7 @@ class TextGenerator(object):
 								 + ' <strong>' + conclusion + '</strong>. '\
 								 + (_t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting))\
 								 + ' <strong>' + conclusion + ' '\
-		                         + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>. (VERIFY THIS)'  # todo
+		                         + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>.'
 		if with_no_opinion_text:
 			ret_dict['no_opinion_text'] = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
 
