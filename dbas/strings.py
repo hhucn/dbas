@@ -719,7 +719,7 @@ class Translator(object):
 		en_lang[self.supportPosition] = 'support position'
 		en_lang[self.strength] = 'Strength'
 		en_lang[self.strong] = 'strong'
-		en_lang[self.strongerStatementForRecjecting] = 'they claim to have a stronger statement for rejecting'
+		en_lang[self.strongerStatementForRecjecting] = 'but they claim to have a stronger statement for rejecting'
 		en_lang[self.soYouEnteredMultipleReasons] = 'So you entered multiple reasons'
 		en_lang[self.soYourOpinionIsThat] = 'So your opinion is that'
 		en_lang[self.soYouWantToArgueAgainst] = 'So you want to counter-argue against'
@@ -1102,7 +1102,7 @@ class Translator(object):
 		de_lang[self.showAllUsersTitle] = 'Zeige alle Nutzer'
 		de_lang[self.strength] = 'Stärke'
 		de_lang[self.strong] = 'stark'
-		de_lang[self.strongerStatementForRecjecting] = 'Sie haben eine stärkere Aussage zur Ablehnung von'
+		de_lang[self.strongerStatementForRecjecting] = 'aber Sie haben eine stärkere Aussage zur Ablehnung von'
 		de_lang[self.soYouEnteredMultipleReasons] = 'Sie haben mehrere Gründe eingegeben'
 		de_lang[self.soYourOpinionIsThat] = 'Ihre Meinung ist, dass'
 		de_lang[self.soYouWantToArgueAgainst] = 'Sie möchten ein Gegenargument bringen für'
@@ -1380,8 +1380,8 @@ class TextGenerator(object):
 			if reply_for_argument:  # reply for argument
 				confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting) if user_is_attacking else _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
 			else:		# reply for premise group
-				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong> ' +\
-				                     _t.get(_t.strongerStatementForRecjecting)
+				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, '
+				confrontation_text += _t.get(_t.strongerStatementForRecjecting)
 			confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 
 		elif attack == 'undercut':

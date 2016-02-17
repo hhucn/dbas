@@ -183,12 +183,19 @@ class DictionaryHelper(object):
 				                      + '<br><br>' + _tn.get(_tn.otherParticipantsDontHaveCounterForThat)\
 				                      + '.<br><br>' + _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 			else:
+				logger('---','#', _qh.get_text_for_argument_uid(uid, lang))
+				logger('---','#', _qh.get_text_for_argument_uid(uid, lang))
+				logger('---','#', _qh.get_text_for_argument_uid(additional_id, lang))
+				logger('---','#', _qh.get_text_for_argument_uid(additional_id, lang))
 				premise, tmp        = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 				conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 										else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
 				db_confrontation    = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
 				confrontation, tmp  = _qh.get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
-				# confrontation       = _qh.get_text_for_argument_uid(additional_id, lang)
+				if attack == 'undermine':
+					premise = _qh.get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
+						else _qh.get_text_for_argument_uid(db_confrontation.argument_uid, lang, True)
+
 
 				# argumentation is a reply for an argument, if the arguments conclusion of the user is no position
 				db_statement        = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
@@ -196,8 +203,8 @@ class DictionaryHelper(object):
 				current_argument    = _qh.get_text_for_argument_uid(uid, lang, True)
 				user_is_attacking   = not db_argument.is_supportive
 				heading             = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
-				                                                     confrontation, reply_for_argument, user_is_attacking,
-			                                                         current_argument)
+				                                                     confrontation, reply_for_argument,
+				                                                     user_is_attacking, current_argument)
 		elif at_choosing:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
 			heading = _tn.get(_tn.soYouEnteredMultipleReasons) + '.<br><br>'
