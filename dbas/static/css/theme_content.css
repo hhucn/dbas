@@ -255,3 +255,9 @@
 #add-premise-container-main-input {
 	
 }
+
+.flex-div {
+	-webkit-box-flex:1.0;
+	-moz-box-flex:1.0;
+	box-flex:1.0;"
+}

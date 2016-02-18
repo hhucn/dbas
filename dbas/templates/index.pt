@@ -7,13 +7,12 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
 		</head>
 
-		<div class="container colored_container first-container" id="home-template">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="content">
+		<div class="container colored_container first-container jumbotron" id="home-template">
+				<div class="content">
 						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en">
 						<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.png')}" alt="dbas logo" tal:condition="extras.lang_is_de">
 						<br>
+						<!--
 						<h2><span i18n:translate="welcome">Welcome</span>
 								<span i18n:translate="to_the_dbas">to the</span>
 									<strong>D</strong><span i18n:translate="ialog">ialog</span>-
@@ -22,13 +21,15 @@
 									<strong>S</strong><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span> 
 									<strong>D-BAS</strong>
 								</h2>
+						-->
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem in a structured manner.</p>
 						<br>
 						<form action="/discuss" method="get" class="text-center">
-							<input class="button button-block btn btn-lg btn-primary" type="submit" value="Click here to start now!" name="Submit" id="start-discussion-button" tal:attributes="value extras.buttons.lets_go"/>
+							<input class="btn btn-lg btn-primary" type="submit" value="Click here to start now!" name="Submit" id="start-discussion-button" tal:attributes="value extras.buttons.lets_go"/>
 						</form>
 						<br>
 						<br>
+						<!--
 						<p class="lead" i18n:translate="dbas_intro_advantages_intro">D-Bas offers a lot of advantages, here are a few of them:</p>
 						<ul class="lead list">
 							<li i18n:translate="dbas_intro_advantages_1">Easy to use and very powerful</li>
@@ -36,6 +37,7 @@
 							<li i18n:translate="dbas_intro_advantages_3">Every argument and position will be connected logically to each other</li>
 						</ul>
 						<br>
+						-->
 						<p class="lead"><span i18n:translate="projec_based_on">This project is based on research of the graduation school Online-Participation, subsidised governmentally by</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.</p>
 						<ul class="list-logos">
 							<li>
@@ -57,8 +59,6 @@
 							</li>
 						</ul>
 					</div>
-				</div>
-			</div>
 		</div>
 
 		<div class="container colored_container" id="description-template">

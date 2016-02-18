@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-02-18 11:16+0100\n"
+"POT-Creation-Date: 2016-02-18 11:24+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -71,8 +71,8 @@ msgstr "oder kurz"
 #: dbas/templates/index.pt:25
 msgid "novel_software"
 msgstr ""
-"Diese neuartige Diskussionssoftware soll helfen, Probleme strukturiert zu "
-"erörtern."
+"Willkommen, diese neuartige Diskussionssoftware soll helfen, Probleme "
+"strukturiert zu erörtern."
 
 #. Default: D-Bas offers a lot of advantages, here are a few of them:
 #: dbas/templates/index.pt:32
@@ -120,7 +120,7 @@ msgid "description"
 msgstr "Beschreibung"
 
 #. Default: of D-BAS
-#: dbas/templates/index.pt:68 dbas/templates/index.pt:113
+#: dbas/templates/index.pt:68 dbas/templates/index.pt:115
 msgid "of_dbas"
 msgstr "von D-BAS"
 
@@ -129,63 +129,15 @@ msgstr "von D-BAS"
 msgid "description_intro"
 msgstr "Im Folgenden wird eine kurze Beschreibung von D-BAS gegeben:"
 
-#. Default: Participants are able to add and modify positions and arguments in
-#. every discussion.
-#: dbas/templates/index.pt:72
-msgid "description_list_1"
-msgstr ""
-"Teilnehmer/innen können Argumente/Aussagen und Positionen hinzufügen und "
-"editieren."
-
-#. Default: Positions and arguments are connected logically by participants
-#: dbas/templates/index.pt:73
-msgid "description_list_2"
-msgstr "Argumente/Aussagen und Positionen sind logisch miteinander verbunden"
-
-#. Default: It offers a time-shifted discussion in three modes:
-#: dbas/templates/index.pt:74
-msgid "description_list_3"
-msgstr "Das System ist sehr einfach in der Benutzung"
-
-#. Default: Guided View: The participants will be lead through the discussion .
-#: dbas/templates/index.pt:76
-msgid "guided_view_description"
-msgstr "Geführte Asnicht: Teilnehmer werden durch die Diskussion geführt."
-
-#. Default: Island View: A position with all connected arguments is presented
-#. as island. This supports the insight of a discussion about a specific
-#. position.
-#: dbas/templates/index.pt:77
-msgid "island_view_description"
-msgstr ""
-"Insel Ansicht: Eine Aussage mit allen verknüpften Aussagen wird als Insel "
-"bezeichnet. Die Aussagen werden nach Pro und Kontra sortiert. Dies erhöht "
-"die Übersicht"
-
-#. Default: Expert View: Participants are able to see and do everything.
-#: dbas/templates/index.pt:78
-msgid "expert_view_description"
-msgstr "Experten Ansicht: Teilnehmer können die Argumentationskarte sehen."
-
-#. Default: Contributions can be rated by the participants.
-#: dbas/templates/index.pt:81
-msgid "description_list_5"
-msgstr "Beiträge werden durch die Teilnehmer bewertet"
-
-#. Default: You have the huge power of the crowd!.
-#: dbas/templates/index.pt:82
-msgid "description_list_6"
-msgstr "Dies ist die Weisheit der Menge"
-
 #. Default: Fast
-#: dbas/templates/index.pt:92
+#: dbas/templates/index.pt:94
 msgid "Fast"
 msgstr "Schnell"
 
 #. Default: Participant do not have to read much text. Every unique step in out
 #. novel system regards to one point of view in the discussion. Less text, less
 #. confusions.
-#: dbas/templates/index.pt:93
+#: dbas/templates/index.pt:95
 msgid "fast_content"
 msgstr ""
 "Teilnehmer/innen müssen nicht viel Text lesen. Jeder Schritt in unserem "
@@ -194,14 +146,14 @@ msgstr ""
 
 #. Default: Matching Ideas
 #. Default: Dialog-based
-#: dbas/templates/index.pt:97 dbas/templates/index.pt:128
+#: dbas/templates/index.pt:99 dbas/templates/index.pt:130
 msgid "dialog_based"
 msgstr "Dialog-basiert"
 
 #. Default: Do you have a matching idea? Good, because your ideal will not
 #. become boggy in a flood of text, it will matched at the right position into
 #. the discussion.
-#: dbas/templates/index.pt:98
+#: dbas/templates/index.pt:100
 msgid "matching_ideas_content"
 msgstr ""
 "Sie haben eine gute Idee? Gut, denn diese wird nicht irgendwo im System "
@@ -209,31 +161,31 @@ msgstr ""
 "zum richtigen Zeitpunkt sehen wird."
 
 #. Default: Based on Science
-#: dbas/templates/index.pt:102
+#: dbas/templates/index.pt:104
 msgid "based_on_science"
 msgstr "Basierend auf Wissenschaft"
 
 #. Default: Our novel system is based on the work of multiple doctoral thesis'
 #. as well as final papers of students.
-#: dbas/templates/index.pt:103
+#: dbas/templates/index.pt:105
 msgid "based_on_science_content"
 msgstr ""
 "Unser neuartiges System basiert auf meheren Doktorarbeit sowie Bachelor- und "
 "Masterarbeiten."
 
 #. Default: Features
-#: dbas/templates/index.pt:113 dbas/templates/snippet-header.pt:26
+#: dbas/templates/index.pt:115 dbas/templates/snippet-header.pt:26
 msgid "features"
 msgstr "Besonderheiten"
 
 #. Default: Some of these features will be released in a future version of
 #. D-BAS.
-#: dbas/templates/index.pt:114
+#: dbas/templates/index.pt:116
 msgid "release_future_version"
 msgstr "Einige der Funktionen stehen erst bald zur Verfügung."
 
 #. Default: Argumentation Maps
-#: dbas/templates/index.pt:123
+#: dbas/templates/index.pt:125
 msgid "argu_maps"
 msgstr "Argumentationskarten"
 
@@ -241,7 +193,7 @@ msgstr "Argumentationskarten"
 #. the nodes are highly important and can have several meanings. Additionally
 #. the bubbles of the map can have play a important role. Therefore using this
 #. data structure for logically presentations of some graphs makes sense.
-#: dbas/templates/index.pt:124
+#: dbas/templates/index.pt:126
 msgid "argu_maps_content"
 msgstr ""
 "Eine Argumentationskarte ist wie eine Mind-Map, jedoch haben die Striche "
@@ -252,7 +204,7 @@ msgstr ""
 #. Default: Yeah, this is a novel and it is a kind of dialog-based approach.
 #. This means that the system will represent argumentations of panelist and
 #. claims will be given through the other participants.
-#: dbas/templates/index.pt:129
+#: dbas/templates/index.pt:131
 msgid "dialog_based_content"
 msgstr ""
 "Yeah, das ist neu und verwirklicht eine Art dialog-basierten Ansatz. Demnach "
@@ -260,40 +212,40 @@ msgstr ""
 "weiterer Benutzer beruhen."
 
 #. Default: Simple UI
-#: dbas/templates/index.pt:133
+#: dbas/templates/index.pt:135
 msgid "simple_ui"
 msgstr "Einfache Oberfläche"
 
 #. Default: The user interface of D-BAS is simple, clear and easy. At any point
 #. during the discussion the choices for the participant are bounded, but not
 #. isolating him/her.
-#: dbas/templates/index.pt:134
+#: dbas/templates/index.pt:136
 msgid "simple_ui_content"
 msgstr ""
 "Die Oberfläche von D-BAS ist einfach und klar strukturiert. An jeder Stelle "
 "sind die Auswahlen für den Benutzer begrenzt, aber niemals einschränkend"
 
 #. Default: Guided View
-#: dbas/templates/index.pt:141
+#: dbas/templates/index.pt:143
 msgid "guided_view"
 msgstr "Geführte Ansicht"
 
 #. Default: You will never see something like an argumentation map, because the
 #. systems seems to be like a dynamic and generic
-#: dbas/templates/index.pt:142
+#: dbas/templates/index.pt:144
 msgid "guided_view_content1"
 msgstr ""
 "Du wirst nie etwas wie eine Argumentationskarte sehen, da das System dich "
 "führt. Das System ist daher dynamisch und generisch ."
 
 #. Default: for you
-#: dbas/templates/index.pt:142
+#: dbas/templates/index.pt:144
 msgid "guided_view_content2"
 msgstr "für dich."
 
 #. Default: Island View
 #. Default: Island<dynamic element>View
-#: dbas/templates/index.pt:146 dbas/templates/content.pt:121
+#: dbas/templates/index.pt:148 dbas/templates/content.pt:121
 #: dbas/templates/content.pt:356
 msgid "island_view"
 msgstr "Insel-Ansicht"
@@ -301,7 +253,7 @@ msgstr "Insel-Ansicht"
 #. Default: Okay, you want to see more as, but not everything. Therefore the
 #. island view will present you a list of every connected statement for an
 #. specific statement.
-#: dbas/templates/index.pt:147
+#: dbas/templates/index.pt:149
 msgid "island_view_content"
 msgstr ""
 "Okay, Sie möchten mehr sehen, aber nicht alles? Genau dafür haben wie eine "
@@ -309,33 +261,33 @@ msgstr ""
 "Aussagen, die mit Ihrem aktuellen Standpunkt verbunden sind."
 
 #. Default: Expert View
-#: dbas/templates/index.pt:151
+#: dbas/templates/index.pt:153
 msgid "expert_view"
 msgstr "Experten Ansicht"
 
 #. Default: So, you think you are an expert? Okay, you can have a view of the
 #. complete argumentation map.
-#: dbas/templates/index.pt:152
+#: dbas/templates/index.pt:154
 msgid "expert_view_content"
 msgstr ""
 "Experten Ansicht: Du bist also ein Experte? Okay, dann darfst du wirklich "
 "alles auf einen Blick sehen."
 
 #. Default: About
-#: dbas/templates/index.pt:161 dbas/templates/snippet-header.pt:28
+#: dbas/templates/index.pt:163 dbas/templates/snippet-header.pt:28
 msgid "about"
 msgstr "Über"
 
 #. Default: D-BAS is a of discussions in the field of online participation and
 #. developed by
-#: dbas/templates/index.pt:162
+#: dbas/templates/index.pt:164
 msgid "about_description"
 msgstr ""
 "D-BAS ist eine Diskussions-Software im Bereich der Online-Partizipation und "
 "wurde enwickelt von"
 
 #. Default: Cooperation with
-#: dbas/templates/index.pt:168 dbas/templates/index.pt:178
+#: dbas/templates/index.pt:170 dbas/templates/index.pt:180
 msgid "cooperation_with"
 msgstr "In Kooperation mit"
 
@@ -346,19 +298,19 @@ msgstr "In Kooperation mit"
 #. different needs of our users. In addition, we are developing Thentos, an
 #. identity management system which ensures privacy during complex
 #. participation processes.
-#: dbas/templates/index.pt:169
+#: dbas/templates/index.pt:171
 msgid "liquid_democracy_description"
 msgstr ""
 "Der Praxispartner von Tobias Krauthoff ist Daniel Reichert vom Liquid "
 "Democracy e.V."
 
 #. Default: Graduation School
-#: dbas/templates/index.pt:173
+#: dbas/templates/index.pt:175
 msgid "graduation_scool"
 msgstr "Graduierten-Kolleg"
 
 #. Default: Online-Participation
-#: dbas/templates/index.pt:173
+#: dbas/templates/index.pt:175
 msgid "fk_op"
 msgstr "Online-Partizipation"
 
@@ -370,7 +322,7 @@ msgstr "Online-Partizipation"
 #. practice. The objective is the examination of opportunities of the internet,
 #. where affected persons are able to participate in decisions, where they are
 #. affected.
-#: dbas/templates/index.pt:174
+#: dbas/templates/index.pt:176
 msgid "fk_op_description"
 msgstr ""
 "Das NRW Fortschrittskolleg Online-Partizipation ist ein vom Land Nordrhein-"
@@ -382,7 +334,7 @@ msgstr ""
 "von Betroffenen an für sie relevanten Entscheidungen zu untersuchen."
 
 #. Default: Karlsruhe Institut of Technology
-#: dbas/templates/index.pt:178
+#: dbas/templates/index.pt:180
 msgid "kit"
 msgstr "Karlsruher Institut der Technologie"
 
@@ -394,7 +346,7 @@ msgstr "Karlsruher Institut der Technologie"
 #. of dialectical struc- tures, defines argument relations in terms of locigo-
 #. sematical relations between propositions and thus gives rise to a new
 #. computational approach to the reconstruction of complex debates.
-#: dbas/templates/index.pt:179
+#: dbas/templates/index.pt:181
 msgid "kit_description"
 msgstr ""
 "Die Arbeitsgruppe Funktionalität des Graduierten-Kollegs arbeitet eng mit "
@@ -1430,6 +1382,36 @@ msgstr "Weil..."
 #: dbas/templates/content.pt:347
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
+
+#~ msgid "description_list_1"
+#~ msgstr ""
+#~ "Teilnehmer/innen können Argumente/Aussagen und Positionen hinzufügen und "
+#~ "editieren."
+
+#~ msgid "description_list_2"
+#~ msgstr ""
+#~ "Argumente/Aussagen und Positionen sind logisch miteinander verbunden"
+
+#~ msgid "description_list_3"
+#~ msgstr "Das System ist sehr einfach in der Benutzung"
+
+#~ msgid "guided_view_description"
+#~ msgstr "Geführte Asnicht: Teilnehmer werden durch die Diskussion geführt."
+
+#~ msgid "island_view_description"
+#~ msgstr ""
+#~ "Insel Ansicht: Eine Aussage mit allen verknüpften Aussagen wird als Insel "
+#~ "bezeichnet. Die Aussagen werden nach Pro und Kontra sortiert. Dies erhöht "
+#~ "die Übersicht"
+
+#~ msgid "expert_view_description"
+#~ msgstr "Experten Ansicht: Teilnehmer können die Argumentationskarte sehen."
+
+#~ msgid "description_list_5"
+#~ msgstr "Beiträge werden durch die Teilnehmer bewertet"
+
+#~ msgid "description_list_6"
+#~ msgstr "Dies ist die Weisheit der Menge"
 
 #~ msgid "dont_forget"
 #~ msgstr "Und vergessen Sie nicht, auch folgende Seite zu lesen "

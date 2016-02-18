@@ -1055,15 +1055,6 @@ class Dbas(object):
 			issue           = _qh.get_issue_id(self.request)
 
 			arg = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-			logger('SET PGROUPS', '---', str(arg_uid))
-			logger('SET PGROUPS', '---', str(arg_uid))
-			logger('SET PGROUPS', '---', str(arg_uid))
-			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
-			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
-			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
-			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
-			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
-			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
 
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, issue, user_id, for_api,

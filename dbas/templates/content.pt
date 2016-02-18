@@ -320,7 +320,7 @@
 						<div>
 							<h5 style="float: left; line-height: 20px; text-align: center;" i18n:translate="Because...">Because...</h5>
 						</div>
-						<div style="-webkit-box-flex:1.0; -moz-box-flex:1.0; box-flex:1.0;">
+						<div class="flex-div">
 							<input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="">
 						</div>
 						<div>

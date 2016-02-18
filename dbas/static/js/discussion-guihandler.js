@@ -19,7 +19,7 @@ function GuiHandler() {
 			uid = new Date().getTime(),
 			div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs'),
 			div_l = $('<div>'),
-			div_m = $('<div style="-webkit-box-flex:1.0; -moz-box-flex:1.0; box-flex:1.0;">'),
+			div_m = $('<div>').addClass('flex-div'),
 			div_r = $('<div>'),
 			h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
 			id = 'add-premise-container-main-input-' + uid,
