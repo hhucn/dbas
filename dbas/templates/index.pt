@@ -22,7 +22,7 @@
 									<strong>S</strong><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span> 
 									<strong>D-BAS</strong>
 								</h2>
-						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem or statement in a structured manner.</p>
+						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem in a structured manner.</p>
 						<br>
 						<form action="/discuss" method="get" class="text-center">
 							<input class="button button-block btn btn-lg btn-primary" type="submit" value="Click here to start now!" name="Submit" id="start-discussion-button" tal:attributes="value extras.buttons.lets_go"/>
@@ -56,8 +56,6 @@
 								</a>
 							</li>
 						</ul>
-						<br>
-						<p class="lead"><span i18n:translate="dont_forget">And don't forget to check reguarly the</span> <a href="${request.application_url}/news" title="news"><span i18n:translate="news_page">news-page</span></a>.</p>
 					</div>
 				</div>
 			</div>
@@ -69,11 +67,11 @@
 					<div class="content">
 						<h2><strong i18n:translate="description">Description</strong> <span i18n:translate="of_dbas">of D-BAS</span></h2>
 
-						<p class="lead"><span i18n:translate="description_intro">In the following a short description of D-BAS will be given with the help of bulletpoints:</span>
+						<p class="lead"><span i18n:translate="description_intro">In the following a short description of D-BAS will be given:</span>
+							<!--
 							<ul class="lead list">
 								<li i18n:translate="description_list_1"> Participants are able to add and modify positions and arguments in every discussion.</li>
 								<li i18n:translate="description_list_2"> Positions and arguments are connected logically by participants</li>
-								<li i18n:translate="description_list_3"> The system is very easy to use.</li>
 								<li><span i18n:translate="description_list_3"> It offers a time-shifted discussion in three modes:</span>
 									<ul class="lead list">
 										<li i18n:translate="guided_view_description"> Guided View: The participants will be lead through the discussion .</li>
@@ -84,6 +82,7 @@
 								<li i18n:translate="description_list_5"> Contributions can be rated by the participants.</li>
 								<li i18n:translate="description_list_6"> You have the huge power of the crowd!.</li>
 							</ul>
+							-->
 					</div>
 				</div>
 			</div>
@@ -93,14 +92,17 @@
 				<div class="col-md-4 col-badge">
 					<img id="icon-map" class="icon-badge" alt="icon-scooter" src="${request.static_url('dbas:static/images/icon_scooter.png')}" />
 					<h3 i18n:translate="Fast">Fast</h3>
+					<p class="content" i18n:translate="fast_content">Participant do not have to read much text. Every unique step in out novel system regards to one point of view in the discussion. Less text, less confusions.</p>
 				</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-dialog" class="icon-badge" alt="icon-match" src="${request.static_url('dbas:static/images/icon_match.png')}" />
-					<h3 i18n:translate="dialog_based">Matching ideas</h3>
+					<h3 i18n:translate="dialog_based">Matching Ideas</h3>
+					<p class="content" i18n:translate="matching_ideas_content">Do you have a matching idea? Good, because your ideal will not become boggy in a flood of text, it will matched at the right position into the discussion.</p>
 			</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-science" class="icon-badge" alt="icon-laboratory" src="${request.static_url('dbas:static/images/icon_laboratory.png')}" />
-					<h3 i18n:translate="simple_science">Based on Science</h3>
+					<h3 i18n:translate="based_on_science">Based on Science</h3>
+					<p class="content" i18n:translate="based_on_science_content">Our novel system is based on the work of multiple doctoral thesis' as well as final papers of students.</p>
 					</div>
 			</div>
 			
@@ -183,7 +185,8 @@
 				</div>
 			</div>
 		</div>
-
+		
+		<!--
 		<div class="container colored_container" id="research-template">
 			<div class="row">
 				<div class="col-md-12">
@@ -220,7 +223,7 @@
 				</div>
 			</div>
 		</div>
-		
+		-->
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/eu-cookie-law-popup.js')}"></script>
 

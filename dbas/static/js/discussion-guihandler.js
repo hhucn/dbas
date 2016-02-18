@@ -17,7 +17,10 @@ function GuiHandler() {
 	this.appendAddPremiseRow = function(){
 		var body = $('#add-premise-container-body'),
 			uid = new Date().getTime(),
-			div = $('<div>').attr('style', 'padding-bottom: 2em'),
+			div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs'),
+			div_l = $('<div>'),
+			div_m = $('<div style="-webkit-box-flex:1.0; -moz-box-flex:1.0; box-flex:1.0;">'),
+			div_r = $('<div>'),
 			h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
 			id = 'add-premise-container-main-input-' + uid,
 			input = $('<input>').attr('id', id)
@@ -36,7 +39,9 @@ function GuiHandler() {
 				.attr('style', 'height: 30px;')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
 
-		div.append(h5).append(input).append(imgm).append(imgp);
+		div.append(div_l.append(h5))
+			.append(div_m.append(input))
+			.append(div_r.append(imgm).append(imgp));
 		$('#' + addPremiseContainerBodyId).append(div);
 
 		imgp.click(function(){

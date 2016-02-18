@@ -76,10 +76,7 @@
 .add-statement-container-input{
 	width: 100%;
 }
-.add-premise-container-input{
-	width: 85%;
-	float: left;
-}
+
 #add-statement-container-body input,
 #add-premise-container-body input{
 	-webkit-border-radius: 3px;
@@ -242,3 +239,19 @@
 
 	
 
+
+.container-three-divs {
+	display:-webkit-box;
+	-webkit-box-orient:horizontal;
+	-webkit-box-align:stretch; 
+	display:-moz-box;      
+	-moz-box-orient:horizontal;
+	-moz-box-align:stretch;
+	display:box;
+	box-orient:horizontal;
+	box-align:stretch; 
+}
+
+#add-premise-container-main-input {
+	
+}
