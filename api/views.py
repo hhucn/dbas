@@ -5,7 +5,7 @@ from dbas.views import Dbas
 import logging
 
 log = logging.getLogger()
-log.setLevel(logging.ERROR)
+log.setLevel(logging.DEBUG)
 
 # @author Christian Meter, Tobias Krauthoff
 # @email {meter, krauthoff}@cs.uni-duesseldorf.de
@@ -290,7 +290,6 @@ def get_users(request):
 def login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
-
 	The function body is only executed, if the validator added a request.validated field.
 	:param request:
 	:return: token
@@ -299,21 +298,9 @@ def login(request):
 
 	# Convert bytes to string
 	if type(user['token']) == bytes:
-		_USERS[user['nickname']] = user['token'].decode('utf-8')
+		token = user['token'].decode('utf-8')
 	else:
-		_USERS[user['nickname']] = user['token']
-	return {'token': '%s-%s' % (user['nickname'], user['token'])}
+		token = user['token']
 
-
-########################
-# Historical functions #
-########################
-#@users.post(validators=unique)
-#def create_user(request):
-#	"""Adds a new user."""
-#	user = request.validated['user']
-#	if type(user['name'] == bytes):
-#		_USERS[user['name'].decode('utf-8')] = user['token'].decode('utf-8')
-#	else:
-#		_USERS[user['name']]= user['token']
-#	return {'token': '%s-%s' % (user['name'], user['token'])}
+	_USERS[user['nickname']] = token
+	return {'token': '%s-%s' % (user['nickname'], token)}
