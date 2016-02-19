@@ -198,10 +198,10 @@ function News() {
 	this.setSlimscrollForNewsRows = function () {
 		var placeholders = [], h, wrapperContent = $('#wrapper-content'), footer = $('#footer');
 		placeholders.push($('.navbar-collapse').height());
-		placeholders.push(parseInt(wrapperContent).css('padding-top').replace('px','')));
-		placeholders.push(parseInt(wrapperContent).css('padding-bottom').replace('px','')));
-		placeholders.push(parseInt(wrapperContent).css('margin-top').replace('px','')));
-		placeholders.push(parseInt(wrapperContent).css('margin-bottom').replace('px','')));
+		placeholders.push(parseInt(wrapperContent.css('padding-top').replace('px','')));
+		placeholders.push(parseInt(wrapperContent.css('padding-bottom').replace('px','')));
+		placeholders.push(parseInt(wrapperContent.css('margin-top').replace('px','')));
+		placeholders.push(parseInt(wrapperContent.css('margin-bottom').replace('px','')));
 		placeholders.push(footer.height());
 		placeholders.push(parseInt(footer.css('padding-top').replace('px','')));
 		placeholders.push(parseInt(footer.css('margin-top').replace('px','')));

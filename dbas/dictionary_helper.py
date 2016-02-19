@@ -153,8 +153,8 @@ class DictionaryHelper(object):
 									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
 			if attack=='support':
 				is_supportive = not is_supportive
-			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion,
-			                                                                False, is_supportive, logged_in)
+			heading             = _tg.get_header_for_users_confrontation_response(confrontation, premise, attack, conclusion,
+			                                                                      False, is_supportive, logged_in)
 			if attack == 'undermine':
 				add_premise_text = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
 				                                                          db_argument.is_supportive)
@@ -191,10 +191,6 @@ class DictionaryHelper(object):
 				                      + '<br><br>' + _tn.get(_tn.otherParticipantsDontHaveCounterForThat)\
 				                      + '.<br><br>' + _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 			else:
-				logger('---','#', _qh.get_text_for_argument_uid(uid, lang))
-				logger('---','#', _qh.get_text_for_argument_uid(uid, lang))
-				logger('---','#', _qh.get_text_for_argument_uid(additional_id, lang))
-				logger('---','#', _qh.get_text_for_argument_uid(additional_id, lang))
 				premise, tmp        = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 				conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 										else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
@@ -447,7 +443,7 @@ class DictionaryHelper(object):
 			conclusion       = conclusion[0:1].lower() + conclusion[1:]
 			premise          = premise[0:1].lower() + premise[1:]
 
-			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True, not db_argument.is_supportive)
+			ret_dict         = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_argument.is_supportive)
 			mode             = 't' if is_supportive else 't'
 			_um              = UrlManager(application_url, slug, for_api)
 
@@ -605,9 +601,9 @@ class DictionaryHelper(object):
 				island_dict = _qh.get_everything_for_island_view(argument_id, lang)
 				island_dict['premise'] = island_dict['premise'][0:1].lower() + island_dict['premise'][1:]
 				island_dict['conclusion'] = island_dict['conclusion'][0:1].lower() + island_dict['conclusion'][1:]
-				island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
-				                                                                                    island_dict['conclusion'],
-				                                                                                    False, False, not db_argument.is_supportive))
+				island_dict.update(TextGenerator(lang).get_relation_text_dict(island_dict['premise'],
+				                                                              island_dict['conclusion'],
+				                                                              False, False, not db_argument.is_supportive))
 				return_dict['island'] = island_dict
 			else:
 				return_dict['is_editable']            = False
