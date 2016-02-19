@@ -701,9 +701,11 @@ class Dbas(object):
 
 	# ajax - user login
 	@view_config(route_name='ajax_user_login', renderer='json')
-	def user_login(self):
+	def user_login(self, nickname=None, password=None, for_api=False):
 		"""
 		Will login the user by his nickname and password
+		:param nickname: Manually provide nickname (e.g. from API)
+		:param password: Manually provide password (e.g. from API)
 		:return: dict() with success and message
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -714,9 +716,14 @@ class Dbas(object):
 		return_dict = dict()
 
 		try:
-			nickname = self.escape_string(self.request.params['user'])
-			password = self.escape_string(self.request.params['password'])
-			url = self.request.params['url']
+			if not nickname and not password:
+				nickname = self.escape_string(self.request.params['user'])
+				password = self.escape_string(self.request.params['password'])
+				url = self.request.params['url']
+			else:
+				nickname = self.escape_string(nickname)
+				password = self.escape_string(password)
+				url = ""
 
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
@@ -736,10 +743,13 @@ class Dbas(object):
 				db_user.update_last_logged()
 				transaction.commit()
 
-				return HTTPFound(
-					location=url,
-					headers=headers,
-				)
+				if for_api:
+					return True
+				else:
+					return HTTPFound(
+						location=url,
+						headers=headers,
+					)
 
 		except KeyError as e:
 			logger('user_login', 'error', repr(e))
