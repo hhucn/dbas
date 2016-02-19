@@ -226,6 +226,12 @@ class _401(exc.HTTPError):
 
 
 def valid_token(request):
+	"""
+	Validate the submitted token. Checks if a user is logged in.
+
+	:param request:
+	:return:
+	"""
 	header = 'X-Messaging-Token'
 	htoken = request.headers.get(header)
 	if htoken is None:
@@ -261,7 +267,7 @@ def get_users(request):
 
 
 @users.post(validators=unique)
-def create_user(request):
+def login(request):
 	"""Adds a new user."""
 	user = request.validated['user']
 	if type(user['name'] == bytes):
@@ -269,3 +275,16 @@ def create_user(request):
 	else:
 		_USERS[user['name']]= user['token']
 	return {'token': '%s-%s' % (user['name'], user['token'])}
+
+########################
+# Historical functions #
+########################
+#@users.post(validators=unique)
+#def create_user(request):
+#	"""Adds a new user."""
+#	user = request.validated['user']
+#	if type(user['name'] == bytes):
+#		_USERS[user['name'].decode('utf-8')] = user['token'].decode('utf-8')
+#	else:
+#		_USERS[user['name']]= user['token']
+#	return {'token': '%s-%s' % (user['name'], user['token'])}
