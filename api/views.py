@@ -197,6 +197,10 @@ login      = Service(name='login',
 
 ##################################
 
+# =============================================================================
+# LOGIN
+# =============================================================================
+
 import os
 import binascii
 import json
@@ -248,17 +252,19 @@ def valid_token(request):
 		log.error("ValueError")
 		raise _401()
 
-	log.debug("Login Attempt via API: %s: %s" % (user, token))
+	log.debug("API Login Attempt: %s: %s" % (user, token))
 
 	valid = user in _USERS and _USERS[user] == token
+
 	if not valid:
-		log.error("Invalid token")
+		log.error("API Invalid token")
 		raise _401()
 
+	log.debug("API Remote login successful")
 	request.validated['user'] = user
 
 
-def unique(request):
+def validate_credentials(request):
 	# Decode received data
 	data = request.body.decode('utf-8')
 	data = json.loads(data)
@@ -286,7 +292,7 @@ def get_users(request):
 	return {'users': _USERS}
 
 
-@users.post(validators=unique)
+@users.post(validators=validate_credentials)
 def login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
