@@ -37,10 +37,10 @@
 						<input id="send-news" type="button" value="Send News" class="button button-block btn btn-primary" data-dismiss="modal" />
 						<div id="news_credentials" style="float: right;">
 							<h5><span i18n:translate="author">Author</span>: 
-					<span tal:replace="logged_in"></span>, 
-					<span i18n:translate="date">Date</span>: 
-					<span tal:replace="date"></span>
-				</h5>
+					        <span tal:replace="logged_in"></span>,
+					        <span i18n:translate="date">Date</span>:
+					        <span tal:replace="date"></span>
+				        </h5>
 						</div>
 					</div>
 				</div>
@@ -49,11 +49,11 @@
 
 		<div id="news-body"></div>
 
-		<div class="container">
+		<div id="news-navigation-container" class="container">
 			<div class="row">
 				<div class="col-md-12 text-center">
 
-					<nav  id="news-navigation">
+					<nav id="news-navigation">
 						<ul class="pagination">
 							<li class="disabled">
 								<a href="#">
@@ -75,6 +75,7 @@
 		</div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery.slimscroll-1.3.7.min.js')}"></script>
 
 	</tal:block>
 </tal:block>
