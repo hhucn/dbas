@@ -1,5 +1,3 @@
-/*global $, jQuery, discussionsDescriptionId, discussionContainerId, discussionSpaceId, discussionAvoidanceSpaceId, _t */
-
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
@@ -181,7 +179,7 @@ function GuiHandler() {
 			}
 
 			if (type == fuzzy_add_reason){
-				new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, decided_texts);
+				new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
 			} else if (type == fuzzy_start_premise){
 				new AjaxSiteHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
 			} else {
@@ -302,7 +300,7 @@ function GuiHandler() {
 			input1, input2, input3, list, bigText, bigTextSpan, connection, i;
 
 		if (topic.match(/\.$/)){
-			topic = topic.substr(0, topic.length-2) + ', '
+			topic = topic.substr(0, topic.length-1) + ', '
 		}
 
 		div_page.attr('id', id + page_no).attr('page', page_no).show();
@@ -365,16 +363,18 @@ function GuiHandler() {
 
 			// make all tokens bold
 			uneditted_value = val;
-			val = '<b>' + val.replace(token, '</b>' + token + '<b>').replace(token.toLocaleLowerCase(), '</b>' + token.toLocaleLowerCase() + '<b>') + '</b>';
+			// replacement from http://stackoverflow.com/a/280805/2648872
+			val = '<b>' + val.replace( new RegExp( "(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "</b>$1<b>" ) + '</b>';
 
-			button = $('<button>').attr({type : 'button',
-				class : 'list-group-item',
-				id : 'proposal_' + index,
-				text: uneditted_value})
+			button = $('<button>')
+				.attr('type', 'button')
+				.attr('class', 'list-group-item')
+				.attr('id', 'proposal_' + index)
+				.attr('text', uneditted_value)
 				.hover(function(){$(this).addClass('active');},
 					   function(){ $(this).removeClass('active');});
-			span_dist = $('<span>').attr({class : 'badge'}).text(parsedData.distance_name + ' ' + distance);
-			span_text = $('<span>').attr({id : 'proposal_' + index + '_text'}).html(val);
+			span_dist = $('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
+			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(val);
 			button.append(span_dist).append(span_text).click(function(){
 				callbackElement.val($(this).attr('text'));
 				$('#' + proposalStatementListGroupId).empty();
@@ -415,11 +415,10 @@ function GuiHandler() {
 		$('#' + popupEditStatementWarning).hide();
 
 		// top row
-		table = $('<table>').attr({
-			class: 'table table-condensed',
-			border: '0',
-			style: 'border-collapse: separate; border-spacing: 5px 5px;'
-		});
+		table = $('<table>')
+			.attr('class', 'table table-condensed')
+			.attr('border', '0')
+			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 		td_text = $('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
 		td_buttons = $('<td>').html('<strong>' + _t(options) + '</strong>').css('text-align', 'right');
 		table.append($('<tr>').append(td_text).append(td_buttons));
@@ -478,12 +477,11 @@ function GuiHandler() {
 
 		// top row
 		table = $('<table>');
-		table.attr({
-			id: 'edit_statement_table',
-			class: 'table table-condensed',
-			border: '0',
-			style: 'border-collapse: separate; border-spacing: 5px 5px;'
-		});
+		table
+			.attr('id', 'edit_statement_table')
+			.attr('class', 'table table-condensed')
+			.attr('border', '0')
+			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 		tr = $('<tr>');
 		td_date = $('<td>');
 		td_text = $('<td>');
@@ -496,7 +494,7 @@ function GuiHandler() {
 		tr.append(td_author);
 		table.append(tr);
 
-		$.each(jsonData, function displayStatementCorrectionsInPopupEach(key, val) {
+		$.each(jsonData.content, function displayStatementCorrectionsInPopupEach(key, val) {
 			tr = $('<tr>');
 			td_date = $('<td>');
 			td_text = $('<td>');

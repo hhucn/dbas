@@ -245,9 +245,6 @@ setStyleOptions = function (guiHandler){
 	$.each($('#' + discussionSpaceId + ' label'), function replaceHtmlTagInHeader() {
 		replaceHtmlTags($(this));
 	});
-	$.each($('#' + islandViewContainerId + ' h5'), function replaceHtmlTagInIsland() {
-		replaceHtmlTags($(this));
-	});
 	replaceHtmlTags($('#' + issueInfoId));
 	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
 };
@@ -314,17 +311,20 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 			supportive = splits[splits.length - 1] == 't';
 			text = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
-				text.push($(this).val());
+				if ($(this).val().length > 0)
+					text.push($(this).val());
 			});
 			interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
 		}, sendArgumentsPremise = function (){
 			text = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
-				text.push($(this).val());
+				if ($(this).val().length > 0)
+					text.push($(this).val());
 			});
-			arg = splits[splits.length - 3];
-			supportive = splits[splits.length - 2] == 't';
-			relation = splits[splits.length - 1];
+			var add = window.location.href.indexOf('support') != -1 ? 1 : 0;
+			arg = splits[splits.length - 3 - add];
+			supportive = splits[splits.length - 2 - add] == 't';
+			relation = splits[splits.length - 1 - add];
 			interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
 		};
 
@@ -353,7 +353,9 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 
 	// TODO CLEAR DESIGN
 	// options for the extra buttons, where the user can add input!
-	if (window.location.href.indexOf('/attitude/') == -1) {
+	if (input.attr('id').indexOf('start_statement') != -1 ||
+		input.attr('id').indexOf('start_premise') != -1 ||
+		input.attr('id').indexOf('justify_premise') != -1) {
 		input.attr('onclick', '');
 		input.change(function () {
 			if (input.prop('checked')) {

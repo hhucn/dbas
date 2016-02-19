@@ -406,3 +406,33 @@ class VoteStatement(DiscussionBase):
 		:return: None
 		"""
 		self.timestamp = func.now()
+
+
+class Notification(DiscussionBase):
+	"""
+
+	"""
+	__tablename__ = 'messages'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	from_author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	to_author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	topic = sa.Column(sa.Text, nullable=False)
+	content = sa.Column(sa.Text, nullable=False)
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	read = sa.Column(sa.Boolean, nullable=False)
+
+	def __init__(self, from_author_uid, to_author_uid, topic, content):
+		self.from_author_uid = from_author_uid
+		self.to_author_uid = to_author_uid
+		self.topic = topic
+		self.content = content
+		self.timestamp = func.now()
+		self.read = False
+
+	def set_read(self, was_read):
+		"""
+		Sets validity of this record
+		:param is_valid: boolean
+		:return: None
+		"""
+		self.read = was_read

@@ -59,9 +59,9 @@ function InteractionHandler() {
 		// status is the length of the content
 		if (parsedData.error.length == 0) {
 			$('#' + popupEditStatementLogfileSpaceId).text('');
-			new GuiHandler().showStatementCorrectionsInPopup(parsedData.error);
+			new GuiHandler().showStatementCorrectionsInPopup(parsedData);
 		} else {
-			$('#' + popupEditStatementLogfileSpaceId).text(_t(noCorrections));
+			$('#' + popupEditStatementLogfileSpaceId).text(parsedData.error);
 		}
 	};
 
@@ -113,6 +113,7 @@ function InteractionHandler() {
 	this.callbackIfDoneFuzzySearch = function (data, callbackid, type) {
 		var parsedData = $.parseJSON(data);
 		// if there is no returned data, we will clean the list
+
 		if (Object.keys(parsedData).length == 0) {
 			$('#' + proposalStatementListGroupId).empty();
 			$('#' + proposalPremiseListGroupId).empty();
@@ -134,7 +135,13 @@ function InteractionHandler() {
 	this.sendStatement = function (text, conclusion, supportive, arg, relation, type) {
 		// error on "no text"
 		if (text.length == 0) {
-			new GuiHandler().setErrorDescription(_t(inputEmpty));
+			if (type==fuzzy_start_statement){
+				$('#' + addStatementErrorContainer).show();
+				$('#' + addStatementErrorMsg).text(_t(inputEmpty));
+			} else {
+				$('#' + addPremiseErrorContainer).show();
+				$('#' + addPremiseErrorMsg).text(_t(inputEmpty));
+			}
 		} else {
 			var undecided_texts = [], decided_texts = [];
 			if ($.isArray(text)) {
@@ -174,7 +181,7 @@ function InteractionHandler() {
 				} else if (type == fuzzy_start_premise) {
 					new AjaxSiteHandler().sendNewStartPremise(text, conclusion, supportive);
 				} else  if (type == fuzzy_add_reason) {
-					new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, supportive, text);
+					new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, text);
 				}
 			}
 		}

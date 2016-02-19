@@ -70,9 +70,9 @@ function AdminInterface(){
 		var tableElement, trElement, tElement, i, thead, tbody;
 		tElement = ['', '', '', '', '', '', '', '', '', ''];
 		tableElement = $('<table>');
-		tableElement.attr({class: 'table table-striped table-hover',
-						border: '0',
-						style: 'border-collapse: separate; border-spacing: 0px;'});
+		tableElement.attr('class', 'table table-striped table-hover');
+		tableElement.attr('border', '0');
+		tableElement.attr('style', 'border-collapse: separate; border-spacing: 0px;');
 
 		trElement = $('<tr>');
 		thead = $('<thead>');
@@ -134,9 +134,9 @@ function AdminInterface(){
 		tdElement   = ['', '', '', '', '', ''];
 		spanElement = ['', '', '', '', '', ''];
 		tableElement = $('<table>');
-		tableElement.attr({class: 'table table-condensed tablesorter',
-						border: '0',
-						style: 'border-collapse: separate; border-spacing: 0px;'});
+		tableElement.attr('class', 'table table-condensed tablesorter');
+		tableElement.attr('border', '0');
+		tableElement.attr('style', 'border-collapse: separate; border-spacing: 0px;');
 		tbody = $('<tbody>');
 		thead = $('<thead>');
 
@@ -145,7 +145,7 @@ function AdminInterface(){
 		for (i = 0; i < tdElement.length; i += 1) {
 			tdElement[i] = $('<td>');
 			spanElement[i] = $('<spand>');
-			spanElement[i].attr({class: 'font-semi-bold'});
+			spanElement[i].attr('class', 'font-semi-bold');
 		}
 
 		// add header row

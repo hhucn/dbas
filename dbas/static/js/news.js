@@ -196,8 +196,7 @@ function News() {
 	 */
 	this.setPageNavigation = function () {
 		var counter, row = $('#' + newsBodyId).children().length, pagebreak = 2, _this = this,
-			pagecounter = 0, newsNavigator = $('#news-navigation'), html, back, forth, pages='',
-			placeholder = '<li class="disabled"><a hred="#" id="news-placeholder">' + '...' + '</a></li>';
+			pagecounter = 1, newsNavigator = $('#news-navigation'), html, back, forth, pages='';
 
 		newsNavigator.empty();
 
@@ -211,23 +210,13 @@ function News() {
 
 		// create navbar
 		back = '<li><a href="#" id="news-back"><span aria-hidden="true">&laquo;</span></a></li>';
-		for (counter = 0; counter <= pagecounter; counter++) {
-			pages += '<li><a href="#" counter="' + counter + '" id="news-' + (counter + 1) + '">' + (counter + 1) + '</a></li>';
+		for (counter = 1; counter <= pagecounter; counter++) {
+			pages += '<li><a href="#" counter="' + counter + '" id="news-' + counter + '">' + counter + '</a></li>';
 		}
 
 		forth= '<li><a href="#" id="news-forth"><span aria-hidden="true">&raquo;</span></a></li>';
 		html = '<ul class="pagination">' + back + pages + forth + '</ul>';
 		newsNavigator.append(html);
-
-		/*
-		// first try for a pagination limitation
-		if (counter > 4){
-			$('#news-3').parent().after(placeholder);
-			for (counter=3; counter <= pagecounter-2; counter++){
-				$('#news-' + (counter + 1)).parent().hide();
-			}
-		}
-		*/
 
 		// click events
 		for (counter = 0; counter <= pagecounter; counter++) {
@@ -241,24 +230,59 @@ function News() {
 			});
 		}
 
-		$('#news-back').click(function () {
-			if (!$(this).parent().hasClass('disabled')) {
-				_this.turnThePage(true);
-			}
-		});
-
-		$('#news-forth').click(function () {
-			if (!$(this).parent().hasClass('disabled')) {
-				_this.turnThePage(false);
-			}
-		});
-
 		$('#news-1').parent().addClass('active');
-		$('.news-page-0').show();
+		$('.news-page-1').show();
 		$('#news-back').parent().addClass('disabled');
+		_this.setPlaceholder($('#news-1').attr('counter'), pagecounter);
+
+		// add page limitation to each click
+		$('.pagination a').click(function(){
+			if (!$(this).hasClass('news-placeholder'))
+				_this.setPlaceholder($(this).attr('counter'), pagecounter);
+		});
+
+		$('#news-back').off('click').click(function () {
+			if (!$(this).parent().hasClass('disabled')) {
+				_this.turnThePage(true, pagecounter);
+			}
+		}).hide();
+
+		$('#news-forth').off('click').click(function () {
+			if (!$(this).parent().hasClass('disabled')) {
+				_this.turnThePage(false, pagecounter);
+			}
+		}).hide();
 	};
 
-	this.turnThePage = function (isBack){
+	this.setPlaceholder = function(index, pagecounter){
+		var i, p, s,
+			placeholder = $('<li>').addClass('disabled').append($('<a>').addClass('news-placeholder').text('...'));
+		$('.news-placeholder').remove();
+
+		for (i=3; i<pagecounter-1; i++){
+			$('#news-' + i).parent().hide();
+		}
+
+		p = index - 1;
+		i = p + 1;
+		s = i + 1;
+
+		$('#news-' + p).parent().show();
+		$('#news-' + i).parent().show();
+		$('#news-' + s).parent().show();
+
+		if (p-3 > 0)
+			placeholder.insertAfter($('#news-' + (p-1)).parent());
+		if (pagecounter-2-s > 0)
+			placeholder.insertAfter($('#news-' + s).parent());
+	};
+
+	/**
+	 *
+	 * @param isBack
+	 * @param pagecounter
+	 */
+	this.turnThePage = function (isBack, pagecounter){
 		var activeElement = $('#news-navigation .active'),
 			counter = parseInt(activeElement.children().eq(0).attr('counter'));
 		activeElement.removeClass('active');
@@ -270,8 +294,14 @@ function News() {
 		counter = isBack ? counter-1 : counter+1;
 		$('.news-page-' + counter).show();
 		this.checkNewsForthAndBackButtons(counter, pagecounter);
+		this.setPlaceholder(counter, pagecounter);
 	};
 
+	/**
+	 *
+	 * @param currentCounter
+	 * @param max
+	 */
 	this.checkNewsForthAndBackButtons = function(currentCounter, max){
 		if (currentCounter == 0)   $('#news-back').parent().addClass('disabled');
 		else                       $('#news-back').parent().removeClass('disabled');

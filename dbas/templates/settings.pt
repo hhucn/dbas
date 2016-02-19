@@ -12,37 +12,36 @@
 		<div class="container colored_container">
 			<div class="content row">
 				<div class="col-md-12">
-					<h4 i18n:translate="info_about_yourself">Information about yourself</h4>
+					<h4 i18n:translate="personal_information">Personal Information</h4>
 				</div>
 			</div>
 			<div class="content row">
 				<div class="col-md-8">
-
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="firstname">Firstname</span></td>
-							<td><span tal:replace="db_firstname"></span></td>
+							<td>${settings.db_firstname}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="surname">Surname</span></td>
-							<td><span tal:replace="db_surname"></span></td>
+							<td>${settings.db_surname}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="nickname">Nickname</span></td>
-							<td id='table_nickname'><span tal:replace="db_nickname"></span></td>
+							<td id='table_nickname'>${settings.db_nickname}</td>
 						</tr>
 						<tr>
 							<td><span class="lead">E-Mail</span></td>
-							<td><span tal:replace="db_mail"></span></td>
+							<td>${settings.db_mail}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="group">Group</span></td>
-							<td><span tal:replace="db_group"></span></td>
+							<td>${settings.db_group}</td>
 						</tr>
 					</table>
 				</div>
 				<div class="col-md-4 center text-center">
-					<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src avatar_url">
+					<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
 					<p i18n:translate="profile_picture">Profile Picture</p>
 				</div>
 			</div>
@@ -54,12 +53,12 @@
 					<h4 i18n:translate="history">Your last history</h4>
 
 					<div style="text-align:center;">
-						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.request_history"/>
-						<input id="delete-history" type="button" value="Delete history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.delete_history"/>
+						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.request_history" />
+						<input id="delete-history" type="button" value="Delete history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.delete_history" />
 					</div>
 
 					<div id="history-table-success" class="alert alert-success" role="alert" style="display: none;">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -68,7 +67,7 @@
 					</div>
 
 					<div id="history-table-failure" class="alert alert-danger" role="alert" style="display: none;">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -88,22 +87,39 @@
 
 		<div class="container colored_container">
 			<div class="content row">
-				<div class="col-md-2"></div>
-				<div class="col-md-8">
+				<div class="col-md-4">
+					<h4 i18n:translate="discussion_stat">Discussion Statistics</h4>
+					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<tr>
+							<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
+							<td>${settings.edits_done}</td>
+						</tr>
+						<tr>
+							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Argumennts</span></td>
+							<td>${settings.discussion_arg_votes}</td>
+						</tr>
+						<tr>
+							<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
+							<td>${settings.discussion_stat_votes}</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-md-1"></div>
+				<div class="col-md-7">
 					<h4 i18n:translate="change_password">Change your password</h4>
 					<form action="/settings" method="post">
 
 						<div class="form-group">
 							<p class="col-md-5 control-label" i18n:translate="old_password">Old password</p>
 							<div class="col-md-7">
-								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${passwordold}">
+								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${settings.passwordold}">
 							</div>
 						</div>
 
 						<div class="form-group">
 							<p class="col-md-5 control-label" i18n:translate="new_password">New Password</p>
 							<div class="col-md-7">
-								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${password}">
+								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${settings.password}">
 							</div>
 
 							<div id="settings-password-extras" style="display: none;">
@@ -118,37 +134,32 @@
 						<div class="form-group">
 							<p class="col-md-5 control-label" i18n:translate="new_password_confirm">New Password (confirm)</p>
 							<div class="col-md-7">
-								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${passwordconfirm}">
+								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${settings.passwordconfirm}">
 							</div>
 						</div>
 
-						<div class="col-md-12" tal:condition="change_error">
+						<div class="col-md-12" tal:condition="settings.change_error">
 							<div id="settings-danger-message" class="alert alert-danger alert-dismissible">
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span tal:replace="message">message</span>
+								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>${settings.message}
 							</div>
 						</div>
 
-						<div tal:condition="change_success" id="settings-success-message" class="alert alert-success" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						    	<span aria-hidden="true">&times;</span>
-						    </button>
+						<div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 							<span class="lead" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
 						</div>
-						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit"/>
+						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
 					</form>
 				</div>
-				<div class="col-md-2"></div>
 			</div>
 		</div>
 
-
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
 	</tal:block>
 </tal:block>
 

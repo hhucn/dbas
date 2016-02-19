@@ -1,5 +1,3 @@
-/*global $, jQuery, alert*/
-
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
@@ -23,16 +21,16 @@ function Helper() {
 	 *
 	 * @param text
 	 * @param maxTextWidth
-	 * @param char
+	 * @param charr
 	 * @returns {*}
 	 */
-	this.cutTextOnChar = function (text, maxTextWidth, char) {
-		var i, pos, l;
+	this.cutTextOnChar = function (text, maxTextWidth, charr) {
+		var i, p, l;
 			i = 1;
 			l = text.length;
 		while (i * maxTextWidth < l) {
-			pos = text.indexOf(char, i * maxTextWidth);
-			text = this.replaceAt(text, pos, '<br>', char);
+			p = text.indexOf(charr, i * maxTextWidth);
+			text = this.replaceAt(text, p, '<br>', charr);
 			i = i + 1;
 		}
 		return text;
@@ -144,48 +142,48 @@ function Helper() {
 
 		// table items
 		tr = $('<tr>');
-		td_text = $('<td>').text(text).attr({id: 'td_' + id_id, for: for_id});
+		td_text = $('<td>').text(text).attr('id', 'td_' + id_id).attr('for', for_id);
 		td_buttons = $('<td>').css('text-align', 'right');
 
 		// buttons
-		edit_button = $('<input>').css('margin', '2px').attr({
-			type: 'button',
-			value: 'edit',
-			class: 'btn-sm btn button-primary'
-		}).click(function edit_button_click() {
-			$('#' + popupEditStatementTextareaId).text($(this).parent().prev().text());
-			$('#' + popupEditStatementContentId + ' td').removeClass('text-hover');
-			$(this).parent().prev().addClass('text-hover');
+		edit_button = $('<input>').css('margin', '2px')
+			.attr('type', 'button')
+			.attr('value', 'edit')
+			.attr('class', 'btn-sm btn button-primary')
+			.click(function edit_button_click() {
+				$('#' + popupEditStatementTextareaId).text($(this).parent().prev().text());
+				$('#' + popupEditStatementContentId + ' td').removeClass('text-hover');
+				$(this).parent().prev().addClass('text-hover');
 
-			$('#' + popupEditStatementErrorDescriptionId).text('');
-			$('#' + popupEditStatementSuccessDescriptionId).text('');
+				$('#' + popupEditStatementErrorDescriptionId).text('');
+				$('#' + popupEditStatementSuccessDescriptionId).text('');
 
-			guiHandler.showEditFieldsInEditPopup();
-			guiHandler.hideLogfileInEditPopup();
+				guiHandler.showEditFieldsInEditPopup();
+				guiHandler.hideLogfileInEditPopup();
 
-			$('#' + popupEditStatementSubmitButtonId).click(function edit_statement_click() {
-				tmp = $('#' + popupEditStatementContentId + ' .text-hover');
-				new AjaxSiteHandler().sendCorrectureOfStatement(tmp.attr('id').substr(3), $('#' + popupEditStatementTextareaId).val(), tmp);
+				$('#' + popupEditStatementSubmitButtonId).click(function edit_statement_click() {
+					tmp = $('#' + popupEditStatementContentId + ' .text-hover');
+					new AjaxSiteHandler().sendCorrectureOfStatement(tmp.attr('id').substr(3), $('#' + popupEditStatementTextareaId).val(), tmp);
+				});
+			}).hover(function edit_button_hover() {
+				$(this).toggleClass('btn-primary', 400);
 			});
-		}).hover(function edit_button_hover() {
-			$(this).toggleClass('btn-primary', 400);
-		});
 
-		log_button = $('<input>').css('margin', '2px').attr({
-			type: 'button',
-			value: 'changelog',
-			class: 'btn-sm btn button-primary'
-		}).click(function log_button_click() {
-			$('#' + popupEditStatementLogfileHeaderId).html(_t(logfile) + ': <strong>' + $(this).parent().prev().text() + '</strong>');
-			$('#' + popupEditStatementErrorDescriptionId).text('');
-			$('#' + popupEditStatementSuccessDescriptionId).text('');
-			$('#' + popupEditStatementContentId + ' td').removeClass('text-hover');
-			$(this).parent().prev().addClass('text-hover');
-			ajaxHandler.getLogfileForStatement($(this).parent().prev().attr('id').substr(3));
-			guiHandler.hideEditFieldsInEditPopup();
-		}).hover(function edit_button_hover() {
-			$(this).toggleClass('btn-primary', 400);
-		});
+		log_button = $('<input>').css('margin', '2px')
+			.attr('type', 'button')
+			.attr('value', 'changelog')
+			.attr('class', 'btn-sm btn button-primary')
+			.click(function log_button_click() {
+				$('#' + popupEditStatementLogfileHeaderId).html(_t(logfile) + ': <strong>' + $(this).parent().prev().text() + '</strong>');
+				$('#' + popupEditStatementErrorDescriptionId).text('');
+				$('#' + popupEditStatementSuccessDescriptionId).text('');
+				$('#' + popupEditStatementContentId + ' td').removeClass('text-hover');
+				$(this).parent().prev().addClass('text-hover');
+				ajaxHandler.getLogfileForStatement($(this).parent().prev().attr('id').substr(3));
+				guiHandler.hideEditFieldsInEditPopup();
+			}).hover(function edit_button_hover() {
+				$(this).toggleClass('btn-primary', 400);
+			});
 
 		// append everything
 		td_buttons.append(edit_button);
@@ -260,14 +258,11 @@ function Helper() {
 	 * @param params dictionary with at least {'name': ?, 'content': ?}
 	 */
 	this.redirectInNewTabForContact = function(params){
-		var f = $("<form target='_blank' method='POST' style='display:none;'></form>").attr({action: mainpage + 'contact'});
+		var f = $("<form target='_blank' method='POST' style='display:none;'></form>").attr('action', mainpage + 'contact');
 		f.appendTo(document.body);
 		for (var i in params) {
 			if (params.hasOwnProperty(i)) {
-				f.append($('<input type="hidden" />').attr({
-					name: i,
-					value: params[i]
-				}));
+				f.append($('<input type="hidden" />').attr('name', i).attr('value', params[i]));
 			}
 		}
 
@@ -277,11 +272,11 @@ function Helper() {
 	/**
 	 * Delays a specific function
 	 */
-	this.delay = (function(){
+	this.delay = function(){
 		var timer = 0;
 		return function(callback, ms){
 			clearTimeout (timer);
 			timer = setTimeout(callback, ms);
 		};
-	})();
+	}();
 }

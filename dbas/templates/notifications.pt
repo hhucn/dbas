@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<head>
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
+		</head>
+
+		<div class="container colored_container">
+			<div class="row">
+				<div class="col-md-12" id="message-space">
+                    <h3>Notification Board</h3>
+                    <span class="lead" style="margin-bottom: 1em;" i18n:translate="youHaveGot">You have got</span>
+                    <span id="unread_counter"  class="lead" style="margin-bottom: 1em;"> ${extras.notifications.count} </span>
+                    <span class="lead" style="margin-bottom: 1em;" i18n:translate="unreadNotificationAnd">unread notifications and</span>
+                    <span class="lead" style="margin-bottom: 1em;"> ${extras.notifications.total} </span>
+                    <span class="lead" style="margin-bottom: 1em;" i18n:translate="total">total.</span>
+					<div id="error-space" class="alert alert-danger alert-dismissible" style="display: none; margin-bottom: 1em;">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span id="error-description"></span>
+					</div>
+					<div id="success-space" class="alert alert-success alert-dismissible" style="display: none; margin-bottom: 1em;">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span id="success-description"></span>
+					</div>
+
+                    <div class="panel-group" id="accordion" style="margin-top: 2em;">
+					    <div class="panel panel-default" tal:repeat="msg extras.notifications.all" style="margin-bottom: 1em;" tal:attributes="id msg.id">
+						    <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href msg.collapse_link"><span class="text-primary" tal:condition="msg.read">${msg.topic}</span><strong class="text-primary" tal:condition="not:msg.read">* ${msg.topic}</strong></a>
+                                    <span style="float: right; margin-left: 1.0em; cursor: pointer;" class="glyphicon center glyphicon-trash" title="Delete"></span>
+                                    <span class="text-primary" style="float: right; padding-right: 1em;">${msg.timestamp}</span>
+                                </h4>
+						    </div>
+                            <div id="collapse1" class="panel-collapse collapse" tal:attributes="id msg.collapse_id">
+						        <div class="panel-body">${msg.content}</div>
+                            </div>
+					    </div>
+				    </div>
+                </div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
+
+	</tal:block>
+</tal:block>
+
+</html>

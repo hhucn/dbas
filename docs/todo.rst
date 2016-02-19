@@ -48,7 +48,6 @@ API
 
            'issue': int
            'premisegroups': String[[111],[222],[333,444]]
-           'supportive': Boolean
            'arg_uid': int
            'attack_type': String
 

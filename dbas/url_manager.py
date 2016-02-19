@@ -74,16 +74,19 @@ class UrlManager(object):
 		url = self.slug + '/justify/' + str(statement_uid) + '/' + mode
 		return self.__return_url(as_location_href, url)
 
-	def get_url_for_justifying_argument(self, as_location_href, argument_uid, mode, attitude):
+	def get_url_for_justifying_argument(self, as_location_href, argument_uid, mode, attitude, additional_id=-1):
 		"""
-		 or the API-version
+		Returns url for justifyng an argument of the user or the API-version
 		:param as_location_href: Boolean
 		:param argument_uid: Argument.uid
 		:param mode: String
 		:param attitude: String
+		:param additional_id: String
 		:return: discuss/{slug}/justify/{statement_or_arg_id}/{mode}*attitude
 		"""
 		url = self.slug + '/justify/' + str(argument_uid) + '/' + mode + '/' + attitude
+		if additional_id != -1:
+			url += '/' + str(additional_id)
 		return self.__return_url(as_location_href, url)
 
 	def get_url_for_reaction_on_argument(self, as_location_href, argument_uid, mode, confrontation_argument):
@@ -111,10 +114,16 @@ class UrlManager(object):
 		is_arg = 't' if is_argument else 'f'
 		is_sup = 't' if is_supportive else 'f'
 		pgroups = ('/' + '/'.join(str(x) for x in pgroup_id_list)) if len(pgroup_id_list) > 0 else ''
-		url = self.slug + '/choose/' + is_arg + '/' + is_sup + '/' + statement_or_argument_id + pgroups
+		url = self.slug + '/choose/' + is_arg + '/' + is_sup + '/' + str(statement_or_argument_id) + str(pgroups)
 		return self.__return_url(as_location_href, url)
 
 	def __return_url(self, as_location_href, url):
+		"""
+
+		:param as_location_href:
+		:param url:
+		:return:
+		"""
 		if self.for_api:
 			return self.api_url + url
 		else:

@@ -57,14 +57,20 @@
 
 					<li tal:condition="extras.logged_in" class="dropdown">
 						<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" title="User options">
-							<img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
-							<span tal:replace="extras.users_name" />
+							<img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;${extras.users_name}
+                            <span tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.count}</span>
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
 							<li>
 								<a href="${request.application_url}/settings" title="Settings">
 									<img id="header_settings" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="settings">Settings</span>
+								</a>
+							</li>
+							<li>
+								<a href="${request.application_url}/notifications" title="Notifications">
+									<img tal:condition="extras.notifications.has_unread" id="header_notifications_new" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">
+									<img tal:condition="not:extras.notifications.has_unread" id="header_notifications" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="notifications">Notifications</span><span tal:condition="extras.notifications.has_unread" class="badge" style="margin-left: 1em">${extras.notifications.count}</span>
 								</a>
 							</li>
 							<li tal:condition="extras.is_admin">

@@ -4,7 +4,7 @@ import urllib
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group
+from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion
 from .logger import logger
 from .strings import Translator
 
@@ -62,8 +62,8 @@ class UserHandler(object):
 		:param nick:
 		:return:
 		"""
-		if nick is not None:
-			db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
+		if db_user:
 			db_user.update_last_action()
 			transaction.commit()
 
@@ -118,7 +118,6 @@ class UserHandler(object):
 		"""
 		return True if DBDiscussionSession.query(User).filter_by(nickname=str(user)).first() else False
 
-
 	def get_random_anti_spam_question(self, lang):
 		"""
 		Returns a random math question
@@ -156,6 +155,36 @@ class UserHandler(object):
 		logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question + ', answer: ' + str(answer))
 
 		return question, answer
+
+	def get_edits_of_user(self, user):
+		"""
+
+		:param user:
+		:return:
+		"""
+		if not user:
+			return 0
+
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid).all()
+		edits = []
+		for tv in db_textversions:
+			db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()
+			if db_root_version.uid < tv.uid:
+				edits.append(tv)
+
+		return len(edits)
+
+	def get_votes_of_user(self, user):
+		"""
+
+		:param user:
+		:return:
+		"""
+		if not user:
+			return 0
+		arg_votes = len(DBDiscussionSession.query(VoteArgument).filter_by(author_uid=user.uid).all())
+		stat_votes = len(DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user.uid).all())
+		return arg_votes, stat_votes
 
 	def change_password(self, transaction, user, old_pw, new_pw, confirm_pw, lang):
 		"""

@@ -15,7 +15,7 @@ from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
 
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Statement
+from .database.discussion_model import User, Group, Issue, Argument, Statement, VoteArgument, VoteStatement, Notification
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
@@ -27,9 +27,10 @@ from .recommender_system import RecommenderHelper, RecommenderHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .voting_helper import VotingHelper
 from .url_manager import UrlManager
+from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
-version = '0.5.2'
+version = '0.5.3'
 header = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
@@ -203,10 +204,6 @@ class Dbas(object):
 			slug = self.request.matchdict['slug'] if 'slug' in self.request.matchdict else ''
 		else:
 			slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
-		logger('discussion_init', 'def', 'slug: ' + slug)
-		logger('discussion_init', 'def', 'slug: ' + slug)
-		logger('discussion_init', 'def', 'slug: ' + slug)
-
 
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
@@ -315,6 +312,7 @@ class Dbas(object):
 		mode                = matchdict['mode'] if 'mode' in matchdict else ''
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
+		related_arg         = matchdict['relation'][1] if len(matchdict['relation']) > 1 else -1
 
 		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales          = _qh.get_language(self.request, get_current_registry())
@@ -356,10 +354,11 @@ class Dbas(object):
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
-			is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
+			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
+			# TODO SPECIAL CASE REBUT RESPECTIVELY THE SUPPORT
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
-			                                              logged_in=self.request.authenticated_userid)
+			                                              logged_in=self.request.authenticated_userid, additional_id=related_arg)
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue,
 			                                                             ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, ui_locales, self.request.authenticated_userid,
@@ -460,16 +459,12 @@ class Dbas(object):
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		is_argument     = matchdict['is_argument'] if 'is_argument' in matchdict else ''
 		is_supportive   = matchdict['supportive'] if 'supportive' in matchdict else ''
-		id              = matchdict['id'] if 'id' in matchdict else ''
+		uid             = matchdict['id'] if 'id' in matchdict else ''
 		pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
 		logger('discussion_reaction', 'def', str(pgroup_ids))
 
 		is_argument = True if is_argument is 't' else False
 		is_supportive = True if is_supportive is 't' else False
-		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
-		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
-		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
-		logger('discussion_reaction', 'def', 'main ' + str(is_argument) + ' ' + str(is_supportive))
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
@@ -482,8 +477,8 @@ class Dbas(object):
 		                                                     self.request.session.id, transaction, ui_locales,
 		                                                     mainpage, for_api)
 
-		discussion_dict = _dh.prepare_discussion_dict(id, ui_locales, at_choosing=True, is_uid_argument=is_argument, is_supportive = is_supportive)
-		item_dict       = _dh.prepare_item_dict_for_choosing(id, pgroup_ids, is_argument, is_supportive, ui_locales, mainpage, issue, for_api)
+		discussion_dict = _dh.prepare_discussion_dict(uid, ui_locales, at_choosing=True, is_uid_argument=is_argument, is_supportive=is_supportive)
+		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales, mainpage, issue, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, False, ui_locales, self.request.authenticated_userid,
 		                                          breadcrumbs=breadcrumbs, application_url=mainpage, for_api=for_api)
 
@@ -513,7 +508,6 @@ class Dbas(object):
 		logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		token = self.request.session.get_csrf_token()
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		old_pw = ''
@@ -524,24 +518,22 @@ class Dbas(object):
 		success = False
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
-		uh = UserHandler()
+		_uh = UserHandler()
+		edits = _uh.get_edits_of_user(db_user)
+		arg_vote, stat_vote = _uh.get_votes_of_user(db_user)
+
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			old_pw = self.request.params['passwordold']
 			new_pw = self.request.params['password']
 			confirm_pw = self.request.params['passwordconfirm']
 
-			message, error, success = uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
+			message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
 		# get gravater profile picture
-		gravatar_url = uh.get_profile_picture(db_user)
+		gravatar_url = _uh.get_profile_picture(db_user)
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': 'Settings',
-			'project': header,
-			'extras': extras_dict,
+		settings_dict = {
 			'passwordold': '' if success else old_pw,
 			'password': '' if success else new_pw,
 			'passwordconfirm': '' if success else confirm_pw,
@@ -554,7 +546,37 @@ class Dbas(object):
 			'db_mail': db_user.email if db_user else 'unknown',
 			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
 			'avatar_url': gravatar_url,
-			'csrf_token': token
+			'edits_done': edits,
+			'discussion_arg_votes': arg_vote,
+			'discussion_stat_votes': stat_vote
+		}
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'Settings',
+			'project': header,
+			'extras': extras_dict,
+			'settings': settings_dict
+		}
+
+	# message page, when logged in
+	@view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use')
+	def main_notifications(self):
+		"""
+		View configuration for the content view. Only logged in user can reach this page.
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('main_notifications', 'def', 'main')
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'Messages',
+			'project': header,
+			'extras': extras_dict
 		}
 
 	# admin page, when logged in
@@ -574,7 +596,7 @@ class Dbas(object):
 			'language': str(ui_locales),
 			'title': 'Admin',
 			'project': header,
-			'extras': extras_dict
+			'extras': extras_dict,
 		}
 
 	# news page for everybody
@@ -865,6 +887,7 @@ class Dbas(object):
 						subject = 'D-BAS Account Registration'
 						body = _t.get(_t.accountWasRegistered)
 						EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
+						NotificationHelper().send_welcome_message(transaction, checknewuser.uid)
 
 					else:
 						logger('user_registration', 'main', 'New data was not added')
@@ -965,7 +988,7 @@ class Dbas(object):
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
-				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement.uid)
+				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
 				return_dict['url'] = url
 
 		except KeyError as e:
@@ -1039,13 +1062,22 @@ class Dbas(object):
 			arg_uid         = self.request.params['arg_uid']
 			attack_type     = self.request.params['attack_type']
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
-			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 			issue           = _qh.get_issue_id(self.request)
 
+			arg = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
+			logger('SET PGROUPS', '---', str(arg_uid))
+			logger('SET PGROUPS', '---', str(arg_uid))
+			logger('SET PGROUPS', '---', str(arg_uid))
+			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
+			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
+			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
+			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
+			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
+			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
+
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
-			                                                                         premisegroups, supportive, issue,
-			                                                                         user_id, for_api, mainpage, lang,
-			                                                                         recommenderHelper)
+			                                                                         premisegroups, issue, user_id, for_api,
+			                                                                         mainpage, lang, RecommenderHelper())
 			return_dict['error'] = error
 
 			if url == -1:
@@ -1073,12 +1105,14 @@ class Dbas(object):
 		logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
+		_qh = QueryHelper()
 		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
 
 		try:
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
-			return_dict = QueryHelper().correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text)
+			ui_locales = _qh.get_language(self.request, get_current_registry())
+			return_dict = _qh.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
 			if return_dict == -1:
 				return_dict = dict()
 				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)
@@ -1088,6 +1122,60 @@ class Dbas(object):
 			return_dict = dict()
 			return_dict['error'] = ''
 			logger('set_correcture_of_statement', 'error', repr(e))
+
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - set notification as read
+	@view_config(route_name='ajax_notification_read', renderer='json')
+	def set_notification_read(self):
+		"""
+		Set notification as read
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_notification_read', 'def', 'main ' + str(self.request.params))
+		return_dict = dict()
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_t = Translator(ui_locales)
+
+		try:
+			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).first().set_read(True)
+			transaction.commit()
+			return_dict['unread_messages'] = NotificationHelper().count_of_new_notifications(self.request.authenticated_userid)
+			return_dict['error'] = ''
+		except KeyError as e:
+			logger('set_message_read', 'error', repr(e))
+			return_dict['error'] = _t.get(_t.internalError)
+
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - deletes a notification
+	@view_config(route_name='ajax_notification_delete', renderer='json')
+	def set_notification_delete(self):
+		"""
+		Request the removal of a notification
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_notification_delete', 'def', 'main ' + str(self.request.params))
+		return_dict = dict()
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_t = Translator(ui_locales)
+
+		try:
+			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).delete()
+			transaction.commit()
+			return_dict['unread_messages'] = NotificationHelper().count_of_new_notifications(self.request.authenticated_userid)
+			return_dict['error'] = ''
+			return_dict['success'] = _t.get(_t.messageDeleted)
+		except KeyError as e:
+			logger('set_message_read', 'error', repr(e))
+			return_dict['error'] = _t.get(_t.internalError)
+			return_dict['success'] = ''
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 

@@ -68,6 +68,7 @@ def main(global_config, **settings):
 	config.add_route('main_page',               '/')
 	config.add_route('main_contact',            '/contact')
 	config.add_route('main_settings',           '/settings')
+	config.add_route('main_notification',       '/notifications')
 	config.add_route('main_admin',              '/admin')
 	config.add_route('main_news',               '/news')
 	config.add_route('main_imprint',            '/imprint')
@@ -94,6 +95,8 @@ def main(global_config, **settings):
 	config.add_route('ajax_delete_user_history',                 'ajax_delete_user_history')
 	config.add_route('ajax_get_news',                            'ajax_get_news')
 	config.add_route('ajax_send_news',                           'ajax_send_news')
+	config.add_route('ajax_notification_read',                   'ajax_notification_read')
+	config.add_route('ajax_notification_delete',                 'ajax_notification_delete')
 
 	config.add_route('ajax_additional_service',                  '{stuff:.*}additional_service')
 

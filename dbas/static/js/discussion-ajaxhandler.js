@@ -1,5 +1,3 @@
-/*global $, jQuery, alert, GuiHandler, InteractionHandler, internal_error, popupErrorDescriptionId, _t */
-
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
@@ -12,10 +10,9 @@ function AjaxSiteHandler() {
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid
 	 * @param relation
-	 * @param supportive
 	 * @param text
 	 */
-	this.sendNewPremiseForArgument = function (arg_uid, relation, supportive, text) {
+	this.sendNewPremiseForArgument = function (arg_uid, relation, text) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_premises_for_argument',
@@ -23,8 +20,7 @@ function AjaxSiteHandler() {
 			data: {
 				arg_uid: arg_uid,
 				attack_type: relation,
-				premisegroups: JSON.stringify(text),
-				supportive: supportive
+				premisegroups: JSON.stringify(text)
 			},
 			dataType: 'json',
 			async: true,

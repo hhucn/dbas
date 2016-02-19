@@ -1,9 +1,3 @@
-#placeholder_minimap{
-	background: url(../images/diablo3-minimap.jpg);
-	height: 150px;
-	width: 126px;
-}
-
 #navbar-left {
 	visibility: hidden;
 }
@@ -21,8 +15,9 @@
 #discussions-space{
 	margin-top: 25px;
 }
+
 #discussions-space label{
-	max-width: 90%;
+	max-width: 95%;
 }
 
 #discussions-space ul{
@@ -214,7 +209,7 @@
 #discussion-container .icon-badge,
 #display-style-menu-icon .icon-badge,
 #display-style-menu{
-	width: 60px;
+	width: 50px;
 	margin-bottom: 0.5em;
 }
 

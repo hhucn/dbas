@@ -7,8 +7,6 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
 		</head>
 
-		<img src="${request.static_url('dbas:static/images/beta.png')}" alt="beta logo" style="position:fixed; z-index:10; top:65px; width:100px;">
-
 		<div class="container colored_container first-container" id="home-template">
 			<div class="row">
 				<div class="col-md-12">

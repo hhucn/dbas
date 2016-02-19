@@ -1,5 +1,3 @@
-/*global $ */
-
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
