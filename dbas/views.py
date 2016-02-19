@@ -352,7 +352,7 @@ class Dbas(object):
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_dont_know=True,
 				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
-		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
+		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]: # TODO REACTION FOR THE RELATION
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			# TODO SPECIAL CASE REBUT RESPECTIVELY THE SUPPORT
@@ -1054,8 +1054,6 @@ class Dbas(object):
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			issue           = _qh.get_issue_id(self.request)
 
-			arg = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, issue, user_id, for_api,
 			                                                                         mainpage, lang, RecommenderHelper())
@@ -1290,6 +1288,34 @@ class Dbas(object):
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
+
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - for getting all users with the same opinion
+	@view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
+	def get_users_with_same_opinion(self):
+		"""
+		ajax interface for getting a dump
+		:return: json-set with everything
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('get_users_with_same_opinion', 'def', 'main')
+		_qh = QueryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
+
+		return_dict = dict()
+		try:
+			uid = self.request.params['uid']
+			is_argument = self.request.params['is_argument']
+			if is_argument:
+				return_dict = _qh.get_user_with_same_opinion_for_argument(uid)
+			else:
+				return_dict = _qh.get_user_with_same_opinion_for_statement(uid)
+			return_dict['error'] = ''
+		except KeyError as e:
+			logger('set_new_start_statement', 'error', repr(e))
+			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 

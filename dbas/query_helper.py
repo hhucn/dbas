@@ -690,26 +690,58 @@ class QueryHelper(object):
 				index += 1
 		return return_array
 
-	def get_user_with_same_opinion(self, argument_uid, lang):  # TODO TERESA
+	def get_user_with_same_opinion_for_argument(self, argument_uid, lang):  # TODO TERESA
 		"""
 
-		:param argument_uid:
-		:param lang:
-		:return:
+		:param argument_uid: Statement.uid
+		:param lang: ui_locales
+		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
 		"""
 		logger('QueryHelper', 'get_user_with_same_opinion', 'Argument ' + str(argument_uid))
 
 		ret_dict = dict()
+		all_users = []
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		if not db_argument:
+			ret_dict['users'] = all_users
 			return ret_dict
 
 		db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=db_argument.uid).all()
 		uh = UserHandler()
 		for vote in db_votes:
+			users_dict = dict()
 			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-			ret_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
-			                                 'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+			users_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
+			                                   'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+			all_users.append(users_dict)
+			ret_dict['users'] = all_users
+		return ret_dict
+
+	def get_user_with_same_opinion_for_statement(self, statement_uid, lang):  # TODO TERESA
+		"""
+
+		:param statement_uid: Statement.uid
+		:param lang: ui_locales
+		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
+		"""
+		logger('QueryHelper', 'get_user_with_same_opinion_for_statement', 'Statement ' + str(statement_uid))
+
+		ret_dict = dict()
+		all_users = []
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+		if not db_argument:
+			ret_dict['users'] = all_users
+			return ret_dict
+
+		db_votes = DBDiscussionSession.query(VoteStatement).filter_by(statement_uid=db_statement.uid).all()
+		uh = UserHandler()
+		for vote in db_votes:
+			users_dict = dict()
+			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+			users_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
+			                                   'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+			all_users.append(users_dict)
+		ret_dict['users'] = all_users
 		return ret_dict
 
 	def get_id_of_slug(self, slug, request, save_id_in_session):
