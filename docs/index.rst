@@ -5,16 +5,17 @@
 
 .. _index:
 
+=================================
 Welcome to D-BAS's documentation!
 =================================
 
 Installation
-------------
+============
 .. toctree::
     installation
 
 Core Documentation
-------------------
+==================
 
 .. toctree::
     :maxdepth: 2
@@ -24,7 +25,7 @@ Core Documentation
 
 
 API Documentation
------------------
+=================
 
 .. toctree::
     :maxdepth: 2
@@ -33,8 +34,18 @@ API Documentation
     api/index
 
 
+Pyramid-Specific Stuff
+======================
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
+    specific_to_pyramid
+
+
 Indices and tables
-------------------
+==================
 
 * :ref:`genindex`
 * :ref:`modindex`
@@ -42,12 +53,12 @@ Indices and tables
 
 
 Todo's
-------
+======
 .. toctree::
     todo
 
 External Links
---------------
+==============
 
 * Useful `sphinx slides`_
 
