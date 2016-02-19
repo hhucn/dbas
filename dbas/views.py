@@ -744,7 +744,7 @@ class Dbas(object):
 				transaction.commit()
 
 				if for_api:
-					return True
+					return {'status': 'success'}
 				else:
 					return HTTPFound(
 						location=url,

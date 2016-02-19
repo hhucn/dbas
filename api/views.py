@@ -234,7 +234,6 @@ class _401(exc.HTTPError):
 def valid_token(request):
 	"""
 	Validate the submitted token. Checks if a user is logged in.
-
 	:param request:
 	:return:
 	"""
@@ -269,12 +268,13 @@ def unique(request):
 	# Check in DBAS' database, if the user's credentials are valid
 	logged_in = Dbas(request).user_login(nickname, password, for_api=True)
 
-	if logged_in:
-		user = {'nickname': nickname, 'token': _create_token()}
-		request.validated['user'] = user
-	else:
+	try:
+		if logged_in['status'] == 'success':
+			user = {'nickname': nickname, 'token': _create_token()}
+			request.validated['user'] = user
+	except TypeError:
 		log.error('API - Not logged in: %s' % logged_in)
-		raise _401()
+		request.errors.add(logged_in)
 
 
 #
@@ -290,11 +290,12 @@ def get_users(request):
 def login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
+
+	The function body is only executed, if the validator added a request.validated field.
 	:param request:
 	:return: token
 	"""
 	user = request.validated['user']
-	print(user)
 
 	# Convert bytes to string
 	if type(user['token']) == bytes:
