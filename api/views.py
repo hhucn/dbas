@@ -208,10 +208,16 @@ _USERS = {}
 # Helpers
 #
 def _create_token():
+	"""
+	Use the system's urandom function to generate a random token and convert it to ASCII.
+	"""
 	return binascii.b2a_hex(os.urandom(20))
 
 
 class _401(exc.HTTPError):
+	"""
+	Return a 401 HTTP Error message if user is not authenticated
+	"""
 	def __init__(self, msg='Unauthorized'):
 		body = {'status': 401, 'message': msg}
 		Response.__init__(self, json.dumps(body))
@@ -230,8 +236,8 @@ def valid_token(request):
 		raise _401()
 
 	valid = user in _USERS and _USERS[user] == token
-	#if not valid:
-	#	raise _401()
+	if not valid:
+		raise _401()
 
 	request.validated['user'] = user
 
@@ -258,13 +264,8 @@ def get_users(request):
 def create_user(request):
 	"""Adds a new user."""
 	user = request.validated['user']
-	_USERS[user['name'].decode('utf-8')] = user['token'].decode('utf-8')
+	if type(user['name'] == bytes):
+		_USERS[user['name'].decode('utf-8')] = user['token'].decode('utf-8')
+	else:
+		_USERS[user['name']]= user['token']
 	return {'token': '%s-%s' % (user['name'], user['token'])}
-
-
-@users.delete(validators=valid_token)
-def del_user(request):
-	"""Removes the user."""
-	name = request.validated['user']
-	del _USERS[name]
-	return {'Goodbye': name}
