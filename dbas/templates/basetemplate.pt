@@ -76,8 +76,6 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-en.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/i18n-de.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>

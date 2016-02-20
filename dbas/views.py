@@ -423,7 +423,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict(arg_id_user, ui_locales, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
-		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, ui_locales, mainpage, for_api)
+		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, ui_locales, self.request.authenticated_userid,
 		                                          argument_id=arg_id_user, breadcrumbs=breadcrumbs,
 		                                          application_url=mainpage, for_api=for_api)
@@ -732,8 +732,11 @@ class Dbas(object):
 		logger('user_login', 'def', 'main')
 		logger('user_login', 'def', 'main, self.request.params: ' + str(self.request.params))
 
-		message = ''
+		error = ''
 		return_dict = dict()
+
+		lang = _qh.get_language(self.request, get_current_registry())
+		_tn = Translator(lang)
 
 		try:
 			nickname = self.escape_string(self.request.params['user'])
@@ -745,12 +748,13 @@ class Dbas(object):
 			# check for user and password validations
 			if not db_user:
 				logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
-				message = 'User / Password do not match'
+				error = _tn.get(_tn.userPasswordNotMatch)
 			elif not db_user.validate_password(password):
 				logger('user_login', 'password not valid', 'wrong password')
-				message = 'User / Password do not match'
+				error = _tn.get(_tn.userPasswordNotMatch)
 			else:
 				logger('user_login', 'login', 'login successful')
+				error = ''
 				headers = remember(self.request, nickname)
 
 				# update timestamp
@@ -764,9 +768,10 @@ class Dbas(object):
 				)
 
 		except KeyError as e:
+			error = _tn.get(_t.internalError)
 			logger('user_login', 'error', repr(e))
 
-		return_dict['message'] = str(message)
+		return_dict['error'] = str(error)
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -1299,7 +1304,7 @@ class Dbas(object):
 		:return: json-set with everything
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_users_with_same_opinion', 'def', 'main')
+		logger('get_users_with_same_opinion', 'def', 'main') # TODO TERESA
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)

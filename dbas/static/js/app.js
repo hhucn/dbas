@@ -512,9 +512,9 @@ function ajaxMama(){
  */
 function callbackIfDoneForLogin(data){
 	var parsedData = $.parseJSON(data);
-	if (parsedData.message.length != 0) {
+	if (parsedData.error.length != 0) {
 		$('#' + popupLoginFailed).show();
-		$('#' + popupLoginFailed + '-message').text(parsedData.message);
+		$('#' + popupLoginFailed + '-message').text(parsedData.error);
 	} else {
 		$('#' + popupLogin).modal('hide');
 		location.reload();

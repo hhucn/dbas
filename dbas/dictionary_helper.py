@@ -414,12 +414,14 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_reaction(self, argument_uid, is_supportive, issue_uid, lang, application_url, for_api):
+	def prepare_item_dict_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, issue_uid, attack, lang, application_url, for_api):
 		"""
 
-		:param argument_uid:
+		:param argument_uid_sys:
+		:param argument_uid_user:
 		:param is_supportive:
 		:param issue_uid:
+		:param attack:
 		:param lang:
 		:param application_url:
 		:param for_api:
@@ -430,41 +432,70 @@ class DictionaryHelper(object):
 		_qh = QueryHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		db_sys_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_sys).first()
+		db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_user).first()
 		statements_array = []
+		if not db_sys_argument or not db_user_argument:
+			return statements_array
 
-		if db_argument:
-			if db_argument.argument_uid == 0:
-				conclusion = _qh.get_text_for_statement_uid(db_argument.conclusion_uid)
+		if db_sys_argument.argument_uid == 0:
+			conclusion = _qh.get_text_for_statement_uid(db_sys_argument.conclusion_uid)
+		else:
+			conclusion = _qh.get_text_for_argument_uid(db_sys_argument.argument_uid, lang)
+
+		premise, tmp     = _qh.get_text_for_premisesgroup_uid(db_sys_argument.premisesgroup_uid)
+		conclusion       = conclusion[0:1].lower() + conclusion[1:]
+		premise          = premise[0:1].lower() + premise[1:]
+
+		ret_dict         = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive)
+		mode             = 't' if is_supportive else 't'
+		_um              = UrlManager(application_url, slug, for_api)
+
+		# based in the relation, we will fetch different url's for the items
+		relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut']
+		for relation in relations:
+
+			# special case, when the user selectes the support, because this does not need to be justified!
+			if relation == 'support':
+				arg_id_sys, sys_attack = RecommenderHelper().get_attack_for_argument(argument_uid_sys, issue_uid)
+				url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
+
+			# easy cases
+			elif relation == 'undermine' or relation == 'undercut':
+				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+
+			elif relation == 'overbid':
+				# if overbid is the 'overbid', it's easy
+				#  url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+				# otherwise it will be the attack again
+				url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, attack)
+
+
+			elif relation == 'rebut':  # if we are having an rebut, everything seems different TODO IS THIS RIGHT
+				# is_rebut_supportive = not db_argument.is_supportive
+				# db_new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
+				#                                                                   Argument.argument_uid == db_argument.argument_uid,
+				#                                                                   Argument.is_supportive == is_rebut_supportive)).first()
+				# url = _um.get_url_for_justifying_argument(True, db_new_argument.uid if db_new_argument else 0, mode, 'support', additional_id=argument_uid_sys)
+				# rebutting an undermine will be a support for the initial argument
+				if attack == 'undermine':
+					url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
+				# rebutting an undercut will be a overbid for the initial argument
+				elif attack == 'undercut':
+					url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
+				# rebutting an rebut will be a justify for the initial argument
+				elif attack == 'rebut':
+					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
+
 			else:
-				conclusion = _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
-			premise, tmp     = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-			conclusion       = conclusion[0:1].lower() + conclusion[1:]
-			premise          = premise[0:1].lower() + premise[1:]
+			statements_array.append(self.__get_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
 
-			ret_dict         = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_argument.is_supportive)
-			mode             = 't' if is_supportive else 't'
-			_um              = UrlManager(application_url, slug, for_api)
-
-			types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
-			for type in types:
-				# special case, when the user selectes the support, because this does not need to be justified!
-				if type == 'support':
-					arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid)
-					url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
-				else:
-					key = 'back' if for_api else 'window.history.go(-1)'
-
-					if type == 'rebut':  # if we are having an rebut, everything seems different TODO IS THIS RIGHT
-						is_rebut_supportive = not db_argument.is_supportive
-						db_new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
-						                                                                  Argument.argument_uid == db_argument.argument_uid,
-						                                                                  Argument.is_supportive == is_rebut_supportive)).first()
-						url = _um.get_url_for_justifying_argument(True, db_new_argument.uid if db_new_argument else 0, mode, 'support', additional_id=argument_uid)
-					else:
-						url = key if type == 'no_opinion' else _um.get_url_for_justifying_argument(True, argument_uid, mode, type)
-				statements_array.append(self.__get_statement_dict(type, ret_dict[type + '_text'], [{'title': ret_dict[type + '_text'], 'id':type}], type, url))
+		# last item is the back button
+		relation = 'no_opinion'
+		url = 'back' if for_api else 'window.history.go(-1)'
+		statements_array.append(self.__get_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
 
