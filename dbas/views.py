@@ -368,7 +368,7 @@ class Dbas(object):
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
 				                            at_justify_argumentation=True)
 		else:
-			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'j', statement_or_arg_id, mode, relation]))
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
