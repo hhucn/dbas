@@ -89,6 +89,8 @@ function GuiHandler() {
 		$('#' + islandViewContainerId).hide();
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
+		$('#' + headerContainerId).show();
+		$('#' + breadcrumbContainerId).show();
 	};
 
 	/**
@@ -111,8 +113,25 @@ function GuiHandler() {
 		this.setImageInactive($('#' + displayStyleIconExpertId));
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
+		$('#' + headerContainerId).hide();
+		$('#' + breadcrumbContainerId).hide();
 		new GuiHandler().hideDiscussionError();
 		new DiscussionGraph().showGraph();
+
+		// text
+		var html = $('#' + discussionsDescriptionId).html(), innerHeight, header, footer;
+		html = html.substr(0, html.indexOf('<br>'));
+		$('#' + graphViewContainerHeaderId).html(html);
+
+		// height
+		header = $('#' + customBootstrapMenuId);
+		footer = $('#footer');
+		innerHeight = window.innerHeight;
+		innerHeight -= header.outerHeight(true); // header height with margin
+		innerHeight -= parseInt(header.css('padding-bottom').replace('px','')); // paddings
+		innerHeight -= footer.outerHeight(true); // footer height with margin
+		innerHeight -= parseInt(footer.css('padding-top').replace('px','')); // paddings
+		$('#' + graphViewContainerId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em;');
 	};
 
 	/**

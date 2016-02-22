@@ -8,7 +8,7 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
 
-		<div class="container first-container colored_container" tal:condition="extras.logged_in">
+		<div class="container first-container colored_container" tal:condition="extras.logged_in" id="breadcrumb-container">
 			<div class="row">
 				<div class="col-md-12">
 					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0;">
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container">
+		<div class="container colored_container" id="header-container">
 			<div class="row">
 				<div class="col-md-8 center text-center">
 					<p i18n:translate="current_discussion">Current discussion is about</p>
@@ -267,10 +267,11 @@
 
 		</div>
 
-		<div class="container colored_container" id="graph-view-container" style="display:none">
+		<div class="colored_container" id="graph-view-container" style="display:none">
 			<button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
+			<h4 id="graph-view-container-header" class="center"></h4>
 			<div id="graph-view-container-space"></div>
 		</div>
 
