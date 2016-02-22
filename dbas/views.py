@@ -777,14 +777,14 @@ class Dbas(object):
 					)
 
 		except KeyError as e:
-			error = _tn.get(_t.internalError)
+			error = _tn.get(_tn.internalError)
 			logger('user_login', 'error', repr(e))
 
 		return_dict['error'] = str(error)
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-	# ajax - user login
+	# ajax - user logout
 	@view_config(route_name='ajax_user_logout', renderer='json')
 	def user_logout(self):
 		"""
