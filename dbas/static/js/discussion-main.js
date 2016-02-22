@@ -246,17 +246,30 @@ setStyleOptions = function (guiHandler){
 	replaceHtmlTags($('#' + issueInfoId));
 	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
 
-	if (window.innerWidth < 992){ // collapse
-		var child0 = $('#display-style-menu-icon').children().eq(0),
-			child1 = $('#display-style-menu-icon').children().eq(1),
-			helper = new Helper();
+	setNavigationSidebar(window.innerWidth);
+
+};
+
+/**
+ *
+ * @param windowInnerWidth
+ */
+setNavigationSidebar = function (windowInnerWidth){
+	var menuIcon = $('#display-style-menu-icon'),
+		child0 = menuIcon.children().eq(0),
+		child1 = menuIcon.children().eq(1),
+		helper = new Helper(),
+		collapsed = windowInnerWidth < 992 && child1.attr('id') == 'more-statement',
+		bigSize = windowInnerWidth > 991 && child0.attr('id') == 'more-statement';
+
+	if (collapsed || bigSize){
 		helper.swapElements(child1, child0);
 
-		$('#more-statement').attr('style', 'float: left;');
-		$('#site-navigation').attr('style', 'float: left; width: 80%;');
+		$('#more-statement').attr('style', bigSize ? '' : 'float: left;');
+		$('#site-navigation').attr('style', bigSize ? '' : 'float: left; width: 80%;');
 
-		$('.display-style-menu').each(function(){
-			$(this).attr('style', 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
+		$('.display-style-menu').each(function () {
+			$(this).attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
 			child0 = $(this).children().eq(0);
 			child1 = $(this).children().eq(1);
 			helper.swapElements(child1, child0);
@@ -278,6 +291,10 @@ setWindowOptions = function(){
 	$('#navbar-left').empty();
 
 	$(window).load( function windowLoad () {
+	});
+
+	$( window ).resize(function() {
+		setNavigationSidebar(window.innerWidth);
 	});
 };
 

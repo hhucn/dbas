@@ -352,7 +352,7 @@ class Dbas(object):
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_dont_know=True,
 				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
-		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]: # TODO REACTION FOR THE RELATION
+		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
@@ -727,13 +727,13 @@ class Dbas(object):
 		Will login the user by his nickname and password
 		:param nickname: Manually provide nickname (e.g. from API)
 		:param password: Manually provide password (e.g. from API)
-		:return: dict() with success and message
+		:param for_api: Manually provide boolean (e.g. from API)
+		:return: dict() with error
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_login', 'def', 'main')
 		logger('user_login', 'def', 'main, self.request.params: ' + str(self.request.params))
 
-		error = ''
 		return_dict = dict()
 
 		lang = _qh.get_language(self.request, get_current_registry())
@@ -760,7 +760,6 @@ class Dbas(object):
 				error = _tn.get(_tn.userPasswordNotMatch)
 			else:
 				logger('user_login', 'login', 'login successful')
-				error = ''
 				headers = remember(self.request, nickname)
 
 				# update timestamp
