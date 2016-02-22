@@ -76,10 +76,12 @@ class User(DiscussionBase):
 	last_action = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	last_login = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	registered = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	token = sa.Column(sa.Text, nullable=True)
+	token_timestamp = sa.Column(sa.DateTime(timezone=True), nullable=True)
 
 	groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
-	def __init__(self, firstname, surname, nickname, email, password, gender, group=0):
+	def __init__(self, firstname, surname, nickname, email, password, gender, group=0, token='', token_timestamp=None):
 		"""
 		Initializes a row in current user-table
 		"""
@@ -93,6 +95,8 @@ class User(DiscussionBase):
 		self.last_action = func.now()
 		self.last_login = func.now()
 		self.registered = func.now()
+		self.token = token
+		self.token_timestamp = token_timestamp
 
 	@classmethod
 	def by_surname(cls):
@@ -108,6 +112,12 @@ class User(DiscussionBase):
 
 	def update_last_action(self):
 		self.last_action = func.now()
+
+	def update_token_timestamp(self):
+		self.token_timestamp = func.now()
+
+	def set_token(self, token):
+		self.token = token
 
 
 class Statement(DiscussionBase):
