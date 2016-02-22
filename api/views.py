@@ -1,5 +1,8 @@
-""" Cornice services.
-"""
+# Introducing an API to enable external discussions
+#
+# @author Christian Meter, Tobias Krauthoff
+# @email {meter, krauthoff}@cs.uni-duesseldorf.de
+
 import binascii
 import json
 import logging
@@ -11,9 +14,6 @@ from webob import Response, exc
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-
-# @author Christian Meter, Tobias Krauthoff
-# @email {meter, krauthoff}@cs.uni-duesseldorf.de
 
 # CORS configuration
 cors_policy = dict(enabled=True,
@@ -31,10 +31,10 @@ dump       = Service(name='api_dump',
 					 path='/dump',
 					 description="Database Dump",
 					 cors_policy=cors_policy)
-login      = Service(name='login',
-					 path='/login',
-					 description="Log into account of external discussion system",
-					 cors_policy=cors_policy)
+users      = Service(name='login',
+                     path='/login',
+                     description="User management of external discussion system",
+                     cors_policy=cors_policy)
 news       = Service(name='api_news',
  					 path='/get_news',
  					 description="News app",
@@ -57,9 +57,9 @@ zinit      = Service(name='api_init',
 					 description="Discussion Init",
 					 cors_policy=cors_policy)
 zinit_blank = Service(name='api_init_blank',
-					 path='/',
-					 description="Discussion Init",
-					 cors_policy=cors_policy)
+					  path='/',
+					  description="Discussion Init",
+					  cors_policy=cors_policy)
 
 
 @news.get()
@@ -187,12 +187,11 @@ def set_value(request):
 # =============================================================================
 # LOGIN
 # =============================================================================
-users = Service(name='users', path='/users', description="Users", cors_policy=cors_policy)
 _USERS = {}
+
 
 #########
 # Helpers
-
 def _create_token():
 	"""
 	Use the system's urandom function to generate a random token and convert it to ASCII.
@@ -262,13 +261,12 @@ def validate_credentials(request):
 			user = {'nickname': nickname, 'token': _create_token()}
 			request.validated['user'] = user
 	except TypeError:
-		log.error('API - Not logged in: %s' % logged_in)
+		log.error('API Not logged in: %s' % logged_in)
 		request.errors.add(logged_in)
 
 
 ############################
 # Services - User Management
-
 # TODO sample function, remove it
 @users.get(validators=valid_token)
 def get_users(request):
@@ -279,7 +277,7 @@ def get_users(request):
 
 
 @users.post(validators=validate_credentials)
-def login(request):
+def user_login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
 	The function body is only executed, if the validator added a request.validated field.
