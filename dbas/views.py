@@ -736,6 +736,7 @@ class Dbas(object):
 
 		return_dict = dict()
 
+		_qh = QueryHelper()
 		lang = _qh.get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 
