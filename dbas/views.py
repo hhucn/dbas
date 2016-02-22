@@ -355,7 +355,6 @@ class Dbas(object):
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]: # TODO REACTION FOR THE RELATION
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-			# TODO SPECIAL CASE REBUT RESPECTIVELY THE SUPPORT
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid, additional_id=related_arg)

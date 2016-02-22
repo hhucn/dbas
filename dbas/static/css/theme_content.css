@@ -91,6 +91,7 @@
 
 #add-statement-container-main-input-intro{
 	float:left;
+	line-height: 50px;
 	text-align: center;
 }
 
@@ -221,24 +222,6 @@
    -webkit-transition: opacity .45s ease-in-out;
 }
 
-@media (max-width: 767px) {
-	#discussions-space ul {
-		display: block;
-	}
-
-	#discussions-space ul li{
-		display: block;
-	}
-	#pro-position-column,
-	#con-position-column {
-		float: none;
-		width: 95%;
-	}
-}
-
-	
-
-
 .container-three-divs {
 	display:-webkit-box;
 	-webkit-box-orient:horizontal;
@@ -258,5 +241,28 @@
 .flex-div {
 	-webkit-box-flex:1.0;
 	-moz-box-flex:1.0;
-	box-flex:1.0;"
+	box-flex:1.0;
 }
+
+
+@media (max-width: 767px) {
+	#discussions-space ul {
+		display: block;
+	}
+
+	#discussions-space ul li{
+		display: block;
+	}
+	#pro-position-column,
+	#con-position-column {
+		float: none;
+		width: 95%;
+	}
+}
+
+@media (max-width: 991px) {
+	#discussion-sidebar {
+		text-align: left;
+	}
+}
+

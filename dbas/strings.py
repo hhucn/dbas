@@ -1339,8 +1339,8 @@ class TextGenerator(object):
 
 		ret_dict['support_text'] = r + ', ' + _t.get(_t.itIsTrue) + ' <strong>' + premise + '</strong>.'
 
-		# ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounterFor) + ' <strong>' + conclusion + '</strong>.'
-		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveReasonForReject) + ' <strong>' + conclusion + '</strong>.'
+		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounterFor) + ' <strong>' + conclusion + '</strong>.'
+		# ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveReasonForReject) + ' <strong>' + conclusion + '</strong>.'
 
 		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.andIDoBelieveCounterFor) + ' <strong>' + conclusion + '</strong>. '\
 		                           + (_t.get(_t.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting))\

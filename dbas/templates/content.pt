@@ -99,7 +99,7 @@
                         <span tal:condition="extras.is_reportable" style="display:none; float: left; width: 72px; text-align: center;">${extras.buttons.report_title}</span>
 						<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
 						<div id="display-style-menu-icon" tal:condition="extras.show_display_style or extras.show_bar_icon">
-                            <span tal:condition="extras.show_display_style or extras.show_bar_icon"  style="display:none; float: left; width: 72px; text-align: center;">${extras.buttons.more_title}</span>
+							<span tal:condition="extras.show_display_style or extras.show_bar_icon"  style="display:none; float: left; width: 72px; text-align: center;">${extras.buttons.more_title}</span>
 							<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" tal:attributes="title extras.buttons.more_title"/>
 							<nav id="site-navigation">
 								<div class="display-style-menu" tal:condition="extras.show_bar_icon">

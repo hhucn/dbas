@@ -36,6 +36,20 @@ function Helper() {
 		return text;
 	};
 
+
+	/**
+	 * Swaps the element with the paramter
+	 * @param from element
+	 * @param to element
+	 * @returns {*}
+	 */
+	this.swapElements = function(from, to) {
+	    var copy_to = $(to).clone(true),
+		    copy_from = $(from).clone(true);
+		$(to).replaceWith(copy_from);
+		$(from).replaceWith(copy_to);
+	};
+
 	/**
 	 *
 	 * @param text
