@@ -38,6 +38,8 @@ _build
 #*.sh
 *.bak
 pull*.sh
+dbas/static/minimize.sh
+
 
 # Pycharm
 .idea/

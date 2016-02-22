@@ -470,7 +470,6 @@ class DictionaryHelper(object):
 				# otherwise it will be the attack again
 				url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, attack)
 
-
 			elif relation == 'rebut':  # if we are having an rebut, everything seems different TODO IS THIS RIGHT
 				# is_rebut_supportive = not db_argument.is_supportive
 				# db_new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
