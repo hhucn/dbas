@@ -23,10 +23,10 @@ where we currently do not know, which overbid will be taken.
 ====================  ================  =================  ==================
 user    /    system   undermine         undercut           rebut
 ====================  ================  =================  ==================
-*undermine*           D --(-)--> A      D ---(-)--> arg1   D --(-)--> B
+*undermine*           D --(-)--> C      D ---(-)--> C      D --(-)--> C
 *support*             next              next               next
 *undercut*            D --(-)--> arg2i  D --(-)--> arg2ii  D --(-)--> arg2iii
-*overbid as attack*   D --(-)--> C      D --(-)--> C       D --(-)--> C
+*overbid as attack*   D --(-)--> A      D --(-)--> arg1    D --(-)--> B
 *overbid as overbid*  D --(+)--> arg2i  D --(+)--> arg2ii  D --(+)--> arg2iii
 *rebut*               D --(+)--> A      D --(-)--> arg1    D --(+)--> B
 ====================  ================  =================  ==================
