@@ -1,5 +1,8 @@
-""" Cornice services.
-"""
+# Introducing an API to enable external discussions
+#
+# @author Christian Meter, Tobias Krauthoff
+# @email {meter, krauthoff}@cs.uni-duesseldorf.de
+
 import binascii
 import json
 import logging
@@ -11,9 +14,6 @@ from webob import Response, exc
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-
-# @author Christian Meter, Tobias Krauthoff
-# @email {meter, krauthoff}@cs.uni-duesseldorf.de
 
 # CORS configuration
 cors_policy = dict(enabled=True,
@@ -31,8 +31,8 @@ dump       = Service(name='api_dump',
 					 path='/dump',
 					 description="Database Dump",
 					 cors_policy=cors_policy)
-users      = Service(name='users',
-                     path='/users',
+users      = Service(name='login',
+                     path='/login',
                      description="User management of external discussion system",
                      cors_policy=cors_policy)
 news       = Service(name='api_news',
@@ -189,9 +189,9 @@ def set_value(request):
 # =============================================================================
 _USERS = {}
 
+
 #########
 # Helpers
-
 def _create_token():
 	"""
 	Use the system's urandom function to generate a random token and convert it to ASCII.
@@ -267,7 +267,6 @@ def validate_credentials(request):
 
 ############################
 # Services - User Management
-
 # TODO sample function, remove it
 @users.get(validators=valid_token)
 def get_users(request):
