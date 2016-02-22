@@ -43,9 +43,7 @@ Internationalization
 --------------------
 
 Frontend Javascript:
- - strings.js contains every id
- - i18n-de.js german dict
- - i18n-en.js englisch dict
+ - strings.js contains every id with german dict and englisch dict
 
 Frontent HTML:
  - little script i18n.sh which extract all i18n:translate metals

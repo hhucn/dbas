@@ -76,10 +76,7 @@
 .add-statement-container-input{
 	width: 100%;
 }
-.add-premise-container-input{
-	width: 85%;
-	float: left;
-}
+
 #add-statement-container-body input,
 #add-premise-container-body input{
 	-webkit-border-radius: 3px;
@@ -225,6 +222,29 @@
    -webkit-transition: opacity .45s ease-in-out;
 }
 
+.container-three-divs {
+	display:-webkit-box;
+	-webkit-box-orient:horizontal;
+	-webkit-box-align:stretch; 
+	display:-moz-box;      
+	-moz-box-orient:horizontal;
+	-moz-box-align:stretch;
+	display:box;
+	box-orient:horizontal;
+	box-align:stretch; 
+}
+
+#add-premise-container-main-input {
+	
+}
+
+.flex-div {
+	-webkit-box-flex:1.0;
+	-moz-box-flex:1.0;
+	box-flex:1.0;
+}
+
+
 @media (max-width: 767px) {
 	#discussions-space ul {
 		display: block;
@@ -240,5 +260,9 @@
 	}
 }
 
-	
+@media (max-width: 991px) {
+	#discussion-sidebar {
+		text-align: left;
+	}
+}
 

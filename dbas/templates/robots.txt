@@ -2,7 +2,7 @@ User-agent: *
 Disallow: /content
 Disallow: /static
 Disallow: /database
-Disallow: /discussion/*
+Disallow: /discuss/*
 Allow: /
 
 #Baiduspider

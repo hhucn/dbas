@@ -17,7 +17,10 @@ function GuiHandler() {
 	this.appendAddPremiseRow = function(){
 		var body = $('#add-premise-container-body'),
 			uid = new Date().getTime(),
-			div = $('<div>').attr('style', 'padding-bottom: 2em'),
+			div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs'),
+			div_l = $('<div>'),
+			div_m = $('<div>').addClass('flex-div'),
+			div_r = $('<div>'),
 			h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
 			id = 'add-premise-container-main-input-' + uid,
 			input = $('<input>').attr('id', id)
@@ -36,7 +39,9 @@ function GuiHandler() {
 				.attr('style', 'height: 30px;')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
 
-		div.append(h5).append(input).append(imgm).append(imgp);
+		div.append(div_l.append(h5))
+			.append(div_m.append(input))
+			.append(div_r.append(imgm).append(imgp));
 		$('#' + addPremiseContainerBodyId).append(div);
 
 		imgp.click(function(){
@@ -84,6 +89,8 @@ function GuiHandler() {
 		$('#' + islandViewContainerId).hide();
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
+		$('#' + headerContainerId).show();
+		$('#' + breadcrumbContainerId).show();
 	};
 
 	/**
@@ -106,8 +113,25 @@ function GuiHandler() {
 		this.setImageInactive($('#' + displayStyleIconExpertId));
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
+		$('#' + headerContainerId).hide();
+		$('#' + breadcrumbContainerId).hide();
 		new GuiHandler().hideDiscussionError();
 		new DiscussionGraph().showGraph();
+
+		// text
+		var html = $('#' + discussionsDescriptionId).html(), innerHeight, header, footer;
+		html = html.substr(0, html.indexOf('<br>'));
+		$('#' + graphViewContainerHeaderId).html(html);
+
+		// height
+		header = $('#' + customBootstrapMenuId);
+		footer = $('#footer');
+		innerHeight = window.innerHeight;
+		innerHeight -= header.outerHeight(true); // header height with margin
+		innerHeight -= parseInt(header.css('padding-bottom').replace('px','')); // paddings
+		innerHeight -= footer.outerHeight(true); // footer height with margin
+		innerHeight -= parseInt(footer.css('padding-top').replace('px','')); // paddings
+		$('#' + graphViewContainerId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em;');
 	};
 
 	/**

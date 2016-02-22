@@ -151,20 +151,24 @@ class DictionaryHelper(object):
 			premise, tmp        = _qh.get_text_for_premisesgroup_uid(uid)
 			conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
-			if attack=='support':
-				is_supportive = not is_supportive
-			heading             = _tg.get_header_for_confrontation_response(confrontation, premise, attack, conclusion,
-			                                                                False, is_supportive, logged_in)
+
+			heading             = _tg.get_header_for_users_confrontation_response(confrontation, premise, attack, conclusion,
+			                                                                      False, is_supportive, logged_in)
 			if attack == 'undermine':
 				add_premise_text = _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
 				                                                          db_argument.is_supportive)
 				add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
 
-			elif attack=='support':
+			elif attack == 'support':
+				is_supportive = not is_supportive
 				# when the user rebuts a system confrontation, he attacks his own negated premise, therefore he supports
 				# is own premise. so his premise is the conclusion and we need new premises ;-)
 				add_premise_text += _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
 				                                                           is_supportive)
+			elif attack == 'undercut':
+				add_premise_text += _tg.get_text_for_add_premise_container(premise, premise, attack, conclusion,
+				                                                           db_argument.is_supportive)
+
 			else:
 				add_premise_text += _tg.get_text_for_add_premise_container(confrontation, premise, attack, conclusion,
 				                                                           db_argument.is_supportive)
@@ -178,7 +182,7 @@ class DictionaryHelper(object):
 			if text:
 				heading         = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
 			                     + '</strong>. ' + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
-			else: # this will be set in add_discussion_end_text, because if we have no argument, the item_dict will be empty
+			else:  # this will be set in add_discussion_end_text, because if we have no argument, the item_dict will be empty
 				heading         = _tn.get(_tn.firstOneText) + ' <strong>' + _qh.get_text_for_statement_uid(additional_id) + '</strong>.'
 
 		elif at_argumentation:
@@ -191,10 +195,6 @@ class DictionaryHelper(object):
 				                      + '<br><br>' + _tn.get(_tn.otherParticipantsDontHaveCounterForThat)\
 				                      + '.<br><br>' + _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 			else:
-				logger('---','#', _qh.get_text_for_argument_uid(uid, lang))
-				logger('---','#', _qh.get_text_for_argument_uid(uid, lang))
-				logger('---','#', _qh.get_text_for_argument_uid(additional_id, lang))
-				logger('---','#', _qh.get_text_for_argument_uid(additional_id, lang))
 				premise, tmp        = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 				conclusion          = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 										else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
@@ -203,7 +203,6 @@ class DictionaryHelper(object):
 				if attack == 'undermine':
 					premise = _qh.get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
 						else _qh.get_text_for_argument_uid(db_confrontation.argument_uid, lang, True)
-
 
 				# argumentation is a reply for an argument, if the arguments conclusion of the user is no position
 				db_statement        = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
@@ -418,12 +417,14 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_reaction(self, argument_uid, is_supportive, issue_uid, lang, application_url, for_api):
+	def prepare_item_dict_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, issue_uid, attack, lang, application_url, for_api):
 		"""
 
-		:param argument_uid:
+		:param argument_uid_sys:
+		:param argument_uid_user:
 		:param is_supportive:
 		:param issue_uid:
+		:param attack:
 		:param lang:
 		:param application_url:
 		:param for_api:
@@ -434,41 +435,64 @@ class DictionaryHelper(object):
 		_qh = QueryHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		db_sys_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_sys).first()
+		db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_user).first()
 		statements_array = []
+		if not db_sys_argument or not db_user_argument:
+			return statements_array
 
-		if db_argument:
-			if db_argument.argument_uid == 0:
-				conclusion = _qh.get_text_for_statement_uid(db_argument.conclusion_uid)
+		if db_sys_argument.argument_uid == 0:
+			conclusion = _qh.get_text_for_statement_uid(db_sys_argument.conclusion_uid)
+		else:
+			conclusion = _qh.get_text_for_argument_uid(db_sys_argument.argument_uid, lang)
+
+		premise, tmp     = _qh.get_text_for_premisesgroup_uid(db_sys_argument.premisesgroup_uid)
+		conclusion       = conclusion[0:1].lower() + conclusion[1:]
+		premise          = premise[0:1].lower() + premise[1:]
+
+		ret_dict         = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive)
+		mode             = 't' if is_supportive else 't'
+		_um              = UrlManager(application_url, slug, for_api)
+
+		# based in the relation, we will fetch different url's for the items
+		relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut']
+		for relation in relations:
+			url = ''
+
+			# special case, when the user selectes the support, because this does not need to be justified!
+			if relation == 'support':
+				arg_id_sys, sys_attack = RecommenderHelper().get_attack_for_argument(argument_uid_sys, issue_uid)
+				url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
+
+			# easy cases
+			elif relation == 'undermine' or relation == 'undercut':
+				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+
+			elif relation == 'overbid':
+				# if overbid is the 'overbid', it's easy
+				#  url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+				# otherwise it will be the attack again
+				url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, attack)
+
+			elif relation == 'rebut':  # if we are having an rebut, everything seems different
+				if attack == 'undermine':  # rebutting an undermine will be a support for the initial argument
+					url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
+				# rebutting an undercut will be a overbid for the initial argument
+				elif attack == 'undercut':
+					url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
+				# rebutting an rebut will be a justify for the initial argument
+				elif attack == 'rebut':
+					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
+
 			else:
-				conclusion = _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
-			premise, tmp     = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-			conclusion       = conclusion[0:1].lower() + conclusion[1:]
-			premise          = premise[0:1].lower() + premise[1:]
+			statements_array.append(self.__get_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
 
-			ret_dict         = _tg.get_relation_text_dict_without_confrontation(premise, conclusion, False, True, not db_argument.is_supportive)
-			mode             = 't' if is_supportive else 't'
-			_um              = UrlManager(application_url, slug, for_api)
-
-			types = ['undermine', 'support', 'undercut', 'overbid', 'rebut', 'no_opinion']
-			for type in types:
-				# special case, when the user selectes the support, because this does not need to be justified!
-				if type == 'support':
-					arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid)
-					url = _um.get_url_for_reaction_on_argument(True, argument_uid, attack, arg_id_sys)
-				else:
-					key = 'back' if for_api else 'window.history.go(-1)'
-
-					if type == 'rebut':  # if we are having an rebut, everything seems different TODO IS THIS RIGHT
-						is_rebut_supportive = not db_argument.is_supportive
-						db_new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
-						                                                                  Argument.argument_uid == db_argument.argument_uid,
-						                                                                  Argument.is_supportive == is_rebut_supportive)).first()
-						url = _um.get_url_for_justifying_argument(True, db_new_argument.uid if db_new_argument else 0, mode, 'support', additional_id=argument_uid)
-					else:
-						url = key if type == 'no_opinion' else _um.get_url_for_justifying_argument(True, argument_uid, mode, type)
-				statements_array.append(self.__get_statement_dict(type, ret_dict[type + '_text'], [{'title': ret_dict[type + '_text'], 'id':type}], type, url))
+		# last item is the back button
+		relation = 'no_opinion'
+		url = 'back' if for_api else 'window.history.go(-1)'
+		statements_array.append(self.__get_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
 
@@ -522,7 +546,7 @@ class DictionaryHelper(object):
 			                                                  url))
 		url = 'back' if for_api else 'window.history.go(-1)'
 		text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
-		statements_array.append(self.__get_statement_dict('no_opinion', text, [{'title': text, 'id':'no_opinion'}], 'no_opinion', url))
+		statements_array.append(self.__get_statement_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
 		return statements_array
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles, lang,
@@ -588,13 +612,13 @@ class DictionaryHelper(object):
 		                                                  'rem_statement_row_title': _tn.get(_tn.remStatementRow),
 		                                                  'switch_discussion': _tn.get(_tn.switchDiscussionTitle)}
 		if not for_api:
-			return_dict['breadcrumbs']  = breadcrumbs
+			return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
-			message_dict['count']       = _nh.count_of_new_notifications(authenticated_userid)
-			message_dict['has_unread']  = (message_dict['count'] > 0)
-			message_dict['all']         = _nh.get_notification_for(authenticated_userid)
-			message_dict['total']       = len(message_dict['all'])
-			return_dict['notifications']= message_dict
+			message_dict['count']        = _nh.count_of_new_notifications(authenticated_userid)
+			message_dict['has_unread']   = (message_dict['count'] > 0)
+			message_dict['all']          = _nh.get_notification_for(authenticated_userid)
+			message_dict['total']        = len(message_dict['all'])
+			return_dict['notifications'] = message_dict
 		self.add_language_options_for_extra_dict(return_dict, lang)
 
 		# add everything for the island view
@@ -605,9 +629,9 @@ class DictionaryHelper(object):
 				island_dict = _qh.get_everything_for_island_view(argument_id, lang)
 				island_dict['premise'] = island_dict['premise'][0:1].lower() + island_dict['premise'][1:]
 				island_dict['conclusion'] = island_dict['conclusion'][0:1].lower() + island_dict['conclusion'][1:]
-				island_dict.update(TextGenerator(lang).get_relation_text_dict_without_confrontation(island_dict['premise'],
-				                                                                                    island_dict['conclusion'],
-				                                                                                    False, False, not db_argument.is_supportive))
+				island_dict.update(TextGenerator(lang).get_relation_text_dict(island_dict['premise'],
+				                                                              island_dict['conclusion'],
+				                                                              False, False, not db_argument.is_supportive))
 				return_dict['island'] = island_dict
 			else:
 				return_dict['is_editable']            = False
@@ -665,7 +689,7 @@ class DictionaryHelper(object):
 			discussion_dict['mode'] = 'dont_know'
 			discussion_dict['heading'] = _t.get(_t.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
 			discussion_dict['heading'] += _t.get(_t.butOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '<br><br>'
-			discussion_dict['heading'] +=  _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndLinkText)
+			discussion_dict['heading'] += _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndLinkText)
 
 		elif at_justify:
 			discussion_dict['mode'] = 'justify'

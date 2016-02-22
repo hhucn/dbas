@@ -352,10 +352,9 @@ class Dbas(object):
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_dont_know=True,
 				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
-		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
+		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]: # TODO REACTION FOR THE RELATION
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-			# TODO SPECIAL CASE REBUT RESPECTIVELY THE SUPPORT
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify_argumentation=True,
 			                                              is_supportive=supportive, attack=relation,
 			                                              logged_in=self.request.authenticated_userid, additional_id=related_arg)
@@ -423,7 +422,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict(arg_id_user, ui_locales, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
-		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, supportive, issue, ui_locales, mainpage, for_api)
+		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, ui_locales, self.request.authenticated_userid,
 		                                          argument_id=arg_id_user, breadcrumbs=breadcrumbs,
 		                                          application_url=mainpage, for_api=for_api)
@@ -734,8 +733,11 @@ class Dbas(object):
 		logger('user_login', 'def', 'main')
 		logger('user_login', 'def', 'main, self.request.params: ' + str(self.request.params))
 
-		message = ''
+		error = ''
 		return_dict = dict()
+
+		lang = _qh.get_language(self.request, get_current_registry())
+		_tn = Translator(lang)
 
 		try:
 			if not nickname and not password:
@@ -752,12 +754,13 @@ class Dbas(object):
 			# check for user and password validations
 			if not db_user:
 				logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
-				message = 'User / Password do not match'
+				error = _tn.get(_tn.userPasswordNotMatch)
 			elif not db_user.validate_password(password):
 				logger('user_login', 'password not valid', 'wrong password')
-				message = 'User / Password do not match'
+				error = _tn.get(_tn.userPasswordNotMatch)
 			else:
 				logger('user_login', 'login', 'login successful')
+				error = ''
 				headers = remember(self.request, nickname)
 
 				# update timestamp
@@ -774,9 +777,10 @@ class Dbas(object):
 					)
 
 		except KeyError as e:
+			error = _tn.get(_t.internalError)
 			logger('user_login', 'error', repr(e))
 
-		return_dict['message'] = str(message)
+		return_dict['error'] = str(error)
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -1064,17 +1068,6 @@ class Dbas(object):
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			issue           = _qh.get_issue_id(self.request)
 
-			arg = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-			logger('SET PGROUPS', '---', str(arg_uid))
-			logger('SET PGROUPS', '---', str(arg_uid))
-			logger('SET PGROUPS', '---', str(arg_uid))
-			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
-			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
-			logger('SET PGROUPS', '---', _qh.get_text_for_argument_uid(arg_uid, lang))
-			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
-			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
-			logger('SET PGROUPS', '---', _qh.get_text_for_statement_uid(arg.conclusion_uid))
-
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, issue, user_id, for_api,
 			                                                                         mainpage, lang, RecommenderHelper())
@@ -1309,6 +1302,34 @@ class Dbas(object):
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
+
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - for getting all users with the same opinion
+	@view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
+	def get_users_with_same_opinion(self):
+		"""
+		ajax interface for getting a dump
+		:return: json-set with everything
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('get_users_with_same_opinion', 'def', 'main') # TODO TERESA
+		_qh = QueryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
+
+		return_dict = dict()
+		try:
+			uid = self.request.params['uid']
+			is_argument = self.request.params['is_argument']
+			if is_argument:
+				return_dict = _qh.get_user_with_same_opinion_for_argument(uid)
+			else:
+				return_dict = _qh.get_user_with_same_opinion_for_statement(uid)
+			return_dict['error'] = ''
+		except KeyError as e:
+			logger('set_new_start_statement', 'error', repr(e))
+			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 

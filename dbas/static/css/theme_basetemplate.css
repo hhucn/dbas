@@ -29,13 +29,10 @@
 	font-style: normal;
 }
 
-
 body {
-	/* font-family: "DroidSans", "OpenSans", Helvetica, Arial, sans-serif; */
-	font-weight: 300;
 	color: #000;
 	background: #EBEBEB;
-	font-size: 14px;
+	line-height: 1.5;
 }
 
 html,
@@ -43,6 +40,7 @@ body {
 	margin: 0;
 	padding: 0;
 	height: 100%;
+    font-size: 14px;
 }
 
 .ajaxloader {
@@ -209,15 +207,6 @@ comment .container and wrap each container with <div class="coloured-div">
 
 .button:hover {
 	transition: 0.5s all;
-}
-
-.modal-title {
-	/*
-	font-family: "Pacifico", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	*/
-	font-size: 30px;
-	margin-bottom: 5px;
-	text-align: center;
 }
 
 .links {
@@ -434,10 +423,6 @@ comment .container and wrap each container with <div class="coloured-div">
 	color: #2196f3;
 }
 
-.modal-title{
-	line-height: 1.2em;
-}
-
 #generate-password-body {
 	padding-bottom: 10px;
 }
@@ -475,7 +460,6 @@ comment .container and wrap each container with <div class="coloured-div">
 	color: #efefef;
 	padding: 5px 20px;
 	font-size: 14px;
-	line-height: 1.2em;
 	text-align: center;
 	display: none;
 	z-index: 9999999;
@@ -513,7 +497,6 @@ comment .container and wrap each container with <div class="coloured-div">
 .eupopup-closebutton {
 	font-size: 16px;
 	font-weight: 100;
-	line-height: 1;
 	color: #a2a2a2;
 	filter: alpha(opacity=20);
 	position: absolute;
@@ -576,7 +559,6 @@ comment .container and wrap each container with <div class="coloured-div">
 .eupopup-style-compact {
 	text-align: left;
 	padding: 8px 30px 7px 20px;
-	line-height: 15px;
 }
 
 .eupopup-style-compact .eupopup-head,

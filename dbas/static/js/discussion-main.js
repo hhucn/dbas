@@ -68,14 +68,12 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 
 	// hiding the island view, when the X button is clicked
 	$('#' + closeIslandViewContainerId).click(function () {
-		$('#' + islandViewContainerId).hide();
 		guiHandler.resetChangeDisplayStyleBox();
 		$('#li_' + addReasonButtonId).attr('checked', true).prop('checked', true);
 	});
 
 	// hiding the island view, when the X button is clicked
 	$('#' + closeGraphViewContainerId).click(function () {
-		$('#' + graphViewContainerId).hide();
 		guiHandler.resetChangeDisplayStyleBox();
 	});
 
@@ -247,6 +245,23 @@ setStyleOptions = function (guiHandler){
 	});
 	replaceHtmlTags($('#' + issueInfoId));
 	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
+
+	if (window.innerWidth < 992){ // collapse
+		var child0 = $('#display-style-menu-icon').children().eq(0),
+			child1 = $('#display-style-menu-icon').children().eq(1),
+			helper = new Helper();
+		helper.swapElements(child1, child0);
+
+		$('#more-statement').attr('style', 'float: left;');
+		$('#site-navigation').attr('style', 'float: left; width: 80%;');
+
+		$('.display-style-menu').each(function(){
+			$(this).attr('style', 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
+			child0 = $(this).children().eq(0);
+			child1 = $(this).children().eq(1);
+			helper.swapElements(child1, child0);
+		})
+	}
 };
 
 /**

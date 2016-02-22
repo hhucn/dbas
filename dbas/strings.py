@@ -93,7 +93,7 @@ class Translator(object):
 		self.attackedWith = 'attackedWith'
 		self.attackPosition = 'attackPosition'
 		self.agreeBecause = 'agreeBecause'
-		self.andIDoBelieveCounter = 'andIDoBelieveCounter'
+		self.andIDoBelieveCounterFor = 'andIDoBelieveCounterFor'
 		self.andIDoBelieveArgument = 'andIDoBelieveArgument'
 		self.addArguments = 'addArguments'
 		self.addStatements = 'addStatements'
@@ -111,7 +111,8 @@ class Translator(object):
 		self.butOtherParticipantsDontHaveOpinionRegardingYourOpinion = 'butOtherParticipantsDontHaveOpinionRegardingYourOpinion'
 		self.butOtherParticipantsDontHaveArgument = 'butOtherParticipantsDontHaveArgument'
 		self.butOtherParticipantsDontHaveCounterArgument = 'butOtherParticipantsDontHaveCounterArgument'
-		self.butIDoNotBelieveCounter = 'butIDoNotBelieveCounter'
+		self.butIDoNotBelieveCounterFor = 'butIDoNotBelieveCounterFor'
+		self.butIDoNotBelieveReasonForReject = 'butIDoNotBelieveReasonForReject'
 		self.butIDoNotBelieveArgument = 'butIDoNotBelieveArgument'
 		self.butTheyDoNotBelieveCounter = 'butTheyDoNotBelieveCounter'
 		self.butTheyDoNotBelieveArgument = 'butTheyDoNotBelieveArgument'
@@ -378,6 +379,7 @@ class Translator(object):
 		self.relation_rebut = 'relation_rebut'
 		self.uid = 'uid'
 		self.unfortunatelyNoMoreArgument = 'unfortunatelyNoMoreArgument'
+		self.userPasswordNotMatch = 'userPasswordNotMatch'
 
 		self.sentencesOpenersRequesting = [self.whyDoYouThinkThat]
 		self.sentencesOpenersForArguments = [self.soYourOpinionIsThat]
@@ -492,8 +494,8 @@ class Translator(object):
 		en_lang[self.attackedBy] = 'You were attacked by'
 		en_lang[self.attackedWith] = 'You\'ve attacked with'
 		en_lang[self.agreeBecause] = 'I agree because '
-		en_lang[self.andIDoBelieveCounter] = 'and I do believe that this is a good counter-argument for'
-		en_lang[self.andIDoBelieveArgument] = 'and I do believe that this is a good argument for'
+		en_lang[self.andIDoBelieveCounterFor] = 'and I do believe that this is a counter-argument for'
+		en_lang[self.andIDoBelieveArgument] = 'and I do believe that this is a argument for'
 		en_lang[self.breadcrumbsStart] = 'Start'
 		en_lang[self.breadcrumbsChoose] = 'Multiple reasons for'
 		en_lang[self.breadcrumbsJustifyStatement] = 'Why do you think that'
@@ -502,8 +504,9 @@ class Translator(object):
 		en_lang[self.breadcrumbsReplyForPremisegroup] = 'Reply for group'
 		en_lang[self.breadcrumbsReplyForResponseOfConfrontation] = 'Justification of'  # 'Reply for confrontation'
 		en_lang[self.breadcrumbsReplyForArgument] = 'Reply for argument'
-		en_lang[self.butIDoNotBelieveCounter] = 'but I do not believe that this is a good counter-argument for'
-		en_lang[self.butIDoNotBelieveArgument] = 'but I do not believe that this is a good argument for'
+		en_lang[self.butIDoNotBelieveCounterFor] = 'but I do not believe that this is a counter-argument for'
+		en_lang[self.butIDoNotBelieveReasonForReject] = 'but I do not believe that this is a reason for rejecting'
+		en_lang[self.butIDoNotBelieveArgument] = 'but I do not believe that this is a argument for'
 		en_lang[self.butTheyDoNotBelieveCounter] = 'but they do not believe that this is a good counter-argument for'
 		en_lang[self.butTheyDoNotBelieveArgument] = 'but they do not believe that this is a good argument for'
 		en_lang[self.butOtherParticipantsDontHaveOpinionRegardingYourOpinion] = 'but other participants do not have any opinion regarding your selection'
@@ -768,6 +771,7 @@ class Translator(object):
 		en_lang[self.relation_rebut] = 'is a counter-argument for'
 		en_lang[self.uid] = 'ID'
 		en_lang[self.unfortunatelyNoMoreArgument] = 'Unfortunately there are no more arguments about'
+		en_lang[self.userPasswordNotMatch] = 'User / Password do not match'
 
 		return en_lang
 
@@ -870,7 +874,7 @@ class Translator(object):
 		de_lang[self.attackedWith] = 'Sie haben attackiert mit'
 		de_lang[self.attackPosition] = 'Position angreifen'
 		de_lang[self.agreeBecause] = 'Ich stimme zu, weil '
-		de_lang[self.andIDoBelieveCounter] = 'und ich glaube, dass ist ein gutes Gegenargument für'
+		de_lang[self.andIDoBelieveCounterFor] = 'und ich glaube, dass ist ein gutes Gegenargument für'
 		de_lang[self.andIDoBelieveArgument] = 'und ich glaube, dass ist ein gutes Argument für'
 		de_lang[self.addArguments] = 'Argumente hizufügen'
 		de_lang[self.addStatements] = 'Aussagen hizufügen'
@@ -888,8 +892,9 @@ class Translator(object):
 		de_lang[self.butOtherParticipantsDontHaveOpinionRegardingYourOpinion] = 'aber andere Teilnehmer haben keine Meinung bezüglich ihrer Eingabe'
 		de_lang[self.butOtherParticipantsDontHaveArgument] = 'aber andere Teilnehmer haben keine Begründung für dafür'
 		de_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'aber andere Teilnehmer haben kein Gegenargument.'
-		de_lang[self.butIDoNotBelieveCounter] = 'aber ich glaube, dass ist kein gutes Gegenargument für'
-		de_lang[self.butIDoNotBelieveArgument] = 'aber ich glaube, dass ist kein gutes Argument für'
+		de_lang[self.butIDoNotBelieveCounterFor] = 'aber ich glaube nicht, dass ist ein gutes Gegenargument für'
+		de_lang[self.butIDoNotBelieveReasonForReject] = 'aber ich glaube nicht, dass das zur Aussage führt'
+		de_lang[self.butIDoNotBelieveArgument] = 'aber ich glaube nicht, dass ist ein gutes Argument für'
 		de_lang[self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass ist kein gutes Gegenargument für'
 		de_lang[self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass ist kein gutes Argument für'
 		de_lang[self.because] = 'Weil'
@@ -1151,6 +1156,7 @@ class Translator(object):
 		de_lang[self.relation_rebut] = 'ist ein Gegenargument für'
 		de_lang[self.uid] = 'ID'
 		de_lang[self.unfortunatelyNoMoreArgument] = 'Leider gibt es keine weiteren Argumente für'
+		de_lang[self.userPasswordNotMatch] = 'Benutzername und / oder Passwort sind falsch'
 
 		return de_lang
 
@@ -1220,9 +1226,9 @@ class TextGenerator(object):
 			ret_text += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
 			ret_text += '</strong>.'
 		if attack_type == 'undercut':
-			ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounter) + ' ' + conclusion + '.'
+			ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounterFor) + ' ' + conclusion + '.'
 		if attack_type == 'overbid':
-			ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieveCounter) + ' ' + conclusion
+			ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieveCounterFor) + ' ' + conclusion
 		#  + '.<br><br>' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
 		if attack_type == 'rebut':
 			ret_text = confrontation + ' ' \
@@ -1231,8 +1237,8 @@ class TextGenerator(object):
 
 		return ret_text
 
-	def get_header_for_confrontation_response(self, confrontation, premise, attack_type, conclusion, start_lower_case,
-	                                          is_supportive, is_logged_in):
+	def get_header_for_users_confrontation_response(self, confrontation, premise, attack_type, conclusion, start_lower_case,
+	                                                is_supportive, is_logged_in):
 		"""
 		Based on the users reaction, text will be build.
 		:param confrontation: choosen confrontation
@@ -1279,12 +1285,12 @@ class TextGenerator(object):
 
 		if attack_type == 'undercut':
 			ret_text += r + '<strong>' + premise + '</strong>, '
-			ret_text += _t.get(_t.butIDoNotBelieveCounter) if is_supportive else _t.get(_t.butIDoNotBelieveArgument)
+			ret_text += _t.get(_t.butIDoNotBelieveCounterFor) if is_supportive else _t.get(_t.butIDoNotBelieveArgument)
 			ret_text += ' <strong>' + conclusion + '</strong>.'
 
 		if attack_type == 'overbid':
 			ret_text += r + '<strong>' + premise + '</strong>, '
-			ret_text += _t.get(_t.andIDoBelieveCounter) if is_supportive else _t.get(_t.andIDoBelieveArgument)
+			ret_text += _t.get(_t.andIDoBelieveCounterFor) if is_supportive else _t.get(_t.andIDoBelieveArgument)
 			ret_text += ' <strong>' + conclusion + '</strong>.<br><br>'
 			ret_text += _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)
 			ret_text += ' <strong>' + conclusion + '</strong>.'
@@ -1302,8 +1308,7 @@ class TextGenerator(object):
 
 		return ret_text
 
-	def get_relation_text_dict_without_confrontation(self, premises, conclusion, start_lower_case, with_no_opinion_text,
-	                                                 is_attacking):
+	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking):
 		"""
 
 		:param premises:
@@ -1331,17 +1336,23 @@ class TextGenerator(object):
 		r = (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:]
 
 		ret_dict['undermine_text'] = w + ', ' + _t.get(_t.itIsFalse) + ' <strong>' + premise + '</strong>.'
+
 		ret_dict['support_text'] = r + ', ' + _t.get(_t.itIsTrue) + ' <strong>' + premise + '</strong>.'
-		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounter) + ' <strong>' + conclusion + '</strong>.'
-		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.andIDoBelieveCounter) + ' <strong>' + conclusion + '</strong>. ' + \
-		                           (_t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_attacking else
-									_t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)) + ' <strong>' + conclusion + '</strong>.'
+
+		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounterFor) + ' <strong>' + conclusion + '</strong>.'
+		# ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveReasonForReject) + ' <strong>' + conclusion + '</strong>.'
+
+		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.andIDoBelieveCounterFor) + ' <strong>' + conclusion + '</strong>. '\
+		                           + (_t.get(_t.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting))\
+		                           + ' <strong>' + conclusion + '</strong>.'
+
 		ret_dict['rebut_text'] = r + ', <strong>' + premise + '</strong> ' \
 								 + (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument)) \
 								 + ' <strong>' + conclusion + '</strong>. '\
-								 + (_t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting))\
-								 + ' <strong>' + conclusion + ' '\
-		                         + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>.'
+								 + (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))\
+								 + ' <strong>' + conclusion + ' ' + '</strong>.'
+		# + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>.'
+
 		if with_no_opinion_text:
 			ret_dict['no_opinion_text'] = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
 
@@ -1436,7 +1447,7 @@ class TextGenerator(object):
 			ret_dict['argument'] = conclusion + ' ' + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] + ' ' + premise
 
 		if supportive:
-			ret_dict.update(self.get_relation_text_dict_without_confrontation(premises, conclusion, False, True))
+			ret_dict.update(self.get_relation_text_dict(premises, conclusion, False, True))
 		else:
 			ret_dict.update(self.__get_text_dict_for_attacks_only(premises, conclusion, False))
 
