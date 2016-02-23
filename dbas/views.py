@@ -508,6 +508,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
 
 		old_pw = ''
 		new_pw = ''
@@ -550,8 +551,11 @@ class Dbas(object):
 			'discussion_arg_votes': arg_vote,
 			'discussion_stat_votes': stat_vote,
 			'send_mails': db_settings.send_mails,
-			'send_notifications': db_settings.send_notifications
+			'send_notifications': db_settings.send_notifications,
+			'title_mails': _tn.get(_tn.mailSettingsTitle),
+			'title_notifications': _tn.get(_tn.notificationSettingsTitle)
 		}
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
@@ -965,56 +969,36 @@ class Dbas(object):
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-	# ajax - set boolean for receiving notifications
-	@view_config(route_name='ajax_set_user_receive_notifications', renderer='json')
-	def set_user_receive_notifications(self):
+	# ajax - set boolean for receiving information
+	@view_config(route_name='ajax_set_user_receive_information', renderer='json')
+	def set_user_receive_information_settings(self):
 		"""
 		Will logout the user
 		:return: HTTPFound with forgotten headers
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('set_user_receive_notifications', 'def', 'main, self.request.params: ' + str(self.request.params))
+		logger('set_user_receive_information_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
 		_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
 
 		try:
 			error = ''
-			should_send = True if self.request.params['sends'] == 'True' else False
+			should_send = True if self.request.params['should_send'] == 'True' else False
+			service = self.request.params['service']
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
 			if db_user:
-				db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-				db_settings.send_notifications = should_send
+				db_setting = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+				if service == 'mail':
+					db_setting.should_send_mails(should_send)
+				elif service == 'notification':
+					db_setting.should_send_notifications(should_send)
+				else:
+					error = _tn.get(_tn.keyword)
+				transaction.commit()
 			else:
 				error = _tn.get(_tn.checkNickname)
 		except KeyError as e:
 			error = _tn.get(_tn.internalError)
-			logger('set_user_receive_mails', 'error', repr(e))
-
-		return_dict = {'error': error}
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-	# ajax - set boolean for receiving mails
-	@view_config(route_name='ajax_set_user_receive_mails', renderer='json')
-	def set_user_receive_mails(self):
-		"""
-		Will logout the user
-		:return: HTTPFound with forgotten headers
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('set_user_receive_mails', 'def', 'main, self.request.params: ' + str(self.request.params))
-		_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
-
-		try:
-			error = ''
-			should_send = True if self.request.params['sends'] == 'True' else False
-			db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
-			if db_user:
-				db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-				db_settings.send_mails = should_send
-			else:
-				error = _tn.get(_tn.checkNickname)
-		except KeyError as e:
-			error = _tn.get(_tn.internalError)
-			logger('set_user_receive_mails', 'error', repr(e))
+			logger('set_user_receive_information_settings', 'error', repr(e))
 
 		return_dict = {'error': error}
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
@@ -1445,22 +1429,27 @@ class Dbas(object):
 
 	# ajax - for fuzzy search
 	@view_config(route_name='ajax_fuzzy_search', renderer='json')
-	def fuzzy_search(self):
+	def fuzzy_search(self, for_api=False):
 		"""
 		ajax interface for fuzzy string search
+		:param for_api: boolean
 		:return: json-set with all matched strings
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('fuzzy_search', 'def', 'main, self.request.params: ' + str(self.request.params))
+		logger('fuzzy_search', 'def', 'main, for_api: ' + str(for_api) + ', self.request.params: ' + str(self.request.params))
 
 		try:
 			value = self.request.params['value']
-			mode = str(self.request.params['type'])
-			issue = QueryHelper().get_issue_id(self.request)
+			mode = str(self.request.params['type']) if not for_api else ''
+			issue = QueryHelper().get_issue_id(self.request) if not for_api else ''
 
 			return_dict = dict()
 			# return_dict['distance_name'] = 'SequenceMatcher'  # TODO improve fuzzy search
 			return_dict['distance_name'] = 'Levensthein'
+			if for_api:
+				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_issues(value)
+				return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
 			if mode == '0':  # start statement
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
 			elif mode == '1':  # edit statement popup

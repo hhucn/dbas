@@ -137,6 +137,12 @@ class Settings(DiscussionBase):
 		self.send_mails = send_mails
 		self.send_notifications = send_notifications
 
+	def should_send_mails(self, send_mails):
+		self.send_mails = send_mails
+
+	def should_send_notifications(self, send_notifications):
+		self.send_notifications = send_notifications
+
 
 class Statement(DiscussionBase):
 	"""

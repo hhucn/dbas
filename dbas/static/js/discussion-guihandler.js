@@ -50,10 +50,10 @@ function GuiHandler() {
 		});
 
 		imgm.click(function(){
-			$(this).parent().remove();
+			$(this).parent().parent().remove();
 			body.find('div').children().last().show();
 			// hide minus icon, when there is only one child
-			if (body.find('div').length == 1) {
+			if (body.find('.container-three-divs').length == 1) {
 				body.find('.icon-rem-premise').hide();
 			} else {
 				body.find('.icon-rem-premise').show();

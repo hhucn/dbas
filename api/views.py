@@ -46,6 +46,10 @@ attitude   = Service(name='api_attitude',
 					 path='/{slug}/attitude/*statement_id',
 					 description="Discussion Attitude",
 					 cors_policy=cors_policy)
+issues     = Service(name='get_issues',
+ 					 path='/get_issues',
+ 					 description="Issue Selector",
+ 					 cors_policy=cors_policy)
 # Prefix with 'z' so it is added as the last route
 zinit      = Service(name='api_init',
 					 path='/{slug}',
@@ -98,6 +102,16 @@ def discussion_attitude(request):
 	:return: Dbas(request).discussion_attitude(True)
 	"""
 	return Dbas(request).discussion_attitude(True)
+
+
+@issues.get()
+def issue_selector(request):
+	"""
+	Return data from DBas discussion_attitude page
+	:param request: request
+	:return: Dbas(request).discussion_attitude(True)
+	"""
+	return Dbas(request).fuzzy_search(True)
 
 
 @zinit.get()
