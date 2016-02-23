@@ -555,6 +555,7 @@ class Dbas(object):
 			'title_mails': _tn.get(_tn.mailSettingsTitle),
 			'title_notifications': _tn.get(_tn.notificationSettingsTitle)
 		}
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
@@ -1426,22 +1427,27 @@ class Dbas(object):
 
 	# ajax - for fuzzy search
 	@view_config(route_name='ajax_fuzzy_search', renderer='json')
-	def fuzzy_search(self):
+	def fuzzy_search(self, for_api=False):
 		"""
 		ajax interface for fuzzy string search
+		:param for_api: boolean
 		:return: json-set with all matched strings
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('fuzzy_search', 'def', 'main, self.request.params: ' + str(self.request.params))
+		logger('fuzzy_search', 'def', 'main, for_api: ' + str(for_api) + ', self.request.params: ' + str(self.request.params))
 
 		try:
 			value = self.request.params['value']
-			mode = str(self.request.params['type'])
-			issue = QueryHelper().get_issue_id(self.request)
+			mode = str(self.request.params['type']) if not for_api else ''
+			issue = QueryHelper().get_issue_id(self.request) if not for_api else ''
 
 			return_dict = dict()
 			# return_dict['distance_name'] = 'SequenceMatcher'  # TODO improve fuzzy search
 			return_dict['distance_name'] = 'Levensthein'
+			if for_api:
+				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_issues(value)
+				return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
 			if mode == '0':  # start statement
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
 			elif mode == '1':  # edit statement popup

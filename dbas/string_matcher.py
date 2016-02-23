@@ -5,7 +5,7 @@ from sqlalchemy import and_
 from Levenshtein import distance
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Statement, User, TextVersion
+from .database.discussion_model import Statement, User, TextVersion, Issue
 from .logger import logger
 
 # @author Tobias Krauthoff
@@ -100,6 +100,31 @@ class FuzzyStringMatcher(object):
 		       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
 
 		return return_dict
+
+	def get_fuzzy_string_for_issues(self, value):
+		"""
+
+		:param value:
+		:return:
+		"""
+		db_issues = DBDiscussionSession.query(Issue).all()
+		tmp_dict = dict()
+
+		for index, issue in enumerate(db_issues):
+			dist = self.__get_distance__(value, issue.title)
+			tmp_dict[str(dist) + '_' + str(index)] = issue.title
+
+		tmp_dict = collections.OrderedDict(sorted(tmp_dict.items()))
+
+		return_dict = collections.OrderedDict()
+		for i in list(tmp_dict.keys())[0:self.return_count]:
+			return_dict[i] = tmp_dict[i]
+
+		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_issues', 'string: ' + value +
+		       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
+
+		return return_dict
+
 
 	def __get_distance__(self, string_a, string_b):
 		"""
