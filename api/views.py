@@ -192,6 +192,7 @@ _USERS = {}
 
 #########
 # Helpers
+
 def _create_token():
 	"""
 	Use the system's urandom function to generate a random token and convert it to ASCII.
@@ -267,6 +268,7 @@ def validate_credentials(request):
 
 ############################
 # Services - User Management
+
 # TODO sample function, remove it
 @users.get(validators=valid_token)
 def get_users(request):
