@@ -158,6 +158,13 @@ function PasswordHandler(){
 		}
 	};
 
+	/**
+	 *
+	 * @param passwordInput
+	 * @param passwordMeter
+	 * @param passwordStrength
+	 * @param passwordExtras
+	 */
 	this.check_strength = function (passwordInput, passwordMeter, passwordStrength, passwordExtras) {
 		'use strict';
 		var total = 0,
@@ -170,7 +177,10 @@ function PasswordHandler(){
 		new PasswordHandler().set_total(total, passwordMeter, passwordStrength, passwordExtras);
 	};
 
-	// password generator
+	/**
+	 *
+	 * @param output
+	 */
 	this.generate_password = function (output) {
 		'use strict';
 		var password = '',
@@ -186,8 +196,81 @@ function PasswordHandler(){
 	};
 }
 
+function SettingsHandler(){
+
+	/**
+	 *
+	 * @param should_send
+	 */
+	this.setReceiveNotifications = function(should_send) {
+		$.ajax({
+			url: 'ajax_set_user_receive_notifications',
+			method: 'GET',
+			data:{'send': should_send ? 'True': 'False'},
+			dataType: 'json',
+			async: true
+		}).done(function setReceiveNotificationsDone(data) {
+			new SettingsHandler().callbackReceiveDone(data, $('#' + settingsReceiveNotifications), should_send);
+		}).fail(function setReceiveNotificationsFail() {
+			new SettingsHandler().callbackReceiveFail($('#' + settingsReceiveNotifications), should_send);
+		});
+	};
+
+	/**
+	 *
+	 * @param should_send
+	 */
+	this.setReceiveMails = function(should_send) {
+		$.ajax({
+			url: 'ajax_set_user_receive_mails',
+			method: 'GET',
+			data:{'send': should_send ? 'True': 'False'},
+			dataType: 'json',
+			async: true
+		}).done(function setReceiveMailDone(data) {
+			new SettingsHandler().callbackReceiveDone(data, $('#' + settingsReceiveMails), should_send);
+		}).fail(function setReceiveMailFail() {
+			new SettingsHandler().callbackReceiveFail($('#' + settingsReceiveMails), should_send);
+		});
+	};
+
+	/**
+	 *
+	 * @param jsonData
+	 * @param toggle_element
+	 * @param should_send
+	 */
+	this.callbackReceiveDone = function (jsonData, toggle_element, should_send){
+		var parsedData = $.parseJSON(jsonData);
+		if (parsedData.error.length == 0){
+			$('#' + settingsSuccessDialog).fadeIn();
+			new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 1000);
+		} else {
+			new SettingsHandler().callbackReceiveFail(toggle_element, should_send);
+		}
+	};
+
+	/**
+	 *
+	 * @param toggle_element
+	 * @param should_send
+	 */
+	this.callbackReceiveFail = function (toggle_element, should_send){
+		$('#' + settingsAlertDialog).fadeIn();
+		new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 1000);
+		toggle_element.off('change').bootstrapToggle(should_send ? 'off' : 'on').change(function() {
+			if (toggle_element.attr('id').toLocaleLowerCase().indexOf('mail') != -1)
+				new SettingsHandler().setReceiveMails(toggle_element.prop('checked'));
+			else
+				new SettingsHandler().setReceiveNotifications(toggle_element.prop('checked'));
+		});
+	}
+
+}
+
 $(function () {
 	'use strict';
+	var settingsPasswordExtras = $('#' + settingsPasswordExtrasId);
 
 	$('#' + requestHistoryButtonId).click(function requestTrack() {
 		new HistoryHandler().getUserHistoryData();
@@ -208,11 +291,11 @@ $(function () {
 		new PasswordHandler().check_strength($('#' + settingsPasswordInputId),
 				$('#' + settingsPasswordMeterId),
 				$('#' + settingsPasswordStrengthId),
-				$('#' + settingsPasswordExtrasId));
+				settingsPasswordExtras);
 		if ($(this).val().length > 0){
-			$('#' + settingsPasswordExtrasId).fadeIn('slow');
+			settingsPasswordExtras.fadeIn('slow');
 		} else {
-			$('#' + settingsPasswordExtrasId).fadeOut('slow');
+			settingsPasswordExtras.fadeOut('slow');
 		}
 	});
 
@@ -226,6 +309,14 @@ $(function () {
 
 	$('#' + popupPasswordGeneratorButton).click(function passwordGeneratorButton() {
 		new PasswordHandler().generate_password($('#' + popupPasswordGeneratorOutput));
+	});
+
+	$('#' + settingsReceiveNotifications).change(function() {
+		new SettingsHandler().setReceiveNotifications($('#' + settingsReceiveNotifications).prop('checked'));
+	});
+
+	$('#' + settingsReceiveMails).change(function() {
+		new SettingsHandler().setReceiveMails($('#' + settingsReceiveMails).prop('checked'));
 	});
 
 	// ajax loading animation

@@ -11,12 +11,8 @@
 
 		<div class="container colored_container">
 			<div class="content row">
-				<div class="col-md-12">
+				<div class="col-md-7">
 					<h4 i18n:translate="personal_information">Personal Information</h4>
-				</div>
-			</div>
-			<div class="content row">
-				<div class="col-md-8">
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="firstname">Firstname</span></td>
@@ -40,9 +36,106 @@
 						</tr>
 					</table>
 				</div>
-				<div class="col-md-4 center text-center">
-					<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
-					<p i18n:translate="profile_picture">Profile Picture</p>
+				<div class="col-md-5">
+					<h4 i18n:translate="settings">Settings</h4>
+					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<tr>
+							<td><span i18n:translate="receive_notifications" class="lead">Receive Notifications</span></td>
+						    <td class="text-center"><input id="receive-notifications-toggle" type="checkbox" checked data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_notifications"></td>
+				    	</tr>
+			    		<tr>
+		    				<td><span i18n:translate="receive_mails" class="lead">Receive E-Mails</span></td>
+	    					<td class="text-center"><input id="receive-mails-toggle" type="checkbox" checked data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_mails"></td>
+    					 </tr>
+					</table>
+					<div class="center text-center">
+						<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
+						<p i18n:translate="profile_picture">Profile Picture</p>
+					</div>
+				</div>
+				<div class="col-md-12">
+                    <div id="settings-alert" class="alert alert-dismissible alert-danger" style="display: none;">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <span id="settings-alert-message" i18n:translate="settings_not_set">Settings could not be set. Please try again later.</span>
+                    </div>
+                    <div id="settings-success" class="alert alert-dismissible alert-success" style="display: none;">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <span id="settings-success-message" i18n:translate="settings_set">Settings were set successfully.</span>
+                    </div>
+                </div>
+			</div>
+		</div>
+
+		<div class="container colored_container">
+			<div class="content row">
+				<div class="col-md-7">
+					<h4 i18n:translate="change_password">Change your password</h4>
+					<form action="/settings" method="post">
+
+						<div class="form-group">
+							<p class="col-md-5 control-label lead" i18n:translate="old_password">Old password</p>
+							<div class="col-md-7">
+								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${settings.passwordold}">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<p class="col-md-5 control-label lead" i18n:translate="new_password">New Password</p>
+							<div class="col-md-7">
+								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${settings.password}">
+							</div>
+
+							<div id="settings-password-extras" style="display: none;">
+								<div id="settings-password-meter" class="veryweak"></div>
+								<h5 id="settings-password-strength" i18n:translate="strength">Strength</h5>
+								<a id="settings-password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
+									<i id="settings-password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
+								</a>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<p class="col-md-5 control-label lead" i18n:translate="new_password_confirm">New Password (confirm)</p>
+							<div class="col-md-7">
+								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${settings.passwordconfirm}">
+							</div>
+						</div>
+
+						<div class="col-md-12" tal:condition="settings.change_error">
+							<div id="settings-danger-message" class="alert alert-danger alert-dismissible">
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>${settings.message}
+							</div>
+						</div>
+
+						<div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="lead" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
+						</div>
+						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
+					</form>
+				</div>
+				<div class="col-md-5">
+					<h4 i18n:translate="discussion_stat">Discussion Statistics</h4>
+					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<tr>
+							<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
+							<td>${settings.edits_done}</td>
+						</tr>
+						<tr>
+							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Argumennts</span></td>
+							<td>${settings.discussion_arg_votes}</td>
+						</tr>
+						<tr>
+							<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
+							<td>${settings.discussion_stat_votes}</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -81,81 +174,6 @@
 							</tr>
 						</table>
 					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="container colored_container">
-			<div class="content row">
-				<div class="col-md-4">
-					<h4 i18n:translate="discussion_stat">Discussion Statistics</h4>
-					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
-						<tr>
-							<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
-							<td>${settings.edits_done}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Argumennts</span></td>
-							<td>${settings.discussion_arg_votes}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
-							<td>${settings.discussion_stat_votes}</td>
-						</tr>
-					</table>
-				</div>
-				<div class="col-md-1"></div>
-				<div class="col-md-7">
-					<h4 i18n:translate="change_password">Change your password</h4>
-					<form action="/settings" method="post">
-
-						<div class="form-group">
-							<p class="col-md-5 control-label" i18n:translate="old_password">Old password</p>
-							<div class="col-md-7">
-								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${settings.passwordold}">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<p class="col-md-5 control-label" i18n:translate="new_password">New Password</p>
-							<div class="col-md-7">
-								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${settings.password}">
-							</div>
-
-							<div id="settings-password-extras" style="display: none;">
-								<div id="settings-password-meter" class="veryweak"></div>
-								<h5 id="settings-password-strength" i18n:translate="strength">Strength</h5>
-								<a id="settings-password-info-link" href="" data-toggle="modal" data-target="#popup_password_info" title="Show Password Information">
-									<i id="settings-password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
-								</a>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<p class="col-md-5 control-label" i18n:translate="new_password_confirm">New Password (confirm)</p>
-							<div class="col-md-7">
-								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${settings.passwordconfirm}">
-							</div>
-						</div>
-
-						<div class="col-md-12" tal:condition="settings.change_error">
-							<div id="settings-danger-message" class="alert alert-danger alert-dismissible">
-								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>${settings.message}
-							</div>
-						</div>
-
-						<div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" role="alert">
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="lead" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
-						</div>
-						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
-					</form>
 				</div>
 			</div>
 		</div>

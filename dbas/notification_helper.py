@@ -1,46 +1,62 @@
 from .logger import logger
 from .database import DBDiscussionSession
-from .database.discussion_model import User, TextVersion, Notification
+from .database.discussion_model import User, TextVersion, Notification, Settings
 from .strings import Translator
 from sqlalchemy import and_
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
-class NotificationHelper():
+
+class NotificationHelper:
 
 	def send_edit_text_notification(self, textversion, lang):
 		"""
-
-		:param textversion:
-		:return:
+		Sends an notification to the root-author and last author, when their text was edited.
+		:param textversion: new Textversion
+		:param lang: ui_locales
+		:return: None
 		"""
-		oem = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=textversion.statement_uid).first()
-		author = oem.author_uid
+		all_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=textversion.statement_uid).order_by(TextVersion.uid.desc()).all()
+		oem = all_textversions[-1]
+		root_author = oem.author_uid
 		new_author = textversion.author_uid
+		last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
+		send_for_root_author = DBDiscussionSession.query(Settings).filter_by(uid=root_author).first().send_notifications
+		send_for_last_author = DBDiscussionSession.query(Settings).filter_by(uid=last_author).first().send_notifications
 
-		if author == new_author:
+		# check for different authors
+		if root_author == new_author:
 			return None
 
+		# create content
 		_t = Translator(lang)
 		topic = _t.get(_t.textversionChangedTopic)
 		content = _t.get(_t.textversionChangedContent) + ' ' + DBDiscussionSession.query(User).filter_by(uid=new_author).first().nickname
 		content += '<br>' + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + textversion.content + '<br>'
 		content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + oem.content
 
-		motification = Notification(from_author_uid=new_author, to_author_uid=author, topic=topic, content=content)
-		DBDiscussionSession.add(motification)
+		# send notifications
+		if send_for_root_author:
+			notification_to_root_author = Notification(from_author_uid=new_author, to_author_uid=root_author, topic=topic, content=content)
+			DBDiscussionSession.add(notification_to_root_author)
+		if last_author != root_author and send_for_last_author:
+			notification_to_last_author = Notification(from_author_uid=new_author, to_author_uid=last_author, topic=topic, content=content)
+			DBDiscussionSession.add(notification_to_last_author)
+
 		DBDiscussionSession.flush()
 
 	def send_welcome_message(self, transaction, user, lang='en'):
 		"""
-
-		:param user:
-		:param lang:
-		:return:
+		Creates and send the welcome message to a new user
+		:param transaction: transaction
+		:param user: User.uid
+		:param lang: ui_locales
+		:return: None
 		"""
-		topic = 'Welcome'
-		content = 'Welcome to the novel dialog-based argumentation system...'
+		_tn = Translator(lang)
+		topic = _tn.get(_tn.welcome)
+		content = _tn.get(_tn.welcomeMessage)
 		motification = Notification(from_author_uid=1, to_author_uid=user, topic=topic, content=content)
 		DBDiscussionSession.add(motification)
 		DBDiscussionSession.flush()
@@ -48,9 +64,9 @@ class NotificationHelper():
 
 	def count_of_new_notifications(self, user):
 		"""
-
-		:param user:
-		:return:
+		Returns the count of unread messages of the given user
+		:param user: User.nickname
+		:return: integer
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
 		if db_user:
@@ -61,9 +77,9 @@ class NotificationHelper():
 
 	def get_notification_for(self, user):
 		"""
-
-		:param user:
-		:return:
+		Returns all notifications for the user
+		:param user: User.nickname
+		:return: [Notification]
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
 		if not db_user:

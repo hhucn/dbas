@@ -111,7 +111,7 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, isRes
 function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
 	// display dialog
 	$('#' + popupConfirmDialogId).modal('show');
-	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
+	$('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
 	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
@@ -479,8 +479,9 @@ function ajaxRoundhouseKick(){
 		async: true
 	}).done(function ajaxPasswordRequestDone(data) {
 		if (data.type == 'success'){
-			displayConfirmationDialogWithoutCancelAndFunction('Chuck Norris Fact #' + data.value.id,  '<h4>' + data.value.joke + '</h4>\n\n<span' +
-					' style="float:right;">powered by <a href="http://www.icndb.com/">http://www.icndb.com/</a></span>');
+			displayConfirmationDialogWithoutCancelAndFunction('Chuck Norris Fact #' + data.value.id,
+				'<h5>' + data.value.joke + '</h5>\n\n' +
+				'<span style="float:right;">powered by <a href="http://www.icndb.com/" target="_blank">http://www.icndb.com/</a></span>');
 
 		}
 	});

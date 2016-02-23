@@ -6,23 +6,11 @@
 function Helper() {
 
 	/**
-	 * For debugging: Displays an alert with entries of the json data
-	 * @param jsonData data for displaying
-	 */
-	this.alertWithJsonData = function (jsonData) {
-		var txt = '';
-		$.each(jsonData, function (k, v) {
-			txt += k + ": " + v + "\n";
-		});
-		alert(txt);
-	};
-
-	/**
-	 *
-	 * @param text
-	 * @param maxTextWidth
-	 * @param charr
-	 * @returns {*}
+	 * Insert a <br>-tag after the given maxTextWidth or char
+	 * @param text string
+	 * @param maxTextWidth int
+	 * @param charr char
+	 * @returns {String}
 	 */
 	this.cutTextOnChar = function (text, maxTextWidth, charr) {
 		var i, p, l;
@@ -30,12 +18,11 @@ function Helper() {
 			l = text.length;
 		while (i * maxTextWidth < l) {
 			p = text.indexOf(charr, i * maxTextWidth);
-			text = this.replaceAt(text, p, '<br>', charr);
+			text =  text.substr(0, p) + '<br>' + text.substr(p + charr.length);
 			i = i + 1;
 		}
 		return text;
 	};
-
 
 	/**
 	 * Swaps the element with the paramter
@@ -48,19 +35,6 @@ function Helper() {
 		    copy_from = $(from).clone(true);
 		$(to).replaceWith(copy_from);
 		$(from).replaceWith(copy_to);
-	};
-
-	/**
-	 *
-	 * @param text
-	 */
-	this.resizeIssueText = function (text) {
-		if ($(window).width() < 500) {
-			text = this.cutTextOnChar(text, 30, ' ');
-		} else if ($(window).width() < 1200) {
-			text = this.cutTextOnChar(text, 50, ' ');
-		}
-		return text;
 	};
 
 	/**
@@ -86,35 +60,6 @@ function Helper() {
 		var div = document.createElement('div');
     	div.appendChild(document.createTextNode(text));
     	return div.innerHTML;
-	};
-
-	/**
-	 * Removes all HTML-Signs
-	 * @param text to escape
-	 * @returns {*} cleared string
-	 */
-	this.clearHtml = function(text) {
-		var p = $('<p>');
-    	p.html(text);
-    	return p.text();
-	};
-
-	/**
-	 *
-	 * @param id
-	 * @param title
-	 * @param text
-	 * @returns {jQuery|HTMLElement}
-	 */
-	this.getATagForDropDown = function (id, title, text) {
-		return $('<a>')
-				.attr('id', id)
-				.attr('role', 'menuitem')
-				.attr('tabindex', '-1')
-				.attr('data-toggle', 'modal')
-				.attr('title', title)
-				.attr('href', '#')
-				.text(text);
 	};
 
 	/**
@@ -144,11 +89,11 @@ function Helper() {
 	};
 
 	/**
-	 *
-	 * @param text
-	 * @param for_id
-	 * @param id_id
-	 * @returns {jQuery|HTMLElement|*}
+	 * Creates an row in the edit statement modal dialog
+	 * @param text String
+	 * @param for_id int
+	 * @param id_id int
+	 * @returns {jQuery|HTMLElement|*} tr-Tag
 	 */
 	this.createRowInEditDialog = function(text, for_id, id_id){
 		var edit_button, log_button, guiHandler = new GuiHandler(), ajaxHandler = new AjaxSiteHandler(), tr,
@@ -253,18 +198,6 @@ function Helper() {
 			}
 		}
 		return userAcceptedCookies;
-	};
-
-	/**
-	 *
-	 * @param string
-	 * @param index
-	 * @param character
-	 * @param replacedCharacter
-	 * @returns {string}
-	 */
-	this.replaceAt = function(string, index, character, replacedCharacter) {
-    	return string.substr(0, index) + character + string.substr(index + replacedCharacter.length);
 	};
 
 	/**

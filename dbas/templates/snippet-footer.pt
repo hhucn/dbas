@@ -6,7 +6,7 @@
 		<div class="row links">
 			<ul>
 				<li>
-					&copy; 2015 Krauthoff&#160;&#160;&#160;
+					&copy; 2016 Krauthoff&#160;&#160;&#160;
 				</li>
 				<li>
 					<a href="${request.application_url}/imprint">

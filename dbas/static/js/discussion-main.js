@@ -221,23 +221,6 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
  * @param guiHandler
  */
 setStyleOptions = function (guiHandler){
-	var tmp1, tmp2, w1, w2;
-
-	guiHandler.hideSuccessDescription();
-	guiHandler.hideErrorDescription();
-
-	tmp1 = $('#discussion-restart-btn');
-	tmp2 = $('#' + issueDropdownButtonID);
-	w1 = tmp1.outerWidth();
-	w2 = tmp2.outerWidth();
-	tmp1.attr('style', w1<w2 ? 'width: ' + w2 + 'px;' : '');
-	tmp2.attr('style', w1>w2 ? 'width: ' + w1 + 'px;' : '');
-
-	// focus text of input elements
-	$("input[type='text']").on("click", function () {
-		$(this).select();
-	});
-
 	// render html tags
 	replaceHtmlTags($('#discussions-header'));
 	$.each($('#' + discussionSpaceId + ' label'), function replaceHtmlTagInHeader() {
@@ -245,6 +228,23 @@ setStyleOptions = function (guiHandler){
 	});
 	replaceHtmlTags($('#' + issueInfoId));
 	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
+
+	guiHandler.hideSuccessDescription();
+	guiHandler.hideErrorDescription();
+
+	// align buttons
+	var restart, issues, restartWidth, issueWidth;
+	restart = $('#discussion-restart-btn');
+	issues = $('#' + issueDropdownButtonID);
+	restartWidth = restart.outerWidth();
+	issueWidth = issues.outerWidth();
+	restart.attr('style', restartWidth<issueWidth ? 'width: ' + issueWidth + 'px;' : '');
+	issues.attr('style', restartWidth>issueWidth ? 'width: ' + restartWidth + 'px;' : '');
+
+	// focus text of input elements
+	$("input[type='text']").on("click", function () {
+		$(this).select();
+	});
 
 	setNavigationSidebar(window.innerWidth);
 
@@ -255,23 +255,42 @@ setStyleOptions = function (guiHandler){
  * @param windowInnerWidth
  */
 setNavigationSidebar = function (windowInnerWidth){
-	var menuIcon = $('#display-style-menu-icon'),
-		child0 = menuIcon.children().eq(0),
-		child1 = menuIcon.children().eq(1),
+	var parent = $('#display-style-menu-icon'),
+		child0 = parent.children().eq(0),
+		child1 = parent.children().eq(1),
 		helper = new Helper(),
+		margin = 2,
+		shiftRight = false,
 		collapsed = windowInnerWidth < 992 && child1.attr('id') == 'more-statement',
 		bigSize = windowInnerWidth > 991 && child0.attr('id') == 'more-statement';
 
 	if (collapsed || bigSize){
 		helper.swapElements(child1, child0);
 
-		$('#more-statement').attr('style', bigSize ? '' : 'float: left;');
+		// modify the edit statement button
+		parent = $('#edit-statement-container');
+		parent.attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
+		child0 = parent.children().eq(0);
+		child1 = parent.children().eq(1);
+		helper.swapElements(child1, child0);
+
+		// modify the report button
+		parent = $('#report-button-container');
+		parent.attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
+		child0 = parent.children().eq(0);
+		child1 = parent.children().eq(1);
+		helper.swapElements(child1, child0);
+
+		$('#more-statement').attr('style', bigSize ? '' : 'float: left; margin-left: 2em;');
 		$('#site-navigation').attr('style', bigSize ? '' : 'float: left; width: 80%;');
 
+		// modify the hover sidebar
+		shiftRight = parent.attr('id') ? true : false;
 		$('.display-style-menu').each(function () {
-			$(this).attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
 			child0 = $(this).children().eq(0);
 			child1 = $(this).children().eq(1);
+			margin = shiftRight && (child0.attr('id') == 'opinion-barometer-img' || child1.attr('id') == 'opinion-barometer-img') ? 13 : 2;
+			$(this).attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: ' + margin + 'em;');
 			helper.swapElements(child1, child0);
 		})
 	}
@@ -432,9 +451,9 @@ $(function () {
 		interactionHandler = new InteractionHandler(), tmp;
 
 	guiHandler.setHandler(interactionHandler);
+	setStyleOptions(guiHandler);
 	setClickFunctions(guiHandler, ajaxHandler);
 	setKeyUpFunctions(guiHandler, ajaxHandler);
-	setStyleOptions(guiHandler);
 	setWindowOptions();
 	setGuiOptions();
 	setInputExtraOptions(guiHandler, interactionHandler);

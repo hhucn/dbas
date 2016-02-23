@@ -9,7 +9,7 @@ from dbas.user_management import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, \
-	PremiseGroup, Premise, Group, Issue, Notification
+	PremiseGroup, Premise, Group, Issue, Notification, Settings
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 
@@ -273,8 +273,7 @@ def setup_discussion_database():
 	issue1 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!')
 	issue2 = Issue(title='Town cuts spending', info='Our town needs to cut spending. Please discuss ideas how this should be done.')
 	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?')
-	issue4 = Issue(title='How does a dog wear pants?', info='If a dog wears a pants, how would he wear them? Have a look at <a href="http://bit.ly/1n06TAX">http://bit.ly/1n06TAX</html>.')
-	DBDiscussionSession.add_all([issue1, issue2, issue3, issue4])
+	DBDiscussionSession.add_all([issue1, issue2, issue3])
 	DBDiscussionSession.flush()
 
 	# adding groups
@@ -312,6 +311,23 @@ def setup_discussion_database():
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group2.uid, gender='m')
 	user11 = User(firstname='Raphael', surname='Bialon', nickname='raphael', email='bialon@cs.uni-duesseldorf.de', password=pw11, group=group2.uid, gender='m')
 	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11])
+	DBDiscussionSession.flush()
+
+	# adding settings
+	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True)
+	settings1 = Settings(author_uid=user1.uid, send_mails=True, send_notifications=True)
+	settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True)
+	settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True)
+	settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True)
+	settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True)
+	settings6 = Settings(author_uid=user6.uid, send_mails=True, send_notifications=True)
+	settings7 = Settings(author_uid=user7.uid, send_mails=True, send_notifications=True)
+	settings8 = Settings(author_uid=user8.uid, send_mails=True, send_notifications=True)
+	settings9 = Settings(author_uid=user9.uid, send_mails=True, send_notifications=True)
+	settings10 = Settings(author_uid=user10.uid, send_mails=True, send_notifications=True)
+	settings11 = Settings(author_uid=user11.uid, send_mails=True, send_notifications=True)
+	DBDiscussionSession.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7,
+	                             settings8, settings9, settings10, settings11])
 	DBDiscussionSession.flush()
 
 	# Adding welcome notifications
