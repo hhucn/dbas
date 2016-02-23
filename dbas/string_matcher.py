@@ -18,8 +18,8 @@ class FuzzyStringMatcher(object):
 		self.max_count_zeros = 5
 		self.index_zeros = 3
 		self.return_count = 10  # same number as in googles suggest list (16.12.2015)
-		# self.mechanism = 'Levensthein'
-		self.mechanism = 'SequenceMatcher'
+		self.mechanism = 'Levensthein'
+		# self.mechanism = 'SequenceMatcher'
 
 	def get_fuzzy_string_for_start(self, value, issue, is_startpoint):
 		"""
