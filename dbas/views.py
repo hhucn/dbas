@@ -876,7 +876,7 @@ class Dbas(object):
 					message = _t.get(_t.errorTryLateOrContant)
 					logger('user_registration', 'main', 'Error occured')
 				else:
-					# creating a new user with hased password
+					# creating a new user with hashed password
 					logger('user_registration', 'main', 'Adding user')
 					hashed_password = PasswordHandler().get_hashed_password(password)
 					newuser = User(firstname=firstname,
