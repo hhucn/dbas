@@ -5,6 +5,11 @@
 
 from cornice import Service
 
+import transaction
+
+from api.lib import response401
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 from api.login import valid_token, validate_credentials
 from dbas.views import Dbas
 from .login import _USERS  # TODO: This is *not* an appropriate solution. Just for testing purposes
@@ -216,7 +221,6 @@ def user_login(request):
 	:param request:
 	:return: token
 	"""
-	# print(request.headers)
 	user = request.validated['user']
 
 	# Convert bytes to string
@@ -225,5 +229,11 @@ def user_login(request):
 	else:
 		token = user['token']
 
-	_USERS[user['nickname']] = token
-	return {'token': '%s-%s' % (user['nickname'], token)}
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
+	if db_user:
+		db_user.set_token(token)
+		db_user.update_token_timestamp()
+		transaction.commit()
+		return {'token': '%s-%s' % (user['nickname'], token)}
+
+	raise response401()
