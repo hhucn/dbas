@@ -120,6 +120,24 @@ class User(DiscussionBase):
 		self.token = token
 
 
+class Settings(DiscussionBase):
+	"""
+	Settings-table with several columns.
+	"""
+	__tablename__ = 'settings'
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), nullable=True, primary_key=True)
+	send_mails = sa.Column(sa.Boolean, nullable=False)
+	send_notifications = sa.Column(sa.Boolean, nullable=False)
+
+	def __init__(self, author_uid, send_mails, send_notifications):
+		"""
+		Initializes a row in current settings-table
+		"""
+		self.author_uid = author_uid
+		self.send_mails = send_mails
+		self.send_notifications = send_notifications
+
+
 class Statement(DiscussionBase):
 	"""
 	Statement-table with several columns.

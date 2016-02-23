@@ -380,6 +380,8 @@ class Translator(object):
 		self.uid = 'uid'
 		self.unfortunatelyNoMoreArgument = 'unfortunatelyNoMoreArgument'
 		self.userPasswordNotMatch = 'userPasswordNotMatch'
+		self.welcome = 'welcome'
+		self.welcomeMessage = 'welcomeMessage'
 
 		self.sentencesOpenersRequesting = [self.whyDoYouThinkThat]
 		self.sentencesOpenersForArguments = [self.soYourOpinionIsThat]
@@ -772,6 +774,8 @@ class Translator(object):
 		en_lang[self.uid] = 'ID'
 		en_lang[self.unfortunatelyNoMoreArgument] = 'Unfortunately there are no more arguments about'
 		en_lang[self.userPasswordNotMatch] = 'User / Password do not match'
+		en_lang[self.welcome] = 'Welcome'
+		en_lang[self.welcomeMessage] = 'Welcome to the novel dialog-based argumentation system.<br>We hope you enjoy using this system and happy arguing!'
 
 		return en_lang
 
@@ -1157,6 +1161,8 @@ class Translator(object):
 		de_lang[self.uid] = 'ID'
 		de_lang[self.unfortunatelyNoMoreArgument] = 'Leider gibt es keine weiteren Argumente für'
 		de_lang[self.userPasswordNotMatch] = 'Benutzername und / oder Passwort sind falsch'
+		de_lang[self.welcome] = 'Willkommen'
+		de_lang[self.welcomeMessage] = 'Willkommen im neuen Dialog-basierten Argumentations-System.<br>Wir wünschen viel Spaß beim Diskutieren!'
 
 		return de_lang
 
@@ -1220,7 +1226,6 @@ class TextGenerator(object):
 		if attack_type == 'undermine':
 			ret_text = _t.get(_t.itIsFalse) + ' ' + premise + '.'
 		if attack_type == 'support':
-			ret_text = _t.get(_t.itIsTrue) + ' ' + premise + '.'
 			ret_text = _t.get(_t.itIsTrue) if is_supportive else _t.get(_t.itIsFalse)
 			ret_text += ' <strong>' + conclusion + ' '
 			ret_text += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
@@ -1237,8 +1242,8 @@ class TextGenerator(object):
 
 		return ret_text
 
-	def get_header_for_users_confrontation_response(self, confrontation, premise, attack_type, conclusion, start_lower_case,
-	                                                is_supportive, is_logged_in):
+	def get_header_for_users_confrontation_response(self, confrontation, premise, attack_type, conclusion,
+	                                                start_lower_case, is_supportive, is_logged_in):
 		"""
 		Based on the users reaction, text will be build.
 		:param confrontation: choosen confrontation
@@ -1261,13 +1266,6 @@ class TextGenerator(object):
 
 		if conclusion[-1] == '.':
 			conclusion = premise[:-1]
-
-		#  long_conclusion = ''
-		#  if attack_type == 'overbid':
-		#  	if (is_supportive):
-		#  		long_conclusion = conclusion + ', ' + _t.get(_t.because).lower() + ' ' + premise
-		#  	else:
-		#  		long_conclusion = premise + ', ' + _t.get(_t.doesNotJustify).lower() + ' ' + conclusion
 
 		# pretty print
 		#  w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:] + ', '

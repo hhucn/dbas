@@ -40,7 +40,7 @@ news       = Service(name='api_news',
  					 description="News app",
  					 cors_policy=cors_policy)
 reaction   = Service(name='api_reaction',
- 					 path='/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys',
+ 					 path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
  					 description="Discussion Reaction",
  					 cors_policy=cors_policy)
 justify    = Service(name='api_justify',

@@ -15,7 +15,7 @@ from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
 
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Statement, VoteArgument, VoteStatement, Notification
+from .database.discussion_model import User, Group, Issue, Argument, Statement, VoteArgument, VoteStatement, Notification, Settings
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
@@ -517,6 +517,7 @@ class Dbas(object):
 		success = False
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
+		db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
 		_uh = UserHandler()
 		edits = _uh.get_edits_of_user(db_user)
 		arg_vote, stat_vote = _uh.get_votes_of_user(db_user)
@@ -547,7 +548,9 @@ class Dbas(object):
 			'avatar_url': gravatar_url,
 			'edits_done': edits,
 			'discussion_arg_votes': arg_vote,
-			'discussion_stat_votes': stat_vote
+			'discussion_stat_votes': stat_vote,
+			'send_mails': db_settings.send_mails,
+			'send_notifications': db_settings.send_notifications
 		}
 		return {
 			'layout': self.base_layout(),
@@ -959,6 +962,61 @@ class Dbas(object):
 		return_dict['message'] = str(message)
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - set boolean for receiving notifications
+	@view_config(route_name='ajax_set_user_receive_notifications', renderer='json')
+	def set_user_receive_notifications(self):
+		"""
+		Will logout the user
+		:return: HTTPFound with forgotten headers
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('set_user_receive_notifications', 'def', 'main, self.request.params: ' + str(self.request.params))
+		_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
+
+		try:
+			error = ''
+			should_send = True if self.request.params['sends'] == 'True' else False
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
+			if db_user:
+				db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+				db_settings.send_notifications = should_send
+			else:
+				error = _tn.get(_tn.checkNickname)
+		except KeyError as e:
+			error = _tn.get(_tn.internalError)
+			logger('set_user_receive_mails', 'error', repr(e))
+
+		return_dict = {'error': error}
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - set boolean for receiving mails
+	@view_config(route_name='ajax_set_user_receive_mails', renderer='json')
+	def set_user_receive_mails(self):
+		"""
+		Will logout the user
+		:return: HTTPFound with forgotten headers
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('set_user_receive_mails', 'def', 'main, self.request.params: ' + str(self.request.params))
+		_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
+
+		try:
+			error = ''
+			should_send = True if self.request.params['sends'] == 'True' else False
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
+			if db_user:
+				db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+				db_settings.send_mails = should_send
+			else:
+				error = _tn.get(_tn.checkNickname)
+		except KeyError as e:
+			error = _tn.get(_tn.internalError)
+			logger('set_user_receive_mails', 'error', repr(e))
+
+		return_dict = {'error': error}
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
 
 # #######################################
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
