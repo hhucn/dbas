@@ -774,6 +774,8 @@ class Dbas(object):
 				if for_api:
 					return {'status': 'success'}
 				else:
+					print("Headers:")
+					print(headers)
 					return HTTPFound(
 						location=url,
 						headers=headers,

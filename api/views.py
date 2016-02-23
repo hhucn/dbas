@@ -7,6 +7,7 @@ from cornice import Service
 
 from api.login import valid_token, validate_credentials
 from dbas.views import Dbas
+from .login import _USERS  # TODO: This is *not* an appropriate solution. Just for testing purposes
 
 
 # CORS configuration
@@ -192,9 +193,6 @@ def set_value(request):
 # 	Returns a list of all users
 # 	"""
 # 	return {'users': _USERS}
-
-from .login import _USERS
-
 
 @users.post(validators=validate_credentials)
 def user_login(request):

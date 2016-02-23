@@ -3,10 +3,6 @@
 # @author Christian Meter, Tobias Krauthoff
 # @email {meter, krauthoff}@cs.uni-duesseldorf.de
 
-
-#########
-# Helpers
-
 import binascii
 import json
 import os
