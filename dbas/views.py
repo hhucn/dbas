@@ -508,6 +508,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
 
 		old_pw = ''
 		new_pw = ''
@@ -550,7 +551,9 @@ class Dbas(object):
 			'discussion_arg_votes': arg_vote,
 			'discussion_stat_votes': stat_vote,
 			'send_mails': db_settings.send_mails,
-			'send_notifications': db_settings.send_notifications
+			'send_notifications': db_settings.send_notifications,
+			'title_mails': _tn.get(_tn.mailSettingsTitle),
+			'title_notifications': _tn.get(_tn.notificationSettingsTitle)
 		}
 		return {
 			'layout': self.base_layout(),
@@ -976,7 +979,7 @@ class Dbas(object):
 
 		try:
 			error = ''
-			should_send = True if self.request.params['sends'] == 'True' else False
+			should_send = True if self.request.params['should_send'] == 'True' else False
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
 			if db_user:
 				db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
@@ -1003,7 +1006,7 @@ class Dbas(object):
 
 		try:
 			error = ''
-			should_send = True if self.request.params['sends'] == 'True' else False
+			should_send = True if self.request.params['should_send'] == 'True' else False
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
 			if db_user:
 				db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()

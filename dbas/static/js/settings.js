@@ -58,7 +58,7 @@ function HistoryHandler(){
 	this.getDataFail = function(){
 		$('#' + historyTableSuccessId).hide();
 		$('#' + historyTableFailureId).fadeIn('slow');
-		$('#' + historyFailureMessageId).text(_t(internalError));
+		$('#' + historyFailureMessageId).html(_t(internalError));
 	};
 
 	/**
@@ -206,7 +206,7 @@ function SettingsHandler(){
 		$.ajax({
 			url: 'ajax_set_user_receive_notifications',
 			method: 'GET',
-			data:{'send': should_send ? 'True': 'False'},
+			data:{'should_send': should_send ? 'True': 'False'},
 			dataType: 'json',
 			async: true
 		}).done(function setReceiveNotificationsDone(data) {
@@ -224,7 +224,7 @@ function SettingsHandler(){
 		$.ajax({
 			url: 'ajax_set_user_receive_mails',
 			method: 'GET',
-			data:{'send': should_send ? 'True': 'False'},
+			data:{'should_send': should_send ? 'True': 'False'},
 			dataType: 'json',
 			async: true
 		}).done(function setReceiveMailDone(data) {
@@ -244,7 +244,7 @@ function SettingsHandler(){
 		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length == 0){
 			$('#' + settingsSuccessDialog).fadeIn();
-			new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 1000);
+			new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 		} else {
 			new SettingsHandler().callbackReceiveFail(toggle_element, should_send);
 		}
@@ -257,7 +257,7 @@ function SettingsHandler(){
 	 */
 	this.callbackReceiveFail = function (toggle_element, should_send){
 		$('#' + settingsAlertDialog).fadeIn();
-		new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 1000);
+		new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 		toggle_element.off('change').bootstrapToggle(should_send ? 'off' : 'on').change(function() {
 			if (toggle_element.attr('id').toLocaleLowerCase().indexOf('mail') != -1)
 				new SettingsHandler().setReceiveMails(toggle_element.prop('checked'));
@@ -321,8 +321,7 @@ $(function () {
 
 	// ajax loading animation
 	$(document).on({
-		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); }, // delay, because we do not want a
-		// flickering screen
+		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
 	});
 });
