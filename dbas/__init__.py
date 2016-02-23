@@ -13,6 +13,7 @@ import logging
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
+
 def main(global_config, **settings):
 	""" This function returns a Pyramid WSGI application.
 	"""
@@ -48,8 +49,8 @@ def main(global_config, **settings):
 			  }
 
 	# creating the configurator	cache_regions = set_cache_regions_from_settings
-	config = Configurator(settings=settings,root_factory='dbas.security.RootFactory')
-	config.add_translation_dirs('dbas:locale') # add this before the locale negotiator
+	config = Configurator(settings=settings, root_factory='dbas.security.RootFactory')
+	config.add_translation_dirs('dbas:locale')  # add this before the locale negotiator
 
 	config.set_authentication_policy(authn_policy)
 	config.set_authorization_policy(authz_policy)

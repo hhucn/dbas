@@ -3,17 +3,12 @@
 # @author Christian Meter, Tobias Krauthoff
 # @email {meter, krauthoff}@cs.uni-duesseldorf.de
 
-import binascii
-import json
-import logging
-import os
-
 from cornice import Service
-from dbas.views import Dbas
-from webob import Response, exc
 
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
+from api.login import valid_token, validate_credentials
+from dbas.views import Dbas
+from .login import _USERS  # TODO: This is *not* an appropriate solution. Just for testing purposes
+
 
 # CORS configuration
 cors_policy = dict(enabled=True,
@@ -201,94 +196,17 @@ def set_value(request):
 # =============================================================================
 # LOGIN
 # =============================================================================
-_USERS = {}
-
-
-#########
-# Helpers
-def _create_token():
-	"""
-	Use the system's urandom function to generate a random token and convert it to ASCII.
-	:return:
-	"""
-	return binascii.b2a_hex(os.urandom(20))
-
-
-class _401(exc.HTTPError):
-	"""
-	Return a 401 HTTP Error message if user is not authenticated
-	:return:
-	"""
-	def __init__(self, msg='Unauthorized'):
-		body = {'status': 401, 'message': msg}
-		Response.__init__(self, json.dumps(body))
-		self.status = 401
-		self.content_type = 'application/json'
-
-
-def valid_token(request):
-	"""
-	Validate the submitted token. Checks if a user is logged in.
-	:param request:
-	:return:
-	"""
-	header = 'X-Messaging-Token'
-	htoken = request.headers.get(header)
-	if htoken is None:
-		log.error("htoken is None")
-		raise _401()
-	try:
-		user, token = htoken.split('-', 1)
-	except ValueError:
-		log.error("ValueError")
-		raise _401()
-
-	log.debug("API Login Attempt: %s: %s" % (user, token))
-
-	valid = user in _USERS and _USERS[user] == token
-
-	if not valid:
-		log.error("API Invalid token")
-		raise _401()
-
-	log.debug("API Remote login successful")
-	request.validated['user'] = user
-
-
-def validate_credentials(request):
-	"""
-	Parse credentials from POST request and validate it against DBAS' database
-	:param request:
-	:return:
-	"""
-	# Decode received data
-	data = request.body.decode('utf-8')
-	data = json.loads(data)
-	nickname = data['nickname']
-	password = data['password']
-
-	# Check in DBAS' database, if the user's credentials are valid
-	logged_in = Dbas(request).user_login(nickname, password, for_api=True)
-
-	try:
-		if logged_in['status'] == 'success':
-			user = {'nickname': nickname, 'token': _create_token()}
-			request.validated['user'] = user
-	except TypeError:
-		log.error('API Not logged in: %s' % logged_in)
-		request.errors.add(logged_in)
-
 
 ############################
 # Services - User Management
-# TODO sample function, remove it
-@users.get(validators=valid_token)
-def get_users(request):
-	"""
-	Returns a list of all users
-	"""
-	return {'users': _USERS}
 
+# TODO sample function, remove it
+# @users.get(validators=valid_token)
+# def get_users(request):
+# 	"""
+# 	Returns a list of all users
+# 	"""
+# 	return {'users': _USERS}
 
 @users.post(validators=validate_credentials)
 def user_login(request):
@@ -298,6 +216,7 @@ def user_login(request):
 	:param request:
 	:return: token
 	"""
+	# print(request.headers)
 	user = request.validated['user']
 
 	# Convert bytes to string
