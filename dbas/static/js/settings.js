@@ -198,39 +198,18 @@ function PasswordHandler(){
 
 function SettingsHandler(){
 
-	/**
-	 *
-	 * @param should_send
-	 */
-	this.setReceiveNotifications = function(should_send) {
+	this.setReceiveInformation = function(toggle_element, service) {
+		var should_send = toggle_element.prop('checked');
 		$.ajax({
-			url: 'ajax_set_user_receive_notifications',
+			url: 'ajax_set_user_receive_information',
 			method: 'GET',
-			data:{'should_send': should_send ? 'True': 'False'},
+			data:{'should_send': should_send ? 'True': 'False', 'service': service},
 			dataType: 'json',
 			async: true
 		}).done(function setReceiveNotificationsDone(data) {
-			new SettingsHandler().callbackReceiveDone(data, $('#' + settingsReceiveNotifications), should_send);
+			new SettingsHandler().callbackReceiveDone(data, toggle_element, should_send, service);
 		}).fail(function setReceiveNotificationsFail() {
-			new SettingsHandler().callbackReceiveFail($('#' + settingsReceiveNotifications), should_send);
-		});
-	};
-
-	/**
-	 *
-	 * @param should_send
-	 */
-	this.setReceiveMails = function(should_send) {
-		$.ajax({
-			url: 'ajax_set_user_receive_mails',
-			method: 'GET',
-			data:{'should_send': should_send ? 'True': 'False'},
-			dataType: 'json',
-			async: true
-		}).done(function setReceiveMailDone(data) {
-			new SettingsHandler().callbackReceiveDone(data, $('#' + settingsReceiveMails), should_send);
-		}).fail(function setReceiveMailFail() {
-			new SettingsHandler().callbackReceiveFail($('#' + settingsReceiveMails), should_send);
+			new SettingsHandler().callbackReceiveFail(toggle_element, should_send, service);
 		});
 	};
 
@@ -239,14 +218,15 @@ function SettingsHandler(){
 	 * @param jsonData
 	 * @param toggle_element
 	 * @param should_send
+	 * @param service
 	 */
-	this.callbackReceiveDone = function (jsonData, toggle_element, should_send){
+	this.callbackReceiveDone = function (jsonData, toggle_element, should_send, service){
 		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length == 0){
 			$('#' + settingsSuccessDialog).fadeIn();
 			new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 		} else {
-			new SettingsHandler().callbackReceiveFail(toggle_element, should_send);
+			new SettingsHandler().callbackReceiveFail(toggle_element, should_send, service);
 		}
 	};
 
@@ -254,15 +234,13 @@ function SettingsHandler(){
 	 *
 	 * @param toggle_element
 	 * @param should_send
+	 * @param service
 	 */
-	this.callbackReceiveFail = function (toggle_element, should_send){
+	this.callbackReceiveFail = function (toggle_element, should_send, service){
 		$('#' + settingsAlertDialog).fadeIn();
 		new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 		toggle_element.off('change').bootstrapToggle(should_send ? 'off' : 'on').change(function() {
-			if (toggle_element.attr('id').toLocaleLowerCase().indexOf('mail') != -1)
-				new SettingsHandler().setReceiveMails(toggle_element.prop('checked'));
-			else
-				new SettingsHandler().setReceiveNotifications(toggle_element.prop('checked'));
+			new SettingsHandler().setReceiveInformation(toggle_element, service);
 		});
 	}
 
@@ -312,11 +290,11 @@ $(function () {
 	});
 
 	$('#' + settingsReceiveNotifications).change(function() {
-		new SettingsHandler().setReceiveNotifications($('#' + settingsReceiveNotifications).prop('checked'));
+		new SettingsHandler().setReceiveInformation($(this), 'notification');
 	});
 
 	$('#' + settingsReceiveMails).change(function() {
-		new SettingsHandler().setReceiveMails($('#' + settingsReceiveMails).prop('checked'));
+		new SettingsHandler().setReceiveInformation($(this), 'mail');
 	});
 
 	// ajax loading animation

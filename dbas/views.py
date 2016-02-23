@@ -966,56 +966,36 @@ class Dbas(object):
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
-	# ajax - set boolean for receiving notifications
-	@view_config(route_name='ajax_set_user_receive_notifications', renderer='json')
-	def set_user_receive_notifications(self):
+	# ajax - set boolean for receiving information
+	@view_config(route_name='ajax_set_user_receive_information', renderer='json')
+	def set_user_receive_information_settings(self):
 		"""
 		Will logout the user
 		:return: HTTPFound with forgotten headers
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('set_user_receive_notifications', 'def', 'main, self.request.params: ' + str(self.request.params))
+		logger('set_user_receive_information_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
 		_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
 
 		try:
 			error = ''
 			should_send = True if self.request.params['should_send'] == 'True' else False
+			service = self.request.params['service']
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
 			if db_user:
-				db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-				db_settings.send_notifications = should_send
+				db_setting = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+				if service == 'mail':
+					db_setting.should_send_mails(should_send)
+				elif service == 'notification':
+					db_setting.should_send_notifications(should_send)
+				else:
+					error = _tn.get(_tn.keyword)
+				transaction.commit()
 			else:
 				error = _tn.get(_tn.checkNickname)
 		except KeyError as e:
 			error = _tn.get(_tn.internalError)
-			logger('set_user_receive_mails', 'error', repr(e))
-
-		return_dict = {'error': error}
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
-
-	# ajax - set boolean for receiving mails
-	@view_config(route_name='ajax_set_user_receive_mails', renderer='json')
-	def set_user_receive_mails(self):
-		"""
-		Will logout the user
-		:return: HTTPFound with forgotten headers
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('set_user_receive_mails', 'def', 'main, self.request.params: ' + str(self.request.params))
-		_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
-
-		try:
-			error = ''
-			should_send = True if self.request.params['should_send'] == 'True' else False
-			db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
-			if db_user:
-				db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-				db_settings.send_mails = should_send
-			else:
-				error = _tn.get(_tn.checkNickname)
-		except KeyError as e:
-			error = _tn.get(_tn.internalError)
-			logger('set_user_receive_mails', 'error', repr(e))
+			logger('set_user_receive_information_settings', 'error', repr(e))
 
 		return_dict = {'error': error}
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)

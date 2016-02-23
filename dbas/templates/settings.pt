@@ -41,11 +41,11 @@
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span i18n:translate="receive_notifications" class="lead">Receive Notifications</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" tal:attributes="title settings.title_notifications"></td>
-						    <td class="text-center"><input id="receive-notifications-toggle" type="checkbox" checked data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_notifications"></td>
+						    <td class="text-center"><input id="receive-notifications-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_notifications"></td>
 				    	</tr>
 			    		<tr>
 		    				<td><span i18n:translate="receive_mails" class="lead">Receive E-Mails</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" tal:attributes="title settings.title_mails"></span></td>
-	    					<td class="text-center"><input id="receive-mails-toggle" type="checkbox" checked data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_mails"></td>
+	    					<td class="text-center"><input id="receive-mails-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_mails"></td>
     					 </tr>
 					</table>
 					<div class="center text-center">
