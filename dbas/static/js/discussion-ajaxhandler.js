@@ -212,6 +212,7 @@ function AjaxSiteHandler() {
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
+			new GuiHandler().hideDiscussionError();
 		}).fail(function ajaxGetAllUsersFail() {
 			new Helper().delay(function ajaxGetAllUsersFailDelay() {
 				new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 11). '

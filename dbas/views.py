@@ -1442,21 +1442,19 @@ class Dbas(object):
 			issue = QueryHelper().get_issue_id(self.request) if not for_api else ''
 
 			return_dict = dict()
-			# return_dict['distance_name'] = 'SequenceMatcher'  # TODO improve fuzzy search
-			return_dict['distance_name'] = 'Levensthein'
 			if for_api:
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_issues(value)
 				return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 			if mode == '0':  # start statement
-				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
 			elif mode == '1':  # edit statement popup
 				statement_uid = self.request.params['extra']
-				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid, issue)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid, issue)
 			elif mode == '2':  # start premise
-				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
 			elif mode == '3':  # adding reasons
-				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_reasons(value, issue)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_reasons(value, issue)
 			else:
 				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
 		except KeyError as e:
