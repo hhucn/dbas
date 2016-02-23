@@ -151,7 +151,7 @@ class UserHandler(object):
 				int2 = random.randint(1,9)
 			answer = int1 / int2
 
-		question += _t.get(str(int1)) + ' ' + sign + ' '+ _t.get(str(int2)) + '?'
+		question += _t.get(str(int1)) + ' ' + sign + ' ' + _t.get(str(int2)) + '?'
 		logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question + ', answer: ' + str(answer))
 
 		return question, answer
@@ -213,7 +213,7 @@ class UserHandler(object):
 			logger('UserHandler', 'change_password', 'new pwd is empty')
 			message = _t.get(_t.newPwdEmtpy) # 'The new password field is empty.'
 			error = True
-		# is the cofnrimation password given?
+		# is the confirmation password given?
 		elif not confirm_pw:
 			logger('UserHandler', 'change_password', 'confirm pwd is empty')
 			message = _t.get(_t.confPwdEmpty) # 'The password confirmation field is empty.'
@@ -244,7 +244,7 @@ class UserHandler(object):
 				transaction.commit()
 
 				logger('UserHandler', 'change_password', 'password was changed')
-				message = _t.get(_t.pwdChanged) # 'Your password was changed'
+				message = _t.get(_t.pwdChanged)  # 'Your password was changed'
 				success = True
 
 		return message, error, success

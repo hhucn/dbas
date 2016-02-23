@@ -216,6 +216,7 @@ def user_login(request):
 	:param request:
 	:return: token
 	"""
+	# print(request.headers)
 	user = request.validated['user']
 
 	# Convert bytes to string
