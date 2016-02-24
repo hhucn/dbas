@@ -12,10 +12,10 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from api.login import valid_token, validate_credentials
 from dbas.views import Dbas
-from .login import _USERS  # TODO: This is *not* an appropriate solution. Just for testing purposes
 
-
+#
 # CORS configuration
+#
 cors_policy = dict(enabled=True,
 				   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
 				   origins=('*',),
@@ -31,10 +31,6 @@ dump       = Service(name='api_dump',
 					 path='/dump',
 					 description="Database Dump",
 					 cors_policy=cors_policy)
-users      = Service(name='login',
-                     path='/login',
-                     description="User management of external discussion system",
-                     cors_policy=cors_policy)
 news       = Service(name='api_news',
  					 path='/get_news',
  					 description="News app",
@@ -65,19 +61,18 @@ zinit_blank = Service(name='api_init_blank',
 					  description="Discussion Init",
 					  cors_policy=cors_policy)
 
-
-@news.get()
-def get_news(request):
-	"""
-	Returns news from DBAS in JSON.
-	:param request: request
-	:return: Dbas(request).get_news()
-	"""
-	return Dbas(request).get_news()
+#
+# User Management
+#
+login = Service(name='login',
+                path='/login',
+                description="Log into external discussion system",
+                cors_policy=cors_policy)
 
 
-##############################
-# Discussion-related functions
+# =============================================================================
+# DISCUSSION-RELATED REQUESTS
+# =============================================================================
 
 @reaction.get()
 def discussion_reaction(request):
@@ -139,9 +134,13 @@ def discussion_init(request):
 	return Dbas(request).discussion_init(True)
 
 
-##########
-# Database
+# =============================================================================
+# OTHER REQUESTS
+# =============================================================================
 
+#
+# Database
+#
 @dump.get()
 def discussion_init(request):
 	"""
@@ -152,58 +151,22 @@ def discussion_init(request):
 	return Dbas(request).get_database_dump()
 
 
-# =============================================================================
-# POST / GET EXAMPLE
-# =============================================================================
-
-hello = Service(name='api', path='/hello', description="Simplest app", cors_policy=cors_policy)
-values = Service(name='foo', path='/values/{value}', description="Cornice Demo", cors_policy=cors_policy)
-
-_VALUES = {}
-
-
-@hello.get()
-def get_info(request):
+@news.get()
+def get_news(request):
 	"""
-
-	:param request:
-	:return:
+	Returns news from DBAS in JSON.
+	:param request: request
+	:return: Dbas(request).get_news()
 	"""
-	return {'Hello': 'World'}
-
-
-@values.get()
-def get_value(request):
-	"""
-
-	:param request:
-	:return:
-	"""
-	key = request.matchdict['value']
-	return _VALUES.get(key)
-
-
-@values.post()
-def set_value(request):
-	"""Set the value.
-
-	Returns *True* or *False*.
-	"""
-	key = request.matchdict['value']
-	try:
-		# json_body is JSON-decoded variant of the request body
-		_VALUES[key] = request.json_body
-	except ValueError:
-		return False
-	return True
+	return Dbas(request).get_news()
 
 
 # =============================================================================
-# LOGIN
+# USER MANAGEMENT
 # =============================================================================
 
-@users.get(validators=valid_token)
-def get_users(request):
+@login.get(validators=valid_token)
+def testing(request):
 	"""
 	Test user's credentials, return success if valid token and username is provided.
 	:param request:
@@ -213,7 +176,7 @@ def get_users(request):
 	return {'status': 'success'}
 
 
-@users.post(validators=validate_credentials)
+@login.post(validators=validate_credentials)
 def user_login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
@@ -230,10 +193,11 @@ def user_login(request):
 		token = user['token']
 
 	db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
-	if db_user:
-		db_user.set_token(token)
-		db_user.update_token_timestamp()
-		transaction.commit()
-		return {'token': '%s-%s' % (user['nickname'], token)}
 
-	raise response401()
+	if not db_user:
+		raise response401()
+
+	db_user.set_token(token)
+	db_user.update_token_timestamp()
+	transaction.commit()
+	return {'token': '%s-%s' % (user['nickname'], token)}
