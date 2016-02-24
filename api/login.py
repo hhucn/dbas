@@ -7,6 +7,8 @@ import binascii
 import json
 import os
 
+from dbas import DBDiscussionSession
+from dbas.database.discussion_model import User
 from dbas.views import Dbas
 from .lib import logger, response401
 
@@ -19,7 +21,7 @@ def _create_token():
 	Use the system's urandom function to generate a random token and convert it to ASCII.
 	:return:
 	"""
-	return binascii.b2a_hex(os.urandom(20))
+	return binascii.b2a_hex(os.urandom(64))
 
 
 def valid_token(request):
@@ -41,13 +43,17 @@ def valid_token(request):
 
 	log.debug("API Login Attempt: %s: %s" % (user, token))
 
-	valid = user in _USERS and _USERS[user] == token
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
-	if not valid:
-		log.error("API Invalid token")
+	if not db_user:
+		log.error("API Invalid user")
 		raise response401()
 
-	log.debug("API Remote login successful")
+	if not db_user.token == token:
+		log.error("API Invalid Token")
+		raise response401()
+
+	log.debug("API Valid token")
 	request.validated['user'] = user
 
 

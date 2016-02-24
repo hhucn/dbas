@@ -5,12 +5,17 @@
 
 from cornice import Service
 
+import transaction
+
+from api.lib import response401
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 from api.login import valid_token, validate_credentials
 from dbas.views import Dbas
-from .login import _USERS  # TODO: This is *not* an appropriate solution. Just for testing purposes
 
-
+#
 # CORS configuration
+#
 cors_policy = dict(enabled=True,
 				   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
 				   origins=('*',),
@@ -22,57 +27,56 @@ cors_policy = dict(enabled=True,
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
-dump       = Service(name='api_dump',
-					 path='/dump',
-					 description="Database Dump",
-					 cors_policy=cors_policy)
-users      = Service(name='login',
-                     path='/login',
-                     description="User management of external discussion system",
-                     cors_policy=cors_policy)
-news       = Service(name='api_news',
- 					 path='/get_news',
- 					 description="News app",
- 					 cors_policy=cors_policy)
-reaction   = Service(name='api_reaction',
- 					 path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
- 					 description="Discussion Reaction",
- 					 cors_policy=cors_policy)
-justify    = Service(name='api_justify',
-					 path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation',
-					 description="Discussion Justify",
-					 cors_policy=cors_policy)
-attitude   = Service(name='api_attitude',
-					 path='/{slug}/attitude/*statement_id',
-					 description="Discussion Attitude",
-					 cors_policy=cors_policy)
-issues     = Service(name='get_issues',
- 					 path='/get_issues',
- 					 description="Issue Selector",
- 					 cors_policy=cors_policy)
+reaction = Service(name='api_reaction',
+ 				   path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
+ 				   description="Discussion Reaction",
+ 				   cors_policy=cors_policy)
+justify  = Service(name='api_justify',
+				   path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation',
+				   description="Discussion Justify",
+				   cors_policy=cors_policy)
+attitude = Service(name='api_attitude',
+				   path='/{slug}/attitude/*statement_id',
+				   description="Discussion Attitude",
+				   cors_policy=cors_policy)
+issues   = Service(name='get_issues',
+ 			       path='/get_issues',
+ 			       description="Issue Selector",
+ 			       cors_policy=cors_policy)
 # Prefix with 'z' so it is added as the last route
-zinit      = Service(name='api_init',
-					 path='/{slug}',
-					 description="Discussion Init",
-					 cors_policy=cors_policy)
+zinit    = Service(name='api_init',
+				   path='/{slug}',
+				   description="Discussion Init",
+				   cors_policy=cors_policy)
 zinit_blank = Service(name='api_init_blank',
 					  path='/',
 					  description="Discussion Init",
 					  cors_policy=cors_policy)
 
+#
+# Other Services
+#
+dump = Service(name='api_dump',
+			   path='/dump',
+			   description="Database Dump",
+			   cors_policy=cors_policy)
+news = Service(name='api_news',
+ 			   path='/get_news',
+ 			   description="News app",
+ 			   cors_policy=cors_policy)
 
-@news.get()
-def get_news(request):
-	"""
-	Returns news from DBAS in JSON.
-	:param request: request
-	:return: Dbas(request).get_news()
-	"""
-	return Dbas(request).get_news()
+#
+# User Management
+#
+login = Service(name='login',
+                path='/login',
+                description="Log into external discussion system",
+                cors_policy=cors_policy)
 
 
-##############################
-# Discussion-related functions
+# =============================================================================
+# DISCUSSION-RELATED REQUESTS
+# =============================================================================
 
 @reaction.get()
 def discussion_reaction(request):
@@ -134,9 +138,13 @@ def discussion_init(request):
 	return Dbas(request).discussion_init(True)
 
 
-##########
-# Database
+# =============================================================================
+# OTHER REQUESTS
+# =============================================================================
 
+#
+# Database
+#
 @dump.get()
 def discussion_init(request):
 	"""
@@ -147,68 +155,32 @@ def discussion_init(request):
 	return Dbas(request).get_database_dump()
 
 
-# =============================================================================
-# POST / GET EXAMPLE
-# =============================================================================
-
-hello = Service(name='api', path='/hello', description="Simplest app", cors_policy=cors_policy)
-values = Service(name='foo', path='/values/{value}', description="Cornice Demo", cors_policy=cors_policy)
-
-_VALUES = {}
-
-
-@hello.get()
-def get_info(request):
+@news.get()
+def get_news(request):
 	"""
+	Returns news from DBAS in JSON.
+	:param request: request
+	:return: Dbas(request).get_news()
+	"""
+	return Dbas(request).get_news()
 
+
+# =============================================================================
+# USER MANAGEMENT
+# =============================================================================
+
+@login.get(validators=valid_token)  # TODO test this permission='use'
+def testing(request):
+	"""
+	Test user's credentials, return success if valid token and username is provided.
 	:param request:
 	:return:
 	"""
-	return {'Hello': 'World'}
+	Dbas(request).main_notifications()
+	return {'status': 'success'}
 
 
-@values.get()
-def get_value(request):
-	"""
-
-	:param request:
-	:return:
-	"""
-	key = request.matchdict['value']
-	return _VALUES.get(key)
-
-
-@values.post()
-def set_value(request):
-	"""Set the value.
-
-	Returns *True* or *False*.
-	"""
-	key = request.matchdict['value']
-	try:
-		# json_body is JSON-decoded variant of the request body
-		_VALUES[key] = request.json_body
-	except ValueError:
-		return False
-	return True
-
-
-# =============================================================================
-# LOGIN
-# =============================================================================
-
-############################
-# Services - User Management
-
-# TODO sample function, remove it
-# @users.get(validators=valid_token)
-# def get_users(request):
-# 	"""
-# 	Returns a list of all users
-# 	"""
-# 	return {'users': _USERS}
-
-@users.post(validators=validate_credentials)
+@login.post(validators=validate_credentials)
 def user_login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
@@ -216,7 +188,6 @@ def user_login(request):
 	:param request:
 	:return: token
 	"""
-	# print(request.headers)
 	user = request.validated['user']
 
 	# Convert bytes to string
@@ -225,5 +196,12 @@ def user_login(request):
 	else:
 		token = user['token']
 
-	_USERS[user['nickname']] = token
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
+
+	if not db_user:
+		raise response401()
+
+	db_user.set_token(token)
+	db_user.update_token_timestamp()
+	transaction.commit()
 	return {'token': '%s-%s' % (user['nickname'], token)}
