@@ -247,7 +247,7 @@ class DictionaryHelper(object):
 				statements_array.append(self.__get_statement_dict(statement.uid,
 				                                                  _qh.get_text_for_statement_uid(statement.uid),
 				                                                  [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
-				                                                  '',
+				                                                  'start',
 				                                                  _um.get_url_for_statement_attitude(True, statement.uid)))
 
 			if logged_in:
@@ -255,7 +255,7 @@ class DictionaryHelper(object):
 				statements_array.append(self.__get_statement_dict('start_statement',
 				                                                _tn.get(_tn.newConclusionRadioButtonText),
 				                                                [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
-				                                                'add',
+				                                                'start',
 				                                                'add'))
 
 		return statements_array
@@ -337,8 +337,8 @@ class DictionaryHelper(object):
 			statements_array.append(self.__get_statement_dict('start_premise',
 			                                                  _tn.get(_tn.newPremiseRadioButtonText),
 			                                                  [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
-			                                                  'null',
-			                                                  'null'))
+			                                                  'justify',
+			                                                  'add'))
 
 		return statements_array
 
