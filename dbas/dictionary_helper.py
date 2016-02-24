@@ -610,7 +610,8 @@ class DictionaryHelper(object):
 		                                                  'save_my_statement': _tn.get(_tn.saveMyStatement),
 		                                                  'add_statement_row_title': _tn.get(_tn.addStatementRow),
 		                                                  'rem_statement_row_title': _tn.get(_tn.remStatementRow),
-		                                                  'switch_discussion': _tn.get(_tn.switchDiscussionTitle)}
+		                                                  'switch_discussion': _tn.get(_tn.switchDiscussionTitle),
+		                                                  'clear_statistics': _tn.get(_tn.clearStatistics)}
 		if not for_api:
 			return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()

@@ -19,7 +19,7 @@
 	display: none;
 }
 .form-group{
-	height: 40px;
+	min-height: 40px;
 }
 #name-input,
 #email-input,

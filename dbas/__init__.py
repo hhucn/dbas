@@ -29,9 +29,11 @@ def main(global_config, **settings):
 
 	# load database
 	discussionEngine = engine_from_config(settings, 'sqlalchemy-discussion.')
+	newsEngine       = engine_from_config(settings, 'sqlalchemy-news.')
+	apiEngine        = engine_from_config(settings, 'sqlalchemy-api.')
 	load_discussion_database(discussionEngine)
-	newsEngine = engine_from_config(settings, 'sqlalchemy-news.')
 	load_news_database(newsEngine)
+	load_api_database(apiEngine)
 
 	# session management and cache region support with pyramid_beaker
 	session_factory = session_factory_from_settings(settings)
@@ -94,6 +96,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_get_user_history',                       'ajax_get_user_history')
 	config.add_route('ajax_set_user_receive_information',           'ajax_set_user_receive_information')
 	config.add_route('ajax_delete_user_history',                    'ajax_delete_user_history')
+	config.add_route('ajax_delete_statistics',                      'ajax_delete_statistics')
 	config.add_route('ajax_get_news',                               'ajax_get_news')
 	config.add_route('ajax_send_news',                              'ajax_send_news')
 	config.add_route('ajax_get_user_with_same_opinion',             'ajax_get_user_with_same_opinion')

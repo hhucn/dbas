@@ -198,6 +198,11 @@ function PasswordHandler(){
 
 function SettingsHandler(){
 
+	/**
+	 *
+	 * @param toggle_element
+	 * @param service
+	 */
 	this.setReceiveInformation = function(toggle_element, service) {
 		var should_send = toggle_element.prop('checked');
 		$.ajax({
@@ -246,6 +251,72 @@ function SettingsHandler(){
 
 }
 
+function StatisticsHandler(){
+
+	/**
+	 *
+	 */
+	this.deleteStatistics = function(){
+		// display dialog
+		$('#' + popupConfirmDialogId).modal('show');
+		$('#' + popupConfirmDialogId + ' h4.modal-title').text(_t(deleteStatisticsTitle));
+		$('#' + popupConfirmDialogId + ' div.modal-body').html(_t(deleteStatisticsBody));
+		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
+			$('#' + popupConfirmDialogId).modal('hide');
+			new StatisticsHandler().deleteStatisticsRequest()
+		});
+		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
+			$('#' + popupConfirmDialogId).modal('hide');
+		});
+	};
+
+	/**
+	 *
+	 */
+	this.deleteStatisticsRequest = function() {
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_delete_statistics',
+			method: 'GET',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function deleteStatisticsRequestDone(data) {
+			new StatisticsHandler().callbackDeleteStatisticsDone(data);
+		}).fail(function deleteStatisticsRequestFail() {
+			new StatisticsHandler().callbackDeleteStatisticsFail();
+		});
+	};
+
+	/**
+	 *
+	 * @param jsonData
+	 */
+	this.callbackDeleteStatisticsDone = function(jsonData) {
+		var parsedData = $.parseJSON(jsonData);
+		if (parsedData.removed_data == 'true') {
+			$('#' + statisticsSuccessDialog).fadeIn();
+			new Helper().delay(function () {
+				$('#' + statisticsSuccessDialog).fadeOut();
+			}, 3000);
+			$('#edits-done-count').text('0');
+			$('#discussion-arg-votes-count').text('0');
+			$('#discussion-stat-votes-count').text('0');
+		} else {
+			new StatisticsHandler().callbackDeleteStatisticsFail();
+		}
+	};
+
+	/**
+	 *
+	 */
+	this.callbackDeleteStatisticsFail = function(){
+		$('#' + statisticsAlertDialog).fadeIn();
+		new Helper().delay(function() { $('#' + statisticsAlertDialog).fadeOut(); }, 3000);
+	};
+
+}
+
 $(function () {
 	'use strict';
 	var settingsPasswordExtras = $('#' + settingsPasswordExtrasId);
@@ -287,6 +358,10 @@ $(function () {
 
 	$('#' + popupPasswordGeneratorButton).click(function passwordGeneratorButton() {
 		new PasswordHandler().generate_password($('#' + popupPasswordGeneratorOutput));
+	});
+
+	$('#' + clearStatisticsButtonId).click(function clearCtatisticsButton(){
+		new StatisticsHandler().deleteStatistics();
 	});
 
 	$('#' + settingsReceiveNotifications).change(function() {

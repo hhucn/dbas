@@ -35,7 +35,7 @@ requires = [
 ]
 
 setup(name='dbas',
-	version='0.5.3',
+	version='0.5.4',
 	description='Novel prototype for a dialog-based online argumentation',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[
@@ -60,5 +60,6 @@ setup(name='dbas',
 	[console_scripts]
 	initialize_discussion_sql = dbas.database.initializedb:main_discussion
 	initialize_news_sql = dbas.database.initializedb:main_news
+	initialize_api_sql = dbas.database.initializedb:main_api
 	""",
 	)

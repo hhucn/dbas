@@ -30,7 +30,7 @@ from .url_manager import UrlManager
 from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
-version = '0.5.3'
+version = '0.5.4'
 header = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
@@ -724,6 +724,23 @@ class Dbas(object):
 		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
+
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - deleting complete history of the user
+	@view_config(route_name='ajax_delete_statistics', renderer='json', check_csrf=True)
+	def delete_statistics(self):
+		"""
+		Request the complete user history
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('delete_statistics', 'def', 'main')
+
+		return_dict = dict()
+		return_dict['removed_data'] = 'true' if VotingHelper().clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 

@@ -25,7 +25,7 @@ function News() {
 				+ '<a class="share-icon-small share-facebook-small"></a>'
 				+ '<h5><span class="font-semi-bold" id="news_' + no + '_title">' + title + '</span></h5>'
 				+ '</div>'
-				+ '<div class="panel-body">'
+				+ '<div class="panel-body" style="text-align: justify;">'
 				+ '<h6>'
 					//+ '<span i18n:translate="author">Author</span>: '
 				+ '<span id="news_' + no + '_author">' + author + '</span>' + ', '

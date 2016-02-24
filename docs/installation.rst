@@ -40,6 +40,7 @@ Then follow these steps:
 
     $ initialize_news_sql development.ini
     $ initialize_discussion_sql development.ini
+    $ initialize_api_sql development.ini
 
 5. Start development webserver
 

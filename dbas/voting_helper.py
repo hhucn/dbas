@@ -70,6 +70,23 @@ class VotingHelper(object):
 
 		return len(db_votes)
 
+	def clear_votes_of_user(self, transaction, user):
+		"""
+
+		:param user:
+		:return:
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if not db_user:
+			return False
+
+		DBDiscussionSession.query(VoteArgument).filter_by(author_uid=db_user.uid).delete()
+		DBDiscussionSession.query(VoteStatement).filter_by(author_uid=db_user.uid).delete()
+		DBDiscussionSession.flush()
+		transaction.commit()
+		return True
+
+
 	def __vote_argument(self, argument, user, is_accept):
 		"""
 		Check if there is a vote for the argument. If not, we will create a new one, otherwise the current one will be
