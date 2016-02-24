@@ -202,9 +202,6 @@ def set_value(request):
 # LOGIN
 # =============================================================================
 
-############################
-# Services - User Management
-
 @users.get(validators=valid_token)
 def get_users(request):
 	"""
@@ -212,6 +209,7 @@ def get_users(request):
 	:param request:
 	:return:
 	"""
+	Dbas(request).main_notifications()
 	return {'status': 'success'}
 
 

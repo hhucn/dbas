@@ -53,7 +53,7 @@ def valid_token(request):
 		log.error("API Invalid Token")
 		raise response401()
 
-	log.debug("API Remote login successful")
+	log.debug("API Valid token")
 	request.validated['user'] = user
 
 
