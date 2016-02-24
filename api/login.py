@@ -43,19 +43,14 @@ def valid_token(request):
 
 	log.debug("API Login Attempt: %s: %s" % (user, token))
 
-	users = DBDiscussionSession.query(User).all()
-	tokens = filter(None, [user.token for user in users])
-	for token in tokens:
-		print(token)
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
-	print(tokens)
-	for user in users:
-		print(user.nickname)
+	if not db_user:
+		log.error("API Invalid user")
+		raise response401()
 
-	valid = user in users and token in tokens
-
-	if not valid:
-		log.error("API Invalid token")
+	if not db_user.token == token:
+		log.error("API Invalid Token")
 		raise response401()
 
 	log.debug("API Remote login successful")
