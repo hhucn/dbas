@@ -205,11 +205,12 @@ def set_value(request):
 ############################
 # Services - User Management
 
-# TODO sample function, remove it
 @users.get(validators=valid_token)
 def get_users(request):
 	"""
-	Returns a list of all users
+	Test user's credentials, return success if valid token and username is provided.
+	:param request:
+	:return:
 	"""
 	return {'status': 'success'}
 

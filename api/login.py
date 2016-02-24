@@ -21,7 +21,7 @@ def _create_token():
 	Use the system's urandom function to generate a random token and convert it to ASCII.
 	:return:
 	"""
-	return binascii.b2a_hex(os.urandom(20))
+	return binascii.b2a_hex(os.urandom(64))
 
 
 def valid_token(request):
