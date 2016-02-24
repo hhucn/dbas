@@ -206,12 +206,13 @@ def set_value(request):
 # Services - User Management
 
 # TODO sample function, remove it
-# @users.get(validators=valid_token)
-# def get_users(request):
-# 	"""
-# 	Returns a list of all users
-# 	"""
-# 	return {'users': _USERS}
+@users.get(validators=valid_token)
+def get_users(request):
+	"""
+	Returns a list of all users
+	"""
+	return {'status': 'success'}
+
 
 @users.post(validators=validate_credentials)
 def user_login(request):

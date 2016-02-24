@@ -7,6 +7,8 @@ import binascii
 import json
 import os
 
+from dbas import DBDiscussionSession
+from dbas.database.discussion_model import User
 from dbas.views import Dbas
 from .lib import logger, response401
 
@@ -41,7 +43,16 @@ def valid_token(request):
 
 	log.debug("API Login Attempt: %s: %s" % (user, token))
 
-	valid = user in _USERS and _USERS[user] == token
+	users = DBDiscussionSession.query(User).all()
+	tokens = filter(None, [user.token for user in users])
+	for token in tokens:
+		print(token)
+
+	print(tokens)
+	for user in users:
+		print(user.nickname)
+
+	valid = user in users and token in tokens
 
 	if not valid:
 		log.error("API Invalid token")
