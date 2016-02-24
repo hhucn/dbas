@@ -169,7 +169,7 @@ def get_news(request):
 # USER MANAGEMENT
 # =============================================================================
 
-@login.get(validators=valid_token)
+@login.get(validators=valid_token)  # TODO test this permission='use'
 def testing(request):
 	"""
 	Test user's credentials, return success if valid token and username is provided.
