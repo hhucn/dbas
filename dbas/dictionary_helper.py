@@ -361,9 +361,10 @@ class DictionaryHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 
 		db_arguments = []
+		# description in docs: dbas/logic
 		if attack_type == 'undermine':
-			db_premisses = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-			for premise in db_premisses:
+			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+			for premise in db_premises:
 				arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == premise.statement_uid,
 				                                                            Argument.is_supportive == False)).all()
 				db_arguments = db_arguments + arguments

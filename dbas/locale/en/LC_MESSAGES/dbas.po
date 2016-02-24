@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-02-24 14:08+0100\n"
+"POT-Creation-Date: 2016-02-24 20:50+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -1138,7 +1138,7 @@ msgstr "Edits done"
 #. Default: Votes for Arguments
 #: dbas/templates/settings.pt:126
 msgid "discussion_votes_statements"
-msgstr "Votes for Argumennts"
+msgstr "Votes for Arguments"
 
 #. Default: Votes for Statements
 #: dbas/templates/settings.pt:130

@@ -209,6 +209,10 @@
 	width: 50px;
 	margin-bottom: 0.5em;
 }
+#discussion-container .icon-badge:hover,
+#display-style-menu-icon .icon-badge:hover{
+	width: 60px;
+}
 
 .display-style-menu > div{
 	width: 70px;

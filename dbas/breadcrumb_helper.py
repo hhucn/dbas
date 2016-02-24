@@ -16,7 +16,7 @@ from .url_manager import UrlManager
 
 class BreadcrumbHelper(object):
 
-	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, for_api):
+	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, delete_dupliacates, for_api):
 		"""
 
 		:param path:
@@ -26,6 +26,7 @@ class BreadcrumbHelper(object):
 		:param transaction:
 		:param lang:
 		:param application_url:
+		:param delete_dupliacates:
 		:param for_api:
 		:return:
 		"""
@@ -36,6 +37,7 @@ class BreadcrumbHelper(object):
 
 		url = UrlManager(application_url, slug, for_api).get_url(path)
 
+		# delete by slugs
 		expr = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)
 		if expr:
 			group0 = expr.group(0)
@@ -43,7 +45,7 @@ class BreadcrumbHelper(object):
 				self.del_breadcrumbs_of_user(transaction, user)
 
 		db_already_in = DBDiscussionSession.query(History).filter_by(url=url).first()
-		if db_already_in:
+		if db_already_in and delete_dupliacates:
 			DBDiscussionSession.query(History).filter(and_(History.author_uid == db_user.uid, History.uid > db_already_in.uid)).delete()
 		else:
 			DBDiscussionSession.add(History(user=db_user.uid, url=url, session_id=session_id))
@@ -73,7 +75,7 @@ class BreadcrumbHelper(object):
 		for index, history in enumerate(db_history):
 			hist = dict()
 			hist['index']       = str(index)
-			hist['url']         = str(history.url)
+			hist['url']         = str(history.url) + '?breadcrumb=true' # add this for deleting traces
 			hist['text']        = self.__get_text_for_url__(history.url, lang)
 			hist['shorttext']   = hist['text'][0:30] + '...' if len(hist['text']) > 35 else hist['text']
 			breadcrumbs.append(hist)

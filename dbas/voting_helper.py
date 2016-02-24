@@ -73,6 +73,7 @@ class VotingHelper(object):
 	def clear_votes_of_user(self, transaction, user):
 		"""
 
+		:param transaction:
 		:param user:
 		:return:
 		"""
@@ -85,7 +86,6 @@ class VotingHelper(object):
 		DBDiscussionSession.flush()
 		transaction.commit()
 		return True
-
 
 	def __vote_argument(self, argument, user, is_accept):
 		"""
@@ -111,9 +111,13 @@ class VotingHelper(object):
 			old_vote.update_timestamp()
 		DBDiscussionSession.flush()
 
-		db_new_vote = VoteArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
-		DBDiscussionSession.add(db_new_vote)
-		DBDiscussionSession.flush()
+		if not DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+		                                                           VoteArgument.author_uid == user.uid,
+		                                                           VoteArgument.is_up_vote == is_accept,
+		                                                           VoteArgument.is_valid == True)).first():
+			db_new_vote = VoteArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
+			DBDiscussionSession.add(db_new_vote)
+			DBDiscussionSession.flush()
 
 	def __vote_statement(self, statement, user, is_accept):
 		"""
@@ -139,9 +143,14 @@ class VotingHelper(object):
 			old_vote.update_timestamp()
 		DBDiscussionSession.flush()
 
-		db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
-		DBDiscussionSession.add(db_new_vote)
-		DBDiscussionSession.flush()
+		# check for duplicate
+		if not DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
+		                                                            VoteStatement.author_uid == user.uid,
+		                                                            VoteStatement.is_up_vote == is_accept,
+		                                                            VoteStatement.is_valid == True)).first():
+			db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
+			DBDiscussionSession.add(db_new_vote)
+			DBDiscussionSession.flush()
 
 	def __vote_premisesgroup(self, premisesgroup_uid, user, is_accept):
 		"""

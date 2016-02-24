@@ -205,6 +205,8 @@ class Dbas(object):
 		else:
 			slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
 
+		del_breadcrumb = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
+
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
@@ -213,7 +215,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 		                                                 self.request.session.id, transaction, ui_locales,
-		                                                 mainpage, for_api)
+		                                                 mainpage, del_breadcrumb, for_api)
 
 		discussion_dict = _dh.prepare_discussion_dict(issue, ui_locales, at_start=True)
 		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, ui_locales, mainpage, for_api)
@@ -256,6 +258,7 @@ class Dbas(object):
 		_dh = DictionaryHelper()
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
+		del_breadcrumb  = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
 
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
@@ -265,7 +268,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 		                                                 self.request.session.id, transaction, ui_locales,
-		                                                 mainpage, for_api)
+		                                                 mainpage, del_breadcrumb, for_api)
 
 		discussion_dict = _dh.prepare_discussion_dict(statement_id, ui_locales, at_attitude=True)
 		if not discussion_dict:
@@ -313,6 +316,7 @@ class Dbas(object):
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 		related_arg         = matchdict['relation'][1] if len(matchdict['relation']) > 1 else -1
+		del_breadcrumb      = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
 
 		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales          = _qh.get_language(self.request, get_current_registry())
@@ -322,7 +326,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 		                                                 self.request.session.id, transaction, ui_locales,
-		                                                 mainpage, for_api)
+		                                                 mainpage, del_breadcrumb, for_api)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			# justifying position
@@ -403,6 +407,7 @@ class Dbas(object):
 		attack          = matchdict['mode'] if 'mode' in matchdict else ''
 		arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
 		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().is_supportive
+		del_breadcrumb  = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
 
 		# set votings
 		VotingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
@@ -418,7 +423,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 		                                                 self.request.session.id, transaction, ui_locales,
-		                                                 mainpage, for_api)
+		                                                 mainpage, del_breadcrumb, for_api)
 
 		discussion_dict = _dh.prepare_discussion_dict(arg_id_user, ui_locales, at_argumentation=True, is_supportive=supportive,
 		                                              additional_id=arg_id_sys, attack=attack)
@@ -460,6 +465,7 @@ class Dbas(object):
 		is_supportive   = matchdict['supportive'] if 'supportive' in matchdict else ''
 		uid             = matchdict['id'] if 'id' in matchdict else ''
 		pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
+		del_breadcrumb  = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
 		logger('discussion_reaction', 'def', str(pgroup_ids))
 
 		is_argument = True if is_argument is 't' else False
@@ -474,7 +480,7 @@ class Dbas(object):
 
 		breadcrumbs     = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 		                                                     self.request.session.id, transaction, ui_locales,
-		                                                     mainpage, for_api)
+		                                                     mainpage, del_breadcrumb, for_api)
 
 		discussion_dict = _dh.prepare_discussion_dict(uid, ui_locales, at_choosing=True, is_uid_argument=is_argument, is_supportive=is_supportive)
 		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales, mainpage, issue, for_api)
