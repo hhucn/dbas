@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html i18n:domain="dbas" metal:define-macro="layout">
+<div i18n:domain="dbas" metal:define-macro="layout">
 
 <div id="footer">
 	<div class="col-md-12">
@@ -44,4 +44,4 @@
 	</div>
 </div>
 
-</html>
+</div>

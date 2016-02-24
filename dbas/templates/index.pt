@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html i18n:domain="dbas" metal:define-macro="layout">
-<tal:block metal:use-macro="layout">
+<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
 		<head>
@@ -92,12 +91,12 @@
 				<div class="col-md-4 col-badge">
 					<img id="icon-map" class="icon-badge" alt="icon-scooter" src="${request.static_url('dbas:static/images/icon_scooter.png')}" />
 					<h3 i18n:translate="Fast">Fast</h3>
-					<p class="content" i18n:translate="fast_content">Participant do not have to read much text. Every unique step in out novel system regards to one point of view in the discussion. Less text, less confusions.</p>
+					<p class="content" i18n:translate="fast_content">Participant do not have to read much text. Every unique step in our novel system regards to one point of view in the discussion. Less text, less confusions.</p>
 				</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-dialog" class="icon-badge" alt="icon-match" src="${request.static_url('dbas:static/images/icon_match.png')}" />
 					<h3 i18n:translate="dialog_based">Matching Ideas</h3>
-					<p class="content" i18n:translate="matching_ideas_content">Do you have a matching idea? Good, because your ideal will not become boggy in a flood of text, it will matched at the right position into the discussion.</p>
+					<p class="content" i18n:translate="matching_ideas_content">Do you have a matching idea? Good, because your idea will not become boggy in a flood of text, it will matched at the right position into the discussion.</p>
 			</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-science" class="icon-badge" alt="icon-laboratory" src="${request.static_url('dbas:static/images/icon_laboratory.png')}" />
@@ -141,7 +140,7 @@
 				<div class="col-md-4 col-badge">
 					<img id="icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
 					<h3 i18n:translate="guided_view">Guided View</h3>
-					<p class="content"><span i18n:translate="guided_view_content1">You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic</span> <a target="_blank" href="www.bpb.de/politik/wahlen/wahl-o-mat/">Wahl-O-Mat</a> <span i18n:translate="guided_view_content2">for you</span>.</p>
+					<p class="content"><span i18n:translate="guided_view_content">You will never see something like an argumentation map, because the systems is your dialog partner</span>.</p>
 				</div>
 				<div class="col-md-4 col-badge">
 					<img id="icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
@@ -229,5 +228,3 @@
 
 	</tal:block>
 </tal:block>
-
-</html>
