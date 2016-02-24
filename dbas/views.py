@@ -30,7 +30,7 @@ from .url_manager import UrlManager
 from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
-version = '0.5.3'
+version = '0.5.4'
 header = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
@@ -724,6 +724,23 @@ class Dbas(object):
 		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
+
+		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+
+	# ajax - deleting complete history of the user
+	@view_config(route_name='ajax_delete_statistics', renderer='json', check_csrf=True)
+	def delete_statistics(self):
+		"""
+		Request the complete user history
+		:return: json-dict()
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('delete_statistics', 'def', 'main')
+
+		return_dict = dict()
+		return_dict['removed_data'] = 'true' if VotingHelper().clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
 
 		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
@@ -1442,21 +1459,19 @@ class Dbas(object):
 			issue = QueryHelper().get_issue_id(self.request) if not for_api else ''
 
 			return_dict = dict()
-			# return_dict['distance_name'] = 'SequenceMatcher'  # TODO improve fuzzy search
-			return_dict['distance_name'] = 'Levensthein'
 			if for_api:
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_issues(value)
 				return DictionaryHelper().dictionary_to_json_array(return_dict, True)
 
 			if mode == '0':  # start statement
-				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
 			elif mode == '1':  # edit statement popup
 				statement_uid = self.request.params['extra']
-				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid, issue)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid, issue)
 			elif mode == '2':  # start premise
-				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
 			elif mode == '3':  # adding reasons
-				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_reasons(value, issue)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_reasons(value, issue)
 			else:
 				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
 		except KeyError as e:

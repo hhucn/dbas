@@ -84,19 +84,15 @@ function changeBackgroundOnScroll(){
  * @param titleText
  * @param bodyText
  * @param functionForAccept
- * @param isRestartingDiscussion
  */
-function displayConfirmationDialog(titleText, bodyText, functionForAccept, isRestartingDiscussion) {
+function displayConfirmationDialog(titleText, bodyText, functionForAccept) {
 	// display dialog
 	$('#' + popupConfirmDialogId).modal('show');
 	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
 	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
-		if (isRestartingDiscussion)
-			window.location.href = functionForAccept;
-		else
-			functionForAccept();
+		functionForAccept();
 	});
 	$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
@@ -477,7 +473,7 @@ function ajaxRoundhouseKick(){
 		data: {type:'chuck'},
 		global: false,
 		async: true
-	}).done(function ajaxPasswordRequestDone(data) {
+	}).done(function ajaxRoundhouseKickDone(data) {
 		if (data.type == 'success'){
 			displayConfirmationDialogWithoutCancelAndFunction('Chuck Norris Fact #' + data.value.id,
 				'<h5>' + data.value.joke + '</h5>\n\n' +
@@ -497,7 +493,7 @@ function ajaxMama(){
 		data: {type:'mama'},
 		global: false,
 		async: true
-	}).done(function ajaxPasswordRequestDone(data) {
+	}).done(function ajaxMamaDone(data) {
 		displayConfirmationDialogWithoutCancelAndFunction('Yo Mamma',  '<h4>' + data.joke + '</h4>\n\n<span' +
 				' style="float:right;">powered by <a href="http://yomomma.info/">http://yomomma.info/</a></span>');
 	});

@@ -394,7 +394,7 @@ class VoteStatement(DiscussionBase):
 	Vote-table with several columns for statements.
 	The combination of the both FK is a PK
 	"""
-	__tablename__ = 'votes'
+	__tablename__ = 'votes_statement'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))

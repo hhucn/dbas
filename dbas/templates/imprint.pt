@@ -130,6 +130,11 @@
 					<ul>
 						<li>Improved recommendation of the next argument/statement</li>
 					</ul>
+                    <span class="project lead">0.5.4 (2016-02-24)</span>
+					<ul>
+						<li>Improvements for the settings page</li>
+						<li>Bugfixes</li>
+					</ul>
 
                     <span class="project lead">0.5.3 (2016-02-15)</span>
 					<ul>

@@ -5,6 +5,7 @@ from dbas.database import NewsBase
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
+
 class News(NewsBase):
 	"""
 	News-table with several columns.

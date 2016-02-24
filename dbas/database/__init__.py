@@ -7,11 +7,14 @@ from zope.sqlalchemy import ZopeTransactionExtension as Zte
 
 
 DBDiscussionSession = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False))
-DBNewsSession = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False))
-DiscussionBase = declarative_base()
-NewsBase = declarative_base()
-DBEngine = None
-DBNewsEngine = None
+DBNewsSession       = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False))
+DBAPISession        = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False))
+DiscussionBase      = declarative_base()
+NewsBase            = declarative_base()
+APIBase             = declarative_base()
+DBEngine            = None
+DBNewsEngine        = None
+DBAPIEngine         = None
 
 
 def load_discussion_database(engine):
@@ -26,3 +29,10 @@ def load_news_database(engine):
 	DBNewsSession.configure(bind=db_news_engine)
 	NewsBase.metadata.bind = db_news_engine
 	NewsBase.metadata.create_all(db_news_engine)
+
+
+def load_api_database(engine):
+	db_api_engine = engine
+	DBAPISession.configure(bind=db_api_engine)
+	APIBase.metadata.bind = db_api_engine
+	APIBase.metadata.create_all(db_api_engine)

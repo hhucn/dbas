@@ -40,7 +40,7 @@
                     <h4><span class="glyphicon glyphicon-cog" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="settings">Settings</span></h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
-							<td><span i18n:translate="receive_notifications" class="lead">Receive Notifications</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" tal:attributes="title settings.title_notifications"></td>
+							<td><span i18n:translate="receive_notifications" class="lead">Receive Notifications</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" tal:attributes="title settings.title_notifications"></span></td>
 						    <td class="text-center"><input id="receive-notifications-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_notifications"></td>
 				    	</tr>
 			    		<tr>
@@ -48,7 +48,7 @@
 	    					<td class="text-center"><input id="receive-mails-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_mails"></td>
     					 </tr>
 					</table>
-					<div class="center text-center">
+					<div class="center text-center well well-sm">
 						<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
                         <br>
 						<span class="lead" i18n:translate="profile_picture">Profile Picture</span>
@@ -76,14 +76,14 @@
 					<form action="/settings" method="post">
 
 						<div class="form-group">
-							<p class="col-md-5 control-label lead" i18n:translate="old_password">Old password</p>
+							<label for="settings-password-old-input" class="col-md-5 control-label lead" i18n:translate="old_password">Old password</label>
 							<div class="col-md-7">
 								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${settings.passwordold}">
 							</div>
 						</div>
 
 						<div class="form-group">
-							<p class="col-md-5 control-label lead" i18n:translate="new_password">New Password</p>
+							<label for="settings-password-input" class="col-md-5 control-label lead" i18n:translate="new_password">New Password</label>
 							<div class="col-md-7">
 								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${settings.password}">
 							</div>
@@ -112,35 +112,52 @@
 								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>${settings.message}
 							</div>
 						</div>
-
-						<div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" role="alert">
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="lead" i18n:translate="great:">Great:</span> <span i18n:translate="password_changed">Your password was changed</span>.
-						</div>
 						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
 					</form>
 				</div>
-				<div class="col-md-5">
+
+                <div class="col-md-5">
 					<h4><span class="glyphicon glyphicon-stats" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
 					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
-							<td style="text-align: right">${settings.edits_done}</td>
+							<td id="edits-done-count" style="text-align: right">${settings.edits_done}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>
-							<td style="text-align: right">${settings.discussion_arg_votes}</td>
+							<td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
-							<td style="text-align: right">${settings.discussion_stat_votes}</td>
+							<td id="discussion-stat-votes-count" style="text-align: right">${settings.discussion_stat_votes}</td>
 						</tr>
 					</table>
+                    <div class="text-center">
+                        <input id="clear-statistics" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.clear_statistics" />
+                    </div>
 				</div>
 			</div>
+
+            <div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" class="col-md-12">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span i18n:translate="password_changed">Your password was changed</span>.
+            </div>
+            <div class="col-md-12">
+                <div id="statistics-alert" class="alert alert-dismissible alert-danger" style="display: none;">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span id="statistics-alert-message" i18n:translate="statistics_not_deleted">Statistics could not be deleted.</span>
+
+                </div>
+                <div id="statistics-success" class="alert alert-dismissible alert-success" style="display: none;">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    <span id="statistics-success-message" i18n:translate="statistics_deletet">Statistics were set successfully deleted.</span>
+
+                </div>
+
+            </div>
 		</div>
 
 		<div class="container colored_container">

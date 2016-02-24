@@ -77,6 +77,8 @@ var duplicateDialog									= 'duplicateDialog';
 var doNotHesitateToContact 							= 'doNotHesitateToContact';
 var deleteTrack 									= 'deleteTrack';
 var deleteHistory 									= 'deleteHistory';
+var deleteStatisticsTitle                           = 'deleteStatisticsTitle';
+var deleteStatisticsBody                            = 'deleteStatisticsBody';
 var euCookiePopupTitle 								= 'euCookiePopupTitle';
 var euCookiePopupText 								= 'euCookiePopupText';
 var euCookiePopoupButton1 							= 'euCookiePopoupButton1';
@@ -199,6 +201,8 @@ var dbas_en = {
 	'didYouMean': 'Top10 statements, which you probably could mean:',
 	'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version as the current one once again?',
 	'doNotHesitateToContact': 'Do not hesitate to <b><span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span></b>',
+	'deleteStatisticsTitle': 'Delete Statistics',
+	'deleteStatisticsBody': 'Are you sure? This will delete all stored information about clicks respectively votes you have done.',
 	'euCookiePopupTitle': 'This website is using cookies and Piwik.',
 	'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose. All tracked data are saved anonymously with reduced masked IP-adresses.',
 	'euCookiePopoupButton1': 'Continue',
@@ -304,6 +308,8 @@ var dbas_de = {
 	'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
 	'deleteTrack': 'Track löschen',
 	'deleteHistory': 'History löschen',
+	'deleteStatisticsTitle': 'Statistik löschen',
+	'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
 	'doNotHesitateToContact': 'Zögern Sie nicht, uns zu <b><span style="cursor: pointer;" id="contact_on_error">kontaktieren (hier klicken)</span></b>',
 	'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Piwik.',
 	'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
