@@ -329,6 +329,7 @@ class Dbas(object):
 		                                                 mainpage, del_breadcrumb, for_api)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
+			VotingHelper().add_vote_for_statement(statement_or_arg_id, self.request.authenticated_userid, supportive, transaction)
 			# justifying position
 			discussion_dict = _dh.prepare_discussion_dict(statement_or_arg_id, ui_locales, at_justify=True, is_supportive=supportive)
 			if not discussion_dict:
