@@ -166,17 +166,17 @@
 					<div class="row">
 						<div class="col-md-4 col-badge">
 							<img id="icon-liqd" class="icon-badge" alt="icon-liqd" src="${request.static_url('dbas:static/images/icon_liqd.png')}" />
-							<h3><span i18n:translate="cooperation_with">Cooperation with</span> <a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a></h3>
+							<h3><a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a></h3>
 							<p i18n:translate="liquid_democracy_description">A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid Democracy e.V., which is a non-party, non-profit association. The key element of their work is the development of Adhocracy, a free software which serves as a digital participation tool. It offers various functions for the different needs of our users. In addition, we are developing Thentos, an identity management system which ensures privacy during complex participation processes.</p>
 						</div>
 						<div class="col-md-4 col-badge">
 							<img id="icon-kolleg" class="icon-badge" alt="icon-kolleg" src="${request.static_url('dbas:static/images/icon_kolleg.png')}" />
-							<h3><span i18n:translate="graduation_scool">Graduation School</span> <a href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank" i18n:translate="fk_op">Online-Participation</a></h3>
+							<h3><a href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank"><span i18n:translate="graduation_scool">Graduation School</span> <span i18n:translate="fk_op">Online-Participation</span></a></h3>
 							<p i18n:translate="fk_op_description">The NRW Graduation School Online-Participation is subsidised governmentally by Ministry of Innovation, Science and Research in North Rhine-Westphalia. The Graduation School is a network of business economics, computer scientiests, communication scientists, political scientists, jurists and sociologist, which are wokring together with partners from practice. The objective is the examination of opportunities of the internet, where affected persons are able to participate in decisions, where they are affected.</p>
 						</div>
 						<div class="col-md-4 col-badge">
 							<img id="icon-kit" class="icon-badge" alt="icon-kit" src="${request.static_url('dbas:static/images/icon_kit.png')}" />
-							<h3><span i18n:translate="cooperation_with">Cooperation with</span> <a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" i18n:translate="kit">Karlsruhe Institut of Technology</a></h3>
+							<h3><a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" i18n:translate="kit">Karlsruhe Institut of Technology</a></h3>
 							<p i18n:translate="kit_description">The workging group of functionality of the graduation school has a close-knit connection with the Institute for Technology Assessment and Systems Analysis (ITAS) of the Karlsruhe Institut of Technology, especially to Prof. Dr. G. Betz. His working group develoepd Argunet, a software tool for collaborative argumentation analysis. Its underlying theory, the theory of dialectical struc- tures, defines argument relations in terms of locigo- sematical relations between propositions and thus gives rise to a new computational approach to the reconstruction of complex debates.
 							</p>
 						</div>

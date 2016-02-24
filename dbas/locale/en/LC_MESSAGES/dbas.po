@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-02-24 13:51+0100\n"
+"POT-Creation-Date: 2016-02-24 14:08+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -217,12 +217,8 @@ msgstr "About"
 #: dbas/templates/index.pt:163
 msgid "about_description"
 msgstr ""
-"D-BAS is a discussions software in the field of online participation and"
-
-#. Default: Cooperation with
-#: dbas/templates/index.pt:169 dbas/templates/index.pt:179
-msgid "cooperation_with"
-msgstr "Cooperation with"
+"D-BAS is a discussions software in the field of online participation and "
+"developed by"
 
 #. Default: A partner of practice of Tobias Krauthoff is Daniel Reichert of
 #. Liquid Democracy e.V., which is a non-party, non-profit association. The key
@@ -1337,6 +1333,9 @@ msgstr "Because..."
 #: dbas/templates/content.pt:350
 msgid "change_style"
 msgstr "Change display style"
+
+#~ msgid "cooperation_with"
+#~ msgstr "Cooperation with"
 
 #~ msgid "welcome"
 #~ msgstr "Welcome"
