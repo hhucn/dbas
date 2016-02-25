@@ -576,7 +576,8 @@ class Dbas(object):
 		logger('main_notifications', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, ui_locales, self.request.authenticated_userid)
-
+		print(self.request)
+		print(self.request.authenticated_userid)
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),

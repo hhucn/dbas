@@ -189,7 +189,11 @@ def user_login(request):
 	:return: token
 	"""
 	user = request.validated['user']
-	return user
+	cookie = user.token
+	nickname = user.nickname
+
+
+	return {'token': cookie, 'nickname': nickname}
 	# Convert bytes to string
 	# if type(user['token']) == bytes:
 	# 	token = user['token'].decode('utf-8')

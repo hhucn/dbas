@@ -33,11 +33,15 @@ def valid_token(request):
 	:return:
 	"""
 	print(request)
-	try:
-		token = request.token
-	except AttributeError:
-		raise response401(msg=u'token is empty')
+	request.headers = request.token
+
+	#try:
+	#	token = request.token
+	#except AttributeError:
+	#	raise response401(msg=u'token is empty')
 	user_id = authenticated_userid(request)
+	print(user_id)
+	print(request.authenticated_userid)
 
 	if user_id is None:
 		raise response401(msg=u"token cannot parse to a valid username")
@@ -87,9 +91,13 @@ def validate_credentials(request):
 
 	try:
 		if logged_in['status'] == 'success':
-			cookie = remember(request, nickname)
-			user = {'nickname': nickname, 'token': cookie}
-			request.validated['user'] = user
+			print("ping")
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+			print("pong")
+			if db_user:
+				cookie = remember(request, nickname)
+				db_user.set_token(cookie)
+				request.validated['user'] = db_user
 	except TypeError:
 		log.error('API Not logged in: %s' % logged_in)
 		request.errors.add(logged_in)
