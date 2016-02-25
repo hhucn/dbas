@@ -17,16 +17,16 @@ from .lib import logger, response401
 log = logger()
 
 
-def __create_token(nickname, alg='sha512'):
+def _create_token(nickname, alg='sha512'):
 	"""
 	Use the system's urandom function to generate a random token and convert it to ASCII.
 	:return:
 	"""
-	salt = __create_salt(nickname)
+	salt = _create_salt(nickname)
 	return hashlib.new(alg, salt).hexdigest()
 
 
-def __create_salt(nickname):
+def _create_salt(nickname):
 	rnd = binascii.b2a_hex(os.urandom(64))
 	timestamp = datetime.now().isoformat().encode('utf-8')
 	nickname = nickname.encode('utf-8')
@@ -83,7 +83,7 @@ def validate_credentials(request):
 
 	try:
 		if logged_in['status'] == 'success':
-			token = __create_token(nickname)
+			token = _create_token(nickname)
 			user = {'nickname': nickname, 'token': token}
 			request.validated['user'] = user
 	except TypeError:
