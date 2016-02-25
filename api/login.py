@@ -5,23 +5,32 @@
 
 import binascii
 import json
+import hashlib
 import os
 
+from datetime import datetime
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import Dbas
 from .lib import logger, response401
 
 log = logger()
-_USERS = {}
 
 
-def _create_token():
+def __create_token(nickname, alg='sha512'):
 	"""
 	Use the system's urandom function to generate a random token and convert it to ASCII.
 	:return:
 	"""
-	return binascii.b2a_hex(os.urandom(64))
+	salt = __create_salt(nickname)
+	return hashlib.new(alg, salt).hexdigest()
+
+
+def __create_salt(nickname):
+	rnd = binascii.b2a_hex(os.urandom(64))
+	timestamp = datetime.now().isoformat().encode('utf-8')
+	nickname = nickname.encode('utf-8')
+	return rnd + timestamp + nickname
 
 
 def valid_token(request):
@@ -74,7 +83,10 @@ def validate_credentials(request):
 
 	try:
 		if logged_in['status'] == 'success':
-			user = {'nickname': nickname, 'token': _create_token()}
+			print("here")
+			token = __create_token(nickname)
+			print("token: %s" % token)
+			user = {'nickname': nickname, 'token': token}
 			request.validated['user'] = user
 	except TypeError:
 		log.error('API Not logged in: %s' % logged_in)
