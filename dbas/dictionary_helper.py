@@ -665,11 +665,11 @@ class DictionaryHelper(object):
 		                                                  'rem_statement_row_title': _tn.get(_tn.remStatementRow),
 		                                                  'switch_discussion': _tn.get(_tn.switchDiscussionTitle),
 		                                                  'clear_statistics': _tn.get(_tn.clearStatistics),
-		                                                  'user_options': 'TODO',
-		                                                  'switch_language': 'TODO',
-		                                                  'login': 'TODO',
-		                                                  'news_about_dbas': 'TODO',
-		                                                  'share_url': 'TODO'}
+		                                                  'user_options': _tn.get(_tn.userOptions),
+		                                                  'switch_language': _tn.get(_tn.switchLanguage),
+		                                                  'login': _tn.get(_tn.login),
+		                                                  'news_about_dbas': _tn.get(_tn.newsAboutDbas),
+		                                                  'share_url': _tn.get(_tn.shareUrl)}
 		if not for_api:
 			return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
