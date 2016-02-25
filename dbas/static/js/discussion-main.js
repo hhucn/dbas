@@ -257,10 +257,14 @@ setStyleOptions = function (guiHandler){
 setNavigationSidebar = function (windowInnerWidth){
 	if (windowInnerWidth < 992){
 		$('#discussion-sidebar').addClass('list-inline').css('text-align', 'left');
-		$('#site-navigation').addClass('list-inline').css('text-align', 'left');
+		$('#site-navigation').addClass('list-inline').css('text-align', 'left').find('img').each(function(){
+			$(this).attr('data-placement', 'bottom');
+		});
 	} else {
 		$('#discussion-sidebar').removeClass('list-inline').css('text-align', 'right');
-		$('#site-navigation').removeClass('list-inline').css('text-align', 'right');
+		$('#site-navigation').removeClass('list-inline').css('text-align', 'right').find('img').each(function(){
+			$(this).attr('data-placement', 'left');
+		});
 	}
 };
 
