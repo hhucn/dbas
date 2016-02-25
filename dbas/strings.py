@@ -1315,7 +1315,7 @@ class TextGenerator(object):
 
 		return ret_text
 
-	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking):
+	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False):
 		"""
 
 		:param premises:
@@ -1323,6 +1323,7 @@ class TextGenerator(object):
 		:param start_lower_case:
 		:param with_no_opinion_text:
 		:param is_attacking:
+		:param is_dont_know:
 		:return:
 		"""
 		_t = Translator(self.lang)
@@ -1346,10 +1347,13 @@ class TextGenerator(object):
 
 		ret_dict['support_text'] = r + ', ' + _t.get(_t.itIsTrue) + ' <strong>' + premise + '</strong>.'
 
-		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveCounterFor) + ' <strong>' + conclusion + '</strong>.'
-		# ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.butIDoNotBelieveReasonForReject) + ' <strong>' + conclusion + '</strong>.'
+		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, '\
+		                            + (_t.get(_t.butIDoNotBelieveArgument) if is_dont_know else _t.get(_t.butIDoNotBelieveCounterFor))\
+		                            + ' <strong>' + conclusion + '</strong>.'
 
-		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, ' + _t.get(_t.andIDoBelieveCounterFor) + ' <strong>' + conclusion + '</strong>. '\
+		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, '\
+		                           + (_t.get(_t.andIDoBelieveArgument) if is_dont_know else _t.get(_t.andIDoBelieveCounterFor))\
+		                           + ' <strong>' + conclusion + '</strong>. '\
 		                           + (_t.get(_t.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting))\
 		                           + ' <strong>' + conclusion + '</strong>.'
 

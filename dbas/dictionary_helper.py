@@ -179,6 +179,7 @@ class DictionaryHelper(object):
 		elif at_dont_know:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_dont_know')
 			text                = _qh.get_text_for_argument_uid(uid, lang)
+			text                = text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
 			if text:
 				heading         = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
 			                     + '</strong>. ' + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
@@ -415,6 +416,57 @@ class DictionaryHelper(object):
 			                                                [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
 			                                                'null',
 			                                                'null'))
+
+		return statements_array
+
+	def prepare_item_dict_for_dont_know_reaction(self, argument_uid, is_supportive, issue_uid, lang, application_url, for_api):
+		"""
+
+		:param argument_uid:
+		:param is_supportive:
+		:param issue_uid:
+		:param lang:
+		:param application_url:
+		:param for_api:
+		:return:
+		"""
+		logger('DictionaryHelper', 'prepare_item_dict_for_dont_know_reaction', 'def')
+		_tg  = TextGenerator(lang)
+		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
+		_um = UrlManager(application_url, slug, for_api)
+		_qh = QueryHelper()
+		statements_array = []
+
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		if db_argument.argument_uid == 0:
+			conclusion = _qh.get_text_for_statement_uid(db_argument.conclusion_uid)
+		else:
+			conclusion = _qh.get_text_for_argument_uid(db_argument.argument_uid, lang)
+
+		premise, tmp = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+		conclusion   = conclusion[0:1].lower() + conclusion[1:]
+		premise      = premise[0:1].lower() + premise[1:]
+		ret_dict     = _tg.get_relation_text_dict(premise, conclusion, False, False, False, is_dont_know=True)
+		mode         = 't' if is_supportive else 't'
+		counter_mode = 'f' if is_supportive else 't'
+
+		relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut']
+		for relation in relations:
+			url = ''
+			if relation == 'support':
+				arg_id_sys, sys_attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid)
+				url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
+
+			elif relation == 'undermine' or relation == 'undercut':
+				url = _um.get_url_for_justifying_argument(True, argument_uid, counter_mode, relation)
+
+			elif relation == 'overbid':
+				url = _um.get_url_for_justifying_argument(True, argument_uid, mode, relation)
+
+			elif relation == 'rebut':
+				url = _um.get_url_for_justifying_argument(True, argument_uid, counter_mode, relation)
+
+			statements_array.append(self.__get_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
 
@@ -670,7 +722,7 @@ class DictionaryHelper(object):
 		"""
 		logger('QueryHelper', 'add_discussion_end_text', 'main')
 		_t = Translator(lang)
-		discussion_dict['heading'] += '<br><br>'
+		discussion_dict['heading']['outro'] += '<br><br>'
 
 		if at_start:
 			discussion_dict['mode'] = 'start'
@@ -678,13 +730,13 @@ class DictionaryHelper(object):
 			if logged_in:
 				extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
 				extras_dict['close_statement_container'] = False
-				discussion_dict['heading']      += '<br><br>' + _t.get(_t.pleaseAddYourSuggestion)
+				discussion_dict['heading'] += '<br><br>' + _t.get(_t.pleaseAddYourSuggestion)
 			else:
-				discussion_dict['heading']      += '<br><br>' + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin)
-			extras_dict['show_display_style']   = False
-			extras_dict['show_bar_icon']        = False
-			extras_dict['is_editable']          = False
-			extras_dict['is_reportable']        = False
+				discussion_dict['heading'] += '<br><br>' + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin)
+			extras_dict['show_display_style']       = False
+			extras_dict['show_bar_icon']            = False
+			extras_dict['is_editable']              = False
+			extras_dict['is_reportable']            = False
 
 		elif at_justify_argumentation:
 			discussion_dict['mode'] = 'justify_argumentation'

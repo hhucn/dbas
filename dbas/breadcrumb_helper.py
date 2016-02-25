@@ -112,8 +112,7 @@ class BreadcrumbHelper(object):
 			text = text[0:1].lower() + text[1:]
 			# 7 choose action for start statemens
 			# 8 choose justification for a relation
-			hold = _t.get(_t.hold) if '/t' in url else _t.get(_t.doesNotHold)
-			return ((_t.get(_t.breadcrumbsJustifyStatement) + ' ' + text + ' ' + hold + '?'))\
+			return ((_t.get(_t.breadcrumbsJustifyStatement) + ' ' + text + ' ' + _t.get(_t.hold)  + '?'))\
 				if len(splitted) == 8 else\
 				(_t.get(_t.breadcrumbsReplyForResponseOfConfrontation) + ' ' + text)
 
