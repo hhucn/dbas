@@ -255,6 +255,20 @@ setStyleOptions = function (guiHandler){
  * @param windowInnerWidth
  */
 setNavigationSidebar = function (windowInnerWidth){
+	var divSiteNavigation = $('#issue_info').hover(
+		function(){
+			$(this).attr('data-container', 'body')
+				.attr('data-toggle', 'popover')
+				.attr('data-placement', 'left')
+				.attr('data-content', 'Vivamus sagittis lacus vel augue laoreet rutrum faucibus.');
+		}, function (){
+			$(this).attr('data-container', '')
+				.attr('data-toggle', '')
+				.attr('data-placement', '')
+				.attr('data-content', '');
+		}
+	);
+
 	var parent = $('#display-style-menu-icon'),
 		child0 = parent.children().eq(0),
 		child1 = parent.children().eq(1),

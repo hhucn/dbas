@@ -30,7 +30,7 @@ function setLinkActive(linkname) {
  */
 function jmpToChapter() {
 	// jump to chapter-function
-	$('a[href^=#]').on('click', function (e) {
+	$('a[href^="#"]').on('click', function (e) {
 		try {
 			var href = $(this).attr('href');
 			$('html, body').animate({
