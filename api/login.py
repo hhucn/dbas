@@ -83,9 +83,7 @@ def validate_credentials(request):
 
 	try:
 		if logged_in['status'] == 'success':
-			print("here")
 			token = __create_token(nickname)
-			print("token: %s" % token)
 			user = {'nickname': nickname, 'token': token}
 			request.validated['user'] = user
 	except TypeError:
