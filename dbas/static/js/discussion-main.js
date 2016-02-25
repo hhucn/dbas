@@ -185,7 +185,7 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		new Helper().delay(function() {
 			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
-			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
+			if ($('#' + discussionsDescriptionIntroId).text().indexOf(_t(initialPositionInterest)) != -1) {
 				// here we have our start statement
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {
@@ -222,8 +222,13 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
  */
 setStyleOptions = function (guiHandler){
 	// render html tags
-	replaceHtmlTags($('#discussions-header'));
+	replaceHtmlTags($('#' + discussionsDescriptionIntroId));
+	replaceHtmlTags($('#' + discussionsDescriptionBridgeId));
+	replaceHtmlTags($('#' + discussionsDescriptionOutroId));
 	$.each($('#' + discussionSpaceId + ' label'), function replaceHtmlTagInHeader() {
+		replaceHtmlTags($(this));
+	});
+	$.each($('#' + islandViewContainerId + ' h5'), function replaceHtmlTagInIsland() {
 		replaceHtmlTags($(this));
 	});
 	replaceHtmlTags($('#' + issueInfoId));

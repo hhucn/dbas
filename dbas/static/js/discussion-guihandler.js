@@ -119,7 +119,7 @@ function GuiHandler() {
 		new DiscussionGraph().showGraph();
 
 		// text
-		var html = $('#' + discussionsDescriptionId).html(), innerHeight, header, footer;
+		var html = $('#' + discussionsDescriptionIntroId).html(), innerHeight, header, footer;
 		html = html.substr(0, html.indexOf('<br>'));
 		$('#' + graphViewContainerHeaderId).html(html);
 
@@ -139,7 +139,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageInactive = function(imageElement){
-		imageElement.addClass('inactive-image').css('cursor','not-allowed');
+		imageElement.addClass('inactive-image').removeClass('icon-badge').css('cursor','not-allowed');
 	};
 
 	/**
@@ -147,7 +147,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageActive = function(imageElement){
-		imageElement.removeClass('inactive-image').css('cursor', 'pointer');
+		imageElement.removeClass('inactive-image').addClass('icon-badge').css('cursor', 'pointer');
 	};
 
 	/**
@@ -615,13 +615,6 @@ function GuiHandler() {
 	 */
 	this.hideDiscussionError = function () {
 		$('#' + discussionFailureRowId).hide();
-	};
-
-	/**
-	 * Hide some element for getting more space (hides last col-md-2)
-	 */
-	this.hideDiscussionDescriptionsNextElement = function() {
-		$('#' + discussionsDescriptionId).attr('style', 'margin-bottom: 0px;').parent().parent().next().hide();
 	};
 
 	/**

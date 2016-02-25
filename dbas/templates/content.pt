@@ -77,7 +77,9 @@
 					<div id="argument-blogging-sidebar">
 						<a class="share-icon share-def" id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" style="margin-right: 1em;" tal:attributes="title extras.buttons.share_url"></a>
 					</div>
-					<h4 id="discussions-header">${discussion.heading}</h4>
+					<h4 id="discussions-header-intro">${discussion.heading.intro}</h4>
+					<h4 id="discussions-header-bridge">${discussion.heading.bridge}</h4>
+					<h4 id="discussions-header-outro">${discussion.heading.outro}</h4>
 					<div id="discussions-space">
 
 						<ul>

@@ -599,6 +599,18 @@ class QueryHelper(object):
 
 		return new_statement, False
 
+	def get_text_for_conclusion(self, argument, lang):
+		"""
+
+		:param argument:
+		:param lang:
+		:return:
+		"""
+		if argument.argument_uid == 0:
+			return self.get_text_for_statement_uid(argument.conclusion_uid)
+		else:
+			return self.get_text_for_argument_uid(argument.argument_uid, lang)
+
 	def get_text_for_statement_uid(self, uid):
 		"""
 
