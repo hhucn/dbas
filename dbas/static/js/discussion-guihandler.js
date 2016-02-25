@@ -139,7 +139,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageInactive = function(imageElement){
-		imageElement.addClass('inactive-image');
+		imageElement.addClass('inactive-image').css('cursor','not-allowed');
 	};
 
 	/**
@@ -147,7 +147,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageActive = function(imageElement){
-		imageElement.removeClass('inactive-image');
+		imageElement.removeClass('inactive-image').css('cursor', 'pointer');
 	};
 
 	/**

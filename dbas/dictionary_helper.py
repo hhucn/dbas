@@ -612,7 +612,12 @@ class DictionaryHelper(object):
 		                                                  'add_statement_row_title': _tn.get(_tn.addStatementRow),
 		                                                  'rem_statement_row_title': _tn.get(_tn.remStatementRow),
 		                                                  'switch_discussion': _tn.get(_tn.switchDiscussionTitle),
-		                                                  'clear_statistics': _tn.get(_tn.clearStatistics)}
+		                                                  'clear_statistics': _tn.get(_tn.clearStatistics),
+		                                                  'user_options': 'TODO',
+		                                                  'switch_language': 'TODO',
+		                                                  'login': 'TODO',
+		                                                  'news_about_dbas': 'TODO',
+		                                                  'share_url': 'TODO'}
 		if not for_api:
 			return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()

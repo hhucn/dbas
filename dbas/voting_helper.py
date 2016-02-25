@@ -151,9 +151,6 @@ class VotingHelper(object):
 		db_old_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
 		                                                                    VoteStatement.author_uid == user.uid,
 		                                                                    VoteStatement.is_valid == True)).all()
-		logger('VotingHelper', '__vote_statement', 'OLD VOTES ' + str(len(db_old_votes)))
-		logger('VotingHelper', '__vote_statement', 'OLD VOTES ' + str(len(db_old_votes)))
-		logger('VotingHelper', '__vote_statement', 'OLD VOTES ' + str(len(db_old_votes)))
 
 		for old_vote in db_old_votes:
 			old_vote.set_valid(False)
@@ -165,9 +162,6 @@ class VotingHelper(object):
 		                                                            VoteStatement.author_uid == user.uid,
 		                                                            VoteStatement.is_up_vote == is_accept,
 		                                                            VoteStatement.is_valid == True)).first():
-			logger('VotingHelper', '__vote_statement', 'NO DUPL')
-			logger('VotingHelper', '__vote_statement', 'NO DUPL')
-			logger('VotingHelper', '__vote_statement', 'NO DUPL')
 			db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
 			DBDiscussionSession.add(db_new_vote)
 			DBDiscussionSession.flush()

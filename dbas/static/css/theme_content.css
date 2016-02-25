@@ -196,34 +196,40 @@
 	background-repeat: no-repeat;
 }
 
-#discussion-sidebar{
-	text-align: right;
-}
-.display-style-menu {
+.display-style-menu-icon {
 	opacity: 0;
 }
 
-#discussion-container .icon-badge,
-#display-style-menu-icon .icon-badge,
-#display-style-menu{
+#discussion-container img,
+#discussion-sidebar-style-menu img,
+#display-style-menu-icon{
 	width: 50px;
 	margin-bottom: 0.5em;
 }
-#discussion-container .icon-badge:hover,
-#display-style-menu-icon .icon-badge:hover{
+#discussion-container img:hover,
+#discussion-sidebar-style-menu img:hover{
 	width: 60px;
+	cursor: pointer;
 }
 
-.display-style-menu > div{
-	width: 70px;
-	float: left;
-}
-
-#display-style-menu-icon:hover .display-style-menu {
+#discussion-sidebar-style-menu:hover .display-style-menu-icon {
    opacity: 1;
    transition: opacity .45s ease-in-out;
    -moz-transition: opacity .45s ease-in-out;
    -webkit-transition: opacity .45s ease-in-out;
+}
+
+#site-navigation .tooltip {
+	width: 150px;
+}
+
+#discussion-sidebar{
+	list-style-type: none;
+	text-align: right;
+}
+#discussion-sidebar ul{
+	list-style-type: none;
+	padding-left: 0px;
 }
 
 .container-three-divs {
@@ -261,12 +267,6 @@
 	#con-position-column {
 		float: none;
 		width: 95%;
-	}
-}
-
-@media (max-width: 991px) {
-	#discussion-sidebar {
-		text-align: left;
 	}
 }
 

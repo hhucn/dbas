@@ -255,58 +255,10 @@ setStyleOptions = function (guiHandler){
  * @param windowInnerWidth
  */
 setNavigationSidebar = function (windowInnerWidth){
-	var divSiteNavigation = $('#issue_info').hover(
-		function(){
-			$(this).attr('data-container', 'body')
-				.attr('data-toggle', 'popover')
-				.attr('data-placement', 'left')
-				.attr('data-content', 'Vivamus sagittis lacus vel augue laoreet rutrum faucibus.');
-		}, function (){
-			$(this).attr('data-container', '')
-				.attr('data-toggle', '')
-				.attr('data-placement', '')
-				.attr('data-content', '');
-		}
-	);
-
-	var parent = $('#display-style-menu-icon'),
-		child0 = parent.children().eq(0),
-		child1 = parent.children().eq(1),
-		helper = new Helper(),
-		margin = 2,
-		shiftRight = false,
-		collapsed = windowInnerWidth < 992 && child1.attr('id') == 'more-statement',
-		bigSize = windowInnerWidth > 991 && child0.attr('id') == 'more-statement';
-
-	if (collapsed || bigSize){
-		helper.swapElements(child1, child0);
-
-		// modify the edit statement button
-		parent = $('#edit-statement-container');
-		parent.attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
-		child0 = parent.children().eq(0);
-		child1 = parent.children().eq(1);
-		helper.swapElements(child1, child0);
-
-		// modify the report button
-		parent = $('#report-button-container');
-		parent.attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
-		child0 = parent.children().eq(0);
-		child1 = parent.children().eq(1);
-		helper.swapElements(child1, child0);
-
-		$('#more-statement').attr('style', bigSize ? '' : 'float: left; margin-left: 2em;');
-		$('#site-navigation').attr('style', bigSize ? '' : 'float: left; width: 80%;');
-
-		// modify the hover sidebar
-		shiftRight = parent.attr('id') ? true : false;
-		$('.display-style-menu').each(function () {
-			child0 = $(this).children().eq(0);
-			child1 = $(this).children().eq(1);
-			margin = shiftRight && (child0.attr('id') == 'opinion-barometer-img' || child1.attr('id') == 'opinion-barometer-img') ? 13 : 2;
-			$(this).attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: ' + margin + 'em;');
-			helper.swapElements(child1, child0);
-		})
+	if (windowInnerWidth < 992){
+		$('#discussion-sidebar').addClass('list-inline').css('text-align', 'left');
+	} else {
+		$('#discussion-sidebar').removeClass('list-inline').css('text-align', 'right');
 	}
 };
 

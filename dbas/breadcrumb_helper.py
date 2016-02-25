@@ -45,9 +45,11 @@ class BreadcrumbHelper(object):
 				self.del_breadcrumbs_of_user(transaction, user)
 
 		db_already_in = DBDiscussionSession.query(History).filter_by(url=url).first()
+		db_last = DBDiscussionSession.query(History).order_by(History.uid.desc()).first()
+		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
 		if db_already_in and delete_dupliacates:
 			DBDiscussionSession.query(History).filter(and_(History.author_uid == db_user.uid, History.uid > db_already_in.uid)).delete()
-		else:
+		elif not already_last:
 			DBDiscussionSession.add(History(user=db_user.uid, url=url, session_id=session_id))
 		transaction.commit()
 

@@ -575,7 +575,7 @@ $(document).ready(function () {
 	else if (path.indexOf(urlSettings) != -1 ||
 			 path.indexOf(urlImprint) != -1 ||
 			 path.indexOf(urlLogout) != -1){											$('#' + navbarLeft).hide(); }
-	else { 											setLinkActive(''); 					$('#' + navbarLeft).show(); }
+	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
 	// language switch
 	$('#' + translationLinkDe).click(function(){ ajaxSwitchDisplayLanguage('de') });
@@ -586,6 +586,11 @@ $(document).ready(function () {
 
 	// gui preperation
 	prepareLoginRegistrationPopup();
+
+	// activate tooltips
+	$(function () {
+		$("body").tooltip({ selector: '[data-toggle=tooltip]' });
+    });
 
 	// ajax loading animation
 	$(document).on({
