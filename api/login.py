@@ -7,6 +7,8 @@ import binascii
 import json
 import os
 
+from pyramid.security import authenticated_userid, remember
+
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import Dbas
@@ -30,31 +32,42 @@ def valid_token(request):
 	:param request:
 	:return:
 	"""
-	header = 'X-Messaging-Token'
-	htoken = request.headers.get(header)
-	if htoken is None:
-		log.error("htoken is None")
-		raise response401()
+	print(request)
 	try:
-		user, token = htoken.split('-', 1)
-	except ValueError:
-		log.error("ValueError")
-		raise response401()
+		token = request.token
+	except AttributeError:
+		raise response401(msg=u'token is empty')
+	user_id = authenticated_userid(request)
 
-	log.debug("API Login Attempt: %s: %s" % (user, token))
-
-	db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-
-	if not db_user:
-		log.error("API Invalid user")
-		raise response401()
-
-	if not db_user.token == token:
-		log.error("API Invalid Token")
-		raise response401()
-
-	log.debug("API Valid token")
-	request.validated['user'] = user
+	if user_id is None:
+		raise response401(msg=u"token cannot parse to a valid username")
+	# header = 'X-Messaging-Token'
+	# htoken = request.headers.get(header)
+	# if htoken is None:
+	# 	log.error("htoken is None")
+	# 	raise response401()
+	# try:
+	# 	user, token = htoken.split('-', 1)
+	# except ValueError:
+	# 	log.error("ValueError")
+	# 	raise response401()
+	#
+	# log.debug("API Login Attempt: %s: %s" % (user, token))
+	#
+	# print(request)
+	#
+	# db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+	#
+	# if not db_user:
+	# 	log.error("API Invalid user")
+	# 	raise response401()
+	#
+	# if not db_user.token == token:
+	# 	log.error("API Invalid Token")
+	# 	raise response401()
+	#
+	# log.debug("API Valid token")
+	# request.validated['user'] = user
 
 
 def validate_credentials(request):
@@ -74,7 +87,8 @@ def validate_credentials(request):
 
 	try:
 		if logged_in['status'] == 'success':
-			user = {'nickname': nickname, 'token': _create_token()}
+			cookie = remember(request, nickname)
+			user = {'nickname': nickname, 'token': cookie}
 			request.validated['user'] = user
 	except TypeError:
 		log.error('API Not logged in: %s' % logged_in)

@@ -189,19 +189,19 @@ def user_login(request):
 	:return: token
 	"""
 	user = request.validated['user']
-
+	return user
 	# Convert bytes to string
-	if type(user['token']) == bytes:
-		token = user['token'].decode('utf-8')
-	else:
-		token = user['token']
-
-	db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
-
-	if not db_user:
-		raise response401()
-
-	db_user.set_token(token)
-	db_user.update_token_timestamp()
-	transaction.commit()
-	return {'token': '%s-%s' % (user['nickname'], token)}
+	# if type(user['token']) == bytes:
+	# 	token = user['token'].decode('utf-8')
+	# else:
+	# 	token = user['token']
+    #
+	# db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
+    #
+	# if not db_user:
+	# 	raise response401()
+    #
+	# db_user.set_token(token)
+	# db_user.update_token_timestamp()
+	# transaction.commit()
+	# return {'token': '%s-%s' % (user['nickname'], token)}
