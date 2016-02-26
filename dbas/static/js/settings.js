@@ -401,22 +401,17 @@ function StatisticsHandler(){
 			return;
 		}
 
-		var table, tr, td_text, td_date, td_type, td_valid, span_up, span_down;
-		// top row
+		var table, tr, span_up, span_down;
 		table = $('<table>');
 		table.attr('class', 'table table-condensed')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
-		tr = $('<tr>');
-		td_date = $('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
-		td_text = $('<td>').html('<strong>' + _t(date) + '</strong>').css('text-align', 'center');
-		td_type = $('<td>').html('<strong>' + _t(typeofVote) + '</strong>').css('text-align', 'center');
-		td_valid = $('<td>').html('<strong>' + _t(valid) + '</strong>').css('text-align', 'center');
-		tr.append(td_date);
-		tr.append(td_text);
+		tr = $('<tr>')
+			.append($('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center'))
+			.append($('<td>').html('<strong>' + _t(date) + '</strong>').css('text-align', 'center'));
 		if (is_vote) {
-			tr.append(td_type);
-			tr.append(td_valid);
+			tr.append($('<td>').html('<strong>' + _t(typeofVote) + '</strong>').css('text-align', 'center'))
+				.append($('<td>').html('<strong>' + _t(valid) + '</strong>').css('text-align', 'center'));
 		}
 		table.append(tr);
 
