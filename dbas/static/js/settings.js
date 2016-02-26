@@ -256,7 +256,107 @@ function StatisticsHandler(){
 	/**
 	 *
 	 */
+	this.getEditsDone = function() {
+		if ($('#' + editsDoneCountId).text() == '0'){
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
+			return;
+		}
+
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_get_all_edits',
+			method: 'GET',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function deleteStatisticsRequestDone(data) {
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allEditsDone), false);
+		}).fail(function deleteStatisticsRequestFail() {
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
+		});
+	};
+
+	/**
+	 *
+	 */
+	this.getStatementsSend = function() {
+		if ($('#' + statementsDoneCountId).text() == '0'){
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
+			return;
+		}
+
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_get_all_posted_statements',
+			method: 'GET',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function deleteStatisticsRequestDone(data) {
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allStatementsPosted), false);
+		}).fail(function deleteStatisticsRequestFail() {
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
+		});
+	};
+
+	/**
+	 *
+	 */
+	this.getArgumentVotes = function(){
+		if ($('#' + discussionArgVoteCountId).text() == '0'){
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
+			return;
+		}
+
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_get_all_argument_votes',
+			method: 'GET',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function deleteStatisticsRequestDone(data) {
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
+		}).fail(function deleteStatisticsRequestFail() {
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
+		});
+
+	};
+
+	/**
+	 *
+	 */
+	this.getStatementVotes = function(){
+		if ($('#' + discussionStatVoteCountId).text() == '0'){
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
+			return;
+		}
+
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_get_all_statement_votes',
+			method: 'GET',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function deleteStatisticsRequestDone(data) {
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
+		}).fail(function deleteStatisticsRequestFail() {
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
+		});
+
+	};
+
+	/**
+	 *
+	 */
 	this.deleteStatistics = function(){
+		if ($('#' + editsDoneCountId).text() == '0' &&
+			$('#' + discussionArgVoteCountId).text() == '0' &&
+			$('#' + discussionStatVoteCountId).text() == '0'){
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
+			return;
+		}
 		// display dialog
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' h4.modal-title').text(_t(deleteStatisticsTitle));
@@ -284,8 +384,65 @@ function StatisticsHandler(){
 		}).done(function deleteStatisticsRequestDone(data) {
 			new StatisticsHandler().callbackDeleteStatisticsDone(data);
 		}).fail(function deleteStatisticsRequestFail() {
-			new StatisticsHandler().callbackDeleteStatisticsFail();
+			new StatisticsHandler().callbackStatisticsFail();
 		});
+	};
+
+	/**
+	 *
+	 * @param jsonData
+	 * @param titleText
+	 * @param is_vote
+	 */
+	this.callbackGetStatisticsDone = function(jsonData, titleText, is_vote){
+		var parsedData = $.parseJSON(jsonData);
+		if (parsedData.length == 0){
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
+			return;
+		}
+
+		var table, tr, td_text, td_date, td_type, td_valid, span_up, span_down;
+		// top row
+		table = $('<table>');
+		table.attr('class', 'table table-condensed')
+			.attr('border', '0')
+			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
+		tr = $('<tr>');
+		td_date = $('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
+		td_text = $('<td>').html('<strong>' + _t(date) + '</strong>').css('text-align', 'center');
+		td_type = $('<td>').html('<strong>' + _t(typeofVote) + '</strong>').css('text-align', 'center');
+		td_valid = $('<td>').html('<strong>' + _t(valid) + '</strong>').css('text-align', 'center');
+		tr.append(td_date);
+		tr.append(td_text);
+		if (is_vote) {
+			tr.append(td_type);
+			tr.append(td_valid);
+		}
+		table.append(tr);
+
+		span_up = $('<span>').addClass('glyphicon').addClass('glyphicon glyphicon-thumbs-up').attr('aria-hidden', 'true');
+		span_down = $('<span>').addClass('glyphicon').addClass('glyphicon glyphicon-thumbs-down').attr('aria-hidden', 'true');
+
+		$.each(parsedData, function callbackGetStatisticsDoneTableEach(key, val) {
+			tr = $('<tr>')
+				.append($('<td>').text(val.timestamp))
+				.append($('<td>').text(is_vote ? val.text : val.content));
+			if (is_vote) {
+				tr.append($('<td>').html(val.is_up_vote ? span_up.clone() : span_down.clone()).css('text-align', 'center'))
+					.append($('<td>').html(val.is_valid ? checkmark : ballot).css('text-align', 'center'));
+			}
+			table.append(tr);
+		});
+
+		$('#' + popupEditStatementLogfileSpaceId).empty().append(table);
+
+		$('#' + popupConfirmDialogId).modal('show').find('.modal-dialog').addClass('modal-lg');
+		$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
+		$('#' + popupConfirmDialogId + ' div.modal-body').append(table);
+		$('#' + popupConfirmDialogAcceptBtn).hide();
+		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
+			$('#' + popupConfirmDialogId).modal('hide');
+		}).removeClass('btn-danger').text('Okay');
 	};
 
 	/**
@@ -296,22 +453,25 @@ function StatisticsHandler(){
 		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.removed_data == 'true') {
 			$('#' + statisticsSuccessDialog).fadeIn();
+			$('#' + statisticsSuccessMessage).text(_t(statisticsDeleted));
 			new Helper().delay(function () {
 				$('#' + statisticsSuccessDialog).fadeOut();
 			}, 3000);
-			$('#edits-done-count').text('0');
-			$('#discussion-arg-votes-count').text('0');
-			$('#discussion-stat-votes-count').text('0');
+			$('#' + editsDoneCountId).text('0');
+			$('#' + discussionArgVoteCountId).text('0');
+			$('#' + discussionStatVoteCountId).text('0');
 		} else {
-			new StatisticsHandler().callbackDeleteStatisticsFail();
+			new StatisticsHandler().callbackStatisticsFail();
 		}
 	};
 
 	/**
 	 *
+	 * @param text
 	 */
-	this.callbackDeleteStatisticsFail = function(){
+	this.callbackStatisticsFail = function(text){
 		$('#' + statisticsAlertDialog).fadeIn();
+		$('#' + statisticsAlertMessage).text(text);
 		new Helper().delay(function() { $('#' + statisticsAlertDialog).fadeOut(); }, 3000);
 	};
 
@@ -364,11 +524,27 @@ $(function () {
 		new StatisticsHandler().deleteStatistics();
 	});
 
-	$('#' + settingsReceiveNotifications).change(function() {
+	$('#' + infoEditsId).click(function (){
+		new StatisticsHandler().getEditsDone();
+	});
+
+	$('#' + infoStatementsId).click(function (){
+		new StatisticsHandler().getStatementsSend();
+	});
+
+	$('#' + infoVoteArgumentsId).click(function (){
+		new StatisticsHandler().getArgumentVotes();
+	});
+
+	$('#' + infoVoteStatementsId).click(function (){
+		new StatisticsHandler().getStatementVotes();
+	});
+
+	$('#' + settingsReceiveNotifications).change(function notificationReceiverChange() {
 		new SettingsHandler().setReceiveInformation($(this), 'notification');
 	});
 
-	$('#' + settingsReceiveMails).change(function() {
+	$('#' + settingsReceiveMails).change(function emailReceiverChange() {
 		new SettingsHandler().setReceiveInformation($(this), 'mail');
 	});
 

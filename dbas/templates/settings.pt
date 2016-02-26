@@ -11,7 +11,7 @@
 		<div class="container colored_container" id="first-settings-container">
 			<div class="content row">
 				<div class="col-md-7">
-                    <h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="personal_information">Personal Information</span></h4>
+					<h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="personal_information">Personal Information</span></h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="firstname">Firstname</span></td>
@@ -36,35 +36,39 @@
 					</table>
 				</div>
 				<div class="col-md-5">
-                    <h4><span class="glyphicon glyphicon-cog" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="settings">Settings</span></h4>
+					<h4><span class="glyphicon glyphicon-cog" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="settings">Settings</span></h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span i18n:translate="receive_notifications" class="lead">Receive Notifications</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_notifications"></span></td>
-						    <td class="text-center"><input id="receive-notifications-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_notifications"></td>
-				    	</tr>
-			    		<tr>
-		    				<td><span i18n:translate="receive_mails" class="lead">Receive E-Mails</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_mails"></span></td>
-	    					<td class="text-center"><input id="receive-mails-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_mails"></td>
-    					 </tr>
+							<td class="text-center">
+								<input id="receive-notifications-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_notifications">
+							</td>
+						</tr>
+						<tr>
+							<td><span i18n:translate="receive_mails" class="lead">Receive E-Mails</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_mails"></span></td>
+							<td class="text-center">
+								<input id="receive-mails-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_mails">
+							</td>
+						</tr>
 					</table>
 					<div class="center text-center well well-sm">
 						<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
-                        <br>
+						<br>
 						<span class="lead" i18n:translate="profile_picture">Profile Picture</span>
 					</div>
 				</div>
 				<div class="col-md-12">
-                    <div id="settings-alert" class="alert alert-dismissible alert-danger" style="display: none;">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+					<div id="settings-alert" class="alert alert-dismissible alert-danger" style="display: none;">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                        <span id="settings-alert-message" i18n:translate="settings_not_set">Settings could not be set. Please try again later.</span>
-                    </div>
-                    <div id="settings-success" class="alert alert-dismissible alert-success" style="display: none;">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+						<span id="settings-alert-message" i18n:translate="settings_not_set">Settings could not be set. Please try again later.</span>
+					</div>
+					<div id="settings-success" class="alert alert-dismissible alert-success" style="display: none;">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
 						<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                        <span id="settings-success-message" i18n:translate="settings_set">Settings were set successfully.</span>
-                    </div>
-                </div>
+						<span id="settings-success-message" i18n:translate="settings_set">Settings were set successfully.</span>
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -115,54 +119,71 @@
 					</form>
 				</div>
 
-                <div class="col-md-5">
+				<div class="col-md-5">
 					<h4><span class="glyphicon glyphicon-stats" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
 					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
-							<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
+							<td>
+								<span class="lead" i18n:translate="statements_posted">Statements posted</span>
+								<a href="#"><span id="info-statements" class="glyphicon glyphicon-info-sign"></span></a>
+							</td>
+							<td id="statements-done-count" style="text-align: right">${settings.statemens_posted}</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="lead" i18n:translate="edits_done">Edits done</span>
+								<a href="#"><span id="info-edits" class="glyphicon glyphicon-info-sign"></span></a>
+							</td>
 							<td id="edits-done-count" style="text-align: right">${settings.edits_done}</td>
 						</tr>
 						<tr>
-							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>
+							<td>
+								<span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span>
+								<a href="#"><span id="info-vote-arguments" class="glyphicon glyphicon-info-sign"></span></a>
+							</td>
 							<td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
 						</tr>
 						<tr>
-							<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
+							<td>
+								<span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span>
+								<a href="#"><span id="info-vote-statements" class="glyphicon glyphicon-info-sign"></span></a>
+							</td>
 							<td id="discussion-stat-votes-count" style="text-align: right">${settings.discussion_stat_votes}</td>
 						</tr>
 					</table>
-                    <div class="text-center">
-                        <input id="clear-statistics" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.clear_statistics" />
-                    </div>
+					<div class="text-center">
+						<input id="clear-statistics" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.clear_statistics" />
+					</div>
 				</div>
 			</div>
 
-            <div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" class="col-md-12">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span i18n:translate="password_changed">Your password was changed</span>.
-            </div>
-            <div class="col-md-12">
-                <div id="statistics-alert" class="alert alert-dismissible alert-danger" style="display: none;">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                    <span id="statistics-alert-message" i18n:translate="statistics_not_deleted">Statistics could not be deleted.</span>
+			<div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" class="col-md-12">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<span i18n:translate="password_changed">Your password was changed</span>.
+			</div>
+			
+			<div class="col-md-12">
+				<div id="statistics-alert" class="alert alert-dismissible alert-danger" style="display: none;">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span id="statistics-alert-message" i18n:translate="statistics_not_deleted">Statistics could not be deleted.</span>
 
-                </div>
-                <div id="statistics-success" class="alert alert-dismissible alert-success" style="display: none;">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                    <span id="statistics-success-message" i18n:translate="statistics_deletet">Statistics were set successfully deleted.</span>
+				</div>
+				<div id="statistics-success" class="alert alert-dismissible alert-success" style="display: none;">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+					<span id="statistics-success-message" i18n:translate="statistics_deletet">Statistics were set successfully deleted.</span>
 
-                </div>
+				</div>
 
-            </div>
+			</div>
 		</div>
 
 		<div class="container colored_container">
 			<div class="content row">
 				<div class="col-md-12">
-                    <h4><span class="glyphicon glyphicon-time" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="history">Your last history</span></h4>
+					<h4><span class="glyphicon glyphicon-time" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="history">Your last history</span></h4>
 
 					<div style="text-align:center;">
 						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.request_history" />

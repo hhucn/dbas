@@ -2,14 +2,17 @@ import random
 import hashlib
 import urllib
 
+from collections import OrderedDict
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion
+from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Statement
 from .logger import logger
+
 from .strings import Translator
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
+
 
 class PasswordGenerator(object):
 
@@ -25,11 +28,11 @@ class PasswordGenerator(object):
 		pw_len = 10
 		pwlist = []
 
-		for i in range(pw_len//3):
+		for i in range(pw_len // 3):
 			pwlist.append(alphabet[random.randrange(len(alphabet))])
 			pwlist.append(upperalphabet[random.randrange(len(upperalphabet))])
 			pwlist.append(str(random.randrange(10)))
-		for i in range(pw_len-len(pwlist)):
+		for i in range(pw_len - len(pwlist)):
 			pwlist.append(alphabet[random.randrange(len(alphabet))])
 
 		pwlist.append(symbols[random.randrange(len(symbols))])
@@ -90,7 +93,7 @@ class UserHandler(object):
 		"""
 		email = user.email.encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
-		gravatar_url += urllib.parse.urlencode({'d':'wavatar', 's':str(80)})
+		gravatar_url += urllib.parse.urlencode({'d': 'wavatar', 's': str(80)})
 		logger('UserHandler', 'get_profile_picture', 'url: ' + gravatar_url)
 		return gravatar_url
 
@@ -126,11 +129,11 @@ class UserHandler(object):
 		"""
 		_t = Translator(lang)
 
-		int1 = random.randint(0,9)
-		int2 = random.randint(0,9)
+		int1 = random.randint(0, 9)
+		int2 = random.randint(0, 9)
 		answer = 0
 		question = _t.get(_t.antispamquestion) + ' '
-		sign = _t.get(_t.signs)[random.randint(0,3)]
+		sign = _t.get(_t.signs)[random.randint(0, 3)]
 
 		if sign is '+':
 			sign = _t.get(sign)
@@ -147,8 +150,8 @@ class UserHandler(object):
 		elif sign is '/':
 			sign = _t.get(sign)
 			while int1 == 0 or int2 == 0 or int1 % int2 != 0:
-				int1 = random.randint(1,9)
-				int2 = random.randint(1,9)
+				int1 = random.randint(1, 9)
+				int2 = random.randint(1, 9)
 			answer = int1 / int2
 
 		question += _t.get(str(int1)) + ' ' + sign + ' ' + _t.get(str(int2)) + '?'
@@ -156,25 +159,30 @@ class UserHandler(object):
 
 		return question, answer
 
-	def get_edits_of_user(self, user):
+	def get_count_of_statements_of_user(self, user, only_edits):
 		"""
 
 		:param user:
+		:param only_edits:
 		:return:
 		"""
 		if not user:
 			return 0
 
+		edit_count = 0
+		statement_count = 0
 		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid).all()
-		edits = []
+
 		for tv in db_textversions:
 			db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()
 			if db_root_version.uid < tv.uid:
-				edits.append(tv)
+				edit_count += 1
+			else:
+				statement_count +=1
 
-		return len(edits)
+		return edit_count if only_edits else statement_count
 
-	def get_votes_of_user(self, user):
+	def get_count_of_votes_of_user(self, user):
 		"""
 
 		:param user:
@@ -185,6 +193,97 @@ class UserHandler(object):
 		arg_votes = len(DBDiscussionSession.query(VoteArgument).filter_by(author_uid=user.uid).all())
 		stat_votes = len(DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user.uid).all())
 		return arg_votes, stat_votes
+
+	def get_statements_of_user(self, user, lang):
+		"""
+
+		:param user:
+		:param lang:
+		:return:
+		"""
+		return_array = []
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if not db_user:
+			return return_dict
+
+		db_edits = DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
+
+		for edit in db_edits:
+			db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=edit.statement_uid).first()
+			if db_root_version.uid == edit.uid:
+				edit_dict = dict()
+				edit_dict['uid'] = str(edit.uid)
+				edit_dict['statement_uid'] = str(edit.statement_uid)
+				edit_dict['content'] = str(edit.content)
+				edit_dict['timestamp'] = str(edit.timestamp)
+				return_array.append(edit_dict)
+
+		return return_array
+
+	def get_edits_of_user(self, user, lang, query_helper):
+		"""
+
+		:param user:
+		:param lang:
+		:param query_helper:
+		:return:
+		"""
+		return_array = []
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if not db_user:
+			return return_dict
+
+		db_edits = DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
+
+		for edit in db_edits:
+			edit_dict = dict()
+			edit_dict['uid'] = str(edit.uid)
+			edit_dict['statement_uid'] = str(edit.statement_uid)
+			edit_dict['content'] = str(edit.content)
+			edit_dict['timestamp'] = query_helper.sql_timestamp_pretty_print(str(edit.timestamp), lang)
+			return_array.append(edit_dict)
+
+		return return_array
+
+	def get_votes_of_user(self, user, is_argument, lang, query_helper):
+		"""
+
+		:param user:
+		:param is_argument:
+		:param lang:
+		:param query_helper:
+		:return:
+		"""
+		return_array = []
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if not db_user:
+			return return_dict
+
+		_qh = query_helper
+
+		if is_argument:
+			db_votes = DBDiscussionSession.query(VoteArgument).filter_by(author_uid=db_user.uid).all()
+		else:
+			db_votes = DBDiscussionSession.query(VoteStatement).filter_by(author_uid=db_user.uid).all()
+
+		for vote in db_votes:
+			vote_dict = dict()
+			vote_dict['uid'] = str(vote.uid)
+			vote_dict['timestamp'] = _qh.sql_timestamp_pretty_print(str(vote.timestamp), lang)
+			vote_dict['is_up_vote'] = str(vote.is_up_vote)
+			vote_dict['is_valid'] = str(vote.is_valid)
+			if is_argument:
+				vote_dict['argument_uid'] = str(vote.argument_uid)
+				vote_dict['text'] = _qh.get_text_for_argument_uid(vote.argument_uid, lang)
+			else:
+				vote_dict['statement_uid'] = str(vote.statement_uid)
+				vote_dict['text'] = _qh.get_text_for_statement_uid(vote.statement_uid)
+			return_array.append(vote_dict)
+
+		return return_array
 
 	def change_password(self, transaction, user, old_pw, new_pw, confirm_pw, lang):
 		"""

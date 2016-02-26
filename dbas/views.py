@@ -517,18 +517,19 @@ class Dbas(object):
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
 
-		old_pw = ''
-		new_pw = ''
-		confirm_pw = ''
-		message = ''
-		error = False
-		success = False
+		old_pw      = ''
+		new_pw      = ''
+		confirm_pw  = ''
+		message     = ''
+		error       = False
+		success     = False
 
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
+		db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
 		db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-		_uh = UserHandler()
-		edits = _uh.get_edits_of_user(db_user)
-		arg_vote, stat_vote = _uh.get_votes_of_user(db_user)
+		_uh         = UserHandler()
+		edits       = _uh.get_count_of_statements_of_user(db_user, True)
+		statements  = _uh.get_count_of_statements_of_user(db_user, False)
+		arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			old_pw = self.request.params['passwordold']
@@ -555,6 +556,7 @@ class Dbas(object):
 			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
 			'avatar_url': gravatar_url,
 			'edits_done': edits,
+			'statemens_posted': statements,
 			'discussion_arg_votes': arg_vote,
 			'discussion_stat_votes': stat_vote,
 			'send_mails': db_settings.send_mails,
@@ -709,13 +711,66 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-
 		logger('get_user_history', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-
 		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, ui_locales)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+	# ajax - getting all text edits
+	@view_config(route_name='ajax_get_all_posted_statements', renderer='json', check_csrf=True)
+	def get_all_posted_statements(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		logger('get_all_posted_statements', 'def', 'main')
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales)
+		return DictionaryHelper().data_to_json_array(return_array, True)
+
+	# ajax - getting all text edits
+	@view_config(route_name='ajax_get_all_edits', renderer='json', check_csrf=True)
+	def get_all_edits(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		logger('get_all_edits', 'def', 'main')
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		return_array = UserHandler().get_edits_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
+		return DictionaryHelper().data_to_json_array(return_array, True)
+
+	# ajax - getting all votes for arguments
+	@view_config(route_name='ajax_get_all_argument_votes', renderer='json', check_csrf=True)
+	def get_all_argument_votes(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		logger('get_all_argument_votes', 'def', 'main')
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, True, ui_locales, QueryHelper())
+		return DictionaryHelper().data_to_json_array(return_array, True)
+
+	# ajax - getting all votes for statements
+	@view_config(route_name='ajax_get_all_statement_votes', renderer='json', check_csrf=True)
+	def get_all_statement_votes(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		logger('get_all_statement_votes', 'def', 'main')
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, False, ui_locales, QueryHelper())
+		return DictionaryHelper().data_to_json_array(return_array, True)
 
 	# ajax - deleting complete history of the user
 	@view_config(route_name='ajax_delete_user_history', renderer='json', check_csrf=True)
@@ -732,7 +787,7 @@ class Dbas(object):
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - deleting complete history of the user
 	@view_config(route_name='ajax_delete_statistics', renderer='json', check_csrf=True)
@@ -749,7 +804,7 @@ class Dbas(object):
 		return_dict = dict()
 		return_dict['removed_data'] = 'true' if VotingHelper().clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - user login
 	@view_config(route_name='ajax_user_login', renderer='json')
@@ -813,7 +868,7 @@ class Dbas(object):
 
 		return_dict['error'] = str(error)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - user logout
 	@view_config(route_name='ajax_user_logout', renderer='json')
@@ -934,7 +989,7 @@ class Dbas(object):
 		return_dict['success'] = str(success)
 		return_dict['message'] = str(message)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - password requests
 	@view_config(route_name='ajax_user_password_request', renderer='json')
@@ -989,7 +1044,7 @@ class Dbas(object):
 		return_dict['success'] = str(success)
 		return_dict['message'] = str(message)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - set boolean for receiving information
 	@view_config(route_name='ajax_set_user_receive_information', renderer='json')
@@ -1023,7 +1078,7 @@ class Dbas(object):
 			logger('set_user_receive_information_settings', 'error', repr(e))
 
 		return_dict = {'error': error}
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 
 # #######################################
@@ -1065,7 +1120,7 @@ class Dbas(object):
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - send new start premise
 	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
@@ -1098,14 +1153,14 @@ class Dbas(object):
 			return_dict['error'] = error
 
 			if url == -1:
-				return _dh.dictionary_to_json_array(return_dict, True)
+				return _dh.data_to_json_array(return_dict, True)
 
 			return_dict['url'] = url
 		except KeyError as e:
 			logger('set_new_start_premise', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
-		return_json = _dh.dictionary_to_json_array(return_dict, True)
+		return_json = _dh.data_to_json_array(return_dict, True)
 
 		return return_json
 
@@ -1140,7 +1195,7 @@ class Dbas(object):
 			return_dict['error'] = error
 
 			if url == -1:
-				return _dh.dictionary_to_json_array(return_dict, True)
+				return _dh.data_to_json_array(return_dict, True)
 
 			return_dict['url'] = url
 
@@ -1148,7 +1203,7 @@ class Dbas(object):
 			logger('set_new_premises_for_argument', 'error', repr(e))
 			return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
-		return_json = _dh.dictionary_to_json_array(return_dict, True)
+		return_json = _dh.data_to_json_array(return_dict, True)
 
 		logger('set_new_premises_for_argument', 'def', 'returning ' + str(return_dict))
 		return return_json
@@ -1182,7 +1237,7 @@ class Dbas(object):
 			return_dict['error'] = ''
 			logger('set_correcture_of_statement', 'error', repr(e))
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - set notification as read
 	@view_config(route_name='ajax_notification_read', renderer='json')
@@ -1208,7 +1263,7 @@ class Dbas(object):
 			logger('set_message_read', 'error', repr(e))
 			return_dict['error'] = _t.get(_t.internalError)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - deletes a notification
 	@view_config(route_name='ajax_notification_delete', renderer='json')
@@ -1236,7 +1291,7 @@ class Dbas(object):
 			return_dict['error'] = _t.get(_t.internalError)
 			return_dict['success'] = ''
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #
@@ -1265,7 +1320,7 @@ class Dbas(object):
 
 		# return_dict = QueryHelper().get_logfile_for_premisegroup(uid)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - for shorten url
 	@view_config(route_name='ajax_get_shortened_url', renderer='json')
@@ -1310,7 +1365,7 @@ class Dbas(object):
 			_tn = Translator(self.request, get_current_registry())
 			return_dict['error'] = _tn.get(_tn.internalError)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - for attack overview
 	@view_config(route_name='ajax_get_argument_overview', renderer='json')
@@ -1325,7 +1380,7 @@ class Dbas(object):
 		issue = QueryHelper().get_issue_id(self.request)
 		return_dict = QueryHelper().get_attack_overview(self.request.authenticated_userid, issue, ui_locales)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - for getting all news
 	@view_config(route_name='ajax_get_news', renderer='json')
@@ -1337,7 +1392,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_news', 'def', 'main')
 		return_dict = QueryHelper().get_news()
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - for getting database
 	@view_config(route_name='ajax_get_database_dump', renderer='json')
@@ -1354,7 +1409,7 @@ class Dbas(object):
 
 		return_dict = _qh.get_dump(issue, ui_locales)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - for getting all users
 	@view_config(route_name='ajax_all_users', renderer='json')
@@ -1369,7 +1424,7 @@ class Dbas(object):
 
 		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - for getting all users with the same opinion
 	@view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
@@ -1397,7 +1452,7 @@ class Dbas(object):
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 
 # ########################################
@@ -1424,7 +1479,7 @@ class Dbas(object):
 		except KeyError as e:
 			logger('swich_language', 'error', repr(e))
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - for sending news
 	@view_config(route_name='ajax_send_news', renderer='json')
@@ -1447,7 +1502,7 @@ class Dbas(object):
 			_tn = Translator(QueryHelper().get_language(self.request), get_current_registry())
 			return_dict['error'] = _tn.get(_tn.internalError)
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - for fuzzy search
 	@view_config(route_name='ajax_fuzzy_search', renderer='json')
@@ -1468,7 +1523,7 @@ class Dbas(object):
 			return_dict = dict()
 			if for_api:
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_issues(value)
-				return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+				return DictionaryHelper().data_to_json_array(return_dict, True)
 
 			if mode == '0':  # start statement
 				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
@@ -1485,7 +1540,7 @@ class Dbas(object):
 			return_dict = dict()
 			logger('fuzzy_search', 'error', repr(e))
 
-		return DictionaryHelper().dictionary_to_json_array(return_dict, True)
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - for additional service
 	@view_config(route_name='ajax_additional_service', renderer='json')

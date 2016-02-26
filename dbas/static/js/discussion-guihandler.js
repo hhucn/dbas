@@ -510,28 +510,19 @@ function GuiHandler() {
 		td_date = $('<td>');
 		td_text = $('<td>');
 		td_author = $('<td>');
-		td_date.html('<b>Date</b>').css('text-align', 'center');
-		td_text.html('<b>Text</b>').css('text-align', 'center');
-		td_author.html('<b>Author</b>').css('text-align', 'center');
+		td_date.html('<strong>' + _t(date) + '</strong>').css('text-align', 'center');
+		td_text.html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
+		td_author.html('<strong>' + _t(author) + '</strong>').css('text-align', 'center');
 		tr.append(td_date);
 		tr.append(td_text);
 		tr.append(td_author);
 		table.append(tr);
 
 		$.each(jsonData.content, function displayStatementCorrectionsInPopupEach(key, val) {
-			tr = $('<tr>');
-			td_date = $('<td>');
-			td_text = $('<td>');
-			td_author = $('<td>');
-
-			td_date.text(val.date);
-			td_text.text(val.text);
-			td_author.text(val.author);
-
-			// append everything
-			tr.append(td_date);
-			tr.append(td_text);
-			tr.append(td_author);
+			tr = $('<tr>')
+				.append($('<td>').text(val.date))
+				.append($('<td>').text(val.text))
+				.append($('<td>').text(val.author));
 			table.append(tr);
 		});
 
