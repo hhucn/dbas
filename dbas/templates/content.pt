@@ -82,7 +82,7 @@
                     <a id="discussions-header-bridge-infos-link" data-toggle="collapse" href="#discussions-header-bridge-infos" aria-expanded="false" aria-controls="discussions-header-bridge-infos" class="collapsed">
 					<h4>
                         <span id="discussions-header-bridge">${discussion.heading.bridge}</span>
-                        <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em; float: right;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.click_fore_more"></span>
+                        <!--<span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em; float: right;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.click_fore_more"></span>-->
                     </h4>
                     </a>
                     <div class="collapse" id="discussions-header-bridge-infos">
