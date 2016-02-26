@@ -78,8 +78,20 @@
 						<a class="share-icon share-def" id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" style="margin-right: 1em;" tal:attributes="title extras.buttons.share_url"></a>
 					</div>
 					<h4 id="discussions-header-intro">${discussion.heading.intro}</h4>
-					<h4 id="discussions-header-bridge">${discussion.heading.bridge}</h4>
-					<h4 id="discussions-header-outro">${discussion.heading.outro}</h4>
+
+                    <a id="discussions-header-bridge-infos-link" data-toggle="collapse" href="#discussions-header-bridge-infos" aria-expanded="false" aria-controls="discussions-header-bridge-infos" class="collapsed">
+					<h4>
+                        <span style="width: 95%; float: left;" id="discussions-header-bridge">${discussion.heading.bridge}</span>
+                        <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em; float: right;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.click_fore_more"></span>
+                    </h4>
+                    </a>
+                    <br>
+                    <br>
+                    <div class="collapse" id="discussions-header-bridge-infos">
+                        <div class="well lead" id="discussions-header-bridge-infos-content" data-toggle="tooltip" data-placement="bottom"></div>
+                    </div>
+
+					<h4 style="float: left;" id="discussions-header-outro">${discussion.heading.outro}</h4>
 					<div id="discussions-space">
 
 						<ul>

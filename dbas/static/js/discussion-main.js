@@ -173,6 +173,12 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		}
 	});
 
+	$('#discussions-header-bridge-infos-link').click(function(){
+		var splits = window.location.href.split('/'),
+			uid = splits[splits.length - 1];
+		ajaxHandler.getMoreInfosAboutArgument(uid);
+	});
+
 };
 
 /**

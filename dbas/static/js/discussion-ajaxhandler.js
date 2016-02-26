@@ -182,6 +182,35 @@ function AjaxSiteHandler() {
 		});
 	};
 
+	this.getMoreInfosAboutArgument = function(uid){
+		if ($('#' + discussionsDescriptionBridgeInfoId).hasClass('in')){
+			$('#' + discussionsDescriptionBridgeInfoId).close();
+			return;
+		}
+
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_get_infos_about_argument',
+			method: 'POST',
+			data: {
+				uid: uid
+			},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
+		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
+			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
+		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8). '
+				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			if ($('#' + discussionsDescriptionBridgeInfoId).hasClass('in')){
+				$('#' + discussionsDescriptionBridgeInfoId).close();
+			}
+		});
+	};
+
 	/***
 	 * Ajax request for the fuzzy search
 	 * @param value

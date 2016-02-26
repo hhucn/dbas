@@ -68,6 +68,13 @@ var acceptItTitle 									= 'acceptItTitle';
 var contactSubmit									= 'contactSubmit';
 var correctionsSet 									= 'correctionsSet';
 var because                                         = 'because';
+var bridgeInfoStatementCreatedBy                    = 'bridgeInfoStatementCreatedBy';
+var bridgeInfoAt                                    = 'bridgeInfoAt';
+var bridgeInfoCurrentlySupported                    = 'bridgeInfoCurrentlySupported';
+var bridgeInfoParticipant                           = 'bridgeInfoParticipant';
+var bridgeInfoParticipantPl                         = 'bridgeInfoParticipantPl';
+var bridgeInfoSupporterSg                           = 'bridgeInfoSupporterSg';
+var bridgeInfoSupporterPl                           = 'bridgeInfoSupporterPl';
 var checkFirstname									= 'checkFirstname';
 var checkLastname									= 'checkLastname';
 var checkNickname									= 'checkNickname';
@@ -204,6 +211,13 @@ var dbas_en = {
 	'allGivenVotes': 'All Votes',
 	'author': 'Author',
 	'because': 'because',
+	'bridgeInfoStatementCreatedBy': 'This statement was created by',
+	'bridgeInfoAt': 'at',
+	'bridgeInfoCurrentlySupported': 'Currently it is supported by',
+	'bridgeInfoParticipant': 'participant',
+	'bridgeInfoParticipantPl': 's',
+	'bridgeInfoSupporterSg': 'Supporter is',
+	'bridgeInfoSupporterPl': 'Supporters are',
 	'countOfArguments': 'Count of arguments',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
 	'correctionsSet': 'Your correction was set.',
@@ -326,6 +340,13 @@ var dbas_de = {
 	'allGivenVotes': 'Alle Stimmen',
 	'author': 'Autor',
 	'because':'weil',
+	'bridgeInfoStatementCreatedBy': 'Diese Aussage wurde gemacht von',
+	'bridgeInfoAt': 'am',
+	'bridgeInfoCurrentlySupported': 'Sie wird aktuell unterstützt von',
+	'bridgeInfoParticipant': 'Teilnehmer/in',
+	'bridgeInfoParticipantPl': '/n/nen',
+	'bridgeInfoSupporterSg': 'Unterstützer/in ist',
+	'bridgeInfoSupporterPl': 'Unterstützer/innen sind',
 	'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',

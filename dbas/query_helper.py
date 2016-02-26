@@ -1069,6 +1069,30 @@ class QueryHelper(object):
 
 		return return_dict
 
+	def get_infos_about_argument(self, uid, lang):
+		"""
+
+		:param uid:
+		:return:
+		"""
+		return_dict = dict()
+		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.uid == uid,
+		                                                               VoteArgument.is_valid == True,
+		                                                               VoteStatement.is_up_vote == True)).all()
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+		db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
+		return_dict['vote_count'] = str(len(db_votes) + 2)
+		return_dict['author']     = db_author.nickname
+		return_dict['timestamp']  = self.sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
+
+		supporter = []
+		for vote in db_votes:
+			supporter.append(DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first().nickname)
+
+		return_dict['supporter'] = supporter
+
+		return return_dict
+
 	# ########################################
 	# OTHER - SETTER
 	# ########################################

@@ -660,7 +660,8 @@ class DictionaryHelper(object):
 														'switch_language': _tn.get(_tn.switchLanguage),
 														'login': _tn.get(_tn.login),
 														'news_about_dbas': _tn.get(_tn.newsAboutDbas),
-														'share_url': _tn.get(_tn.shareUrl)}
+														'share_url': _tn.get(_tn.shareUrl),
+		                                                'click_fore_more': _tn.get(_tn.clickForMore)}
 		if not for_api:
 			return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()

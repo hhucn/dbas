@@ -93,6 +93,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_fuzzy_search',                           '{url:.*}ajax_fuzzy_search')
 	config.add_route('ajax_switch_language',                        '{url:.*}ajax_switch_language{params:.*}')
 	config.add_route('ajax_get_database_dump',                      '{url:.*}ajax_get_database_dump')
+	config.add_route('ajax_get_infos_about_argument',               '{url:.*}ajax_get_infos_about_argument')
 	config.add_route('ajax_get_user_history',                       'ajax_get_user_history')
 	config.add_route('ajax_get_all_edits',                          'ajax_get_all_edits')
 	config.add_route('ajax_get_all_posted_statements',              'ajax_get_all_posted_statements')

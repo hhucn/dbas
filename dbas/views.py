@@ -1411,6 +1411,29 @@ class Dbas(object):
 
 		return DictionaryHelper().data_to_json_array(return_dict, True)
 
+	# ajax - for getting argument infos
+	@view_config(route_name='ajax_get_infos_about_argument', renderer='json')
+	def get_infos_about_argument(self):
+		"""
+		ajax interface for getting a dump
+		:return: json-set with everything
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('get_infos_about_argument', 'def', 'main')
+		_qh = QueryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
+		_t = Translator(ui_locales)
+		return_dict = dict()
+
+		try:
+			uid = self.request.params['uid']
+			return_dict = _qh.get_infos_about_argument(uid, ui_locales)
+			return_dict['error'] = ''
+		except KeyError as e:
+			return_dict['error'] = _t.get(_t.internalError)
+
+		return DictionaryHelper().data_to_json_array(return_dict, True)
+
 	# ajax - for getting all users
 	@view_config(route_name='ajax_all_users', renderer='json')
 	def get_all_users(self):
