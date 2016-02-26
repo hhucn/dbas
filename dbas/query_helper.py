@@ -1081,7 +1081,7 @@ class QueryHelper(object):
 		                                                               VoteStatement.is_up_vote == True)).all()
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
-		return_dict['vote_count'] = str(len(db_votes) + 2)
+		return_dict['vote_count'] = str(len(db_votes))
 		return_dict['author']     = db_author.nickname
 		return_dict['timestamp']  = self.sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
 
