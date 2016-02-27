@@ -440,7 +440,7 @@ function GuiHandler() {
 
 		// top row
 		table = $('<table>')
-			.attr('class', 'table table-condensed')
+			.attr('class', 'table table-condensed table-hover')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 		td_text = $('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');

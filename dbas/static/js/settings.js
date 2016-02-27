@@ -401,9 +401,9 @@ function StatisticsHandler(){
 			return;
 		}
 
-		var table, tr, span_up, span_down;
+		var table, tr, span_up, span_down, modalBody;
 		table = $('<table>');
-		table.attr('class', 'table table-condensed')
+		table.attr('class', 'table table-condensed table-hover')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 		tr = $('<tr>')
@@ -429,15 +429,36 @@ function StatisticsHandler(){
 			table.append(tr);
 		});
 
-		$('#' + popupEditStatementLogfileSpaceId).empty().append(table);
+		$('#' + popupConfirmDialogId).off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+			// re-hanging our modal body and delete the slimscrolldiv
+			var modalbody = $('.slimScrollDiv').children().eq(0);
+			modalbody.children().eq(1).remove();
+			modalbody.children().eq(2).remove();
+			$('.modal-header').after(modalbody);
+			$('.slimScrollDiv').remove();
+		}).modal('show').find('.modal-dialog').addClass('modal-lg');
 
-		$('#' + popupConfirmDialogId).modal('show').find('.modal-dialog').addClass('modal-lg');
 		$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
-		$('#' + popupConfirmDialogId + ' div.modal-body').append(table);
+		modalBody = $('#' + popupConfirmDialogId + ' div.modal-body');
+		modalBody.empty().append(table);
+		alert(modalBody.height() +"\n"+ (window.innerHeight-250));
+
+		if (modalBody.height() > (window.innerHeight-250)){
+			modalBody.slimScroll({
+				position: 'right',
+				height: (window.innerHeight-250) + 'px',
+				railVisible: true,
+				alwaysVisible: false
+			});
+		} else {
+			$(".scrollarea").slimScroll({destroy:true});
+		}
 		$('#' + popupConfirmDialogAcceptBtn).hide();
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
+			$(".scrollarea"); sa.slimScroll({destroy:true});
 		}).removeClass('btn-danger').text('Okay');
+		$('#myModal')
 	};
 
 	/**
