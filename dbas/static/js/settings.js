@@ -58,6 +58,7 @@ function HistoryHandler(){
 	this.getDataFail = function(){
 		$('#' + historyTableSuccessId).hide();
 		$('#' + historyTableFailureId).fadeIn('slow');
+		new Helper().delay(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
 		$('#' + historyFailureMessageId).html(_t(internalError));
 	};
 

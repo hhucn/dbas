@@ -204,7 +204,6 @@
 							<span aria-hidden="true">&times;</span>
 						</button>
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span class="lead" i18n:translate="error:" style="color: white;">Error:</span>
 						<span id="history-failure-msg"></span>
 					</div>
 
