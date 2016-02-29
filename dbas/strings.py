@@ -120,6 +120,7 @@ class Translator(object):
 		self.butTheyDoNotBelieveArgument = 'butTheyDoNotBelieveArgument'
 		self.because = 'because'
 		self.butWhich = 'butWhich'
+		self.butYouCounteredWith = 'butYouCounteredWith'
 		self.clickHereForRegistration = 'clickHereForRegistration'
 		self.confirmation = 'confirmation'
 		self.contactSubmit = 'contactSubmit'
@@ -309,6 +310,8 @@ class Translator(object):
 		self.otherParticipantDisagree = 'otherParticipantDisagree'
 		self.otherUsersClaimStrongerArgumentRejecting = 'otherUsersClaimStrongerArgumentRejecting'
 		self.otherUsersClaimStrongerArgumentAccepting = 'otherUsersClaimStrongerArgumentAccepting'
+		self.otherUsersHaveCounterArgument = 'otherUsersHaveCounterArgument'
+		self.otherUsersSaidThat = 'otherUsersSaidThat'
 		self.opinionBarometer = 'opinionBarometer'
 		self.pleaseAddYourSuggestion = 'pleaseAddYourSuggestion'
 		self.premiseGroup = 'premiseGroup'
@@ -528,6 +531,7 @@ class Translator(object):
 		en_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'but other participants do not have any counter argument for that.'
 		en_lang[self.because] = 'Because'
 		en_lang[self.butWhich] = 'but which one'
+		en_lang[self.butYouCounteredWith] = 'But you countered them with:'
 		en_lang[self.canYouGiveAReason] = 'Can you give a reason?'
 		en_lang[self.canYouGiveAReasonFor] = 'Can you give a reason for'
 		en_lang[self.canYouGiveACounter] = 'Can you give a counter-argument?'
@@ -713,6 +717,8 @@ class Translator(object):
 		en_lang[self.otherParticipantDisagree] = 'Other participants disagree that '
 		en_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Other users claim to have a stronger statement for rejecting'
 		en_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Other users claim to have a stronger statement for accepting'
+		en_lang[self.otherUsersHaveCounterArgument] = 'Other users have the counter-argument that'
+		en_lang[self.otherUsersSaidThat] = 'Other users said that'
 		en_lang[self.opinionBarometer] = 'Opinion Barometer'
 		en_lang[self.pleaseAddYourSuggestion] = 'Please add your suggestion!'
 		en_lang[self.premiseGroup] = 'PremiseGroup'
@@ -923,6 +929,7 @@ class Translator(object):
 		de_lang[self.butIDoNotBelieveArgument] = 'aber ich glaube nicht, dass ist ein gutes Argument für'
 		de_lang[self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass ist kein gutes Gegenargument für'
 		de_lang[self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass ist kein gutes Argument für'
+		de_lang[self.butYouCounteredWith] = 'Jedoch haben Sie das Gegenargument gebracht, dass'
 		de_lang[self.because] = 'Weil'
 		de_lang[self.butWhich] = 'aber welches'
 		de_lang[self.clickHereForRegistration] = 'Klick <a href="" data-toggle="modal" data-target="#popup_login" title="Login">hier</a> für die Anmeldung oder eine Registrierung!'
@@ -1111,6 +1118,8 @@ class Translator(object):
 		de_lang[self.otherParticipantDisagree] = 'Andere Teilnehmer widersprechen, dass '
 		de_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung von'
 		de_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme von'
+		de_lang[self.otherUsersHaveCounterArgument] = 'Andere Teilnehmer haben das Gegenargument, dass'
+		de_lang[self.otherUsersSaidThat] = 'Andere Teilnehmer haben gesagt, dass'
 		de_lang[self.opinionBarometer] = 'Meinungsbarometer'
 		de_lang[self.pleaseAddYourSuggestion] = 'Bitte geben Sie Ihren Vorschlag an!'
 		de_lang[self.previous] = 'Vorheriger Eintrag'
@@ -1441,9 +1450,9 @@ class TextGenerator(object):
 								 + ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' '\
 								 + _t.get(_t.theyThink).lower() + ': '  + confrontation
 
-		intro = _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + opinion + '.'
+		intro  = opinion + '.'
 		bridge = confrontation_text + '.'
-		outro = _t.get(_t.whatDoYouThinkAboutThat) + '?'
+		outro  = _t.get(_t.whatDoYouThinkAboutThat) + '?'
 		return intro, bridge, outro
 
 	def get_text_for_premise_for_statement(self, conclusion, premises, supportive, logged_in):

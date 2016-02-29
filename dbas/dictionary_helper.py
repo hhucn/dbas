@@ -213,7 +213,7 @@ class DictionaryHelper(object):
 				# argumentation is a reply for an argument, if the arguments conclusion of the user is no position
 				db_statement		= DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
 				reply_for_argument  = not (db_statement and db_statement.is_startpoint)
-				current_argument	= _qh.get_text_for_argument_uid(uid, lang, True)
+				current_argument	= _qh.get_text_for_argument_uid(uid, lang, True, True)
 				user_is_attacking   = not db_argument.is_supportive
 				h_intro, h_bridge , h_outro = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
 				                                                             confr, reply_for_argument, user_is_attacking,

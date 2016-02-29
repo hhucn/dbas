@@ -155,7 +155,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 
 		new Helper().redirectInNewTabForContact(params);
 
-	});
+	});3
 
 	// opinion barometer
 	$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
@@ -182,13 +182,12 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		ajaxHandler.getMoreInfosAboutArgument(uid, false);
 	});
 
-	$('#question-button').click(function(){
+	// get infos about the author
+	$('#' + questionItButtonId).click(function(){
 		var splits = window.location.href.split('/'),
 			uid = splits[splits.length - 1],
 			qmark = uid.indexOf('?');
-		if (qmark != -1)
-			uid = uid.substr(0, qmark);
-		ajaxHandler.getMoreInfosAboutArgument(uid, true);
+		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
 	});
 
 };
@@ -284,12 +283,14 @@ setNavigationSidebar = function (windowInnerWidth){
 			$(this).attr('data-placement', 'bottom');
 		});
 		$('#' + sidebarMoreButtonId).attr('data-placement', 'top');
+		$('#' + questionItButtonId).attr('data-placement', 'top');
 	} else {
 		$('#discussion-sidebar').removeClass('list-inline').css('text-align', 'right');
 		$('#site-navigation').removeClass('list-inline').css('text-align', 'right').find('img').each(function(){
 			$(this).attr('data-placement', 'left');
 		});
 		$('#' + sidebarMoreButtonId).attr('data-placement', 'left');
+		$('#' + questionItButtonId).attr('data-placement', 'left');
 	}
 };
 

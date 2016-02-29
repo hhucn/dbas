@@ -28,11 +28,74 @@ class QueryHelper(object):
 	# ########################################
 	# ARGUMENTS
 	# ########################################
-
-	#  TODO BETTER VISUALIZATION
-	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag=False):
+	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag = False, start_with_intro=False):
 		"""
 		Returns current argument as string like conclusion, because premise1 and premise2
+		:param uid: int
+		:param lang: str
+		:param with_strong_html_tag: Boolean
+		:param start_with_intro: Boolean
+		:return: str
+		"""
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+		# catch error
+		if not db_argument:
+			return None
+
+		_t = Translator(lang)
+		sb = '<strong>' if with_strong_html_tag else ''
+		se = '</strong>' if with_strong_html_tag else ''
+		because = ' ' + se + _t.get(_t.because).lower() + ' ' + sb
+		doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHoldBecause).lower() + ' ' + sb
+
+		# getting all argument id
+		arg_array = [db_argument.uid]
+		while db_argument.argument_uid != 0:
+			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_argument.argument_uid).first()
+			arg_array.append(db_argument.uid)
+
+		if len(arg_array) == 1:
+			# build one and only argument
+			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
+			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
+			premises = premises[:-1] if premises.endswith('.') else premises  # pretty print
+			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+			ret_value = conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
+
+		else:
+			# get all pgroups and at last, the conclusion
+			pgroups = []
+			supportive = []
+			arg_array = arg_array[::-1]
+			for uid in arg_array:
+				db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+				text, tmp = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+				pgroups.append(text[0:1].lower() + text[1:])
+				supportive.append(db_argument.is_supportive)
+			conclusion = self.get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
+
+			if len(arg_array) % 2 is 0: # system starts
+				ret_value = se + _t.get(_t.otherUsersSaidThat) + sb + ' '
+				users_opinion = True # user after system
+				conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+			else: # user starts
+				ret_value = se + _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + sb
+				users_opinion = False # system after user
+				conclusion = conclusion[0:1].upper() + conclusion[1:]  # pretty print
+
+			ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
+			for i in range(1, len(pgroups)):
+				ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
+				users_opinion = not users_opinion
+
+		return ret_value[:-1] # cut off punctuation
+
+
+	# DEPRECATED
+	def __get_text_for_argument_uid(self, uid, lang, with_strong_html_tag = False):
+		"""
+		DEPRECATED Returns current argument as string like conclusion, because premise1 and premise2
 		:param uid: int
 		:param lang: str
 		:param with_strong_html_tag: Boolean
@@ -60,11 +123,7 @@ class QueryHelper(object):
 			if not conclusion:
 				return None
 			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
-			if db_argument.is_supportive:
-				argument = conclusion + because + premises
-			else:
-				argument = conclusion + doesnt_hold_because + premises
-			# argument = premises + (' supports ' if db_argument.is_supportive else ' attacks ') + conclusion
+			argument = conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
 			return argument
 
 		# recursion
@@ -77,7 +136,6 @@ class QueryHelper(object):
 				ret_value = argument + ',' + because + premises
 			else:
 				ret_value = argument + doesnt_hold_because + premises
-			# ret_value = premises + (' supports ' if db_argument.is_supportive else ' attacks ') + argument
 		return ret_value
 
 	def get_undermines_for_argument_uid(self, argument_uid):
@@ -369,7 +427,7 @@ class QueryHelper(object):
 		       ', conclusion_uid: ' + str(conclusion_uid) +
 		       ', argument_uid: ' + str(argument_uid) +
 		       ', is_supportive: ' + str(is_supportive) +
-		       ', issue: ' + str(issue))
+		       ', issue: ' + str(issue), debug=True)
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
@@ -514,7 +572,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		logger('QueryHelper', '__set_statements_as_new_premisegroup', 'user: ' + str(user) +
-		       ', statement: ' + str(statements) + ', issue: ' + str(issue))
+		       ', statement: ' + str(statements) + ', issue: ' + str(issue), debug=True)
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		# check for duplicate
@@ -658,7 +716,7 @@ class QueryHelper(object):
 		:param premises_as_statements_uid:
 		:return:
 		"""
-		logger('QueryHelper', '__get_undermines_for_premises', 'main')
+		logger('QueryHelper', '__get_undermines_for_premises', 'main', debug=True)
 		return_array = []
 		index = 0
 		given_undermines = set()
@@ -683,7 +741,7 @@ class QueryHelper(object):
 		"""
 		return_array = []
 		logger('QueryHelper', '__get_attack_or_support_for_justification_of_argument_uid',
-		       'db_undercut against Argument.argument_uid==' + str(argument_uid))
+		       'db_undercut against Argument.argument_uid==' + str(argument_uid), debug=True)
 		db_related_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
 		                                                                       Argument.argument_uid == argument_uid)).all()
 		given_relations = set()

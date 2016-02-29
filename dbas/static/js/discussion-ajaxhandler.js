@@ -183,18 +183,11 @@ function AjaxSiteHandler() {
 	};
 
 	this.getMoreInfosAboutArgument = function(uid, calledbButton){
-		if (calledbButton){
-			if (!$('#' + discussionsDescriptionBridgeInfoId).hasClass('in')){
-				$('#' + discussionsDescriptionBridgeInfoId).collapse('show');
-			} else {
-				$('#' + discussionsDescriptionBridgeInfoId).collapse('hide');
-			}
-		} else {
-			if ($('#' + discussionsDescriptionBridgeInfoId).hasClass('in')) {
-				// $('#' + discussionsDescriptionBridgeInfoId).removeClass('in');
-				return;
-			}
-		}
+		var infoWindow = $('#' + discussionsDescriptionBridgeInfoId);
+		if (calledbButton)
+			if (!infoWindow.hasClass('in')) infoWindow.collapse('show');
+			else            				infoWindow.collapse('hide');
+		else if (infoWindow.hasClass('in'))	return;
 
 
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
