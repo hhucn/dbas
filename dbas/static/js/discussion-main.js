@@ -271,11 +271,13 @@ setNavigationSidebar = function (windowInnerWidth){
 		$('#site-navigation').addClass('list-inline').css('text-align', 'left').find('img').each(function(){
 			$(this).attr('data-placement', 'bottom');
 		});
+		$('#' + sidebarMoreButtonId).attr('data-placement', 'top');
 	} else {
 		$('#discussion-sidebar').removeClass('list-inline').css('text-align', 'right');
 		$('#site-navigation').removeClass('list-inline').css('text-align', 'right').find('img').each(function(){
 			$(this).attr('data-placement', 'left');
 		});
+		$('#' + sidebarMoreButtonId).attr('data-placement', 'left');
 	}
 };
 
