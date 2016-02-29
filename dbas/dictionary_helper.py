@@ -621,17 +621,17 @@ class DictionaryHelper(object):
 		is_logged_in = _uh.is_user_logged_in(authenticated_userid)
 
 		return_dict = dict()
-		return_dict['restart_url']				   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
-		return_dict['is_editable']				   = is_editable and is_logged_in
-		return_dict['is_reportable']				 = is_reportable
-		return_dict['is_admin']					  = _uh.is_user_admin(authenticated_userid)
-		return_dict['logged_in']					 = is_logged_in
-		return_dict['show_bar_icon']				 = show_bar_icon
-		return_dict['show_display_style']			= show_display_styles
-		return_dict['users_name']					= str(authenticated_userid)
+		return_dict['restart_url']		             = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
+		return_dict['is_editable']                   = is_editable and is_logged_in
+		return_dict['is_reportable']	             = is_reportable
+		return_dict['is_admin']			             = _uh.is_user_admin(authenticated_userid)
+		return_dict['logged_in']		             = is_logged_in
+		return_dict['show_bar_icon']	             = show_bar_icon
+		return_dict['show_display_style']            = show_display_styles
+		return_dict['users_name']		             = str(authenticated_userid)
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'
-		return_dict['close_premise_container']	   = True
+		return_dict['close_premise_container']	     = True
 		return_dict['close_statement_container']	 = True
 		return_dict['title']						 = {'barometer': _tn.get(_tn.opinionBarometer),
 														'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
@@ -639,6 +639,7 @@ class DictionaryHelper(object):
 														'expert_view': _tn.get(_tn.displayControlDialogExpertBody)}
 		return_dict['buttons']					   = {'report': _tn.get(_tn.report),
 														'report_title': _tn.get(_tn.reportTitle),
+														'question_title': _tn.get(_tn.questionTitle),
 														'show_all_arguments': _tn.get(_tn.showAllArguments),
 														'show_all_users': _tn.get(_tn.showAllUsers),
 														'delete_track': _tn.get(_tn.deleteTrack),
@@ -687,16 +688,16 @@ class DictionaryHelper(object):
 																			  False, False, not db_argument.is_supportive))
 				return_dict['island'] = island_dict
 			else:
-				return_dict['is_editable']			= False
-				return_dict['is_reportable']		  = False
-				return_dict['show_bar_icon']		  = False
-				return_dict['show_display_style']	 = False
-				return_dict['title']				  = {'barometer': _tn.get(_tn.opinionBarometer),
-														'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
-														'island_view': _tn.get(_tn.displayControlDialogIslandBody),
-														'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
-														'edit_statement': _tn.get(_tn.editTitle),
-														'report_statement': _tn.get(_tn.reportTitle)}
+				return_dict['is_editable']		  = False
+				return_dict['is_reportable']	  = False
+				return_dict['show_bar_icon']	  = False
+				return_dict['show_display_style'] = False
+				return_dict['title']			  = {'barometer': _tn.get(_tn.opinionBarometer),
+				                                     'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
+				                                     'island_view': _tn.get(_tn.displayControlDialogIslandBody),
+				                                     'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
+				                                     'edit_statement': _tn.get(_tn.editTitle),
+				                                     'report_statement': _tn.get(_tn.reportTitle)}
 		return return_dict
 
 	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False,
@@ -753,11 +754,11 @@ class DictionaryHelper(object):
 			discussion_dict['heading']['bridge'] = ''
 			discussion_dict['heading']['outro']  = _t.get(_t.whyDoYouThinkThat) + '?'
 			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
-			extras_dict['close_premise_container']  = False
+			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style']	   = False
-			extras_dict['show_bar_icon']			= False
-			extras_dict['is_editable']			  = False
-			extras_dict['is_reportable']			= False
+			extras_dict['show_bar_icon']		   = False
+			extras_dict['is_editable']			   = False
+			extras_dict['is_reportable']		   = False
 
 		else:
 			discussion_dict['heading']['outro'] += _t.get(_t.discussionEnd) + ' ' + (_t.get(_t.discussionEndLinkText) if logged_in else _t.get(_t.feelFreeToLogin))

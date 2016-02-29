@@ -1419,7 +1419,7 @@ class Dbas(object):
 		:return: json-set with everything
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_infos_about_argument', 'def', 'main')
+		logger('get_infos_about_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		_t = Translator(ui_locales)

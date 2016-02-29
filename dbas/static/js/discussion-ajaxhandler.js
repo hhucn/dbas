@@ -182,11 +182,20 @@ function AjaxSiteHandler() {
 		});
 	};
 
-	this.getMoreInfosAboutArgument = function(uid){
-		if ($('#' + discussionsDescriptionBridgeInfoId).hasClass('in')){
-			$('#' + discussionsDescriptionBridgeInfoId).close();
-			return;
+	this.getMoreInfosAboutArgument = function(uid, calledbButton){
+		if (calledbButton){
+			if (!$('#' + discussionsDescriptionBridgeInfoId).hasClass('in')){
+				$('#' + discussionsDescriptionBridgeInfoId).collapse('show');
+			} else {
+				$('#' + discussionsDescriptionBridgeInfoId).collapse('hide');
+			}
+		} else {
+			if ($('#' + discussionsDescriptionBridgeInfoId).hasClass('in')) {
+				// $('#' + discussionsDescriptionBridgeInfoId).removeClass('in');
+				return;
+			}
 		}
+
 
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
@@ -206,7 +215,7 @@ function AjaxSiteHandler() {
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 			if ($('#' + discussionsDescriptionBridgeInfoId).hasClass('in')){
-				$('#' + discussionsDescriptionBridgeInfoId).close();
+				$('#' + discussionsDescriptionBridgeInfoId).removeClass('in');
 			}
 		});
 	};

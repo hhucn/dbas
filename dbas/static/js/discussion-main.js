@@ -173,10 +173,22 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		}
 	});
 
-	$('#discussions-header-bridge-infos-link').click(function(){
+	$('#' + discussionsDescriptionBridgeInfoLinkId).click(function(){
 		var splits = window.location.href.split('/'),
-			uid = splits[splits.length - 1];
-		ajaxHandler.getMoreInfosAboutArgument(uid);
+			uid = splits[splits.length - 1],
+			qmark = uid.indexOf('?');
+		if (qmark != -1)
+			uid = uid.substr(0, qmark);
+		ajaxHandler.getMoreInfosAboutArgument(uid, false);
+	});
+
+	$('#question-button').click(function(){
+		var splits = window.location.href.split('/'),
+			uid = splits[splits.length - 1],
+			qmark = uid.indexOf('?');
+		if (qmark != -1)
+			uid = uid.substr(0, qmark);
+		ajaxHandler.getMoreInfosAboutArgument(uid, true);
 	});
 
 };

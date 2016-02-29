@@ -38,6 +38,7 @@ var discussionsDescriptionIntroId 				= 'discussions-header-intro';
 var discussionsDescriptionBridgeId 				= 'discussions-header-bridge';
 var discussionsDescriptionOutroId 				= 'discussions-header-outro';
 var discussionsDescriptionBridgeInfoId 	    	= 'discussions-header-bridge-infos';
+var discussionsDescriptionBridgeInfoLinkId     	= 'discussions-header-bridge-infos-link';
 var discussionsDescriptionBridgeInfoMsgId		= 'discussions-header-bridge-infos-content';
 var discussionContainerId 						= 'discussion-container';
 var discussionEndStepBack 						= 'discussionEndStepBack';
