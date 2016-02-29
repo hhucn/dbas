@@ -199,7 +199,7 @@
 						<span id="history-success-msg"></span>
 					</div>
 
-					<div id="history-table-failure" class="alert alert-danger" role="alert" style="display: none;">
+					<div id="history-table-failure" class="alert alert-danger" role="alert" style="display: none; padding: 1em;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>

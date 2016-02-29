@@ -112,7 +112,7 @@
 						</li>
 						<li>
 							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon">
-								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.more_title"/>
+								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="left" tal:attributes="title extras.buttons.more_title"/>
 
 								<ul id="site-navigation">
 									<li>

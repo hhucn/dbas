@@ -156,7 +156,6 @@ var popupLoginWarningMessageText 				= 'popup-login-warning-message-text';
 var popupLoginInlineRadioGenderN 				= 'inlineRadioGender1';
 var popupLoginInlineRadioGenderF 				= 'inlineRadioGender2';
 var popupLoginInlineRadioGenderM 				= 'inlineRadioGender3';
-
 var popupSetPremiseGroups 			    		= 'popup-set-premisegroups';
 var popupSetPremiseGroupsBodyContent            = 'popup-set-premisegroups-body-content';
 var popupSetPremiseGroupsCounter                = 'popup-set-premisegroups-counter';
@@ -169,7 +168,6 @@ var popupSetPremiseGroupsOptions                = 'insert_statements_options';
 var popupSetPremiseGroupsStatementCount         = 'insert_statements_count';
 var popupSetPremiseGroupsListMoreArguments      = 'insert_statements_list_more_arguments';
 var popupSetPremiseGroupsOneBigStatement        = 'insert_statements_one_argument';
-
 var popupUrlSharingLongUrlButtonID 				= 'popup-url-sharing-long-url-button';
 var popupUrlSharingId 							= 'popup-url-sharing';
 var popupUrlSharingCloseButtonXId 				= 'popup-url-sharing-close';
@@ -219,6 +217,9 @@ var settingsPasswordExtrasId 					= 'settings-password-extras';
 var settingsPasswordSubmitButtonId 				= 'settings-password-submit';
 var settingsPasswordChangeDangerMessage 		= 'settings-danger-message';
 var settingsPasswordChangeSuccessMessage 		= 'settings-success-message';
+var sidebarEditButtonId                         = 'edit-statement';
+var sidebarReportButtonId                       = 'report-button';
+var sidebarMoreButtonId                         = 'more-statement';
 var switchLangIndicatorEnId						= 'switch-lang-indicator-en';
 var startDiscussionButtonId 					= 'start-discussion-button';
 var switchLangIndicatorDeId						= 'switch-lang-indicator-de';

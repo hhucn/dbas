@@ -708,8 +708,8 @@ class Translator(object):
 		en_lang[self.otherParticipantsDontHaveCounter] = 'Other participants do not have any counter-argument for '
 		en_lang[self.otherParticipantsDontHaveArgument] = 'Other participants do not have any argument for '
 		en_lang[self.otherParticipantsAcceptBut] = 'Other participants accept your argument, but'
-		en_lang[self.otherParticipantAgree] = 'Other participants agree, that '
-		en_lang[self.otherParticipantDisagree] = 'Other participants disagree, that '
+		en_lang[self.otherParticipantAgree] = 'Other participants agree that '
+		en_lang[self.otherParticipantDisagree] = 'Other participants disagree that '
 		en_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Other users claim to have a stronger statement for rejecting'
 		en_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Other users claim to have a stronger statement for accepting'
 		en_lang[self.opinionBarometer] = 'Opinion Barometer'
@@ -1243,7 +1243,7 @@ class TextGenerator(object):
 		if conclusion[-1] == '.':
 			conclusion = premise[:-1]
 
-		confrontation = '<strong>' + confrontation + '</strong>'
+		confrontation = '<strong>' + confrontation[0:1].upper() + confrontation[1:] + '</strong>'
 
 		premise = '<strong>' + premise[0:1].lower() + premise[1:] + '</strong>'
 		conclusion = '<strong>' + conclusion[0:1].lower() + conclusion[1:] + '</strong>'
@@ -1260,7 +1260,7 @@ class TextGenerator(object):
 		if attack_type == 'undercut':
 			ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounterFor) + ' ' + conclusion + '.'
 		if attack_type == 'overbid':
-			ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieveCounterFor) + ' ' + conclusion
+			ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieveCounterFor) + ' ' + conclusion + '.'
 		#  + '.' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
 		if attack_type == 'rebut':
 			ret_text = confrontation + ' ' \
@@ -1380,7 +1380,7 @@ class TextGenerator(object):
 								 + (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument)) \
 								 + ' <strong>' + conclusion + '</strong>. '\
 								 + (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))\
-								 + ' <strong>' + conclusion + ' ' + '</strong>.'
+								 + ' <strong>' + conclusion + '</strong>.'
 		# + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>.'
 
 		if with_no_opinion_text:

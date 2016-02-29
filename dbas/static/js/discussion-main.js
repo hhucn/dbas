@@ -304,11 +304,39 @@ setWindowOptions = function(){
  *
  */
 setGuiOptions = function(){
+	// set do not hide on hover popup
+	var originalLeave = $.fn.popover.Constructor.prototype.leave;
+	// http://jsfiddle.net/WojtekKruszewski/Zf3m7/22/
+	$.fn.popover.Constructor.prototype.leave = function(obj){
+		var self = obj instanceof this.constructor ?
+			obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type);
+		var container, timeout;
 
-	$('#edit-statement').hover(function() { $(this).prev().fadeIn(); }, function() { $(this).prev().fadeOut(); }).prev().hide();
-	$('#report-button').hover(function() { $(this).prev().fadeIn(); }, function() { $(this).prev().fadeOut(); }).prev().hide();
-	$('#more-statement').hover(function() { $(this).prev().fadeIn(); }, function() { $(this).prev().fadeOut(); }).prev().hide();
+		originalLeave.call(this, obj);
 
+		if(obj.currentTarget) {
+			container = $(obj.currentTarget).siblings('.popover');
+			timeout = self.timeout;
+			container.one('mouseenter', function(){
+				//We entered the actual popover – call off the dogs
+				clearTimeout(timeout);
+				// Let's monitor popover content instead
+				container.one('mouseleave', function(){
+					$.fn.popover.Constructor.prototype.leave.call(self, self);
+				});
+			})
+		}
+	};
+	$('#site-navigation').hide();
+	$('body').popover({ selector: '[data-popover]', trigger: 'click hover', delay: {show: 50, hide: 50}}).on('inserted.bs.popover', function () {
+		var element = $('#site-navigation').detach().show();
+		$('#discussion-sidebar-style-menu .popover-content').append(element);
+	}).on('hide.bs.popover', function () {
+		var element = $('#site-navigation').detach().hide();
+		$('#discussion-sidebar-style-menu').append(element);
+	});
+
+	// relation buttons
 	if (false && window.location.href.indexOf('/reaction/') != -1){
 		var cl = 'icon-badge',
 			style = 'height: 30px; width:30px; margin-right: 0.5em;',

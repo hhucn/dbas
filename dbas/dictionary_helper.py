@@ -120,7 +120,8 @@ class DictionaryHelper(object):
 		h_intro        = ''
 		h_bridge       = ''
 		h_outro        = ''
-		add_premise_text = (_tn.get(_tn.iAgreeWithInColor) if is_supportive else _tn.get(_tn.iDisagreeWithInColor)) + ': '
+		# add_premise_text = (_tn.get(_tn.iAgreeWithInColor) if is_supportive else _tn.get(_tn.iDisagreeWithInColor)) + ': '
+		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 		if at_start:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_start')
@@ -143,15 +144,15 @@ class DictionaryHelper(object):
 			                      + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
 			because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 			h_outro             = because
-			add_premise_text	+= text
+			add_premise_text	+= text[0:1].upper() + text[1:]
 
 		elif at_justify_argumentation:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_justify_argumentation')
 			_tg = TextGenerator(lang)
-			db_argument		 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-			confr	   = _qh.get_text_for_argument_uid(uid, lang, True)
-			premise, tmp		= _qh.get_text_for_premisesgroup_uid(uid)
-			conclusion		  = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
+			db_argument		= DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+			confr	        = _qh.get_text_for_argument_uid(uid, lang, True)
+			premise, tmp	= _qh.get_text_for_premisesgroup_uid(uid)
+			conclusion		= _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
 
 			h_intro, h_bridge , h_outro = _tg.get_header_for_users_confrontation_response(confr, premise, attack,
@@ -499,7 +500,8 @@ class DictionaryHelper(object):
 		_um			 = UrlManager(application_url, slug, for_api)
 
 		# based in the relation, we will fetch different url's for the items
-		relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut']
+		# relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO 'overbid'
+		relations = ['undermine', 'support', 'undercut', 'rebut']
 		for relation in relations:
 			url = ''
 
