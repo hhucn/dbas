@@ -352,6 +352,17 @@ setGuiOptions = function(){
 		$('#discussion-sidebar-style-menu').append(element);
 	});
 
+	var baseFontSize = parseInt($('body').css('font-size').replace('px',''));
+	if ($('#' + breadcrumbContainerId).height() > 6*baseFontSize){
+		$('#' + breadcrumbContainerId + ' .col-md-12').slimScroll({
+			position: 'right',
+			height: 5 * baseFontSize + 'px',
+			railVisible: true,
+			alwaysVisible: false,
+			start: 'bottom'
+		});
+	}
+
 	// relation buttons
 	if (false && window.location.href.indexOf('/reaction/') != -1){
 		var cl = 'icon-badge',

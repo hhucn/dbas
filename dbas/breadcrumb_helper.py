@@ -78,7 +78,7 @@ class BreadcrumbHelper(object):
 		for index, history in enumerate(db_history):
 			hist = dict()
 			hist['index']       = str(index)
-			hist['url']         = str(history.url) + '?breadcrumb=true' # add this for deleting traces
+			hist['url']         = str(history.url) + '?breadcrumb=true'  # add this for deleting traces
 			hist['text']        = self.__get_text_for_url__(history.url, lang)
 			hist['shorttext']   = hist['text'][0:30] + '...' if len(hist['text']) > 35 else hist['text']
 			breadcrumbs.append(hist)
@@ -113,9 +113,10 @@ class BreadcrumbHelper(object):
 			text = text[0:1].lower() + text[1:]
 			# 7 choose action for start statemens
 			# 8 choose justification for a relation
-			return ((_t.get(_t.breadcrumbsJustifyStatement) + ' ' + text + ' ' + _t.get(_t.hold)  + '?'))\
-				if len(splitted) == 8 else\
-				(_t.get(_t.breadcrumbsReplyForResponseOfConfrontation) + ' ' + text)
+			if len(splitted) == 8:
+				return _t.get(_t.breadcrumbsJustifyStatement) + ' ' + text + ' ' + _t.get(_t.hold)  + '?'
+			else:
+				return _t.get(_t.breadcrumbsReplyForResponseOfConfrontation) + ' ' + text
 
 		elif '/attitude/' in url:
 			uid  = url[url.rfind('/') + 1:]
@@ -126,7 +127,7 @@ class BreadcrumbHelper(object):
 		elif '/choose/' in url:
 			splitted = url.split('/')
 			uid = splitted[8]
-			if splitted[6] == 't': # is argument
+			if splitted[6] == 't':  # is argument
 				arg = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 				text = _qh.get_text_for_statement_uid(arg.conclusion_uid) if arg.argument_uid == 0 else _qh.get_text_for_argument_uid(arg.argument_uid, lang)
 			else:
