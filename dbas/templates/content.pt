@@ -56,7 +56,7 @@
 		<div class="container colored_container" id="discussion-container">
 			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
-				<div class="col-md-10" style="text-align: justify;">
+				<div class="col-md-11" style="text-align: justify;">
 
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -109,7 +109,7 @@
 					</div>
 				</div>
 
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<ul id="discussion-sidebar">
 						<li>
 							<img tal:condition="extras.is_editable"  id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
