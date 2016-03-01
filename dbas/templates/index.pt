@@ -24,7 +24,7 @@
 						<p class="lead" i18n:translate="novel_software">This novel discussions software will help you to discuss a problem in a structured manner.</p>
 						<br>
 						<form action="/discuss" method="get" class="text-center">
-							<input class="btn btn-lg btn-primary" type="submit" value="Click here to start now!" name="Submit" id="start-discussion-button" tal:attributes="value extras.buttons.lets_go"/>
+							<input class="btn btn-lg btn-primary" type="submit" value="Click here to start now!" name="Submit" id="start-discussion-button" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.lets_go; title extras.buttons.lets_go"/>
 						</form>
 						<br>
 						<br>
@@ -40,18 +40,18 @@
 						<p class="lead"><span i18n:translate="projec_based_on">This project is based on research of the graduation school Online-Participation, subsidised governmentally by</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.</p>
 						<ul class="list-logos">
 							<li>
-								<a id="logo_hhu_link" href="http://www.hhu.de/" title="Heinrich-Heine-University Duesseldorf" target="_blank">
+								<a id="logo_hhu_link" href="http://www.hhu.de/" data-toggle="tooltip" data-placement="bottom" title="Heinrich-Heine-University Duesseldorf" target="_blank">
 									<img class="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo" />
 								</a>
 							</li>
 							<li>
-								<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank">
+								<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" data-toggle="tooltip" data-placement="bottom" title="Graduation School Online Participation" target="_blank">
 									<img id="logo_kolleg" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo" />
 									<img id="logo_kolleg_s" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}" alt="graduation school logo" />
 								</a>
 							</li>
 							<li>
-								<a id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
+								<a id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" data-toggle="tooltip" data-placement="bottom" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
 									<img id="logo_fhoev" class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" alt="fhoev logo" />
 									<img id="logo_fhoev_s" class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}" alt="fhoev logo" />
 								</a>
@@ -166,17 +166,17 @@
 					<div class="row">
 						<div class="col-md-4 col-badge">
 							<img id="icon-liqd" class="icon-badge" alt="icon-liqd" src="${request.static_url('dbas:static/images/icon_liqd.png')}" />
-							<h3><a target="_blank" href="https://liqd.net/" title="lidq">Liquid Democracy e.V.</a></h3>
+							<h3><a target="_blank" href="https://liqd.net/" data-toggle="tooltip" data-placement="bottom" title="Liquid Democracy e.V.">Liquid Democracy e.V.</a></h3>
 							<p i18n:translate="liquid_democracy_description">A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid Democracy e.V., which is a non-party, non-profit association. The key element of their work is the development of Adhocracy, a free software which serves as a digital participation tool. It offers various functions for the different needs of our users. In addition, we are developing Thentos, an identity management system which ensures privacy during complex participation processes.</p>
 						</div>
 						<div class="col-md-4 col-badge">
 							<img id="icon-kolleg" class="icon-badge" alt="icon-kolleg" src="${request.static_url('dbas:static/images/icon_kolleg.png')}" />
-							<h3><a href="http://www.fortschrittskolleg.de/" title="Graduation School Online Participation" target="_blank"><span i18n:translate="graduation_scool">Graduation School</span> <span i18n:translate="fk_op">Online-Participation</span></a></h3>
+							<h3><a href="http://www.fortschrittskolleg.de/" data-toggle="tooltip" data-placement="bottom" title="Graduation School Online Participation" target="_blank"><span i18n:translate="graduation_scool">Graduation School</span> <span i18n:translate="fk_op">Online-Participation</span></a></h3>
 							<p i18n:translate="fk_op_description">The NRW Graduation School Online-Participation is subsidised governmentally by Ministry of Innovation, Science and Research in North Rhine-Westphalia. The Graduation School is a network of business economics, computer scientiests, communication scientists, political scientists, jurists and sociologist, which are wokring together with partners from practice. The objective is the examination of opportunities of the internet, where affected persons are able to participate in decisions, where they are affected.</p>
 						</div>
 						<div class="col-md-4 col-badge">
 							<img id="icon-kit" class="icon-badge" alt="icon-kit" src="${request.static_url('dbas:static/images/icon_kit.png')}" />
-							<h3><a target="_blank" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" i18n:translate="kit">Karlsruhe Institut of Technology</a></h3>
+							<h3><a target="_blank" data-toggle="tooltip" data-placement="bottom" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" i18n:translate="kit">Karlsruhe Institut of Technology</a></h3>
 							<p i18n:translate="kit_description">The workging group of functionality of the graduation school has a close-knit connection with the Institute for Technology Assessment and Systems Analysis (ITAS) of the Karlsruhe Institut of Technology, especially to Prof. Dr. G. Betz. His working group develoepd Argunet, a software tool for collaborative argumentation analysis. Its underlying theory, the theory of dialectical struc- tures, defines argument relations in terms of locigo- sematical relations between propositions and thus gives rise to a new computational approach to the reconstruction of complex debates.
 							</p>
 						</div>
@@ -196,7 +196,7 @@
 						</span>
 						<br>
 						<span i18n:translate="data_structure_description">
-							We are using a modified argumentation map as data structure, whereby we differentiate between arguments, statements, (groups of) premises and conclusions. An <b>argument</b> consists of one or more <b>statements</b> that form the <b>premis(es)</b> and one statement or another argument or the negation of any of those two that form the <b>conclusion</b>. For example: '<i>Shutting down university park will save 100.000$ a year, therefore we should shut down university park.</i>' would be an argument where '<i>Shutting down university park will save 100.000$ a year.</i>' is the premise and '<i>we should shut down university park.</i>' is the conclusion. An example where the conclusion is an argument itself, would be: '<i>Yes, drug dealers are using the park to sell drugs but this is not a good reason for shutting down university park since we should not give in to criminals.</i>'. In this example the premise is '<i>we should not give in to criminals.</i>' while the conclusion is the negative form of the argument '<i>We should shut down university park because criminals use university park to sell drugs</i>'. More information can be afforded via the</span> <a href="${request.application_url}/contact" title="Contact" i18n:translate="contact">contact</a>-<span i18n:translate="formular">formular</span>.
+							We are using a modified argumentation map as data structure, whereby we differentiate between arguments, statements, (groups of) premises and conclusions. An <b>argument</b> consists of one or more <b>statements</b> that form the <b>premis(es)</b> and one statement or another argument or the negation of any of those two that form the <b>conclusion</b>. For example: '<i>Shutting down university park will save 100.000$ a year, therefore we should shut down university park.</i>' would be an argument where '<i>Shutting down university park will save 100.000$ a year.</i>' is the premise and '<i>we should shut down university park.</i>' is the conclusion. An example where the conclusion is an argument itself, would be: '<i>Yes, drug dealers are using the park to sell drugs but this is not a good reason for shutting down university park since we should not give in to criminals.</i>'. In this example the premise is '<i>we should not give in to criminals.</i>' while the conclusion is the negative form of the argument '<i>We should shut down university park because criminals use university park to sell drugs</i>'. More information can be afforded via the</span> <a href="${request.application_url}/contact" data-toggle="tooltip" data-placement="bottom" title="Contact" i18n:translate="contact">contact</a>-<span i18n:translate="formular">formular</span>.
 						<br>
 						<br>
 						<p class="lead" i18n:translate="additional_studies">In addition, we have studied several tools:</p>

@@ -18,12 +18,12 @@ class VotingHelper(object):
 		:param transaction: transaction
 		:return: increased votes of the argument
 		"""
-		if not UserHandler().is_user_logged_in(user):
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if not UserHandler().is_user_logged_in(user) or not db_user:
 			return None
 
 		logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		# set vote for the argument (relation), its premisegroup and conclusion
 		self.__vote_argument(db_argument, db_user, True)
@@ -63,16 +63,31 @@ class VotingHelper(object):
 
 		# return count of votes for this argument
 		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == db_argument.uid,
-		                                                               VoteArgument.is_valid is True,
-		                                                               VoteArgument.is_valid is True)).all()
+		                                                               VoteArgument.is_valid == True)).all()
 
 		transaction.commit()
 
 		return len(db_votes)
 
+	def add_vote_for_statement(self, statement_uid, user, supportive, transaction):
+		"""
+
+		:param statement_uid:
+		:param user:
+		:param supportive:
+		:param transaction:
+		:return:
+		"""
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if db_user:
+			self.__vote_statement(db_statement, db_user, supportive)
+			transaction.commit()
+
 	def clear_votes_of_user(self, transaction, user):
 		"""
 
+		:param transaction:
 		:param user:
 		:return:
 		"""
@@ -85,7 +100,6 @@ class VotingHelper(object):
 		DBDiscussionSession.flush()
 		transaction.commit()
 		return True
-
 
 	def __vote_argument(self, argument, user, is_accept):
 		"""
@@ -102,18 +116,33 @@ class VotingHelper(object):
 
 		logger('VotingHelper', '__vote_argument', 'argument ' + str(argument.uid) + ', user ' + user.nickname)
 
+		db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+		                                                              VoteArgument.author_uid == user.uid,
+		                                                              VoteArgument.is_up_vote == is_accept,
+		                                                              VoteArgument.is_valid == True)).first()
+
+		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+		                                                              VoteArgument.author_uid == user.uid,
+		                                                              VoteArgument.is_up_vote == is_accept)).all()
+		for d in db_votes:
+			logger('--',str(d.uid), str(d.is_valid))
+
 		# old one will be invalid
 		db_old_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
 		                                                                   VoteArgument.author_uid == user.uid,
-		                                                                   VoteArgument.is_valid is True)).all()
+		                                                                   VoteArgument.is_valid == True)).all()
+		if db_vote in db_old_votes:
+			db_old_votes.remove(db_vote)
+
 		for old_vote in db_old_votes:
 			old_vote.set_valid(False)
 			old_vote.update_timestamp()
 		DBDiscussionSession.flush()
 
-		db_new_vote = VoteArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
-		DBDiscussionSession.add(db_new_vote)
-		DBDiscussionSession.flush()
+		if not db_vote:
+			db_new_vote = VoteArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
+			DBDiscussionSession.add(db_new_vote)
+			DBDiscussionSession.flush()
 
 	def __vote_statement(self, statement, user, is_accept):
 		"""
@@ -130,18 +159,28 @@ class VotingHelper(object):
 
 		logger('VotingHelper', '__vote_statement', 'statement ' + str(statement.uid) + ', user ' + user.nickname)
 
+		# check for duplicate
+		db_vote = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
+		                                                               VoteStatement.author_uid == user.uid,
+		                                                               VoteStatement.is_up_vote == is_accept,
+		                                                               VoteStatement.is_valid == True)).first()
+
 		# old one will be invalid
 		db_old_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
 		                                                                    VoteStatement.author_uid == user.uid,
-		                                                                    VoteStatement.is_valid is True)).all()
+		                                                                    VoteStatement.is_valid == True)).all()
+		if db_vote in db_old_votes:
+			db_old_votes.remove(db_vote)
+
 		for old_vote in db_old_votes:
 			old_vote.set_valid(False)
 			old_vote.update_timestamp()
 		DBDiscussionSession.flush()
 
-		db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
-		DBDiscussionSession.add(db_new_vote)
-		DBDiscussionSession.flush()
+		if not db_vote:
+			db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
+			DBDiscussionSession.add(db_new_vote)
+			DBDiscussionSession.flush()
 
 	def __vote_premisesgroup(self, premisesgroup_uid, user, is_accept):
 		"""

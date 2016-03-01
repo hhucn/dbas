@@ -24,15 +24,79 @@ class QueryHelper(object):
 
 	def __init__(self):
 		self.__statement_min_length = 5
+		#  TODO move lang here and init translator
 
 	# ########################################
 	# ARGUMENTS
 	# ########################################
-
-	#  TODO BETTER VISUALIZATION
-	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag=False):
+	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag = False, start_with_intro=False):
 		"""
 		Returns current argument as string like conclusion, because premise1 and premise2
+		:param uid: int
+		:param lang: str
+		:param with_strong_html_tag: Boolean
+		:param start_with_intro: Boolean
+		:return: str
+		"""
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+		# catch error
+		if not db_argument:
+			return None
+
+		_t = Translator(lang)
+		sb = '<strong>' if with_strong_html_tag else ''
+		se = '</strong>' if with_strong_html_tag else ''
+		because = ' ' + se + _t.get(_t.because).lower() + ' ' + sb
+		doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHoldBecause).lower() + ' ' + sb
+
+		# getting all argument id
+		arg_array = [db_argument.uid]
+		while db_argument.argument_uid != 0:
+			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_argument.argument_uid).first()
+			arg_array.append(db_argument.uid)
+
+		if len(arg_array) == 1:
+			# build one and only argument
+			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
+			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
+			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+			ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
+			ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
+
+			return ret_value
+
+		else:
+			# get all pgroups and at last, the conclusion
+			pgroups = []
+			supportive = []
+			arg_array = arg_array[::-1]
+			for uid in arg_array:
+				db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+				text, tmp = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+				pgroups.append(text[0:1].lower() + text[1:])
+				supportive.append(db_argument.is_supportive)
+			conclusion = self.get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
+
+			if len(arg_array) % 2 is 0: # system starts
+				ret_value = se + _t.get(_t.otherUsersSaidThat) + sb + ' '
+				users_opinion = True # user after system
+				conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+			else: # user starts
+				ret_value = (se + _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + sb) if start_with_intro else ''
+				users_opinion = False # system after user
+				conclusion = conclusion[0:1].upper() + conclusion[1:]  # pretty print
+
+			ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
+			for i in range(1, len(pgroups)):
+				ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
+				users_opinion = not users_opinion
+			return ret_value[:-1] # cut off punctuation
+
+	# DEPRECATED
+	def __get_text_for_argument_uid(self, uid, lang, with_strong_html_tag = False, start_with_intro=False):
+		"""
+		DEPRECATED Returns current argument as string like conclusion, because premise1 and premise2
 		:param uid: int
 		:param lang: str
 		:param with_strong_html_tag: Boolean
@@ -54,36 +118,32 @@ class QueryHelper(object):
 
 		# basecase
 		if db_argument.argument_uid == 0:
-			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
 			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
 			premises = premises[:-1] if premises.endswith('.') else premises  # pretty print
 			if not conclusion:
 				return None
 			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
-			if db_argument.is_supportive:
-				argument = conclusion + because + premises
-			else:
-				argument = conclusion + doesnt_hold_because + premises
-			# argument = premises + (' supports ' if db_argument.is_supportive else ' attacks ') + conclusion
+			argument = conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
 			return argument
 
 		# recursion
 		if db_argument.conclusion_uid == 0:
 			argument = self.get_text_for_argument_uid(db_argument.argument_uid, lang, with_strong_html_tag)
-			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
 			if not premises:
 				return None
 			if db_argument.is_supportive:
 				ret_value = argument + ',' + because + premises
 			else:
 				ret_value = argument + doesnt_hold_because + premises
-			# ret_value = premises + (' supports ' if db_argument.is_supportive else ' attacks ') + argument
 		return ret_value
 
-	def get_undermines_for_argument_uid(self, argument_uid):
+	def get_undermines_for_argument_uid(self, argument_uid, lang):
 		"""
 		Calls __get_undermines_for_premises('reason', premises_as_statements_uid)
 		:param argument_uid: uid of the specified argument
+		:param lang: ui_locales
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(argument_uid))
@@ -99,43 +159,47 @@ class QueryHelper(object):
 		if len(premises_as_statements_uid) == 0:
 			return None
 
-		return self.__get_undermines_for_premises(premises_as_statements_uid)
+		return self.__get_undermines_for_premises(premises_as_statements_uid, lang)
 
-	def get_overbids_for_argument_uid(self, argument_uid):
+	def get_overbids_for_argument_uid(self, argument_uid, lang):
 		"""
 		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, True)
 		:param argument_uid: uid of the specified argument
+		:param lang:
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_overbids_for_argument_uid', 'main')
-		return self.__get_attack_or_support_for_justification_of_argument_uid(argument_uid, True)
+		return self.__get_attack_or_support_for_justification_of_argument_uid(argument_uid, True, lang)
 
-	def get_undercuts_for_argument_uid(self, argument_uid):
+	def get_undercuts_for_argument_uid(self, argument_uid, lang):
 		"""
 		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, False)
 		:param argument_uid:
+		:param lang:
 
 		:return:
 		"""
 		logger('QueryHelper', 'get_undercuts_for_argument_uid', 'main')
-		return self.__get_attack_or_support_for_justification_of_argument_uid(argument_uid, False)
+		return self.__get_attack_or_support_for_justification_of_argument_uid(argument_uid, False, lang)
 
-	def get_rebuts_for_argument_uid(self, argument_uid):
+	def get_rebuts_for_argument_uid(self, argument_uid, lang):
 		"""
 		Calls self.get_rebuts_for_arguments_conclusion_uid('reason', Argument.conclusion_uid)
 		:param argument_uid: uid of the specified argument
+		:param lang:
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_rebuts_for_argument_uid', 'main')
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 		if not db_argument:
 			return None
-		return self.get_rebuts_for_arguments_conclusion_uid(db_argument)
+		return self.get_rebuts_for_arguments_conclusion_uid(db_argument, lang)
 
-	def get_rebuts_for_arguments_conclusion_uid(self, db_argument):
+	def get_rebuts_for_arguments_conclusion_uid(self, db_argument, lang):
 		"""
 
 		:param db_argument:
+		:param lang:
 		:return:
 		"""
 		return_array = []
@@ -151,17 +215,18 @@ class QueryHelper(object):
 				given_rebuts.add(rebut.premisesgroup_uid)
 				tmp_dict = dict()
 				tmp_dict['id'] = rebut.uid
-				text, trash = self.get_text_for_premisesgroup_uid(rebut.premisesgroup_uid)
+				text, trash = self.get_text_for_premisesgroup_uid(rebut.premisesgroup_uid, lang)
 				tmp_dict['text'] = text[0:1].upper() + text[1:]
 				return_array.append(tmp_dict)
 				index += 1
 
 		return return_array
 
-	def get_supports_for_argument_uid(self, argument_uid):
+	def get_supports_for_argument_uid(self, argument_uid, lang):
 		"""
 
 		:param argument_uid: uid of the specified argument
+		:param lang:
 		:return: dictionary
 		"""
 		logger('QueryHelper', 'get_supporRects_for_argument_uid', 'main')
@@ -183,7 +248,7 @@ class QueryHelper(object):
 				if support.premisesgroup_uid not in given_supports:
 					tmp_dict = dict()
 					tmp_dict['id'] = support.uid
-					tmp_dict['text'], trash = self.get_text_for_premisesgroup_uid(support.premisesgroup_uid)
+					tmp_dict['text'], trash = self.get_text_for_premisesgroup_uid(support.premisesgroup_uid, lang)
 					return_array.append(tmp_dict)
 					index += 1
 					given_supports.add(support.premisesgroup_uid)
@@ -369,7 +434,7 @@ class QueryHelper(object):
 		       ', conclusion_uid: ' + str(conclusion_uid) +
 		       ', argument_uid: ' + str(argument_uid) +
 		       ', is_supportive: ' + str(is_supportive) +
-		       ', issue: ' + str(issue))
+		       ', issue: ' + str(issue), debug=True)
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
@@ -514,7 +579,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		logger('QueryHelper', '__set_statements_as_new_premisegroup', 'user: ' + str(user) +
-		       ', statement: ' + str(statements) + ', issue: ' + str(issue))
+		       ', statement: ' + str(statements) + ', issue: ' + str(issue), debug=True)
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		# check for duplicate
@@ -599,6 +664,18 @@ class QueryHelper(object):
 
 		return new_statement, False
 
+	def get_text_for_conclusion(self, argument, lang):
+		"""
+
+		:param argument:
+		:param lang:
+		:return:
+		"""
+		if argument.argument_uid == 0:
+			return self.get_text_for_statement_uid(argument.conclusion_uid)
+		else:
+			return self.get_text_for_argument_uid(argument.argument_uid, lang)
+
 	def get_text_for_statement_uid(self, uid):
 		"""
 
@@ -622,31 +699,34 @@ class QueryHelper(object):
 	# OTHER - GETTER
 	# ########################################
 
-	def get_text_for_premisesgroup_uid(self, uid):
+	def get_text_for_premisesgroup_uid(self, uid, lang):
 		"""
 
 		:param uid: id of a premise group
+		:param lang: ui_locales
 		:return: text of all premises in this group and the uids as list
 		"""
 		db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).join(Statement).all()
 		text = ''
 		uids = []
+		_t = Translator(lang)
 		for premise in db_premises:
 			tmp = self.get_text_for_statement_uid(premise.statements.uid)
 			if tmp.endswith('.'):
 				tmp = tmp[:-1]
 			uids.append(str(premise.statements.uid))
-			text += ' and ' + tmp[:1].lower() + tmp[1:]
+			text += ' ' + _t.get(_t.aand) + ' ' + tmp[0:1].lower() + tmp[1:]
 
 		return text[5:], uids
 
-	def __get_undermines_for_premises(self, premises_as_statements_uid):
+	def __get_undermines_for_premises(self, premises_as_statements_uid, lang):
 		"""
 
 		:param premises_as_statements_uid:
+		:param lang: ui_locales
 		:return:
 		"""
-		logger('QueryHelper', '__get_undermines_for_premises', 'main')
+		logger('QueryHelper', '__get_undermines_for_premises', 'main', debug=True)
 		return_array = []
 		index = 0
 		given_undermines = set()
@@ -657,21 +737,22 @@ class QueryHelper(object):
 					given_undermines.add(undermine.premisesgroup_uid)
 					tmp_dict = dict()
 					tmp_dict['id'] = undermine.uid
-					tmp_dict['text'], uids = self.get_text_for_premisesgroup_uid(undermine.premisesgroup_uid)
+					tmp_dict['text'], uids = self.get_text_for_premisesgroup_uid(undermine.premisesgroup_uid, lang)
 					return_array.append(tmp_dict)
 					index += 1
 		return return_array
 
-	def __get_attack_or_support_for_justification_of_argument_uid(self, argument_uid, is_supportive):
+	def __get_attack_or_support_for_justification_of_argument_uid(self, argument_uid, is_supportive, lang):
 		"""
 
 		:param argument_uid:
 		:param is_supportive:
+		:param lang:
 		:return:
 		"""
 		return_array = []
 		logger('QueryHelper', '__get_attack_or_support_for_justification_of_argument_uid',
-		       'db_undercut against Argument.argument_uid==' + str(argument_uid))
+		       'db_undercut against Argument.argument_uid==' + str(argument_uid), debug=True)
 		db_related_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
 		                                                                       Argument.argument_uid == argument_uid)).all()
 		given_relations = set()
@@ -685,7 +766,7 @@ class QueryHelper(object):
 				given_relations.add(relation.premisesgroup_uid)
 				tmp_dict = dict()
 				tmp_dict['id'] = relation.uid
-				tmp_dict['text'], trash = self.get_text_for_premisesgroup_uid(relation.premisesgroup_uid)
+				tmp_dict['text'], trash = self.get_text_for_premisesgroup_uid(relation.premisesgroup_uid, lang)
 				return_array.append(tmp_dict)
 				index += 1
 		return return_array
@@ -760,45 +841,41 @@ class QueryHelper(object):
 				return issue.uid
 		return self.get_issue_id(request)
 
-	def get_everything_for_island_view(self, arg_uid, lang):
+	def get_every_attack_for_island_view(self, arg_uid, lang):
 		"""
 
 		:param arg_uid:
 		:param lang:
 		:return:
 		"""
-		logger('QueryHelper', 'get_everything_for_island_view', 'def with arg_uid: ' + str(arg_uid))
+		logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
 		return_dict = {}
 		_t = Translator(lang)
 
-		undermine = self.get_undermines_for_argument_uid(arg_uid)
-		support = self.get_supports_for_argument_uid(arg_uid)
-		undercut = self.get_undercuts_for_argument_uid(arg_uid)
-		overbid = self.get_overbids_for_argument_uid(arg_uid)
-		rebut = self.get_rebuts_for_argument_uid(arg_uid)
+		undermine = self.get_undermines_for_argument_uid(arg_uid, lang)
+		support = self.get_supports_for_argument_uid(arg_uid, lang)
+		undercut = self.get_undercuts_for_argument_uid(arg_uid, lang)
+		# overbid = self.get_overbids_for_argument_uid(arg_uid, lang)
+		rebut = self.get_rebuts_for_argument_uid(arg_uid, lang)
 
 		undermine = undermine if undermine else [{'id': 0, 'text': _t.get(_t.no_entry)}]
 		support = support if support else [{'id': 0, 'text': _t.get(_t.no_entry)}]
 		undercut = undercut if undercut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-		overbid = overbid if overbid else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+		# overbid = overbid if overbid else [{'id': 0, 'text': _t.get(_t.no_entry)}]
 		rebut = rebut if rebut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
 
 		return_dict.update({'undermine': undermine})
 		return_dict.update({'support': support})
 		return_dict.update({'undercut': undercut})
-		return_dict.update({'overbid': overbid})
+		# return_dict.update({'overbid': overbid})
 		return_dict.update({'rebut': rebut})
 
-		logger('QueryHelper', 'get_everything_for_island_view', 'summary: ' + str(len(undermine)) + ' undermines, ' +
-		       str(len(support)) + ' supports, ' + str(len(undercut)) + ' undercuts, ' + str(len(overbid)) +
-		       ' overbids, ' + str(len(rebut)) + ' rebuts')
-
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-		return_dict['premise'], tmp = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-		return_dict['conclusion'] = self.get_text_for_statement_uid(db_argument.conclusion_uid,) \
-			if db_argument.conclusion_uid != 0 else \
-			self.get_text_for_argument_uid(db_argument.argument_uid, lang)
-		return_dict['heading'] = self.get_text_for_argument_uid(arg_uid, lang)
+		logger('QueryHelper', 'get_every_attack_for_island_view', 'summary: ' +
+		       str(len(undermine)) + ' undermines, ' +
+		       str(len(support)) + ' supports, ' +
+		       str(len(undercut)) + ' undercuts, ' +
+		       # str(len(overbid)) + ' overbids, ' +
+		       str(len(rebut)) + ' rebuts')
 
 		return return_dict
 
@@ -1054,6 +1131,30 @@ class QueryHelper(object):
 			corr_dict['text'] = str(versions.content)
 			content_dict[str(index)] = corr_dict
 		return_dict['content'] = content_dict
+
+		return return_dict
+
+	def get_infos_about_argument(self, uid, lang):
+		"""
+
+		:param uid:
+		:return:
+		"""
+		return_dict = dict()
+		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.uid == uid,
+		                                                               VoteArgument.is_valid == True,
+		                                                               VoteStatement.is_up_vote == True)).all()
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+		db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
+		return_dict['vote_count'] = str(len(db_votes))
+		return_dict['author']     = db_author.nickname
+		return_dict['timestamp']  = self.sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
+
+		supporter = []
+		for vote in db_votes:
+			supporter.append(DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first().nickname)
+
+		return_dict['supporter'] = supporter
 
 		return return_dict
 

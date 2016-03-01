@@ -196,30 +196,40 @@
 	background-repeat: no-repeat;
 }
 
-#discussion-sidebar{
-	text-align: right;
-}
-.display-style-menu {
+.display-style-menu-icon {
 	opacity: 0;
 }
 
-#discussion-container .icon-badge,
-#display-style-menu-icon .icon-badge,
-#display-style-menu{
+#discussion-container img,
+#discussion-sidebar-style-menu img,
+#display-style-menu-icon{
 	width: 50px;
 	margin-bottom: 0.5em;
 }
-
-.display-style-menu > div{
-	width: 70px;
-	float: left;
+#discussion-container img:hover,
+#discussion-sidebar-style-menu img:hover{
+	width: 60px;
+	cursor: pointer;
 }
 
-#display-style-menu-icon:hover .display-style-menu {
+#discussion-sidebar-style-menu:hover .display-style-menu-icon {
    opacity: 1;
    transition: opacity .45s ease-in-out;
    -moz-transition: opacity .45s ease-in-out;
    -webkit-transition: opacity .45s ease-in-out;
+}
+
+#site-navigation .tooltip {
+	width: 150px;
+}
+
+#discussion-sidebar{
+	list-style-type: none;
+	text-align: right;
+}
+#discussion-sidebar ul{
+	list-style-type: none;
+	padding-left: 0px;
 }
 
 .container-three-divs {
@@ -229,13 +239,9 @@
 	display:-moz-box;      
 	-moz-box-orient:horizontal;
 	-moz-box-align:stretch;
-	display:box;
+	display: box;
 	box-orient:horizontal;
 	box-align:stretch; 
-}
-
-#add-premise-container-main-input {
-	
 }
 
 .flex-div {
@@ -243,7 +249,111 @@
 	-moz-box-flex:1.0;
 	box-flex:1.0;
 }
+/* http://nicolasgallagher.com/pure-css-speech-bubbles/ */
+/* http://codepen.io/ryanmcnz/pen/JDLhu */
+.triangle-l,
+.triangle-r,
+.triangle-m{
+  position: relative;
+  margin: 1em 0 1em;
+  padding: 15px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  width: 70%;
+  box-shadow: 2px 2px 5px #888888;
+}
+.triangle-l{
+  float: left;
+  background: #E0FFAD;
+}
+.triangle-r{
+  float: right;
+  background: #ADDFFF;
+}
+.triangle-m{
+  padding: 5px;
+  background: #E5E4E2;
+  width: 40%;
+  text-align: center;
+  margin-left: auto ;
+  margin-right: auto ;
+}
+.triangle-l::after,
+.triangle-r::after{
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin-left: -0.5em;
+  bottom: -2em;
+  box-sizing: border-box;
+  border: 1em solid black;
+  transform-origin: 0 0;
+  transform: rotate(-45deg);
+  box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+/* creates triangle */
+.triangle-l:after {
+  left: 20%;
+  border-color: transparent transparent #E0FFAD #E0FFAD;
+}
+/* creates triangle */
+.triangle-r:after {
+  right: 20%;
+  border-color: transparent transparent #ADDFFF #ADDFFF;
+}
 
+/*
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin-left: -0.5em;
+  bottom: -2em;
+  left: 50%;
+  box-sizing: border-box;
+  border: 1em solid black;
+  border-color: transparent transparent #bada55 #bada55;
+  transform-origin: 0 0;
+  transform: rotate(-45deg);
+  box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.4);
+*/
+
+/* creates triangle */
+.triangle-isosceles-l:after {
+  left: 50px;
+  border-color: #E0FFAD transparent;
+}
+
+/* creates triangle */
+.triangle-isosceles-r:after {
+  right: 50px;
+  border-color: #ADDFFF transparent;
+}
+
+/* creates triangle */
+.triangle-isosceles-l:after,
+.triangle-isosceles-r:after {
+  content: "";
+  display: block; /* reduce the damage in FF3.0 */
+  position: absolute;
+  bottom: -15px;
+  width: 0;
+  border-width: 15px 15px 0;
+  border-style: solid;
+}
+
+/* creates triangle */
+.triangle-isosceles-l:after {
+  left: 50px;
+  border-color: #E0FFAD transparent;
+}
+
+/* creates triangle */
+.triangle-isosceles-r:after {
+  right: 50px;
+  border-color: #ADDFFF transparent;
+}
 
 @media (max-width: 767px) {
 	#discussions-space ul {
@@ -257,12 +367,6 @@
 	#con-position-column {
 		float: none;
 		width: 95%;
-	}
-}
-
-@media (max-width: 991px) {
-	#discussion-sidebar {
-		text-align: left;
 	}
 }
 

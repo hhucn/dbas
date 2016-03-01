@@ -16,7 +16,7 @@ from .url_manager import UrlManager
 
 class BreadcrumbHelper(object):
 
-	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, for_api):
+	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, delete_dupliacates, for_api):
 		"""
 
 		:param path:
@@ -26,6 +26,7 @@ class BreadcrumbHelper(object):
 		:param transaction:
 		:param lang:
 		:param application_url:
+		:param delete_dupliacates:
 		:param for_api:
 		:return:
 		"""
@@ -34,8 +35,10 @@ class BreadcrumbHelper(object):
 			return []
 		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
 
-		url = UrlManager(application_url, slug, for_api).get_url(path)
+		_um = UrlManager(application_url, slug, for_api)
+		url = _um.get_url(path)
 
+		# delete by slugs
 		expr = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)
 		if expr:
 			group0 = expr.group(0)
@@ -43,9 +46,11 @@ class BreadcrumbHelper(object):
 				self.del_breadcrumbs_of_user(transaction, user)
 
 		db_already_in = DBDiscussionSession.query(History).filter_by(url=url).first()
-		if db_already_in:
+		db_last = DBDiscussionSession.query(History).order_by(History.uid.desc()).first()
+		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
+		if db_already_in and delete_dupliacates:
 			DBDiscussionSession.query(History).filter(and_(History.author_uid == db_user.uid, History.uid > db_already_in.uid)).delete()
-		else:
+		elif not already_last:
 			DBDiscussionSession.add(History(user=db_user.uid, url=url, session_id=session_id))
 		transaction.commit()
 
@@ -73,7 +78,7 @@ class BreadcrumbHelper(object):
 		for index, history in enumerate(db_history):
 			hist = dict()
 			hist['index']       = str(index)
-			hist['url']         = str(history.url)
+			hist['url']         = str(history.url) + '?breadcrumb=true' # add this for deleting traces
 			hist['text']        = self.__get_text_for_url__(history.url, lang)
 			hist['shorttext']   = hist['text'][0:30] + '...' if len(hist['text']) > 35 else hist['text']
 			breadcrumbs.append(hist)
@@ -108,8 +113,7 @@ class BreadcrumbHelper(object):
 			text = text[0:1].lower() + text[1:]
 			# 7 choose action for start statemens
 			# 8 choose justification for a relation
-			hold = _t.get(_t.hold) if '/t' in url else _t.get(_t.doesNotHold)
-			return ((_t.get(_t.breadcrumbsJustifyStatement) + ' ' + text + ' ' + hold + '?'))\
+			return ((_t.get(_t.breadcrumbsJustifyStatement) + ' ' + text + ' ' + _t.get(_t.hold)  + '?'))\
 				if len(splitted) == 8 else\
 				(_t.get(_t.breadcrumbsReplyForResponseOfConfrontation) + ' ' + text)
 

@@ -34,7 +34,7 @@
 						    <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a class="accordion-toggle panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href msg.collapse_link"><span class="text-primary" tal:condition="msg.read">${msg.topic}</span><strong class="text-primary" tal:condition="not:msg.read">* ${msg.topic}</strong></a>
-                                    <span style="float: right; margin-left: 1.0em; cursor: pointer;" class="glyphicon center glyphicon-trash" title="Delete"></span>
+                                    <span style="float: right; margin-left: 1.0em; cursor: pointer;" class="glyphicon center glyphicon-trash" data-toggle="tooltip" data-placement="bottom" title="Delete"></span>
                                     <span class="text-primary" style="float: right; padding-right: 1em;">${msg.timestamp}</span>
                                 </h4>
 						    </div>

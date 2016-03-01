@@ -155,7 +155,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 
 		new Helper().redirectInNewTabForContact(params);
 
-	});
+	});3
 
 	// opinion barometer
 	$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
@@ -173,6 +173,23 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		}
 	});
 
+	$('#' + discussionsDescriptionBridgeInfoLinkId).click(function(){
+		var splits = window.location.href.split('/'),
+			uid = splits[splits.length - 1],
+			qmark = uid.indexOf('?');
+		if (qmark != -1)
+			uid = uid.substr(0, qmark);
+		ajaxHandler.getMoreInfosAboutArgument(uid, false);
+	});
+
+	// get infos about the author
+	$('#' + questionItButtonId).click(function(){
+		var splits = window.location.href.split('/'),
+			uid = splits[splits.length - 1],
+			qmark = uid.indexOf('?');
+		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
+	});
+
 };
 
 /**
@@ -185,7 +202,7 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		new Helper().delay(function() {
 			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
-			if ($('#' + discussionsDescriptionId).text().indexOf(_t(initialPositionInterest)) != -1) {
+			if ($('#' + discussionsDescriptionIntroId).text().indexOf(_t(initialPositionInterest)) != -1) {
 				// here we have our start statement
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {
@@ -222,12 +239,18 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
  */
 setStyleOptions = function (guiHandler){
 	// render html tags
-	replaceHtmlTags($('#discussions-header'));
+	replaceHtmlTags($('#' + discussionsDescriptionIntroId));
+	replaceHtmlTags($('#' + discussionsDescriptionBridgeId));
+	replaceHtmlTags($('#' + discussionsDescriptionOutroId));
 	$.each($('#' + discussionSpaceId + ' label'), function replaceHtmlTagInHeader() {
+		replaceHtmlTags($(this));
+	});
+	$.each($('#' + islandViewContainerId + ' h5'), function replaceHtmlTagInIsland() {
 		replaceHtmlTags($(this));
 	});
 	replaceHtmlTags($('#' + issueInfoId));
 	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
+	replaceHtmlTags($('#island-view-container-space-heading'));
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
@@ -255,44 +278,20 @@ setStyleOptions = function (guiHandler){
  * @param windowInnerWidth
  */
 setNavigationSidebar = function (windowInnerWidth){
-	var parent = $('#display-style-menu-icon'),
-		child0 = parent.children().eq(0),
-		child1 = parent.children().eq(1),
-		helper = new Helper(),
-		margin = 2,
-		shiftRight = false,
-		collapsed = windowInnerWidth < 992 && child1.attr('id') == 'more-statement',
-		bigSize = windowInnerWidth > 991 && child0.attr('id') == 'more-statement';
-
-	if (collapsed || bigSize){
-		helper.swapElements(child1, child0);
-
-		// modify the edit statement button
-		parent = $('#edit-statement-container');
-		parent.attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
-		child0 = parent.children().eq(0);
-		child1 = parent.children().eq(1);
-		helper.swapElements(child1, child0);
-
-		// modify the report button
-		parent = $('#report-button-container');
-		parent.attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: 2em;');
-		child0 = parent.children().eq(0);
-		child1 = parent.children().eq(1);
-		helper.swapElements(child1, child0);
-
-		$('#more-statement').attr('style', bigSize ? '' : 'float: left; margin-left: 2em;');
-		$('#site-navigation').attr('style', bigSize ? '' : 'float: left; width: 80%;');
-
-		// modify the hover sidebar
-		shiftRight = parent.attr('id') ? true : false;
-		$('.display-style-menu').each(function () {
-			child0 = $(this).children().eq(0);
-			child1 = $(this).children().eq(1);
-			margin = shiftRight && (child0.attr('id') == 'opinion-barometer-img' || child1.attr('id') == 'opinion-barometer-img') ? 13 : 2;
-			$(this).attr('style', bigSize ? '' : 'float: left; max-width: 25%; width: 50px; margin-left: ' + margin + 'em;');
-			helper.swapElements(child1, child0);
-		})
+	if (windowInnerWidth < 992){
+		$('#discussion-sidebar').addClass('list-inline').css('text-align', 'left');
+		$('#site-navigation').addClass('list-inline').css('text-align', 'left').find('img').each(function(){
+			$(this).attr('data-placement', 'bottom');
+		});
+		$('#' + sidebarMoreButtonId).attr('data-placement', 'top');
+		$('#' + questionItButtonId).attr('data-placement', 'top');
+	} else {
+		$('#discussion-sidebar').removeClass('list-inline').css('text-align', 'right');
+		$('#site-navigation').removeClass('list-inline').css('text-align', 'right').find('img').each(function(){
+			$(this).attr('data-placement', 'left');
+		});
+		$('#' + sidebarMoreButtonId).attr('data-placement', 'left');
+		$('#' + questionItButtonId).attr('data-placement', 'left');
 	}
 };
 
@@ -321,11 +320,39 @@ setWindowOptions = function(){
  *
  */
 setGuiOptions = function(){
+	// set do not hide on hover popup
+	var originalLeave = $.fn.popover.Constructor.prototype.leave;
+	// http://jsfiddle.net/WojtekKruszewski/Zf3m7/22/
+	$.fn.popover.Constructor.prototype.leave = function(obj){
+		var self = obj instanceof this.constructor ?
+			obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type);
+		var container, timeout;
 
-	$('#edit-statement').hover(function() { $(this).prev().fadeIn(); }, function() { $(this).prev().fadeOut(); }).prev().hide();
-	$('#report-button').hover(function() { $(this).prev().fadeIn(); }, function() { $(this).prev().fadeOut(); }).prev().hide();
-	$('#more-statement').hover(function() { $(this).prev().fadeIn(); }, function() { $(this).prev().fadeOut(); }).prev().hide();
+		originalLeave.call(this, obj);
 
+		if(obj.currentTarget) {
+			container = $(obj.currentTarget).siblings('.popover');
+			timeout = self.timeout;
+			container.one('mouseenter', function(){
+				//We entered the actual popover – call off the dogs
+				clearTimeout(timeout);
+				// Let's monitor popover content instead
+				container.one('mouseleave', function(){
+					$.fn.popover.Constructor.prototype.leave.call(self, self);
+				});
+			})
+		}
+	};
+	$('#site-navigation').hide();
+	$('body').popover({ selector: '[data-popover]', trigger: 'click hover', delay: {show: 50, hide: 50}}).on('inserted.bs.popover', function () {
+		var element = $('#site-navigation').detach().show();
+		$('#discussion-sidebar-style-menu .popover-content').append(element);
+	}).on('hide.bs.popover', function () {
+		var element = $('#site-navigation').detach().hide();
+		$('#discussion-sidebar-style-menu').append(element);
+	});
+
+	// relation buttons
 	if (false && window.location.href.indexOf('/reaction/') != -1){
 		var cl = 'icon-badge',
 			style = 'height: 30px; width:30px; margin-right: 0.5em;',

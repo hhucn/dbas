@@ -24,6 +24,32 @@ class UrlManager(object):
 		self.slug = slug
 		self.for_api = for_api
 
+	def __verify_path(self, path): # TODO
+		"""
+
+		:param path:
+		:return:
+		"""
+		splitted = path.split('/')
+		if splitted[0] == 'discuss':
+			if splitted[2] == 'reaction':
+				# /discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}'
+				return True
+			elif splitted[2] == 'justify':
+				# /discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
+				return True
+			elif splitted[2] == 'attitude':
+				# /discuss/{slug}/attitude/*statement_id'
+				return True
+			elif splitted[2] == 'choose':
+				# /discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
+				return True
+			else:
+				return True
+
+			# /discuss*slug'
+		return False
+
 	def get_url(self, path):
 		"""
 		Returns current url with self.url as prefix or the API-version

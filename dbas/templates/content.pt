@@ -12,7 +12,7 @@
 				<div class="col-md-12">
 					<ol class="breadcrumb" id="navigation-breadcrumb" style="background: #fff; margin-bottom: 0;">
 						<li tal:repeat="breadcrumb extras.breadcrumbs">
-							<a href="" tal:attributes="href breadcrumb.url; title breadcrumb.text" tal:condition="not:repeat.breadcrumb.end"><span tal:replace="breadcrumb.shorttext">weee :)</span></a>
+							<a href="" tal:attributes="href breadcrumb.url; title breadcrumb.text" data-toggle="tooltip" data-placement="bottom" tal:condition="not:repeat.breadcrumb.end"><span tal:replace="breadcrumb.shorttext">weee :)</span></a>
 							<span tal:replace="breadcrumb.text" tal:condition="repeat.breadcrumb.end">weee :)</span>
 						</li>
 					</ol>
@@ -75,9 +75,19 @@
 
 					
 					<div id="argument-blogging-sidebar">
-						<a class="share-icon share-def" id="share-url" title="Share your url" style="margin-right: 1em;"></a>
+						<a class="share-icon share-def" id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" style="margin-right: 1em;" tal:attributes="title extras.buttons.share_url"></a>
 					</div>
-					<h4 id="discussions-header">${discussion.heading}</h4>
+					<h4 id="discussions-header-intro">${discussion.heading.intro}</h4>
+
+                    <a tal:condition="extras.is_questionable" id="discussions-header-bridge-infos-link" data-toggle="collapse" href="#discussions-header-bridge-infos" aria-expanded="false" aria-controls="discussions-header-bridge-infos" class="collapsed">
+					<h4><span id="discussions-header-bridge">${discussion.heading.bridge}</span></h4>
+                    </a>
+                    <h4 tal:condition="not:extras.is_questionable"><span id="discussions-header-bridge">${discussion.heading.bridge}</span></h4>
+                    <div class="collapse" id="discussions-header-bridge-infos">
+                        <div class="well lead" id="discussions-header-bridge-infos-content" data-toggle="tooltip" data-placement="bottom"></div>
+                    </div>
+
+					<h4 id="discussions-header-outro">${discussion.heading.outro}</h4>
 					<div id="discussions-space">
 
 						<ul>
@@ -91,50 +101,41 @@
 				</div>
 
 				<div class="col-md-2">
-					<div id="discussion-sidebar">
-						<div tal:condition="extras.is_editable" id ="edit-statement-container">
-							<span style="display:none; float: left; width: 72px; text-align: center;">${extras.buttons.edit_statement}</span>
-							<img id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
-						</div>
-						<div tal:condition="extras.is_reportable" id ="report-button-container">
-							<span style="display:none; float: left; width: 72px; text-align: center;">${extras.buttons.report_title}</span>
-							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
-						</div>
-						<div id="display-style-menu-icon" tal:condition="extras.show_display_style or extras.show_bar_icon">
-							<span tal:condition="extras.show_display_style or extras.show_bar_icon"  style="display:none; float: left; width: 72px; text-align: center;">${extras.buttons.more_title}</span>
-							<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" tal:attributes="title extras.buttons.more_title"/>
-							<nav id="site-navigation">
-								<div class="display-style-menu" tal:condition="extras.show_bar_icon">
-									<div>
-										<span i18n:translate="opinion_barometer">Opinion<br>Barometer</span>
-									</div>
-									<img id="opinion-barometer-img" class="icon-badge" alt="icon-bars" tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" />
-								</div>
+					<ul id="discussion-sidebar">
+						<li>
+							<img tal:condition="extras.is_editable"  id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
+						</li>
+						<li>
+							<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
+						</li>
+						<li>
+							<img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_questionmark1.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" />
+						</li>
+						<li>
+							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon">
+								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="left" tal:attributes="title extras.buttons.more_title"/>
 
-								<div class="display-style-menu" id="display-style-icon-guided" tal:condition="extras.show_display_style">
-									<div>
-										<span i18n:translate="dialog_view">Dialog<br>View</span>
-									</div>
-									<img id="display-style-icon-guided-img" class="icon-badge" alt="icon-guided" tal:attributes="title extras.title.guided_view" src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" />
-								</div>
+								<ul id="site-navigation">
+									<li>
+										<img tal:condition="extras.show_bar_icon" id="opinion-barometer-img" class="display-style-menu-icon icon-badge" alt="icon-bars" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" />
+									</li>
 
-								<div class="display-style-menu" id="display-style-icon-island" tal:condition="extras.show_display_style">
-									<div>
-										<span i18n:translate="island_view">Island<br>View</span>
-									</div>
-									<img id="display-style-icon-island-img" class="icon-badge" alt="icon-island" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" />
-								</div>
+									<li>
+										<img tal:condition="extras.show_display_style" id="display-style-icon-guided-img" class="display-style-menu-icon icon-badge" alt="icon-guided" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view" src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" />
+									</li>
 
-								<div class="display-style-menu" id="display-style-icon-expert" tal:condition="extras.show_display_style">
-									<div>
-										<span i18n:translate="complete_view">Complete<br>View</span>
-									</div>
-									<img id="display-style-icon-expert-img" class="icon-badge" alt="icon-expert" tal:attributes="title extras.title.expert_view" src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" />
-								</div>
-							</nav>
-						</div>
+									<li>
+										<img tal:condition="extras.show_display_style" id="display-style-icon-island-img" class="display-style-menu-icon icon-badge" alt="icon-island" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" />
+									</li>
 
-					</div>
+									<li>
+										<img tal:condition="extras.show_display_style" id="display-style-icon-expert-img" class="display-style-menu-icon icon-badge" alt="icon-expert" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" />
+									</li>
+								</ul>
+							</div>
+						</li>
+
+					</ul>
 				</div>
 			</div>
 
@@ -159,12 +160,9 @@
 				<span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row" id="island-view-container-space">
-				<div class="col-md-2"></div>
-				<div class="col-md-8 text-center">
-					<h4>Island View for <strong>this is not true for overbred races does not hold, because even overbred races can be taught.</strong>
-					</h4>
+				<div class="col-md-12 text-center">
+					<h4><span i18n:translate="island_view_for">Island View for</span> <span id="island-view-container-space-heading"><strong>${extras.island.heading}</strong></span></h4>
 				</div>
-				<div class="col-md-2"></div>
 			</div>
 
 			<div class="row">
@@ -222,11 +220,31 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h5>
-									<span class="text-success">✓</span> 
+                                <span class="text-danger">✗</span>
+                                <span tal:replace="extras.island.rebut_text">rebut_text</span>
+								</h5>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
+									<label tal:attributes="for rebut.id">${rebut.text}</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+<!--?				<div class="col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
+									<span class="text-success">✓</span>
 									<span tal:replace="extras.island.overbid_text">overbid_text</span>
 								</h5>
 						</div>
@@ -259,7 +277,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>-->
 
 			<div class="center text-center">
 				<button id="island-view-add-arguments" type="button" class="button button-block btn btn-primary disabled" data-dismiss="modal">
@@ -295,7 +313,7 @@
 					<input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
 				</div>
 				<div class="list-group" id="proposal-statement-list-group"></div>
-				<input id="send-new-statement" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
+				<input id="send-new-statement" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" title="Saving the data." tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
 			</div>
 		</div>
 
@@ -341,7 +359,7 @@
 					</div>
 				</div>
 				<div class="list-group" id="proposal-premise-list-group"></div>
-				<input id="send-new-premise" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" title="Saving the data." tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
+				<input id="send-new-premise" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" title="Saving the data." tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
 			</div>
 		</div>
 

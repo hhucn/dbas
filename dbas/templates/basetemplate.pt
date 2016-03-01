@@ -10,7 +10,7 @@
 	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
 	<title>${project} - ${title}</title>
 	<!-- Bootstrap core CSS -->
-	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.5-paper.min.css')}" rel="stylesheet">
+	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.6-paper.min.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-toggle.min.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/css/theme_form.css')}" rel="stylesheet">
@@ -24,7 +24,9 @@
 	<input type="hidden" id="hidden_language" value="${language}">
 
 	<!-- Inlcuding this at top for references -->
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.1.4.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.2.1.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.6.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
 
 	<!-- JS DISABLED -->
 	<noscript>
@@ -55,7 +57,7 @@
 		<div id="wrapper-content">
 			<div metal:define-slot="content_page"></div>
 		</div>
-
+		
 		<div id="wrapper-footer">
 			<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" src="${request.static_url('dbas:static/images/home.png')}"></a>
 
@@ -67,11 +69,8 @@
 
 	<div class="eupopup eupopup-fixedtop"></div>
 
-	<!-- Bootstrap core, JavaScript, jquery
 	<!-- Placed at the end of the document so the pages load faster -->
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.5.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
-
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/jquery.slimscroll-1.3.7.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>

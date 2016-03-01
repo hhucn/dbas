@@ -119,7 +119,7 @@ function GuiHandler() {
 		new DiscussionGraph().showGraph();
 
 		// text
-		var html = $('#' + discussionsDescriptionId).html(), innerHeight, header, footer;
+		var html = $('#' + discussionsDescriptionIntroId).html(), innerHeight, header, footer;
 		html = html.substr(0, html.indexOf('<br>'));
 		$('#' + graphViewContainerHeaderId).html(html);
 
@@ -139,7 +139,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageInactive = function(imageElement){
-		imageElement.addClass('inactive-image');
+		imageElement.addClass('inactive-image').removeClass('icon-badge').css('cursor','not-allowed');
 	};
 
 	/**
@@ -147,7 +147,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageActive = function(imageElement){
-		imageElement.removeClass('inactive-image');
+		imageElement.removeClass('inactive-image').addClass('icon-badge').css('cursor', 'pointer');
 	};
 
 	/**
@@ -440,7 +440,7 @@ function GuiHandler() {
 
 		// top row
 		table = $('<table>')
-			.attr('class', 'table table-condensed')
+			.attr('class', 'table table-condensed table-hover')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 		td_text = $('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
@@ -510,28 +510,19 @@ function GuiHandler() {
 		td_date = $('<td>');
 		td_text = $('<td>');
 		td_author = $('<td>');
-		td_date.html('<b>Date</b>').css('text-align', 'center');
-		td_text.html('<b>Text</b>').css('text-align', 'center');
-		td_author.html('<b>Author</b>').css('text-align', 'center');
+		td_date.html('<strong>' + _t(date) + '</strong>').css('text-align', 'center');
+		td_text.html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
+		td_author.html('<strong>' + _t(author) + '</strong>').css('text-align', 'center');
 		tr.append(td_date);
 		tr.append(td_text);
 		tr.append(td_author);
 		table.append(tr);
 
 		$.each(jsonData.content, function displayStatementCorrectionsInPopupEach(key, val) {
-			tr = $('<tr>');
-			td_date = $('<td>');
-			td_text = $('<td>');
-			td_author = $('<td>');
-
-			td_date.text(val.date);
-			td_text.text(val.text);
-			td_author.text(val.author);
-
-			// append everything
-			tr.append(td_date);
-			tr.append(td_text);
-			tr.append(td_author);
+			tr = $('<tr>')
+				.append($('<td>').text(val.date))
+				.append($('<td>').text(val.text))
+				.append($('<td>').text(val.author));
 			table.append(tr);
 		});
 
@@ -615,13 +606,6 @@ function GuiHandler() {
 	 */
 	this.hideDiscussionError = function () {
 		$('#' + discussionFailureRowId).hide();
-	};
-
-	/**
-	 * Hide some element for getting more space (hides last col-md-2)
-	 */
-	this.hideDiscussionDescriptionsNextElement = function() {
-		$('#' + discussionsDescriptionId).attr('style', 'margin-bottom: 0px;').parent().parent().next().hide();
 	};
 
 	/**

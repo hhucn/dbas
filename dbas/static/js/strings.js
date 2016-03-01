@@ -55,14 +55,26 @@ getLanguage = function(){
 var checkmark                                       = '&#x2713;'; // ✓
 var ballot                                          = '&#x2717;'; // ✗
 
+
 var and 						            		= 'and';
 var andAtTheSameTime                                = 'andAtTheSameTime';
 var addedEverything 								= 'addedEverything';
 var acceptIt 										= 'acceptIt';
+var allEditsDone                                    = 'allEditsDone';
+var allStatementsPosted                             = 'allStatementsPosted';
+var allGivenVotes                                   = 'allGivenVotes';
+var author                                          = 'author';
 var acceptItTitle 									= 'acceptItTitle';
 var contactSubmit									= 'contactSubmit';
 var correctionsSet 									= 'correctionsSet';
 var because                                         = 'because';
+var bridgeInfoStatementCreatedBy                    = 'bridgeInfoStatementCreatedBy';
+var bridgeInfoAt                                    = 'bridgeInfoAt';
+var bridgeInfoCurrentlySupported                    = 'bridgeInfoCurrentlySupported';
+var bridgeInfoParticipant                           = 'bridgeInfoParticipant';
+var bridgeInfoParticipantPl                         = 'bridgeInfoParticipantPl';
+var bridgeInfoSupporterSg                           = 'bridgeInfoSupporterSg';
+var bridgeInfoSupporterPl                           = 'bridgeInfoSupporterPl';
 var checkFirstname									= 'checkFirstname';
 var checkLastname									= 'checkLastname';
 var checkNickname									= 'checkNickname';
@@ -75,6 +87,7 @@ var dataRemoved 									= 'dataRemoved';
 var didYouMean										= 'didYouMean';
 var duplicateDialog									= 'duplicateDialog';
 var doNotHesitateToContact 							= 'doNotHesitateToContact';
+var date                                            = 'date';
 var deleteTrack 									= 'deleteTrack';
 var deleteHistory 									= 'deleteHistory';
 var deleteStatisticsTitle                           = 'deleteStatisticsTitle';
@@ -120,6 +133,9 @@ var last_action 									= 'last_action';
 var last_login 										= 'last_login';
 var logfile											= 'logfile';
 var letsGo 											= 'letsGo';
+var listOfDoneEdits                                 = 'listOfDoneEdits';
+var listOfPostedStatements                          = 'listOfPostedStatements';
+var listOfGivenVotes                                = 'listOfGivenVotes';
 var medium 											= 'medium';
 var nickname 										= 'nickname';
 var noCorrections 									= 'noCorrections';
@@ -152,6 +168,10 @@ var showMeAnArgumentFor 							= 'showMeAnArgumentFor';
 var strength 										= 'strength';
 var strong 											= 'strong';
 var shortenedBy 									= 'shortenedBy';
+var statisticsDeleted                               = 'statisticsDeleted';
+var statisticsNotDeleted                            = 'statisticsNotDeleted';
+var statisticsNotFetched                            = 'statisticsNotFetched';
+var statisticsNotThere                              = 'statisticsNotThere';
 var switchDiscussion								= 'switchDiscussion';
 var switchDiscussionText1 							= 'switchDiscussionText1';
 var switchDiscussionText2 							= 'switchDiscussionText2';
@@ -159,7 +179,9 @@ var surname 										= 'surname';
 var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
+var typeofVote                                      = 'typeofVote';
 var veryweak 										= 'veryweak';
+var valid    										= 'valid';
 var weak 											= 'weak';
 
 // cookies
@@ -184,7 +206,18 @@ var dbas_en = {
 	'addedEverything': 'Everything was added.',
 	'acceptIt': 'Accept it...',
 	'acceptItTitle': 'Accept it...',
+	'allEditsDone': 'All edits you\'ve done',
+	'allStatementsPosted': 'All statements you\'ve posted',
+	'allGivenVotes': 'All Votes',
+	'author': 'Author',
 	'because': 'because',
+	'bridgeInfoStatementCreatedBy': 'This statement was created by',
+	'bridgeInfoAt': 'at',
+	'bridgeInfoCurrentlySupported': 'Currently it is supported by',
+	'bridgeInfoParticipant': 'participant',
+	'bridgeInfoParticipantPl': 's',
+	'bridgeInfoSupporterSg': 'Supporter is',
+	'bridgeInfoSupporterPl': 'Supporters are',
 	'countOfArguments': 'Count of arguments',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
 	'correctionsSet': 'Your correction was set.',
@@ -198,6 +231,7 @@ var dbas_en = {
 	'deleteTrack': 'Delete track',
 	'deleteHistory': 'Delete history',
 	'dataRemoved': 'Data was successfully removed.',
+	'date': 'Date',
 	'didYouMean': 'Top10 statements, which you probably could mean:',
 	'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version as the current one once again?',
 	'doNotHesitateToContact': 'Do not hesitate to <b><span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span></b>',
@@ -242,6 +276,9 @@ var dbas_en = {
 	'last_login': 'Last Login',
 	'logfile': 'Logfile for',
 	'letsGo': 'Click here to start now!',
+	'listOfPostedStatements': 'This is a list of all posted statements:',
+	'listOfDoneEdits': 'This is a list of all edits:',
+	'listOfGivenVotes': 'This is a list of all votes:',
 	'medium': 'medium',
 	'nickname': 'Nickname',
 	'noCorrections': 'No corrections for the given statement.',
@@ -275,6 +312,10 @@ var dbas_en = {
 	'supportPosition': 'support position',
 	'strength': 'Strength',
 	'strong': 'strong',
+	'statisticsDeleted': 'Statistics were deleted.',
+	'statisticsNotDeleted': 'Statistics could not be deleted.',
+	'statisticsNotFetched': 'Statistics could not be fetched.',
+	'statisticsNotThere': 'You have no statistics.',
 	'surname' : 'Surname',
 	'shortenedBy': 'which was shortened with',
 	'switchDiscussion': 'Change of discussion\'s topic',
@@ -282,6 +323,8 @@ var dbas_en = {
 	'switchDiscussionText2': 'and the discussion will be restarted.',
 	'showMeAnArgumentFor': 'Show me an argument for',
 	'text': 'Text',
+	'typeofVote': 'Agree / Disagree',
+	'valid': 'Valid',
 	'veryweak': 'very weak',
 	'weak': 'weak'
 };
@@ -292,7 +335,18 @@ var dbas_de = {
 	'addedEverything': 'Alles wurde hinzugefügt.',
 	'acceptItTitle': 'Einsenden...',
 	'acceptIt': 'Eintragen...',
+	'allEditsDone': 'Alle Änderungen von Ihnen:',
+	'allStatementsPosted': 'Alle Ausagen von Ihnen:',
+	'allGivenVotes': 'Alle Stimmen',
+	'author': 'Autor',
 	'because':'weil',
+	'bridgeInfoStatementCreatedBy': 'Diese Aussage wurde gemacht von',
+	'bridgeInfoAt': 'am',
+	'bridgeInfoCurrentlySupported': 'Sie wird aktuell unterstützt von',
+	'bridgeInfoParticipant': 'Teilnehmer/in',
+	'bridgeInfoParticipantPl': '/n/nen',
+	'bridgeInfoSupporterSg': 'Unterstützer/in ist',
+	'bridgeInfoSupporterPl': 'Unterstützer/innen sind',
 	'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',
@@ -304,13 +358,13 @@ var dbas_de = {
 	'checkConfirmation': 'Bitte überprüfen Sie Ihre Passwort-Bestätigung, da die Eingabe leer ist!',
 	'checkPasswordConfirm': 'Bitte überprüfen Sie Ihre Passwörter, da die Passwärter nicht gleich sind!',
 	'dataRemoved': 'Daten wurden erfolgreich gelöscht.',
+	'date': 'Datum',
 	'didYouMean': 'Top 10 der Aussagen, die Sie eventuell meinten:',
 	'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
 	'deleteTrack': 'Track löschen',
 	'deleteHistory': 'History löschen',
 	'deleteStatisticsTitle': 'Statistik löschen',
 	'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
-	'doNotHesitateToContact': 'Zögern Sie nicht, uns zu <b><span style="cursor: pointer;" id="contact_on_error">kontaktieren (hier klicken)</span></b>',
 	'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Piwik.',
 	'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
 	'euCookiePopoupButton1': 'Weiter',
@@ -350,6 +404,9 @@ var dbas_de = {
 	'last_login': 'Letze Anmeldung',
 	'logfile': 'Logdatei für',
 	'letsGo': 'Wenn Sie direkt starten möchten, klicken Sie bitte hier!',
+	'listOfPostedStatements': 'Dies ist eine Liste von allen gemachten Aussagen:',
+	'listOfDoneEdits': 'Dies ist eine Liste von allen Änderungen:',
+	'listOfGivenVotes': 'Dies ist eine Liste von allen Stimmen:',
 	'medium': 'mittel',
 	'nickname': 'Spitzname',
 	'noCorrections': 'Keinte Korreturen für die aktuelle Aussage.',
@@ -380,6 +437,10 @@ var dbas_de = {
 	'showAllArguments': 'Zeig\' alle Argumente',
 	'showAllArgumentsTitle': 'Zeigt alle Argumente',
 	'showAllUsersTitle': 'Zeige alle Nutzer',
+	'statisticsDeleted': 'Statistikten wurden gelöscht.',
+	'statisticsNotDeleted': 'Statistikten konnten nicht gelöscht werden.',
+	'statisticsNotFetched': 'Statistikten konnten nicht angefordert werden.',
+	'statisticsNotThere': 'Sie haben keine Statistiken.',
 	'strength': 'Stärke',
 	'strong': 'stark',
 	'shortenedBy': 'welche gekürzt wurde mit',
@@ -389,6 +450,8 @@ var dbas_de = {
 	'surname': 'Nachname',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
+	'typeofVote': 'Zustimmung/Ablehnung',
+	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',
 	'weak': 'schwach'
 };

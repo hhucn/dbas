@@ -606,3 +606,15 @@ comment .container and wrap each container with <div class="coloured-div">
 		padding: 40px;
 	}
 }
+@media (max-width: 992px) {
+	.first-container:not(:first-child) {
+		margin-top: 30px;
+	}
+	#breadcrumb-container{
+		margin-top: 0px;
+	}
+	.imprint-container,
+	#first-settings-container {
+		margin-top: -50px;
+	}
+}
