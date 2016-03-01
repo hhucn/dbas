@@ -555,6 +555,7 @@ function GuiHandler() {
 		$('#' + discussionsDescriptionBridgeInfoLinkId).fadeIn();
 		$('#' + discussionsDescriptionBridgeId).fadeIn();
 		$('#' + discussionsDescriptionOutroId).fadeIn();
+		$('#question-button').parent().fadeIn();
 
 		new Helper().delay(function () {
 			$('#dialog-speech-bubbles-space').fadeOut();
@@ -570,6 +571,7 @@ function GuiHandler() {
 		$('#' + discussionsDescriptionBridgeInfoId).fadeOut();
 		$('#' + discussionsDescriptionBridgeId).fadeOut();
 		$('#' + discussionsDescriptionOutroId).fadeOut();
+		$('#question-button').parent().fadeOut();
 
 		new Helper().delay(function () {
 			$('#dialog-speech-bubbles-space').fadeIn();
