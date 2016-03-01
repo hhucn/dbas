@@ -709,6 +709,7 @@ class Dbas(object):
 			'extras': extras_dict
 		}
 
+
 # ####################################
 # ADDTIONAL AJAX STUFF # USER THINGS #
 # ####################################
@@ -1304,6 +1305,7 @@ class Dbas(object):
 
 		return DictionaryHelper().data_to_json_array(return_dict, True)
 
+
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #
 # ###################################
@@ -1441,6 +1443,7 @@ class Dbas(object):
 			return_dict = _qh.get_infos_about_argument(uid, ui_locales)
 			return_dict['error'] = ''
 		except KeyError as e:
+			logger('get_infos_about_argument', 'error', repr(e))
 			return_dict['error'] = _t.get(_t.internalError)
 
 		return DictionaryHelper().data_to_json_array(return_dict, True)
@@ -1468,7 +1471,7 @@ class Dbas(object):
 		:return: json-set with everything
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_users_with_same_opinion', 'def', 'main') # TODO TERESA
+		logger('get_users_with_same_opinion', 'def', 'main')  # TODO TERESA
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)

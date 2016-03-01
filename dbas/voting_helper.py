@@ -121,12 +121,6 @@ class VotingHelper(object):
 		                                                              VoteArgument.is_up_vote == is_accept,
 		                                                              VoteArgument.is_valid == True)).first()
 
-		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
-		                                                              VoteArgument.author_uid == user.uid,
-		                                                              VoteArgument.is_up_vote == is_accept)).all()
-		for d in db_votes:
-			logger('--',str(d.uid), str(d.is_valid))
-
 		# old one will be invalid
 		db_old_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
 		                                                                   VoteArgument.author_uid == user.uid,

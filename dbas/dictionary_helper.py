@@ -23,6 +23,10 @@ from .notification_helper import NotificationHelper
 
 class DictionaryHelper(object):
 
+	#  def __init__(self):
+	#  self.lang = ''
+	#  TODO move lang here and init translator
+
 	def get_random_subdict_out_of_orderer_dict(self, ordered_dict, count):
 		"""
 		Creates a random subdictionary with given count out of the given ordered_dict.
@@ -202,10 +206,10 @@ class DictionaryHelper(object):
 				h_outro          = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 			else:
 				premise, tmp	 = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-				conclusion		 = _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
-										else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
+				conclusion       = _qh.get_text_for_conclusion(db_argument, lang)
 				db_confrontation = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
 				confr, tmp       = _qh.get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid, lang)
+				sys_conclusion   = _qh.get_text_for_conclusion(db_confrontation, lang)
 				if attack == 'undermine':
 					premise = _qh.get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
 						else _qh.get_text_for_argument_uid(db_confrontation.argument_uid, lang, True)
@@ -221,9 +225,9 @@ class DictionaryHelper(object):
 				if conclusion.startswith(prefix):
 					conclusion = conclusion[len(prefix):]
 
-				h_intro, h_bridge , h_outro = _tg.get_text_for_confrontation(premise, conclusion, is_supportive, attack,
-				                                                             confr, reply_for_argument, user_is_attacking,
-				                                                             current_argument)
+				h_intro, h_bridge , h_outro = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive,
+				                                                             attack, confr, reply_for_argument, user_is_attacking,
+				                                                             current_argument, db_argument)
 		elif at_choosing:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
 			h_intro  = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
@@ -501,7 +505,7 @@ class DictionaryHelper(object):
 		premise		 = premise[0:1].lower() + premise[1:]
 
 		ret_dict	 = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive)
-		mode		 = 't' if is_supportive else 't'
+		mode		 = 't' if is_supportive else 'f'
 		_um			 = UrlManager(application_url, slug, for_api)
 
 		# based in the relation, we will fetch different url's for the items
@@ -517,6 +521,7 @@ class DictionaryHelper(object):
 
 			# easy cases
 			elif relation == 'undermine' or relation == 'undercut':
+
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
 			elif relation == 'overbid':

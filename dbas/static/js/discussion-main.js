@@ -321,7 +321,8 @@ setWindowOptions = function(){
  */
 setGuiOptions = function(){
 	// set do not hide on hover popup
-	var originalLeave = $.fn.popover.Constructor.prototype.leave;
+	var originalLeave = $.fn.popover.Constructor.prototype.leave,
+		body = $('body'), baseFontSize;
 	// http://jsfiddle.net/WojtekKruszewski/Zf3m7/22/
 	$.fn.popover.Constructor.prototype.leave = function(obj){
 		var self = obj instanceof this.constructor ?
@@ -344,7 +345,7 @@ setGuiOptions = function(){
 		}
 	};
 	$('#site-navigation').hide();
-	$('body').popover({ selector: '[data-popover]', trigger: 'click hover', delay: {show: 50, hide: 50}}).on('inserted.bs.popover', function () {
+	body.popover({ selector: '[data-popover]', trigger: 'click hover', delay: {show: 50, hide: 50}}).on('inserted.bs.popover', function () {
 		var element = $('#site-navigation').detach().show();
 		$('#discussion-sidebar-style-menu .popover-content').append(element);
 	}).on('hide.bs.popover', function () {
@@ -352,7 +353,8 @@ setGuiOptions = function(){
 		$('#discussion-sidebar-style-menu').append(element);
 	});
 
-	var baseFontSize = parseInt($('body').css('font-size').replace('px',''));
+	// slimscroll for breadcrumbs
+	baseFontSize = parseInt(body.css('font-size').replace('px',''));
 	if ($('#' + breadcrumbContainerId).height() > 6*baseFontSize){
 		$('#' + breadcrumbContainerId + ' .col-md-12').slimScroll({
 			position: 'right',

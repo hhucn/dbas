@@ -17,6 +17,7 @@ from .url_manager import UrlManager
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
+
 class QueryHelper(object):
 	"""
 
@@ -24,6 +25,7 @@ class QueryHelper(object):
 
 	def __init__(self):
 		self.__statement_min_length = 5
+		#  self.lang = ''
 		#  TODO move lang here and init translator
 
 	# ########################################

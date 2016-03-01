@@ -415,7 +415,7 @@ class Translator(object):
 		en_lang[self.support] = 'You agreed with'
 		en_lang[self.premise] = 'Premise'
 		en_lang[self.because] = 'because'
-		en_lang[self.doesNotHoldBecause] = 'does not hold because'
+
 		en_lang[self.moreAbout] = 'More about'
 		en_lang[self.undermine1] = 'It is false that'
 		en_lang[self.undermine2] = ''
@@ -815,7 +815,6 @@ class Translator(object):
 		de_lang[self.support] = 'Sie akzeptieren'
 		de_lang[self.premise] = 'Prämisse'
 		de_lang[self.because] = 'weil'
-		de_lang[self.doesNotHoldBecause] = 'gilt nicht, weil'
 		de_lang[self.moreAbout] = 'Mehr über'
 		de_lang[self.undermine1] = 'Es ist falsch, dass'
 		de_lang[self.undermine2] = ''
@@ -1400,18 +1399,20 @@ class TextGenerator(object):
 
 		return ret_dict
 
-	def get_text_for_confrontation(self, premise, conclusion, supportive, attack, confrontation, reply_for_argument,
-								   user_is_attacking, current_argument=''):
+	def get_text_for_confrontation(self, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
+	                               reply_for_argument, user_is_attacking, current_argument, user_arg):
 		"""
 
 		:param premise:
 		:param conclusion:
+		:param sys_conclusion:
 		:param supportive:
 		:param attack:
 		:param confrontation:
 		:param reply_for_argument:
 		:param user_is_attacking:
 		:param current_argument:
+		:param user_arg:
 		:return:
 		"""
 		_t = Translator(self.lang)
@@ -1419,6 +1420,7 @@ class TextGenerator(object):
 		#  build some confrontation text
 		confrontation = confrontation[0:1].lower() + confrontation[1:]
 		premise = premise[0:1].lower() + premise[1:]
+		sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
 
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
 
@@ -1439,11 +1441,15 @@ class TextGenerator(object):
 		elif attack == 'rebut':
 			# distinguish between reply for argument and reply for premise group
 			if reply_for_argument:  # reply for argument
+				if not user_arg.is_supportive:
+					user_is_attacking = not user_is_attacking
+					conclusion = sys_conclusion
 				confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting) if user_is_attacking else _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
-			else:		# reply for premise group
+				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
+			else:  # reply for premise group
 				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, '
 				confrontation_text += _t.get(_t.strongerStatementForRecjecting)
-			confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
+				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 
 		elif attack == 'undercut':
 			confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong> ' \
