@@ -595,6 +595,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_notifications', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {

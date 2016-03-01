@@ -28,9 +28,9 @@ cors_policy = dict(enabled=True,
 # =============================================================================
 
 reaction = Service(name='api_reaction',
- 				   path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
- 				   description="Discussion Reaction",
- 				   cors_policy=cors_policy)
+				   path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
+				   description="Discussion Reaction",
+				   cors_policy=cors_policy)
 justify  = Service(name='api_justify',
 				   path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation',
 				   description="Discussion Justify",
@@ -40,9 +40,9 @@ attitude = Service(name='api_attitude',
 				   description="Discussion Attitude",
 				   cors_policy=cors_policy)
 issues   = Service(name='get_issues',
- 			       path='/get_issues',
- 			       description="Issue Selector",
- 			       cors_policy=cors_policy)
+				   path='/get_issues',
+				   description="Issue Selector",
+				   cors_policy=cors_policy)
 # Prefix with 'z' so it is added as the last route
 zinit    = Service(name='api_init',
 				   path='/{slug}',
@@ -61,17 +61,17 @@ dump = Service(name='api_dump',
 			   description="Database Dump",
 			   cors_policy=cors_policy)
 news = Service(name='api_news',
- 			   path='/get_news',
- 			   description="News app",
- 			   cors_policy=cors_policy)
+			   path='/get_news',
+			   description="News app",
+			   cors_policy=cors_policy)
 
 #
 # User Management
 #
 login = Service(name='login',
-                path='/login',
-                description="Log into external discussion system",
-                cors_policy=cors_policy)
+				path='/login',
+				description="Log into external discussion system",
+				cors_policy=cors_policy)
 
 
 # =============================================================================
@@ -189,7 +189,6 @@ def user_login(request):
 	:return: token
 	"""
 	user = request.validated['user']
-
 	# Convert bytes to string
 	if type(user['token']) == bytes:
 		token = user['token'].decode('utf-8')
