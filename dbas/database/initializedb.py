@@ -1128,8 +1128,7 @@ def setup_discussion_database():
 	argument24.conclusions_argument(argument10.uid)
 	argument25.conclusions_argument(argument10.uid)
 	argument26.conclusions_argument(argument11.uid)
-	argument29.conclusions_argument(argument12.uid)
-	argument30.conclusions_argument(argument13.uid)
+	
 	argument31.conclusions_argument(argument14.uid)
 	argument32.conclusions_argument(argument15.uid)
 	argument33.conclusions_argument(argument16.uid)

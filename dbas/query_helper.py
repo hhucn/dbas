@@ -94,7 +94,7 @@ class QueryHelper(object):
 			return ret_value[:-1] # cut off punctuation
 
 	# DEPRECATED
-	def __get_text_for_argument_uid(self, uid, lang, with_strong_html_tag = False):
+	def __get_text_for_argument_uid(self, uid, lang, with_strong_html_tag = False, start_with_intro=False):
 		"""
 		DEPRECATED Returns current argument as string like conclusion, because premise1 and premise2
 		:param uid: int
