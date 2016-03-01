@@ -251,32 +251,48 @@
 }
 /* http://nicolasgallagher.com/pure-css-speech-bubbles/ */
 /* http://codepen.io/ryanmcnz/pen/JDLhu */
+
+.line-wrapper-m,
+.line-wrapper-l,
+.line-wrapper-r{
+	width: 100%;
+}
+.line-wrapper-r{
+	float:left;
+}
+.line-wrapper-r{
+	float:right;
+}
 .triangle-l,
 .triangle-r,
 .triangle-m{
   position: relative;
-  margin: 1em 0 1em;
-  padding: 15px;
+  padding: 10px;
   box-sizing: border-box;
   border-radius: 10px;
-  width: 70%;
+  max-width: 60%;
   box-shadow: 2px 2px 5px #888888;
 }
 .triangle-l{
   float: left;
   background: #E0FFAD;
+  margin: 1em auto 1em 0;
+
 }
 .triangle-r{
   float: right;
+  text-align: right;
   background: #ADDFFF;
+  margin: 1em 0 1em auto;
 }
 .triangle-m{
-  padding: 5px;
+  float: left;
+  left: 200px;
+  padding: 1px;
+  width: 50%;
   background: #E5E4E2;
-  width: 40%;
   text-align: center;
-  margin-left: auto ;
-  margin-right: auto ;
+  margin: 1em auto 1em auto;
 }
 .triangle-l::after,
 .triangle-r::after{
@@ -292,14 +308,12 @@
   transform: rotate(-45deg);
   box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.4);
 }
-/* creates triangle */
 .triangle-l:after {
-  left: 20%;
+  left: 10%;
   border-color: transparent transparent #E0FFAD #E0FFAD;
 }
-/* creates triangle */
 .triangle-r:after {
-  right: 20%;
+  right: 10%;
   border-color: transparent transparent #ADDFFF #ADDFFF;
 }
 
