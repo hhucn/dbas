@@ -548,6 +548,35 @@ function GuiHandler() {
 	};
 
 	/**
+	 *
+	 */
+	this.switchToTextView = function(){
+		$('#' + discussionsDescriptionIntroId).fadeIn();
+		$('#' + discussionsDescriptionBridgeInfoLinkId).fadeIn();
+		$('#' + discussionsDescriptionBridgeId).fadeIn();
+		$('#' + discussionsDescriptionOutroId).fadeIn();
+
+		new Helper().delay(function () {
+			$('#dialog-speech-bubbles-space').fadeOut();
+		}, 400);
+	};
+
+	/**
+	 *
+	 */
+	this.switchToDialogView = function(){
+		$('#' + discussionsDescriptionIntroId).fadeOut();
+		$('#' + discussionsDescriptionBridgeInfoLinkId).fadeOut();
+		$('#' + discussionsDescriptionBridgeInfoId).fadeOut();
+		$('#' + discussionsDescriptionBridgeId).fadeOut();
+		$('#' + discussionsDescriptionOutroId).fadeOut();
+
+		new Helper().delay(function () {
+			$('#dialog-speech-bubbles-space').fadeIn();
+		}, 400);
+	};
+
+	/**
 	 * Hides the url sharing text field
 	 */
 	this.hideEditFieldsInEditPopup = function () {

@@ -88,6 +88,15 @@
                     </div>
 
 					<h4 id="discussions-header-outro">${discussion.heading.outro}</h4>
+					<div id="dialog-speech-bubbles-space" style="display:none;">
+                        <div tal:repeat="bubble discussion.heading.bubbles" tal:omit-tag="">
+                            <div tal:condition="bubble.is_user" class="line-wrapper-l"><div class="triangle-l">${bubble.message}</div></div>
+                            <div tal:condition="bubble.is_system" class="line-wrapper-r"><div class="triangle-r">${bubble.message}</div></div>
+                            <div tal:condition="bubble.is_status" class="line-wrapper-m"><div class="triangle-m">${bubble.message}</div></div>
+                            <div tal:condition="repeat.bubble.end" class="line-wrapper-m" style="margin-bottom: 2em;"></div>
+
+                        </div>
+                    </div>
 					<div id="discussions-space">
 
 						<ul>
@@ -134,8 +143,10 @@
 								</ul>
 							</div>
 						</li>
-
 					</ul>
+                    <div id="dialog-switcher-container">
+                        <input tal:condition="extras.show_display_style" id="dialog-switcher" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="primary" data-offstyle="default" data-on="Dialog" data-off="Text">
+                    </div>
 				</div>
 			</div>
 

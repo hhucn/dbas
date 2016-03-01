@@ -249,19 +249,28 @@
 	-moz-box-flex:1.0;
 	box-flex:1.0;
 }
+
+#dialog-switcher-container{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+#dialog-speech-bubbles-space{
+    margin-left: 3em;
+}
 /* http://nicolasgallagher.com/pure-css-speech-bubbles/ */
 /* http://codepen.io/ryanmcnz/pen/JDLhu */
-
 .line-wrapper-m,
-.line-wrapper-l,
+.line-wrapper-r,
 .line-wrapper-r{
 	width: 100%;
 }
-.line-wrapper-r{
-	float:left;
+.line-wrapper-l,
+.line-wrapper-m{
+	float: left;
 }
 .line-wrapper-r{
-	float:right;
+	float: right;
 }
 .triangle-l,
 .triangle-r,
@@ -270,30 +279,29 @@
   padding: 10px;
   box-sizing: border-box;
   border-radius: 10px;
-  max-width: 60%;
+  min-width: 40%;
+  max-width: 55%;
   box-shadow: 2px 2px 5px #888888;
 }
 .triangle-l{
   float: left;
-  background: #E0FFAD;
-  margin: 1em auto 1em 0;
-
+  background: #E5E4E2;
+  margin: 0 auto 2em 0;
 }
 .triangle-r{
   float: right;
-  text-align: right;
-  background: #ADDFFF;
-  margin: 1em 0 1em auto;
+  text-align: left;
+  background: #dcf8c6;
+  margin: 0 0 2em auto;
 }
 .triangle-m{
-  float: left;
-  left: 200px;
   padding: 1px;
   width: 50%;
-  background: #E5E4E2;
+  background: #e1f3fb;
   text-align: center;
-  margin: 1em auto 1em auto;
+  margin: 0 auto 2em auto;
 }
+
 .triangle-l::after,
 .triangle-r::after{
   content: "";
@@ -308,65 +316,15 @@
   transform: rotate(-45deg);
   box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.4);
 }
+/* creates triangle */
 .triangle-l:after {
   left: 10%;
-  border-color: transparent transparent #E0FFAD #E0FFAD;
+  border-color: transparent transparent #E5E4E2 #E5E4E2;
 }
+/* creates triangle */
 .triangle-r:after {
   right: 10%;
-  border-color: transparent transparent #ADDFFF #ADDFFF;
-}
-
-/*
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  margin-left: -0.5em;
-  bottom: -2em;
-  left: 50%;
-  box-sizing: border-box;
-  border: 1em solid black;
-  border-color: transparent transparent #bada55 #bada55;
-  transform-origin: 0 0;
-  transform: rotate(-45deg);
-  box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.4);
-*/
-
-/* creates triangle */
-.triangle-isosceles-l:after {
-  left: 50px;
-  border-color: #E0FFAD transparent;
-}
-
-/* creates triangle */
-.triangle-isosceles-r:after {
-  right: 50px;
-  border-color: #ADDFFF transparent;
-}
-
-/* creates triangle */
-.triangle-isosceles-l:after,
-.triangle-isosceles-r:after {
-  content: "";
-  display: block; /* reduce the damage in FF3.0 */
-  position: absolute;
-  bottom: -15px;
-  width: 0;
-  border-width: 15px 15px 0;
-  border-style: solid;
-}
-
-/* creates triangle */
-.triangle-isosceles-l:after {
-  left: 50px;
-  border-color: #E0FFAD transparent;
-}
-
-/* creates triangle */
-.triangle-isosceles-r:after {
-  right: 50px;
-  border-color: #ADDFFF transparent;
+  border-color: transparent transparent #dcf8c6 #dcf8c6;
 }
 
 @media (max-width: 767px) {

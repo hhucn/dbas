@@ -93,6 +93,8 @@ class QueryHelper(object):
 			for i in range(1, len(pgroups)):
 				ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
 				users_opinion = not users_opinion
+
+			ret_value = ret_value.replace('.</strong>', '</strong>.').replace('. </strong>', '</strong>. ')
 			return ret_value[:-1] # cut off punctuation
 
 	# DEPRECATED

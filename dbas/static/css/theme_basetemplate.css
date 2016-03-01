@@ -87,6 +87,10 @@ body.loading .ajaxloader {
 .row{
 	padding-left: 15px;
 	padding-right: 15px;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display:         flex;
 }
 
 :-moz-placeholder {

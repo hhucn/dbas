@@ -2,8 +2,8 @@ import random
 import json
 import datetime
 import locale
-import collections
 
+from collections import OrderedDict
 from sqlalchemy import and_
 from slugify import slugify
 
@@ -124,6 +124,7 @@ class DictionaryHelper(object):
 		h_intro        = ''
 		h_bridge       = ''
 		h_outro        = ''
+		bubbles_array  = []
 		# add_premise_text = (_tn.get(_tn.iAgreeWithInColor) if is_supportive else _tn.get(_tn.iDisagreeWithInColor)) + ': '
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
@@ -228,6 +229,45 @@ class DictionaryHelper(object):
 				h_intro, h_bridge , h_outro = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive,
 				                                                             attack, confr, reply_for_argument, user_is_attacking,
 				                                                             current_argument, db_argument)
+
+				# get speech bubbles
+				speech = dict()
+				speech['is_user']   = False
+				speech['is_system'] = False
+				speech['is_status'] = True
+				speech['message']   = 'Then...'
+				bubbles_array.append(speech)
+
+				then_split = h_intro.replace('<strong>','').replace('</strong>','').split('. ')
+				for split in then_split:
+					speech = dict()
+					speech['is_user']   = split.startswith(_tn.get(_tn.butYouCounteredWith)) or split.startswith(_tn.get(_tn.soYourOpinionIsThat))
+					speech['is_system'] = not split.startswith(_tn.get(_tn.butYouCounteredWith))
+					speech['is_status'] = False
+					speech['message']   = split
+					bubbles_array.append(speech)
+
+				speech = dict()
+				speech['is_user']   = False
+				speech['is_system'] = False
+				speech['is_status'] = True
+				speech['message']   = 'Now...'
+				bubbles_array.append(speech)
+
+				speech = dict()
+				speech['is_user']   = False
+				speech['is_system'] = True
+				speech['is_status'] = False
+				speech['message']   = h_bridge.replace('<strong>','').replace('</strong>','')
+				bubbles_array.append(speech)
+
+				speech = dict()
+				speech['is_user']   = True
+				speech['is_system'] = False
+				speech['is_status'] = False
+				speech['message']   = h_outro.replace('<strong>','').replace('</strong>','')
+				bubbles_array.append(speech)
+
 		elif at_choosing:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
 			h_intro  = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
@@ -236,7 +276,7 @@ class DictionaryHelper(object):
 			h_bridge += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
 			h_bridge += '</strong>?'
 			h_outro  += _tn.get(_tn.because) + '...'
-		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro}
+		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
 		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
 	def prepare_item_dict_for_start(self, issue_uid, logged_in, lang, application_url, for_api):

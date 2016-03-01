@@ -190,6 +190,13 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
 	});
 
+	$('#dialog-switcher').change(function() {
+		if ($(this).prop('checked'))
+			guiHandler.switchToDialogView();
+		else
+			guiHandler.switchToTextView();
+	});
+
 };
 
 /**

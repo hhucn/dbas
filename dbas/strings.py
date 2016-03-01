@@ -1441,6 +1441,7 @@ class TextGenerator(object):
 		elif attack == 'rebut':
 			# distinguish between reply for argument and reply for premise group
 			if reply_for_argument:  # reply for argument
+				# changing arguments for better understanding
 				if not user_arg.is_supportive:
 					user_is_attacking = not user_is_attacking
 					conclusion = sys_conclusion
