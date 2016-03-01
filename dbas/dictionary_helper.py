@@ -351,10 +351,11 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_statement(self, statement_uid, issue_uid, is_supportive, lang, application_url, for_api):
+	def prepare_item_dict_for_justify_statement(self, statement_uid, user, issue_uid, is_supportive, lang, application_url, for_api):
 		"""
 
 		:param statement_uid:
+		:param user:
 		:param issue_uid:
 		:param is_supportive:
 		:param lang:
@@ -390,11 +391,12 @@ class DictionaryHelper(object):
 																  'justify',
 																  _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
-			statements_array.append(self.__get_statement_dict('start_premise',
-															  _tn.get(_tn.newPremiseRadioButtonText),
-															  [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
-															  'justify',
-															  'add'))
+			if user:
+				statements_array.append(self.__get_statement_dict('start_premise',
+																  _tn.get(_tn.newPremiseRadioButtonText),
+																  [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
+																  'justify',
+																  'add'))
 
 		return statements_array
 

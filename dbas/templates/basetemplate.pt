@@ -27,6 +27,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.2.1.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.6.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/ads.js')}"></script>
 
 	<!-- JS DISABLED -->
 	<noscript>
@@ -43,7 +44,10 @@
 	</div>
 
 	<script type="text/javascript">
-		var adblock = true;
+      if( window.canRunAds === undefined ){
+        // adblocker detected, show fallback
+        $('#adblocker_message').show();
+      }
 	</script>
 
 

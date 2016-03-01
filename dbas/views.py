@@ -335,7 +335,7 @@ class Dbas(object):
 			if not discussion_dict:
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
-			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, issue, supportive, ui_locales, mainpage, for_api)
+			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, self.request.authenticated_userid, issue, supportive, ui_locales, mainpage, for_api)
 			breadcrumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid, slug,
 			                                                 self.request.session.id, transaction, ui_locales,
 		                                                     mainpage, del_breadcrumb, for_api)

@@ -57,6 +57,8 @@
 						<span class="lead" i18n:translate="profile_picture">Profile Picture</span>
 					</div>
 				</div>
+                </div>
+            <div class="row">
 				<div class="col-md-12">
 					<div id="settings-alert" class="alert alert-dismissible alert-danger" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert">&times;</button>
