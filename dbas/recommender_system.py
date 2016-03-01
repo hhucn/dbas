@@ -14,9 +14,16 @@ from .query_helper import QueryHelper
 
 class RecommenderHelper(object):
 
-	def get_attack_for_argument(self, argument_uid, issue):
+	def get_attack_for_argument(self, argument_uid, issue, lang):
+		"""
+
+		:param argument_uid:
+		:param issue:
+		:param lang:
+		:return:
+		"""
 		# getting undermines or undercuts or rebuts
-		attacks, key = self.__get_attack_for_argument(argument_uid, issue)
+		attacks, key = self.__get_attack_for_argument(argument_uid, issue, lang)
 		logger('RecommenderHelper', 'get_attack_for_argument', 'main')
 
 		if not attacks or len(attacks) == 0:
@@ -78,14 +85,14 @@ class RecommenderHelper(object):
 
 		return db_arguments
 
-
-	def __get_attack_for_argument(self, argument_uid, issue):
+	def __get_attack_for_argument(self, argument_uid, issue, lang):
 		"""
 		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
 		Additionally returns id's of premises groups with [key + str(index) + 'id']
 		:param db_argument:
 		:param user:
 		:param issue:
+		:param lang:
 		:return: dict, key
 		"""
 
@@ -96,21 +103,22 @@ class RecommenderHelper(object):
 
 		logger('RecommenderHelper', '__get_attack_for_argument', 'attack_list : ' + str(attacks))
 		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
-		return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks)
+		return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang)
 
 		# sanity check if we could not found an attack for a left attack in out set
 		if not return_dict and len(attacks) > 0:
-			return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks)
+			return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks, lang)
 
 		return return_dict, key
 
-	def __get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks):
+	def __get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks, lang):
 		"""
 
 		:param argument_uid:
 		:param attack_list:
 		:param issue:
 		:param complete_list_of_attacks:
+		:param lang: ui_locales
 		:return:
 		"""
 		return_dict = None
@@ -127,9 +135,9 @@ class RecommenderHelper(object):
 			attack = random.choice(attack_list)
 			attack_list.remove(attack)
 
-			return_dict = _qh.get_undermines_for_argument_uid(argument_uid) if attack == 1 \
-				else (_qh.get_rebuts_for_argument_uid(argument_uid) if attack == 5
-				      else _qh.get_undercuts_for_argument_uid(argument_uid))
+			return_dict = _qh.get_undermines_for_argument_uid(argument_uid, lang) if attack == 1 \
+				else (_qh.get_rebuts_for_argument_uid(argument_uid, lang) if attack == 5
+				      else _qh.get_undercuts_for_argument_uid(argument_uid, lang))
 			key = 'undermine' if attack == 1 \
 				else ('rebut' if attack == 5
 				      else 'undercut')

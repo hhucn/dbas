@@ -531,7 +531,7 @@ class Translator(object):
 		en_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'but other participants do not have any counter argument for that.'
 		en_lang[self.because] = 'Because'
 		en_lang[self.butWhich] = 'but which one'
-		en_lang[self.butYouCounteredWith] = 'But you countered them with:'
+		en_lang[self.butYouCounteredWith] = 'You did not agree with this because'
 		en_lang[self.canYouGiveAReason] = 'Can you give a reason?'
 		en_lang[self.canYouGiveAReasonFor] = 'Can you give a reason for'
 		en_lang[self.canYouGiveACounter] = 'Can you give a counter-argument?'
@@ -1419,6 +1419,7 @@ class TextGenerator(object):
 		#  build some confrontation text
 		confrontation = confrontation[0:1].lower() + confrontation[1:]
 		premise = premise[0:1].lower() + premise[1:]
+
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
 
 		opinion = '<strong>'

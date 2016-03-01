@@ -250,6 +250,7 @@ setStyleOptions = function (guiHandler){
 	});
 	replaceHtmlTags($('#' + issueInfoId));
 	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
+	replaceHtmlTags($('#island-view-container-space-heading'));
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();

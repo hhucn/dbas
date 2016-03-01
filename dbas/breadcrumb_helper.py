@@ -35,7 +35,8 @@ class BreadcrumbHelper(object):
 			return []
 		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
 
-		url = UrlManager(application_url, slug, for_api).get_url(path)
+		_um = UrlManager(application_url, slug, for_api)
+		url = _um.get_url(path)
 
 		# delete by slugs
 		expr = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)

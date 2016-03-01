@@ -79,12 +79,10 @@
 					</div>
 					<h4 id="discussions-header-intro">${discussion.heading.intro}</h4>
 
-                    <a id="discussions-header-bridge-infos-link" data-toggle="collapse" href="#discussions-header-bridge-infos" aria-expanded="false" aria-controls="discussions-header-bridge-infos" class="collapsed">
-					<h4>
-                        <span id="discussions-header-bridge">${discussion.heading.bridge}</span>
-                        <!--<span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em; float: right;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.click_fore_more"></span>-->
-                    </h4>
+                    <a tal:condition="extras.is_questionable" id="discussions-header-bridge-infos-link" data-toggle="collapse" href="#discussions-header-bridge-infos" aria-expanded="false" aria-controls="discussions-header-bridge-infos" class="collapsed">
+					<h4><span id="discussions-header-bridge">${discussion.heading.bridge}</span></h4>
                     </a>
+                    <h4 tal:condition="not:extras.is_questionable"><span id="discussions-header-bridge">${discussion.heading.bridge}</span></h4>
                     <div class="collapse" id="discussions-header-bridge-infos">
                         <div class="well lead" id="discussions-header-bridge-infos-content" data-toggle="tooltip" data-placement="bottom"></div>
                     </div>
@@ -111,7 +109,7 @@
 							<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
 						</li>
 						<li>
-							<img tal:condition="extras.show_display_style" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_questionmark1.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" />
+							<img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_questionmark1.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" />
 						</li>
 						<li>
 							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon">
@@ -162,12 +160,9 @@
 				<span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row" id="island-view-container-space">
-				<div class="col-md-2"></div>
-				<div class="col-md-8 text-center">
-					<h4>Island View for <strong>this is not true for overbred races does not hold, because even overbred races can be taught.</strong>
-					</h4>
+				<div class="col-md-12 text-center">
+					<h4><span i18n:translate="island_view_for">Island View for</span> <span id="island-view-container-space-heading"><strong>${extras.island.heading}</strong></span></h4>
 				</div>
-				<div class="col-md-2"></div>
 			</div>
 
 			<div class="row">
@@ -225,11 +220,31 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h5>
-									<span class="text-success">✓</span> 
+                                <span class="text-danger">✗</span>
+                                <span tal:replace="extras.island.rebut_text">rebut_text</span>
+								</h5>
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
+									<label tal:attributes="for rebut.id">${rebut.text}</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+<!--?				<div class="col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5>
+									<span class="text-success">✓</span>
 									<span tal:replace="extras.island.overbid_text">overbid_text</span>
 								</h5>
 						</div>
@@ -262,7 +277,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>-->
 
 			<div class="center text-center">
 				<button id="island-view-add-arguments" type="button" class="button button-block btn btn-primary disabled" data-dismiss="modal">
