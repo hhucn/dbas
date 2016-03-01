@@ -221,7 +221,7 @@ class Dbas(object):
 		                                                 self.request.session.id, transaction, ui_locales,
 		                                                 mainpage, del_breadcrumb, for_api)
 
-		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, ui_locales,
+		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, ui_locales,
 		                                          self.request.authenticated_userid, breadcrumbs=breadcrumbs,
 		                                          application_url=mainpage, for_api=for_api)
 
