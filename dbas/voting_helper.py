@@ -18,12 +18,12 @@ class VotingHelper(object):
 		:param transaction: transaction
 		:return: increased votes of the argument
 		"""
-		if not UserHandler().is_user_logged_in(user):
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if not UserHandler().is_user_logged_in(user) or not db_user:
 			return None
 
 		logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		# set vote for the argument (relation), its premisegroup and conclusion
 		self.__vote_argument(db_argument, db_user, True)
@@ -80,8 +80,9 @@ class VotingHelper(object):
 		"""
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		self.__vote_statement(db_statement, db_user, supportive)
-		transaction.commit()
+		if db_user:
+			self.__vote_statement(db_statement, db_user, supportive)
+			transaction.commit()
 
 	def clear_votes_of_user(self, transaction, user):
 		"""
