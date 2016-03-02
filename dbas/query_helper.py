@@ -97,52 +97,6 @@ class QueryHelper(object):
 			ret_value = ret_value.replace('.</strong>', '</strong>.').replace('. </strong>', '</strong>. ')
 			return ret_value[:-1] # cut off punctuation
 
-	# DEPRECATED
-	def __get_text_for_argument_uid(self, uid, lang, with_strong_html_tag = False, start_with_intro=False):
-		"""
-		DEPRECATED Returns current argument as string like conclusion, because premise1 and premise2
-		:param uid: int
-		:param lang: str
-		:param with_strong_html_tag: Boolean
-		:return: str
-		"""
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-		ret_value = ''
-		_t = Translator(lang)
-		because = (' </strong>' if with_strong_html_tag else ' ')\
-		          + _t.get(_t.because).lower()\
-		          + (' <strong>' if with_strong_html_tag else ' ')
-		doesnt_hold_because = (' </strong>' if with_strong_html_tag else ' ')\
-		                     + _t.get(_t.doesNotHoldBecause).lower()\
-		                     + (' <strong>' if with_strong_html_tag else ' ')
-
-		# catch error
-		if not db_argument:
-			return None
-
-		# basecase
-		if db_argument.argument_uid == 0:
-			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-			conclusion = self.get_text_for_statement_uid(db_argument.conclusion_uid)
-			premises = premises[:-1] if premises.endswith('.') else premises  # pretty print
-			if not conclusion:
-				return None
-			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
-			argument = conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
-			return argument
-
-		# recursion
-		if db_argument.conclusion_uid == 0:
-			argument = self.get_text_for_argument_uid(db_argument.argument_uid, lang, with_strong_html_tag)
-			premises, uids = self.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-			if not premises:
-				return None
-			if db_argument.is_supportive:
-				ret_value = argument + ',' + because + premises
-			else:
-				ret_value = argument + doesnt_hold_because + premises
-		return ret_value
-
 	def get_undermines_for_argument_uid(self, argument_uid, lang):
 		"""
 		Calls __get_undermines_for_premises('reason', premises_as_statements_uid)
@@ -540,11 +494,9 @@ class QueryHelper(object):
 			all_array.append(issue_dict)
 
 		_t = Translator(lang)
-		a = _t.get(_t.discussionInfoTooltip1)
-		b = _t.get(_t.discussionInfoTooltip2)
-		c = _t.get(_t.discussionInfoTooltip3pl)
-		d = _t.get(_t.discussionInfoTooltip3sg)
-		tooltip = a + ' ' + date + ' ' + b + ' ' + str(arg_count) + ' ' + (c if arg_count > 1 else d)
+		tooltip = _t.get(_t.discussionInfoTooltip1) + ' ' + date + ' ' +\
+		          _t.get(_t.discussionInfoTooltip2) + ' ' + str(arg_count) + ' ' +\
+		          (_t.get(_t.discussionInfoTooltip3pl) if arg_count > 1 else  _t.get(_t.discussionInfoTooltip3sg))
 
 		return {'slug': slug, 'info': info, 'title': title, 'uid': uid, 'arg_count': arg_count, 'date': date, 'all': all_array, 'tooltip': tooltip}
 

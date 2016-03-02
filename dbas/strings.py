@@ -485,7 +485,7 @@ class Translator(object):
 
 		en_lang[self.aand] = 'and'
 		en_lang[self.addedEverything] = 'Everything was added.'
-		en_lang[self.addStatementRow] = 'Adds another row for adding a new statemtent.'
+		en_lang[self.addStatementRow] = 'Add another row for adding a new statemtent.'
 		en_lang[self.alreadyInserted] = 'This is a duplicate and already there.'
 		en_lang[self.addPremisesRadioButtonText] = 'Let me enter my reasons!'
 		en_lang[self.addArgumentsRadioButtonText] = 'Let me enter my own statements!'
@@ -604,7 +604,7 @@ class Translator(object):
 		en_lang[self.emailUnknown] = 'The given e-mail address is unkown.'
 		en_lang[self.error_code] = 'Error code'
 		en_lang[self.edit] = 'Edit'
-		en_lang[self.editTitle] = 'Editing the statements.'
+		en_lang[self.editTitle] = 'Edit the statements.'
 		en_lang[self.feelFreeToLogin] = ' If you want to proceed, please feel free to login yourself :)'
 		en_lang[self.forText] = 'for'
 		en_lang[self.firstConclusionRadioButtonText] = 'Let me enter my idea!'

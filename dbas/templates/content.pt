@@ -96,13 +96,12 @@
                     </div>
 
 					<h4 id="discussions-header-outro">${discussion.heading.outro}</h4>
-					<div id="dialog-speech-bubbles-space" style="display:none;">
+					<div id="dialog-speech-bubbles-space">
                         <div tal:repeat="bubble discussion.heading.bubbles" tal:omit-tag="">
-                            <div tal:condition="bubble.is_user" class="line-wrapper-l"><div class="triangle-l" tal:attributes="id bubble.id">${bubble.message}</div></div>
-                            <div tal:condition="bubble.is_system" class="line-wrapper-r"><div class="triangle-r" tal:attributes="id bubble.id">${bubble.message}</div></div>
-                            <div tal:condition="bubble.is_status" class="line-wrapper-m"><div class="triangle-m" tal:attributes="id bubble.id">${bubble.message}</div></div>
+                            <div tal:condition="bubble.is_user" class="line-wrapper-l"><a tal:attributes="href bubble.url"><p class="triangle-l" tal:attributes="id bubble.id">${bubble.message}</p></a></div>
+                            <div tal:condition="bubble.is_system" class="line-wrapper-r"><a tal:attributes="href bubble.url"><p class="triangle-r" tal:attributes="id bubble.id">${bubble.message}</p></a></div>
+                            <div tal:condition="bubble.is_status" class="line-wrapper-m"><p class="triangle-m" tal:attributes="id bubble.id">${bubble.message}</p></div>
                             <div tal:condition="repeat.bubble.end" class="line-wrapper-m" style="margin-bottom: 2em;"></div>
-
                         </div>
                     </div>
 					<div id="discussions-space">
@@ -119,11 +118,6 @@
 
 				<div class="col-md-2">
 					<ul id="discussion-sidebar">
-                        <li tal:condition="extras.show_display_style">
-                        <div id="dialog-switcher-container">
-                           <input id="dialog-switcher" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="primary" data-offstyle="default" data-on="Dialog" data-off="Text">
-                        </div>
-                        </li>
 						<li>
 							<img tal:condition="extras.is_editable"  id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
 						</li>

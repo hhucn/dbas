@@ -8,8 +8,9 @@ from collections import OrderedDict
 from sqlalchemy import and_
 from slugify import slugify
 
+from .breadcrumb_helper import BreadcrumbHelper
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Breadcrumb, Issue
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Breadcrumb, Issue, History
 from .logger import logger
 from .recommender_system import RecommenderHelper
 from .query_helper import QueryHelper
@@ -99,14 +100,18 @@ class DictionaryHelper(object):
 
 		return {'uid': uid, 'text': text, 'date': date, 'author': author, 'premisegroup_uid': pgroup}
 
-	def prepare_discussion_dict(self, uid, lang, at_start=False, at_attitude=False, at_justify=False,
-								is_supportive=False, at_dont_know=False, at_argumentation=False,
-								at_justify_argumentation=False, at_choosing=False, additional_id=0, attack='',
-								is_uid_argument=False, logged_in=False):
+	def prepare_discussion_dict(self, user, transaction, uid, lang, breadcrumbs, save_crumb, at_start=False,
+	                            at_attitude=False, at_justify=False, is_supportive=False, at_dont_know=False,
+	                            at_argumentation=False, at_justify_argumentation=False, at_choosing=False,
+	                            additional_id=0, attack='', is_uid_argument=False, logged_in=False):
 		"""
 
+		:param user:
+		:param transaction:
 		:param uid:
 		:param lang:
+		:param breadcrumbs:
+		:param save_crumb:
 		:param at_start:
 		:param at_attitude:
 		:param at_justify:
@@ -117,6 +122,7 @@ class DictionaryHelper(object):
 		:param at_choosing:
 		:param additional_id:
 		:param attack:
+		:param is_uid_argument:
 		:param logged_in:
 		:return:
 		"""
@@ -125,14 +131,23 @@ class DictionaryHelper(object):
 		h_intro        = ''
 		h_bridge       = ''
 		h_outro        = ''
-		bubbles_array  = []
-		# add_premise_text = (_tn.get(_tn.iAgreeWithInColor) if is_supportive else _tn.get(_tn.iDisagreeWithInColor)) + ': '
+		db_user        = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		bubbles_array  = self.__create_speechbubble_history(db_user)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
+
 		if at_start:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_start')
 			h_intro             = _tn.get(_tn.initialPositionInterest)
 			save_statement_url  = 'ajax_set_new_start_premise'
+			text = 'Welcome to D-BAS<br>If you want to get back in the discussion,<br>please click a bubble. Caution: Your progress will be lost!' # TODO TEXT
+			welcome_bubble = self.__create_speechbubble_dict(False, False, True, 'welcome', '', text)
+			start_bubble = self.__create_speechbubble_dict(True, False, False, 'start', '', h_intro)
+			bubbles_array.append(welcome_bubble)
+			bubbles_array.append(start_bubble)
+
+			if save_crumb:
+				self.__save_speechbubble(welcome_bubble, db_user, breadcrumbs[-1], transaction)
 
 		elif at_attitude:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_attitude')
@@ -140,6 +155,15 @@ class DictionaryHelper(object):
 			if not text:
 				return None
 			h_bridge            = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
+			select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', 'You have selected: <strong>' + text + '</strong>') # TODO TEXT
+			bubble = self.__create_speechbubble_dict(True, False, False, '', '', h_bridge)
+			if save_crumb:
+				bubbles_array.append(select_bubble)
+				self.__save_speechbubble(select_bubble, db_user, breadcrumbs[-1], transaction)
+				# self.__save_speechbubble(bubble, db_user, breadcrumbs[-1], transaction)
+			bubbles_array.append(bubble)
+			for b in breadcrumbs:
+				logger('---','---',str(b))
 
 		elif at_justify:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_justify')
@@ -151,6 +175,15 @@ class DictionaryHelper(object):
 			because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 			h_outro             = because
 			add_premise_text	+= text[0:1].upper() + text[1:]
+
+			select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', 'You have selected: <strong>' + text + '</strong> ' + ('is true' if is_supportive else 'is false')) # TODO TEXT
+			bubble = self.__create_speechbubble_dict(True, False, False, '', '', h_bridge + ' ' + h_outro)
+			if save_crumb:
+				bubbles_array.append(select_bubble)
+				self.__save_speechbubble(select_bubble, db_user, breadcrumbs[-1], transaction)
+			bubbles_array.append(self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
+			bubbles_array.append(bubble)
+
 
 		elif at_justify_argumentation:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_justify_argumentation')
@@ -185,6 +218,14 @@ class DictionaryHelper(object):
 			because			 = ' ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 			h_outro      	 = because
 			save_statement_url  = 'ajax_set_new_premises_for_argument'
+
+
+			bubble_intro = self.__create_speechbubble_dict(True, False, False, '', '', h_intro)
+			if save_crumb:
+				bubbles_array.append(bubble_intro)
+			bubble_intro['message'] = bubble_intro['message'] + ' ' + h_outro
+			bubbles_array.append(self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
+			bubbles_array.append(bubble_intro)
 
 		elif at_dont_know:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_dont_know')
@@ -230,65 +271,16 @@ class DictionaryHelper(object):
 				h_intro, h_bridge , h_outro = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive,
 				                                                             attack, confr, reply_for_argument, user_is_attacking,
 				                                                             current_argument, db_argument)
-
-				# get speech bubbles
-				speech = dict()
-				speech['is_user']   = False
-				speech['is_system'] = False
-				speech['is_status'] = True
-				speech['id']        = 'system_history'
-				speech['message']   = 'History'
-				bubbles_array.append(speech)
-
-				system = True
-				for i in range(0,15):
-					speech = dict()
-					speech['is_user']   = system
-					speech['is_system'] = not system
-					speech['is_status'] = False
-					speech['id']        = str(i)
-					c1 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
-					c2 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
-					c3 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
-					c4 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
-					c5 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
-					speech['message']   = c1 + " " + c2 + " " + c3 + " " + c4 + " " + c5
-					bubbles_array.append(speech)
-					system = not system
-
-				speech = dict()
-				speech['is_user']   = False
-				speech['is_system'] = False
-				speech['is_status'] = True
-				speech['id']        = 'system_now'
-				speech['message']   = 'Now'
-				bubbles_array.append(speech)
-
-				then_split = h_intro.replace('<strong>','').replace('</strong>','').split('. ')
-				for split in then_split:
-					speech = dict()
-					speech['is_user']   = split.startswith(_tn.get(_tn.butYouCounteredWith)) or split.startswith(_tn.get(_tn.soYourOpinionIsThat))
-					speech['is_system'] = not split.startswith(_tn.get(_tn.butYouCounteredWith))
-					speech['is_status'] = False
-					speech['id']        = ''
-					speech['message']   = split
-					bubbles_array.append(speech)
-
-				speech = dict()
-				speech['is_user']   = False
-				speech['is_system'] = True
-				speech['is_status'] = False
-				speech['id']        = ''
-				speech['message']   = h_bridge.replace('<strong>','').replace('</strong>','')
-				bubbles_array.append(speech)
-
-				speech = dict()
-				speech['is_user']   = True
-				speech['is_system'] = False
-				speech['is_status'] = False
-				speech['id']        = ''
-				speech['message']   = h_outro.replace('<strong>','').replace('</strong>','')
-				bubbles_array.append(speech)
+				bubble_intro = self.__create_speechbubble_dict(True, False, False, '', '', h_intro)
+				bubble_bridge = self.__create_speechbubble_dict(False, True, False, '', '', h_bridge)
+				bubble_outro = self.__create_speechbubble_dict(True, False, False, '', '', h_outro)
+				bubbles_array.append(self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
+				bubbles_array.append(bubble_intro)
+				bubbles_array.append(bubble_bridge)
+				bubbles_array.append(bubble_outro)
+				if save_crumb:
+					self.__save_speechbubble(bubble_intro, db_user, breadcrumbs[-1], transaction)
+					self.__save_speechbubble(bubble_bridge, db_user, breadcrumbs[-1], transaction)
 
 		elif at_choosing:
 			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
@@ -298,6 +290,7 @@ class DictionaryHelper(object):
 			h_bridge += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
 			h_bridge += '</strong>?'
 			h_outro  += _tn.get(_tn.because) + '...'
+
 		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
 		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
@@ -322,17 +315,17 @@ class DictionaryHelper(object):
 
 		if db_statements:
 			for statement in db_statements:
-				statements_array.append(self.__get_statement_dict(statement.uid,
-																  _qh.get_text_for_statement_uid(statement.uid),
-																  [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
+				statements_array.append(self.__create_statement_dict(statement.uid,
+				                                                     _qh.get_text_for_statement_uid(statement.uid),
+				                                                     [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
 																  'start',
-																  _um.get_url_for_statement_attitude(True, statement.uid)))
+																     _um.get_url_for_statement_attitude(True, statement.uid)))
 
 			if logged_in:
 				_tn = Translator(lang)
-				statements_array.append(self.__get_statement_dict('start_statement',
-																_tn.get(_tn.newConclusionRadioButtonText),
-																[{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
+				statements_array.append(self.__create_statement_dict('start_statement',
+				                                                     _tn.get(_tn.newConclusionRadioButtonText),
+				                                                     [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
 																'start',
 																'add'))
 
@@ -358,17 +351,17 @@ class DictionaryHelper(object):
 
 		_um = UrlManager(application_url, slug, for_api)
 
-		statements_array.append(self.__get_statement_dict('agree',
-														_tn.get(_tn.iAgreeWithInColor) + ': ' + text,
-														[{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
+		statements_array.append(self.__create_statement_dict('agree',
+		                                                     _tn.get(_tn.iAgreeWithInColor) + ': ' + text,
+		                                                     [{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
 														'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't')))
-		statements_array.append(self.__get_statement_dict('disagree',
-														_tn.get(_tn.iDisagreeWithInColor) + ': ' + text,
-														[{'title': _tn.get(_tn.iDisagreeWithInColor) + ': ' + text, 'id': 'disagree'}],
+		statements_array.append(self.__create_statement_dict('disagree',
+		                                                     _tn.get(_tn.iDisagreeWithInColor) + ': ' + text,
+		                                                     [{'title': _tn.get(_tn.iDisagreeWithInColor) + ': ' + text, 'id': 'disagree'}],
 														'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f')))
-		statements_array.append(self.__get_statement_dict('dontknow',
-														_tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text,
-														[{'title': _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text, 'id': 'dontknow'}],
+		statements_array.append(self.__create_statement_dict('dontknow',
+		                                                     _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text,
+		                                                     [{'title': _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text, 'id': 'dontknow'}],
 														'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd')))
 
 		return statements_array
@@ -407,16 +400,16 @@ class DictionaryHelper(object):
 
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument.uid, issue_uid, lang)
-				statements_array.append(self.__get_statement_dict(str(argument.uid),
-																  text,
-																  premise_array,
+				statements_array.append(self.__create_statement_dict(str(argument.uid),
+				                                                     text,
+				                                                     premise_array,
 																  'justify',
-																  _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
+																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
 			if user:
-				statements_array.append(self.__get_statement_dict('start_premise',
-																  _tn.get(_tn.newPremiseRadioButtonText),
-																  [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
+				statements_array.append(self.__create_statement_dict('start_premise',
+				                                                     _tn.get(_tn.newPremiseRadioButtonText),
+				                                                     [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
 																  'justify',
 																  'add'))
 
@@ -484,15 +477,15 @@ class DictionaryHelper(object):
 				# for each justifying premise, we need a new confrontation:
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, lang)
 
-				statements_array.append(self.__get_statement_dict(argument.uid,
-																text,
-																premises_array,
+				statements_array.append(self.__create_statement_dict(argument.uid,
+				                                                     text,
+				                                                     premises_array,
 																'justify',
-																_um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
+																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
-			statements_array.append(self.__get_statement_dict('justify_premise',
-															_tn.get(_tn.newPremiseRadioButtonText),
-															[{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
+			statements_array.append(self.__create_statement_dict('justify_premise',
+			                                                     _tn.get(_tn.newPremiseRadioButtonText),
+			                                                     [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
 															'null',
 															'null'))
 
@@ -535,7 +528,7 @@ class DictionaryHelper(object):
 				current_mode = mode if relation == 'overbid' else counter_mode
 				url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, relation)
 
-			statements_array.append(self.__get_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
+			statements_array.append(self.__create_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
 
@@ -607,12 +600,12 @@ class DictionaryHelper(object):
 			else:
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
-			statements_array.append(self.__get_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
+			statements_array.append(self.__create_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the back button
 		relation = 'no_opinion'
 		url = 'back' if for_api else 'window.history.go(-1)'
-		statements_array.append(self.__get_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
+		statements_array.append(self.__create_statement_dict(relation, ret_dict[relation + '_text'], [{'title': ret_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
 
@@ -659,14 +652,14 @@ class DictionaryHelper(object):
 			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(db_argument.uid, issue_uid, lang)
 			url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
-			statements_array.append(self.__get_statement_dict(str(db_argument.uid),
-															  text,
-															  premise_array,
+			statements_array.append(self.__create_statement_dict(str(db_argument.uid),
+			                                                     text,
+			                                                     premise_array,
 															  'choose',
-															  url))
+															     url))
 		url = 'back' if for_api else 'window.history.go(-1)'
 		text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
-		statements_array.append(self.__get_statement_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
+		statements_array.append(self.__create_statement_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
 		return statements_array
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, is_questionable, show_bar_icon,
@@ -695,88 +688,89 @@ class DictionaryHelper(object):
 
 		return_dict = dict()
 		return_dict['restart_url']		             = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
-		return_dict['is_editable']                   = is_editable and is_logged_in
-		return_dict['is_reportable']	             = is_reportable
-		return_dict['is_questionable']                 = is_questionable
-		return_dict['is_admin']			             = _uh.is_user_admin(authenticated_userid)
 		return_dict['logged_in']		             = is_logged_in
-		return_dict['show_bar_icon']	             = show_bar_icon
-		return_dict['show_display_style']            = show_display_styles
 		return_dict['users_name']		             = str(authenticated_userid)
-		return_dict['add_premise_container_style']   = 'display: none'
-		return_dict['add_statement_container_style'] = 'display: none'
-		return_dict['close_premise_container']	     = True
-		return_dict['close_statement_container']	 = True
-		return_dict['title']						 = {'barometer': _tn.get(_tn.opinionBarometer),
-														'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
-														'island_view': _tn.get(_tn.displayControlDialogIslandBody),
-														'expert_view': _tn.get(_tn.displayControlDialogExpertBody)}
-		return_dict['buttons']					   = {'report': _tn.get(_tn.report),
-														'report_title': _tn.get(_tn.reportTitle),
-														'question_title': _tn.get(_tn.questionTitle),
-														'show_all_arguments': _tn.get(_tn.showAllArguments),
-														'show_all_users': _tn.get(_tn.showAllUsers),
-														'delete_track': _tn.get(_tn.deleteTrack),
-														'request_track': _tn.get(_tn.requestTrack),
-														'delete_history': _tn.get(_tn.deleteHistory),
-														'request_history': _tn.get(_tn.requestHistory),
-														'password_submit': _tn.get(_tn.passwordSubmit),
-														'contact_submit': _tn.get(_tn.contactSubmit),
-														'lets_go': _tn.get(_tn.letsGo),
-														'opinion_barometer': _tn.get(_tn.opinionBarometer),
-														'edit_statement': _tn.get(_tn.editTitle),
-														'more_title': _tn.get(_tn.more),
-														'previous': _tn.get(_tn.previous),
-														'next': _tn.get(_tn.next),
-														'save_my_statement': _tn.get(_tn.saveMyStatement),
-														'add_statement_row_title': _tn.get(_tn.addStatementRow),
-														'rem_statement_row_title': _tn.get(_tn.remStatementRow),
-														'switch_discussion': _tn.get(_tn.switchDiscussionTitle),
-														'clear_statistics': _tn.get(_tn.clearStatistics),
-														'user_options': _tn.get(_tn.userOptions),
-														'switch_language': _tn.get(_tn.switchLanguage),
-														'login': _tn.get(_tn.login),
-														'news_about_dbas': _tn.get(_tn.newsAboutDbas),
-														'share_url': _tn.get(_tn.shareUrl),
-		                                                'click_fore_more': _tn.get(_tn.clickForMore)}
+		self.add_language_options_for_extra_dict(return_dict, lang)
+
 		if not for_api:
+			return_dict['is_editable']                   = is_editable and is_logged_in
+			return_dict['is_reportable']	             = is_reportable
+			return_dict['is_questionable']                 = is_questionable
+			return_dict['is_admin']			             = _uh.is_user_admin(authenticated_userid)
+			return_dict['show_bar_icon']	             = show_bar_icon
+			return_dict['show_display_style']            = show_display_styles
+			return_dict['add_premise_container_style']   = 'display: none'
+			return_dict['add_statement_container_style'] = 'display: none'
+			return_dict['close_premise_container']	     = True
+			return_dict['close_statement_container']	 = True
+			return_dict['title']						 = {'barometer': _tn.get(_tn.opinionBarometer),
+															'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
+															'island_view': _tn.get(_tn.displayControlDialogIslandBody),
+															'expert_view': _tn.get(_tn.displayControlDialogExpertBody)}
+			return_dict['buttons']					   = {'report': _tn.get(_tn.report),
+															'report_title': _tn.get(_tn.reportTitle),
+															'question_title': _tn.get(_tn.questionTitle),
+															'show_all_arguments': _tn.get(_tn.showAllArguments),
+															'show_all_users': _tn.get(_tn.showAllUsers),
+															'delete_track': _tn.get(_tn.deleteTrack),
+															'request_track': _tn.get(_tn.requestTrack),
+															'delete_history': _tn.get(_tn.deleteHistory),
+															'request_history': _tn.get(_tn.requestHistory),
+															'password_submit': _tn.get(_tn.passwordSubmit),
+															'contact_submit': _tn.get(_tn.contactSubmit),
+															'lets_go': _tn.get(_tn.letsGo),
+															'opinion_barometer': _tn.get(_tn.opinionBarometer),
+															'edit_statement': _tn.get(_tn.editTitle),
+															'more_title': _tn.get(_tn.more),
+															'previous': _tn.get(_tn.previous),
+															'next': _tn.get(_tn.next),
+															'save_my_statement': _tn.get(_tn.saveMyStatement),
+															'add_statement_row_title': _tn.get(_tn.addStatementRow),
+															'rem_statement_row_title': _tn.get(_tn.remStatementRow),
+															'switch_discussion': _tn.get(_tn.switchDiscussionTitle),
+															'clear_statistics': _tn.get(_tn.clearStatistics),
+															'user_options': _tn.get(_tn.userOptions),
+															'switch_language': _tn.get(_tn.switchLanguage),
+															'login': _tn.get(_tn.login),
+															'news_about_dbas': _tn.get(_tn.newsAboutDbas),
+															'share_url': _tn.get(_tn.shareUrl)}
+			# /return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
 			message_dict['count']		= _nh.count_of_new_notifications(authenticated_userid)
 			message_dict['has_unread']   = (message_dict['count'] > 0)
 			message_dict['all']		  = _nh.get_notification_for(authenticated_userid)
 			message_dict['total']		= len(message_dict['all'])
 			return_dict['notifications'] = message_dict
-		self.add_language_options_for_extra_dict(return_dict, lang)
 
-		# add everything for the island view
-		if show_display_styles:
-			# does an argumente exists?
-			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
-			if db_argument:
-				island_dict = _qh.get_every_attack_for_island_view(argument_id, lang)
-
+			# add everything for the island view
+			if show_display_styles:
+				# does an argumente exists?
 				db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
-				premise, tmp = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-				conclusion = _qh.get_text_for_conclusion(db_argument, lang)
-				island_dict['heading'] = _qh.get_text_for_argument_uid(argument_id, lang, True)
+				if db_argument:
+					island_dict = _qh.get_every_attack_for_island_view(argument_id, lang)
 
-				island_dict['premise'] = premise[0:1].lower() + premise[1:]
-				island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]
-				island_dict.update(TextGenerator(lang).get_relation_text_dict(island_dict['premise'],
-																			  island_dict['conclusion'],
-																			  False, False, not db_argument.is_supportive))
-				return_dict['island'] = island_dict
-			else:
-				return_dict['is_editable']		  = False
-				return_dict['is_reportable']	  = False
-				return_dict['show_bar_icon']	  = False
-				return_dict['show_display_style'] = False
-				return_dict['title']			  = {'barometer': _tn.get(_tn.opinionBarometer),
-				                                     'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
-				                                     'island_view': _tn.get(_tn.displayControlDialogIslandBody),
-				                                     'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
-				                                     'edit_statement': _tn.get(_tn.editTitle),
-				                                     'report_statement': _tn.get(_tn.reportTitle)}
+					db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
+					premise, tmp = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+					conclusion = _qh.get_text_for_conclusion(db_argument, lang)
+					island_dict['heading'] = _qh.get_text_for_argument_uid(argument_id, lang, True)
+
+					island_dict['premise'] = premise[0:1].lower() + premise[1:]
+					island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]
+					island_dict.update(TextGenerator(lang).get_relation_text_dict(island_dict['premise'],
+																				  island_dict['conclusion'],
+																				  False, False, not db_argument.is_supportive))
+					return_dict['island'] = island_dict
+				else:
+					return_dict['is_editable']		  = False
+					return_dict['is_reportable']	  = False
+					return_dict['show_bar_icon']	  = False
+					return_dict['show_display_style'] = False
+					return_dict['title']			  = {'barometer': _tn.get(_tn.opinionBarometer),
+					                                     'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
+					                                     'island_view': _tn.get(_tn.displayControlDialogIslandBody),
+					                                     'expert_view': _tn.get(_tn.displayControlDialogExpertBody),
+					                                     'edit_statement': _tn.get(_tn.editTitle),
+					                                     'report_statement': _tn.get(_tn.reportTitle)}
 		return return_dict
 
 	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False,
@@ -855,7 +849,7 @@ class DictionaryHelper(object):
 			'link_en_class': ('active' if lang_is_en else '')
 		})
 		
-	def __get_statement_dict(self, uid, title, premises, attitude, url):
+	def __create_statement_dict(self, uid, title, premises, attitude, url):
 		"""
 
 		:param uid:
@@ -871,3 +865,53 @@ class DictionaryHelper(object):
 			'premises': premises,
 			'attitude': attitude,
 			'url': url}
+
+	def __create_speechbubble_dict(self, is_user, is_system, is_status, uid, url, message):
+		"""
+
+		:param is_user:
+		:param is_system:
+		:param is_status:
+		:param uid:
+		:param url:
+		:param message:
+		:param should_save:
+		:return:
+		"""
+		speech = dict()
+		speech['is_user']   = is_user
+		speech['is_system'] = is_system
+		speech['is_status'] = is_status
+		speech['id']        = uid
+		speech['url']       = url + '?breadcrumb=true'
+		speech['message']   = message
+
+		return speech
+
+	def __save_speechbubble(self, bubble_dict, db_user, related_breadcrumb, transaction):
+		"""
+
+		:param bubble_dict:
+		:param transaction:
+		:return:
+		"""
+		DBDiscussionSession.add(History(bubble_id=bubble_dict['id'], user=str(db_user.uid), content=bubble_dict['message'],
+		                                is_user=bubble_dict['is_user'], is_system=bubble_dict['is_system'],
+		                                is_status=bubble_dict['is_status'], breadcrumb_uid=str(related_breadcrumb['uid'])))
+		transaction.commit()
+
+	def __create_speechbubble_history(self, user):
+		"""
+
+		:param user:
+		:return:
+		"""
+		if not user:
+			return []
+
+		bubble_history = []
+		db_history = DBDiscussionSession.query(History).filter_by(author_uid=user.uid).join(Breadcrumb).all()
+		for h in db_history:
+			bubble_history.append(self.__create_speechbubble_dict(h.is_user, h.is_system, h.is_status, h.bubble_id, h.breadcrumbs.url, h.content))
+
+		return bubble_history

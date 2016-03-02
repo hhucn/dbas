@@ -345,6 +345,7 @@ class History(DiscussionBase):
 	"""
 	__tablename__ = 'history'
 	uid = sa.Column(sa.Integer, primary_key=True)
+	bubble_id = sa.Column(sa.Integer, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	content = sa.Column(sa.Text, nullable=False)
 	is_user = sa.Column(sa.Boolean, nullable=False)
@@ -355,7 +356,7 @@ class History(DiscussionBase):
 	breadcrumbs = relationship('Breadcrumb', foreign_keys=[breadcrumb_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, user, content='', is_user=False, is_system=False, is_status=False, breadcrumb_uid=0):
+	def __init__(self, bubble_id='', user=0, content='', is_user=False, is_system=False, is_status=False, breadcrumb_uid=0):
 		"""
 		Initializes a row in current history-table
 		:param user:
@@ -363,6 +364,7 @@ class History(DiscussionBase):
 		:param session_id:
 		:return:
 		"""
+		self.bubble_id = bubble_id
 		self.author_uid = user
 		self.content = content
 		self.is_user = is_user

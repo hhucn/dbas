@@ -258,30 +258,34 @@ setStyleOptions = function (guiHandler){
 	replaceHtmlTags($('#' + issueInfoId));
 	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
 	replaceHtmlTags($('#island-view-container-space-heading'));
+	$.each($('#dialog-speech-bubbles-space > div p'), function replaceHtmlTagInBubbles() {
+		replaceHtmlTags($(this));
+	});
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
 
 	// align buttons
-	var restart, issues, restartWidth, issueWidth;
-	restart = $('#discussion-restart-btn');
-	issues = $('#' + issueDropdownButtonID);
-	restartWidth = restart.outerWidth();
-	issueWidth = issues.outerWidth();
-	restart.attr('style', restartWidth<issueWidth ? 'width: ' + issueWidth + 'px;' : '');
-	issues.attr('style', restartWidth>issueWidth ? 'width: ' + restartWidth + 'px;' : '');
+	// var restart, issues, restartWidth, issueWidth;
+	// restart = $('#discussion-restart-btn');
+	// issues = $('#' + issueDropdownButtonID);
+	// restartWidth = restart.outerWidth();
+	// issueWidth = issues.outerWidth();
+	// restart.attr('style', restartWidth<issueWidth ? 'width: ' + issueWidth + 'px;' : '');
+	// issues.attr('style', restartWidth>issueWidth ? 'width: ' + restartWidth + 'px;' : '');
 
 	// focus text of input elements
 	$("input[type='text']").on("click", function () {
 		$(this).select();
 	});
 
+
 	setNavigationSidebar(window.innerWidth);
 
 };
 
 /**
- *
+ * Resizes the sidebar, whether bootstrap collapsed or not
  * @param windowInnerWidth
  */
 setNavigationSidebar = function (windowInnerWidth){
@@ -290,16 +294,14 @@ setNavigationSidebar = function (windowInnerWidth){
 		$('#site-navigation').addClass('list-inline').css('text-align', 'left').find('img').each(function(){
 			$(this).attr('data-placement', 'bottom');
 		});
-		$('#' + sidebarMoreButtonId).attr('data-placement', 'top');
-		$('#' + questionItButtonId).attr('data-placement', 'top');
 	} else {
 		$('#discussion-sidebar').removeClass('list-inline').css('text-align', 'right');
 		$('#site-navigation').removeClass('list-inline').css('text-align', 'right').find('img').each(function(){
 			$(this).attr('data-placement', 'left');
 		});
-		$('#' + sidebarMoreButtonId).attr('data-placement', 'left');
-		$('#' + questionItButtonId).attr('data-placement', 'left');
 	}
+	$('#' + sidebarMoreButtonId).attr('data-placement', windowInnerWidth < 992 ? 'top' : 'left');
+	$('#' + questionItButtonId).attr('data-placement', windowInnerWidth < 992 ? 'top' : 'left');
 };
 
 /**

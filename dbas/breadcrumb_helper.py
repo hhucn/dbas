@@ -4,7 +4,7 @@ from sqlalchemy import and_, func
 from slugify import slugify
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Breadcrumb, Issue
+from .database.discussion_model import Argument, Statement, User, TextVersion, Breadcrumb, Issue, History
 from .logger import logger
 from .strings import Translator
 from .query_helper import QueryHelper
@@ -16,7 +16,7 @@ from .url_manager import UrlManager
 
 class BreadcrumbHelper(object):
 
-	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, delete_dupliacates, for_api):
+	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, delete_duplicates, for_api):
 		"""
 
 		:param path:
@@ -26,13 +26,13 @@ class BreadcrumbHelper(object):
 		:param transaction:
 		:param lang:
 		:param application_url:
-		:param delete_dupliacates:
+		:param delete_duplicates:
 		:param for_api:
-		:return:
+		:return: all breadcrumbs, boolean (if a crumb was inserted)
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if not db_user or for_api:
-			return []
+			return [], False
 		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
 
 		_um = UrlManager(application_url, slug, for_api)
@@ -48,13 +48,15 @@ class BreadcrumbHelper(object):
 		db_already_in = DBDiscussionSession.query(Breadcrumb).filter_by(url=url).first()
 		db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
 		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
-		if db_already_in and delete_dupliacates:
+		is_new_crumb = False
+		if db_already_in and delete_duplicates:
 			DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid, Breadcrumb.uid > db_already_in.uid)).delete()
 		elif not already_last:
 			DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=url, session_id=session_id))
+			is_new_crumb = True
 		transaction.commit()
 
-		return self.get_breadcrumbs(user, lang)
+		return self.get_breadcrumbs(user, lang), is_new_crumb
 
 	def get_breadcrumbs(self, user, lang):
 		"""
@@ -68,22 +70,30 @@ class BreadcrumbHelper(object):
 		if not db_user:
 			return dict()
 
-		db_history = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all()
-		logger('BreadcrumbHelper', 'get_breadcrumbs', 'user ' + str(user) + ', count ' + str(len(db_history)))
+		db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all()
+		logger('BreadcrumbHelper', 'get_breadcrumbs', 'user ' + str(user) + ', count ' + str(len(db_breadcrumbs)))
 
-		if not db_history:
+		if not db_breadcrumbs:
 			return dict()
 
 		breadcrumbs = []
-		for index, history in enumerate(db_history):
+		for index, crumb in enumerate(db_breadcrumbs):
 			hist = dict()
 			hist['index']       = str(index)
-			hist['url']         = str(history.url) + '?breadcrumb=true'  # add this for deleting traces
-			hist['text']        = self.__get_text_for_url__(history.url, lang)
+			hist['uid']         = crumb.uid
+			hist['url']         = str(crumb.url) + '?breadcrumb=true'  # add this for deleting traces
+			hist['text']        = self.__get_text_for_url__(crumb.url, lang)
 			hist['shorttext']   = hist['text'][0:30] + '...' if len(hist['text']) > 35 else hist['text']
 			breadcrumbs.append(hist)
 
 		return breadcrumbs
+
+	def get_last_breadcrumb_of_user(self, user):
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+		if not db_user:
+			return None
+		return DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).order_by(Breadcrumb.uid.desc()).first()
 
 	def __get_text_for_url__(self, url, lang):
 		"""
@@ -156,4 +166,5 @@ class BreadcrumbHelper(object):
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user', 'user ' + str(db_user.uid))
 			DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
+			DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
 			transaction.commit()
