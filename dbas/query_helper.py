@@ -539,7 +539,12 @@ class QueryHelper(object):
 			issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
 			all_array.append(issue_dict)
 
-		tooltip = 'The discussion was started at ' + date + ' and already has ' + str(arg_count) + ' arguments.'  # TODO Translator
+		_t = Translator(lang)
+		a = _t.get(_t.discussionInfoTooltip1)
+		b = _t.get(_t.discussionInfoTooltip2)
+		c = _t.get(_t.discussionInfoTooltip3pl)
+		d = _t.get(_t.discussionInfoTooltip3sg)
+		tooltip = a + ' ' + date + ' ' + b + ' ' + str(arg_count) + ' ' + (c if arg_count > 1 else d)
 
 		return {'slug': slug, 'info': info, 'title': title, 'uid': uid, 'arg_count': arg_count, 'date': date, 'all': all_array, 'tooltip': tooltip}
 

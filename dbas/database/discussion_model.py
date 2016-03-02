@@ -315,12 +315,14 @@ class Breadcrumb(DiscussionBase):
 	Breadcrumb-table with several columns.
 	Each user will be tracked
 	"""
-	__tablename__ = 'breadcrumb'
+	__tablename__ = 'breadcrumbs'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	url = sa.Column(sa.Text, nullable=False)
 	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	session_id = sa.Column(sa.Integer)
+
+	users = relationship('User', foreign_keys=[author_uid])
 
 	def __init__(self, user, url, session_id=0):
 		"""
@@ -334,6 +336,39 @@ class Breadcrumb(DiscussionBase):
 		self.url = url
 		self.timestamp = func.now()
 		self.session_id = session_id
+
+
+class History(DiscussionBase):
+	"""
+	History-table with several columns.
+	Each user will be tracked
+	"""
+	__tablename__ = 'history'
+	uid = sa.Column(sa.Integer, primary_key=True)
+	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	content = sa.Column(sa.Text, nullable=False)
+	is_user = sa.Column(sa.Boolean, nullable=False)
+	is_system = sa.Column(sa.Boolean, nullable=False)
+	is_status = sa.Column(sa.Boolean, nullable=False)
+	breadcrumb_uid = sa.Column(sa.Integer, sa.ForeignKey('breadcrumbs.uid'))
+
+	breadcrumbs = relationship('Breadcrumb', foreign_keys=[breadcrumb_uid])
+	users = relationship('User', foreign_keys=[author_uid])
+
+	def __init__(self, user, content='', is_user=False, is_system=False, is_status=False, breadcrumb_uid=0):
+		"""
+		Initializes a row in current history-table
+		:param user:
+		:param url:
+		:param session_id:
+		:return:
+		"""
+		self.author_uid = user
+		self.content = content
+		self.is_user = is_user
+		self.is_system = is_system
+		self.is_status = is_status
+		self.breadcrumb_uid = breadcrumb_uid
 
 
 class VoteArgument(DiscussionBase):

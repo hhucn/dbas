@@ -7,6 +7,7 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
 
+        <!--
 		<div class="container first-container colored_container" tal:condition="extras.logged_in" id="breadcrumb-container">
 			<div class="row">
 				<div class="col-md-12">
@@ -19,6 +20,7 @@
 				</div>
 			</div>
 		</div>
+		-->
 
 		<div class="container colored_container" id="header-container">
 			<div class="row">
@@ -27,7 +29,7 @@
 					<span id="issue_info">${issues.info}</span>
 				</div>
 				<div class="col-md-1 center text-center">
-                    <img class="icon-badge" style="width: 30px;" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="data-original-title issues.tooltip"/>
+                    <img class="icon-badge" style="width: 30px;" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"/>
                 </div>
 				<div class="col-md-2 center text-center">
                     <!--

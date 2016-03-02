@@ -670,8 +670,7 @@ class DictionaryHelper(object):
 		return statements_array
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, is_questionable, show_bar_icon,
-	                        show_display_styles, lang, authenticated_userid, argument_id=0, breadcrumbs='',
-							application_url='', for_api=False):
+	                        show_display_styles, lang, authenticated_userid, argument_id=0, application_url='', for_api=False):
 		"""
 
 		:param current_slug:
@@ -683,7 +682,6 @@ class DictionaryHelper(object):
 		:param lang:
 		:param authenticated_userid:
 		:param argument_id:
-		:param breadcrumbs:
 		:param application_url:
 		:param for_api:
 		:return:
@@ -742,7 +740,6 @@ class DictionaryHelper(object):
 														'share_url': _tn.get(_tn.shareUrl),
 		                                                'click_fore_more': _tn.get(_tn.clickForMore)}
 		if not for_api:
-			return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
 			message_dict['count']		= _nh.count_of_new_notifications(authenticated_userid)
 			message_dict['has_unread']   = (message_dict['count'] > 0)
