@@ -397,14 +397,14 @@ setGuiOptions = function(){
 		item_no_opinion.hide().next().prepend(no_opinion);
 	}
 
-	$('#dialog-speech-bubbles-space').slimScroll({
-		position: 'right',
-		height: '400px',
-		railVisible: true,
-		wheelStep: 10,
-		alwaysVisible: false,
-		start: $('#system_now')
-	}).parent().hide();
+	//$('#dialog-speech-bubbles-space').slimScroll({
+	//	position: 'right',
+	//	height: '400px',
+	//	railVisible: true,
+	//	wheelStep: 10,
+	//	alwaysVisible: false,
+	//	start: $('#system_now')
+	//}).parent().hide();
 
 };
 
