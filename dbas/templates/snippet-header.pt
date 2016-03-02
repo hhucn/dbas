@@ -15,6 +15,7 @@
 			</div>
 
 			<div class="collapse navbar-collapse navbar-menubuilder">
+                <!--
 				<ul id="navbar-left" class="nav navbar-nav navbar-left">
 					<li id="home-hook">
 						<a href="#home-template" data-toggle="tooltip" data-placement="bottom" title="Go to the top">Home</a>
@@ -27,12 +28,15 @@
 					</li>
 					<li id="about-hook"><a href="#about-template" data-toggle="tooltip" data-placement="bottom" title="Go to About" i18n:translate="about">About</a>
 					</li>
+                    -->
 					<!--
 					<li id="research-hook">
 						<a href="#research-template" data-toggle="tooltip" data-placement="bottom" title="Go to Research" i18n:translate="research">Research</a>
 					</li>
 					-->
+                <!--
 				</ul>
+				-->
 
 				<ul id="navbar-right" class="nav navbar-nav navbar-right">
 

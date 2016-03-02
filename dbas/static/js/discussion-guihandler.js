@@ -559,6 +559,7 @@ function GuiHandler() {
 
 		new Helper().delay(function () {
 			$('#dialog-speech-bubbles-space').fadeOut();
+			$('#dialog-speech-bubbles-space').parent().fadeOut();
 		}, 400);
 	};
 
@@ -575,6 +576,7 @@ function GuiHandler() {
 
 		new Helper().delay(function () {
 			$('#dialog-speech-bubbles-space').fadeIn();
+			$('#dialog-speech-bubbles-space').parent().fadeIn();
 		}, 400);
 	};
 

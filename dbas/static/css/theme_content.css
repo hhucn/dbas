@@ -251,9 +251,7 @@
 }
 
 #dialog-switcher-container{
-    position: absolute;
-    right: 0;
-    bottom: 0;
+	margin-bottom: 1em;
 }
 #dialog-speech-bubbles-space{
     margin-left: 3em;
@@ -292,7 +290,7 @@
   float: right;
   text-align: left;
   background: #dcf8c6;
-  margin: 0 0 2em auto;
+  margin: 0 1em 2em auto;
 }
 .triangle-m{
   padding: 1px;

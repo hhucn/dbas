@@ -396,8 +396,23 @@ setGuiOptions = function(){
 		item_rebut.hide().next().prepend(rebut);
 		item_no_opinion.hide().next().prepend(no_opinion);
 	}
+
+	$('#dialog-speech-bubbles-space').slimScroll({
+		position: 'right',
+		height: '400px',
+		railVisible: true,
+		wheelStep: 10,
+		alwaysVisible: false,
+		start: $('#system_now')
+	}).parent().hide();
+
 };
 
+/**
+ *
+ * @param guiHandler
+ * @param interactionHandler
+ */
 setInputExtraOptions = function(guiHandler, interactionHandler){
 	var input = $('#' + discussionSpaceId + ' li:last-child input'),
 		text = [], splits = window.location.href.split('/'), conclusion, supportive, arg, relation,

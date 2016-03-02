@@ -6,7 +6,7 @@ from sqlalchemy import and_, func
 from slugify import slugify
 
 from .database import DBDiscussionSession, DBNewsSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, History, VoteArgument, VoteStatement, Issue, Group
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Breadcrumb, VoteArgument, VoteStatement, Issue, Group
 from .database.news_model import News
 from .logger import logger
 from .notification_helper import NotificationHelper
@@ -539,7 +539,9 @@ class QueryHelper(object):
 			issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
 			all_array.append(issue_dict)
 
-		return {'slug': slug, 'info': info, 'title': title, 'uid': uid, 'arg_count': arg_count, 'date': date, 'all': all_array}
+		tooltip = 'The discussion was started at ' + date + ' and already has ' + str(arg_count) + ' arguments.'  # TODO Translator
+
+		return {'slug': slug, 'info': info, 'title': title, 'uid': uid, 'arg_count': arg_count, 'date': date, 'all': all_array, 'tooltip': tooltip}
 
 	def get_number_of_arguments(self, issue):
 		"""

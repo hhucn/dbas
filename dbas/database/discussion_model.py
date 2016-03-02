@@ -310,12 +310,12 @@ class Argument(DiscussionBase):
 		self.argument_uid = argument
 
 
-class History(DiscussionBase):
+class Breadcrumb(DiscussionBase):
 	"""
-	History-table with several columns.
+	Breadcrumb-table with several columns.
 	Each user will be tracked
 	"""
-	__tablename__ = 'history'
+	__tablename__ = 'breadcrumb'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	url = sa.Column(sa.Text, nullable=False)

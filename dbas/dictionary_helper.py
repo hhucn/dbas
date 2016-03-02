@@ -2,13 +2,14 @@ import random
 import json
 import datetime
 import locale
+import string
 
 from collections import OrderedDict
 from sqlalchemy import and_
 from slugify import slugify
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, History, Issue
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Breadcrumb, Issue
 from .logger import logger
 from .recommender_system import RecommenderHelper
 from .query_helper import QueryHelper
@@ -235,7 +236,32 @@ class DictionaryHelper(object):
 				speech['is_user']   = False
 				speech['is_system'] = False
 				speech['is_status'] = True
-				speech['message']   = 'Then...'
+				speech['id']        = 'system_history'
+				speech['message']   = 'History'
+				bubbles_array.append(speech)
+
+				system = True
+				for i in range(0,15):
+					speech = dict()
+					speech['is_user']   = system
+					speech['is_system'] = not system
+					speech['is_status'] = False
+					speech['id']        = str(i)
+					c1 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
+					c2 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
+					c3 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
+					c4 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
+					c5 = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(5,30)))
+					speech['message']   = c1 + " " + c2 + " " + c3 + " " + c4 + " " + c5
+					bubbles_array.append(speech)
+					system = not system
+
+				speech = dict()
+				speech['is_user']   = False
+				speech['is_system'] = False
+				speech['is_status'] = True
+				speech['id']        = 'system_now'
+				speech['message']   = 'Now'
 				bubbles_array.append(speech)
 
 				then_split = h_intro.replace('<strong>','').replace('</strong>','').split('. ')
@@ -244,20 +270,15 @@ class DictionaryHelper(object):
 					speech['is_user']   = split.startswith(_tn.get(_tn.butYouCounteredWith)) or split.startswith(_tn.get(_tn.soYourOpinionIsThat))
 					speech['is_system'] = not split.startswith(_tn.get(_tn.butYouCounteredWith))
 					speech['is_status'] = False
+					speech['id']        = ''
 					speech['message']   = split
 					bubbles_array.append(speech)
 
 				speech = dict()
 				speech['is_user']   = False
-				speech['is_system'] = False
-				speech['is_status'] = True
-				speech['message']   = 'Now...'
-				bubbles_array.append(speech)
-
-				speech = dict()
-				speech['is_user']   = False
 				speech['is_system'] = True
 				speech['is_status'] = False
+				speech['id']        = ''
 				speech['message']   = h_bridge.replace('<strong>','').replace('</strong>','')
 				bubbles_array.append(speech)
 
@@ -265,6 +286,7 @@ class DictionaryHelper(object):
 				speech['is_user']   = True
 				speech['is_system'] = False
 				speech['is_status'] = False
+				speech['id']        = ''
 				speech['message']   = h_outro.replace('<strong>','').replace('</strong>','')
 				bubbles_array.append(speech)
 

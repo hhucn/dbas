@@ -22,11 +22,15 @@
 
 		<div class="container colored_container" id="header-container">
 			<div class="row">
-				<div class="col-md-8 center text-center">
-					<p i18n:translate="current_discussion">Current discussion is about</p>
-					<h5 id="issue_info">${issues.info}</h5>
+				<div class="col-md-7 center">
+					<span i18n:translate="current_discussion">Current discussion is about</span>:<br>
+					<span id="issue_info">${issues.info}</span>
 				</div>
-				<div class="col-md-4 center text-center">
+				<div class="col-md-1 center text-center">
+                    <img class="icon-badge" style="width: 30px;" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="data-original-title issues.tooltip"/>
+                </div>
+				<div class="col-md-2 center text-center">
+                    <!--
 					<span i18n:translate="startet_at">The discussion was started at</span>
 					<span id="issue-date" class="text-info">${issues.date}</span>
 					<br>
@@ -34,6 +38,7 @@
 					<span id="issue-count" class="text-info">${issues.arg_count}</span>
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
+					-->
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<span tal:replace="extras.buttons.switch_discussion"></span>&#160;&#160;&#160;<span class="caret"></span>
@@ -45,7 +50,8 @@
 							</li>
 						</ul>
 					</div>
-					<br>
+                 </div>
+                <div class="col-md-2 center text-center">
 					<button id="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart Discussion</span>
 					</button>
@@ -56,7 +62,7 @@
 		<div class="container colored_container" id="discussion-container">
 			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
-				<div class="col-md-11" style="text-align: justify;">
+				<div class="col-md-10" style="text-align: justify;">
 
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -90,9 +96,9 @@
 					<h4 id="discussions-header-outro">${discussion.heading.outro}</h4>
 					<div id="dialog-speech-bubbles-space" style="display:none;">
                         <div tal:repeat="bubble discussion.heading.bubbles" tal:omit-tag="">
-                            <div tal:condition="bubble.is_user" class="line-wrapper-l"><div class="triangle-l">${bubble.message}</div></div>
-                            <div tal:condition="bubble.is_system" class="line-wrapper-r"><div class="triangle-r">${bubble.message}</div></div>
-                            <div tal:condition="bubble.is_status" class="line-wrapper-m"><div class="triangle-m">${bubble.message}</div></div>
+                            <div tal:condition="bubble.is_user" class="line-wrapper-l"><div class="triangle-l" tal:attributes="id bubble.id">${bubble.message}</div></div>
+                            <div tal:condition="bubble.is_system" class="line-wrapper-r"><div class="triangle-r" tal:attributes="id bubble.id">${bubble.message}</div></div>
+                            <div tal:condition="bubble.is_status" class="line-wrapper-m"><div class="triangle-m" tal:attributes="id bubble.id">${bubble.message}</div></div>
                             <div tal:condition="repeat.bubble.end" class="line-wrapper-m" style="margin-bottom: 2em;"></div>
 
                         </div>
@@ -109,8 +115,13 @@
 					</div>
 				</div>
 
-				<div class="col-md-1">
+				<div class="col-md-2">
 					<ul id="discussion-sidebar">
+                        <li tal:condition="extras.show_display_style">
+                        <div id="dialog-switcher-container">
+                           <input id="dialog-switcher" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="primary" data-offstyle="default" data-on="Dialog" data-off="Text">
+                        </div>
+                        </li>
 						<li>
 							<img tal:condition="extras.is_editable"  id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
 						</li>
@@ -144,9 +155,6 @@
 							<img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_questionmark1.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" />
 						</li>
 					</ul>
-                    <div id="dialog-switcher-container">
-                        <input tal:condition="extras.show_display_style" id="dialog-switcher" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="primary" data-offstyle="default" data-on="Dialog" data-off="Text">
-                    </div>
 				</div>
 			</div>
 

@@ -4,7 +4,7 @@ from sqlalchemy import and_, func
 from slugify import slugify
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, History, Issue
+from .database.discussion_model import Argument, Statement, User, TextVersion, Breadcrumb, Issue
 from .logger import logger
 from .strings import Translator
 from .query_helper import QueryHelper
@@ -45,13 +45,13 @@ class BreadcrumbHelper(object):
 			if group0 and url.endswith(group0):
 				self.del_breadcrumbs_of_user(transaction, user)
 
-		db_already_in = DBDiscussionSession.query(History).filter_by(url=url).first()
-		db_last = DBDiscussionSession.query(History).order_by(History.uid.desc()).first()
+		db_already_in = DBDiscussionSession.query(Breadcrumb).filter_by(url=url).first()
+		db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
 		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
 		if db_already_in and delete_dupliacates:
-			DBDiscussionSession.query(History).filter(and_(History.author_uid == db_user.uid, History.uid > db_already_in.uid)).delete()
+			DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid, Breadcrumb.uid > db_already_in.uid)).delete()
 		elif not already_last:
-			DBDiscussionSession.add(History(user=db_user.uid, url=url, session_id=session_id))
+			DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=url, session_id=session_id))
 		transaction.commit()
 
 		return self.get_breadcrumbs(user, lang)
@@ -68,7 +68,7 @@ class BreadcrumbHelper(object):
 		if not db_user:
 			return dict()
 
-		db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
+		db_history = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all()
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'user ' + str(user) + ', count ' + str(len(db_history)))
 
 		if not db_history:
@@ -155,5 +155,5 @@ class BreadcrumbHelper(object):
 		if user:
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user', 'user ' + str(db_user.uid))
-			DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
+			DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
 			transaction.commit()
