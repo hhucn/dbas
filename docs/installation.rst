@@ -16,36 +16,30 @@ Ensure that the following tools are installed:
 
 Then follow these steps:
 
-1. Create virtualenv with python3
-
-.. code-block:: console
+1. Create virtualenv with python3::
 
     $ mkvirtualenv --python=$(which python3) dbas
 
-2. Install all requirements
-
-.. code-block:: console
+2. Install all requirements::
 
     $ pip install -r requirements.txt
 
-3. Develop application
-
-.. code-block:: console
+3. Develop application::
 
     $ python setup.py develop
 
-4. Create database
-
-.. code-block:: console
+4. Create database::
 
     $ initialize_news_sql development.ini
     $ initialize_discussion_sql development.ini
     $ initialize_api_sql development.ini
 
-5. Start development webserver
+  Alternatively, you can use our Makefile from the project's root directory to initialize the database::
 
-.. code-block:: console
+    $ make databases
+
+5. Start development web server::
 
     $ pserve development.ini --reload
 
-6. If you are running MAC OSX, please install portmap *https://codingmonkeys.de/portmap/*
+6. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
