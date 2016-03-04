@@ -1,15 +1,15 @@
 # DBAS Makefile
 
-DATABASES_DIR = dbas/static/
-
+DATABASE_DIR = dbas/static/
+DATABASES = api.sqlite dbas.sqlite news.sqlite
 
 # Remove old databases and initialize new ones
 databases:
-	rm -f $(DATABASES_DIR)*.sqlite
+	rm -f $(addprefix $(DATABASE_DIR), $(DATABASES))
 	initialize_api_sql development.ini
 	initialize_discussion_sql development.ini
 	initialize_news_sql development.ini
 
 clean:
-	rm $(DATABASES_DIR)*.sqlite
+	rm -f $(addprefix $(DATABASE_DIR), $(DATABASES))
 
