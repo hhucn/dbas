@@ -252,6 +252,9 @@ setStyleOptions = function (guiHandler){
 	});
 	start = typeof nowBubble == 'undefined' ? 'bottom' : nowBubble;
 	if (height > maxHeight){
+		if (maxHeight < 500){
+			maxHeight = 500;
+		}
 		speechBubbles.slimscroll({
 			position: 'right',
 			height: maxHeight + 'px',

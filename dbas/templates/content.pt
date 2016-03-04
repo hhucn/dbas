@@ -81,10 +81,6 @@
 						<span id="discussion-success-description"></span>
 					</div>
 
-					
-					<div id="argument-blogging-sidebar">
-						<a class="share-icon share-def" id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" style="margin-right: 1em;" tal:attributes="title extras.buttons.share_url"></a>
-					</div>
                     <div id="discussions-header" style="display:none;">
 					    <h4 id="discussions-header-intro">${structure:discussion.heading.intro}</h4>
 
@@ -120,6 +116,9 @@
 
 				<div class="col-md-1">
 					<ul id="discussion-sidebar">
+                        <li>
+						    <a id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" style="margin-right: 1em;" tal:attributes="title extras.buttons.share_url"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_share.png')}"/></a>
+                        </li>
 						<li>
 							<img tal:condition="extras.is_editable"  id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
 						</li>
