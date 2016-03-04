@@ -99,7 +99,6 @@
                              <div tal:condition="bubble.is_user" class="line-wrapper-r"><a tal:attributes="href bubble.url"><p class="triangle-r" tal:attributes="id bubble.id">${structure:bubble.message}</p></a></div>
                              <div tal:condition="bubble.is_system" class="line-wrapper-l"><a tal:attributes="href bubble.url"><p class="triangle-l" tal:attributes="id bubble.id">${structure:bubble.message}</p></a></div>
                              <div tal:condition="bubble.is_status" class="line-wrapper-m"><p class="triangle-m" tal:attributes="id bubble.id">${structure:bubble.message}</p></div>
-                             <div tal:condition="repeat.bubble.end" class="line-wrapper-m" style="margin-bottom: 2em;"></div>
                         </div>
                      </div>
 					<div id="discussions-space">
