@@ -100,10 +100,7 @@ class DictionaryHelper(object):
 
 		return {'uid': uid, 'text': text, 'date': date, 'author': author, 'premisegroup_uid': pgroup}
 
-	def prepare_discussion_dict(self, user, transaction, uid, lang, breadcrumbs, save_crumb, at_start=False,
-	                            at_attitude=False, at_justify=False, is_supportive=False, at_dont_know=False,
-	                            at_argumentation=False, at_justify_argumentation=False, at_choosing=False,
-	                            additional_id=0, attack='', is_uid_argument=False, logged_in=False):
+	def prepare_discussion_dict_for_start(self, user, transaction, uid, lang, breadcrumbs, save_crumb, session_id):
 		"""
 
 		:param user:
@@ -112,184 +109,299 @@ class DictionaryHelper(object):
 		:param lang:
 		:param breadcrumbs:
 		:param save_crumb:
-		:param at_start:
-		:param at_attitude:
-		:param at_justify:
-		:param is_supportive:
-		:param at_dont_know:
-		:param at_argumentation:
-		:param at_justify_argumentation:
-		:param at_choosing:
-		:param additional_id:
-		:param attack:
-		:param is_uid_argument:
-		:param logged_in:
 		:return:
 		"""
+		logger('DictionaryHelper', 'prepare_discussion_dict_for_start', 'at_start')
+		_tn			        = Translator(lang)
+		h_bridge            = ''
+		h_outro             = ''
+		db_user             = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		bubbles_array       = self.__create_speechbubble_history(db_user, session_id)
+		add_premise_text    = ''
+		h_intro             = _tn.get(_tn.initialPositionInterest)
+		save_statement_url  = 'ajax_set_new_start_premise'
+		text = 'Welcome to D-BAS<br>If you want to get back in the discussion, please click a bubble.<br>Caution: Your progress will be lost!' # TODO TEXT
+		welcome_bubble = self.__create_speechbubble_dict(False, False, True, 'welcome', '', text)
+		start_bubble = self.__create_speechbubble_dict(False, True, False, 'start', '', h_intro)
+		bubbles_array.append(welcome_bubble)
+		bubbles_array.append(start_bubble)
+
+		if save_crumb:
+			self.__save_speechbubble(welcome_bubble, db_user, breadcrumbs[-1], transaction)
+
+		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
+		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+
+	def prepare_discussion_dict_for_attitude(self, user, transaction, uid, lang, breadcrumbs, save_crumb, session_id):
+		"""
+
+		:param user:
+		:param transaction:
+		:param uid:
+		:param lang:
+		:param breadcrumbs:
+		:param save_crumb:
+		:return:
+		"""
+		logger('DictionaryHelper', 'prepare_discussion_dict_for_attitude', 'at_attitude')
+		_tn			        = Translator(lang)
+		_qh			        = QueryHelper()
+		h_intro             = ''
+		h_outro             = ''
+		db_user             = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		bubbles_array       = self.__create_speechbubble_history(db_user, session_id)
+		add_premise_text    = ''
+		save_statement_url  = 'ajax_set_new_start_statement'
+		text				= _qh.get_text_for_statement_uid(uid)
+		if not text:
+			return None
+		h_bridge            = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
+		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', 'You have selected: <strong>' + text + '</strong>') # TODO TEXT
+		bubble = self.__create_speechbubble_dict(False, True, False, '', '', h_bridge)
+
+		if save_crumb:
+			bubbles_array.append(select_bubble)
+			self.__save_speechbubble(select_bubble, db_user, breadcrumbs[-1], transaction)
+			# self.__save_speechbubble(bubble, db_user, breadcrumbs[-1], transaction)
+		bubbles_array.append(bubble)
+
+		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
+		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+
+	def prepare_discussion_dict_for_justify_statement(self, user, transaction, uid, lang, breadcrumbs, save_crumb, is_supportive, session_id):
+		"""
+
+		:param user:
+		:param transaction:
+		:param uid:
+		:param lang:
+		:param breadcrumbs:
+		:param save_crumb:
+		:param is_supportive:
+		:return:
+		"""
+		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
+		_tn			        = Translator(lang)
+		_qh			        = QueryHelper()
+		h_intro             = ''
+		db_user             = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		bubbles_array       = self.__create_speechbubble_history(db_user, session_id)
+		add_premise_text    = ''
+		save_statement_url  = 'ajax_set_new_start_statement'
+		text				= _qh.get_text_for_statement_uid(uid)
+		if not text:
+			return None
+		h_bridge            = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
+		                      + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
+		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
+		h_outro             = '<br>' + because
+		add_premise_text	+= text[0:1].upper() + text[1:]
+
+		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', 'You have selected: <strong>' + text + '</strong> ' + ('is true' if is_supportive else 'is false')) # TODO TEXT
+		bubble = self.__create_speechbubble_dict(False, True, False, '', '', h_bridge + ' ' + h_outro)
+		if save_crumb:
+			bubbles_array.append(select_bubble)
+			self.__save_speechbubble(select_bubble, db_user, breadcrumbs[-1], transaction)
+		bubbles_array.append(self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
+		bubbles_array.append(bubble)
+
+		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
+		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+
+	def prepare_discussion_dict_for_justify_argument(self, user, transaction, uid, lang, breadcrumbs, save_crumb, is_supportive, attack, logged_in, additional_id, session_id):
+		"""
+
+		:param user:
+		:param transaction:
+		:param uid:
+		:param lang:
+		:param breadcrumbs:
+		:param save_crumb:
+		:param is_supportive:
+		:param attack:
+		:param logged_id:
+		:param additional_id:
+		:return:
+		"""
+		logger('DictionaryHelper', 'prepare_discussion_dict', 'prepare_discussion_dict_for_justify_argument')
+		_tn			   = Translator(lang)
+		_qh			   = QueryHelper()
+		db_user        = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		bubbles_array  = self.__create_speechbubble_history(db_user, session_id)
+		add_premise_text = ''
+
+		_tg = TextGenerator(lang)
+		db_argument		= DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+		confr	        = _qh.get_text_for_argument_uid(uid, lang, True)
+		premise, tmp	= _qh.get_text_for_premisesgroup_uid(uid, lang)
+		conclusion		= _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
+								else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
+
+		h_intro, h_bridge , h_outro = _tg.get_header_for_users_confrontation_response(confr, premise, attack,
+			                                                                              conclusion, False, is_supportive,
+			                                                                              logged_in)
+		if attack == 'undermine':
+			add_premise_text = _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
+																	  db_argument.is_supportive)
+			add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
+
+		elif attack == 'support':
+			is_supportive = not is_supportive
+			# when the user rebuts a system confrontation, he attacks his own negated premise, therefore he supports
+			# is own premise. so his premise is the conclusion and we need new premises ;-)
+			add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
+																	   is_supportive)
+		elif attack == 'undercut':
+			add_premise_text += _tg.get_text_for_add_premise_container(premise, premise, attack, conclusion,
+																	   db_argument.is_supportive)
+		else:
+			add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
+																	   db_argument.is_supportive)
+		because			 = ' ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
+		h_outro      	 = because
+		save_statement_url  = 'ajax_set_new_premises_for_argument'
+
+		bubble_intro = self.__create_speechbubble_dict(True, False, False, '', '', h_intro)
+		if save_crumb:
+			bubbles_array.append(bubble_intro)
+		bubble_intro['message'] = bubble_intro['message'] + ' ' + h_outro
+		bubbles_array.append(self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
+		bubbles_array.append(bubble_intro)
+
+		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
+		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+
+	def prepare_discussion_dict_for_dont_know_reaction(self, user, transaction, uid, lang, breadcrumbs, save_crumb, supportive, additional_id, session_id):
+		"""
+
+		:param user:
+		:param transaction:
+		:param uid:
+		:param lang:
+		:param breadcrumbs:
+		:param save_crumb:
+		:param supportive:
+		:param additional_id:
+		:return:
+		"""
+		logger('DictionaryHelper', 'prepare_discussion_dict_for_dont_know_reaction', 'at_dont_know')
 		_tn			   = Translator(lang)
 		_qh			   = QueryHelper()
 		h_intro        = ''
 		h_bridge       = ''
 		h_outro        = ''
 		db_user        = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		bubbles_array  = self.__create_speechbubble_history(db_user)
+		bubbles_array  = self.__create_speechbubble_history(db_user, session_id)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 
-		if at_start:
-			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_start')
-			h_intro             = _tn.get(_tn.initialPositionInterest)
-			save_statement_url  = 'ajax_set_new_start_premise'
-			text = 'Welcome to D-BAS<br>If you want to get back in the discussion,<br>please click a bubble. Caution: Your progress will be lost!' # TODO TEXT
-			welcome_bubble = self.__create_speechbubble_dict(False, False, True, 'welcome', '', text)
-			start_bubble = self.__create_speechbubble_dict(True, False, False, 'start', '', h_intro)
-			bubbles_array.append(welcome_bubble)
-			bubbles_array.append(start_bubble)
+		text				= _qh.get_text_for_argument_uid(uid, lang)
+		text				= text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
+		if text:
+			h_bridge      	= _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:]  + '</strong>. ' + ''
+			h_outro         = _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
+		else:  # this will be set in add_discussion_end_text, because if we have no argument, the item_dict will be empty
+			h_intro      	= _tn.get(_tn.firstOneText) + ' <strong>' + _qh.get_text_for_statement_uid(additional_id) + '</strong>.'
 
-			if save_crumb:
-				self.__save_speechbubble(welcome_bubble, db_user, breadcrumbs[-1], transaction)
+		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
+		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-		elif at_attitude:
-			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_attitude')
-			text				= _qh.get_text_for_statement_uid(uid)
-			if not text:
-				return None
-			h_bridge            = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong>?'
-			select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', 'You have selected: <strong>' + text + '</strong>') # TODO TEXT
-			bubble = self.__create_speechbubble_dict(True, False, False, '', '', h_bridge)
-			if save_crumb:
-				bubbles_array.append(select_bubble)
-				self.__save_speechbubble(select_bubble, db_user, breadcrumbs[-1], transaction)
-				# self.__save_speechbubble(bubble, db_user, breadcrumbs[-1], transaction)
-			bubbles_array.append(bubble)
-			for b in breadcrumbs:
-				logger('---','---',str(b))
+	def prepare_discussion_dict_for_argumentation(self, user, transaction, uid, lang, breadcrumbs, save_crumb, is_supportive, additional_id, attack, session_id):
+		"""
 
-		elif at_justify:
-			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_justify')
-			text				= _qh.get_text_for_statement_uid(uid)
-			if not text:
-				return None
-			h_bridge            = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
-			                      + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
-			because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
-			h_outro             = because
-			add_premise_text	+= text[0:1].upper() + text[1:]
+		:param user:
+		:param transaction:
+		:param uid:
+		:param lang:
+		:param breadcrumbs:
+		:param save_crumb:
+		:param is_supportive:
+		:param additional_id:
+		:param attack:
+		:return:
+		"""
+		logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
+		_tn			   = Translator(lang)
+		_qh			   = QueryHelper()
+		db_user        = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		bubbles_array  = self.__create_speechbubble_history(db_user, session_id)
+		add_premise_text = ''
+		save_statement_url = 'ajax_set_new_start_statement'
 
-			select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', 'You have selected: <strong>' + text + '</strong> ' + ('is true' if is_supportive else 'is false')) # TODO TEXT
-			bubble = self.__create_speechbubble_dict(True, False, False, '', '', h_bridge + ' ' + h_outro)
-			if save_crumb:
-				bubbles_array.append(select_bubble)
-				self.__save_speechbubble(select_bubble, db_user, breadcrumbs[-1], transaction)
-			bubbles_array.append(self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
-			bubbles_array.append(bubble)
-
-
-		elif at_justify_argumentation:
-			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_justify_argumentation')
-			_tg = TextGenerator(lang)
-			db_argument		= DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-			confr	        = _qh.get_text_for_argument_uid(uid, lang, True)
-			premise, tmp	= _qh.get_text_for_premisesgroup_uid(uid, lang)
-			conclusion		= _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
-									else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
-
-			h_intro, h_bridge , h_outro = _tg.get_header_for_users_confrontation_response(confr, premise, attack,
-			                                                                              conclusion, False, is_supportive,
-			                                                                              logged_in)
+		_tg					 = TextGenerator(lang)
+		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+		if attack == 'end':
+			h_intro          = _tn.get(_tn.sentencesOpenersForArguments[0])\
+								  + ': <strong>' + _qh.get_text_for_argument_uid(uid, lang, True) + '</strong>. '
+			h_bridge         = _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
+			h_outro          = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
+		else:
+			premise, tmp	 = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+			conclusion       = _qh.get_text_for_conclusion(db_argument, lang)
+			db_confrontation = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
+			confr, tmp       = _qh.get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid, lang)
+			sys_conclusion   = _qh.get_text_for_conclusion(db_confrontation, lang)
 			if attack == 'undermine':
-				add_premise_text = _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
-																		  db_argument.is_supportive)
-				add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
+				premise = _qh.get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
+					else _qh.get_text_for_argument_uid(db_confrontation.argument_uid, lang, True)
 
-			elif attack == 'support':
-				is_supportive = not is_supportive
-				# when the user rebuts a system confrontation, he attacks his own negated premise, therefore he supports
-				# is own premise. so his premise is the conclusion and we need new premises ;-)
-				add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
-																		   is_supportive)
-			elif attack == 'undercut':
-				add_premise_text += _tg.get_text_for_add_premise_container(premise, premise, attack, conclusion,
-																		   db_argument.is_supportive)
+			# argumentation is a reply for an argument, if the arguments conclusion of the user is no position
+			db_statement		= DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+			reply_for_argument  = not (db_statement and db_statement.is_startpoint)
+			current_argument	= _qh.get_text_for_argument_uid(uid, lang, True, True)
+			user_is_attacking   = not db_argument.is_supportive
 
-			else:
-				add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
-																		   db_argument.is_supportive)
-			because			 = ' ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
-			h_outro      	 = because
-			save_statement_url  = 'ajax_set_new_premises_for_argument'
+			# fix
+			prefix = '</strong>' + _tn.get(_tn.soYourOpinionIsThat) + ': <strong>'
+			if conclusion.startswith(prefix):
+				conclusion = conclusion[len(prefix):]
 
-
+			h_intro, h_bridge , h_outro = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive,
+			                                                             attack, confr, reply_for_argument, user_is_attacking,
+			                                                             current_argument, db_argument)
 			bubble_intro = self.__create_speechbubble_dict(True, False, False, '', '', h_intro)
-			if save_crumb:
-				bubbles_array.append(bubble_intro)
-			bubble_intro['message'] = bubble_intro['message'] + ' ' + h_outro
+			bubble_bridge = self.__create_speechbubble_dict(False, True, False, '', '', h_bridge)
+			bubble_outro = self.__create_speechbubble_dict(True, False, False, '', '', h_outro)
 			bubbles_array.append(self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
 			bubbles_array.append(bubble_intro)
+			bubbles_array.append(bubble_bridge)
+			bubbles_array.append(bubble_outro)
+			if save_crumb:
+				self.__save_speechbubble(bubble_intro, db_user, breadcrumbs[-1], transaction)
+				self.__save_speechbubble(bubble_bridge, db_user, breadcrumbs[-1], transaction)
 
-		elif at_dont_know:
-			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_dont_know')
-			text				= _qh.get_text_for_argument_uid(uid, lang)
-			text				= text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
-			if text:
-				h_bridge      	= _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] \
-								 + '</strong>. ' + ''
-				h_outro         = _tn.get(_tn.whatDoYouThinkAboutThat) + '?'
-			else:  # this will be set in add_discussion_end_text, because if we have no argument, the item_dict will be empty
-				h_intro      	= _tn.get(_tn.firstOneText) + ' <strong>' + _qh.get_text_for_statement_uid(additional_id) + '</strong>.'
+		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
+		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-		elif at_argumentation:
-			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_argumentation')
-			_tg					 = TextGenerator(lang)
-			db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-			if attack == 'end':
-				h_intro          = _tn.get(_tn.sentencesOpenersForArguments[0])\
-									  + ': <strong>' + _qh.get_text_for_argument_uid(uid, lang, True) + '</strong>. '
-				h_bridge         = _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
-				h_outro          = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
-			else:
-				premise, tmp	 = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-				conclusion       = _qh.get_text_for_conclusion(db_argument, lang)
-				db_confrontation = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
-				confr, tmp       = _qh.get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid, lang)
-				sys_conclusion   = _qh.get_text_for_conclusion(db_confrontation, lang)
-				if attack == 'undermine':
-					premise = _qh.get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
-						else _qh.get_text_for_argument_uid(db_confrontation.argument_uid, lang, True)
+	def prepare_discussion_dict_for_choosing(self, user, transaction, uid, lang, breadcrumbs, save_crumb, is_uid_argument, is_supportive, session_id):
+		"""
 
-				# argumentation is a reply for an argument, if the arguments conclusion of the user is no position
-				db_statement		= DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
-				reply_for_argument  = not (db_statement and db_statement.is_startpoint)
-				current_argument	= _qh.get_text_for_argument_uid(uid, lang, True, True)
-				user_is_attacking   = not db_argument.is_supportive
+		:param user:
+		:param transaction:
+		:param uid:
+		:param lang:
+		:param breadcrumbs:
+		:param save_crumb:
+		:param is_uid_argument:
+		:param is_supportive:
+		:return:
+		"""
+		_tn			   = Translator(lang)
+		_qh			   = QueryHelper()
+		h_bridge       = ''
+		h_outro        = ''
+		db_user        = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		bubbles_array  = self.__create_speechbubble_history(db_user, session_id)
+		add_premise_text = ''
+		save_statement_url = 'ajax_set_new_start_statement'
 
-				# fix
-				prefix = '</strong>' + _tn.get(_tn.soYourOpinionIsThat) + ': <strong>'
-				if conclusion.startswith(prefix):
-					conclusion = conclusion[len(prefix):]
-
-				h_intro, h_bridge , h_outro = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive,
-				                                                             attack, confr, reply_for_argument, user_is_attacking,
-				                                                             current_argument, db_argument)
-				bubble_intro = self.__create_speechbubble_dict(True, False, False, '', '', h_intro)
-				bubble_bridge = self.__create_speechbubble_dict(False, True, False, '', '', h_bridge)
-				bubble_outro = self.__create_speechbubble_dict(True, False, False, '', '', h_outro)
-				bubbles_array.append(self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
-				bubbles_array.append(bubble_intro)
-				bubbles_array.append(bubble_bridge)
-				bubbles_array.append(bubble_outro)
-				if save_crumb:
-					self.__save_speechbubble(bubble_intro, db_user, breadcrumbs[-1], transaction)
-					self.__save_speechbubble(bubble_bridge, db_user, breadcrumbs[-1], transaction)
-
-		elif at_choosing:
-			logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
-			h_intro  = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
-			h_bridge += _tn.get(_tn.whyAreYouAgreeingWithInColor) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWithInColor)
-			h_bridge += ': <strong>'
-			h_bridge += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
-			h_bridge += '</strong>?'
-			h_outro  += _tn.get(_tn.because) + '...'
+		logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
+		h_intro  = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
+		h_bridge += _tn.get(_tn.whyAreYouAgreeingWithInColor) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWithInColor)
+		h_bridge += ': <strong>'
+		h_bridge += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
+		h_bridge += '</strong>?'
+		h_outro  += _tn.get(_tn.because) + '...'
 
 		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
 		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
@@ -895,23 +1007,34 @@ class DictionaryHelper(object):
 		:param transaction:
 		:return:
 		"""
+		if not db_user:
+			user = 'anonymous'
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+			if not db_user:
+				return
 		DBDiscussionSession.add(History(bubble_id=bubble_dict['id'], user=str(db_user.uid), content=bubble_dict['message'],
 		                                is_user=bubble_dict['is_user'], is_system=bubble_dict['is_system'],
 		                                is_status=bubble_dict['is_status'], breadcrumb_uid=str(related_breadcrumb['uid'])))
 		transaction.commit()
 
-	def __create_speechbubble_history(self, user):
+	def __create_speechbubble_history(self, user, session_id):
 		"""
 
 		:param user:
 		:return:
 		"""
 		if not user:
-			return []
+			user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
+			if not user:
+				return []
 
 		bubble_history = []
 		db_history = DBDiscussionSession.query(History).filter_by(author_uid=user.uid).join(Breadcrumb).all()
 		for h in db_history:
-			bubble_history.append(self.__create_speechbubble_dict(h.is_user, h.is_system, h.is_status, h.bubble_id, h.breadcrumbs.url, h.content))
+			if user.nickname == 'anonymous':
+				if h.breadcrumbs.session_id == session_id:
+					bubble_history.append(self.__create_speechbubble_dict(h.is_user, h.is_system, h.is_status, h.bubble_id, h.breadcrumbs.url, h.content))
+			else:
+				bubble_history.append(self.__create_speechbubble_dict(h.is_user, h.is_system, h.is_status, h.bubble_id, h.breadcrumbs.url, h.content))
 
 		return bubble_history

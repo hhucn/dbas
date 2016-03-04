@@ -788,6 +788,35 @@ class QueryHelper(object):
 		ret_dict['users'] = all_users
 		return ret_dict
 
+	def get_user_with_same_opinion_for_position(self, issue_uid, lang):
+		logger('QueryHelper', 'get_user_with_same_opinion_for_position', 'issue ' + str(issue_uid))
+
+		ret_dict = dict()
+		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.issue_uid == issue_uid,
+		                                                                Statement.is_startpoint == True)).all()
+		if not db_statements:
+			return ret_dict
+
+		uh = UserHandler()
+		votes = []
+		for statement in db_statements:
+			vote_dict = dict()
+			vote_dict['statement_uid'] = str(statement.uid)
+			vote_dict['text'] = self.get_text_for_statement_uid(statement.uid)
+			db_votes = DBDiscussionSession.query(VoteStatement).filter_by(statement_uid=statement.uid).all()
+			vote_dict['count'] = str(len(db_votes))
+			all_users = {}
+			for vote in db_votes:
+				db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+				all_users[db_user.nickname] = {'avatar_url': uh.get_profile_picture(db_user),
+				                               'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+			vote_dict['users'] = all_users
+			votes.append(vote_dict)
+
+		ret_dict['votes'] = votes
+		return ret_dict
+
+
 	def get_id_of_slug(self, slug, request, save_id_in_session):
 		"""
 		Returns the uid
@@ -1170,6 +1199,8 @@ class QueryHelper(object):
 		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                          Statement.issue_uid == issue)).first()
 		statements = self.insert_as_statements(transaction, text, user, issue)
+		if statements == -1:
+			return -1
 
 		# second, set the new statements as premisegroup
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
@@ -1184,7 +1215,8 @@ class QueryHelper(object):
 	# OTHER
 	# ########################################
 
-	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive, issue, user, for_api, mainpage, lang, recommender_helper):
+	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive,
+	                                                    issue, user, for_api, mainpage, lang, recommender_helper):
 		"""
 
 		:param transaction:
@@ -1224,7 +1256,7 @@ class QueryHelper(object):
 
 		elif len(new_arguments) == 1:
 			new_argument_uid    = random.choice(new_arguments)
-			arg_id_sys, attack  = recommender_helper.get_attack_for_argument(new_argument_uid, issue)
+			arg_id_sys, attack  = recommender_helper.get_attack_for_argument(new_argument_uid, issue, lang)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 
 		else:

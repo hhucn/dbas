@@ -71,7 +71,7 @@
 		<div class="ajaxloader"></div>
 	</div>
 
-	<div class="eupopup eupopup-fixedtop"></div>
+	<div class="eupopup eupopup-bottomleft"></div>
 
 	<!-- Placed at the end of the document so the pages load faster -->
     <script type="text/javascript" src="${request.static_url('dbas:static/js/jquery.slimscroll-1.3.7.min.js')}"></script>

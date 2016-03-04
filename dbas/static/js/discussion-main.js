@@ -155,7 +155,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 
 		new Helper().redirectInNewTabForContact(params);
 
-	});3
+	});
 
 	// opinion barometer
 	$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
@@ -189,14 +189,6 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 			qmark = uid.indexOf('?');
 		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
 	});
-
-	$('#dialog-switcher').change(function() {
-		if ($(this).prop('checked'))
-			guiHandler.switchToDialogView();
-		else
-			guiHandler.switchToTextView();
-	});
-
 };
 
 /**
@@ -245,22 +237,31 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
  * @param guiHandler
  */
 setStyleOptions = function (guiHandler){
-	// render html tags
-	replaceHtmlTags($('#' + discussionsDescriptionIntroId));
-	replaceHtmlTags($('#' + discussionsDescriptionBridgeId));
-	replaceHtmlTags($('#' + discussionsDescriptionOutroId));
-	$.each($('#' + discussionSpaceId + ' label'), function replaceHtmlTagInHeader() {
-		replaceHtmlTags($(this));
+
+	// max size of the container
+	var speechBubbles = $('#dialog-speech-bubbles-space'), height = 0,
+		maxHeight = new Helper().getMaxSizeOfDiscussionViewContainer(), start,
+		nowBubble = $('#now');
+	$.each(speechBubbles.find('div p'), function(){
+		height += $(this).outerHeight(true);
+		// clear unnecessary a tags
+		if ($(this).parent().attr('href') == '?breadcrumb=true'){
+			$(this).insertAfter($(this).parent());
+			$(this).prev().remove();
+		}
 	});
-	$.each($('#' + islandViewContainerId + ' h5'), function replaceHtmlTagInIsland() {
-		replaceHtmlTags($(this));
-	});
-	replaceHtmlTags($('#' + issueInfoId));
-	replaceHtmlTags($('#' + addPremiseContainerMainInputIntroId));
-	replaceHtmlTags($('#island-view-container-space-heading'));
-	$.each($('#dialog-speech-bubbles-space > div p'), function replaceHtmlTagInBubbles() {
-		replaceHtmlTags($(this));
-	});
+	start = typeof nowBubble == 'undefined' ? 'bottom' : nowBubble;
+	if (height > maxHeight){
+		speechBubbles.slimscroll({
+			position: 'right',
+			height: maxHeight + 'px',
+			railVisible: true,
+			alwaysVisible: true,
+			start: start,
+			scrollBy: '10px',
+			allowPageScroll: true
+		});
+	}
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();
@@ -279,9 +280,7 @@ setStyleOptions = function (guiHandler){
 		$(this).select();
 	});
 
-
 	setNavigationSidebar(window.innerWidth);
-
 };
 
 /**
@@ -399,15 +398,6 @@ setGuiOptions = function(){
 		item_no_opinion.hide().next().prepend(no_opinion);
 	}
 
-	//$('#dialog-speech-bubbles-space').slimScroll({
-	//	position: 'right',
-	//	height: '400px',
-	//	railVisible: true,
-	//	wheelStep: 10,
-	//	alwaysVisible: false,
-	//	start: $('#system_now')
-	//}).parent().hide();
-
 };
 
 /**
@@ -509,7 +499,7 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 /**
  * main function
  */
-$(function () {
+$(document).ready(function () {
 	'use strict';
 	var guiHandler = new GuiHandler(),
 		ajaxHandler = new AjaxSiteHandler(),

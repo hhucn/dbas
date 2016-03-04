@@ -207,8 +207,9 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			if ($('#' + discussionsDescriptionBridgeInfoId).hasClass('in')){
-				$('#' + discussionsDescriptionBridgeInfoId).removeClass('in');
+			var element = $('#' + discussionsDescriptionBridgeInfoId);
+			if (element.hasClass('in')){
+				element.removeClass('in');
 			}
 		});
 	};
@@ -221,13 +222,27 @@ function AjaxSiteHandler() {
 	 * @param extra optional
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
-		var settings_data, url, callback = $('#' + callbackid);
+		var settings_data, url, callback = $('#' + callbackid),
+			pencil = '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>',
+			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
+			bubbleSpace = $('#dialog-speech-bubbles-space');
 
+		// clear lists if input is empty
 		if(callback.val().length==0) {
 			$('#' + proposalStatementListGroupId).empty();
 			$('#' + proposalPremiseListGroupId).empty();
 			$('#' + proposalEditListGroupId).empty();
+			$('#current').parent().remove();
 			return;
+		}
+
+		// add or remove bubble
+		if (bubbleSpace.find('#current_' + tmpid).length == 0){
+			var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil),
+				current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
+			current.insertBefore(bubbleSpace.find('div:last-child'));
+		} else {
+			$('#current_' + tmpid).html(value + '...' + pencil);
 		}
 
 		$.ajax({

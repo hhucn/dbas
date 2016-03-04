@@ -216,6 +216,34 @@ function Helper() {
 		f.submit().remove();
 	};
 
+	this.getMaxSizeOfGraphViewContainer = function(){
+		var header, footer, innerHeight;
+		header = $('#' + customBootstrapMenuId);
+		footer = $('#footer');
+		innerHeight = window.innerHeight;
+		innerHeight -= header.outerHeight(true);
+		innerHeight -= footer.outerHeight(true);
+		innerHeight -= this.getPaddingOfElement(header);
+		innerHeight -= this.getPaddingOfElement(footer);
+		return innerHeight;
+	};
+
+	this.getMaxSizeOfDiscussionViewContainer = function(){
+		var bar, innerHeight, list;
+		bar = $('#header-container');
+		list = $('#discussions-space-list');
+		innerHeight = this.getMaxSizeOfGraphViewContainer();
+		innerHeight -= bar.outerHeight(true);
+		innerHeight -= list.outerHeight(true);
+		innerHeight -= this.getPaddingOfElement(bar);
+		innerHeight -= this.getPaddingOfElement(list);
+		return innerHeight-40;
+	};
+
+	this.getPaddingOfElement = function (element){
+		return parseInt(element.css('padding-top').replace('px','')) + parseInt(element.css('padding-bottom').replace('px',''))
+	};
+
 	/**
 	 * Delays a specific function
 	 */

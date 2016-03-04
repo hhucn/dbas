@@ -26,7 +26,7 @@
 			<div class="row">
 				<div class="col-md-7 center">
 					<span i18n:translate="current_discussion">Current discussion is about</span>:<br>
-					<span id="issue_info">${issues.info}</span>
+					<span id="issue_info">${structure:issues.info}</span>
 				</div>
 				<div class="col-md-1 center text-center">
                     <img class="icon-badge" style="width: 30px;" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"/>
@@ -34,10 +34,10 @@
 				<div class="col-md-2 center text-center">
                     <!--
 					<span i18n:translate="startet_at">The discussion was started at</span>
-					<span id="issue-date" class="text-info">${issues.date}</span>
+					<span id="issue-date" class="text-info">${structure:issues.date}</span>
 					<br>
 					<span i18n:translate="already_has">and already has</span>
-					<span id="issue-count" class="text-info">${issues.arg_count}</span>
+					<span id="issue-count" class="text-info">${structure:issues.arg_count}</span>
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 					-->
@@ -45,7 +45,7 @@
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<span tal:replace="extras.buttons.switch_discussion"></span>&#160;&#160;&#160;<span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown">
+						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 250px;">
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
 							<li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
 								<a href="#" tal:attributes="href issue.url; value issue.title"><span tal:replace="issue.title"></span><span class="badge" style="float: right; margin-left: 1em"><span tal:replace="issue.arg_count"></span></span></a>
@@ -64,7 +64,7 @@
 		<div class="container colored_container" id="discussion-container">
 			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
-				<div class="col-md-10" style="text-align: justify;">
+				<div class="col-md-11" style="text-align: justify;">
 
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -85,38 +85,40 @@
 					<div id="argument-blogging-sidebar">
 						<a class="share-icon share-def" id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" style="margin-right: 1em;" tal:attributes="title extras.buttons.share_url"></a>
 					</div>
-					<h4 id="discussions-header-intro">${discussion.heading.intro}</h4>
+                    <div id="discussions-header" style="display:none;">
+					    <h4 id="discussions-header-intro">${structure:discussion.heading.intro}</h4>
 
-                    <a tal:condition="extras.is_questionable" id="discussions-header-bridge-infos-link" data-toggle="collapse" href="#discussions-header-bridge-infos" aria-expanded="false" aria-controls="discussions-header-bridge-infos" class="collapsed">
-					<h4><span id="discussions-header-bridge">${discussion.heading.bridge}</span></h4>
-                    </a>
-                    <h4 tal:condition="not:extras.is_questionable"><span id="discussions-header-bridge">${discussion.heading.bridge}</span></h4>
-                    <div class="collapse" id="discussions-header-bridge-infos">
-                        <div class="well lead" id="discussions-header-bridge-infos-content" data-toggle="tooltip" data-placement="bottom"></div>
-                    </div>
-
-					<h4 id="discussions-header-outro">${discussion.heading.outro}</h4>
-					<div id="dialog-speech-bubbles-space">
-                        <div tal:repeat="bubble discussion.heading.bubbles" tal:omit-tag="">
-                            <div tal:condition="bubble.is_user" class="line-wrapper-l"><a tal:attributes="href bubble.url"><p class="triangle-l" tal:attributes="id bubble.id">${bubble.message}</p></a></div>
-                            <div tal:condition="bubble.is_system" class="line-wrapper-r"><a tal:attributes="href bubble.url"><p class="triangle-r" tal:attributes="id bubble.id">${bubble.message}</p></a></div>
-                            <div tal:condition="bubble.is_status" class="line-wrapper-m"><p class="triangle-m" tal:attributes="id bubble.id">${bubble.message}</p></div>
-                            <div tal:condition="repeat.bubble.end" class="line-wrapper-m" style="margin-bottom: 2em;"></div>
+                        <a tal:condition="extras.is_questionable" id="discussions-header-bridge-infos-link" data-toggle="collapse" href="#discussions-header-bridge-infos" aria-expanded="false" aria-controls="discussions-header-bridge-infos" class="collapsed">
+					        <h4 id="discussions-header-bridge">${structure:discussion.heading.bridge}</h4>
+                        </a>
+                        <h4 tal:condition="not:extras.is_questionable"><span id="discussions-header-bridge">${structure:discussion.heading.bridge}</span></h4>
+                        <div class="collapse" id="discussions-header-bridge-infos">
+                            <div class="well lead" id="discussions-header-bridge-infos-content" data-toggle="tooltip" data-placement="bottom"></div>
                         </div>
+
+					    <h4 id="discussions-header-outro">${structure:discussion.heading.outro}</h4>
                     </div>
+					 <div id="dialog-speech-bubbles-space">
+                         <div tal:repeat="bubble discussion.heading.bubbles" tal:omit-tag="">
+                             <div tal:condition="bubble.is_user" class="line-wrapper-r"><a tal:attributes="href bubble.url"><p class="triangle-r" tal:attributes="id bubble.id">${structure:bubble.message}</p></a></div>
+                             <div tal:condition="bubble.is_system" class="line-wrapper-l"><a tal:attributes="href bubble.url"><p class="triangle-l" tal:attributes="id bubble.id">${structure:bubble.message}</p></a></div>
+                             <div tal:condition="bubble.is_status" class="line-wrapper-m"><p class="triangle-m" tal:attributes="id bubble.id">${structure:bubble.message}</p></div>
+                             <div tal:condition="repeat.bubble.end" class="line-wrapper-m" style="margin-bottom: 2em;"></div>
+                        </div>
+                     </div>
 					<div id="discussions-space">
 
-						<ul>
+						<ul id="discussions-space-list">
 							<li tal:repeat="item items">
 								<input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-								<span tal:repeat="premise item.premises" tal:omit-tag=""><label for="tmp" tal:attributes="for item.id; id premise.id">${premise.title}</label><label tal:attributes="for item.id" tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em></label></span>
+								<span tal:repeat="premise item.premises" tal:omit-tag=""><label for="tmp" tal:attributes="for item.id; id premise.id">${structure:premise.title}</label><label tal:attributes="for item.id" tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em></label></span>
 							</li>
 						</ul>
 
 					</div>
 				</div>
 
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<ul id="discussion-sidebar">
 						<li>
 							<img tal:condition="extras.is_editable"  id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
@@ -176,7 +178,7 @@
 			</button>
 			<div class="row" id="island-view-container-space">
 				<div class="col-md-12 text-center">
-					<h4><span i18n:translate="island_view_for">Island View for</span> <span id="island-view-container-space-heading"><strong>${extras.island.heading}</strong></span></h4>
+					<h4><span i18n:translate="island_view_for">Island View for</span> <span id="island-view-container-space-heading"><strong>${structure:extras.island.heading}</strong></span></h4>
 				</div>
 			</div>
 
@@ -186,13 +188,13 @@
 						<div class="panel-heading">
 							<h5>
 									<span class="text-danger">✗</span>
-									<span tal:replace="extras.island.undermine_text">undermine_text</span>
+									<span tal:replace="structure:extras.island.undermine_text">structure:undermine_text</span>
 								</h5>
 						</div>
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
-									<label tal:attributes="for undermine.id">${undermine.text}</label>
+									<label tal:attributes="for undermine.id">${structure:undermine.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -203,13 +205,13 @@
 						<div class="panel-heading">
 							<h5>
 									<span class="text-success">✓</span> 
-									<span tal:replace="extras.island.support_text">support_text</span>
+									<span tal:replace="extras.island.support_text">structure:support_text</span>
 								</h5>
 						</div>
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="support extras.island.support" tal:attributes="id support.id">
-									<label tal:attributes="for support.id">${support.text}</label>
+									<label tal:attributes="for support.id">${structure:support.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -223,13 +225,13 @@
 						<div class="panel-heading">
 							<h5>
                                     <span class="text-danger">✗</span>
-                                    <span tal:replace="extras.island.undercut_text">undercut_text</span>
+                                    <span tal:replace="extras.island.undercut_text">structure:undercut_text</span>
 							    </h5>
 						</div>
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="undercut extras.island.undercut" tal:attributes="id undercut.id">
-									<label tal:attributes="for undercut.id">${undercut.text}</label>
+									<label tal:attributes="for undercut.id">${structure:undercut.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -241,13 +243,13 @@
 						<div class="panel-heading">
 							<h5>
                                 <span class="text-danger">✗</span>
-                                <span tal:replace="extras.island.rebut_text">rebut_text</span>
+                                <span tal:replace="extras.island.rebut_text">structure:rebut_text</span>
 								</h5>
 						</div>
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
-									<label tal:attributes="for rebut.id">${rebut.text}</label>
+									<label tal:attributes="for rebut.id">${structure:rebut.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -266,7 +268,7 @@
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="overbid extras.island.overbid" tal:attributes="id overbid.id">
-									<label tal:attributes="for overbid.id">${overbid.text}</label>
+									<label tal:attributes="for overbid.id">${structure:overbid.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -286,7 +288,7 @@
 						<div class="panel-body">
 							<ul>
 								<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
-									<label tal:attributes="for rebut.id">${rebut.text}</label>
+									<label tal:attributes="for rebut.id">${structure:rebut.text}</label>
 								</li>
 							</ul>
 						</div>
@@ -350,7 +352,7 @@
 					<span i18n:translate="error:">Error:</span>
 					<span id="add-premise-error-msg"></span>
 				</div>
-				<h5  id="add-premise-container-main-input-intro">${discussion.add_premise_text}</h5>
+				<h5  id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</h5>
 				<div id="add-premise-container-body">
 					<div class="container-three-divs" style="padding-bottom: 2em;">
 						<div>

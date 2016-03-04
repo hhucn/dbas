@@ -6,11 +6,7 @@
 $(function () {
 	'use strict';
 
-	$.each($('#message-space .panel-body'), function replaceHtmlTagsInMessages() {
-		replaceHtmlTags($(this));
-	});
-
-	$.each($('#message-space .panel-title-link'), function replaceHtmlTagsInMessages() {
+	$.each($('#message-space .panel-title-link'), function ajaxLinksRead() {
 		$(this).click(function(){
 			var id = $(this).parent().parent().parent().attr('id');
 			if ($(this).html().indexOf('<strong') != -1) {
@@ -19,23 +15,13 @@ $(function () {
 		});
 	});
 
-	$.each($('#message-space .glyphicon-trash'), function replaceHtmlTagsInMessages() {
+	$.each($('#message-space .glyphicon-trash'), function ajaxLinksDelete() {
 		$(this).off('click').click(function(){
 			$(this).parent().parent().attr('href','');
 			sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));
 		});
 	});
 });
-
-replaceHtmlTags = function(element){
-	var text = element.text();
-	text = text.replace('&lt;strong&gt;', '<strong>');
-	text = text.replace('&lt;/strong&gt;', '</strong>');
-	text = text.replace('&lt;a', '<a');
-	text = text.replace('&lt;/a', '</a');
-	text = text.replace('&lt;br&gt;', '<br>');
-	element.html(text);
-};
 
 hideInfoSpaces = function() {
 	$('#error-space').hide();

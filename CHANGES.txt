@@ -127,5 +127,9 @@
 - Improvements for the settings page
 - Bugfixes
 
+0.5.5 (2016-03-02)
+- SpeechBubbles instead of text
+- History for anonymous users
+
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation

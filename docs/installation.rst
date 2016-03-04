@@ -47,3 +47,5 @@ Then follow these steps:
 .. code-block:: console
 
     $ pserve development.ini --reload
+
+6. If you are running MAC OSX, please install portmap *https://codingmonkeys.de/portmap/*

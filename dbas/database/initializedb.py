@@ -282,12 +282,17 @@ def setup_news_db():
 				  date='16.02.2016',
 				  author='Tobias Krauthoff',
 				  news='Yesterday we have develope a minimal notification system. This system could send information to every author, '
-				       'if one of their statement was edited. More features are comming soon')
+				       'if one of their statement was edited. More features are comming soon!')
+	news44 = News(title='Speech Bubbles System',
+				  date='02.03.2016',
+				  author='Tobias Krauthoff',
+				  news='After one week of testing, we released a new minor version of D-BAS. Instead of the text presentation,'
+				       'we will use chat-like style :) Come on and try it! Additionally anonymous users will have a history now!')
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
 	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41,
-	              news42, news43]
+	              news42, news43, news44]
 	DBNewsSession.add_all(news_array[::-1])
 	DBNewsSession.flush()
 

@@ -249,15 +249,11 @@
 	-moz-box-flex:1.0;
 	box-flex:1.0;
 }
-
-#dialog-switcher-container{
-	margin-bottom: 1em;
-}
-#dialog-speech-bubbles-space{
-    margin-left: 3em;
-}
 /* http://nicolasgallagher.com/pure-css-speech-bubbles/ */
 /* http://codepen.io/ryanmcnz/pen/JDLhu */
+#welcome{
+	margin-top: 0em;
+}
 .line-wrapper-l,
 .line-wrapper-m{
 	float: left;
@@ -267,10 +263,8 @@
 	float: right;
 	width: 100%;
 }
-
-.triangle-l:hover,
-.triangle-r:hover,
-.triangle-m:hover {
+.line-wrapper-l>a>p:hover,
+.line-wrapper-r>a>p:hover {
     color: #2196f3;
 }
 .triangle-l,
@@ -294,7 +288,7 @@
   float: right;
   text-align: left;
   background: #dcf8c6;
-  margin: 0 1em 2em auto;
+  margin: 0 2em 2em auto;
 }
 .triangle-m{
   padding: 1px;
@@ -320,12 +314,12 @@
 }
 /* creates triangle */
 .triangle-l:after {
-  left: 10%;
+  left: 40px;
   border-color: transparent transparent #E5E4E2 #E5E4E2;
 }
 /* creates triangle */
 .triangle-r:after {
-  right: 10%;
+  right: 40px;
   border-color: transparent transparent #dcf8c6 #dcf8c6;
 }
 

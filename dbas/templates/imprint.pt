@@ -91,6 +91,9 @@
 						<li>
 							Avatare by <a href="http://www.gravatar.com/">Gravatar</a>
 						</li>
+						<li>
+							Charts by <a href="https://github.com/nnnick/Chart.js">Chart.js</a>
+						</li>
 					</ul>
 				</div>
 				<br>
@@ -129,6 +132,13 @@
 					<ul>
 						<li>Improved recommendation of the next argument/statement</li>
 					</ul>
+
+                    <span class="project lead">0.5.5 (2016-03-02)</span>
+					<ul>
+						<li>SpeechBubbles instead of text</li>
+						<li>History for anonymous users</li>
+					</ul>
+
                     <span class="project lead">0.5.4 (2016-02-24)</span>
 					<ul>
 						<li>Improvements for the settings page</li>

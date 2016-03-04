@@ -30,9 +30,16 @@ class BreadcrumbHelper(object):
 		:param for_api:
 		:return: all breadcrumbs, boolean (if a crumb was inserted)
 		"""
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		if not db_user or for_api:
+		if for_api:
 			return [], False
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if not db_user:
+			user = 'anonymous'
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+			if not db_user:
+				return [], False
+
 		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
 
 		_um = UrlManager(application_url, slug, for_api)
@@ -45,10 +52,13 @@ class BreadcrumbHelper(object):
 			if group0 and url.endswith(group0):
 				self.del_breadcrumbs_of_user(transaction, user)
 
-		db_already_in = DBDiscussionSession.query(Breadcrumb).filter_by(url=url).first()
+		delete_duplicates = True
+		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == url,
+		                                                                  Breadcrumb.author_uid == db_user.uid)).first()
 		db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
 		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
 		is_new_crumb = False
+
 		if db_already_in and delete_duplicates:
 			DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid, Breadcrumb.uid > db_already_in.uid)).delete()
 		elif not already_last:
@@ -56,12 +66,13 @@ class BreadcrumbHelper(object):
 			is_new_crumb = True
 		transaction.commit()
 
-		return self.get_breadcrumbs(user, lang), is_new_crumb
+		return self.get_breadcrumbs(user, session_id, lang), is_new_crumb
 
-	def get_breadcrumbs(self, user, lang):
+	def get_breadcrumbs(self, user,session_id, lang):
 		"""
 
 		:param user:
+		:param session_id:
 		:param lang:
 		:return:
 		"""
@@ -70,7 +81,12 @@ class BreadcrumbHelper(object):
 		if not db_user:
 			return dict()
 
-		db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all()
+		if user == 'anonymous':
+				db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
+				                                                                   Breadcrumb.session_id == session_id)).all()
+		else:
+				db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all()
+
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'user ' + str(user) + ', count ' + str(len(db_breadcrumbs)))
 
 		if not db_breadcrumbs:

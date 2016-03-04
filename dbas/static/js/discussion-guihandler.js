@@ -50,6 +50,10 @@ function GuiHandler() {
 		});
 
 		imgm.click(function(){
+			// removing bubble
+			var id = $(this).parent().parent().find('input').attr('id'),
+				tmpid = id.split('-').length == 6 ? id.split('-')[5] : '0';
+			$('#current_' + tmpid).fadeOut().remove();
 			$(this).parent().parent().remove();
 			body.find('div').children().last().show();
 			// hide minus icon, when there is only one child
@@ -119,18 +123,12 @@ function GuiHandler() {
 		new DiscussionGraph().showGraph();
 
 		// text
-		var html = $('#' + discussionsDescriptionIntroId).html(), innerHeight, header, footer;
+		var html = $('#' + discussionsDescriptionIntroId).html(), innerHeight;
 		html = html.substr(0, html.indexOf('<br>'));
 		$('#' + graphViewContainerHeaderId).html(html);
 
 		// height
-		header = $('#' + customBootstrapMenuId);
-		footer = $('#footer');
-		innerHeight = window.innerHeight;
-		innerHeight -= header.outerHeight(true); // header height with margin
-		innerHeight -= parseInt(header.css('padding-bottom').replace('px','')); // paddings
-		innerHeight -= footer.outerHeight(true); // footer height with margin
-		innerHeight -= parseInt(footer.css('padding-top').replace('px','')); // paddings
+		innerHeight = new Helper().getMaxSizeOfGraphViewContainer();
 		$('#' + graphViewContainerId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em;');
 	};
 
