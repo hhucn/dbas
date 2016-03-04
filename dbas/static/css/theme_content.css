@@ -251,8 +251,10 @@
 }
 /* http://nicolasgallagher.com/pure-css-speech-bubbles/ */
 /* http://codepen.io/ryanmcnz/pen/JDLhu */
-#welcome{
-	margin-top: 0em;
+#dialog-speech-bubbles-space{
+    border-radius: 10px;
+    background: #f3f3f3;
+    padding: 1em;
 }
 .line-wrapper-l,
 .line-wrapper-m{
