@@ -41,7 +41,7 @@
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 					-->
-					<div class="dropdown">
+					<div class="dropdown" style="margin-top: 5px;">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<span tal:replace="extras.buttons.switch_discussion"></span>&#160;&#160;&#160;<span class="caret"></span>
 						</button>
@@ -54,7 +54,7 @@
 					</div>
                  </div>
                 <div class="col-md-2 center text-center">
-					<button id="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-bottom: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
+					<button id="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-top: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart Discussion</span>
 					</button>
 				</div>
@@ -116,13 +116,13 @@
 				<div class="col-md-1">
 					<ul id="discussion-sidebar">
                         <li>
-						    <a id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" style="margin-right: 1em;" tal:attributes="title extras.buttons.share_url"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_share.png')}"/></a>
+						    <a id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" tal:attributes="title extras.buttons.share_url"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_share.png')}"/></a>
                         </li>
-						<li>
-							<img tal:condition="extras.is_editable"  id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
+						<li tal:condition="extras.is_editable">
+							<img id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
 						</li>
-						<li>
-							<img tal:condition="extras.is_reportable" id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
+						<li tal:condition="extras.is_reportable" >
+							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
 						</li>
 						<li>
 							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon">
