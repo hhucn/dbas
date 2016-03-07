@@ -182,7 +182,7 @@ function AjaxSiteHandler() {
 		});
 	};
 
-	this.getMoreInfosAboutArgument = function(uid, calledbButton){
+	this.getMoreInfosAboutArgument = function(uid){
 		alert('TODO');
 		return;
 

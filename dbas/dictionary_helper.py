@@ -373,20 +373,20 @@ class DictionaryHelper(object):
 		"""
 		_tn			   = Translator(lang)
 		_qh			   = QueryHelper()
-		h_bridge       = ''
-		h_outro        = ''
 		db_user        = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		bubbles_array  = self.__create_speechbubble_history(db_user, session_id)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
-		h_intro  = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
-		h_bridge += _tn.get(_tn.whyAreYouAgreeingWithInColor) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWithInColor)
-		h_bridge += ': <strong>'
-		h_bridge += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
-		h_bridge += '</strong>?'
-		h_outro  += _tn.get(_tn.because) + '...'
+		text = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
+		text += _tn.get(_tn.whyAreYouAgreeingWithInColor) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWithInColor)
+		text += ':<br><strong>'
+		text += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
+		text += '</strong>?<br>' + _tn.get(_tn.because) + '...'
+
+		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
+		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(True, False, False, '', '', text))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
@@ -574,11 +574,11 @@ class DictionaryHelper(object):
 				# for each justifying premise, we need a new confrontation:
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, lang)
 
-				#statements_array.append(self.__create_statement_dict(argument.uid,
-				#                                                     text,
-				#                                                     premises_array,
-				#												'justify',
-				#												     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
+				statements_array.append(self.__create_statement_dict(argument.uid,
+				                                                     text,
+				                                                     premises_array,
+																	'justify',
+																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
 			if logged_in:
 				statements_array.append(self.__create_statement_dict('justify_premise',
@@ -750,14 +750,10 @@ class DictionaryHelper(object):
 			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(db_argument.uid, issue_uid, lang)
 			url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
-			statements_array.append(self.__create_statement_dict(str(db_argument.uid),
-			                                                     text,
-			                                                     premise_array,
-															  'choose',
-															     url))
-		url = 'back' if for_api else 'window.history.go(-1)'
-		text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
-		statements_array.append(self.__create_statement_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
+			statements_array.append(self.__create_statement_dict(str(db_argument.uid), text, premise_array, 'choose', url))
+		# url = 'back' if for_api else 'window.history.go(-1)'
+		# text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
+		# statements_array.append(self.__create_statement_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
 		return statements_array
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, is_questionable, show_bar_icon,

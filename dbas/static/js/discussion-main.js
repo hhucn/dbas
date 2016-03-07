@@ -416,9 +416,9 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 		}
 	});
 	$('#' + sendNewPremiseId).off("click").click(function(){
-		if ($(this).attr('name').indexOf('justify') != -1){
+		if ($(this).attr('name').indexOf('start') != -1){
 			sendStartPremise();
-		} else if ($(this).attr('name').indexOf('start') != -1){
+		} else if ($(this).attr('name').indexOf('justify') != -1){
 			sendArgumentsPremise();
 		}
 	});
