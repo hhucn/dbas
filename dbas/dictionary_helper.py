@@ -120,14 +120,9 @@ class DictionaryHelper(object):
 		add_premise_text    = ''
 		h_intro             = _tn.get(_tn.initialPositionInterest)
 		save_statement_url  = 'ajax_set_new_start_premise'
-		text = 'Welcome to D-BAS<br>If you want to get back in the discussion, please click a bubble.<br>Caution: Your progress will be lost!' # TODO TEXT
-		welcome_bubble = self.__create_speechbubble_dict(False, False, True, 'welcome', '', text)
-		start_bubble = self.__create_speechbubble_dict(False, True, False, 'start', '', h_intro)
-		bubbles_array.append(welcome_bubble)
-		bubbles_array.append(start_bubble)
 
-		if save_crumb:
-			self.__save_speechbubble(welcome_bubble, db_user, breadcrumbs[-1], transaction)
+		start_bubble = self.__create_speechbubble_dict(False, True, False, 'start', '', h_intro)
+		bubbles_array.append(start_bubble)
 
 		heading_dict = {'intro': h_intro, 'bridge': h_bridge, 'outro': h_outro, 'bubbles': bubbles_array}
 		return {'heading': heading_dict, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
@@ -360,12 +355,10 @@ class DictionaryHelper(object):
 			                                                             attack, confr, reply_for_argument, user_is_attacking,
 			                                                             current_argument, db_argument)
 			bubble_intro = self.__create_speechbubble_dict(True, False, False, '', '', h_intro)
-			bubble_bridge = self.__create_speechbubble_dict(False, True, False, '', '', h_bridge)
-			bubble_outro = self.__create_speechbubble_dict(True, False, False, '', '', h_outro)
+			bubble_bridge = self.__create_speechbubble_dict(False, True, False, '', '', h_bridge + '<br>' + h_outro)
 			bubbles_array.append(self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
 			bubbles_array.append(bubble_intro)
 			bubbles_array.append(bubble_bridge)
-			bubbles_array.append(bubble_outro)
 			if save_crumb:
 				self.__save_speechbubble(bubble_intro, db_user, breadcrumbs[-1], transaction)
 				self.__save_speechbubble(bubble_bridge, db_user, breadcrumbs[-1], transaction)
@@ -845,7 +838,8 @@ class DictionaryHelper(object):
 															'switch_language': _tn.get(_tn.switchLanguage),
 															'login': _tn.get(_tn.login),
 															'news_about_dbas': _tn.get(_tn.newsAboutDbas),
-															'share_url': _tn.get(_tn.shareUrl)}
+															'share_url': _tn.get(_tn.shareUrl),
+			                                                'go_back': _tn.get(_tn.goStepBack)}
 			# /return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
 			message_dict['count']		= _nh.count_of_new_notifications(authenticated_userid)

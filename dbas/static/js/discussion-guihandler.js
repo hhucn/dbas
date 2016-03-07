@@ -148,6 +148,42 @@ function GuiHandler() {
 		imageElement.removeClass('inactive-image').addClass('icon-badge').css('cursor', 'pointer');
 	};
 
+	/*
+
+	 */
+	this.setMaxHeightForBubbleSpace = function() {
+		// max size of the container
+		var speechBubbles = $('#dialog-speech-bubbles-space'), height = 0,
+			maxHeight = new Helper().getMaxSizeOfDiscussionViewContainer(), start,
+			nowBubble = $('#now');
+		$.each(speechBubbles.find('div p'), function () {
+			height += $(this).outerHeight(true);
+			// clear unnecessary a tags
+			if ($(this).parent().attr('href') == '?breadcrumb=true') {
+				$(this).insertAfter($(this).parent());
+				$(this).prev().remove();
+			}
+		});
+		start = typeof nowBubble == 'undefined' ? 'bottom' : nowBubble;
+		if (height > maxHeight) {
+			if (maxHeight < 500) {
+				maxHeight = 500;
+			}
+			speechBubbles.slimscroll({
+				position: 'right',
+				height: maxHeight + 'px',
+				railVisible: true,
+				alwaysVisible: true,
+				start: start,
+				scrollBy: '10px',
+				allowPageScroll: true
+			});
+		} else {
+			height += 20;
+			speechBubbles.css('height', height + 'px').css('max-height', maxHeight + 'px');
+		}
+	};
+
 	/**
 	 *
 	 */
@@ -532,7 +568,6 @@ function GuiHandler() {
 	 */
 	this.showHowToWriteTextPopup = function(){
 		var cookie_name = 'HOW_TO_WRITE_TEXT',
-			// show popup, when the user does not accepted the cookie already
 			userAcceptedCookies = new Helper().isCookieSet(cookie_name);
 		if (!userAcceptedCookies) {
 			$('#' + popupHowToWriteText).modal('show');

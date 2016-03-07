@@ -237,34 +237,7 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
  * @param guiHandler
  */
 setStyleOptions = function (guiHandler){
-
-	// max size of the container
-	var speechBubbles = $('#dialog-speech-bubbles-space'), height = 0,
-		maxHeight = new Helper().getMaxSizeOfDiscussionViewContainer(), start,
-		nowBubble = $('#now');
-	$.each(speechBubbles.find('div p'), function(){
-		height += $(this).outerHeight(true);
-		// clear unnecessary a tags
-		if ($(this).parent().attr('href') == '?breadcrumb=true'){
-			$(this).insertAfter($(this).parent());
-			$(this).prev().remove();
-		}
-	});
-	start = typeof nowBubble == 'undefined' ? 'bottom' : nowBubble;
-	if (height > maxHeight){
-		if (maxHeight < 500){
-			maxHeight = 500;
-		}
-		speechBubbles.slimscroll({
-			position: 'right',
-			height: maxHeight + 'px',
-			railVisible: true,
-			alwaysVisible: true,
-			start: start,
-			scrollBy: '10px',
-			allowPageScroll: true
-		});
-	}
+	guiHandler.setMaxHeightForBubbleSpace();
 
 	guiHandler.hideSuccessDescription();
 	guiHandler.hideErrorDescription();

@@ -269,6 +269,19 @@
 .line-wrapper-r>a>p:hover {
     color: #2196f3;
 }
+.line-wrapper-l>a,
+.line-wrapper-r>a,
+.line-wrapper-l>p,
+.line-wrapper-r>p{
+    min-width: 40%;
+    max-width: 55%;
+}
+.line-wrapper-l>a{
+	float: left;
+}
+.line-wrapper-r>a{
+	float: right;
+}
 .triangle-l,
 .triangle-r,
 .triangle-m{
@@ -276,8 +289,6 @@
     padding: 10px;
     box-sizing: border-box;
     border-radius: 10px;
-    min-width: 40%;
-    max-width: 55%;
     box-shadow: 2px 2px 5px #888888;
     color: black;
 }
@@ -295,7 +306,7 @@
 .triangle-m{
   padding: 1px;
   width: 35%;
-  background: #e1f3fb;
+  background: #cbeaf8;
   text-align: center;
   margin: 0 auto 2em auto;
 }
