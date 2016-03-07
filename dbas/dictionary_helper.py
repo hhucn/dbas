@@ -515,8 +515,8 @@ class DictionaryHelper(object):
 				statements_array.append(self.__create_statement_dict('start_premise',
 				                                                     _tn.get(_tn.newPremiseRadioButtonText),
 				                                                     [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
-																  'justify',
-																  'add'))
+																	  'justify',
+																	  'add'))
 
 		return statements_array
 
@@ -585,14 +585,14 @@ class DictionaryHelper(object):
 				statements_array.append(self.__create_statement_dict(argument.uid,
 				                                                     text,
 				                                                     premises_array,
-																'justify',
+																	 'justify',
 																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
 			statements_array.append(self.__create_statement_dict('justify_premise',
 			                                                     _tn.get(_tn.newPremiseRadioButtonText),
 			                                                     [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
-															'null',
-															'null'))
+																 'justify',
+																 'add'))
 
 		return statements_array
 
