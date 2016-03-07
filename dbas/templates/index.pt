@@ -38,7 +38,7 @@
 					<br>
 					-->
 					<p class="lead"><span i18n:translate="projec_based_on">This project is based on research of the graduation school Online-Participation, subsidised governmentally by</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.</p>
-					<ul class="list-logos">
+					<ul class="list-logos center">
 						<li>
 							<a id="logo_hhu_link" href="http://www.hhu.de/" data-toggle="tooltip" data-placement="bottom" title="Heinrich-Heine-University Duesseldorf" target="_blank">
 								<img class="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo" />

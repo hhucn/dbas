@@ -280,7 +280,7 @@ class Dbas(object):
 
 		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, ui_locales,
-		                                          self.request.authenticated_userid,  application_url=mainpage, for_api=for_api)
+		                                          self.request.authenticated_userid, application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict

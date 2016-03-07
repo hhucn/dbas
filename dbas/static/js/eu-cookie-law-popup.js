@@ -144,7 +144,6 @@ $.fn.euCookieLawPopup = (function() {
 
 	// Let's see if we have a consent cookie already
 	var userAlreadyAcceptedCookies = function() {
-		return false;
 		var userAcceptedCookies = false;
 		var cookies = document.cookie.split(";");
 		for (var i = 0; i < cookies.length; i++) {

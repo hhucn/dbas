@@ -38,9 +38,8 @@ function InteractionHandler() {
 	/**
 	 * Callback, when new premises were send
 	 * @param data returned data
-	 * @param isSupportive
 	 */
-	this.callbackIfDoneForSendNewStartPremise = function (data, isSupportive) {
+	this.callbackIfDoneForSendNewStartPremise = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.error.length > 0) {
 			$('#' + addPremiseErrorContainer).show();

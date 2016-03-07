@@ -413,6 +413,9 @@ comment .container and wrap each container with <div class="coloured-div">
 .share-mail-small:hover {
 	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail-small.png') no-repeat 5px 5px;
 }
+#popup-url-sharing-input{
+	background: url('../images/glyphicons_free/glyphicons/glyphicons-309-share-alt.png') no-repeat 5px 5px;
+}
 
 #popup-login-body,
 #popup-write-text-body,

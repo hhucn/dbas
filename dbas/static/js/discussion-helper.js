@@ -166,7 +166,7 @@ function Helper() {
 	 * @param cookie_name string
 	 */
 	this.setCookie = function(cookie_name){
-		this.setCookieForDays(cookie_name, 1);
+		this.setCookieForDays(cookie_name, 7);
 	};
 
 	/**

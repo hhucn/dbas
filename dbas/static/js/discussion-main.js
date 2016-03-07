@@ -480,6 +480,8 @@ $(document).ready(function () {
 	setGuiOptions();
 	setInputExtraOptions(guiHandler, interactionHandler);
 
+	displayBubbleInformationDialog();
+
 	// some extras
 	// get restart url and cut the quotes
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);

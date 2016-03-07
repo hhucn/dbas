@@ -58,7 +58,7 @@ function AjaxSiteHandler() {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxSendNewStartPremiseDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data, supportive);
+			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
 		}).fail(function ajaxSendNewStartPremiseFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 7). '

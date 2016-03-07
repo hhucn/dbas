@@ -136,7 +136,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
 			// maybe set a cookie
 			if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
-				new Helper().setCookie(WARNING_CHANGE_DISCUSSION_POPUP);
+				new Helper().setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7);
 			}
 
 			if (isRestartingDiscussion) {
@@ -149,6 +149,21 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 		$('#' + popupConfirmChecbkoxDialogRefuseBtn).click( function () {
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
 		})
+	}
+}
+
+function displayBubbleInformationDialog(){
+	if (!new Helper().isCookieSet(BUBBLE_INFOS)){
+		var img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
+		$('#' + popupConfirmDialogId).modal('show');
+		$('#' + popupConfirmDialogId + ' .modal-dialog').attr('style', 'width: ' + ($(document).width() > 992? '430' : '200') + 'px;');
+		$('#' + popupConfirmDialogId + ' h4.modal-title').html('Introduction');
+		$('#' + popupConfirmDialogId + ' div.modal-body').html(img);
+		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
+			$('#' + popupConfirmDialogId).modal('hide');
+			new Helper().setCookieForDays(BUBBLE_INFOS, 30);
+		}).removeClass('btn-success');
+		$('#' + popupConfirmDialogRefuseBtn).hide();
 	}
 }
 

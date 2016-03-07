@@ -2,26 +2,22 @@
 	color: #101000;
 }
 
-.logo_hhu,
-.logo_kolleg,
-.logo_fhoev {
+.list-logos img {
 	padding: 5px;
 	background: #fff;
 	border: 1px solid #d9dadb;
 }
 
-.logo_hhu:hover,
-.logo_kolleg:hover,
-.logo_fhoev:hover {
+.list-logos img {
 	border: 1px solid #006ab3;
 	transition: .5s ease;
 }
-	#logo_kolleg_s{
-		display: none;
-	}
-	#logo_fhoev_s{
-		display: none;
-	}
+#logo_kolleg_s{
+	display: none;
+}
+#logo_fhoev_s{
+	display: none;
+}
 
 .logo {
 	margin-top: 20px;

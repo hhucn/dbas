@@ -186,6 +186,7 @@ var weak 											= 'weak';
 
 // cookies
 var WARNING_CHANGE_DISCUSSION_POPUP = 'WARNING_CHANGE_DISCUSSION_POPUP';
+var BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
 
 /**
  * URL's
