@@ -128,23 +128,26 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForGettingInfosAboutArgument = function(data){
-		var parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data), supporters, title, text, element, header = '';
 		// status is the length of the content
 		if (parsedData.error.length == 0) {
-			var supporters = parsedData.supporter.join(', '),
-				text = _t(bridgeInfoStatementCreatedBy) + ' ' + parsedData.author  + ' ' + _t(bridgeInfoAt) + ' ' + parsedData.timestamp +
-					'. ' + _t(bridgeInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ' + _t(bridgeInfoParticipant)
-					+ (parsedData.vote_count==1 ? '' : _t(bridgeInfoParticipantPl)) + '.';
-			alert(text);
+			supporters = parsedData.supporter.join(', ');
+			header = parsedData.text;
+			text = _t(bridgeInfoStatementCreatedBy) + ' ' + parsedData.author  + ' ' + _t(bridgeInfoAt) + ' ' + parsedData.timestamp + '.<br>';
+			text += _t(bridgeInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ' + _t(bridgeInfoParticipant)
+				+ (parsedData.vote_count==1 ? '' : _t(bridgeInfoParticipantPl)) + '.';
 
 			if (parsedData.vote_count==1){
-				field.attr('title', _t(bridgeInfoSupporterSg) + ': ' + supporters);
+				title = _t(bridgeInfoSupporterSg) + ': ' + supporters;
 			} else if (parsedData.vote_count>1){
-				field.attr('title', _t(bridgeInfoSupporterPl) + ': ' + supporters);
+				title = _t(bridgeInfoSupporterPl) + ': ' + supporters;
 			}
+			text += '\n' + title;
 		} else {
-			alert(parsedData.error);
+			text = parsedData.error;
 		}
+		element = $('<p>').attr('data-toggle', 'tooltip').attr('data-placement', 'bottom').attr('title', title).text(text);
+		displayConfirmationDialogWithoutCancelAndFunction(header, element);
 	};
 
 	/**

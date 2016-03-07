@@ -50,7 +50,7 @@ class BreadcrumbHelper(object):
 		if expr:
 			group0 = expr.group(0)
 			if group0 and url.endswith(group0):
-				self.del_breadcrumbs_of_user(transaction, user)
+				self.del_breadcrumbs_of_user(transaction, user, session_id)
 
 		delete_duplicates = True
 		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == url,
@@ -60,7 +60,13 @@ class BreadcrumbHelper(object):
 		is_new_crumb = False
 
 		if db_already_in and delete_duplicates:
-			DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid, Breadcrumb.uid > db_already_in.uid)).delete()
+			if user == 'anonymous':
+				DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
+				                                                  Breadcrumb.uid > db_already_in.uid,
+				                                                  Breadcrumb.session_id == session_id)).delete()
+			else:
+				DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
+				                                                  Breadcrumb.uid > db_already_in.uid)).delete()
 		elif not already_last:
 			DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=url, session_id=session_id))
 			is_new_crumb = True
@@ -170,17 +176,22 @@ class BreadcrumbHelper(object):
 						break
 			return slug if slug else _t.get(_t.breadcrumbsStart)
 
-	def del_breadcrumbs_of_user(self, transaction, user):
+	def del_breadcrumbs_of_user(self, transaction, user, session_id=0):
 		"""
 		Deletes the complete breadcrumbs of given user
 		:param transaction: current transaction
 		:param user: current user
+		:param session_id: current session id
 		:return: undefined
 		"""
 		# maybe we are anonymous
 		if user:
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user', 'user ' + str(db_user.uid))
-			DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
-			DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
+			if user == 'anonymous':
+				DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
+				                                                  Breadcrumb.session_id == session_id)).delete()
+			else:
+				DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
+				DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
 			transaction.commit()

@@ -183,9 +183,6 @@ function AjaxSiteHandler() {
 	};
 
 	this.getMoreInfosAboutArgument = function(uid){
-		alert('TODO');
-		return;
-
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_infos_about_argument',
@@ -203,10 +200,6 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			var element = $('#' + discussionsDescriptionBridgeInfoId);
-			if (element.hasClass('in')){
-				element.removeClass('in');
-			}
 		});
 	};
 

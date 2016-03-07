@@ -122,6 +122,9 @@
 							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
 						</li>
 						<li>
+							<img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_questionmark1.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" />
+						</li>
+						<li>
 							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon">
 								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="left" tal:attributes="title extras.buttons.more_title"/>
 
@@ -143,9 +146,6 @@
 									</li>
 								</ul>
 							</div>
-						</li>
-						<li>
-							<img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_questionmark1.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" />
 						</li>
 					</ul>
 				</div>

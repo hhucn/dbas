@@ -1141,6 +1141,7 @@ class QueryHelper(object):
 		return_dict['vote_count'] = str(len(db_votes))
 		return_dict['author']     = db_author.nickname
 		return_dict['timestamp']  = self.sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
+		return_dict['text']       = 'Argument: <strong>' + self.get_text_for_argument_uid(uid, lang, True) + '<strong>'
 
 		supporter = []
 		for vote in db_votes:
