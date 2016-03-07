@@ -585,7 +585,7 @@ class DictionaryHelper(object):
 			                                                     [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
 																 'justify',
 																 'add'))
-			
+
 		return statements_array
 
 	def prepare_item_dict_for_dont_know_reaction(self, argument_uid, is_supportive, issue_uid, lang, application_url, for_api):
