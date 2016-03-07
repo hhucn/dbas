@@ -33,6 +33,23 @@ def _create_salt(nickname):
 	return rnd + timestamp + nickname
 
 
+def validate_login(request):
+	"""
+	Takes token from request and validates it. Return true if logged in, else false.
+	:param request:
+	:return:
+	"""
+	header = 'X-Messaging-Token'
+	htoken = request.headers.get(header)
+	if htoken is None:
+		log.debug("[API] No htoken set")
+		request.api_logged_in = False
+		return
+
+	valid_token(request)
+	request.api_logged_in = True
+
+
 def valid_token(request):
 	"""
 	Validate the submitted token. Checks if a user is logged in.
@@ -42,28 +59,30 @@ def valid_token(request):
 	header = 'X-Messaging-Token'
 	htoken = request.headers.get(header)
 	if htoken is None:
-		log.error("htoken is None")
+		log.error("[API] htoken is None")
 		raise response401()
 	try:
 		user, token = htoken.split('-', 1)
 	except ValueError:
-		log.error("ValueError")
+		log.error("[API] ValueError")
 		raise response401()
 
-	log.debug("API Login Attempt: %s: %s" % (user, token))
+	log.debug("[API] Login Attempt: %s: %s" % (user, token))
 
 	db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 	if not db_user:
-		log.error("API Invalid user")
+		log.error("[API] Invalid user")
 		raise response401()
 
 	if not db_user.token == token:
-		log.error("API Invalid Token")
+		log.error("[API] Invalid Token")
 		raise response401()
 
-	log.debug("API Valid token")
+	log.debug("[API] Valid token")
 	request.validated['user'] = user
+	request.api_logged_in = True
+
 
 
 def validate_credentials(request):

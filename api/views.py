@@ -10,7 +10,7 @@ import transaction
 from api.lib import response401
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from api.login import valid_token, validate_credentials
+from api.login import valid_token, validate_credentials, validate_login
 from dbas.views import Dbas
 
 #
@@ -118,7 +118,7 @@ def issue_selector(request):
 	return Dbas(request).fuzzy_search(for_api=True)
 
 
-@zinit.get()
+@zinit.get(validators=validate_login)
 def discussion_init(request):
 	"""
 	Return data from DBas discussion_init page
@@ -128,14 +128,17 @@ def discussion_init(request):
 	return Dbas(request).discussion_init(for_api=True)
 
 
-@zinit_blank.get()
+@zinit_blank.get(validators=validate_login)
 def discussion_init(request):
 	"""
 	Return data from DBas discussion_init page
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
-	return Dbas(request).discussion_init(for_api=True)
+	logged_in = False
+	if request.api_logged_in:
+		logged_in = True
+	return Dbas(request).discussion_init(for_api=True, api_logged_in=logged_in)
 
 
 # =============================================================================

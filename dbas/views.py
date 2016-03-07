@@ -188,15 +188,18 @@ class Dbas(object):
 
 	# content page
 	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
-	def discussion_init(self, for_api=False):
+	def discussion_init(self, for_api=False, api_logged_in=False):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
+		:param api_logged_in: Boolean, indicates whether the user logged in via API or not
 		:return: dictionary
 		"""
 		# '/a*slug'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+
+		logged_in = api_logged_in or self.request.authenticated_userid
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
@@ -210,7 +213,7 @@ class Dbas(object):
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		item_dict       = _dh.prepare_item_dict_for_start(issue, self.request.authenticated_userid, ui_locales, mainpage, for_api)
+		item_dict       = _dh.prepare_item_dict_for_start(issue, logged_in, ui_locales, mainpage, for_api)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
@@ -221,7 +224,7 @@ class Dbas(object):
 		discussion_dict = _dh.prepare_discussion_dict_for_start(self.request.authenticated_userid, transaction, issue, ui_locales,
 		                                              breadcrumbs, has_new_crumbs, self.request.session.id)
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, ui_locales,
-		                                          self.request.authenticated_userid,  application_url=mainpage, for_api=for_api)
+		                                          self.request.authenticated_userid, application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
 			_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_start=True)
