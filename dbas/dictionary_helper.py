@@ -414,7 +414,7 @@ class DictionaryHelper(object):
 				statements_array.append(self.__create_statement_dict(statement.uid,
 				                                                     _qh.get_text_for_statement_uid(statement.uid),
 				                                                     [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
-																  'start',
+																     'start',
 																     _um.get_url_for_statement_attitude(True, statement.uid)))
 
 			if logged_in:
@@ -422,8 +422,8 @@ class DictionaryHelper(object):
 				statements_array.append(self.__create_statement_dict('start_statement',
 				                                                     _tn.get(_tn.newConclusionRadioButtonText),
 				                                                     [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
-																'start',
-																'add'))
+																	 'start',
+																	 'add'))
 
 		return statements_array
 
@@ -450,15 +450,15 @@ class DictionaryHelper(object):
 		statements_array.append(self.__create_statement_dict('agree',
 		                                                     _tn.get(_tn.iAgreeWithInColor) + ': ' + text,
 		                                                     [{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
-														'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't')))
+															 'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't')))
 		statements_array.append(self.__create_statement_dict('disagree',
 		                                                     _tn.get(_tn.iDisagreeWithInColor) + ': ' + text,
 		                                                     [{'title': _tn.get(_tn.iDisagreeWithInColor) + ': ' + text, 'id': 'disagree'}],
-														'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f')))
+															 'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f')))
 		statements_array.append(self.__create_statement_dict('dontknow',
 		                                                     _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text,
 		                                                     [{'title': _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text, 'id': 'dontknow'}],
-														'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd')))
+															 'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd')))
 
 		return statements_array
 
