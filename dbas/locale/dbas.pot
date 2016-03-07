@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-02-24 20:50+0100\n"
+"POT-Creation-Date: 2016-03-07 22:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,241 +49,50 @@ msgstr ""
 msgid "ministry_of_innovation"
 msgstr ""
 
-#. Default: Description
-#: ./dbas/templates/index.pt:67 ./dbas/templates/snippet-header.pt:23
-msgid "description"
-msgstr ""
-
-#. Default: of D-BAS
-#: ./dbas/templates/index.pt:67 ./dbas/templates/index.pt:114
-msgid "of_dbas"
-msgstr ""
-
-#. Default: In the following a short description of D-BAS will be given:
-#: ./dbas/templates/index.pt:69
-msgid "description_intro"
-msgstr ""
-
-#. Default: Fast
-#: ./dbas/templates/index.pt:93
-msgid "Fast"
-msgstr ""
-
-#. Default: Participant do not have to read much text. Every unique step in our
-#. novel system regards to one point of view in the discussion. Less text, less
-#. confusions.
-#: ./dbas/templates/index.pt:94
-msgid "fast_content"
-msgstr ""
-
-#. Default: Matching Ideas
-#. Default: Dialog-based
-#: ./dbas/templates/index.pt:98 ./dbas/templates/index.pt:129
-msgid "dialog_based"
-msgstr ""
-
-#. Default: Do you have a matching idea? Good, because your idea will not
-#. become boggy in a flood of text, it will matched at the right position into
-#. the discussion.
-#: ./dbas/templates/index.pt:99
-msgid "matching_ideas_content"
-msgstr ""
-
-#. Default: Based on Science
-#: ./dbas/templates/index.pt:103
-msgid "based_on_science"
-msgstr ""
-
-#. Default: Our novel system is based on the work of multiple doctoral thesis'
-#. as well as final papers of students.
-#: ./dbas/templates/index.pt:104
-msgid "based_on_science_content"
-msgstr ""
-
-#. Default: Features
-#: ./dbas/templates/index.pt:114 ./dbas/templates/snippet-header.pt:26
-msgid "features"
-msgstr ""
-
-#. Default: Some of these features will be released in a future version of
-#. D-BAS.
-#: ./dbas/templates/index.pt:115
-msgid "release_future_version"
-msgstr ""
-
-#. Default: Argumentation Maps
-#: ./dbas/templates/index.pt:124
-msgid "argu_maps"
-msgstr ""
-
-#. Default: A argumentation map is like a mind map, but the relations between
-#. the nodes are highly important and can have several meanings. Additionally
-#. the bubbles of the map can have play a important role. Therefore using this
-#. data structure for logically presentations of some graphs makes sense.
-#: ./dbas/templates/index.pt:125
-msgid "argu_maps_content"
-msgstr ""
-
-#. Default: Yeah, this is a novel and it is a kind of dialog-based approach.
-#. This means that the system will represent argumentations of panelist and
-#. claims will be given through the other participants.
-#: ./dbas/templates/index.pt:130
-msgid "dialog_based_content"
-msgstr ""
-
-#. Default: Simple UI
-#: ./dbas/templates/index.pt:134
-msgid "simple_ui"
-msgstr ""
-
-#. Default: The user interface of D-BAS is simple, clear and easy. At any point
-#. during the discussion the choices for the participant are bounded, but not
-#. isolating him/her.
-#: ./dbas/templates/index.pt:135
-msgid "simple_ui_content"
-msgstr ""
-
-#. Default: Guided View
-#: ./dbas/templates/index.pt:142
-msgid "guided_view"
-msgstr ""
-
-#. Default: You will never see something like an argumentation map, because the
-#. systems is your dialog partner
-#: ./dbas/templates/index.pt:143
-msgid "guided_view_content"
-msgstr ""
-
-#. Default: Island View
-#. Default: Island<dynamic element>View
-#: ./dbas/templates/index.pt:147 ./dbas/templates/content.pt:123
-#: ./dbas/templates/content.pt:359
-msgid "island_view"
-msgstr ""
-
-#. Default: Okay, you want to see more as, but not everything. Therefore the
-#. island view will present you a list of every connected statement for an
-#. specific statement.
-#: ./dbas/templates/index.pt:148
-msgid "island_view_content"
-msgstr ""
-
-#. Default: Expert View
-#: ./dbas/templates/index.pt:152
-msgid "expert_view"
-msgstr ""
-
-#. Default: So, you think you are an expert? Okay, you can have a view of the
-#. complete argumentation map.
-#: ./dbas/templates/index.pt:153
-msgid "expert_view_content"
-msgstr ""
-
-#. Default: About
-#: ./dbas/templates/index.pt:162 ./dbas/templates/snippet-header.pt:28
-msgid "about"
-msgstr ""
-
-#. Default: D-BAS is a of discussions in the field of online participation and
-#. developed by
-#: ./dbas/templates/index.pt:163
-msgid "about_description"
-msgstr ""
-
-#. Default: A partner of practice of Tobias Krauthoff is Daniel Reichert of
-#. Liquid Democracy e.V., which is a non-party, non-profit association. The key
-#. element of their work is the development of Adhocracy, a free software which
-#. serves as a digital participation tool. It offers various functions for the
-#. different needs of our users. In addition, we are developing Thentos, an
-#. identity management system which ensures privacy during complex
-#. participation processes.
-#: ./dbas/templates/index.pt:170
-msgid "liquid_democracy_description"
-msgstr ""
-
-#. Default: Graduation School
-#: ./dbas/templates/index.pt:174
-msgid "graduation_scool"
-msgstr ""
-
-#. Default: Online-Participation
-#: ./dbas/templates/index.pt:174
-msgid "fk_op"
-msgstr ""
-
-#. Default: The NRW Graduation School Online-Participation is subsidised
-#. governmentally by Ministry of Innovation, Science and Research in North
-#. Rhine-Westphalia. The Graduation School is a network of business economics,
-#. computer scientiests, communication scientists, political scientists,
-#. jurists and sociologist, which are wokring together with partners from
-#. practice. The objective is the examination of opportunities of the internet,
-#. where affected persons are able to participate in decisions, where they are
-#. affected.
-#: ./dbas/templates/index.pt:175
-msgid "fk_op_description"
-msgstr ""
-
-#. Default: Karlsruhe Institut of Technology
-#: ./dbas/templates/index.pt:179
-msgid "kit"
-msgstr ""
-
-#. Default: The workging group of functionality of the graduation school has a
-#. close-knit connection with the Institute for Technology Assessment and
-#. Systems Analysis (ITAS) of the Karlsruhe Institut of Technology, especially
-#. to Prof. Dr. G. Betz. His working group develoepd Argunet, a software tool
-#. for collaborative argumentation analysis. Its underlying theory, the theory
-#. of dialectical struc- tures, defines argument relations in terms of locigo-
-#. sematical relations between propositions and thus gives rise to a new
-#. computational approach to the reconstruction of complex debates.
-#: ./dbas/templates/index.pt:180
-msgid "kit_description"
-msgstr ""
-
 #. Default: Toggle navigation
 #: ./dbas/templates/snippet-header.pt:10
 msgid "Toggle Navigation"
 msgstr ""
 
 #. Default: Let's go
-#: ./dbas/templates/snippet-header.pt:41
+#: ./dbas/templates/snippet-header.pt:45
 msgid "lets_go"
 msgstr ""
 
 #. Default: News
-#: ./dbas/templates/snippet-header.pt:47
+#: ./dbas/templates/snippet-header.pt:51
 msgid "news"
 msgstr ""
 
 #. Default: Login
 #. Default: Log In
-#: ./dbas/templates/snippet-header.pt:56 ./dbas/templates/snippet-popups.pt:245
+#: ./dbas/templates/snippet-header.pt:60 ./dbas/templates/snippet-popups.pt:245
 #: ./dbas/templates/snippet-popups.pt:431
 msgid "login"
 msgstr ""
 
 #. Default: Settings
-#: ./dbas/templates/snippet-header.pt:69 ./dbas/templates/settings.pt:39
+#: ./dbas/templates/snippet-header.pt:73 ./dbas/templates/settings.pt:39
 msgid "settings"
 msgstr ""
 
 #. Default: Notifications
-#: ./dbas/templates/snippet-header.pt:75
+#: ./dbas/templates/snippet-header.pt:79
 msgid "notifications"
 msgstr ""
 
 #. Default: Admin
-#: ./dbas/templates/snippet-header.pt:80
+#: ./dbas/templates/snippet-header.pt:84
 msgid "Admin"
 msgstr ""
 
 #. Default: Logout
-#: ./dbas/templates/snippet-header.pt:85
+#: ./dbas/templates/snippet-header.pt:89
 msgid "logout"
 msgstr ""
 
 #. Default: Language
-#: ./dbas/templates/snippet-header.pt:99
+#: ./dbas/templates/snippet-header.pt:103
 msgid "language"
 msgstr ""
 
@@ -464,12 +273,12 @@ msgid "icons_by"
 msgstr ""
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: ./dbas/templates/imprint.pt:101
+#: ./dbas/templates/imprint.pt:104
 msgid "generated_with"
 msgstr ""
 
 #. Default: Changes
-#: ./dbas/templates/imprint.pt:126
+#: ./dbas/templates/imprint.pt:129
 msgid "changes"
 msgstr ""
 
@@ -681,15 +490,15 @@ msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:292
-#: ./dbas/templates/snippet-popups.pt:394 ./dbas/templates/content.pt:149
+#: ./dbas/templates/snippet-popups.pt:394 ./dbas/templates/content.pt:162
 msgid "error"
 msgstr ""
 
 #. Default: Success:
 #. Default: Success
 #: ./dbas/templates/snippet-popups.pt:299
-#: ./dbas/templates/snippet-popups.pt:386 ./dbas/templates/settings.pt:177
-#: ./dbas/templates/content.pt:72
+#: ./dbas/templates/snippet-popups.pt:386 ./dbas/templates/settings.pt:200
+#: ./dbas/templates/content.pt:80
 msgid "success"
 msgstr ""
 
@@ -879,15 +688,13 @@ msgid "i_actually_have"
 msgstr ""
 
 #. Default: arguments:
-#. Default: arguments
-#: ./dbas/templates/snippet-popups.pt:536 ./dbas/templates/content.pt:35
+#: ./dbas/templates/snippet-popups.pt:536
 msgid "arguments"
 msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:559 ./dbas/templates/news.pt:24
-#: ./dbas/templates/settings.pt:186 ./dbas/templates/content.pt:291
-#: ./dbas/templates/content.pt:317
+#: ./dbas/templates/content.pt:321 ./dbas/templates/content.pt:347
 msgid "error:"
 msgstr ""
 
@@ -942,87 +749,92 @@ msgid "receive_notifications"
 msgstr ""
 
 #. Default: Receive E-Mails
-#: ./dbas/templates/settings.pt:46
+#: ./dbas/templates/settings.pt:48
 msgid "receive_mails"
 msgstr ""
 
 #. Default: Profile Picture
-#: ./dbas/templates/settings.pt:53
+#: ./dbas/templates/settings.pt:57
 msgid "profile_picture"
 msgstr ""
 
 #. Default: Settings could not be set. Please try again later.
-#: ./dbas/templates/settings.pt:60
+#: ./dbas/templates/settings.pt:66
 msgid "settings_not_set"
 msgstr ""
 
 #. Default: Settings were set successfully.
-#: ./dbas/templates/settings.pt:65
+#: ./dbas/templates/settings.pt:71
 msgid "settings_set"
 msgstr ""
 
 #. Default: Change your password
-#: ./dbas/templates/settings.pt:74
+#: ./dbas/templates/settings.pt:80
 msgid "change_password"
 msgstr ""
 
 #. Default: Old password
-#: ./dbas/templates/settings.pt:78
+#: ./dbas/templates/settings.pt:84
 msgid "old_password"
 msgstr ""
 
 #. Default: New Password
-#: ./dbas/templates/settings.pt:85
+#: ./dbas/templates/settings.pt:91
 msgid "new_password"
 msgstr ""
 
 #. Default: Strength
-#: ./dbas/templates/settings.pt:92
+#: ./dbas/templates/settings.pt:98
 msgid "strength"
 msgstr ""
 
 #. Default: New Password (confirm)
-#: ./dbas/templates/settings.pt:100
+#: ./dbas/templates/settings.pt:106
 msgid "new_password_confirm"
 msgstr ""
 
 #. Default: Discussion Statistics
-#: ./dbas/templates/settings.pt:119
+#: ./dbas/templates/settings.pt:125
 msgid "discussion_stat"
 msgstr ""
 
+#. Default: Statements posted
+#: ./dbas/templates/settings.pt:129
+msgid "statements_posted"
+msgstr ""
+
 #. Default: Edits done
-#: ./dbas/templates/settings.pt:122
+#: ./dbas/templates/settings.pt:136
 msgid "edits_done"
 msgstr ""
 
 #. Default: Votes for Arguments
-#: ./dbas/templates/settings.pt:126
+#: ./dbas/templates/settings.pt:143
 msgid "discussion_votes_statements"
 msgstr ""
 
 #. Default: Votes for Statements
-#: ./dbas/templates/settings.pt:130
+#: ./dbas/templates/settings.pt:150
 msgid "discussion_votes_arguments"
 msgstr ""
 
 #. Default: Your password was changed
-#: ./dbas/templates/settings.pt:143
+#: ./dbas/templates/settings.pt:165
 msgid "password_changed"
 msgstr ""
 
 #. Default: Statistics could not be deleted.
-#: ./dbas/templates/settings.pt:149
+#: ./dbas/templates/settings.pt:172
 msgid "statistics_not_deleted"
 msgstr ""
 
 #. Default: Statistics were set successfully deleted.
-#: ./dbas/templates/settings.pt:155
+#: ./dbas/templates/settings.pt:178
 msgid "statistics_deletet"
 msgstr ""
 
 #. Default: Your last history
-#: ./dbas/templates/settings.pt:165
+#: ./dbas/templates/settings.pt:188
 msgid "history"
 msgstr ""
 
@@ -1103,93 +915,91 @@ msgid "total"
 msgstr ""
 
 #. Default: JavaScript is not enabled:
-#: ./dbas/templates/basetemplate.pt:32
+#: ./dbas/templates/basetemplate.pt:35
 msgid "js_disabled1"
 msgstr ""
 
 #. Default: Please enable JavaScript!
-#: ./dbas/templates/basetemplate.pt:34
+#: ./dbas/templates/basetemplate.pt:37
 msgid "js_disabled2"
 msgstr ""
 
 #. Default: AdBlocker is enabled:
-#: ./dbas/templates/basetemplate.pt:38
+#: ./dbas/templates/basetemplate.pt:41
 msgid "adblock_enabled1"
 msgstr ""
 
 #. Default: Please disable your AdBlocker!
-#: ./dbas/templates/basetemplate.pt:40
+#: ./dbas/templates/basetemplate.pt:43
 msgid "adblock_enabled2"
 msgstr ""
 
 #. Default: Current discussion is about
-#: ./dbas/templates/content.pt:26
+#: ./dbas/templates/content.pt:28
 msgid "current_discussion"
 msgstr ""
 
-#. Default: The discussion was started at
-#: ./dbas/templates/content.pt:30
-msgid "startet_at"
-msgstr ""
-
-#. Default: and already has
-#: ./dbas/templates/content.pt:33
-msgid "already_has"
+#. Default: Switch Topic
+#: ./dbas/templates/content.pt:46
+msgid "switch_topc"
 msgstr ""
 
 #. Default: Topics
-#: ./dbas/templates/content.pt:42
+#: ./dbas/templates/content.pt:49
 msgid "topics"
 msgstr ""
 
-#. Default: Restart Discussion
-#: ./dbas/templates/content.pt:50
+#. Default: Restart
+#: ./dbas/templates/content.pt:58
 msgid "restart_discussion"
 msgstr ""
 
 #. Default: and
-#: ./dbas/templates/content.pt:86
+#: ./dbas/templates/content.pt:106
 msgid "and"
 msgstr ""
 
-#. Default: Opinion<dynamic element>Barometer
-#: ./dbas/templates/content.pt:109
-msgid "opinion_barometer"
-msgstr ""
-
-#. Default: Dialog<dynamic element>View
-#. Default: Dialog View
-#: ./dbas/templates/content.pt:116 ./dbas/templates/content.pt:353
-msgid "dialog_view"
-msgstr ""
-
-#. Default: Complete<dynamic element>View
-#. Default: Complete View
-#: ./dbas/templates/content.pt:130 ./dbas/templates/content.pt:365
-msgid "complete_view"
+#. Default: Island View for
+#: ./dbas/templates/content.pt:176
+msgid "island_view_for"
 msgstr ""
 
 #. Default: Add statement
-#: ./dbas/templates/content.pt:266
+#: ./dbas/templates/content.pt:296
 msgid "add_statement"
 msgstr ""
 
 #. Default: What is your idea? What should we do?
-#: ./dbas/templates/content.pt:285
+#: ./dbas/templates/content.pt:315
 msgid "what_is_your_idea"
 msgstr ""
 
 #. Default: Let me enter my reason!
-#: ./dbas/templates/content.pt:308
+#: ./dbas/templates/content.pt:338
 msgid "let_me_enter_my_reason"
 msgstr ""
 
 #. Default: Because...
-#: ./dbas/templates/content.pt:324
+#: ./dbas/templates/content.pt:354
 msgid "Because..."
 msgstr ""
 
 #. Default: Change display style
-#: ./dbas/templates/content.pt:350
+#: ./dbas/templates/content.pt:380
 msgid "change_style"
+msgstr ""
+
+#. Default: Dialog View
+#: ./dbas/templates/content.pt:383
+msgid "dialog_view"
+msgstr ""
+
+#. Default: Island View
+#: ./dbas/templates/content.pt:389
+msgid "island_view"
+msgstr ""
+
+#. Default: Complete View
+#: ./dbas/templates/content.pt:395
+msgid "complete_view"
 msgstr ""

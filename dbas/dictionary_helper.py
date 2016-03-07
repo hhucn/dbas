@@ -511,7 +511,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, lang, application_url, for_api, logged_in):
+	def switch_discussionprepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, lang, application_url, for_api, logged_in):
 		"""
 
 		:param argument_uid:
@@ -820,7 +820,6 @@ class DictionaryHelper(object):
 															'save_my_statement': _tn.get(_tn.saveMyStatement),
 															'add_statement_row_title': _tn.get(_tn.addStatementRow),
 															'rem_statement_row_title': _tn.get(_tn.remStatementRow),
-															'switch_discussion': _tn.get(_tn.switchDiscussionTitle),
 															'clear_statistics': _tn.get(_tn.clearStatistics),
 															'user_options': _tn.get(_tn.userOptions),
 															'switch_language': _tn.get(_tn.switchLanguage),
