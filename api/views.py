@@ -85,7 +85,7 @@ def discussion_reaction(request):
 	:param request: request
 	:return: Dbas(request).discussion_reaction(True)
 	"""
-	return Dbas(request).discussion_reaction(True)
+	return Dbas(request).discussion_reaction(for_api=True)
 
 
 @justify.get()
@@ -95,7 +95,7 @@ def discussion_justify(request):
 	:param request: request
 	:return: Dbas(request).discussion_justify(True)
 	"""
-	return Dbas(request).discussion_justify(True)
+	return Dbas(request).discussion_justify(for_api=True)
 
 
 @attitude.get()
@@ -105,7 +105,7 @@ def discussion_attitude(request):
 	:param request: request
 	:return: Dbas(request).discussion_attitude(True)
 	"""
-	return Dbas(request).discussion_attitude(True)
+	return Dbas(request).discussion_attitude(for_api=True)
 
 
 @issues.get()
@@ -115,7 +115,7 @@ def issue_selector(request):
 	:param request: request
 	:return: Dbas(request).discussion_attitude(True)
 	"""
-	return Dbas(request).fuzzy_search(True)
+	return Dbas(request).fuzzy_search(for_api=True)
 
 
 @zinit.get()
@@ -125,7 +125,7 @@ def discussion_init(request):
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
-	return Dbas(request).discussion_init(True)
+	return Dbas(request).discussion_init(for_api=True)
 
 
 @zinit_blank.get()
@@ -135,7 +135,7 @@ def discussion_init(request):
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
-	return Dbas(request).discussion_init(True)
+	return Dbas(request).discussion_init(for_api=True)
 
 
 # =============================================================================
