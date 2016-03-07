@@ -208,6 +208,7 @@ class Translator(object):
 		self.firstname = 'firstname'
 		self.fromm = 'fromm'
 		self.gender = 'gender'
+		self.goBack = 'goBack'
 		self.goStepBack = 'goStepBack'
 		self.generateSecurePassword = 'generateSecurePassword'
 		self.goodPointTakeMeBackButtonText = 'goodPointTakeMeBackButtonText'
@@ -399,6 +400,9 @@ class Translator(object):
 		self.userOptions = 'userOptions'
 		self.welcome = 'welcome'
 		self.welcomeMessage = 'welcomeMessage'
+		self.youAreInterestedIn = 'youAreInterestedIn'
+		self.youAgreeWith = 'youAgreeWith'
+		self.youDisagreeWith = 'youDisagreeWith'
 
 		self.sentencesOpenersRequesting = [self.whyDoYouThinkThat]
 		self.sentencesOpenersForArguments = [self.soYourOpinionIsThat]
@@ -574,13 +578,13 @@ class Translator(object):
 		en_lang[self.didYouMean] = 'Top10 statements, which you probably could mean:'
 		en_lang[self.dialogView] = 'Dialog View'
 		en_lang[self.dialogViewTitle] = 'Show the dialog View'
-		en_lang[self.discussionEnd] = 'The discussion ends here.'
 		en_lang[self.displayControlDialogGuidedTitle] = 'Dialog View'
 		en_lang[self.displayControlDialogGuidedBody] = 'You will never see something like an argumentation map, because the systems seems to be like a dynamic and generic.'
 		en_lang[self.displayControlDialogIslandTitle] = 'Island View'
 		en_lang[self.displayControlDialogIslandBody] = 'Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.'
 		en_lang[self.displayControlDialogExpertTitle] = 'Expert View'
 		en_lang[self.displayControlDialogExpertBody] = 'So, you think you are an expert? Okay, you can have a view of the complete argumentation map'
+		en_lang[self.discussionEnd] = 'The discussion ends here.'
 		en_lang[self.discussionEndLinkText] = 'You can click <a id="discussionEndStepBack" onclick="window.history.back();" style="cursor: pointer;">here</a> to go one step back or you can use the button above or <a id="discussionEndRestart" href="#">this link</a> to restart the discussion.'
 		en_lang[self.discussionInfoTooltip1] = 'The discussion was started at'
 		en_lang[self.discussionInfoTooltip2] = 'and already has'
@@ -623,6 +627,7 @@ class Translator(object):
 		en_lang[self.fillLine] = 'Please, fill this this line with your report'
 		en_lang[self.fromm] = 'from'
 		en_lang[self.gender] = 'Gender'
+		en_lang[self.goBack] = 'Go back'
 		en_lang[self.goStepBack] = 'Go one step back'
 		en_lang[self.generateSecurePassword] = 'Generate secure password'
 		en_lang[self.goodPointTakeMeBackButtonText] = 'I agree, that is a good argument! Take me one step back.'
@@ -810,6 +815,9 @@ class Translator(object):
 		en_lang[self.userOptions] = 'Users Options'
 		en_lang[self.welcome] = 'Welcome'
 		en_lang[self.welcomeMessage] = 'Welcome to the novel dialog-based argumentation system.<br>We hope you enjoy using this system and happy arguing!'
+		en_lang[self.youAreInterestedIn] = 'You are interested in'
+		en_lang[self.youAgreeWith] = 'You agree with'
+		en_lang[self.youDisagreeWith] = 'You disagree with'
 
 		return en_lang
 
@@ -1027,6 +1035,7 @@ class Translator(object):
 		de_lang[self.fromm] = 'von'
 		de_lang[self.hold] = 'stimmt'
 		de_lang[self.gender] = 'Geschlecht'
+		de_lang[self.goBack] = 'Zurück'
 		de_lang[self.goStepBack] = 'Einen Schritt zurück'
 		de_lang[self.generateSecurePassword] = 'Generate secure password'
 		de_lang[self.goodPointTakeMeBackButtonText] = 'Ich stimme zu, dass ist ein gutes Argument. Geh einen Schritt zurück.'
@@ -1213,6 +1222,9 @@ class Translator(object):
 		de_lang[self.userOptions] = 'Benutzeroptionen'
 		de_lang[self.welcome] = 'Willkommen'
 		de_lang[self.welcomeMessage] = 'Willkommen im neuen Dialog-basierten Argumentations-System.<br>Wir wünschen viel Spaß beim Diskutieren!'
+		de_lang[self.youAreInterestedIn] = 'Sie interessieren Sich für'
+		de_lang[self.youAgreeWith] = 'Sie sind der Meinung, dass'
+		de_lang[self.youDisagreeWith] = 'Sie weidersprechen'
 
 		return de_lang
 
@@ -1436,9 +1448,9 @@ class TextGenerator(object):
 
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
 
-		opinion = '<strong>'
-		opinion += current_argument if current_argument != '' else premise
-		opinion += '</strong>'
+		user_opinion = '<strong>'
+		user_opinion += current_argument if current_argument != '' else premise
+		user_opinion += '</strong>.'
 		#  if reply_for_argument:
 		#  opinion += ' ' + _t.get('relation_' + attack) + ' ' + '<strong>' + conclusion + '</strong>'
 
@@ -1470,10 +1482,8 @@ class TextGenerator(object):
 								 + ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' '\
 								 + _t.get(_t.theyThink).lower() + ': '  + confrontation
 
-		intro  = opinion + '.'
-		bridge = confrontation_text + '.'
-		outro  = _t.get(_t.whatDoYouThinkAboutThat) + '?'
-		return intro, bridge, outro
+		sys_text = confrontation_text + '.<br>' +  _t.get(_t.whatDoYouThinkAboutThat) + '?'
+		return user_opinion, sys_text
 
 	def get_text_for_premise_for_statement(self, conclusion, premises, supportive, logged_in):
 		"""

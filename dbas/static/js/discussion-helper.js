@@ -244,6 +244,10 @@ function Helper() {
 		return parseInt(element.css('padding-top').replace('px','')) + parseInt(element.css('padding-bottom').replace('px',''))
 	};
 
+	this.isMobileAgent = function(){
+		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+	};
+
 	/**
 	 * Delays a specific function
 	 */

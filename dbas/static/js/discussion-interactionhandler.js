@@ -131,12 +131,11 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		// status is the length of the content
 		if (parsedData.error.length == 0) {
-			var field = $('#' + discussionsDescriptionBridgeInfoMsgId),
-				supporters = parsedData.supporter.join(', '),
+			var supporters = parsedData.supporter.join(', '),
 				text = _t(bridgeInfoStatementCreatedBy) + ' ' + parsedData.author  + ' ' + _t(bridgeInfoAt) + ' ' + parsedData.timestamp +
 					'. ' + _t(bridgeInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ' + _t(bridgeInfoParticipant)
 					+ (parsedData.vote_count==1 ? '' : _t(bridgeInfoParticipantPl)) + '.';
-			field.text(text);
+			alert(text);
 
 			if (parsedData.vote_count==1){
 				field.attr('title', _t(bridgeInfoSupporterSg) + ': ' + supporters);
@@ -144,7 +143,7 @@ function InteractionHandler() {
 				field.attr('title', _t(bridgeInfoSupporterPl) + ': ' + supporters);
 			}
 		} else {
-			$('#' + discussionsDescriptionBridgeInfoMsgId).text(parsedData.error);
+			alert(parsedData.error);
 		}
 	};
 

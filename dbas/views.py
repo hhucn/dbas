@@ -323,7 +323,9 @@ class Dbas(object):
 		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		_uh = UserHandler()
+		_uh.update_last_action(transaction, self.request.authenticated_userid)
+		logged_in = _uh.is_user_logged_in(self.request.authenticated_userid)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid,
 		                                                                 slug, self.request.session.id, transaction, ui_locales,
 		                                                                 mainpage, del_breadcrumb, for_api)
@@ -369,12 +371,13 @@ class Dbas(object):
 			                                                                   has_new_crumbs, supportive, relation,
 			                                                                   self.request.authenticated_userid, related_arg,
 			                                                                   self.request.session.id)
-			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue,
-			                                                             ui_locales, mainpage, for_api)
+			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
+			                                                             mainpage, for_api, logged_in)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, ui_locales, self.request.authenticated_userid,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
-			if len(item_dict) == 0:
+			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
+				item_dict = dict()
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
 				                            at_justify_argumentation=True)
 		else:

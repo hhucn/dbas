@@ -173,15 +173,6 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		}
 	});
 
-	$('#' + discussionsDescriptionBridgeInfoLinkId).click(function(){
-		var splits = window.location.href.split('/'),
-			uid = splits[splits.length - 1],
-			qmark = uid.indexOf('?');
-		if (qmark != -1)
-			uid = uid.substr(0, qmark);
-		ajaxHandler.getMoreInfosAboutArgument(uid, false);
-	});
-
 	// get infos about the author
 	$('#' + questionItButtonId).click(function(){
 		var splits = window.location.href.split('/'),
@@ -201,7 +192,7 @@ setKeyUpFunctions = function (guiHandler, ajaxHandler){
 	$('#' + addStatementContainerMainInputId).keyup(function () {
 		new Helper().delay(function() {
 			var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
-			if ($('#' + discussionsDescriptionIntroId).text().indexOf(_t(initialPositionInterest)) != -1) {
+			if ($('#' + discussionBubbleSpaceId).find('p:last-child').text().indexOf(_t(initialPositionInterest)) != -1) {
 				// here we have our start statement
 				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 			} else {

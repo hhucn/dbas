@@ -123,12 +123,10 @@ function GuiHandler() {
 		new DiscussionGraph().showGraph();
 
 		// text
-		var html = $('#' + discussionsDescriptionIntroId).html(), innerHeight;
-		html = html.substr(0, html.indexOf('<br>'));
-		$('#' + graphViewContainerHeaderId).html(html);
+		$('#' + graphViewContainerHeaderId).html($('#issue_info').html());
 
 		// height
-		innerHeight = new Helper().getMaxSizeOfGraphViewContainer();
+		var innerHeight = new Helper().getMaxSizeOfGraphViewContainer();
 		$('#' + graphViewContainerId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em;');
 	};
 
@@ -153,7 +151,7 @@ function GuiHandler() {
 	 */
 	this.setMaxHeightForBubbleSpace = function() {
 		// max size of the container
-		var speechBubbles = $('#dialog-speech-bubbles-space'), height = 0,
+		var speechBubbles = $('#' + discussionBubbleSpaceId), height = 0,
 			maxHeight = new Helper().getMaxSizeOfDiscussionViewContainer(), start,
 			nowBubble = $('#now');
 		$.each(speechBubbles.find('div p'), function () {
@@ -164,9 +162,10 @@ function GuiHandler() {
 				$(this).prev().remove();
 			}
 		});
+
 		start = typeof nowBubble == 'undefined' ? 'bottom' : nowBubble;
 		if (height > maxHeight) {
-			if (maxHeight < 500) {
+			if (maxHeight < 500 && new Helper().isMobileAgent() ) {
 				maxHeight = 500;
 			}
 			speechBubbles.slimscroll({
@@ -578,37 +577,6 @@ function GuiHandler() {
 			$('#' + popupHowToWriteText).modal('hide');
 			new Helper().setCookie(cookie_name);
 		});
-	};
-
-	/**
-	 *
-	 */
-	this.switchToTextView = function(){
-		$('#' + discussionsDescriptionIntroId).fadeIn();
-		$('#' + discussionsDescriptionBridgeInfoLinkId).fadeIn();
-		$('#' + discussionsDescriptionBridgeId).fadeIn();
-		$('#' + discussionsDescriptionOutroId).fadeIn();
-		$('#question-button').parent().fadeIn();
-
-		new Helper().delay(function () {
-			$('#dialog-speech-bubbles-space').fadeOut();
-		}, 400);
-	};
-
-	/**
-	 *
-	 */
-	this.switchToDialogView = function(){
-		$('#' + discussionsDescriptionIntroId).fadeOut();
-		$('#' + discussionsDescriptionBridgeInfoLinkId).fadeOut();
-		$('#' + discussionsDescriptionBridgeInfoId).fadeOut();
-		$('#' + discussionsDescriptionBridgeId).fadeOut();
-		$('#' + discussionsDescriptionOutroId).fadeOut();
-		$('#question-button').parent().fadeOut();
-
-		new Helper().delay(function () {
-			$('#dialog-speech-bubbles-space').fadeIn();
-		}, 400);
 	};
 
 	/**

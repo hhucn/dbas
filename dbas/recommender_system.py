@@ -27,7 +27,7 @@ class RecommenderHelper(object):
 		logger('RecommenderHelper', 'get_attack_for_argument', 'main')
 
 		if not attacks or len(attacks) == 0:
-			return 0, ''
+			return 0, 'end'
 		else:
 			attack_no = random.randrange(0, len(attacks))  # Todo fix random
 

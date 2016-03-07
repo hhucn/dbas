@@ -183,12 +183,8 @@ function AjaxSiteHandler() {
 	};
 
 	this.getMoreInfosAboutArgument = function(uid, calledbButton){
-		var infoWindow = $('#' + discussionsDescriptionBridgeInfoId);
-		if (calledbButton)
-			if (!infoWindow.hasClass('in')) infoWindow.collapse('show');
-			else            				infoWindow.collapse('hide');
-		else if (infoWindow.hasClass('in'))	return;
-
+		alert('TODO');
+		return;
 
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
@@ -225,7 +221,7 @@ function AjaxSiteHandler() {
 		var settings_data, url, callback = $('#' + callbackid),
 			pencil = '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>',
 			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
-			bubbleSpace = $('#dialog-speech-bubbles-space');
+			bubbleSpace = $('#' + discussionBubbleSpaceId);
 
 		// clear lists if input is empty
 		if(callback.val().length==0) {

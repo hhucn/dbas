@@ -81,24 +81,21 @@
 						<span id="discussion-success-description"></span>
 					</div>
 
-                    <div id="discussions-header" style="display:none;">
-					    <h4 id="discussions-header-intro">${structure:discussion.heading.intro}</h4>
-
-                        <a tal:condition="extras.is_questionable" id="discussions-header-bridge-infos-link" data-toggle="collapse" href="#discussions-header-bridge-infos" aria-expanded="false" aria-controls="discussions-header-bridge-infos" class="collapsed">
-					        <h4 id="discussions-header-bridge">${structure:discussion.heading.bridge}</h4>
-                        </a>
-                        <h4 tal:condition="not:extras.is_questionable"><span id="discussions-header-bridge">${structure:discussion.heading.bridge}</span></h4>
-                        <div class="collapse" id="discussions-header-bridge-infos">
-                            <div class="well lead" id="discussions-header-bridge-infos-content" data-toggle="tooltip" data-placement="bottom"></div>
-                        </div>
-
-					    <h4 id="discussions-header-outro">${structure:discussion.heading.outro}</h4>
-                    </div>
 					 <div id="dialog-speech-bubbles-space">
-                         <div tal:repeat="bubble discussion.heading.bubbles" tal:omit-tag="">
-                             <div tal:condition="bubble.is_user" class="line-wrapper-r"><a tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="top"><p class="triangle-r" tal:attributes="id bubble.id">${structure:bubble.message}</p></a></div>
-                             <div tal:condition="bubble.is_system" class="line-wrapper-l"><a tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="top"><p class="triangle-l" tal:attributes="id bubble.id">${structure:bubble.message}</p></a></div>
-                             <div tal:condition="bubble.is_status" class="line-wrapper-m"><p class="triangle-m" tal:attributes="id bubble.id">${structure:bubble.message}</p></div>
+                         <div tal:repeat="bubble discussion.bubbles" tal:omit-tag="">
+                             <div tal:condition="bubble.is_user" class="line-wrapper-r">
+                                 <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="top">
+                                     <p class="triangle-r" tal:attributes="id bubble.id">${structure:bubble.message}</p>
+                                 </a>
+                             </div>
+                             <div tal:condition="bubble.is_system" class="line-wrapper-l">
+                                 <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="top">
+                                     <p class="triangle-l" tal:attributes="id bubble.id">${structure:bubble.message}</p>
+                                 </a>
+                             </div>
+                             <div tal:condition="bubble.is_status" class="line-wrapper-m">
+                                 <p class="triangle-m" tal:attributes="id bubble.id">${structure:bubble.message}</p>
+                             </div>
                         </div>
                      </div>
 					<div id="discussions-space">
