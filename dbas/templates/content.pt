@@ -24,7 +24,7 @@
 
 		<div class="container colored_container" id="header-container">
 			<div class="row">
-				<div class="col-md-7 center">
+				<div class="col-md-8 center">
 					<span i18n:translate="current_discussion">Current discussion is about</span>:<br>
 					<span id="issue_info">${structure:issues.info}</span>
 				</div>
@@ -42,7 +42,7 @@
 					<br>
 					-->
 					<div class="dropdown" style="margin-top: 5px;">
-						<button class="btn btn-primary dropdown-toggle" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 250px;">
@@ -53,8 +53,8 @@
 						</ul>
 					</div>
                  </div>
-                <div class="col-md-2 center text-center">
-					<button id="discussion-restart-btn" class="button button-block btn btn-primary" data-dismiss="modal" style="margin-top: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
+                <div class="col-md-1 center text-center">
+					<button id="discussion-restart-btn" class="btn btn-primary btn-sm" data-dismiss="modal" style="margin-top: 5px;" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart</span>&#160;&#160;<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
 					</button>
 				</div>

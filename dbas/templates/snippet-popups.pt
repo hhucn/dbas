@@ -90,7 +90,7 @@
 			</div>
 			<div class="modal-body">
 				<span>
-					Copyright &copy; 2015 
+					Copyright &copy; 2016
 					<a href="mailto:krauthoff@cs.uni-duesseldorf.de">
 						Tobias Krauthoff
 					</a><br><br>
@@ -373,9 +373,7 @@
 								<h6 id="popup-login-password-strength" i18n:translate="password_strength">very weak</h6>
 								<br>
 								<div id="popup-login-generate-password" class="form-group">
-									<a>
-										<span i18n:translate="generate_password">Generate secure password</span>
-									</a>
+									<a i18n:translate="generate_password" style="cursor: pointer;">Generate secure password</a>
 								</div>
 							</div>
 						</div>
@@ -396,7 +394,6 @@
 							</div>
 						</div>
 
-						<!--
 						<div id="popup-login-generate-password-body">
 							<h4 class="modal-title" id="myModalLabel" i18n:translate="select_password">How to select a strong password</h4>
 
@@ -416,11 +413,9 @@
 							</ul>
 							<br><span i18n:translate="select_password_help">If you need some help with our password, you can get one here:</span>
 							<br>
-							<br>
-							<input type="text" id="password-generator-output">
+							<input class="form-control" type="text" id="password-generator-output">
 							<input type="button" id="password-generator-button" value="Generate Password" class="button button-block btn btn-primary">
 						</div>
-						-->
 					</div>
 
 				</div>

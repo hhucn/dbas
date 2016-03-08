@@ -442,7 +442,6 @@ function StatisticsHandler(){
 		$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
 		modalBody = $('#' + popupConfirmDialogId + ' div.modal-body');
 		modalBody.empty().append(table);
-		alert(modalBody.height() +"\n"+ (window.innerHeight-250));
 
 		if (modalBody.height() > (window.innerHeight-250)){
 			modalBody.slimScroll({

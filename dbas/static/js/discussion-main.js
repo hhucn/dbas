@@ -480,7 +480,7 @@ $(document).ready(function () {
 	setGuiOptions();
 	setInputExtraOptions(guiHandler, interactionHandler);
 
-	displayBubbleInformationDialog();
+	// displayBubbleInformationDialog();
 
 	// some extras
 	// get restart url and cut the quotes

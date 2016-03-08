@@ -8,7 +8,7 @@
 	border: 1px solid #d9dadb;
 }
 
-.list-logos img {
+.list-logos img:hover{
 	border: 1px solid #006ab3;
 	transition: .5s ease;
 }
