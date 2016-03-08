@@ -66,6 +66,17 @@ class Dbas(object):
 		layout = renderer.implementation().macros['layout']
 		return layout
 
+	def get_nickname_and_session(self, for_api, api_data):
+		"""
+		Given data from api, return nickname and session_id.
+		:param for_api:
+		:param api_data:
+		:return:
+		"""
+		nickname = api_data["nickname"] if api_data and for_api else self.request.authenticated_userid
+		session_id = api_data["session_id"] if api_data and for_api else self.request.session.id
+		return nickname, session_id
+
 	# main page
 	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 	@forbidden_view_config(renderer='templates/index.pt')
@@ -199,9 +210,15 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
-		logged_in = api_data or self.request.authenticated_userid
-		nickname = self.request.authenticated_userid if not for_api else api_data['nickname']
-		session_id = self.request.session.id if not for_api else api_data['session_id']
+		if for_api and api_data:
+			try:
+				logged_in = api_data["nickname"]
+			except KeyError:
+				logged_in = None
+		else:
+			logged_in = self.request.authenticated_userid
+
+		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
@@ -268,8 +285,8 @@ class Dbas(object):
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		nickname        = self.request.authenticated_userid if not for_api else api_data['nickname']
-		session_id      = self.request.session.id if not for_api else api_data['session_id']
+
+		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, nickname)
@@ -328,8 +345,8 @@ class Dbas(object):
 		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales          = _qh.get_language(self.request, get_current_registry())
 		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		nickname            = self.request.authenticated_userid if not for_api else api_data['nickname']
-		session_id          = self.request.session.id if not for_api else api_data['session_id']
+
+		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
 		# update timestamp and manage breadcrumb
 		_uh = UserHandler()
@@ -424,8 +441,8 @@ class Dbas(object):
 		arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
 		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().is_supportive
 		del_breadcrumb  = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
-		nickname        = self.request.authenticated_userid if not for_api else api_data['nickname']
-		session_id      = self.request.session.id if not for_api else api_data['session_id']
+		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+
 		# set votings
 		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
 
