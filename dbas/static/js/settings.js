@@ -443,22 +443,24 @@ function StatisticsHandler(){
 		modalBody = $('#' + popupConfirmDialogId + ' div.modal-body');
 		modalBody.empty().append(table);
 
-		if (modalBody.height() > (window.innerHeight-250)){
-			modalBody.slimScroll({
-				position: 'right',
-				height: (window.innerHeight-250) + 'px',
-				railVisible: true,
-				alwaysVisible: false
-			});
-		} else {
-			$(".scrollarea").slimScroll({destroy:true});
-		}
 		$('#' + popupConfirmDialogAcceptBtn).hide();
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 			$(".scrollarea"); sa.slimScroll({destroy:true});
 		}).removeClass('btn-danger').text('Okay');
-		$('#myModal')
+
+		new Helper().delay(function() {
+			if (modalBody.height() > (window.innerHeight-250)){
+				modalBody.slimScroll({
+					position: 'right',
+					height: (window.innerHeight-250) + 'px',
+					railVisible: true,
+					alwaysVisible: false
+				});
+			} else {
+				$(".scrollarea").slimScroll({destroy:true});
+			}
+		}, 250);
 	};
 
 	/**

@@ -74,7 +74,7 @@ class BreadcrumbHelper(object):
 
 		return self.get_breadcrumbs(user, session_id, lang), is_new_crumb
 
-	def get_breadcrumbs(self, user,session_id, lang):
+	def get_breadcrumbs(self, user, session_id, lang):
 		"""
 
 		:param user:

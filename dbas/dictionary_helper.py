@@ -511,7 +511,7 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def switch_discussionprepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, lang, application_url, for_api, logged_in):
+	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, issue_uid, lang, application_url, for_api, logged_in):
 		"""
 
 		:param argument_uid:

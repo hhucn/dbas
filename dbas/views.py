@@ -729,7 +729,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_user_history', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, ui_locales)
+		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, self.request.session.id, ui_locales)
 		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 	# ajax - getting all text edits
