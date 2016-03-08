@@ -188,7 +188,7 @@ class Dbas(object):
 
 	# content page
 	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
-	def discussion_init(self, for_api=False, api_data=False):
+	def discussion_init(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
