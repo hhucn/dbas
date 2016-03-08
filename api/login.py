@@ -82,7 +82,6 @@ def valid_token(request):
 	# Prepare data for DBAS
 	request.validated['user'] = user
 	request.validated['session_id'] = request.session.id
-	request.validated['logged_in'] = True
 
 
 def validate_credentials(request):
