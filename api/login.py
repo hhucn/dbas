@@ -81,8 +81,8 @@ def valid_token(request):
 
 	log.debug("[API] Valid token")
 	request.validated['user'] = user
-	request.api_logged_in = True
-
+	request.validated['session_id'] = "TODO"
+	request.validated['logged_in'] = True
 
 
 def validate_credentials(request):

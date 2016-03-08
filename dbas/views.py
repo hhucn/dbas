@@ -188,18 +188,18 @@ class Dbas(object):
 
 	# content page
 	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
-	def discussion_init(self, for_api=False, api_logged_in=False):
+	def discussion_init(self, for_api=False, api_data=False):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
-		:param api_logged_in: Boolean, indicates whether the user logged in via API or not
+		:param api_data: Dictionary, containing data of a user who logged in via API
 		:return: dictionary
 		"""
 		# '/a*slug'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
-		logged_in = api_logged_in or self.request.authenticated_userid
+		logged_in = api_data or self.request.authenticated_userid
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()

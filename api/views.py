@@ -135,10 +135,15 @@ def discussion_init(request):
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
-	logged_in = False
-	if request.api_logged_in:
-		logged_in = True
-	return Dbas(request).discussion_init(for_api=True, api_logged_in=logged_in)
+	val = request.validated
+	try:
+		api_data = {"nickname": val["user"],
+		            "session_id": val["session_id"],
+		            "logged_in": val["logged_in"]}
+	except KeyError:
+		api_data = dict()
+
+	return Dbas(request).discussion_init(for_api=True, api_data=api_data)
 
 
 # =============================================================================
