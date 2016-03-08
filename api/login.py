@@ -50,7 +50,7 @@ def validate_login(request):
 
 def valid_token(request):
 	"""
-	Validate the submitted token. Checks if a user is logged in.
+	Validate the submitted token. Checks if a user is logged in and prepares a dictionary, which is then passed to DBAS.
 	:param request:
 	:return:
 	"""
@@ -78,6 +78,8 @@ def valid_token(request):
 		raise response401()
 
 	log.debug("[API] Valid token")
+
+	# Prepare data for DBAS
 	request.validated['user'] = user
 	request.validated['session_id'] = request.session.id
 	request.validated['logged_in'] = True
