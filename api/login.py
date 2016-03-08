@@ -43,11 +43,9 @@ def validate_login(request):
 	htoken = request.headers.get(header)
 	if htoken is None:
 		log.debug("[API] No htoken set")
-		request.api_logged_in = False
 		return
 
 	valid_token(request)
-	request.api_logged_in = True
 
 
 def valid_token(request):
