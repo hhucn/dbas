@@ -23,10 +23,10 @@ class RecommenderHelper(object):
 		:return:
 		"""
 		# getting undermines or undercuts or rebuts
+		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid))
 		attacks, key = self.__get_attack_for_argument(argument_uid, issue, lang)
-		logger('RecommenderHelper', 'get_attack_for_argument', 'main')
 
-		if not attacks or len(attacks) == 0:
+		if not attacks or len(attacks) == 0 or True:
 			return 0, 'end'
 		else:
 			attack_no = random.randrange(0, len(attacks))  # Todo fix random
@@ -127,8 +127,10 @@ class RecommenderHelper(object):
 		attack_found = False
 		_qh = QueryHelper()
 
-		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack_list : ' + str(attack_list)  +
-		       ', complete_list_of_attacks : ' + str(complete_list_of_attacks) + ', left_attacks : ' + str(left_attacks))
+		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'argument_uid: ' + str(argument_uid) +
+		       ', attack_list : ' + str(attack_list)  +
+		       ', complete_list_of_attacks : ' + str(complete_list_of_attacks) +
+		       ', left_attacks : ' + str(left_attacks))
 
 		# randomize at least 1, maximal 3 times for getting an attack
 		while len(attack_list) > 0:
@@ -141,7 +143,7 @@ class RecommenderHelper(object):
 			key = 'undermine' if attack == 1 \
 				else ('rebut' if attack == 5
 				      else 'undercut')
-
+			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'key: ' + key)
 			if return_dict and len(return_dict) != 0:
 				attack_found = True
 				break

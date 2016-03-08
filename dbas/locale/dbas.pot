@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-08 08:46+0100\n"
+"POT-Creation-Date: 2016-03-08 11:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,38 +33,38 @@ msgstr ""
 
 #. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
 #. argumentation system. There will be bugs. Please feel free to
-#: ./dbas/templates/index.pt:25
+#: ./dbas/templates/index.pt:15
 msgid "welcome_text1"
 msgstr ""
 
 #. Default: contact
-#: ./dbas/templates/index.pt:26
+#: ./dbas/templates/index.pt:16
 msgid "welcome_text2"
 msgstr ""
 
 #. Default: us to report bugs or provide feedback.
-#: ./dbas/templates/index.pt:27
+#: ./dbas/templates/index.pt:17
 msgid "welcome_text3"
 msgstr ""
 
 #. Default: This work is part of the graduate school on
-#: ./dbas/templates/index.pt:46
+#: ./dbas/templates/index.pt:27
 msgid "work_based_on"
 msgstr ""
 
 #. Default: Online-Participation
-#: ./dbas/templates/index.pt:46
+#: ./dbas/templates/index.pt:27
 msgid "online_participation"
 msgstr ""
 
 #. Default: It is funded by the
-#: ./dbas/templates/index.pt:47
+#: ./dbas/templates/index.pt:28
 msgid "funded_by"
 msgstr ""
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: ./dbas/templates/index.pt:47
+#: ./dbas/templates/index.pt:28
 msgid "ministry_of_innovation"
 msgstr ""
 

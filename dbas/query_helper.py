@@ -137,7 +137,7 @@ class QueryHelper(object):
 
 		:return:
 		"""
-		logger('QueryHelper', 'get_undercuts_for_argument_uid', 'main')
+		logger('QueryHelper', 'get_undercuts_for_argument_uid', 'main ' + str(argument_uid))
 		return self.__get_attack_or_support_for_justification_of_argument_uid(argument_uid, False, lang)
 
 	def get_rebuts_for_argument_uid(self, argument_uid, lang):
@@ -147,11 +147,14 @@ class QueryHelper(object):
 		:param lang:
 		:return: dictionary
 		"""
-		logger('QueryHelper', 'get_rebuts_for_argument_uid', 'main')
+		logger('QueryHelper', 'get_rebuts_for_argument_uid', 'main ' + str(argument_uid))
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 		if not db_argument:
 			return None
-		return self.get_rebuts_for_arguments_conclusion_uid(db_argument, lang)
+		if db_argument.conclusion_uid != 0:
+			return self.get_rebuts_for_arguments_conclusion_uid(db_argument, lang)
+		else:
+			return self.get_undercuts_for_argument_uid(db_argument.argument_uid, lang)
 
 	def get_rebuts_for_arguments_conclusion_uid(self, db_argument, lang):
 		"""
