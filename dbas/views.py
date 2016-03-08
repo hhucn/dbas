@@ -200,6 +200,8 @@ class Dbas(object):
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
 		logged_in = api_data or self.request.authenticated_userid
+		nickname = self.request.authenticated_userid if not for_api else api_data['nickname']
+		session_id = self.request.session.id if not for_api else api_data['session_id']
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
@@ -216,18 +218,18 @@ class Dbas(object):
 		item_dict       = _dh.prepare_item_dict_for_start(issue, logged_in, ui_locales, mainpage, for_api)
 
 		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid,
-		                                                                 slug, self.request.session.id, transaction, ui_locales,
-		                                                                 mainpage, del_breadcrumb, for_api)
+		UserHandler().update_last_action(transaction, nickname)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id,
+		                                                                 transaction, ui_locales, mainpage, del_breadcrumb,
+		                                                                 for_api)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_start(self.request.authenticated_userid, transaction, issue, ui_locales,
-		                                              breadcrumbs, has_new_crumbs, self.request.session.id)
-		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, ui_locales,
-		                                          self.request.authenticated_userid, application_url=mainpage, for_api=for_api)
+		discussion_dict = _dh.prepare_discussion_dict_for_start(nickname, transaction, issue, ui_locales,
+		                                              breadcrumbs, has_new_crumbs, session_id)
+		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, ui_locales, nickname,
+		                                          application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
-			_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_start=True)
+			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_start=True)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -266,21 +268,23 @@ class Dbas(object):
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		nickname        = self.request.authenticated_userid if not for_api else api_data['nickname']
+		session_id      = self.request.session.id if not for_api else api_data['session_id']
 
 		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid,
-		                                                                 slug, self.request.session.id, transaction, ui_locales,
+		UserHandler().update_last_action(transaction, nickname)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug,
+		                                                                 session_id, transaction, ui_locales,
 		                                                                 mainpage, del_breadcrumb, for_api)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_attitude(self.request.authenticated_userid, transaction, statement_id,
-		                                              ui_locales, breadcrumbs, has_new_crumbs, self.request.session.id)
+		discussion_dict = _dh.prepare_discussion_dict_for_attitude(nickname, transaction, statement_id,
+		                                              ui_locales, breadcrumbs, has_new_crumbs, session_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(for_api=for_api).get_404([slug, statement_id]))
 
 		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, ui_locales,
-		                                          self.request.authenticated_userid, application_url=mainpage, for_api=for_api)
+		                                          nickname, application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -324,64 +328,64 @@ class Dbas(object):
 		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		ui_locales          = _qh.get_language(self.request, get_current_registry())
 		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		nickname            = self.request.authenticated_userid if not for_api else api_data['nickname']
+		session_id          = self.request.session.id if not for_api else api_data['session_id']
 
 		# update timestamp and manage breadcrumb
 		_uh = UserHandler()
-		_uh.update_last_action(transaction, self.request.authenticated_userid)
-		logged_in = _uh.is_user_logged_in(self.request.authenticated_userid)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid,
-		                                                                 slug, self.request.session.id, transaction, ui_locales,
+		_uh.update_last_action(transaction, nickname)
+		logged_in = _uh.is_user_logged_in(nickname)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname,
+		                                                                 slug, session_id, transaction, ui_locales,
 		                                                                 mainpage, del_breadcrumb, for_api)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
-			VotingHelper().add_vote_for_statement(statement_or_arg_id, self.request.authenticated_userid, supportive, transaction)
+			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 			# justifying position
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(self.request.authenticated_userid, transaction, statement_or_arg_id,
-			                                              ui_locales, breadcrumbs, has_new_crumbs, supportive, self.request.session.id)
+			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(nickname, transaction, statement_or_arg_id,
+			                                              ui_locales, breadcrumbs, has_new_crumbs, supportive, session_id)
 			if not discussion_dict:
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
-			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, self.request.authenticated_userid,
-			                                                              issue, supportive, ui_locales, mainpage, for_api)
+			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, issue,
+			                                                              supportive, ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, ui_locales,
-			                                          self.request.authenticated_userid, mode == 't',
+			                                          nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales,
 				                            at_justify=True, current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
 		elif 'd' in mode and relation == '':
 			# dont know
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
-			discussion_dict = _dh.prepare_discussion_dict_for_dont_know_reaction(self.request.authenticated_userid,
-			                                                                     transaction, argument_uid, ui_locales,
-			                                                                     breadcrumbs, has_new_crumbs, supportive,
-			                                                                     statement_or_arg_id, self.request.session.id)
+			discussion_dict = _dh.prepare_discussion_dict_for_dont_know_reaction(nickname, transaction, argument_uid,
+			                                                                     ui_locales, breadcrumbs, has_new_crumbs,
+			                                                                     supportive, statement_or_arg_id, session_id)
 			item_dict       = _dh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive, issue, ui_locales, mainpage, for_api)
-			extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, True, ui_locales, self.request.authenticated_userid,
+			extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, True, ui_locales, nickname,
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales, at_dont_know=True,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_dont_know=True,
 				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(self.request.authenticated_userid, transaction,
-			                                                                   statement_or_arg_id, ui_locales, breadcrumbs,
-			                                                                   has_new_crumbs, supportive, relation,
-			                                                                   self.request.authenticated_userid, related_arg,
-			                                                                   self.request.session.id)
+			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, transaction, statement_or_arg_id,
+			                                                                   ui_locales, breadcrumbs, has_new_crumbs,
+			                                                                   supportive, relation, nickname, related_arg,
+			                                                                   session_id)
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
 			                                                             mainpage, for_api, logged_in)
-			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, ui_locales, self.request.authenticated_userid,
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, ui_locales, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
 				# item_dict = dict()
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, self.request.authenticated_userid, ui_locales,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales,
 				                            at_justify_argumentation=True)
 		else:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -420,9 +424,10 @@ class Dbas(object):
 		arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
 		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().is_supportive
 		del_breadcrumb  = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
-
+		nickname        = self.request.authenticated_userid if not for_api else api_data['nickname']
+		session_id      = self.request.session.id if not for_api else api_data['session_id']
 		# set votings
-		VotingHelper().add_vote_for_argument(arg_id_user, self.request.authenticated_userid, transaction)
+		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
 
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
@@ -432,16 +437,17 @@ class Dbas(object):
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid,
-		                                                                 slug, self.request.session.id, transaction, ui_locales,
+		UserHandler().update_last_action(transaction, nickname)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname,
+		                                                                 slug, session_id, transaction, ui_locales,
 		                                                                 mainpage, del_breadcrumb, for_api)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(self.request.authenticated_userid, transaction,
-		                                                                arg_id_user, ui_locales, breadcrumbs, has_new_crumbs,
-		                                                                supportive, arg_id_sys, attack, self.request.session.id)
-		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, ui_locales, mainpage, for_api)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, ui_locales, self.request.authenticated_userid,
+		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(nickname, transaction, arg_id_user, ui_locales,
+		                                                                breadcrumbs, has_new_crumbs, supportive, arg_id_sys,
+		                                                                attack, session_id)
+		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, ui_locales,
+		                                                     mainpage, for_api)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, ui_locales, nickname,
 		                                          argument_id=arg_id_user, application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
@@ -478,7 +484,8 @@ class Dbas(object):
 		uid             = matchdict['id'] if 'id' in matchdict else ''
 		pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
 		del_breadcrumb  = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
-		logger('discussion_reaction', 'def', str(pgroup_ids))
+		nickname        = self.request.authenticated_userid if not for_api else api_data['nickname']
+		session_id      = self.request.session.id if not for_api else api_data['session_id']
 
 		is_argument = True if is_argument is 't' else False
 		is_supportive = True if is_supportive is 't' else False
@@ -491,15 +498,16 @@ class Dbas(object):
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, self.request.authenticated_userid,
-		                                                                 slug, self.request.session.id, transaction, ui_locales,
-		                                                                 mainpage, del_breadcrumb, for_api)
+		UserHandler().update_last_action(transaction, nickname)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id,
+		                                                                 transaction, ui_locales, mainpage, del_breadcrumb,
+		                                                                 for_api)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_choosing(self.request.authenticated_userid, transaction, uid, ui_locales,
-		                                                           breadcrumbs, has_new_crumbs, is_argument, is_supportive, self.request.session.id)
-		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales, mainpage, issue, for_api)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, False, ui_locales, self.request.authenticated_userid,
+		discussion_dict = _dh.prepare_discussion_dict_for_choosing(nickname, transaction, uid, ui_locales, breadcrumbs,
+		                                                           has_new_crumbs, is_argument, is_supportive, session_id)
+		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales,
+		                                                     mainpage, issue, for_api)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, False, ui_locales, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
