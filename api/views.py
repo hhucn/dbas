@@ -141,7 +141,7 @@ def discussion_init(request):
 		            "session_id": val["session_id"],
 		            "logged_in": val["logged_in"]}
 	except KeyError:
-		api_data = False
+		api_data = None
 
 	return Dbas(request).discussion_init(for_api=True, api_data=api_data)
 
