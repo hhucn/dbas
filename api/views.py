@@ -77,45 +77,63 @@ login = Service(name='login',
 # =============================================================================
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
+def prepare_user_information(request):
+	"""
+	Check if user is authenticated, return prepared data for DBAS.
+	:param request:
+	:return:
+	"""
+	val = request.validated
+	try:
+		api_data = {"nickname": val["user"],
+		            "session_id": val["session_id"]}
+	except KeyError:
+		api_data = None
+	return api_data
 
-@reaction.get()
+
+@reaction.get(validators=validate_login)
 def discussion_reaction(request):
 	"""
 	Return data from DBas discussion_reaction page
 	:param request: request
 	:return: Dbas(request).discussion_reaction(True)
 	"""
-	return Dbas(request).discussion_reaction(for_api=True)
+	api_data = prepare_user_information(request)
+	return Dbas(request).discussion_reaction(for_api=True, api_data=api_data)
 
 
-@justify.get()
+@justify.get(validators=validate_login)
 def discussion_justify(request):
 	"""
 	Return data from DBas discussion_justify page
 	:param request: request
 	:return: Dbas(request).discussion_justify(True)
 	"""
-	return Dbas(request).discussion_justify(for_api=True)
+	api_data = prepare_user_information(request)
+	return Dbas(request).discussion_justify(for_api=True, api_data=api_data)
 
 
-@attitude.get()
+@attitude.get(validators=validate_login)
 def discussion_attitude(request):
 	"""
 	Return data from DBas discussion_attitude page
 	:param request: request
 	:return: Dbas(request).discussion_attitude(True)
 	"""
-	return Dbas(request).discussion_attitude(for_api=True)
+	api_data = prepare_user_information(request)
+	return Dbas(request).discussion_attitude(for_api=True, api_data=api_data)
 
 
-@issues.get()
+@issues.get(validators=validate_login)
 def issue_selector(request):
 	"""
 	Return data from DBas discussion_attitude page
 	:param request: request
 	:return: Dbas(request).discussion_attitude(True)
 	"""
-	return Dbas(request).fuzzy_search(for_api=True)
+	api_data = prepare_user_information(request)
+	return Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
 
 
 @zinit.get(validators=validate_login)
@@ -125,7 +143,8 @@ def discussion_init(request):
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
-	return Dbas(request).discussion_init(for_api=True)
+	api_data = prepare_user_information(request)
+	return Dbas(request).discussion_init(for_api=True, api_data=api_data)
 
 
 @zinit_blank.get(validators=validate_login)
@@ -135,13 +154,7 @@ def discussion_init(request):
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
-	val = request.validated
-	try:
-		api_data = {"nickname": val["user"],
-		            "session_id": val["session_id"]}
-	except KeyError:
-		api_data = None
-
+	api_data = prepare_user_information(request)
 	return Dbas(request).discussion_init(for_api=True, api_data=api_data)
 
 
