@@ -319,9 +319,9 @@ class DictionaryHelper(object):
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		if attack == 'end':
 			user_text        = _tn.get(_tn.sentencesOpenersForArguments[0])\
-								  + ': <strong>' + _qh.get_text_for_argument_uid(uid, lang, True) + '</strong>. ' +\
-			                   _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
-			sys_text         = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
+								  + ': <strong>' + _qh.get_text_for_argument_uid(uid, lang, True) + '</strong>.'
+			sys_text         = _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
+			mid_text         = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 		else:
 			premise, tmp	 = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
 			conclusion       = _qh.get_text_for_conclusion(db_argument, lang)
@@ -347,11 +347,21 @@ class DictionaryHelper(object):
 			                                                     attack, confr, reply_for_argument, user_is_attacking,
 			                                                     current_argument, db_argument)
 
-		bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, attack == 'end')
-		bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, attack == 'end')
+		if attack == 'end':
+			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True)
+			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, True)
+			bubble_mid = self.__create_speechbubble_dict(False, False, True, '', '', mid_text, True)
+		else:
+			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, is_end)
+			bubble_sys = self.__create_speechbubble_dict(False, not is_end, is_end, '', '', sys_text, is_end)
+
 		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
 		self.__append_bubble(bubbles_array, bubble_user)
 		self.__append_bubble(bubbles_array, bubble_sys)
+
+		if attack == 'end':
+			self.__append_bubble(bubbles_array, bubble_mid)
+
 		if save_crumb:
 			self.__save_speechbubble(bubble_user, db_user, breadcrumbs[-1], transaction)
 			self.__save_speechbubble(bubble_sys, db_user, breadcrumbs[-1], transaction)
@@ -930,7 +940,7 @@ class DictionaryHelper(object):
 
 		else:
 			mid_text = _t.get(_t.discussionEnd) + ' ' + (_t.get(_t.discussionEndLinkText) if logged_in else _t.get(_t.feelFreeToLogin))
-			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, '', '', mid_text))
+			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, True, False, '', '', mid_text))
 
 	def add_language_options_for_extra_dict(self, extras_dict, lang):
 		"""

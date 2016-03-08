@@ -362,7 +362,7 @@ class Dbas(object):
 			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(nickname, transaction, statement_or_arg_id,
 			                                              ui_locales, breadcrumbs, has_new_crumbs, supportive, session_id)
 			if not discussion_dict:
-				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
+				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
 			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, issue,
 			                                                              supportive, ui_locales, mainpage, for_api)
@@ -501,8 +501,7 @@ class Dbas(object):
 		uid             = matchdict['id'] if 'id' in matchdict else ''
 		pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
 		del_breadcrumb  = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
-		nickname        = self.request.authenticated_userid if not for_api else api_data['nickname']
-		session_id      = self.request.session.id if not for_api else api_data['session_id']
+		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
 		is_argument = True if is_argument is 't' else False
 		is_supportive = True if is_supportive is 't' else False
