@@ -36,7 +36,7 @@ msgstr "for could not be found."
 #: dbas/templates/index.pt:24
 msgid "novel_software"
 msgstr ""
-"Welcome, this novel discussions software will help you to discuss a problem "
+"Welcome, this novel discussions system will help you to discuss a problem "
 "in a structured manner."
 
 #. Default: This project is based on research of the graduation school Online-
@@ -893,7 +893,7 @@ msgstr "Discussion Statistics"
 msgid "statements_posted"
 msgstr "Statements posted"
 
-#. Default: Edits done
+#. Default: Edits doneFz
 #: dbas/templates/settings.pt:136
 msgid "edits_done"
 msgstr "Edits done"

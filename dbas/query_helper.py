@@ -1309,7 +1309,7 @@ class QueryHelper(object):
 
 		elif len(new_arguments) == 1:
 			new_argument_uid = random.choice(new_arguments)
-			arg_id_sys, attack = recommender_helper.get_attack_for_argument(new_argument_uid, issue)
+			arg_id_sys, attack = recommender_helper.get_attack_for_argument(new_argument_uid, issue, lang)
 			if arg_id_sys == 0:
 				attack = 'end'
 
