@@ -979,7 +979,6 @@ def setup_discussion_database():
 	premise102 = Premise(premisesgroup=premisegroup101.uid, statement=statement106.uid, is_negated=False, author=user2.uid, issue=issue2.uid)
 	premise103 = Premise(premisesgroup=premisegroup102.uid, statement=statement107.uid, is_negated=False, author=user2.uid, issue=issue2.uid)
 	premise104 = Premise(premisesgroup=premisegroup103.uid, statement=statement108.uid, is_negated=False, author=user2.uid, issue=issue2.uid)
-
 	premise105 = Premise(premisesgroup=premisegroup104.uid, statement=statement109.uid, is_negated=False, author=user2.uid, issue=issue1.uid)
 
 	DBDiscussionSession.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9,
@@ -1102,10 +1101,6 @@ def setup_discussion_database():
 	argument100 = Argument(premisegroup=premisegroup99.uid, issupportive=True, author=user2.uid, conclusion=statement102.uid, issue=issue2.uid)
 	argument101 = Argument(premisegroup=premisegroup100.uid, issupportive=False, author=user2.uid, issue=issue2.uid)
 	argument102 = Argument(premisegroup=premisegroup103.uid, issupportive=False, author=user2.uid, issue=issue2.uid)
-	# premise104 = Premise(premisesgroup=premisegroup103.uid, statement=statement108.uid,  isnegated=False, author=user2.uid,  issue=issue2.uid)
-
-	argument105 = Argument(premisegroup=premisegroup104.uid, issupportive=False, author=user2.uid, conclusion=statement10.uid,
-	                       issue=issue1.uid)
 
 	DBDiscussionSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9,
 	                             argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18,
@@ -1118,7 +1113,7 @@ def setup_discussion_database():
 	                             argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81,
 	                             argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90,
 	                             argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99,
-	                             argument100, argument101, argument102, argument105])
+	                             argument100, argument101, argument102])
 	DBDiscussionSession.flush()
 
 	argument5.conclusions_argument(argument3.uid)

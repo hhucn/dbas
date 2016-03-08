@@ -11,16 +11,6 @@
 				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en">
 				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.png')}" alt="dbas logo" tal:condition="extras.lang_is_de">
 				<br>
-				<!--
-				<h2><span i18n:translate="welcome">Welcome</span>
-						<span i18n:translate="to_the_dbas">to the</span>
-							<strong>D</strong><span i18n:translate="ialog">ialog</span>-
-							<strong>B</strong><span i18n:translate="ased">ased</span>
-							<strong>A</strong><span i18n:translate="rgumentation">rgumentation</span>
-							<strong>S</strong><span i18n:translate="oftware">oftware</span>, <span i18n:translate="or_short">or short</span>
-							<strong>D-BAS</strong>
-						</h2>
-				-->
                 <p class="lead">
 				<span i18n:translate="welcome_text1">Welcome to D-BAS! This is an early prototype of our dialog-based argumentation system. There will be bugs. Please feel free to</span>
                 <a href="${request.application_url}/contact"><span i18n:translate="welcome_text2">contact</span></a>
@@ -33,15 +23,6 @@
 				</form>
 				<br>
 				<br>
-				<!--
-				<p class="lead" i18n:translate="dbas_intro_advantages_intro">D-Bas offers a lot of advantages, here are a few of them:</p>
-				<ul class="lead list">
-					<li i18n:translate="dbas_intro_advantages_1">Easy to use and very powerful</li>
-					<li i18n:translate="dbas_intro_advantages_2">Avoid redundancy due to multiple statements because an argumentation map is used as background structure</li>
-					<li i18n:translate="dbas_intro_advantages_3">Every argument and position will be connected logically to each other</li>
-				</ul>
-				<br>
-				-->
 				<p class="lead">
                     <span i18n:translate="work_based_on">This work is part of the graduate school on</span> <a href="http://www.fortschrittskolleg.de/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.
                     <span i18n:translate="funded_by">It is funded by the</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.

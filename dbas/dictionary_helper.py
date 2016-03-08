@@ -536,25 +536,30 @@ class DictionaryHelper(object):
 			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 			for premise in db_premises:
 				arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == premise.statement_uid,
-																			Argument.is_supportive == False)).all()
+																			Argument.is_supportive == False,
+				                                                            Argument.issue_uid == issue_uid)).all()
 				db_arguments = db_arguments + arguments
 
 		elif attack_type == 'undercut':
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid,
-																		   Argument.is_supportive == False)).all()
+																		   Argument.is_supportive == False,
+				                                                           Argument.issue_uid == issue_uid)).all()
 
 		elif attack_type == 'overbid':
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid,
-																		   Argument.is_supportive == True)).all()
+																		   Argument.is_supportive == True,
+				                                                           Argument.issue_uid == issue_uid)).all()
 
 		elif attack_type == 'rebut':
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
 																		   Argument.argument_uid == db_argument.argument_uid,
-																		   Argument.is_supportive == False)).all()
+																		   Argument.is_supportive == False,
+				                                                           Argument.issue_uid == issue_uid)).all()
 		elif attack_type == 'support':
 			db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
 																		   Argument.argument_uid == db_argument.argument_uid,
-																		   Argument.is_supportive == db_argument.is_supportive)).all()
+																		   Argument.is_supportive == db_argument.is_supportive,
+				                                                           Argument.issue_uid == issue_uid)).all()
 
 		_um = UrlManager(application_url, slug, for_api)
 
@@ -580,11 +585,11 @@ class DictionaryHelper(object):
 																	 'justify',
 																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
-			statements_array.append(self.__create_statement_dict('justify_premise',
-			                                                     _tn.get(_tn.newPremiseRadioButtonText),
-			                                                     [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
-																 'justify',
-																 'add'))
+		statements_array.append(self.__create_statement_dict('justify_premise',
+		                                                     _tn.get(_tn.newPremiseRadioButtonText),
+		                                                     [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
+															 'justify',
+															 'add'))
 
 		return statements_array
 

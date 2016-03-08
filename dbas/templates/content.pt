@@ -41,7 +41,7 @@
 					<span i18n:translate="arguments">arguments</span>.
 					<br>
 					-->
-					<div class="dropdown" style="margin-top: 5px;">
+					<div class="dropdown center" style="margin-top: 5px;">
 						<button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
 						</button>
