@@ -188,7 +188,7 @@ class Dbas(object):
 
 	# content page
 	@view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
-	def discussion_init(self, for_api=False, api_data=False):
+	def discussion_init(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
@@ -248,7 +248,7 @@ class Dbas(object):
 
 	# attitude page
 	@view_config(route_name='discussion_attitude', renderer='templates/content.pt', permission='everybody')
-	def discussion_attitude(self, for_api=False):
+	def discussion_attitude(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
@@ -303,7 +303,7 @@ class Dbas(object):
 
 	# justify page
 	@view_config(route_name='discussion_justify', renderer='templates/content.pt', permission='everybody')
-	def discussion_justify(self, for_api=False):
+	def discussion_justify(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
@@ -407,7 +407,7 @@ class Dbas(object):
 
 	# reaction page
 	@view_config(route_name='discussion_reaction', renderer='templates/content.pt', permission='everybody')
-	def discussion_reaction(self, for_api=False):
+	def discussion_reaction(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
@@ -467,7 +467,7 @@ class Dbas(object):
 
 	# choosing page
 	@view_config(route_name='discussion_choose', renderer='templates/content.pt', permission='everybody')
-	def discussion_choose(self, for_api=False):
+	def discussion_choose(self, for_api=False, api_data=None):
 		"""
 		View configuration for the choosing view.
 		:param for_api: Boolean
