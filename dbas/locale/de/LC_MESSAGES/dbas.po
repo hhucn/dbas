@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-07 22:07+0100\n"
+"POT-Creation-Date: 2016-03-08 08:46+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -31,25 +31,42 @@ msgstr "Die Seite &quot;<dynamic element>&quot; konnte nicht gefunden werden"
 msgid "404_text_part2"
 msgstr "Die Seite &quot;<dynamic element>&quot; konnte nicht gefunden werden"
 
-#. Default: This novel discussions software will help you to discuss a problem
-#. in a structured manner.
-#: dbas/templates/index.pt:24
-msgid "novel_software"
+#. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
+#. argumentation system. There will be bugs. Please feel free to
+#: dbas/templates/index.pt:25
+msgid "welcome_text1"
 msgstr ""
-"Willkommen, diese neuartige Diskussionssoftware soll helfen, Probleme "
-"strukturiert zu erörtern."
+"Willkommen bei D-BAS! Dies ist ein früher Prototyp unseres Dialog-basierten "
+"Argumentationssystem. Falls Fehler auftreten, bitte"
 
-#. Default: This project is based on research of the graduation school Online-
-#. Participation, subsidised governmentally by
-#: dbas/templates/index.pt:40
-msgid "projec_based_on"
-msgstr ""
-"Dieses Projekt basiert auf Forschungen des Fortschrittskolleg Online-"
-"Partizipation und wird staatlich gefördert durch"
+#. Default: contact
+#: dbas/templates/index.pt:26
+msgid "welcome_text2"
+msgstr "kontaktieren"
+
+#. Default: us to report bugs or provide feedback.
+#: dbas/templates/index.pt:27
+msgid "welcome_text3"
+msgstr "Sie uns."
+
+#. Default: This work is part of the graduate school on
+#: dbas/templates/index.pt:46
+msgid "work_based_on"
+msgstr "Dieses Projekt ist Teil der Graduierten-Kollegs"
+
+#. Default: Online-Participation
+#: dbas/templates/index.pt:46
+msgid "online_participation"
+msgstr "Online-Partizipation"
+
+#. Default: It is funded by the
+#: dbas/templates/index.pt:47
+msgid "funded_by"
+msgstr "Es wird finanziert bei dem"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: dbas/templates/index.pt:40
+#: dbas/templates/index.pt:47
 msgid "ministry_of_innovation"
 msgstr ""
 "Ministerium fpr Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
@@ -73,7 +90,7 @@ msgstr "Nachrichten"
 #. Default: Login
 #. Default: Log In
 #: dbas/templates/snippet-header.pt:60 dbas/templates/snippet-popups.pt:245
-#: dbas/templates/snippet-popups.pt:431
+#: dbas/templates/snippet-popups.pt:426
 msgid "login"
 msgstr "Login"
 
@@ -453,7 +470,7 @@ msgstr "Fax"
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:76 dbas/templates/snippet-popups.pt:121
 #: dbas/templates/snippet-popups.pt:157 dbas/templates/snippet-popups.pt:230
-#: dbas/templates/snippet-popups.pt:434 dbas/templates/snippet-popups.pt:473
+#: dbas/templates/snippet-popups.pt:429 dbas/templates/snippet-popups.pt:468
 msgid "close"
 msgstr "Schließen"
 
@@ -581,14 +598,14 @@ msgstr ""
 "Adresse gesendet."
 
 #. Default: Error:
-#: dbas/templates/snippet-popups.pt:292 dbas/templates/snippet-popups.pt:394
+#: dbas/templates/snippet-popups.pt:292 dbas/templates/snippet-popups.pt:392
 #: dbas/templates/content.pt:162
 msgid "error"
 msgstr "Fehler:"
 
 #. Default: Success:
 #. Default: Success
-#: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:386
+#: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:384
 #: dbas/templates/settings.pt:200 dbas/templates/content.pt:80
 msgid "success"
 msgstr "Erfolg:"
@@ -655,42 +672,37 @@ msgid "password_strength"
 msgstr "sehr schwach"
 
 #. Default: Generate secure password
-#: dbas/templates/snippet-popups.pt:377
+#: dbas/templates/snippet-popups.pt:376
 msgid "generate_password"
 msgstr "Neues Password"
 
-#. Default: Register
-#: dbas/templates/snippet-popups.pt:432
-msgid "register"
-msgstr "Registierung"
-
 #. Default: How to select a strong password
-#: dbas/templates/snippet-popups.pt:447
+#: dbas/templates/snippet-popups.pt:398 dbas/templates/snippet-popups.pt:442
 msgid "select_password"
 msgstr "Wie wählt man ein sicheres Password"
 
 #. Default: A Password is strong, when it contains at least:
-#: dbas/templates/snippet-popups.pt:450
+#: dbas/templates/snippet-popups.pt:400 dbas/templates/snippet-popups.pt:445
 msgid "select_password_intro"
 msgstr "Ein Passwort ist stark, wenn es mindestens folgende Sachen enthält:"
 
 #. Default: eight characters
-#: dbas/templates/snippet-popups.pt:452
+#: dbas/templates/snippet-popups.pt:402 dbas/templates/snippet-popups.pt:447
 msgid "select_password_rule1"
 msgstr "acht Zeichen"
 
 #. Default: one uppercase letter
-#: dbas/templates/snippet-popups.pt:453
+#: dbas/templates/snippet-popups.pt:403 dbas/templates/snippet-popups.pt:448
 msgid "select_password_rule2"
 msgstr "ein Großbuchstaben"
 
 #. Default: one lowercase letter
-#: dbas/templates/snippet-popups.pt:454
+#: dbas/templates/snippet-popups.pt:404 dbas/templates/snippet-popups.pt:449
 msgid "select_password_rule3"
 msgstr "ein Kleinbuchstaben"
 
 #. Default: one special sign
-#: dbas/templates/snippet-popups.pt:455
+#: dbas/templates/snippet-popups.pt:405 dbas/templates/snippet-popups.pt:450
 msgid "select_password_rule4"
 msgstr "ein Sonderzeichen"
 
@@ -698,7 +710,7 @@ msgstr "ein Sonderzeichen"
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: dbas/templates/snippet-popups.pt:457
+#: dbas/templates/snippet-popups.pt:407 dbas/templates/snippet-popups.pt:452
 msgid "popup_password_text"
 msgstr ""
 "Als Beispiel ist 'M2015_fiO' ein starkes Passwort, dass erst nach ca. 275 "
@@ -707,46 +719,51 @@ msgstr ""
 "Foldenges sollte beachtet werden."
 
 #. Default: Avoid using a password on several pages
-#: dbas/templates/snippet-popups.pt:459
+#: dbas/templates/snippet-popups.pt:409 dbas/templates/snippet-popups.pt:454
 msgid "select_password_avoid1"
 msgstr "Niemals Passwörter für mehrere Seiten nutzen"
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: dbas/templates/snippet-popups.pt:460
+#: dbas/templates/snippet-popups.pt:410 dbas/templates/snippet-popups.pt:455
 msgid "select_password_avoid2"
 msgstr "Phrasen vermeiden, die in Büchern gefunden werden können"
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: dbas/templates/snippet-popups.pt:461
+#: dbas/templates/snippet-popups.pt:411 dbas/templates/snippet-popups.pt:456
 msgid "select_password_avoid3"
 msgstr ""
 "Verwendung von Informationen, die eventuell in Verbindung zur Person stehen"
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: dbas/templates/snippet-popups.pt:462
+#: dbas/templates/snippet-popups.pt:412 dbas/templates/snippet-popups.pt:457
 msgid "select_password_avoid4"
 msgstr ""
 "Verwendung von Informationen, die eventuell Freund/Bekannte der Person  "
 "kennen"
 
 #. Default: If you need some help with our password, you can get one here:
-#: dbas/templates/snippet-popups.pt:464
+#: dbas/templates/snippet-popups.pt:414 dbas/templates/snippet-popups.pt:459
 msgid "select_password_help"
 msgstr ""
 "Wenn Sie Hilfe bei der Erstellung brauchen, können Sie sich hier eins "
 "generieren lassen:"
 
+#. Default: Register
+#: dbas/templates/snippet-popups.pt:427
+msgid "register"
+msgstr "Registierung"
+
 #. Default: How to write text
-#: dbas/templates/snippet-popups.pt:486
+#: dbas/templates/snippet-popups.pt:481
 msgid "how-to-write-text-header"
 msgstr "Wie schreibe ich Texte"
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: dbas/templates/snippet-popups.pt:489
+#: dbas/templates/snippet-popups.pt:484
 msgid "how-to-write-text-header-body"
 msgstr ""
 "Gut zu schreiben ist ein Herausforderung und notwendig für die Benutzung von "
@@ -754,62 +771,62 @@ msgstr ""
 "paar Regeln gelistet, was gut ist."
 
 #. Default: Do's:
-#: dbas/templates/snippet-popups.pt:492
+#: dbas/templates/snippet-popups.pt:487
 msgid "dos"
 msgstr "Gut:"
 
 #. Default: Write short!
-#: dbas/templates/snippet-popups.pt:494
+#: dbas/templates/snippet-popups.pt:489
 msgid "how-to-write-text-short"
 msgstr "Schreiben Sie kurz!"
 
 #. Default: Only one statement per field!
-#: dbas/templates/snippet-popups.pt:495
+#: dbas/templates/snippet-popups.pt:490
 msgid "how-to-write-text-one-point"
 msgstr "Immer nur eine Aussage/Argumete/Punkt pro Feld!"
 
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:508
+#: dbas/templates/snippet-popups.pt:503
 msgid "Okay"
 msgstr "Okay"
 
 #. Default: We need your help to understand your statement!
-#: dbas/templates/snippet-popups.pt:523
+#: dbas/templates/snippet-popups.pt:518
 msgid "need-help-to-understand-statement"
 msgstr "Wir brauchen Hilfe zum Verständniss Ihrer Aussage!"
 
 #. Default: You have used 'and' in your statement. As a result there are two
 #. ways it could be interpreted. Please help us by selecting the right
 #. interpretation:
-#: dbas/templates/snippet-popups.pt:526
+#: dbas/templates/snippet-popups.pt:521
 msgid "set_premisegroups_intro"
 msgstr ""
 "Sie haben 'und' in Ihrer Aussage benutzt. Daher existeiren zwei mögliche "
 "Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen"
 
 #. Default: I actually have
-#: dbas/templates/snippet-popups.pt:536
+#: dbas/templates/snippet-popups.pt:531
 msgid "i_actually_have"
 msgstr "Aktuell habe ich"
 
 #. Default: arguments:
-#: dbas/templates/snippet-popups.pt:536
+#: dbas/templates/snippet-popups.pt:531
 msgid "arguments"
 msgstr "Argumente"
 
 #. Default: Error:
-#: dbas/templates/snippet-popups.pt:559 dbas/templates/news.pt:24
+#: dbas/templates/snippet-popups.pt:554 dbas/templates/news.pt:24
 #: dbas/templates/content.pt:321 dbas/templates/content.pt:347
 msgid "error:"
 msgstr "Fehler:"
 
 #. Default: You forgot to choose the right interpretation
-#: dbas/templates/snippet-popups.pt:560
+#: dbas/templates/snippet-popups.pt:555
 msgid "forgot_input_radio"
 msgstr "Eingabe vergessen"
 
 #. Default: Save my Statement!
-#: dbas/templates/snippet-popups.pt:566
+#: dbas/templates/snippet-popups.pt:561
 msgid "save_my_statement"
 msgstr "Aussage speichern"
 
@@ -1113,6 +1130,11 @@ msgstr "Insel-Ansicht"
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
+#~ msgid "novel_software"
+#~ msgstr ""
+#~ "Willkommen, diese neuartige Diskussionssoftware soll helfen, Probleme "
+#~ "strukturiert zu erörtern."
+
 #~ msgid "description"
 #~ msgstr "Beschreibung"
 
@@ -1254,9 +1276,6 @@ msgstr "Komplette Ansicht"
 
 #~ msgid "guided_view_content2"
 #~ msgstr "für dich."
-
-#~ msgid "welcome"
-#~ msgstr "Willkommen"
 
 #~ msgid "to_the_dbas"
 #~ msgstr "zu dem"
