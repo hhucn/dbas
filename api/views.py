@@ -138,8 +138,7 @@ def discussion_init(request):
 	val = request.validated
 	try:
 		api_data = {"nickname": val["user"],
-		            "session_id": val["session_id"],
-		            "logged_in": val["logged_in"]}
+		            "session_id": val["session_id"]}
 	except KeyError:
 		api_data = None
 
