@@ -88,10 +88,10 @@ class BreadcrumbHelper(object):
 			return dict()
 
 		if user == 'anonymous':
-				db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
-				                                                                   Breadcrumb.session_id == session_id)).all()
+			db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
+			                                                                   Breadcrumb.session_id == session_id)).all()
 		else:
-				db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all()
+			db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all()
 
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'user ' + str(user) + ', count ' + str(len(db_breadcrumbs)))
 
