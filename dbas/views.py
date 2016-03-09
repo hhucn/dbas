@@ -400,6 +400,10 @@ class Dbas(object):
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, ui_locales, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
+			logger('---', '---', str((not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1)))
+			logger('---', '---', str((not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1)))
+			logger('---', '---', str((not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1)))
+
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
 				# item_dict = dict()
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales,

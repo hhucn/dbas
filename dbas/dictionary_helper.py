@@ -917,9 +917,12 @@ class DictionaryHelper(object):
 
 		elif at_justify_argumentation:
 			discussion_dict['mode'] = 'justify_argumentation'
-			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
+			if logged_in:
+				extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style'] = False
+			user_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
+			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, '', '', user_text))
 
 		elif at_dont_know:
 			discussion_dict['mode'] = 'dont_know'
@@ -938,7 +941,8 @@ class DictionaryHelper(object):
 				discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
 				discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
 			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, '', '', user_text))
-			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
+			if logged_in:
+				extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style']	   = False
 			extras_dict['show_bar_icon']		   = False
