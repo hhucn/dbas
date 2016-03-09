@@ -903,7 +903,7 @@ class DictionaryHelper(object):
 			discussion_dict['mode'] = 'start'
 			user_text = _t.get(_t.firstPositionText) + '<br>'
 			user_text += _t.get(_t.pleaseAddYourSuggestion) if logged_in else (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin))
-			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(True, False, False, '', '', user_text))
+			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, '', '', user_text))
 			if logged_in:
 				extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
 				extras_dict['close_statement_container'] = False
