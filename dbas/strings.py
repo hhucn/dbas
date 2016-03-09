@@ -725,7 +725,7 @@ class Translator(object):
 		en_lang[self.otherParticipantsThinkThat] = 'Other participants think that'
 		en_lang[self.otherParticipantsAgreeThat] = 'Other participants agree that'
 		en_lang[self.otherParticipantsDontHaveOpinion] = 'Other participants do not have any opinion regarding your selection.'
-		en_lang[self.otherParticipantsDontHaveCounterForThat] = 'Other participants do not have any counter-argument for for that'
+		en_lang[self.otherParticipantsDontHaveCounterForThat] = 'Other participants do not have any counter-argument for that'
 		en_lang[self.otherParticipantsDontHaveCounter] = 'Other participants do not have any counter-argument for '
 		en_lang[self.otherParticipantsDontHaveArgument] = 'Other participants do not have any argument for '
 		en_lang[self.otherParticipantsAcceptBut] = 'Other participants accept your argument, but'
