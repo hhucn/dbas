@@ -223,7 +223,7 @@ class DictionaryHelper(object):
 		conclusion		= _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
 								else _qh.get_text_for_argument_uid(db_argument.argument_uid, lang, True)
 
-		h_intro, h_bridge , h_outro = _tg.get_header_for_users_confrontation_response(confr, premise, attack,
+		user_msg, sys_msg = _tg.get_header_for_users_confrontation_response(confr, premise, attack,
 			                                                                              conclusion, False, is_supportive,
 			                                                                              logged_in)
 		if attack == 'undermine':
@@ -243,16 +243,19 @@ class DictionaryHelper(object):
 		else:
 			add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
 																	   db_argument.is_supportive)
-		because			 = ' ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
-		h_outro      	 = because
+
+		sys_msg			    = _tn.get(_tn.whyDoYouThinkThat) + '? ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 		save_statement_url  = 'ajax_set_new_premises_for_argument'
 
-		bubble_intro = self.__create_speechbubble_dict(True, False, False, '', '', h_intro)
+		bubble_intro = self.__create_speechbubble_dict(True, False, False, '', '', user_msg)
+		bubble_question = self.__create_speechbubble_dict(False, True, False, '', '', sys_msg)
 		if save_crumb:
 			self.__append_bubble(bubbles_array, bubble_intro)
-		bubble_intro['message'] = bubble_intro['message'] + ' ' + h_outro
+		# bubble_intro['message'] = bubble_intro['message'] + ' ' + sys_msg
+
 		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
 		self.__append_bubble(bubbles_array, bubble_intro)
+		self.__append_bubble(bubbles_array, bubble_question)
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
