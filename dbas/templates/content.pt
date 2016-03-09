@@ -101,7 +101,7 @@
 							<img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_questionmark1.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" />
 						</li>
 						<li>
-							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon">
+							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon or extras.show_expert_icon">
 								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="left" tal:attributes="title extras.buttons.more_title"/>
 
 								<ul id="site-navigation">
@@ -118,7 +118,7 @@
 									</li>
 
 									<li>
-										<img tal:condition="extras.show_display_style" id="display-style-icon-expert-img" class="display-style-menu-icon icon-badge" alt="icon-expert" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" />
+										<img tal:condition="extras.show_expert_icon" id="display-style-icon-expert-img" class="display-style-menu-icon icon-badge" alt="icon-expert" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" />
 									</li>
 								</ul>
 							</div>
