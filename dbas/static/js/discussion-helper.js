@@ -158,7 +158,7 @@ function Helper() {
 	 * @returns {number}
 	 */
 	this.getCurrentIssueId = function(){
-		return $('#' + issueDropdownTextID).attr('issue');
+		return $('#' + issueDropdownButtonID).attr('issue');
 	};
 
 	/**
