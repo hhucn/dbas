@@ -593,11 +593,12 @@ class DictionaryHelper(object):
 																	 'justify',
 																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
-		statements_array.append(self.__create_statement_dict('justify_premise',
-		                                                     _tn.get(_tn.newPremiseRadioButtonText),
-		                                                     [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
-															 'justify',
-															 'add'))
+		if logged_in:
+			statements_array.append(self.__create_statement_dict('justify_premise',
+			                                                     _tn.get(_tn.newPremiseRadioButtonText),
+			                                                     [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
+																 'justify',
+																 'add'))
 
 		return statements_array
 
