@@ -345,6 +345,7 @@ class Translator(object):
 		self.saveMyStatement = 'saveMyStatement'
 		self.strength = 'strength'
 		self.strong = 'strong'
+		self.strongerStatementForAccepting = 'strongerStatementForAccepting'
 		self.strongerStatementForRecjecting = 'strongerStatementForRecjecting'
 		self.soYouEnteredMultipleReasons = 'soYouEnteredMultipleReasons'
 		self.soYourOpinionIsThat = 'soYourOpinionIsThat'
@@ -762,6 +763,7 @@ class Translator(object):
 		en_lang[self.supportPosition] = 'support position'
 		en_lang[self.strength] = 'Strength'
 		en_lang[self.strong] = 'strong'
+		en_lang[self.strongerStatementForAccepting] = 'but they claim to have a stronger statement for accepting'
 		en_lang[self.strongerStatementForRecjecting] = 'but they claim to have a stronger statement for rejecting'
 		en_lang[self.soYouEnteredMultipleReasons] = 'So you entered multiple reasons'
 		en_lang[self.soYourOpinionIsThat] = 'So your opinion is that'
@@ -1170,6 +1172,7 @@ class Translator(object):
 		de_lang[self.showAllUsersTitle] = 'Zeige alle Nutzer'
 		de_lang[self.strength] = 'Stärke'
 		de_lang[self.strong] = 'stark'
+		de_lang[self.strongerStatementForAccepting] = 'aber Sie haben eine stärkere Aussage zur Annahme von'
 		de_lang[self.strongerStatementForRecjecting] = 'aber Sie haben eine stärkere Aussage zur Ablehnung von'
 		de_lang[self.soYouEnteredMultipleReasons] = 'Sie haben mehrere Gründe eingegeben'
 		de_lang[self.soYourOpinionIsThat] = 'Ihre Meinung ist, dass'
@@ -1322,8 +1325,7 @@ class TextGenerator(object):
 		"""
 		_t         = Translator(self.lang)
 		intro      = _t.get(_t.sentencesOpenersForArguments[0])  + ': '
-		bridge     = ''
-		outro      = ''
+		system     = ''
 		premise    = premise[0:1].lower() + premise[1:]
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
 
@@ -1355,22 +1357,22 @@ class TextGenerator(object):
 		if attack_type == 'overbid':
 			intro += r + '<strong>' + premise + '</strong>, '
 			intro += _t.get(_t.andIDoBelieveCounterFor) if is_supportive else _t.get(_t.andIDoBelieveArgument)
+			intro += ' <strong>' + conclusion + '</strong>. '
+			intro += _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)
 			intro += ' <strong>' + conclusion + '</strong>.'
-			bridge += _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)
-			bridge += ' <strong>' + conclusion + '</strong>.'
 
 		if attack_type == 'rebut':
 			intro += r + '<strong>' + premise + '</strong>, '
 			intro += _t.get(_t.iAcceptCounter) if is_supportive else _t.get(_t.iAcceptArgument)
+			intro += ' <strong>' + conclusion + '</strong>. '
+			intro += _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) if is_supportive else _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting)
 			intro += ' <strong>' + conclusion + '</strong>.'
-			bridge += _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) if is_supportive else _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting)
-			bridge += ' <strong>' + conclusion + '</strong>.'
 
 		# is logged in?
 		if is_logged_in:
-			outro  = _t.get(_t.canYouGiveAReasonForThat)
+			system  = _t.get(_t.canYouGiveAReasonForThat)
 
-		return intro, bridge, outro
+		return intro, system
 
 	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False):
 		"""
@@ -1476,7 +1478,7 @@ class TextGenerator(object):
 				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 			else:  # reply for premise group
 				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, '
-				confrontation_text += _t.get(_t.strongerStatementForRecjecting)
+				confrontation_text += _t.get(_t.strongerStatementForAccepting) if user_is_attacking else _t.get(_t.strongerStatementForRecjecting)
 				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 
 		elif attack == 'undercut':
@@ -1485,7 +1487,7 @@ class TextGenerator(object):
 								 + ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' '\
 								 + _t.get(_t.theyThink).lower() + ': '  + confrontation
 
-		sys_text = confrontation_text + '.<br>' +  _t.get(_t.whatDoYouThinkAboutThat) + '?'
+		sys_text = confrontation_text + '.<br><br>' +  _t.get(_t.whatDoYouThinkAboutThat) + '?'
 		return user_opinion, sys_text
 
 	def get_text_for_premise_for_statement(self, conclusion, premises, supportive, logged_in):

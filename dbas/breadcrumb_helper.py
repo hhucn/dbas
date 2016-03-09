@@ -100,11 +100,17 @@ class BreadcrumbHelper(object):
 
 		breadcrumbs = []
 		for index, crumb in enumerate(db_breadcrumbs):
+			try:
+				url_text = self.__get_text_for_url__(crumb.url, lang)
+			except:
+				logger('BreadcrumbHelper', 'get_breadcrumbs', 'error on getting text for ' + crumb.url, error=True)
+				return dict()
+			
 			hist = dict()
 			hist['index']       = str(index)
 			hist['uid']         = crumb.uid
 			hist['url']         = str(crumb.url) + '?breadcrumb=true'  # add this for deleting traces
-			hist['text']        = self.__get_text_for_url__(crumb.url, lang)
+			hist['text']        = url_text
 			hist['shorttext']   = hist['text'][0:30] + '...' if len(hist['text']) > 35 else hist['text']
 			breadcrumbs.append(hist)
 

@@ -401,7 +401,6 @@ class Dbas(object):
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
-				# item_dict = dict()
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales,
 				                            at_justify_argumentation=True)
 		else:
