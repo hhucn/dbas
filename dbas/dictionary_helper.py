@@ -776,7 +776,8 @@ class DictionaryHelper(object):
 		return statements_array
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, is_questionable, show_bar_icon,
-	                        show_display_styles, lang, authenticated_userid, argument_id=0, application_url='', for_api=False):
+	                        show_display_styles, show_expert_icon, lang, authenticated_userid, argument_id=0,
+	                        application_url='', for_api=False):
 		"""
 
 		:param current_slug:
@@ -785,6 +786,7 @@ class DictionaryHelper(object):
 		:param is_questionable:
 		:param show_bar_icon:
 		:param show_display_styles:
+		:param show_expert_icon:
 		:param lang:
 		:param authenticated_userid:
 		:param argument_id:
@@ -812,6 +814,7 @@ class DictionaryHelper(object):
 			return_dict['is_admin']			             = _uh.is_user_admin(authenticated_userid)
 			return_dict['show_bar_icon']	             = show_bar_icon
 			return_dict['show_display_style']            = show_display_styles
+			return_dict['show_expert_icon']              = show_expert_icon
 			return_dict['add_premise_container_style']   = 'display: none'
 			return_dict['add_statement_container_style'] = 'display: none'
 			return_dict['close_premise_container']	     = True

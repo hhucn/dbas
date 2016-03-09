@@ -88,7 +88,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_page', 'def', 'main page')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
 
 		return {
@@ -178,7 +178,7 @@ class Dbas(object):
 				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
@@ -236,13 +236,14 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, nickname)
+
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id,
 		                                                                 transaction, ui_locales, mainpage, del_breadcrumb,
 		                                                                 for_api)
 
 		discussion_dict = _dh.prepare_discussion_dict_for_start(nickname, transaction, issue, ui_locales,
 		                                              breadcrumbs, has_new_crumbs, session_id)
-		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, ui_locales, nickname,
+		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
@@ -300,7 +301,7 @@ class Dbas(object):
 			return HTTPFound(location=UrlManager(for_api=for_api).get_404([slug, statement_id]))
 
 		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
-		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, ui_locales,
+		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, True, ui_locales,
 		                                          nickname, application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
@@ -366,7 +367,7 @@ class Dbas(object):
 
 			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, issue,
 			                                                              supportive, ui_locales, mainpage, for_api)
-			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, ui_locales,
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales,
 			                                          nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -381,7 +382,7 @@ class Dbas(object):
 			                                                                     ui_locales, breadcrumbs, has_new_crumbs,
 			                                                                     supportive, statement_or_arg_id, session_id)
 			item_dict       = _dh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive, issue, ui_locales, mainpage, for_api)
-			extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, True, ui_locales, nickname,
+			extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, True, True, ui_locales, nickname,
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
@@ -397,7 +398,7 @@ class Dbas(object):
 			                                                                   session_id)
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
 			                                                             mainpage, for_api, logged_in)
-			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, ui_locales, nickname,
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, True, ui_locales, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
@@ -463,7 +464,7 @@ class Dbas(object):
 		                                                                attack, session_id)
 		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, ui_locales,
 		                                                     mainpage, for_api)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, ui_locales, nickname,
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, True, ui_locales, nickname,
 		                                          argument_id=arg_id_user, application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
@@ -522,7 +523,7 @@ class Dbas(object):
 		                                                           has_new_crumbs, is_argument, is_supportive, session_id)
 		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales,
 		                                                     mainpage, issue, for_api)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, False, ui_locales, nickname,
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, False, True, True, ui_locales, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
@@ -578,7 +579,7 @@ class Dbas(object):
 		# get gravater profile picture
 		gravatar_url = _uh.get_profile_picture(db_user)
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 		settings_dict = {
 			'passwordold': '' if success else old_pw,
 			'password': '' if success else new_pw,
@@ -622,7 +623,7 @@ class Dbas(object):
 		logger('main_notifications', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -642,7 +643,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_admin', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -672,7 +673,7 @@ class Dbas(object):
 		dd = str(now.day) if now.day > 9 else '0' + str(now.day)
 		date = dd + "." + mm + "." + yyyy
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -695,7 +696,7 @@ class Dbas(object):
 		logger('main_imprint', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -725,7 +726,7 @@ class Dbas(object):
 		self.request.response.status = 404
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),

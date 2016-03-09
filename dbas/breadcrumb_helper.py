@@ -30,9 +30,6 @@ class BreadcrumbHelper(object):
 		:param for_api:
 		:return: all breadcrumbs, boolean (if a crumb was inserted)
 		"""
-		if for_api:
-			return [], False
-
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if not db_user:
 			user = 'anonymous'
@@ -45,11 +42,18 @@ class BreadcrumbHelper(object):
 		_um = UrlManager(application_url, slug, for_api)
 		url = _um.get_url(path)
 
-		# delete by slugs
-		expr = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)
-		if expr:
-			group0 = expr.group(0)
+		# delete by slugs (dbas version)
+		expr_dbas = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)
+		if expr_dbas:
+			group0 = expr_dbas.group(0)
 			if group0 and url.endswith(group0):
+				self.del_breadcrumbs_of_user(transaction, user, session_id)
+
+		# delete by slugs (api version)
+		expr_api = re.search(re.compile(r"/api/[a-zA-Z0-9,-]*"), path)
+		if expr_api:
+			group1 = expr_api.group(0)
+			if group1 and url.endswith(group1):
 				self.del_breadcrumbs_of_user(transaction, user, session_id)
 
 		delete_duplicates = True
