@@ -149,9 +149,9 @@ class DictionaryHelper(object):
 		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', _tn.get(_tn.youAreInterestedIn) + ': <strong>' + statement_text + '</strong>')
 		bubble = self.__create_speechbubble_dict(False, True, False, '', '', text)
 
-		if save_crumb:
-			self.__append_bubble(bubbles_array, select_bubble)
-			self.__save_speechbubble(select_bubble, db_user, breadcrumbs[-1], transaction)
+		# if save_crumb:
+		# 	self.__append_bubble(bubbles_array, select_bubble)
+		# 	self.__save_speechbubble(select_bubble, db_user, breadcrumbs[-1], transaction)
 		self.__append_bubble(bubbles_array, bubble)
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
@@ -189,7 +189,7 @@ class DictionaryHelper(object):
 		if save_crumb:
 			self.__append_bubble(bubbles_array, select_bubble)
 			self.__save_speechbubble(select_bubble, db_user, breadcrumbs[-1], transaction)
-		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
+		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.now)))
 		self.__append_bubble(bubbles_array, bubble)
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
@@ -277,19 +277,17 @@ class DictionaryHelper(object):
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 
-		text				= _qh.get_text_for_argument_uid(uid, lang)
-		text				= text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
-		if text:
+		if uid != 0:
+			text			= _qh.get_text_for_argument_uid(uid, lang)
+			text			= text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
 			sys_text    	= _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:]  + '</strong>. '
-		else:  # this will be set in add_discussion_end_text, because if we have no argument, the item_dict will be empty
-			sys_text    	= _tn.get(_tn.firstOneText) + ' <strong>' + _qh.get_text_for_statement_uid(additional_id) + '</strong>.'
 
-		bubble_sys_save = self.__create_speechbubble_dict(False, True, False, '', '', sys_text)
-		bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?')
-		self.__append_bubble(bubbles_array, bubble_sys)
+			bubble_sys_save = self.__create_speechbubble_dict(False, True, False, '', '', sys_text)
+			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?')
+			self.__append_bubble(bubbles_array, bubble_sys)
 
-		if save_crumb:
-			self.__save_speechbubble(bubble_sys_save, db_user, breadcrumbs[-1], transaction)
+			if save_crumb:
+				self.__save_speechbubble(bubble_sys_save, db_user, breadcrumbs[-1], transaction)
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
@@ -352,8 +350,8 @@ class DictionaryHelper(object):
 			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, True)
 			bubble_mid = self.__create_speechbubble_dict(False, False, True, '', '', mid_text, True)
 		else:
-			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, is_end)
-			bubble_sys = self.__create_speechbubble_dict(False, not is_end, is_end, '', '', sys_text, is_end)
+			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, False)
+			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, False)
 
 		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
 		self.__append_bubble(bubbles_array, bubble_user)
@@ -622,6 +620,9 @@ class DictionaryHelper(object):
 		statements_array = []
 
 		db_argument  = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		if not db_argument:
+			return statements_array
+
 		conclusion   = _qh.get_text_for_conclusion(db_argument, lang)
 		premise, tmp = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
 		conclusion   = conclusion[0:1].lower() + conclusion[1:]
@@ -897,12 +898,13 @@ class DictionaryHelper(object):
 		:return: None
 		"""
 		logger('QueryHelper', 'add_discussion_end_text', 'main')
-		_t = Translator(lang)
+		_tn = Translator(lang)
+		current_premise = current_premise[0:1].lower() + current_premise[1:]
 
 		if at_start:
 			discussion_dict['mode'] = 'start'
-			user_text = _t.get(_t.firstPositionText) + '<br>'
-			user_text += _t.get(_t.pleaseAddYourSuggestion) if logged_in else (_t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin))
+			user_text = _tn.get(_tn.firstPositionText) + '<br>'
+			user_text += _tn.get(_tn.pleaseAddYourSuggestion) if logged_in else (_tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin))
 			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, '', '', user_text))
 			if logged_in:
 				extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
@@ -920,17 +922,21 @@ class DictionaryHelper(object):
 
 		elif at_dont_know:
 			discussion_dict['mode'] = 'dont_know'
-			sys_text  = _t.get(_t.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
-			sys_text += _t.get(_t.butOtherParticipantsDontHaveOpinionRegardingYourOpinion) + ''
-			mid_text  = _t.get(_t.discussionEnd) + ' ' + _t.get(_t.discussionEndLinkText)
+			sys_text  = _tn.get(_tn.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
+			sys_text += _tn.get(_tn.butOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
+			mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, True, False, '', '', sys_text))
 			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, '', '', mid_text))
 
 		elif at_justify:
 			discussion_dict['mode'] = 'justify'
-			user_text  = _t.get(_t.firstPremiseText1) + ' <strong>' + current_premise + '</strong>.<br>'
-			user_text += _t.get(_t.whyDoYouThinkThat) + '?'
-			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(True, False, False, '', '', user_text))
+			user_text  = _tn.get(_tn.firstPremiseText1) + ' <strong>' + current_premise + '</strong>.<br>'
+			user_text += _tn.get(_tn.firstPremiseText2)
+			# pretty prints
+			if discussion_dict['bubbles'][-1]['is_system'] and discussion_dict['bubbles'][-2]['message'] == _tn.get(_tn.now):
+				discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
+				discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
+			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, '', '', user_text))
 			extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style']	   = False
@@ -939,7 +945,7 @@ class DictionaryHelper(object):
 			extras_dict['is_reportable']		   = False
 
 		else:
-			mid_text = _t.get(_t.discussionEnd) + ' ' + (_t.get(_t.discussionEndLinkText) if logged_in else _t.get(_t.feelFreeToLogin))
+			mid_text = _tn.get(_tn.discussionEnd) + ' ' + (_tn.get(_tn.discussionEndLinkText) if logged_in else _tn.get(_tn.feelFreeToLogin))
 			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, True, False, '', '', mid_text))
 
 	def add_language_options_for_extra_dict(self, extras_dict, lang):
