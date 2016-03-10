@@ -308,7 +308,6 @@ class DictionaryHelper(object):
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 		mid_text = ''
-		bubble_mid = ''
 
 		_tg					 = TextGenerator(lang)
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -346,6 +345,7 @@ class DictionaryHelper(object):
 			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True)
 			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, True)
 			bubble_mid = self.__create_speechbubble_dict(False, False, True, '', '', mid_text, True)
+			self.__append_bubble(bubbles_array, bubble_mid)
 		else:
 			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, False)
 			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, False)
@@ -354,8 +354,10 @@ class DictionaryHelper(object):
 		self.__append_bubble(bubbles_array, bubble_user)
 		self.__append_bubble(bubbles_array, bubble_sys)
 
-		if attack == 'end':
-			self.__append_bubble(bubbles_array, bubble_mid)
+		logger('.....','.....',str(save_crumb))
+		logger('.....','.....',str(save_crumb))
+		logger('.....','.....',str(save_crumb))
+		logger('.....','.....',str(save_crumb))
 
 		if save_crumb:
 			self.__save_speechbubble(bubble_user, db_user, breadcrumbs[-1], transaction)
@@ -847,10 +849,10 @@ class DictionaryHelper(object):
 			                                                'go_back': _tn.get(_tn.goBack)}
 			# /return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
-			message_dict['count']		= _nh.count_of_new_notifications(authenticated_userid)
+			message_dict['new_count']		 = _nh.count_of_new_notifications(authenticated_userid)
 			message_dict['has_unread']   = (message_dict['count'] > 0)
-			message_dict['all']		  = _nh.get_notification_for(authenticated_userid)
-			message_dict['total']		= len(message_dict['all'])
+			message_dict['all']		     = _nh.get_notification_for(authenticated_userid)
+			message_dict['total']		 = len(message_dict['all'])
 			return_dict['notifications'] = message_dict
 
 			# add everything for the island view
@@ -1006,7 +1008,7 @@ class DictionaryHelper(object):
 		speech['is_system'] = is_system
 		speech['is_status'] = is_status
 		speech['id']        = uid
-		speech['url']       = url + '?breadcrumb=true'
+		speech['url']       = url
 		speech['message']   = message
 		speech['omit_url']  = omit_url
 
