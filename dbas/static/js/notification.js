@@ -23,6 +23,9 @@ $(function () {
 	});
 });
 
+/**
+ *
+ */
 hideInfoSpaces = function() {
 	$('#error-space').hide();
 	$('#error-description').text('');
@@ -30,6 +33,10 @@ hideInfoSpaces = function() {
 	$('#success-description').text('');
 };
 
+/**
+ *
+ * @param counter
+ */
 setNewBadgeCounter = function(counter){
 	if (counter == 0){
 		$('#header_user').next().remove();
@@ -43,6 +50,11 @@ setNewBadgeCounter = function(counter){
 	$('#unread_counter').text(' ' + counter + ' ');
 };
 
+/**
+ *
+ * @param id
+ * @param _this
+ */
 sendAjaxForReadMessage = function(id, _this){
 	hideInfoSpaces();
 	$.ajax({
@@ -70,6 +82,10 @@ sendAjaxForReadMessage = function(id, _this){
 	});
 };
 
+/**
+ *
+ * @param id
+ */
 sendAjaxForDeleteMessage = function(id) {
 	hideInfoSpaces();
 	$.ajax({
@@ -84,6 +100,7 @@ sendAjaxForDeleteMessage = function(id) {
 		if (parsedData.success.length > 0) {
 			$('#' + id).remove();
 			setNewBadgeCounter(parsedData.unread_messages);
+			$('#total_counter').text(parsedData.total_messages);
 			$('#success-space').fadeIn();
 			$('#success-description').text(parsedData.success);
 		} else {

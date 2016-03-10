@@ -623,7 +623,7 @@ class Dbas(object):
 		}
 
 	# admin page, when logged in
-	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='admin')  # or permission='use'
+	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='everybody')  # or permission='use'
 	def main_admin(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
@@ -974,8 +974,8 @@ class Dbas(object):
 				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is not valid')
 				message = _t.get(_t.mailNotValid)
 			else:
-				# getting the editors group
-				db_group = DBDiscussionSession.query(Group).filter_by(name="editors").first()
+				# getting the authors group
+				db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
 
 				# does the group exists?
 				if not db_group:
@@ -1312,7 +1312,9 @@ class Dbas(object):
 		try:
 			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).delete()
 			transaction.commit()
-			return_dict['unread_messages'] = NotificationHelper().count_of_new_notifications(self.request.authenticated_userid)
+			_nh = NotificationHelper()
+			return_dict['unread_messages'] = _nh.count_of_new_notifications(self.request.authenticated_userid)
+			return_dict['total_messages'] = str(len(_nh.get_notification_for(self.request.authenticated_userid)))
 			return_dict['error'] = ''
 			return_dict['success'] = _t.get(_t.messageDeleted)
 		except KeyError as e:

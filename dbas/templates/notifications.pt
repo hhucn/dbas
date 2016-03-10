@@ -12,9 +12,9 @@
 				<div class="col-md-12" id="message-space">
                     <h3>Notification Board</h3>
                     <span class="lead" style="margin-bottom: 1em;" i18n:translate="youHaveGot">You have got</span>
-                    <span id="unread_counter"  class="lead" style="margin-bottom: 1em;"> ${structure:extras.notifications.count} </span>
+                    <span id="unread_counter" class="lead" style="margin-bottom: 1em;"> ${structure:extras.notifications.new_count} </span>
                     <span class="lead" style="margin-bottom: 1em;" i18n:translate="unreadNotificationAnd">unread notifications and</span>
-                    <span class="lead" style="margin-bottom: 1em;"> ${structure:extras.notifications.total} </span>
+                    <span id="total_counter" class="lead" style="margin-bottom: 1em;"> ${structure:extras.notifications.total} </span>
                     <span class="lead" style="margin-bottom: 1em;" i18n:translate="total">total.</span>
 					<div id="error-space" class="alert alert-danger alert-dismissible" style="display: none; margin-bottom: 1em;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">

@@ -64,7 +64,7 @@
 					<li tal:condition="extras.logged_in" class="dropdown" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.user_options">
 						<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user">
 							<img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;${extras.users_name}
-                            <span tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.count}</span>
+                            <span tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
@@ -76,7 +76,7 @@
 							<li>
 								<a href="${request.application_url}/notifications" data-toggle="tooltip" data-placement="right" title="Notifications">
 									<img tal:condition="extras.notifications.has_unread" id="header_notifications_new" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">
-									<img tal:condition="not:extras.notifications.has_unread" id="header_notifications" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="notifications">Notifications</span><span tal:condition="extras.notifications.has_unread" class="badge" style="margin-left: 1em">${extras.notifications.count}</span>
+									<img tal:condition="not:extras.notifications.has_unread" id="header_notifications" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="notifications">Notifications</span><span tal:condition="extras.notifications.has_unread" class="badge" style="margin-left: 1em">${extras.notifications.new_count}</span>
 								</a>
 							</li>
 							<li tal:condition="extras.is_admin">
