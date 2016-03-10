@@ -1116,7 +1116,7 @@ class Dbas(object):
 
 	# ajax - send new start statement
 	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
-	def set_new_start_statement(self, for_api=False):
+	def set_new_start_statement(self, for_api=False, api_data=None):
 		"""
 		Inserts a new statement into the database, which should be available at the beginning
 		:param for_api: boolean
@@ -1134,11 +1134,18 @@ class Dbas(object):
 		return_dict = dict()
 		return_dict['error'] = ''
 		try:
-			statement   = self.request.params['statement']
-			issue       = _qh.get_issue_id(self.request)
-			slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+			if for_api and api_data:
+				nickname  = api_data["nickname"]
+				statement = api_data["statement"]
+				issue     = api_data["issue_id"]
+				slug      = api_data["slug"]
+			else:
+				nickname    = self.request.authenticated_userid
+				statement   = self.request.params['statement']
+				issue       = _qh.get_issue_id(self.request)
+				slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-			new_statement = _qh.insert_as_statements(transaction, statement, self.request.authenticated_userid, issue, is_start=True)
+			new_statement = _qh.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
