@@ -175,11 +175,13 @@ def add_start_statement(request):
 	:param request:
 	:return:
 	"""
-	data = json_bytes_to_dict(request.body)
 	api_data = prepare_user_information(request)
-	api_data.update(data)
-	return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
-
+	if api_data:
+		data = json_bytes_to_dict(request.body)
+		api_data.update(data)
+		return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+	else:
+		raise response401()
 
 
 # =============================================================================
