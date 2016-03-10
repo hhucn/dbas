@@ -337,7 +337,7 @@ def setup_discussion_database():
 	user6 = User(firstname='Tobias', surname='Escher', nickname='drtobias', email='tobias.escher@hhu.de', password=pw6, group=group1.uid, gender='m')
 	user7 = User(firstname='Michael', surname='Baurmann', nickname='michael', email='baurmann@hhu.de', password=pw7, group=group1.uid, gender='m')
 	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group1.uid, gender='m')
-	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group1.uid, gender='m')
+	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group0.uid, gender='m')
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
 	user11 = User(firstname='Raphael', surname='Bialon', nickname='raphael', email='bialon@cs.uni-duesseldorf.de', password=pw11, group=group1.uid, gender='m')
 	user12 = User(firstname='Andre', surname='Ippisch', nickname='andre', email='ippisch@cs.uni-duesseldorf.de', password=pw12, group=group1.uid, gender='m')

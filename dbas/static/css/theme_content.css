@@ -252,7 +252,7 @@
 /* http://nicolasgallagher.com/pure-css-speech-bubbles/ */
 /* http://codepen.io/ryanmcnz/pen/JDLhu */
 #dialog-speech-bubbles-space{
-    border-radius: 10px;
+    border-radius: 5px;
     background: #f3f3f3;
     padding: 1em;
 }
@@ -288,7 +288,7 @@
     position: relative;
     padding: 10px;
     box-sizing: border-box;
-    border-radius: 10px;
+    border-radius: 3px;
     box-shadow: 2px 2px 5px #888888;
     color: black;
 }

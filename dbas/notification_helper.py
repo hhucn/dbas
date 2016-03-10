@@ -22,8 +22,8 @@ class NotificationHelper:
 		root_author = oem.author_uid
 		new_author = textversion.author_uid
 		last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
-		send_for_root_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first().send_notifications
-		send_for_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first().send_notifications
+		send_for_root_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first().should_send_notifications
+		send_for_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first().should_send_notifications
 
 		# check for different authors
 		if root_author == new_author:

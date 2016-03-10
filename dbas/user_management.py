@@ -141,7 +141,11 @@ class UserHandler(object):
 
 		elif sign is '-':
 			sign = _t.get(sign)
-			answer = int2 - int1 if int2 > int1 else int1 - int2
+			if int2 > int1:
+				tmp = int1
+				int1 = int2
+				int2 = tmp
+			answer = int1 - int2
 
 		elif sign is '*':
 			sign = _t.get(sign)
@@ -157,7 +161,7 @@ class UserHandler(object):
 		question += _t.get(str(int1)) + ' ' + sign + ' ' + _t.get(str(int2)) + '?'
 		logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question + ', answer: ' + str(answer))
 
-		return question, answer
+		return question, str(answer)
 
 	def get_count_of_statements_of_user(self, user, only_edits):
 		"""

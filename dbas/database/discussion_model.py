@@ -126,22 +126,22 @@ class Settings(DiscussionBase):
 	"""
 	__tablename__ = 'settings'
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), nullable=True, primary_key=True)
-	send_mails = sa.Column(sa.Boolean, nullable=False)
-	send_notifications = sa.Column(sa.Boolean, nullable=False)
+	should_send_mails = sa.Column(sa.Boolean, nullable=False)
+	should_send_notifications = sa.Column(sa.Boolean, nullable=False)
 
 	def __init__(self, author_uid, send_mails, send_notifications):
 		"""
 		Initializes a row in current settings-table
 		"""
 		self.author_uid = author_uid
-		self.send_mails = send_mails
-		self.send_notifications = send_notifications
+		self.should_send_mails = send_mails
+		self.should_send_notifications = send_notifications
 
-	def should_send_mails(self, send_mails):
-		self.send_mails = send_mails
+	def set_send_mails(self, send_mails):
+		self.should_send_mails = send_mails
 
-	def should_send_notifications(self, send_notifications):
-		self.send_notifications = send_notifications
+	def set_send_notifications(self, send_notifications):
+		self.should_send_notifications = send_notifications
 
 
 class Statement(DiscussionBase):
@@ -338,12 +338,12 @@ class Breadcrumb(DiscussionBase):
 		self.session_id = session_id
 
 
-class History(DiscussionBase):
+class Bubble(DiscussionBase):
 	"""
-	History-table with several columns.
+	Bubbles-table with several columns.
 	Each user will be tracked
 	"""
-	__tablename__ = 'history'
+	__tablename__ = 'bubbles'
 	uid = sa.Column(sa.Integer, primary_key=True)
 	bubble_id = sa.Column(sa.Integer, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
@@ -351,17 +351,22 @@ class History(DiscussionBase):
 	is_user = sa.Column(sa.Boolean, nullable=False)
 	is_system = sa.Column(sa.Boolean, nullable=False)
 	is_status = sa.Column(sa.Boolean, nullable=False)
+	session_id = sa.Column(sa.Integer)
 	breadcrumb_uid = sa.Column(sa.Integer, sa.ForeignKey('breadcrumbs.uid'))
 
 	breadcrumbs = relationship('Breadcrumb', foreign_keys=[breadcrumb_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, bubble_id='', user=0, content='', is_user=False, is_system=False, is_status=False, breadcrumb_uid=0):
+	def __init__(self, bubble_id='', user=0, content='', is_user=False, is_system=False, is_status=False, session_id=0, breadcrumb_uid=0):
 		"""
-		Initializes a row in current history-table
+
+		:param bubble_id:
 		:param user:
-		:param url:
-		:param session_id:
+		:param content:
+		:param is_user:
+		:param is_system:
+		:param is_status:
+		:param breadcrumb_uid:
 		:return:
 		"""
 		self.bubble_id = bubble_id
@@ -370,6 +375,7 @@ class History(DiscussionBase):
 		self.is_user = is_user
 		self.is_system = is_system
 		self.is_status = is_status
+		self.session_id = session_id
 		self.breadcrumb_uid = breadcrumb_uid
 
 

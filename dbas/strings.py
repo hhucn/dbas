@@ -115,7 +115,7 @@ class Translator(object):
 		self.butOtherParticipantsDontHaveCounterArgument = 'butOtherParticipantsDontHaveCounterArgument'
 		self.butIDoNotBelieveCounterFor = 'butIDoNotBelieveCounterFor'
 		self.butIDoNotBelieveReasonForReject = 'butIDoNotBelieveReasonForReject'
-		self.butIDoNotBelieveArgument = 'butIDoNotBelieveArgument'
+		self.butIDoNotBelieveArgumentFor = 'butIDoNotBelieveArgument'
 		self.butTheyDoNotBelieveCounter = 'butTheyDoNotBelieveCounter'
 		self.butTheyDoNotBelieveArgument = 'butTheyDoNotBelieveArgument'
 		self.because = 'because'
@@ -534,7 +534,7 @@ class Translator(object):
 		en_lang[self.breadcrumbsReplyForArgument] = 'Reply for argument'
 		en_lang[self.butIDoNotBelieveCounterFor] = 'but I do not believe that this is a counter-argument for'
 		en_lang[self.butIDoNotBelieveReasonForReject] = 'but I do not believe that this is a reason for rejecting'
-		en_lang[self.butIDoNotBelieveArgument] = 'but I do not believe that this is a argument for'
+		en_lang[self.butIDoNotBelieveArgumentFor] = 'but I do not believe that this is a argument for'
 		en_lang[self.butTheyDoNotBelieveCounter] = 'but they do not believe that this is a good counter-argument for'
 		en_lang[self.butTheyDoNotBelieveArgument] = 'but they do not believe that this is a good argument for'
 		en_lang[self.butOtherParticipantsDontHaveOpinionRegardingYourOpinion] = 'but other participants do not have any opinion regarding your selection'
@@ -947,7 +947,7 @@ class Translator(object):
 		de_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'aber andere Teilnehmer haben kein Gegenargument.'
 		de_lang[self.butIDoNotBelieveCounterFor] = 'aber ich glaube nicht, dass ist ein gutes Gegenargument für'
 		de_lang[self.butIDoNotBelieveReasonForReject] = 'aber ich glaube nicht, dass das zur Aussage führt'
-		de_lang[self.butIDoNotBelieveArgument] = 'aber ich glaube nicht, dass ist ein gutes Argument für'
+		de_lang[self.butIDoNotBelieveArgumentFor] = 'aber ich glaube nicht, dass ist ein gutes Argument für'
 		de_lang[self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass ist kein gutes Gegenargument für'
 		de_lang[self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass ist kein gutes Argument für'
 		de_lang[self.butYouCounteredWith] = 'Jedoch haben Sie das Gegenargument gebracht, dass'
@@ -1353,7 +1353,7 @@ class TextGenerator(object):
 
 		if attack_type == 'undercut':
 			user_msg = r + '<strong>' + premise + '</strong>, '
-			user_msg += _t.get(_t.butIDoNotBelieveCounterFor) if is_supportive else _t.get(_t.butIDoNotBelieveArgument)
+			user_msg += _t.get(_t.butIDoNotBelieveCounterFor) if is_supportive else _t.get(_t.butIDoNotBelieveArgumentFor)
 			user_msg += ' <strong>' + conclusion + '</strong>.'
 
 		if attack_type == 'overbid':
@@ -1408,8 +1408,9 @@ class TextGenerator(object):
 
 		ret_dict['support_text'] = r + ', ' + _t.get(_t.itIsTrue) + ' <strong>' + premise + '</strong>.'
 
+		tmp = _t.get(_t.butIDoNotBelieveCounterFor) if is_attacking else _t.get(_t.butIDoNotBelieveArgumentFor)
 		ret_dict['undercut_text'] = r + ', <strong>' + premise + '</strong>, '\
-		                            + (_t.get(_t.butIDoNotBelieveArgument) if is_dont_know else _t.get(_t.butIDoNotBelieveCounterFor))\
+		                            + (_t.get(_t.butIDoNotBelieveArgumentFor) if is_dont_know else tmp)\
 		                            + ' <strong>' + conclusion + '</strong>.'
 
 		ret_dict['overbid_text'] = r + ', <strong>' + premise + '</strong>, '\
@@ -1558,7 +1559,7 @@ class TextGenerator(object):
 		counter_justi = ' <strong>' + conclusion + ', ' + _t.get(t.because).toLocaleLowerCase() + ' ' + premise + '</strong>'
 
 		ret_dict['undermine_text'] = w + ', <strong>' + premise + '</strong>.'
-		ret_dict['undercut_text'] = r + ', <strong>' + conclusion + '</strong>, ' + _t.get(_t.butIDoNotBelieveArgument) + ' ' + counter_justi + '.'
+		ret_dict['undercut_text'] = r + ', <strong>' + conclusion + '</strong>, ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + counter_justi + '.'
 		ret_dict['rebut_text'] = r + ', <strong>' + premise + '</strong> ' + _t.get(_t.iAcceptArgument) + ' <strong>' + conclusion + '</strong>. '\
 								 + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' <strong>' + conclusion + '</strong>.'
 		ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': <strong>' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() \

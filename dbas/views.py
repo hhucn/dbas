@@ -109,8 +109,6 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
 
-		token = self.request.session.new_csrf_token()
-
 		contact_error = False
 		send_message = False
 		message = ''
@@ -126,14 +124,18 @@ class Dbas(object):
 		content         = self.request.params['content'] if 'content' in self.request.params else ''
 		spam            = self.request.params['spam'] if 'spam' in self.request.params else ''
 		request_token   = self.request.params['csrf_token'] if 'csrf_token' in self.request.params else ''
+		spamquestion    = ''
 
-		# get anti-spam-question
-		spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
-		# save answer in session
-		self.request.session['antispamanswer'] = answer
+		if 'form.contact.submitted' not in self.request.params:
+			# get anti-spam-question
+			spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
+			# save answer in session
+			self.request.session['antispamanswer'] = answer
+			token = self.request.session.new_csrf_token()
 
-		if 'form.contact.submitted' in self.request.params:
+		else:
 			_t = Translator(ui_locales)
+			token = self.request.session.get_csrf_token()
 
 			logger('main_contact', 'form.contact.submitted', 'validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
@@ -158,7 +160,7 @@ class Dbas(object):
 				message = _t.get(_t.emtpyContent)
 
 			# check for empty username
-			elif (not spam) or (not spam.isdigit()) or (not int(spam) == self.request.session['antispamanswer']):
+			elif (not spam) or (not (int(spam) == int(self.request.session['antispamanswer']))):
 				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spam + ', right answer ' + str(self.request.session['antispamanswer']))
 				contact_error = True
 				message = _t.get(_t.maliciousAntiSpam)
@@ -170,13 +172,18 @@ class Dbas(object):
 				contact_error = True
 
 			else:
-				subject = 'contactDBAS''Contact D-BAS'
+				subject = 'Contact D-BAS'
 				body = _t.get(_t.name) + ': ' + username + '\n'\
 				       + _t.get(_t.mail) + ': ' + email + '\n'\
 				       + _t.get(_t.phone) + ': ' + phone + '\n'\
 				       + _t.get(_t.message) + ':\n' + content
+				EmailHelper().send_mail(self.request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
+				body = '* THIS IS A COPY OF YOUR MAIL *\n\n' + body
+				subject = '[INFO] ' + subject
 				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
+				if send_message:
+					spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 		return {
@@ -235,10 +242,9 @@ class Dbas(object):
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, nickname)
 
-		BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id, transaction, ui_locales, mainpage,
-		                                   for_api)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_start(nickname, ui_locales, session_id)
+		discussion_dict = _dh.prepare_discussion_dict_for_start(ui_locales, breadcrumbs)
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -287,10 +293,9 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, nickname)
-		BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id, transaction, ui_locales,
-		                                   mainpage, for_api)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_attitude(nickname, statement_id, ui_locales, session_id)
+		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(for_api=for_api).get_404([slug, statement_id]))
 
@@ -347,9 +352,7 @@ class Dbas(object):
 		_uh = UserHandler()
 		_uh.update_last_action(transaction, nickname)
 		logged_in = _uh.is_user_logged_in(nickname)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname,
-		                                                                 slug, session_id, transaction, ui_locales,
-		                                                                 mainpage, for_api)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			if not QueryHelper().get_text_for_statement_uid(statement_or_arg_id):
@@ -361,8 +364,7 @@ class Dbas(object):
 			                                                              supportive, ui_locales, mainpage, for_api)
 			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(nickname, transaction, statement_or_arg_id,
 			                                                                    ui_locales, breadcrumbs, has_new_crumbs,
-			                                                                    supportive, session_id, nickname,
-			                                                                    len(item_dict))
+			                                                                    supportive, nickname, len(item_dict), session_id)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales,
 			                                          nickname, mode == 't', application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -374,8 +376,7 @@ class Dbas(object):
 			# dont know
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _dh.prepare_discussion_dict_for_dont_know_reaction(nickname, transaction, argument_uid,
-			                                                                     ui_locales, breadcrumbs, has_new_crumbs,
-			                                                                     session_id)
+			                                                                     ui_locales, breadcrumbs, has_new_crumbs, session_id)
 			item_dict       = _dh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive, issue, ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, True, True, ui_locales, nickname,
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
@@ -389,9 +390,8 @@ class Dbas(object):
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
 			                                                             mainpage, for_api, logged_in)
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id, ui_locales,
-			                                                                   supportive, relation, nickname, session_id,
-			                                                                   len(item_dict))
+			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(statement_or_arg_id, ui_locales, supportive,
+			                                                                   relation, nickname, breadcrumbs, len(item_dict))
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, True, ui_locales, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -449,8 +449,7 @@ class Dbas(object):
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, nickname)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname,
-		                                                                 slug, session_id, transaction, ui_locales,
-		                                                                 mainpage, for_api)
+		                                                                 session_id, transaction, ui_locales)
 
 		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(nickname, transaction, arg_id_user, ui_locales,
 		                                                                breadcrumbs, has_new_crumbs, supportive, arg_id_sys,
@@ -508,9 +507,9 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, nickname)
-		BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id, transaction, ui_locales, mainpage, for_api)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_choosing(nickname, uid, ui_locales, is_argument, is_supportive, session_id)
+		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, ui_locales, is_argument, is_supportive, breadcrumbs)
 		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales,
 		                                                     mainpage, issue, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, False, True, True, ui_locales, nickname,
@@ -587,8 +586,8 @@ class Dbas(object):
 			'statemens_posted': statements,
 			'discussion_arg_votes': arg_vote,
 			'discussion_stat_votes': stat_vote,
-			'send_mails': db_settings.send_mails,
-			'send_notifications': db_settings.send_notifications,
+			'send_mails': db_settings.should_send_mails,
+			'send_notifications': db_settings.should_send_notifications,
 			'title_mails': _tn.get(_tn.mailSettingsTitle),
 			'title_notifications': _tn.get(_tn.notificationSettingsTitle)
 		}
@@ -1095,9 +1094,9 @@ class Dbas(object):
 			if db_user:
 				db_setting = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
 				if service == 'mail':
-					db_setting.should_send_mails(should_send)
+					db_setting.set_send_mails(should_send)
 				elif service == 'notification':
-					db_setting.should_send_notifications(should_send)
+					db_setting.set_send_notifications(should_send)
 				else:
 					error = _tn.get(_tn.keyword)
 				transaction.commit()

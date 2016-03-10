@@ -64,6 +64,7 @@ var allEditsDone                                    = 'allEditsDone';
 var allStatementsPosted                             = 'allStatementsPosted';
 var allGivenVotes                                   = 'allGivenVotes';
 var author                                          = 'author';
+var avatar                                          = 'avatar';
 var acceptItTitle 									= 'acceptItTitle';
 var contactSubmit									= 'contactSubmit';
 var correctionsSet 									= 'correctionsSet';
@@ -202,6 +203,7 @@ var urlLogout 							= 'logout';
 
 
 var dbas_en = {
+	'avatar': 'Avatar',
 	'and': 'and',
 	'andAtTheSameTime': 'and at the same time',
 	'addedEverything': 'Everything was added.',
@@ -331,6 +333,7 @@ var dbas_en = {
 };
 
 var dbas_de = {
+	'avatar': 'Avatar',
 	'and': 'und',
 	'andAtTheSameTime': 'und zur selben Zeit',
 	'addedEverything': 'Alles wurde hinzugefügt.',

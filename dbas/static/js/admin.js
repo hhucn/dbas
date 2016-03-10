@@ -68,7 +68,7 @@ function AdminInterface(){
 	this.setDataToContent = function (jsonData) {
 		//var tableElement, trElement, tbody, thead, tdElement, spanElement, i;
 		var tableElement, trElement, tElement, i, thead, tbody;
-		tElement = ['', '', '', '', '', '', '', '', '', ''];
+		tElement = ['', '', '', '', '', '', '', '', '', '', ''];
 		tableElement = $('<table>');
 		tableElement.attr('class', 'table table-striped table-hover');
 		tableElement.attr('border', '0');
@@ -83,16 +83,17 @@ function AdminInterface(){
 		}
 
 		// add header row
-		tElement[0] = $('<th>').text('#');
-		tElement[1] = $('<th>').text(_t(firstname));
-		tElement[2] = $('<th>').text(_t(surname));
-		tElement[3] = $('<th>').text(_t(nickname));
-		tElement[4] = $('<th>').text(_t(email));
-		tElement[5] = $('<th>').text(_t(group_uid));
-		tElement[6] = $('<th>').text(_t(last_action));
-		tElement[7] = $('<th>').text(_t(last_login));
-		tElement[8] = $('<th>').text(_t(registered));
-		tElement[9] = $('<th>').text(_t(gender));
+		tElement[0]  = $('<th>').text('#');
+		tElement[1]  = $('<th>').text(_t(firstname));
+		tElement[2]  = $('<th>').text(_t(surname));
+		tElement[3]  = $('<th>').text(_t(nickname));
+		tElement[4]  = $('<th>').text(_t(email));
+		tElement[5]  = $('<th>').text(_t(group_uid));
+		tElement[6]  = $('<th>').text(_t(last_action));
+		tElement[7]  = $('<th>').text(_t(last_login));
+		tElement[8]  = $('<th>').text(_t(registered));
+		tElement[9]  = $('<th>').text(_t(gender));
+		tElement[10] = $('<th>').text(_t(gender));
 
 		for (i = 0; i < tElement.length; i += 1) {
 			trElement.append(tElement[i]);
@@ -102,16 +103,17 @@ function AdminInterface(){
 
 		// add each user element
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
-			tElement[0] = $('<td>').text(value.uid);
-			tElement[1] = $('<td>').text(value.firstname);
-			tElement[2] = $('<td>').text(value.surname);
-			tElement[3] = $('<td>').text(value.nickname);
-			tElement[4] = $('<td>').text(value.email);
-			tElement[5] = $('<td>').text(value.group_uid);
-			tElement[6] = $('<td>').text(value.last_action);
-			tElement[7] = $('<td>').text(value.last_login);
-			tElement[8] = $('<td>').text(value.registered);
-			tElement[9] = $('<td>').text(value.gender);
+			tElement[0]  = $('<td>').text(value.uid);
+			tElement[1]  = $('<td>').text(value.firstname);
+			tElement[2]  = $('<td>').text(value.surname);
+			tElement[3]  = $('<td>').text(value.nickname);
+			tElement[4]  = $('<td>').text(value.email);
+			tElement[5]  = $('<td>').text(value.group_uid);
+			tElement[6]  = $('<td>').text(value.last_action);
+			tElement[7]  = $('<td>').text(value.last_login);
+			tElement[8]  = $('<td>').text(value.registered);
+			tElement[9]  = $('<td>').text(value.gender);
+			tElement[10] = $('<td>').html('<img src=' + value.avatar + ' style="height: 50%;">');
 
 			trElement = $('<tr>');
 			for (i = 0; i < tElement.length; i += 1) {

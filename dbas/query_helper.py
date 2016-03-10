@@ -1054,6 +1054,7 @@ class QueryHelper(object):
 		if not is_admin:
 			return return_dict
 
+		_uh = UserHandler()
 		db_users = DBDiscussionSession.query(User).all()
 		for index, user in enumerate(db_users):
 			tmp_dict = dict()
@@ -1067,6 +1068,7 @@ class QueryHelper(object):
 			tmp_dict['last_action'] = self.sql_timestamp_pretty_print(str(user.last_action), lang)
 			tmp_dict['last_login']  = self.sql_timestamp_pretty_print(str(user.last_login), lang)
 			tmp_dict['registered']  = self.sql_timestamp_pretty_print(str(user.registered), lang)
+			tmp_dict['avatar']      = _uh.get_profile_picture(user)
 			return_dict[str(index)] = tmp_dict
 
 		return return_dict
@@ -1092,11 +1094,11 @@ class QueryHelper(object):
 			tmp_dict['uid'] = str(argument.uid)
 			tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
 			db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument.uid).all()
-			db_valid_votes = DBDiscussionSession.query(Vote).filter(and_(VoteArgument.argument_uid == argument.uid,
-			                                                             VoteArgument.is_valid == True)).all()
-			db_valid_upvotes = DBDiscussionSession.query(Vote).filter(and_(VoteArgument.argument_uid == argument.uid,
-			                                                               VoteArgument.is_valid == True,
-			                                                               VoteArgument.is_up_vote)).all()
+			db_valid_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+			                                                                     VoteArgument.is_valid == True)).all()
+			db_valid_upvotes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+			                                                                       VoteArgument.is_valid == True,
+			                                                                       VoteArgument.is_up_vote)).all()
 			tmp_dict['votes'] = len(db_votes)
 			tmp_dict['valid_votes'] = len(db_valid_votes)
 			tmp_dict['valid_upvotes'] = len(db_valid_upvotes)

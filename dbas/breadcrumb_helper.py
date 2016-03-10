@@ -4,7 +4,7 @@ from sqlalchemy import and_, func
 from slugify import slugify
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Breadcrumb, Issue, History
+from .database.discussion_model import Argument, Statement, User, TextVersion, Breadcrumb, Issue, Bubble
 from .logger import logger
 from .strings import Translator
 from .query_helper import QueryHelper
@@ -16,18 +16,17 @@ from .url_manager import UrlManager
 
 class BreadcrumbHelper(object):
 
-	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, for_api):
+	def save_breadcrumb(self, path, user, session_id, transaction, lang):
 		"""
 
 		:param path:
 		:param user:
-		:param slug:
+
 		:param session_id:
 		:param transaction:
 		:param lang:
 		:param application_url:
-		:param delete_duplicates:
-		:param for_api:
+
 		:return: all breadcrumbs, boolean (if a crumb was inserted)
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -36,21 +35,17 @@ class BreadcrumbHelper(object):
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			if not db_user:
 				return [], False
-			
-		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
-		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
-		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
-		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
+		logger('BreadcrumbHelper', 'save_breadcrumb', 'path: ' + path + ', user ' + user)
 
 		# delete by slugs (dbas version)
-		expr_dbas = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), path)
+		expr_dbas = re.search(re.compile(r"/?discuss/?[a-zA-Z0-9,-]*"), path)
 		if expr_dbas:
 			group0 = expr_dbas.group(0)
 			if group0 and path.endswith(group0):
 				self.del_breadcrumbs_of_user(transaction, user, session_id)
 
 		# delete by slugs (api version)
-		expr_api = re.search(re.compile(r"api/[a-zA-Z0-9,-]*"), path)
+		expr_api = re.search(re.compile(r"/?api/[a-zA-Z0-9,-]*"), path)
 		if expr_api:
 			group1 = expr_api.group(0)
 			if group1 and path.endswith(group1):
@@ -94,10 +89,10 @@ class BreadcrumbHelper(object):
 		if user == 'anonymous':
 			db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
 			                                                                   Breadcrumb.session_id == session_id)).all()
+			logger('BreadcrumbHelper', 'get_breadcrumbs', 'user ' + str(db_user.uid) + ', session_id ' + session_id + ', count ' + str(len(db_breadcrumbs)))
 		else:
 			db_breadcrumbs = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all()
-
-		logger('BreadcrumbHelper', 'get_breadcrumbs', 'user ' + str(user) + ', count ' + str(len(db_breadcrumbs)))
+			logger('BreadcrumbHelper', 'get_breadcrumbs', 'user ' + str(db_user.uid) + ', count ' + str(len(db_breadcrumbs)))
 
 		if not db_breadcrumbs:
 			return dict()
@@ -113,9 +108,8 @@ class BreadcrumbHelper(object):
 			hist = dict()
 			hist['index']       = str(index)
 			hist['uid']         = crumb.uid
-			hist['url']         = str(crumb.url) + '?breadcrumb=true'  # add this for deleting traces
+			hist['url']         = str(crumb.url)
 			hist['text']        = url_text
-			hist['shorttext']   = hist['text'][0:30] + '...' if len(hist['text']) > 35 else hist['text']
 			breadcrumbs.append(hist)
 
 		return breadcrumbs
@@ -194,14 +188,16 @@ class BreadcrumbHelper(object):
 		:param session_id: current session id
 		:return: undefined
 		"""
-		# maybe we are anonymous
-		if user:
-			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if user == 'anonymous':
+			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user', 'user ' + str(db_user.uid) + ' with session_id ' + str(session_id))
+			DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
+			                                                  Breadcrumb.session_id == session_id)).delete()
+			DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
+			                                              Bubble.session_id == session_id)).delete()
+		else:
 			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user', 'user ' + str(db_user.uid))
-			if user == 'anonymous':
-				DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
-				                                                  Breadcrumb.session_id == session_id)).delete()
-			else:
-				DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
-				DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
-			transaction.commit()
+			DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
+			DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid).delete()
+		transaction.commit()
