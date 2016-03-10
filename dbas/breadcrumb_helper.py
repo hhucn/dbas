@@ -37,6 +37,9 @@ class BreadcrumbHelper(object):
 			if not db_user:
 				return [], False
 
+		if path.startswith('/'):
+			path = path[1:]
+			
 		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
 
 		url = UrlManager(application_url, slug, for_api).get_url(path)
@@ -49,7 +52,7 @@ class BreadcrumbHelper(object):
 				self.del_breadcrumbs_of_user(transaction, user, session_id)
 
 		# delete by slugs (api version)
-		expr_api = re.search(re.compile(r"api/[a-zA-Z0-9,-]*"), path[1:])
+		expr_api = re.search(re.compile(r"api/[a-zA-Z0-9,-]*"), path)
 		if expr_api:
 			group1 = expr_api.group(0)
 			if group1 and url.endswith(group1):
