@@ -18,7 +18,7 @@
 	<title>${project} - ${title}</title>
 </head>
 
-<img src="${request.static_url('dbas:static/images/beta.png')}" alt="beta logo" style="position:fixed; z-index:10; top:65px; width:100px;">
+<img src="${request.static_url('dbas:static/images/alpha.png')}" alt="alpha logo" style="position:fixed; z-index:10; top:65px; width:100px;">
 
 <body>
 	<input type="hidden" id="hidden_language" value="${language}">

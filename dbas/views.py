@@ -290,12 +290,10 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, nickname)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug,
-		                                                                 session_id, transaction, ui_locales,
-		                                                                 mainpage, del_breadcrumb, for_api)
+		BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id, transaction, ui_locales,
+		                                   mainpage, del_breadcrumb, for_api)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_attitude(nickname, transaction, statement_id,
-		                                              ui_locales, breadcrumbs, has_new_crumbs, session_id)
+		discussion_dict = _dh.prepare_discussion_dict_for_attitude(nickname, statement_id, ui_locales, session_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(for_api=for_api).get_404([slug, statement_id]))
 
@@ -380,7 +378,7 @@ class Dbas(object):
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _dh.prepare_discussion_dict_for_dont_know_reaction(nickname, transaction, argument_uid,
 			                                                                     ui_locales, breadcrumbs, has_new_crumbs,
-			                                                                     supportive, statement_or_arg_id, session_id)
+			                                                                     session_id)
 			item_dict       = _dh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive, issue, ui_locales, mainpage, for_api)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, True, True, ui_locales, nickname,
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)

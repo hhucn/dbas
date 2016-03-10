@@ -68,13 +68,13 @@ class DictionaryHelper(object):
 		return_dict = json.dumps(raw_dict, ensure_ascii)
 		return return_dict
 
-	def string_to_json(self, string):
+	def string_to_json(self, s):
 		"""
 
-		:param string:
+		:param s:
 		:return:
 		"""
-		return json.loads(string)
+		return json.loads(s)
 
 	def save_statement_row_in_dictionary(self, statement_row):
 		"""
@@ -104,11 +104,8 @@ class DictionaryHelper(object):
 		"""
 
 		:param user:
-		:param transaction:
-		:param uid:
 		:param lang:
-		:param breadcrumbs:
-		:param save_crumb:
+		:param session_id:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_start', 'at_start')
@@ -124,15 +121,13 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_attitude(self, user, transaction, uid, lang, breadcrumbs, save_crumb, session_id):
+	def prepare_discussion_dict_for_attitude(self, user, uid, lang, session_id):
 		"""
 
 		:param user:
-		:param transaction:
 		:param uid:
 		:param lang:
-		:param breadcrumbs:
-		:param save_crumb:
+		:param session_id:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_attitude', 'at_attitude')
@@ -166,6 +161,7 @@ class DictionaryHelper(object):
 		:param breadcrumbs:
 		:param save_crumb:
 		:param is_supportive:
+		:param session_id:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
@@ -198,15 +194,12 @@ class DictionaryHelper(object):
 		"""
 
 		:param user:
-		:param transaction:
 		:param uid:
 		:param lang:
-		:param breadcrumbs:
-		:param save_crumb:
 		:param is_supportive:
 		:param attack:
-		:param logged_id:
-		:param additional_id:
+		:param logged_in:
+		:param session_id:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'prepare_discussion_dict_for_justify_argument')
@@ -258,7 +251,7 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_dont_know_reaction(self, user, transaction, uid, lang, breadcrumbs, save_crumb, supportive, additional_id, session_id):
+	def prepare_discussion_dict_for_dont_know_reaction(self, user, transaction, uid, lang, breadcrumbs, save_crumb, session_id):
 		"""
 
 		:param user:
@@ -267,8 +260,7 @@ class DictionaryHelper(object):
 		:param lang:
 		:param breadcrumbs:
 		:param save_crumb:
-		:param supportive:
-		:param additional_id:
+		:param session_id:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_dont_know_reaction', 'at_dont_know')
@@ -305,6 +297,7 @@ class DictionaryHelper(object):
 		:param is_supportive:
 		:param additional_id:
 		:param attack:
+		:param session_id:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
@@ -314,6 +307,8 @@ class DictionaryHelper(object):
 		bubbles_array  = self.__create_speechbubble_history(db_user, session_id)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
+		mid_text = ''
+		bubble_mid = ''
 
 		_tg					 = TextGenerator(lang)
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -372,13 +367,11 @@ class DictionaryHelper(object):
 		"""
 
 		:param user:
-		:param transaction:
 		:param uid:
 		:param lang:
-		:param breadcrumbs:
-		:param save_crumb:
 		:param is_uid_argument:
 		:param is_supportive:
+		:param session_id:
 		:return:
 		"""
 		_tn			   = Translator(lang)
@@ -743,7 +736,6 @@ class DictionaryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 		_qh = QueryHelper()
 		_um = UrlManager(application_url, slug, for_api)
-		_t = Translator(lang)
 		conclusion = argument_or_statement_id if not is_argument else 0
 		argument = argument_or_statement_id if is_argument else 0
 
@@ -757,10 +749,10 @@ class DictionaryHelper(object):
 			text, uid = _qh.get_text_for_premisesgroup_uid(group_id, lang)
 
 			# get attack for each premise, so the urls will be unique
-			logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'premisesgroup_uid: ' + str(group_id)
-			       + ', conclusion_uid: ' + str(conclusion)
-			       + ', argument_uid: ' + str(argument)
-			       + ', is_supportive: ' + str(is_supportive))
+			logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'premisesgroup_uid: ' + str(group_id) +
+			       ', conclusion_uid: ' + str(conclusion) +
+			       ', argument_uid: ' + str(argument) +
+			       ', is_supportive: ' + str(is_supportive))
 			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == group_id,
 																		  Argument.conclusion_uid == conclusion,
 																		  Argument.argument_uid == argument,
@@ -1067,7 +1059,7 @@ class DictionaryHelper(object):
 		"""
 		# sanity check
 		if len(bubbles_array) > 2:
-			for i in range(-3,0):
+			for i in range(-3, 0):
 				if bubbles_array[i]['message'] == bubble['message']:
 					bubbles_array.remove(bubbles_array[i])
 

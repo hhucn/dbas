@@ -79,6 +79,7 @@ def setup_api_db():
 	DBAPISession.add_all([mapping1, mapping2])
 	DBAPISession.flush()
 
+
 def setup_news_db():
 	news01 = News(title='Anonymous users after vacation',
 				  date='24.09.2015',
@@ -477,6 +478,7 @@ def setup_discussion_database():
 	textversion99 = TextVersion(content="For debugging argument 94. Thus this supports 'It is important, that pets are[...]'", author=user2.uid)
 	textversion100 = TextVersion(content="For debugging argument 95. Thus this supports 'Cats are little, sweet and inn[...]'", author=user2.uid)
 	textversion101 = TextVersion(content="For debugging argument 96. Thus this supports 'Do you have ever seen a sphinx[...]'", author=user2.uid)
+	textversion109 = TextVersion(content="It is much work to take care of both animals.", author=user2.uid)
 
 	textversion102 = TextVersion(content="We should shut down university park.", author=user2.uid)
 	textversion103 = TextVersion(content="Shutting down university park will save 100.000$ a year.", author=user2.uid)
@@ -485,8 +487,6 @@ def setup_discussion_database():
 	textversion106 = TextVersion(content="We should close public swimming pools.", author=user2.uid)
 	textversion107 = TextVersion(content="The mayor should increase the taxes", author=user2.uid)
 	textversion108 = TextVersion(content="The number of police patrols should be increased.", author=user2.uid)
-
-	textversion109 = TextVersion(content="It is much work to take care of both animals.", author=user2.uid)
 
 	DBDiscussionSession.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6, textversion7,
 	                             textversion8, textversion9, textversion10, textversion11, textversion12, textversion13, textversion14,
@@ -607,6 +607,7 @@ def setup_discussion_database():
 	statement99 = Statement(textversion=textversion99.uid, is_startpoint=False, issue=issue1.uid)
 	statement100 = Statement(textversion=textversion100.uid, is_startpoint=False, issue=issue1.uid)
 	statement101 = Statement(textversion=textversion101.uid, is_startpoint=False, issue=issue1.uid)
+	statement109 = Statement(textversion=textversion109.uid, is_startpoint=False, issue=issue1.uid)
 
 	statement102 = Statement(textversion=textversion102.uid, is_startpoint=True, issue=issue2.uid)
 	statement103 = Statement(textversion=textversion103.uid, is_startpoint=False, issue=issue2.uid)
@@ -615,8 +616,6 @@ def setup_discussion_database():
 	statement106 = Statement(textversion=textversion106.uid, is_startpoint=True, issue=issue2.uid)
 	statement107 = Statement(textversion=textversion107.uid, is_startpoint=True, issue=issue2.uid)
 	statement108 = Statement(textversion=textversion108.uid, is_startpoint=False, issue=issue2.uid)
-
-	statement109 = Statement(textversion=textversion109.uid, is_startpoint=False, issue=issue1.uid)
 
 	DBDiscussionSession.add_all([statement1, statement2, statement3, statement4, statement5, statement6, statement7, statement8,
 	                             statement9, statement10, statement11, statement12, statement13, statement14, statement15, statement16,
@@ -845,6 +844,7 @@ def setup_discussion_database():
 	premisegroup94 = PremiseGroup(author=user2.uid)
 	premisegroup95 = PremiseGroup(author=user2.uid)
 	premisegroup96 = PremiseGroup(author=user2.uid)
+	premisegroup104 = PremiseGroup(author=user2.uid)
 
 	premisegroup97 = PremiseGroup(author=user2.uid)
 	premisegroup98 = PremiseGroup(author=user2.uid)
@@ -853,8 +853,6 @@ def setup_discussion_database():
 	premisegroup101 = PremiseGroup(author=user2.uid)
 	premisegroup102 = PremiseGroup(author=user2.uid)
 	premisegroup103 = PremiseGroup(author=user2.uid)
-
-	premisegroup104 = PremiseGroup(author=user2.uid)
 
 	DBDiscussionSession.add_all([premisegroup1, premisegroup2, premisegroup3, premisegroup4, premisegroup5, premisegroup6,
 	                             premisegroup7, premisegroup8, premisegroup9, premisegroup10, premisegroup11, premisegroup12,
@@ -973,6 +971,7 @@ def setup_discussion_database():
 	premise95 = Premise(premisesgroup=premisegroup94.uid, statement=statement99.uid, is_negated=False, author=user2.uid, issue=issue1.uid)
 	premise96 = Premise(premisesgroup=premisegroup95.uid, statement=statement100.uid, is_negated=False, author=user2.uid, issue=issue1.uid)
 	premise97 = Premise(premisesgroup=premisegroup96.uid, statement=statement101.uid, is_negated=False, author=user2.uid, issue=issue1.uid)
+	premise105 = Premise(premisesgroup=premisegroup104.uid, statement=statement109.uid, is_negated=False, author=user2.uid, issue=issue1.uid)
 
 	premise98 = Premise(premisesgroup=premisegroup97.uid, statement=statement102.uid, is_negated=False, author=user2.uid, issue=issue2.uid)
 	premise99 = Premise(premisesgroup=premisegroup98.uid, statement=statement103.uid, is_negated=False, author=user2.uid, issue=issue2.uid)
@@ -981,7 +980,6 @@ def setup_discussion_database():
 	premise102 = Premise(premisesgroup=premisegroup101.uid, statement=statement106.uid, is_negated=False, author=user2.uid, issue=issue2.uid)
 	premise103 = Premise(premisesgroup=premisegroup102.uid, statement=statement107.uid, is_negated=False, author=user2.uid, issue=issue2.uid)
 	premise104 = Premise(premisesgroup=premisegroup103.uid, statement=statement108.uid, is_negated=False, author=user2.uid, issue=issue2.uid)
-	premise105 = Premise(premisesgroup=premisegroup104.uid, statement=statement109.uid, is_negated=False, author=user2.uid, issue=issue1.uid)
 
 	DBDiscussionSession.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9,
 	                             premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17, premise18,
