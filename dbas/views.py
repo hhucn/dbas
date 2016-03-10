@@ -237,12 +237,10 @@ class Dbas(object):
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, nickname)
 
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id,
-		                                                                 transaction, ui_locales, mainpage, del_breadcrumb,
-		                                                                 for_api)
+		BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id, transaction, ui_locales, mainpage,
+		                                   del_breadcrumb, for_api)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_start(nickname, transaction, issue, ui_locales,
-		                                              breadcrumbs, has_new_crumbs, session_id)
+		discussion_dict = _dh.prepare_discussion_dict_for_start(nickname, ui_locales, session_id)
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -270,6 +268,7 @@ class Dbas(object):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
+		:param api_data:
 		:return: dictionary
 		"""
 		# '/discuss/{slug}/attitude/{statement_id}'
@@ -325,6 +324,7 @@ class Dbas(object):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
+		:param api_data:
 		:return: dictionary
 		"""
 		# '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
@@ -340,7 +340,7 @@ class Dbas(object):
 		mode                = matchdict['mode'] if 'mode' in matchdict else ''
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
-		related_arg         = matchdict['relation'][1] if len(matchdict['relation']) > 1 else -1
+		# related_arg         = matchdict['relation'][1] if len(matchdict['relation']) > 1 else -1
 		del_breadcrumb      = self.request.params['breadcrumb'] if 'breadcrumb' in self.request.params else False
 
 		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
@@ -392,10 +392,8 @@ class Dbas(object):
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, transaction, statement_or_arg_id,
-			                                                                   ui_locales, breadcrumbs, has_new_crumbs,
-			                                                                   supportive, relation, nickname, related_arg,
-			                                                                   session_id)
+			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id, ui_locales,
+			                                                                   supportive, relation, nickname, session_id)
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
 			                                                             mainpage, for_api, logged_in)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, True, ui_locales, nickname,
@@ -428,6 +426,7 @@ class Dbas(object):
 		"""
 		View configuration for the content view.
 		:param for_api: Boolean
+		:param api_data:
 		:return: dictionary
 		"""
 		# '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
@@ -488,6 +487,7 @@ class Dbas(object):
 		"""
 		View configuration for the choosing view.
 		:param for_api: Boolean
+		:param api_data:
 		:return: dictionary
 		"""
 		# '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
@@ -515,12 +515,10 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		UserHandler().update_last_action(transaction, nickname)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id,
-		                                                                 transaction, ui_locales, mainpage, del_breadcrumb,
-		                                                                 for_api)
+		BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, slug, session_id, transaction, ui_locales, mainpage,
+		                                   del_breadcrumb, for_api)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_choosing(nickname, transaction, uid, ui_locales, breadcrumbs,
-		                                                           has_new_crumbs, is_argument, is_supportive, session_id)
+		discussion_dict = _dh.prepare_discussion_dict_for_choosing(nickname, uid, ui_locales, is_argument, is_supportive, session_id)
 		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales,
 		                                                     mainpage, issue, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, False, True, True, ui_locales, nickname,
@@ -1499,7 +1497,7 @@ class Dbas(object):
 		:return: json-set with everything
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_users_with_same_opinion', 'def', 'main')  # TODO TERESA
+		logger('get_users_with_same_opinion', 'def', 'main')
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)

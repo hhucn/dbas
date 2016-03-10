@@ -1310,11 +1310,10 @@ class TextGenerator(object):
 
 		return ret_text
 
-	def get_header_for_users_confrontation_response(self, confrontation, premise, attack_type, conclusion,
-	                                                start_lower_case, is_supportive, is_logged_in):
+	def get_header_for_users_confrontation_response(self, premise, attack_type, conclusion, start_lower_case,
+	                                                is_supportive, is_logged_in):
 		"""
 		Based on the users reaction, text will be build.
-		:param confrontation: choosen confrontation
 		:param premise: current premise
 		:param attack_type: type of the attack
 		:param conclusion: current conclusion
@@ -1324,8 +1323,8 @@ class TextGenerator(object):
 		:return: string
 		"""
 		_t         = Translator(self.lang)
-		intro      = _t.get(_t.sentencesOpenersForArguments[0])  + ': '
-		system     = ''
+		user_msg   = ''
+		system_msg = ''
 		premise    = premise[0:1].lower() + premise[1:]
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
 
@@ -1341,38 +1340,38 @@ class TextGenerator(object):
 
 		# different cases
 		if attack_type == 'undermine':
-			intro += _t.get(_t.itIsFalse) + ' <strong>' + premise + '</strong>.'
+			user_msg = _t.get(_t.itIsFalse) + ' <strong>' + premise + '</strong>.'
 
 		if attack_type == 'support':
-			intro += _t.get(_t.itIsTrue) if is_supportive else _t.get(_t.itIsFalse)
-			intro += ' <strong>' + conclusion + ' '
-			intro += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
-			intro += '</strong>.'
+			user_msg = _t.get(_t.itIsTrue) if is_supportive else _t.get(_t.itIsFalse)
+			user_msg += ' <strong>' + conclusion + ' '
+			user_msg += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
+			user_msg += '</strong>.'
 
 		if attack_type == 'undercut':
-			intro += r + '<strong>' + premise + '</strong>, '
-			intro += _t.get(_t.butIDoNotBelieveCounterFor) if is_supportive else _t.get(_t.butIDoNotBelieveArgument)
-			intro += ' <strong>' + conclusion + '</strong>.'
+			user_msg = r + '<strong>' + premise + '</strong>, '
+			user_msg += _t.get(_t.butIDoNotBelieveCounterFor) if is_supportive else _t.get(_t.butIDoNotBelieveArgument)
+			user_msg += ' <strong>' + conclusion + '</strong>.'
 
 		if attack_type == 'overbid':
-			intro += r + '<strong>' + premise + '</strong>, '
-			intro += _t.get(_t.andIDoBelieveCounterFor) if is_supportive else _t.get(_t.andIDoBelieveArgument)
-			intro += ' <strong>' + conclusion + '</strong>. '
-			intro += _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)
-			intro += ' <strong>' + conclusion + '</strong>.'
+			user_msg = r + '<strong>' + premise + '</strong>, '
+			user_msg += _t.get(_t.andIDoBelieveCounterFor) if is_supportive else _t.get(_t.andIDoBelieveArgument)
+			user_msg += ' <strong>' + conclusion + '</strong>. '
+			user_msg += _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)
+			user_msg += ' <strong>' + conclusion + '</strong>.'
 
 		if attack_type == 'rebut':
-			intro += r + '<strong>' + premise + '</strong>, '
-			intro += _t.get(_t.iAcceptCounter) if is_supportive else _t.get(_t.iAcceptArgument)
-			intro += ' <strong>' + conclusion + '</strong>. '
-			intro += _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) if is_supportive else _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting)
-			intro += ' <strong>' + conclusion + '</strong>.'
+			user_msg = r + '<strong>' + premise + '</strong>, '
+			user_msg += _t.get(_t.iAcceptCounter) if is_supportive else _t.get(_t.iAcceptArgument)
+			user_msg += ' <strong>' + conclusion + '</strong>. '
+			user_msg += _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) if is_supportive else _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting)
+			user_msg += ' <strong>' + conclusion + '</strong>.'
 
 		# is logged in?
 		if is_logged_in:
-			system  = _t.get(_t.canYouGiveAReasonForThat)
+			system_msg  = _t.get(_t.canYouGiveAReasonForThat)
 
-		return intro, system
+		return user_msg, system_msg
 
 	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False):
 		"""
