@@ -7,7 +7,7 @@ from cornice import Service
 
 import transaction
 
-from api.lib import response401
+from api.lib import response401, json_bytes_to_dict
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from api.login import valid_token, validate_credentials, validate_login
@@ -52,6 +52,13 @@ zinit_blank = Service(name='api_init_blank',
 					  path='/',
 					  description="Discussion Init",
 					  cors_policy=cors_policy)
+#
+# Add new data to DBAS
+#
+start_statement = Service(name="start_statement",
+                          path="/add/start_statement",
+                          description="Add new start statement to issue",
+                          cors_policy=cors_policy)
 
 #
 # Other Services
@@ -156,6 +163,23 @@ def discussion_init(request):
 	"""
 	api_data = prepare_user_information(request)
 	return Dbas(request).discussion_init(for_api=True, api_data=api_data)
+
+
+#
+# Add new statements / positions
+#
+@start_statement.post(validators=validate_login)
+def add_start_statement(request):
+	"""
+	Add new start statement to issue.
+	:param request:
+	:return:
+	"""
+	data = json_bytes_to_dict(request.body)
+	api_data = prepare_user_information(request)
+	api_data.update(data)
+	return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+
 
 
 # =============================================================================
