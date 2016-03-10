@@ -813,6 +813,8 @@ class DictionaryHelper(object):
 		return_dict['restart_url']		             = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
 		return_dict['logged_in']		             = is_logged_in
 		return_dict['users_name']		             = str(authenticated_userid)
+		return_dict['add_premise_container_style']   = 'display: none'
+		return_dict['add_statement_container_style'] = 'display: none'
 		self.add_language_options_for_extra_dict(return_dict, lang)
 
 		if not for_api:
@@ -823,8 +825,6 @@ class DictionaryHelper(object):
 			return_dict['show_bar_icon']	             = show_bar_icon
 			return_dict['show_display_style']            = show_display_styles
 			return_dict['show_expert_icon']              = show_expert_icon
-			return_dict['add_premise_container_style']   = 'display: none'
-			return_dict['add_statement_container_style'] = 'display: none'
 			return_dict['close_premise_container']	     = True
 			return_dict['close_statement_container']	 = True
 			return_dict['title']						 = {'barometer': _tn.get(_tn.opinionBarometer),

@@ -65,7 +65,7 @@ def main(global_config, **settings):
 	config.include('pyramid_chameleon')
 	config.include('pyramid_mailer')
 	config.include('pyramid_beaker')
-	# config.include('pyramid_hsts')
+	config.include('pyramid_hsts')
 
 	# adding all routes
 	config.add_static_view('static', 'static', cache_max_age=3600)

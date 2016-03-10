@@ -182,6 +182,10 @@ function AjaxSiteHandler() {
 		});
 	};
 
+	/**
+	 *
+	 * @param uid
+	 */
 	this.getMoreInfosAboutArgument = function(uid){
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
