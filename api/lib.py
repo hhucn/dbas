@@ -11,7 +11,7 @@ from webob import Response, exc
 
 def logger():
 	"""
-	Create a logger
+	Create a logger.
 	:return:
 	"""
 	log = logging.getLogger()
@@ -19,9 +19,19 @@ def logger():
 	return log
 
 
+def json_bytes_to_dict(col):
+	"""
+	Given a json object as bytes, convert it to a Python dictionary.
+	:param col: bytes
+	:return: dict
+	"""
+	return json.loads(col.decode("utf-8"))
+
+
+
 class response401(exc.HTTPError):
 	"""
-	Return a 401 HTTP Error message if user is not authenticated
+	Return a 401 HTTP Error message if user is not authenticated.
 	:return:
 	"""
 	def __init__(self, msg='Unauthorized'):
