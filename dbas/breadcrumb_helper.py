@@ -77,14 +77,15 @@ class BreadcrumbHelper(object):
 			is_new_crumb = True
 		transaction.commit()
 
-		return self.get_breadcrumbs(user, session_id, lang), is_new_crumb
+		return self.get_breadcrumbs(user, session_id, lang, for_api), is_new_crumb
 
-	def get_breadcrumbs(self, user, session_id, lang):
+	def get_breadcrumbs(self, user, session_id, lang, for_api):
 		"""
 
 		:param user:
 		:param session_id:
 		:param lang:
+		:param for_api:
 		:return:
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -106,7 +107,7 @@ class BreadcrumbHelper(object):
 		breadcrumbs = []
 		for index, crumb in enumerate(db_breadcrumbs):
 			try:
-				url_text = self.__get_text_for_url__(crumb.url, lang)
+				url_text = self.__get_text_for_url__(crumb.url, lang, for_api)
 			except:
 				logger('BreadcrumbHelper', 'get_breadcrumbs', 'error on getting text for ' + crumb.url, error=True)
 				return dict()
@@ -128,11 +129,12 @@ class BreadcrumbHelper(object):
 			return None
 		return DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).order_by(Breadcrumb.uid.desc()).first()
 
-	def __get_text_for_url__(self, url, lang):
+	def __get_text_for_url__(self, url, lang, for_api):
 		"""
 
 		:param url:
 		:param lang:
+		:param for_api:
 		:return:
 		"""
 		_t = Translator(lang)
@@ -151,7 +153,7 @@ class BreadcrumbHelper(object):
 
 		elif '/justify/' in url:
 			splitted = url.split('/')
-			uid  = splitted[6]
+			uid  = splitted[3] if for_api else splitted[6]
 			text = _qh.get_text_for_statement_uid(uid) if len(splitted) == 8 else _qh.get_text_for_argument_uid(uid, lang)
 			text = text[0:1].lower() + text[1:]
 			# 7 choose action for start statemens
