@@ -151,7 +151,8 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_justify_statement(self, user, transaction, uid, lang, breadcrumbs, save_crumb, is_supportive, session_id):
+	def prepare_discussion_dict_for_justify_statement(self, user, transaction, uid, lang, breadcrumbs, save_crumb,
+	                                                  is_supportive, session_id, logged_in, count_of_items):
 		"""
 
 		:param user:
@@ -162,6 +163,8 @@ class DictionaryHelper(object):
 		:param save_crumb:
 		:param is_supportive:
 		:param session_id:
+		:param logged_in:
+		:param count_of_items:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
@@ -188,9 +191,13 @@ class DictionaryHelper(object):
 		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.now)))
 		self.__append_bubble(bubbles_array, bubble)
 
+		if not logged_in and count_of_items:
+			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItem)))
+
+
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_justify_argument(self, user, uid, lang, is_supportive, attack, logged_in, session_id):
+	def prepare_discussion_dict_for_justify_argument(self, user, uid, lang, is_supportive, attack, logged_in, session_id, count_of_items):
 		"""
 
 		:param user:
@@ -200,6 +207,7 @@ class DictionaryHelper(object):
 		:param attack:
 		:param logged_in:
 		:param session_id:
+		:param count_of_items:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'prepare_discussion_dict_for_justify_argument')
@@ -245,9 +253,12 @@ class DictionaryHelper(object):
 		# 	self.__append_bubble(bubbles_array, bubble_intro)
 		# bubble_intro['message'] = bubble_intro['message'] + ' ' + sys_msg
 
-		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
+		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.now)))
 		# self.__append_bubble(bubbles_array, bubble_intro)
 		self.__append_bubble(bubbles_array, bubble_question)
+
+		if not logged_in and count_of_items:
+			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItem)))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
@@ -849,8 +860,8 @@ class DictionaryHelper(object):
 			                                                'go_back': _tn.get(_tn.goBack)}
 			# /return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
-			message_dict['new_count']		 = _nh.count_of_new_notifications(authenticated_userid)
-			message_dict['has_unread']   = (message_dict['count'] > 0)
+			message_dict['new_count']    = _nh.count_of_new_notifications(authenticated_userid)
+			message_dict['has_unread']   = (message_dict['new_count'] > 0)
 			message_dict['all']		     = _nh.get_notification_for(authenticated_userid)
 			message_dict['total']		 = len(message_dict['all'])
 			return_dict['notifications'] = message_dict

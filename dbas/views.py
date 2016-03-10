@@ -30,7 +30,7 @@ from .url_manager import UrlManager
 from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
-version = '0.5.5'
+version = '0.5.6'
 header = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
@@ -352,18 +352,19 @@ class Dbas(object):
 		                                                                 mainpage, for_api)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
-			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
-			# justifying position
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(nickname, transaction, statement_or_arg_id,
-			                                              ui_locales, breadcrumbs, has_new_crumbs, supportive, session_id)
-			if not discussion_dict:
+			if not QueryHelper().get_text_for_statement_uid(statement_or_arg_id):
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
+			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
+			# justifying position
 			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, issue,
 			                                                              supportive, ui_locales, mainpage, for_api)
+			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(nickname, transaction, statement_or_arg_id,
+			                                                                    ui_locales, breadcrumbs, has_new_crumbs,
+			                                                                    supportive, session_id, nickname,
+			                                                                    len(item_dict))
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales,
-			                                          nickname, mode == 't',
-			                                          application_url=mainpage, for_api=for_api)
+			                                          nickname, mode == 't', application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales,
@@ -386,16 +387,16 @@ class Dbas(object):
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id, ui_locales,
-			                                                                   supportive, relation, nickname, session_id)
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
 			                                                             mainpage, for_api, logged_in)
+			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id, ui_locales,
+			                                                                   supportive, relation, nickname, session_id,
+			                                                                   len(item_dict))
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, True, ui_locales, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales,
-				                            at_justify_argumentation=True)
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify_argumentation=True)
 		else:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
 
