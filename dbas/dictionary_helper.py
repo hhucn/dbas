@@ -589,9 +589,13 @@ class DictionaryHelper(object):
 																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
 		if logged_in:
+			if len(statements_array) == 0:
+				text = _tn.get(_tn.newPremisesRadioButtonTextAsFirstOne)
+			else:
+				text = _tn.get(_tn.newPremiseRadioButtonText)
 			statements_array.append(self.__create_statement_dict('justify_premise',
-			                                                     _tn.get(_tn.newPremiseRadioButtonText),
-			                                                     [{'id': '0', 'title': _tn.get(_tn.newPremiseRadioButtonText)}],
+			                                                     text,
+			                                                     [{'id': '0', 'title': text}],
 																 'justify',
 																 'add'))
 
@@ -918,8 +922,9 @@ class DictionaryHelper(object):
 				extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style'] = False
-			user_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
-			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, '', '', user_text))
+			if not logged_in:
+				user_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
+				discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, '', '', user_text))
 
 		elif at_dont_know:
 			discussion_dict['mode'] = 'dont_know'

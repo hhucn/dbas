@@ -36,29 +36,27 @@ class BreadcrumbHelper(object):
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			if not db_user:
 				return [], False
-
-		if path.startswith('/'):
-			path = path[1:]
 			
 		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
-
-		url = UrlManager(application_url, slug, for_api).get_url(path)
+		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
+		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
+		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
 
 		# delete by slugs (dbas version)
-		expr_dbas = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)
+		expr_dbas = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), path)
 		if expr_dbas:
 			group0 = expr_dbas.group(0)
-			if group0 and url.endswith(group0):
+			if group0 and path.endswith(group0):
 				self.del_breadcrumbs_of_user(transaction, user, session_id)
 
 		# delete by slugs (api version)
 		expr_api = re.search(re.compile(r"api/[a-zA-Z0-9,-]*"), path)
 		if expr_api:
 			group1 = expr_api.group(0)
-			if group1 and url.endswith(group1):
+			if group1 and path.endswith(group1):
 				self.del_breadcrumbs_of_user(transaction, user, session_id)
 
-		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == url,
+		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == path,
 		                                                                  Breadcrumb.author_uid == db_user.uid)).first()
 		db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
 		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
@@ -73,13 +71,13 @@ class BreadcrumbHelper(object):
 				DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
 				                                                  Breadcrumb.uid > db_already_in.uid)).delete()
 		elif not already_last:
-			DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=url, session_id=session_id))
+			DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=path, session_id=session_id))
 			is_new_crumb = True
 		transaction.commit()
 
-		return self.get_breadcrumbs(user, session_id, lang, for_api), is_new_crumb
+		return self.get_breadcrumbs(user, session_id, lang), is_new_crumb
 
-	def get_breadcrumbs(self, user, session_id, lang, for_api):
+	def get_breadcrumbs(self, user, session_id, lang):
 		"""
 
 		:param user:
@@ -107,7 +105,7 @@ class BreadcrumbHelper(object):
 		breadcrumbs = []
 		for index, crumb in enumerate(db_breadcrumbs):
 			try:
-				url_text = self.__get_text_for_url__(crumb.url, lang, for_api)
+				url_text = self.__get_text_for_url__(crumb.url, lang)
 			except:
 				logger('BreadcrumbHelper', 'get_breadcrumbs', 'error on getting text for ' + crumb.url, error=True)
 				return dict()
@@ -129,12 +127,11 @@ class BreadcrumbHelper(object):
 			return None
 		return DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).order_by(Breadcrumb.uid.desc()).first()
 
-	def __get_text_for_url__(self, url, lang, for_api):
+	def __get_text_for_url__(self, url, lang):
 		"""
 
 		:param url:
 		:param lang:
-		:param for_api:
 		:return:
 		"""
 		_t = Translator(lang)
@@ -142,7 +139,7 @@ class BreadcrumbHelper(object):
 
 		if '/reaction/' in url:
 			splitted = url.split('/')
-			uid  = splitted[6]
+			uid  = splitted[4]
 			text = _qh.get_text_for_argument_uid(uid, lang)
 			text = text[0:1].lower() + text[1:]
 
@@ -153,12 +150,12 @@ class BreadcrumbHelper(object):
 
 		elif '/justify/' in url:
 			splitted = url.split('/')
-			uid  = splitted[3] if for_api else splitted[6]
-			text = _qh.get_text_for_statement_uid(uid) if len(splitted) == 8 else _qh.get_text_for_argument_uid(uid, lang)
+			uid  = splitted[4]
+			text = _qh.get_text_for_statement_uid(uid) if len(splitted) == 6 else _qh.get_text_for_argument_uid(uid, lang)
 			text = text[0:1].lower() + text[1:]
-			# 7 choose action for start statemens
-			# 8 choose justification for a relation
-			if len(splitted) == 8:
+			# 5 choose action for start statemens
+			# 6 choose justification for a relation
+			if len(splitted) == 6:
 				return _t.get(_t.breadcrumbsJustifyStatement) + ' ' + text + ' ' + _t.get(_t.hold)  + '?'
 			else:
 				return _t.get(_t.breadcrumbsReplyForResponseOfConfrontation) + ' ' + text
@@ -171,8 +168,8 @@ class BreadcrumbHelper(object):
 
 		elif '/choose/' in url:
 			splitted = url.split('/')
-			uid = splitted[8]
-			if splitted[6] == 't':  # is argument
+			uid = splitted[6]
+			if splitted[4] == 't':  # is argument
 				arg = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 				text = _qh.get_text_for_statement_uid(arg.conclusion_uid) if arg.argument_uid == 0 else _qh.get_text_for_argument_uid(arg.argument_uid, lang)
 			else:
