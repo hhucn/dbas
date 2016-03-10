@@ -16,7 +16,7 @@ from .url_manager import UrlManager
 
 class BreadcrumbHelper(object):
 
-	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, delete_duplicates, for_api):
+	def save_breadcrumb(self, path, user, slug, session_id, transaction, lang, application_url, for_api):
 		"""
 
 		:param path:
@@ -39,8 +39,7 @@ class BreadcrumbHelper(object):
 
 		logger('BreadcrumbHelper', 'save_breadcrumb', 'path ' + path + ', user ' + str(user), debug=True)
 
-		_um = UrlManager(application_url, slug, for_api)
-		url = _um.get_url(path)
+		url = UrlManager(application_url, slug, for_api).get_url(path)
 
 		# delete by slugs (dbas version)
 		expr_dbas = re.search(re.compile(r"discuss/?[a-zA-Z0-9,-]*"), url)
@@ -50,20 +49,19 @@ class BreadcrumbHelper(object):
 				self.del_breadcrumbs_of_user(transaction, user, session_id)
 
 		# delete by slugs (api version)
-		expr_api = re.search(re.compile(r"/api/[a-zA-Z0-9,-]*"), path)
+		expr_api = re.search(re.compile(r"api/[a-zA-Z0-9,-]*"), path[1:])
 		if expr_api:
 			group1 = expr_api.group(0)
 			if group1 and url.endswith(group1):
 				self.del_breadcrumbs_of_user(transaction, user, session_id)
 
-		delete_duplicates = True
 		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == url,
 		                                                                  Breadcrumb.author_uid == db_user.uid)).first()
 		db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
 		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
 		is_new_crumb = False
 
-		if db_already_in and delete_duplicates:
+		if db_already_in:
 			if user == 'anonymous':
 				DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
 				                                                  Breadcrumb.uid > db_already_in.uid,
