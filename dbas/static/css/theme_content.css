@@ -200,13 +200,13 @@
 	opacity: 0;
 }
 
-#discussion-container img,
+#discussion-sidebar img,
 #discussion-sidebar-style-menu img,
 #display-style-menu-icon{
 	width: 50px;
 	margin-bottom: 0.5em;
 }
-#discussion-container img:hover,
+#discussion-sidebar img:hover,
 #discussion-sidebar-style-menu img:hover{
 	width: 60px;
 	cursor: pointer;
@@ -276,64 +276,74 @@
     min-width: 40%;
     max-width: 55%;
 }
+.triangle-gravatar-l,
 .line-wrapper-l>a{
 	float: left;
 }
+.triangle-gravatar-r,
 .line-wrapper-r>a{
 	float: right;
 }
+
 .triangle-l,
 .triangle-r,
 .triangle-m{
     position: relative;
-    padding: 10px;
+    padding: 0.5em;
     box-sizing: border-box;
     border-radius: 3px;
-    box-shadow: 2px 2px 5px #888888;
+    box-shadow: 1px 1px 2px #888888;
     color: black;
 }
 .triangle-l{
-  float: left;
-  background: #E5E4E2;
-  margin: 0 auto 2em 0;
+    float: left;
+    background: #CFD8DC;
+    margin: 0 auto 1em 1em;
 }
 .triangle-r{
-  float: right;
-  text-align: left;
-  background: #dcf8c6;
-  margin: 0 2em 2em auto;
+    float: right;
+    text-align: left;
+    background: #E6EE9C;
+    margin: 0 2em 1em auto;
 }
 .triangle-m{
-  padding: 1px;
-  width: 35%;
-  background: #cbeaf8;
-  text-align: center;
-  margin: 0 auto 2em auto;
+    padding: 1px;
+    width: 35%;
+    background: #B2EBF2;
+    text-align: center;
+    margin: 0 auto 1em auto;
 }
 
 .triangle-l::after,
 .triangle-r::after{
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  margin-left: -0.5em;
-  bottom: -2em;
-  box-sizing: border-box;
-  border: 1em solid black;
-  transform-origin: 0 0;
-  transform: rotate(-45deg);
-  box-shadow: -2px 2px 2px 0 rgba(0, 0, 0, 0.4);
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    bottom: 0.33em;
+    box-sizing: border-box;
+    border: 0.6em solid black;
 }
 /* creates triangle */
 .triangle-l:after {
-  left: 40px;
-  border-color: transparent transparent #E5E4E2 #E5E4E2;
+    left: -0.52em;
+    transform: rotate(45deg);
+    border-color: transparent transparent #CFD8DC #CFD8DC;
 }
 /* creates triangle */
 .triangle-r:after {
-  right: 40px;
-  border-color: transparent transparent #dcf8c6 #dcf8c6;
+    right: -0.52em;
+    transform: rotate(-135deg);
+    border-color: transparent transparent #E6EE9C #E6EE9C;
+    box-shadow: -1px 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.triangle-gravatar-r,
+.triangle-gravatar-l{
+    width: 2em;
+    margin: 0.5em;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.7);
 }
 
 @media (max-width: 767px) {

@@ -770,7 +770,7 @@ class DictionaryHelper(object):
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, is_questionable, show_bar_icon,
 	                        show_display_styles, show_expert_icon, lang, authenticated_userid, argument_id=0,
-	                        application_url='', for_api=False):
+	                        application_url='', for_api=False,):
 		"""
 
 		:param current_slug:
@@ -793,6 +793,8 @@ class DictionaryHelper(object):
 		_qh = QueryHelper()
 		_nh = NotificationHelper()
 		is_logged_in = _uh.is_user_logged_in(authenticated_userid)
+		nickname = authenticated_userid if authenticated_userid else 'anonymous'
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
 		return_dict = dict()
 		return_dict['restart_url']		             = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
@@ -800,6 +802,7 @@ class DictionaryHelper(object):
 		return_dict['users_name']		             = str(authenticated_userid)
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'
+		return_dict['users_avatar']                = _uh.get_profile_picture(db_user)
 		self.add_language_options_for_extra_dict(return_dict, lang)
 
 		if not for_api:
