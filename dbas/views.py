@@ -1122,11 +1122,11 @@ class Dbas(object):
 		"""
 		Inserts a new statement into the database, which should be available at the beginning
 		:param for_api: boolean
-		:return: a status code, if everything was successfull
+		:param api_data:
+		:return: a status code, if everything was successful
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_new_start_statement', 'def', 'ajax, self.request.params: ' + str(self.request.params))
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('set_new_start_statement', 'def', 'main')
 
@@ -1147,6 +1147,7 @@ class Dbas(object):
 				issue       = _qh.get_issue_id(self.request)
 				slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
+			UserHandler().update_last_action(transaction, nickname)
 			new_statement = _qh.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
@@ -1162,31 +1163,39 @@ class Dbas(object):
 
 	# ajax - send new start premise
 	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
-	def set_new_start_premise(self, for_api=False):
+	def set_new_start_premise(self, for_api=False, api_data=None):
 		"""
 		Sets new premise for the start
 		:param for_api: boolean
+		:param api_data:
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_new_start_premise', 'def', 'main, self.request.params: ' + str(self.request.params))
-		user_id = self.request.authenticated_userid
-		UserHandler().update_last_action(transaction, user_id)
 
 		return_dict = dict()
 		_qh = QueryHelper()
 		_dh = DictionaryHelper()
 		lang = _qh.get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
-
 		try:
+			if for_api and api_data:
+				nickname  = api_data["nickname"]
+				statement = api_data["statement"]
+				issue     = api_data["issue_id"]
+				slug      = api_data["slug"]
+				# TODO hier weitermachen
+			else:
+				nickname = self.request.authenticated_userid
+				issue    = _qh.get_issue_id(self.request)
+
+			UserHandler().update_last_action(transaction, nickname)
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			conclusion_id   = self.request.params['conclusion_id']
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
-			issue           = _qh.get_issue_id(self.request)
 
 			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
-			                                                                 supportive, issue, user_id, for_api,
+			                                                                 supportive, issue, nickname, for_api,
 			                                                                 mainpage, lang, RecommenderHelper())
 			return_dict['error'] = error
 
