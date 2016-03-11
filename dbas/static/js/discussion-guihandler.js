@@ -165,8 +165,8 @@ function GuiHandler() {
 
 		start = typeof nowBubble == 'undefined' ? 'bottom' : nowBubble;
 		if (height > maxHeight) {
-			if (maxHeight < 500 && new Helper().isMobileAgent() ) {
-				maxHeight = 500;
+			if (maxHeight < 300){//} && new Helper().isMobileAgent() ) {
+				maxHeight = 300;
 			}
 			speechBubbles.slimscroll({
 				position: 'right',
