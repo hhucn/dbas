@@ -373,7 +373,7 @@ setGuiOptions = function(){
  * @param interactionHandler
  */
 setInputExtraOptions = function(guiHandler, interactionHandler){
-	var input = $('#' + discussionSpaceId + ' li:last-child input'),
+	var input = $('#' + discussionSpaceListId).find('li:last-child input'),
 		text = [], splits = window.location.href.split('/'), conclusion, supportive, arg, relation,
 		sendStartStatement = function(){
 			text = $('#' + addStatementContainerMainInputId).val();
@@ -423,6 +423,15 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 		}
 	});
 
+	// hide one line options
+	var children = $('#' + discussionSpaceListId).find('input');
+	if (children.length == 1 && (
+		children.eq(0).attr('id').indexOf('start_statement') != -1 ||
+		children.eq(0).attr('id').indexOf('start_premise') != -1 ||
+		children.eq(0).attr('id').indexOf('justify_premise') != -1)) {
+		children.eq(0).attr('checked', true).prop('checked', true).parent().hide();
+	}
+
 	// TODO CLEAR DESIGN
 	// options for the extra buttons, where the user can add input!
 	if (input.attr('id') && (
@@ -461,6 +470,16 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 			}
 		});
 	}
+	// play safe
+	$('#' + sendNewPremiseId).off("click").click(function () {
+		if (input.attr('id').indexOf('start_statement') != -1) {
+			sendStartStatement();
+		} else if (input.attr('id').indexOf('start_premise') != -1) {
+			sendStartPremise();
+		} else if (input.attr('id').indexOf('justify_premise') != -1) {
+			sendArgumentsPremise();
+		}
+	});
 };
 
 /**

@@ -368,7 +368,7 @@ class Dbas(object):
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales,
 			                                          nickname, mode == 't', application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
-			if len(item_dict) == 0:
+			if len(item_dict) == 0 or len(item_dict) and logged_in:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales,
 				                            at_justify=True, current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 

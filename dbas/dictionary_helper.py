@@ -147,11 +147,11 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_justify_statement(self, user, transaction, uid, lang, breadcrumbs, save_crumb,
+	def prepare_discussion_dict_for_justify_statement(self, nickname, transaction, uid, lang, breadcrumbs, save_crumb,
 	                                                  is_supportive, logged_in, count_of_items, session_id):
 		"""
 
-		:param user:
+		:param nickname:
 		:param transaction:
 		:param uid:
 		:param lang:
@@ -166,7 +166,9 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
 		_tn			        = Translator(lang)
 		_qh			        = QueryHelper()
-		db_user             = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		if not nickname:
+			nickname = 'anonymous'
+		db_user             = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		bubbles_array       = self.__create_speechbubble_history(breadcrumbs)
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
@@ -181,9 +183,14 @@ class DictionaryHelper(object):
 		intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith)
 		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', intro + ': <strong>' + text + '</strong>', True)
 		bubble = self.__create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
+
 		if save_crumb:
-			self.__append_bubble(bubbles_array, select_bubble)
+			if len(bubbles_array) > 0 and bubbles_array[-1]['message'].endswith(': <strong>' + text + '</strong>'):
+				if self.__remove_last_bubble(db_user, session_id):
+					bubbles_array.remove(bubbles_array[-1])
 			self.__save_speechbubble(select_bubble, db_user, session_id, breadcrumbs[-1], transaction)
+		self.__append_bubble(bubbles_array, select_bubble)
+
 		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.now), True))
 		self.__append_bubble(bubbles_array, bubble)
 
@@ -217,6 +224,8 @@ class DictionaryHelper(object):
 		save_statement_url = 'ajax_set_new_premises_for_argument'
 
 		db_argument		= DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+		if not db_argument:
+			return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 		confr	        = _qh.get_text_for_argument_uid(uid, lang, True)
 		premise, tmp	= _qh.get_text_for_premisesgroup_uid(uid, lang)
 		conclusion		= _qh.get_text_for_statement_uid(db_argument.conclusion_uid) if db_argument.conclusion_uid != 0 \
@@ -514,12 +523,12 @@ class DictionaryHelper(object):
 				                                                     'justify',
 																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
-			if user:
-				statements_array.append(self.__create_statement_dict('start_premise',
-				                                                     _tn.get(_tn.newPremiseRadioButtonText),
-				                                                     [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
-																	  'justify',
-																	  'add'))
+		if user:
+			statements_array.append(self.__create_statement_dict('start_premise',
+			                                                     _tn.get(_tn.newPremiseRadioButtonText),
+			                                                     [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
+																  'justify',
+																  'add'))
 
 		return statements_array
 
@@ -1077,3 +1086,17 @@ class DictionaryHelper(object):
 					bubbles_array.remove(bubbles_array[i])
 
 		bubbles_array.append(bubble)
+
+	def __remove_last_bubble(self, db_user, session_id):
+		"""
+
+		:param db_user:
+		:param session_id:
+		:return:
+		"""
+		bubble = DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
+		                                                       Bubble.session_id == session_id)).order_by(Bubble.uid.desc()).first()
+		if bubble:
+			DBDiscussionSession.query(Bubble).filter_by(uid=bubble.uid).delete()
+			return True
+		return False

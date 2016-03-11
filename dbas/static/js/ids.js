@@ -38,6 +38,7 @@ var discussionContainerId 						= 'discussion-container';
 var discussionEndStepBack 						= 'discussionEndStepBack';
 var discussionEndRestart 						= 'discussionEndRestart';
 var discussionSpaceId 							= 'discussions-space';
+var discussionSpaceListId						= 'discussions-space-list';
 var discussionFailureRowId 						= 'discussion-failure-row';
 var discussionFailureMsgId 						= 'discussion-failure-msg';
 var displayStyleIconGuidedId                    = 'display-style-icon-guided-img';
