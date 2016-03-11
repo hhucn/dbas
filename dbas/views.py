@@ -30,7 +30,7 @@ from .url_manager import UrlManager
 from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
-version = '0.5.6'
+version = '0.5.6a'
 header = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
@@ -390,8 +390,10 @@ class Dbas(object):
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
 			                                                             mainpage, for_api, logged_in)
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(statement_or_arg_id, ui_locales, supportive,
-			                                                                   relation, nickname, breadcrumbs, len(item_dict))
+			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id, ui_locales,
+			                                                                   supportive, relation, nickname, breadcrumbs,
+			                                                                   has_new_crumbs, len(item_dict), session_id,
+			                                                                   transaction)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, True, ui_locales, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?

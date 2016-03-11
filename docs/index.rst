@@ -23,6 +23,15 @@ Core Documentation
 
     dbas/index
 
+Server Documentation
+====================
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
+    server/index
+
 
 API Documentation
 =================

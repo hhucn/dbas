@@ -133,6 +133,11 @@
 						<li>Improved recommendation of the next argument/statement</li>
 					</ul>
 
+                    <span class="project lead">0.5.6 (2016-03-11)</span>
+					<ul>
+						<li>Bunch of fixes</li>
+					</ul>
+
                     <span class="project lead">0.5.5 (2016-03-02)</span>
 					<ul>
 						<li>SpeechBubbles instead of text</li>

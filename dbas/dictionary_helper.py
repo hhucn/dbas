@@ -192,16 +192,20 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_justify_argument(self, uid, lang, is_supportive, attack, logged_in, breadcrumbs, count_of_items):
+	def prepare_discussion_dict_for_justify_argument(self, nickname, uid, lang, is_supportive, attack, logged_in, breadcrumbs, save_crumb, count_of_items, session_id, transaction):
 		"""
 
+		:param nickname:
 		:param uid:
 		:param lang:
 		:param is_supportive:
 		:param attack:
 		:param logged_in:
 		:param breadcrumbs:
+		:param save_crumb:
 		:param count_of_items:
+		:param session_id:
+		:param transaction:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'prepare_discussion_dict_for_justify_argument')
@@ -237,18 +241,18 @@ class DictionaryHelper(object):
 			add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
 																	   db_argument.is_supportive)
 
-		# user_msg = _tn.get(_tn.sentencesOpenersForArguments[0])  + ': ' + user_msg
-		# sys_msg  = _tn.get(_tn.whyDoYouThinkThat) + '? ' + _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
-		sys_msg  = _tn.get(_tn.whyDoYouThinkThat) + ' ' + user_msg[:-1] + '?<br>' + _tn.get(_tn.because) + '...'
-		# bubble_intro = self.__create_speechbubble_dict(True, False, False, '', '', user_msg)
+		sys_msg  = _tn.get(_tn.whyDoYouThinkThat) + '?<br>' + _tn.get(_tn.because) + '...'
+		bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_msg[0:1].upper() + user_msg[1:], True)
 		bubble_question = self.__create_speechbubble_dict(False, True, False, '', '', sys_msg, True)
-		# if save_crumb:
-		# 	self.__append_bubble(bubbles_array, bubble_intro)
-		# bubble_intro['message'] = bubble_intro['message'] + ' ' + sys_msg
 
 		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.now), True))
-		# self.__append_bubble(bubbles_array, bubble_intro)
+		self.__append_bubble(bubbles_array, bubble_user)
 		self.__append_bubble(bubbles_array, bubble_question)
+
+		if save_crumb:
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+			self.__save_speechbubble(bubble_user, db_user, session_id, breadcrumbs[-1], transaction)
+			self.__save_speechbubble(bubble_question, db_user, session_id, breadcrumbs[-1], transaction)
 
 		if not logged_in and count_of_items == 1:
 			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItem), True))
@@ -1026,7 +1030,7 @@ class DictionaryHelper(object):
 			user = 'anonymous'
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			if not db_user:
-				return
+				return False
 		DBDiscussionSession.add(Bubble(bubble_id=bubble_dict['id'],
 		                               user=str(db_user.uid),
 		                               content=bubble_dict['message'],
@@ -1036,6 +1040,7 @@ class DictionaryHelper(object):
 		                               session_id=session_id,
 		                               breadcrumb_uid=str(related_breadcrumb['uid'])))
 		transaction.commit()
+		return True
 
 	def __create_speechbubble_history(self, breadcrumbs):
 		"""
@@ -1045,15 +1050,17 @@ class DictionaryHelper(object):
 		"""
 		bubble_history = []
 		for crumb in breadcrumbs:
-			history   = DBDiscussionSession.query(Bubble).filter_by(breadcrumb_uid=crumb['uid']).first()
-			if history:
-				is_user   = history.is_user
-				is_system = history.is_system
-				is_status = history.is_status
+			history   = DBDiscussionSession.query(Bubble).filter_by(breadcrumb_uid=crumb['uid']).all()
+			for h in history:
+				is_user   = h.is_user
+				is_system = h.is_system
+				is_status = h.is_status
 				uid       = crumb['uid']
 				url       = crumb['url']
-				content   = history.content
+				content   = h.content
 				bubble_history.append(self.__create_speechbubble_dict(is_user, is_system, is_status, uid, url, content))
+		logger('---','---',str(len(bubble_history)))
+		logger('---','---',str(len(bubble_history)))
 
 		return bubble_history
 	

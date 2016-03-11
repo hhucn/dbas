@@ -255,6 +255,7 @@
     border-radius: 5px;
     background: #f3f3f3;
     padding: 1em;
+    min-height:300px;
 }
 .line-wrapper-l,
 .line-wrapper-m{
