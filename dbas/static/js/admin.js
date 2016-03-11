@@ -23,7 +23,7 @@ function AdminInterface(){
 				url = this.url;
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
-			_this.setDataToContent($.parseJSON(data));
+			_this.setUserDataToContent($.parseJSON(data));
 		}).fail(function ajaxGetAllUsersFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
@@ -65,8 +65,7 @@ function AdminInterface(){
 	 * Sets given json data to admins content
 	 * @param jsonData
 	 */
-	this.setDataToContent = function (jsonData) {
-		//var tableElement, trElement, tbody, thead, tdElement, spanElement, i;
+	this.setUserDataToContent = function (jsonData) {
 		var tableElement, trElement, tElement, i, thead, tbody;
 		tElement = ['', '', '', '', '', '', '', '', '', '', ''];
 		tableElement = $('<table>');
@@ -102,7 +101,7 @@ function AdminInterface(){
 		tableElement.append(thead);
 
 		// add each user element
-		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
+		$.each(jsonData, function setJsonUserDataToAdminContentEach(key, value) {
 			tElement[0]  = $('<td>').text(value.uid);
 			tElement[1]  = $('<td>').text(value.firstname);
 			tElement[2]  = $('<td>').text(value.surname);
@@ -131,77 +130,99 @@ function AdminInterface(){
 	 * @param jsonData
 	 */
 	this.setArgumentOverviewDataContent = function (jsonData) {
-		var tableElement, trElement, tdElement, tbody, thead, spanElement, i, img;
+		var space = $('#' + adminsSpaceForArgumentsId),
+			list = $('#dropdown-issue-list');
+		space.empty();
+		list.find('li:not(:first-child)').remove();
+		$('#issue-switch-col').show();
+		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
+			$('#dropdown-issue-list').append($('<li>').addClass('enabled').append($('<a>').text(key).attr('href', '#')));
+			var tableElement, trElement, tdElement, tbody, thead, spanElement, i, img;
 
-		tdElement   = ['', '', '', '', '', ''];
-		spanElement = ['', '', '', '', '', ''];
-		tableElement = $('<table>');
-		tableElement.attr('class', 'table table-condensed tablesorter');
-		tableElement.attr('border', '0');
-		tableElement.attr('style', 'border-collapse: separate; border-spacing: 0px;');
-		tbody = $('<tbody>');
-		thead = $('<thead>');
+			tdElement = ['', '', '', '', '', ''];
+			spanElement = ['', '', '', '', '', ''];
+			tableElement = $('<table>').attr('id', 'table_' + key.replace(/\ /g, '_'));
+			tableElement.attr('class', 'table table-condensed tablesorter');
+			tableElement.attr('border', '0');
+			tableElement.attr('style', 'border-collapse: separate; border-spacing: 0px; display: none;');
+			tbody = $('<tbody>');
+			thead = $('<thead>');
 
-		trElement = $('<tr>');
-
-		for (i = 0; i < tdElement.length; i += 1) {
-			tdElement[i] = $('<td>');
-			spanElement[i] = $('<spand>');
-			spanElement[i].attr('class', 'font-semi-bold');
-		}
-
-		// add header row
-		spanElement[0].text('#');
-		spanElement[1].text(_t(text));
-		spanElement[2].text('#Votes');
-		spanElement[3].text('#Upvotes');
-		spanElement[4].text('#Valid Upotes');
-		spanElement[5].text('');
-
-		for (i = 0; i < tdElement.length; i += 1) {
-			tdElement[i].append(spanElement[i]);
-			trElement.append(tdElement[i]);
-			thead.append(trElement);
-		}
-		tableElement.append(thead);
-
-		// add each attack element
-		$.each(jsonData, function setJsonAttackDataToAdminContentEach(key, value) {
 			trElement = $('<tr>');
+
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
+				spanElement[i] = $('<spand>');
+				spanElement[i].attr('class', 'font-semi-bold');
 			}
 
-			img = $('<img>').addClass('glyphicon-local center info-glyphicon');
-			img.attr('id', 'info_' + value.uid).attr('src', mainpage + "static/images/transparent.gif");
-			img.click(function(){
-				alert('todo infos about argument ' + value.uid);
-			});
-
-			tdElement[0].text(key).attr('argument_' + value.uid);
-			tdElement[1].text(value.text);
-			tdElement[2].text(value.votes);
-			tdElement[3].text(value.valid_votes);
-			tdElement[4].text(value.valid_upvotes);
-			tdElement[5].append(img);
+			// add header row
+			spanElement[0].text('#');
+			spanElement[1].text(_t(text));
+			spanElement[2].text('#Votes');
+			spanElement[3].text('#Upvotes');
+			spanElement[4].text('#Valid Upotes');
+			spanElement[5].text('');
 
 			for (i = 0; i < tdElement.length; i += 1) {
+				tdElement[i].append(spanElement[i]);
 				trElement.append(tdElement[i]);
+				thead.append(trElement);
 			}
-			trElement.hover(function () {
-				$(this).toggleClass('text-hover');
-			});
-			tbody.append(trElement);
-		});
-		tableElement.append(tbody);
+			tableElement.append(thead);
 
-		$('#' + adminsSpaceForArgumentsId).empty().append(tableElement);
+			// add each attack element
+			$.each(value, function setJsonArgumentkDataToAdminContentEach(v_key, v_value) {
+				trElement = $('<tr>');
+				for (i = 0; i < tdElement.length; i += 1) {
+					tdElement[i] = $('<td>');
+				}
+
+				img = $('<img>').addClass('glyphicon-local center info-glyphicon');
+				img.attr('id', 'info_' + v_value.uid).attr('src', mainpage + "static/images/transparent.gif");
+				img.click(function () {
+					alert('todo infos about argument ' + v_value.uid);
+				});
+
+				tdElement[0].text(v_key).attr('argument_' + v_value.uid);
+				tdElement[1].text(v_value.text);
+				tdElement[2].text(v_value.votes);
+				tdElement[3].text(v_value.valid_votes);
+				tdElement[4].text(v_value.valid_upvotes);
+				tdElement[5].append(img);
+
+				for (i = 0; i < tdElement.length; i += 1) {
+					trElement.append(tdElement[i]);
+				}
+				trElement.hover(function () {
+					$(this).toggleClass('text-hover');
+				});
+				tbody.append(trElement);
+			});
+			tableElement.append(tbody);
+
+			space.append(tableElement);
+		});
+
+		space.find('table:first-child').show();
+		list.find('li:nth-child(2)').removeClass('enabled').addClass('disabled');
+		list.find('li:not(:first-child)').each(function(){
+			$(this).click(function(){
+				var current = $('#dropdown-issue-list').find('li.disabled'),
+					currentIssue = current.find('a').text();
+				current.addClass('enabled').removeClass('disabled');
+				$(this).removeClass('enabled').addClass('disabled');
+				$('#table_' + currentIssue.replace(/\ /g, '_')).hide();
+				$('#table_' + $(this).find('a').text().replace(/\ /g, '_')).show();
+			})
+		});
 	};
 
 }
 
 $(function () {
 	var ai = new AdminInterface();
+	$('#issue-switch-col').hide();
 
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {

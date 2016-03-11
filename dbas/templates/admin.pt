@@ -17,8 +17,12 @@
 				<div class="col-md-8">
 					<h4><span class="lead" i18n:translate="participant_list">List of participants</span></h4>
 					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
-					<input id="list-all-users" type="button" name="" value="Show all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_users"/>
-				</div>
+					<div class="row">
+                        <div class="col-md-12">
+					        <input id="list-all-users" type="button" name="" value="Show all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_users"/>
+                        </div>
+                    </div>
+                </div>
 				<div class="col-md-2"></div>
 				<div class="col-md-12">
 					<div id="admins-space-users" class="center"> </div>
@@ -32,7 +36,21 @@
 				<div class="col-md-8">
 					<h4><span class="lead" i18n:translate="list_attacks">List of attacks, clicked by the participants</span></h4>
 					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
-					<input id="list-all-arguments" type="button" name="" value="Show all arguments" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_arguments"/>
+					<div class="row">
+                        <div class="col-md-6">
+                            <input id="list-all-arguments" type="button" name="" value="Show all arguments" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_arguments"/>
+                        </div>
+                        <div class="col-md-6" id="issue-switch-col" style="display: none;">
+                            <div class="dropdown">
+					    	    <button class="btn btn-primary dropdown-toggle btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    		    <span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
+					    	    </button>
+					    	    <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 250px;">
+					    		    <li class="dropdown-header" i18n:translate="topics">Topics</li>
+					    	    </ul>
+                            </div>
+					    </div>
+                    </div>
 				</div>
 				<div class="col-md-2"></div>
 				<div class="col-md-12">

@@ -1415,9 +1415,9 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_argument_overview', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		issue = QueryHelper().get_issue_id(self.request)
-		return_dict = QueryHelper().get_attack_overview(self.request.authenticated_userid, issue, ui_locales)
+		_qh = QueryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
+		return_dict = _qh.get_argument_overview(self.request.authenticated_userid, ui_locales)
 
 		return DictionaryHelper().data_to_json_array(return_dict, True)
 
