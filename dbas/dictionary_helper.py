@@ -357,7 +357,7 @@ class DictionaryHelper(object):
 			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True)
 			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, True)
 
-		# dirty fixes_array) > 1 and bubbles_array[-1]['message'] == bubble_user['message']))
+		# dirty fixes
 		if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
 			bubbles_array.remove(bubbles_array[-1])
 
@@ -1060,8 +1060,6 @@ class DictionaryHelper(object):
 				url       = crumb['url']
 				content   = h.content
 				bubble_history.append(self.__create_speechbubble_dict(is_user, is_system, is_status, uid, url, content))
-		logger('---','---',str(len(bubble_history)))
-		logger('---','---',str(len(bubble_history)))
 
 		return bubble_history
 	
