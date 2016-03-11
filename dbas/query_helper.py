@@ -1177,7 +1177,7 @@ class QueryHelper(object):
 		logger('QueryHelper', 'set_news', 'def')
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		author = db_user.firstname if db_user.firstname == 'admin' else db_user.firstname + ' ' + db_user.surname
-		now = datetime.now()
+		now = datetime.datetime.now()
 		day = str(now.day) if now.day > 9 else ('0' + str(now.day))
 		month = str(now.month) if now.month > 9 else ('0' + str(now.month))
 		date = day + '.' + month + '.' + str(now.year)

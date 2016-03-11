@@ -803,6 +803,7 @@ class DictionaryHelper(object):
 		return_dict = dict()
 		return_dict['restart_url']		             = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
 		return_dict['logged_in']		             = is_logged_in
+		return_dict['nickname']		                 = nickname
 		return_dict['users_name']		             = str(authenticated_userid)
 		return_dict['add_premise_container_style']   = 'display: none'
 		return_dict['add_statement_container_style'] = 'display: none'

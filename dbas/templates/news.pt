@@ -34,12 +34,13 @@
 						<textarea id="writing-news-text" type="text" class="form-control news-text" name="newstext" autocomplete="on" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="2"></textarea>
 
 						<input id="send-news" type="button" value="Send News" class="button button-block btn btn-primary" data-dismiss="modal" />
-						<div id="news_credentials" style="float: right;">
-							<h5><span i18n:translate="author">Author</span>: 
-					        <span tal:replace="logged_in"></span>,
-					        <span i18n:translate="date">Date</span>:
-					        <span tal:replace="date"></span>
-				        </h5>
+						<div id="news_credentials">
+							<h6>
+                                <span i18n:translate="author">Author</span>:
+					            <span tal:replace="extras.nickname"></span>,
+					            <span i18n:translate="date">Date</span>:
+					            <span tal:replace="date"></span>
+                            </h6>
 						</div>
 					</div>
 				</div>
