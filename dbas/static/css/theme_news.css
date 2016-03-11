@@ -9,6 +9,7 @@
 
 #send-news{
     margin-top: 1em;
+    float: right;
 }
 
 @media (min-width: 1800px) {

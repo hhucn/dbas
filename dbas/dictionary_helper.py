@@ -241,18 +241,18 @@ class DictionaryHelper(object):
 			add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
 																	   db_argument.is_supportive)
 
-		sys_msg  = _tn.get(_tn.whyDoYouThinkThat) + '?<br>' + _tn.get(_tn.because) + '...'
-		bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_msg[0:1].upper() + user_msg[1:], True)
+		sys_msg  = _tn.get(_tn.whyDoYouThinkThat) + ' ' + user_msg[:-1] + '?<br>' + _tn.get(_tn.because) + '...'
+		# bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_msg[0:1].upper() + user_msg[1:], True)
 		bubble_question = self.__create_speechbubble_dict(False, True, False, '', '', sys_msg, True)
 
 		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.now), True))
-		self.__append_bubble(bubbles_array, bubble_user)
+		# self.__append_bubble(bubbles_array, bubble_user)
 		self.__append_bubble(bubbles_array, bubble_question)
 
-		if save_crumb:
-			db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-			self.__save_speechbubble(bubble_user, db_user, session_id, breadcrumbs[-1], transaction)
-			self.__save_speechbubble(bubble_question, db_user, session_id, breadcrumbs[-1], transaction)
+		# if save_crumb:
+		# 	db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		# 	self.__save_speechbubble(bubble_user, db_user, session_id, breadcrumbs[-1], transaction)
+		# 	self.__save_speechbubble(bubble_question, db_user, session_id, breadcrumbs[-1], transaction)
 
 		if not logged_in and count_of_items == 1:
 			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItem), True))
