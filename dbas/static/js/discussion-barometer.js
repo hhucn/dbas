@@ -8,9 +8,6 @@ function DiscussionBarometer(){
 	 * Displays the barometer
 	 */
 	this.showBarometer = function(){
-		var txt = 'Hier wird bald ein Meinungsbarometer erscheinen.';
-		txt += '<br><img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Disk_usage_(Boabab).png">';
-		displayConfirmationDialogWithoutCancelAndFunction('In progress', txt);
 		/**
 		 * TODO TERESA:
 		 * 1. ajax request
@@ -20,36 +17,63 @@ function DiscussionBarometer(){
 		 * 5. displayConfirmationDialogWithoutCancelAndFunction with html as text and suitable header
 		 */
 
-		getDictionary();
-	};
-
-	/**
-	 * sends Ajax-Request to Server
-	 * saves answer in array
-	 * */
-	getDictionary = function() {
 		$.ajax({
 			url: "ajax_get_user_with_same_opinion",
 			type: 'GET',
 			dataType: 'json',
-			data: {
-				uid: 0,
-				is_argument: false
-			},
+			data: {uid: 0, is_argument: false},
 			async: true
 		}).done(function (data) {
-			var obj = JSON.parse(data);
-			var error = obj.error;
-			var votes = [];
-			var i = 0;
-			$.each(obj.votes, function () {
-				votes[i] = [];
-				$.each(this, function (key, value) {
-					votes[i].push("Key: " + key + ", Value:" + value);
-				});
-				i++;
-			});
+			new DiscussionBarometer().callbackIfDoneForGetDictionary(data);
 		}).fail(function () {
+			new DiscussionBarometer().callbackIfFailForGetDictionary();
 		});
+	};
+
+	/**
+	 * Callback if the ajax request was successfull
+	 * @param data: unparsed data of the request
+	 */
+	this.callbackIfDoneForGetDictionary = function(data){
+		var obj,
+			votes = [],
+			i = 0;
+
+        try{
+	        obj = JSON.parse(data);
+        }catch(e){
+	        // TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
+			alert('parsing-json: ' + e);
+	        return;
+        }
+
+		$.each(obj.votes, function () {
+			votes[i] = [];
+			$.each(this, function (key, value) {
+				votes[i].push("Key: " + key + ", Value:" + value);
+			});
+			i++;
+		});
+		// TODO: Nun hier mit chart.js die votes passend darstellen. ich denke, eine pie-chart bietet sich an
+		
+		var txt = 'Hier wird bald ein Meinungsbarometer erscheinen.';
+		txt += '<br><img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Disk_usage_(Boabab).png">';
+
+		$('#' + popupConfirmDialogId).modal('show');
+		$('#' + popupConfirmDialogId + ' h4.modal-title').html('In progress');
+		$('#' + popupConfirmDialogId + ' div.modal-body').html(txt); // TODO: anstelle von txt kann der neue html code eingetragen werden
+		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
+			$('#' + popupConfirmDialogId).modal('hide');
+		}).removeClass('btn-success');
+		$('#' + popupConfirmDialogRefuseBtn).hide();
+	};
+
+
+	/**
+	 * Callback if the ajax request failed
+	 */
+	this.callbackIfFailForGetDictionary = function(){
+		alert('ajax-request: some error');
+		// TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
 	};
 }
