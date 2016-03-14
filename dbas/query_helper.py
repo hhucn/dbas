@@ -6,11 +6,11 @@ from sqlalchemy import and_, func
 from slugify import slugify
 
 from .database import DBDiscussionSession, DBNewsSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Breadcrumb, VoteArgument, VoteStatement, Issue, Group
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue, Group
 from .database.news_model import News
 from .logger import logger
 from .notification_helper import NotificationHelper
-from .strings import Translator, TextGenerator
+from .strings import Translator
 from .user_management import UserHandler
 from .url_manager import UrlManager
 

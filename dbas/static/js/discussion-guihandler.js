@@ -12,7 +12,7 @@ function GuiHandler() {
 	};
 
 	/**
-	 *
+	 * Adds a premise row in the 'add premise'-container
 	 */
 	this.appendAddPremiseRow = function(){
 		var body = $('#add-premise-container-body'),
@@ -146,8 +146,8 @@ function GuiHandler() {
 		imageElement.removeClass('inactive-image').addClass('icon-badge').css('cursor', 'pointer');
 	};
 
-	/*
-
+	/**
+	 * Sets the maximal height for the bubble space. If needed, a scrollbar will be displayed.
 	 */
 	this.setMaxHeightForBubbleSpace = function() {
 		// max size of the container
@@ -179,19 +179,23 @@ function GuiHandler() {
 			});
 		} else {
 			height += 20;
-			speechBubbles.css('height', height + 'px').css('max-height', maxHeight + 'px');
+			if (height < 50)
+				speechBubbles.css('min-height', '100px');
+			else
+				speechBubbles.css('height', height + 'px').css('min-height', '300px');
+			speechBubbles.css('min-height', '100px').css('max-height', maxHeight + 'px');
 		}
 	};
 
 	/**
-	 *
+	 * Shows the 'add position'-container
 	 */
 	this.showAddPositionContainer = function(){
 		$('#' + addStatementContainerId).show();
 	};
 
 	/**
-	 *
+	 * Shows the 'add premise'-container
 	 */
 	this.showAddPremiseContainer = function(){
 		$('#' + addPremiseContainerId).show();
@@ -256,7 +260,8 @@ function GuiHandler() {
 			});
 
 		} else { // we need several pages
-			prev.show().removeClass('href').attr('max', undecided_texts.length).parent().addClass('disabled');
+			prev.show().removeClass('href').attr('max', undecided_texts.length);
+			prev.parent().addClass('disabled');
 			next.show().attr('max', undecided_texts.length);
 			counter.show().text('1/' + undecided_texts.length);
 

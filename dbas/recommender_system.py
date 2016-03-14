@@ -1,10 +1,9 @@
 import random
-import collections
 
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, User, Statement, VoteArgument
+from .database.discussion_model import Argument, User, VoteArgument
 from .logger import logger
 from .query_helper import QueryHelper
 

@@ -1,14 +1,12 @@
-import collections
 import re
-from sqlalchemy import and_, func
+from sqlalchemy import and_
 from slugify import slugify
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Breadcrumb, Issue, Bubble
+from .database.discussion_model import Argument, User, Breadcrumb, Issue, Bubble
 from .logger import logger
 from .strings import Translator
 from .query_helper import QueryHelper
-from .url_manager import UrlManager
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -21,11 +19,9 @@ class BreadcrumbHelper(object):
 
 		:param path:
 		:param user:
-
 		:param session_id:
 		:param transaction:
 		:param lang:
-		:param application_url:
 
 		:return: all breadcrumbs, boolean (if a crumb was inserted)
 		"""
@@ -78,7 +74,6 @@ class BreadcrumbHelper(object):
 		:param user:
 		:param session_id:
 		:param lang:
-		:param for_api:
 		:return:
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -115,6 +110,11 @@ class BreadcrumbHelper(object):
 		return breadcrumbs
 
 	def get_last_breadcrumb_of_user(self, user):
+		"""
+
+		:param user:
+		:return:
+		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		if not db_user:

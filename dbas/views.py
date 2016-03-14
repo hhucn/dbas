@@ -1,29 +1,25 @@
 import transaction
 import datetime
 import requests
-import urllib
-import hashlib
-import random
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
-from pyramid.session import check_csrf_token
 from pyramid.renderers import get_renderer
 from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
 
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Statement, VoteArgument, VoteStatement, Notification, Settings
+from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
-from .query_helper import QueryHelper, UrlManager
-from .strings import Translator, TextGenerator
+from .query_helper import QueryHelper
+from .strings import Translator
 from .string_matcher import FuzzyStringMatcher
 from .breadcrumb_helper import BreadcrumbHelper
-from .recommender_system import RecommenderHelper, RecommenderHelper
+from .recommender_system import RecommenderHelper
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 from .voting_helper import VotingHelper
 from .url_manager import UrlManager
@@ -297,7 +293,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs)
 		if not discussion_dict:
-			return HTTPFound(location=UrlManager(for_api=for_api).get_404([slug, statement_id]))
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
 		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, True, ui_locales,
@@ -368,7 +364,7 @@ class Dbas(object):
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales,
 			                                          nickname, mode == 't', application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
-			if len(item_dict) == 0:
+			if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales,
 				                            at_justify=True, current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
@@ -1122,8 +1118,8 @@ class Dbas(object):
 		"""
 		Inserts a new statement into the database, which should be available at the beginning
 		:param for_api: boolean
-		:param api_data:
-		:return: a status code, if everything was successful
+		:param api_data: api_data
+		:return: a status code, if everything was successfull
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_new_start_statement', 'def', 'ajax, self.request.params: ' + str(self.request.params))
@@ -1365,7 +1361,7 @@ class Dbas(object):
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
-			_tn = Translator(self.request, get_current_registry())
+			_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
 			return_dict['error'] = _tn.get(_tn.noCorrections)
 
 		# return_dict = QueryHelper().get_logfile_for_premisegroup(uid)
@@ -1412,7 +1408,7 @@ class Dbas(object):
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_shortened_url', 'error', repr(e))
-			_tn = Translator(self.request, get_current_registry())
+			_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
 			return_dict['error'] = _tn.get(_tn.internalError)
 
 		return DictionaryHelper().data_to_json_array(return_dict, True)
@@ -1576,7 +1572,7 @@ class Dbas(object):
 		except KeyError as e:
 			return_dict = dict()
 			logger('send_news', 'error', repr(e))
-			_tn = Translator(QueryHelper().get_language(self.request), get_current_registry())
+			_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
 			return_dict['error'] = _tn.get(_tn.internalError)
 
 		return DictionaryHelper().data_to_json_array(return_dict, True)
