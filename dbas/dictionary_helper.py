@@ -1,16 +1,10 @@
 import random
 import json
-import datetime
-import locale
-import string
 
-from collections import OrderedDict
 from sqlalchemy import and_
-from slugify import slugify
 
-from .breadcrumb_helper import BreadcrumbHelper
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Breadcrumb, Issue, Bubble
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, Issue, Bubble
 from .logger import logger
 from .recommender_system import RecommenderHelper
 from .query_helper import QueryHelper
@@ -75,30 +69,6 @@ class DictionaryHelper(object):
 		:return:
 		"""
 		return json.loads(s)
-
-	def save_statement_row_in_dictionary(self, statement_row):
-		"""
-		Saved a row in dictionary
-		:param statement_row: for saving
-		:return: dictionary
-		"""
-		logger('DictionaryHelper', 'save_statement_row_in_dictionary', 'statement uid ' + str(statement_row.uid))
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_row.uid,
-																		Statement.issue_uid == issue)).first()
-		db_premise = DBDiscussionSession.query(Premise).filter(and_(Premise.statement_uid == db_statement.uid,
-																	Premise.issue_uid == issue)).first()
-		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).first()
-
-		uid	= str(db_statement.uid)
-		text   = db_textversion.content
-		date   = str(db_textversion.timestamp)
-		author = db_textversion.users.nickname
-		pgroup = str(db_premise.premisesgroup_uid) if db_premise else '0'
-
-		while text.endswith('.'):
-			text = text[:-1]
-
-		return {'uid': uid, 'text': text, 'date': date, 'author': author, 'premisegroup_uid': pgroup}
 
 	def prepare_discussion_dict_for_start(self, lang, breadcrumbs):
 		"""
@@ -181,18 +151,18 @@ class DictionaryHelper(object):
 		add_premise_text	+= text[0:1].upper() + text[1:] + ' ' + (_tn.get(_tn.isTrue) if is_supportive else _tn.get(_tn.isFalse))
 
 		intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith)
-		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', intro + ': <strong>' + text + '</strong>', True)
-		bubble = self.__create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
+		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', intro + ': <strong>' + text + '</strong>', False)
+		question_bubble = self.__create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
 
+		if len(bubbles_array) > 0 and bubbles_array[-1]['message'].endswith(': <strong>' + text + '</strong>'):
+			if self.__remove_last_bubble(db_user, session_id):
+				bubbles_array.remove(bubbles_array[-1])
 		if save_crumb:
-			if len(bubbles_array) > 0 and bubbles_array[-1]['message'].endswith(': <strong>' + text + '</strong>'):
-				if self.__remove_last_bubble(db_user, session_id):
-					bubbles_array.remove(bubbles_array[-1])
 			self.__save_speechbubble(select_bubble, db_user, session_id, breadcrumbs[-1], transaction)
 		self.__append_bubble(bubbles_array, select_bubble)
 
 		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.now), True))
-		self.__append_bubble(bubbles_array, bubble)
+		self.__append_bubble(bubbles_array, question_bubble)
 
 		if not logged_in and count_of_items == 1:
 			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItem), True))

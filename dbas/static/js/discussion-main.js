@@ -288,6 +288,7 @@ setWindowOptions = function(){
 
 	$( window ).resize(function() {
 		setNavigationSidebar(window.innerWidth);
+		new GuiHandler().setMaxHeightForBubbleSpace();
 	});
 };
 

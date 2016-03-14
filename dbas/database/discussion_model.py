@@ -160,8 +160,8 @@ class Statement(DiscussionBase):
 
 	def __init__(self, textversion, is_startpoint, issue=0):
 		"""
-		Initializes a row in current statement-table
-		:param text:
+
+		:param textversion:
 		:param is_startpoint:
 		:param issue:
 		:return:
@@ -288,7 +288,7 @@ class Argument(DiscussionBase):
 	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, premisegroup, issupportive, author, issue, conclusion=0):
+	def __init__(self, premisegroup, issupportive, author, issue, conclusion=0, argument=0):
 		"""
 		Initializes a row in current argument-table
 		:param premisegroup:
@@ -303,7 +303,7 @@ class Argument(DiscussionBase):
 		self.argument_uid = None
 		self.is_supportive = issupportive
 		self.author_uid = author
-		self.argument_uid = 0
+		self.argument_uid = argument
 		self.issue_uid = issue
 
 	def conclusions_argument(self, argument):
@@ -397,9 +397,11 @@ class VoteArgument(DiscussionBase):
 
 	def __init__(self, argument_uid=0, author_uid=0, is_up_vote=True, is_valid=True):
 		"""
-		Initializes a row
-		:param weight_uid:
+
+		:param argument_uid:
 		:param author_uid:
+		:param is_up_vote:
+		:param is_valid:
 		:return:
 		"""
 		self.argument_uid = argument_uid
@@ -450,9 +452,11 @@ class VoteStatement(DiscussionBase):
 
 	def __init__(self, statement_uid=0, author_uid=0, is_up_vote=True, is_valid=True):
 		"""
-		Initializes a row
-		:param weight_uid:
+
+		:param statement_uid:
 		:param author_uid:
+		:param is_up_vote:
+		:param is_valid:
 		:return:
 		"""
 		self.statement_uid = statement_uid
@@ -509,7 +513,7 @@ class Notification(DiscussionBase):
 	def set_read(self, was_read):
 		"""
 		Sets validity of this record
-		:param is_valid: boolean
+		:param was_read: boolean
 		:return: None
 		"""
 		self.read = was_read
