@@ -35,9 +35,7 @@ function DiscussionBarometer(){
 	 * @param data: unparsed data of the request
 	 */
 	this.callbackIfDoneForGetDictionary = function(data){
-		var obj,
-			votes = [],
-			i = 0;
+		var obj;
 
         try{
 	        obj = JSON.parse(data);
@@ -46,26 +44,48 @@ function DiscussionBarometer(){
 			alert('parsing-json: ' + e);
 	        return;
         }
-
-		$.each(obj.votes, function () {
-			votes[i] = [];
-			$.each(this, function (key, value) {
-				votes[i].push("Key: " + key + ", Value:" + value);
-			});
-			i++;
-		});
 		// TODO: Nun hier mit chart.js die votes passend darstellen. ich denke, eine pie-chart bietet sich an
-		
+
 		var txt = 'Hier wird bald ein Meinungsbarometer erscheinen.';
 		txt += '<br><img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Disk_usage_(Boabab).png">';
 
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' h4.modal-title').html('In progress');
-		$('#' + popupConfirmDialogId + ' div.modal-body').html(txt); // TODO: anstelle von txt kann der neue html code eingetragen werden
+		$('#' + popupConfirmDialogId + ' div.modal-body')
+			.html('<canvas id="chartCanvas" width="400" height="400" style= "display: block; margin: 0 auto;"></canvas>');
+		// TODO: anstelle von txt kann der neue html code eingetragen werden
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 		}).removeClass('btn-success');
-		$('#' + popupConfirmDialogRefuseBtn).hide();
+
+		// create pie-Chart
+    	var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
+
+    	var pieData = [
+        	{
+            	//value: obj.votes[0].count,
+				value: 80,
+            	color: "#41AF3D",
+				highlight: "#8ADB87",
+            	label: obj.votes[0].text
+        	},
+			{
+            	//value: obj.votes[1].count,
+				value: 60,
+            	color: "#E04F5F",
+				highlight: "#EFA5AC",
+            	label: obj.votes[1].text
+			},
+			{
+            	//value: obj.votes[2].count,
+                value: 70,
+            	color: "#1281A0",
+				highlight: "#87D7EF",
+				label: obj.votes[2].text
+        	}
+    	];
+
+    	var chart = new Chart(ctx).Pie(pieData);
 	};
 
 
@@ -77,3 +97,4 @@ function DiscussionBarometer(){
 		// TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
 	};
 }
+
