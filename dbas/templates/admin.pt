@@ -25,7 +25,39 @@
                 </div>
 				<div class="col-md-2"></div>
 				<div class="col-md-12">
-					<div id="admins-space-users" class="center"> </div>
+					<div id="admins-space-users" class="center" style="display:none;">
+                        <table style="border-collapse: separate; border-spacing: 0;" class="table table-condensed tablesorter" border="0">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th i18n:translate="firstname">Firstname</th>
+                                <th i18n:translate="surname">Surname</th>
+                                <th i18n:translate="nickname">Nickname</th>
+                                <th i18n:translate="email">E-Mail</th>
+                                <th i18n:translate="group_uid">Group</th>
+                                <th i18n:translate="last_login">Last Login</th>
+                                <th i18n:translate="registered">Registered</th>
+                                <th i18n:translate="gender">Gender</th>
+                                <th i18n:translate="avatar">Avatar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr tal:repeat="user users">
+                                    <td>${user.uid}</td>
+                                    <td>${user.firstname}</td>
+                                    <td>${user.surname}</td>
+                                    <td>${user.nickname}</td>
+                                    <td>${user.email}</td>
+                                    <td>${user.gender}</td>
+                                    <td>${user.group_uid}</td>
+                                    <td>${user.last_login}</td>
+                                    <td>${user.registered}</td>
+                                    <td><img style="height: 50%;" tal:attributes="src user.avatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=80"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
 				</div>
 			</div>
 		</div>

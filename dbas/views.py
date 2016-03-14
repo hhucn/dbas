@@ -630,8 +630,10 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_admin', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_qh = QueryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
 
 		return {
 			'layout': self.base_layout(),
@@ -639,6 +641,7 @@ class Dbas(object):
 			'title': 'Admin',
 			'project': header,
 			'extras': extras_dict,
+			'users': users
 		}
 
 	# news page for everybody
@@ -845,7 +848,6 @@ class Dbas(object):
 		:return: dict() with error
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('user_login', 'def', 'main')
 		logger('user_login', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		return_dict = dict()
