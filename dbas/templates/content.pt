@@ -304,7 +304,7 @@
 					<span id="add-statement-error-msg"></span>
 				</div>
 				<div id="add-statement-container-body">
-					<input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="example: We should build a new opera house" value="" />
+					<input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="Your statement" value="" />
 				</div>
 				<div class="list-group" id="proposal-statement-list-group"></div>
 				<input id="send-new-statement" type="button" name="" value="Save my Statement!" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" title="Saving the data." tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
@@ -332,7 +332,7 @@
 							<h5 style="float: left; line-height: 20px; text-align: center;" i18n:translate="Because...">Because...</h5>
 						</div>
 						<div class="flex-div">
-							<input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="example: There is some reason!" value="">
+							<input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="Your statement" value="">
 						</div>
 						<div>
 							<img class="icon-badge icon-rem-premise"
