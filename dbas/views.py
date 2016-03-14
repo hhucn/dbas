@@ -386,6 +386,7 @@ class Dbas(object):
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
 			                                                             mainpage, for_api, logged_in)
+
 			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id, ui_locales,
 			                                                                   supportive, relation, nickname, breadcrumbs,
 			                                                                   has_new_crumbs, len(item_dict), session_id,

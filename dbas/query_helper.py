@@ -819,7 +819,6 @@ class QueryHelper(object):
 		ret_dict['votes'] = votes
 		return ret_dict
 
-
 	def get_id_of_slug(self, slug, request, save_id_in_session):
 		"""
 		Returns the uid
@@ -884,7 +883,7 @@ class QueryHelper(object):
 		try:
 			lang = str(request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = current_registry.settings['pyramid.default_locale_name']
+			lang = str(current_registry.settings['pyramid.default_locale_name'])
 		return lang
 
 	def get_news(self):
