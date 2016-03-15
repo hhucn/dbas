@@ -912,15 +912,9 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_logout', 'def', 'main')
 
-		url = self.request.params['url']
-
-		if 'setting' in url:
-			url = mainpage
-			logger('user_logout', 'def', 'redirect: ' + url)
-
 		headers = forget(self.request)
 		return HTTPFound(
-			location=url,
+			location=mainpage,
 			headers=headers,
 		)
 

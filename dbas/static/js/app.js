@@ -405,7 +405,6 @@ function ajaxLogout (){
 	$.ajax({
 		url: 'ajax_user_logout',
 		type: 'POST',
-		data: { url: url },
 		dataType: 'json',
 		async: true
 	}).done(function ajaxLogoutDone(data) {
