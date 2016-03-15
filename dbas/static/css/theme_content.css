@@ -373,3 +373,8 @@
 	}
 }
 
+@media (max-width: 992px) {
+    #issue-dropdown {
+        margin-bottom: 1em;
+    }
+}
