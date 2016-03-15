@@ -634,6 +634,7 @@ class Dbas(object):
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
+		dashboard = _qh.get_dashboard_infos()
 
 		return {
 			'layout': self.base_layout(),
@@ -641,7 +642,8 @@ class Dbas(object):
 			'title': 'Admin',
 			'project': header,
 			'extras': extras_dict,
-			'users': users
+			'users': users,
+			'dashboard': dashboard
 		}
 
 	# news page for everybody

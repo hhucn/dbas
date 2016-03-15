@@ -44,17 +44,17 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <i class="fa fa-comments fa-5x"></i>
+                                            <img id="dashboard_user" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">26</div>
-                                            <div>New Comments!</div>
+                                            <div class="huge">${dashboard.user_count}</div>
+                                            <div i18n:translate="users!">Users!</div>
                                         </div>
                                     </div>
                                 </div>
                                 <a href="#">
                                     <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
+                                        <span id="dashboard-user-count-detail" class="pull-left" i18n:translate="view_details">View Details</span>
                                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                         <div class="clearfix"></div>
                                     </div>
@@ -66,17 +66,17 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <i class="fa fa-tasks fa-5x"></i>
+                                            <img id="dashboard_vote" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">12</div>
-                                            <div>New Tasks!</div>
+                                            <div class="huge">${dashboard.vote_count}</div>
+                                            <div i18n:translate="votes!">Votes!</div>
                                         </div>
                                     </div>
                                 </div>
                                 <a href="#">
                                     <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
+                                        <span id="dashboard-vote-count-detail" class="pull-left" i18n:translate="view_details">View Details</span>
                                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                         <div class="clearfix"></div>
                                     </div>
@@ -88,17 +88,17 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <i class="fa fa-shopping-cart fa-5x"></i>
+                                            <img id="dashboard_argument" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">124</div>
-                                            <div>New Orders!</div>
+                                            <div class="huge">${dashboard.argument_count}</div>
+                                            <div i18n:translate="arguments!">Arguments!</div>
                                         </div>
                                     </div>
                                 </div>
                                 <a href="#">
                                     <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
+                                        <span id="dashboard-argument-count-detail" class="pull-left" i18n:translate="view_details">View Details</span>
                                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                         <div class="clearfix"></div>
                                     </div>
@@ -110,17 +110,17 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <i class="fa fa-support fa-5x"></i>
+                                            <img id="dashboard_statement" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">13</div>
-                                            <div>Support Tickets!</div>
+                                            <div class="huge">${dashboard.statement_count}</div>
+                                            <div i18n:translate="statements!">Statements!</div>
                                         </div>
                                     </div>
                                 </div>
                                 <a href="#">
                                     <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
+                                        <span id="dashboard-statement-count-detail" class="pull-left" i18n:translate="view_details">View Details</span>
                                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                         <div class="clearfix"></div>
                                     </div>
