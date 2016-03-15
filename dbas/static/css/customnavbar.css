@@ -136,7 +136,6 @@ bootstrap-paper hover #eeeeee
 #footer .links ul li .glyphicon-local {
 	font-size: 12px;
 }
-
 #footer {
 	position: absolute;
 	width: 100%;
@@ -153,35 +152,27 @@ bootstrap-paper hover #eeeeee
 	bottom: 0;
 	left: 0;
 }
-
 #footer div div {
-	margin-bottom: 0px;
+	margin-bottom: 0;
 }
-
 #footer_imprint {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-115-list.png) no-repeat;
 }
-
 #footer-glyphicons {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-249-asterisk.png) no-repeat;
 }
-
 #footer_contact {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-310-comments.png) no-repeat;
 }
-
 #header_letsgo {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-551-erase.png) no-repeat;
 }
-
 #header_news {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat;
 }
-
 #header_login {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-387-log-in.png) no-repeat;
 }
-
 #header_notifications {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-11-envelope.png) no-repeat;
 }
@@ -191,41 +182,32 @@ bootstrap-paper hover #eeeeee
 #header_settings {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-138-cogwheels.png) no-repeat;
 }
-
 .info-glyphicon {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-196-circle-info.png) no-repeat;
 	width: 80%;
 }
-
 #header_admin {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-140-adjust-alt.png) no-repeat;
 }
-
 #header_user {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
 }
-
 #header_logout {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-388-log-out.png) no-repeat;
 }
-
 #header_privacy {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-499-sunglasses.png) no-repeat;
 }
-
 #footer_author {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
 }
-
 #footer_licence {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-341-globe.png) no-repeat;
 }
-
 #roundhousekick {
 	background: url(../images/chucknorris.png) no-repeat;
 	float:right;
 }
-
 #yomamma {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-36-woman.png) no-repeat;
 	float:right;
