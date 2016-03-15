@@ -1122,7 +1122,7 @@ class Dbas(object):
 		Inserts a new statement into the database, which should be available at the beginning
 		:param for_api: boolean
 		:param api_data: api_data
-		:return: a status code, if everything was successfull
+		:return: a status code, if everything was successful
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_new_start_statement', 'def', 'ajax, self.request.params: ' + str(self.request.params))
@@ -1146,7 +1146,7 @@ class Dbas(object):
 				issue       = _qh.get_issue_id(self.request)
 				slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-			UserHandler().update_last_action(transaction, nickname)
+			UserHandler().update_last_action(nickname)
 			new_statement = _qh.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
