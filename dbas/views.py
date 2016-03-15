@@ -1215,7 +1215,7 @@ class Dbas(object):
 				nickname = self.request.authenticated_userid
 				issue    = _qh.get_issue_id(self.request)
 
-			UserHandler().update_last_action(transaction, nickname)
+			UserHandler().update_last_action(nickname)
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			conclusion_id   = self.request.params['conclusion_id']
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
