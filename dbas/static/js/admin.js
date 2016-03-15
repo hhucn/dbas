@@ -16,22 +16,21 @@ function AdminInterface(){
 			dataType: 'json',
 			data: { issue: new Helper().getCurrentIssueId() },
 			async: true,
-			headers: {
-				'X-CSRF-Token': csrfToken
-			},
+			headers: {'X-CSRF-Token': csrfToken},
 			beforeSend: function(jqXHR, settings ){
 				settings_data = settings.data;
 				url = this.url;
 			}
 		}).done(function getArgumentOverviewDone(data) {
+			// display fetched data
 			_this.setArgumentOverviewDataContent($.parseJSON(data));
-			$('#' + listAllUsersArgumentId).val(_t(hideAllArguments));
+			$('#' + listAllArgumentId).val(_t(hideAllArguments));
 			new GuiHandler().hideErrorDescription();
 		}).fail(function getArgumentOverviewFail() {
-			// new GuiHandler().setErrorDescription(_t(internalError));
+			// display error message
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			$('#' + listAllUsersArgumentId).val(_t(showAllArguments));
+			$('#' + listAllArgumentId).val(_t(showAllArguments));
 		});
 	};
 
@@ -45,25 +44,27 @@ function AdminInterface(){
 		space.empty();
 		list.find('li:not(:first-child)').remove();
 		$('#issue-switch-col').show();
+
+		// add each issue table
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
 			$('#dropdown-issue-list').append($('<li>').addClass('enabled').append($('<a>').text(key).attr('href', '#')));
-			var tableElement, trElement, tdElement, tbody, thead, spanElement, i, img;
+			var tableElement, i, img,
+				tbody = $('<tbody>'),
+				thead = $('<thead>'),
+				trElement = $('<tr>'),
+				tdElement = ['', '', '', '', '', ''],
+				spanElement = ['', '', '', '', '', ''];
 
-			tdElement = ['', '', '', '', '', ''];
-			spanElement = ['', '', '', '', '', ''];
-			tableElement = $('<table>').attr('id', 'table_' + key.replace(/\ /g, '_'));
-			tableElement.attr('class', 'table table-condensed tablesorter');
-			tableElement.attr('border', '0');
-			tableElement.attr('style', 'border-collapse: separate; border-spacing: 0px; display: none;');
-			tbody = $('<tbody>');
-			thead = $('<thead>');
+			// table element
+			tableElement = $('<table>').attr('id', 'table_' + key.replace(/\ /g, '_'))
+				.attr('class', 'table table-condensed tablesorter')
+				.attr('border', '0')
+				.attr('style', 'border-collapse: separate; border-spacing: 0px; display: none;');
 
-			trElement = $('<tr>');
-
+			// header elements
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
-				spanElement[i] = $('<spand>');
-				spanElement[i].attr('class', 'font-semi-bold');
+				spanElement[i] = $('<spand>').attr('class', 'font-semi-bold');
 			}
 
 			// add header row
@@ -74,6 +75,7 @@ function AdminInterface(){
 			spanElement[4].text('#Valid Upotes');
 			spanElement[5].text('');
 
+			// adding everyhting
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i].append(spanElement[i]);
 				trElement.append(tdElement[i]);
@@ -81,7 +83,7 @@ function AdminInterface(){
 			}
 			tableElement.append(thead);
 
-			// add each attack element
+			// add argument elements
 			$.each(value, function setJsonArgumentkDataToAdminContentEach(v_key, v_value) {
 				trElement = $('<tr>');
 				for (i = 0; i < tdElement.length; i += 1) {
@@ -101,19 +103,20 @@ function AdminInterface(){
 				tdElement[4].text(v_value.valid_upvotes);
 				tdElement[5].append(img);
 
-				for (i = 0; i < tdElement.length; i += 1) {
+				for (i = 0; i < tdElement.length; i += 1)
 					trElement.append(tdElement[i]);
-				}
+
 				trElement.hover(function () {
 					$(this).toggleClass('text-hover');
 				});
+
 				tbody.append(trElement);
 			});
 			tableElement.append(tbody);
-
 			space.append(tableElement);
 		});
 
+		// some magic and gui fixes for the issue dropdown
 		space.find('table:first-child').show();
 		list.find('li:nth-child(2)').removeClass('enabled').addClass('disabled');
 		list.find('li:not(:first-child)').each(function(){
@@ -127,14 +130,12 @@ function AdminInterface(){
 			})
 		});
 	};
-
 }
 
+// main function
 $(function () {
 	var ai = new AdminInterface();
-	$('#issue-switch-col').hide();
-
-	// admin list all users button
+	// hide or show all users
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 		if ($(this).val() === _t(showAllUsers)) {
 			$('#admins-space-users').fadeIn();
@@ -145,13 +146,19 @@ $(function () {
 		}
 	});
 
-	// admin list all attacks button
-	$('#' + listAllUsersArgumentId).click(function listAllUsersAttacksId() {
+	// hide or show all arguments
+	$('#' + listAllArgumentId).click(function listAllUsersAttacksId() {
 		if ($(this).val() === _t(showAllArguments)) {
-			ai.getArgumentOverview();
+			// getting arguments via ajax, if we do not fetched them already
+			if ($('#' + adminsSpaceForArgumentsId).find('table').length == 0) {
+				ai.getArgumentOverview();
+			} else {
+				$('#' + listAllArgumentId).val(_t(hideAllArguments));
+				$('#' + adminsSpaceForArgumentsId).fadeIn();
+			}
 		} else {
-			$('#' + adminsSpaceForArgumentsId).empty();
-			$('#' + listAllUsersArgumentId).val(_t(showAllArguments));
+			$('#' + adminsSpaceForArgumentsId).fadeOut();
+			$('#' + listAllArgumentId).val(_t(showAllArguments));
 		}
 	});
 });

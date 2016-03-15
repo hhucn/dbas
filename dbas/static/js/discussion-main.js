@@ -45,7 +45,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 	});
 
 	// admin list all attacks button
-	$('#' + listAllUsersArgumentId).click(function listAllUsersAttacksId() {
+	$('#' + listAllArgumentId).click(function listAllUsersAttacksId() {
 		if ($(this).val() === _t(showAllAttacks)) {
 			ajaxHandler.getArgumentOverview();
 		} else {

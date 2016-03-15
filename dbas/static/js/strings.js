@@ -273,7 +273,7 @@ var dbas_en = {
 	'itIsFalseThat': 'it is false that',
 	'keepSetting': 'Keep this',
 	'hideAllUsers': 'Hide all users',
-	'hideAllArguments': 'Hide all attacks',
+	'hideAllArguments': 'Hide all arguments',
 	'languageCouldNotBeSwitched': 'Unfortunately, the language could not be switched',
 	'last_action': 'Last Action',
 	'last_login': 'Last Login',
