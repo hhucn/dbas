@@ -1256,7 +1256,7 @@ class Translator(object):
 			return 'unknown identifier in the englisch dictionary'
 
 		else:
-			return 'unknown language: ' + self.lang
+			return 'unknown language: ' + str(self.lang)
 
 
 class TextGenerator(object):
@@ -1490,50 +1490,8 @@ class TextGenerator(object):
 								 + ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' '\
 								 + _t.get(_t.theyThink).lower() + ': '  + confrontation
 
-		sys_text = confrontation_text + '.<br><br>' +  _t.get(_t.whatDoYouThinkAboutThat) + '?'
+		sys_text = confrontation_text + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
 		return user_opinion, sys_text
-
-	def get_text_for_premise_for_statement(self, conclusion, premises, supportive, logged_in):
-		"""
-
-		:param conclusion:
-		:param premises:
-		:param supportive:
-		:param logged_in:
-		:return:
-		"""
-		_t = Translator(self.lang)
-		ret_dict = dict()
-
-		if len(premises) == 0:
-			text_add_on = '' if logged_in else (''  + _t.get(_t.discussionEnd) + ' ' + _t.get(_t.feelFreeToLogin))
-			if supportive:
-				ret_dict['discussion_description'] = _t.get(_t.unfortunatelyNoMoreArgument) + ' ' + argument \
-													 + '.' + _t.get(_t.canYouGiveAReason) + '' \
-													 + _t.get(_t.alternatively) + ': ' + _t.get(_t.discussionEndLinkText) \
-													 + text_add_on
-			else:
-				ret_dict['discussion_description'] = _t.get(_t.soYouWantToArgueAgainst) + ' ' + argument + ', ' \
-													 + _t.get(_t.butOtherParticipantsDontHaveArgument) + text_add_on
-			ret_dict['argument'] = '<strong>' + conclusion + '</strong>'
-
-		else:
-			premise = ''
-			for p in premises:
-				premise += ('' if premise == '' else (' ' + _t.get(_t.aand) + ' ')) + premises[p]['text'][0:1].lower() + premises[p]['text'][1:]
-			ret_dict['discussion_description'] = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + conclusion + '</strong>, ' \
-												 + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] \
-												 + ' <strong>' + premise + '</strong>.' \
-												 + ((_t.get(_t.whatDoYouThinkAboutThat) + '?')
-													if supportive else _t.get(_t.whyAreYouDisagreeingWithThat))
-			ret_dict['argument'] = conclusion + ' ' + _t.get(_t.because)[0:1].lower() + _t.get(_t.because)[1:] + ' ' + premise
-
-		if supportive:
-			ret_dict.update(self.get_relation_text_dict(premises, conclusion, False, True))
-		else:
-			ret_dict.update(self.__get_text_dict_for_attacks_only(premises, conclusion, False))
-
-		return ret_dict
 
 	def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
 		"""

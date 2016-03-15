@@ -819,7 +819,6 @@ class QueryHelper(object):
 		ret_dict['votes'] = votes
 		return ret_dict
 
-
 	def get_id_of_slug(self, slug, request, save_id_in_session):
 		"""
 		Returns the uid
@@ -884,7 +883,7 @@ class QueryHelper(object):
 		try:
 			lang = str(request.cookies['_LOCALE_'])
 		except KeyError:
-			lang = current_registry.settings['pyramid.default_locale_name']
+			lang = str(current_registry.settings['pyramid.default_locale_name'])
 		return lang
 
 	def get_news(self):
@@ -1050,9 +1049,9 @@ class QueryHelper(object):
 		"""
 		is_admin = UserHandler().is_user_admin(user)
 		logger('QueryHelper', 'get_all_users', 'is_admin ' + str(is_admin))
-		return_dict = dict()
+		return_array = []
 		if not is_admin:
-			return return_dict
+			return return_array
 
 		_uh = UserHandler()
 		db_users = DBDiscussionSession.query(User).all()
@@ -1065,13 +1064,13 @@ class QueryHelper(object):
 			tmp_dict['email']       = str(user.email)
 			tmp_dict['gender']      = str(user.gender)
 			tmp_dict['group_uid']   = DBDiscussionSession.query(Group).filter_by(uid=user.group_uid).first().name
-			tmp_dict['last_action'] = self.sql_timestamp_pretty_print(str(user.last_action), lang)
 			tmp_dict['last_login']  = self.sql_timestamp_pretty_print(str(user.last_login), lang)
 			tmp_dict['registered']  = self.sql_timestamp_pretty_print(str(user.registered), lang)
 			tmp_dict['avatar']      = _uh.get_profile_picture(user)
-			return_dict[str(index)] = tmp_dict
+			# tmp_dict['last_action'] = self.sql_timestamp_pretty_print(str(user.last_action), lang)
+			return_array.append(tmp_dict)
 
-		return return_dict
+		return return_array
 
 	def get_argument_overview(self, user, lang):
 		"""

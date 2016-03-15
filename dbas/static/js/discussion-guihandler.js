@@ -153,7 +153,7 @@ function GuiHandler() {
 		// max size of the container
 		var speechBubbles = $('#' + discussionBubbleSpaceId), height = 0,
 			maxHeight = new Helper().getMaxSizeOfDiscussionViewContainer(), start,
-			nowBubble = $('#now');
+			nowBubble = speechBubbles.find('*[id*=now]');
 		$.each(speechBubbles.find('div p'), function () {
 			height += $(this).outerHeight(true);
 			// clear unnecessary a tags
@@ -163,7 +163,7 @@ function GuiHandler() {
 			}
 		});
 
-		start = typeof nowBubble == 'undefined' ? 'bottom' : nowBubble;
+		start = nowBubble.length == 0 ? 'bottom' : nowBubble;
 		if (height > maxHeight) {
 			if (maxHeight < 300){//} && new Helper().isMobileAgent() ) {
 				maxHeight = 300;

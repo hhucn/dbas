@@ -236,7 +236,7 @@ class Dbas(object):
 		item_dict       = _dh.prepare_item_dict_for_start(issue, logged_in, ui_locales, mainpage, for_api)
 
 		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, nickname)
+		UserHandler().update_last_action(nickname)
 
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
@@ -288,7 +288,7 @@ class Dbas(object):
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
 		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, nickname)
+		UserHandler().update_last_action(nickname)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
 		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs)
@@ -346,7 +346,7 @@ class Dbas(object):
 
 		# update timestamp and manage breadcrumb
 		_uh = UserHandler()
-		_uh.update_last_action(transaction, nickname)
+		_uh.update_last_action(nickname)
 		logged_in = _uh.is_user_logged_in(nickname)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
@@ -386,6 +386,7 @@ class Dbas(object):
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
 			                                                             mainpage, for_api, logged_in)
+
 			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id, ui_locales,
 			                                                                   supportive, relation, nickname, breadcrumbs,
 			                                                                   has_new_crumbs, len(item_dict), session_id,
@@ -445,7 +446,7 @@ class Dbas(object):
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, nickname)
+		UserHandler().update_last_action(nickname)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname,
 		                                                                 session_id, transaction, ui_locales)
 
@@ -504,7 +505,7 @@ class Dbas(object):
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		# update timestamp and manage breadcrumb
-		UserHandler().update_last_action(transaction, nickname)
+		UserHandler().update_last_action(nickname)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
 		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, ui_locales, is_argument, is_supportive, breadcrumbs)
@@ -537,7 +538,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
@@ -629,8 +630,10 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_admin', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_qh = QueryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
 
 		return {
 			'layout': self.base_layout(),
@@ -638,6 +641,7 @@ class Dbas(object):
 			'title': 'Admin',
 			'project': header,
 			'extras': extras_dict,
+			'users': users
 		}
 
 	# news page for everybody
@@ -737,7 +741,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 		logger('get_user_history', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, self.request.session.id, ui_locales)
@@ -751,7 +755,7 @@ class Dbas(object):
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 		logger('get_all_posted_statements', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales)
@@ -765,7 +769,7 @@ class Dbas(object):
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 		logger('get_all_edits', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_edits_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
@@ -779,7 +783,7 @@ class Dbas(object):
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 		logger('get_all_argument_votes', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, True, ui_locales, QueryHelper())
@@ -793,7 +797,7 @@ class Dbas(object):
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 		logger('get_all_statement_votes', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, False, ui_locales, QueryHelper())
@@ -807,7 +811,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 
 		logger('delete_user_history', 'def', 'main')
 		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
@@ -824,7 +828,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 
 		logger('delete_statistics', 'def', 'main')
 
@@ -844,7 +848,6 @@ class Dbas(object):
 		:return: dict() with error
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('user_login', 'def', 'main')
 		logger('user_login', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		return_dict = dict()
@@ -1216,7 +1219,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		user_id = self.request.authenticated_userid
-		UserHandler().update_last_action(transaction, user_id)
+		UserHandler().update_last_action(user_id)
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_new_premises_for_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
 
@@ -1260,7 +1263,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 
 		_qh = QueryHelper()
 		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
@@ -1290,7 +1293,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 
 		logger('set_notification_read', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
@@ -1316,7 +1319,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 
 		logger('set_notification_delete', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
@@ -1352,7 +1355,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_logfile_for_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 
 		return_dict = dict()
 		try:
@@ -1376,7 +1379,7 @@ class Dbas(object):
 		:return: dictionary with shortend url
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 
 		logger('get_shortened_url', 'def', 'main')
 
@@ -1540,7 +1543,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler().update_last_action(self.request.authenticated_userid)
 		logger('switch_language', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		return_dict = dict()

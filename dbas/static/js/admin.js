@@ -6,32 +6,6 @@
 function AdminInterface(){
 
 	/**
-	 * Requests all users
-	 */
-	this.getUsersOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, _this = this;
-		$.ajax({
-			url: 'ajax_all_users',
-			method: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrfToken
-			},
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
-			}
-		}).done(function ajaxGetAllUsersDone(data) {
-			_this.setUserDataToContent($.parseJSON(data));
-		}).fail(function ajaxGetAllUsersFail() {
-			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-		});
-	};
-
-	/**
 	 * Requests all attacks
 	 */
 	this.getArgumentOverview = function () {
@@ -42,87 +16,24 @@ function AdminInterface(){
 			dataType: 'json',
 			data: { issue: new Helper().getCurrentIssueId() },
 			async: true,
-			headers: {
-				'X-CSRF-Token': csrfToken
-			},
+			headers: {'X-CSRF-Token': csrfToken},
 			beforeSend: function(jqXHR, settings ){
 				settings_data = settings.data;
 				url = this.url;
 			}
 		}).done(function getArgumentOverviewDone(data) {
+			// display fetched data
 			_this.setArgumentOverviewDataContent($.parseJSON(data));
-			$('#' + listAllUsersArgumentId).val(_t(hideAllArguments));
+			$('#' + listAllArgumentId).val(_t(hideAllArguments));
+				$('#' + adminsSpaceForArgumentsId).fadeIn();
 			new GuiHandler().hideErrorDescription();
 		}).fail(function getArgumentOverviewFail() {
-			// new GuiHandler().setErrorDescription(_t(internalError));
+			// display error message
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			$('#' + listAllUsersArgumentId).val(_t(showAllArguments));
+			$('#' + listAllArgumentId).val(_t(showAllArguments));
+				$('#' + adminsSpaceForArgumentsId).fadeOut();
 		});
-	};
-
-	/**
-	 * Sets given json data to admins content
-	 * @param jsonData
-	 */
-	this.setUserDataToContent = function (jsonData) {
-		var tableElement, trElement, tElement, i, thead, tbody;
-		tElement = ['', '', '', '', '', '', '', '', '', '', ''];
-		tableElement = $('<table>');
-		tableElement.attr('class', 'table table-striped table-hover');
-		tableElement.attr('border', '0');
-		tableElement.attr('style', 'border-collapse: separate; border-spacing: 0px;');
-
-		trElement = $('<tr>');
-		thead = $('<thead>');
-		tbody = $('<tbody>');
-
-		for (i = 0; i < tElement.length; i += 1) {
-			tElement[i] = $('<th>');
-		}
-
-		// add header row
-		tElement[0]  = $('<th>').text('#');
-		tElement[1]  = $('<th>').text(_t(firstname));
-		tElement[2]  = $('<th>').text(_t(surname));
-		tElement[3]  = $('<th>').text(_t(nickname));
-		tElement[4]  = $('<th>').text(_t(email));
-		tElement[5]  = $('<th>').text(_t(group_uid));
-		tElement[6]  = $('<th>').text(_t(last_action));
-		tElement[7]  = $('<th>').text(_t(last_login));
-		tElement[8]  = $('<th>').text(_t(registered));
-		tElement[9]  = $('<th>').text(_t(gender));
-		tElement[10] = $('<th>').text(_t(gender));
-
-		for (i = 0; i < tElement.length; i += 1) {
-			trElement.append(tElement[i]);
-		}
-		thead.append(trElement);
-		tableElement.append(thead);
-
-		// add each user element
-		$.each(jsonData, function setJsonUserDataToAdminContentEach(key, value) {
-			tElement[0]  = $('<td>').text(value.uid);
-			tElement[1]  = $('<td>').text(value.firstname);
-			tElement[2]  = $('<td>').text(value.surname);
-			tElement[3]  = $('<td>').text(value.nickname);
-			tElement[4]  = $('<td>').text(value.email);
-			tElement[5]  = $('<td>').text(value.group_uid);
-			tElement[6]  = $('<td>').text(value.last_action);
-			tElement[7]  = $('<td>').text(value.last_login);
-			tElement[8]  = $('<td>').text(value.registered);
-			tElement[9]  = $('<td>').text(value.gender);
-			tElement[10] = $('<td>').html('<img src=' + value.avatar + ' style="height: 50%;">');
-
-			trElement = $('<tr>');
-			for (i = 0; i < tElement.length; i += 1) {
-				trElement.append(tElement[i]);
-			}
-			tbody.append(trElement);
-		});
-		tableElement.append(tbody);
-
-		$('#' + adminsSpaceForUsersId).empty().append(tableElement);
 	};
 
 	/**
@@ -135,25 +46,27 @@ function AdminInterface(){
 		space.empty();
 		list.find('li:not(:first-child)').remove();
 		$('#issue-switch-col').show();
+
+		// add each issue table
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
 			$('#dropdown-issue-list').append($('<li>').addClass('enabled').append($('<a>').text(key).attr('href', '#')));
-			var tableElement, trElement, tdElement, tbody, thead, spanElement, i, img;
+			var tableElement, i, img,
+				tbody = $('<tbody>'),
+				thead = $('<thead>'),
+				trElement = $('<tr>'),
+				tdElement = ['', '', '', '', '', ''],
+				spanElement = ['', '', '', '', '', ''];
 
-			tdElement = ['', '', '', '', '', ''];
-			spanElement = ['', '', '', '', '', ''];
-			tableElement = $('<table>').attr('id', 'table_' + key.replace(/\ /g, '_'));
-			tableElement.attr('class', 'table table-condensed tablesorter');
-			tableElement.attr('border', '0');
-			tableElement.attr('style', 'border-collapse: separate; border-spacing: 0px; display: none;');
-			tbody = $('<tbody>');
-			thead = $('<thead>');
+			// table element
+			tableElement = $('<table>').attr('id', 'table_' + key.replace(/\ /g, '_'))
+				.attr('class', 'table table-condensed tablesorter')
+				.attr('border', '0')
+				.attr('style', 'border-collapse: separate; border-spacing: 0px; display: none;');
 
-			trElement = $('<tr>');
-
+			// header elements
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i] = $('<td>');
-				spanElement[i] = $('<spand>');
-				spanElement[i].attr('class', 'font-semi-bold');
+				spanElement[i] = $('<spand>').attr('class', 'font-semi-bold');
 			}
 
 			// add header row
@@ -164,6 +77,7 @@ function AdminInterface(){
 			spanElement[4].text('#Valid Upotes');
 			spanElement[5].text('');
 
+			// adding everyhting
 			for (i = 0; i < tdElement.length; i += 1) {
 				tdElement[i].append(spanElement[i]);
 				trElement.append(tdElement[i]);
@@ -171,7 +85,7 @@ function AdminInterface(){
 			}
 			tableElement.append(thead);
 
-			// add each attack element
+			// add argument elements
 			$.each(value, function setJsonArgumentkDataToAdminContentEach(v_key, v_value) {
 				trElement = $('<tr>');
 				for (i = 0; i < tdElement.length; i += 1) {
@@ -191,19 +105,20 @@ function AdminInterface(){
 				tdElement[4].text(v_value.valid_upvotes);
 				tdElement[5].append(img);
 
-				for (i = 0; i < tdElement.length; i += 1) {
+				for (i = 0; i < tdElement.length; i += 1)
 					trElement.append(tdElement[i]);
-				}
+
 				trElement.hover(function () {
 					$(this).toggleClass('text-hover');
 				});
+
 				tbody.append(trElement);
 			});
 			tableElement.append(tbody);
-
 			space.append(tableElement);
 		});
 
+		// some magic and gui fixes for the issue dropdown
 		space.find('table:first-child').show();
 		list.find('li:nth-child(2)').removeClass('enabled').addClass('disabled');
 		list.find('li:not(:first-child)').each(function(){
@@ -217,31 +132,69 @@ function AdminInterface(){
 			})
 		});
 	};
-
 }
 
-$(function () {
-	var ai = new AdminInterface();
-	$('#issue-switch-col').hide();
 
-	// admin list all users button
+function NavBarInterface(){
+	this.setUpLinks = function(){
+		$('#admin-dashboards').click(function(){
+			$('#admin-navbar').find('.active').removeClass('active');
+			$('#admin-page-wrapper>div').each(function(){
+				$(this).hide();
+			});
+			$(this).parent().addClass('active');
+			$('#admins-space-dashboard').show();
+		});
+
+		$('#admin-users').click(function(){
+			$('#admin-navbar').find('.active').removeClass('active');
+			$('#admin-page-wrapper>div').each(function(){
+				$(this).hide();
+			});
+			$(this).parent().addClass('active');
+			$('#admins-space-users').show().prev();
+		});
+
+		$('#admin-arguments').click(function(){
+			$('#admin-navbar').find('.active').removeClass('active');
+			$('#admin-page-wrapper>div').each(function(){
+				$(this).hide();
+			});
+			$(this).parent().addClass('active');
+			$('#admins-space-argument').prev().show();
+		});
+	}
+}
+
+// main function
+$(function () {
+	var ai = new AdminInterface(), nbi = new NavBarInterface();
+	// hide or show all users
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 		if ($(this).val() === _t(showAllUsers)) {
-			ai.getUsersOverview();
+			$('#admins-space-users').fadeIn();
 			$(this).val(_t(hideAllUsers));
 		} else {
-			$('#' + adminsSpaceForUsersId).empty();
+			$('#admins-space-users').fadeOut();
 			$(this).val(_t(showAllUsers));
 		}
 	});
 
-	// admin list all attacks button
-	$('#' + listAllUsersArgumentId).click(function listAllUsersAttacksId() {
+	// hide or show all arguments
+	$('#' + listAllArgumentId).click(function listAllUsersAttacksId() {
 		if ($(this).val() === _t(showAllArguments)) {
-			ai.getArgumentOverview();
+			// getting arguments via ajax, if we do not fetched them already
+			if ($('#' + adminsSpaceForArgumentsId).find('table').length == 0) {
+				ai.getArgumentOverview();
+			} else {
+				$('#' + listAllArgumentId).val(_t(hideAllArguments));
+				$('#' + adminsSpaceForArgumentsId).fadeIn();
+			}
 		} else {
-			$('#' + adminsSpaceForArgumentsId).empty();
-			$('#' + listAllUsersArgumentId).val(_t(showAllArguments));
+			$('#' + adminsSpaceForArgumentsId).fadeOut();
+			$('#' + listAllArgumentId).val(_t(showAllArguments));
 		}
 	});
+
+	nbi.setUpLinks();
 });

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-08 11:05+0100\n"
+"POT-Creation-Date: 2016-03-14 16:28+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -371,7 +371,7 @@ msgid "imprint_copyright"
 msgstr "Imprint and Copyright"
 
 #. Default: Author
-#: dbas/templates/snippet-footer.pt:20 dbas/templates/news.pt:38
+#: dbas/templates/snippet-footer.pt:20 dbas/templates/news.pt:37
 msgid "author"
 msgstr "Author"
 
@@ -585,14 +585,14 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:292 dbas/templates/snippet-popups.pt:392
-#: dbas/templates/content.pt:162
+#: dbas/templates/content.pt:144
 msgid "error"
 msgstr "Error:"
 
 #. Default: Success:
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:299 dbas/templates/snippet-popups.pt:384
-#: dbas/templates/settings.pt:200 dbas/templates/content.pt:80
+#: dbas/templates/settings.pt:200 dbas/templates/content.pt:56
 msgid "success"
 msgstr "Success:"
 
@@ -609,11 +609,13 @@ msgstr "Your Last Name"
 #. Default: Your Nickname
 #. Default: Nickname
 #: dbas/templates/snippet-popups.pt:321 dbas/templates/settings.pt:25
+#: dbas/templates/admin.pt:35
 msgid "nickname"
 msgstr "Nickname"
 
 #. Default: Your Gender
-#: dbas/templates/snippet-popups.pt:328
+#. Default: Gender
+#: dbas/templates/snippet-popups.pt:328 dbas/templates/admin.pt:40
 msgid "gender"
 msgstr "Your Gender"
 
@@ -633,7 +635,8 @@ msgid "male"
 msgstr "male"
 
 #. Default: Your Email Address
-#: dbas/templates/snippet-popups.pt:349
+#. Default: E-Mail
+#: dbas/templates/snippet-popups.pt:349 dbas/templates/admin.pt:36
 msgid "email"
 msgstr "Your Email Address"
 
@@ -800,8 +803,8 @@ msgid "arguments"
 msgstr "arguments"
 
 #. Default: Error:
-#: dbas/templates/snippet-popups.pt:554 dbas/templates/news.pt:24
-#: dbas/templates/content.pt:321 dbas/templates/content.pt:347
+#: dbas/templates/snippet-popups.pt:554 dbas/templates/news.pt:19
+#: dbas/templates/content.pt:303 dbas/templates/content.pt:326
 msgid "error:"
 msgstr "Error:"
 
@@ -815,18 +818,18 @@ msgstr "You forgot to choose the right interpretation"
 msgid "save_my_statement"
 msgstr "Save my Statement!"
 
-#. Default: Writing a new message
-#: dbas/templates/news.pt:20
-msgid "writing_message"
-msgstr "Writing a new message"
-
 #. Default: Success:
-#: dbas/templates/news.pt:29
+#: dbas/templates/news.pt:24
 msgid "success:"
 msgstr "Success:"
 
+#. Default: Writing a new message
+#: dbas/templates/news.pt:30
+msgid "writing_message"
+msgstr "Writing a new message"
+
 #. Default: Date
-#: dbas/templates/news.pt:40
+#: dbas/templates/news.pt:39
 msgid "date"
 msgstr "Date"
 
@@ -836,12 +839,12 @@ msgid "personal_information"
 msgstr "Personal Information"
 
 #. Default: Firstname
-#: dbas/templates/settings.pt:17
+#: dbas/templates/settings.pt:17 dbas/templates/admin.pt:33
 msgid "firstname"
 msgstr "Firstname"
 
 #. Default: Surname
-#: dbas/templates/settings.pt:21
+#: dbas/templates/settings.pt:21 dbas/templates/admin.pt:34
 msgid "surname"
 msgstr "Surname"
 
@@ -998,14 +1001,44 @@ msgid "participant_list"
 msgstr "List of participants"
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/admin.pt:19 dbas/templates/admin.pt:34
+#: dbas/templates/admin.pt:19 dbas/templates/admin.pt:70
 msgid "admin_only"
 msgstr "Some additional options for the administrator."
 
+#. Default: Group
+#: dbas/templates/admin.pt:37
+msgid "group_uid"
+msgstr "Group"
+
+#. Default: Last Login
+#: dbas/templates/admin.pt:38
+msgid "last_login"
+msgstr "Last Login"
+
+#. Default: Registered
+#: dbas/templates/admin.pt:39
+msgid "registered"
+msgstr "Register"
+
+#. Default: Avatar
+#: dbas/templates/admin.pt:41
+msgid "avatar"
+msgstr "Avatar"
+
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/admin.pt:33
+#: dbas/templates/admin.pt:69
 msgid "list_attacks"
 msgstr "List of attacks, clicked by the participants"
+
+#. Default: Switch Topic
+#: dbas/templates/admin.pt:78 dbas/templates/content.pt:22
+msgid "switch_topc"
+msgstr "Switch Topic"
+
+#. Default: Topics
+#: dbas/templates/admin.pt:81 dbas/templates/content.pt:25
+msgid "topics"
+msgstr "Topics"
 
 #. Default: You have got
 #: dbas/templates/notifications.pt:14
@@ -1028,87 +1061,77 @@ msgid "js_disabled1"
 msgstr "JavaScript is not enabled:"
 
 #. Default: Please enable JavaScript!
-#: dbas/templates/basetemplate.pt:37
+#: dbas/templates/basetemplate.pt:36
 msgid "js_disabled2"
 msgstr "Please enable JavaScript!"
 
 #. Default: AdBlocker is enabled:
-#: dbas/templates/basetemplate.pt:41
+#: dbas/templates/basetemplate.pt:40
 msgid "adblock_enabled1"
 msgstr "AdBlocker is enabled:"
 
 #. Default: Please disable your AdBlocker!
-#: dbas/templates/basetemplate.pt:43
+#: dbas/templates/basetemplate.pt:41
 msgid "adblock_enabled2"
 msgstr "Please disable your AdBlocker!"
 
 #. Default: Current discussion is about
-#: dbas/templates/content.pt:28
+#: dbas/templates/content.pt:13
 msgid "current_discussion"
 msgstr "The current discussion is about"
 
-#. Default: Switch Topic
-#: dbas/templates/content.pt:46
-msgid "switch_topc"
-msgstr "Switch Topic"
-
-#. Default: Topics
-#: dbas/templates/content.pt:49
-msgid "topics"
-msgstr "Topics"
-
 #. Default: Restart
-#: dbas/templates/content.pt:58
+#: dbas/templates/content.pt:34
 msgid "restart_discussion"
 msgstr "Restart"
 
 #. Default: and
-#: dbas/templates/content.pt:106
+#: dbas/templates/content.pt:88
 msgid "and"
 msgstr "and"
 
 #. Default: Island View for
-#: dbas/templates/content.pt:176
+#: dbas/templates/content.pt:158
 msgid "island_view_for"
 msgstr "Island View for"
 
 #. Default: Add statement
-#: dbas/templates/content.pt:296
+#: dbas/templates/content.pt:278
 msgid "add_statement"
 msgstr "Add statement"
 
 #. Default: What is your idea? What should we do?
-#: dbas/templates/content.pt:315
+#: dbas/templates/content.pt:297
 msgid "what_is_your_idea"
 msgstr "What is your idea? What should we do?"
 
 #. Default: Let me enter my reason!
-#: dbas/templates/content.pt:338
+#: dbas/templates/content.pt:319
 msgid "let_me_enter_my_reason"
 msgstr "Let me enter my reason!"
 
 #. Default: Because...
-#: dbas/templates/content.pt:354
+#: dbas/templates/content.pt:332
 msgid "Because..."
 msgstr "Because..."
 
 #. Default: Change display style
-#: dbas/templates/content.pt:380
+#: dbas/templates/content.pt:358
 msgid "change_style"
 msgstr "Change display style"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:383
+#: dbas/templates/content.pt:361
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Island View
-#: dbas/templates/content.pt:389
+#: dbas/templates/content.pt:367
 msgid "island_view"
 msgstr "Island View"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:395
+#: dbas/templates/content.pt:373
 msgid "complete_view"
 msgstr "Complete View"
 

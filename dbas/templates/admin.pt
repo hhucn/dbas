@@ -3,60 +3,205 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<head>
-			<link type="text/css" href="${request.static_url('dbas:static/css/theme_basetemplate.css')}" rel="stylesheet">
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
+			<link type="text/css" href="${request.static_url('dbas:static/css/theme_admin.css')}" rel="stylesheet">
 		</head>
 		
 		<div class="container colored_container" tal:condition="not:extras.is_admin" style="width: 578px;">
-				<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
+			<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
 		</div>
 
-		<div class="container colored_container" tal:condition="extras.is_admin">
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-8">
-					<h4><span class="lead" i18n:translate="participant_list">List of participants</span></h4>
-					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
-					<div class="row">
-                        <div class="col-md-12">
-					        <input id="list-all-users" type="button" name="" value="Show all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_users"/>
+        <div class="row">
+			<div class="col-md-2" id="navbar-wrapper" tal:condition="extras.is_admin">
+				<nav id="admin-navbar" class="navbar navbar-default navbar-left" role="navigation">
+					<ul class="nav navbar navbar-left">
+						<li class="active">
+                            <a href="#" id="admin-dashboards">
+                                <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>&thinsp;&thinsp;
+                                <span i18n:translate="dashboard">Dashboard</span>
+                            </a></li>
+						<li>
+                            <a href="#" id="admin-users">
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&thinsp;&thinsp;
+                                <span i18n:translate="users">Users</span>
+                            </a>
+                        </li>
+						<li>
+                            <a href="#" id="admin-arguments">
+                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&thinsp;&thinsp;
+                                <span i18n:translate="arguments">Arguments</span>
+                            </a>
+                        </li>
+					</ul>
+				</nav>
+			</div>
+
+			<div class="col-md-10" id="admin-page-wrapper" tal:condition="extras.is_admin">
+                <div class="row col-md-12" id="admins-space-dashboard">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-comments fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">26</div>
+                                            <div>New Comments!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer">
+                                        <span class="pull-left">View Details</span>
+                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-tasks fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">12</div>
+                                            <div>New Tasks!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer">
+                                        <span class="pull-left">View Details</span>
+                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-warning">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-shopping-cart fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">124</div>
+                                            <div>New Orders!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer">
+                                        <span class="pull-left">View Details</span>
+                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-support fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">13</div>
+                                            <div>Support Tickets!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer">
+                                        <span class="pull-left">View Details</span>
+                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-				<div class="col-md-2"></div>
-				<div class="col-md-12">
-					<div id="admins-space-users" class="center"> </div>
-				</div>
-			</div>
-		</div>
 
-		<div class="container colored_container" tal:condition="extras.is_admin">
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-8">
-					<h4><span class="lead" i18n:translate="list_attacks">List of attacks, clicked by the participants</span></h4>
-					<p i18n:translate="admin_only">Some additional options for the administrator.</p>
-					<div class="row">
-                        <div class="col-md-6">
-                            <input id="list-all-arguments" type="button" name="" value="Show all arguments" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_arguments"/>
+                <!--
+                <div class="row container colored_container" style="display:none;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <h4><span class="lead" i18n:translate="participant_list">List of participants</span></h4>
+                        <p i18n:translate="admin_only">Some additional options for the administrator.</p>
+                        <div class="row col-md-12">
+                            <input id="list-all-users" type="button" name="" value="Show all users" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_users"/>
                         </div>
-                        <div class="col-md-6" id="issue-switch-col" style="display: none;">
-                            <div class="dropdown">
-					    	    <button class="btn btn-primary dropdown-toggle btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					    		    <span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
-					    	    </button>
-					    	    <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 250px;">
-					    		    <li class="dropdown-header" i18n:translate="topics">Topics</li>
-					    	    </ul>
-                            </div>
-					    </div>
                     </div>
-				</div>
-				<div class="col-md-2"></div>
-				<div class="col-md-12">
-					<div id="admins-space-argument"> </div>
-				</div>
-			</div>
+                    <div class="col-md-1"></div>
+                </div>
+                -->
+                <div class="row col-md-12 center container colored_container" id="admins-space-users" style="display:none;">
+                     <table style="border-collapse: separate; border-spacing: 0;" class="table table-condensed tablesorter" border="0">
+                         <thead>
+                         <tr>
+                             <th>#</th>
+                             <th i18n:translate="firstname">Firstname</th>
+                             <th i18n:translate="surname">Surname</th>
+                             <th i18n:translate="nickname">Nickname</th>
+                             <th i18n:translate="email">E-Mail</th>
+                             <th i18n:translate="group_uid">Group</th>
+                             <th i18n:translate="last_login">Last Login</th>
+                             <th i18n:translate="registered">Registered</th>
+                             <th i18n:translate="gender">Gender</th>
+                             <th i18n:translate="avatar">Avatar</th>
+                         </tr>
+                         </thead>
+                         <tbody>
+                         <tr tal:repeat="user users">
+                             <td>${user.uid}</td>
+                             <td>${user.firstname}</td>
+                             <td>${user.surname}</td>
+                             <td>${user.nickname}</td>
+                             <td>${user.email}</td>
+                             <td>${user.gender}</td>
+                             <td>${user.group_uid}</td>
+                             <td>${user.last_login}</td>
+                             <td>${user.registered}</td>
+                             <td><img style="height: 50%;" tal:attributes="src user.avatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=80"></td>
+                         </tr>
+                         </tbody>
+                     </table>
+                </div>
+
+                <div class="row container colored_container" style="display:none;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <h4><span class="lead" i18n:translate="list_attacks">List of attacks, clicked by the participants</span></h4>
+                        <p i18n:translate="admin_only">Some additional options for the administrator.</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input id="list-all-arguments" type="button" name="" value="Show all arguments" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_arguments"/>
+                            </div>
+                            <div class="col-md-6" id="issue-switch-col" style="display: none;">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 250px;">
+                                        <li class="dropdown-header" i18n:translate="topics">Topics</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div >
+                <div class="row col-md-12 colored_container" id="admins-space-argument" style="display:none;">
+                </div>
+            </div>
 		</div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
