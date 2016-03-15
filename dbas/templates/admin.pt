@@ -37,6 +37,7 @@
 			</div>
 
 			<div class="col-md-10" id="admin-page-wrapper" tal:condition="extras.is_admin">
+
                 <div class="row col-md-12" id="admins-space-dashboard">
                     <div class="row">
                         <div class="col-lg-3 col-md-6">
@@ -55,8 +56,6 @@
                                 <a href="#">
                                     <div class="panel-footer">
                                         <span id="dashboard-user-count-detail" class="pull-left" i18n:translate="view_details">View Details</span>
-                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                        <div class="clearfix"></div>
                                     </div>
                                 </a>
                             </div>
@@ -77,8 +76,6 @@
                                 <a href="#">
                                     <div class="panel-footer">
                                         <span id="dashboard-vote-count-detail" class="pull-left" i18n:translate="view_details">View Details</span>
-                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                        <div class="clearfix"></div>
                                     </div>
                                 </a>
                             </div>
@@ -99,8 +96,6 @@
                                 <a href="#">
                                     <div class="panel-footer">
                                         <span id="dashboard-argument-count-detail" class="pull-left" i18n:translate="view_details">View Details</span>
-                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                        <div class="clearfix"></div>
                                     </div>
                                 </a>
                             </div>
@@ -121,8 +116,6 @@
                                 <a href="#">
                                     <div class="panel-footer">
                                         <span id="dashboard-statement-count-detail" class="pull-left" i18n:translate="view_details">View Details</span>
-                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                        <div class="clearfix"></div>
                                     </div>
                                 </a>
                             </div>
@@ -176,7 +169,7 @@
                      </table>
                 </div>
 
-                <div class="row container colored_container" style="display:none;">
+                <div class="row col-md-12 container colored_container" style="display:none;">
                     <div class="col-md-1"></div>
                     <div class="col-md-10">
                         <h4><span class="lead" i18n:translate="list_attacks">List of attacks, clicked by the participants</span></h4>
