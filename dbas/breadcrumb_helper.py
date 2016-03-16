@@ -110,19 +110,8 @@ class BreadcrumbHelper(object):
 
 		return breadcrumbs
 
-	def get_last_breadcrumb_of_user(self, user):
-		"""
-
-		:param user:
-		:return:
-		"""
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-
-		if not db_user:
-			return None
-		return DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).order_by(Breadcrumb.uid.desc()).first()
-
-	def __get_text_for_url__(self, url, lang):
+	@staticmethod
+	def __get_text_for_url__(url, lang):
 		"""
 
 		:param url:
