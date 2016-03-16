@@ -67,7 +67,7 @@ function goBackToTop() {
 }
 
 /**
- *
+ * Changes the navbar on background scrolling events
  */
 function changeBackgroundOnScroll(){
 	$(window).scroll(function () {
@@ -401,7 +401,7 @@ function ajaxLogin (){
  *
  */
 function ajaxLogout (){
-	var url = window.location.href;
+	// var url = window.location.href;
 	$.ajax({
 		url: 'ajax_user_logout',
 		type: 'POST',

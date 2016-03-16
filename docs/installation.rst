@@ -18,7 +18,7 @@ Then follow these steps:
 
 1. Create virtualenv with python3::
 
-    $ mkvirtualenv --python=$(which python3) dbas
+    $ mkvirtualenv "--python=$(which python3)" dbas
 
 2. Install all requirements::
 

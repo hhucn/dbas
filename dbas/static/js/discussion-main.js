@@ -508,25 +508,3 @@ $(document).ready(function () {
 	tmp = tmp.substr(1, tmp.length-2);
 	$('#' + discussionEndRestart).attr('href', tmp);
 });
-
-// new
-replaceHtmlTags = function(element){
-	var text = element.text();
-	text = text.replace('&lt;strong&gt;', '<strong>');
-	text = text.replace('&lt;/strong&gt;', '</strong>');
-	text = text.replace('&lt;a', '<a');
-	text = text.replace('&lt;/a', '</a');
-	text = text.replace('&lt;br&gt;', '<br>');
-	element.html(text);
-};
-
-// new
-clearHtmlTags = function(element) {
-	var text = element.text();
-	text = text.replace('&lt;strong&gt;', '');
-	text = text.replace('&lt;/strong&gt;', '');
-	text = text.replace('&lt;a', '');
-	text = text.replace('&lt;/a', '');
-	text = text.replace('&lt;br&gt;', '');
-	element.html(text);
-};
