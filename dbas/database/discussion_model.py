@@ -2,7 +2,7 @@ import sqlalchemy as sa
 
 from slugify import slugify
 
-from datetime import datetime
+from sqlalchemy import func
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.orm import relationship
 from dbas.database import DBDiscussionSession, DiscussionBase
@@ -20,7 +20,7 @@ class Issue(DiscussionBase):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	title = sa.Column(sa.Text, nullable=False)
 	info = sa.Column(sa.Text, nullable=False)
-	date = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
+	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
 	def __init__(self, title, info):
 		"""
@@ -73,9 +73,9 @@ class User(DiscussionBase):
 	gender = sa.Column(sa.Text, nullable=False)
 	password = sa.Column(sa.Text, nullable=False)
 	group_uid = sa.Column(sa.Integer, sa.ForeignKey('groups.uid'))
-	last_action = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
-	last_login = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
-	registered = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
+	last_action = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	last_login = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	registered = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	token = sa.Column(sa.Text, nullable=True)
 	token_timestamp = sa.Column(sa.DateTime(timezone=True), nullable=True)
 
@@ -92,9 +92,9 @@ class User(DiscussionBase):
 		self.gender = gender
 		self.password = password
 		self.group_uid = group
-		self.last_action = datetime.now()
-		self.last_login = datetime.now()
-		self.registered = datetime.now()
+		self.last_action = func.now()
+		self.last_login = func.now()
+		self.registered = func.now()
 		self.token = token
 		self.token_timestamp = token_timestamp
 
@@ -108,13 +108,13 @@ class User(DiscussionBase):
 		return manager.check(self.password, password)
 
 	def update_last_login(self):
-		self.last_login = datetime.now()
+		self.last_login = func.now()
 
 	def update_last_action(self):
-		self.last_action = datetime.now()
+		self.last_action = func.now()
 
 	def update_token_timestamp(self):
-		self.token_timestamp = datetime.now()
+		self.token_timestamp = func.now()
 
 	def set_token(self, token):
 		self.token = token
@@ -185,7 +185,7 @@ class TextVersion(DiscussionBase):
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'), nullable=True)
 	content = sa.Column(sa.Text, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
@@ -199,7 +199,7 @@ class TextVersion(DiscussionBase):
 		"""
 		self.content = content
 		self.author_uid = author
-		self.timestamp = datetime.now()
+		self.timestamp = func.now()
 
 	def set_statement(self, value):
 		self.statement_uid = value
@@ -240,7 +240,7 @@ class Premise(DiscussionBase):
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'), primary_key=True)
 	is_negated = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
 	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
@@ -262,7 +262,7 @@ class Premise(DiscussionBase):
 		self.statement_uid = statement
 		self.is_negated = is_negated
 		self.author_uid = author
-		self.timestamp = datetime.now()
+		self.timestamp = func.now()
 		self.issue_uid = issue
 
 
@@ -279,7 +279,7 @@ class Argument(DiscussionBase):
 	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
 	is_supportive = sa.Column(sa.Boolean, nullable=False)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
 
 	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
@@ -319,7 +319,7 @@ class Breadcrumb(DiscussionBase):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	url = sa.Column(sa.Text, nullable=False)
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	session_id = sa.Column(sa.Integer)
 
 	users = relationship('User', foreign_keys=[author_uid])
@@ -334,7 +334,7 @@ class Breadcrumb(DiscussionBase):
 		"""
 		self.author_uid = user
 		self.url = url
-		self.timestamp = datetime.now()
+		self.timestamp = func.now()
 		self.session_id = session_id
 
 
@@ -388,7 +388,7 @@ class VoteArgument(DiscussionBase):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	is_up_vote = sa.Column(sa.Boolean, nullable=False)
 	is_valid = sa.Column(sa.Boolean, nullable=False)
 
@@ -407,7 +407,7 @@ class VoteArgument(DiscussionBase):
 		self.argument_uid = argument_uid
 		self.author_uid = author_uid
 		self.is_up_vote = is_up_vote
-		self.timestamp = datetime.now()
+		self.timestamp = func.now()
 		self.is_valid = is_valid
 
 	def set_up_vote(self, is_up_vote):
@@ -431,7 +431,7 @@ class VoteArgument(DiscussionBase):
 		Updates timestamp of this record
 		:return: None
 		"""
-		self.timestamp = datetime.now()
+		self.timestamp = func.now()
 
 
 class VoteStatement(DiscussionBase):
@@ -443,7 +443,7 @@ class VoteStatement(DiscussionBase):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
 	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	is_up_vote = sa.Column(sa.Boolean, nullable=False)
 	is_valid = sa.Column(sa.Boolean, nullable=False)
 
@@ -462,7 +462,7 @@ class VoteStatement(DiscussionBase):
 		self.statement_uid = statement_uid
 		self.author_uid = author_uid
 		self.is_up_vote = is_up_vote
-		self.timestamp = datetime.now()
+		self.timestamp = func.now()
 		self.is_valid = is_valid
 
 	def set_up_vote(self, is_up_vote):
@@ -486,7 +486,7 @@ class VoteStatement(DiscussionBase):
 		Updates timestamp of this record
 		:return: None
 		"""
-		self.timestamp = datetime.now()
+		self.timestamp = func.now()
 
 
 class Notification(DiscussionBase):
@@ -499,7 +499,7 @@ class Notification(DiscussionBase):
 	to_author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
 	topic = sa.Column(sa.Text, nullable=False)
 	content = sa.Column(sa.Text, nullable=False)
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=datetime.now())
+	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	read = sa.Column(sa.Boolean, nullable=False)
 
 	def __init__(self, from_author_uid, to_author_uid, topic, content):
@@ -507,7 +507,7 @@ class Notification(DiscussionBase):
 		self.to_author_uid = to_author_uid
 		self.topic = topic
 		self.content = content
-		self.timestamp = datetime.now()
+		self.timestamp = func.now()
 		self.read = False
 
 	def set_read(self, was_read):

@@ -920,10 +920,12 @@ class Dbas(object):
 		logger('user_logout', 'def', 'main')
 		self.request.session.invalidate()
 		headers = forget(self.request)
-		return HTTPFound(
-			location=mainpage,
-			headers=headers,
-		)
+		self.request.response.headerlist.extend(headers)
+		return self.request.response
+		#  return HTTPFound(
+		#  	location=mainpage,
+		#  	headers=headers,
+		#  )
 
 	# ajax - registration of users
 	@view_config(route_name='ajax_user_registration', renderer='json')
