@@ -26,6 +26,7 @@ class BreadcrumbHelper(object):
 		:return: all breadcrumbs, boolean (if a crumb was inserted)
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		run_transaction = False
 		if not db_user:
 			user = 'anonymous'
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -39,6 +40,7 @@ class BreadcrumbHelper(object):
 			group0 = expr_dbas.group(0)
 			if group0 and path.endswith(group0):
 				self.del_breadcrumbs_of_user(transaction, user, session_id)
+				run_transaction = True
 
 		# delete by slugs (api version)
 		expr_api = re.search(re.compile(r"/?api/[a-zA-Z0-9,-]*"), path)
@@ -46,6 +48,7 @@ class BreadcrumbHelper(object):
 			group1 = expr_api.group(0)
 			if group1 and path.endswith(group1):
 				self.del_breadcrumbs_of_user(transaction, user, session_id)
+				run_transaction = True
 
 		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == path,
 		                                                                  Breadcrumb.author_uid == db_user.uid)).first()
@@ -54,6 +57,7 @@ class BreadcrumbHelper(object):
 		is_new_crumb = False
 
 		if db_already_in:
+			run_transaction = True
 			if user == 'anonymous':
 				DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
 				                                                  Breadcrumb.uid > db_already_in.uid,
@@ -64,7 +68,10 @@ class BreadcrumbHelper(object):
 		elif not already_last:
 			DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=path, session_id=session_id))
 			is_new_crumb = True
-		transaction.commit()
+			run_transaction = True
+
+		if run_transaction:
+			transaction.commit()
 
 		return self.get_breadcrumbs(user, session_id, lang), is_new_crumb
 
