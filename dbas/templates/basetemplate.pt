@@ -27,7 +27,9 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.2.1.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.6.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
+    <!--
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ads.js')}"></script>
+	-->
 
 	<!-- JS DISABLED -->
 	<noscript>
@@ -36,12 +38,12 @@
 			<strong i18n:translate="js_disabled2">Please enable JavaScript!</strong>
 		</div>
 	</noscript>
+    <!--
 	<div id="adblocker_message" class="blocked adblockenabled" style="display:none">
 		<strong i18n:translate="adblock_enabled1">AdBlocker is enabled:</strong><br>
 		<strong i18n:translate="adblock_enabled2">Please disable your AdBlocker!</strong>
 	</div>
 
-    <!--
 	<script type="text/javascript">
       if( window.canRunAds === undefined ){
         // adblocker detected, show fallback

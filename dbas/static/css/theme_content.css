@@ -238,21 +238,13 @@
 }
 
 .container-three-divs {
-	display:-webkit-box;
-	-webkit-box-orient:horizontal;
-	-webkit-box-align:stretch; 
-	display:-moz-box;      
-	-moz-box-orient:horizontal;
-	-moz-box-align:stretch;
-	display: box;
-	box-orient:horizontal;
-	box-align:stretch; 
+	display: -webkit-flex;
+  display: flex;
 }
 
 .flex-div {
-	-webkit-box-flex:1.0;
-	-moz-box-flex:1.0;
-	box-flex:1.0;
+  -webkit-flex: 1;
+          flex: 1;
 }
 /* http://nicolasgallagher.com/pure-css-speech-bubbles/ */
 /* http://codepen.io/ryanmcnz/pen/JDLhu */
