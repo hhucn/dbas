@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <div i18n:domain="dbas" metal:define-macro="layout">
 <!-- ABOUT POPUP IN dropdown-menu -->
 <div class="modal fade" id="popup_author" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

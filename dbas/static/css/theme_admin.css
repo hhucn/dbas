@@ -31,6 +31,36 @@ body > img{
     margin-right: 0;
 }
 
+.glyphicons-dashboard{
+	border: none;
+   	-webkit-filter: invert(100%);
+}
+
+#dashboard_user{
+    background: url(../images/glyphicons_free/glyphicons/glyphicons-500-family.png) no-repeat;
+    background-size:cover;
+	height: 30px;
+	width: 50px;
+}
+#dashboard_vote{
+    background: url(../images/glyphicons_free/glyphicons/glyphicons-344-thumbs-up.png) no-repeat;
+    background-size:cover;
+	height: 30px;
+	width: 35px;
+}
+#dashboard_argument{
+    background: url(../images/glyphicons_free/glyphicons/glyphicons-547-quote.png) no-repeat;
+    background-size:cover;
+	height: 30px;
+	width: 33px;
+}
+#dashboard_statement{
+    background: url(../images/glyphicons_free/glyphicons/glyphicons-310-comments.png) no-repeat;
+    background-size:cover;
+	height: 30px;
+	width: 33px;
+}
+
 @media (max-width: 767px) {
     #navbar-wrapper{
         margin-top: -50px;

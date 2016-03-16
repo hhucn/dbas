@@ -240,7 +240,7 @@ class Dbas(object):
 
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_start(ui_locales, breadcrumbs)
+		discussion_dict = _dh.prepare_discussion_dict_for_start(ui_locales, breadcrumbs, nickname, session_id)
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -291,7 +291,7 @@ class Dbas(object):
 		UserHandler().update_last_action(nickname)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs)
+		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs, nickname, session_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
@@ -508,7 +508,7 @@ class Dbas(object):
 		UserHandler().update_last_action(nickname)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, ui_locales, is_argument, is_supportive, breadcrumbs)
+		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, ui_locales, is_argument, is_supportive, breadcrumbs, nickname, session_id)
 		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales,
 		                                                     mainpage, issue, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, False, True, True, ui_locales, nickname,
@@ -634,6 +634,7 @@ class Dbas(object):
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
+		dashboard = _qh.get_dashboard_infos()
 
 		return {
 			'layout': self.base_layout(),
@@ -641,7 +642,8 @@ class Dbas(object):
 			'title': 'Admin',
 			'project': header,
 			'extras': extras_dict,
-			'users': users
+			'users': users,
+			'dashboard': dashboard
 		}
 
 	# news page for everybody
@@ -910,15 +912,9 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_logout', 'def', 'main')
 
-		url = self.request.params['url']
-
-		if 'setting' in url:
-			url = mainpage
-			logger('user_logout', 'def', 'redirect: ' + url)
-
 		headers = forget(self.request)
 		return HTTPFound(
-			location=url,
+			location=mainpage,
 			headers=headers,
 		)
 

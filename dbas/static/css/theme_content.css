@@ -165,13 +165,18 @@
 #popup-edit-statement-textarea,
 #popup-url-sharing-input {
 	width: 100%;
-	padding: 12px 10px 6px 50px;
+	padding: 12px 10px 0 12px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 5px;
 	-o-border-radius: 5px;
-	margin: 0px 0px 10px 0px;
+	margin: 0 0 10px 0;
 	-webkit-appearance: none;
 	resize: vertical;
+}
+
+#add-premise-container textarea,
+#popup-url-sharing-input {
+	padding: 12px 10px 0 50px;
 }
 
 #popup-url-sharing-body {
@@ -233,21 +238,13 @@
 }
 
 .container-three-divs {
-	display:-webkit-box;
-	-webkit-box-orient:horizontal;
-	-webkit-box-align:stretch; 
-	display:-moz-box;      
-	-moz-box-orient:horizontal;
-	-moz-box-align:stretch;
-	display: box;
-	box-orient:horizontal;
-	box-align:stretch; 
+	display: -webkit-flex;
+  display: flex;
 }
 
 .flex-div {
-	-webkit-box-flex:1.0;
-	-moz-box-flex:1.0;
-	box-flex:1.0;
+  -webkit-flex: 1;
+          flex: 1;
 }
 /* http://nicolasgallagher.com/pure-css-speech-bubbles/ */
 /* http://codepen.io/ryanmcnz/pen/JDLhu */
@@ -309,7 +306,7 @@
 .triangle-m{
     padding: 1px;
     max-width: 35%;
-    background: #B2EBF2;
+    background: #BBDEFB;
     text-align: center;
     margin: 0 auto 1em auto;
 }
@@ -368,3 +365,8 @@
 	}
 }
 
+@media (max-width: 992px) {
+    #issue-dropdown {
+        margin-bottom: 1em;
+    }
+}

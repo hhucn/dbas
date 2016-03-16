@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <div i18n:domain="dbas" metal:define-macro="layout">
 
 <div id="footer">

@@ -136,34 +136,66 @@ function AdminInterface(){
 
 
 function NavBarInterface(){
+	var _this = this;
 	this.setUpLinks = function(){
 		$('#admin-dashboards').click(function(){
-			$('#admin-navbar').find('.active').removeClass('active');
-			$('#admin-page-wrapper>div').each(function(){
-				$(this).hide();
-			});
-			$(this).parent().addClass('active');
-			$('#admins-space-dashboard').show();
+			_this.showDashboard();
 		});
 
 		$('#admin-users').click(function(){
-			$('#admin-navbar').find('.active').removeClass('active');
-			$('#admin-page-wrapper>div').each(function(){
-				$(this).hide();
-			});
-			$(this).parent().addClass('active');
-			$('#admins-space-users').show().prev();
+			_this.showUsers();
 		});
 
 		$('#admin-arguments').click(function(){
-			$('#admin-navbar').find('.active').removeClass('active');
-			$('#admin-page-wrapper>div').each(function(){
-				$(this).hide();
-			});
-			$(this).parent().addClass('active');
-			$('#admins-space-argument').prev().show();
+			_this.showArguments()
 		});
-	}
+
+		 $('#dashboard-user-count-detail').click(function(){
+			_this.showUsers();
+		 });
+		 $('#dashboard-vote-count-detail').click(function(){
+			_this.showVotes();
+		 });
+		 $('#dashboard-argument-count-detail').click(function(){
+			_this.showArguments();
+		 });
+		 $('#dashboard-statement-count-detail').click(function(){
+			_this.showStatements();
+		 });
+	};
+
+	this.hideEverything = function(){
+		$('#admin-navbar').find('.active').removeClass('active');
+		$('#admin-page-wrapper').find('>div').each(function(){
+			$(this).hide();
+		});
+	};
+
+	this.showDashboard = function(){
+		this.hideEverything();
+		$('#admin-dashboards').parent().addClass('active');
+		$('#admins-space-dashboard').show();
+	};
+
+	this.showUsers = function(){
+		this.hideEverything();
+		$('#admin-users').parent().addClass('active');
+		$('#admins-space-users').show().prev();
+	};
+
+	this.showVotes = function(){
+		this.hideEverything();
+	};
+
+	this.showArguments = function(){
+		this.hideEverything();
+		$('#admin-arguments').parent().addClass('active');
+		$('#admins-space-argument').prev().show();
+	};
+
+	this.showStatements = function(){
+		this.hideEverything();
+	};
 }
 
 // main function

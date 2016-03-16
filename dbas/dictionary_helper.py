@@ -70,16 +70,18 @@ class DictionaryHelper(object):
 		"""
 		return json.loads(s)
 
-	def prepare_discussion_dict_for_start(self, lang, breadcrumbs):
+	def prepare_discussion_dict_for_start(self, lang, breadcrumbs, nickname, session_id):
 		"""
 
 		:param lang:
 		:param breadcrumbs:
+		:param nickname:
+		:param session_id:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_start', 'at_start')
 		_tn			        = Translator(lang)
-		bubbles_array       = self.__create_speechbubble_history(breadcrumbs)
+		bubbles_array       = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text    = ''
 		intro               = _tn.get(_tn.initialPositionInterest)
 		save_statement_url  = 'ajax_set_new_start_premise'
@@ -89,18 +91,20 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_attitude(self, uid, lang, breadcrumbs):
+	def prepare_discussion_dict_for_attitude(self, uid, lang, breadcrumbs, nickname, session_id):
 		"""
 
 		:param uid:
 		:param lang:
 		:param breadcrumbs:
+		:param nickname:
+		:param session_id:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_attitude', 'at_attitude')
 		_tn			        = Translator(lang)
 		_qh			        = QueryHelper()
-		bubbles_array       = self.__create_speechbubble_history(breadcrumbs)
+		bubbles_array       = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
 		statement_text      = _qh.get_text_for_statement_uid(uid)
@@ -139,7 +143,7 @@ class DictionaryHelper(object):
 		if not nickname:
 			nickname = 'anonymous'
 		db_user             = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-		bubbles_array       = self.__create_speechbubble_history(breadcrumbs)
+		bubbles_array       = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
 		text				= _qh.get_text_for_statement_uid(uid)
@@ -189,7 +193,7 @@ class DictionaryHelper(object):
 		_tn			       = Translator(lang)
 		_qh			       = QueryHelper()
 		_tg                = TextGenerator(lang)
-		bubbles_array      = self.__create_speechbubble_history(breadcrumbs)
+		bubbles_array      = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text   = ''
 		save_statement_url = 'ajax_set_new_premises_for_argument'
 
@@ -238,10 +242,10 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_dont_know_reaction(self, user, transaction, uid, lang, breadcrumbs, save_crumb, session_id):
+	def prepare_discussion_dict_for_dont_know_reaction(self, nickname, transaction, uid, lang, breadcrumbs, save_crumb, session_id):
 		"""
 
-		:param user:
+		:param nickname:
 		:param transaction:
 		:param uid:
 		:param lang:
@@ -252,8 +256,8 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_dont_know_reaction', 'at_dont_know')
 		_tn			   = Translator(lang)
 		_qh			   = QueryHelper()
-		db_user        = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		bubbles_array  = self.__create_speechbubble_history(breadcrumbs)
+		db_user        = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		bubbles_array  = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 
@@ -271,10 +275,10 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_argumentation(self, user, transaction, uid, lang, breadcrumbs, save_crumb, is_supportive, additional_id, attack, session_id):
+	def prepare_discussion_dict_for_argumentation(self, nickname, transaction, uid, lang, breadcrumbs, save_crumb, is_supportive, additional_id, attack, session_id):
 		"""
 
-		:param user:
+		:param nickname:
 		:param transaction:
 		:param uid:
 		:param lang:
@@ -289,8 +293,8 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
 		_tn			   = Translator(lang)
 		_qh			   = QueryHelper()
-		db_user        = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		bubbles_array  = self.__create_speechbubble_history(breadcrumbs)
+		db_user        = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		bubbles_array  = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 		mid_text = ''
@@ -353,7 +357,7 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_choosing(self, uid, lang, is_uid_argument, is_supportive, breadcrumbs):
+	def prepare_discussion_dict_for_choosing(self, uid, lang, is_uid_argument, is_supportive, breadcrumbs, nickname, session_id):
 		"""
 
 		:param uid:
@@ -365,7 +369,7 @@ class DictionaryHelper(object):
 		"""
 		_tn			   = Translator(lang)
 		_qh			   = QueryHelper()
-		bubbles_array  = self.__create_speechbubble_history(breadcrumbs)
+		bubbles_array  = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 
@@ -1026,15 +1030,27 @@ class DictionaryHelper(object):
 		transaction.commit()
 		return True
 
-	def __create_speechbubble_history(self, breadcrumbs):
+	def __create_speechbubble_history(self, breadcrumbs, nickname, session_id):
 		"""
 
-		:param user:
+		:param breadcrumbs:
+		:param nickname:
+		:param session_id:
 		:return:
 		"""
 		bubble_history = []
+		is_user_anonym = not nickname
+		if is_user_anonym:
+			nickname = 'anonymous'
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		for crumb in breadcrumbs:
-			history   = DBDiscussionSession.query(Bubble).filter_by(breadcrumb_uid=crumb['uid']).all()
+			if is_user_anonym:
+				history = DBDiscussionSession.query(Bubble).filter(and_(Bubble.breadcrumb_uid == crumb['uid'],
+				                                                        Bubble.author_uid == db_user.uid,
+				                                                        Bubble.session_id == session_id)).all()
+			else:
+				history = DBDiscussionSession.query(Bubble).filter(and_(Bubble.breadcrumb_uid == crumb['uid'],
+				                                                        Bubble.author_uid == db_user.uid)).all()
 			for h in history:
 				is_user   = h.is_user
 				is_system = h.is_system

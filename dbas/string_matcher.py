@@ -54,9 +54,10 @@ class FuzzyStringMatcher(object):
 		:return: dict()
 		"""
 
-		db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_uid,
-		                                                                Statement.issue_uid == issue)).first()
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
+		# db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_uid,
+		#                                                                Statement.issue_uid == issue)).first()
+		# db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).join(User).all()
 
 		tmp_dict = dict()
 		index = 1
@@ -118,7 +119,7 @@ class FuzzyStringMatcher(object):
 
 		return self.mechanism, return_dict
 
-	def __sort_dict (self, dictionary):
+	def __sort_dict(self, dictionary):
 		"""
 
 		:return:
@@ -129,7 +130,7 @@ class FuzzyStringMatcher(object):
 		for i in list(dictionary.keys())[0:self.return_count]:
 			return_dict[i] = dictionary[i]
 
-		if self.mechanism == 'SequenceMatcher': # sort descending
+		if self.mechanism == 'SequenceMatcher':  # sort descending
 			return_dict = OrderedDict(sorted(dictionary.items(), key=lambda kv: kv[0], reverse=True))
 		else:  # sort ascending
 			return_dict = OrderedDict()
@@ -150,7 +151,7 @@ class FuzzyStringMatcher(object):
 			#  logger('FuzzyStringMatcher', '__get_distance__', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' + string_b.lower())
 		else:
 			matcher = difflib.SequenceMatcher(lambda x: x == " ", string_a.lower(), string_b.lower())
-			dist = str(round(matcher.ratio()*100,1))[:-2]
+			dist = str(round(matcher.ratio() * 100, 1))[:-2]
 			# logger('FuzzyStringMatcher', '__get_distance__', 'SequenceMatcher: ' + str(matcher.ratio()) + ', value: ' + string_a.lower() + ' in: ' +  string_b.lower())
 
 		return str(dist).zfill(self.max_count_zeros)

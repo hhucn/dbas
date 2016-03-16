@@ -1072,6 +1072,15 @@ class QueryHelper(object):
 
 		return return_array
 
+	def get_dashboard_infos(self):
+		logger('QueryHelper', 'get_dashboard_infos', 'main')
+		return_dict = dict()
+		return_dict['user_count'] = str(len(DBDiscussionSession.query(User).all()))
+		return_dict['vote_count'] = str(len(DBDiscussionSession.query(VoteArgument).all()) + len(DBDiscussionSession.query(VoteStatement).all()))
+		return_dict['argument_count'] = str(len(DBDiscussionSession.query(Argument).all()))
+		return_dict['statement_count'] = str(len(DBDiscussionSession.query(Statement).all()))
+		return return_dict
+
 	def get_argument_overview(self, user, lang):
 		"""
 		Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
