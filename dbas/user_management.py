@@ -2,10 +2,10 @@ import random
 import hashlib
 import urllib
 
-from collections import OrderedDict
+from datetime import datetime
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Statement
+from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion
 from .logger import logger
 
 from .strings import Translator
@@ -58,17 +58,19 @@ class PasswordHandler(object):
 
 class UserHandler(object):
 
-	def update_last_action(self, nick):
+	def __init__(self):
+		self.timeout = 1200
+
+	def update_last_action(self, transaction, nick):
 		"""
 
-		:param transaction:
 		:param nick:
 		:return:
 		"""
-		return  # TODO
-		# db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
-		# if db_user:
-		# 	db_user.update_last_action()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
+		if db_user:
+			db_user.update_last_action()
+			transaction.commit()
 
 	def is_user_admin(self, user):
 		"""

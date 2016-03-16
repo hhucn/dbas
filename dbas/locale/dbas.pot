@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-15 16:37+0100\n"
+"POT-Creation-Date: 2016-03-16 22:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,17 +17,17 @@ msgstr ""
 "Generated-By: Lingua 4.7\n"
 
 #. Default: 404 Error
-#: ./dbas/templates/404.pt:10
+#: ./dbas/templates/404.pt:9
 msgid "404"
 msgstr ""
 
 #. Default: The page
-#: ./dbas/templates/404.pt:13
+#: ./dbas/templates/404.pt:12
 msgid "404_text_part1"
 msgstr ""
 
 #. Default: for could not be found.
-#: ./dbas/templates/404.pt:15
+#: ./dbas/templates/404.pt:14
 msgid "404_text_part2"
 msgstr ""
 
@@ -69,70 +69,70 @@ msgid "ministry_of_innovation"
 msgstr ""
 
 #. Default: Toggle navigation
-#: ./dbas/templates/snippet-header.pt:10
+#: ./dbas/templates/snippet-header.pt:9
 msgid "Toggle Navigation"
 msgstr ""
 
 #. Default: Let's go
-#: ./dbas/templates/snippet-header.pt:45
+#: ./dbas/templates/snippet-header.pt:44
 msgid "lets_go"
 msgstr ""
 
 #. Default: News
-#: ./dbas/templates/snippet-header.pt:51
+#: ./dbas/templates/snippet-header.pt:50
 msgid "news"
 msgstr ""
 
 #. Default: Login
 #. Default: Log In
-#: ./dbas/templates/snippet-header.pt:60 ./dbas/templates/snippet-popups.pt:245
-#: ./dbas/templates/snippet-popups.pt:426
+#: ./dbas/templates/snippet-header.pt:59 ./dbas/templates/snippet-popups.pt:244
+#: ./dbas/templates/snippet-popups.pt:425
 msgid "login"
 msgstr ""
 
 #. Default: Settings
-#: ./dbas/templates/snippet-header.pt:73 ./dbas/templates/settings.pt:39
+#: ./dbas/templates/snippet-header.pt:72 ./dbas/templates/settings.pt:38
 msgid "settings"
 msgstr ""
 
 #. Default: Notifications
-#: ./dbas/templates/snippet-header.pt:79
+#: ./dbas/templates/snippet-header.pt:78
 msgid "notifications"
 msgstr ""
 
 #. Default: Admin
-#: ./dbas/templates/snippet-header.pt:84
+#: ./dbas/templates/snippet-header.pt:83
 msgid "Admin"
 msgstr ""
 
 #. Default: Logout
-#: ./dbas/templates/snippet-header.pt:89
+#: ./dbas/templates/snippet-header.pt:88
 msgid "logout"
 msgstr ""
 
 #. Default: Language
-#: ./dbas/templates/snippet-header.pt:103
+#: ./dbas/templates/snippet-header.pt:102
 msgid "language"
 msgstr ""
 
 #. Default: Impressum
-#: ./dbas/templates/imprint.pt:6
+#: ./dbas/templates/imprint.pt:5
 msgid "imprint"
 msgstr ""
 
 #. Default: Angaben gemäß § 5 TMG
-#: ./dbas/templates/imprint.pt:7
+#: ./dbas/templates/imprint.pt:6
 msgid "data_tmg"
 msgstr ""
 
 #. Default: Institut für Informatik
-#: ./dbas/templates/imprint.pt:9
+#: ./dbas/templates/imprint.pt:8
 msgid "department"
 msgstr ""
 
 #. Default: Kontakt:
 #. Default: Contact
-#: ./dbas/templates/imprint.pt:15 ./dbas/templates/snippet-footer.pt:33
+#: ./dbas/templates/imprint.pt:14 ./dbas/templates/snippet-footer.pt:32
 msgid "contact"
 msgstr ""
 
@@ -142,12 +142,12 @@ msgid "phone"
 msgstr ""
 
 #. Default: Haftungsausschluss:
-#: ./dbas/templates/imprint.pt:22
+#: ./dbas/templates/imprint.pt:21
 msgid "disclaimer"
 msgstr ""
 
 #. Default: Haftung für Inhalte
-#: ./dbas/templates/imprint.pt:24
+#: ./dbas/templates/imprint.pt:23
 msgid "disclaimer_content"
 msgstr ""
 
@@ -164,12 +164,12 @@ msgstr ""
 #. Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von
 #. entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
 #. entfernen.
-#: ./dbas/templates/imprint.pt:25
+#: ./dbas/templates/imprint.pt:24
 msgid "disclaimer_content_content"
 msgstr ""
 
 #. Default: Haftung für Links
-#: ./dbas/templates/imprint.pt:28
+#: ./dbas/templates/imprint.pt:27
 msgid "disclaimer_links"
 msgstr ""
 
@@ -183,12 +183,12 @@ msgstr ""
 #. Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer
 #. Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen
 #. werden wir derartige Links umgehend entfernen.
-#: ./dbas/templates/imprint.pt:29
+#: ./dbas/templates/imprint.pt:28
 msgid "disclaimer_links_content"
 msgstr ""
 
 #. Default: Urheberrecht
-#: ./dbas/templates/imprint.pt:32
+#: ./dbas/templates/imprint.pt:31
 msgid "disclaimer_copyright"
 msgstr ""
 
@@ -204,12 +204,12 @@ msgstr ""
 #. aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei
 #. Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend
 #. entfernen.
-#: ./dbas/templates/imprint.pt:33
+#: ./dbas/templates/imprint.pt:32
 msgid "disclaimer_copyright_content"
 msgstr ""
 
 #. Default: Datenschutz
-#: ./dbas/templates/imprint.pt:36
+#: ./dbas/templates/imprint.pt:35
 msgid "disclaimer_dataprotection"
 msgstr ""
 
@@ -227,12 +227,12 @@ msgstr ""
 #. ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich
 #. ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von
 #. Werbeinformationen, etwa durch Spam-Mails, vor.
-#: ./dbas/templates/imprint.pt:37
+#: ./dbas/templates/imprint.pt:36
 msgid "disclaimer_dataprotection_content"
 msgstr ""
 
 #. Default: Session-Cookies
-#: ./dbas/templates/imprint.pt:42
+#: ./dbas/templates/imprint.pt:41
 msgid "disclaimer_session_cookie"
 msgstr ""
 
@@ -242,12 +242,12 @@ msgstr ""
 #. Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht auf
 #. Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung
 #. beenden.
-#: ./dbas/templates/imprint.pt:43
+#: ./dbas/templates/imprint.pt:42
 msgid "disclaimer_session_cookie_content"
 msgstr ""
 
 #. Default: Tracking-Cookies
-#: ./dbas/templates/imprint.pt:47
+#: ./dbas/templates/imprint.pt:46
 msgid "disclaimer_tracking_cookie"
 msgstr ""
 
@@ -257,12 +257,12 @@ msgstr ""
 #. Informationen festzuhalten, z.B. von Ihnen ausgewählte Seiten und Optionen
 #. und den Weg, den Sie durch unsere Website gewählt haben. Durch das
 #. Überwachen dieser Informationen können wir unsere Websites verbessern.
-#: ./dbas/templates/imprint.pt:48
+#: ./dbas/templates/imprint.pt:47
 msgid "disclaimer_tracking_cookie_content"
 msgstr ""
 
 #. Default: Piwik
-#: ./dbas/templates/imprint.pt:53
+#: ./dbas/templates/imprint.pt:52
 msgid "disclaimer_piwik"
 msgstr ""
 
@@ -277,131 +277,131 @@ msgstr ""
 #. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
 #. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
 #. Funktionen dieser Website vollumfänglich nutzen können.
-#: ./dbas/templates/imprint.pt:54
+#: ./dbas/templates/imprint.pt:53
 msgid "disclaimer_piwik_content"
 msgstr ""
 
 #. Default: Copyrights and used Software
-#: ./dbas/templates/imprint.pt:64
+#: ./dbas/templates/imprint.pt:63
 msgid "copyright_and_used_software"
 msgstr ""
 
 #. Default: Icons by
-#: ./dbas/templates/imprint.pt:78
+#: ./dbas/templates/imprint.pt:77
 msgid "icons_by"
 msgstr ""
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: ./dbas/templates/imprint.pt:100
+#: ./dbas/templates/imprint.pt:102
 msgid "generated_with"
 msgstr ""
 
 #. Default: Changes
-#: ./dbas/templates/imprint.pt:125
+#: ./dbas/templates/imprint.pt:127
 msgid "changes"
 msgstr ""
 
 #. Default: Imprint and Copyrights
-#: ./dbas/templates/snippet-footer.pt:14
+#: ./dbas/templates/snippet-footer.pt:13
 msgid "imprint_copyright"
 msgstr ""
 
 #. Default: Author
-#: ./dbas/templates/snippet-footer.pt:20 ./dbas/templates/news.pt:37
+#: ./dbas/templates/snippet-footer.pt:19 ./dbas/templates/news.pt:36
 msgid "author"
 msgstr ""
 
 #. Default: Licence
-#: ./dbas/templates/snippet-footer.pt:26
+#: ./dbas/templates/snippet-footer.pt:25
 msgid "licence"
 msgstr ""
 
 #. Default: About me
-#: ./dbas/templates/snippet-popups.pt:10
+#: ./dbas/templates/snippet-popups.pt:9
 msgid "about_me"
 msgstr ""
 
 #. Default: Name
-#: ./dbas/templates/snippet-popups.pt:19
+#: ./dbas/templates/snippet-popups.pt:18
 msgid "name"
 msgstr ""
 
 #. Default: Role
-#: ./dbas/templates/snippet-popups.pt:25
+#: ./dbas/templates/snippet-popups.pt:24
 msgid "role"
 msgstr ""
 
 #. Default: Doctoral Student
-#: ./dbas/templates/snippet-popups.pt:28
+#: ./dbas/templates/snippet-popups.pt:27
 msgid "role_value_1"
 msgstr ""
 
 #. Default: Lab for Technology of Social Networks
-#: ./dbas/templates/snippet-popups.pt:29
+#: ./dbas/templates/snippet-popups.pt:28
 msgid "lab_tsn"
 msgstr ""
 
 #. Default: Member of the graduation school
-#: ./dbas/templates/snippet-popups.pt:30
+#: ./dbas/templates/snippet-popups.pt:29
 msgid "role_value_2"
 msgstr ""
 
 #. Default: Online Participation
-#: ./dbas/templates/snippet-popups.pt:32
+#: ./dbas/templates/snippet-popups.pt:31
 msgid "role_value_3"
 msgstr ""
 
 #. Default: Office
-#: ./dbas/templates/snippet-popups.pt:45
+#: ./dbas/templates/snippet-popups.pt:44
 msgid "office"
 msgstr ""
 
 #. Default: Heinrich-Heine University Duesseldorf
-#: ./dbas/templates/snippet-popups.pt:47
+#: ./dbas/templates/snippet-popups.pt:46
 msgid "office_value_1"
 msgstr ""
 
 #. Default: Universitätsstraße 1
-#: ./dbas/templates/snippet-popups.pt:48
+#: ./dbas/templates/snippet-popups.pt:47
 msgid "office_value_2"
 msgstr ""
 
 #. Default: 40225 Duesseldorf
-#: ./dbas/templates/snippet-popups.pt:49
+#: ./dbas/templates/snippet-popups.pt:48
 msgid "office_value_3"
 msgstr ""
 
 #. Default: Department of Computer Science
-#: ./dbas/templates/snippet-popups.pt:50
+#: ./dbas/templates/snippet-popups.pt:49
 msgid "office_value_4"
 msgstr ""
 
 #. Default: Building 25.12, Room 02.45
-#: ./dbas/templates/snippet-popups.pt:51
+#: ./dbas/templates/snippet-popups.pt:50
 msgid "office_value_5"
 msgstr ""
 
 #. Default: Telephone
-#: ./dbas/templates/snippet-popups.pt:56
+#: ./dbas/templates/snippet-popups.pt:55
 msgid "telephone"
 msgstr ""
 
 #. Default: Fax
-#: ./dbas/templates/snippet-popups.pt:62
+#: ./dbas/templates/snippet-popups.pt:61
 msgid "fax"
 msgstr ""
 
 #. Default: Close
-#: ./dbas/templates/snippet-popups.pt:76 ./dbas/templates/snippet-popups.pt:121
-#: ./dbas/templates/snippet-popups.pt:157
-#: ./dbas/templates/snippet-popups.pt:230
-#: ./dbas/templates/snippet-popups.pt:429
-#: ./dbas/templates/snippet-popups.pt:468
+#: ./dbas/templates/snippet-popups.pt:75 ./dbas/templates/snippet-popups.pt:120
+#: ./dbas/templates/snippet-popups.pt:156
+#: ./dbas/templates/snippet-popups.pt:229
+#: ./dbas/templates/snippet-popups.pt:428
+#: ./dbas/templates/snippet-popups.pt:467
 msgid "close"
 msgstr ""
 
 #. Default: MIT License (MIT)
-#: ./dbas/templates/snippet-popups.pt:89
+#: ./dbas/templates/snippet-popups.pt:88
 msgid "mit_licencse"
 msgstr ""
 
@@ -412,13 +412,13 @@ msgstr ""
 #. sublicense, and/or sell copies of the Software, and to permit persons to
 #. whom the Software is furnished to do so, subject to the following
 #. conditions:
-#: ./dbas/templates/snippet-popups.pt:98
+#: ./dbas/templates/snippet-popups.pt:97
 msgid "mit_licence_part1"
 msgstr ""
 
 #. Default: The above copyright notice and this permission notice shall be
 #. included in all copies or substantial portions of the Software.
-#: ./dbas/templates/snippet-popups.pt:107
+#: ./dbas/templates/snippet-popups.pt:106
 msgid "mit_licence_part2"
 msgstr ""
 
@@ -429,200 +429,205 @@ msgstr ""
 #. DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 #. OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 #. USE OR OTHER DEALINGS IN THE SOFTWARE.
-#: ./dbas/templates/snippet-popups.pt:112
+#: ./dbas/templates/snippet-popups.pt:111
 msgid "mit_licence_part3"
 msgstr ""
 
 #. Default: Edit Statements / View Changelog
-#: ./dbas/templates/snippet-popups.pt:134
+#: ./dbas/templates/snippet-popups.pt:133
 msgid "edit_statement_view_changelog"
 msgstr ""
 
 #. Default: Please, edit the selected statement here:
-#: ./dbas/templates/snippet-popups.pt:141
+#: ./dbas/templates/snippet-popups.pt:140
 msgid "edit_statement_here"
 msgstr ""
 
 #. Default: Warning:
 #. Default: Warning!
-#: ./dbas/templates/snippet-popups.pt:148 ./dbas/templates/contact.pt:58
+#: ./dbas/templates/snippet-popups.pt:147 ./dbas/templates/contact.pt:57
 msgid "warning"
 msgstr ""
 
 #. Default: Submit
-#: ./dbas/templates/snippet-popups.pt:156
+#: ./dbas/templates/snippet-popups.pt:155
 msgid "submit"
 msgstr ""
 
 #. Default: Okay
-#: ./dbas/templates/snippet-popups.pt:175
-#: ./dbas/templates/snippet-popups.pt:200
+#: ./dbas/templates/snippet-popups.pt:174
+#: ./dbas/templates/snippet-popups.pt:199
 msgid "okay"
 msgstr ""
 
 #. Default: Cancel
-#: ./dbas/templates/snippet-popups.pt:176
-#: ./dbas/templates/snippet-popups.pt:201
+#: ./dbas/templates/snippet-popups.pt:175
+#: ./dbas/templates/snippet-popups.pt:200
 msgid "cancel"
 msgstr ""
 
 #. Default: Share your URL
-#: ./dbas/templates/snippet-popups.pt:214
+#: ./dbas/templates/snippet-popups.pt:213
 msgid "url-sharing"
 msgstr ""
 
 #. Default: Please feel free to share this url:
-#: ./dbas/templates/snippet-popups.pt:219
+#: ./dbas/templates/snippet-popups.pt:218
 msgid "url-sharing-description"
 msgstr ""
 
 #. Default: Fetch long url!
-#: ./dbas/templates/snippet-popups.pt:229
+#: ./dbas/templates/snippet-popups.pt:228
 msgid "fetchurl"
 msgstr ""
 
 #. Default: Sign Up
-#: ./dbas/templates/snippet-popups.pt:247
+#: ./dbas/templates/snippet-popups.pt:246
 msgid "sign_up"
 msgstr ""
 
 #. Default: Your Nickname
-#: ./dbas/templates/snippet-popups.pt:260
+#: ./dbas/templates/snippet-popups.pt:259
 msgid "your_nickname"
 msgstr ""
 
 #. Default: Your Password
-#: ./dbas/templates/snippet-popups.pt:267
+#: ./dbas/templates/snippet-popups.pt:266
 msgid "your_password"
 msgstr ""
 
-#. Default: Password-Request
-#: ./dbas/templates/snippet-popups.pt:280
-msgid "password_request"
+#. Default: Keep me logged in
+#: ./dbas/templates/snippet-popups.pt:275
+msgid "keep_me_logged_in"
+msgstr ""
+
+#. Default: Forgot your password?
+#: ./dbas/templates/snippet-popups.pt:277
+msgid "forgot_password"
 msgstr ""
 
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
-#: ./dbas/templates/snippet-popups.pt:282
+#: ./dbas/templates/snippet-popups.pt:281
 msgid "fill_in_mail_for_password"
 msgstr ""
 
 #. Default: Error:
-#: ./dbas/templates/snippet-popups.pt:292
-#: ./dbas/templates/snippet-popups.pt:392 ./dbas/templates/content.pt:143
+#: ./dbas/templates/snippet-popups.pt:291
+#: ./dbas/templates/snippet-popups.pt:391 ./dbas/templates/content.pt:142
 msgid "error"
 msgstr ""
 
 #. Default: Success:
 #. Default: Success
-#: ./dbas/templates/snippet-popups.pt:299
-#: ./dbas/templates/snippet-popups.pt:384 ./dbas/templates/settings.pt:200
-#: ./dbas/templates/content.pt:55
+#: ./dbas/templates/snippet-popups.pt:298
+#: ./dbas/templates/snippet-popups.pt:383 ./dbas/templates/settings.pt:199
+#: ./dbas/templates/content.pt:54
 msgid "success"
 msgstr ""
 
 #. Default: Your First Name
-#: ./dbas/templates/snippet-popups.pt:307
+#: ./dbas/templates/snippet-popups.pt:306
 msgid "first_name"
 msgstr ""
 
 #. Default: Your Last Name
-#: ./dbas/templates/snippet-popups.pt:314
+#: ./dbas/templates/snippet-popups.pt:313
 msgid "last_name"
 msgstr ""
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: ./dbas/templates/snippet-popups.pt:321 ./dbas/templates/settings.pt:25
-#: ./dbas/templates/admin.pt:146
+#: ./dbas/templates/snippet-popups.pt:320 ./dbas/templates/settings.pt:24
+#: ./dbas/templates/admin.pt:141
 msgid "nickname"
 msgstr ""
 
 #. Default: Your Gender
 #. Default: Gender
-#: ./dbas/templates/snippet-popups.pt:328 ./dbas/templates/admin.pt:151
+#: ./dbas/templates/snippet-popups.pt:327 ./dbas/templates/admin.pt:146
 msgid "gender"
 msgstr ""
 
 #. Default: none
-#: ./dbas/templates/snippet-popups.pt:333
+#: ./dbas/templates/snippet-popups.pt:332
 msgid "none"
 msgstr ""
 
 #. Default: female
-#: ./dbas/templates/snippet-popups.pt:338
+#: ./dbas/templates/snippet-popups.pt:337
 msgid "female"
 msgstr ""
 
 #. Default: male
-#: ./dbas/templates/snippet-popups.pt:343
+#: ./dbas/templates/snippet-popups.pt:342
 msgid "male"
 msgstr ""
 
 #. Default: Your Email Address
 #. Default: E-Mail
-#: ./dbas/templates/snippet-popups.pt:349 ./dbas/templates/admin.pt:147
+#: ./dbas/templates/snippet-popups.pt:348 ./dbas/templates/admin.pt:142
 msgid "email"
 msgstr ""
 
 #. Default: Your Password
-#: ./dbas/templates/snippet-popups.pt:356
+#: ./dbas/templates/snippet-popups.pt:355
 msgid "password"
 msgstr ""
 
 #. Default: Password (confirm)
-#: ./dbas/templates/snippet-popups.pt:363
+#: ./dbas/templates/snippet-popups.pt:362
 msgid "password-confirm"
 msgstr ""
 
 #. Default: Password Strength
-#: ./dbas/templates/snippet-popups.pt:370
+#: ./dbas/templates/snippet-popups.pt:369
 msgid "password-strength"
 msgstr ""
 
 #. Default: very weak
-#: ./dbas/templates/snippet-popups.pt:373
+#: ./dbas/templates/snippet-popups.pt:372
 msgid "password_strength"
 msgstr ""
 
 #. Default: Generate secure password
-#: ./dbas/templates/snippet-popups.pt:376
+#: ./dbas/templates/snippet-popups.pt:375
 msgid "generate_password"
 msgstr ""
 
 #. Default: How to select a strong password
-#: ./dbas/templates/snippet-popups.pt:398
-#: ./dbas/templates/snippet-popups.pt:442
+#: ./dbas/templates/snippet-popups.pt:397
+#: ./dbas/templates/snippet-popups.pt:441
 msgid "select_password"
 msgstr ""
 
 #. Default: A Password is strong, when it contains at least:
-#: ./dbas/templates/snippet-popups.pt:400
-#: ./dbas/templates/snippet-popups.pt:445
+#: ./dbas/templates/snippet-popups.pt:399
+#: ./dbas/templates/snippet-popups.pt:444
 msgid "select_password_intro"
 msgstr ""
 
 #. Default: eight characters
-#: ./dbas/templates/snippet-popups.pt:402
-#: ./dbas/templates/snippet-popups.pt:447
+#: ./dbas/templates/snippet-popups.pt:401
+#: ./dbas/templates/snippet-popups.pt:446
 msgid "select_password_rule1"
 msgstr ""
 
 #. Default: one uppercase letter
-#: ./dbas/templates/snippet-popups.pt:403
-#: ./dbas/templates/snippet-popups.pt:448
+#: ./dbas/templates/snippet-popups.pt:402
+#: ./dbas/templates/snippet-popups.pt:447
 msgid "select_password_rule2"
 msgstr ""
 
 #. Default: one lowercase letter
-#: ./dbas/templates/snippet-popups.pt:404
-#: ./dbas/templates/snippet-popups.pt:449
+#: ./dbas/templates/snippet-popups.pt:403
+#: ./dbas/templates/snippet-popups.pt:448
 msgid "select_password_rule3"
 msgstr ""
 
 #. Default: one special sign
-#: ./dbas/templates/snippet-popups.pt:405
-#: ./dbas/templates/snippet-popups.pt:450
+#: ./dbas/templates/snippet-popups.pt:404
+#: ./dbas/templates/snippet-popups.pt:449
 msgid "select_password_rule4"
 msgstr ""
 
@@ -630,462 +635,452 @@ msgstr ""
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: ./dbas/templates/snippet-popups.pt:407
-#: ./dbas/templates/snippet-popups.pt:452
+#: ./dbas/templates/snippet-popups.pt:406
+#: ./dbas/templates/snippet-popups.pt:451
 msgid "popup_password_text"
 msgstr ""
 
 #. Default: Avoid using a password on several pages
-#: ./dbas/templates/snippet-popups.pt:409
-#: ./dbas/templates/snippet-popups.pt:454
+#: ./dbas/templates/snippet-popups.pt:408
+#: ./dbas/templates/snippet-popups.pt:453
 msgid "select_password_avoid1"
 msgstr ""
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: ./dbas/templates/snippet-popups.pt:410
-#: ./dbas/templates/snippet-popups.pt:455
+#: ./dbas/templates/snippet-popups.pt:409
+#: ./dbas/templates/snippet-popups.pt:454
 msgid "select_password_avoid2"
 msgstr ""
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: ./dbas/templates/snippet-popups.pt:411
-#: ./dbas/templates/snippet-popups.pt:456
+#: ./dbas/templates/snippet-popups.pt:410
+#: ./dbas/templates/snippet-popups.pt:455
 msgid "select_password_avoid3"
 msgstr ""
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: ./dbas/templates/snippet-popups.pt:412
-#: ./dbas/templates/snippet-popups.pt:457
+#: ./dbas/templates/snippet-popups.pt:411
+#: ./dbas/templates/snippet-popups.pt:456
 msgid "select_password_avoid4"
 msgstr ""
 
 #. Default: If you need some help with our password, you can get one here:
-#: ./dbas/templates/snippet-popups.pt:414
-#: ./dbas/templates/snippet-popups.pt:459
+#: ./dbas/templates/snippet-popups.pt:413
+#: ./dbas/templates/snippet-popups.pt:458
 msgid "select_password_help"
 msgstr ""
 
 #. Default: Register
-#: ./dbas/templates/snippet-popups.pt:427
+#: ./dbas/templates/snippet-popups.pt:426
 msgid "register"
 msgstr ""
 
 #. Default: How to write text
-#: ./dbas/templates/snippet-popups.pt:481
+#: ./dbas/templates/snippet-popups.pt:480
 msgid "how-to-write-text-header"
 msgstr ""
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: ./dbas/templates/snippet-popups.pt:484
+#: ./dbas/templates/snippet-popups.pt:483
 msgid "how-to-write-text-header-body"
 msgstr ""
 
 #. Default: Do's:
-#: ./dbas/templates/snippet-popups.pt:487
+#: ./dbas/templates/snippet-popups.pt:486
 msgid "dos"
 msgstr ""
 
 #. Default: Write short!
-#: ./dbas/templates/snippet-popups.pt:489
+#: ./dbas/templates/snippet-popups.pt:488
 msgid "how-to-write-text-short"
 msgstr ""
 
 #. Default: Only one statement per field!
-#: ./dbas/templates/snippet-popups.pt:490
+#: ./dbas/templates/snippet-popups.pt:489
 msgid "how-to-write-text-one-point"
 msgstr ""
 
 #. Default: Okay
-#: ./dbas/templates/snippet-popups.pt:503
+#: ./dbas/templates/snippet-popups.pt:502
 msgid "Okay"
 msgstr ""
 
 #. Default: We need your help to understand your statement!
-#: ./dbas/templates/snippet-popups.pt:518
+#: ./dbas/templates/snippet-popups.pt:517
 msgid "need-help-to-understand-statement"
 msgstr ""
 
 #. Default: You have used 'and' in your statement. As a result there are two
 #. ways it could be interpreted. Please help us by selecting the right
 #. interpretation:
-#: ./dbas/templates/snippet-popups.pt:521
+#: ./dbas/templates/snippet-popups.pt:520
 msgid "set_premisegroups_intro"
 msgstr ""
 
 #. Default: I actually have
-#: ./dbas/templates/snippet-popups.pt:531
+#: ./dbas/templates/snippet-popups.pt:530
 msgid "i_actually_have"
 msgstr ""
 
 #. Default: arguments:
 #. Default: Arguments
-#: ./dbas/templates/snippet-popups.pt:531 ./dbas/templates/admin.pt:32
+#: ./dbas/templates/snippet-popups.pt:530 ./dbas/templates/admin.pt:31
 msgid "arguments"
 msgstr ""
 
 #. Default: Error:
-#: ./dbas/templates/snippet-popups.pt:554 ./dbas/templates/news.pt:19
-#: ./dbas/templates/content.pt:302 ./dbas/templates/content.pt:325
+#: ./dbas/templates/snippet-popups.pt:553 ./dbas/templates/news.pt:18
+#: ./dbas/templates/content.pt:301 ./dbas/templates/content.pt:324
 msgid "error:"
 msgstr ""
 
 #. Default: You forgot to choose the right interpretation
-#: ./dbas/templates/snippet-popups.pt:555
+#: ./dbas/templates/snippet-popups.pt:554
 msgid "forgot_input_radio"
 msgstr ""
 
 #. Default: Save my Statement!
-#: ./dbas/templates/snippet-popups.pt:561
+#: ./dbas/templates/snippet-popups.pt:560
 msgid "save_my_statement"
 msgstr ""
 
 #. Default: Success:
-#: ./dbas/templates/news.pt:24
+#: ./dbas/templates/news.pt:23
 msgid "success:"
 msgstr ""
 
 #. Default: Writing a new message
-#: ./dbas/templates/news.pt:30
+#: ./dbas/templates/news.pt:29
 msgid "writing_message"
 msgstr ""
 
 #. Default: Date
-#: ./dbas/templates/news.pt:39
+#: ./dbas/templates/news.pt:38
 msgid "date"
 msgstr ""
 
 #. Default: Personal Information
-#: ./dbas/templates/settings.pt:14
+#: ./dbas/templates/settings.pt:13
 msgid "personal_information"
 msgstr ""
 
 #. Default: Firstname
-#: ./dbas/templates/settings.pt:17 ./dbas/templates/admin.pt:144
+#: ./dbas/templates/settings.pt:16 ./dbas/templates/admin.pt:139
 msgid "firstname"
 msgstr ""
 
 #. Default: Surname
-#: ./dbas/templates/settings.pt:21 ./dbas/templates/admin.pt:145
+#: ./dbas/templates/settings.pt:20 ./dbas/templates/admin.pt:140
 msgid "surname"
 msgstr ""
 
 #. Default: Group
-#: ./dbas/templates/settings.pt:33
+#: ./dbas/templates/settings.pt:32
 msgid "group"
 msgstr ""
 
 #. Default: Receive Notifications
-#: ./dbas/templates/settings.pt:42
+#: ./dbas/templates/settings.pt:41
 msgid "receive_notifications"
 msgstr ""
 
 #. Default: Receive E-Mails
-#: ./dbas/templates/settings.pt:48
+#: ./dbas/templates/settings.pt:47
 msgid "receive_mails"
 msgstr ""
 
 #. Default: Profile Picture
-#: ./dbas/templates/settings.pt:57
+#: ./dbas/templates/settings.pt:56
 msgid "profile_picture"
 msgstr ""
 
 #. Default: Settings could not be set. Please try again later.
-#: ./dbas/templates/settings.pt:66
+#: ./dbas/templates/settings.pt:65
 msgid "settings_not_set"
 msgstr ""
 
 #. Default: Settings were set successfully.
-#: ./dbas/templates/settings.pt:71
+#: ./dbas/templates/settings.pt:70
 msgid "settings_set"
 msgstr ""
 
 #. Default: Change your password
-#: ./dbas/templates/settings.pt:80
+#: ./dbas/templates/settings.pt:79
 msgid "change_password"
 msgstr ""
 
 #. Default: Old password
-#: ./dbas/templates/settings.pt:84
+#: ./dbas/templates/settings.pt:83
 msgid "old_password"
 msgstr ""
 
 #. Default: New Password
-#: ./dbas/templates/settings.pt:91
+#: ./dbas/templates/settings.pt:90
 msgid "new_password"
 msgstr ""
 
 #. Default: Strength
-#: ./dbas/templates/settings.pt:98
+#: ./dbas/templates/settings.pt:97
 msgid "strength"
 msgstr ""
 
 #. Default: New Password (confirm)
-#: ./dbas/templates/settings.pt:106
+#: ./dbas/templates/settings.pt:105
 msgid "new_password_confirm"
 msgstr ""
 
 #. Default: Discussion Statistics
-#: ./dbas/templates/settings.pt:125
+#: ./dbas/templates/settings.pt:124
 msgid "discussion_stat"
 msgstr ""
 
 #. Default: Statements posted
-#: ./dbas/templates/settings.pt:129
+#: ./dbas/templates/settings.pt:128
 msgid "statements_posted"
 msgstr ""
 
 #. Default: Edits done
-#: ./dbas/templates/settings.pt:136
+#: ./dbas/templates/settings.pt:135
 msgid "edits_done"
 msgstr ""
 
 #. Default: Votes for Arguments
-#: ./dbas/templates/settings.pt:143
+#: ./dbas/templates/settings.pt:142
 msgid "discussion_votes_statements"
 msgstr ""
 
 #. Default: Votes for Statements
-#: ./dbas/templates/settings.pt:150
+#: ./dbas/templates/settings.pt:149
 msgid "discussion_votes_arguments"
 msgstr ""
 
 #. Default: Your password was changed
-#: ./dbas/templates/settings.pt:165
+#: ./dbas/templates/settings.pt:164
 msgid "password_changed"
 msgstr ""
 
 #. Default: Statistics could not be deleted.
-#: ./dbas/templates/settings.pt:172
+#: ./dbas/templates/settings.pt:171
 msgid "statistics_not_deleted"
 msgstr ""
 
 #. Default: Statistics were set successfully deleted.
-#: ./dbas/templates/settings.pt:178
+#: ./dbas/templates/settings.pt:177
 msgid "statistics_deletet"
 msgstr ""
 
 #. Default: Your last history
-#: ./dbas/templates/settings.pt:188
+#: ./dbas/templates/settings.pt:187
 msgid "history"
 msgstr ""
 
 #. Default: Get In Touch With Us
-#: ./dbas/templates/contact.pt:6
+#: ./dbas/templates/contact.pt:5
 msgid "contact_header_1"
 msgstr ""
 
 #. Default: Feel free to drop us a line and we’ll try to get back to you in 48
 #. hours max!
-#: ./dbas/templates/contact.pt:7
+#: ./dbas/templates/contact.pt:6
 msgid "contact_header_2"
 msgstr ""
 
 #. Default: Your Name (required)
-#: ./dbas/templates/contact.pt:13
+#: ./dbas/templates/contact.pt:12
 msgid "name_req"
 msgstr ""
 
 #. Default: Your E-Mail (required)
-#: ./dbas/templates/contact.pt:20
+#: ./dbas/templates/contact.pt:19
 msgid "mail_req"
 msgstr ""
 
 #. Default: Your Phone Number
-#: ./dbas/templates/contact.pt:27
+#: ./dbas/templates/contact.pt:26
 msgid "phone_no"
 msgstr ""
 
 #. Default: Your Notification (required)
-#: ./dbas/templates/contact.pt:34
+#: ./dbas/templates/contact.pt:33
 msgid "message_req"
 msgstr ""
 
 #. Default: Anti-Spam (required)
-#: ./dbas/templates/contact.pt:41
+#: ./dbas/templates/contact.pt:40
 msgid "spam_req"
 msgstr ""
 
 #. Default: Great:
-#: ./dbas/templates/contact.pt:66
+#: ./dbas/templates/contact.pt:65
 msgid "great"
 msgstr ""
 
 #. Default: Your message was sent.
-#: ./dbas/templates/contact.pt:66
+#: ./dbas/templates/contact.pt:65
 msgid "message_sent"
 msgstr ""
 
 #. Default: Dashboard
-#: ./dbas/templates/admin.pt:21
+#: ./dbas/templates/admin.pt:20
 msgid "dashboard"
 msgstr ""
 
 #. Default: Users
-#: ./dbas/templates/admin.pt:26
+#: ./dbas/templates/admin.pt:25
 msgid "users"
 msgstr ""
 
 #. Default: Users!
-#: ./dbas/templates/admin.pt:52
+#: ./dbas/templates/admin.pt:51
 msgid "users!"
 msgstr ""
 
 #. Default: View Details
-#: ./dbas/templates/admin.pt:58 ./dbas/templates/admin.pt:78
-#: ./dbas/templates/admin.pt:98 ./dbas/templates/admin.pt:118
+#: ./dbas/templates/admin.pt:56 ./dbas/templates/admin.pt:75
+#: ./dbas/templates/admin.pt:94 ./dbas/templates/admin.pt:113
 msgid "view_details"
 msgstr ""
 
 #. Default: Votes!
-#: ./dbas/templates/admin.pt:72
+#: ./dbas/templates/admin.pt:70
 msgid "votes!"
 msgstr ""
 
 #. Default: Arguments!
-#: ./dbas/templates/admin.pt:92
+#: ./dbas/templates/admin.pt:89
 msgid "arguments!"
 msgstr ""
 
 #. Default: Statements!
-#: ./dbas/templates/admin.pt:112
+#: ./dbas/templates/admin.pt:108
 msgid "statements!"
 msgstr ""
 
 #. Default: Group
-#: ./dbas/templates/admin.pt:148
+#: ./dbas/templates/admin.pt:143
 msgid "group_uid"
 msgstr ""
 
 #. Default: Last Login
-#: ./dbas/templates/admin.pt:149
+#: ./dbas/templates/admin.pt:144
 msgid "last_login"
 msgstr ""
 
 #. Default: Registered
-#: ./dbas/templates/admin.pt:150
+#: ./dbas/templates/admin.pt:145
 msgid "registered"
 msgstr ""
 
 #. Default: Avatar
-#: ./dbas/templates/admin.pt:152
+#: ./dbas/templates/admin.pt:147
 msgid "avatar"
 msgstr ""
 
 #. Default: List of attacks, clicked by the participants
-#: ./dbas/templates/admin.pt:175
+#: ./dbas/templates/admin.pt:170
 msgid "list_attacks"
 msgstr ""
 
 #. Default: Some additional options for the administrator.
-#: ./dbas/templates/admin.pt:176
+#: ./dbas/templates/admin.pt:171
 msgid "admin_only"
 msgstr ""
 
 #. Default: Switch Topic
-#: ./dbas/templates/admin.pt:184 ./dbas/templates/content.pt:21
+#: ./dbas/templates/admin.pt:179 ./dbas/templates/content.pt:20
 msgid "switch_topc"
 msgstr ""
 
 #. Default: Topics
-#: ./dbas/templates/admin.pt:187 ./dbas/templates/content.pt:24
+#: ./dbas/templates/admin.pt:182 ./dbas/templates/content.pt:23
 msgid "topics"
 msgstr ""
 
 #. Default: You have got
-#: ./dbas/templates/notifications.pt:14
+#: ./dbas/templates/notifications.pt:13
 msgid "youHaveGot"
 msgstr ""
 
 #. Default: unread notifications and
-#: ./dbas/templates/notifications.pt:16
+#: ./dbas/templates/notifications.pt:15
 msgid "unreadNotificationAnd"
 msgstr ""
 
 #. Default: total.
-#: ./dbas/templates/notifications.pt:18
+#: ./dbas/templates/notifications.pt:17
 msgid "total"
 msgstr ""
 
 #. Default: JavaScript is not enabled:
-#: ./dbas/templates/basetemplate.pt:35
+#: ./dbas/templates/basetemplate.pt:36
 msgid "js_disabled1"
 msgstr ""
 
 #. Default: Please enable JavaScript!
-#: ./dbas/templates/basetemplate.pt:36
+#: ./dbas/templates/basetemplate.pt:37
 msgid "js_disabled2"
 msgstr ""
 
-#. Default: AdBlocker is enabled:
-#: ./dbas/templates/basetemplate.pt:40
-msgid "adblock_enabled1"
-msgstr ""
-
-#. Default: Please disable your AdBlocker!
-#: ./dbas/templates/basetemplate.pt:41
-msgid "adblock_enabled2"
-msgstr ""
-
 #. Default: Current discussion is about
-#: ./dbas/templates/content.pt:12
+#: ./dbas/templates/content.pt:11
 msgid "current_discussion"
 msgstr ""
 
 #. Default: Restart
-#: ./dbas/templates/content.pt:33
+#: ./dbas/templates/content.pt:32
 msgid "restart_discussion"
 msgstr ""
 
 #. Default: and
-#: ./dbas/templates/content.pt:87
+#: ./dbas/templates/content.pt:86
 msgid "and"
 msgstr ""
 
 #. Default: Island View for
-#: ./dbas/templates/content.pt:157
+#: ./dbas/templates/content.pt:156
 msgid "island_view_for"
 msgstr ""
 
 #. Default: Add statement
-#: ./dbas/templates/content.pt:277
+#: ./dbas/templates/content.pt:276
 msgid "add_statement"
 msgstr ""
 
 #. Default: What is your idea? What should we do?
-#: ./dbas/templates/content.pt:296
+#: ./dbas/templates/content.pt:295
 msgid "what_is_your_idea"
 msgstr ""
 
 #. Default: Let me enter my reason!
-#: ./dbas/templates/content.pt:318
+#: ./dbas/templates/content.pt:317
 msgid "let_me_enter_my_reason"
 msgstr ""
 
 #. Default: Because...
-#: ./dbas/templates/content.pt:331
+#: ./dbas/templates/content.pt:330
 msgid "Because..."
 msgstr ""
 
 #. Default: Change display style
-#: ./dbas/templates/content.pt:357
+#: ./dbas/templates/content.pt:356
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ./dbas/templates/content.pt:360
+#: ./dbas/templates/content.pt:359
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/content.pt:366
+#: ./dbas/templates/content.pt:365
 msgid "island_view"
 msgstr ""
 
 #. Default: Complete View
-#: ./dbas/templates/content.pt:372
+#: ./dbas/templates/content.pt:371
 msgid "complete_view"
 msgstr ""

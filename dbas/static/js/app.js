@@ -271,11 +271,13 @@ function prepareLoginRegistrationPopup(){
 	}).keypress(function(e) { if (e.which == 13) { ajaxRegistration() } });
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
-		if (popupLoginGeneratePasswordBody.is(':visible')){
-			popupLoginGeneratePasswordBody.hide();
+		if ($('#' + popupLoginForgotPasswordBody).is(':visible')){
+			$('#' + popupLoginForgotPasswordBody).fadeOut();
 			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
+			$('#' + popupLoginFailed).fadeOut();
+			$('#' + popupLoginSuccess).fadeOut();
 		} else {
-			$('#' + popupLoginForgotPasswordBody).show();
+			$('#' + popupLoginForgotPasswordBody).fadeIn();
 			$('#' + popupLoginForgotPasswordText).text(_t(hidePasswordRequest));
 		}
 	});
@@ -374,14 +376,16 @@ function ajaxSwitchDisplayLanguage (new_lang){
 function ajaxLogin (){
 	var user = $('#' + loginUserId).val(),
 		password = $('#' + loginPwId).val(),
-		url = window.location.href;
+		url = window.location.href,
+		keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
 	$.ajax({
 		url: 'ajax_user_login',
 		type: 'POST',
 		data: {
 			user: user,
 			password: password,
-			url: url
+			url: url,
+			keep_login: keep_login
 		},
 		dataType: 'json',
 		async: true
