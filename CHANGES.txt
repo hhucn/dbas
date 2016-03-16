@@ -134,5 +134,9 @@
 0.5.6 (2016-03-11)
 - Bunch of fixes
 
+0.5.7 (2016-03-16)
+- Bunch of fixes
+- Improved log in and log out
+
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation

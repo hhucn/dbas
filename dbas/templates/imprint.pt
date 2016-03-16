@@ -131,6 +131,12 @@
 						<li>Improved recommendation of the next argument/statement</li>
 					</ul>
 
+					<span class="project lead">0.5.7 (2016-03-16)</span>
+					<ul>
+						<li>Bunch of fixes</li>
+						<li>Improved log in and log out</li>
+					</ul>
+
 					<span class="project lead">0.5.6 (2016-03-11)</span>
 					<ul>
 						<li>Bunch of fixes</li>
