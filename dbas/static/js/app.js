@@ -231,8 +231,10 @@ function hideExtraViewsOfLoginPopup(){
 	$('#' + popupLoginWarningMessage).hide();
 	$('#' + popupLoginFailed).hide();
 	$('#' + popupLoginSuccess).hide();
+	$('#' + popupLoginInfo).hide();
 	$('#' + popupLoginRegistrationSuccess).hide();
 	$('#' + popupLoginRegistrationFailed).hide();
+	$('#' + popupLoginRegistrationInfo).hide();
 	$('#' + popupLoginButtonRegister).hide();
 	$('#' + popupLoginButtonLogin).hide();
 	$('#' + popupLoginForgotPasswordBody).hide();
@@ -276,6 +278,7 @@ function prepareLoginRegistrationPopup(){
 			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 			$('#' + popupLoginFailed).fadeOut();
 			$('#' + popupLoginSuccess).fadeOut();
+			$('#' + popupLoginInfo).fadeOut();
 		} else {
 			$('#' + popupLoginForgotPasswordBody).fadeIn();
 			$('#' + popupLoginForgotPasswordText).text(_t(hidePasswordRequest));
@@ -542,14 +545,20 @@ function callbackIfDoneForLogin(data){
  */
 function callbackIfDoneForRegistration(data){
 	var parsedData = $.parseJSON(data);
-	if (parsedData.success == '0') {
-		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationSuccess).hide();
-		$('#' + popupLoginRegistrationFailed + '-message').text(parsedData.message);
-	} else {
-		$('#' + popupLoginRegistrationFailed).hide();
+	$('#' + popupLoginRegistrationSuccess).hide();
+	$('#' + popupLoginRegistrationFailed).hide();
+	$('#' + popupLoginRegistrationInfo).hide();
+	if (parsedData.success.length > 0) {
 		$('#' + popupLoginRegistrationSuccess).show();
-		$('#' + popupLoginRegistrationSuccess + '-message').text(parsedData.message);
+		$('#' + popupLoginRegistrationSuccess + '-message').text(_t(parsedData.message));
+	}
+	if (parsedData.error.length > 0) {
+		$('#' + popupLoginRegistrationFailed).show();
+		$('#' + popupLoginRegistrationFailed + '-message').text(_t(parsedData.message));
+	}
+	if (parsedData.info.length > 0) {
+		$('#' + popupLoginRegistrationInfo).show();
+		$('#' + popupLoginRegistrationInfo + '-message').text(_t(parsedData.message));
 	}
 }
 
@@ -559,16 +568,22 @@ function callbackIfDoneForRegistration(data){
  */
 function callbackIfDoneForPasswordRequest(data){
 	var parsedData = $.parseJSON(data);
-	if (parsedData.success == '0') {
-		$('#' + popupLoginFailed).show();
-		$('#' + popupLoginSuccess).hide();
-		$('#' + popupLoginFailed + '-message').text(_t(parsedData.message));
-	} else {
+	$('#' + popupLoginFailed).hide();
+	$('#' + popupLoginSuccess).hide();
+	$('#' + popupLoginInfo).hide();
+	if (parsedData.success.length > 0) {
 		$('#' + popupLoginForgotPasswordBody).hide();
-		$('#' + popupLoginFailed).hide();
+		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 		$('#' + popupLoginSuccess).show();
 		$('#' + popupLoginSuccess + '-message').text(_t(parsedData.message));
-		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
+	}
+	if (parsedData.error.length > 0) {
+		$('#' + popupLoginFailed).show();
+		$('#' + popupLoginFailed + '-message').text(_t(parsedData.message));
+	}
+	if (parsedData.info.length > 0) {
+		$('#' + popupLoginInfo).show();
+		$('#' + popupLoginInfo + '-message').text(_t(parsedData.message));
 	}
 }
 

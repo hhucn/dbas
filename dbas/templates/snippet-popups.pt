@@ -294,8 +294,15 @@
 
     						<div class="col-md-12" id="popup-login-success">
     							<div class="alert alert-success" role="alert">
-    								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    								<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
     								<span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
+    							</div>
+    						</div>
+
+    						<div class="col-md-12" id="popup-login-info">
+    							<div class="alert alert-warning" role="alert">
+    								<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    								<span class="sr-only" i18n:translate="info">Info:</span> <span id="popup-login-info-message"></span>
     							</div>
     						</div>
     					</div>
@@ -387,9 +394,17 @@
 
     						<div class="col-md-12" id="popup-login-registration-failed" role="alert">
     							<div class="alert alert-danger alert-dismissible">
-    								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    								<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
     								<span class="sr-only" i18n:translate="error">Error:</span>
     								<span id="popup-login-registration-failed-message"></span>
+    							</div>
+    						</div>
+
+    						<div class="col-md-12" id="popup-login-registration-info" role="alert">
+    							<div class="alert alert-warning alert-dismissible">
+    								<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    								<span class="sr-only" i18n:translate="info">Info:</span>
+    								<span id="popup-login-registration-info-message"></span>
     							</div>
     						</div>
 

@@ -939,9 +939,15 @@ class Dbas(object):
 		logger('user_registration', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		# default values
-		success = '0'
-		message = ''
+		success = ''
+		error = ''
+		info = ''
 		return_dict = dict()
+
+		ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
+		if not ui_locales:
+			ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_t = Translator(ui_locales)
 
 		# getting params
 		try:
@@ -953,11 +959,6 @@ class Dbas(object):
 			gender          = self.escape_string(params['gender'])
 			password        = self.escape_string(params['password'])
 			passwordconfirm = self.escape_string(params['passwordconfirm'])
-			ui_locales      = self.request.params['lang'] if 'lang' in self.request.params else None
-			if not ui_locales:
-				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-
-			_t = Translator(ui_locales)
 
 			# database queries mail verification
 			db_nick = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -967,26 +968,26 @@ class Dbas(object):
 			# are the password equal?
 			if not password == passwordconfirm:
 				logger('user_registration', 'main', 'Passwords are not equal')
-				message = _t.get(_t.pwdNotEqual)
+				info = _t.get(_t.pwdNotEqual)
 			# is the nick already taken?
 			elif db_nick:
 				logger('user_registration', 'main', 'Nickname \'' + nickname + '\' is taken')
-				message = _t.get(_t.nickIsTaken)
+				info = _t.get(_t.nickIsTaken)
 			# is the email already taken?
 			elif db_mail:
 				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is taken')
-				message = _t.get(_t.mailIsTaken)
+				info = _t.get(_t.mailIsTaken)
 			# is the email valid?
 			elif not is_mail_valid:
 				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is not valid')
-				message = _t.get(_t.mailNotValid)
+				info = _t.get(_t.mailNotValid)
 			else:
 				# getting the authors group
 				db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
 
 				# does the group exists?
 				if not db_group:
-					message = _t.get(_t.errorTryLateOrContant)
+					info = _t.get(_t.errorTryLateOrContant)
 					logger('user_registration', 'main', 'Error occured')
 				else:
 					# creating a new user with hashed password
@@ -1006,8 +1007,7 @@ class Dbas(object):
 					checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 					if checknewuser:
 						logger('user_registration', 'main', 'New data was added with uid ' + str(checknewuser.uid))
-						message = _t.get(_t.accountWasAdded)
-						success = '1'
+						success = _t.get(_t.accountWasAdded)
 
 						# sending an email
 						subject = 'D-BAS Account Registration'
@@ -1017,13 +1017,15 @@ class Dbas(object):
 
 					else:
 						logger('user_registration', 'main', 'New data was not added')
-						message = _t.get(_t.accoutErrorTryLateOrContant)
+						info = _t.get(_t.accoutErrorTryLateOrContant)
 
 		except KeyError as e:
 			logger('user_registration', 'error', repr(e))
+			error = _t.get(_t.internalError)
 
 		return_dict['success'] = str(success)
-		return_dict['message'] = str(message)
+		return_dict['error']   = str(error)
+		return_dict['info']    = str(info)
 
 		return DictionaryHelper().data_to_json_array(return_dict, True)
 
@@ -1037,19 +1039,17 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_password_request', 'def', 'main, self.request.params: ' + str(self.request.params))
 
-		success = '0'
-		message = ''
+		success = ''
+		error = ''
+		info = ''
 		return_dict = dict()
+		ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
+		if not ui_locales:
+			ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		_t = Translator(ui_locales)
 
 		try:
 			email = self.escape_string(self.request.params['email'])
-			ui_locales      = self.request.params['lang'] if 'lang' in self.request.params else None
-			if not ui_locales:
-				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-
-			success = '1'
-			_t = Translator(ui_locales)
-
 			db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
 
 			# does the user exists?
@@ -1069,17 +1069,20 @@ class Dbas(object):
 				reg_success, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
 
 				if reg_success:
-					success = '1'
+					success = message
+				else:
+					error = message
 			else:
 				logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
-				message = 'emailUnknown'
-				success = '0'
+				info = _t.get(_t.emailUnknown)
 
 		except KeyError as e:
 			logger('user_password_request', 'error', repr(e))
+			error = _t.get(_t.internalError)
 
 		return_dict['success'] = str(success)
-		return_dict['message'] = str(message)
+		return_dict['error']   = str(error)
+		return_dict['info']    = str(info)
 
 		return DictionaryHelper().data_to_json_array(return_dict, True)
 
