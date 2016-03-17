@@ -300,7 +300,7 @@
 .triangle-r{
     float: right;
     text-align: left;
-    background: #E6EE9C;
+    background: #C5E1A5;
     margin: 0 2em 1em auto;
 }
 .triangle-m{
@@ -338,7 +338,7 @@
     /*right: -0.52em;*/
 	right: 20px;
     /*transform: rotate(-135deg);*/
-    border-color: transparent transparent #E6EE9C #E6EE9C;
+    border-color: transparent transparent #C5E1A5 #C5E1A5;
     /*box-shadow: -1px 1px 1px 0 rgba(0, 0, 0, 0.4);*/
 }
 

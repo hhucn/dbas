@@ -104,6 +104,15 @@
 	<noscript>
 		<p><img src="//dbas.cs.uni-duesseldorf.de/piwik/piwik.php?idsite=1" style="border:0;" alt="" /></p>
 	</noscript>
+    <!-- Click Heat-->
+    <script type="text/javascript" src="http://dbas.cs.uni-duesseldorf.de/piwik/plugins/ClickHeat/libs/js/clickheat.js"></script>
+    <noscript><p><a href="http://www.dugwood.com/index.html">Open Source Sofware</a></p></noscript>
+    <script type="text/javascript"><!--
+    clickHeatSite = 1;
+    clickHeatGroup = encodeURIComponent(window.location.pathname+window.location.search);
+    clickHeatServer = 'http://dbas.cs.uni-duesseldorf.de/piwik/plugins/ClickHeat/libs/click.php';
+    initClickHeat(); //-->
+    </script>
 	<!-- End Piwik Code -->
 </body>
 
