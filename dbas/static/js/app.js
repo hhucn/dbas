@@ -11,18 +11,11 @@
  */
 function setLinkActive(linkname) {
 	'use strict';
-	var linkIds = ['#' + contactLink,
-					'#' + loginLinkId,
-					'#' + newsLink,
-					'#' + contentLink],
-		i;
-	for (i = 0; i < linkIds.length; i++) {
-		if (linkIds[i] === linkname) {
-			$(linkIds[i]).addClass('active');
-		} else {
-			$(linkIds[i]).removeClass('active');
-		}
-	}
+	$('#navbar-right').find('>li').each(function(){
+		$(this).removeClass('active')
+	});
+	$(linkname).addClass('active');
+
 }
 
 /**
