@@ -293,7 +293,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs, nickname, session_id)
 		if not discussion_dict:
-			return HTTPFound(location= UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
 		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, True, ui_locales,
@@ -331,7 +331,7 @@ class Dbas(object):
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
 		_uh = UserHandler()
-		timed_out =_uh.update_last_action(transaction, nickname)
+		_uh.update_last_action(transaction, nickname)
 		logged_in = _uh.is_user_logged_in(nickname)
 
 		_qh = QueryHelper()
@@ -351,7 +351,7 @@ class Dbas(object):
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			if not QueryHelper().get_text_for_statement_uid(statement_or_arg_id):
-				return HTTPFound(location= UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
+				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 			# justifying position
@@ -396,7 +396,7 @@ class Dbas(object):
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify_argumentation=True)
 		else:
-			return HTTPFound(location= UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -850,6 +850,7 @@ class Dbas(object):
 		:param nickname: Manually provide nickname (e.g. from API)
 		:param password: Manually provide password (e.g. from API)
 		:param for_api: Manually provide boolean (e.g. from API)
+		:param keep_login: Manually provide boolean (e.g. from API)
 		:return: dict() with error
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
