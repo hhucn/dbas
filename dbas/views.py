@@ -1,9 +1,8 @@
 import transaction
-import datetime
 import requests
 
 from validate_email import validate_email
-from pyramid.httpexceptions import HTTPOk, HTTPError, HTTPFound
+from pyramid.httpexceptions import HTTPError, HTTPFound, HTTPOk
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 from pyramid.renderers import get_renderer
@@ -85,7 +84,7 @@ class Dbas(object):
 		logger('main_page', 'def', 'main, self.request.params: ' + str(self.request.params))
 		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		if should_log_out:
-			self.user_logout(True)
+			return self.user_logout(True)
 
 		session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
@@ -111,6 +110,8 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
 		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if should_log_out:
+			return self.user_logout(True)
 
 		contact_error = False
 		send_message = False
@@ -887,7 +888,7 @@ class Dbas(object):
 			else:
 				nickname = self.escape_string(nickname)
 				password = self.escape_string(password)
-				url = ""
+				url = ''
 
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
@@ -908,11 +909,20 @@ class Dbas(object):
 				logger('user_login', 'login', 'update login timestamp')
 				db_user.update_last_login()
 				transaction.commit()
+				logger('user_login', '---login', url)
+				logger('user_login', '---login', url)
+
+				ending = ['/?session_expired=true', '/?session_expired=false']
+				for e in ending:
+					if url.endswith(e):
+						url = url[0:-len(e)]
+				logger('user_login', '---login', url)
+				logger('user_login', '---login', url)
 
 				if for_api:
 					return {'status': 'success'}
 				else:
-					return HTTPOk(
+					return HTTPFound(
 						location=url,
 						headers=headers,
 					)
