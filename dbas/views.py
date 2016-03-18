@@ -1173,7 +1173,7 @@ class Dbas(object):
 				issue       = _qh.get_issue_id(self.request)
 				slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
-			UserHandler().update_last_action(nickname)
+			UserHandler().update_last_action(transaction, nickname)
 			new_statement = _qh.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
@@ -1215,7 +1215,7 @@ class Dbas(object):
 				nickname = self.request.authenticated_userid
 				issue    = _qh.get_issue_id(self.request)
 
-			UserHandler().update_last_action(nickname)
+			UserHandler().update_last_action(transaction, nickname)
 			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
 			conclusion_id   = self.request.params['conclusion_id']
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
