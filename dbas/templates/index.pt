@@ -6,6 +6,10 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
 		</head>
 
+        <div class="blocked session_expired center alert-warning" id="session_expired_container" tal:condition="session_expired">
+            <h5>Your session has expired!</h5>
+        </div>
+
 		<div class="container colored_container first-container jumbotron" id="home-template">
             <div class="content">
 				<img class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en">

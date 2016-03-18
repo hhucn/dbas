@@ -69,8 +69,12 @@ class UserHandler(object):
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
 		if db_user:
+			last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
+			log_out = (datetime.now() - last_action_object).seconds > self.timeout
 			db_user.update_last_action()
 			transaction.commit()
+			return log_out
+		return False
 
 	def is_user_admin(self, user):
 		"""

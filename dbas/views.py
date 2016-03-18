@@ -3,7 +3,7 @@ import datetime
 import requests
 
 from validate_email import validate_email
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPOk, HTTPError, HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 from pyramid.renderers import get_renderer
@@ -27,7 +27,7 @@ from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
 version = '0.5.7a'
-header = name + ' ' + version
+project_name = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
 
@@ -44,7 +44,6 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		self.request = request
-		self.user_login_timeout = '1200'
 		global mainpage
 		mainpage = request.application_url
 		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
@@ -83,9 +82,12 @@ class Dbas(object):
 		:return: HTTP 200 with several information
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('main_page', 'def', 'main page')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		
+		logger('main_page', 'def', 'main, self.request.params: ' + str(self.request.params))
+		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if should_log_out:
+			self.user_logout(True)
+
+		session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
@@ -94,8 +96,9 @@ class Dbas(object):
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Main',
-			'project': header,
-			'extras': extras_dict
+			'project': project_name,
+			'extras': extras_dict,
+			'session_expired': session_expired
 		}
 
 	# contact page
@@ -107,7 +110,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		contact_error = False
 		send_message = False
@@ -190,7 +193,7 @@ class Dbas(object):
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Contact',
-			'project': header,
+			'project': project_name,
 			'extras': extras_dict,
 			'was_message_send': send_message,
 			'contact_error': contact_error,
@@ -218,7 +221,9 @@ class Dbas(object):
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-		UserHandler().update_last_action(transaction, nickname)
+		should_log_out = UserHandler().update_last_action(transaction, nickname)
+		if should_log_out:
+			return self.user_logout(True)
 
 		if for_api and api_data:
 			try:
@@ -261,7 +266,7 @@ class Dbas(object):
 			return_dict['layout'] = self.base_layout()
 			return_dict['language'] = str(ui_locales)
 			return_dict['title'] = issue_dict['title']
-			return_dict['project'] = header
+			return_dict['project'] = project_name
 			return return_dict
 
 	# attitude page
@@ -293,7 +298,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs, nickname, session_id)
 		if not discussion_dict:
-			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
+			return HTTPError(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
 		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, True, ui_locales,
@@ -311,7 +316,7 @@ class Dbas(object):
 			return_dict['layout'] = self.base_layout()
 			return_dict['language'] = str(ui_locales)
 			return_dict['title'] = issue_dict['title']
-			return_dict['project'] = header
+			return_dict['project'] = project_name
 			return return_dict
 
 	# justify page
@@ -331,7 +336,9 @@ class Dbas(object):
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
 		_uh = UserHandler()
-		_uh.update_last_action(transaction, nickname)
+		should_log_out = _uh.update_last_action(transaction, nickname)
+		if should_log_out:
+			return self.user_logout(True)
 		logged_in = _uh.is_user_logged_in(nickname)
 
 		_qh = QueryHelper()
@@ -351,7 +358,7 @@ class Dbas(object):
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			if not QueryHelper().get_text_for_statement_uid(statement_or_arg_id):
-				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
+				return HTTPError(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 			# justifying position
@@ -396,7 +403,7 @@ class Dbas(object):
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify_argumentation=True)
 		else:
-			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
+			return HTTPError(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -410,7 +417,7 @@ class Dbas(object):
 			return_dict['layout'] = self.base_layout()
 			return_dict['language'] = str(ui_locales)
 			return_dict['title'] = issue_dict['title']
-			return_dict['project'] = header
+			return_dict['project'] = project_name
 			return return_dict
 
 	# reaction page
@@ -433,7 +440,9 @@ class Dbas(object):
 		arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
 		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-		UserHandler().update_last_action(transaction, nickname)
+		should_log_out = UserHandler().update_last_action(transaction, nickname)
+		if should_log_out:
+			return self.user_logout(True)
 
 		# set votings
 		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
@@ -468,7 +477,7 @@ class Dbas(object):
 			return_dict['layout'] = self.base_layout()
 			return_dict['language'] = str(ui_locales)
 			return_dict['title'] = issue_dict['title']
-			return_dict['project'] = header
+			return_dict['project'] = project_name
 			return return_dict
 
 	# choosing page
@@ -502,7 +511,9 @@ class Dbas(object):
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		UserHandler().update_last_action(transaction, nickname)
+		should_log_out = UserHandler().update_last_action(transaction, nickname)
+		if should_log_out:
+			return self.user_logout(True)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
 		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, ui_locales, is_argument, is_supportive, breadcrumbs, nickname, session_id)
@@ -523,7 +534,7 @@ class Dbas(object):
 			return_dict['layout'] = self.base_layout()
 			return_dict['language'] = str(ui_locales)
 			return_dict['title'] = issue_dict['title']
-			return_dict['project'] = header
+			return_dict['project'] = project_name
 			return return_dict
 
 	# settings page, when logged in
@@ -535,7 +546,9 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if should_log_out:
+			return self.user_logout(True)
 
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
@@ -592,7 +605,7 @@ class Dbas(object):
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Settings',
-			'project': header,
+			'project': project_name,
 			'extras': extras_dict,
 			'settings': settings_dict
 		}
@@ -607,7 +620,9 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_notifications', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if should_log_out:
+			return self.user_logout(True)
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
@@ -615,7 +630,7 @@ class Dbas(object):
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Messages',
-			'project': header,
+			'project': project_name,
 			'extras': extras_dict
 		}
 
@@ -628,7 +643,9 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_admin', 'def', 'main')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if should_log_out:
+			return self.user_logout(True)
 
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
@@ -640,7 +657,7 @@ class Dbas(object):
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Admin',
-			'project': header,
+			'project': project_name,
 			'extras': extras_dict,
 			'users': users,
 			'dashboard': dashboard
@@ -655,7 +672,9 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_news', 'def', 'main')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if should_log_out:
+			return self.user_logout(True)
 
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		is_author = UserHandler().is_user_author(self.request.authenticated_userid)
@@ -666,7 +685,7 @@ class Dbas(object):
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'News',
-			'project': header,
+			'project': project_name,
 			'extras': extras_dict,
 			'is_author': is_author
 		}
@@ -681,7 +700,9 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_imprint', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if should_log_out:
+			return self.user_logout(True)
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
@@ -689,7 +710,7 @@ class Dbas(object):
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Imprint',
-			'project': header,
+			'project': project_name,
 			'extras': extras_dict
 		}
 
@@ -716,11 +737,13 @@ class Dbas(object):
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
+		# return HTTPError(location=UrlManager(mainpage, for_api=False).get_404([self.request.path]))
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Error',
-			'project': header,
+			'project': project_name,
 			'page_notfound_viewname': self.request.path,
 			'extras': extras_dict
 		}
@@ -859,6 +882,7 @@ class Dbas(object):
 				nickname = self.escape_string(self.request.params['user'])
 				password = self.escape_string(self.request.params['password'])
 				keep_login = self.escape_string(self.request.params['keep_login'])
+				keep_login = True if keep_login == 'true' else False
 				url = self.request.params['url']
 			else:
 				nickname = self.escape_string(nickname)
@@ -876,10 +900,9 @@ class Dbas(object):
 				error = _tn.get(_tn.userPasswordNotMatch)
 			else:
 				logger('user_login', 'login', 'login successful')
-				if keep_login:
-					headers = remember(self.request, nickname, max_age=self.user_login_timeout)
-				else:
-					headers = remember(self.request, nickname)
+				logger('user_login', 'login', 'keep_login: ' + str(keep_login))
+				db_user.should_hold_the_login(keep_login)
+				headers = remember(self.request, nickname)
 
 				# update timestamp
 				logger('user_login', 'login', 'update login timestamp')
@@ -889,7 +912,7 @@ class Dbas(object):
 				if for_api:
 					return {'status': 'success'}
 				else:
-					return HTTPFound(
+					return HTTPOk(
 						location=url,
 						headers=headers,
 					)
@@ -904,21 +927,23 @@ class Dbas(object):
 
 	# ajax - user logout
 	@view_config(route_name='ajax_user_logout', renderer='json')
-	def user_logout(self):
+	def user_logout(self, redirect_to_main=False):
 		"""
 		Will logout the user
 		:return: HTTPFound with forgotten headers
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('user_logout', 'def', 'main')
+		logger('user_logout', 'def', 'main, redirect_to_main: ' + str(redirect_to_main))
 		self.request.session.invalidate()
 		headers = forget(self.request)
-		self.request.response.headerlist.extend(headers)
-		return self.request.response
-		#  return HTTPFound(
-		#  	location=mainpage,
-		#  	headers=headers,
-		#  )
+		if redirect_to_main:
+			return HTTPFound(
+				location=mainpage + '?session_expired=true',
+				headers=headers,
+			)
+		else:
+			self.request.response.headerlist.extend(headers)
+			return self.request.response
 
 	# ajax - registration of users
 	@view_config(route_name='ajax_user_registration', renderer='json')
@@ -1083,7 +1108,7 @@ class Dbas(object):
 	def set_user_receive_information_settings(self):
 		"""
 		Will logout the user
-		:return: HTTPFound with forgotten headers
+		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_user_receive_information_settings', 'def', 'main, self.request.params: ' + str(self.request.params))

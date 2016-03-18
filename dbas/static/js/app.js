@@ -624,4 +624,8 @@ $(document).ready(function () {
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
 	});
 
+	if ($('#session_expired_container').length == 1)
+		new Helper().delay(function(){
+			$('#session_expired_container').fadeOut();
+		}, 3000);
 });

@@ -78,10 +78,11 @@ class User(DiscussionBase):
 	registered = sa.Column(sa.DateTime(timezone=True), default=func.now())
 	token = sa.Column(sa.Text, nullable=True)
 	token_timestamp = sa.Column(sa.DateTime(timezone=True), nullable=True)
+	keep_logged_in = sa.Column(sa.Boolean, nullable=False)
 
 	groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
-	def __init__(self, firstname, surname, nickname, email, password, gender, group=0, token='', token_timestamp=None):
+	def __init__(self, firstname, surname, nickname, email, password, gender, group=0, token='', token_timestamp=None, keep_logged_in=False):
 		"""
 		Initializes a row in current user-table
 		"""
@@ -97,6 +98,7 @@ class User(DiscussionBase):
 		self.registered = func.now()
 		self.token = token
 		self.token_timestamp = token_timestamp
+		self.keep_logged_in = keep_logged_in
 
 	@classmethod
 	def by_surname(cls):
@@ -118,6 +120,9 @@ class User(DiscussionBase):
 
 	def set_token(self, token):
 		self.token = token
+
+	def should_hold_the_login(self, keep_logged_in):
+		self.keep_logged_in = keep_logged_in
 
 
 class Settings(DiscussionBase):
