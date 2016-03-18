@@ -70,8 +70,11 @@ class UserHandler(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
 		if db_user:
 			last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
-			log_out = (datetime.now() - last_action_object).seconds > self.timeout
+			diff = (datetime.now() - last_action_object).seconds - 3600  # TODO dirty fix
+			log_out = diff > self.timeout
+			logger('UserHandler', 'update_last_action', 'session run out: ' + str(log_out) + ', ' + str(diff) + 's')
 			db_user.update_last_action()
+			db_user.should_hold_the_login(not log_out)
 			transaction.commit()
 			return log_out
 		return False

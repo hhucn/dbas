@@ -252,7 +252,7 @@ def setup_news_db():
 	news38 = News(title='Island View and Pictures',
 				  date='06.01.2016',
 				  author='Tobias Krauthoff',
-				  news='DBAS will be more personal and results driven. Therefore the new release has profile pictures for '
+				  news='D-BAS will be more personal and results driven. Therefore the new release has profile pictures for '
 				       'everyone. They are powered by gravatar and are based on a md5-hash of the users email. Next to this '
 				       'a new view was published - the island view. Do not be shy and try it in discussions ;-) Last '
 				       'improvement just collects the attacks and supports for arguments...this is needed for our next big '
@@ -260,18 +260,18 @@ def setup_news_db():
 	news39 = News(title='Refactoring',
 				  date='27.01.2016',
 				  author='Tobias Krauthoff',
-				  news='DBAS refactored the last two weeks. During this time, a lot of JavaScript was removed. Therefore '
-				       'DBAS uses Chameleon with TAL in the Pyramid-Framework. So DBAS will be more stable and faster. '
+				  news='D-BAS refactored the last two weeks. During this time, a lot of JavaScript was removed. Therefore '
+				       'D-BAS uses Chameleon with TAL in the Pyramid-Framework. So D-BAS will be more stable and faster. '
 				       'The next period all functions will be tested and recovered.')
 	news40 = News(title='API',
 				  date='29.01.2016',
 				  author='Tobias Krauthoff',
-				  news='Now DBAS has a API. Just replace the "discuss"-tag in your url with api to get your current steps raw data.')
+				  news='Now D-BAS has a API. Just replace the "discuss"-tag in your url with api to get your current steps raw data.')
 	news41 = News(title='Voting Model',
 				  date='05.01.2016',
 				  author='Tobias Krauthoff',
 				  news='Currently we are improving out model of voting for arguments as well as statements. Therefore we are working'
-				       'together with our colleage out of the theoretical computer science...because DBAS datastructure can be '
+				       'together with our colleage out of the theoretical computer science...because D-BAS datastructure can be '
 				       'formalized to be compatible with frameworks of Dung.')
 	news42 = News(title='Premisegroups',
 				  date='09.02.2016',

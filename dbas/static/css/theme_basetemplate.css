@@ -289,7 +289,7 @@ comment .container and wrap each container with <div class="coloured-div">
 
 .add-button{
 	border-radius: 50%;
-    font-size: 36px;
+    font-size: 40px;
     margin: auto;
     height: 48px;
     width: 48px;
@@ -302,6 +302,8 @@ comment .container and wrap each container with <div class="coloured-div">
     position: fixed;
     bottom: 2em;
     right: 0.5em;
+    cursor: pointer;
+    text-align:center;
 }
 
 .inactive-image{
@@ -333,6 +335,7 @@ comment .container and wrap each container with <div class="coloured-div">
 	padding: 1.3em;
 	opacity: 0.5;
 	transition: 1s ease;
+    cursor: pointer;
 }
 
 .share-icon-small {
@@ -340,6 +343,7 @@ comment .container and wrap each container with <div class="coloured-div">
 	padding: 1.0em;
 	opacity: 0.5;
 	transition: 1s ease;
+    cursor: pointer;
 }
 
 .share-icon:hover {

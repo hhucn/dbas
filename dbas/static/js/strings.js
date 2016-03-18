@@ -320,7 +320,7 @@ var dbas_en = {
 	'statisticsNotFetched': 'Statistics could not be fetched.',
 	'statisticsNotThere': 'You have no statistics.',
 	'surname' : 'Surname',
-	'shortenedBy': 'which was shortened with',
+	'shortenedBy': 'which was shortened by',
 	'switchDiscussion': 'Change of discussion\'s topic',
 	'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
 	'switchDiscussionText2': 'and the discussion will be restarted.',
