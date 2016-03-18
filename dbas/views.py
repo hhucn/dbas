@@ -1245,8 +1245,8 @@ class Dbas(object):
 		:param for_api: boolean
 		:return: json-dict()
 		"""
-		user_id = self.request.authenticated_userid
-		UserHandler().update_last_action(transaction, user_id)
+		nickname = self.request.authenticated_userid
+		UserHandler().update_last_action(transaction, nickname)
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_new_premises_for_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
 
@@ -1263,7 +1263,7 @@ class Dbas(object):
 			issue           = _qh.get_issue_id(self.request)
 
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
-			                                                                         premisegroups, issue, user_id, for_api,
+			                                                                         premisegroups, issue, nickname, for_api,
 			                                                                         mainpage, lang, RecommenderHelper())
 			return_dict['error'] = error
 
