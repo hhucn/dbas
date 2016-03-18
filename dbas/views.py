@@ -2,7 +2,7 @@ import transaction
 import requests
 
 from validate_email import validate_email
-from pyramid.httpexceptions import HTTPError, HTTPFound, HTTPOk
+from pyramid.httpexceptions import HTTPError, HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 from pyramid.renderers import get_renderer
@@ -940,6 +940,7 @@ class Dbas(object):
 	def user_logout(self, redirect_to_main=False):
 		"""
 		Will logout the user
+		:param redirect_to_main: Boolean
 		:return: HTTPFound with forgotten headers
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1421,23 +1422,25 @@ class Dbas(object):
 		logger('get_shortened_url', 'def', 'main')
 
 		return_dict = dict()
-		# google_api_key = 'AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0' # browser is
-		# google_api_key = 'AIzaSyDneaEJN9FNGUpXHDZahe9Rhb21FsFNS14' # server id
-		# bitly_login = 'dbashhu'
-		# bitly_token = ''
-		# bitly_key = 'R_d8c4acf2fb554494b65529314d1e11d1'
 
 		try:
 			url = self.request.params['url']
+			# google_api_key = 'AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0' # browser is
+			# google_api_key = 'AIzaSyDneaEJN9FNGUpXHDZahe9Rhb21FsFNS14' # server id
 			# service = 'GoogleShortener'
-			# service = 'BitlyShortener'
-			service = 'TinyurlShortener'
 			# service_url = 'https://goo.gl/'
-			# service_url = 'https://bitly.com/'
-			service_url = 'http://tinyurl.com/'
-
 			# shortener = Shortener(service, api_key=google_api_key)
-			# shortener = Shortener(service, bitly_login=bitly_login, bitly_api_key=bitly_key, bitly_token=bitly_token)
+
+			# bitly_login = 'dbashhu'
+			# bitly_key = ''
+			# bitly_token = 'R_d8c4acf2fb554494b65529314d1e11d1'
+
+			# service = 'BitlyShortener'
+			# service_url = 'https://bitly.com/'
+			# shortener = Shortener(service, bitly_token=bitly_token)
+
+			service = 'TinyurlShortener'
+			service_url = 'http://tinyurl.com/'
 			shortener = Shortener(service)
 
 			short_url = format(shortener.short(url))
