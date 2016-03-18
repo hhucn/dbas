@@ -1,12 +1,16 @@
-#writing-news-title,
-#writing-news-text{
+#popup-writing-news-title,
+#popup-writing-news-text{
 	padding-left: 3em;
 }
 
-#news_credentials{
-    float:right;
+#popup-writing-news-title{
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-605-text-size.png) no-repeat 12px 10px;
 }
 
+#popup-writing-news-text {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat 12px 10px;
+	resize: vertical;
+}
 #send-news{
     margin-top: 1em;
     float: right;

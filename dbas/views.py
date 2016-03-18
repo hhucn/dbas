@@ -660,13 +660,6 @@ class Dbas(object):
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		is_author = UserHandler().is_user_author(self.request.authenticated_userid)
 
-		# get date
-		now = datetime.datetime.now()
-		yyyy = str(now.year)
-		mm = str(now.month) if now.month > 9 else '0' + str(now.month)
-		dd = str(now.day) if now.day > 9 else '0' + str(now.day)
-		date = dd + "." + mm + "." + yyyy
-
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
 		return {
@@ -675,7 +668,6 @@ class Dbas(object):
 			'title': 'News',
 			'project': header,
 			'extras': extras_dict,
-			'date': date,
 			'is_author': is_author
 		}
 

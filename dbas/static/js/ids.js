@@ -195,7 +195,7 @@ var shareButtonGoogleSmall						= 'share-google-small';
 var shareButtonFacebookSmall					= 'share-facebook-small';
 var sendNewStatementId 							= 'send-new-statement';
 var sendNewPremiseId 							= 'send-new-premise';
-var sendNewsButtonId 							= 'send-news';
+var sendNewsButtonId 							= 'popup-writing-news-send';
 var settingsSuccessDialog                       = 'settings-success';
 var settingsSuccessMessage                      = 'settings-success-message';
 var settingsAlertDialog                         = 'settings-alert';
@@ -226,12 +226,12 @@ var supportPositionButtonId 					= 'support-position';
 var popupLoginUserfirstnameInputId 				= 'userfirstname-input';
 var popupLoginUserlastnameInputId 				= 'userlastname-input';
 var uid 										= 'uid';
-var writingNewsFailedId 						= 'writing-news-failed';
-var writingNewsSuccessId 						= 'writing-news-success';
-var writingNewsFailedMessageId 					= 'writing-news-failed-message';
-var writingNewsSuccessMessageId 				= 'writing-news-success-message';
-var writingNewNewsTitleId 						= 'writing-news-title';
-var writingNewNewsTextId 						= 'writing-news-text';
+var writingNewsFailedId 						= 'popup-writing-news-failed';
+var writingNewsSuccessId 						= 'popup-writing-news-success';
+var writingNewsFailedMessageId 					= 'popup-writing-news-failed-message';
+var writingNewsSuccessMessageId 				= 'popup-writing-news-success-message';
+var writingNewNewsTitleId 						= 'popup-writing-news-title';
+var writingNewNewsTextId 						= 'popup-writing-news-text';
 
 
 // classes and id's

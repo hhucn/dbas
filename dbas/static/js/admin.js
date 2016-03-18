@@ -165,8 +165,8 @@ function NavBarInterface(){
 	};
 
 	this.hideEverything = function(){
-		$('#admin-navbar').find('.active').removeClass('active');
-		$('#admin-page-wrapper').find('>div').each(function(){
+		$('#navbar-wrapper').find('.active').removeClass('active');
+		$('#content-wrapper').find('>div').each(function(){
 			$(this).hide();
 		});
 	};

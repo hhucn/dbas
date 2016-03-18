@@ -279,6 +279,23 @@ comment .container and wrap each container with <div class="coloured-div">
 	margin: auto;
 }
 
+.add-button{
+	border-radius: 50%;
+    font-size: 36px;
+    margin: auto;
+    height: 48px;
+    width: 48px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.12),0 1px 1px 0 rgba(0,0,0,.24);
+    line-height: normal;
+    color: #fff;
+    background: #2196f3;
+    position: fixed;
+    bottom: 2em;
+    right: 0.5em;
+}
+
 .inactive-image{
     -webkit-filter: grayscale(100%);
     -webkit-filter: blur(50%);
@@ -420,7 +437,8 @@ comment .container and wrap each container with <div class="coloured-div">
 #popup-login-body,
 #popup-write-text-body,
 #popup-generate-password-body,
-#popup-set-premisegroups-body{
+#popup-set-premisegroups-body,
+#popup-url-sharing-body{
 	padding: 10px;
 }
 
@@ -605,8 +623,8 @@ comment .container and wrap each container with <div class="coloured-div">
 	}
 	.glyphicon-local{
 		visibility: hidden;
-		width: 0px;
-		height: 0px;
+		width: 0;
+		height: 0;
 	}
 	
 }

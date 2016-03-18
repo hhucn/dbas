@@ -1,6 +1,7 @@
 import random
 import json
 
+from datetime import datetime
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
@@ -804,6 +805,7 @@ class DictionaryHelper(object):
 			return_dict['show_expert_icon']              = show_expert_icon and False
 			return_dict['close_premise_container']	     = True
 			return_dict['close_statement_container']	 = True
+			return_dict['date']	                         = datetime.strftime(datetime.now(), '%d.%m.%Y')
 			return_dict['title']						 = {'barometer': _tn.get(_tn.opinionBarometer),
 															'guided_view': _tn.get(_tn.displayControlDialogGuidedBody),
 															'island_view': _tn.get(_tn.displayControlDialogIslandBody),

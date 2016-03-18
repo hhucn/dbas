@@ -104,15 +104,6 @@ textarea.content {
 	height: 23px;
 }
 
-#writing-news-title{
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-605-text-size.png) no-repeat 12px 10px;
-}
-
-#writing-news-text {
-	background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat 12px 10px;
-	resize: vertical;
-}
-
 .center {
 	margin-left: auto;
 	margin-right: auto;

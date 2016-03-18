@@ -73,8 +73,8 @@ function News() {
 				$('#' + writingNewsFailedId).fadeOut();
 				new Helper().delay(function(){
 					$('#' + writingNewsFailedMessageId).text('');
-				}, 500);
-			}, 1000);
+				}, 2000);
+			}, 2000);
 			return;
 		} else {
 			$('#' + writingNewsFailedId).hide();
@@ -353,7 +353,6 @@ function News() {
 	// *********************
 	//	SHARING IS CARING
 	// *********************
-
 	this.setSharingClasses = function () {
 		var news = new News();
 		/**
@@ -469,6 +468,9 @@ $(document).ready(function () {
 		news.ajaxSendNews();
 	});
 
+	$('#icon-add-news').click(function(){
+		$('#popup-writing-news').modal('show');
+	});
 
 	// make some things pretty
 	$(window).on('resize', function resizeWindow(){
