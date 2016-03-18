@@ -301,7 +301,7 @@ def setup_news_db():
 def setup_discussion_database():
 	# adding our main issue
 	issue1 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!')
-	issue2 = Issue(title='Town cuts spending', info='Our town needs to cut spending. Please discuss ideas how this should be done.')
+	issue2 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.')
 	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?')
 	DBDiscussionSession.add_all([issue2, issue1])
 	DBDiscussionSession.flush()
@@ -414,7 +414,7 @@ def setup_discussion_database():
 	textversion36 = TextVersion(content="It is much work to take care of both animals.", author=user2.uid)
 	textversion101 = TextVersion(content="The major should increase the taxes.", author=user2.uid)
 	textversion102 = TextVersion(content="We should shut down university park.", author=user2.uid)
-	textversion103 = TextVersion(content="We should close public swimming pool.", author=user2.uid)
+	textversion103 = TextVersion(content="We should close public swimming pools.", author=user2.uid)
 	# textversion104 = TextVersion(content="The major should start an e-participation process for the participatory budgeting.", author=user2.uid)
 	textversion105 = TextVersion(content="This is a good idea, because we have more money then to solve other problems.", author=user2.uid)
 	textversion106 = TextVersion(content="Not every problem can be solved with money.", author=user2.uid)
@@ -426,7 +426,7 @@ def setup_discussion_database():
 	textversion112 = TextVersion(content="Criminals use university park to sell drugs.", author=user2.uid)
 	textversion113 = TextVersion(content="Shutting down university park will save 100.000$ a year.", author=user2.uid)
 	textversion114 = TextVersion(content="We should not give in to criminals.", author=user2.uid)
-	textversion115 = TextVersion(content="The number of police patrols should be increased", author=user2.uid)
+	textversion115 = TextVersion(content="The number of police patrols has been increased recently.", author=user2.uid)
 	textversion116 = TextVersion(content="This is the only park in our city.", author=user2.uid)
 	textversion117 = TextVersion(content="There are many parks in neighbouring towns.", author=user2.uid)
 	textversion118 = TextVersion(content="The city is planing a new park in the upcoming month.", author=user2.uid)
