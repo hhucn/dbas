@@ -303,7 +303,8 @@ def setup_discussion_database():
 	issue1 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!')
 	issue2 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.')
 	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?')
-	DBDiscussionSession.add_all([issue2, issue1])
+	issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?')
+	DBDiscussionSession.add_all([issue4, issue2, issue1])
 	DBDiscussionSession.flush()
 
 	# adding groups
