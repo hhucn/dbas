@@ -197,6 +197,12 @@ function InteractionHandler() {
 			}
 
 			if (undecided_texts.length > 0){
+				var helper = new Helper();
+				for (var j=0; j<undecided_texts.length; j++){
+					undecided_texts[j] = helper.startWithLowerCase(undecided_texts[j]);
+					if (undecided_texts[j].match(/\.$/))
+						undecided_texts[j] = undecided_texts[j].substr(0, undecided_texts[j].length -1)
+				}
 				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion);
 			} else {
 				if (type == fuzzy_start_statement) {

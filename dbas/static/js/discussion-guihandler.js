@@ -225,7 +225,7 @@ function GuiHandler() {
 
 			// merge every text part to one array
 			for (i=0; i<undecided_texts.length; i++){
-					splitted = undecided_texts[i].split(' ' + _t(and) + ' ');
+				splitted = undecided_texts[i].split(' ' + _t(and) + ' ');
 
 				if (selections[i].id.indexOf(attr_more_args) != -1){ // each splitted text part is one argument
 					for (j=0; j<splitted.length; j++)
