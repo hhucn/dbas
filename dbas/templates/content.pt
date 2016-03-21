@@ -334,15 +334,13 @@
 						</div>
 						<div>
 							<img class="icon-badge icon-rem-premise"
-								 alt="icon-rem"
-								 src="${request.static_url('dbas:static/images/icon_minus2.png')}"
-								 style="height: 30px; display:none; padding-right: 0.5em;"
-								 tal:attributes="title extras.buttons.rem_statement_row_title"/>
+									 alt="icon-rem"
+									 src="${request.static_url('dbas:static/images/icon_minus1.png')}"
+									 tal:attributes="title extras.buttons.rem_statement_row_title"/>
 							<img class="icon-badge icon-add-premise"
-								 alt="icon-add"
-								 src="${request.static_url('dbas:static/images/icon_plus2.png')}"
-								 style="height: 30px;"
-								 tal:attributes="title extras.buttons.add_statement_row_title"/>
+									 alt="icon-add"
+									 src="${request.static_url('dbas:static/images/icon_plus1.png')}"
+									 tal:attributes="title extras.buttons.add_statement_row_title"/>
 						</div>
 					</div>
 				</div>

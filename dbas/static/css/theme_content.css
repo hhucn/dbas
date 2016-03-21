@@ -188,6 +188,16 @@
 	float: left;
 }
 
+
+.icon-rem-premise{
+	height: 30px;
+	display:none;
+	padding-right: 0.5em;
+}
+.icon-add-premise{
+	height: 30px;
+}
+
 #opinion-barometer-img{
 	width: 80px;
 }
@@ -197,9 +207,6 @@
 	visibility: hidden;
 }
 
-#report-statement{	background:url(../images/glyphicons_free/glyphicons/glyphicons-197-circle-exclamation-mark.png) no-repeat;
-	background-repeat: no-repeat;
-}
 
 .display-style-menu-icon {
 	opacity: 0;

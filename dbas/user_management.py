@@ -59,7 +59,7 @@ class PasswordHandler(object):
 class UserHandler(object):
 
 	def __init__(self):
-		self.timeout = 1800
+		self.timeout = 3600
 
 	def update_last_action(self, transaction, nick):
 		"""

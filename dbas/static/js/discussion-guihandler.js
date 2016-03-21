@@ -7,6 +7,10 @@ function GuiHandler() {
 	'use strict';
 	var interactionHandler;
 
+	/**
+	 *
+	 * @param externInteractionHandler
+	 */
 	this.setHandler = function (externInteractionHandler) {
 		interactionHandler = externInteractionHandler;
 	};
@@ -30,13 +34,13 @@ function GuiHandler() {
 				.attr('placeholder', 'example: There is some reason!'),
 			imgm = $('<img>').attr('class', 'icon-rem-premise')
 				.attr('alt', 'icon-rem')
-				.attr('src', mainpage + 'static/images/icon_minus2.png')
-				.attr('style', 'height: 30px; padding-right: 0.5em;')
+				.attr('src', mainpage + 'static/images/icon_minus1.png')
+				// .attr('style', 'height: 30px; padding-right: 0.5em;')
 				.attr('title', body.find('.icon-rem-premise').first().attr('title')),
 			imgp = $('<img>').attr('class', 'icon-add-premise')
 				.attr('alt', 'icon-add')
-				.attr('src', mainpage + 'static/images/icon_plus2.png')
-				.attr('style', 'height: 30px;')
+				.attr('src', mainpage + 'static/images/icon_plus1.png')
+				// .attr('style', 'height: 30px;')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
 
 		div.append(div_l.append(h5))
@@ -63,7 +67,7 @@ function GuiHandler() {
 				body.find('.icon-rem-premise').show();
 			}
 
-		});
+		}).show();
 
 		// add fuzzy search
 		$('#' + id).keyup(function () {
