@@ -383,13 +383,15 @@ function ajaxLogin (){
 			url: url,
 			keep_login: keep_login
 		},
-		dataType: 'json',
+		dataType: 'html',
 		async: true
 	}).done(function ajaxLoginDone(data) {
 		callbackIfDoneForLogin(data);
 	}).fail(function ajaxLoginFail(xhr) {
 		if (xhr.status == 200) {
 			location.reload(true);
+		} else if (xhr.status == 302) {
+			location.href = xhr.getResponseHeader("Location");
 		} else {
 			$('#' + popupLoginFailed).show();
 			$('#' + popupLoginFailed + '-message').text(_t(requestFailed));
@@ -522,14 +524,24 @@ function ajaxMama(){
  * @param data
  */
 function callbackIfDoneForLogin(data){
-	var parsedData = $.parseJSON(data);
-	if (parsedData.error.length != 0) {
-		$('#' + popupLoginFailed).show();
-		$('#' + popupLoginFailed + '-message').text(parsedData.error);
-	} else {
-		$('#' + popupLogin).modal('hide');
-		location.reload();
+	try {
+		var jsonData = $.parseJSON(data);
+		// It is JSON
+		if (jsonData.error.length != 0) {
+			$('#' + popupLoginFailed).show();
+			$('#' + popupLoginFailed + '-message').text(jsonData.error);
+		} else {
+			$('#' + popupLogin).modal('hide');
+			location.reload(true);
+		}
+	} catch(err){
+		//var htmlData = $.parseHTML(data);
+		var url = location.href;
+		if (url.indexOf('?session_expired=true') != -1)
+			url = url.substr(0, url.length - '?session_expired=true'.length);
+		location.href = url;
 	}
+
 }
 
 /**
