@@ -218,7 +218,7 @@ class UserHandler(object):
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if not db_user:
-			return return_dict
+			return return_array
 
 		db_edits = DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
 
@@ -246,7 +246,7 @@ class UserHandler(object):
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if not db_user:
-			return return_dict
+			return return_array
 
 		db_edits = DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
 
@@ -273,7 +273,7 @@ class UserHandler(object):
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if not db_user:
-			return return_dict
+			return return_array
 
 		_qh = query_helper
 

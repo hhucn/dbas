@@ -192,6 +192,12 @@ bootstrap-paper hover #eeeeee
 #header_user {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat;
 }
+#header_male {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-35-old-man.png) no-repeat;
+}
+#header_female {
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-36-woman.png) no-repeat;
+}
 #header_logout {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-388-log-out.png) no-repeat;
 }
