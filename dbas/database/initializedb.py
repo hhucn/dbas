@@ -326,8 +326,6 @@ def setup_discussion_database():
 	pw8 = pwhandler.get_hashed_password('gregor')
 	pw9 = pwhandler.get_hashed_password('christian')
 	pw10 = pwhandler.get_hashed_password('alexander')
-	pw11 = pwhandler.get_hashed_password('raphael')
-	pw12 = pwhandler.get_hashed_password('andre')
 	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
 	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
 	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
@@ -339,9 +337,7 @@ def setup_discussion_database():
 	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group1.uid, gender='m')
 	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group0.uid, gender='m')
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
-	user11 = User(firstname='Raphael', surname='Bialon', nickname='raphael', email='bialon@cs.uni-duesseldorf.de', password=pw11, group=group1.uid, gender='m')
-	user12 = User(firstname='Andre', surname='Ippisch', nickname='andre', email='ippisch@cs.uni-duesseldorf.de', password=pw12, group=group1.uid, gender='m')
-	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11, user12])
+	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10])
 	DBDiscussionSession.flush()
 
 	# adding settings
@@ -355,10 +351,8 @@ def setup_discussion_database():
 	settings7 = Settings(author_uid=user7.uid, send_mails=True, send_notifications=True)
 	settings8 = Settings(author_uid=user8.uid, send_mails=True, send_notifications=True)
 	settings9 = Settings(author_uid=user9.uid, send_mails=True, send_notifications=True)
-	settings10 = Settings(author_uid=user10.uid, send_mails=True, send_notifications=True)
-	settings11 = Settings(author_uid=user11.uid, send_mails=True, send_notifications=True)
 	DBDiscussionSession.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7])
-	DBDiscussionSession.add_all([settings8, settings9, settings10, settings11])
+	DBDiscussionSession.add_all([settings8, settings9])
 	DBDiscussionSession.flush()
 
 	# Adding welcome notifications
