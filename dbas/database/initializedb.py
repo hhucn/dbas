@@ -366,7 +366,7 @@ def setup_discussion_database():
 	notification7 = Notification(from_author_uid=user1.uid, to_author_uid=user9.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification8 = Notification(from_author_uid=user1.uid, to_author_uid=user10.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	DBDiscussionSession.add_all([notification0, notification1, notification2, notification3, notification4])
-	DBDiscussionSession.add_all([notification5, notification6, notification7, notification8, notification9])
+	DBDiscussionSession.add_all([notification5, notification6, notification7, notification8])
 	DBDiscussionSession.flush()
 
 	# Adding all textversions
