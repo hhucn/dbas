@@ -6,7 +6,6 @@ chardet==2.3.0
 colorama==0.3.7
 cornice==1.2.0
 cryptacular==1.4.1
--e git+gitolite@gitcn.cs.uni-duesseldorf.de:project/dbas@d7ac4879fd7d7e7f368e463416ad440e99b4c5c0#egg=dbas
 docutils==0.12
 html5lib==0.9999999
 lingua==4.8.1
@@ -28,6 +27,7 @@ pyramid-mailer==0.14.1
 pyramid-mako==1.0.2
 pyramid-redis-sessions==1.0.1
 pyramid-tm==0.12.1
+psycopg2==2.6.1
 pyshorteners==0.5.3
 python-Levenshtein==0.12.0
 python-slugify==1.2.0

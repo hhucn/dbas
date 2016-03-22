@@ -31,7 +31,8 @@ requires = [
 	'requests',
 	'pyshorteners',
 	'python-slugify',
-	'validate_email'
+	'validate_email',
+	'db-psycopg2'
 ]
 
 setup(name='dbas',

@@ -349,6 +349,12 @@
     /*box-shadow: -1px 1px 1px 0 rgba(0, 0, 0, 0.4);*/
 }
 
+.triangle-r-info{
+    color: grey;
+    float:right;
+    font-size: 12px;
+}
+
 .triangle-gravatar-r,
 .triangle-gravatar-l{
     width: 2em;

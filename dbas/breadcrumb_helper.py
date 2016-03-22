@@ -155,7 +155,10 @@ class BreadcrumbHelper(object):
 			uid = splitted[6]
 			if splitted[4] == 't':  # is argument
 				arg = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-				text = _qh.get_text_for_statement_uid(arg.conclusion_uid) if arg.argument_uid == 0 else _qh.get_text_for_argument_uid(arg.argument_uid, lang)
+				if arg.argument_uid is None:
+					text = _qh.get_text_for_statement_uid(arg.conclusion_uid)
+				else:
+					text = _qh.get_text_for_argument_uid(arg.argument_uid, lang)
 			else:
 				text = _qh.get_text_for_statement_uid(uid)
 			return _t.get(_t.breadcrumbsChoose) + ' ' + text[0:1].lower() + text[1:]
@@ -182,23 +185,20 @@ class BreadcrumbHelper(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if user == 'anonymous':
 			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user', 'user ' + str(db_user.uid) + ' with session_id ' + str(session_id))
-			if DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
-			                                                    Breadcrumb.session_id == session_id)).all():
-				DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
-				                                                  Breadcrumb.session_id == session_id)).delete()
-				transaction.commit()
 
 			if DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
 			                                                 Bubble.session_id == session_id)).all():
 				DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
 			                                                  Bubble.session_id == session_id)).delete()
-				transaction.commit()
+			if DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
+			                                                    Breadcrumb.session_id == session_id)).all():
+				DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
+				                                                  Breadcrumb.session_id == session_id)).delete()
 		else:
 			logger('BreadcrumbHelper', 'del_breadcrumbs_of_user', 'user ' + str(db_user.uid))
-			if DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all():
-				DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
-				transaction.commit()
-
 			if DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid).all():
 				DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid).delete()
-				transaction.commit()
+			if DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).all():
+				DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
+
+		transaction.commit()

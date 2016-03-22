@@ -232,18 +232,20 @@ function AjaxSiteHandler() {
 		}
 
 		// add or remove bubble
-		if (bubbleSpace.find('#current_' + tmpid).length == 0){
-			var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil),
-				current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
-			current.insertAfter(bubbleSpace.find('div:last-child'));
-			setInterval(function () { // fading pencil
-				$('.glyphicon-pencil').fadeTo('slow', 0.2, function () {
-					$('.glyphicon-pencil').fadeTo('slow', 1.0, function () {
+		if (type != fuzzy_statement_popup) {
+			if (bubbleSpace.find('#current_' + tmpid).length == 0) {
+				var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil),
+					current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
+				current.insertAfter(bubbleSpace.find('div:last-child'));
+				setInterval(function () { // fading pencil
+					$('.glyphicon-pencil').fadeTo('slow', 0.2, function () {
+						$('.glyphicon-pencil').fadeTo('slow', 1.0, function () {
+						});
 					});
-				});
-			}, 1000);
-		} else {
-			$('#current_' + tmpid).html(value + '...' + pencil);
+				}, 1000);
+			} else {
+				$('#current_' + tmpid).html(value + '...' + pencil);
+			}
 		}
 		new GuiHandler().setMaxHeightForBubbleSpace();
 

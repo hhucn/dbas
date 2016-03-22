@@ -50,6 +50,18 @@ function AdminInterface(){
 		// add each issue table
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
 			$('#dropdown-issue-list').append($('<li>').addClass('enabled').append($('<a>').text(key).attr('href', '#')));
+
+			if (Object.keys(value).length == 0){
+				var p = $('<p>').text(_t(noTrackedData)),
+					div = $('<div>').attr('id', 'table_' + key.replace(/\ /g, '_'))
+						.addClass('alert-warning')
+						.addClass('alert')
+						.attr('style', 'margin-left: 2em; margin-right: 2em;');
+				div.append(p);
+				space.append(div);
+				return;
+			}
+
 			var tableElement, i, img,
 				tbody = $('<tbody>'),
 				thead = $('<thead>'),
@@ -138,30 +150,13 @@ function AdminInterface(){
 function NavBarInterface(){
 	var _this = this;
 	this.setUpLinks = function(){
-		$('#admin-dashboards').click(function(){
-			_this.showDashboard();
-		});
-
-		$('#admin-users').click(function(){
-			_this.showUsers();
-		});
-
-		$('#admin-arguments').click(function(){
-			_this.showArguments()
-		});
-
-		 $('#dashboard-user-count-detail').click(function(){
-			_this.showUsers();
-		 });
-		 $('#dashboard-vote-count-detail').click(function(){
-			_this.showVotes();
-		 });
-		 $('#dashboard-argument-count-detail').click(function(){
-			_this.showArguments();
-		 });
-		 $('#dashboard-statement-count-detail').click(function(){
-			_this.showStatements();
-		 });
+		$('#admin-dashboards').click(function(){	_this.showDashboard();	});
+		$('#admin-users').click(function(){			_this.showUsers();		});
+		$('#admin-arguments').click(function(){		_this.showArguments()	});
+		$('#dashboard-user-count-detail').click(function(){			_this.showUsers();		});
+		$('#dashboard-vote-count-detail').click(function(){			_this.showVotes();		});
+		$('#dashboard-argument-count-detail').click(function(){		_this.showArguments();	});
+		$('#dashboard-statement-count-detail').click(function(){	_this.showStatements();	});
 	};
 
 	this.hideEverything = function(){

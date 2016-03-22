@@ -29,7 +29,7 @@ class VotingHelper(object):
 		self.__vote_argument(db_argument, db_user, True)
 		self.__vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
 
-		if db_argument.argument_uid == 0:
+		if db_argument.argument_uid is None:
 			db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
 			self.__vote_statement(db_conclusion, db_user, True)
 		else:
