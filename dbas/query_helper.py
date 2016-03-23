@@ -477,6 +477,7 @@ class QueryHelper(object):
 		:param application_url:
 		:param lang: String
 		:param for_api: boolean
+		:param nickname: String
 		:return: dict()
 		"""
 		logger('QueryHelper', 'prepare_json_of_issue', 'main')
@@ -502,7 +503,7 @@ class QueryHelper(object):
 		_t = Translator(lang)
 		tooltip = _t.get(_t.discussionInfoTooltip1) + ' ' + date + ' ' +\
 		          _t.get(_t.discussionInfoTooltip2) + ' ' + str(arg_count) + ' ' +\
-		          (_t.get(_t.discussionInfoTooltip3pl) if arg_count > 1 else  _t.get(_t.discussionInfoTooltip3sg))
+		          (_t.get(_t.discussionInfoTooltip3pl) if arg_count > 1 else _t.get(_t.discussionInfoTooltip3sg))
 
 		return {'slug': slug, 'info': info, 'title': title, 'uid': uid, 'arg_count': arg_count, 'date': date, 'all': all_array, 'tooltip': tooltip}
 
@@ -1050,7 +1051,7 @@ class QueryHelper(object):
 		:param lang:
 		:return:
 		"""
-		is_admin = UserHandler().is_user_admin(user)
+		is_admin = UserHandler().is_user_in_group(user, 'admins')
 		logger('QueryHelper', 'get_all_users', 'is_admin ' + str(is_admin))
 		return_array = []
 		if not is_admin:
@@ -1092,7 +1093,7 @@ class QueryHelper(object):
 		:param lang: current language
 		:return: dict()
 		"""
-		is_admin = UserHandler().is_user_admin(user)
+		is_admin = UserHandler().is_user_in_group(user, 'admins')
 		logger('QueryHelper', 'get_argument_overview', 'is_admin ' + str(is_admin))
 		return_dict = dict()
 		if not is_admin:

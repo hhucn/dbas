@@ -70,6 +70,7 @@ class Translator(object):
 
 		self.aand = 'and'
 		self.addedEverything = 'addedEverything'
+		self.addTopic = 'addTopic'
 		self.addStatementRow = 'addStatementRow'
 		self.alreadyInserted = 'alreadyInserted'
 		self.addPremisesRadioButtonText = 'addPremisesRadioButtonText'
@@ -493,6 +494,7 @@ class Translator(object):
 		en_lang[self.aand] = 'and'
 		en_lang[self.addedEverything] = 'Everything was added.'
 		en_lang[self.addStatementRow] = 'Add another row for adding a new statemtent.'
+		en_lang[self.addTopic] = 'Add a Topic'
 		en_lang[self.alreadyInserted] = 'This is a duplicate and already there.'
 		en_lang[self.addPremisesRadioButtonText] = 'Let me enter my reasons!'
 		en_lang[self.addArgumentsRadioButtonText] = 'Let me enter my own statements!'
@@ -903,6 +905,7 @@ class Translator(object):
 		de_lang[self.aand] = 'und'
 		de_lang[self.addStatementRow] = 'Fügt eine neue Reihe hinzu.'
 		de_lang[self.addedEverything] = 'Alles wurde hinzugefügt.'
+		de_lang[self.addTopic] = 'Thema hinzufügen'
 		de_lang[self.at] = 'am'
 		de_lang[self.alreadyInserted] = 'Dies ist ein Duplikat und schon vorhanden.'
 		de_lang[self.addPremisesRadioButtonText] = 'Lass\' mich meine eigenen Gründe angeben!'

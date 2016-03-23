@@ -85,17 +85,30 @@ class UserHandler(object):
 			return log_out
 		return False
 
+	def is_user_in_group(self, user, groupname):
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).join(Group).first()
+		logger('UserHandler', 'is user in: ' + groupname, 'main')
+		return db_user and db_user.groups.name == groupname
+
 	def is_user_admin(self, user):
 		"""
 		Check, if the given uid has admin rights or is admin
 		:param user: current user name
 		:return: true, if user is admin, false otherwise
 		"""
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
-		db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).join(Group).first()
 		logger('UserHandler', 'is_user_admin', 'main')
-		if db_user:
-			if db_user.group_uid == db_admin_group.uid:
+		return db_user and db_user.groups.name == 'admins'
+
+	def is_user_author(self, user):
+		"""
+		Check, if the given uid has author rights or is author
+		:param user: current user name
+		:return: true, if user is admin, false otherwise
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).join(Group).first()
+		logger('UserHandler', 'is_user_author', 'main')
+		if db_user and db_user.groups.name == 'authors':
 				return True
 
 		return False
@@ -373,7 +386,7 @@ class UserHandler(object):
 		:param user: self.request.authenticated_userid
 		:return: dictionary
 		"""
-		is_admin = UserHandler().is_user_admin(user)
+		is_admin = UserHandler().is_user_in_group(user, 'admins')
 		if not is_admin:
 			return_dict = dict()
 		else:

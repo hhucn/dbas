@@ -803,7 +803,8 @@ class DictionaryHelper(object):
 			return_dict['is_editable']                   = is_editable and is_logged_in
 			return_dict['is_reportable']	             = is_reportable
 			return_dict['is_questionable']               = is_questionable
-			return_dict['is_admin']			             = _uh.is_user_admin(authenticated_userid)
+			return_dict['is_admin']			             = _uh.is_user_in_group(authenticated_userid, 'admins')
+			return_dict['is_author']			         = _uh.is_user_in_group(authenticated_userid, 'authors')
 			return_dict['show_bar_icon']	             = show_bar_icon and False
 			return_dict['show_display_style']            = show_display_styles and False
 			return_dict['show_expert_icon']              = show_expert_icon and False
