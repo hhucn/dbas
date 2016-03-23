@@ -231,10 +231,10 @@
 #discussion-sidebar{
 	list-style-type: none;
 	text-align: right;
+	padding-left: 0;
 }
 #discussion-sidebar ul{
 	list-style-type: none;
-	padding-left: 0px;
 }
 
 .container-three-divs {
