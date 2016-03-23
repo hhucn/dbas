@@ -1062,6 +1062,7 @@ class DictionaryHelper(object):
 		:param session_id:
 		:return:
 		"""
+		logger('DictionaryHelper', '__create_speechbubble_history', 'main')
 		bubble_history = []
 		is_user_anonym = not nickname
 		if is_user_anonym:

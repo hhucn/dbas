@@ -2,7 +2,7 @@ import transaction
 import requests
 
 from validate_email import validate_email
-from pyramid.httpexceptions import HTTPError, HTTPFound
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 from pyramid.renderers import get_renderer
@@ -299,7 +299,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs, nickname, session_id)
 		if not discussion_dict:
-			return HTTPError(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
 		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, True, ui_locales,
@@ -359,7 +359,7 @@ class Dbas(object):
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			if not QueryHelper().get_text_for_statement_uid(statement_or_arg_id):
-				return HTTPError(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
+				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 			# justifying position
@@ -404,7 +404,7 @@ class Dbas(object):
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify_argumentation=True)
 		else:
-			return HTTPError(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -439,7 +439,10 @@ class Dbas(object):
 		arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
 		attack          = matchdict['mode'] if 'mode' in matchdict else ''
 		arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
-		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().is_supportive
+		tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
+		if not tmp_argument:
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+		supportive      = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired  = UserHandler().update_last_action(transaction, nickname)
 		if session_expired:
@@ -733,19 +736,23 @@ class Dbas(object):
 		for param in self.request.params:
 			logger('notfound', 'def', '    ' + param + ' -> ' + self.request.params[param])
 
+		path = self.request.path
+		if path.startswith('/404/'):
+			path = path[5:]
+
 		self.request.response.status = 404
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
-		# return HTTPError(location=UrlManager(mainpage, for_api=False).get_404([self.request.path]))
+		# return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Error',
 			'project': project_name,
-			'page_notfound_viewname': self.request.path,
+			'page_notfound_viewname': path,
 			'extras': extras_dict
 		}
 

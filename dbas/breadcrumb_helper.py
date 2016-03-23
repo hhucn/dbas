@@ -30,6 +30,7 @@ class BreadcrumbHelper(object):
 			user = 'anonymous'
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			if not db_user:
+				logger('BreadcrumbHelper', 'save_breadcrumb', 'return [], False')
 				return [], False
 		logger('BreadcrumbHelper', 'save_breadcrumb', 'path: ' + path + ', user ' + user)
 
@@ -103,6 +104,7 @@ class BreadcrumbHelper(object):
 			hist['text']        = url_text
 			breadcrumbs.append(hist)
 
+		logger('BreadcrumbHelper', 'get_breadcrumbs', 'return crumbs #' + str(len(breadcrumbs)))
 		return breadcrumbs
 
 	@staticmethod
@@ -223,11 +225,8 @@ class BreadcrumbHelper(object):
 			crumbs_for_del = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
 			                                                                   Breadcrumb.uid > uid)).all()
 		# delete all bubbles with fkeys for the crumbs
-		crumb_uids = []
 		for crumb in crumbs_for_del:
-			# DBDiscussionSession.query(Bubble).filter(breadcrumb_uid=crumb.uid).delete()
-			crumb_uids.append(crumb.uid)
-		DBDiscussionSession.query(Bubble).filter(Bubble.breadcrumb_uid.in_(crumb_uids)).delete()
+			DBDiscussionSession.query(Bubble).filter_by(breadcrumb_uid=crumb.uid).delete()
 
 		# delete the breadcrumbs
 		if db_user.nickname == 'anonymous':

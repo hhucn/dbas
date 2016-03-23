@@ -16,7 +16,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		$(this).click(function() {
 			guiHandler.appendAddPremiseRow($(this));
 			$(this).hide().prev().show();
-			send.val(_t(saveMyStatements));
+			$('#' + sendNewPremiseId).val(_t(saveMyStatements));
 		});
 	});
 
