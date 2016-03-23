@@ -11,6 +11,8 @@ databases:
 
 init_postgres:
 	sudo -u postgres bash -c "psql -c \"create user dbas with password 'SQL_2015&';\""
+	sudo -u postgres bash -c "psql -c \"create database discussion;\""
+	sudo -u postgres bash -c "psql -c \"create database news;\""
 
 postgres:
 	sudo -u postgres bash -c "psql -c \"drop database discussion;\""
