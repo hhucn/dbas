@@ -979,8 +979,8 @@ class QueryHelper(object):
 			argument_prgoup_set.add(argument.premisesgroup_uid)
 			tmp_dict['uid']                 = argument.uid
 			tmp_dict['premisesgroup_uid']   = argument.premisesgroup_uid
-			tmp_dict['conclusion_uid']      = argument.conclusion_uid
-			tmp_dict['argument_uid']        = argument.argument_uid
+			tmp_dict['conclusion_uid']      = argument.conclusion_uid if argument.conclusion_uid else 0
+			tmp_dict['argument_uid']        = argument.argument_uid if argument.argument_uid else 0
 			tmp_dict['is_supportive']       = argument.is_supportive
 			tmp_dict['author_uid']          = argument.author_uid
 			tmp_dict['timestamp']           = self.sql_timestamp_pretty_print(str(argument.timestamp), lang)
