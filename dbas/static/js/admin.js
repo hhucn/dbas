@@ -51,12 +51,12 @@ function AdminInterface(){
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
 			$('#dropdown-issue-list').append($('<li>').addClass('enabled').append($('<a>').text(key).attr('href', '#')));
 
-			if (Object.keys(value).length == 0){
-				var p = $('<p>').text(_t(noTrackedData)),
+			if (value.length == 0){
+				var p = $('<p>').text(_t(noEntriesFor) + ': ' + key),
 					div = $('<div>').attr('id', 'table_' + key.replace(/\ /g, '_'))
 						.addClass('alert-warning')
 						.addClass('alert')
-						.attr('style', 'margin-left: 2em; margin-right: 2em;');
+						.attr('style', 'margin-left: 2em; margin-right: 2em; display: none');
 				div.append(p);
 				space.append(div);
 				return;
@@ -73,7 +73,7 @@ function AdminInterface(){
 			tableElement = $('<table>').attr('id', 'table_' + key.replace(/\ /g, '_'))
 				.attr('class', 'table table-condensed tablesorter')
 				.attr('border', '0')
-				.attr('style', 'border-collapse: separate; border-spacing: 0px; display: none;');
+				.attr('style', 'border-collapse: separate; border-spacing: 0px; display: none; margin-left: 1em; margin-right: 1em;');
 
 			// header elements
 			for (i = 0; i < tdElement.length; i += 1) {
@@ -82,7 +82,7 @@ function AdminInterface(){
 			}
 
 			// add header row
-			spanElement[0].text('#');
+			spanElement[0].text('ID');
 			spanElement[1].text(_t(text));
 			spanElement[2].text('#Votes');
 			spanElement[3].text('#Upvotes');
@@ -98,7 +98,7 @@ function AdminInterface(){
 			tableElement.append(thead);
 
 			// add argument elements
-			$.each(value, function setJsonArgumentkDataToAdminContentEach(v_key, v_value) {
+			$.each(value, function setJsonArgumentkDataToAdminContentEach(index, v_value) {
 				trElement = $('<tr>');
 				for (i = 0; i < tdElement.length; i += 1) {
 					tdElement[i] = $('<td>');
@@ -110,7 +110,7 @@ function AdminInterface(){
 					alert('todo infos about argument ' + v_value.uid);
 				});
 
-				tdElement[0].text(v_key).attr('argument_' + v_value.uid);
+				tdElement[0].text(v_value.uid).attr('argument_' + v_value.uid);
 				tdElement[1].text(v_value.text);
 				tdElement[2].text(v_value.votes);
 				tdElement[3].text(v_value.valid_votes);
@@ -131,7 +131,7 @@ function AdminInterface(){
 		});
 
 		// some magic and gui fixes for the issue dropdown
-		space.find('table:first-child').show();
+		space.children().eq(0).show();
 		list.find('li:nth-child(2)').removeClass('enabled').addClass('disabled');
 		list.find('li:not(:first-child)').each(function(){
 			$(this).click(function(){

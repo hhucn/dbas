@@ -377,13 +377,13 @@ class DictionaryHelper(object):
 
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
 		text = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
-		text += _tn.get(_tn.whyAreYouAgreeingWithInColor) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWithInColor)
+		text += _tn.get(_tn.whyAreYouAgreeingWith) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWith)
 		text += ':<br><strong>'
 		text += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
 		text += '</strong>?<br>' + _tn.get(_tn.because) + '...'
 
-		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
-		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(True, False, False, '', '', text))
+		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now', True))
+		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(True, False, False, '', '', text, True))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
@@ -728,8 +728,8 @@ class DictionaryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 		_qh = QueryHelper()
 		_um = UrlManager(application_url, slug, for_api)
-		conclusion = argument_or_statement_id if not is_argument else 0
-		argument = argument_or_statement_id if is_argument else 0
+		conclusion = argument_or_statement_id if not is_argument else None
+		argument = argument_or_statement_id if is_argument else None
 
 		for group_id in pgroup_ids:
 			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
@@ -1008,8 +1008,8 @@ class DictionaryHelper(object):
 		speech['is_user']   = is_user
 		speech['is_system'] = is_system
 		speech['is_status'] = is_status
-		speech['id']        = uid if len(uid) > 0 else 'None'
-		speech['url']       = url if len(url) > 0 else 'None'
+		speech['id']        = uid if len(str(uid)) > 0 else 'None'
+		speech['url']       = url if len(str(url)) > 0 else 'None'
 		speech['message']   = message
 		speech['omit_url']  = omit_url
 		# speech['votecounts']= votecounts # modify database

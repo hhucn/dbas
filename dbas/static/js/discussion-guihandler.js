@@ -20,6 +20,7 @@ function GuiHandler() {
 	 */
 	this.appendAddPremiseRow = function(){
 		var body = $('#add-premise-container-body'),
+			send = $('#' + sendNewPremiseId),
 			uid = new Date().getTime(),
 			div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs'),
 			div_l = $('<div>'),
@@ -51,23 +52,28 @@ function GuiHandler() {
 		imgp.click(function(){
 			new GuiHandler().appendAddPremiseRow();
 			$(this).hide().prev().show(); // hide +, show -
+			send.val(_t(saveMyStatements));
 		});
 
-		imgm.click(function(){
-			// removing bubble
-			var id = $(this).parent().parent().find('input').attr('id'),
-				tmpid = id.split('-').length == 6 ? id.split('-')[5] : '0';
-			$('#current_' + tmpid).fadeOut().remove();
-			$(this).parent().parent().remove();
-			body.find('div').children().last().show();
-			// hide minus icon, when there is only one child
-			if (body.find('.container-three-divs').length == 1) {
-				body.find('.icon-rem-premise').hide();
-			} else {
-				body.find('.icon-rem-premise').show();
-			}
-
-		}).show();
+		body.find('.icon-rem-premise').each(function(){
+			$(this).click(function(){
+				// removing bubble
+				var id = $(this).parent().parent().find('input').attr('id'),
+					tmpid = id.split('-').length == 6 ? id.split('-')[5] : '0';
+				$('#current_' + tmpid).fadeOut().remove();
+				$(this).parent().parent().remove();
+				body.find('div').children().last().show();
+				// hide minus icon, when there is only one child
+				if (body.find('.container-three-divs').length == 1) {
+					body.find('.icon-rem-premise').hide();
+					send.val(_t(saveMyStatement));
+				} else {
+					body.find('.icon-rem-premise').show();
+					send.val(_t(saveMyStatements));
+				}
+			});
+		});
+		imgm.show();
 
 		// add fuzzy search
 		$('#' + id).keyup(function () {
@@ -256,6 +262,7 @@ function GuiHandler() {
 		if (undecided_texts.length == 1){ // we only need one page div
 			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
 			body.append(page);
+			send.text(_t(saveMyStatement));
 
 			page.find('input').each(function(){
 				$(this).click(function inputClick (){
@@ -268,6 +275,7 @@ function GuiHandler() {
 			prev.parent().addClass('disabled');
 			next.show().attr('max', undecided_texts.length);
 			counter.show().text('1/' + undecided_texts.length);
+			send.text(_t(saveMyStatements));
 
 			// for each statement a new page div will be added
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {

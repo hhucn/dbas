@@ -492,7 +492,7 @@ class Dbas(object):
 		"""
 		# '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		logger('discussion_choose', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
 
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
@@ -835,7 +835,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('delete_user_history', 'def', 'main')
-		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
+		BreadcrumbHelper().del_all_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
 

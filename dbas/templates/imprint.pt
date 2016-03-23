@@ -126,9 +126,9 @@
 				<div class="first-container colored_container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
-					<span class="project lead">0.6.0 (unreleased)</span>
+					<span class="project lead">0.5.8 (2016-03-08)</span>
 					<ul>
-						<li>Improved recommendation of the next argument/statement</li>
+						<li>Switched to PostgreSQL
 					</ul>
 
 					<span class="project lead">0.5.7 (2016-03-16)</span>

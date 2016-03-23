@@ -207,13 +207,14 @@ function Helper() {
 	this.redirectInNewTabForContact = function(params){
 		var f = $("<form target='_blank' method='POST' style='display:none;'></form>").attr('action', mainpage + 'contact');
 		f.appendTo(document.body);
-		for (var i in params) {
-			if (params.hasOwnProperty(i)) {
-				f.append($('<input type="hidden" />').attr('name', i).attr('value', params[i]));
+		for (var prms in params) {
+			if (params.hasOwnProperty(prms)) {
+				f.append($('<input type="hidden" />').attr('name', prms).attr('value', params[prms]));
 			}
 		}
-
+		alert(1);
 		f.submit().remove();
+		alert(2);
 	};
 
 	this.getMaxSizeOfGraphViewContainer = function(){

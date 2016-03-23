@@ -231,7 +231,7 @@ function AjaxSiteHandler() {
 			return;
 		}
 
-		// add or remove bubble
+		// add or remove bubble only iff we are not in an popp
 		if (type != fuzzy_statement_popup) {
 			if (bubbleSpace.find('#current_' + tmpid).length == 0) {
 				var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil),

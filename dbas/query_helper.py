@@ -417,9 +417,13 @@ class QueryHelper(object):
                                                                            Argument.issue_uid == issue)).first()
 		transaction.commit()
 		if new_argument:
+			logger('QueryHelper', '__set_argument', 'argument was inserted')
+			logger('QueryHelper', '__set_argument', 'argument was inserted')
 			return new_argument.uid
 		else:
-			return 0
+			logger('QueryHelper', '__set_argument', 'argument was not inserted')
+			logger('QueryHelper', '__set_argument', 'argument was not inserted')
+			return None
 
 	# ########################################
 	# ISSUE
@@ -1096,12 +1100,12 @@ class QueryHelper(object):
 
 		db_issues = DBDiscussionSession.query(Issue).all()
 		for issue in db_issues:
-			issue_dict = dict()
-			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).all()
+			issue_array = []
+			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).order_by(Argument.uid.asc()).all()
 			logger('QueryHelper', 'get_argument_overview', 'count: ' + str(len(db_arguments)))
 
 			if len(db_arguments) > 0:
-				for index, argument in enumerate(db_arguments):
+				for argument in db_arguments:
 					tmp_dict = dict()
 					tmp_dict['uid'] = str(argument.uid)
 					tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
@@ -1116,8 +1120,8 @@ class QueryHelper(object):
 					tmp_dict['valid_votes'] = len(db_valid_votes)
 					tmp_dict['valid_upvotes'] = len(db_valid_upvotes)
 
-					issue_dict[str(index)] = tmp_dict
-			return_dict[issue.title] = issue_dict
+					issue_array.append(tmp_dict)
+			return_dict[issue.title] = issue_array
 
 		return return_dict
 
@@ -1227,7 +1231,7 @@ class QueryHelper(object):
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
 
 		# third, insert the argument
-		new_argument_uid = self.__set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
+		new_argument_uid = self.__set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
 
 		transaction.commit()
 		return new_argument_uid
@@ -1252,6 +1256,7 @@ class QueryHelper(object):
 		:param recommender_helper:
 		:return:
 		"""
+		logger('QueryHelper', 'process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
 		_tn = Translator(lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 		error = ''
@@ -1259,7 +1264,7 @@ class QueryHelper(object):
 
 		# insert all premisegroups into our databse
 		# all new arguments are collected in a list
-		new_arguments = []
+		new_argument_uids = []
 		for group in premisegroups:  # premisegroups is a list of lists
 			new_argument_uid = self.set_premises_as_group_for_conclusion(transaction, user, group, conclusion_id, supportive, issue)
 
@@ -1267,23 +1272,23 @@ class QueryHelper(object):
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
 
-			new_arguments.append(new_argument_uid)
+			new_argument_uids.append(new_argument_uid)
 
 		# #arguments=0: empty input
 		# #arguments=1: deliever new url
 		# #arguments>1: deliever url where the user has to choose between her inputs
-		if len(new_arguments) == 0:
+		if len(new_argument_uids) == 0:
 			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
-		elif len(new_arguments) == 1:
-			new_argument_uid    = random.choice(new_arguments)
+		elif len(new_argument_uids) == 1:
+			new_argument_uid    = random.choice(new_argument_uids)
 			arg_id_sys, attack  = recommender_helper.get_attack_for_argument(new_argument_uid, issue, lang)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 
 		else:
 			pgroups = []
-			for argument in new_arguments:
-				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
+			for arg_uid in new_argument_uids:
+				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first().premisesgroup_uid)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
 
 		return url, error
