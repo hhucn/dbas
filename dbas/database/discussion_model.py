@@ -18,13 +18,17 @@ class Issue(DiscussionBase):
 	title = Column(Text, nullable=False)
 	info = Column(Text, nullable=False)
 	date = Column(DateTime(timezone=True), default=func.now())
+	author_uid = Column(Integer, ForeignKey('users.uid'))
 
-	def __init__(self, title, info):
+	users = relationship('User', foreign_keys=[author_uid])
+
+	def __init__(self, title, info, author_uid):
 		"""
 		Initializes a row in current position-table
 		"""
 		self.title = title
 		self.info = info
+		self.author_uid = author_uid
 
 	@classmethod
 	def by_text(cls):

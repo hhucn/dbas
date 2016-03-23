@@ -490,14 +490,7 @@ class QueryHelper(object):
 		db_issues = DBDiscussionSession.query(Issue).all()
 		all_array = []
 		for issue in db_issues:
-			issue_dict = dict()
-			issue_dict['slug']              = issue.get_slug()
-			issue_dict['title']             = issue.title
-			issue_dict['url']               = UrlManager(application_url, issue.get_slug(), for_api).get_slug_url(False) if str(uid) != str(issue.uid) else ''
-			issue_dict['info']              = issue.info
-			issue_dict['arg_count']         = self.get_number_of_arguments(issue.uid)
-			issue_dict['date']              = self.sql_timestamp_pretty_print(str(issue.date), lang)
-			issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
+			issue_dict = self.get_issue_dict_for(issue, application_url, for_api, uid, lang)
 			all_array.append(issue_dict)
 
 		_t = Translator(lang)
@@ -1237,6 +1230,38 @@ class QueryHelper(object):
 		transaction.commit()
 		return new_argument_uid
 
+	def set_issue(self, info, title, nickname, transaction, ui_locales):
+		"""
+
+		:param info:
+		:param title:
+		:param nickname:
+		:param transaction:
+		:param ui_locales:
+		:return:
+		"""
+		_tn = Translator(ui_locales)
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		if not UserHandler().is_user_author(nickname):
+			return False, _tn.get(_tn.noRights)
+
+		if len(info)<10:
+			return False, _tn.get(_tn.notInsertedErrorBecauseEmpty)
+
+		db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
+		db_duplicates2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
+		if db_duplicates1 or db_duplicates2:
+			return False, _tn.get(_tn.duplicate)
+
+		DBDiscussionSession.add(Issue(title=title, info=info, author_uid=db_user.uid))
+		DBDiscussionSession.flush()
+
+		transaction.commit()
+
+		return True, ''
+
+
 	# ########################################
 	# OTHER
 	# ########################################
@@ -1456,3 +1481,24 @@ class QueryHelper(object):
 				new_statement, is_duplicate = self.set_statement(transaction, text_list, user, is_start, issue)
 				statements.append(new_statement)
 		return statements
+
+	def get_issue_dict_for(self, issue, application_url, for_api, uid, lang):
+		"""
+
+		:param issue:
+		:param application_url:
+		:param for_api:
+		:param uid:
+		:param lang:
+		:return:
+		"""
+		issue_dict = dict()
+		issue_dict['slug']              = issue.get_slug()
+		issue_dict['title']             = issue.title
+		issue_dict['url']               = UrlManager(application_url, issue.get_slug(), for_api).get_slug_url(False) if str(uid) != str(issue.uid) else ''
+		issue_dict['info']              = issue.info
+		issue_dict['arg_count']         = self.get_number_of_arguments(issue.uid)
+		issue_dict['date']              = self.sql_timestamp_pretty_print(str(issue.date), lang)
+		issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
+		return issue_dict
+

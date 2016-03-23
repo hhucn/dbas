@@ -151,6 +151,33 @@ function InteractionHandler() {
 
 	/**
 	 *
+	 * @param data
+	 */
+	this.callbackIfDoneForSendNewIssue = function(data){
+		var parsedData = $.parseJSON(data);
+
+		if (parsedData.error.length == 0) {
+			$('#' + popupConfirmDialogId).modal('hide');
+			var li = $('<li>').addClass('enabled'),
+				a = $('<a>').attr('href', parsedData.issue.url).attr('value', parsedData.issue.title),
+				spanTitle = $('<span>').text(parsedData.issue.title),
+				spanBadge = $('<span>').addClass('badge').attr('style', 'float: right; margin-left: 1em;').text(parsedData.issue.arg_count),
+				divider = $('#' + issueDropdownListID).find('li.divider');
+			li.append(a.append(spanTitle).append(spanBadge));
+			if (divider.length>0){
+				li.insertBefore(divider);
+			}
+		} else {
+			$('#add-topic-error-text').text(parsedData.error);
+			$('#add-topic-error').show();
+			new Helper().delay(function(){
+				$('#add-topic-error').hide();
+			}, 2500);
+		}
+	};
+
+	/**
+	 *
 	 * @param text
 	 * @param conclusion
 	 * @param supportive

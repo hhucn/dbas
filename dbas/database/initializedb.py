@@ -274,14 +274,6 @@ def setup_news_db():
 
 
 def setup_discussion_database():
-	# adding our main issue
-	issue1 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!')
-	issue2 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.')
-	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?')
-	issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?')
-	DBDiscussionSession.add_all([issue2, issue1])
-	DBDiscussionSession.flush()
-
 	# adding groups
 	group0 = Group(name='admins')
 	group1 = Group(name='authors')
@@ -315,6 +307,14 @@ def setup_discussion_database():
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
 	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10])
 	DBDiscussionSession.flush()
+	# adding our main issue
+	issue1 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user2.uid)
+	issue2 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user2.uid)
+	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user2.uid)
+	issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user2.uid)
+	DBDiscussionSession.add_all([issue2, issue1])
+	DBDiscussionSession.flush()
+
 
 	# adding settings
 	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True)

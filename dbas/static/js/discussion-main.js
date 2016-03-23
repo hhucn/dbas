@@ -1,5 +1,3 @@
-/*global $, jQuery, alert, AjaxHandler, GuiHandler, InteractionHandler */
-
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
@@ -172,6 +170,31 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 			uid = splits[splits.length - 1],
 			qmark = uid.indexOf('?');
 		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
+	});
+
+	$('#add-topic').click(function(){
+		var p1 = $('<p>').text(_t(addTopicTitleText)),
+			p2 = $('<p>').text(_t(addTopicShortText)).attr('style', 'margin-top: 1em;'),
+			input1 = $('<input>').addClass('form-control').attr('type', 'text').attr('placeholder', '...').attr('id', 'add-topic-info-input'),
+			input2 = $('<input>').addClass('form-control').attr('type', 'text').attr('placeholder', '...').attr('id', 'add-topic-title-input'),
+			alert = $('<div>').addClass('alert')
+				.attr('id', 'add-topic-error')
+				.addClass('alert-danger')
+				.attr('style', 'margin-top: 1em;')
+				.append($('<strong>').attr('id', 'add-topic-error-text')
+					.text('Error')).hide();
+
+		$('#' + popupConfirmDialogId).modal('show');
+		$('#' + popupConfirmDialogId + ' h4.modal-title').text(_t(addTopic));
+		$('#' + popupConfirmDialogId + ' div.modal-body').empty().append(p1).append(input1).append(p2).append(input2).append(alert);
+		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
+			var info = $('#add-topic-info-input').val(),
+				title = $('#add-topic-title-input').val();
+			new AjaxSiteHandler().sendNewIssue(info, title);
+		});
+		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
+			$('#' + popupConfirmDialogId).modal('hide');
+		});
 	});
 };
 

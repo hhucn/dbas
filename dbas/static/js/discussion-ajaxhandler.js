@@ -93,6 +93,38 @@ function AjaxSiteHandler() {
 	};
 
 	/**
+	 * Sends a new topic
+	 * @param info
+	 * @param title
+	 */
+	this.sendNewIssue = function(info, title){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$('#add-topic-error').hide();
+		$.ajax({
+			url: 'ajax_set_new_issue',
+			method: 'POST',
+			data: {
+				info: info, title: title
+			},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
+		}).done(function ajaxSendStartStatementDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
+		}).fail(function ajaxSendStartStatementFail() {
+			// new GuiHandler().setErrorDescription(_t(internalError));
+			$('#add-topic-error-text').text(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
+				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			$('#add-topic-error').show();
+			new Helper().delay(function(){
+				$('#add-topic-error').hide();
+			}, 2500);
+		});
+	};
+
+	/**
 	 * Requests the logfile for the given uid
 	 * @param id_id current uid of the statement
 	 */

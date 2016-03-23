@@ -59,6 +59,9 @@ var ballot                                          = '&#x2717;'; // ✗
 var and 						            		= 'and';
 var andAtTheSameTime                                = 'andAtTheSameTime';
 var addedEverything 								= 'addedEverything';
+var addTopic                                        = 'addTopic';
+var addTopicTitleText                               = 'addTopicTitleText';
+var addTopicShortText                               = 'addTopicShortText';
 var acceptIt 										= 'acceptIt';
 var allEditsDone                                    = 'allEditsDone';
 var allStatementsPosted                             = 'allStatementsPosted';
@@ -210,6 +213,9 @@ var dbas_en = {
 	'and': 'and',
 	'andAtTheSameTime': 'and at the same time',
 	'addedEverything': 'Everything was added.',
+	'addTopic': 'Add a Topic',
+	'addTopicTitleText': 'Please enter your topic here:',
+	'addTopicShortText': 'Please enter a shorttext for your topic here:',
 	'acceptIt': 'Accept it...',
 	'acceptItTitle': 'Accept it...',
 	'allEditsDone': 'All edits you\'ve done',
@@ -340,6 +346,9 @@ var dbas_en = {
 var dbas_de = {
 	'avatar': 'Avatar',
 	'and': 'und',
+	'addTopic': 'Thema hinzufügen',
+	'addTopicTitleText': 'Bitte geben Sie Ihr Thema an:',
+	'addTopicShortText': 'Bitte geben Sie die Kurform Ihres Themas an:',
 	'andAtTheSameTime': 'und zur selben Zeit',
 	'addedEverything': 'Alles wurde hinzugefügt.',
 	'acceptItTitle': 'Einsenden...',

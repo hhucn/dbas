@@ -8,6 +8,7 @@ from pyramid.security import remember, forget
 from pyramid.renderers import get_renderer
 from pyramid.threadlocal import get_current_registry
 from pyshorteners.shorteners import Shortener
+from sqlalchemy import and_
 
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
@@ -1386,6 +1387,32 @@ class Dbas(object):
 
 		return DictionaryHelper().data_to_json_array(return_dict, True)
 
+	# ajax - set new issue
+	@view_config(route_name='ajax_set_new_issue', renderer='json')
+	def set_new_issue(self):
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+
+		logger('set_new_issue', 'def', 'main ' + str(self.request.params))
+		return_dict = dict()
+		_qh = QueryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
+
+		try:
+			info = self.request.params['info']
+			title = self.request.params['title']
+			was_set, error = _qh.set_issue(info, title, self.request.authenticated_userid, transaction, ui_locales)
+			if was_set:
+				db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
+				                                                        Issue.info == info)).first()
+				return_dict['issue'] = _qh.get_issue_dict_for(db_issue, mainpage, False, 0, ui_locales)
+		except KeyError as e:
+			logger('set_new_issue', 'error', repr(e))
+			error = _tn.get(_tn.notInsertedErrorBecauseInternal)
+
+		return_dict['error'] = error
+		return DictionaryHelper().data_to_json_array(return_dict, True)
 
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #

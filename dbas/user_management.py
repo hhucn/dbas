@@ -85,8 +85,8 @@ class UserHandler(object):
 			return log_out
 		return False
 
-	def is_user_in_group(self, user, groupname):
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).join(Group).first()
+	def is_user_in_group(self, nickname, groupname):
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
 		logger('UserHandler', 'is user in: ' + groupname, 'main')
 		return db_user and db_user.groups.name == groupname
 
@@ -99,19 +99,6 @@ class UserHandler(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).join(Group).first()
 		logger('UserHandler', 'is_user_admin', 'main')
 		return db_user and db_user.groups.name == 'admins'
-
-	def is_user_author(self, user):
-		"""
-		Check, if the given uid has author rights or is author
-		:param user: current user name
-		:return: true, if user is admin, false otherwise
-		"""
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).join(Group).first()
-		logger('UserHandler', 'is_user_author', 'main')
-		if db_user and db_user.groups.name == 'authors':
-				return True
-
-		return False
 
 	def get_profile_picture(self, user):
 		"""

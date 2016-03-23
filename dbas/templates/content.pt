@@ -29,8 +29,10 @@
                                     </span>
                                 </a>
 							</li>
-                            <li tal:condition="extras.is_admin or extras-is_author" role="separator" class="divider"></li>
-                            <li tal:condition="extras.is_admin or extras-is_author" role="separator" i18n:translate="add_topc">Add a Topic</li>
+                            <li tal:condition="extras.is_admin or extras.is_author" role="separator" class="divider"></li>
+                            <li tal:condition="extras.is_admin or extras.is_author" role="separator" i18n:translate="add_topc">
+								<a id="add-topic" href="#">Add a Topic</a>
+                            </li>
 						</ul>
 					</div>
                  </div>
