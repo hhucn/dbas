@@ -30,10 +30,8 @@ def main(global_config, **settings):
 	# load database
 	discussionEngine = engine_from_config(settings, 'sqlalchemy-discussion.')  # , connect_args={'client_encoding': 'utf8'}
 	newsEngine       = engine_from_config(settings, 'sqlalchemy-news.')  # , connect_args={'client_encoding': 'utf8'}
-	apiEngine        = engine_from_config(settings, 'sqlalchemy-api.')  # , connect_args={'client_encoding': 'utf8'}
 	load_discussion_database(discussionEngine)
 	load_news_database(newsEngine)
-	load_api_database(apiEngine)
 
 	# session management and cache region support with pyramid_beaker
 	session_factory = session_factory_from_settings(settings)

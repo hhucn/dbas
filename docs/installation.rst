@@ -39,10 +39,8 @@ Then follow these steps:
 
     $ sudo -u postgres bash -c psql
     $ create user dbas with password 'SQL_2015&';
-    $ create database api;
     $ create database discussion;
     $ create database news;
-    $ alter database api owner to dbas;
     $ alter database discussion owner to dbas;
     $ alter database news owner to dbas;
 
@@ -55,7 +53,6 @@ Then follow these steps:
 
     $ initialize_news_sql development.ini
     $ initialize_discussion_sql development.ini
-    $ initialize_api_sql development.ini
 
   Alternatively, you can use our Makefile from the project's root directory to initialize the database::
 
