@@ -85,7 +85,7 @@ class QueryHelper(object):
 				users_opinion = True  # user after system
 				conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
 			else:  # user starts
-				ret_value = (se + _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + sb) if start_with_intro else ''
+				ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
 				users_opinion = False  # system after user
 				conclusion = conclusion[0:1].upper() + conclusion[1:]  # pretty print
 
@@ -1159,7 +1159,7 @@ class QueryHelper(object):
 		return_dict['vote_count'] = str(len(db_votes))
 		return_dict['author']     = db_author.nickname
 		return_dict['timestamp']  = self.sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
-		return_dict['text']       = 'Argument: <strong>' + self.get_text_for_argument_uid(uid, lang, True) + '<strong>'
+		return_dict['text']       = '<strong>' + self.get_text_for_argument_uid(uid, lang, True) + '<strong>'
 
 		supporter = []
 		for vote in db_votes:

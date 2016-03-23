@@ -180,6 +180,7 @@ var translationLink 							= 'link-trans-';
 var translationLinkDe 							= 'link-trans-de';
 var translationLinkEn 							= 'link-trans-en';
 var questionItButtonId                          = 'question-button';
+var questionBubbleId                            = 'question-bubble';
 var shareUrlId 									= 'share-url';
 var shareUrlButtonMail 							= 'share-url-mail';
 var shareUrlButtonTwitter 						= 'share-url-twitter';

@@ -72,7 +72,7 @@
                                         <!--<img class="triangle-gravatar-r" tal:attributes="src extras.users_avatar">-->
                                          <span>${structure:bubble.message}</span>
                                          <br>
-                                         <em class="triangle-r-info">bubble.votecounts</em>
+                                         <em class="triangle-r-info">${bubble.votecounts}</em>
                                      </p>
                                  </a>
                              </div>
@@ -112,9 +112,11 @@
 						<li tal:condition="extras.is_reportable" >
 							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
 						</li>
+                        <!--
 						<li>
 							<img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_qmark.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" />
 						</li>
+						-->
 						<li>
 							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon or extras.show_expert_icon">
 								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="left" tal:attributes="title extras.buttons.more_title"/>

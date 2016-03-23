@@ -1,5 +1,6 @@
 import transaction
 import requests
+import json
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
@@ -57,7 +58,8 @@ class Dbas(object):
 		return text  # todo escaping string correctly
 		# return re.escape(text)
 
-	def base_layout(self):
+	@staticmethod
+	def base_layout():
 		renderer = get_renderer('templates/basetemplate.pt')
 		layout = renderer.implementation().macros['layout']
 		return layout
@@ -89,8 +91,8 @@ class Dbas(object):
 
 		session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
-		DictionaryHelper().add_language_options_for_extra_dict(extras_dict, ui_locales)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		DictionaryHelper(ui_locales).add_language_options_for_extra_dict(extras_dict)
 
 		return {
 			'layout': self.base_layout(),
@@ -190,7 +192,7 @@ class Dbas(object):
 				if send_message:
 					spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
@@ -236,25 +238,25 @@ class Dbas(object):
 			logged_in = self.request.authenticated_userid
 
 		_qh = QueryHelper()
-		_dh = DictionaryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
+		_dh = DictionaryHelper(ui_locales)
 		if for_api:
 			slug = self.request.matchdict['slug'] if 'slug' in self.request.matchdict else ''
 		else:
 			slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
-		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		item_dict       = _dh.prepare_item_dict_for_start(issue, logged_in, ui_locales, mainpage, for_api)
+		item_dict       = _dh.prepare_item_dict_for_start(issue, logged_in, mainpage, for_api)
 
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_start(ui_locales, breadcrumbs, nickname, session_id)
-		extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales, nickname,
+		discussion_dict = _dh.prepare_discussion_dict_for_start(breadcrumbs, nickname, session_id)
+		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
-			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_start=True)
+			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -289,22 +291,22 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, nickname)
 
 		_qh = QueryHelper()
-		_dh = DictionaryHelper()
+		ui_locales      = _qh.get_language(self.request, get_current_registry())
+		_dh = DictionaryHelper(ui_locales)
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
-		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs, nickname, session_id)
+		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, breadcrumbs, nickname, session_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
-		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
-		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, True, ui_locales,
-		                                          nickname, application_url=mainpage, for_api=for_api)
+		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, mainpage, for_api)
+		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, True, nickname,
+		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -344,7 +346,8 @@ class Dbas(object):
 		logged_in = _uh.is_user_logged_in(nickname)
 
 		_qh = QueryHelper()
-		_dh = DictionaryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
+		_dh = DictionaryHelper(ui_locales)
 
 		slug                = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_or_arg_id = matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in matchdict else ''
@@ -354,7 +357,6 @@ class Dbas(object):
 		# related_arg         = matchdict['relation'][1] if len(matchdict['relation']) > 1 else -1
 
 		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
-		ui_locales          = _qh.get_language(self.request, get_current_registry())
 		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
@@ -365,45 +367,45 @@ class Dbas(object):
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 			# justifying position
 			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, issue,
-			                                                              supportive, ui_locales, mainpage, for_api)
+			                                                              supportive, mainpage, for_api)
 			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(nickname, transaction, statement_or_arg_id,
-			                                                                    ui_locales, breadcrumbs, has_new_crumbs,
+			                                                                    breadcrumbs, has_new_crumbs,
 			                                                                    supportive, nickname, len(item_dict), session_id)
-			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, False, True, ui_locales,
-			                                          nickname, mode == 't', application_url=mainpage, for_api=for_api)
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
+			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales,
-				                            at_justify=True, current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
+				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
 		elif 'd' in mode and relation == '':
 			# dont know
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _dh.prepare_discussion_dict_for_dont_know_reaction(nickname, transaction, argument_uid,
-			                                                                     ui_locales, breadcrumbs, has_new_crumbs, session_id)
-			item_dict       = _dh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive, issue, ui_locales, mainpage, for_api)
-			extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, True, True, ui_locales, nickname,
+			                                                                     breadcrumbs, has_new_crumbs, session_id)
+			item_dict       = _dh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive, issue, mainpage, for_api)
+			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_dont_know=True,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
 				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue, ui_locales,
+			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue,
 			                                                             mainpage, for_api, logged_in)
 
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id, ui_locales,
+			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id,
 			                                                                   supportive, relation, nickname, breadcrumbs,
 			                                                                   has_new_crumbs, len(item_dict), session_id,
 			                                                                   transaction)
-			extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, True, True, ui_locales, nickname,
+			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify_argumentation=True)
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 		else:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
 
@@ -452,22 +454,20 @@ class Dbas(object):
 		# set votings
 		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
 
-		_qh = QueryHelper()
-		_dh = DictionaryHelper()
-
-		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
+		_qh             = QueryHelper()
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
+		_dh             = DictionaryHelper(ui_locales)
+		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname,
 		                                                                 session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(nickname, transaction, arg_id_user, ui_locales,
+		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(nickname, transaction, arg_id_user,
 		                                                                breadcrumbs, has_new_crumbs, supportive, arg_id_sys,
 		                                                                attack, session_id)
-		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, ui_locales,
-		                                                     mainpage, for_api)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, True, ui_locales, nickname,
+		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, mainpage, for_api)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 		                                          argument_id=arg_id_user, application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
@@ -509,11 +509,10 @@ class Dbas(object):
 		is_argument = True if is_argument is 't' else False
 		is_supportive = True if is_supportive is 't' else False
 
-		_qh = QueryHelper()
-		_dh = DictionaryHelper()
-
-		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
+		_qh             = QueryHelper()
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
+		_dh             = DictionaryHelper(ui_locales)
+		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		session_expired = UserHandler().update_last_action(transaction, nickname)
@@ -521,10 +520,9 @@ class Dbas(object):
 			return self.user_logout(True)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, ui_locales, is_argument, is_supportive, breadcrumbs, nickname, session_id)
-		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, ui_locales,
-		                                                     mainpage, issue, for_api)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, False, True, False, True, True, ui_locales, nickname,
+		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive, breadcrumbs, nickname, session_id)
+		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, mainpage, issue, for_api)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
@@ -582,7 +580,7 @@ class Dbas(object):
 		# get gravater profile picture
 		gravatar_url = _uh.get_profile_picture(db_user)
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 		settings_dict = {
 			'passwordold': '' if success else old_pw,
 			'password': '' if success else new_pw,
@@ -629,7 +627,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -654,7 +652,7 @@ class Dbas(object):
 
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
 		dashboard = _qh.get_dashboard_infos()
 
@@ -684,7 +682,7 @@ class Dbas(object):
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		is_author = UserHandler().is_user_author(self.request.authenticated_userid)
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -709,7 +707,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
 		return {
 			'layout': self.base_layout(),
@@ -744,7 +742,7 @@ class Dbas(object):
 		self.request.response.status = 404
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
-		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
 		# return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
 
@@ -774,7 +772,7 @@ class Dbas(object):
 		logger('get_user_history', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, self.request.session.id, ui_locales)
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - getting all text edits
 	@view_config(route_name='ajax_get_all_posted_statements', renderer='json', check_csrf=True)
@@ -788,7 +786,7 @@ class Dbas(object):
 		logger('get_all_posted_statements', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales)
-		return DictionaryHelper().data_to_json_array(return_array, True)
+		return json.dumps(return_array, True)
 
 	# ajax - getting all text edits
 	@view_config(route_name='ajax_get_all_edits', renderer='json', check_csrf=True)
@@ -802,7 +800,7 @@ class Dbas(object):
 		logger('get_all_edits', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_edits_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
-		return DictionaryHelper().data_to_json_array(return_array, True)
+		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for arguments
 	@view_config(route_name='ajax_get_all_argument_votes', renderer='json', check_csrf=True)
@@ -816,7 +814,7 @@ class Dbas(object):
 		logger('get_all_argument_votes', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, True, ui_locales, QueryHelper())
-		return DictionaryHelper().data_to_json_array(return_array, True)
+		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for statements
 	@view_config(route_name='ajax_get_all_statement_votes', renderer='json', check_csrf=True)
@@ -830,7 +828,7 @@ class Dbas(object):
 		logger('get_all_statement_votes', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, False, ui_locales, QueryHelper())
-		return DictionaryHelper().data_to_json_array(return_array, True)
+		return json.dumps(return_array, True)
 
 	# ajax - deleting complete history of the user
 	@view_config(route_name='ajax_delete_user_history', renderer='json', check_csrf=True)
@@ -847,7 +845,7 @@ class Dbas(object):
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - deleting complete history of the user
 	@view_config(route_name='ajax_delete_statistics', renderer='json', check_csrf=True)
@@ -864,7 +862,7 @@ class Dbas(object):
 		return_dict = dict()
 		return_dict['removed_data'] = 'true' if VotingHelper().clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - user login
 	@view_config(route_name='ajax_user_login', renderer='json')
@@ -941,7 +939,7 @@ class Dbas(object):
 
 		return_dict['error'] = str(error)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - user logout
 	@view_config(route_name='ajax_user_logout', renderer='json')
@@ -1063,7 +1061,7 @@ class Dbas(object):
 		return_dict['error']   = str(error)
 		return_dict['info']    = str(info)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - password requests
 	@view_config(route_name='ajax_user_password_request', renderer='json')
@@ -1120,7 +1118,7 @@ class Dbas(object):
 		return_dict['error']   = str(error)
 		return_dict['info']    = str(info)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - set boolean for receiving information
 	@view_config(route_name='ajax_set_user_receive_information', renderer='json')
@@ -1154,7 +1152,7 @@ class Dbas(object):
 			logger('set_user_receive_information_settings', 'error', repr(e))
 
 		return_dict = {'error': error}
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 
 # #######################################
@@ -1204,7 +1202,7 @@ class Dbas(object):
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - send new start premise
 	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
@@ -1220,22 +1218,22 @@ class Dbas(object):
 
 		return_dict = dict()
 		_qh = QueryHelper()
-		_dh = DictionaryHelper()
 		lang = _qh.get_language(self.request, get_current_registry())
+		_dh = DictionaryHelper(lang)
 		_tn = Translator(lang)
 		try:
 			if for_api and api_data:
-				nickname  = api_data["nickname"]
-				statement = api_data["statement"]
-				issue     = api_data["issue_id"]
-				slug      = api_data["slug"]
+				nickname  = api_data['nickname']
+				statement = api_data['statement']
+				issue     = api_data['issue_id']
+				slug      = api_data['slug']
 				# TODO hier weitermachen
 			else:
 				nickname = self.request.authenticated_userid
 				issue    = _qh.get_issue_id(self.request)
 
 			UserHandler().update_last_action(transaction, nickname)
-			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
+			premisegroups   = json.loads(self.request.params['premisegroups'])
 			conclusion_id   = self.request.params['conclusion_id']
 			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 
@@ -1245,16 +1243,14 @@ class Dbas(object):
 			return_dict['error'] = error
 
 			if url == -1:
-				return _dh.data_to_json_array(return_dict, True)
+				return json.dumps(return_dict, True)
 
 			return_dict['url'] = url
 		except KeyError as e:
 			logger('set_new_start_premise', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
-		return_json = _dh.data_to_json_array(return_dict, True)
-
-		return return_json
+		return json.dumps(return_dict, True)
 
 	# ajax - send new premises
 	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json', check_csrf=True)
@@ -1271,14 +1267,14 @@ class Dbas(object):
 
 		return_dict = dict()
 		_qh = QueryHelper()
-		_dh = DictionaryHelper()
 		lang = _qh.get_language(self.request, get_current_registry())
+		_dh = DictionaryHelper(lang)
 		_tn = Translator(lang)
 
 		try:
 			arg_uid         = self.request.params['arg_uid']
 			attack_type     = self.request.params['attack_type']
-			premisegroups   = _dh.string_to_json(self.request.params['premisegroups'])
+			premisegroups   = json.loads(self.request.params['premisegroups'])
 			issue           = _qh.get_issue_id(self.request)
 
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
@@ -1287,7 +1283,7 @@ class Dbas(object):
 			return_dict['error'] = error
 
 			if url == -1:
-				return _dh.data_to_json_array(return_dict, True)
+				return json.dumps(return_dict, True)
 
 			return_dict['url'] = url
 
@@ -1295,10 +1291,8 @@ class Dbas(object):
 			logger('set_new_premises_for_argument', 'error', repr(e))
 			return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
-		return_json = _dh.data_to_json_array(return_dict, True)
-
 		logger('set_new_premises_for_argument', 'def', 'returning ' + str(return_dict))
-		return return_json
+		return json.dumps(return_dict, True)
 
 	# ajax - set new textvalue for a statement
 	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
@@ -1329,7 +1323,7 @@ class Dbas(object):
 			return_dict['error'] = ''
 			logger('set_correcture_of_statement', 'error', repr(e))
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - set notification as read
 	@view_config(route_name='ajax_notification_read', renderer='json')
@@ -1355,7 +1349,7 @@ class Dbas(object):
 			logger('set_message_read', 'error', repr(e))
 			return_dict['error'] = _t.get(_t.internalError)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - deletes a notification
 	@view_config(route_name='ajax_notification_delete', renderer='json')
@@ -1385,7 +1379,7 @@ class Dbas(object):
 			return_dict['error'] = _t.get(_t.internalError)
 			return_dict['success'] = ''
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - set new issue
 	@view_config(route_name='ajax_set_new_issue', renderer='json')
@@ -1412,7 +1406,7 @@ class Dbas(object):
 			error = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
 		return_dict['error'] = error
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #
@@ -1444,7 +1438,7 @@ class Dbas(object):
 
 		# return_dict = QueryHelper().get_logfile_for_premisegroup(uid)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for shorten url
 	@view_config(route_name='ajax_get_shortened_url', renderer='json')
@@ -1491,7 +1485,7 @@ class Dbas(object):
 			_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
 			return_dict['error'] = _tn.get(_tn.internalError)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for attack overview
 	@view_config(route_name='ajax_get_argument_overview', renderer='json')
@@ -1506,7 +1500,7 @@ class Dbas(object):
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		return_dict = _qh.get_argument_overview(self.request.authenticated_userid, ui_locales)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for getting all news
 	@view_config(route_name='ajax_get_news', renderer='json')
@@ -1518,7 +1512,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_news', 'def', 'main')
 		return_dict = QueryHelper().get_news()
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for getting database
 	@view_config(route_name='ajax_get_database_dump', renderer='json')
@@ -1535,7 +1529,7 @@ class Dbas(object):
 
 		return_dict = _qh.get_dump(issue, ui_locales)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for getting argument infos
 	@view_config(route_name='ajax_get_infos_about_argument', renderer='json')
@@ -1559,7 +1553,7 @@ class Dbas(object):
 			logger('get_infos_about_argument', 'error', repr(e))
 			return_dict['error'] = _t.get(_t.internalError)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for getting all users
 	@view_config(route_name='ajax_all_users', renderer='json')
@@ -1574,7 +1568,7 @@ class Dbas(object):
 
 		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for getting all users with the same opinion
 	@view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
@@ -1605,7 +1599,7 @@ class Dbas(object):
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 
 # ########################################
@@ -1632,7 +1626,7 @@ class Dbas(object):
 		except KeyError as e:
 			logger('swich_language', 'error', repr(e))
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for sending news
 	@view_config(route_name='ajax_send_news', renderer='json')
@@ -1655,7 +1649,7 @@ class Dbas(object):
 			_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
 			return_dict['error'] = _tn.get(_tn.internalError)
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for fuzzy search
 	@view_config(route_name='ajax_fuzzy_search', renderer='json')
@@ -1676,7 +1670,7 @@ class Dbas(object):
 			return_dict = dict()
 			if for_api:
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_issues(value)
-				return DictionaryHelper().data_to_json_array(return_dict, True)
+				return json.dumps(return_dict, True)
 
 			if mode == '0':  # start statement
 				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
@@ -1693,7 +1687,7 @@ class Dbas(object):
 			return_dict = dict()
 			logger('fuzzy_search', 'error', repr(e))
 
-		return DictionaryHelper().data_to_json_array(return_dict, True)
+		return json.dumps(return_dict, True)
 
 	# ajax - for additional service
 	@view_config(route_name='ajax_additional_service', renderer='json')

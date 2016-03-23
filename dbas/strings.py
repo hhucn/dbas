@@ -404,14 +404,15 @@ class Translator(object):
 		self.unfortunatelyNoMoreArgument = 'unfortunatelyNoMoreArgument'
 		self.userPasswordNotMatch = 'userPasswordNotMatch'
 		self.userOptions = 'userOptions'
+		self.voteCountTextFirst = 'voteCountTextFirst'
+		self.voteCountTextOneOther = 'voteCountTextOneOther'
+		self.voteCountTextOneMore1 = 'voteCountTextOneMore1'
 		self.welcome = 'welcome'
 		self.welcomeMessage = 'welcomeMessage'
 		self.youAreInterestedIn = 'youAreInterestedIn'
 		self.youAgreeWith = 'youAgreeWith'
 		self.youDisagreeWith = 'youDisagreeWith'
 
-		self.sentencesOpenersRequesting = [self.whyDoYouThinkThat]
-		self.sentencesOpenersForArguments = [self.soYourOpinionIsThat]
 		self.sentencesOpenersArguingWithAgreeing = [self.agreeBecause, self.therefore]
 		self.sentencesOpenersArguingWithDisagreeing = [self.disagreeBecause, self.alternatively]
 		self.sentencesOpenersInforming = [self.thinkWeShould, self.letMeExplain, self.sureThat]
@@ -825,6 +826,9 @@ class Translator(object):
 		en_lang[self.unfortunatelyNoMoreArgument] = 'Unfortunately there are no more arguments about'
 		en_lang[self.userPasswordNotMatch] = 'User / Password do not match'
 		en_lang[self.userOptions] = 'Users Options'
+		en_lang[self.voteCountTextFirst] = 'First one with this opinion.'
+		en_lang[self.voteCountTextOneOther] = 'One other with this opinion.'
+		en_lang[self.voteCountTextOneMore1] = 'more participants with this opinion.'
 		en_lang[self.welcome] = 'Welcome'
 		en_lang[self.welcomeMessage] = 'Welcome to the novel dialog-based argumentation system.<br>We hope you enjoy using this system and happy arguing!'
 		en_lang[self.youAreInterestedIn] = 'You are interested in'
@@ -1238,6 +1242,9 @@ class Translator(object):
 		de_lang[self.unfortunatelyNoMoreArgument] = 'Leider gibt es keine weiteren Argumente für'
 		de_lang[self.userPasswordNotMatch] = 'Benutzername und / oder Passwort sind falsch'
 		de_lang[self.userOptions] = 'Benutzeroptionen'
+		de_lang[self.voteCountTextFirst] = 'Erster mit dieser Meinung.'
+		de_lang[self.voteCountTextOneOther] = 'Ein/e Andere/r mit dieser Meinung.'
+		de_lang[self.voteCountTextOneMore1] = 'weitere Teilnehmer/innen mit dieser Meinung.'
 		de_lang[self.welcome] = 'Willkommen'
 		de_lang[self.welcomeMessage] = 'Willkommen im neuen Dialog-basierten Argumentations-System.<br>Wir wünschen viel Spaß beim Diskutieren!'
 		de_lang[self.youAreInterestedIn] = 'Sie interessieren Sich für'
@@ -1531,5 +1538,4 @@ class TextGenerator(object):
 								 + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' <strong>' + conclusion + '</strong>.'
 		ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': <strong>' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() \
 									  + ' ' + premise + '</strong>. ' + _t.get(_t.goStepBack) + '.'
-
 		return ret_dict

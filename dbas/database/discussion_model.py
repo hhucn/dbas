@@ -83,7 +83,7 @@ class User(DiscussionBase):
 
 	groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
-	def __init__(self, firstname, surname, nickname, email, password, gender, group=0, token='', token_timestamp=None, keep_logged_in=False):
+	def __init__(self, firstname, surname, nickname, email, password, gender, group, token='', token_timestamp=None, keep_logged_in=False):
 		"""
 		Initializes a row in current user-table
 		"""
@@ -164,7 +164,7 @@ class Statement(DiscussionBase):
 	textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, textversion, is_startpoint, issue=0):
+	def __init__(self, textversion, is_startpoint, issue):
 		"""
 
 		:param textversion:
@@ -364,7 +364,7 @@ class Breadcrumb(DiscussionBase):
 
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, user, url, session_id=0):
+	def __init__(self, user, url, session_id=''):
 		"""
 		Initializes a row in current history-table
 		:param user:
@@ -392,12 +392,17 @@ class Bubble(DiscussionBase):
 	is_system = Column(Boolean, nullable=False)
 	is_status = Column(Boolean, nullable=False)
 	session_id = Column(Text)
+	related_argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
+	related_statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
 	breadcrumb_uid = Column(Integer, ForeignKey('breadcrumbs.uid'))
 
 	breadcrumbs = relationship('Breadcrumb', foreign_keys=[breadcrumb_uid])
 	users = relationship('User', foreign_keys=[author_uid])
+	arguments = relationship('Argument', foreign_keys=[related_argument_uid])
+	statements = relationship('Statement', foreign_keys=[related_statement_uid])
 
-	def __init__(self, bubble_id='', user=0, content='', is_user=False, is_system=False, is_status=False, session_id=0, breadcrumb_uid=0):
+	def __init__(self, bubble_id, user, content, is_user, is_system, is_status, session_id,
+	             breadcrumb_uid, related_argument_uid=None, related_statement_uid=None):
 		"""
 
 		:param bubble_id:
@@ -406,7 +411,10 @@ class Bubble(DiscussionBase):
 		:param is_user:
 		:param is_system:
 		:param is_status:
+		:param session_id:
 		:param breadcrumb_uid:
+		:param related_argument_uid:
+		:param related_statement_uid:
 		:return:
 		"""
 		self.bubble_id = bubble_id
@@ -417,6 +425,8 @@ class Bubble(DiscussionBase):
 		self.is_status = is_status
 		self.session_id = session_id
 		self.breadcrumb_uid = breadcrumb_uid
+		self.related_argument_uid = related_argument_uid
+		self.related_statement_uid = related_statement_uid
 
 
 class VoteArgument(DiscussionBase):
@@ -435,7 +445,7 @@ class VoteArgument(DiscussionBase):
 	arguments = relationship('Argument', foreign_keys=[argument_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, argument_uid=0, author_uid=0, is_up_vote=True, is_valid=True):
+	def __init__(self, argument_uid, author_uid, is_up_vote=True, is_valid=True):
 		"""
 
 		:param argument_uid:
@@ -490,7 +500,7 @@ class VoteStatement(DiscussionBase):
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, statement_uid=0, author_uid=0, is_up_vote=True, is_valid=True):
+	def __init__(self, statement_uid, author_uid, is_up_vote=True, is_valid=True):
 		"""
 
 		:param statement_uid:

@@ -363,6 +363,13 @@
     border: 1px solid rgba(0, 0, 0, 0.7);
 }
 
+#question-bubble{
+	cursor: help;
+}
+#question-bubble:hover{
+    color: #0a6ebd;
+}
+
 @media (max-width: 767px) {
 	#discussions-space ul {
 		display: block;

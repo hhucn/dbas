@@ -165,6 +165,12 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 	});
 
 	// get infos about the author
+	$('#' + questionBubbleId).click(function(){
+		var splits = window.location.href.split('/'),
+			uid = splits[splits.length - 1],
+			qmark = uid.indexOf('?');
+		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
+	});
 	$('#' + questionItButtonId).click(function(){
 		var splits = window.location.href.split('/'),
 			uid = splits[splits.length - 1],
