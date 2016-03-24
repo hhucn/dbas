@@ -59,7 +59,7 @@ class PasswordHandler(object):
 class UserHandler(object):
 
 	def __init__(self):
-		self.timeout = 1800
+		self.timeout = 3600
 
 	def update_last_action(self, transaction, nick):
 		"""
@@ -69,8 +69,14 @@ class UserHandler(object):
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
 		if db_user:
-			last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
-			diff = (datetime.now() - last_action_object).seconds - 3600  # TODO dirty fix
+
+			try:  # sqlite
+				last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
+				diff = (datetime.now() - last_action_object).seconds - 3600  # dirty fix for sqlite
+			except ValueError:  # postgres
+				last_action_object = datetime.strptime(str(db_user.last_action)[:-6], '%Y-%m-%d %H:%M:%S.%f')
+				diff = (datetime.now() - last_action_object).seconds
+
 			log_out = diff > self.timeout
 			logger('UserHandler', 'update_last_action', 'session run out: ' + str(log_out) + ', ' + str(diff) + 's')
 			db_user.update_last_action()

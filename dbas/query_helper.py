@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import locale
 import collections
 import random
@@ -31,7 +31,7 @@ class QueryHelper(object):
 	# ########################################
 	# ARGUMENTS
 	# ########################################
-	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag = False, start_with_intro=False):
+	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag=False, start_with_intro=False):
 		"""
 		Returns current argument as string like conclusion, because premise1 and premise2
 		:param uid: int
@@ -53,7 +53,7 @@ class QueryHelper(object):
 
 		# getting all argument id
 		arg_array = [db_argument.uid]
-		while db_argument.argument_uid != 0:
+		while db_argument.argument_uid:
 			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_argument.argument_uid).first()
 			arg_array.append(db_argument.uid)
 
@@ -80,13 +80,13 @@ class QueryHelper(object):
 				supportive.append(db_argument.is_supportive)
 			conclusion = self.get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
 
-			if len(arg_array) % 2 is 0: # system starts
+			if len(arg_array) % 2 is 0:  # system starts
 				ret_value = se + _t.get(_t.otherUsersSaidThat) + sb + ' '
-				users_opinion = True # user after system
+				users_opinion = True  # user after system
 				conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
-			else: # user starts
+			else:  # user starts
 				ret_value = (se + _t.get(_t.sentencesOpenersForArguments[0]) + ': ' + sb) if start_with_intro else ''
-				users_opinion = False # system after user
+				users_opinion = False  # system after user
 				conclusion = conclusion[0:1].upper() + conclusion[1:]  # pretty print
 
 			ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
@@ -95,7 +95,7 @@ class QueryHelper(object):
 				users_opinion = not users_opinion
 
 			ret_value = ret_value.replace('.</strong>', '</strong>.').replace('. </strong>', '</strong>. ')
-			return ret_value[:-1] # cut off punctuation
+			return ret_value[:-1]  # cut off punctuation
 
 	def get_undermines_for_argument_uid(self, argument_uid, lang):
 		"""
@@ -270,12 +270,11 @@ class QueryHelper(object):
 		db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).all()
 		for premise in db_premises:
 			db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                          Argument.is_supportive == (current_attack == 'support'),
-                                                                          Argument.conclusion_uid == premise.statement_uid,
-                                                                          Argument.argument_uid == 0)).first()
-			# duplicate?
+			                                                              Argument.is_supportive == True,
+			                                                              Argument.conclusion_uid == current_argument.conclusion_uid,
+			                                                              Argument.argument_uid == None)).first()
 			if db_argument:
-				already_in.append(db_argument)
+				return db_argument, True
 			else:
 				new_argument = Argument(premisegroup=premisegroup_uid,
 			                            issupportive=current_attack == 'support',
@@ -308,9 +307,9 @@ class QueryHelper(object):
 		"""
 		# duplicate?
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-		                                                              Argument.is_supportive == (current_attack == 'overbid'),
-		                                                              Argument.conclusion_uid == 0,
-		                                                              Argument.argument_uid == current_argument.uid)).first()
+		                                                              Argument.is_supportive == True,
+		                                                              Argument.conclusion_uid == current_argument.conclusion_uid,
+		                                                              Argument.argument_uid == 0)).first()
 		if db_argument:
 			return db_argument, True
 		else:
@@ -335,9 +334,9 @@ class QueryHelper(object):
 		"""
 		# duplicate?
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-		                                                              Argument.is_supportive == False,
+		                                                              Argument.is_supportive == True,
 		                                                              Argument.conclusion_uid == current_argument.conclusion_uid,
-		                                                              Argument.argument_uid == 0)).first()
+		                                                              Argument.argument_uid == None)).first()
 		if db_argument:
 			return db_argument, True
 		else:
@@ -418,9 +417,13 @@ class QueryHelper(object):
                                                                            Argument.issue_uid == issue)).first()
 		transaction.commit()
 		if new_argument:
+			logger('QueryHelper', '__set_argument', 'argument was inserted')
+			logger('QueryHelper', '__set_argument', 'argument was inserted')
 			return new_argument.uid
 		else:
-			return 0
+			logger('QueryHelper', '__set_argument', 'argument was not inserted')
+			logger('QueryHelper', '__set_argument', 'argument was not inserted')
+			return None
 
 	# ########################################
 	# ISSUE
@@ -637,10 +640,10 @@ class QueryHelper(object):
 		:param lang:
 		:return:
 		"""
-		if argument.argument_uid == 0:
-			return self.get_text_for_statement_uid(argument.conclusion_uid)
-		else:
+		if argument.argument_uid:
 			return self.get_text_for_argument_uid(argument.argument_uid, lang)
+		else:
+			return self.get_text_for_statement_uid(argument.conclusion_uid)
 
 	def get_text_for_statement_uid(self, uid):
 		"""
@@ -776,7 +779,7 @@ class QueryHelper(object):
 		ret_dict = dict()
 		all_users = []
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-		if not db_argument:
+		if not db_statement:
 			ret_dict['users'] = all_users
 			return ret_dict
 
@@ -902,9 +905,9 @@ class QueryHelper(object):
 			news_dict['news'] = news.news
 			news_dict['uid'] = str(news.uid)
 			# string date into date
-			date_object = datetime.datetime.strptime(str(news.date), '%d.%m.%Y')
+			date_object = datetime.strptime(str(news.date), '%d.%m.%Y')
 			# add index on the seconds for unique id's
-			sec = (date_object - datetime.datetime(1970, 1, 1)).total_seconds() + index
+			sec = (date_object - datetime(1970, 1, 1)).total_seconds() + index
 			ret_dict[str(sec)] = news_dict
 
 		ret_dict = collections.OrderedDict(sorted(ret_dict.items()))
@@ -1097,33 +1100,36 @@ class QueryHelper(object):
 
 		db_issues = DBDiscussionSession.query(Issue).all()
 		for issue in db_issues:
-			issue_dict = dict()
-			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).all()
+			issue_array = []
+			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).order_by(Argument.uid.asc()).all()
+			logger('QueryHelper', 'get_argument_overview', 'count: ' + str(len(db_arguments)))
 
-			for index, argument in enumerate(db_arguments):
-				tmp_dict = dict()
-				tmp_dict['uid'] = str(argument.uid)
-				tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
-				tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
-				db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument.uid).all()
-				db_valid_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
-				                                                                     VoteArgument.is_valid == True)).all()
-				db_valid_upvotes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
-				                                                                       VoteArgument.is_valid == True,
-				                                                                       VoteArgument.is_up_vote)).all()
-				tmp_dict['votes'] = len(db_votes)
-				tmp_dict['valid_votes'] = len(db_valid_votes)
-				tmp_dict['valid_upvotes'] = len(db_valid_upvotes)
+			if len(db_arguments) > 0:
+				for argument in db_arguments:
+					tmp_dict = dict()
+					tmp_dict['uid'] = str(argument.uid)
+					tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
+					tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
+					db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument.uid).all()
+					db_valid_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+					                                                                     VoteArgument.is_valid == True)).all()
+					db_valid_upvotes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+					                                                                       VoteArgument.is_valid == True,
+					                                                                       VoteArgument.is_up_vote)).all()
+					tmp_dict['votes'] = len(db_votes)
+					tmp_dict['valid_votes'] = len(db_valid_votes)
+					tmp_dict['valid_upvotes'] = len(db_valid_upvotes)
 
-				issue_dict[str(index)] = tmp_dict
-			return_dict[issue.title] = issue_dict
+					issue_array.append(tmp_dict)
+			return_dict[issue.title] = issue_array
 
 		return return_dict
 
-	def get_logfile_for_statement(self, uid):
+	def get_logfile_for_statement(self, uid, lang):
 		"""
 		Returns the logfile for the given statement uid
 		:param uid: requested statement uid
+		:param lang: ui_locales
 		:return: dictionary with the logfile-rows
 		"""
 		logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
@@ -1137,7 +1143,7 @@ class QueryHelper(object):
 			corr_dict = dict()
 			corr_dict['uid'] = str(versions.uid)
 			corr_dict['author'] = str(versions.users.nickname)
-			corr_dict['date'] = str(versions.timestamp)
+			corr_dict['date'] = self.sql_timestamp_pretty_print(str(versions.timestamp), lang)
 			corr_dict['text'] = str(versions.content)
 			content_dict[str(index)] = corr_dict
 		return_dict['content'] = content_dict
@@ -1185,7 +1191,7 @@ class QueryHelper(object):
 		logger('QueryHelper', 'set_news', 'def')
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		author = db_user.firstname if db_user.firstname == 'admin' else db_user.firstname + ' ' + db_user.surname
-		now = datetime.datetime.now()
+		now = datetime.now()
 		day = str(now.day) if now.day > 9 else ('0' + str(now.day))
 		month = str(now.month) if now.month > 9 else ('0' + str(now.month))
 		date = day + '.' + month + '.' + str(now.year)
@@ -1225,7 +1231,7 @@ class QueryHelper(object):
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
 
 		# third, insert the argument
-		new_argument_uid = self.__set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, 0, is_supportive, issue)
+		new_argument_uid = self.__set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
 
 		transaction.commit()
 		return new_argument_uid
@@ -1250,6 +1256,7 @@ class QueryHelper(object):
 		:param recommender_helper:
 		:return:
 		"""
+		logger('QueryHelper', 'process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
 		_tn = Translator(lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 		error = ''
@@ -1257,7 +1264,7 @@ class QueryHelper(object):
 
 		# insert all premisegroups into our databse
 		# all new arguments are collected in a list
-		new_arguments = []
+		new_argument_uids = []
 		for group in premisegroups:  # premisegroups is a list of lists
 			new_argument_uid = self.set_premises_as_group_for_conclusion(transaction, user, group, conclusion_id, supportive, issue)
 
@@ -1265,23 +1272,23 @@ class QueryHelper(object):
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
 
-			new_arguments.append(new_argument_uid)
+			new_argument_uids.append(new_argument_uid)
 
 		# #arguments=0: empty input
 		# #arguments=1: deliever new url
 		# #arguments>1: deliever url where the user has to choose between her inputs
-		if len(new_arguments) == 0:
+		if len(new_argument_uids) == 0:
 			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
-		elif len(new_arguments) == 1:
-			new_argument_uid    = random.choice(new_arguments)
+		elif len(new_argument_uids) == 1:
+			new_argument_uid    = random.choice(new_argument_uids)
 			arg_id_sys, attack  = recommender_helper.get_attack_for_argument(new_argument_uid, issue, lang)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 
 		else:
 			pgroups = []
-			for argument in new_arguments:
-				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
+			for arg_uid in new_argument_uids:
+				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first().premisesgroup_uid)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
 
 		return url, error
@@ -1339,8 +1346,7 @@ class QueryHelper(object):
 
 			current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_id).first()
 			# relation to the arguments premisegroup
-			if attack_type == 'undermine' or attack_type == 'support':
-				 # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
+			if attack_type == 'undermine' or attack_type == 'support':  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
 				db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).first()
 				db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
 				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
@@ -1352,7 +1358,7 @@ class QueryHelper(object):
 			# relation to the arguments conclusion
 			elif attack_type == 'rebut':
 				# TODO WHAT IS WITH ARGUMENT AS CONCLUSION?
-				is_argument = current_argument.conclusion_uid == 0
+				is_argument = current_argument.conclusion_uid is not None
 				uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
 				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
 
@@ -1374,7 +1380,10 @@ class QueryHelper(object):
 			except locale.Error:
 				locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
 
-		time = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
+		try:  # sqlite
+			time = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
+		except ValueError:  # postgres
+			time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
 
 		return time.strftime(formatter)
 

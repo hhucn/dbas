@@ -188,6 +188,16 @@
 	float: left;
 }
 
+
+.icon-rem-premise{
+	height: 30px;
+	display:none;
+	padding-right: 0.5em;
+}
+.icon-add-premise{
+	height: 30px;
+}
+
 #opinion-barometer-img{
 	width: 80px;
 }
@@ -197,9 +207,6 @@
 	visibility: hidden;
 }
 
-#report-statement{	background:url(../images/glyphicons_free/glyphicons/glyphicons-197-circle-exclamation-mark.png) no-repeat;
-	background-repeat: no-repeat;
-}
 
 .display-style-menu-icon {
 	opacity: 0;
@@ -340,6 +347,12 @@
     /*transform: rotate(-135deg);*/
     border-color: transparent transparent #C5E1A5 #C5E1A5;
     /*box-shadow: -1px 1px 1px 0 rgba(0, 0, 0, 0.4);*/
+}
+
+.triangle-r-info{
+    color: grey;
+    float:right;
+    font-size: 12px;
 }
 
 .triangle-gravatar-r,

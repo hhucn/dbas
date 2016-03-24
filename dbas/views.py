@@ -2,7 +2,7 @@ import transaction
 import requests
 
 from validate_email import validate_email
-from pyramid.httpexceptions import HTTPError, HTTPFound
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid.security import remember, forget
 from pyramid.renderers import get_renderer
@@ -82,8 +82,8 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_page', 'def', 'main, self.request.params: ' + str(self.request.params))
-		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if should_log_out:
+		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if session_expired:
 			return self.user_logout(True)
 
 		session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
@@ -109,8 +109,8 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
-		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if should_log_out:
+		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if session_expired:
 			return self.user_logout(True)
 
 		contact_error = False
@@ -222,8 +222,8 @@ class Dbas(object):
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-		should_log_out = UserHandler().update_last_action(transaction, nickname)
-		if should_log_out:
+		session_expired = UserHandler().update_last_action(transaction, nickname)
+		if session_expired:
 			return self.user_logout(True)
 
 		if for_api and api_data:
@@ -299,7 +299,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, ui_locales, breadcrumbs, nickname, session_id)
 		if not discussion_dict:
-			return HTTPError(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
 		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, ui_locales, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, True, False, True, ui_locales,
@@ -337,8 +337,8 @@ class Dbas(object):
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
 		_uh = UserHandler()
-		should_log_out = _uh.update_last_action(transaction, nickname)
-		if should_log_out:
+		session_expired = _uh.update_last_action(transaction, nickname)
+		if session_expired:
 			return self.user_logout(True)
 		logged_in = _uh.is_user_logged_in(nickname)
 
@@ -359,7 +359,7 @@ class Dbas(object):
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			if not QueryHelper().get_text_for_statement_uid(statement_or_arg_id):
-				return HTTPError(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
+				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 			# justifying position
@@ -404,7 +404,7 @@ class Dbas(object):
 			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify_argumentation=True)
 		else:
-			return HTTPError(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -439,10 +439,13 @@ class Dbas(object):
 		arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
 		attack          = matchdict['mode'] if 'mode' in matchdict else ''
 		arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
-		supportive      = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first().is_supportive
+		tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
+		if not tmp_argument:
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+		supportive      = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-		should_log_out = UserHandler().update_last_action(transaction, nickname)
-		if should_log_out:
+		session_expired  = UserHandler().update_last_action(transaction, nickname)
+		if session_expired:
 			return self.user_logout(True)
 
 		# set votings
@@ -492,7 +495,7 @@ class Dbas(object):
 		"""
 		# '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		logger('discussion_choose', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
 
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
@@ -512,8 +515,8 @@ class Dbas(object):
 		ui_locales      = _qh.get_language(self.request, get_current_registry())
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		should_log_out = UserHandler().update_last_action(transaction, nickname)
-		if should_log_out:
+		session_expired = UserHandler().update_last_action(transaction, nickname)
+		if session_expired:
 			return self.user_logout(True)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
@@ -547,8 +550,8 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
-		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if should_log_out:
+		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if session_expired:
 			return self.user_logout(True)
 
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
@@ -621,8 +624,8 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_notifications', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if should_log_out:
+		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if session_expired:
 			return self.user_logout(True)
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
@@ -644,8 +647,8 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_admin', 'def', 'main')
-		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if should_log_out:
+		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if session_expired:
 			return self.user_logout(True)
 
 		_qh = QueryHelper()
@@ -673,8 +676,8 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_news', 'def', 'main')
-		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if should_log_out:
+		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if session_expired:
 			return self.user_logout(True)
 
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
@@ -701,8 +704,8 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_imprint', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if should_log_out:
+		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if session_expired:
 			return self.user_logout(True)
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
@@ -733,19 +736,23 @@ class Dbas(object):
 		for param in self.request.params:
 			logger('notfound', 'def', '    ' + param + ' -> ' + self.request.params[param])
 
+		path = self.request.path
+		if path.startswith('/404/'):
+			path = path[5:]
+
 		self.request.response.status = 404
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 
 		extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
 
-		# return HTTPError(location=UrlManager(mainpage, for_api=False).get_404([self.request.path]))
+		# return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Error',
 			'project': project_name,
-			'page_notfound_viewname': self.request.path,
+			'page_notfound_viewname': path,
 			'extras': extras_dict
 		}
 
@@ -835,7 +842,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('delete_user_history', 'def', 'main')
-		BreadcrumbHelper().del_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
+		BreadcrumbHelper().del_all_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
 
@@ -1396,13 +1403,16 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		return_dict = dict()
+		_qh = QueryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
+
 		try:
 			uid = self.request.params['uid']
-			return_dict = QueryHelper().get_logfile_for_statement(uid)
+			return_dict = _qh.get_logfile_for_statement(uid, ui_locales)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
-			_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
+			_tn = Translator(ui_locales)
 			return_dict['error'] = _tn.get(_tn.noCorrections)
 
 		# return_dict = QueryHelper().get_logfile_for_premisegroup(uid)

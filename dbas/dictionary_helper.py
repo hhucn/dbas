@@ -1,5 +1,6 @@
 import random
 import json
+import time
 
 from datetime import datetime
 from sqlalchemy import and_
@@ -376,13 +377,13 @@ class DictionaryHelper(object):
 
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
 		text = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
-		text += _tn.get(_tn.whyAreYouAgreeingWithInColor) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWithInColor)
+		text += _tn.get(_tn.whyAreYouAgreeingWith) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWith)
 		text += ':<br><strong>'
 		text += _qh.get_text_for_argument_uid(uid, lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
 		text += '</strong>?<br>' + _tn.get(_tn.because) + '...'
 
-		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now'))
-		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(True, False, False, '', '', text))
+		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now', True))
+		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(True, False, False, '', '', text, True))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
@@ -727,8 +728,8 @@ class DictionaryHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 		_qh = QueryHelper()
 		_um = UrlManager(application_url, slug, for_api)
-		conclusion = argument_or_statement_id if not is_argument else 0
-		argument = argument_or_statement_id if is_argument else 0
+		conclusion = argument_or_statement_id if not is_argument else None
+		argument = argument_or_statement_id if is_argument else None
 
 		for group_id in pgroup_ids:
 			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
@@ -894,7 +895,7 @@ class DictionaryHelper(object):
 		:param current_premise: id
 		:return: None
 		"""
-		logger('QueryHelper', 'add_discussion_end_text', 'main')
+		logger('DictionaryHelper', 'add_discussion_end_text', 'main')
 		_tn = Translator(lang)
 		current_premise = current_premise[0:1].lower() + current_premise[1:]
 
@@ -971,8 +972,9 @@ class DictionaryHelper(object):
 			'link_de_class': ('active' if lang_is_de else ''),
 			'link_en_class': ('active' if lang_is_en else '')
 		})
-		
-	def __create_statement_dict(self, uid, title, premises, attitude, url):
+
+	@staticmethod
+	def __create_statement_dict(uid, title, premises, attitude, url):
 		"""
 
 		:param uid:
@@ -989,7 +991,8 @@ class DictionaryHelper(object):
 			'attitude': attitude,
 			'url': url}
 
-	def __create_speechbubble_dict(self, is_user, is_system, is_status, uid, url, message, omit_url=False):
+	@staticmethod
+	def __create_speechbubble_dict(is_user, is_system, is_status, uid, url, message, omit_url=False):
 		"""
 
 		:param is_user:
@@ -1005,14 +1008,16 @@ class DictionaryHelper(object):
 		speech['is_user']   = is_user
 		speech['is_system'] = is_system
 		speech['is_status'] = is_status
-		speech['id']        = uid
-		speech['url']       = url
+		speech['id']        = uid if len(str(uid)) > 0 else 'None'
+		speech['url']       = url if len(str(url)) > 0 else 'None'
 		speech['message']   = message
 		speech['omit_url']  = omit_url
+		# speech['votecounts']= votecounts # modify database
 
 		return speech
 
-	def __save_speechbubble(self, bubble_dict, db_user, session_id, related_breadcrumb, transaction):
+	@staticmethod
+	def __save_speechbubble(bubble_dict, db_user, session_id, related_breadcrumb, transaction):
 		"""
 
 		:param bubble_dict:
@@ -1024,6 +1029,20 @@ class DictionaryHelper(object):
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 			if not db_user:
 				return False
+
+		latest_bubble = DBDiscussionSession.query(Bubble).filter(and_(Bubble.breadcrumb_uid == related_breadcrumb['uid'],
+		                                                             Bubble.author_uid == db_user.uid)).order_by(Bubble.uid.desc()).first()
+		if latest_bubble and latest_bubble.content == bubble_dict['message']:
+				return False
+
+		logger('DictionaryHelper', '__save_speechbubble', 'bubble_id = ' + str(bubble_dict['id']))
+		logger('DictionaryHelper', '__save_speechbubble', 'user = ' + str(db_user.uid))
+		logger('DictionaryHelper', '__save_speechbubble', 'content = ' + str(bubble_dict['message']))
+		logger('DictionaryHelper', '__save_speechbubble', 'is_user = ' + str(bubble_dict['is_user']))
+		logger('DictionaryHelper', '__save_speechbubble', 'is_system = ' + str(bubble_dict['is_system']))
+		logger('DictionaryHelper', '__save_speechbubble', 'is_status = ' + str(bubble_dict['is_status']))
+		logger('DictionaryHelper', '__save_speechbubble', 'session_id = ' + str(session_id))
+		logger('DictionaryHelper', '__save_speechbubble', 'breadcrumb_uid = ' + str(related_breadcrumb['uid']))
 		DBDiscussionSession.add(Bubble(bubble_id=bubble_dict['id'],
 		                               user=str(db_user.uid),
 		                               content=bubble_dict['message'],
@@ -1043,6 +1062,7 @@ class DictionaryHelper(object):
 		:param session_id:
 		:return:
 		"""
+		logger('DictionaryHelper', '__create_speechbubble_history', 'main')
 		bubble_history = []
 		is_user_anonym = not nickname
 		if is_user_anonym:
@@ -1066,8 +1086,9 @@ class DictionaryHelper(object):
 				bubble_history.append(self.__create_speechbubble_dict(is_user, is_system, is_status, uid, url, content))
 
 		return bubble_history
-	
-	def __append_bubble(self, bubbles_array, bubble):
+
+	@staticmethod
+	def __append_bubble(bubbles_array, bubble):
 		"""
 		
 		:param bubbles_array: 
@@ -1082,7 +1103,8 @@ class DictionaryHelper(object):
 
 		bubbles_array.append(bubble)
 
-	def __remove_last_bubble(self, db_user, session_id):
+	@staticmethod
+	def __remove_last_bubble(db_user, session_id):
 		"""
 
 		:param db_user:

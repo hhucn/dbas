@@ -19,7 +19,7 @@
 						<button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
 							<span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 250px;">
+						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
 							<li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
 								<a href="#" tal:attributes="href issue.url; value issue.title"><span tal:replace="issue.title"></span><span class="badge" style="float: right; margin-left: 1em"><span tal:replace="issue.arg_count"></span></span></a>
@@ -61,7 +61,9 @@
                                  <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="bottom">
                                      <p class="triangle-r" tal:attributes="id bubble.id">
                                         <!--<img class="triangle-gravatar-r" tal:attributes="src extras.users_avatar">-->
-                                         ${structure:bubble.message}
+                                         <span>${structure:bubble.message}</span>
+                                         <br>
+                                         <em class="triangle-r-info">bubble.votecounts</em>
                                      </p>
                                  </a>
                              </div>
@@ -334,15 +336,13 @@
 						</div>
 						<div>
 							<img class="icon-badge icon-rem-premise"
-								 alt="icon-rem"
-								 src="${request.static_url('dbas:static/images/icon_minus2.png')}"
-								 style="height: 30px; display:none; padding-right: 0.5em;"
-								 tal:attributes="title extras.buttons.rem_statement_row_title"/>
+									 alt="icon-rem"
+									 src="${request.static_url('dbas:static/images/icon_minus1.png')}"
+									 tal:attributes="title extras.buttons.rem_statement_row_title"/>
 							<img class="icon-badge icon-add-premise"
-								 alt="icon-add"
-								 src="${request.static_url('dbas:static/images/icon_plus2.png')}"
-								 style="height: 30px;"
-								 tal:attributes="title extras.buttons.add_statement_row_title"/>
+									 alt="icon-add"
+									 src="${request.static_url('dbas:static/images/icon_plus1.png')}"
+									 tal:attributes="title extras.buttons.add_statement_row_title"/>
 						</div>
 					</div>
 				</div>

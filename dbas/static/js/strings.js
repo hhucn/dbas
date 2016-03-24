@@ -149,6 +149,7 @@ var notInsertedErrorBecauseInternal					= 'notInsertedErrorBecauseInternal';
 var notInsertedErrorBecauseTooShort					= 'notInsertedErrorBecauseTooShort';
 var noTrackedData 									= 'noTrackedData';
 var noEntries                                       = 'noEntries';
+var noEntriesFor                                    = 'noEntriesFor';
 var note 											= 'note';
 var number 											= 'number';
 var opinionBarometer                                = 'opinionBarometer';
@@ -163,6 +164,8 @@ var requestHistory 									= 'requestHistory';
 var refreshHistory 									= 'refreshHistory';
 var requestFailed 									= 'requestFailed';
 var restartOnError									= 'restartOnError';
+var saveMyStatement                                 = 'saveMyStatement';
+var saveMyStatements                                = 'saveMyStatements';
 var showAllUsers 									= 'showAllUsers';
 var showAllArguments 								= 'showAllArguments';
 var showMeAnArgumentFor 							= 'showMeAnArgumentFor';
@@ -292,7 +295,7 @@ var dbas_en = {
 	'notInsertedErrorBecauseUnknown': 'Your idea was not inserted due to an unkown error.',
 	'notInsertedErrorBecauseInternal': 'Your idea was not inserted due to an internal error.',
 	'notInsertedErrorBecauseTooShort': 'Your idea was not inserted due to the shortness.',
-	'noEntries': 'No entries',
+	'noEntriesFor': 'No entries for',
 	'noTrackedData': 'No data was tracked.',
 	'number': 'No',
 	'note': 'Note',
@@ -308,6 +311,8 @@ var dbas_en = {
 	'requestHistory': 'Request history',
 	'refreshHistory': 'Refresh history',
 	'requestFailed': 'Request failed',
+	'saveMyStatement': 'Save my Statement!',
+	'saveMyStatements': 'Save my Statements!',
 	'showAllUsers': 'Show all users',
 	'showAllArguments': 'Show all arguments',
 	'showAllArgumentsTitle': 'Show all arguments, done by users',
@@ -422,6 +427,7 @@ var dbas_de = {
 	'notInsertedErrorBecauseInternal': 'Ihre Idee wurde aufgrund eines internen Fehlers nicht gespeichert.',
 	'notInsertedErrorBecauseTooShort': 'Ihre Idee wurde aufgrund der Kürze nicht gespeichert.',
 	'noEntries': 'Keine Einträge vorhanden',
+	'noEntriesFor': 'Keine Einträge vorhanden für',
 	'noTrackedData': 'Keine Daten wurden gespeichert.',
 	'number': 'Nr',
 	'note': 'Hinweis',
@@ -437,6 +443,8 @@ var dbas_de = {
 	'refreshHistory': 'History neuladen',
 	'requestFailed': 'Anfrage fehlgeschlagen',
 	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.',
+	'saveMyStatement': 'Aussage speichern!',
+	'saveMyStatements': 'Ausagen speichern!',
 	'showAllUsers': 'Zeig\' alle Benutzer',
 	'showAllArguments': 'Zeig\' alle Argumente',
 	'showAllArgumentsTitle': 'Zeigt alle Argumente',

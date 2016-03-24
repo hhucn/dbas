@@ -7,6 +7,10 @@ function GuiHandler() {
 	'use strict';
 	var interactionHandler;
 
+	/**
+	 *
+	 * @param externInteractionHandler
+	 */
 	this.setHandler = function (externInteractionHandler) {
 		interactionHandler = externInteractionHandler;
 	};
@@ -16,6 +20,7 @@ function GuiHandler() {
 	 */
 	this.appendAddPremiseRow = function(){
 		var body = $('#add-premise-container-body'),
+			send = $('#' + sendNewPremiseId),
 			uid = new Date().getTime(),
 			div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs'),
 			div_l = $('<div>'),
@@ -30,13 +35,13 @@ function GuiHandler() {
 				.attr('placeholder', 'example: There is some reason!'),
 			imgm = $('<img>').attr('class', 'icon-rem-premise')
 				.attr('alt', 'icon-rem')
-				.attr('src', mainpage + 'static/images/icon_minus2.png')
-				.attr('style', 'height: 30px; padding-right: 0.5em;')
+				.attr('src', mainpage + 'static/images/icon_minus1.png')
+				// .attr('style', 'height: 30px; padding-right: 0.5em;')
 				.attr('title', body.find('.icon-rem-premise').first().attr('title')),
 			imgp = $('<img>').attr('class', 'icon-add-premise')
 				.attr('alt', 'icon-add')
-				.attr('src', mainpage + 'static/images/icon_plus2.png')
-				.attr('style', 'height: 30px;')
+				.attr('src', mainpage + 'static/images/icon_plus1.png')
+				// .attr('style', 'height: 30px;')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
 
 		div.append(div_l.append(h5))
@@ -47,23 +52,28 @@ function GuiHandler() {
 		imgp.click(function(){
 			new GuiHandler().appendAddPremiseRow();
 			$(this).hide().prev().show(); // hide +, show -
+			send.val(_t(saveMyStatements));
 		});
 
-		imgm.click(function(){
-			// removing bubble
-			var id = $(this).parent().parent().find('input').attr('id'),
-				tmpid = id.split('-').length == 6 ? id.split('-')[5] : '0';
-			$('#current_' + tmpid).fadeOut().remove();
-			$(this).parent().parent().remove();
-			body.find('div').children().last().show();
-			// hide minus icon, when there is only one child
-			if (body.find('.container-three-divs').length == 1) {
-				body.find('.icon-rem-premise').hide();
-			} else {
-				body.find('.icon-rem-premise').show();
-			}
-
+		body.find('.icon-rem-premise').each(function(){
+			$(this).click(function(){
+				// removing bubble
+				var id = $(this).parent().parent().find('input').attr('id'),
+					tmpid = id.split('-').length == 6 ? id.split('-')[5] : '0';
+				$('#current_' + tmpid).fadeOut().remove();
+				$(this).parent().parent().remove();
+				body.find('div').children().last().show();
+				// hide minus icon, when there is only one child
+				if (body.find('.container-three-divs').length == 1) {
+					body.find('.icon-rem-premise').hide();
+					send.val(_t(saveMyStatement));
+				} else {
+					body.find('.icon-rem-premise').show();
+					send.val(_t(saveMyStatements));
+				}
+			});
 		});
+		imgm.show();
 
 		// add fuzzy search
 		$('#' + id).keyup(function () {
@@ -252,6 +262,7 @@ function GuiHandler() {
 		if (undecided_texts.length == 1){ // we only need one page div
 			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
 			body.append(page);
+			send.text(_t(saveMyStatement));
 
 			page.find('input').each(function(){
 				$(this).click(function inputClick (){
@@ -264,6 +275,7 @@ function GuiHandler() {
 			prev.parent().addClass('disabled');
 			next.show().attr('max', undecided_texts.length);
 			counter.show().text('1/' + undecided_texts.length);
+			send.text(_t(saveMyStatements));
 
 			// for each statement a new page div will be added
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {

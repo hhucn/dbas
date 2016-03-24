@@ -16,22 +16,15 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		$(this).click(function() {
 			guiHandler.appendAddPremiseRow($(this));
 			$(this).hide().prev().show();
+			$('#' + sendNewPremiseId).val(_t(saveMyStatements));
 		});
 	});
 
+	/*
 	$('.icon-rem-premise').each(function() {
-		var _this = this, body = $('#add-premise-container-body');
-		$(this).click(function() {
-			$(_this).parent().remove();
-			body.find('div').children().last().show();
-			// hide minus icon, when there is only one child
-			if (body.find('div').length == 1) {
-				body.find('.icon-rem-premise').hide();
-			} else {
-				body.find('.icon-rem-premise').show();
-			}
-		});
+		// set in GuiHandler
 	});
+	*/
 
 	// admin list all users button
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {

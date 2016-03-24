@@ -11,8 +11,7 @@ from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, \
 	PremiseGroup, Premise, Group, Issue, Notification, Settings
 from dbas.database.news_model import News
-from dbas.database.api_model import KeywordMapper
-from dbas.database import DiscussionBase, NewsBase, APIBase, DBDiscussionSession, DBNewsSession, DBAPISession
+from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -54,30 +53,6 @@ def main_news(argv=sys.argv):
 	with transaction.manager:
 		setup_news_db()
 		transaction.commit()
-
-
-def main_api(argv=sys.argv):
-	if len(argv) != 2:
-		usage(argv)
-	config_uri = argv[1]
-	setup_logging(config_uri)
-	settings = get_appsettings(config_uri)
-
-	api_engine = engine_from_config(settings, 'sqlalchemy-api.')
-	DBAPISession.configure(bind=api_engine)
-	APIBase.metadata.create_all(api_engine)
-
-	with transaction.manager:
-		setup_api_db()
-		transaction.commit()
-
-
-def setup_api_db():
-	# adding data
-	mapping1 = KeywordMapper(url='http://localhost:4284/discuss/cat-or-dog', keyword='Cat', issue_uid=1)
-	mapping2 = KeywordMapper(url='http://localhost:4284/discuss/cat-or-dog', keyword='Dog', issue_uid=1)
-	DBAPISession.add_all([mapping1, mapping2])
-	DBAPISession.flush()
 
 
 def setup_news_db():
@@ -303,6 +278,7 @@ def setup_discussion_database():
 	issue1 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!')
 	issue2 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.')
 	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?')
+	issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?')
 	DBDiscussionSession.add_all([issue2, issue1])
 	DBDiscussionSession.flush()
 
