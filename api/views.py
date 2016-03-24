@@ -57,7 +57,17 @@ zinit_blank = Service(name='api_init_blank',
 #
 start_statement = Service(name="start_statement",
                           path="/add/start_statement",
-                          description="Add new start statement to issue",
+                          description="Add new position to issue",
+                          cors_policy=cors_policy)
+
+start_premise = Service(name="start_premise",
+                        path="/add/start_premise",
+                        description="Add new premises",
+                        cors_policy=cors_policy)
+
+justify_premise = Service(name="justify_premise",
+                          path="/add/justify_premise",
+                          description="Add new justifying premises",
                           cors_policy=cors_policy)
 
 #
@@ -183,6 +193,44 @@ def add_start_statement(request):
 	else:
 		raise response401()
 
+
+@start_premise.post(validators=validate_login)
+def add_start_premise(request):
+	"""
+	Add new premise group.
+	:param request:
+	:return:
+	"""
+	print("\n### START PREMISE ###\n")
+	api_data = prepare_user_information(request)
+	if api_data:
+		data = json_bytes_to_dict(request.body)
+		api_data.update(data)
+		print(api_data)
+		print(request)
+		return Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
+		#return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+	else:
+		raise response401()
+	print("\n\n")
+
+
+@justify_premise.post(validators=validate_login)
+def add_justify_premise(request):
+	"""
+	Add new justifying premise group.
+	:param request:
+	:return:
+	"""
+	print("\n### JUSTIFY PREMISE ###\n")
+	api_data = prepare_user_information(request)
+	if api_data:
+		data = json_bytes_to_dict(request.body)
+		api_data.update(data)
+		print(api_data)
+		#return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+	else:
+		raise response401()
 
 # =============================================================================
 # OTHER REQUESTS

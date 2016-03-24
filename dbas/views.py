@@ -1243,23 +1243,22 @@ class Dbas(object):
 		return_dict = dict()
 		_qh = QueryHelper()
 		lang = _qh.get_language(self.request, get_current_registry())
-		_dh = DictionaryHelper(lang)
 		_tn = Translator(lang)
 		try:
 			if for_api and api_data:
-				nickname  = api_data['nickname']
-				statement = api_data['statement']
-				issue     = api_data['issue_id']
-				slug      = api_data['slug']
-				# TODO hier weitermachen
+				nickname      = api_data['nickname']
+				premisegroups = api_data['statement']
+				issue         = api_data['issue_id']
+				conclusion_id = api_data['conclusion_id']
+				supportive    = api_data['supportive']
 			else:
-				nickname = self.request.authenticated_userid
-				issue    = _qh.get_issue_id(self.request)
+				nickname        = self.request.authenticated_userid
+				issue           = _qh.get_issue_id(self.request)
+				premisegroups   = json.loads(self.request.params['premisegroups'])
+				conclusion_id   = self.request.params['conclusion_id']
+				supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 
 			UserHandler().update_last_action(transaction, nickname)
-			premisegroups   = json.loads(self.request.params['premisegroups'])
-			conclusion_id   = self.request.params['conclusion_id']
-			supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 
 			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
 			                                                                 supportive, issue, nickname, for_api,
