@@ -220,10 +220,10 @@
     			</div>
     			<div class="modal-footer">
 
-    				<a class="share-icon share-mail" id="share-url-mail"></a>
-    				<a class="share-icon share-twitter" id="share-url-twitter"></a>
-    				<a class="share-icon share-google" id="share-url-google"></a>
-    				<a class="share-icon share-facebook" id="share-url-facebook"></a>
+    				<a class="share-icon share-facebook-small" id="share-url-facebook"></a>
+    				<a class="share-icon share-google-small" id="share-url-google"></a>
+    				<a class="share-icon share-twitter-small" id="share-url-twitter"></a>
+    				<a class="share-icon share-mail-small" id="share-url-mail"></a>
 
     				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" data-short-url="1">Fetch long url!</button>
     				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" i18n:translate="close">Close</button>
