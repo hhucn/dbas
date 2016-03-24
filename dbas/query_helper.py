@@ -1508,4 +1508,3 @@ class QueryHelper(object):
 		issue_dict['date']              = self.sql_timestamp_pretty_print(str(issue.date), lang)
 		issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
 		return issue_dict
-

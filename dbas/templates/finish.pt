@@ -1,0 +1,20 @@
+<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<div class="container first-containercenter">
+			<div class="row">
+				<div class="col-md-6 center colored_container" style="float: none">
+					<h3 class="text-center" i18n:translate="thank_you">Thank you!</h3>
+                    <span class="lead" i18n:translate="finish_text">Your participation in this discussion was saved and will be used for evaluation later. If you have any questions, please do not hesitat to</span>
+                    <span class="lead"><a href="/contact" i18n:translate="contact_us">contact us (click here)</a>.</span>
+                    <div class="text-center">
+                        <img class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}"/>
+                        <br><br>
+                    <input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" i18n:translate="lets_go_home" style="margin: 10px;" />
+					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="window.history.back();" value="Let's go back!" i18n:translate="lets_go_back" style="margin: 10px;" />
+                    </div>
+                </div>
+		</div>
+
+	</tal:block>
+</tal:block>

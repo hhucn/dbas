@@ -113,6 +113,7 @@ def main(global_config, **settings):
 	config.add_route('discussion_justify',    '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
 	config.add_route('discussion_attitude',   '/discuss/{slug}/attitude/*statement_id')
 	config.add_route('discussion_choose',     '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids')
+	config.add_route('discussion_finish',     '/discuss/finish')
 	config.add_route('discussion_init',       '/discuss*slug')
 
 	# read the input and start

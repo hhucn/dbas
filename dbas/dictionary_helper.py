@@ -132,10 +132,10 @@ class DictionaryHelper(object):
 		text				= _qh.get_text_for_statement_uid(uid)
 		if not text:
 			return None
-		question            = _tn.get(_tn.whyDoYouThinkThat) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> ' \
-		                      + _tn.get(_tn.isTrue if is_supportive else _tn.isFalse) + '?'
+		question            = _tn.get(_tn.whatIsYourMostImportantReason) + ': <strong>' + text[0:1].lower() + text[1:] + '</strong> '
+		question            += _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '?'
 		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
-		add_premise_text	+= text[0:1].upper() + text[1:] + ' ' + (_tn.get(_tn.isTrue) if is_supportive else _tn.get(_tn.isFalse))
+		add_premise_text	+= text[0:1].upper() + text[1:] + ' ' + (_tn.get(_tn.holds) if is_supportive else _tn.get(_tn.isNotAGoodIdea))
 
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
@@ -210,7 +210,7 @@ class DictionaryHelper(object):
 			add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
 																	   db_argument.is_supportive)
 
-		sys_msg  = _tn.get(_tn.whyDoYouThinkThat) + ' ' + user_msg[:-1] + '?<br>' + _tn.get(_tn.because) + '...'
+		sys_msg  = _tn.get(_tn.whatIsYourMostImportantReason) + ': ' + user_msg[:-1] + '?<br>' + _tn.get(_tn.because) + '...'
 		# bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_msg[0:1].upper() + user_msg[1:], True)
 		bubble_question = self.__create_speechbubble_dict(False, True, False, '', '', sys_msg, True)
 
@@ -682,8 +682,19 @@ class DictionaryHelper(object):
 			statements_array.append(self.__create_statement_dict(relation, rel_dict[relation + '_text'], [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the back button
-		relation = 'no_opinion'
-		url = 'back' if for_api else 'window.history.go(-1)'
+		# relation = 'no_opinion'
+		# url = 'back' if for_api else 'window.history.go(-1)'
+		# statements_array.append(self.__create_statement_dict(relation, rel_dict[relation + '_text'], [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+
+		# last item is the change attack button or step back, if we have bno other attack
+		_rh = RecommenderHelper()
+		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, issue_uid, self.lang, restriction_on_attack=attack, restriction_on_argument_uid=argument_uid_sys)
+		if new_attack == 'no_other_attack':
+			relation = 'step_back'
+			url = 'back' if for_api else 'window.history.go(-1)'
+		else:
+			relation = 'no_opinion'
+			url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
 		statements_array.append(self.__create_statement_dict(relation, rel_dict[relation + '_text'], [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
@@ -799,6 +810,7 @@ class DictionaryHelper(object):
 															'expert_view': _tn.get(_tn.displayControlDialogExpertBody)}
 			return_dict['buttons']					     = {'report': _tn.get(_tn.report),
 															'report_title': _tn.get(_tn.reportTitle),
+															'finish_title': _tn.get(_tn.finishTitle),
 															'question_title': _tn.get(_tn.questionTitle),
 															'show_all_arguments': _tn.get(_tn.showAllArguments),
 															'show_all_users': _tn.get(_tn.showAllUsers),

@@ -485,6 +485,30 @@ class Dbas(object):
 			return_dict['project'] = project_name
 			return return_dict
 
+	# finish page
+	@view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
+	def page(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('page', 'def', 'main')
+		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if session_expired:
+			return self.user_logout(True)
+
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'Finish',
+			'project': project_name,
+			'extras': extras_dict
+		}
+
 	# choosing page
 	@view_config(route_name='discussion_choose', renderer='templates/content.pt', permission='everybody')
 	def discussion_choose(self, for_api=False, api_data=None):

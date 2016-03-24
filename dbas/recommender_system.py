@@ -13,24 +13,34 @@ from .query_helper import QueryHelper
 
 class RecommenderHelper(object):
 
-	def get_attack_for_argument(self, argument_uid, issue, lang):
+	def get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attack=None, restriction_on_argument_uid=None):
 		"""
 
 		:param argument_uid:
 		:param issue:
 		:param lang:
+		:param restriction_on_attack:
+		:param restriction_on_argument_uid:
 		:return:
 		"""
 		# getting undermines or undercuts or rebuts
 		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid))
-		attacks, key = self.__get_attack_for_argument(argument_uid, issue, lang)
+		attacks_array, key = self.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attack, restriction_on_argument_uid)
 
-		if not attacks or len(attacks) == 0:
+		if not attacks_array or len(attacks_array) == 0:
 			return 0, 'end'
 		else:
-			attack_no = random.randrange(0, len(attacks))  # Todo fix random
+			attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
+			attack_uid = attacks_array[attack_no]['id']
+			while attack_uid == restriction_on_argument_uid:
+				attacks_array.pop(attack_no)
+				attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
+				attack_uid = attacks_array[attack_no]['id']
 
-			return attacks[attack_no]['id'], key
+			if attack_uid == restriction_on_argument_uid:
+				return 0, 'no_other_attack'
+
+			return attacks_array[attack_no]['id'], key
 
 	def get_argument_by_conclusion(self, statement_uid, is_supportive):
 		"""
@@ -84,15 +94,16 @@ class RecommenderHelper(object):
 
 		return db_arguments
 
-	def __get_attack_for_argument(self, argument_uid, issue, lang):
+	def __get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attack=None, restriction_on_argument_uid=None):
 		"""
 		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
 		Additionally returns id's of premises groups with [key + str(index) + 'id']
-		:param db_argument:
-		:param user:
+		:param argument_uid:
 		:param issue:
 		:param lang:
-		:return: dict, key
+		:param restriction_on_attack:
+		:param restriction_on_argument_uid:
+		:return:
 		"""
 
 		# 1 = undermine, 2 = support, 3 = undercut, 4 = overbid, 5 = rebut, all possible attacks
@@ -102,25 +113,27 @@ class RecommenderHelper(object):
 
 		logger('RecommenderHelper', '__get_attack_for_argument', 'attack_list : ' + str(attacks))
 		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
-		return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang)
+		return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attack, restriction_on_argument_uid)
 
 		# sanity check if we could not found an attack for a left attack in out set
-		if not return_dict and len(attacks) > 0:
-			return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks, lang)
+		if not return_array and len(attacks) > 0:
+			return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks, lang, restriction_on_attack, restriction_on_argument_uid)
 
-		return return_dict, key
+		return return_array, key
 
-	def __get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks, lang):
+	def __get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attack=None, restriction_on_argument_uid=None):
 		"""
 
 		:param argument_uid:
 		:param attack_list:
 		:param issue:
 		:param complete_list_of_attacks:
-		:param lang: ui_locales
+		:param lang:
+		:param restriction_on_attack:
+		:param restriction_on_argument_uid:
 		:return:
 		"""
-		return_dict = None
+		return_array = None
 		key = ''
 		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
 		attack_found = False
@@ -131,19 +144,20 @@ class RecommenderHelper(object):
 		       ', complete_list_of_attacks : ' + str(complete_list_of_attacks) +
 		       ', left_attacks : ' + str(left_attacks))
 
-		# randomize at least 1, maximal 3 times for getting an attack
-		while len(attack_list) > 0:
+		# randomize at least 1, maximal 3 times for getting an attack or
+		# if the attack type and the only attacking argument are the same as the restriction
+		while len(attack_list) > 0 or (restriction_on_attack == key and len(return_array) == 1 and restriction_on_argument_uid == return_array[0]['id']):
 			attack = random.choice(attack_list)
 			attack_list.remove(attack)
 
-			return_dict = _qh.get_undermines_for_argument_uid(argument_uid, lang) if attack == 1 \
+			return_array = _qh.get_undermines_for_argument_uid(argument_uid, lang) if attack == 1 \
 				else (_qh.get_rebuts_for_argument_uid(argument_uid, lang) if attack == 5
 				      else _qh.get_undercuts_for_argument_uid(argument_uid, lang))
 			key = 'undermine' if attack == 1 \
 				else ('rebut' if attack == 5
 				      else 'undercut')
 			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'key: ' + key)
-			if return_dict and len(return_dict) != 0:
+			if return_array and len(return_array) != 0:
 				attack_found = True
 				break
 			else:
@@ -151,11 +165,11 @@ class RecommenderHelper(object):
 
 		if len(left_attacks) > 0 and not attack_found:
 			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
-			return_dict, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks, lang)
+			return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks, lang)
 		else:
 			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
 
-		return return_dict, key
+		return return_array, key
 
 	def __get_best_argument(self, argument_list):
 		"""
