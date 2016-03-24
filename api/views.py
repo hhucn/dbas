@@ -201,18 +201,13 @@ def add_start_premise(request):
 	:param request:
 	:return:
 	"""
-	print("\n### START PREMISE ###\n")
 	api_data = prepare_user_information(request)
 	if api_data:
 		data = json_bytes_to_dict(request.body)
 		api_data.update(data)
-		print(api_data)
-		print(request)
 		return Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
-		#return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
 	else:
 		raise response401()
-	print("\n\n")
 
 
 @justify_premise.post(validators=validate_login)
