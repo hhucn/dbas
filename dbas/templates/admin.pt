@@ -127,10 +127,10 @@
                              <th i18n:translate="surname">Surname</th>
                              <th i18n:translate="nickname">Nickname</th>
                              <th i18n:translate="email">E-Mail</th>
+                             <th i18n:translate="gender">Gender</th>
                              <th i18n:translate="group_uid">Group</th>
                              <th i18n:translate="last_login">Last Login</th>
                              <th i18n:translate="registered">Registered</th>
-                             <th i18n:translate="gender">Gender</th>
                              <th i18n:translate="avatar">Avatar</th>
                          </tr>
                          </thead>

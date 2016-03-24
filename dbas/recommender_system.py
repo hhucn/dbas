@@ -32,12 +32,13 @@ class RecommenderHelper(object):
 		else:
 			attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 			attack_uid = attacks_array[attack_no]['id']
-			while attack_uid == restriction_on_argument_uid:
+
+			while len(attacks_array) > 1 and attack_uid == restriction_on_argument_uid and str(key) == str(restriction_on_attack):
 				attacks_array.pop(attack_no)
 				attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 				attack_uid = attacks_array[attack_no]['id']
 
-			if attack_uid == restriction_on_argument_uid:
+			if attack_uid == restriction_on_argument_uid and str(key) == str(restriction_on_attack):
 				return 0, 'no_other_attack'
 
 			return attacks_array[attack_no]['id'], key

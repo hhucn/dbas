@@ -126,7 +126,7 @@
 							</div>
 						</li>
 						<li>
-                            <img onclick="window.location='/discuss/finish'" id="finish-button" class="icon-badge" alt="icon-finish" src="${request.static_url('dbas:static/images/icon_door.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.finish_title" />
+                            <img onclick="window.location='/discuss/finish'" id="finish-button" class="icon-badge" alt="icon-finish" src="${request.static_url('dbas:static/images/icon_finish.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.finish_title" />
 						</li>
 					</ul>
 				</div>

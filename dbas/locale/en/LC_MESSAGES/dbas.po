@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-24 12:43+0100\n"
+"POT-Creation-Date: 2016-03-24 13:51+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -646,9 +646,8 @@ msgid "male"
 msgstr "male"
 
 #. Default: Your Email Address
-#. Default: E-Mail
-#: dbas/templates/snippet-popups.pt:355 dbas/templates/admin.pt:129
-msgid "email"
+#: dbas/templates/snippet-popups.pt:355
+msgid "your_email"
 msgstr "Your Email Address"
 
 #. Default: Your Password
@@ -1065,6 +1064,11 @@ msgstr "Arguments"
 #: dbas/templates/admin.pt:108
 msgid "statements!"
 msgstr "Statements!"
+
+#. Default: E-Mail
+#: dbas/templates/admin.pt:129
+msgid "email"
+msgstr "Email Address"
 
 #. Default: Group
 #: dbas/templates/admin.pt:130

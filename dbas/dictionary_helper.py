@@ -139,15 +139,22 @@ class DictionaryHelper(object):
 
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
+		intro_rev = '' if not is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', intro + '<strong>' + text + '</strong>', False, statement_uid=uid, nickname=nickname)
 		question_bubble = self.__create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
 
 		if save_crumb:
 			self.__save_speechbubble(select_bubble, db_user, session_id, breadcrumbs[-1], transaction, statement_uid=uid)
 
+		# check for double bubbles
 		should_append = True
 		if len(bubbles_array) > 0:
 			should_append = bubbles_array[-1]['message'] != select_bubble['message']
+			if bubbles_array[-1]['message'] == intro_rev + '<strong>' + text + '</strong>':
+				bubbles_array.remove(bubbles_array[-1])
+		if len(bubbles_array) > 1:
+			if bubbles_array[-2]['message'] == intro_rev + '<strong>' + text + '</strong>':
+				bubbles_array.remove(bubbles_array[-2])
 
 		if should_append:
 			self.__append_bubble(bubbles_array, select_bubble)

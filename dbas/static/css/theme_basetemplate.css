@@ -380,13 +380,13 @@ comment .container and wrap each container with <div class="coloured-div">
 	background: url('../images/glyphicons_free/glyphicons/glyphicons-309-share-alt.png') no-repeat 10px 10px;
 }
 
-.share-facebook {	            background: url('../images/icon_fb_m.png') no-repeat 4px 4px;}
+.share-facebook {	            background: url('../images/icon_fb.png') no-repeat 4px 4px;}
 .share-facebook-small {	        background: url('../images/icon_fb_s.png') no-repeat 1px 1px;}
-.share-google {	                background: url('../images/icon_googlep_m.png') no-repeat 4px 4px;}
+.share-google {	                background: url('../images/icon_googlep.png') no-repeat 4px 4px;}
 .share-google-small {	        background: url('../images/icon_googlep_s.png') no-repeat 1px 1px;}
-.share-twitter:hover {	        background: url('../images/icon_twitter_m.png') no-repeat 4px 4px;}
+.share-twitter:hover {	        background: url('../images/icon_twitter.png') no-repeat 4px 4px;}
 .share-twitter-small {	        background: url('../images/icon_twitter_s.png') no-repeat 1px 1px;}
-.share-mail {	                background: url('../images/icon_mail_m.png') no-repeat 4px 4px;}
+.share-mail {	                background: url('../images/icon_mail.png') no-repeat 4px 4px;}
 .share-mail-small {	            background: url('../images/icon_mail_s.png') no-repeat 1px 1px;}
 
 #popup-url-sharing-input{

@@ -352,7 +352,7 @@
     						</div>
 
     						<div class="form-group">
-    							<label class="col-md-3 control-label" for="email-input" i18n:translate="email">Your Email Address</label>
+    							<label class="col-md-3 control-label" for="email-input" i18n:translate="your_email">Your Email Address</label>
     							<div class="col-md-9">
     								<input id="email-input" type="email" class="form-control email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
     							</div>
