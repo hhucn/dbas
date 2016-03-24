@@ -33,7 +33,6 @@ Then follow these steps:
 
     $ apt-get install libpq-dev python-dev postgresql
     $ pip install db-psycopg2
-    $ dpkg-reconfigure postgresql-common
 
 6. Create user and tables::
 

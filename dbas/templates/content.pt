@@ -67,22 +67,22 @@
 					 <div id="dialog-speech-bubbles-space">
                          <div tal:repeat="bubble discussion.bubbles" tal:omit-tag="">
                              <div tal:condition="bubble.is_user" class="line-wrapper-r">
-                                 <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="bottom">
-                                     <p class="triangle-r" tal:attributes="id bubble.id">
-                                        <!--<img class="triangle-gravatar-r" tal:attributes="src extras.users_avatar">-->
+                                 <p class="triangle-r" tal:attributes="id bubble.id">
+                                     <!--<img class="triangle-gravatar-r" tal:attributes="src extras.users_avatar">-->
+                                     <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="bottom">
                                          <span>${structure:bubble.message}</span>
-                                         <br>
-                                         <em class="triangle-r-info">${bubble.votecounts}</em>
-                                     </p>
-                                 </a>
+                                     </a>
+                                     <br>
+                                     <em class="triangle-r-info" tal:attributes="data-type bubble.data_type; data-argument-uid bubble.data_argument_uid; data-statement-uid bubble.data_statement_uid">${bubble.votecounts}</em>
+                                 </p>
                              </div>
                              <div tal:condition="bubble.is_system" class="line-wrapper-l">
-                                 <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="bottom">
-                                     <p class="triangle-l" tal:attributes="id bubble.id">
-                                        <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
-                                         ${structure:bubble.message}
-                                     </p>
-                                 </a>
+                                 <p class="triangle-l" tal:attributes="id bubble.id">
+                                     <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
+                                     <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="bottom">
+                                             ${structure:bubble.message}
+                                     </a>
+                                 </p>
                              </div>
                              <div tal:condition="bubble.is_status" class="line-wrapper-m">
                                  <p class="triangle-m" tal:attributes="id bubble.id">${structure:bubble.message}</p>
@@ -112,31 +112,16 @@
 						<li tal:condition="extras.is_reportable" >
 							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
 						</li>
-                        <!--
-						<li>
-							<img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_qmark.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" />
-						</li>
-						-->
+                        <!--<li><img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_qmark.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" /></li>-->
 						<li>
 							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon or extras.show_expert_icon">
 								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="left" tal:attributes="title extras.buttons.more_title"/>
 
 								<ul id="site-navigation">
-									<li>
-										<img tal:condition="extras.show_bar_icon" id="opinion-barometer-img" class="display-style-menu-icon icon-badge" alt="icon-bars" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" />
-									</li>
-
-									<li>
-										<img tal:condition="extras.show_display_style" id="display-style-icon-guided-img" class="display-style-menu-icon icon-badge" alt="icon-guided" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view" src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" />
-									</li>
-
-									<li>
-										<img tal:condition="extras.show_display_style" id="display-style-icon-island-img" class="display-style-menu-icon icon-badge" alt="icon-island" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" />
-									</li>
-
-									<li>
-										<img tal:condition="extras.show_expert_icon" id="display-style-icon-expert-img" class="display-style-menu-icon icon-badge" alt="icon-expert" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" />
-									</li>
+									<li tal:condition="extras.show_bar_icon"><img id="opinion-barometer-img" class="display-style-menu-icon icon-badge" alt="icon-bars" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" /></li>
+									<li tal:condition="extras.show_display_style"><img id="display-style-icon-guided-img" class="display-style-menu-icon icon-badge" alt="icon-guided" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view" src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" /></li>
+									<li tal:condition="extras.show_display_style"><img id="display-style-icon-island-img" class="display-style-menu-icon icon-badge" alt="icon-island" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" /></li>
+									<li tal:condition="extras.show_expert_icon"><img id="display-style-icon-expert-img" class="display-style-menu-icon icon-badge" alt="icon-expert" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" /></li>
 								</ul>
 							</div>
 						</li>
@@ -176,7 +161,7 @@
 						<div class="panel-heading">
 							<h5>
 									<span class="text-danger">✗</span>
-									<span tal:replace="structure:extras.island.undermine_text">structure:undermine_text</span>
+									<span tal:replace="extras.island.undermine_text">structure:undermine_text</span>
 								</h5>
 						</div>
 						<div class="panel-body">
@@ -245,21 +230,20 @@
 				</div>
 			</div>
 
-<!--?				<div class="col-md-6">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h5>
-									<span class="text-success">✓</span>
-									<span tal:replace="extras.island.overbid_text">overbid_text</span>
-								</h5>
-						</div>
-						<div class="panel-body">
-							<ul>
-								<li tal:repeat="overbid extras.island.overbid" tal:attributes="id overbid.id">
-									<label tal:attributes="for overbid.id">${structure:overbid.text}</label>
-								</li>
-							</ul>
-						</div>
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h5>
+							<span class="text-success">✓</span>
+							<span tal:replace="extras.island.overbid_text">overbid_text</span>
+							</h5>
+					</div>
+					<div class="panel-body">
+						<ul>
+							<li tal:repeat="overbid extras.island.overbid" tal:attributes="id overbid.id">
+								<label tal:attributes="for overbid.id">${structure:overbid.text}</label>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -282,7 +266,7 @@
 						</div>
 					</div>
 				</div>
-			</div>-->
+			</div>
 
 			<div class="center text-center">
 				<button id="island-view-add-arguments" type="button" class="button button-block btn btn-primary disabled" data-dismiss="modal">

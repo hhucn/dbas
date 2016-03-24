@@ -103,7 +103,7 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
 	$('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
 	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
-		$('#' + popupConfirmDialogId).modal('hide');
+		$('#' + popupConfirmDialogId).modal('hide').find('.modal-dialog').removeClass('modal-sm');
 	}).removeClass('btn-success');
 	$('#' + popupConfirmDialogRefuseBtn).hide();
 }

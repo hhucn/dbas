@@ -179,6 +179,46 @@ function InteractionHandler() {
 
 	/**
 	 *
+	 * @param data
+	 */
+	this.callbackIfDoneForGettingMoreInfosAboutOpinion = function(data){
+		var parsedData = $.parseJSON(data);
+
+		if (parsedData.error.length == 0) {
+			var body = $('<div>'),
+				span = $('<span>').text(parsedData.message),
+				table = $('<table>')
+					.attr('class', 'table table-condensed table-hover')
+					.attr('border', '0')
+					.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;'),
+				tr = $('<tr>')
+					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
+				tbody = $('<tbody>'),
+				td_nick, td_avatar;
+
+			table.append($('<thead>').append(tr));
+
+
+			$.each(parsedData.users, function (i, val) {
+				$.each(val, function (k, v) {
+					td_nick = $('<td>').text(k);
+					td_avatar = $('<td>').html('<img style="height: 50%;" src="' + v.avatar_url + '"></td>');
+					tbody.append($('<tr>').append(td_avatar).append(td_nick));
+				});
+			});
+
+			body.append(span).append(table.append(tbody));
+			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), body);
+			$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-sm');
+		} else {
+			new GuiHandler().showDiscussionError(parsedData.error);
+		}
+
+	};
+
+	/**
+	 *
 	 * @param text
 	 * @param conclusion
 	 * @param supportive

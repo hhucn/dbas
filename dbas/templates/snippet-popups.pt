@@ -225,7 +225,7 @@
     				<a class="share-icon share-google" id="share-url-google"></a>
     				<a class="share-icon share-facebook" id="share-url-facebook"></a>
 
-    				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" short_url="1">Fetch long url!</button>
+    				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" data-short-url="1">Fetch long url!</button>
     				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>

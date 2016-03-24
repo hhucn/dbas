@@ -227,7 +227,6 @@ function AjaxSiteHandler() {
 				uid: uid
 			},
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
 			}
@@ -237,6 +236,29 @@ function AjaxSiteHandler() {
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
+	};
+
+	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid){
+		var is_argument = type == 'argument',
+			uid = argument_uid == 'None' ? statement_uid : argument_uid,
+			csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_get_user_with_same_opinion',
+			method: 'GET',
+			data: {
+				is_argument: is_argument, uid: uid
+			},
+			dataType: 'json',
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
+		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
+			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data);
+		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
+				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+		});
+
 	};
 
 	/***

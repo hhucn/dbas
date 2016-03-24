@@ -627,15 +627,16 @@ class QueryHelper(object):
 
 		return new_statement, False
 
-	def get_text_for_conclusion(self, argument, lang):
+	def get_text_for_conclusion(self, argument, lang, start_with_intro=False):
 		"""
 
 		:param argument:
 		:param lang:
+		:param start_with_intro:
 		:return:
 		"""
 		if argument.argument_uid:
-			return self.get_text_for_argument_uid(argument.argument_uid, lang)
+			return self.get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro)
 		else:
 			return self.get_text_for_statement_uid(argument.conclusion_uid)
 
@@ -734,7 +735,7 @@ class QueryHelper(object):
 				index += 1
 		return return_array
 
-	def get_user_with_same_opinion_for_argument(self, argument_uid, lang):  # TODO TERESA
+	def get_user_with_same_opinion_for_argument(self, argument_uid, lang):
 		"""
 
 		:param argument_uid: Statement.uid
@@ -745,6 +746,7 @@ class QueryHelper(object):
 
 		ret_dict = dict()
 		all_users = []
+		_t = Translator(lang)
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		if not db_argument:
 			ret_dict['users'] = all_users
@@ -759,9 +761,10 @@ class QueryHelper(object):
 			                                   'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 			all_users.append(users_dict)
 			ret_dict['users'] = all_users
+		ret_dict['message'] = _t.get(_t.voteCountTextFirst) if len(all_users) == 0 else _t.get(_t.voteCountTextOneMore1)[0:1].upper() + _t.get(_t.voteCountTextOneMore1)[1:-1] + ':'
 		return ret_dict
 
-	def get_user_with_same_opinion_for_statement(self, statement_uid, lang):  # TODO TERESA
+	def get_user_with_same_opinion_for_statement(self, statement_uid, lang):
 		"""
 
 		:param statement_uid: Statement.uid
@@ -772,6 +775,7 @@ class QueryHelper(object):
 
 		ret_dict = dict()
 		all_users = []
+		_t = Translator(lang)
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
 		if not db_statement:
 			ret_dict['users'] = all_users
@@ -786,12 +790,14 @@ class QueryHelper(object):
 			                                   'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 			all_users.append(users_dict)
 		ret_dict['users'] = all_users
+		ret_dict['message'] = _t.get(_t.voteCountTextFirst) if len(all_users) == 0 else _t.get(_t.voteCountTextOneMore1)[0:1].upper() + _t.get(_t.voteCountTextOneMore1)[1:-1] + ':'
 		return ret_dict
 
 	def get_user_with_same_opinion_for_position(self, issue_uid, lang):
 		logger('QueryHelper', 'get_user_with_same_opinion_for_position', 'issue ' + str(issue_uid))
 
 		ret_dict = dict()
+		_t = Translator(lang)
 		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.issue_uid == issue_uid,
 		                                                                Statement.is_startpoint == True)).all()
 		if not db_statements:
@@ -814,6 +820,7 @@ class QueryHelper(object):
 			votes.append(vote_dict)
 
 		ret_dict['votes'] = votes
+		ret_dict['message'] = _t.get(_t.voteCountTextFirst) if len(all_users) == 0 else _t.get(_t.voteCountTextOneMore1)[0:1].upper() + _t.get(_t.voteCountTextOneMore1)[1:-1] + ':'
 		return ret_dict
 
 	def get_id_of_slug(self, slug, request, save_id_in_session):

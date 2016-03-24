@@ -185,7 +185,7 @@ class StatementReferences(DiscussionBase):
 	"""
 
 	"""
-	__tablename__ = 'statementreferences'
+	__tablename__ = 'statement_references'
 	uid = Column(Integer, primary_key=True)
 	statement = Column(Text, nullable=False)
 	origin = Column(Text, nullable=False)
@@ -434,7 +434,7 @@ class VoteArgument(DiscussionBase):
 	Vote-table with several columns for arguments.
 	The combination of the both FK is a PK
 	"""
-	__tablename__ = 'votes_argument'
+	__tablename__ = 'vote_arguments'
 	uid = Column(Integer, primary_key=True)
 	argument_uid = Column(Integer, ForeignKey('arguments.uid'))
 	author_uid = Column(Integer, ForeignKey('users.uid'))
@@ -489,7 +489,7 @@ class VoteStatement(DiscussionBase):
 	Vote-table with several columns for statements.
 	The combination of the both FK is a PK
 	"""
-	__tablename__ = 'votes_statement'
+	__tablename__ = 'vote_statements'
 	uid = Column(Integer, primary_key=True)
 	statement_uid = Column(Integer, ForeignKey('statements.uid'))
 	author_uid = Column(Integer, ForeignKey('users.uid'))

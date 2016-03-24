@@ -277,7 +277,6 @@
 .line-wrapper-r>a,
 .line-wrapper-l>p,
 .line-wrapper-r>p{
-    min-width: 40%;
     max-width: 55%;
 }
 .triangle-gravatar-l,
@@ -287,6 +286,12 @@
 .triangle-gravatar-r,
 .line-wrapper-r>a{
 	float: right;
+}
+
+.triangle-l a,
+.triangle-r a,
+.triangle-m a{
+    color: black;
 }
 
 .triangle-l,
@@ -366,8 +371,17 @@
 #question-bubble{
 	cursor: help;
 }
+
+.triangle-l a:hover,
+.triangle-r a:hover,
+.triangle-m a:hover,
+.triangle-r-info:hover,
 #question-bubble:hover{
-    color: #0a6ebd;
+    color: #2196f3;
+    text-decoration: none;
+}
+.triangle-r-info:hover{
+    cursor: help;
 }
 
 @media (max-width: 767px) {

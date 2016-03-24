@@ -7,6 +7,7 @@
  * ID's
  * @type {string}
  */
+var addTopicButtonId                            = 'add-topic';
 var addReasonButtonId 							= 'add-reason';
 var addStatementContainerId 					= 'add-statement-container';
 var addStatementContainerMainInputId 			= 'add-statement-container-main-input';
@@ -179,7 +180,6 @@ var radioButtonGroup 							= 'radioButtonGroup';
 var translationLink 							= 'link-trans-';
 var translationLinkDe 							= 'link-trans-de';
 var translationLinkEn 							= 'link-trans-en';
-var questionItButtonId                          = 'question-button';
 var questionBubbleId                            = 'question-bubble';
 var shareUrlId 									= 'share-url';
 var shareUrlButtonMail 							= 'share-url-mail';

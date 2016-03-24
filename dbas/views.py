@@ -1578,7 +1578,7 @@ class Dbas(object):
 		:return: json-set with everything
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_users_with_same_opinion', 'def', 'main')
+		logger('get_users_with_same_opinion', 'def', 'main: ' + str(self.request.params))
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
@@ -1586,7 +1586,7 @@ class Dbas(object):
 		return_dict = dict()
 		try:
 			uid = self.request.params['uid']
-			is_argument = self.request.params['is_argument']
+			is_argument = self.request.params['is_argument'] == 'true'
 			if uid == '0':
 				issue = _qh.get_issue_id(self.request)
 				return_dict = _qh.get_user_with_same_opinion_for_position(issue, ui_locales)
@@ -1596,8 +1596,8 @@ class Dbas(object):
 				return_dict = _qh.get_user_with_same_opinion_for_statement(uid, ui_locales)
 			return_dict['error'] = ''
 		except KeyError as e:
-			logger('set_new_start_statement', 'error', repr(e))
-			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
+			logger('get_users_with_same_opinion', 'error', repr(e))
+			return_dict['error'] = _tn.get(_tn.internalError)
 
 		return json.dumps(return_dict, True)
 

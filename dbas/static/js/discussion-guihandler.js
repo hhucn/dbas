@@ -547,7 +547,7 @@ function GuiHandler() {
 	 * @param jsonData json encoded return data
 	 */
 	this.showStatementCorrectionsInPopup = function (jsonData) {
-		var table, tr, td_text, td_date, td_author;
+		var table, tr;
 
 		// top row
 		table = $('<table>');
@@ -557,15 +557,10 @@ function GuiHandler() {
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 		tr = $('<tr>');
-		td_date = $('<td>');
-		td_text = $('<td>');
-		td_author = $('<td>');
-		td_date.html('<strong>' + _t(date) + '</strong>').css('text-align', 'center');
-		td_text.html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
-		td_author.html('<strong>' + _t(author) + '</strong>').css('text-align', 'center');
-		tr.append(td_date);
-		tr.append(td_text);
-		tr.append(td_author);
+
+		tr.append($('<td>').html('<strong>' + _t(date) + '</strong>').css('text-align', 'center'));
+		tr.append($('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center'));
+		tr.append($('<td>').html('<strong>' + _t(author) + '</strong>').css('text-align', 'center'));
 		table.append(tr);
 
 		$.each(jsonData.content, function displayStatementCorrectionsInPopupEach(key, val) {

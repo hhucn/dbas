@@ -139,7 +139,7 @@ class DictionaryHelper(object):
 
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
-		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', intro + '<strong>' + text + '</strong>', False, statement_uid=uid)
+		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', intro + '<strong>' + text + '</strong>', False, statement_uid=uid, nickname=nickname)
 		question_bubble = self.__create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
 
 		if save_crumb:
@@ -287,8 +287,8 @@ class DictionaryHelper(object):
 		_tg					 = TextGenerator(self.lang)
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		if attack == 'end':
-			user_text        = _tn.get(_tn.soYourOpinionIsThat)\
-								  + ': <strong>' + _qh.get_text_for_argument_uid(uid, self.lang, True) + '</strong>.'
+			#  user_text        = _tn.get(_tn.soYourOpinionIsThat) + ': '
+			user_text        = '<strong>' + _qh.get_text_for_argument_uid(uid, self.lang, True) + '</strong>.'
 			sys_text         = _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
 			mid_text         = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 		else:
@@ -320,11 +320,11 @@ class DictionaryHelper(object):
 			                                                     current_argument, db_argument)
 
 		if attack == 'end':
-			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid)
+			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid, nickname=nickname)
 			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, True)
 			bubble_mid = self.__create_speechbubble_dict(False, False, True, '', '', mid_text, True)
 		else:
-			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid)
+			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid, nickname=nickname)
 			bubble_sys = self.__create_speechbubble_dict(False, True, False, 'question-bubble', '', sys_text, True)
 
 		# dirty fixes
@@ -972,7 +972,7 @@ class DictionaryHelper(object):
 			'attitude': attitude,
 			'url': url}
 
-	def __create_speechbubble_dict(self, is_user, is_system, is_status, uid, url, message, omit_url=False, argument_uid=None, statement_uid=None):
+	def __create_speechbubble_dict(self, is_user, is_system, is_status, uid, url, message, omit_url=False, argument_uid=None, statement_uid=None, nickname=None):
 		"""
 
 		:param is_user:
@@ -987,13 +987,16 @@ class DictionaryHelper(object):
 		:return:
 		"""
 		speech = dict()
-		speech['is_user']    = is_user
-		speech['is_system']  = is_system
-		speech['is_status']  = is_status
-		speech['id']         = uid if len(str(uid)) > 0 else 'None'
-		speech['url']        = url if len(str(url)) > 0 else 'None'
-		speech['message']    = message
-		speech['omit_url']   = omit_url
+		speech['is_user']            = is_user
+		speech['is_system']          = is_system
+		speech['is_status']          = is_status
+		speech['id']                 = uid if len(str(uid)) > 0 else 'None'
+		speech['url']                = url if len(str(url)) > 0 else 'None'
+		speech['message']            = message
+		speech['omit_url']           = omit_url
+		speech['data_type']          = 'argument' if argument_uid else 'statement' if statement_uid else 'None'
+		speech['data_argument_uid']  = str(argument_uid)
+		speech['data_statement_uid'] = str(statement_uid)
 		votecounts = None
 
 		if argument_uid:
@@ -1004,9 +1007,13 @@ class DictionaryHelper(object):
 			votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
 			                                                                  VoteStatement.is_up_vote == True,
 			                                                                  VoteStatement.is_valid == True)).all()
+
 		if votecounts:
 			_t = Translator(self.lang)
-			votecounts = len(votecounts) - 1 if votecounts else 0
+			diff = 0
+			if nickname:
+				diff = 1 if nickname != 'anonymous' else 0
+			votecounts = len(votecounts) - diff if votecounts else 0
 			if votecounts == 0:
 				speech['votecounts'] = _t.get(_t.voteCountTextFirst)
 			elif votecounts == 1:

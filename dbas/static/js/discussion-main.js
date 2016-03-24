@@ -89,12 +89,12 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 	 */
 	$('#' + popupUrlSharingLongUrlButtonID).click(function (){
 
-		if ($(this).attr('short_url') == '0'){
+		if ($(this).attr('data-short-url') == '0'){
 			new AjaxSiteHandler().getShortenUrl(window.location);
-			$(this).attr('short_url', '1').text(_t(fetchLongUrl));
+			$(this).attr('data-short-url', '1').text(_t(fetchLongUrl));
 		} else {
 			$('#' + popupUrlSharingInputId).val(window.location);
-			$(this).attr('short_url', '0').text(_t(fetchShortUrl));
+			$(this).attr('data-short-url', '0').text(_t(fetchShortUrl));
 		}
 	});
 
@@ -171,14 +171,9 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 			qmark = uid.indexOf('?');
 		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
 	});
-	$('#' + questionItButtonId).click(function(){
-		var splits = window.location.href.split('/'),
-			uid = splits[splits.length - 1],
-			qmark = uid.indexOf('?');
-		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
-	});
 
-	$('#add-topic').click(function(){
+	// adding issues
+	$('#' + addTopicButtonId).click(function(){
 		var p1 = $('<p>').text(_t(addTopicTitleText)),
 			p2 = $('<p>').text(_t(addTopicShortText)).attr('style', 'margin-top: 1em;'),
 			input1 = $('<input>').addClass('form-control').attr('type', 'text').attr('placeholder', '...').attr('id', 'add-topic-info-input'),
@@ -200,6 +195,16 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		});
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
+		});
+	});
+
+	// user info click
+	$('.triangle-r-info').each(function(){
+		$(this).click(function(){
+			var data_type = $(this).attr('data-type'),
+				data_argument_uid = $(this).attr('data-argument-uid'),
+				data_statement_uid = $(this).attr('data-statement-uid');
+			new AjaxSiteHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid);
 		});
 	});
 };
@@ -289,7 +294,6 @@ setNavigationSidebar = function (windowInnerWidth){
 		});
 	}
 	$('#' + sidebarMoreButtonId).attr('data-placement', windowInnerWidth < 992 ? 'top' : 'left');
-	$('#' + questionItButtonId).attr('data-placement', windowInnerWidth < 992 ? 'top' : 'left');
 };
 
 /**
