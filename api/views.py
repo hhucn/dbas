@@ -7,7 +7,7 @@ from cornice import Service
 
 import transaction
 
-from api.lib import response401, json_bytes_to_dict
+from api.lib import HTTP401, HTTP501, json_bytes_to_dict
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from api.login import valid_token, validate_credentials, validate_login
@@ -191,7 +191,7 @@ def add_start_statement(request):
 		api_data.update(data)
 		return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
 	else:
-		raise response401()
+		raise HTTP401()
 
 
 @start_premise.post(validators=validate_login)
@@ -207,7 +207,7 @@ def add_start_premise(request):
 		api_data.update(data)
 		return Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
 	else:
-		raise response401()
+		raise HTTP401()
 
 
 @justify_premise.post(validators=validate_login)
@@ -217,15 +217,16 @@ def add_justify_premise(request):
 	:param request:
 	:return:
 	"""
-	print("\n### JUSTIFY PREMISE ###\n")
-	api_data = prepare_user_information(request)
-	if api_data:
-		data = json_bytes_to_dict(request.body)
-		api_data.update(data)
-		print(api_data)
-		#return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
-	else:
-		raise response401()
+	raise HTTP501()
+	# print("\n### JUSTIFY PREMISE ###\n")
+	# api_data = prepare_user_information(request)
+	# if api_data:
+	# 	data = json_bytes_to_dict(request.body)
+	# 	api_data.update(data)
+	# 	print(api_data)
+	# 	#return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+	# else:
+	# 	raise HTTP401()
 
 # =============================================================================
 # OTHER REQUESTS
@@ -287,7 +288,7 @@ def user_login(request):
 	db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
 
 	if not db_user:
-		raise response401()
+		raise HTTP401()
 
 	db_user.set_token(token)
 	db_user.update_token_timestamp()
