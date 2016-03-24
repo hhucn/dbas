@@ -1220,6 +1220,16 @@ class QueryHelper(object):
 		return return_dict
 
 	def set_premises_as_group_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
+		"""
+		
+		:param transaction:
+		:param user:
+		:param text:
+		:param conclusion_id:
+		:param is_supportive:
+		:param issue:
+		:return:
+		"""
 		logger('QueryHelper', 'set_premises_as_group_for_conclusion', 'main with text ' + str(text))
 		# current conclusion
 		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
