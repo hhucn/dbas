@@ -38,7 +38,7 @@
 						</a>
 					</li>
 					<li>
-						<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" data-toggle="tooltip" data-placement="bottom" title="Graduation School Online Participation" target="_blank">
+						<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" data-toggle="tooltip" data-placement="bottom" title="Graduate School on Online-Participation" target="_blank">
 							<img id="logo_kolleg" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo" />
 							<img id="logo_kolleg_s" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}" alt="graduation school logo" />
 						</a>
