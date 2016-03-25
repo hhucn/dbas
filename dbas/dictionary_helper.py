@@ -165,7 +165,7 @@ class DictionaryHelper(object):
 		if not logged_in and count_of_items == 1:
 			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItem), True))
 
-		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': str(is_supportive)}
+		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 
 	def prepare_discussion_dict_for_justify_argument(self, nickname, uid, is_supportive, attack, logged_in, breadcrumbs, save_crumb, count_of_items, session_id, transaction):
 		"""
