@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-24 13:51+0100\n"
+"POT-Creation-Date: 2016-03-25 09:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -292,12 +292,12 @@ msgid "icons_by"
 msgstr ""
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: ./dbas/templates/imprint.pt:102
+#: ./dbas/templates/imprint.pt:98
 msgid "generated_with"
 msgstr ""
 
 #. Default: Changes
-#: ./dbas/templates/imprint.pt:127
+#: ./dbas/templates/imprint.pt:123
 msgid "changes"
 msgstr ""
 
@@ -552,7 +552,7 @@ msgstr ""
 
 #. Default: Your Gender
 #. Default: Gender
-#: ./dbas/templates/snippet-popups.pt:334 ./dbas/templates/admin.pt:133
+#: ./dbas/templates/snippet-popups.pt:334 ./dbas/templates/admin.pt:130
 msgid "gender"
 msgstr ""
 
@@ -994,17 +994,17 @@ msgid "email"
 msgstr ""
 
 #. Default: Group
-#: ./dbas/templates/admin.pt:130
+#: ./dbas/templates/admin.pt:131
 msgid "group_uid"
 msgstr ""
 
 #. Default: Last Login
-#: ./dbas/templates/admin.pt:131
+#: ./dbas/templates/admin.pt:132
 msgid "last_login"
 msgstr ""
 
 #. Default: Registered
-#: ./dbas/templates/admin.pt:132
+#: ./dbas/templates/admin.pt:133
 msgid "registered"
 msgstr ""
 

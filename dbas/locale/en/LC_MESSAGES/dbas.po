@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-24 13:51+0100\n"
+"POT-Creation-Date: 2016-03-25 09:10+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -356,12 +356,12 @@ msgid "icons_by"
 msgstr "Icons by"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:102
+#: dbas/templates/imprint.pt:98
 msgid "generated_with"
 msgstr "generated_with"
 
 #. Default: Changes
-#: dbas/templates/imprint.pt:127
+#: dbas/templates/imprint.pt:123
 msgid "changes"
 msgstr "Changes in Version"
 
@@ -626,7 +626,7 @@ msgstr "Nickname"
 
 #. Default: Your Gender
 #. Default: Gender
-#: dbas/templates/snippet-popups.pt:334 dbas/templates/admin.pt:133
+#: dbas/templates/snippet-popups.pt:334 dbas/templates/admin.pt:130
 msgid "gender"
 msgstr "Your Gender"
 
@@ -1071,17 +1071,17 @@ msgid "email"
 msgstr "Email Address"
 
 #. Default: Group
-#: dbas/templates/admin.pt:130
+#: dbas/templates/admin.pt:131
 msgid "group_uid"
 msgstr "Group"
 
 #. Default: Last Login
-#: dbas/templates/admin.pt:131
+#: dbas/templates/admin.pt:132
 msgid "last_login"
 msgstr "Last Login"
 
 #. Default: Registered
-#: dbas/templates/admin.pt:132
+#: dbas/templates/admin.pt:133
 msgid "registered"
 msgstr "Register"
 
