@@ -76,7 +76,7 @@ class Dbas(object):
 		return nickname, session_id
 
 	# main page
-	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
+	@view_config(route_name='main_page', renderer='templzates/index.pt', permission='everybody')
 	@forbidden_view_config(renderer='templates/index.pt')
 	def main_page(self):
 		"""
@@ -487,13 +487,13 @@ class Dbas(object):
 
 	# finish page
 	@view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
-	def page(self):
+	def discussion_finish(self):
 		"""
 
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('page', 'def', 'main')
+		logger('discussion_finish', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
 		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
