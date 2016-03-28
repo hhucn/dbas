@@ -448,11 +448,11 @@ class DictionaryHelper(object):
 
 		return statements_array
 
-	def prepare_item_dict_for_justify_statement(self, statement_uid, user, issue_uid, is_supportive, application_url, for_api):
+	def prepare_item_dict_for_justify_statement(self, statement_uid, nickname, issue_uid, is_supportive, application_url, for_api):
 		"""
 
 		:param statement_uid:
-		:param user:
+		:param nickname:
 		:param issue_uid:
 		:param is_supportive:
 		:param application_url:
@@ -488,12 +488,14 @@ class DictionaryHelper(object):
 				                                                     'justify',
 																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
-		if user:
+		if nickname:
 			statements_array.append(self.__create_statement_dict('start_premise',
 			                                                     _tn.get(_tn.newPremiseRadioButtonText),
 			                                                     [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
 																  'justify',
 																  'add'))
+		elif len(statements_array) == 1:
+			statements_array.append(self.__create_statement_dict('login', _tn.get(_tn.onlyOneItem), [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
 		return statements_array
 
@@ -573,6 +575,8 @@ class DictionaryHelper(object):
 			else:
 				text = _tn.get(_tn.newPremiseRadioButtonText)
 			statements_array.append(self.__create_statement_dict('justify_premise', text, [{'id': '0', 'title': text}], 'justify', 'add'))
+		elif len(statements_array) == 1:
+			statements_array.append(self.__create_statement_dict('login', _tn.get(_tn.onlyOneItem), [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
 		return statements_array
 

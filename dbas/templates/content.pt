@@ -94,7 +94,10 @@
 						<ul id="discussions-space-list">
 							<li tal:repeat="item items">
 								<input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
-								<span tal:repeat="premise item.premises" tal:omit-tag=""><label for="tmp" tal:attributes="for item.id; id premise.id">${structure:premise.title}</label><label tal:attributes="for item.id" tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em></label></span>
+								<span tal:repeat="premise item.premises" tal:omit-tag="">
+                                    <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
+                                    <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end">&nbsp;<em i18n:translate="and">and</em></label>
+                                </span>
 							</li>
 						</ul>
 

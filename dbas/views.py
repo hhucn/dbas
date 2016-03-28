@@ -76,7 +76,7 @@ class Dbas(object):
 		return nickname, session_id
 
 	# main page
-	@view_config(route_name='main_page', renderer='templzates/index.pt', permission='everybody')
+	@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 	@forbidden_view_config(renderer='templates/index.pt')
 	def main_page(self):
 		"""

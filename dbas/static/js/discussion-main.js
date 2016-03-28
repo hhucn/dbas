@@ -153,6 +153,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		new DiscussionBarometer().showBarometer()
 	});
 
+	// issues
 	$('#' + issueDropdownListID + ' .enabled').each(function() {
 		if ($(this).children().length > 0){
 			$(this).children().click(function() {
@@ -392,6 +393,13 @@ setGuiOptions = function(){
 		item_no_opinion.hide().next().prepend(no_opinion);
 	}
 
+	// uncheck login button on hide
+	$('#' + popupLogin).on('hidden.bs.modal', function () {
+		var login_item = $('#' + discussionSpaceListId).find('#item_login');
+		if (login_item.length > 0)
+			login_item.attr('checked', false).prop('checked', false)
+	});
+
 };
 
 /**
@@ -455,7 +463,8 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 	if (children.length == 1 && (
 		children.eq(0).attr('id').indexOf('start_statement') != -1 ||
 		children.eq(0).attr('id').indexOf('start_premise') != -1 ||
-		children.eq(0).attr('id').indexOf('justify_premise') != -1)) {
+		children.eq(0).attr('id').indexOf('justify_premise') != -1 ||
+		children.eq(0).attr('id').indexOf('login') != -1)) {
 		children.eq(0).attr('checked', true).prop('checked', true).parent().hide();
 	}
 
@@ -464,7 +473,8 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 	if (input.attr('id') && (
 		input.attr('id').indexOf('start_statement') != -1 ||
 		input.attr('id').indexOf('start_premise') != -1 ||
-		input.attr('id').indexOf('justify_premise') != -1)) {
+		input.attr('id').indexOf('justify_premise') != -1 ||
+		input.attr('id').indexOf('login') != -1)) {
 		input.attr('onclick', '');
 		input.change(function () {
 			if (input.prop('checked')) {
@@ -493,6 +503,11 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 					$('#' + sendNewPremiseId).off("click").click(function () {
 						sendArgumentsPremise();
 					});
+				}
+
+				// login
+				else if (input.attr('id').indexOf('login') != -1) {
+					$('#' + popupLogin).modal('show');
 				}
 			}
 		});
