@@ -60,7 +60,7 @@ setup(name='dbas',
 	main = dbas:main
 	[console_scripts]
 	initialize_discussion_sql = dbas.database.initializedb:main_discussion
+	reload_discussion_sql = dbas.database.initializedb:main_discussion_reload
 	initialize_news_sql = dbas.database.initializedb:main_news
-	initialize_api_sql = dbas.database.initializedb:main_api
 	""",
 	)

@@ -8,8 +8,8 @@ import transaction
 from dbas.user_management import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
-from dbas.database.discussion_model import User, Argument, Statement, TextVersion, \
-	PremiseGroup, Premise, Group, Issue, Notification, Settings
+from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue,\
+	Notification, Settings, VoteArgument, VoteStatement, Bubble, Breadcrumb, StatementReferences
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 
@@ -35,7 +35,26 @@ def main_discussion(argv=sys.argv):
 	DiscussionBase.metadata.create_all(discussion_engine)
 
 	with transaction.manager:
-		setup_discussion_database()
+		user2 = setup_up_users()
+		setup_discussion_database(user2)
+		transaction.commit()
+
+
+def main_discussion_reload(argv=sys.argv):
+	if len(argv) != 2:
+		usage(argv)
+	config_uri = argv[1]
+	setup_logging(config_uri)
+	settings = get_appsettings(config_uri)
+
+	discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+	DBDiscussionSession.configure(bind=discussion_engine)
+	DiscussionBase.metadata.create_all(discussion_engine)
+
+	with transaction.manager:
+		drop_in_discussion_database()
+		user2 = DBDiscussionSession.query(User).filter_by(nickname = 'tobias').first()
+		setup_discussion_database(user2)
 		transaction.commit()
 
 
@@ -273,7 +292,26 @@ def setup_news_db():
 	DBNewsSession.flush()
 
 
-def setup_discussion_database():
+def drop_in_discussion_database():
+	"""
+
+	:return:
+	"""
+	DBDiscussionSession.query(VoteArgument).delete()
+	DBDiscussionSession.query(VoteStatement).delete()
+	DBDiscussionSession.query(Bubble).delete()
+	DBDiscussionSession.query(Breadcrumb).delete()
+	DBDiscussionSession.query(Notification).delete()
+	DBDiscussionSession.query(StatementReferences).delete()
+	DBDiscussionSession.query(Argument).delete()
+	DBDiscussionSession.query(Premise).delete()
+	DBDiscussionSession.query(PremiseGroup).delete()
+	DBDiscussionSession.query(Statement).delete()
+	DBDiscussionSession.query(TextVersion).delete()
+	DBDiscussionSession.query(Issue).delete()
+
+
+def setup_up_users():
 	# adding groups
 	group0 = Group(name='admins')
 	group1 = Group(name='authors')
@@ -307,14 +345,6 @@ def setup_discussion_database():
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
 	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10])
 	DBDiscussionSession.flush()
-	# adding our main issue
-	issue1 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user2.uid)
-	issue2 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user2.uid)
-	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user2.uid)
-	issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user2.uid)
-	DBDiscussionSession.add_all([issue2, issue1])
-	DBDiscussionSession.flush()
-
 
 	# adding settings
 	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True)
@@ -343,6 +373,18 @@ def setup_discussion_database():
 	notification8 = Notification(from_author_uid=user1.uid, to_author_uid=user10.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	DBDiscussionSession.add_all([notification0, notification1, notification2, notification3, notification4])
 	DBDiscussionSession.add_all([notification5, notification6, notification7, notification8])
+	DBDiscussionSession.flush()
+
+	return user2
+
+
+def setup_discussion_database(user2):
+	# adding our main issue
+	issue1 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user2.uid)
+	issue2 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user2.uid)
+	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user2.uid)
+	issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user2.uid)
+	DBDiscussionSession.add_all([issue2, issue1])
 	DBDiscussionSession.flush()
 
 	# Adding all textversions
@@ -490,64 +532,64 @@ def setup_discussion_database():
 	DBDiscussionSession.flush()
 
 	# set statements
-	textversion1.set_statement(statement1.uid)
-	textversion2.set_statement(statement2.uid)
-	textversion3.set_statement(statement3.uid)
-	textversion4.set_statement(statement4.uid)
-	textversion5.set_statement(statement5.uid)
-	textversion6.set_statement(statement6.uid)
-	textversion7.set_statement(statement7.uid)
-	textversion8.set_statement(statement8.uid)
-	textversion9.set_statement(statement9.uid)
-	textversion10.set_statement(statement10.uid)
-	textversion11.set_statement(statement11.uid)
-	textversion12.set_statement(statement12.uid)
-	textversion13.set_statement(statement13.uid)
-	textversion14.set_statement(statement14.uid)
-	textversion15.set_statement(statement15.uid)
-	textversion16.set_statement(statement16.uid)
-	textversion17.set_statement(statement17.uid)
-	textversion18.set_statement(statement18.uid)
-	textversion19.set_statement(statement19.uid)
-	textversion20.set_statement(statement20.uid)
-	textversion21.set_statement(statement21.uid)
-	textversion22.set_statement(statement22.uid)
-	textversion23.set_statement(statement23.uid)
-	textversion24.set_statement(statement24.uid)
-	textversion25.set_statement(statement25.uid)
-	textversion26.set_statement(statement26.uid)
-	textversion27.set_statement(statement27.uid)
-	textversion29.set_statement(statement29.uid)
-	textversion30.set_statement(statement30.uid)
-	textversion31.set_statement(statement31.uid)
-	textversion32.set_statement(statement32.uid)
-	textversion33.set_statement(statement33.uid)
-	textversion34.set_statement(statement34.uid)
-	textversion35.set_statement(statement35.uid)
-	textversion36.set_statement(statement36.uid)
-	textversion101.set_statement(statement101.uid)
-	textversion102.set_statement(statement102.uid)
-	textversion103.set_statement(statement103.uid)
-	# textversion104.set_statement(statement104.uid)
-	textversion105.set_statement(statement105.uid)
-	textversion106.set_statement(statement106.uid)
-	textversion107.set_statement(statement107.uid)
-	textversion108.set_statement(statement108.uid)
-	textversion109.set_statement(statement109.uid)
-	textversion110.set_statement(statement110.uid)
-	textversion111.set_statement(statement111.uid)
-	textversion112.set_statement(statement112.uid)
-	textversion113.set_statement(statement113.uid)
-	textversion114.set_statement(statement114.uid)
-	textversion115.set_statement(statement115.uid)
-	textversion116.set_statement(statement116.uid)
-	textversion117.set_statement(statement117.uid)
-	textversion118.set_statement(statement118.uid)
-	textversion119.set_statement(statement119.uid)
-	textversion120.set_statement(statement120.uid)
-	textversion121.set_statement(statement121.uid)
-	textversion122.set_statement(statement122.uid)
-	textversion123.set_statement(statement123.uid)
+	# textversion1.set_statement(statement1.uid)
+	# textversion2.set_statement(statement2.uid)
+	# textversion3.set_statement(statement3.uid)
+	# textversion4.set_statement(statement4.uid)
+	# textversion5.set_statement(statement5.uid)
+	# textversion6.set_statement(statement6.uid)
+	# textversion7.set_statement(statement7.uid)
+	# textversion8.set_statement(statement8.uid)
+	# textversion9.set_statement(statement9.uid)
+	# textversion10.set_statement(statement10.uid)
+	# textversion11.set_statement(statement11.uid)
+	# textversion12.set_statement(statement12.uid)
+	# textversion13.set_statement(statement13.uid)
+	# textversion14.set_statement(statement14.uid)
+	# textversion15.set_statement(statement15.uid)
+	# textversion16.set_statement(statement16.uid)
+	# textversion17.set_statement(statement17.uid)
+	# textversion18.set_statement(statement18.uid)
+	# textversion19.set_statement(statement19.uid)
+	# textversion20.set_statement(statement20.uid)
+	# textversion21.set_statement(statement21.uid)
+	# textversion22.set_statement(statement22.uid)
+	# textversion23.set_statement(statement23.uid)
+	# textversion24.set_statement(statement24.uid)
+	# textversion25.set_statement(statement25.uid)
+	# textversion26.set_statement(statement26.uid)
+	# textversion27.set_statement(statement27.uid)
+	# textversion29.set_statement(statement29.uid)
+	# textversion30.set_statement(statement30.uid)
+	# textversion31.set_statement(statement31.uid)
+	# textversion32.set_statement(statement32.uid)
+	# textversion33.set_statement(statement33.uid)
+	# textversion34.set_statement(statement34.uid)
+	# textversion35.set_statement(statement35.uid)
+	# textversion36.set_statement(statement36.uid)
+	# textversion101.set_statement(statement101.uid)
+	# textversion102.set_statement(statement102.uid)
+	# textversion103.set_statement(statement103.uid)
+	# # textversion104.set_statement(statement104.uid)
+	# textversion105.set_statement(statement105.uid)
+	# textversion106.set_statement(statement106.uid)
+	# textversion107.set_statement(statement107.uid)
+	# textversion108.set_statement(statement108.uid)
+	# textversion109.set_statement(statement109.uid)
+	# textversion110.set_statement(statement110.uid)
+	# textversion111.set_statement(statement111.uid)
+	# textversion112.set_statement(statement112.uid)
+	# textversion113.set_statement(statement113.uid)
+	# textversion114.set_statement(statement114.uid)
+	# textversion115.set_statement(statement115.uid)
+	# textversion116.set_statement(statement116.uid)
+	# textversion117.set_statement(statement117.uid)
+	# textversion118.set_statement(statement118.uid)
+	# textversion119.set_statement(statement119.uid)
+	# textversion120.set_statement(statement120.uid)
+	# textversion121.set_statement(statement121.uid)
+	# textversion122.set_statement(statement122.uid)
+	# textversion123.set_statement(statement123.uid)
 
 	DBDiscussionSession.flush()
 
