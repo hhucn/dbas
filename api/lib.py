@@ -26,27 +26,3 @@ def json_bytes_to_dict(col):
 	:return: dict
 	"""
 	return json.loads(col.decode("utf-8"))
-
-
-class HTTP401(exc.HTTPError):
-	"""
-	Return a 401 HTTP Error message if user is not authenticated.
-	:return:
-	"""
-	def __init__(self, msg='Unauthorized'):
-		body = {'status': 401, 'message': msg}
-		Response.__init__(self, json.dumps(body))
-		self.status = 401
-		self.content_type = 'application/json'
-
-
-class HTTP501(exc.HTTPError):
-	"""
-	HTTP 501: Not implemented
-	:return:
-	"""
-	def __init__(self, msg='Not Implemented'):
-		body = {'status': 501, 'message': msg}
-		Response.__init__(self, json.dumps(body))
-		self.status = 501
-		self.content_type = 'application/json'
