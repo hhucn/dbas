@@ -11,28 +11,17 @@ from dbas.query_helper import QueryHelper
 from dbas.logger import logger
 from pyramid.threadlocal import get_current_registry
 
-#
-# CORS configuration
-#
-cors_policy = dict(enabled=True,
-				   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
-				   origins=('*',),
-				   max_age=42)
-
-
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
 dump = Service(name='export_dump',
 			   path='/dump',
-			   description="Database Dump",
-			   cors_policy=cors_policy)
+			   description="Database Dump")
 
 sigma = Service(name='export_sigma',
                 path='/sigma',
-                description="Sigma Dump",
-                cors_policy=cors_policy)
+                description="Sigma Dump")
 
 
 # =============================================================================

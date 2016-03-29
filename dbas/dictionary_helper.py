@@ -399,7 +399,6 @@ class DictionaryHelper(object):
 		if db_statements:
 			for statement in db_statements:
 				statements_array.append(self.__create_statement_dict(statement.uid,
-				                                                     _qh.get_text_for_statement_uid(statement.uid),
 				                                                     [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
 																     'start',
 																     _um.get_url_for_statement_attitude(True, statement.uid)))
@@ -407,7 +406,6 @@ class DictionaryHelper(object):
 			if logged_in:
 				_tn = Translator(self.lang)
 				statements_array.append(self.__create_statement_dict('start_statement',
-				                                                     _tn.get(_tn.newConclusionRadioButtonText),
 				                                                     [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
 																	 'start',
 																	 'add'))
@@ -434,15 +432,12 @@ class DictionaryHelper(object):
 		_um = UrlManager(application_url, slug, for_api)
 
 		statements_array.append(self.__create_statement_dict('agree',
-		                                                     _tn.get(_tn.iAgreeWithInColor) + ': ' + text,
 		                                                     [{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
 															 'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't')))
 		statements_array.append(self.__create_statement_dict('disagree',
-		                                                     _tn.get(_tn.iDisagreeWithInColor) + ': ' + text,
 		                                                     [{'title': _tn.get(_tn.iDisagreeWithInColor) + ': ' + text, 'id': 'disagree'}],
 															 'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f')))
 		statements_array.append(self.__create_statement_dict('dontknow',
-		                                                     _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text,
 		                                                     [{'title': _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text, 'id': 'dontknow'}],
 															 'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd')))
 
@@ -483,19 +478,17 @@ class DictionaryHelper(object):
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, issue_uid, self.lang)
 				statements_array.append(self.__create_statement_dict(str(argument.uid),
-				                                                     text,
 				                                                     premise_array,
 				                                                     'justify',
 																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
 
 		if nickname:
 			statements_array.append(self.__create_statement_dict('start_premise',
-			                                                     _tn.get(_tn.newPremiseRadioButtonText),
 			                                                     [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
 																  'justify',
 																  'add'))
 		elif len(statements_array) == 1:
-			statements_array.append(self.__create_statement_dict('login', _tn.get(_tn.onlyOneItem), [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
+			statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
 		return statements_array
 
@@ -567,16 +560,16 @@ class DictionaryHelper(object):
 				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self.lang)
 
 				url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
-				statements_array.append(self.__create_statement_dict(argument.uid, text, premises_array, 'justify', url))
+				statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))
 
 		if logged_in:
 			if len(statements_array) == 0:
 				text = _tn.get(_tn.newPremisesRadioButtonTextAsFirstOne)
 			else:
 				text = _tn.get(_tn.newPremiseRadioButtonText)
-			statements_array.append(self.__create_statement_dict('justify_premise', text, [{'id': '0', 'title': text}], 'justify', 'add'))
+			statements_array.append(self.__create_statement_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
 		elif len(statements_array) == 1:
-			statements_array.append(self.__create_statement_dict('login', _tn.get(_tn.onlyOneItem), [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
+			statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
 		return statements_array
 
@@ -619,7 +612,7 @@ class DictionaryHelper(object):
 				current_mode = mode if relation == 'overbid' else counter_mode
 				url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, relation)
 
-			statements_array.append(self.__create_statement_dict(relation, rel_dict[relation + '_text'], [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
 
@@ -690,7 +683,7 @@ class DictionaryHelper(object):
 			else:
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
-			statements_array.append(self.__create_statement_dict(relation, rel_dict[relation + '_text'], [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the back button
 		# relation = 'no_opinion'
@@ -706,7 +699,7 @@ class DictionaryHelper(object):
 		else:
 			relation = 'no_opinion'
 			url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
-		statements_array.append(self.__create_statement_dict(relation, rel_dict[relation + '_text'], [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+		statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
 
@@ -751,7 +744,7 @@ class DictionaryHelper(object):
 			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(db_argument.uid, issue_uid, self.lang)
 			url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
-			statements_array.append(self.__create_statement_dict(str(db_argument.uid), text, premise_array, 'choose', url))
+			statements_array.append(self.__create_statement_dict(str(db_argument.uid), premise_array, 'choose', url))
 		# url = 'back' if for_api else 'window.history.go(-1)'
 		# text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
 		# statements_array.append(self.__create_statement_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
@@ -978,11 +971,10 @@ class DictionaryHelper(object):
 		})
 
 	@staticmethod
-	def __create_statement_dict(uid, title, premises, attitude, url):
+	def __create_statement_dict(uid, premises, attitude, url):
 		"""
 
 		:param uid:
-		:param title:
 		:param premises:
 		:param attitude:
 		:param url:
@@ -990,7 +982,6 @@ class DictionaryHelper(object):
 		"""
 		return {
 			'id': 'item_' + str(uid),
-			'title': title,
 			'premises': premises,
 			'attitude': attitude,
 			'url': url}
