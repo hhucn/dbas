@@ -218,13 +218,11 @@ def add_justify_premise(request):
 	:param request:
 	:return:
 	"""
-	print("\n### JUSTIFY PREMISE ###\n")
 	api_data = prepare_user_information(request)
 	if api_data:
 		data = json_bytes_to_dict(request.body)
 		api_data.update(data)
-		print(api_data)
-		#return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+		return Dbas(request).set_new_premises_for_argument(for_api=True, api_data=api_data)
 	else:
 		raise HTTP401()
 

@@ -1292,21 +1292,27 @@ class Dbas(object):
 		lang = _qh.get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 
+		print("\n\n\n")
+
 		try:
 			if for_api and api_data:
 				nickname      = api_data['nickname']
 				premisegroups = api_data['statement']
 				issue         = api_data['issue_id']
-				arg_uid       = None
-				attack_type   = None
-				conclusion_id = api_data['conclusion_id']
-				supportive    = api_data['supportive']
+				arg_uid       = api_data['arg_uid']
+				attack_type   = api_data['attack_type']
 			else:
-				nickname        = self.request.authenticated_userid
-				premisegroups   = json.loads(self.request.params['premisegroups'])
-				issue           = _qh.get_issue_id(self.request)
-				arg_uid         = self.request.params['arg_uid']
-				attack_type     = self.request.params['attack_type']
+				nickname = self.request.authenticated_userid
+				premisegroups = json.loads(self.request.params['premisegroups'])
+				issue = _qh.get_issue_id(self.request)
+				arg_uid = self.request.params['arg_uid']
+				attack_type = self.request.params['attack_type']
+
+			print("nickname: %s" % nickname)
+			print("premisegroups: %s" % premisegroups)
+			print("issue: %s" % issue)
+			print("arg_uid: %s" % arg_uid)
+			print("attack_type: %s" % attack_type)
 
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, issue, nickname, for_api,
@@ -1317,6 +1323,8 @@ class Dbas(object):
 
 			if url == -1:
 				return json.dumps(return_dict, True)
+
+			print("\n\n\n")
 
 			return_dict['url'] = url
 
