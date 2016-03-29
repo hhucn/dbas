@@ -226,7 +226,7 @@ class TextVersion(DiscussionBase):
 	author_uid = Column(Integer, ForeignKey('users.uid'))
 	timestamp = Column(DateTime(timezone=True), default=func.now())
 
-	statements = relationship('Statement', foreign_keys=[statement_uid]) # TODO not neccessary
+	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
 	def __init__(self, content, author, statement_uid=None):
@@ -239,6 +239,14 @@ class TextVersion(DiscussionBase):
 		self.content = content
 		self.author_uid = author
 		self.timestamp = func.now()
+		self.statement_uid = statement_uid
+
+	def set_statement(self, statement_uid):
+		"""
+
+		:param statement_uid:
+		:return:
+		"""
 		self.statement_uid = statement_uid
 
 
