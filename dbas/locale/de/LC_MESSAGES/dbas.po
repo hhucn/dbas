@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-29 09:44+0200\n"
+"POT-Creation-Date: 2016-03-29 12:44+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -50,28 +50,28 @@ msgid "welcome_text3"
 msgstr "Sie uns."
 
 #. Default: Click here to start now!
-#: dbas/templates/index.pt:26
+#: dbas/templates/index.pt:27
 msgid "lets_start_now"
 msgstr "Hier klicken um zu starten"
 
 #. Default: This work is part of the graduate school on
-#: dbas/templates/index.pt:31
+#: dbas/templates/index.pt:33
 msgid "work_based_on"
 msgstr "Dieses Projekt ist Teil der Graduierten-Kollegs"
 
 #. Default: Online-Participation
-#: dbas/templates/index.pt:31
+#: dbas/templates/index.pt:33
 msgid "online_participation"
 msgstr "Online-Partizipation"
 
 #. Default: It is funded by the
-#: dbas/templates/index.pt:32
+#: dbas/templates/index.pt:34
 msgid "funded_by"
 msgstr "Es wird finanziert bei dem"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: dbas/templates/index.pt:32
+#: dbas/templates/index.pt:34
 msgid "ministry_of_innovation"
 msgstr ""
 "Ministerium fpr Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
@@ -392,9 +392,9 @@ msgstr "Impressum und Urheberrecht"
 msgid "author"
 msgstr "Autor"
 
-#. Default: Licence
+#. Default: license
 #: dbas/templates/snippet-footer.pt:25
-msgid "licence"
+msgid "license"
 msgstr "Lizenz"
 
 #. Default: About me
@@ -482,7 +482,7 @@ msgstr "Schließen"
 
 #. Default: MIT License (MIT)
 #: dbas/templates/snippet-popups.pt:88
-msgid "mit_licencse"
+msgid "mit_license"
 msgstr "MIT Lizenz"
 
 #. Default: Permission is hereby granted, free of charge, to any person
@@ -493,7 +493,7 @@ msgstr "MIT Lizenz"
 #. whom the Software is furnished to do so, subject to the following
 #. conditions:
 #: dbas/templates/snippet-popups.pt:97
-msgid "mit_licence_part1"
+msgid "mit_license_part1"
 msgstr ""
 "Hiermit wird unentgeltlich jeder Person, die eine Kopie der Software und der "
 "zugehörigen Dokumentationen (die \"Software\")erhält, die Erlaubnis erteilt, "
@@ -505,7 +505,7 @@ msgstr ""
 #. Default: The above copyright notice and this permission notice shall be
 #. included in all copies or substantial portions of the Software.
 #: dbas/templates/snippet-popups.pt:106
-msgid "mit_licence_part2"
+msgid "mit_license_part2"
 msgstr ""
 "Der obige Urheberrechtsvermerk und dieser Erlaubnisvermerk sind in allen "
 "Kopien oder Teilkopien der Software beizulegen."
@@ -518,7 +518,7 @@ msgstr ""
 #. OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 #. USE OR OTHER DEALINGS IN THE SOFTWARE.
 #: dbas/templates/snippet-popups.pt:111
-msgid "mit_licence_part3"
+msgid "mit_license_part3"
 msgstr ""
 "DIE SOFTWARE WIRD OHNE JEDE AUSDRÜCKLICHE ODER IMPLIZIERTE GARANTIE "
 "BEREITGESTELLT, EINSCHLIESSLICH DER GARANTIE ZUR BENUTZUNG FÜR DEN "

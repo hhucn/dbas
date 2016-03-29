@@ -79,13 +79,13 @@
     </div>
 
     <!-- COPYRIGHT POPUP IN dropdown-menu -->
-    <div class="modal fade" id="popup_licence" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup_license" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
-    				<button name="popup_licence_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				<button name="popup_license_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="mit_licencse">MIT License (MIT)</h4>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="mit_license">MIT License (MIT)</h4>
     			</div>
     			<div class="modal-body">
     				<span>
@@ -94,7 +94,7 @@
     						Tobias Krauthoff
     					</a><br><br>
 
-    				<span i18n:translate="mit_licence_part1">Permission is hereby granted, free of charge, to any person obtaining a copy
+    				<span i18n:translate="mit_license_part1">Permission is hereby granted, free of charge, to any person obtaining a copy
     				of this software and associated documentation files (the "Software"), to deal
     				in the Software without restriction, including without limitation the rights
     				to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -103,12 +103,12 @@
     				<br>
     				<br>
 
-    				<span i18n:translate="mit_licence_part2">The above copyright notice and this permission notice shall be included in
+    				<span i18n:translate="mit_license_part2">The above copyright notice and this permission notice shall be included in
     					all copies or substantial portions of the Software.</span>
     				<br>
     				<br>
 
-    				<span i18n:translate="mit_licence_part3">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    				<span i18n:translate="mit_license_part3">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     				IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     				FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
     				AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -117,7 +117,7 @@
     					THE SOFTWARE.</span></span>
     			</div>
     			<div class="modal-footer">
-    				<button id="popup_licence_btn_close" type="button" class="btn btn-primary" data-dismiss="modal" i18n:translate="close">Close</button>
+    				<button id="popup_license_btn_close" type="button" class="btn btn-primary" data-dismiss="modal" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>

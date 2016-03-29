@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-29 09:44+0200\n"
+"POT-Creation-Date: 2016-03-29 12:44+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -50,28 +50,28 @@ msgid "welcome_text3"
 msgstr "us to report bugs or provide feedback."
 
 #. Default: Click here to start now!
-#: dbas/templates/index.pt:26
+#: dbas/templates/index.pt:27
 msgid "lets_start_now"
 msgstr "Click here to start now!"
 
 #. Default: This work is part of the graduate school on
-#: dbas/templates/index.pt:31
+#: dbas/templates/index.pt:33
 msgid "work_based_on"
 msgstr "This work is part of the graduate school on"
 
 #. Default: Online-Participation
-#: dbas/templates/index.pt:31
+#: dbas/templates/index.pt:33
 msgid "online_participation"
 msgstr "Online-Participation"
 
 #. Default: It is funded by the
-#: dbas/templates/index.pt:32
+#: dbas/templates/index.pt:34
 msgid "funded_by"
 msgstr "It is funded by the"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: dbas/templates/index.pt:32
+#: dbas/templates/index.pt:34
 msgid "ministry_of_innovation"
 msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 
@@ -380,10 +380,10 @@ msgstr "Imprint and Copyright"
 msgid "author"
 msgstr "Author"
 
-#. Default: Licence
+#. Default: license
 #: dbas/templates/snippet-footer.pt:25
-msgid "licence"
-msgstr "Licence"
+msgid "license"
+msgstr "License"
 
 #. Default: About me
 #: dbas/templates/snippet-popups.pt:9
@@ -470,7 +470,7 @@ msgstr "Close"
 
 #. Default: MIT License (MIT)
 #: dbas/templates/snippet-popups.pt:88
-msgid "mit_licencse"
+msgid "mit_license"
 msgstr "MIT License (MIT)"
 
 #. Default: Permission is hereby granted, free of charge, to any person
@@ -481,7 +481,7 @@ msgstr "MIT License (MIT)"
 #. whom the Software is furnished to do so, subject to the following
 #. conditions:
 #: dbas/templates/snippet-popups.pt:97
-msgid "mit_licence_part1"
+msgid "mit_license_part1"
 msgstr ""
 "Permission is hereby granted, free of charge, to any person obtaining a copy "
 "of this software and associated documentation files (the \"Software\"), to "
@@ -493,7 +493,7 @@ msgstr ""
 #. Default: The above copyright notice and this permission notice shall be
 #. included in all copies or substantial portions of the Software.
 #: dbas/templates/snippet-popups.pt:106
-msgid "mit_licence_part2"
+msgid "mit_license_part2"
 msgstr ""
 "The above copyright notice and this permission notice shall be included in "
 "all copies or substantial portions of the Software."
@@ -506,7 +506,7 @@ msgstr ""
 #. OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 #. USE OR OTHER DEALINGS IN THE SOFTWARE.
 #: dbas/templates/snippet-popups.pt:111
-msgid "mit_licence_part3"
+msgid "mit_license_part3"
 msgstr ""
 "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR "
 "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, "
