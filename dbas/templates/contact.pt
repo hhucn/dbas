@@ -72,5 +72,6 @@
 <script type="text/javascript" src="${request.static_url('dbas:static/js/contact.js')}"></script>
 -->
 		</div>
+		
 	</tal:block>
-	</tal:block>
+</tal:block>

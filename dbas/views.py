@@ -369,7 +369,7 @@ class Dbas(object):
 			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, issue,
 			                                                              supportive, mainpage, for_api)
 			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(nickname, transaction, statement_or_arg_id,
-			                                                                    breadcrumbs, has_new_crumbs,
+			                                                                    breadcrumbs, has_new_crumbs, mainpage, slug,
 			                                                                    supportive, nickname, len(item_dict), session_id)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)
@@ -710,6 +710,35 @@ class Dbas(object):
 			'title': 'Imprint',
 			'project': project_name,
 			'extras': extras_dict
+		}
+
+	# admin page
+	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='everybody')  # or permission='use'
+	def main_admin(self):
+		"""
+		View configuration for the content view. Only logged in user can reach this page.
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('main_admin', 'def', 'main')
+		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if should_log_out:
+			return self.user_logout(True)
+
+		_qh = QueryHelper()
+		ui_locales = _qh.get_language(self.request, get_current_registry())
+		extras_dict = DictionaryHelper().prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
+		dashboard = _qh.get_dashboard_infos()
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'Admin',
+			'project': project_name,
+			'extras': extras_dict,
+			'users': users,
+			'dashboard': dashboard
 		}
 
 	# 404 page

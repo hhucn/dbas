@@ -151,7 +151,7 @@ class QueryHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(argument_uid)).first()
 		if not db_argument:
 			return None
-		if db_argument.conclusion_uid != 0:
+		if db_argument.conclusion_uid is not None:
 			return self.get_rebuts_for_arguments_conclusion_uid(db_argument, lang)
 		else:
 			return self.get_undercuts_for_argument_uid(db_argument.argument_uid, lang)

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-25 09:10+0100\n"
+"POT-Creation-Date: 2016-03-29 09:44+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -48,6 +48,11 @@ msgstr "kontaktieren"
 #: dbas/templates/index.pt:21
 msgid "welcome_text3"
 msgstr "Sie uns."
+
+#. Default: Click here to start now!
+#: dbas/templates/index.pt:26
+msgid "lets_start_now"
+msgstr "Hier klicken um zu starten"
 
 #. Default: This work is part of the graduate school on
 #: dbas/templates/index.pt:31
@@ -605,7 +610,7 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:291 dbas/templates/snippet-popups.pt:398
-#: dbas/templates/content.pt:143
+#: dbas/templates/content.pt:146
 msgid "error"
 msgstr "Fehler:"
 
@@ -830,7 +835,7 @@ msgstr "Argumente"
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:568 dbas/templates/snippet-popups.pt:599
-#: dbas/templates/content.pt:301 dbas/templates/content.pt:324
+#: dbas/templates/content.pt:304 dbas/templates/content.pt:327
 msgid "error:"
 msgstr "Fehler:"
 
@@ -1047,6 +1052,16 @@ msgstr ""
 msgid "contact_us"
 msgstr "kontaktieren Sie uns bitte (hier klicken)"
 
+#. Default: Let's go home!
+#: dbas/templates/finish.pt:15
+msgid "lets_go_home"
+msgstr "Zur Startseite!"
+
+#. Default: Back to the discussion!
+#: dbas/templates/finish.pt:18
+msgid "back_to_the_discussion"
+msgstr "Zurück zur Diskussion!"
+
 #. Default: Dashboard
 #: dbas/templates/admin.pt:20
 msgid "dashboard"
@@ -1169,52 +1184,52 @@ msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: and
-#: dbas/templates/content.pt:97
+#: dbas/templates/content.pt:99
 msgid "and"
 msgstr "und"
 
 #. Default: Island View for
-#: dbas/templates/content.pt:157
+#: dbas/templates/content.pt:160
 msgid "island_view_for"
 msgstr "Insel-Ansicht für"
 
 #. Default: Add statement
-#: dbas/templates/content.pt:276
+#: dbas/templates/content.pt:279
 msgid "add_statement"
 msgstr "Aussage hinzufügen"
 
 #. Default: What is your idea? What should we do?
-#: dbas/templates/content.pt:295
+#: dbas/templates/content.pt:298
 msgid "what_is_your_idea"
 msgstr "Was ist Ihre Idee? Was sollten wir machen?"
 
 #. Default: Let me enter my reason!
-#: dbas/templates/content.pt:317
+#: dbas/templates/content.pt:320
 msgid "let_me_enter_my_reason"
 msgstr "Lass' mich meinen Grund angeben!"
 
 #. Default: Because...
-#: dbas/templates/content.pt:330
+#: dbas/templates/content.pt:333
 msgid "Because..."
 msgstr "Weil..."
 
 #. Default: Change display style
-#: dbas/templates/content.pt:354
+#: dbas/templates/content.pt:357
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:357
+#: dbas/templates/content.pt:360
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:363
+#: dbas/templates/content.pt:366
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:369
+#: dbas/templates/content.pt:372
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
