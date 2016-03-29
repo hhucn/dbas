@@ -221,15 +221,15 @@ class TextVersion(DiscussionBase):
 	"""
 	__tablename__ = 'textversions'
 	uid = Column(Integer, primary_key=True)
-	# statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
+	statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
 	content = Column(Text, nullable=False)
 	author_uid = Column(Integer, ForeignKey('users.uid'))
 	timestamp = Column(DateTime(timezone=True), default=func.now())
 
-	# statements = relationship('Statement', foreign_keys=[statement_uid]) # TODO not neccessary
+	statements = relationship('Statement', foreign_keys=[statement_uid]) # TODO not neccessary
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, content, author):
+	def __init__(self, content, author, statement_uid=None):
 		"""
 		Initializes a row in current text versions-table
 		:param content:
@@ -239,9 +239,7 @@ class TextVersion(DiscussionBase):
 		self.content = content
 		self.author_uid = author
 		self.timestamp = func.now()
-
-	# def set_statement(self, value):
-	# 	self.statement_uid = value
+		self.statement_uid = statement_uid
 
 
 class PremiseGroup(DiscussionBase):

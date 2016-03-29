@@ -1537,23 +1537,6 @@ class Dbas(object):
 		return_dict = QueryHelper().get_news()
 		return json.dumps(return_dict, True)
 
-	# ajax - for getting database
-	@view_config(route_name='ajax_get_database_dump', renderer='json')
-	def get_database_dump(self):
-		"""
-		ajax interface for getting a dump
-		:return: json-set with everything
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_database_dump', 'def', 'main')
-		_qh = QueryHelper()
-		issue = _qh.get_issue_id(self.request)
-		ui_locales = _qh.get_language(self.request, get_current_registry())
-
-		return_dict = _qh.get_dump(issue, ui_locales)
-
-		return json.dumps(return_dict, True)
-
 	# ajax - for getting argument infos
 	@view_config(route_name='ajax_get_infos_about_argument', renderer='json')
 	def get_infos_about_argument(self):
