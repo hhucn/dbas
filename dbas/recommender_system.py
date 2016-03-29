@@ -157,18 +157,21 @@ class RecommenderHelper(object):
 			key = 'undermine' if attack == 1 \
 				else ('rebut' if attack == 5
 				      else 'undercut')
-			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'key: ' + key)
 			if return_array and len(return_array) != 0:
+				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'key: ' + key + ', attack found')
 				attack_found = True
 				break
 			else:
-				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attack found')
+				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'key: ' + key + ', no attack found')
 
 		if len(left_attacks) > 0 and not attack_found:
 			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
 			return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks, lang)
 		else:
-			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
+			if len(left_attacks) == 0:
+				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
+			if attack_found:
+				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack found')
 
 		return return_array, key
 

@@ -105,8 +105,8 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_justify_statement(self, nickname, transaction, uid, breadcrumbs, save_crumb,
-	                                                  is_supportive, logged_in, count_of_items, session_id):
+	def prepare_discussion_dict_for_justify_statement(self, nickname, transaction, uid, breadcrumbs, save_crumb, application_url,
+	                                                  slug, is_supportive, logged_in, count_of_items, session_id):
 		"""
 
 		:param nickname:
@@ -114,6 +114,8 @@ class DictionaryHelper(object):
 		:param uid:
 		:param breadcrumbs:
 		:param save_crumb:
+		:param application_url:
+		:param slug:
 		:param is_supportive:
 		:param logged_in:
 		:param count_of_items:
@@ -140,7 +142,8 @@ class DictionaryHelper(object):
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro_rev = '' if not is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
-		select_bubble = self.__create_speechbubble_dict(True, False, False, '', '', intro + '<strong>' + text + '</strong>', False, statement_uid=uid, nickname=nickname)
+		url = UrlManager(application_url, slug).get_slug_url(False)
+		select_bubble = self.__create_speechbubble_dict(True, False, False, '', url, intro + '<strong>' + text + '</strong>', False, statement_uid=uid, nickname=nickname)
 		question_bubble = self.__create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
 
 		if save_crumb:
@@ -473,14 +476,13 @@ class DictionaryHelper(object):
 					text = _qh.get_text_for_statement_uid(premise.statement_uid)
 					premise_array.append({'title': text, 'id': premise.statement_uid})
 
-				text, uid = _qh.get_text_for_premisesgroup_uid(argument.premisesgroup_uid, self.lang)
-
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, issue_uid, self.lang)
 				statements_array.append(self.__create_statement_dict(str(argument.uid),
 				                                                     premise_array,
 				                                                     'justify',
 																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
+
 
 		if nickname:
 			statements_array.append(self.__create_statement_dict('start_premise',

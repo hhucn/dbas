@@ -369,7 +369,7 @@ class Dbas(object):
 			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, issue,
 			                                                              supportive, mainpage, for_api)
 			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(nickname, transaction, statement_or_arg_id,
-			                                                                    breadcrumbs, has_new_crumbs,
+			                                                                    breadcrumbs, has_new_crumbs, mainpage, slug,
 			                                                                    supportive, nickname, len(item_dict), session_id)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)

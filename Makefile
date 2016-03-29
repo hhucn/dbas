@@ -24,7 +24,7 @@ postgres:
 	initialize_discussion_sql development.ini
 	initialize_news_sql development.ini
 
-reload_postgres:
+refresh_postgres:
 	reload_discussion_sql development.ini
 	initialize_news_sql development.ini
 
