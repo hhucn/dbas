@@ -52,7 +52,7 @@ def main_discussion_reload(argv=sys.argv):
 	DiscussionBase.metadata.create_all(discussion_engine)
 
 	with transaction.manager:
-		drop_in_discussion_database()
+		drop_discussion_database()
 		user2 = DBDiscussionSession.query(User).filter_by(nickname = 'tobias').first()
 		setup_discussion_database(user2)
 		transaction.commit()
@@ -292,7 +292,7 @@ def setup_news_db():
 	DBNewsSession.flush()
 
 
-def drop_in_discussion_database():
+def drop_discussion_database():
 	"""
 
 	:return:
@@ -312,6 +312,10 @@ def drop_in_discussion_database():
 
 
 def setup_up_users():
+	"""
+
+	:return:
+	"""
 	# adding groups
 	group0 = Group(name='admins')
 	group1 = Group(name='authors')
