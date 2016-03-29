@@ -8,7 +8,7 @@ from cornice import Service
 import transaction
 from pyramid.httpexceptions import exception_response
 
-from api.lib import json_bytes_to_dict
+from .lib import json_bytes_to_dict, HTTP401, HTTP501
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from api.login import valid_token, validate_credentials, validate_login
@@ -192,7 +192,7 @@ def add_start_statement(request):
 		api_data.update(data)
 		return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
 	else:
-		raise exception_response(401)
+		raise HTTP401()
 
 
 @start_premise.post(validators=validate_login)
@@ -208,7 +208,7 @@ def add_start_premise(request):
 		api_data.update(data)
 		return Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
 	else:
-		raise exception_response(401)
+		raise HTTP401()
 
 
 @justify_premise.post(validators=validate_login)
@@ -218,7 +218,7 @@ def add_justify_premise(request):
 	:param request:
 	:return:
 	"""
-	raise exception_response(501)
+	raise HTTP501()
 	# raise HTTP501()
 	# print("\n### JUSTIFY PREMISE ###\n")
 	# api_data = prepare_user_information(request)
@@ -291,7 +291,7 @@ def user_login(request):
 	db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
 
 	if not db_user:
-		raise exception_response(401)
+		raise HTTP401()
 
 	db_user.set_token(token)
 	db_user.update_token_timestamp()
