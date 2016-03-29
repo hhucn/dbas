@@ -236,7 +236,7 @@ class DictionaryHelper(object):
 		if not logged_in and count_of_items == 1:
 			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItem), True))
 
-		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack}
+		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid}
 
 	def prepare_discussion_dict_for_dont_know_reaction(self, nickname, transaction, uid, breadcrumbs, save_crumb, session_id):
 		"""
