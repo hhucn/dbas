@@ -661,35 +661,6 @@ class Dbas(object):
 			'extras': extras_dict
 		}
 
-	# admin page, when logged in
-	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='everybody')  # or permission='use'
-	def main_admin(self):
-		"""
-		View configuration for the content view. Only logged in user can reach this page.
-		:return: dictionary with title and project name as well as a value, weather the user is logged in
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('main_admin', 'def', 'main')
-		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if session_expired:
-			return self.user_logout(True)
-
-		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
-		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
-		dashboard = _qh.get_dashboard_infos()
-
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': 'Admin',
-			'project': project_name,
-			'extras': extras_dict,
-			'users': users,
-			'dashboard': dashboard
-		}
-
 	# news page for everybody
 	@view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
 	def main_news(self):
@@ -1335,7 +1306,7 @@ class Dbas(object):
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
 			ui_locales = _qh.get_language(self.request, get_current_registry())
-			return_dict = _qh.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
+			return_dict = _qh.__correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
 			if return_dict == -1:
 				return_dict = dict()
 				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)

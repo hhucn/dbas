@@ -1058,7 +1058,7 @@ msgstr "Votes!"
 #. Default: Arguments!
 #: dbas/templates/admin.pt:89
 msgid "arguments!"
-msgstr "Arguments"
+msgstr "Arguments!"
 
 #. Default: Statements!
 #: dbas/templates/admin.pt:108

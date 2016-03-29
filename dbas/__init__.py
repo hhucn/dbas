@@ -59,6 +59,7 @@ def main(global_config, **settings):
 	# Include apps
 	config.include('api', route_prefix='/api')
 	config.include('export', route_prefix='/export')
+	config.include('admin', route_prefix='/admin')
 
 	# includings for the config
 	config.include('pyramid_chameleon')
@@ -78,7 +79,6 @@ def main(global_config, **settings):
 	# ajax for navigation logic, administraion, settigs and editing/viewing log
 	config.add_route('ajax_user_login',                             '{url:.*}ajax_user_login')
 	config.add_route('ajax_user_logout',                            '{url:.*}ajax_user_logout')
-
 	config.add_route('ajax_set_new_start_statement',                '/{url:.*}ajax_set_new_start_statement')
 	config.add_route('ajax_set_new_start_premise',                  '/{url:.*}ajax_set_new_start_premise')
 	config.add_route('ajax_set_new_premises_for_argument',          '/{url:.*}ajax_set_new_premises_for_argument')

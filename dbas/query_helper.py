@@ -253,7 +253,8 @@ class QueryHelper(object):
 
 		return new_argument.uid
 
-	def __set_new_undermine_or_support(self, transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
+	@staticmethod
+	def __set_new_undermine_or_support(transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
 		"""
 
 		:param transaction:
@@ -294,7 +295,8 @@ class QueryHelper(object):
 			rnd = random.randint(0, len(already_in) - 1)
 			return already_in[rnd]
 
-	def __set_new_undercut_or_overbid(self, transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
+	@staticmethod
+	def __set_new_undercut_or_overbid(transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
 		"""
 
 		:param transaction:
@@ -323,7 +325,8 @@ class QueryHelper(object):
 			transaction.commit()
 			return new_argument, False
 
-	def __set_new_rebut(self, transaction, premisegroup_uid, current_argument, db_user, issue):
+	@staticmethod
+	def __set_new_rebut(transaction, premisegroup_uid, current_argument, db_user, issue):
 		"""
 
 		:param transaction:
@@ -350,7 +353,8 @@ class QueryHelper(object):
 			transaction.commit()
 			return new_argument, False
 
-	def __set_new_support(self, transaction, premisegroup_uid, current_argument, db_user, issue):
+	@staticmethod
+	def __set_new_support(transaction, premisegroup_uid, current_argument, db_user, issue):
 		"""
 
 		:param transaction:
@@ -377,7 +381,8 @@ class QueryHelper(object):
 			transaction.commit()
 			return new_argument, False
 
-	def __set_argument(self, transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
+	@staticmethod
+	def __set_argument(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
 		"""
 
 		:param transaction:
@@ -473,12 +478,11 @@ class QueryHelper(object):
 	def prepare_json_of_issue(self, uid, application_url, lang, for_api):
 		"""
 		Prepares slug, info, argument count and the date of the issue as dict
-		:param uid: Issue.uid
+		:param uid:
 		:param application_url:
-		:param lang: String
-		:param for_api: boolean
-		:param nickname: String
-		:return: dict()
+		:param lang:
+		:param for_api:
+		:return:
 		"""
 		logger('QueryHelper', 'prepare_json_of_issue', 'main')
 		slug = self.get_slug_for_issue_uid(uid)
@@ -956,47 +960,6 @@ class QueryHelper(object):
 		return_dict['statement_count'] = str(len(DBDiscussionSession.query(Statement).all()))
 		return return_dict
 
-	def get_argument_overview(self, user, lang):
-		"""
-		Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
-		:param user: current user
-		:param issue: current issue
-		:param lang: current language
-		:return: dict()
-		"""
-		is_admin = UserHandler().is_user_in_group(user, 'admins')
-		logger('QueryHelper', 'get_argument_overview', 'is_admin ' + str(is_admin))
-		return_dict = dict()
-		if not is_admin:
-			return return_dict
-
-		db_issues = DBDiscussionSession.query(Issue).all()
-		for issue in db_issues:
-			issue_array = []
-			db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).order_by(Argument.uid.asc()).all()
-			logger('QueryHelper', 'get_argument_overview', 'count: ' + str(len(db_arguments)))
-
-			if len(db_arguments) > 0:
-				for argument in db_arguments:
-					tmp_dict = dict()
-					tmp_dict['uid'] = str(argument.uid)
-					tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
-					tmp_dict['text'] = self.get_text_for_argument_uid(argument.uid, lang)
-					db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument.uid).all()
-					db_valid_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
-					                                                                     VoteArgument.is_valid == True)).all()
-					db_valid_upvotes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
-					                                                                       VoteArgument.is_valid == True,
-					                                                                       VoteArgument.is_up_vote)).all()
-					tmp_dict['votes'] = len(db_votes)
-					tmp_dict['valid_votes'] = len(db_valid_votes)
-					tmp_dict['valid_upvotes'] = len(db_valid_upvotes)
-
-					issue_array.append(tmp_dict)
-			return_dict[issue.title] = issue_array
-
-		return return_dict
-
 	def get_logfile_for_statement(self, uid, lang):
 		"""
 		Returns the logfile for the given statement uid
@@ -1134,7 +1097,7 @@ class QueryHelper(object):
 		if not UserHandler().is_user_author(nickname):
 			return False, _tn.get(_tn.noRights)
 
-		if len(info)<10:
+		if len(info) < 10:
 			return False, _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
 		db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
@@ -1148,7 +1111,6 @@ class QueryHelper(object):
 		transaction.commit()
 
 		return True, ''
-
 
 	# ########################################
 	# OTHER
@@ -1278,7 +1240,8 @@ class QueryHelper(object):
 
 		return url, error
 
-	def sql_timestamp_pretty_print(self, ts, lang):
+	@staticmethod
+	def sql_timestamp_pretty_print(ts, lang):
 		"""
 
 		:param ts: timestamp as string
@@ -1301,7 +1264,8 @@ class QueryHelper(object):
 
 		return time.strftime(formatter)
 
-	def correct_statement(self, transaction, user, uid, corrected_text, lang):
+	@staticmethod
+	def __correct_statement(transaction, user, uid, corrected_text, lang):
 		"""
 		Corrects a statement
 		:param transaction: current transaction
@@ -1311,7 +1275,7 @@ class QueryHelper(object):
 		:param lang: current ui_locales
 		:return: True
 		"""
-		logger('QueryHelper', 'correct_statement', 'def ' + str(uid))
+		logger('QueryHelper', '__correct_statement', 'def ' + str(uid))
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 

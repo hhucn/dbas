@@ -17,7 +17,7 @@ def get_dump(issue, lang):
 	:return: dictionary labeled with enumerated integeres, whereby these dicts are named by their table
 	"""
 	ret_dict = dict()
-	logger('QueryHelper', 'get_dump', 'main')
+	logger('ExportLib', 'get_dump', 'main')
 	_qh = QueryHelper()
 
 	db_issue = DBDiscussionSession.query(Issue).filter_by(uid=issue).first()

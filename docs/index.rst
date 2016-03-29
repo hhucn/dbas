@@ -33,14 +33,14 @@ Server Documentation
     server/index
 
 
-API Documentation
-=================
+Compontents Documentation
+=========================
 
 .. toctree::
     :maxdepth: 2
     :glob:
 
-    api/index
+    components/index
 
 
 Export Documentation
