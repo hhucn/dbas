@@ -235,19 +235,6 @@ def add_justify_premise(request):
 # OTHER REQUESTS
 # =============================================================================
 
-#
-# Database
-#
-@dump.get()
-def discussion_init(request):
-	"""
-	Return database dump
-	:param request: request
-	:return: Dbas(request).get_database_dump(True)
-	"""
-	return Dbas(request).get_database_dump()
-
-
 @news.get()
 def get_news(request):
 	"""
