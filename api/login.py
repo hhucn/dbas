@@ -9,10 +9,13 @@ import hashlib
 import os
 
 from datetime import datetime
+
+from pyramid.httpexceptions import exception_response
+
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import Dbas
-from .lib import logger, HTTP401
+from .lib import logger
 
 log = logger()
 
@@ -58,12 +61,12 @@ def valid_token(request):
 	htoken = request.headers.get(header)
 	if htoken is None:
 		log.error("[API] htoken is None")
-		raise HTTP401()
+		raise exception_response(401)
 	try:
 		user, token = htoken.split('-', 1)
 	except ValueError:
 		log.error("[API] ValueError")
-		raise HTTP401()
+		raise exception_response(401)
 
 	log.debug("[API] Login Attempt: %s: %s" % (user, token))
 
@@ -71,11 +74,11 @@ def valid_token(request):
 
 	if not db_user:
 		log.error("[API] Invalid user")
-		raise HTTP401()
+		raise exception_response(401)
 
 	if not db_user.token == token:
 		log.error("[API] Invalid Token")
-		raise HTTP401()
+		raise exception_response(401)
 
 	log.debug("[API] Valid token")
 
