@@ -66,8 +66,9 @@ def valid_token(request):
 
 	log.debug("[API] Valid token")
 
-	# Prepare data for DBAS
+	# Prepare data for DB-AS
 	request.validated['user'] = user
+	request.validated['user_uid'] = db_user.uid
 	request.validated['session_id'] = request.session.id
 
 

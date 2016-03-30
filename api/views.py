@@ -98,6 +98,7 @@ def prepare_user_information(request):
 	val = request.validated
 	try:
 		api_data = {"nickname": val["user"],
+		            "user_uid": val["user_uid"],
 		            "session_id": val["session_id"]}
 	except KeyError:
 		api_data = None
