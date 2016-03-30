@@ -5,12 +5,7 @@
 
 from cornice import Service
 
-import transaction
-from pyramid.httpexceptions import exception_response
-
-from .lib import json_bytes_to_dict, HTTP401, HTTP501, HTTP204
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
+from .lib import json_bytes_to_dict, HTTP204
 from api.login import valid_token, validate_credentials, validate_login
 from dbas.views import Dbas
 
@@ -74,10 +69,6 @@ justify_premise = Service(name="justify_premise",
 #
 # Other Services
 #
-dump = Service(name='api_dump',
-			   path='/dump',
-			   description="Database Dump",
-			   cors_policy=cors_policy)
 news = Service(name='api_news',
 			   path='/get_news',
 			   description="News app",
@@ -271,12 +262,4 @@ def user_login(request):
 	else:
 		token = user['token']
 
-	db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
-
-	if not db_user:
-		raise HTTP401()
-
-	db_user.set_token(token)
-	db_user.update_token_timestamp()
-	transaction.commit()
 	return {'token': '%s-%s' % (user['nickname'], token)}

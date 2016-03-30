@@ -7,10 +7,9 @@ import binascii
 import json
 import hashlib
 import os
+import transaction
 
 from datetime import datetime
-
-from pyramid.httpexceptions import exception_response
 
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import User
@@ -20,15 +19,6 @@ from .lib import logger, HTTP401
 log = logger()
 
 
-def _create_token(nickname, alg='sha512'):
-	"""
-	Use the system's urandom function to generate a random token and convert it to ASCII.
-	:return:
-	"""
-	salt = _create_salt(nickname)
-	return hashlib.new(alg, salt).hexdigest()
-
-
 def _create_salt(nickname):
 	rnd = binascii.b2a_hex(os.urandom(64))
 	timestamp = datetime.now().isoformat().encode('utf-8')
@@ -36,19 +26,13 @@ def _create_salt(nickname):
 	return rnd + timestamp + nickname
 
 
-def validate_login(request):
+def _create_token(nickname, alg='sha512'):
 	"""
-	Takes token from request and validates it. Return true if logged in, else false.
-	:param request:
+	Use the system's urandom function to generate a random token and convert it to ASCII.
 	:return:
 	"""
-	header = 'X-Messaging-Token'
-	htoken = request.headers.get(header)
-	if htoken is None:
-		log.debug("[API] No htoken set")
-		return
-
-	valid_token(request)
+	salt = _create_salt(nickname)
+	return hashlib.new(alg, salt).hexdigest()
 
 
 def valid_token(request):
@@ -87,6 +71,38 @@ def valid_token(request):
 	request.validated['session_id'] = request.session.id
 
 
+def validate_login(request):
+	"""
+	Takes token from request and validates it. Return true if logged in, else false.
+	:param request:
+	:return:
+	"""
+	header = 'X-Messaging-Token'
+	htoken = request.headers.get(header)
+	if htoken is None:
+		log.debug("[API] No htoken set")
+		return
+
+	valid_token(request)
+
+
+def token_to_database(nickname, token):
+	"""
+	Store the newly created token in database.
+	:param nickname: user's nickname
+	:param token: new token to be stored
+	:return:
+	"""
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
+	if not db_user:
+		raise HTTP401()
+
+	db_user.set_token(token)
+	db_user.update_token_timestamp()
+	transaction.commit()
+
+
 def validate_credentials(request):
 	"""
 	Parse credentials from POST request and validate it against DBAS' database
@@ -106,6 +122,7 @@ def validate_credentials(request):
 		if logged_in['status'] == 'success':
 			token = _create_token(nickname)
 			user = {'nickname': nickname, 'token': token}
+			token_to_database(nickname, token)
 			request.validated['user'] = user
 	except TypeError:
 		log.error('API Not logged in: %s' % logged_in)
