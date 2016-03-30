@@ -6,6 +6,7 @@
 from cornice import Service
 
 from .lib import json_bytes_to_dict, HTTP204
+from .references import store_reference
 from api.login import valid_token, validate_credentials, validate_login
 from dbas.views import Dbas
 
@@ -48,6 +49,7 @@ zinit_blank = Service(name='api_init_blank',
 					  path='/',
 					  description="Discussion Init",
 					  cors_policy=cors_policy)
+
 #
 # Add new data to DBAS
 #
@@ -86,15 +88,17 @@ login = Service(name='login',
 # =============================================================================
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
+
 def prepare_user_information(request):
 	"""
-	Check if user is authenticated, return prepared data for DBAS.
+	Check if user is authenticated, return prepared data for D-BAS.
 	:param request:
 	:return:
 	"""
 	val = request.validated
 	try:
 		api_data = {"nickname": val["user"],
+		            "user_uid": val["user_uid"],
 		            "session_id": val["session_id"]}
 	except KeyError:
 		api_data = None
@@ -181,6 +185,7 @@ def add_start_statement(request):
 	if api_data:
 		data = json_bytes_to_dict(request.body)
 		api_data.update(data)
+		store_reference(api_data)
 		return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
 	else:
 		raise HTTP204()
@@ -197,6 +202,7 @@ def add_start_premise(request):
 	if api_data:
 		data = json_bytes_to_dict(request.body)
 		api_data.update(data)
+		store_reference(api_data)
 		return Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
 	else:
 		raise HTTP204()
@@ -213,23 +219,10 @@ def add_justify_premise(request):
 	if api_data:
 		data = json_bytes_to_dict(request.body)
 		api_data.update(data)
+		store_reference(api_data)
 		return Dbas(request).set_new_premises_for_argument(for_api=True, api_data=api_data)
 	else:
 		raise HTTP204()
-
-
-# =============================================================================
-# OTHER REQUESTS
-# =============================================================================
-
-@news.get()
-def get_news(request):
-	"""
-	Returns news from DBAS in JSON.
-	:param request: request
-	:return: Dbas(request).get_news()
-	"""
-	return Dbas(request).get_news()
 
 
 # =============================================================================
@@ -263,3 +256,18 @@ def user_login(request):
 		token = user['token']
 
 	return {'token': '%s-%s' % (user['nickname'], token)}
+
+
+# =============================================================================
+# OTHER REQUESTS
+# =============================================================================
+
+@news.get()
+def get_news(request):
+	"""
+	Returns news from DBAS in JSON.
+	@DEPRECATED.
+	:param request: request
+	:return: Dbas(request).get_news()
+	"""
+	return Dbas(request).get_news()
