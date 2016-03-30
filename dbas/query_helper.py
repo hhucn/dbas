@@ -399,7 +399,7 @@ class QueryHelper(object):
 		       ', conclusion_uid: ' + str(conclusion_uid) +
 		       ', argument_uid: ' + str(argument_uid) +
 		       ', is_supportive: ' + str(is_supportive) +
-		       ', issue: ' + str(issue), debug=True)
+		       ', issue: ' + str(issue))
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
@@ -546,7 +546,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		logger('QueryHelper', '__set_statements_as_new_premisegroup', 'user: ' + str(user) +
-		       ', statement: ' + str(statements) + ', issue: ' + str(issue), debug=True)
+		       ', statement: ' + str(statements) + ', issue: ' + str(issue))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
 		# check for duplicate
@@ -694,7 +694,7 @@ class QueryHelper(object):
 		:param lang: ui_locales
 		:return:
 		"""
-		logger('QueryHelper', '__get_undermines_for_premises', 'main', debug=True)
+		logger('QueryHelper', '__get_undermines_for_premises', 'main')
 		return_array = []
 		index = 0
 		given_undermines = set()
@@ -720,7 +720,7 @@ class QueryHelper(object):
 		"""
 		return_array = []
 		logger('QueryHelper', '__get_attack_or_support_for_justification_of_argument_uid',
-		       'db_undercut against Argument.argument_uid==' + str(argument_uid), debug=True)
+		       'db_undercut against Argument.argument_uid==' + str(argument_uid))
 		db_related_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
 		                                                                       Argument.argument_uid == argument_uid)).all()
 		given_relations = set()

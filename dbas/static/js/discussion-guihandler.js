@@ -32,16 +32,14 @@ function GuiHandler() {
 				.attr('type', 'text')
 				.attr('class', 'form-control add-premise-container-input')
 				.attr('autocomplete', 'off')
-				.attr('placeholder', 'example: There is some reason!'),
-			imgm = $('<img>').attr('class', 'icon-rem-premise')
-				.attr('alt', 'icon-rem')
+				.attr('placeholder', 'Your statement'),
+			imgm = $('<img>')
+				.attr('class', 'icon-rem-premise')
 				.attr('src', mainpage + 'static/images/icon_minus1.png')
-				// .attr('style', 'height: 30px; padding-right: 0.5em;')
 				.attr('title', body.find('.icon-rem-premise').first().attr('title')),
-			imgp = $('<img>').attr('class', 'icon-add-premise')
-				.attr('alt', 'icon-add')
+			imgp = $('<img>')
+				.attr('class', 'icon-add-premise')
 				.attr('src', mainpage + 'static/images/icon_plus1.png')
-				// .attr('style', 'height: 30px;')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
 
 		div.append(div_l.append(h5))

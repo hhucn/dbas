@@ -625,7 +625,7 @@ class Translator(object):
 		en_lang[self.error_code] = 'Error code'
 		en_lang[self.edit] = 'Edit'
 		en_lang[self.editTitle] = 'Edit the statements.'
-		en_lang[self.feelFreeToLogin] = ' If you want to proceed, please feel free to <a href="" data-toggle="modal" data-target="#popup-login" title="Login">here</a> yourself :)'
+		en_lang[self.feelFreeToLogin] = ' If you want to proceed, please feel free to <a href="" data-toggle="modal" data-target="#popup-login" title="Login">login</a> yourself :)'
 		en_lang[self.forText] = 'for'
 		en_lang[self.firstConclusionRadioButtonText] = 'Let me enter my idea!'
 		en_lang[self.firstArgumentRadioButtonText] = 'Let me enter my own statement(s)!'
