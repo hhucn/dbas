@@ -15,7 +15,6 @@ def store_reference(api_data):
     Validate provided reference and store it in the database.
 
     .. todo::
-
         Sanitize input, issue #2
 
     :param api_data:

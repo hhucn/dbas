@@ -266,7 +266,10 @@ def user_login(request):
 def get_news(request):
 	"""
 	Returns news from DBAS in JSON.
-	@DEPRECATED.
+
+	.. deprecated:: 0.5.8
+	   Unused.
+
 	:param request: request
 	:return: Dbas(request).get_news()
 	"""
