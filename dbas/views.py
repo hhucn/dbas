@@ -1,7 +1,6 @@
 import transaction
 import requests
 import json
-import bleach
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
@@ -56,7 +55,7 @@ class Dbas(object):
 		:param text:
 		:return: json-dict()
 		"""
-		return bleach.clean(text)
+		return text
 
 	@staticmethod
 	def base_layout():
@@ -750,12 +749,10 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request')
-
-		logger('notfound', 'def', 'path: ' + self.request.path)
-		logger('notfound', 'def', 'view name: ' + self.request.view_name)
-
-		logger('notfound', 'def', 'params:')
+		logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request' +
+		       ', path: ' + self.request.path +
+		       ', view name: ' + self.request.view_name +
+		       ', params:')
 		for param in self.request.params:
 			logger('notfound', 'def', '    ' + param + ' -> ' + self.request.params[param])
 
@@ -1210,6 +1207,7 @@ class Dbas(object):
 				issue       = _qh.get_issue_id(self.request)
 				slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
+			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler().update_last_action(transaction, nickname)
 			new_statement = _qh.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
 			if new_statement == -1:
@@ -1254,6 +1252,7 @@ class Dbas(object):
 				conclusion_id   = self.request.params['conclusion_id']
 				supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 
+			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler().update_last_action(transaction, nickname)
 
 			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
@@ -1302,6 +1301,7 @@ class Dbas(object):
 				arg_uid = self.request.params['arg_uid']
 				attack_type = self.request.params['attack_type']
 
+			# escaping will be done in QueryHelper().set_statement(...)
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, issue, nickname, for_api,
 			                                                                         mainpage, lang, RecommenderHelper())

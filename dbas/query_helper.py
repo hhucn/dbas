@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import locale
 import collections
 import random
@@ -598,6 +599,11 @@ class QueryHelper(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) +
 		       ', statement: ' + str(statement) + ', issue: ' + str(issue))
+
+		# bleaching # TODO BLEACH
+		# logger('---', 'before', statement)
+		# statement = bleach.clean(statement)
+		# logger('---', 'after', statement)
 
 		# check for dot at the end
 		if not statement.endswith(('.', '?', '!')):
