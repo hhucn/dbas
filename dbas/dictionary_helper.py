@@ -842,7 +842,8 @@ class DictionaryHelper(object):
 															'login': _tn.get(_tn.login),
 															'news_about_dbas': _tn.get(_tn.newsAboutDbas),
 															'share_url': _tn.get(_tn.shareUrl),
-			                                                'go_back': _tn.get(_tn.goBack)}
+			                                                'go_back': _tn.get(_tn.letsGoBack),
+			                                                'go_home': _tn.get(_tn.letsGoHome)}
 			# /return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
 			message_dict['new_count']    = _nh.count_of_new_notifications(authenticated_userid)
