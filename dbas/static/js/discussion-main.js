@@ -201,12 +201,16 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 
 	// user info click
 	$('.triangle-r-info').each(function(){
-		$(this).click(function(){
-			var data_type = $(this).attr('data-type'),
-				data_argument_uid = $(this).attr('data-argument-uid'),
-				data_statement_uid = $(this).attr('data-statement-uid');
-			new AjaxSiteHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid);
-		});
+		if ($(this).attr('data-votecount') > 0) {
+			$(this).click(function () {
+				var data_type = $(this).attr('data-type'),
+					data_argument_uid = $(this).attr('data-argument-uid'),
+					data_statement_uid = $(this).attr('data-statement-uid');
+				new AjaxSiteHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid);
+			});
+		} else {
+			$(this).removeClass('triangle-r-info').addClass('triangle-r-info-nohover');
+		}
 	});
 };
 
