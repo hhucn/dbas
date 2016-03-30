@@ -226,20 +226,6 @@ def add_justify_premise(request):
 
 
 # =============================================================================
-# OTHER REQUESTS
-# =============================================================================
-
-@news.get()
-def get_news(request):
-	"""
-	Returns news from DBAS in JSON.
-	:param request: request
-	:return: Dbas(request).get_news()
-	"""
-	return Dbas(request).get_news()
-
-
-# =============================================================================
 # USER MANAGEMENT
 # =============================================================================
 
@@ -270,3 +256,18 @@ def user_login(request):
 		token = user['token']
 
 	return {'token': '%s-%s' % (user['nickname'], token)}
+
+
+# =============================================================================
+# OTHER REQUESTS
+# =============================================================================
+
+@news.get()
+def get_news(request):
+	"""
+	Returns news from DBAS in JSON.
+	@DEPRECATED.
+	:param request: request
+	:return: Dbas(request).get_news()
+	"""
+	return Dbas(request).get_news()
