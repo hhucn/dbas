@@ -1,4 +1,5 @@
 import random
+import re
 
 from datetime import datetime
 from sqlalchemy import and_
@@ -143,7 +144,7 @@ class DictionaryHelper(object):
 		intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro_rev = '' if not is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		url = UrlManager(application_url, slug).get_slug_url(False)
-		select_bubble = self.__create_speechbubble_dict(True, False, False, '', url, intro + '<strong>' + text + '</strong>', False, statement_uid=uid, nickname=nickname)
+		select_bubble = self.__create_speechbubble_dict(True, False, False, '', url, intro + '<strong>' + text + '</strong>', False, statement_uid=uid, nickname=nickname, is_up_vote=is_supportive)
 		question_bubble = self.__create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
 
 		if save_crumb:
@@ -330,11 +331,11 @@ class DictionaryHelper(object):
 			                                                     current_argument, db_argument)
 
 		if attack == 'end':
-			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid, nickname=nickname)
+			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid, nickname=nickname, is_up_vote=is_supportive)
 			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, True)
 			bubble_mid = self.__create_speechbubble_dict(False, False, True, '', '', mid_text, True)
 		else:
-			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid, nickname=nickname)
+			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid, nickname=nickname, is_up_vote=is_supportive)
 			bubble_sys = self.__create_speechbubble_dict(False, True, False, 'question-bubble', '', sys_text, True)
 
 		# dirty fixes
@@ -988,7 +989,7 @@ class DictionaryHelper(object):
 			'attitude': attitude,
 			'url': url}
 
-	def __create_speechbubble_dict(self, is_user, is_system, is_status, uid, url, message, omit_url=False, argument_uid=None, statement_uid=None, nickname=None):
+	def __create_speechbubble_dict(self, is_user, is_system, is_status, uid, url, message, omit_url=False, argument_uid=None, statement_uid=None, nickname=None, is_up_vote=True):
 		"""
 
 		:param is_user:
@@ -1000,6 +1001,8 @@ class DictionaryHelper(object):
 		:param omit_url:
 		:param argument_uid:
 		:param statement_uid:
+		:param nickname:
+		:param is_up_vote:
 		:return:
 		"""
 		speech = dict()
@@ -1013,31 +1016,33 @@ class DictionaryHelper(object):
 		speech['data_type']          = 'argument' if argument_uid else 'statement' if statement_uid else 'None'
 		speech['data_argument_uid']  = str(argument_uid)
 		speech['data_statement_uid'] = str(statement_uid)
-		votecounts = None
+		db_votecounts                = None
 
 		if argument_uid:
-			votecounts = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-			                                                                 VoteArgument.is_up_vote == True,
-			                                                                 VoteArgument.is_valid == True)).all()
+			db_votecounts = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
+			                                                                    VoteArgument.is_up_vote == is_up_vote,
+			                                                                    VoteArgument.is_valid == True)).all()
 		elif statement_uid:
-			votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-			                                                                  VoteStatement.is_up_vote == True,
-			                                                                  VoteStatement.is_valid == True)).all()
+			db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
+			                                                                     VoteStatement.is_up_vote == is_up_vote,
+			                                                                     VoteStatement.is_valid == True)).all()
 
-		if votecounts:
+		if db_votecounts:
 			_t = Translator(self.lang)
 			diff = 0
 			if nickname:
 				diff = 1 if nickname != 'anonymous' else 0
-			votecounts = len(votecounts) - diff if votecounts else 0
+			votecounts = len(db_votecounts) - diff if db_votecounts else 0
+
 			if votecounts == 0:
-				speech['votecounts'] = _t.get(_t.voteCountTextFirst)
+				speech['votecounts'] = _t.get(_t.voteCountTextFirst) + '.'
 			elif votecounts == 1:
-				speech['votecounts'] = _t.get(_t.voteCountTextOneOther)
+				speech['votecounts'] = _t.get(_t.voteCountTextOneOther) + '.'
 			else:
-				speech['votecounts'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextOneMore1)
+				speech['votecounts'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 		else:
 			speech['votecounts'] = ''
+
 		return speech
 
 	@staticmethod
@@ -1116,7 +1121,14 @@ class DictionaryHelper(object):
 				uid       = crumb['uid']
 				url       = crumb['url']
 				content   = h.content
-				bubble_history.append(self.__create_speechbubble_dict(is_user, is_system, is_status, uid, url, content, False, h.related_argument_uid, h.related_statement_uid))
+				rel_arg   = h.related_argument_uid
+				rel_stat  = h.related_statement_uid
+				expr0     = re.search(re.compile(r"/t/"), url)
+				expr1     = re.search(re.compile(r"/t$"), url)
+				group0    = expr0.group(0) if expr0 else None
+				group1    = expr1.group(0) if expr1 else None
+				is_supp   = True if group0 or group1 else False
+				bubble_history.append(self.__create_speechbubble_dict(is_user, is_system, is_status, uid, url, content, False, rel_arg, rel_stat, nickname, is_supp))
 
 		return bubble_history
 

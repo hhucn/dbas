@@ -38,7 +38,7 @@ class RecommenderHelper(object):
 				attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 				attack_uid = attacks_array[attack_no]['id']
 
-			if attack_uid == restriction_on_argument_uid and str(key) == str(restriction_on_attack):
+			if str(attack_uid) == str(restriction_on_argument_uid) and str(key) == str(restriction_on_attack):
 				return 0, 'no_other_attack'
 
 			return attacks_array[attack_no]['id'], key

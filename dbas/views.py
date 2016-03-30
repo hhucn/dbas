@@ -1596,6 +1596,7 @@ class Dbas(object):
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
+		nickname = self.request.authenticated_userid
 
 		return_dict = dict()
 		try:
@@ -1603,11 +1604,11 @@ class Dbas(object):
 			is_argument = self.request.params['is_argument'] == 'true'
 			if uid == '0':
 				issue = _qh.get_issue_id(self.request)
-				return_dict = _qh.get_user_with_same_opinion_for_position(issue, ui_locales)
+				return_dict = _qh.get_user_with_same_opinion_for_position(issue, ui_locales, nickname)
 			elif is_argument:
-				return_dict = _qh.get_user_with_same_opinion_for_argument(uid, ui_locales)
+				return_dict = _qh.get_user_with_same_opinion_for_argument(uid, ui_locales, nickname)
 			else:
-				return_dict = _qh.get_user_with_same_opinion_for_statement(uid, ui_locales)
+				return_dict = _qh.get_user_with_same_opinion_for_statement(uid, ui_locales, nickname)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))
