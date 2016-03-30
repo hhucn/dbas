@@ -63,7 +63,7 @@ class Group(DiscussionBase):
 class User(DiscussionBase):
 	"""
 	User-table with several columns.
-	Each user has a firsstname, lastname, email, password, belongs to a group and has a last loggin date
+	Each user has a firstname, lastname, email, password, belongs to a group and has a last login date
 	"""
 	__tablename__ = 'users'
 	uid = Column(Integer, primary_key=True)
