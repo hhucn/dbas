@@ -28,6 +28,18 @@ def json_bytes_to_dict(col):
 	return json.loads(col.decode("utf-8"))
 
 
+class HTTP204(exc.HTTPError):
+	"""
+	HTTP 204: Request successful, but no content was provided.
+	:return:
+	"""
+	def __init__(self, msg='No Content'):
+		body = {'status': 204, 'message': msg}
+		Response.__init__(self, json.dumps(body))
+		self.status = 204
+		self.content_type = 'application/json'
+
+
 class HTTP401(exc.HTTPError):
 	"""
 	Return a 401 HTTP Error message if user is not authenticated.
@@ -42,7 +54,7 @@ class HTTP401(exc.HTTPError):
 
 class HTTP501(exc.HTTPError):
 	"""
-	HTTP 501: Not implemented
+	HTTP 501: Not implemented.
 	:return:
 	"""
 	def __init__(self, msg='Not Implemented'):

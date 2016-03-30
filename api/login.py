@@ -9,6 +9,9 @@ import hashlib
 import os
 
 from datetime import datetime
+
+from pyramid.httpexceptions import exception_response
+
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import Dbas

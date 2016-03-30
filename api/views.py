@@ -6,8 +6,9 @@
 from cornice import Service
 
 import transaction
+from pyramid.httpexceptions import exception_response
 
-from api.lib import HTTP401, HTTP501, json_bytes_to_dict
+from .lib import json_bytes_to_dict, HTTP401, HTTP501, HTTP204
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from api.login import valid_token, validate_credentials, validate_login
@@ -191,7 +192,7 @@ def add_start_statement(request):
 		api_data.update(data)
 		return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
 	else:
-		raise HTTP401()
+		raise HTTP204()
 
 
 @start_premise.post(validators=validate_login)
@@ -207,7 +208,7 @@ def add_start_premise(request):
 		api_data.update(data)
 		return Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
 	else:
-		raise HTTP401()
+		raise HTTP204()
 
 
 @justify_premise.post(validators=validate_login)
@@ -217,34 +218,18 @@ def add_justify_premise(request):
 	:param request:
 	:return:
 	"""
-	raise HTTP501()
-	# print("\n### JUSTIFY PREMISE ###\n")
-	# api_data = prepare_user_information(request)
-	# if api_data:
-	# 	data = json_bytes_to_dict(request.body)
-	# 	api_data.update(data)
-	# 	print(api_data)
-	# 	#return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
-	# else:
-	# 	raise HTTP401()
+	api_data = prepare_user_information(request)
+	if api_data:
+		data = json_bytes_to_dict(request.body)
+		api_data.update(data)
+		return Dbas(request).set_new_premises_for_argument(for_api=True, api_data=api_data)
+	else:
+		raise HTTP204()
 
 
 # =============================================================================
 # OTHER REQUESTS
 # =============================================================================
-
-#
-# Database
-#
-@dump.get()
-def discussion_init(request):
-	"""
-	Return database dump
-	:param request: request
-	:return: Dbas(request).get_database_dump(True)
-	"""
-	return Dbas(request).get_database_dump()
-
 
 @news.get()
 def get_news(request):
