@@ -20,6 +20,13 @@ from .lib import logger, HTTP401
 log = logger()
 
 
+def _create_salt(nickname):
+	rnd = binascii.b2a_hex(os.urandom(64))
+	timestamp = datetime.now().isoformat().encode('utf-8')
+	nickname = nickname.encode('utf-8')
+	return rnd + timestamp + nickname
+
+
 def _create_token(nickname, alg='sha512'):
 	"""
 	Use the system's urandom function to generate a random token and convert it to ASCII.
@@ -27,13 +34,6 @@ def _create_token(nickname, alg='sha512'):
 	"""
 	salt = _create_salt(nickname)
 	return hashlib.new(alg, salt).hexdigest()
-
-
-def _create_salt(nickname):
-	rnd = binascii.b2a_hex(os.urandom(64))
-	timestamp = datetime.now().isoformat().encode('utf-8')
-	nickname = nickname.encode('utf-8')
-	return rnd + timestamp + nickname
 
 
 def valid_token(request):
