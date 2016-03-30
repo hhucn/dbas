@@ -105,7 +105,7 @@ def token_to_database(nickname, token):
 
 def validate_credentials(request):
 	"""
-	Parse credentials from POST request and validate it against DBAS' database
+	Parse credentials from POST request and validate it against DBA-S' database
 	:param request:
 	:return:
 	"""
@@ -115,7 +115,7 @@ def validate_credentials(request):
 	nickname = data['nickname']
 	password = data['password']
 
-	# Check in DBAS' database, if the user's credentials are valid
+	# Check in DB-AS' database, if the user's credentials are valid
 	logged_in = Dbas(request).user_login(nickname, password, for_api=True)
 
 	try:
