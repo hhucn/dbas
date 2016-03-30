@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-29 12:44+0200\n"
+"POT-Creation-Date: 2016-03-30 21:22+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -617,7 +617,7 @@ msgstr "Fehler:"
 #. Default: Success:
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:298 dbas/templates/snippet-popups.pt:390
-#: dbas/templates/settings.pt:199 dbas/templates/content.pt:63
+#: dbas/templates/settings.pt:204 dbas/templates/content.pt:63
 msgid "success"
 msgstr "Erfolg:"
 
@@ -644,9 +644,8 @@ msgid "nickname"
 msgstr "Nickname"
 
 #. Default: Your Gender
-#. Default: Gender
-#: dbas/templates/snippet-popups.pt:334 dbas/templates/admin.pt:130
-msgid "gender"
+#: dbas/templates/snippet-popups.pt:334
+msgid "your_gender"
 msgstr "Ihr Geschlecht"
 
 #. Default: none
@@ -900,89 +899,106 @@ msgid "receive_mails"
 msgstr "E-Mails erhalten"
 
 #. Default: Profile Picture
-#: dbas/templates/settings.pt:56
+#: dbas/templates/settings.pt:57
 msgid "profile_picture"
 msgstr "Profilbild"
 
+#. Default: Change your profile picture on the
+#: dbas/templates/settings.pt:59
+msgid "change_gravatar"
+msgstr "Ändere dein Gravatar auf der"
+
+#. Default: A Gravatar is a Globally Recognized Avatar. You upload it and
+#. create your profile just once, and then when you participate in any
+#. Gravatar-enabled site, your Gravatar image will automatically follow you
+#. there.
+#: dbas/templates/settings.pt:61
+msgid "what_is_gravatar"
+msgstr ""
+"Ein Gravatar ist ein Globally Recognized Avatar (Global Wiedererkennender "
+"Avatar). Sie können es einmalig erstellen und hochladen. Dadurch wird dieses "
+"Bild auf jeder Website angezeigt, die Gravat unterstützt. Ihr Bild wird "
+"Ihnen folgen."
+
 #. Default: Settings could not be set. Please try again later.
-#: dbas/templates/settings.pt:65
+#: dbas/templates/settings.pt:70
 msgid "settings_not_set"
 msgstr ""
 "Einstellungen konnten nicht gesichert werden. Bitte versuchen Sie es später "
 "erneut."
 
 #. Default: Settings were set successfully.
-#: dbas/templates/settings.pt:70
+#: dbas/templates/settings.pt:75
 msgid "settings_set"
 msgstr "Einstellungen wurden gesichert."
 
 #. Default: Change your password
-#: dbas/templates/settings.pt:79
+#: dbas/templates/settings.pt:84
 msgid "change_password"
 msgstr "Ändere dein Passwort"
 
 #. Default: Old password
-#: dbas/templates/settings.pt:83
+#: dbas/templates/settings.pt:88
 msgid "old_password"
 msgstr "Altes Password"
 
 #. Default: New Password
-#: dbas/templates/settings.pt:90
+#: dbas/templates/settings.pt:95
 msgid "new_password"
 msgstr "Neues Password"
 
 #. Default: Strength
-#: dbas/templates/settings.pt:97
+#: dbas/templates/settings.pt:102
 msgid "strength"
 msgstr "Stärke"
 
 #. Default: New Password (confirm)
-#: dbas/templates/settings.pt:105
+#: dbas/templates/settings.pt:110
 msgid "new_password_confirm"
 msgstr "Neues Password (Bestätigung)"
 
 #. Default: Discussion Statistics
-#: dbas/templates/settings.pt:124
+#: dbas/templates/settings.pt:129
 msgid "discussion_stat"
 msgstr "Diskussions-Statistik"
 
 #. Default: Statements posted
-#: dbas/templates/settings.pt:128
+#: dbas/templates/settings.pt:133
 msgid "statements_posted"
 msgstr "Aussagen hinzugefügt"
 
 #. Default: Edits done
-#: dbas/templates/settings.pt:135
+#: dbas/templates/settings.pt:140
 msgid "edits_done"
 msgstr "Änderungen"
 
 #. Default: Votes for Arguments
-#: dbas/templates/settings.pt:142
+#: dbas/templates/settings.pt:147
 msgid "discussion_votes_statements"
 msgstr "Stimmen für Aussagen"
 
 #. Default: Votes for Statements
-#: dbas/templates/settings.pt:149
+#: dbas/templates/settings.pt:154
 msgid "discussion_votes_arguments"
 msgstr "Stimmen für Argumente"
 
 #. Default: Your password was changed
-#: dbas/templates/settings.pt:164
+#: dbas/templates/settings.pt:169
 msgid "password_changed"
 msgstr "Dein Passwurd wurde geändert"
 
 #. Default: Statistics could not be deleted.
-#: dbas/templates/settings.pt:171
+#: dbas/templates/settings.pt:176
 msgid "statistics_not_deleted"
 msgstr "Statistiken konnten nicht gelöscht werden."
 
 #. Default: Statistics were set successfully deleted.
-#: dbas/templates/settings.pt:177
+#: dbas/templates/settings.pt:182
 msgid "statistics_deletet"
 msgstr "Statistiken wurden gelöscht."
 
 #. Default: Your last history
-#: dbas/templates/settings.pt:187
+#: dbas/templates/settings.pt:192
 msgid "history"
 msgstr "Ihre letzte URL-History"
 
@@ -1103,6 +1119,11 @@ msgstr "Aussagen!"
 msgid "email"
 msgstr "E-Mail"
 
+#. Default: Gender
+#: dbas/templates/admin.pt:130
+msgid "gender"
+msgstr "Geschlecht"
+
 #. Default: Group
 #: dbas/templates/admin.pt:131
 msgid "group_uid"
@@ -1214,22 +1235,22 @@ msgid "Because..."
 msgstr "Weil..."
 
 #. Default: Change display style
-#: dbas/templates/content.pt:357
+#: dbas/templates/content.pt:355
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:360
+#: dbas/templates/content.pt:358
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:366
+#: dbas/templates/content.pt:364
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:372
+#: dbas/templates/content.pt:370
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 

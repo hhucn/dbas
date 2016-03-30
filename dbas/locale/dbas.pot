@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-29 12:44+0200\n"
+"POT-Creation-Date: 2016-03-30 21:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -527,7 +527,7 @@ msgstr ""
 #. Default: Success:
 #. Default: Success
 #: ./dbas/templates/snippet-popups.pt:298
-#: ./dbas/templates/snippet-popups.pt:390 ./dbas/templates/settings.pt:199
+#: ./dbas/templates/snippet-popups.pt:390 ./dbas/templates/settings.pt:204
 #: ./dbas/templates/content.pt:63
 msgid "success"
 msgstr ""
@@ -556,9 +556,8 @@ msgid "nickname"
 msgstr ""
 
 #. Default: Your Gender
-#. Default: Gender
-#: ./dbas/templates/snippet-popups.pt:334 ./dbas/templates/admin.pt:130
-msgid "gender"
+#: ./dbas/templates/snippet-popups.pt:334
+msgid "your_gender"
 msgstr ""
 
 #. Default: none
@@ -811,87 +810,100 @@ msgid "receive_mails"
 msgstr ""
 
 #. Default: Profile Picture
-#: ./dbas/templates/settings.pt:56
+#: ./dbas/templates/settings.pt:57
 msgid "profile_picture"
 msgstr ""
 
+#. Default: Change your profile picture on the
+#: ./dbas/templates/settings.pt:59
+msgid "change_gravatar"
+msgstr ""
+
+#. Default: A Gravatar is a Globally Recognized Avatar. You upload it and
+#. create your profile just once, and then when you participate in any
+#. Gravatar-enabled site, your Gravatar image will automatically follow you
+#. there.
+#: ./dbas/templates/settings.pt:61
+msgid "what_is_gravatar"
+msgstr ""
+
 #. Default: Settings could not be set. Please try again later.
-#: ./dbas/templates/settings.pt:65
+#: ./dbas/templates/settings.pt:70
 msgid "settings_not_set"
 msgstr ""
 
 #. Default: Settings were set successfully.
-#: ./dbas/templates/settings.pt:70
+#: ./dbas/templates/settings.pt:75
 msgid "settings_set"
 msgstr ""
 
 #. Default: Change your password
-#: ./dbas/templates/settings.pt:79
+#: ./dbas/templates/settings.pt:84
 msgid "change_password"
 msgstr ""
 
 #. Default: Old password
-#: ./dbas/templates/settings.pt:83
+#: ./dbas/templates/settings.pt:88
 msgid "old_password"
 msgstr ""
 
 #. Default: New Password
-#: ./dbas/templates/settings.pt:90
+#: ./dbas/templates/settings.pt:95
 msgid "new_password"
 msgstr ""
 
 #. Default: Strength
-#: ./dbas/templates/settings.pt:97
+#: ./dbas/templates/settings.pt:102
 msgid "strength"
 msgstr ""
 
 #. Default: New Password (confirm)
-#: ./dbas/templates/settings.pt:105
+#: ./dbas/templates/settings.pt:110
 msgid "new_password_confirm"
 msgstr ""
 
 #. Default: Discussion Statistics
-#: ./dbas/templates/settings.pt:124
+#: ./dbas/templates/settings.pt:129
 msgid "discussion_stat"
 msgstr ""
 
 #. Default: Statements posted
-#: ./dbas/templates/settings.pt:128
+#: ./dbas/templates/settings.pt:133
 msgid "statements_posted"
 msgstr ""
 
 #. Default: Edits done
-#: ./dbas/templates/settings.pt:135
+#: ./dbas/templates/settings.pt:140
 msgid "edits_done"
 msgstr ""
 
 #. Default: Votes for Arguments
-#: ./dbas/templates/settings.pt:142
+#: ./dbas/templates/settings.pt:147
 msgid "discussion_votes_statements"
 msgstr ""
 
 #. Default: Votes for Statements
-#: ./dbas/templates/settings.pt:149
+#: ./dbas/templates/settings.pt:154
 msgid "discussion_votes_arguments"
 msgstr ""
 
 #. Default: Your password was changed
-#: ./dbas/templates/settings.pt:164
+#: ./dbas/templates/settings.pt:169
 msgid "password_changed"
 msgstr ""
 
 #. Default: Statistics could not be deleted.
-#: ./dbas/templates/settings.pt:171
+#: ./dbas/templates/settings.pt:176
 msgid "statistics_not_deleted"
 msgstr ""
 
 #. Default: Statistics were set successfully deleted.
-#: ./dbas/templates/settings.pt:177
+#: ./dbas/templates/settings.pt:182
 msgid "statistics_deletet"
 msgstr ""
 
 #. Default: Your last history
-#: ./dbas/templates/settings.pt:187
+#: ./dbas/templates/settings.pt:192
 msgid "history"
 msgstr ""
 
@@ -1008,6 +1020,11 @@ msgstr ""
 msgid "email"
 msgstr ""
 
+#. Default: Gender
+#: ./dbas/templates/admin.pt:130
+msgid "gender"
+msgstr ""
+
 #. Default: Group
 #: ./dbas/templates/admin.pt:131
 msgid "group_uid"
@@ -1119,21 +1136,21 @@ msgid "Because..."
 msgstr ""
 
 #. Default: Change display style
-#: ./dbas/templates/content.pt:357
+#: ./dbas/templates/content.pt:355
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ./dbas/templates/content.pt:360
+#: ./dbas/templates/content.pt:358
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/content.pt:366
+#: ./dbas/templates/content.pt:364
 msgid "island_view"
 msgstr ""
 
 #. Default: Complete View
-#: ./dbas/templates/content.pt:372
+#: ./dbas/templates/content.pt:370
 msgid "complete_view"
 msgstr ""

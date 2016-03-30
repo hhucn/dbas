@@ -1304,8 +1304,7 @@ class QueryHelper(object):
 
 		return time.strftime(formatter)
 
-	@staticmethod
-	def __correct_statement(transaction, user, uid, corrected_text, lang):
+	def correct_statement(self, transaction, user, uid, corrected_text, lang):
 		"""
 		Corrects a statement
 		:param transaction: current transaction
@@ -1315,7 +1314,7 @@ class QueryHelper(object):
 		:param lang: current ui_locales
 		:return: True
 		"""
-		logger('QueryHelper', '__correct_statement', 'def ' + str(uid))
+		logger('QueryHelper', 'correct_statement', 'def ' + str(uid))
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 

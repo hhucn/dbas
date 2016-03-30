@@ -11,7 +11,7 @@ function AdminInterface(){
 	this.getArgumentOverview = function () {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, _this = this;
 		$.ajax({
-			url: 'admin/get_argument_overview',
+			url: 'admin/argument_overview',
 			method: 'GET',
 			dataType: 'json',
 			data: { issue: new Helper().getCurrentIssueId() },

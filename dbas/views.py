@@ -1,6 +1,7 @@
 import transaction
 import requests
 import json
+import bleach
 
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
@@ -55,8 +56,7 @@ class Dbas(object):
 		:param text:
 		:return: json-dict()
 		"""
-		return text  # todo escaping string correctly
-		# return re.escape(text)
+		return bleach.clean(text)
 
 	@staticmethod
 	def base_layout():
@@ -546,7 +546,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive, breadcrumbs, nickname, session_id)
 		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, mainpage, issue, for_api)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, nickname,
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
@@ -595,9 +595,9 @@ class Dbas(object):
 		arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
-			old_pw = self.request.params['passwordold']
-			new_pw = self.request.params['password']
-			confirm_pw = self.request.params['passwordconfirm']
+			old_pw = self.escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
+			new_pw = self.escape_string(self.request.params['password'])
+			confirm_pw = self.escape_string(self.request.params['passwordconfirm'])
 
 			message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
@@ -727,7 +727,7 @@ class Dbas(object):
 
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper().prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
 		dashboard = _qh.get_dashboard_infos()
 
@@ -809,7 +809,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_posted_statements', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales)
+		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
 		return json.dumps(return_array, True)
 
 	# ajax - getting all text edits
@@ -939,15 +939,11 @@ class Dbas(object):
 				logger('user_login', 'login', 'update login timestamp')
 				db_user.update_last_login()
 				transaction.commit()
-				logger('user_login', '---login', url)
-				logger('user_login', '---login', url)
 
 				ending = ['/?session_expired=true', '/?session_expired=false']
 				for e in ending:
 					if url.endswith(e):
 						url = url[0:-len(e)]
-				logger('user_login', '---login', url)
-				logger('user_login', '---login', url)
 
 				if for_api:
 					return {'status': 'success'}
@@ -1343,7 +1339,7 @@ class Dbas(object):
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
 			ui_locales = _qh.get_language(self.request, get_current_registry())
-			return_dict = _qh.__correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
+			return_dict = _qh.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
 			if return_dict == -1:
 				return_dict = dict()
 				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)
@@ -1515,21 +1511,6 @@ class Dbas(object):
 			logger('get_shortened_url', 'error', repr(e))
 			_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
 			return_dict['error'] = _tn.get(_tn.internalError)
-
-		return json.dumps(return_dict, True)
-
-	# ajax - for attack overview
-	@view_config(route_name='ajax_get_argument_overview', renderer='json')
-	def get_argument_overview(self):
-		"""
-		Returns all attacks, done by the users
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_argument_overview', 'def', 'main')
-		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
-		return_dict = _qh.get_argument_overview(self.request.authenticated_userid, ui_locales)
 
 		return json.dumps(return_dict, True)
 
