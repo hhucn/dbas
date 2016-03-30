@@ -12,8 +12,8 @@
 					<span class="lead" id="issue_info">${structure:issues.info}</span>
 				</div>
 				<div class="col-md-1 center text-center">
-                    <img class="icon-badge" style="width: 30px;" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"/>
-                </div>
+					<span class="icon-badge green-button-middle" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"><strong>i</strong></span>
+				</div>
 				<div class="col-md-2 center text-center">
 					<div class="dropdown center">
 						<button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
@@ -116,8 +116,8 @@
 							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
 						</li>
                         <!--<li><img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_qmark.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" /></li>-->
-						<li>
-							<div id="discussion-sidebar-style-menu" tal:condition="extras.show_display_style or extras.show_bar_icon or extras.show_expert_icon">
+						<li tal:condition="extras.show_display_style or extras.show_bar_icon or extras.show_expert_icon">
+							<div id="discussion-sidebar-style-menu">
 								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="left" tal:attributes="title extras.buttons.more_title"/>
 
 								<ul id="site-navigation">
@@ -337,11 +337,9 @@
 						</div>
 						<div>
 							<img class="icon-badge icon-rem-premise"
-									 alt="icon-rem"
 									 src="${request.static_url('dbas:static/images/icon_minus1.png')}"
 									 tal:attributes="title extras.buttons.rem_statement_row_title"/>
 							<img class="icon-badge icon-add-premise"
-									 alt="icon-add"
 									 src="${request.static_url('dbas:static/images/icon_plus1.png')}"
 									 tal:attributes="title extras.buttons.add_statement_row_title"/>
 						</div>

@@ -9,16 +9,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="125.74216mm"
-   height="125.74216mm"
-   viewBox="0 0 445.5431 445.5431"
+   width="112.88889mm"
+   height="112.88889mm"
+   viewBox="0 0 400.00004 400.00004"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="icon_minus1.svg"
    inkscape:export-filename="/home/tobias/Dokumente/git/dbas/dbas/static/images/icon_minus1.png"
-   inkscape:export-xdpi="12.928042"
-   inkscape:export-ydpi="12.928042">
+   inkscape:export-xdpi="28.799999"
+   inkscape:export-ydpi="28.799999">
   <defs
      id="defs4">
     <inkscape:path-effect
@@ -50,16 +50,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.93458423"
-     inkscape:cx="229.41649"
-     inkscape:cy="243.80049"
+     inkscape:cx="52.867395"
+     inkscape:cy="115.40118"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1256"
-     inkscape:window-height="1028"
-     inkscape:window-x="49"
+     inkscape:window-width="1871"
+     inkscape:window-height="1176"
+     inkscape:window-x="3889"
      inkscape:window-y="24"
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
@@ -67,8 +67,8 @@
     <inkscape:grid
        type="xygrid"
        id="grid8070"
-       originx="-2.2284496"
-       originy="-2.2284717" />
+       originx="-2.2284498"
+       originy="-2.2284448" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -78,7 +78,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -86,19 +86,19 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-2.2284496,-604.59063)">
+     transform="translate(-2.2284496,-650.13372)">
     <circle
        style="fill:#ef5350;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path8068"
-       cx="225"
-       cy="827.36218"
-       r="222.77155" />
+       cx="202.22845"
+       cy="850.13373"
+       r="200" />
     <rect
-       style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect8073"
-       width="320"
-       height="90.838699"
-       x="67"
-       y="782.5235" />
+       width="300"
+       height="60"
+       x="52.228451"
+       y="820.13373" />
   </g>
 </svg>

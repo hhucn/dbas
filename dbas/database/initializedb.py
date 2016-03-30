@@ -703,7 +703,7 @@ def setup_discussion_database(user):
 	argument106 = Argument(premisegroup=premisegroup110.uid, issupportive=False, author=user.uid, issue=issue1.uid)
 	argument107 = Argument(premisegroup=premisegroup111.uid, issupportive=False, author=user.uid, issue=issue1.uid)
 	argument108 = Argument(premisegroup=premisegroup112.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement102.uid)
-	argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement112.uid)
+	argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement102.uid)
 	argument110 = Argument(premisegroup=premisegroup115.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement112.uid)
 	argument111 = Argument(premisegroup=premisegroup114.uid, issupportive=False, author=user.uid, issue=issue1.uid)
 	argument112 = Argument(premisegroup=premisegroup116.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement102.uid)

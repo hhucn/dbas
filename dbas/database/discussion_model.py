@@ -187,7 +187,7 @@ class StatementReferences(DiscussionBase):
 	"""
 	__tablename__ = 'statement_references'
 	uid = Column(Integer, primary_key=True)
-	statement = Column(Text, nullable=False)
+	reference = Column(Text, nullable=False)
 	origin = Column(Text, nullable=False)
 	author_uid = Column(Integer, ForeignKey('users.uid'), nullable=False)
 	statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
@@ -197,7 +197,7 @@ class StatementReferences(DiscussionBase):
 	users = relationship('User', foreign_keys=[author_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, statement, origin, author_uid, statement_uid, issue_uid):
+	def __init__(self, reference, origin, author_uid, statement_uid, issue_uid):
 		"""
 
 		:param statement:
@@ -207,7 +207,7 @@ class StatementReferences(DiscussionBase):
 		:param issue_uid:
 		:return:
 		"""
-		self.statement = statement
+		self.reference = reference
 		self.origin = origin
 		self.author_uid = author_uid
 		self.statement_uid = statement_uid
