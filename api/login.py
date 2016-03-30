@@ -7,10 +7,9 @@ import binascii
 import json
 import hashlib
 import os
+import transaction
 
 from datetime import datetime
-
-from pyramid.httpexceptions import exception_response
 
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import User
@@ -87,6 +86,23 @@ def validate_login(request):
 	valid_token(request)
 
 
+def token_to_database(nickname, token):
+	"""
+	Store the newly created token in database.
+	:param nickname: user's nickname
+	:param token: new token to be stored
+	:return:
+	"""
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
+	if not db_user:
+		raise HTTP401()
+
+	db_user.set_token(token)
+	db_user.update_token_timestamp()
+	transaction.commit()
+
+
 def validate_credentials(request):
 	"""
 	Parse credentials from POST request and validate it against DBAS' database
@@ -107,6 +123,7 @@ def validate_credentials(request):
 			token = _create_token(nickname)
 			user = {'nickname': nickname, 'token': token}
 			request.validated['user'] = user
+			token_to_database(nickname, token)
 	except TypeError:
 		log.error('API Not logged in: %s' % logged_in)
 		request.errors.add(logged_in)
