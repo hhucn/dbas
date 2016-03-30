@@ -27,7 +27,7 @@ class EmailHelper(object):
 		_t = Translator(lang)
 		send_message = False
 		mailer = get_mailer(request)
-		body = body +"\n\n---\n" + _t.get(_t.emailBodyText)
+		body = body + "\n\n---\n" + _t.get(_t.emailBodyText)
 		message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
 		# try sending an catching errors
 		try:
