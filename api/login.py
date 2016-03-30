@@ -36,21 +36,6 @@ def _create_salt(nickname):
 	return rnd + timestamp + nickname
 
 
-def validate_login(request):
-	"""
-	Takes token from request and validates it. Return true if logged in, else false.
-	:param request:
-	:return:
-	"""
-	header = 'X-Messaging-Token'
-	htoken = request.headers.get(header)
-	if htoken is None:
-		log.debug("[API] No htoken set")
-		return
-
-	valid_token(request)
-
-
 def valid_token(request):
 	"""
 	Validate the submitted token. Checks if a user is logged in and prepares a dictionary, which is then passed to DBAS.
@@ -85,6 +70,21 @@ def valid_token(request):
 	# Prepare data for DBAS
 	request.validated['user'] = user
 	request.validated['session_id'] = request.session.id
+
+
+def validate_login(request):
+	"""
+	Takes token from request and validates it. Return true if logged in, else false.
+	:param request:
+	:return:
+	"""
+	header = 'X-Messaging-Token'
+	htoken = request.headers.get(header)
+	if htoken is None:
+		log.debug("[API] No htoken set")
+		return
+
+	valid_token(request)
 
 
 def validate_credentials(request):
