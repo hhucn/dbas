@@ -122,8 +122,8 @@ def validate_credentials(request):
 		if logged_in['status'] == 'success':
 			token = _create_token(nickname)
 			user = {'nickname': nickname, 'token': token}
-			request.validated['user'] = user
 			token_to_database(nickname, token)
+			request.validated['user'] = user
 	except TypeError:
 		log.error('API Not logged in: %s' % logged_in)
 		request.errors.add(logged_in)

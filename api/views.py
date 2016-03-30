@@ -69,10 +69,6 @@ justify_premise = Service(name="justify_premise",
 #
 # Other Services
 #
-dump = Service(name='api_dump',
-			   path='/dump',
-			   description="Database Dump",
-			   cors_policy=cors_policy)
 news = Service(name='api_news',
 			   path='/get_news',
 			   description="News app",
