@@ -188,7 +188,7 @@ class UserHandler(object):
 		if not user:
 			return 0
 
-		edit_count = 0
+		edit_count      = 0
 		statement_count = 0
 		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid).all()
 
@@ -197,7 +197,7 @@ class UserHandler(object):
 			if db_root_version.uid < tv.uid:
 				edit_count += 1
 			else:
-				statement_count +=1
+				statement_count += 1
 
 		return edit_count if only_edits else statement_count
 
@@ -213,7 +213,7 @@ class UserHandler(object):
 		stat_votes = len(DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user.uid).all())
 		return arg_votes, stat_votes
 
-	def get_statements_of_user(self, user, lang):
+	def get_statements_of_user(self, user, lang, query_helper):
 		"""
 
 		:param user:
@@ -225,7 +225,6 @@ class UserHandler(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if not db_user:
 			return return_array
-
 		db_edits = DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
 
 		for edit in db_edits:
@@ -235,7 +234,7 @@ class UserHandler(object):
 				edit_dict['uid'] = str(edit.uid)
 				edit_dict['statement_uid'] = str(edit.statement_uid)
 				edit_dict['content'] = str(edit.content)
-				edit_dict['timestamp'] = str(edit.timestamp)
+				edit_dict['timestamp'] = query_helper.sql_timestamp_pretty_print(str(edit.timestamp), lang)
 				return_array.append(edit_dict)
 
 		return return_array

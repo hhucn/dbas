@@ -2,6 +2,7 @@ import transaction
 import requests
 import json
 
+from html import escape
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -55,8 +56,7 @@ class Dbas(object):
 		:param text:
 		:return: json-dict()
 		"""
-		return text  # todo escaping string correctly
-		# return re.escape(text)
+		return escape(text)
 
 	@staticmethod
 	def base_layout():
@@ -101,114 +101,6 @@ class Dbas(object):
 			'project': project_name,
 			'extras': extras_dict,
 			'session_expired': session_expired
-		}
-
-	# contact page
-	@view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody')
-	def main_contact(self):
-		"""
-		View configuration for the contact view.
-		:return: dictionary with title and project username as well as a value, weather the user is logged in
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
-		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if session_expired:
-			return self.user_logout(True)
-
-		contact_error = False
-		send_message = False
-		message = ''
-
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
-
-		username        = self.request.params['name'] if 'name' in self.request.params else ''
-		email           = self.request.params['mail'] if 'mail' in self.request.params else ''
-		phone           = self.request.params['phone'] if 'phone' in self.request.params else ''
-		content         = self.request.params['content'] if 'content' in self.request.params else ''
-		spam            = self.request.params['spam'] if 'spam' in self.request.params else ''
-		request_token   = self.request.params['csrf_token'] if 'csrf_token' in self.request.params else ''
-		spamquestion    = ''
-
-		if 'form.contact.submitted' not in self.request.params:
-			# get anti-spam-question
-			spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
-			# save answer in session
-			self.request.session['antispamanswer'] = answer
-			token = self.request.session.new_csrf_token()
-
-		else:
-			_t = Translator(ui_locales)
-			token = self.request.session.get_csrf_token()
-
-			logger('main_contact', 'form.contact.submitted', 'validating email')
-			is_mail_valid = validate_email(email, check_mx=True)
-
-			# sanity checks
-			# check for empty username
-			if not username:
-				logger('main_contact', 'form.contact.submitted', 'username empty')
-				contact_error = True
-				message = _t.get(_t.emptyName)
-
-			# check for non valid mail
-			elif not is_mail_valid:
-				logger('main_contact', 'form.contact.submitted', 'mail is not valid')
-				contact_error = True
-				message = _t.get(_t.emptyEmail)
-
-			# check for empty content
-			elif not content:
-				logger('main_contact', 'form.contact.submitted', 'content is empty')
-				contact_error = True
-				message = _t.get(_t.emtpyContent)
-
-			# check for empty username
-			elif (not spam) or (not (int(spam) == int(self.request.session['antispamanswer']))):
-				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spam + ', right answer ' + str(self.request.session['antispamanswer']))
-				contact_error = True
-				message = _t.get(_t.maliciousAntiSpam)
-
-			# is the token valid?
-			elif request_token != token:
-				logger('main_contact', 'form.contact.submitted', 'token is not valid' + ', request_token: ' + str(request_token) + ', token: ' + str(token))
-				message = _t.get(_t.nonValidCSRF)
-				contact_error = True
-
-			else:
-				subject = 'Contact D-BAS'
-				body = _t.get(_t.name) + ': ' + username + '\n'\
-				       + _t.get(_t.mail) + ': ' + email + '\n'\
-				       + _t.get(_t.phone) + ': ' + phone + '\n'\
-				       + _t.get(_t.message) + ':\n' + content
-				EmailHelper().send_mail(self.request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
-				body = '* THIS IS A COPY OF YOUR MAIL *\n\n' + body
-				subject = '[INFO] ' + subject
-				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
-				contact_error = not send_message
-				if send_message:
-					spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
-
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': 'Contact',
-			'project': project_name,
-			'extras': extras_dict,
-			'was_message_send': send_message,
-			'contact_error': contact_error,
-			'message': message,
-			'name': username,
-			'mail': email,
-			'phone': phone,
-			'content': content,
-			'spam': '',
-			'spamquestion': spamquestion,
-			'csrf_token': token
 		}
 
 	# content page
@@ -546,7 +438,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive, breadcrumbs, nickname, session_id)
 		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, mainpage, issue, for_api)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, nickname,
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
@@ -563,6 +455,114 @@ class Dbas(object):
 			return_dict['title'] = issue_dict['title']
 			return_dict['project'] = project_name
 			return return_dict
+
+	# contact page
+	@view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody')
+	def main_contact(self):
+		"""
+		View configuration for the contact view.
+		:return: dictionary with title and project username as well as a value, weather the user is logged in
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
+		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if session_expired:
+			return self.user_logout(True)
+
+		contact_error = False
+		send_message = False
+		message = ''
+
+		try:
+			ui_locales = str(self.request.cookies['_LOCALE_'])
+		except KeyError:
+			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+
+		username        = self.escape_string(self.request.params['name'] if 'name' in self.request.params else '')
+		email           = self.escape_string(self.request.params['mail'] if 'mail' in self.request.params else '')
+		phone           = self.escape_string(self.request.params['phone'] if 'phone' in self.request.params else '')
+		content         = self.escape_string(self.request.params['content'] if 'content' in self.request.params else '')
+		spam            = self.escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
+		request_token   = self.escape_string(self.request.params['csrf_token'] if 'csrf_token' in self.request.params else '')
+		spamquestion    = ''
+
+		if 'form.contact.submitted' not in self.request.params:
+			# get anti-spam-question
+			spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
+			# save answer in session
+			self.request.session['antispamanswer'] = answer
+			token = self.request.session.new_csrf_token()
+
+		else:
+			_t = Translator(ui_locales)
+			token = self.request.session.get_csrf_token()
+
+			logger('main_contact', 'form.contact.submitted', 'validating email')
+			is_mail_valid = validate_email(email, check_mx=True)
+
+			# sanity checks
+			# check for empty username
+			if not username:
+				logger('main_contact', 'form.contact.submitted', 'username empty')
+				contact_error = True
+				message = _t.get(_t.emptyName)
+
+			# check for non valid mail
+			elif not is_mail_valid:
+				logger('main_contact', 'form.contact.submitted', 'mail is not valid')
+				contact_error = True
+				message = _t.get(_t.emptyEmail)
+
+			# check for empty content
+			elif not content:
+				logger('main_contact', 'form.contact.submitted', 'content is empty')
+				contact_error = True
+				message = _t.get(_t.emtpyContent)
+
+			# check for empty username
+			elif (not spam) or (not (int(spam) == int(self.request.session['antispamanswer']))):
+				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spam + ', right answer ' + str(self.request.session['antispamanswer']))
+				contact_error = True
+				message = _t.get(_t.maliciousAntiSpam)
+
+			# is the token valid?
+			elif request_token != token:
+				logger('main_contact', 'form.contact.submitted', 'token is not valid' + ', request_token: ' + str(request_token) + ', token: ' + str(token))
+				message = _t.get(_t.nonValidCSRF)
+				contact_error = True
+
+			else:
+				subject = 'Contact D-BAS'
+				body = _t.get(_t.name) + ': ' + username + '\n'\
+				       + _t.get(_t.mail) + ': ' + email + '\n'\
+				       + _t.get(_t.phone) + ': ' + phone + '\n'\
+				       + _t.get(_t.message) + ':\n' + content
+				EmailHelper().send_mail(self.request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
+				body = '* THIS IS A COPY OF YOUR MAIL *\n\n' + body
+				subject = '[INFO] ' + subject
+				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
+				contact_error = not send_message
+				if send_message:
+					spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
+
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'Contact',
+			'project': project_name,
+			'extras': extras_dict,
+			'was_message_send': send_message,
+			'contact_error': contact_error,
+			'message': message,
+			'name': username,
+			'mail': email,
+			'phone': phone,
+			'content': content,
+			'spam': '',
+			'spamquestion': spamquestion,
+			'csrf_token': token
+		}
 
 	# settings page, when logged in
 	@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
@@ -595,9 +595,9 @@ class Dbas(object):
 		arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
-			old_pw = self.request.params['passwordold']
-			new_pw = self.request.params['password']
-			confirm_pw = self.request.params['passwordconfirm']
+			old_pw = self.escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
+			new_pw = self.escape_string(self.request.params['password'])
+			confirm_pw = self.escape_string(self.request.params['passwordconfirm'])
 
 			message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
@@ -727,7 +727,7 @@ class Dbas(object):
 
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper().prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
 		dashboard = _qh.get_dashboard_infos()
 
@@ -750,12 +750,10 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request')
-
-		logger('notfound', 'def', 'path: ' + self.request.path)
-		logger('notfound', 'def', 'view name: ' + self.request.view_name)
-
-		logger('notfound', 'def', 'params:')
+		logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request' +
+		       ', path: ' + self.request.path +
+		       ', view name: ' + self.request.view_name +
+		       ', params:')
 		for param in self.request.params:
 			logger('notfound', 'def', '    ' + param + ' -> ' + self.request.params[param])
 
@@ -809,7 +807,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_posted_statements', 'def', 'main')
 		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales)
+		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
 		return json.dumps(return_array, True)
 
 	# ajax - getting all text edits
@@ -939,15 +937,11 @@ class Dbas(object):
 				logger('user_login', 'login', 'update login timestamp')
 				db_user.update_last_login()
 				transaction.commit()
-				logger('user_login', '---login', url)
-				logger('user_login', '---login', url)
 
 				ending = ['/?session_expired=true', '/?session_expired=false']
 				for e in ending:
 					if url.endswith(e):
 						url = url[0:-len(e)]
-				logger('user_login', '---login', url)
-				logger('user_login', '---login', url)
 
 				if for_api:
 					return {'status': 'success'}
@@ -1214,6 +1208,7 @@ class Dbas(object):
 				issue       = _qh.get_issue_id(self.request)
 				slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
+			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler().update_last_action(transaction, nickname)
 			new_statement = _qh.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
 			if new_statement == -1:
@@ -1258,6 +1253,7 @@ class Dbas(object):
 				conclusion_id   = self.request.params['conclusion_id']
 				supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 
+			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler().update_last_action(transaction, nickname)
 
 			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
@@ -1306,6 +1302,7 @@ class Dbas(object):
 				arg_uid = self.request.params['arg_uid']
 				attack_type = self.request.params['attack_type']
 
+			# escaping will be done in QueryHelper().set_statement(...)
 			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, issue, nickname, for_api,
 			                                                                         mainpage, lang, RecommenderHelper())
@@ -1343,7 +1340,7 @@ class Dbas(object):
 			uid = self.request.params['uid']
 			corrected_text = self.escape_string(self.request.params['text'])
 			ui_locales = _qh.get_language(self.request, get_current_registry())
-			return_dict = _qh.__correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
+			return_dict = _qh.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
 			if return_dict == -1:
 				return_dict = dict()
 				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)
@@ -1425,8 +1422,8 @@ class Dbas(object):
 		_tn = Translator(ui_locales)
 
 		try:
-			info = self.request.params['info']
-			title = self.request.params['title']
+			info = self.escape_string(self.request.params['info'])
+			title = self.escape_string(self.request.params['title'])
 			was_set, error = _qh.set_issue(info, title, self.request.authenticated_userid, transaction, ui_locales)
 			if was_set:
 				db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
@@ -1518,21 +1515,6 @@ class Dbas(object):
 
 		return json.dumps(return_dict, True)
 
-	# ajax - for attack overview
-	@view_config(route_name='ajax_get_argument_overview', renderer='json')
-	def get_argument_overview(self):
-		"""
-		Returns all attacks, done by the users
-		:return: json-dict()
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_argument_overview', 'def', 'main')
-		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
-		return_dict = _qh.get_argument_overview(self.request.authenticated_userid, ui_locales)
-
-		return json.dumps(return_dict, True)
-
 	# ajax - for getting all news
 	@view_config(route_name='ajax_get_news', renderer='json')
 	def get_news(self):
@@ -1596,6 +1578,7 @@ class Dbas(object):
 		_qh = QueryHelper()
 		ui_locales = _qh.get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
+		nickname = self.request.authenticated_userid
 
 		return_dict = dict()
 		try:
@@ -1603,11 +1586,11 @@ class Dbas(object):
 			is_argument = self.request.params['is_argument'] == 'true'
 			if uid == '0':
 				issue = _qh.get_issue_id(self.request)
-				return_dict = _qh.get_user_with_same_opinion_for_position(issue, ui_locales)
+				return_dict = _qh.get_user_with_same_opinion_for_position(issue, ui_locales, nickname)
 			elif is_argument:
-				return_dict = _qh.get_user_with_same_opinion_for_argument(uid, ui_locales)
+				return_dict = _qh.get_user_with_same_opinion_for_argument(uid, ui_locales, nickname)
 			else:
-				return_dict = _qh.get_user_with_same_opinion_for_statement(uid, ui_locales)
+				return_dict = _qh.get_user_with_same_opinion_for_statement(uid, ui_locales, nickname)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))

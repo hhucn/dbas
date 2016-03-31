@@ -201,12 +201,16 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 
 	// user info click
 	$('.triangle-r-info').each(function(){
-		$(this).click(function(){
-			var data_type = $(this).attr('data-type'),
-				data_argument_uid = $(this).attr('data-argument-uid'),
-				data_statement_uid = $(this).attr('data-statement-uid');
-			new AjaxSiteHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid);
-		});
+		if ($(this).attr('data-votecount') > 0) {
+			$(this).click(function () {
+				var data_type = $(this).attr('data-type'),
+					data_argument_uid = $(this).attr('data-argument-uid'),
+					data_statement_uid = $(this).attr('data-statement-uid');
+				new AjaxSiteHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid);
+			});
+		} else {
+			$(this).removeClass('triangle-r-info').addClass('triangle-r-info-nohover');
+		}
 	});
 };
 
@@ -350,7 +354,7 @@ setGuiOptions = function(){
 	$('#site-navigation').hide();
 	body.popover({ selector: '[data-popover]', trigger: 'click hover', delay: {show: 50, hide: 50}}).on('inserted.bs.popover', function () {
 		var element = $('#site-navigation').detach().show();
-		$('#discussion-sidebar-style-menu .popover-content').append(element);
+		$('#discussion-sidebar-style-menu').find('.popover-content').append(element);
 	}).on('hide.bs.popover', function () {
 		var element = $('#site-navigation').detach().hide();
 		$('#discussion-sidebar-style-menu').append(element);
@@ -450,10 +454,12 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 			sendStartStatement();
 		}
 	});
-	$('#' + sendNewPremiseId).off("click").click(function(){
-		if ($(this).attr('name').indexOf('start') != -1){
+	$('#' + sendNewPremiseId).off("click").click(function () {
+		if (input.attr('id').indexOf('start_statement') != -1) {
+			sendStartStatement();
+		} else if (input.attr('id').indexOf('start_premise') != -1) {
 			sendStartPremise();
-		} else if ($(this).attr('name').indexOf('justify') != -1){
+		} else if (input.attr('id').indexOf('justify_premise') != -1) {
 			sendArgumentsPremise();
 		}
 	});
@@ -512,16 +518,6 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 			}
 		});
 	}
-	// play safe
-	$('#' + sendNewPremiseId).off("click").click(function () {
-		if (input.attr('id').indexOf('start_statement') != -1) {
-			sendStartStatement();
-		} else if (input.attr('id').indexOf('start_premise') != -1) {
-			sendStartPremise();
-		} else if (input.attr('id').indexOf('justify_premise') != -1) {
-			sendArgumentsPremise();
-		}
-	});
 };
 
 /**

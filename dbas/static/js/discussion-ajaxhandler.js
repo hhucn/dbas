@@ -238,6 +238,12 @@ function AjaxSiteHandler() {
 		});
 	};
 
+	/**
+	 *
+	 * @param type
+	 * @param argument_uid
+	 * @param statement_uid
+	 */
 	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid){
 		var is_argument = type == 'argument',
 			uid = argument_uid == 'None' ? statement_uid : argument_uid,
