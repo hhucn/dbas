@@ -7,6 +7,7 @@ import json
 
 from export.lib import get_dump
 from cornice import Service
+from dbas.lib import get_language
 from dbas.query_helper import QueryHelper
 from dbas.logger import logger
 from pyramid.threadlocal import get_current_registry
@@ -34,7 +35,7 @@ def get_database_dump(request):
 	logger('Export', 'get_database_dump', 'main')
 	_qh = QueryHelper()
 	issue = _qh.get_issue_id(request)
-	ui_locales = _qh.get_language(request, get_current_registry())
+	ui_locales = get_language(request, get_current_registry())
 
 	return_dict = get_dump(issue, ui_locales)
 

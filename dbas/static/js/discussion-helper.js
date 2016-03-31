@@ -212,9 +212,7 @@ function Helper() {
 				f.append($('<input type="hidden" />').attr('name', prms).attr('value', params[prms]));
 			}
 		}
-		alert(1);
 		f.submit().remove();
-		alert(2);
 	};
 
 	this.getMaxSizeOfGraphViewContainer = function(){

@@ -9,6 +9,9 @@ from .user_management import UserHandler
 
 
 class VotingHelper(object):
+	"""
+	We are not deleting oppositve votes for detecting opinion changes!
+	"""
 
 	def add_vote_for_argument(self, argument_uid, user, transaction):
 		"""
@@ -101,13 +104,13 @@ class VotingHelper(object):
 		transaction.commit()
 		return True
 
-	def __vote_argument(self, argument, user, is_accept):
+	def __vote_argument(self, argument, user, is_up_vote):
 		"""
 		Check if there is a vote for the argument. If not, we will create a new one, otherwise the current one will be
 		invalid an we will create a new entry.
 		:param argument: Argument
 		:param user: User
-		:param is_accept: Boolean
+		:param is_up_vote: Boolean
 		:return: None
 		"""
 		if argument is None:
@@ -118,13 +121,16 @@ class VotingHelper(object):
 
 		db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
 		                                                              VoteArgument.author_uid == user.uid,
-		                                                              VoteArgument.is_up_vote == is_accept,
+		                                                              VoteArgument.is_up_vote == is_up_vote,
 		                                                              VoteArgument.is_valid == True)).first()
 
 		# old one will be invalid
 		db_old_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
 		                                                                   VoteArgument.author_uid == user.uid,
 		                                                                   VoteArgument.is_valid == True)).all()
+
+		# we are not deleting oppositve votes for detecting opinion changes!
+
 		if db_vote in db_old_votes:
 			db_old_votes.remove(db_vote)
 
@@ -134,17 +140,17 @@ class VotingHelper(object):
 		DBDiscussionSession.flush()
 
 		if not db_vote:
-			db_new_vote = VoteArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
+			db_new_vote = VoteArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_up_vote, is_valid=True)
 			DBDiscussionSession.add(db_new_vote)
 			DBDiscussionSession.flush()
 
-	def __vote_statement(self, statement, user, is_accept):
+	def __vote_statement(self, statement, user, is_up_vote):
 		"""
 		Check if there is a vote for the statement. If not, we will create a new one, otherwise the current one will be
 		invalid an we will create a new entry.
-		:param argument: Statement
+		:param statement: Statement
 		:param user: User
-		:param is_accept: Boolean
+		:param is_up_vote: Boolean
 		:return: None
 		"""
 		if statement is None:
@@ -156,13 +162,16 @@ class VotingHelper(object):
 		# check for duplicate
 		db_vote = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
 		                                                               VoteStatement.author_uid == user.uid,
-		                                                               VoteStatement.is_up_vote == is_accept,
+		                                                               VoteStatement.is_up_vote == is_up_vote,
 		                                                               VoteStatement.is_valid == True)).first()
 
 		# old one will be invalid
 		db_old_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
 		                                                                    VoteStatement.author_uid == user.uid,
 		                                                                    VoteStatement.is_valid == True)).all()
+
+		# we are not deleting oppositve votes for detecting opinion changes!
+
 		if db_vote in db_old_votes:
 			db_old_votes.remove(db_vote)
 
@@ -172,16 +181,16 @@ class VotingHelper(object):
 		DBDiscussionSession.flush()
 
 		if not db_vote:
-			db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=user.uid, is_up_vote=is_accept, is_valid=True)
+			db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=user.uid, is_up_vote=is_up_vote, is_valid=True)
 			DBDiscussionSession.add(db_new_vote)
 			DBDiscussionSession.flush()
 
-	def __vote_premisesgroup(self, premisesgroup_uid, user, is_accept):
+	def __vote_premisesgroup(self, premisesgroup_uid, user, is_up_vote):
 		"""
 		Calls statemens-methods for every premise
 		:param premisegroup_uid: PremiseGroup.uid
 		:param user: User
-		:param is_accept: Boolean
+		:param is_up_vote: Boolean
 		:return:
 		"""
 		if premisesgroup_uid is None or premisesgroup_uid == 0:
@@ -193,4 +202,4 @@ class VotingHelper(object):
 		db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
 		for premise in db_premises:
 			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
-			self.__vote_statement(db_statement, user, is_accept)
+			self.__vote_statement(db_statement, user, is_up_vote)

@@ -200,7 +200,7 @@ class StatementReferences(DiscussionBase):
 	def __init__(self, reference, origin, author_uid, statement_uid, issue_uid):
 		"""
 
-		:param statement:
+		:param reference:
 		:param origin:
 		:param author_uid:
 		:param statement_uid:

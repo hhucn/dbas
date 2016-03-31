@@ -1,6 +1,6 @@
 import random
 import hashlib
-import urllib
+from urllib import parse
 
 from datetime import datetime
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -64,19 +64,24 @@ class UserHandler(object):
 	def update_last_action(self, transaction, nick):
 		"""
 
+		:param transaction:
 		:param nick:
 		:return:
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
 		if db_user:
-
+			# check difference of
 			try:  # sqlite
 				last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
-				diff = (datetime.now() - last_action_object).seconds - 3600  # dirty fix for sqlite
+				last_login_object  = datetime.strptime(str(db_user.last_login), '%Y-%m-%d %H:%M:%S')
+				diff1 = (datetime.now() - last_action_object).seconds - 3600  # dirty fix for sqlite
+				diff2 = (datetime.now() - last_login_object).seconds - 3600  # dirty fix for sqlite
 			except ValueError:  # postgres
 				last_action_object = datetime.strptime(str(db_user.last_action)[:-6], '%Y-%m-%d %H:%M:%S.%f')
-				diff = (datetime.now() - last_action_object).seconds
-
+				last_login_object  = datetime.strptime(str(db_user.last_login)[:-6], '%Y-%m-%d %H:%M:%S.%f')
+				diff1 = (datetime.now() - last_action_object).seconds
+				diff2 = (datetime.now() - last_login_object).seconds
+			diff = diff1 if diff1 < diff2 else diff2
 			log_out = diff > self.timeout
 			logger('UserHandler', 'update_last_action', 'session run out: ' + str(log_out) + ', ' + str(diff) + 's')
 			db_user.update_last_action()
@@ -86,6 +91,12 @@ class UserHandler(object):
 		return False
 
 	def is_user_in_group(self, nickname, groupname):
+		"""
+
+		:param nickname:
+		:param groupname:
+		:return:
+		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
 		logger('UserHandler', 'is user in: ' + groupname, 'main')
 		return db_user and db_user.groups.name == groupname
@@ -108,7 +119,7 @@ class UserHandler(object):
 		"""
 		email = user.email.encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
-		gravatar_url += urllib.parse.urlencode({'d': 'wavatar', 's': str(80)})
+		gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(80)})
 		logger('UserHandler', 'get_profile_picture', 'url: ' + gravatar_url)
 		return gravatar_url
 
@@ -323,33 +334,33 @@ class UserHandler(object):
 		# is the old password given?
 		if not old_pw:
 			logger('UserHandler', 'change_password', 'old pwd is empty')
-			message = _t.get(_t.oldPwdEmpty) # 'The old password field is empty.'
+			message = _t.get(_t.oldPwdEmpty)  # 'The old password field is empty.'
 			error = True
 		# is the new password given?
 		elif not new_pw:
 			logger('UserHandler', 'change_password', 'new pwd is empty')
-			message = _t.get(_t.newPwdEmtpy) # 'The new password field is empty.'
+			message = _t.get(_t.newPwdEmtpy)  # 'The new password field is empty.'
 			error = True
 		# is the confirmation password given?
 		elif not confirm_pw:
 			logger('UserHandler', 'change_password', 'confirm pwd is empty')
-			message = _t.get(_t.confPwdEmpty) # 'The password confirmation field is empty.'
+			message = _t.get(_t.confPwdEmpty)  # 'The password confirmation field is empty.'
 			error = True
 		# is new password equals the confirmation?
 		elif not new_pw == confirm_pw:
 			logger('UserHandler', 'change_password', 'new pwds not equal')
-			message = _t.get(_t.newPwdNotEqual) # 'The new passwords are not equal'
+			message = _t.get(_t.newPwdNotEqual)  # 'The new passwords are not equal'
 			error = True
 		# is new old password equals the new one?
 		elif old_pw == new_pw:
 			logger('UserHandler', 'change_password', 'pwds are the same')
-			message = _t.get(_t.pwdsSame) # 'The new and old password are the same'
+			message = _t.get(_t.pwdsSame)  # 'The new and old password are the same'
 			error = True
 		else:
 			# is the old password valid?
 			if not user.validate_password(old_pw):
 				logger('UserHandler', 'change_password', 'old password is wrong')
-				message = _t.get(_t.oldPwdWrong) # 'Your old password is wrong.'
+				message = _t.get(_t.oldPwdWrong)  # 'Your old password is wrong.'
 				error = True
 			else:
 				password_handler = PasswordHandler()
@@ -365,34 +376,3 @@ class UserHandler(object):
 				success = True
 
 		return message, error, success
-
-	def get_all_users(self, user):
-		"""
-		Returns all users, if the given user is admin
-		:param user: self.request.authenticated_userid
-		:return: dictionary
-		"""
-		is_admin = UserHandler().is_user_in_group(user, 'admins')
-		if not is_admin:
-			return_dict = dict()
-		else:
-			logger('UserHandler', 'get_all_users', 'get all users')
-			db_users = DBDiscussionSession.query(User).join(Group).all()
-
-			return_dict = dict()
-
-			if db_users:
-				for user in db_users:
-					return_user = dict()
-					return_user['uid'] = user.uid
-					return_user['firstname'] = user.firstname
-					return_user['surname'] = user.surname
-					return_user['nickname'] = user.nickname
-					return_user['email'] = user.email
-					return_user['group_uid'] = user.groups.name
-					return_user['last_login'] = str(user.last_login)
-					return_user['last_action'] = str(user.last_action)
-					return_user['registered'] = str(user.registered)
-					return_user['gender'] = str(user.gender)
-					return_dict[user.uid] = return_user
-		return return_dict

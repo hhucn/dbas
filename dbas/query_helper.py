@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from html import escape
 import locale
 import collections
 import random
 from sqlalchemy import and_, func
 from slugify import slugify
 
+from .lib import escape_string
 from .database import DBDiscussionSession, DBNewsSession
 from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue, Group
 from .database.news_model import News
@@ -603,7 +603,7 @@ class QueryHelper(object):
 
 		# escaping
 		logger('---', 'before', statement)
-		statement = escape(statement)
+		statement = escape_string(statement)
 		logger('---', 'after', statement)
 
 		# check for dot at the end
@@ -1367,13 +1367,13 @@ class QueryHelper(object):
 		statements = []
 		if isinstance(text_list, list):
 			for text in text_list:
-				if len(text) < self.__statement_min_length:  # TODO LENGTH
+				if len(text) < self.__statement_min_length:
 					return -1
 				else:
 					new_statement, is_duplicate = self.set_statement(transaction, text, user, is_start, issue)
 					statements.append(new_statement)
 		else:
-			if len(text_list) < self.__statement_min_length:  # TODO LENGTH
+			if len(text_list) < self.__statement_min_length:
 				return -1
 			else:
 				new_statement, is_duplicate = self.set_statement(transaction, text_list, user, is_start, issue)
