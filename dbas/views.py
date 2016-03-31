@@ -2,6 +2,7 @@ import transaction
 import requests
 import json
 
+from html import escape
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -55,7 +56,7 @@ class Dbas(object):
 		:param text:
 		:return: json-dict()
 		"""
-		return text
+		return escape(text)
 
 	@staticmethod
 	def base_layout():
