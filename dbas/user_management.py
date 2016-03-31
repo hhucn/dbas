@@ -74,14 +74,20 @@ class UserHandler(object):
 			try:  # sqlite
 				last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
 				last_login_object  = datetime.strptime(str(db_user.last_login), '%Y-%m-%d %H:%M:%S')
-				diff1 = (datetime.now() - last_action_object).seconds - 3600  # dirty fix for sqlite
-				diff2 = (datetime.now() - last_login_object).seconds - 3600  # dirty fix for sqlite
+				diff_action = (datetime.now() - last_action_object).seconds - 3600  # dirty fix for sqlite
+				diff_login = (datetime.now() - last_login_object).seconds - 3600  # dirty fix for sqlite
 			except ValueError:  # postgres
 				last_action_object = datetime.strptime(str(db_user.last_action)[:-6], '%Y-%m-%d %H:%M:%S.%f')
 				last_login_object  = datetime.strptime(str(db_user.last_login)[:-6], '%Y-%m-%d %H:%M:%S.%f')
-				diff1 = (datetime.now() - last_action_object).seconds
-				diff2 = (datetime.now() - last_login_object).seconds
-			diff = diff1 if diff1 < diff2 else diff2
+				diff_action = (datetime.now() - last_action_object).seconds
+				diff_login = (datetime.now() - last_login_object).seconds
+			logger('UserHandler', 'update_last_action', 'last action: ' + str(diff_action))
+			logger('UserHandler', 'update_last_action', 'last action: ' + str(diff_action))
+			logger('UserHandler', 'update_last_action', 'last action: ' + str(diff_action))
+			logger('UserHandler', 'update_last_action', 'last login: ' + str(diff_login))
+			logger('UserHandler', 'update_last_action', 'last login: ' + str(diff_login))
+			logger('UserHandler', 'update_last_action', 'last login: ' + str(diff_login))
+			diff = diff_action if diff_action < diff_login else diff_login
 			log_out = diff > self.timeout
 			logger('UserHandler', 'update_last_action', 'session run out: ' + str(log_out) + ', ' + str(diff) + 's')
 			db_user.update_last_action()
