@@ -5,7 +5,7 @@
 
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences
-from .lib import logger
+from .lib import escape_html, logger
 
 log = logger()
 
@@ -13,21 +13,19 @@ log = logger()
 def store_reference(api_data):
     """
     Validate provided reference and store it in the database.
-
-    .. todo::
-        Sanitize input, issue #2
-
     :param api_data:
     :return:
     """
     try:
-        reference = api_data["reference"]
+        reference = escape_html(api_data["reference"])
         if not reference or len(reference) < 1:
             return  # Early exit if there is no reference
 
         user_uid = api_data["user_uid"]
-        origin = api_data["origin"]
-        statement_uid = api_data["arg_uid"] if api_data["arg_uid"] is not None else api_data["conclusion_id"]
+        arg_uid = api_data["arg_uid"]
+        conclusion_id = api_data["conclusion_id"]
+        statement_uid = arg_uid if arg_uid is not None else conclusion_id
+        origin = escape_html(api_data["origin"])
         issue_uid = api_data["issue_id"]
 
         db_ref = StatementReferences(reference, origin, user_uid, statement_uid, issue_uid)
