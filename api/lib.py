@@ -6,6 +6,7 @@
 import json
 import logging
 
+from html import escape
 from webob import Response, exc
 
 
@@ -17,6 +18,15 @@ def logger():
 	log = logging.getLogger()
 	log.setLevel(logging.DEBUG)
 	return log
+
+
+def escape_html(input):
+	"""
+	Replace html tags.
+	:param input:
+	:return: escaped string
+	"""
+	return escape(str(input))
 
 
 def json_bytes_to_dict(col):
