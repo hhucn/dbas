@@ -96,7 +96,7 @@ function InteractionHandler() {
 		if (parsedData.error.length == 0) {
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
 			$('#' + popupUrlSharingDescriptionPId).html(_t(feelFreeToShareUrl) + ', ' + _t(shortenedBy) + ' ' + service + ':');
-			$('#' + popupUrlSharingInputId).val(parsedData.url);
+			$('#' + popupUrlSharingInputId).val(parsedData.url).attr('data-short-url', parsedData.url);
 		} else {
 			$('#' + popupUrlSharingDescriptionPId).text(_t(feelFreeToShareUrl) + ":");
 			$('#' + popupUrlSharingInputId).val(long_url);

@@ -63,45 +63,42 @@ class UserHandler(object):
 
 	def update_last_action(self, transaction, nick):
 		"""
-
-		:param transaction:
-		:param nick:
-		:return:
+		Updates the last action field of the user-row in database. Returns boolean if the users session
+		is older than one hour or True, when she wants to keep the login
+		:param transaction: transaction
+		:param nick: User.nickname
+		:return: Boolean
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
-		if db_user:
-			# check difference of
-			try:  # sqlite
-				last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
-				last_login_object  = datetime.strptime(str(db_user.last_login), '%Y-%m-%d %H:%M:%S')
-				diff_action = (datetime.now() - last_action_object).seconds - 3600  # dirty fix for sqlite
-				diff_login = (datetime.now() - last_login_object).seconds - 3600  # dirty fix for sqlite
-			except ValueError:  # postgres
-				last_action_object = datetime.strptime(str(db_user.last_action)[:-6], '%Y-%m-%d %H:%M:%S.%f')
-				last_login_object  = datetime.strptime(str(db_user.last_login)[:-6], '%Y-%m-%d %H:%M:%S.%f')
-				diff_action = (datetime.now() - last_action_object).seconds
-				diff_login = (datetime.now() - last_login_object).seconds
-			logger('UserHandler', 'update_last_action', 'last action: ' + str(diff_action))
-			logger('UserHandler', 'update_last_action', 'last action: ' + str(diff_action))
-			logger('UserHandler', 'update_last_action', 'last action: ' + str(diff_action))
-			logger('UserHandler', 'update_last_action', 'last login: ' + str(diff_login))
-			logger('UserHandler', 'update_last_action', 'last login: ' + str(diff_login))
-			logger('UserHandler', 'update_last_action', 'last login: ' + str(diff_login))
-			diff = diff_action if diff_action < diff_login else diff_login
-			log_out = diff > self.timeout
-			logger('UserHandler', 'update_last_action', 'session run out: ' + str(log_out) + ', ' + str(diff) + 's')
-			db_user.update_last_action()
-			db_user.should_hold_the_login(not log_out)
-			transaction.commit()
-			return log_out
-		return False
+		if not db_user:
+			return False
+
+		# check difference of
+		try:  # sqlite
+			last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
+			last_login_object  = datetime.strptime(str(db_user.last_login), '%Y-%m-%d %H:%M:%S')
+			diff_action = (datetime.now() - last_action_object).seconds - 3600  # dirty fix for sqlite
+			diff_login = (datetime.now() - last_login_object).seconds - 3600  # dirty fix for sqlite
+		except ValueError:  # postgres
+			last_action_object = datetime.strptime(str(db_user.last_action)[:-6], '%Y-%m-%d %H:%M:%S.%f')
+			last_login_object  = datetime.strptime(str(db_user.last_login)[:-6], '%Y-%m-%d %H:%M:%S.%f')
+			diff_action = (datetime.now() - last_action_object).seconds
+			diff_login = (datetime.now() - last_login_object).seconds
+
+		diff = diff_action if diff_action < diff_login else diff_login
+		should_log_out = diff > self.timeout and not db_user.keep_logged_in
+		logger('UserHandler', 'update_last_action', 'session run out: ' + str(should_log_out) + ', ' + str(diff) + 's (keep login: ' + str(db_user.keep_logged_in) + ')')
+		db_user.update_last_action()
+
+		transaction.commit()
+		return should_log_out
 
 	def is_user_in_group(self, nickname, groupname):
 		"""
-
-		:param nickname:
-		:param groupname:
-		:return:
+		Returns boolean if the user is in the group
+		:param nickname: User.nickname
+		:param groupname: Group.name
+		:return: Boolean
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
 		logger('UserHandler', 'is user in: ' + groupname, 'main')
@@ -121,7 +118,7 @@ class UserHandler(object):
 		"""
 		Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
 		:param user: User
-		:return:
+		:return: String
 		"""
 		email = user.email.encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"

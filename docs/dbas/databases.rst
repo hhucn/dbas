@@ -10,7 +10,7 @@ Steps for creating a new database
 3. Load database in dbas/__init__.py.
 4. Add session, engine and methods in dbas/database/__init__.py.
 5. Define a new model <new_model>.py in dbas/database/.
-6. Define a function for creation in dbas/database/initializedb.py. Name of the method is the same as in the con.sole script
+6. Define a function for creation in dbas/database/initializedb.py. Name of the method is the same as in the console script
 7. Optional: add dummy data in dbas/database/initializedb.py.
 8. Call
 
