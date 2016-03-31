@@ -926,18 +926,9 @@ class Dbas(object):
 
 				# update timestamp
 				logger('user_login', 'login', 'update login timestamp')
-				qh = QueryHelper()
-				logger('--', '---', qh.sql_timestamp_pretty_print(str(db_user.last_login), lang))
-				logger('--', '---', qh.sql_timestamp_pretty_print(str(db_user.last_login), lang))
 				db_user.update_last_login()
+				db_user.update_last_action()
 				transaction.commit()
-				db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-				db_user.update_last_login()
-				transaction.commit()
-				db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-				logger('--', '---', qh.sql_timestamp_pretty_print(str(db_user.last_login), lang))
-				logger('--', '---', qh.sql_timestamp_pretty_print(str(db_user.last_login), lang))
-
 				ending = ['/?session_expired=true', '/?session_expired=false']
 				for e in ending:
 					if url.endswith(e):
