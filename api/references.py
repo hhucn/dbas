@@ -17,7 +17,6 @@ log = logger()
 def store_reference(api_data, statement_uid=None):
     """
     Validate provided reference and store it in the database.
-    
     :param api_data:
     :param statement_uid:
     :return:
