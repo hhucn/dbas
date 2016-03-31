@@ -89,12 +89,12 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 	 */
 	$('#' + popupUrlSharingLongUrlButtonID).click(function (){
 
-		if ($(this).attr('data-short-url') == '0'){
-			new AjaxSiteHandler().getShortenUrl(window.location);
-			$(this).attr('data-short-url', '1').text(_t(fetchLongUrl));
+		if ($(this).attr('data-is-short-url') == '0'){
+			$('#' + popupUrlSharingInputId).val($('#' + popupUrlSharingInputId).attr('data-short-url'));
+			$(this).attr('data-is-short-url', '1').text(_t(fetchLongUrl));
 		} else {
 			$('#' + popupUrlSharingInputId).val(window.location);
-			$(this).attr('data-short-url', '0').text(_t(fetchShortUrl));
+			$(this).attr('data-is-short-url', '0').text(_t(fetchShortUrl));
 		}
 	});
 

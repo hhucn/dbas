@@ -482,7 +482,7 @@ function GuiHandler() {
 	 * Opens the edit statements popup
 	 */
 	this.showEditStatementsPopup = function () {
-		var table, tr, td_text, td_buttons, helper = new Helper();
+		var table, tr, td_text, td_buttons, helper = new Helper(), ids = [];
 		$('#' + popupEditStatementId).modal('show');
 		$('#' + popupEditStatementWarning).hide();
 
@@ -498,8 +498,11 @@ function GuiHandler() {
 		// append a row for each statement
 		$('#' + discussionSpaceId + ' li:not(:last-child) label:nth-child(even)').each(function () {
 			tr = helper.createRowInEditDialog($(this).text(), $(this).attr('for').substr('item_'.length), $(this).attr('id'));
-			table.append(tr);
-
+			// add each element only once
+			if ($.inArray($(this).attr('id'), ids) == -1){
+				table.append(tr);
+				ids.push($(this).attr('id'));
+			}
 		});
 
 		$('#' + popupEditStatementContentId).empty().append(table);

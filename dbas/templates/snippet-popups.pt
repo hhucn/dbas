@@ -216,7 +216,7 @@
     				<div id="popup-url-sharing-content">
     				</div>
     				<p id="popup-url-sharing-description-p" i18n:translate="url-sharing-description">Please feel free to share this url:</p>
-    				<input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL">
+    				<input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL" data-short-url="" >
     			</div>
     			<div class="modal-footer">
 
@@ -225,7 +225,7 @@
     				<a class="share-icon share-twitter-small" id="share-url-twitter"></a>
     				<a class="share-icon share-mail-small" id="share-url-mail"></a>
 
-    				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" data-short-url="1">Fetch long url!</button>
+    				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" data-is-short-url="1">Fetch long url!</button>
     				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>
