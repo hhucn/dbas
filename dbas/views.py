@@ -2,7 +2,6 @@ import transaction
 import requests
 import json
 
-from html import escape
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -17,6 +16,7 @@ from .database.discussion_model import User, Group, Issue, Argument, Notificatio
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
+from .lib import get_language, escape_string
 from .query_helper import QueryHelper
 from .strings import Translator
 from .string_matcher import FuzzyStringMatcher
@@ -50,14 +50,6 @@ class Dbas(object):
 		mainpage = request.application_url
 		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
 
-	def escape_string(self, text):
-		"""
-
-		:param text:
-		:return: json-dict()
-		"""
-		return escape(text)
-
 	@staticmethod
 	def base_layout():
 		renderer = get_renderer('templates/basetemplate.pt')
@@ -90,7 +82,7 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 		DictionaryHelper(ui_locales).add_language_options_for_extra_dict(extras_dict)
 
@@ -130,7 +122,7 @@ class Dbas(object):
 			logged_in = self.request.authenticated_userid
 
 		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
 		if for_api:
 			slug = self.request.matchdict['slug'] if 'slug' in self.request.matchdict else ''
@@ -183,7 +175,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, nickname)
 
 		_qh = QueryHelper()
-		ui_locales      = _qh.get_language(self.request, get_current_registry())
+		ui_locales      = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
@@ -238,7 +230,7 @@ class Dbas(object):
 		logged_in = _uh.is_user_logged_in(nickname)
 
 		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
 
 		slug                = matchdict['slug'] if 'slug' in matchdict else ''
@@ -347,7 +339,7 @@ class Dbas(object):
 		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
 
 		_qh             = QueryHelper()
-		ui_locales      = _qh.get_language(self.request, get_current_registry())
+		ui_locales      = get_language(self.request, get_current_registry())
 		_dh             = DictionaryHelper(ui_locales)
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
@@ -386,7 +378,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_finish', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
@@ -426,7 +418,7 @@ class Dbas(object):
 		is_supportive = True if is_supportive is 't' else False
 
 		_qh             = QueryHelper()
-		ui_locales      = _qh.get_language(self.request, get_current_registry())
+		ui_locales      = get_language(self.request, get_current_registry())
 		_dh             = DictionaryHelper(ui_locales)
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
@@ -478,12 +470,12 @@ class Dbas(object):
 		except KeyError:
 			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
 
-		username        = self.escape_string(self.request.params['name'] if 'name' in self.request.params else '')
-		email           = self.escape_string(self.request.params['mail'] if 'mail' in self.request.params else '')
-		phone           = self.escape_string(self.request.params['phone'] if 'phone' in self.request.params else '')
-		content         = self.escape_string(self.request.params['content'] if 'content' in self.request.params else '')
-		spam            = self.escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
-		request_token   = self.escape_string(self.request.params['csrf_token'] if 'csrf_token' in self.request.params else '')
+		username        = escape_string(self.request.params['name'] if 'name' in self.request.params else '')
+		email           = escape_string(self.request.params['mail'] if 'mail' in self.request.params else '')
+		phone           = escape_string(self.request.params['phone'] if 'phone' in self.request.params else '')
+		content         = escape_string(self.request.params['content'] if 'content' in self.request.params else '')
+		spam            = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
+		request_token   = escape_string(self.request.params['csrf_token'] if 'csrf_token' in self.request.params else '')
 		spamquestion    = ''
 
 		if 'form.contact.submitted' not in self.request.params:
@@ -577,7 +569,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
 
 		old_pw      = ''
@@ -595,9 +587,9 @@ class Dbas(object):
 		arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
-			old_pw = self.escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
-			new_pw = self.escape_string(self.request.params['password'])
-			confirm_pw = self.escape_string(self.request.params['passwordconfirm'])
+			old_pw = escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
+			new_pw = escape_string(self.request.params['password'])
+			confirm_pw = escape_string(self.request.params['passwordconfirm'])
 
 			message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
@@ -646,7 +638,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_notifications', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
@@ -674,7 +666,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		is_author = UserHandler().is_user_author(self.request.authenticated_userid)
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
@@ -697,7 +689,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_imprint', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
@@ -726,7 +718,7 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
 		dashboard = _qh.get_dashboard_infos()
@@ -762,7 +754,7 @@ class Dbas(object):
 			path = path[5:]
 
 		self.request.response.status = 404
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
@@ -792,7 +784,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_user_history', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, self.request.session.id, ui_locales)
 		return json.dumps(return_dict, True)
 
@@ -806,7 +798,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_posted_statements', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
 		return json.dumps(return_array, True)
 
@@ -820,7 +812,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_edits', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_edits_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
 		return json.dumps(return_array, True)
 
@@ -834,7 +826,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_argument_votes', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, True, ui_locales, QueryHelper())
 		return json.dumps(return_array, True)
 
@@ -848,7 +840,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_statement_votes', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, False, ui_locales, QueryHelper())
 		return json.dumps(return_array, True)
 
@@ -902,20 +894,19 @@ class Dbas(object):
 
 		return_dict = dict()
 
-		_qh = QueryHelper()
-		lang = _qh.get_language(self.request, get_current_registry())
+		lang = get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 
 		try:
 			if not nickname and not password:
-				nickname = self.escape_string(self.request.params['user'])
-				password = self.escape_string(self.request.params['password'])
-				keep_login = self.escape_string(self.request.params['keep_login'])
+				nickname = escape_string(self.request.params['user'])
+				password = escape_string(self.request.params['password'])
+				keep_login = escape_string(self.request.params['keep_login'])
 				keep_login = True if keep_login == 'true' else False
 				url = self.request.params['url']
 			else:
-				nickname = self.escape_string(nickname)
-				password = self.escape_string(password)
+				nickname = escape_string(nickname)
+				password = escape_string(password)
 				url = ''
 
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -935,8 +926,17 @@ class Dbas(object):
 
 				# update timestamp
 				logger('user_login', 'login', 'update login timestamp')
+				qh = QueryHelper()
+				logger('--', '---', qh.sql_timestamp_pretty_print(str(db_user.last_login), lang))
+				logger('--', '---', qh.sql_timestamp_pretty_print(str(db_user.last_login), lang))
 				db_user.update_last_login()
 				transaction.commit()
+				db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+				db_user.update_last_login()
+				transaction.commit()
+				db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+				logger('--', '---', qh.sql_timestamp_pretty_print(str(db_user.last_login), lang))
+				logger('--', '---', qh.sql_timestamp_pretty_print(str(db_user.last_login), lang))
 
 				ending = ['/?session_expired=true', '/?session_expired=false']
 				for e in ending:
@@ -944,8 +944,10 @@ class Dbas(object):
 						url = url[0:-len(e)]
 
 				if for_api:
+					logger('user_login', 'return', 'for api: success')
 					return {'status': 'success'}
 				else:
+					logger('user_login', 'return', 'success: ' + url)
 					return HTTPFound(
 						location=url,
 						headers=headers,
@@ -998,19 +1000,19 @@ class Dbas(object):
 
 		ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
 		if not ui_locales:
-			ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+			ui_locales = get_language(self.request, get_current_registry())
 		_t = Translator(ui_locales)
 
 		# getting params
 		try:
 			params          = self.request.params
-			firstname       = self.escape_string(params['firstname'])
-			lastname        = self.escape_string(params['lastname'])
-			nickname        = self.escape_string(params['nickname'])
-			email           = self.escape_string(params['email'])
-			gender          = self.escape_string(params['gender'])
-			password        = self.escape_string(params['password'])
-			passwordconfirm = self.escape_string(params['passwordconfirm'])
+			firstname       = escape_string(params['firstname'])
+			lastname        = escape_string(params['lastname'])
+			nickname        = escape_string(params['nickname'])
+			email           = escape_string(params['email'])
+			gender          = escape_string(params['gender'])
+			password        = escape_string(params['password'])
+			passwordconfirm = escape_string(params['passwordconfirm'])
 
 			# database queries mail verification
 			db_nick = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -1097,11 +1099,11 @@ class Dbas(object):
 		return_dict = dict()
 		ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
 		if not ui_locales:
-			ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+			ui_locales = get_language(self.request, get_current_registry())
 		_t = Translator(ui_locales)
 
 		try:
-			email = self.escape_string(self.request.params['email'])
+			email = escape_string(self.request.params['email'])
 			db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
 
 			# does the user exists?
@@ -1147,7 +1149,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_user_receive_information_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
-		_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
+		_tn = Translator(get_language(self.request, get_current_registry()))
 
 		try:
 			error = ''
@@ -1192,7 +1194,7 @@ class Dbas(object):
 		logger('set_new_start_statement', 'def', 'main')
 
 		_qh = QueryHelper()
-		lang = _qh.get_language(self.request, get_current_registry())
+		lang = get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 		return_dict = dict()
 		return_dict['error'] = ''
@@ -1237,7 +1239,7 @@ class Dbas(object):
 
 		return_dict = dict()
 		_qh = QueryHelper()
-		lang = _qh.get_language(self.request, get_current_registry())
+		lang = get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 		try:
 			if for_api and api_data:
@@ -1285,7 +1287,7 @@ class Dbas(object):
 
 		return_dict = dict()
 		_qh = QueryHelper()
-		lang = _qh.get_language(self.request, get_current_registry())
+		lang = get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 
 		try:
@@ -1334,12 +1336,12 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		_qh = QueryHelper()
-		_tn = Translator(_qh.get_language(self.request, get_current_registry()))
+		_tn = Translator(get_language(self.request, get_current_registry()))
 
 		try:
 			uid = self.request.params['uid']
-			corrected_text = self.escape_string(self.request.params['text'])
-			ui_locales = _qh.get_language(self.request, get_current_registry())
+			corrected_text = escape_string(self.request.params['text'])
+			ui_locales = get_language(self.request, get_current_registry())
 			return_dict = _qh.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
 			if return_dict == -1:
 				return_dict = dict()
@@ -1365,7 +1367,7 @@ class Dbas(object):
 
 		logger('set_notification_read', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		_t = Translator(ui_locales)
 
 		try:
@@ -1391,7 +1393,7 @@ class Dbas(object):
 
 		logger('set_notification_delete', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		_t = Translator(ui_locales)
 
 		try:
@@ -1418,12 +1420,12 @@ class Dbas(object):
 		logger('set_new_issue', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
 		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
 
 		try:
-			info = self.escape_string(self.request.params['info'])
-			title = self.escape_string(self.request.params['title'])
+			info = escape_string(self.request.params['info'])
+			title = escape_string(self.request.params['title'])
 			was_set, error = _qh.set_issue(info, title, self.request.authenticated_userid, transaction, ui_locales)
 			if was_set:
 				db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
@@ -1453,7 +1455,7 @@ class Dbas(object):
 
 		return_dict = dict()
 		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 
 		try:
 			uid = self.request.params['uid']
@@ -1510,7 +1512,7 @@ class Dbas(object):
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_shortened_url', 'error', repr(e))
-			_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
+			_tn = Translator(get_language(self.request, get_current_registry()))
 			return_dict['error'] = _tn.get(_tn.internalError)
 
 		return json.dumps(return_dict, True)
@@ -1537,7 +1539,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_infos_about_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
 		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		_t = Translator(ui_locales)
 		return_dict = dict()
 
@@ -1560,7 +1562,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_all_users', 'def', 'main')
-		ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 
 		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
 
@@ -1576,7 +1578,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_users_with_same_opinion', 'def', 'main: ' + str(self.request.params))
 		_qh = QueryHelper()
-		ui_locales = _qh.get_language(self.request, get_current_registry())
+		ui_locales = get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
 		nickname = self.request.authenticated_userid
 
@@ -1618,7 +1620,7 @@ class Dbas(object):
 		try:
 			ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
 			if not ui_locales:
-				ui_locales = QueryHelper().get_language(self.request, get_current_registry())
+				ui_locales = get_language(self.request, get_current_registry())
 			self.request.response.set_cookie('_LOCALE_', str(ui_locales))
 		except KeyError as e:
 			logger('swich_language', 'error', repr(e))
@@ -1636,14 +1638,14 @@ class Dbas(object):
 		logger('send_news', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		try:
-			title = self.escape_string(self.request.params['title'])
-			text = self.escape_string(self.request.params['text'])
+			title = escape_string(self.request.params['title'])
+			text = escape_string(self.request.params['text'])
 			return_dict = QueryHelper().set_news(transaction, title, text, self.request.authenticated_userid)
 			return_dict['error'] = ''
 		except KeyError as e:
 			return_dict = dict()
 			logger('send_news', 'error', repr(e))
-			_tn = Translator(QueryHelper().get_language(self.request, get_current_registry()))
+			_tn = Translator(get_language(self.request, get_current_registry()))
 			return_dict['error'] = _tn.get(_tn.internalError)
 
 		return json.dumps(return_dict, True)

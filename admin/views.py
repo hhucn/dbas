@@ -3,16 +3,12 @@
 # @author Tobias Krauthoff
 # @email {meter, krauthoff}@cs.uni-duesseldorf.de
 
-import json, transaction
+import json
+from dbas.lib import get_language
 from admin.lib import argument_overview
 from cornice import Service
-from dbas.dictionary_helper import DictionaryHelper
-from dbas.query_helper import QueryHelper
 from dbas.logger import logger
-from dbas.user_management import UserHandler
-from dbas.views import project_name
 from pyramid.threadlocal import get_current_registry
-from pyramid.view import view_config
 
 #
 # CORS configuration
@@ -76,8 +72,7 @@ all_arguments = Service(name='admin',
 def get_argument_overview(request):
 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 	logger('Admin', 'get_argument_overview', 'main')
-	_qh = QueryHelper()
-	ui_locales = _qh.get_language(request, get_current_registry())
+	ui_locales = get_language(request, get_current_registry())
 	return_dict = argument_overview(request.authenticated_userid, ui_locales)
 
 	return json.dumps(return_dict, True)
