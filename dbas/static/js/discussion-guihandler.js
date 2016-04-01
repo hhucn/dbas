@@ -30,7 +30,7 @@ function GuiHandler() {
 			id = 'add-premise-container-main-input-' + uid,
 			input = $('<input>').attr('id', id)
 				.attr('type', 'text')
-				.attr('class', 'form-control add-premise-container-input')
+				.attr('class', 'form-control')
 				.attr('autocomplete', 'off')
 				.attr('placeholder', 'Your statement'),
 			imgm = $('<img>')

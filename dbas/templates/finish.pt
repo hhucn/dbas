@@ -11,10 +11,10 @@
 						<img class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}" />
 						<br>
 						<br>
-						<a class="button button-block btn-lg btn btn-primary" href="${request.application_url}" style="margin: 10px;">
+						<a id="home-button" class="button button-block btn-lg btn btn-primary" href="${request.application_url}" style="margin: 10px;">
                             <span i18n:translate="lets_go_home">Let's go home!</span>
                         </a>
-						<a class="button button-block btn-lg btn btn-primary" href="javascript:window.history.back();" style="margin: 10px;">
+						<a id="back-to-discuss-button" class="button button-block btn-lg btn btn-primary" href="javascript:window.history.back();" style="margin: 10px;">
                             <span i18n:translate="back_to_the_discussion">Back to the discussion!</span>
                         </a>
 					</div>

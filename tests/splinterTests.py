@@ -5,7 +5,7 @@ import time
 
 mainpage = 'http://localhost:4284/'
 testcounter = 0
-waittime = 5
+waittime = 0.3
 
 
 class Helper:
@@ -121,14 +121,14 @@ class WebTests:
 
 		browserStyle = self.browserStyle
 		start = time.time()
-		# success_counter += Helper.test_wrapper('test normal pages', self.__test_pages_when_not_logged_in, browserStyle)
-		# success_counter += Helper.test_wrapper('test login logout', self.__test_login_logout, browserStyle)
-		# success_counter += Helper.test_wrapper('test logged in pages', self.__test_pages_when_logged_in, browserStyle)
-		# success_counter += Helper.test_wrapper('test popups', self.__test_popups, browserStyle)
-		# success_counter += Helper.test_wrapper('test contact formular', self.__test_contact_formular, browserStyle)
-		# success_counter += Helper.test_wrapper('test language switch', self.__test_language_switch, browserStyle)
-		# success_counter += Helper.test_wrapper('test discussion buttons', self.__test_discussion_buttons, browserStyle)
-		# success_counter += Helper.test_wrapper('test demo discussion', self.__test_demo_discussion, browserStyle)
+		success_counter += Helper.test_wrapper('test normal pages', self.__test_pages_when_not_logged_in, browserStyle)
+		success_counter += Helper.test_wrapper('test login logout', self.__test_login_logout, browserStyle)
+		success_counter += Helper.test_wrapper('test logged in pages', self.__test_pages_when_logged_in, browserStyle)
+		success_counter += Helper.test_wrapper('test popups', self.__test_popups, browserStyle)
+		success_counter += Helper.test_wrapper('test contact formular', self.__test_contact_formular, browserStyle)
+		success_counter += Helper.test_wrapper('test language switch', self.__test_language_switch, browserStyle)
+		success_counter += Helper.test_wrapper('test discussion buttons', self.__test_discussion_buttons, browserStyle)
+		success_counter += Helper.test_wrapper('test demo discussion', self.__test_demo_discussion, browserStyle)
 		success_counter += Helper.test_wrapper('test demo discussion', self.__test_functions_while_discussion, browserStyle)
 		end = time.time()
 		diff = str(end - start)
@@ -361,42 +361,48 @@ class WebTests:
 		print("Starting __test_discussion_buttons:")
 		b = Browser(browser)
 		self.browser = b
+		success = True
 		h = Helper()
 		b = h.login(b, 'tobias', 'tobias', mainpage + 'discussion')
 
 		# check url popup
 		b.find_by_id('share-url').click()
-		success = h.check_for_present_text(b, 'Share your URL', 'check for share url popup')
+		success = success and h.check_for_present_text(b, 'Share your URL', 'check for share url popup')
 		b.find_by_id('popup-url-sharing-long-url-button').click()
-		success = success and h.check_for_present_text(b, mainpage + 'discussion', 'check for long url')
+		success = success and h.check_for_present_text(b, 'discussion', 'check for long url')
 		b.find_by_id('popup-url-sharing-close').click()
 		time.sleep(waittime)
 
 		# check edit statement popup
 		b.find_by_id('edit-statement').click()
-		success = success and h.check_for_present_text(b, mainpage + 'Edit Statements / View Changelog', 'check for edit statements popup')
+		success = success and h.check_for_present_text(b, 'Edit Statements / View Changelog', 'check for edit statements popup')
 		b.find_by_id('popup-edit-statement-close').click()
 		time.sleep(waittime)
 
 		# check issue dropdown and switch issue
 		b.find_by_id('issue-dropdown').click()
-		success = success and h.check_for_present_text(b, mainpage + 'Cat or Dog', 'check for issue dropdown')
-		success = success and h.check_for_present_text(b, mainpage + 'Change of discussion', 'check for topic list')
+		success = success and h.check_for_present_text(b, 'Cat or Dog', 'check for issue dropdown')
+		b.find_by_css('.dropdown-menu li.enabled').click()
+		success = success and h.check_for_present_text(b, 'Change of discussion', 'check for topic list')
 		b.find_by_id('confirm-dialog-checkbox-accept-btn').click()
 		time.sleep(waittime)
-		success = success and h.check_for_present_text(b, mainpage + 'Your familiy argues', 'check for switched issue')
+		success = success and h.check_for_present_text(b, 'Your familiy argues', 'check for switched issue')
 
+		# check finish
 		b.find_by_id('finish-button').click()
-		success = success and h.check_for_present_text(b, mainpage + 'Thank you!', 'check for finish button')
+		success = success and h.check_for_present_text(b, 'Thank you!', 'check for finish button')
+
+		# go back
+		b.find_by_id('back-to-discuss-button').click()
 
 		# click position
-		success = success and h.check_for_present_text(b, mainpage + 'What is the initial position', 'check for first step in discussion')
+		success = success and h.check_for_present_text(b, 'What is the initial position', 'check for first step in discussion')
 		b.find_by_css('#discussions-space-list li:first-child input').click()
-		success = success and h.check_for_present_text(b, mainpage + 'What do you think', 'check for second step in discussion')
+		success = success and h.check_for_present_text(b, 'What do you think', 'check for second step in discussion')
 
 		# restart
 		b.find_by_id('discussion-restart-btn').click()
-		success = success and h.check_for_present_text(b, mainpage + 'What is the initial position', 'check for restart')
+		success = success and h.check_for_present_text(b, 'What is the initial position', 'check for restart')
 
 		b = h.logout(b)
 		b.quit()
@@ -466,7 +472,8 @@ class WebTests:
 		# new position
 		b.find_by_css('#discussions-space-list li:last-child input').click()
 		success = success and h.check_for_present_text(b, 'What is your idea? ', 'check for new position field')
-		b.find_by_id('add-statement-container-main-input').fill('some new position ' + str(time.time()))
+		position = 'some new position ' + str(time.time())
+		b.find_by_id('add-statement-container-main-input').fill(position)
 		b.find_by_id('send-new-statement').click()
 		time.sleep(waittime)
 
@@ -476,17 +483,15 @@ class WebTests:
 		time.sleep(waittime)
 
 		# new premise
-		success = success and h.check_for_present_text(b, 'Let me enter my reason', 'check for new premise')
+		success = success and h.check_for_present_text(b, 'Let me enter my reason', 'check for new window premise')
 		b.find_by_id('add-premise-container-main-input').fill('some new reason')
 		b.find_by_id('send-new-premise').click()
 		time.sleep(waittime)
 
 		# confrontation
-		success = success and h.check_for_present_text(b, 'some new position because some new reason', 'check for new argument')
+		success = success and h.check_for_present_text(b, position + ' because some new reason', 'check for new argument')
 		success = success and h.check_for_present_text(b, 'Other participants do not have any counter', 'check that no confrontation exists')
-		success = success and h.check_for_present_text(b, 'The discussion ends here', 'check for end')
-		b.find_by_css('#discussions-space-list li:first-child input').click()
-		time.sleep(waittime)
+		success = success and h.check_for_present_text(b, 'The discussion ends here', 'check for end text')
 
 		# go back to first premise
 		b.find_by_css('#dialog-speech-bubbles-space .triangle-r:first-child a span').click()
@@ -494,12 +499,11 @@ class WebTests:
 		b.find_by_css('#discussions-space-list li:last-child input').click()
 		time.sleep(waittime)
 		# add new premise
-		success = success and h.check_for_present_text(b, 'Let me enter my reason', 'check for new again')
+		success = success and h.check_for_present_text(b, 'Let me enter my reason', 'check for new premise window again')
 		b.find_by_id('add-premise-container-main-input').fill('some new reason 1 and some new reason 2')
 		# add another input field
 		b.find_by_css('.icon-add-premise').click()
 		time.sleep(waittime)
-		b.find_by_css('#add-premise-container-body .flex-div:last input').fill('some new reason 3')
 		b.find_by_id('send-new-premise').click()
 		time.sleep(waittime)
 
@@ -514,8 +518,6 @@ class WebTests:
 		success = success and h.check_for_present_text(b, 'multiple reasons', 'check options for choosing ')
 		success = success and h.check_for_present_text(b, 'some new reason 1', 'check options for choosing answer 1')
 		success = success and h.check_for_present_text(b, 'some new reason 2', 'check options for choosing answer 2')
-		success = success and h.check_for_present_text(b, 'some new reason 3', 'check options for choosing answer 3')
-
 
 		b = h.logout(b)
 		b.quit()
