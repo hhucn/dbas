@@ -580,11 +580,11 @@ class Dbas(object):
 		success     = False
 
 		db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
-		db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+		db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
 		_uh         = UserHandler()
-		edits       = _uh.get_count_of_statements_of_user(db_user, True)
-		statements  = _uh.get_count_of_statements_of_user(db_user, False)
-		arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
+		edits       = _uh.get_count_of_statements_of_user(db_user, True) if db_user else 0
+		statements  = _uh.get_count_of_statements_of_user(db_user, False) if db_user else 0
+		arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else 0, 0
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			old_pw = escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
@@ -614,8 +614,8 @@ class Dbas(object):
 			'statemens_posted': statements,
 			'discussion_arg_votes': arg_vote,
 			'discussion_stat_votes': stat_vote,
-			'send_mails': db_settings.should_send_mails,
-			'send_notifications': db_settings.should_send_notifications,
+			'send_mails': db_settings.should_send_mails if db_settings else False,
+			'send_notifications': db_settings.should_send_notifications if db_settings else False,
 			'title_mails': _tn.get(_tn.mailSettingsTitle),
 			'title_notifications': _tn.get(_tn.notificationSettingsTitle)
 		}
