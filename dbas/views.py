@@ -2,6 +2,8 @@ import transaction
 import requests
 import json
 
+from datetime import datetime
+
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -929,7 +931,7 @@ class Dbas(object):
 				db_user.update_last_login()
 				db_user.update_last_action()
 				transaction.commit()
-				ending = ['/?session_expired=true', '/?session_expired=false']
+				ending = ['/?session_expired=true', '/?session_expired=falses']
 				for e in ending:
 					if url.endswith(e):
 						url = url[0:-len(e)]
