@@ -225,6 +225,7 @@ class UserHandler(object):
 			return 0
 		arg_votes = len(DBDiscussionSession.query(VoteArgument).filter_by(author_uid=user.uid).all())
 		stat_votes = len(DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user.uid).all())
+
 		return arg_votes, stat_votes
 
 	def get_statements_of_user(self, user, lang, query_helper):

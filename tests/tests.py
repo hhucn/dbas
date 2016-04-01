@@ -97,7 +97,7 @@ class UnitTestDBAS(DBASTestCase):
 		testing.tearDown()
 
 	def get_csrf_request(self, post=None):
-		print("UnitTestDBDiscussionSession: get_csrf_request")
+		# print("UnitTestDBDiscussionSession: get_csrf_request")
 		csrf = 'abc'
 		if 'csrf_token' not in post.keys():
 			post.update({

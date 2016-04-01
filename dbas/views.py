@@ -514,7 +514,7 @@ class Dbas(object):
 				message = _t.get(_t.emtpyContent)
 
 			# check for empty username
-			elif (not spam) or (not (int(spam) == int(self.request.session['antispamanswer']))):
+			elif (not spam) or (not isinstance(spam, int)) or (not (int(spam) == int(self.request.session['antispamanswer']))):
 				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spam + ', right answer ' + str(self.request.session['antispamanswer']))
 				contact_error = True
 				message = _t.get(_t.maliciousAntiSpam)
@@ -584,9 +584,15 @@ class Dbas(object):
 		db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
 		db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
 		_uh         = UserHandler()
-		edits       = _uh.get_count_of_statements_of_user(db_user, True) if db_user else 0
-		statements  = _uh.get_count_of_statements_of_user(db_user, False) if db_user else 0
-		arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else 0, 0
+		if db_user:
+			edits       = _uh.get_count_of_statements_of_user(db_user, True)
+			statements  = _uh.get_count_of_statements_of_user(db_user, False)
+			arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
+		else:
+			edits       = 0
+			statements  = 0
+			arg_vote    = 0
+			stat_vote   = 0
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			old_pw = escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
