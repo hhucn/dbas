@@ -60,7 +60,7 @@ class Setup:
 
 
 # setup the DBDiscussionSession testing class what will manage our transactions
-class DBDiscussionSessionTestCase(unittest.TestCase):
+class DBASTestCase(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
 		cls.engine = engine_from_config(settings, prefix='sqlalchemy-discussion.')
@@ -77,19 +77,19 @@ class DBDiscussionSessionTestCase(unittest.TestCase):
 
 	def tearDown(self):
 		# rollback - everything that happened with the
-		#  Session above (including calls to commit())
-		#  is rolled back.
+		# Session above (including calls to commit())
+		# is rolled back.
 		testing.tearDown()
 		self.trans.rollback()
 		self.session.close()
 
 
 # skip the routes, templates, etc. So let’s setup our Unit Test DBDiscussionSession class
-class UnitTestDBDiscussionSession(DBDiscussionSessionTestCase):
+class UnitTestDBAS(DBASTestCase):
 	def setUp(self):
 		# print("UnitTestDBDiscussionSession: setUp")
 		self.config = testing.setUp(request=testing.DummyRequest())
-		super(UnitTestDBDiscussionSession, self).setUp()
+		super(UnitTestDBAS, self).setUp()
 		self.config = Setup().add_routes(self.config)
 
 	def tearDown(self):
@@ -113,16 +113,16 @@ class UnitTestDBDiscussionSession(DBDiscussionSessionTestCase):
 
 # integrate with the whole web framework and actually hit the define routes, render the templates,
 # and actually test the full stack of your application
-class IntegrationTestDBDiscussionSession(DBDiscussionSessionTestCase):
+class IntegrationTestDBAS(DBASTestCase):
 	@classmethod
 	def setUpClass(cls):
 		cls.app = main({}, **settings)
-		super(IntegrationTestDBDiscussionSession, cls).setUpClass()
+		super(IntegrationTestDBAS, cls).setUpClass()
 
 	def setUp(self):
 		self.testapp = TestApp(self.app)
 		self.config = testing.setUp()
-		super(IntegrationTestDBDiscussionSession, self).setUp()
+		super(IntegrationTestDBAS, self).setUp()
 		self.config = Setup().add_routes(self.config)
 
 
@@ -130,7 +130,7 @@ class IntegrationTestDBDiscussionSession(DBDiscussionSessionTestCase):
 ##########################################################################################################
 ##########################################################################################################
 
-class ViewMainTests(UnitTestDBDiscussionSession):
+class ViewMainTests(UnitTestDBAS):
 	def _callFUT(self, request):
 		print("ViewLoginTests: _callFUT")
 		return Dbas.main_page(request)
@@ -142,7 +142,7 @@ class ViewMainTests(UnitTestDBDiscussionSession):
 		self.assertEqual('Main', response['title'])
 
 
-class ViewContactTests(UnitTestDBDiscussionSession):
+class ViewContactTests(UnitTestDBAS):
 	def _callFUT(self, request):
 		print('ViewTest: _callFUT')
 		return Dbas.main_contact(request)
@@ -154,7 +154,7 @@ class ViewContactTests(UnitTestDBDiscussionSession):
 		self.assertEqual('Contact', response['title'])
 
 
-class ViewSettingsTests(UnitTestDBDiscussionSession):
+class ViewSettingsTests(UnitTestDBAS):
 	def _callFUT(self, request):
 		print('ViewTest: _callFUT')
 		return Dbas.main_settings(request)
@@ -166,7 +166,7 @@ class ViewSettingsTests(UnitTestDBDiscussionSession):
 		self.assertEqual('Settings', response['title'])
 
 
-class ViewMessagesTests(UnitTestDBDiscussionSession):
+class ViewMessagesTests(UnitTestDBAS):
 	def _callFUT(self, request):
 		print('ViewTest: _callFUT')
 		return Dbas.main_notifications(request)
@@ -178,7 +178,7 @@ class ViewMessagesTests(UnitTestDBDiscussionSession):
 		self.assertEqual('Messages', response['title'])
 
 
-class ViewAdminTests(UnitTestDBDiscussionSession):
+class ViewAdminTests(UnitTestDBAS):
 	def _callFUT(self, request):
 		print('ViewTest: _callFUT')
 		return Dbas.main_admin(request)
@@ -190,7 +190,7 @@ class ViewAdminTests(UnitTestDBDiscussionSession):
 		self.assertEqual('Admin', response['title'])
 
 
-class ViewNewsTests(UnitTestDBDiscussionSession):
+class ViewNewsTests(UnitTestDBAS):
 	def _callFUT(self, request):
 		print('ViewTest: _callFUT')
 		return Dbas.main_news(request)
@@ -202,7 +202,7 @@ class ViewNewsTests(UnitTestDBDiscussionSession):
 		self.assertEqual('News', response['title'])
 
 
-class ViewImprintTests(UnitTestDBDiscussionSession):
+class ViewImprintTests(UnitTestDBAS):
 	def _callFUT(self, request):
 		print('ViewTest: _callFUT')
 		return Dbas.main_imprint(request)
@@ -219,9 +219,10 @@ class ViewImprintTests(UnitTestDBDiscussionSession):
 
 
 # check, if every site responds with 200 except the error page
-class FunctionalViewTests(IntegrationTestDBDiscussionSession):
-	editor_login = '/login?nickname=editor&password=test&came_from=main_page&form.login.submitted=Login'
-	viewer_wrong_login = '/login?nickname=randomguest&password=incorrect&came_from=main_page&form.login.submitted=Login'
+class FunctionalViewTests(IntegrationTestDBAS):
+	editor_login       = '/ajax_user_login?user=editor&password=test&keep_login=false&url=http://localhost:4284/discuss'
+	viewer_wrong_login = '/ajax_user_login?user=guest1&password=fooo&keep_login=false&url=http://localhost:4284/discuss'
+	logout             = '/ajax_user_logout'
 
 	# testing main page
 	def test_home(self):
@@ -235,30 +236,11 @@ class FunctionalViewTests(IntegrationTestDBDiscussionSession):
 		res = self.testapp.get('/contact', status=200)
 		self.assertIn(b'<p class="text-center">Feel free to drop us a line a', res.body)
 
-	# testing login page
-	def test_login_when_logged_out(self):
-		print("FunctionalTests: login_when_logged_out")
-		res = self.testapp.get('/login', status=200)
-		self.assertIn(b'<a href="#signup">Sign Up', res.body)
-		self.assertIn(b'<h2>Welcome Back', res.body)
-
-	# testing logout page without login
-	def test_logout_when_logged_out(self):
-		print("FunctionalTests: logout_when_logged_out")
-		res = self.testapp.get('/logout', status=200)
-		self.assertNotIn(b'You will be logged out and redirected', res.body)
-
-	# testing logout page without login
-	# def logout_redirect_when_logged_out(self):
-		# print("FunctionalTests: logout_redirect_when_logged_out")
-		# res = self.testapp.get('/logout_redirect', status=302)
-		# self.assertIn(b'You will be logged out and redirected', res.body)
-
 	# testing contact page
-	def test_impressum(self):
-		print("FunctionalTests: impressum")
-		res = self.testapp.get('/impressum', status=200)
-		self.assertIn(b'Impressum', res.body)
+	def test_imprint(self):
+		print("FunctionalTests: imprint")
+		res = self.testapp.get('/imprint', status=200)
+		self.assertIn(b'Imprint', res.body)
 
 	# testing a unexisting page
 	def test_unexisting_page(self):
@@ -270,53 +252,36 @@ class FunctionalViewTests(IntegrationTestDBDiscussionSession):
 	# testing successful log in
 	def test_successful_log_in(self):
 		print("FunctionalTests: successful_log_in")
-		res = self.testapp.get(self.editor_login, status=302)
-		self.assertEqual(res.location, 'http://localhost/content')
-		self.testapp.get('/', status=200)
+		res = self.testapp.get('http://localhost:4284' + self.editor_login, status=200)
+		self.assertEqual(res.location, 'http://localhost:4284/discuss')
 
 	# testing failed log in
 	def test_failed_log_in(self):
 		print("FunctionalTests: failed_log_in")
 		res = self.testapp.get(self.viewer_wrong_login, status=200)
-		self.assertTrue(b'User does not exists' in res.body)
-
-	# testing successful log in
-	def test_redirection_when_logged_in(self):
-		print("FunctionalTests: redirection_when_logged_in")
-		res = self.testapp.get(self.editor_login, status=302)
-		self.assertEqual(res.location, 'http://localhost/content')
-		self.testapp.get('/login', status=302)
+		self.assertTrue(b'User / Password do not match' in res.body)
 
 	# testing wheather the login link is there, when we are logged in
 	def test_logout_link_present_when_logged_in(self):
 		print("FunctionalTests: logout_link_present_when_logged_in")
-		self.testapp.get(self.editor_login, status=302)
+		self.testapp.get(self.editor_login, status=200)
 		res = self.testapp.get('/', status=200)
-		self.assertTrue(b'Logout' in res.body)
+		self.assertIn(b'Logout', res.body)
 
 	# testing wheather the logout link is there, when we are logged out
 	def test_logout_link_not_present_after_logged_out(self):
 		print("FunctionalTests: logout_link_not_present_after_logged_out")
-		self.testapp.get(self.editor_login, status=302)
+		self.testapp.get(self.editor_login, status=200)
 		self.testapp.get('/', status=200)
-		res = self.testapp.get('/logout', status=302)
+		res = self.testapp.get(self.logout, status=200)
 		self.assertTrue(b'Logout' not in res.body)
-
-	# testing to get the content page when logged out / logged in
-	def test_content_only_when_logged_in(self):
-		print("FunctionalTests: content_only_when_logged_in")
-		res = self.testapp.get('/content', status=200)
-		self.assertNotIn(b'The current discussion is about', res.body)  # due to login error
-		self.testapp.get(self.editor_login, status=302)
-		res = self.testapp.get('/content', status=200)
-		self.assertIn(b'The current discussion is about', res.body)
 
 	# testing to get the settings page when logged out / logged in
 	def test_settings_only_when_logged_in(self):
 		print("FunctionalTests: settings_only_when_logged_in")
 		res = self.testapp.get('/settings', status=200)
 		self.assertNotIn(b'Settings', res.body)  # due to login error
-		self.testapp.get(self.editor_login, status=302)
+		self.testapp.get(self.editor_login, status=200)
 		res = self.testapp.get('/settings', status=200)
 		self.assertIn(b'Settings', res.body)
 
@@ -325,7 +290,7 @@ class FunctionalViewTests(IntegrationTestDBDiscussionSession):
 
 
 # checks for the email-connection
-class FunctionalEMailTests(IntegrationTestDBDiscussionSession):
+class FunctionalEMailTests(IntegrationTestDBAS):
 	# testing the email - send
 	def test_email_send(self):
 		print("FunctionalTests: email_send")
@@ -367,20 +332,20 @@ class FunctionalEMailTests(IntegrationTestDBDiscussionSession):
 
 
 # checks for the database
-class FunctionalDatabaseTests(IntegrationTestDBDiscussionSession):
-
-	def setUp(self):
-		super(FunctionalDatabaseTests, self).setUp()
-		self.session = Setup().add_testing_db(self.session)
-
-	# testing group content
-	def test_database_group_content(self):
-		print("DatabaseTests: test_database_group_content")
-		group_by_name1 = self.session.query(Group).filter_by(name='foo').first()
-		group_by_name2 = self.session.query(Group).filter_by(name='bar').first()
-		group_by_uid1 = self.session.query(Group).filter_by(uid=1).first()
-		group_by_uid2 = self.session.query(Group).filter_by(uid=2).first()
-		self.assertTrue(group_by_name1.name, group_by_uid1.name)
-		self.assertTrue(group_by_name2.name, group_by_uid2.name)
-		self.assertTrue(group_by_name1.uid, group_by_uid1.uid)
-		self.assertTrue(group_by_name2.uid, group_by_uid2.uid)
+#class FunctionalDatabaseTests(IntegrationTestDBDiscussionSession):
+#
+#	def setUp(self):
+#		super(FunctionalDatabaseTests, self).setUp()
+#		self.session = Setup().add_testing_db(self.session)
+#
+#	# testing group content
+#	def test_database_group_content(self):
+#		print("DatabaseTests: test_database_group_content")
+#		group_by_name1 = self.session.query(Group).filter_by(name='foo').first()
+#		group_by_name2 = self.session.query(Group).filter_by(name='bar').first()
+#		group_by_uid1 = self.session.query(Group).filter_by(uid=1).first()
+#		group_by_uid2 = self.session.query(Group).filter_by(uid=2).first()
+#		self.assertTrue(group_by_name1.name, group_by_uid1.name)
+#		self.assertTrue(group_by_name2.name, group_by_uid2.name)
+#		self.assertTrue(group_by_name1.uid, group_by_uid1.uid)
+#		self.assertTrue(group_by_name2.uid, group_by_uid2.uid)

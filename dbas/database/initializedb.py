@@ -442,7 +442,7 @@ def setup_discussion_database(session, user):
 	textversion102 = TextVersion(content="We should shut down university park.", author=user.uid)
 	textversion103 = TextVersion(content="We should close public swimming pools.", author=user.uid)
 	textversion105 = TextVersion(content="This is a good idea, because we have more money then to solve other problems.", author=user.uid)
-	textversion106 = TextVersion(content="Not every problem can be solved with money.", author=user.uid)
+	textversion106 = TextVersion(content="Every street festival is funded by large companies.", author=user.uid)
 	textversion107 = TextVersion(content="Then we will have more money to expand out pedestrian zone", author=user.uid)
 	textversion108 = TextVersion(content="Our city will get more attractive for shopping.", author=user.uid)
 	textversion109 = TextVersion(content="Street festivals attract many people, which will increase the citys income.", author=user.uid)
