@@ -121,13 +121,13 @@ class WebTests:
 
 		browserStyle = self.browserStyle
 		start = time.time()
-		success_counter += Helper.test_wrapper('test normal pages', self.__test_pages_when_not_logged_in, browserStyle)
-		success_counter += Helper.test_wrapper('test login logout', self.__test_login_logout, browserStyle)
-		success_counter += Helper.test_wrapper('test logged in pages', self.__test_pages_when_logged_in, browserStyle)
-		success_counter += Helper.test_wrapper('test popups', self.__test_popups, browserStyle)
-		success_counter += Helper.test_wrapper('test contact formular', self.__test_contact_formular, browserStyle)
-		success_counter += Helper.test_wrapper('test language switch', self.__test_language_switch, browserStyle)
-		success_counter += Helper.test_wrapper('test discussion buttons', self.__test_discussion_buttons, browserStyle)
+		#success_counter += Helper.test_wrapper('test normal pages', self.__test_pages_when_not_logged_in, browserStyle)
+		#success_counter += Helper.test_wrapper('test login logout', self.__test_login_logout, browserStyle)
+		#success_counter += Helper.test_wrapper('test logged in pages', self.__test_pages_when_logged_in, browserStyle)
+		#success_counter += Helper.test_wrapper('test popups', self.__test_popups, browserStyle)
+		#success_counter += Helper.test_wrapper('test contact formular', self.__test_contact_formular, browserStyle)
+		#success_counter += Helper.test_wrapper('test language switch', self.__test_language_switch, browserStyle)
+		#success_counter += Helper.test_wrapper('test discussion buttons', self.__test_discussion_buttons, browserStyle)
 		success_counter += Helper.test_wrapper('test demo discussion', self.__test_demo_discussion, browserStyle)
 		success_counter += Helper.test_wrapper('test demo discussion', self.__test_functions_while_discussion, browserStyle)
 		end = time.time()
@@ -424,7 +424,7 @@ class WebTests:
 
 		# position
 		success = success and h.check_for_present_text(b, 'initial ', 'check for position')
-		b.find_by_css('#discussions-space-list li:first-child input').click()
+		b.find_by_id('item_37').click()
 		time.sleep(waittime)
 
 		# attitude
