@@ -110,15 +110,15 @@
 						    <a id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" tal:attributes="title extras.buttons.share_url"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_share.png')}"/></a>
                         </li>
 						<li tal:condition="extras.is_editable">
-							<img id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
+							<img id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
 						</li>
 						<li tal:condition="extras.is_reportable" >
-							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
+							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
 						</li>
                         <!--<li><img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_qmark.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" /></li>-->
 						<li tal:condition="extras.show_display_style or extras.show_bar_icon or extras.show_expert_icon">
 							<div id="discussion-sidebar-style-menu">
-								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="left" tal:attributes="title extras.buttons.more_title"/>
+								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="bottom" tal:attributes="title extras.buttons.more_title"/>
 
 								<ul id="site-navigation">
 									<li tal:condition="extras.show_bar_icon"><img id="opinion-barometer-img" class="display-style-menu-icon icon-badge" alt="icon-bars" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" /></li>
@@ -129,7 +129,7 @@
 							</div>
 						</li>
 						<li>
-                            <img onclick="window.location='/discuss/finish'" id="finish-button" class="icon-badge" alt="icon-finish" src="${request.static_url('dbas:static/images/icon_finish.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.finish_title" />
+                            <img onclick="window.location='/discuss/finish'" id="finish-button" class="icon-badge" alt="icon-finish" src="${request.static_url('dbas:static/images/icon_finish.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.finish_title" />
 						</li>
 					</ul>
 				</div>
