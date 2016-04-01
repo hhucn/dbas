@@ -36,8 +36,8 @@ def main_discussion(argv=sys.argv):
 	DiscussionBase.metadata.create_all(discussion_engine)
 
 	with transaction.manager:
-		user2 = setup_up_users()
-		setup_discussion_database(user2)
+		user2 = setup_up_users(DBDiscussionSession)
+		setup_discussion_database(DBDiscussionSession, user2)
 		transaction.commit()
 
 
@@ -53,9 +53,9 @@ def main_discussion_reload(argv=sys.argv):
 	DiscussionBase.metadata.create_all(discussion_engine)
 
 	with transaction.manager:
-		drop_discussion_database()
+		drop_discussion_database(DBDiscussionSession)
 		main_author = DBDiscussionSession.query(User).filter_by(nickname='tobias').first()
-		setup_discussion_database(main_author)
+		setup_discussion_database(DBDiscussionSession, main_author)
 		transaction.commit()
 
 
@@ -71,11 +71,11 @@ def main_news(argv=sys.argv):
 	NewsBase.metadata.create_all(news_engine)
 
 	with transaction.manager:
-		setup_news_db()
+		setup_news_db(DBNewsSession)
 		transaction.commit()
 
 
-def setup_news_db():
+def setup_news_db(session):
 	news01 = News(title='Anonymous users after vacation',
 	              date='24.09.2015',
 				  author='Tobias Krauthoff',
@@ -289,35 +289,35 @@ def setup_news_db():
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
 	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41,
 	              news42, news43, news44]
-	DBNewsSession.add_all(news_array[::-1])
-	DBNewsSession.flush()
+	session.add_all(news_array[::-1])
+	session.flush()
 
 
-def drop_discussion_database():
+def drop_discussion_database(session):
 	"""
 
 	:return:
 	"""
-	db_textversions = DBDiscussionSession.query(TextVersion).all()
+	db_textversions = session.query(TextVersion).all()
 	for tmp in db_textversions:
 		tmp.set_statement(None)
 
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(VoteArgument).delete()) + ' in VoteArgument')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(VoteStatement).delete()) + ' in VoteStatement')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(Bubble).delete()) + ' in Bubble')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(Breadcrumb).delete()) + ' in Breadcrumb')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(Notification).delete()) + ' in Notification')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(StatementReferences).delete()) + ' in StatementReferences')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(Argument).delete()) + ' in Argument')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(Premise).delete()) + ' in Premise')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(PremiseGroup).delete()) + ' in PremiseGroup')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(Statement).delete()) + ' in Statement')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(TextVersion).delete()) + ' in TextVersion')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(DBDiscussionSession.query(Issue).delete()) + ' in Issue')
-	DBDiscussionSession.flush()
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(VoteArgument).delete()) + ' in VoteArgument')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(VoteStatement).delete()) + ' in VoteStatement')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Bubble).delete()) + ' in Bubble')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Breadcrumb).delete()) + ' in Breadcrumb')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Notification).delete()) + ' in Notification')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(StatementReferences).delete()) + ' in StatementReferences')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Argument).delete()) + ' in Argument')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Premise).delete()) + ' in Premise')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(PremiseGroup).delete()) + ' in PremiseGroup')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Statement).delete()) + ' in Statement')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(TextVersion).delete()) + ' in TextVersion')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Issue).delete()) + ' in Issue')
+	session.flush()
 
 
-def setup_up_users():
+def setup_up_users(session):
 	"""
 
 	:return:
@@ -326,8 +326,8 @@ def setup_up_users():
 	group0 = Group(name='admins')
 	group1 = Group(name='authors')
 	group2 = Group(name='users')
-	DBDiscussionSession.add_all([group0, group1, group2])
-	DBDiscussionSession.flush()
+	session.add_all([group0, group1, group2])
+	session.flush()
 
 	# adding some dummy users
 	pwhandler = PasswordHandler()
@@ -353,8 +353,8 @@ def setup_up_users():
 	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group1.uid, gender='m')
 	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group0.uid, gender='m')
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
-	DBDiscussionSession.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10])
-	DBDiscussionSession.flush()
+	session.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10])
+	session.flush()
 
 	# adding settings
 	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True)
@@ -367,9 +367,9 @@ def setup_up_users():
 	settings7 = Settings(author_uid=user7.uid, send_mails=True, send_notifications=True)
 	settings8 = Settings(author_uid=user8.uid, send_mails=True, send_notifications=True)
 	settings9 = Settings(author_uid=user9.uid, send_mails=True, send_notifications=True)
-	DBDiscussionSession.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7])
-	DBDiscussionSession.add_all([settings8, settings9])
-	DBDiscussionSession.flush()
+	session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7])
+	session.add_all([settings8, settings9])
+	session.flush()
 
 	# Adding welcome notifications
 	notification0 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
@@ -381,14 +381,14 @@ def setup_up_users():
 	notification6 = Notification(from_author_uid=user1.uid, to_author_uid=user8.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification7 = Notification(from_author_uid=user1.uid, to_author_uid=user9.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification8 = Notification(from_author_uid=user1.uid, to_author_uid=user10.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	DBDiscussionSession.add_all([notification0, notification1, notification2, notification3, notification4])
-	DBDiscussionSession.add_all([notification5, notification6, notification7, notification8])
-	DBDiscussionSession.flush()
+	session.add_all([notification0, notification1, notification2, notification3, notification4])
+	session.add_all([notification5, notification6, notification7, notification8])
+	session.flush()
 
 	return user2
 
 
-def setup_discussion_database(user):
+def setup_discussion_database(session, user):
 	"""
 
 	:param user: main author
@@ -399,8 +399,8 @@ def setup_discussion_database(user):
 	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid)
 	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid)
 	issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user.uid)
-	DBDiscussionSession.add_all([issue1, issue2])
-	DBDiscussionSession.flush()
+	session.add_all([issue1, issue2])
+	session.flush()
 
 	# Adding all textversions
 	textversion1 = TextVersion(content="We should get a cat.", author=user.uid)
@@ -461,18 +461,18 @@ def setup_discussion_database(user):
 	textversion122 = TextVersion(content="The rate of non-swimmers is too high.", author=user.uid)
 	textversion123 = TextVersion(content="The police cannot patrol in the park for 24/7.", author=user.uid)
 
-	DBDiscussionSession.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6])
-	DBDiscussionSession.add_all([textversion7, textversion8, textversion9, textversion10, textversion11, textversion12])
-	DBDiscussionSession.add_all([textversion13, textversion14, textversion15, textversion16, textversion17, textversion18])
-	DBDiscussionSession.add_all([textversion19, textversion20, textversion21, textversion22, textversion23, textversion24])
-	DBDiscussionSession.add_all([textversion25, textversion26, textversion27, textversion29, textversion30, textversion31])
-	DBDiscussionSession.add_all([textversion32, textversion33, textversion34, textversion35, textversion36])
-	DBDiscussionSession.add_all([textversion101, textversion102, textversion103, textversion105])
-	DBDiscussionSession.add_all([textversion106, textversion107, textversion108, textversion109, textversion110])
-	DBDiscussionSession.add_all([textversion111, textversion112, textversion113, textversion114, textversion115])
-	DBDiscussionSession.add_all([textversion116, textversion117, textversion118, textversion119, textversion120])
-	DBDiscussionSession.add_all([textversion121, textversion122, textversion123])
-	DBDiscussionSession.flush()
+	session.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6])
+	session.add_all([textversion7, textversion8, textversion9, textversion10, textversion11, textversion12])
+	session.add_all([textversion13, textversion14, textversion15, textversion16, textversion17, textversion18])
+	session.add_all([textversion19, textversion20, textversion21, textversion22, textversion23, textversion24])
+	session.add_all([textversion25, textversion26, textversion27, textversion29, textversion30, textversion31])
+	session.add_all([textversion32, textversion33, textversion34, textversion35, textversion36])
+	session.add_all([textversion101, textversion102, textversion103, textversion105])
+	session.add_all([textversion106, textversion107, textversion108, textversion109, textversion110])
+	session.add_all([textversion111, textversion112, textversion113, textversion114, textversion115])
+	session.add_all([textversion116, textversion117, textversion118, textversion119, textversion120])
+	session.add_all([textversion121, textversion122, textversion123])
+	session.flush()
 
 	# adding all statements
 	statement1 = Statement(textversion=textversion1.uid, is_startpoint=True, issue=issue2.uid)
@@ -533,18 +533,18 @@ def setup_discussion_database(user):
 	statement122 = Statement(textversion=textversion122.uid, is_startpoint=False, issue=issue1.uid)
 	statement123 = Statement(textversion=textversion123.uid, is_startpoint=False, issue=issue1.uid)
 
-	DBDiscussionSession.add_all([statement1, statement2, statement3, statement4, statement5, statement6, statement7])
-	DBDiscussionSession.add_all([statement8, statement9, statement10, statement11, statement12, statement13, statement14])
-	DBDiscussionSession.add_all([statement15, statement16, statement17, statement18, statement19, statement20, statement21])
-	DBDiscussionSession.add_all([statement22, statement23, statement24, statement25, statement26, statement27, statement29])
-	DBDiscussionSession.add_all([statement30, statement31, statement32, statement33, statement34, statement35, statement36])
-	DBDiscussionSession.add_all([statement101, statement102, statement103, statement105, statement106])
-	DBDiscussionSession.add_all([statement107, statement108, statement109, statement110, statement111, statement112])
-	DBDiscussionSession.add_all([statement113, statement114, statement115, statement116, statement117, statement118])
-	DBDiscussionSession.add_all([statement119, statement120, statement121, statement122, statement123])
-	DBDiscussionSession.flush()
+	session.add_all([statement1, statement2, statement3, statement4, statement5, statement6, statement7])
+	session.add_all([statement8, statement9, statement10, statement11, statement12, statement13, statement14])
+	session.add_all([statement15, statement16, statement17, statement18, statement19, statement20, statement21])
+	session.add_all([statement22, statement23, statement24, statement25, statement26, statement27, statement29])
+	session.add_all([statement30, statement31, statement32, statement33, statement34, statement35, statement36])
+	session.add_all([statement101, statement102, statement103, statement105, statement106])
+	session.add_all([statement107, statement108, statement109, statement110, statement111, statement112])
+	session.add_all([statement113, statement114, statement115, statement116, statement117, statement118])
+	session.add_all([statement119, statement120, statement121, statement122, statement123])
+	session.flush()
 
-	DBDiscussionSession.flush()
+	session.flush()
 
 	# set textversions
 	textversion1.set_statement(statement1.uid)
@@ -655,16 +655,16 @@ def setup_discussion_database(user):
 	premisegroup122 = PremiseGroup(author=user.uid)
 	premisegroup123 = PremiseGroup(author=user.uid)
 
-	DBDiscussionSession.add_all([premisegroup1, premisegroup2, premisegroup3, premisegroup4, premisegroup5, premisegroup6])
-	DBDiscussionSession.add_all([premisegroup7, premisegroup8, premisegroup9, premisegroup10, premisegroup11, premisegroup12])
-	DBDiscussionSession.add_all([premisegroup13, premisegroup14, premisegroup15, premisegroup16, premisegroup17, premisegroup18])
-	DBDiscussionSession.add_all([premisegroup19, premisegroup20, premisegroup21, premisegroup22, premisegroup23, premisegroup24])
-	DBDiscussionSession.add_all([premisegroup25, premisegroup26, premisegroup27, premisegroup28, premisegroup29])
-	DBDiscussionSession.add_all([premisegroup105, premisegroup106, premisegroup107, premisegroup108, premisegroup109])
-	DBDiscussionSession.add_all([premisegroup110, premisegroup111, premisegroup112, premisegroup113, premisegroup114])
-	DBDiscussionSession.add_all([premisegroup115, premisegroup116, premisegroup117, premisegroup118, premisegroup119])
-	DBDiscussionSession.add_all([premisegroup120, premisegroup121, premisegroup122, premisegroup123])
-	DBDiscussionSession.flush()
+	session.add_all([premisegroup1, premisegroup2, premisegroup3, premisegroup4, premisegroup5, premisegroup6])
+	session.add_all([premisegroup7, premisegroup8, premisegroup9, premisegroup10, premisegroup11, premisegroup12])
+	session.add_all([premisegroup13, premisegroup14, premisegroup15, premisegroup16, premisegroup17, premisegroup18])
+	session.add_all([premisegroup19, premisegroup20, premisegroup21, premisegroup22, premisegroup23, premisegroup24])
+	session.add_all([premisegroup25, premisegroup26, premisegroup27, premisegroup28, premisegroup29])
+	session.add_all([premisegroup105, premisegroup106, premisegroup107, premisegroup108, premisegroup109])
+	session.add_all([premisegroup110, premisegroup111, premisegroup112, premisegroup113, premisegroup114])
+	session.add_all([premisegroup115, premisegroup116, premisegroup117, premisegroup118, premisegroup119])
+	session.add_all([premisegroup120, premisegroup121, premisegroup122, premisegroup123])
+	session.flush()
 
 	premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement4.uid, is_negated=False, author=user.uid, issue=issue2.uid)
 	premise2 = Premise(premisesgroup=premisegroup2.uid, statement=statement5.uid, is_negated=False, author=user.uid, issue=issue2.uid)
@@ -716,14 +716,14 @@ def setup_discussion_database(user):
 	premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False, author=user.uid, issue=issue1.uid)
 	premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False, author=user.uid, issue=issue1.uid)
 
-	DBDiscussionSession.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9])
-	DBDiscussionSession.add_all([premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17])
-	DBDiscussionSession.add_all([premise18, premise19, premise20, premise21, premise22, premise23, premise24, premise25])
-	DBDiscussionSession.add_all([premise26, premise27, premise28, premise29, premise30])
-	DBDiscussionSession.add_all([premise105, premise106, premise107, premise108, premise109, premise110, premise111])
-	DBDiscussionSession.add_all([premise112, premise113, premise114, premise115, premise116, premise117, premise118])
-	DBDiscussionSession.add_all([premise119, premise120, premise121, premise122, premise123])
-	DBDiscussionSession.flush()
+	session.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9])
+	session.add_all([premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17])
+	session.add_all([premise18, premise19, premise20, premise21, premise22, premise23, premise24, premise25])
+	session.add_all([premise26, premise27, premise28, premise29, premise30])
+	session.add_all([premise105, premise106, premise107, premise108, premise109, premise110, premise111])
+	session.add_all([premise112, premise113, premise114, premise115, premise116, premise117, premise118])
+	session.add_all([premise119, premise120, premise121, premise122, premise123])
+	session.flush()
 
 	# adding all arguments and set the adjacency list
 	argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=user.uid, conclusion=statement1.uid, issue=issue2.uid)
@@ -778,15 +778,15 @@ def setup_discussion_database(user):
 	argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement103.uid)
 	argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement115.uid)
 
-	DBDiscussionSession.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
-	DBDiscussionSession.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
-	DBDiscussionSession.add_all([argument16, argument17, argument18, argument19, argument20, argument21, argument22])
-	DBDiscussionSession.add_all([argument23, argument24, argument25, argument26, argument27, argument28, argument29])
-	DBDiscussionSession.add_all([argument30, argument31])
-	DBDiscussionSession.add_all([argument101, argument102, argument103, argument104, argument105, argument106, argument107])
-	DBDiscussionSession.add_all([argument108, argument109, argument110, argument111, argument112, argument113, argument114])
-	DBDiscussionSession.add_all([argument115, argument116, argument117, argument118, argument119])
-	DBDiscussionSession.flush()
+	session.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
+	session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
+	session.add_all([argument16, argument17, argument18, argument19, argument20, argument21, argument22])
+	session.add_all([argument23, argument24, argument25, argument26, argument27, argument28, argument29])
+	session.add_all([argument30, argument31])
+	session.add_all([argument101, argument102, argument103, argument104, argument105, argument106, argument107])
+	session.add_all([argument108, argument109, argument110, argument111, argument112, argument113, argument114])
+	session.add_all([argument115, argument116, argument117, argument118, argument119])
+	session.flush()
 
 	argument5.conclusions_argument(argument3.uid)
 	argument6.conclusions_argument(argument4.uid)
@@ -807,4 +807,4 @@ def setup_discussion_database(user):
 	argument111.conclusions_argument(argument110.uid)
 	argument113.conclusions_argument(argument112.uid)
 	argument117.conclusions_argument(argument116.uid)
-	DBDiscussionSession.flush()
+	session.flush()

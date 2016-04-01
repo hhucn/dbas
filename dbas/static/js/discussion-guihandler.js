@@ -131,11 +131,11 @@ function GuiHandler() {
 		new DiscussionGraph().showGraph();
 
 		// text
-		$('#' + graphViewContainerHeaderId).html($('#issue_info').html());
+		// $('#' + graphViewContainerHeaderId).html($('#issue_info').html());
 
 		// height
 		var innerHeight = new Helper().getMaxSizeOfGraphViewContainer();
-		$('#' + graphViewContainerId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em;');
+		$('#' + graphViewContainerId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; padding: 0 0 0 0;');
 	};
 
 	/**
