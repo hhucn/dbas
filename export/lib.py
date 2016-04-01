@@ -148,22 +148,30 @@ def get_sigma_export(issue, lang):
 	:return:
 	"""
 	logger('ExportLib', 'get_sigma_export', 'main')
+
+	grey = '#9E9E9E'
+	red = '#F44336'
+	green = '#8BC34A'
+
 	nodes_array = []
 	edges_array = []
 	db_textversions = DBDiscussionSession.query(TextVersion).all()
 	db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
+	db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
+
+	# for each statement a node will be added
 	for statement in db_statements:
 		node_dict = dict()
 		node_dict['id'] = 'statement_' + str(statement.uid)
 		text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
-		# text = [tv for tv in db_textversions if tv.uid == statement.textversion_uid]
 		node_dict['label'] = text.content if text else 'None'
+		node_dict['color'] = grey
 		nodes_array.append(node_dict)
 
-	db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
+	# for each argument edges will be added
 	for argument in db_arguments:
 		counter = 0
-		# add point in the middle of the edge
+		# add invisible point in the middle of the edge (to enable pgroups and undercuts)
 		node_dict = dict()
 		node_dict['id'] = 'argument_' + str(argument.uid)
 		node_dict['label'] = ''
@@ -177,6 +185,7 @@ def get_sigma_export(issue, lang):
 			edge_dict['id'] = 'edge_' + str(argument.uid) + '_' + str(counter)
 			edge_dict['source'] = 'statement_' + str(premise.statement_uid)
 			edge_dict['target'] = 'argument_' + str(argument.uid)
+			edge_dict['color'] = green if argument.is_supportive else red
 			edges_array.append(edge_dict)
 			counter += 1
 
@@ -188,6 +197,7 @@ def get_sigma_export(issue, lang):
 			edge_dict['target'] = 'statement_' + str(argument.conclusion_uid)
 		else:
 			edge_dict['target'] = 'argument_' + str(argument.argument_uid)
+		edge_dict['color'] = green if argument.is_supportive else red
 		edges_array.append(edge_dict)
 
 	sigma_dict = {'nodes': nodes_array, 'edges': edges_array}
