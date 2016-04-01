@@ -34,7 +34,7 @@ function DiscussionGraph() {
 			graph: jsonData,
 			renderer: {
 				type: 'canvas',
-				container: graphViewContainerSpaceId
+				container: graphViewContainerId
 			},
 			settings: {
 
@@ -68,7 +68,7 @@ function DiscussionGraph() {
 
 				// other default settings
 				doubleClickEnabled: false,
-				hideEdgesOnMove: true,
+				hideEdgesOnMove: false,
 				zoomMin: 0.2, zoomMax: 1,
 				minArrowSize: 7, maxEdgeSize: 1.7,
 				sideMargin: 1
@@ -77,7 +77,8 @@ function DiscussionGraph() {
 		});
 
 		// start startForceAtlas2
-		s.startForceAtlas2({worker: true, strongGravityMode: true,barnesHutTheta:10,scalingRatio:20}).refresh();
+		s.startForceAtlas2({worker: true, strongGravityMode: true, barnesHutTheta:10, scalingRatio:20}).refresh();
+		alert('nodes: ' + jsonData.nodes.length + "\n" + 'edges: ' + jsonData.edges.length);
 
 		/*
 		// empty graphViewContainerSpaceId after closing
