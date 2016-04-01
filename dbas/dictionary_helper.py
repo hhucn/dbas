@@ -1036,9 +1036,9 @@ class DictionaryHelper(object):
 			votecounts = len(db_votecounts) - diff if db_votecounts else 0
 
 			if votecounts == 0:
-				speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'
+				speech['votecounts'] = _t.get(_t.voteCountTextFirst) + '.'
 			elif votecounts == 1:
-				speech['votecounts_message'] = _t.get(_t.voteCountTextOneOther) + '.'
+				speech['votecounts'] = _t.get(_t.voteCountTextOneOther) + '.'
 			else:
 				speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 			speech['votecounts'] = votecounts
