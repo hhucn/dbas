@@ -13,19 +13,26 @@ from .query_helper import QueryHelper
 
 class RecommenderHelper(object):
 
-	def get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attack=None, restriction_on_argument_uid=None):
+	def get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attack=None, restriction_on_arg_uid=None):
 		"""
 
 		:param argument_uid:
 		:param issue:
 		:param lang:
 		:param restriction_on_attack:
-		:param restriction_on_argument_uid:
+		:param restriction_on_arg_uid:
 		:return:
 		"""
 		# getting undermines or undercuts or rebuts
 		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid))
-		attacks_array, key = self.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attack, restriction_on_argument_uid)
+		attacks_array, key = self.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attack, restriction_on_arg_uid)
+
+		# TODO COMMA16 Special Case
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		is_current_arg_undercut = db_argument.argument_uid is not None
+		additional_restriction = 'undercut' if is_current_arg_undercut else ''
+		if is_current_arg_undercut:
+			logger('RecommenderHelper', 'get_attack_for_argument', ' ADDITIONAL RESTRICTION IS A UNDERCUT')
 
 		if not attacks_array or len(attacks_array) == 0:
 			return 0, 'end'
@@ -33,12 +40,15 @@ class RecommenderHelper(object):
 			attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 			attack_uid = attacks_array[attack_no]['id']
 
-			while len(attacks_array) > 1 and attack_uid == restriction_on_argument_uid and str(key) == str(restriction_on_attack):
+			while len(attacks_array) > 1 \
+					and attack_uid == restriction_on_arg_uid \
+					and str(key) == str(restriction_on_attack) \
+					and str(key) == str(additional_restriction):
 				attacks_array.pop(attack_no)
 				attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 				attack_uid = attacks_array[attack_no]['id']
 
-			if str(attack_uid) == str(restriction_on_argument_uid) and str(key) == str(restriction_on_attack):
+			if str(attack_uid) == str(restriction_on_arg_uid) and str(key) == str(restriction_on_attack):
 				return 0, 'no_other_attack'
 
 			return attacks_array[attack_no]['id'], key

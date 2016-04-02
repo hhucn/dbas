@@ -127,7 +127,7 @@ class BreadcrumbHelper(object):
 			# for index, s in enumerate(splitted):
 			#   logger('-',str(index), s)
 
-			return _t.get(_t.otherParticipantDisagree) + ' ' + text + '.'
+			return _t.get(_t.otherParticipantDisagreeThat) + ' ' + text + '.'
 
 		elif '/justify/' in url:
 			splitted = url.split('/')

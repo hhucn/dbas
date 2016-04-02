@@ -324,8 +324,7 @@ class Translator(object):
 		self.otherParticipantsDontHaveOpinion = 'otherParticipantsDontHaveOpinion'
 		self.otherParticipantsDontHaveArgument = 'otherParticipantsDontHaveArgument'
 		self.otherParticipantsAcceptBut = 'otherParticipantsAcceptBut'
-		self.otherParticipantAgree = 'otherParticipantAgree'
-		self.otherParticipantDisagree = 'otherParticipantDisagree'
+		self.otherParticipantDisagreeThat = 'otherParticipantDisagreeThat'
 		self.otherUsersClaimStrongerArgumentRejecting = 'otherUsersClaimStrongerArgumentRejecting'
 		self.otherUsersClaimStrongerArgumentAccepting = 'otherUsersClaimStrongerArgumentAccepting'
 		self.otherUsersHaveCounterArgument = 'otherUsersHaveCounterArgument'
@@ -397,7 +396,8 @@ class Translator(object):
 		self.whatDoYouThinkAbout = 'whatDoYouThinkAbout'
 		self.whatDoYouThinkAboutThat = 'whatDoYouThinkAboutThat'
 		self.whyDoYouThinkThat = 'whyDoYouThinkThat'
-		self.whatIsYourMostImportantReason = 'whatIsYourMostImportantReason'
+		self.whatIsYourMostImportantReasonFor = 'whatIsYourMostImportantReasonFor'
+		self.whatIsYourMostImportantReasonWhy = 'whatIsYourMostImportantReasonWhy'
 		self.whyAreYouDisagreeingWith = 'whyAreYouDisagreeingWith'
 		self.whyAreYouAgreeingWith = 'whyAreYouAgreeingWith'
 		self.whyAreYouDisagreeingWithInColor = 'whyAreYouDisagreeingWithInColor'
@@ -756,8 +756,7 @@ class Translator(object):
 		en_lang[self.otherParticipantsDontHaveCounter] = 'Other participants do not have any counter-argument for '
 		en_lang[self.otherParticipantsDontHaveArgument] = 'Other participants do not have any argument for '
 		en_lang[self.otherParticipantsAcceptBut] = 'Other participants accept your argument, but'
-		en_lang[self.otherParticipantAgree] = 'Other participants agree that '
-		en_lang[self.otherParticipantDisagree] = 'Other participants disagree that '
+		en_lang[self.otherParticipantDisagreeThat] = 'Other participants disagree that '
 		en_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Other users claim to have a stronger statement for rejecting'
 		en_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Other users claim to have a stronger statement for accepting'
 		en_lang[self.otherUsersHaveCounterArgument] = 'Other users have the counter-argument that'
@@ -827,7 +826,8 @@ class Translator(object):
 		en_lang[self.wouldYourShareArgument] = 'Would you share your argument?'
 		en_lang[self.whatDoYouThinkAbout] = 'What do you think about'
 		en_lang[self.whatDoYouThinkAboutThat] = 'What do you think about that'
-		en_lang[self.whatIsYourMostImportantReason] = 'What is your most important reason for'
+		en_lang[self.whatIsYourMostImportantReasonFor] = 'What is your most important reason for'
+		en_lang[self.whatIsYourMostImportantReasonWhy] = 'What is your most important reason why'
 		en_lang[self.whyDoYouThinkThat] = 'Why do you think that'
 		en_lang[self.wrongURL] = 'Your URL seems to be wrong.'
 		en_lang[self.whyAreYouDisagreeingWith] = 'Why are you disagreeing with'
@@ -846,7 +846,7 @@ class Translator(object):
 		en_lang[self.unfortunatelyNoMoreArgument] = 'Unfortunately there are no more arguments about'
 		en_lang[self.userPasswordNotMatch] = 'User / Password do not match'
 		en_lang[self.userOptions] = 'Users Options'
-		en_lang[self.voteCountTextFirst] = 'First one with this opinion'
+		en_lang[self.voteCountTextFirst] = 'You are the first one with this opinion'
 		en_lang[self.voteCountTextOneOther] = 'One other with this opinion'
 		en_lang[self.voteCountTextMore] = 'more participants with this opinion'
 		en_lang[self.welcome] = 'Welcome'
@@ -1177,14 +1177,13 @@ class Translator(object):
 		de_lang[self.unfortunatelyOnlyOneItem] = 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte hier um sich anzumelden.'
 		de_lang[self.onlyOneItem] = 'Leider gibt es nur eine Auswahl. Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a href="" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> m sich anzumelden.'
 		de_lang[self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass'
-		de_lang[self.otherParticipantsAgreeThat] = 'Andere Teilnehmer denken, dass'
+		de_lang[self.otherParticipantsAgreeThat] = 'Andere Teilnehmer stimmen zu, dass'
 		de_lang[self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
 		de_lang[self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für '
 		de_lang[self.otherParticipantsDontHaveCounterForThat] = 'Andere Teilnehmer haben kein Gegenargument dafür.'
 		de_lang[self.otherParticipantsDontHaveArgument] = 'Andere Teilnehmer haben kein Argument für '
 		de_lang[self.otherParticipantsAcceptBut] = 'Andere Teilnehmer akzeptieren Ihr Argument, aber'
-		de_lang[self.otherParticipantAgree] = 'Andere Teilnehmer stimmen zu, dass '
-		de_lang[self.otherParticipantDisagree] = 'Andere Teilnehmer widersprechen, dass '
+		de_lang[self.otherParticipantDisagreeThat] = 'Andere Teilnehmer widersprechen, dass '
 		de_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung von'
 		de_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme von'
 		de_lang[self.otherUsersHaveCounterArgument] = 'Andere Teilnehmer haben das Gegenargument, dass'
@@ -1254,7 +1253,8 @@ class Translator(object):
 		de_lang[self.wrongURL] = 'Ihre URL scheint falsch zu sein.'
 		de_lang[self.whatDoYouThinkAbout] = 'Was halten Sie von'
 		de_lang[self.whatDoYouThinkAboutThat] = 'Was halten Sie davon, dass'
-		de_lang[self.whatIsYourMostImportantReason] = 'Was ist Ihr wichtigster Grund für'
+		de_lang[self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für'
+		de_lang[self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund für'
 		de_lang[self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
 		de_lang[self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
 		de_lang[self.whyAreYouAgreeingWith] = 'Warum sind sie dafür, dass'
@@ -1500,17 +1500,15 @@ class TextGenerator(object):
 		confrontation = confrontation[0:1].lower() + confrontation[1:]
 		premise = premise[0:1].lower() + premise[1:]
 		sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
+		current_argument = current_argument[0:1].upper() + current_argument[1:]
 
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
 
 		user_opinion = '<strong>'
 		user_opinion += current_argument if current_argument != '' else premise
 		user_opinion += '</strong>.'
-		#  if reply_for_argument:
-		#  opinion += ' ' + _t.get('relation_' + attack) + ' ' + '<strong>' + conclusion + '</strong>'
 
 		confrontation_text = ''
-		confrontation = '<strong>' + confrontation + '</strong>'
 
 		# build some confrontation text
 		if attack == 'undermine':

@@ -133,12 +133,13 @@ class DictionaryHelper(object):
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
 		text				= _qh.get_text_for_statement_uid(uid)
+		text                = text[0:1].upper() + text[1:]
 		if not text:
 			return None
-		question            = _tn.get(_tn.whatIsYourMostImportantReason) + ': <strong>' + text[0:1].lower() + text[1:] + '</strong> '
-		question            += _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '?'
+		question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong>' + text[0:1].lower() + text[1:] + ' '
+		question            += _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '</strong>?'
 		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
-		add_premise_text	+= text[0:1].upper() + text[1:] + ' ' + (_tn.get(_tn.holds) if is_supportive else _tn.get(_tn.isNotAGoodIdea))
+		add_premise_text	+= text + ' ' + (_tn.get(_tn.holds) if is_supportive else _tn.get(_tn.isNotAGoodIdea))
 
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
@@ -221,7 +222,7 @@ class DictionaryHelper(object):
 			add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
 																	   db_argument.is_supportive)
 
-		sys_msg  = _tn.get(_tn.whatIsYourMostImportantReason) + ': ' + user_msg[:-1] + '?<br>' + _tn.get(_tn.because) + '...'
+		sys_msg  = _tn.get(_tn.whatIsYourMostImportantReasonFor) + ': ' + user_msg[:-1] + '?<br>' + _tn.get(_tn.because) + '...'
 		# bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_msg[0:1].upper() + user_msg[1:], True)
 		bubble_question = self.__create_speechbubble_dict(False, True, False, '', '', sys_msg, True)
 
@@ -299,7 +300,8 @@ class DictionaryHelper(object):
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		if attack == 'end':
 			#  user_text        = _tn.get(_tn.soYourOpinionIsThat) + ': '
-			user_text        = '<strong>' + _qh.get_text_for_argument_uid(uid, self.lang, True) + '</strong>.'
+			text             = _qh.get_text_for_argument_uid(uid, self.lang, True)
+			user_text        = '<strong>' + text[0:1].upper() + text[1:] + '</strong>.'
 			sys_text         = _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
 			mid_text         = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 		else:
@@ -329,14 +331,13 @@ class DictionaryHelper(object):
 			user_text, sys_text = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive,
 			                                                     attack, confr, reply_for_argument, user_is_attacking,
 			                                                     current_argument, db_argument)
-
 		if attack == 'end':
 			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid, nickname=nickname, is_up_vote=is_supportive)
-			bubble_sys = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, True)
-			bubble_mid = self.__create_speechbubble_dict(False, False, True, '', '', mid_text, True)
+			bubble_sys  = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, True)
+			bubble_mid  = self.__create_speechbubble_dict(False, False, True, '', '', mid_text, True)
 		else:
 			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid, nickname=nickname, is_up_vote=is_supportive)
-			bubble_sys = self.__create_speechbubble_dict(False, True, False, 'question-bubble', '', sys_text, True)
+			bubble_sys  = self.__create_speechbubble_dict(False, True, False, 'question-bubble', '', sys_text, True)
 
 		# dirty fixes
 		if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
@@ -475,6 +476,7 @@ class DictionaryHelper(object):
 				premise_array = []
 				for premise in db_premises:
 					text = _qh.get_text_for_statement_uid(premise.statement_uid)
+					text = text[0:1].upper() + text[1:]
 					premise_array.append({'title': text, 'id': premise.statement_uid})
 
 				# get attack for each premise, so the urls will be unique
@@ -483,7 +485,6 @@ class DictionaryHelper(object):
 				                                                     premise_array,
 				                                                     'justify',
 																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
-
 
 		if nickname:
 			statements_array.append(self.__create_statement_dict('start_premise',
@@ -548,15 +549,15 @@ class DictionaryHelper(object):
 
 		if db_arguments:
 			for argument in db_arguments:
-				text, tmp = _qh.get_text_for_premisesgroup_uid(argument.premisesgroup_uid, self.lang)
-
 				# get alles premises in this group
 				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 				premises_array = []
 				for premise in db_premises:
 					premise_dict = dict()
 					premise_dict['id'] = premise.statement_uid
-					premise_dict['title'] = _qh.get_text_for_statement_uid(premise.statement_uid)
+					text = _qh.get_text_for_statement_uid(premise.statement_uid)
+					text = text[0:1].upper() + text[1:]
+					premise_dict['title'] = text
 					premises_array.append(premise_dict)
 
 				# for each justifying premise, we need a new confrontation:
@@ -695,7 +696,7 @@ class DictionaryHelper(object):
 
 		# last item is the change attack button or step back, if we have bno other attack
 		_rh = RecommenderHelper()
-		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, issue_uid, self.lang, restriction_on_attack=attack, restriction_on_argument_uid=argument_uid_sys)
+		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, issue_uid, self.lang, restriction_on_attack=attack, restriction_on_arg_uid=argument_uid_sys)
 		if new_attack == 'no_other_attack':
 			relation = 'step_back'
 			url = 'back' if for_api else 'window.history.go(-1)'
