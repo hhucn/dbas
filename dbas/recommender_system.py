@@ -27,7 +27,7 @@ class RecommenderHelper(object):
 		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid))
 		attacks_array, key = self.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attack, restriction_on_arg_uid)
 
-		# TODO COMMA16 Special Case
+		# TODO COMMA16 Special Case (forbid: undercuts of undercuts)
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		is_current_arg_undercut = db_argument.argument_uid is not None
 		additional_restriction = 'undercut' if is_current_arg_undercut else ''

@@ -606,7 +606,8 @@ class DictionaryHelper(object):
 		mode		 = 't' if is_supportive else 't'
 		counter_mode = 'f' if is_supportive else 't'
 
-		relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut']
+		# relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO 'overbid'
+		relations = ['undermine', 'support', 'undercut', 'rebut']
 		for relation in relations:
 			if relation == 'support':
 				arg_id_sys, sys_attack = RecommenderHelper().get_attack_for_argument(argument_uid, issue_uid, self.lang)
@@ -653,8 +654,12 @@ class DictionaryHelper(object):
 		_um			 = UrlManager(application_url, slug, for_api)
 
 		# based in the relation, we will fetch different url's for the items
-		# relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO 'overbid'
-		relations = ['undermine', 'support', 'undercut', 'rebut']
+		# relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO overbid
+		# TODO COMMA16 Special Case (forbid: undercuts of undercuts)
+		if attack == 'undercut':
+			relations = ['undermine', 'support', 'rebut']
+		else:
+			relations = ['undermine', 'support', 'undercut', 'rebut']
 		for relation in relations:
 			url = ''
 
