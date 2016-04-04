@@ -1040,7 +1040,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		return_dict = dict()
-		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(#VoteArgument.argument_uid == uid,
+		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
 		                                                               VoteArgument.is_valid == True,
 		                                                               VoteStatement.is_up_vote == True)).all()
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
