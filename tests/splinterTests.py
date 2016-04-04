@@ -11,7 +11,7 @@ class Helper:
 
 	@staticmethod
 	def print_success(has_success, message):
-		print("    " + ("SUCCESS" if has_success else "FAILED ") + ":  " + message)
+		print('    ' + ('SUCCESS' if has_success else 'FAILED') + ':  ' + message)
 
 	@staticmethod
 	def login(browser, nickname, password, url):
@@ -113,8 +113,8 @@ class WebTests:
 
 		# server check
 		if not self.__check_for_server():
-			print("====================================================")
-			print("Exit gracefully!")
+			print('====================================================')
+			print('Exit gracefully!')
 			return
 
 		success_counter = 0
@@ -132,8 +132,8 @@ class WebTests:
 		end = time.time()
 		diff = str(end - start)
 		diff = diff[0:diff.index('.') + 3]
-		print("====================================================")
-		print("Failed " + str(testcounter - success_counter) + " out of " + str(testcounter) + ' in ' + str(diff) + 's')
+		print('====================================================')
+		print('Failed ' + str(testcounter - success_counter) + ' out of ' + str(testcounter) + ' in ' + str(diff) + 's')
 
 	def __check_for_server(self):
 		"""
@@ -143,23 +143,23 @@ class WebTests:
 		b = Browser(self.browser_style)
 		self.browser = b
 		try:
-			print("Is server online?")
+			print('Is server online?')
 			b.visit(mainpage)
 			success = Helper().check_for_present_text(b, 'part of the graduate school', 'check main page')
 			b.quit()
 			self.browser = None
-			print("    --> SUCCESS" if success else "    --> FAIL")
-			print("")
+			print('    --> SUCCESS' if success else '    --> FAIL')
+			print('')
 			return success
 		except ConnectionResetError:
-			print("    --> FAIL")
-			print("")
+			print('    --> FAIL')
+			print('')
 			b.quit()
 			self.browser = None
 			return False
 		except ConnectionRefusedError:
-			print("    --> FAIL")
-			print("")
+			print('    --> FAIL')
+			print('')
 			b.quit()
 			self.browser = None
 			return False
@@ -170,7 +170,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting tests for pages_not_logged_in:")
+		print('Starting tests for pages_not_logged_in:')
 		success = True
 		b = Browser(browser)
 		self.browser = b
@@ -215,7 +215,7 @@ class WebTests:
 		:return:
 		"""
 		success = True
-		print("Starting tests for login_logout:")
+		print('Starting tests for login_logout:')
 		b = Browser(browser)
 		self.browser = b
 
@@ -242,7 +242,7 @@ class WebTests:
 		:return:
 		"""
 		success = True
-		print("Starting tests for pages_logged_in:")
+		print('Starting tests for pages_logged_in:')
 		b = Browser(browser)
 		self.browser = b
 		b = Helper.login(b, 'tobias', 'tobias', mainpage)
@@ -271,7 +271,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting tests for popups:")
+		print('Starting tests for popups:')
 		b = Browser(browser)
 		self.browser = b
 		b.visit(mainpage)
@@ -300,7 +300,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting tests for contact_formular:")
+		print('Starting tests for contact_formular:')
 		b = Browser(browser)
 		self.browser = b
 		b.visit('http://localhost:4284/contact')
@@ -331,7 +331,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting tests for language_switch:")
+		print('Starting tests for language_switch:')
 		b = Browser(browser)
 		self.browser = b
 		h = Helper()
@@ -357,7 +357,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting tests for discussion_buttons:")
+		print('Starting tests for discussion_buttons:')
 		b = Browser(browser)
 		self.browser = b
 		success = True
@@ -414,7 +414,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting tests for demo_discussion:")
+		print('Starting tests for demo_discussion:')
 		success = True
 		b = Browser(browser)
 		self.browser = b
@@ -461,7 +461,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting tests for functions_while_discussion:")
+		print('Starting tests for functions_while_discussion:')
 		success = True
 		b = Browser(browser)
 		self.browser = b
@@ -529,4 +529,4 @@ webtests = WebTests(browserStyle)
 try:
 	webtests.run_all_tests()
 except ConnectionResetError as e:
-	print("  Server is offline")
+	print('  Server is offline')

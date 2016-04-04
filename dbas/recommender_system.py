@@ -13,35 +13,38 @@ from .query_helper import QueryHelper
 
 class RecommenderHelper(object):
 
-	def get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attack=None, restriction_on_arg_uid=None):
+	def get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attacks=None, restriction_on_arg_uid=None):
 		"""
 
 		:param argument_uid:
 		:param issue:
 		:param lang:
-		:param restriction_on_attack:
+		:param restriction_on_attacks:
 		:param restriction_on_arg_uid:
 		:return:
 		"""
 		# getting undermines or undercuts or rebuts
 		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
-		       str(restriction_on_attack) + ', ' + str(restriction_on_arg_uid) + ')')
-		attacks_array, key = self.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attack, restriction_on_arg_uid)
+		       str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uid) + ')')
 
 		# TODO COMMA16 Special Case (forbid: undercuts of undercuts)
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		is_current_arg_undercut = db_argument.argument_uid is not None
-		additional_restriction = 'undercut' if is_current_arg_undercut else ''
+		tmp = restriction_on_attacks
+		restriction_on_attacks = []
+		restriction_on_attacks.append(tmp)
+		restriction_on_attacks.append('undercut' if is_current_arg_undercut else '')
 		if is_current_arg_undercut:
-			logger('RecommenderHelper', 'get_attack_for_argument', ' ADDITIONAL RESTRICTION IS A UNDERCUT')
+			logger('RecommenderHelper', 'get_attack_for_argument', 'ADDITIONAL RESTRICTION IS A UNDERCUT')
 
+		attacks_array, key = self.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks, restriction_on_arg_uid)
 		if not attacks_array or len(attacks_array) == 0:
 			return 0, 'end'
 		else:
 			attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 			attack_uid = attacks_array[attack_no]['id']
 
-			while len(attacks_array) > 1 and str(key) == str(additional_restriction):
+			while len(attacks_array) > 1:
 				attacks_array.pop(attack_no)
 				attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 				attack_uid = attacks_array[attack_no]['id']
@@ -101,14 +104,14 @@ class RecommenderHelper(object):
 
 		return db_arguments
 
-	def __get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attack=None, restriction_on_argument_uid=None):
+	def __get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attacks, restriction_on_argument_uid):
 		"""
 		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
 		Additionally returns id's of premises groups with [key + str(index) + 'id']
 		:param argument_uid:
 		:param issue:
 		:param lang:
-		:param restriction_on_attack:
+		:param restriction_on_attacks:
 		:param restriction_on_argument_uid:
 		:return:
 		"""
@@ -120,15 +123,15 @@ class RecommenderHelper(object):
 
 		logger('RecommenderHelper', '__get_attack_for_argument', 'attack_list : ' + str(attacks))
 		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
-		return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attack, restriction_on_argument_uid)
+		return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
 
 		# sanity check if we could not found an attack for a left attack in out set
 		if not return_array and len(attacks) > 0:
-			return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks, lang, restriction_on_attack, restriction_on_argument_uid)
+			return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
 
 		return return_array, key
 
-	def __get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attack=None, restriction_on_argument_uid=None):
+	def __get_attack_for_argument_by_random_in_range(self, argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid):
 		"""
 
 		:param argument_uid:
@@ -136,12 +139,12 @@ class RecommenderHelper(object):
 		:param issue:
 		:param complete_list_of_attacks:
 		:param lang:
-		:param restriction_on_attack:
+		:param restriction_on_attacks:
 		:param restriction_on_argument_uid:
 		:return:
 		"""
 		return_array = None
-		key = str(restriction_on_attack) if restriction_on_attack else ''
+		key = ''
 		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
 		attack_found = False
 		_qh = QueryHelper()
@@ -165,7 +168,8 @@ class RecommenderHelper(object):
 				      else _qh.get_undercuts_for_argument_uid(argument_uid, lang))
 
 			if return_array and len(return_array) != 0\
-					and str(restriction_on_attack) != str(key)\
+					and str(restriction_on_attacks[0]) != str(key)\
+					and str(restriction_on_attacks[1]) != str(key)\
 					and restriction_on_argument_uid != return_array[0]['id']:
 				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'key: ' + key + ', attack found')
 				attack_found = True
@@ -175,7 +179,7 @@ class RecommenderHelper(object):
 
 		if len(left_attacks) > 0 and not attack_found:
 			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
-			return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks, lang)
+			return_array, key = self.__get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
 		else:
 			if len(left_attacks) == 0:
 				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')

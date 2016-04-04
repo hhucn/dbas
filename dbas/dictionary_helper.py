@@ -701,7 +701,7 @@ class DictionaryHelper(object):
 		# statements_array.append(self.__create_statement_dict(relation, rel_dict[relation + '_text'], [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the change attack button or step back, if we have bno other attack
-		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, issue_uid, self.lang, restriction_on_attack=attack, restriction_on_arg_uid=argument_uid_sys)
+		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, issue_uid, self.lang, restriction_on_attacks=attack, restriction_on_arg_uid=argument_uid_sys)
 		if new_attack == 'no_other_attack':
 			relation = 'step_back'
 			url = 'back' if for_api else 'window.history.go(-1)'
