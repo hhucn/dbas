@@ -24,7 +24,8 @@ class RecommenderHelper(object):
 		:return:
 		"""
 		# getting undermines or undercuts or rebuts
-		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid))
+		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: '
+		       + str(restriction_on_attack) + ', ' + str(restriction_on_arg_uid)+ ')')
 		attacks_array, key = self.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attack, restriction_on_arg_uid)
 
 		# TODO COMMA16 Special Case (forbid: undercuts of undercuts)
@@ -40,18 +41,12 @@ class RecommenderHelper(object):
 			attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 			attack_uid = attacks_array[attack_no]['id']
 
-			while len(attacks_array) > 1 \
-					and attack_uid == restriction_on_arg_uid \
-					and str(key) == str(restriction_on_attack) \
-					and str(key) == str(additional_restriction):
+			while len(attacks_array) > 1 and str(key) == str(additional_restriction):
 				attacks_array.pop(attack_no)
 				attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 				attack_uid = attacks_array[attack_no]['id']
 
-			if str(attack_uid) == str(restriction_on_arg_uid) and str(key) == str(restriction_on_attack):
-				return 0, 'no_other_attack'
-
-			return attacks_array[attack_no]['id'], key
+			return attack_uid, key
 
 	def get_argument_by_conclusion(self, statement_uid, is_supportive):
 		"""
@@ -145,7 +140,7 @@ class RecommenderHelper(object):
 		:return:
 		"""
 		return_array = None
-		key = ''
+		key = str(restriction_on_attack) if restriction_on_attack else ''
 		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
 		attack_found = False
 		_qh = QueryHelper()
@@ -157,17 +152,20 @@ class RecommenderHelper(object):
 
 		# randomize at least 1, maximal 3 times for getting an attack or
 		# if the attack type and the only attacking argument are the same as the restriction
-		while len(attack_list) > 0 or (restriction_on_attack == key and len(return_array) == 1 and restriction_on_argument_uid == return_array[0]['id']):
+		while len(attack_list) > 0:
 			attack = random.choice(attack_list)
 			attack_list.remove(attack)
+			key = 'undermine' if attack == 1 \
+				else ('rebut' if attack == 5
+				      else 'undercut')
 
 			return_array = _qh.get_undermines_for_argument_uid(argument_uid, lang) if attack == 1 \
 				else (_qh.get_rebuts_for_argument_uid(argument_uid, lang) if attack == 5
 				      else _qh.get_undercuts_for_argument_uid(argument_uid, lang))
-			key = 'undermine' if attack == 1 \
-				else ('rebut' if attack == 5
-				      else 'undercut')
-			if return_array and len(return_array) != 0:
+
+			if return_array and len(return_array) != 0\
+					and str(restriction_on_attack) != str(key)\
+					and restriction_on_argument_uid != return_array[0]['id']:
 				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'key: ' + key + ', attack found')
 				attack_found = True
 				break

@@ -652,6 +652,7 @@ class DictionaryHelper(object):
 		rel_dict	 = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive)
 		mode		 = 't' if is_supportive else 'f'
 		_um			 = UrlManager(application_url, slug, for_api)
+		_rh          = RecommenderHelper()
 
 		# based in the relation, we will fetch different url's for the items
 		# relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO overbid
@@ -665,7 +666,7 @@ class DictionaryHelper(object):
 
 			# special case, when the user selectes the support, because this does not need to be justified!
 			if relation == 'support':
-				arg_id_sys, sys_attack = RecommenderHelper().get_attack_for_argument(argument_uid_sys, issue_uid, self.lang)
+				arg_id_sys, sys_attack = _rh.get_attack_for_argument(argument_uid_sys, issue_uid, self.lang)
 				url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
 
 			# easy cases
@@ -700,7 +701,6 @@ class DictionaryHelper(object):
 		# statements_array.append(self.__create_statement_dict(relation, rel_dict[relation + '_text'], [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the change attack button or step back, if we have bno other attack
-		_rh = RecommenderHelper()
 		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, issue_uid, self.lang, restriction_on_attack=attack, restriction_on_arg_uid=argument_uid_sys)
 		if new_attack == 'no_other_attack':
 			relation = 'step_back'
