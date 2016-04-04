@@ -127,26 +127,27 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForGettingInfosAboutArgument = function(data){
-		var parsedData = $.parseJSON(data), supporters, title = '', text, element, header = '';
+		var parsedData = $.parseJSON(data), supporters = '', text, element;
 		// status is the length of the content
 		if (parsedData.error.length == 0) {
-			supporters = parsedData.supporter.join(', ');
-			text = _t(messageInfoMessage) + ': ' + parsedData.text + '</strong><br><br>';
-			text += _t(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ' '
-				+ _t(messageInfoAt) + ' ' + parsedData.timestamp + '.<br>';
-			text += _t(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' '+ _t(messageInfoParticipant)
-				+ (parsedData.vote_count==1 ? '' : _t(messageInfoParticipantPl)) + '.';
-
-			if (parsedData.vote_count==1){
-				title = _t(messageInfoSupporterSg) + ': ' + supporters;
-			} else if (parsedData.vote_count>1){
-				title = _t(messageInfoSupporterPl) + ': ' + supporters;
+			// supporters = parsedData.supporter.join(', ');
+			text = parsedData.text + '<br><br>';
+			text += _t(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ' ';
+			text += _t(messageInfoAt) + ' ' + parsedData.timestamp + '.<br>';
+			text += _t(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
+			text +=_t(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t(messageInfoParticipantPl)) + '.';
+			if (parsedData.vote_count>0) {
+				$.each(parsedData.supporter, function(index, nick){
+					supporters += '<img style="width:35px;" src="' + parsedData.gravatars[nick] + '"/>' + ' ' + nick;
+					if (index < parsedData.supporter.length-1)
+						supporters += ', ';
+				});
+				text += '<br>' + (parsedData.vote_count == 1 ? _t(messageInfoSupporterSg) : _t(messageInfoSupporterPl)) + ': ' + supporters;
 			}
-			text += '\n' + title;
 		} else {
 			text = parsedData.error;
 		}
-		element = $('<p>').attr('data-toggle', 'tooltip').attr('data-placement', 'bottom').attr('title', title).html(text);
+		element = $('<p>').html(text);
 		displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), element);
 	};
 

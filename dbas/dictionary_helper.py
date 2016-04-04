@@ -657,10 +657,10 @@ class DictionaryHelper(object):
 		# based in the relation, we will fetch different url's for the items
 		# relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO overbid
 		# TODO COMMA16 Special Case (forbid: undercuts of undercuts)
-		if attack == 'undercut':
-			relations = ['undermine', 'support', 'rebut']
-		else:
-			relations = ['undermine', 'support', 'undercut', 'rebut']
+		# if attack == 'undercut':
+		# 	relations = ['undermine', 'support', 'rebut']
+		# else:
+		relations = ['undermine', 'support', 'undercut', 'rebut']
 		for relation in relations:
 			url = ''
 

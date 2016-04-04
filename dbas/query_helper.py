@@ -33,13 +33,14 @@ class QueryHelper(object):
 	# ########################################
 	# ARGUMENTS
 	# ########################################
-	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag=False, start_with_intro=False):
+	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False):
 		"""
 		Returns current argument as string like conclusion, because premise1 and premise2
 		:param uid: int
 		:param lang: str
 		:param with_strong_html_tag: Boolean
 		:param start_with_intro: Boolean
+		:param first_arg_by_user: Boolean
 		:return: str
 		"""
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -82,7 +83,7 @@ class QueryHelper(object):
 				supportive.append(db_argument.is_supportive)
 			conclusion = self.get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
 
-			if len(arg_array) % 2 is 0:  # system starts
+			if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
 				ret_value = se + _t.get(_t.otherUsersSaidThat) + sb + ' '
 				users_opinion = True  # user after system
 				conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
@@ -1039,7 +1040,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		return_dict = dict()
-		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.uid == uid,
+		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(#VoteArgument.argument_uid == uid,
 		                                                               VoteArgument.is_valid == True,
 		                                                               VoteStatement.is_up_vote == True)).all()
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -1047,13 +1048,18 @@ class QueryHelper(object):
 		return_dict['vote_count'] = str(len(db_votes))
 		return_dict['author']     = db_author.nickname
 		return_dict['timestamp']  = self.sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
-		return_dict['text']       = '<strong>' + self.get_text_for_argument_uid(uid, lang, True) + '<strong>'
+		return_dict['text']       = '<strong>' + self.get_text_for_argument_uid(uid, lang, True, True, first_arg_by_user=True) + '</strong>'
 
-		supporter = []
+		supporters = []
+		gravatars = dict()
+		_um = UserHandler()
 		for vote in db_votes:
-			supporter.append(DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first().nickname)
+			db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+			supporters.append(db_user.nickname)
+			gravatars[db_user.nickname] = _um.get_profile_picture(db_user)
 
-		return_dict['supporter'] = supporter
+		return_dict['supporter'] = supporters
+		return_dict['gravatars'] = gravatars
 
 		return return_dict
 
