@@ -1,6 +1,5 @@
 from splinter import Browser, exceptions
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException
-import sys
 import time
 
 mainpage = 'http://localhost:4284/'
@@ -35,10 +34,10 @@ class Helper:
 		try:
 			global testcounter
 			testcounter += 1
-			returnValue = testfunction(*args)
-			print('    --> SUCCESS' if returnValue == 1 else '    --> FAILED')
+			ret_val = testfunction(*args)
+			print('    --> SUCCESS' if ret_val == 1 else '    --> FAILED')
 			print('')
-			return returnValue
+			return ret_val
 		except AttributeError as e1:
 			print('    -> AttributeError occured in ' + name)
 			print('       ' + str(e1))
@@ -64,8 +63,9 @@ class Helper:
 			print('       ' + str(e5))
 			webtests.browser.quit()
 			return 0
-		except:
-			print('    -> Unexpected error: ' + str(sys.exc_info()[0]))
+		except Exception as e6:
+			print('    -> Unexpected error in ' + name)
+			print('       ' + str(e6))
 			webtests.browser.quit()
 			return 0
 
@@ -104,7 +104,7 @@ class WebTests:
 	browser = None
 
 	def __init__(self, browser):
-		self.browserStyle = browser
+		self.browser_style = browser
 
 	def run_all_tests(self):
 		"""
@@ -119,17 +119,16 @@ class WebTests:
 
 		success_counter = 0
 
-		browserStyle = self.browserStyle
 		start = time.time()
-		success_counter += Helper.test_wrapper('test normal pages', self.__test_pages_when_not_logged_in, browserStyle)
-		success_counter += Helper.test_wrapper('test login logout', self.__test_login_logout, browserStyle)
-		success_counter += Helper.test_wrapper('test logged in pages', self.__test_pages_when_logged_in, browserStyle)
-		success_counter += Helper.test_wrapper('test popups', self.__test_popups, browserStyle)
-		success_counter += Helper.test_wrapper('test contact formular', self.__test_contact_formular, browserStyle)
-		success_counter += Helper.test_wrapper('test language switch', self.__test_language_switch, browserStyle)
-		success_counter += Helper.test_wrapper('test discussion buttons', self.__test_discussion_buttons, browserStyle)
-		success_counter += Helper.test_wrapper('test demo discussion', self.__test_demo_discussion, browserStyle)
-		success_counter += Helper.test_wrapper('test demo discussion', self.__test_functions_while_discussion, browserStyle)
+		success_counter += Helper.test_wrapper('test normal pages', self.__test_pages_when_not_logged_in, self.browser_style)
+		success_counter += Helper.test_wrapper('test login logout', self.__test_login_logout, self.browser_style)
+		success_counter += Helper.test_wrapper('test logged in pages', self.__test_pages_when_logged_in, self.browser_style)
+		success_counter += Helper.test_wrapper('test popups', self.__test_popups, self.browser_style)
+		success_counter += Helper.test_wrapper('test contact formular', self.__test_contact_formular, self.browser_style)
+		success_counter += Helper.test_wrapper('test language switch', self.__test_language_switch, self.browser_style)
+		success_counter += Helper.test_wrapper('test discussion buttons', self.__test_discussion_buttons, self.browser_style)
+		success_counter += Helper.test_wrapper('test demo discussion', self.__test_demo_discussion, self.browser_style)
+		success_counter += Helper.test_wrapper('test demo discussion', self.__test_functions_while_discussion, self.browser_style)
 		end = time.time()
 		diff = str(end - start)
 		diff = diff[0:diff.index('.') + 3]
@@ -141,7 +140,7 @@ class WebTests:
 		Checks whether the server if online
 		:return: true when the server is on, false otherwise
 		"""
-		b = Browser(self.browserStyle)
+		b = Browser(self.browser_style)
 		self.browser = b
 		try:
 			print("Is server online?")
@@ -171,7 +170,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_pages_not_logged_in:")
+		print("Starting tests for pages_not_logged_in:")
 		success = True
 		b = Browser(browser)
 		self.browser = b
@@ -216,7 +215,7 @@ class WebTests:
 		:return:
 		"""
 		success = True
-		print("Starting __test_login_logout:")
+		print("Starting tests for login_logout:")
 		b = Browser(browser)
 		self.browser = b
 
@@ -243,7 +242,7 @@ class WebTests:
 		:return:
 		"""
 		success = True
-		print("Starting __test_pages_logged_in:")
+		print("Starting tests for pages_logged_in:")
 		b = Browser(browser)
 		self.browser = b
 		b = Helper.login(b, 'tobias', 'tobias', mainpage)
@@ -272,7 +271,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_popups:")
+		print("Starting tests for popups:")
 		b = Browser(browser)
 		self.browser = b
 		b.visit(mainpage)
@@ -301,7 +300,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_contact_formular:")
+		print("Starting tests for contact_formular:")
 		b = Browser(browser)
 		self.browser = b
 		b.visit('http://localhost:4284/contact')
@@ -332,7 +331,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_language_switch:")
+		print("Starting tests for language_switch:")
 		b = Browser(browser)
 		self.browser = b
 		h = Helper()
@@ -358,7 +357,7 @@ class WebTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_discussion_buttons:")
+		print("Starting tests for discussion_buttons:")
 		b = Browser(browser)
 		self.browser = b
 		success = True
@@ -411,11 +410,11 @@ class WebTests:
 
 	def __test_demo_discussion(self, browser):
 		"""
-		Checks the discussion
+		Checks the demo of the discussion. Simple walkthrough.
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_demo_discussion:")
+		print("Starting tests for demo_discussion:")
 		success = True
 		b = Browser(browser)
 		self.browser = b
@@ -458,11 +457,11 @@ class WebTests:
 
 	def __test_functions_while_discussion(self, browser):
 		"""
-		Checks the discussion
+		Checks different functions in the discussion like adding one premise, premisegroups and so one
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_functions_while_discussion:")
+		print("Starting tests for functions_while_discussion:")
 		success = True
 		b = Browser(browser)
 		self.browser = b
@@ -489,7 +488,7 @@ class WebTests:
 		time.sleep(waittime)
 
 		# confrontation
-		success = success and h.check_for_present_text(b, position + ' because some new reason', 'check for new argument')
+		success = success and h.check_for_present_text(b, position[1:] + ' because some new reason', 'check for new argument')
 		success = success and h.check_for_present_text(b, 'Other participants do not have any counter', 'check that no confrontation exists')
 		success = success and h.check_for_present_text(b, 'The discussion ends here', 'check for end text')
 

@@ -465,7 +465,7 @@ class DictionaryHelper(object):
 		_qh = QueryHelper()
 		_rh = RecommenderHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
-		db_arguments = RecommenderHelper().get_arguments_by_conclusion(statement_uid, is_supportive)
+		db_arguments = RecommenderHelper.get_arguments_by_conclusion(statement_uid, is_supportive)
 
 		_um = UrlManager(application_url, slug, for_api)
 

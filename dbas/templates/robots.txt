@@ -2,6 +2,7 @@ User-agent: *
 Disallow: /content
 Disallow: /static
 Disallow: /database
+Disallow: /news
 Disallow: /discuss/*
 Allow: /
 

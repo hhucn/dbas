@@ -24,8 +24,8 @@ class RecommenderHelper(object):
 		:return:
 		"""
 		# getting undermines or undercuts or rebuts
-		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: '
-		       + str(restriction_on_attack) + ', ' + str(restriction_on_arg_uid)+ ')')
+		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
+		       str(restriction_on_attack) + ', ' + str(restriction_on_arg_uid) + ')')
 		attacks_array, key = self.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attack, restriction_on_arg_uid)
 
 		# TODO COMMA16 Special Case (forbid: undercuts of undercuts)
@@ -81,7 +81,8 @@ class RecommenderHelper(object):
 		else:
 			return 0
 
-	def get_arguments_by_conclusion(self, statement_uid, is_supportive):
+	@staticmethod
+	def get_arguments_by_conclusion(statement_uid, is_supportive):
 		"""
 
 		:param statement_uid:
@@ -198,7 +199,8 @@ class RecommenderHelper(object):
 		index = [i for i, j in enumerate(evaluations) if j == best]
 		return index[0]
 
-	def __evaluate_argument(self, argument_uid):
+	@staticmethod
+	def __evaluate_argument(argument_uid):
 		"""
 
 		:param argument_uid: Argument.uid
