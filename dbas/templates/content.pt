@@ -17,7 +17,7 @@
                         <strong>i</strong>
                     </span>
                     -->
-                    <img style="width:50%;" class="icon-badge" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"/>
+                    <img style="width: 30px; margin-bottom: 0.5em;" class="icon-badge" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"/>
 				</div>
 				<div class="col-md-2 center text-center">
 					<div class="dropdown center">

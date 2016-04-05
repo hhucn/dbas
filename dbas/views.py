@@ -322,6 +322,7 @@ class Dbas(object):
 		# '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		logger('discussion_reaction', 'def', 'main, self.request.params: ' + str(self.request.params))
 		matchdict = self.request.matchdict
 
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
@@ -337,6 +338,10 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
+		rm_last_bubble = True if 'rm_bubble' in self.request.params else False
+		if rm_last_bubble:
+			DictionaryHelper.remove_last_bubble_for_discussion_reaction(nickname, session_id, self.request.params['rm_bubble'])
+
 		# set votings
 		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
 
@@ -346,15 +351,15 @@ class Dbas(object):
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname,
-		                                                                 session_id, transaction, ui_locales)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id,
+		                                                                 transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(nickname, transaction, arg_id_user,
-		                                                                breadcrumbs, has_new_crumbs, supportive, arg_id_sys,
-		                                                                attack, session_id)
+		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(nickname, transaction, arg_id_user, breadcrumbs,
+		                                                                has_new_crumbs, supportive, arg_id_sys, attack,
+		                                                                session_id)
 		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, mainpage, for_api)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
-		                                          argument_id=arg_id_user, application_url=mainpage, for_api=for_api)
+		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname, argument_id=arg_id_user,
+		                                          application_url=mainpage, for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict

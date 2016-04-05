@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy import and_
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, Issue, Bubble, VoteArgument, VoteStatement
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, Issue, Bubble, VoteArgument, VoteStatement, Breadcrumb
 from .logger import logger
 from .recommender_system import RecommenderHelper
 from .query_helper import QueryHelper
@@ -287,14 +287,14 @@ class DictionaryHelper(object):
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
-		_tn			   = Translator(self.lang)
-		_qh			   = QueryHelper()
-		db_user        = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-		bubbles_array  = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
-		add_premise_text = ''
-		save_statement_url = 'ajax_set_new_start_statement'
-		mid_text = ''
-		bubble_mid = ''
+		_tn			        = Translator(self.lang)
+		_qh			        = QueryHelper()
+		db_user             = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		bubbles_array       = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
+		add_premise_text    = ''
+		save_statement_url  = 'ajax_set_new_start_statement'
+		mid_text            = ''
+		bubble_mid          = ''
 
 		_tg					 = TextGenerator(self.lang)
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -314,10 +314,20 @@ class DictionaryHelper(object):
 				premise = _qh.get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
 					else _qh.get_text_for_argument_uid(db_confrontation.argument_uid, self.lang, True)
 
+			for crumb in breadcrumbs:
+				logger('---', '---', str(crumb['url']))
+
+			# did the user changed his opinion?
+			user_changed_opinion = len(breadcrumbs) > 1 and '/undercut/' in breadcrumbs[-2]['url']
+			logger('---', '---', str(user_changed_opinion))
+			logger('---', '---', str(user_changed_opinion))
+			logger('---', '---', str(user_changed_opinion))
+
 			# argumentation is a reply for an argument, if the arguments conclusion of the user is no position
 			db_statement		= DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
 			reply_for_argument  = not (db_statement and db_statement.is_startpoint)
-			current_argument	= _qh.get_text_for_argument_uid(uid, self.lang, True, True)
+			current_argument	= _qh.get_text_for_argument_uid(uid, self.lang, with_strong_html_tag=True,
+			                                                    start_with_intro=True, user_changed_opinion=user_changed_opinion)
 			user_is_attacking   = not db_argument.is_supportive
 
 			# fix
@@ -326,11 +336,15 @@ class DictionaryHelper(object):
 				conclusion = conclusion[len(prefix):]
 			if current_argument.startswith(prefix):
 				current_argument = current_argument[len(prefix):]
-				current_argument = current_argument[0:1].upper() + current_argument[1:]
+			current_argument = current_argument[0:1].upper() + current_argument[1:]
+			premise = premise[0:1].lower() + premise[1:]
 
-			user_text, sys_text = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive,
-			                                                     attack, confr, reply_for_argument, user_is_attacking,
-			                                                     current_argument, db_argument)
+			user_text = '<strong>'
+			user_text += current_argument if current_argument != '' else premise
+			user_text += '</strong>.'
+
+			sys_text = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive, attack, confr,
+			                                          reply_for_argument, user_is_attacking, db_argument)
 		if attack == 'end':
 			bubble_user = self.__create_speechbubble_dict(True, False, False, '', '', user_text, True, argument_uid=uid, nickname=nickname, is_up_vote=is_supportive)
 			bubble_sys  = self.__create_speechbubble_dict(False, True, False, '', '', sys_text, True)
@@ -667,7 +681,14 @@ class DictionaryHelper(object):
 			# special case, when the user selectes the support, because this does not need to be justified!
 			if relation == 'support':
 				arg_id_sys, sys_attack = _rh.get_attack_for_argument(argument_uid_sys, issue_uid, self.lang)
-				url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
+				if sys_attack == 'rebut' and attack == 'undercut':
+					# case: system makes an undercut and the user supports this
+					# new attack can be an rebut, so another undercut for the users argument
+					# therefore now the users opininion is the new undercut (e.g. rebut)
+					# because he supported it!
+					url = _um.get_url_for_reaction_on_argument(True, arg_id_sys, sys_attack, db_sys_argument.argument_uid)
+				else:
+					url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
 
 			# easy cases
 			elif relation == 'undermine' or relation == 'undercut':
@@ -695,19 +716,15 @@ class DictionaryHelper(object):
 
 			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
-		# last item is the back button
-		# relation = 'no_opinion'
-		# url = 'back' if for_api else 'window.history.go(-1)'
-		# statements_array.append(self.__create_statement_dict(relation, rel_dict[relation + '_text'], [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
-
 		# last item is the change attack button or step back, if we have bno other attack
 		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, issue_uid, self.lang, restriction_on_attacks=attack, restriction_on_arg_uid=argument_uid_sys)
-		if new_attack == 'no_other_attack':
+		if new_attack == 'no_other_attack' or new_attack == 'end':
 			relation = 'step_back'
 			url = 'back' if for_api else 'window.history.go(-1)'
 		else:
 			relation = 'no_opinion'
 			url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
+			url = url[0:len(url) - 1] + '?rm_bubble=' + str(argument_uid_user) + '/' + attack + '/' + str(argument_uid_sys) + '"'
 		statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
@@ -1158,16 +1175,22 @@ class DictionaryHelper(object):
 		bubbles_array.append(bubble)
 
 	@staticmethod
-	def __remove_last_bubble(db_user, session_id):
+	def remove_last_bubble_for_discussion_reaction(nickname, session_id, bubble_param):
 		"""
 
-		:param db_user:
+		:param nickname:
 		:param session_id:
+		:param bubble_param:
 		:return:
 		"""
-		bubble = DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
-		                                                       Bubble.session_id == session_id)).order_by(Bubble.uid.desc()).first()
-		if bubble:
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		if nickname == 'anonymous':
+			bubble = DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
+			                                                       Bubble.session_id == session_id)).order_by(Bubble.uid.desc()).first()
+		else:
+			bubble = DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid).order_by(Bubble.uid.desc()).first()
+
+		if bubble and DBDiscussionSession.query(Breadcrumb).filter_by(uid=bubble.breadcrumb_uid).first().url.endswith(bubble_param):
 			DBDiscussionSession.query(Bubble).filter_by(uid=bubble.uid).delete()
 			return True
 		return False

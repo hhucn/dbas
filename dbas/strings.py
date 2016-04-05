@@ -121,7 +121,9 @@ class Translator(object):
 		self.butTheyDoNotBelieveArgument = 'butTheyDoNotBelieveArgument'
 		self.because = 'because'
 		self.butWhich = 'butWhich'
+		self.butThenYouCounteredWith = 'butThenYouCounteredWith'
 		self.butYouCounteredWith = 'butYouCounteredWith'
+		self.butYouAgreedWith = 'butYouAgreedWith'
 		self.clickHereForRegistration = 'clickHereForRegistration'
 		self.confirmation = 'confirmation'
 		self.contactSubmit = 'contactSubmit'
@@ -422,6 +424,7 @@ class Translator(object):
 		self.youAreInterestedIn = 'youAreInterestedIn'
 		self.youAgreeWith = 'youAgreeWith'
 		self.youDisagreeWith = 'youDisagreeWith'
+		self.youSaidThat = 'youSaidThat'
 
 		self.sentencesOpenersArguingWithAgreeing = [self.agreeBecause, self.therefore]
 		self.sentencesOpenersArguingWithDisagreeing = [self.disagreeBecause, self.alternatively]
@@ -557,7 +560,9 @@ class Translator(object):
 		en_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'but other participants do not have any counter argument for that.'
 		en_lang[self.because] = 'Because'
 		en_lang[self.butWhich] = 'but which one'
+		en_lang[self.butThenYouCounteredWith] = 'But then you did not agree with this because'
 		en_lang[self.butYouCounteredWith] = 'You did not agree with this because'
+		en_lang[self.butYouAgreedWith] = 'And you agreed with this because'
 		en_lang[self.canYouGiveAReason] = 'Can you give a reason?'
 		en_lang[self.canYouGiveAReasonFor] = 'Can you give a reason for'
 		en_lang[self.canYouGiveACounter] = 'Can you give a counter-argument?'
@@ -847,13 +852,14 @@ class Translator(object):
 		en_lang[self.userPasswordNotMatch] = 'User / Password do not match'
 		en_lang[self.userOptions] = 'Users Options'
 		en_lang[self.voteCountTextFirst] = 'You are the first one with this opinion'
-		en_lang[self.voteCountTextOneOther] = 'One other with this opinion'
+		en_lang[self.voteCountTextOneOther] = 'One other participant with this opinion'
 		en_lang[self.voteCountTextMore] = 'more participants with this opinion'
 		en_lang[self.welcome] = 'Welcome'
 		en_lang[self.welcomeMessage] = 'Welcome to the novel dialog-based argumentation system.<br>We hope you enjoy using this system and happy arguing!'
 		en_lang[self.youAreInterestedIn] = 'You are interested in'
 		en_lang[self.youAgreeWith] = 'You agree with'
 		en_lang[self.youDisagreeWith] = 'You disagree with'
+		en_lang[self.youSaidThat] = 'You said that'
 
 		return en_lang
 
@@ -981,7 +987,9 @@ class Translator(object):
 		de_lang[self.butIDoNotBelieveArgumentFor] = 'aber ich glaube nicht, dass es ein gutes Argument dafür ist, dass'
 		de_lang[self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass ist kein gutes Gegenargument für'
 		de_lang[self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass ist kein gutes Argument für'
+		de_lang[self.butThenYouCounteredWith] = 'Jedoch haben Sie dann das Gegenargument gebracht, dass'
 		de_lang[self.butYouCounteredWith] = 'Jedoch haben Sie das Gegenargument gebracht, dass'
+		de_lang[self.butYouAgreedWith] = 'Und Sie haben zugestimmt, weil'
 		de_lang[self.because] = 'Weil'
 		de_lang[self.butWhich] = 'aber welches'
 		de_lang[self.clickHereForRegistration] = 'Klick <a href="" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> für die Anmeldung oder eine Registrierung!'
@@ -1280,6 +1288,7 @@ class Translator(object):
 		de_lang[self.youAreInterestedIn] = 'Sie interessieren Sich für'
 		de_lang[self.youAgreeWith] = 'Sie sind der Meinung, dass'
 		de_lang[self.youDisagreeWith] = 'Sie weidersprechen'
+		de_lang[self.youSaidThat] = 'Sie haben gesagt, dass'
 
 		return de_lang
 
@@ -1479,7 +1488,7 @@ class TextGenerator(object):
 		return ret_dict
 
 	def get_text_for_confrontation(self, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
-	                               reply_for_argument, user_is_attacking, current_argument, user_arg):
+	                               reply_for_argument, user_is_attacking, user_arg):
 		"""
 
 		:param premise:
@@ -1490,7 +1499,6 @@ class TextGenerator(object):
 		:param confrontation:
 		:param reply_for_argument:
 		:param user_is_attacking:
-		:param current_argument:
 		:param user_arg:
 		:return:
 		"""
@@ -1500,13 +1508,8 @@ class TextGenerator(object):
 		confrontation = confrontation[0:1].lower() + confrontation[1:]
 		premise = premise[0:1].lower() + premise[1:]
 		sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
-		current_argument = current_argument[0:1].upper() + current_argument[1:]
 
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
-
-		user_opinion = '<strong>'
-		user_opinion += current_argument if current_argument != '' else premise
-		user_opinion += '</strong>.'
 
 		confrontation_text = ''
 
@@ -1522,7 +1525,7 @@ class TextGenerator(object):
 				if not user_arg.is_supportive:
 					user_is_attacking = not user_is_attacking
 					conclusion = sys_conclusion
-				confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting) if user_is_attacking else _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
+				confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentRejecting) if user_is_attacking else _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
 				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 			else:  # reply for premise group
 				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, '
@@ -1536,7 +1539,7 @@ class TextGenerator(object):
 								 + _t.get(_t.theyThink).lower() + ': '  + confrontation
 
 		sys_text = confrontation_text + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
-		return user_opinion, sys_text
+		return sys_text
 
 	def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
 		"""

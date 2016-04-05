@@ -30,12 +30,12 @@ class RecommenderHelper(object):
 		# TODO COMMA16 Special Case (forbid: undercuts of undercuts)
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		is_current_arg_undercut = db_argument.argument_uid is not None
-		tmp = restriction_on_attacks
+		tmp = restriction_on_attacks if restriction_on_attacks else ''
 		restriction_on_attacks = []
 		restriction_on_attacks.append(tmp)
 		restriction_on_attacks.append('undercut' if is_current_arg_undercut else '')
-		if is_current_arg_undercut:
-			logger('RecommenderHelper', 'get_attack_for_argument', 'ADDITIONAL RESTRICTION IS A UNDERCUT')
+		logger('RecommenderHelper', 'get_attack_for_argument', 'restriction  1: ' + restriction_on_attacks[0])
+		logger('RecommenderHelper', 'get_attack_for_argument', 'restriction  2: ' + restriction_on_attacks[1])
 
 		attacks_array, key = self.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks, restriction_on_arg_uid)
 		if not attacks_array or len(attacks_array) == 0:
@@ -44,10 +44,7 @@ class RecommenderHelper(object):
 			attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 			attack_uid = attacks_array[attack_no]['id']
 
-			while len(attacks_array) > 1:
-				attacks_array.pop(attack_no)
-				attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
-				attack_uid = attacks_array[attack_no]['id']
+			logger('RecommenderHelper', 'get_attack_for_argument', 'main return ' + key + ' by ' + str(attack_uid))
 
 			return attack_uid, key
 
@@ -171,11 +168,11 @@ class RecommenderHelper(object):
 					and str(restriction_on_attacks[0]) != str(key)\
 					and str(restriction_on_attacks[1]) != str(key)\
 					and restriction_on_argument_uid != return_array[0]['id']:
-				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'key: ' + key + ', attack found')
+				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack found for key: ' + key)
 				attack_found = True
 				break
 			else:
-				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'key: ' + key + ', no attack found')
+				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attack found for key: ' + key)
 
 		if len(left_attacks) > 0 and not attack_found:
 			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
