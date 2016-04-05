@@ -2,8 +2,6 @@ import transaction
 import requests
 import json
 
-from datetime import datetime
-
 from validate_email import validate_email
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -974,7 +972,7 @@ class Dbas(object):
 		:return: HTTPFound with forgotten headers
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('user_logout', 'def', 'main, user: ' + str(self.request.authenticated_userid) + ',redirect_to_main: ' + str(redirect_to_main))
+		logger('user_logout', 'def', 'main, user: ' + str(self.request.authenticated_userid) + ', redirect_to_main: ' + str(redirect_to_main))
 		self.request.session.invalidate()
 		headers = forget(self.request)
 		if redirect_to_main:

@@ -261,7 +261,7 @@ def setup_news_db(session):
 	news40 = News(title='API',
 				  date='29.01.2016',
 				  author='Tobias Krauthoff',
-				  news='Now D-BAS has a API. Just replace the "discuss"-tag in your url with api to get your current steps raw data.')
+				  news='Now D-BAS has an API. Just replace the "discuss"-tag in your url with api to get your current steps raw data.')
 	news41 = News(title='Voting Model',
 				  date='05.01.2016',
 				  author='Tobias Krauthoff',
@@ -273,22 +273,27 @@ def setup_news_db(session):
 				  author='Tobias Krauthoff',
 				  news='Now we have a mechanism for unclear statements. For example the user enters "I want something because '
 				       'A and B". The we do not know, whether A and B must hold at the same time, or if she wants something '
-				       'when A or B holds.')
+				       'when A or B holds. Therefore the system requests feedback.')
 	news43 = News(title='Notification System',
 				  date='16.02.2016',
 				  author='Tobias Krauthoff',
 				  news='Yesterday we have develope a minimal notification system. This system could send information to every author, '
 				       'if one of their statement was edited. More features are comming soon!')
-	news44 = News(title='Speech Bubbles System',
+	news44 = News(title='Speech Bubble System',
 				  date='02.03.2016',
 				  author='Tobias Krauthoff',
 				  news='After one week of testing, we released a new minor version of D-BAS. Instead of the text presentation,'
 				       'we will use chat-like style :) Come on and try it! Additionally anonymous users will have a history now!')
+	news45 = News(title='COMMA16',
+				  date='05.04.2016',
+				  author='Tobias Krauthoff',
+				  news='After a few works of testing an debugging, we now have verison of D-BAS, whhich will be submitted '
+				       ' to <a href="http://www.ling.uni-potsdam.de/comma2016" target="_blank">COMMA 2016</a>.')
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
 	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41,
-	              news42, news43, news44]
+	              news42, news43, news44, news45]
 	session.add_all(news_array[::-1])
 	session.flush()
 
