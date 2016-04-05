@@ -527,7 +527,17 @@ class WebTests:
 		return 1 if success else 0
 
 
-browserStyle = 'firefox'
+print('Please choose a webbrowser:')
+print('  [c]hrome  (experimental)')
+print('  [f]irefox (default)')
+input_var = input("Enter: ")
+
+browserStyle = 'chrome' if str(input_var) == 'c' else 'firefox'
+
+print('')
+print('-> Tests will be done with ' + browserStyle)
+print('')
+
 try:
 	webtests = WebTests(browserStyle)
 	webtests.run_all_tests()
