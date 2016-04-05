@@ -974,7 +974,7 @@ class Dbas(object):
 		:return: HTTPFound with forgotten headers
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('user_logout', 'def', 'main, redirect_to_main: ' + str(redirect_to_main))
+		logger('user_logout', 'def', 'main, user: ' + str(self.request.authenticated_userid) + ',redirect_to_main: ' + str(redirect_to_main))
 		self.request.session.invalidate()
 		headers = forget(self.request)
 		if redirect_to_main:
