@@ -1,6 +1,7 @@
+import time
+
 from splinter import Browser, exceptions
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException
-import time
 
 mainpage = 'http://localhost:4284/'
 testcounter = 0
@@ -10,8 +11,8 @@ waittime = 0.3
 class Helper:
 
 	@staticmethod
-	def print_success(has_success, message):
-		print('    ' + ('SUCCESS' if has_success else 'FAILED') + ':  ' + message)
+	def print_success(has_success, message=''):
+		print('    ' + ('✓' if has_success else '✗') + ' ' + message)
 
 	@staticmethod
 	def login(browser, nickname, password, url):
@@ -35,7 +36,7 @@ class Helper:
 			global testcounter
 			testcounter += 1
 			ret_val = testfunction(*args)
-			print('    --> SUCCESS' if ret_val == 1 else '    --> FAILED')
+			print('    SUCCESS' if ret_val == 1 else '    FAIL')
 			print('')
 			return ret_val
 		except AttributeError as e1:
@@ -63,9 +64,19 @@ class Helper:
 			print('       ' + str(e5))
 			webtests.browser.quit()
 			return 0
-		except Exception as e6:
-			print('    -> Unexpected error in ' + name)
+		except ConnectionResetError as e6:
+			print('    -> ConnectionResetError occured in ' + name)
 			print('       ' + str(e6))
+			webtests.browser.quit()
+			return 0
+		except ConnectionRefusedError as e7:
+			print('    -> ConnectionRefusedError occured in ' + name)
+			print('       ' + str(e7))
+			webtests.browser.quit()
+			return 0
+		except Exception as e8:
+			print('    -> Unexpected error in ' + name)
+			print('       ' + str(e8))
 			webtests.browser.quit()
 			return 0
 
@@ -112,7 +123,8 @@ class WebTests:
 		"""
 
 		# server check
-		if not self.__check_for_server():
+
+		if not Helper.test_wrapper('testing for connectivity to server', self.__check_for_server, self.browser_style):
 			print('====================================================')
 			print('Exit gracefully!')
 			return
@@ -130,39 +142,27 @@ class WebTests:
 		success_counter += Helper.test_wrapper('test demo discussion', self.__test_demo_discussion, self.browser_style)
 		success_counter += Helper.test_wrapper('test demo discussion', self.__test_functions_while_discussion, self.browser_style)
 		end = time.time()
+
 		diff = str(end - start)
 		diff = diff[0:diff.index('.') + 3]
+
 		print('====================================================')
 		print('Failed ' + str(testcounter - success_counter) + ' out of ' + str(testcounter) + ' in ' + str(diff) + 's')
 
-	def __check_for_server(self):
+	def __check_for_server(self, browser):
 		"""
 		Checks whether the server if online
+		:param browser: current browser
 		:return: true when the server is on, false otherwise
 		"""
-		b = Browser(self.browser_style)
+		print('Is server online?')
+		b = Browser(browser)
 		self.browser = b
-		try:
-			print('Is server online?')
-			b.visit(mainpage)
-			success = Helper().check_for_present_text(b, 'part of the graduate school', 'check main page')
-			b.quit()
-			self.browser = None
-			print('    --> SUCCESS' if success else '    --> FAIL')
-			print('')
-			return success
-		except ConnectionResetError:
-			print('    --> FAIL')
-			print('')
-			b.quit()
-			self.browser = None
-			return False
-		except ConnectionRefusedError:
-			print('    --> FAIL')
-			print('')
-			b.quit()
-			self.browser = None
-			return False
+		b.visit(mainpage)
+		success = Helper().check_for_present_text(b, 'part of the graduate school', 'check main page')
+		b.quit()
+		self.browser = None
+		return success
 
 	def __test_pages_when_not_logged_in(self, browser):
 		"""
@@ -174,6 +174,7 @@ class WebTests:
 		success = True
 		b = Browser(browser)
 		self.browser = b
+		b = Helper.logout(b)
 
 		pages = [mainpage,
 		         mainpage + 'contact',
@@ -193,7 +194,7 @@ class WebTests:
 		         'admin']
 		texts = ['part of the graduate school',
 		         'Feel free to drop us a',
-		         'Speech Bubbles System',
+		         'Speech Bubble System',
 		         'Liability for content',
 		         'The current discussion is about:',
 		         'part of the graduate school',
@@ -267,7 +268,7 @@ class WebTests:
 
 	def __test_popups(self, browser):
 		"""
-		Checks ???
+		Checks UI popups
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
@@ -483,7 +484,8 @@ class WebTests:
 
 		# new premise
 		success = success and h.check_for_present_text(b, 'Let me enter my reason', 'check for new window premise')
-		b.find_by_id('add-premise-container-main-input').fill('some new reason')
+		reason1 = 'some new reason'
+		b.find_by_id('add-premise-container-main-input').fill(reason1)
 		b.find_by_id('send-new-premise').click()
 		time.sleep(waittime)
 
@@ -499,7 +501,8 @@ class WebTests:
 		time.sleep(waittime)
 		# add new premise
 		success = success and h.check_for_present_text(b, 'Let me enter my reason', 'check for new premise window again')
-		b.find_by_id('add-premise-container-main-input').fill('some new reason 1 and some new reason 2')
+		reason2 = 'some new reason 1 and some new reason 2'
+		b.find_by_id('add-premise-container-main-input').fill(reason2)
 		# add another input field
 		b.find_by_css('.icon-add-premise').click()
 		time.sleep(waittime)
@@ -525,8 +528,16 @@ class WebTests:
 
 
 browserStyle = 'firefox'
-webtests = WebTests(browserStyle)
 try:
+	webtests = WebTests(browserStyle)
 	webtests.run_all_tests()
-except ConnectionResetError as e:
-	print('  Server is offline')
+except ConnectionResetError as e1:
+	print('  Server is offline found: ' + str(e1))
+except FileNotFoundError as e2:
+	print('FileNotFoundError found: ' + str(e2))
+except AttributeError as e3:
+	print('AttributeError found: ' + str(e3))
+except WebDriverException as e4:
+	print('WebDriverException found: ' + str(e4))
+except KeyboardInterrupt as e5:
+	print('Exit through KeyboardInterrupt')
