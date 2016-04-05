@@ -28,7 +28,7 @@ from .url_manager import UrlManager
 from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
-version = '0.5.8a'
+version = '0.5.9a'
 project_name = name + ' ' + version
 issue_fallback = 1
 mainpage = ''

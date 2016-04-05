@@ -122,6 +122,11 @@
 				<div class="first-container colored_container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
+					<span class="project lead">0.5.9 (2016-03-05)</span>
+					<ul>
+						<li>Lot of fixes for <a href="http://www.ling.uni-potsdam.de/comma2016/" target="_blank">COMMA16</a></li>
+					</ul>
+
 					<span class="project lead">0.5.8 (2016-03-08)</span>
 					<ul>
 						<li>Switched to PostgreSQL
