@@ -319,9 +319,6 @@ class DictionaryHelper(object):
 
 			# did the user changed his opinion?
 			user_changed_opinion = len(breadcrumbs) > 1 and '/undercut/' in breadcrumbs[-2]['url']
-			logger('---', '---', str(user_changed_opinion))
-			logger('---', '---', str(user_changed_opinion))
-			logger('---', '---', str(user_changed_opinion))
 
 			# argumentation is a reply for an argument, if the arguments conclusion of the user is no position
 			db_statement		= DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
