@@ -869,7 +869,8 @@ class DictionaryHelper(object):
 															'news_about_dbas': _tn.get(_tn.newsAboutDbas),
 															'share_url': _tn.get(_tn.shareUrl),
 			                                                'go_back': _tn.get(_tn.letsGoBack),
-			                                                'go_home': _tn.get(_tn.letsGoHome)}
+			                                                'go_home': _tn.get(_tn.letsGoHome),
+			                                                'count_of_posts': _tn.get(_tn.countOfPosts)}
 			# /return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
 			message_dict['new_count']    = _nh.count_of_new_notifications(authenticated_userid)
@@ -1054,23 +1055,19 @@ class DictionaryHelper(object):
 			                                                                     VoteStatement.is_up_vote == is_up_vote,
 			                                                                     VoteStatement.is_valid == True)).all()
 
-		if db_votecounts:
-			_t = Translator(self.lang)
-			diff = 0
-			if nickname:
-				diff = 1 if nickname != 'anonymous' else 0
-			votecounts = len(db_votecounts) - diff if db_votecounts else 0
+		_t = Translator(self.lang)
+		diff = 0
+		if nickname:
+			diff = 1 if nickname != 'anonymous' else 0
+		votecounts = len(db_votecounts) - diff if db_votecounts else 0
 
-			if votecounts == 0:
-				speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'
-			elif votecounts == 1:
-				speech['votecounts_message'] = _t.get(_t.voteCountTextOneOther) + '.'
-			else:
-				speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
-			speech['votecounts'] = votecounts
+		if votecounts == 0:
+			speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'
+		elif votecounts == 1:
+			speech['votecounts_message'] = _t.get(_t.voteCountTextOneOther) + '.'
 		else:
-			speech['votecounts_message'] = ''
-			speech['votecounts'] = 0
+			speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+		speech['votecounts'] = votecounts
 
 		return speech
 
@@ -1180,13 +1177,18 @@ class DictionaryHelper(object):
 	@staticmethod
 	def remove_last_bubble_for_discussion_reaction(nickname, session_id, bubble_param):
 		"""
-
+		Removes the last Bubble of the user if the linked url ends with the bubble params
 		:param nickname:
 		:param session_id:
 		:param bubble_param:
 		:return:
 		"""
+		logger('DictionaryHelper', 'remove_last_bubble_for_discussion_reaction', 'nickname: ' + str(nickname) + ', session: ' + str(session_id))
+		if not nickname:
+			nickname = 'anonymous'
+
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
 		if nickname == 'anonymous':
 			bubble = DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
 			                                                       Bubble.session_id == session_id)).order_by(Bubble.uid.desc()).first()
