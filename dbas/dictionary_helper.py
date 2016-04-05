@@ -421,13 +421,14 @@ class DictionaryHelper(object):
 				                                                     [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
 																     'start',
 																     _um.get_url_for_statement_attitude(True, statement.uid)))
-
+			_tn = Translator(self.lang)
 			if logged_in:
-				_tn = Translator(self.lang)
 				statements_array.append(self.__create_statement_dict('start_statement',
 				                                                     [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
 																	 'start',
 																	 'add'))
+			# else: # TODO COMMA16
+			#	statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.wantToStateNewPosition)}], 'justify', 'login'))
 
 		return statements_array
 
@@ -505,6 +506,7 @@ class DictionaryHelper(object):
 			                                                     [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
 																  'justify',
 																  'add'))
+		# else: # TODO COMMA16
 		elif len(statements_array) == 1:
 			statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
@@ -586,6 +588,7 @@ class DictionaryHelper(object):
 			else:
 				text = _tn.get(_tn.newPremiseRadioButtonText)
 			statements_array.append(self.__create_statement_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
+		# else: # TODO COMMA16
 		elif len(statements_array) == 1:
 			statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
