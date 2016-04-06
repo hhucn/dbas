@@ -338,7 +338,6 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		rm_last_bubble  = True if 'rm_bubble' in params else False
-		changed_opinion = True if 'changed_opinion' in params and params['changed_opinion'] == 'true' else False
 		if rm_last_bubble:
 			DictionaryHelper.remove_last_bubble_for_discussion_reaction(nickname, session_id, params['rm_bubble'])
 
@@ -356,7 +355,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(nickname, transaction, arg_id_user, breadcrumbs,
 		                                                                has_new_crumbs, supportive, arg_id_sys, attack,
-		                                                                session_id, changed_opinion)
+		                                                                session_id)
 		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname, argument_id=arg_id_user,
 		                                          application_url=mainpage, for_api=for_api)
