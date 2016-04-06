@@ -1,11 +1,18 @@
 import time
 
+# from dbas.database import DBDiscussionSession
+# from dbas.database.discussion_model import VoteArgument, VoteStatement, Bubble, Breadcrumb, Notification,\
+# 	StatementReferences, Argument, Premise, PremiseGroup, Statement, TextVersion, User
+# import transaction
+
 from splinter import Browser, exceptions
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException
 
 mainpage = 'http://localhost:4284/'
 testcounter = 0
 waittime = 0.3
+user = 'test'
+password = 'iamatestuser2016'
 
 
 class Helper:
@@ -25,6 +32,11 @@ class Helper:
 		return browser
 
 	@staticmethod
+	def print_error(errorname, testname, error):
+			print('    -> ' + errorname + ' occured in ' + testname)
+			print('       ' + str(error))
+
+	@staticmethod
 	def test_wrapper(name, testfunction, *args):
 		"""
 		Wrapper method
@@ -39,45 +51,26 @@ class Helper:
 			print('    SUCCESS' if ret_val == 1 else '    FAIL')
 			print('')
 			return ret_val
-		except AttributeError as e1:
-			print('    -> AttributeError occured in ' + name)
-			print('       ' + str(e1))
+		except AttributeError as e:
+			Helper.print_error('AttributeError', name, e)
+		except exceptions.ElementDoesNotExist as e:
+			Helper.print_error('ElementDoesNotExist', name, e)
+		except IndexError as e:
+			Helper.print_error('IndexError', name, e)
+		except ElementNotVisibleException as e:
+			Helper.print_error('ElementNotVisibleException', name, e)
+		except WebDriverException as e:
+			Helper.print_error('WebDriverException', name, e)
+		except ConnectionResetError as e:
+			Helper.print_error('ConnectionResetError', name, e)
+		except ConnectionRefusedError as e:
+			Helper.print_error('ConnectionRefusedError', name, e)
+		except Exception as e:
+			Helper.print_error('Exception', name, e)
+		finally:
+			webtests.browser = Helper.logout(webtests.browser)
 			webtests.browser.quit()
-			return 0
-		except exceptions.ElementDoesNotExist as e2:
-			print('    -> ElementDoesNotExist occured in ' + name)
-			print('       ' + str(e2))
-			webtests.browser.quit()
-			return 0
-		except IndexError as e3:
-			print('    -> IndexError occured in ' + name)
-			print('       ' + str(e3))
-			webtests.browser.quit()
-			return 0
-		except ElementNotVisibleException as e4:
-			print('    -> ElementNotVisibleException occured in ' + name)
-			print('       ' + str(e4))
-			webtests.browser.quit()
-			return 0
-		except WebDriverException as e5:
-			print('    -> WebDriverException occured in ' + name)
-			print('       ' + str(e5))
-			webtests.browser.quit()
-			return 0
-		except ConnectionResetError as e6:
-			print('    -> ConnectionResetError occured in ' + name)
-			print('       ' + str(e6))
-			webtests.browser.quit()
-			return 0
-		except ConnectionRefusedError as e7:
-			print('    -> ConnectionRefusedError occured in ' + name)
-			print('       ' + str(e7))
-			webtests.browser.quit()
-			return 0
-		except Exception as e8:
-			print('    -> Unexpected error in ' + name)
-			print('       ' + str(e8))
-			webtests.browser.quit()
+			webtests.browser = None
 			return 0
 
 	def check_for_present_text(self, browser, text, message):
@@ -132,15 +125,15 @@ class WebTests:
 		success_counter = 0
 
 		start = time.time()
-		success_counter += Helper.test_wrapper('test normal pages', self.__test_pages_when_not_logged_in, self.browser_style)
-		success_counter += Helper.test_wrapper('test login logout', self.__test_login_logout, self.browser_style)
-		success_counter += Helper.test_wrapper('test logged in pages', self.__test_pages_when_logged_in, self.browser_style)
-		success_counter += Helper.test_wrapper('test popups', self.__test_popups, self.browser_style)
-		success_counter += Helper.test_wrapper('test contact formular', self.__test_contact_formular, self.browser_style)
-		success_counter += Helper.test_wrapper('test language switch', self.__test_language_switch, self.browser_style)
-		success_counter += Helper.test_wrapper('test discussion buttons', self.__test_discussion_buttons, self.browser_style)
-		success_counter += Helper.test_wrapper('test demo discussion', self.__test_demo_discussion, self.browser_style)
-		success_counter += Helper.test_wrapper('test demo discussion', self.__test_functions_while_discussion, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for normal pages', self.__test_pages_when_not_logged_in, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for login logout', self.__test_login_logout, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for logged in pages', self.__test_pages_when_logged_in, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for popups', self.__test_popups, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for contact formular', self.__test_contact_formular, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for language switch', self.__test_language_switch, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_functions_while_discussion, self.browser_style)
 		end = time.time()
 
 		diff = str(end - start)
@@ -220,11 +213,11 @@ class WebTests:
 		b = Browser(browser)
 		self.browser = b
 
-		b = Helper.login(b, 'tobias', 'wrongpassword', mainpage)
+		b = Helper.login(b, user, 'wrongpassword', mainpage)
 		test = 'testing wrong login'
 		success = success and Helper().check_for_present_text(b, 'do not match', test)
 
-		b = Helper.login(b, 'tobias', 'tobias', mainpage)
+		b = Helper.login(b, user, password, mainpage)
 		test = 'testing right login'
 		success = success and Helper().check_for_present_text(b, 'tobias', test)
 
@@ -246,7 +239,7 @@ class WebTests:
 		print('Starting tests for pages_logged_in:')
 		b = Browser(browser)
 		self.browser = b
-		b = Helper.login(b, 'tobias', 'tobias', mainpage)
+		b = Helper.login(b, user, password, mainpage)
 
 		pages = [mainpage + 'settings',
 		         mainpage + 'notifications',
@@ -363,7 +356,7 @@ class WebTests:
 		self.browser = b
 		success = True
 		h = Helper()
-		b = h.login(b, 'tobias', 'tobias', mainpage + 'discussion')
+		b = h.login(b, user, password, mainpage + 'discussion')
 
 		# check url popup
 		b.find_by_id('share-url').click()
@@ -420,7 +413,7 @@ class WebTests:
 		b = Browser(browser)
 		self.browser = b
 		h = Helper()
-		b = h.login(b, 'tobias', 'tobias', mainpage + 'discussion')
+		b = h.login(b, user, password, mainpage + 'discussion')
 
 		# position
 		success = success and h.check_for_present_text(b, 'initial ', 'check for position')
@@ -467,7 +460,7 @@ class WebTests:
 		b = Browser(browser)
 		self.browser = b
 		h = Helper()
-		b = h.login(b, 'tobias', 'tobias', mainpage + 'discussion')
+		b = h.login(b, user, password, mainpage + 'discussion')
 
 		# new position
 		b.find_by_css('#discussions-space-list li:last-child input').click()
@@ -520,6 +513,23 @@ class WebTests:
 		success = success and h.check_for_present_text(b, 'multiple reasons', 'check options for choosing ')
 		success = success and h.check_for_present_text(b, 'some new reason 1', 'check options for choosing answer 1')
 		success = success and h.check_for_present_text(b, 'some new reason 2', 'check options for choosing answer 2')
+
+		# Todo remove test data
+		# db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		# for tmp in DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all():
+		# 	tmp.set_statement(None)
+
+		# DBDiscussionSession.query(VoteArgument).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(VoteStatement).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(Notification).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(StatementReferences).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(Argument).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(Premise).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(Statement).filter_by(author_uid=db_user.uid).delete()
+		# DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).delete()
 
 		b = h.logout(b)
 		b.quit()
