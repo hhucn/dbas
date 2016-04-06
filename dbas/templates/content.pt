@@ -5,7 +5,7 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
 
-		<div class="container colored_container" id="header-container">
+		<div class="container colored-container" id="header-container">
 			<div class="row">
 				<div class="col-md-8 center">
 					<span i18n:translate="current_discussion">Current discussion is about</span>:<br>
@@ -49,7 +49,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="discussion-container">
+		<div class="container colored-container" id="discussion-container">
 			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
 				<div class="col-md-11" style="text-align: justify;">
@@ -156,7 +156,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="island-view-container" style="display:none" tal:condition="extras.show_display_style">
+		<div class="container colored-container" id="island-view-container" style="display:none" tal:condition="extras.show_display_style">
 			<button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -287,7 +287,7 @@
 
 		</div>
 
-		<div class="colored_container" id="graph-view-container" style="display:none">
+		<div class="colored-container" id="graph-view-container" style="display:none">
 			<button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -295,7 +295,7 @@
 			<!--<div id="graph-view-container-space"></div>-->
 		</div>
 
-		<div class="container colored_container" id="add-statement-container" style="display:none" tal:attributes="style extras.add_statement_container_style">
+		<div class="container colored-container" id="add-statement-container" style="display:none" tal:attributes="style extras.add_statement_container_style">
 			<button tal:condition="extras.close_statement_container" id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -317,7 +317,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="add-premise-container" style="display:none" tal:attributes="style extras.add_premise_container_style">
+		<div class="container colored-container" id="add-premise-container" style="display:none" tal:attributes="style extras.add_premise_container_style">
 			<button tal:condition="extras.close_premise_container" id="close-premise-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -351,7 +351,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container" id="display-control-container" tal:condition="extras.show_display_style" style="display:none">
+		<div class="container colored-container" id="display-control-container" tal:condition="extras.show_display_style" style="display:none">
 			<div class="row">
 				<h4 i18n:translate="change_style">Change display style</h4>
 				<div class="col-md-4">

@@ -3,7 +3,7 @@
 		
 		<div class="container first-container center">
 			<div class="row">
-				<div class="col-md-6 center colored_container" style="float: none">
+				<div class="col-md-6 center colored-container" style="float: none">
 					<h3 class="text-center" i18n:translate="thank_you">Thank you!</h3>
 					<span class="lead" i18n:translate="finish_text">Your participation in this discussion was saved and will be used for evaluation later. If you have any questions, please do not hesitat to</span>
 					<span class="lead"><a href="/contact" i18n:translate="contact_us">contact us (click here)</a>.</span>
