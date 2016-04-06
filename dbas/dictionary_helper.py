@@ -424,8 +424,8 @@ class DictionaryHelper(object):
 				                                                     [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
 																	 'start',
 																	 'add'))
-			# else: # TODO COMMA16
-			#	statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.wantToStateNewPosition)}], 'justify', 'login'))
+			else:
+				statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.wantToStateNewPosition)}], 'justify', 'login'))
 
 		return statements_array
 
@@ -503,8 +503,8 @@ class DictionaryHelper(object):
 			                                                     [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
 																  'justify',
 																  'add'))
-		# else: # TODO COMMA16
-		elif len(statements_array) == 1:
+		else:
+			# elif len(statements_array) == 1:
 			statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
 		return statements_array
@@ -585,8 +585,8 @@ class DictionaryHelper(object):
 			else:
 				text = _tn.get(_tn.newPremiseRadioButtonText)
 			statements_array.append(self.__create_statement_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
-		# else: # TODO COMMA16
-		elif len(statements_array) == 1:
+		else:
+			# elif len(statements_array) == 1:
 			statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
 		return statements_array
