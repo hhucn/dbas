@@ -236,7 +236,7 @@ function Helper() {
 		innerHeight -= list.outerHeight(true);
 		innerHeight -= this.getPaddingOfElement(bar);
 		innerHeight -= this.getPaddingOfElement(list);
-		return innerHeight-40;
+		return innerHeight;
 	};
 
 	this.getPaddingOfElement = function (element){

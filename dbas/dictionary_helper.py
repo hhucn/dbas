@@ -272,7 +272,7 @@ class DictionaryHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_argumentation(self, nickname, transaction, uid, breadcrumbs, save_crumb, is_supportive, additional_id, attack, session_id):
+	def prepare_discussion_dict_for_argumentation(self, nickname, transaction, uid, breadcrumbs, save_crumb, is_supportive, additional_id, attack, session_id, changed_opinion=False):
 		"""
 
 		:param nickname:
@@ -284,6 +284,7 @@ class DictionaryHelper(object):
 		:param additional_id:
 		:param attack:
 		:param session_id:
+		:param changed_opinion:
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
@@ -314,9 +315,6 @@ class DictionaryHelper(object):
 				premise = _qh.get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
 					else _qh.get_text_for_argument_uid(db_confrontation.argument_uid, self.lang, True)
 
-			for crumb in breadcrumbs:
-				logger('---', '---', str(crumb['url']))
-
 			# did the user changed his opinion?
 			user_changed_opinion = len(breadcrumbs) > 1 and '/undercut/' in breadcrumbs[-2]['url']
 
@@ -331,12 +329,18 @@ class DictionaryHelper(object):
 			prefix = '</strong>' + _tn.get(_tn.soYourOpinionIsThat) + ': <strong>'
 			if conclusion.startswith(prefix):
 				conclusion = conclusion[len(prefix):]
+
 			if current_argument.startswith(prefix):
 				current_argument = current_argument[len(prefix):]
-			current_argument = current_argument[0:1].upper() + current_argument[1:]
+
+			if changed_opinion:
+				current_argument = current_argument[0:1].lower() + current_argument[1:]
+			else:
+				current_argument = current_argument[0:1].upper() + current_argument[1:]
 			premise = premise[0:1].lower() + premise[1:]
 
-			user_text = '<strong>'
+			user_text = _tn.get(_tn.right) + ', ' + _tn.get(_tn.itIsTrue) + ' ' if changed_opinion else ''
+			user_text += '<strong>'
 			user_text += current_argument if current_argument != '' else premise
 			user_text += '</strong>.'
 
@@ -689,6 +693,7 @@ class DictionaryHelper(object):
 					url = _um.get_url_for_reaction_on_argument(True, arg_id_sys, sys_attack, db_sys_argument.argument_uid)
 				else:
 					url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
+				url = url[0:len(url) - 1] + '?changed_opinion=true' + '"'
 
 			# easy cases
 			elif relation == 'undermine' or relation == 'undercut':

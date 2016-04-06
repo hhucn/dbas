@@ -55,7 +55,6 @@ getLanguage = function(){
 var checkmark                                       = '&#x2713;'; // ✓
 var ballot                                          = '&#x2717;'; // ✗
 
-
 var and 						            		= 'and';
 var andAtTheSameTime                                = 'andAtTheSameTime';
 var addedEverything 								= 'addedEverything';

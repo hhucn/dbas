@@ -322,6 +322,7 @@ class Dbas(object):
 		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		logger('discussion_reaction', 'def', 'main, self.request.params: ' + str(self.request.params))
 		matchdict = self.request.matchdict
+		params    = self.request.params
 
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
@@ -336,9 +337,10 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		rm_last_bubble = True if 'rm_bubble' in self.request.params else False
+		rm_last_bubble  = True if 'rm_bubble' in params else False
+		changed_opinion = True if 'changed_opinion' in params and params['changed_opinion'] == 'true' else False
 		if rm_last_bubble:
-			DictionaryHelper.remove_last_bubble_for_discussion_reaction(nickname, session_id, self.request.params['rm_bubble'])
+			DictionaryHelper.remove_last_bubble_for_discussion_reaction(nickname, session_id, params['rm_bubble'])
 
 		# set votings
 		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
@@ -354,7 +356,7 @@ class Dbas(object):
 
 		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(nickname, transaction, arg_id_user, breadcrumbs,
 		                                                                has_new_crumbs, supportive, arg_id_sys, attack,
-		                                                                session_id)
+		                                                                session_id, changed_opinion)
 		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, mainpage, for_api)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname, argument_id=arg_id_user,
 		                                          application_url=mainpage, for_api=for_api)
