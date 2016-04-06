@@ -7,7 +7,8 @@
 		</head>
 
 		<div class="blocked session_expired center alert-warning" id="session_expired_container" tal:condition="session_expired">
-			<h5>Your session has expired!</h5>
+			<h5 i18n:translate="session_expired">Your session has expired!</h5>
+            <h6 i18n:translate="login_again">You have to log in again.</h6>
 		</div>
 
 		<div class="container colored-container first-container jumbotron" id="home-template">

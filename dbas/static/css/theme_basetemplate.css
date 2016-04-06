@@ -203,7 +203,8 @@ comment .container and wrap each container with <div class="coloured-div">
 	z-index: 9999997;
     width: 300px;
 }
-.session_expired h5 {
+.session_expired h5,
+.session_expired h6{
     color: #fff;
 }
 
