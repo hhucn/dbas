@@ -619,9 +619,7 @@ class QueryHelper(object):
 		       ', statement: ' + str(statement) + ', issue: ' + str(issue))
 
 		# escaping
-		logger('---', 'before', statement)
 		statement = escape_string(statement)
-		logger('---', 'after', statement)
 
 		# check for dot at the end
 		if not statement.endswith(('.', '?', '!')):

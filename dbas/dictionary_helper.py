@@ -1087,9 +1087,17 @@ class DictionaryHelper(object):
 			if not db_user:
 				return False
 
+		is_user   = bubble_dict['is_user']
+		is_system = bubble_dict['is_system']
+		is_status = bubble_dict['is_status']
 		latest_bubble = DBDiscussionSession.query(Bubble).filter(and_(Bubble.breadcrumb_uid == related_breadcrumb['uid'],
-		                                                             Bubble.author_uid == db_user.uid)).order_by(Bubble.uid.desc()).first()
-		if latest_bubble and latest_bubble.content == bubble_dict['message']:
+		                                                              Bubble.author_uid == db_user.uid)).order_by(Bubble.uid.desc()).first()
+		latest_specific_bubble = DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
+		                                                                       Bubble.is_user == is_user,
+																			   Bubble.is_system == is_system,
+																			   Bubble.is_status == is_status)).order_by(Bubble.uid.desc()).first()
+		if latest_bubble and latest_bubble.content == bubble_dict['message'] or \
+						latest_specific_bubble and latest_specific_bubble.content == bubble_dict['message']:
 				return False
 
 		logger('DictionaryHelper', '__save_speechbubble', 'bubble_id = ' + str(bubble_dict['id']) +
