@@ -43,6 +43,12 @@ Compontents Documentation
     components/index
 
 
+Tests
+=====
+.. toctree::
+    tests
+
+
 Export Documentation
 ====================
 

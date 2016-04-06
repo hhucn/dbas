@@ -43,19 +43,19 @@ class Setup:
 		return session
 
 	def add_routes(self, config):
-		config.add_route('main_page',           '/')
-		config.add_route('main_contact',        '/contact')
-		config.add_route('main_settings',       '/settings')
-		config.add_route('main_notification',   '/notifications')
-		config.add_route('main_admin',          '/admin')
-		config.add_route('main_news',           '/news')
-		config.add_route('main_imprint',        '/imprint')
+		config.add_route('main_page', '/')
+		config.add_route('main_contact', '/contact')
+		config.add_route('main_settings', '/settings')
+		config.add_route('main_notification', '/notifications')
+		config.add_route('main_admin', '/admin')
+		config.add_route('main_news', '/news')
+		config.add_route('main_imprint', '/imprint')
 		config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}')
-		config.add_route('discussion_justify',  '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
+		config.add_route('discussion_justify', '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
 		config.add_route('discussion_attitude', '/discuss/{slug}/attitude/*statement_id')
-		config.add_route('discussion_choose',   '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids')
-		config.add_route('discussion_finish',   '/discuss/finish')
-		config.add_route('discussion_init',     '/discuss*slug')
+		config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids')
+		config.add_route('discussion_finish', '/discuss/finish')
+		config.add_route('discussion_init', '/discuss*slug')
 		return config
 
 
@@ -298,7 +298,7 @@ class FunctionalEMailTests(IntegrationTestDBAS):
 		mailer = DummyMailer()
 		mailer.send(Message(subject='hello world',
 							sender='krauthoff@cs.uni-duesseldorf.de',
-							recipients =['krauthoff@cs.uni-duesseldorf.de'],
+							recipients=['krauthoff@cs.uni-duesseldorf.de'],
 							body='dummybody'))
 		self.assertEqual(len(mailer.outbox), 1)
 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
@@ -310,7 +310,7 @@ class FunctionalEMailTests(IntegrationTestDBAS):
 		mailer = DummyMailer()
 		mailer.send_immediately(Message(subject='hello world',
 										sender='krauthoff@cs.uni-duesseldorf.de',
-										recipients =['krauthoff@cs.uni-duesseldorf.de'],
+										recipients=['krauthoff@cs.uni-duesseldorf.de'],
 										body='dummybody'))
 		self.assertEqual(len(mailer.outbox), 1)
 		self.assertEqual(mailer.outbox[0].subject, 'hello world')

@@ -1531,7 +1531,10 @@ class TextGenerator(object):
 				if not user_arg.is_supportive:
 					user_is_attacking = not user_is_attacking
 					conclusion = sys_conclusion
-				confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentRejecting) if user_is_attacking else _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
+				if user_is_attacking:
+					confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
+				else:
+					confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
 				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 			else:  # reply for premise group
 				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, '
