@@ -14,11 +14,12 @@ def store_reference(api_data, statement_uid=None):
     """
     Validate provided reference and store it in the database.
     :param api_data:
+    :param statement_uid:
     :return:
     """
     try:
-        reference = escape_html(api_data["reference"])
-        if not reference or len(reference) < 1:
+        reference = api_data["reference"]
+        if not reference:
             return  # Early exit if there is no reference
         if not statement_uid:
             log.error("[API/Reference] No statement_uid provided.")
@@ -28,7 +29,7 @@ def store_reference(api_data, statement_uid=None):
         origin = escape_html(api_data["origin"])
         issue_uid = api_data["issue_id"]
 
-        db_ref = StatementReferences(reference, origin, user_uid, statement_uid, issue_uid)
+        db_ref = StatementReferences(escape_html(reference), origin, user_uid, statement_uid, issue_uid)
         DBDiscussionSession.add(db_ref)
         DBDiscussionSession.flush()
         log.debug("[API/Reference] Successfully saved reference for statement.")
