@@ -55,7 +55,6 @@ getLanguage = function(){
 var checkmark                                       = '&#x2713;'; // ✓
 var ballot                                          = '&#x2717;'; // ✗
 
-
 var and 						            		= 'and';
 var andAtTheSameTime                                = 'andAtTheSameTime';
 var addedEverything 								= 'addedEverything';
@@ -269,7 +268,7 @@ var dbas_en = {
 	'haveALookAt': 'Hey, please have a look at ',
 	'hidePasswordRequest': 'Hide Password Request',
 	'hideGenerator': 'Hide Generator',
-	'internalError': '<strong>Internal Error:</strong> Maybe the server is offline or your session run out.',
+	'internalError': '<strong>Internal Error:</strong> Maybe the server is offline.',
 	'inputEmpty': 'Input is empty!',
 	'initialPositionInterest': 'What is the initial position you are interested in?',
 	'interestingOnDBAS': 'Interesting discussion on DBAS',
@@ -405,7 +404,7 @@ var dbas_de = {
 	'haveALookAt': 'Hey, schau dir mal das an: ',
 	'hidePasswordRequest': 'Verstecke die Passwort-Anfrage',
 	'hideGenerator': 'Verstecke Generator',
-	'internalError': '<strong>Interner Fehler:</strong> Wahrscheinlich ist Ihre Sitzung abgelaufen. Bitte laden Sie die Seite erneut!.',
+	'internalError': '<strong>Interner Fehler:</strong> Wahrscheinlich ist der Server nicht erreichbar. Bitte laden Sie die Seite erneut!.',
 	'inputEmpty': 'Ihre Eingabe ist leer!',
 	'initialPositionInterest': 'An welcher Aussage sind Sie interessiert?',
 	'interestingOnDBAS': 'Interessante Diskussion in D-BAS',

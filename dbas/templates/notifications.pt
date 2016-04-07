@@ -6,7 +6,7 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_content.css')}" rel="stylesheet">
 		</head>
 
-		<div class="container colored_container">
+		<div class="container colored-container">
 			<div class="row">
 				<div class="col-md-12" id="message-space">
                     <h3>Notification Board</h3>

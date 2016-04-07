@@ -98,8 +98,8 @@
 							<img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" tal:condition="extras.lang_is_en">
 							<img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" tal:condition="extras.lang_is_de">
 							<!--
-							<img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
-							<img id="switch-lang-indicator-sp" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
+							<img id="switch-lang-indicator-es" src="${request.static_url('dbas:static/images/flag-es-24.png')}">
+							<img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-sw-24.png')}">
 							-->
 							<span i18n:translate="language">Language</span>
 							<span class="caret"></span>
@@ -108,12 +108,8 @@
 							<li tal:attributes="class extras.link_de_class"><a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">Deutsch</a></li>
 							<li tal:attributes="class extras.link_en_class"><a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">English</a></li>
 							<!--
-							<li>
-								<a class="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">Espa&ntilde;ol</a>
-							</li>
-							<li>
-								<a class="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-32.png')}" alt="flag_sw">Svensk</a>
-							</li>
+							<li tal:attributes="class extras.link_es_class"><a id="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">Espa&ntilde;ol</a></li>
+							<li tal:attributes="class extras.link_sw_class"><a id="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-32.png')}" alt="flag_sw">Svensk</a></li>
 							-->
 						</ul>
 					</li>

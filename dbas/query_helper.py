@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from html import escape
 import locale
 import collections
 import random
 from sqlalchemy import and_, func
 from slugify import slugify
 
+from .lib import escape_string
 from .database import DBDiscussionSession, DBNewsSession
 from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue, Group
 from .database.news_model import News
@@ -33,13 +33,15 @@ class QueryHelper(object):
 	# ########################################
 	# ARGUMENTS
 	# ########################################
-	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag=False, start_with_intro=False):
+	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False, user_changed_opinion=False):
 		"""
 		Returns current argument as string like conclusion, because premise1 and premise2
 		:param uid: int
 		:param lang: str
 		:param with_strong_html_tag: Boolean
 		:param start_with_intro: Boolean
+		:param first_arg_by_user: Boolean
+		:param user_changed_opinion: Boolean
 		:return: str
 		"""
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -82,8 +84,10 @@ class QueryHelper(object):
 				supportive.append(db_argument.is_supportive)
 			conclusion = self.get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
 
-			if len(arg_array) % 2 is 0:  # system starts
-				ret_value = se + _t.get(_t.otherUsersSaidThat) + sb + ' '
+			if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
+				ret_value = se
+				ret_value += _t.get(_t.youSaidThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat)
+				ret_value += sb + ' '
 				users_opinion = True  # user after system
 				conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
 			else:  # user starts
@@ -93,7 +97,20 @@ class QueryHelper(object):
 
 			ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
 			for i in range(1, len(pgroups)):
-				ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
+				ret_value += ' ' + se
+				if users_opinion:
+					if user_changed_opinion:
+						ret_value += _t.get(_t.butThenYouCounteredWith)
+					else:
+						ret_value += _t.get(_t.butYouCounteredWith)
+				else:
+					ret_value += _t.get(_t.otherUsersHaveCounterArgument)
+				ret_value += sb + ' ' + pgroups[i] + '.'
+
+				#if user_changed_opinion:
+				#	ret_value += ' ' + se + _t.get(_t.butThenYouCounteredWith) + sb + ' ' + pgroups[i] + '.'
+				#else:
+				#	ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
 				users_opinion = not users_opinion
 
 			ret_value = ret_value.replace('.</strong>', '</strong>.').replace('. </strong>', '</strong>. ')
@@ -602,9 +619,7 @@ class QueryHelper(object):
 		       ', statement: ' + str(statement) + ', issue: ' + str(issue))
 
 		# escaping
-		logger('---', 'before', statement)
-		statement = escape(statement)
-		logger('---', 'after', statement)
+		statement = escape_string(statement)
 
 		# check for dot at the end
 		if not statement.endswith(('.', '?', '!')):
@@ -754,7 +769,7 @@ class QueryHelper(object):
 		:param nickname: nickname
 		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
 		"""
-		logger('QueryHelper', 'get_user_with_same_opinion', 'Argument ' + str(argument_uid))
+		logger('QueryHelper', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
@@ -763,6 +778,7 @@ class QueryHelper(object):
 		_t = Translator(lang)
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		if not db_argument:
+			ret_dict['message'] = _t.get(_t.internalError) + '.'
 			ret_dict['users'] = all_users
 			return ret_dict
 
@@ -779,12 +795,13 @@ class QueryHelper(object):
 			all_users.append(users_dict)
 			ret_dict['users'] = all_users
 
-		if len(db_votes) == 0:
+		l = len(db_votes)
+		if l == 0:
 			ret_dict['message'] = _t.get(_t.voteCountTextFirst) + '.'
-		elif len(db_votes) == 1:
+		elif l == 1:
 			ret_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
 		else:
-			ret_dict['message'] = str(db_votes) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+			ret_dict['message'] = str(l) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
 		return ret_dict
 
@@ -1039,7 +1056,7 @@ class QueryHelper(object):
 		:return:
 		"""
 		return_dict = dict()
-		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.uid == uid,
+		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
 		                                                               VoteArgument.is_valid == True,
 		                                                               VoteStatement.is_up_vote == True)).all()
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -1047,13 +1064,18 @@ class QueryHelper(object):
 		return_dict['vote_count'] = str(len(db_votes))
 		return_dict['author']     = db_author.nickname
 		return_dict['timestamp']  = self.sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
-		return_dict['text']       = '<strong>' + self.get_text_for_argument_uid(uid, lang, True) + '<strong>'
+		return_dict['text']       = '<strong>' + self.get_text_for_argument_uid(uid, lang, True, True, first_arg_by_user=True) + '</strong>'
 
-		supporter = []
+		supporters = []
+		gravatars = dict()
+		_um = UserHandler()
 		for vote in db_votes:
-			supporter.append(DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first().nickname)
+			db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+			supporters.append(db_user.nickname)
+			gravatars[db_user.nickname] = _um.get_profile_picture(db_user)
 
-		return_dict['supporter'] = supporter
+		return_dict['supporter'] = supporters
+		return_dict['gravatars'] = gravatars
 
 		return return_dict
 
@@ -1367,13 +1389,13 @@ class QueryHelper(object):
 		statements = []
 		if isinstance(text_list, list):
 			for text in text_list:
-				if len(text) < self.__statement_min_length:  # TODO LENGTH
+				if len(text) < self.__statement_min_length:
 					return -1
 				else:
 					new_statement, is_duplicate = self.set_statement(transaction, text, user, is_start, issue)
 					statements.append(new_statement)
 		else:
-			if len(text_list) < self.__statement_min_length:  # TODO LENGTH
+			if len(text_list) < self.__statement_min_length:
 				return -1
 			else:
 				new_statement, is_duplicate = self.set_statement(transaction, text_list, user, is_start, issue)

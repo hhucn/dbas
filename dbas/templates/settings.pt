@@ -7,7 +7,7 @@
 
 		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
-		<div class="container colored_container" id="first-settings-container">
+		<div class="container colored-container" id="first-settings-container">
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-7">
 					<h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="personal_information">Personal Information</span></h4>
@@ -78,7 +78,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container">
+		<div class="container colored-container">
 			<div class="content row">
 				<div class="col-md-7">
 					<h4><span class="glyphicon glyphicon-asterisk" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="change_password">Change your password</span></h4>
@@ -186,7 +186,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container">
+		<div class="container colored-container">
 			<div class="content row">
 				<div class="col-md-12">
 					<h4><span class="glyphicon glyphicon-time" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="history">Your last history</span></h4>

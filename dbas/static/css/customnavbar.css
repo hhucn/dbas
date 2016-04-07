@@ -155,6 +155,9 @@ bootstrap-paper hover #eeeeee
 #footer div div {
 	margin-bottom: 0;
 }
+#footer div{
+	background: #fff;
+}
 #footer_imprint {
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-115-list.png) no-repeat;
 }

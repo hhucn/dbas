@@ -6,7 +6,8 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_admin.css')}" rel="stylesheet">
 		</head>
 		
-		<div class="container colored_container" tal:condition="not:extras.is_admin" style="width: 578px;">
+		<div class="container colored-container" tal:condition="not:extras.is_admin" style="width: 578px;">
+            <span class="lead">401 - Unauthorized</span><br>
 			<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
 		</div>
 
@@ -118,7 +119,7 @@
                     </div>
                 </div>
 
-                <div class="row col-md-12 center container colored_container" id="admins-space-users" style="display:none;">
+                <div class="row col-md-12 center container colored-container" id="admins-space-users" style="display:none;">
                      <table style="border-collapse: separate; border-spacing: 0;" class="table table-condensed tablesorter" border="0">
                          <thead>
                          <tr>
@@ -151,7 +152,7 @@
                      </table>
                 </div>
 
-                <div class="row col-md-12 container colored_container" style="display:none;">
+                <div class="row col-md-12 container colored-container" style="display:none;">
                     <div class="col-md-1"></div>
                     <div class="col-md-10">
                         <h4><span class="lead" i18n:translate="list_attacks">List of attacks, clicked by the participants</span></h4>
@@ -174,13 +175,13 @@
                     </div>
                     <div class="col-md-1"></div>
                 </div >
-                <div class="row col-md-12 colored_container" id="admins-space-argument" style="display:none;">
+                <div class="row col-md-12 colored-container" id="admins-space-argument" style="display:none;">
                 </div>
             </div>
 		</div>
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-helper.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/admin.js')}"></script>
 
 	</tal:block>

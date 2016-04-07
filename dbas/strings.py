@@ -121,13 +121,16 @@ class Translator(object):
 		self.butTheyDoNotBelieveArgument = 'butTheyDoNotBelieveArgument'
 		self.because = 'because'
 		self.butWhich = 'butWhich'
+		self.butThenYouCounteredWith = 'butThenYouCounteredWith'
 		self.butYouCounteredWith = 'butYouCounteredWith'
+		self.butYouAgreedWith = 'butYouAgreedWith'
 		self.clickHereForRegistration = 'clickHereForRegistration'
 		self.confirmation = 'confirmation'
 		self.contactSubmit = 'contactSubmit'
 		self.confirmTranslation = 'confirmTranslation'
 		self.correctionsSet = 'correctionsSet'
 		self.countOfArguments = 'countOfArguments'
+		self.countOfPosts = 'countOfPosts'
 		self.checkFirstname = 'checkFirstname'
 		self.checkLastname = 'checkLastname'
 		self.checkNickname = 'checkNickname'
@@ -317,6 +320,7 @@ class Translator(object):
 		self.noRights = 'noRights'
 		self.unfortunatelyOnlyOneItem = 'unfortunatelyOnlyOneItem'
 		self.onlyOneItem = 'onlyOneItem'
+		self.onlyOneItemWithLink = 'onlyOneItemWithLink'
 		self.otherParticipantsThinkThat = 'otherParticipantsThinkThat'
 		self.otherParticipantsAgreeThat = 'otherParticipantsAgreeThat'
 		self.otherParticipantsDontHaveCounter = 'otherParticipantsDontHaveCounter'
@@ -324,8 +328,7 @@ class Translator(object):
 		self.otherParticipantsDontHaveOpinion = 'otherParticipantsDontHaveOpinion'
 		self.otherParticipantsDontHaveArgument = 'otherParticipantsDontHaveArgument'
 		self.otherParticipantsAcceptBut = 'otherParticipantsAcceptBut'
-		self.otherParticipantAgree = 'otherParticipantAgree'
-		self.otherParticipantDisagree = 'otherParticipantDisagree'
+		self.otherParticipantDisagreeThat = 'otherParticipantDisagreeThat'
 		self.otherUsersClaimStrongerArgumentRejecting = 'otherUsersClaimStrongerArgumentRejecting'
 		self.otherUsersClaimStrongerArgumentAccepting = 'otherUsersClaimStrongerArgumentAccepting'
 		self.otherUsersHaveCounterArgument = 'otherUsersHaveCounterArgument'
@@ -390,6 +393,7 @@ class Translator(object):
 		self.theySay = 'theySay'
 		self.theyThink = 'theyThink'
 		self.veryweak = 'veryweak'
+		self.wantToStateNewPosition = 'wantToStateNewPosition'
 		self.weak = 'weak'
 		self.wrong = 'wrong'
 		self.wouldYourShareArgument = 'wouldYourShareArgument'
@@ -397,7 +401,8 @@ class Translator(object):
 		self.whatDoYouThinkAbout = 'whatDoYouThinkAbout'
 		self.whatDoYouThinkAboutThat = 'whatDoYouThinkAboutThat'
 		self.whyDoYouThinkThat = 'whyDoYouThinkThat'
-		self.whatIsYourMostImportantReason = 'whatIsYourMostImportantReason'
+		self.whatIsYourMostImportantReasonFor = 'whatIsYourMostImportantReasonFor'
+		self.whatIsYourMostImportantReasonWhy = 'whatIsYourMostImportantReasonWhy'
 		self.whyAreYouDisagreeingWith = 'whyAreYouDisagreeingWith'
 		self.whyAreYouAgreeingWith = 'whyAreYouAgreeingWith'
 		self.whyAreYouDisagreeingWithInColor = 'whyAreYouDisagreeingWithInColor'
@@ -422,6 +427,7 @@ class Translator(object):
 		self.youAreInterestedIn = 'youAreInterestedIn'
 		self.youAgreeWith = 'youAgreeWith'
 		self.youDisagreeWith = 'youDisagreeWith'
+		self.youSaidThat = 'youSaidThat'
 
 		self.sentencesOpenersArguingWithAgreeing = [self.agreeBecause, self.therefore]
 		self.sentencesOpenersArguingWithDisagreeing = [self.disagreeBecause, self.alternatively]
@@ -557,7 +563,9 @@ class Translator(object):
 		en_lang[self.butOtherParticipantsDontHaveCounterArgument] = 'but other participants do not have any counter argument for that.'
 		en_lang[self.because] = 'Because'
 		en_lang[self.butWhich] = 'but which one'
+		en_lang[self.butThenYouCounteredWith] = 'But then you did not agree with this because'
 		en_lang[self.butYouCounteredWith] = 'You did not agree with this because'
+		en_lang[self.butYouAgreedWith] = 'And you agreed with this because'
 		en_lang[self.canYouGiveAReason] = 'Can you give a reason?'
 		en_lang[self.canYouGiveAReasonFor] = 'Can you give a reason for'
 		en_lang[self.canYouGiveACounter] = 'Can you give a counter-argument?'
@@ -567,6 +575,7 @@ class Translator(object):
 		en_lang[self.clickHereForRegistration] = 'Click <a href="" data-toggle="modal" data-target="#popup-login" title="Login">here</a> for log in or registration!'
 		en_lang[self.clickForMore] = 'Click for more!'
 		en_lang[self.countOfArguments] = 'Count of arguments'
+		en_lang[self.countOfPosts] = 'Count of posts'
 		en_lang[self.confirmation] = 'Confirmation'
 		en_lang[self.contactSubmit] = 'Submit your Notification'
 		en_lang[self.confirmTranslation] = 'If you change the language, your process on this page will be lost and you have to restart the discussion!'
@@ -628,7 +637,7 @@ class Translator(object):
 		en_lang[self.error_code] = 'Error code'
 		en_lang[self.edit] = 'Edit'
 		en_lang[self.editTitle] = 'Edit the statements.'
-		en_lang[self.feelFreeToLogin] = ' If you want to proceed, please feel free to <a href="" data-toggle="modal" data-target="#popup-login" title="Login">login</a> yourself :)'
+		en_lang[self.feelFreeToLogin] = ' If you want to proceed, please feel free to <u><a href="" data-toggle="modal" data-target="#popup-login" title="Login">login</a></u> yourself :)'
 		en_lang[self.forText] = 'for'
 		en_lang[self.firstConclusionRadioButtonText] = 'Let me enter my idea!'
 		en_lang[self.firstArgumentRadioButtonText] = 'Let me enter my own statement(s)!'
@@ -673,7 +682,7 @@ class Translator(object):
 		en_lang[self.informationForExperts] = 'Infos for experts'
 		en_lang[self.internalFailureWhileDeletingTrack] = 'Internal failure, please try again or did you have deleted your track recently?'
 		en_lang[self.internalFailureWhileDeletingHistory] = 'Internal failure, please try again or did you have deleted your history recently?'
-		en_lang[self.internalError] = '<strong>Internal Error:</strong> Maybe the server is offline or your session run out.'
+		en_lang[self.internalError] = '<strong>Internal Error:</strong> Maybe the server is offline.'
 		en_lang[self.issueList] = 'Topics'
 		en_lang[self.islandViewHeaderText] = 'These are all arguments for: '
 		en_lang[self.islandView] = 'Island View'
@@ -748,6 +757,7 @@ class Translator(object):
 		en_lang[self.no_entry] = 'No entry'
 		en_lang[self.noRights] = 'You have no rights for this action!'
 		en_lang[self.onlyOneItem] = 'If you want to state a new reason, please click here to log in.'
+		en_lang[self.onlyOneItemWithLink] = 'If you want to state a new reason, please click <a href="" data-toggle="modal" data-target="#popup-login" title="Login">here</a> to log in.'
 		en_lang[self.unfortunatelyOnlyOneItem] = 'Unfortunately you only have one option to choose. If you want to state a new reason, please click <a href="" data-toggle="modal" data-target="#popup-login" title="Login">here</a> to log in.'
 		en_lang[self.otherParticipantsThinkThat] = 'Other participants think that'
 		en_lang[self.otherParticipantsAgreeThat] = 'Other participants agree that'
@@ -756,8 +766,7 @@ class Translator(object):
 		en_lang[self.otherParticipantsDontHaveCounter] = 'Other participants do not have any counter-argument for '
 		en_lang[self.otherParticipantsDontHaveArgument] = 'Other participants do not have any argument for '
 		en_lang[self.otherParticipantsAcceptBut] = 'Other participants accept your argument, but'
-		en_lang[self.otherParticipantAgree] = 'Other participants agree that '
-		en_lang[self.otherParticipantDisagree] = 'Other participants disagree that '
+		en_lang[self.otherParticipantDisagreeThat] = 'Other participants disagree that '
 		en_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Other users claim to have a stronger statement for rejecting'
 		en_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Other users claim to have a stronger statement for accepting'
 		en_lang[self.otherUsersHaveCounterArgument] = 'Other users have the counter-argument that'
@@ -822,12 +831,14 @@ class Translator(object):
 		en_lang[self.theyThink] = 'They think'
 		en_lang[self.thisConfrontationIs] = 'This confrontation is a'
 		en_lang[self.veryweak] = 'very weak'
+		en_lang[self.wantToStateNewPosition] = 'If you want to state a new position, please click here to log in.'
 		en_lang[self.weak] = 'weak'
 		en_lang[self.wrong] = 'Wrong'
 		en_lang[self.wouldYourShareArgument] = 'Would you share your argument?'
 		en_lang[self.whatDoYouThinkAbout] = 'What do you think about'
 		en_lang[self.whatDoYouThinkAboutThat] = 'What do you think about that'
-		en_lang[self.whatIsYourMostImportantReason] = 'What is your most important reason for'
+		en_lang[self.whatIsYourMostImportantReasonFor] = 'What is your most important reason for'
+		en_lang[self.whatIsYourMostImportantReasonWhy] = 'What is your most important reason why'
 		en_lang[self.whyDoYouThinkThat] = 'Why do you think that'
 		en_lang[self.wrongURL] = 'Your URL seems to be wrong.'
 		en_lang[self.whyAreYouDisagreeingWith] = 'Why are you disagreeing with'
@@ -846,14 +857,15 @@ class Translator(object):
 		en_lang[self.unfortunatelyNoMoreArgument] = 'Unfortunately there are no more arguments about'
 		en_lang[self.userPasswordNotMatch] = 'User / Password do not match'
 		en_lang[self.userOptions] = 'Users Options'
-		en_lang[self.voteCountTextFirst] = 'First one with this opinion'
-		en_lang[self.voteCountTextOneOther] = 'One other with this opinion'
+		en_lang[self.voteCountTextFirst] = 'You are the first one with this opinion'
+		en_lang[self.voteCountTextOneOther] = 'One other participant with this opinion'
 		en_lang[self.voteCountTextMore] = 'more participants with this opinion'
 		en_lang[self.welcome] = 'Welcome'
 		en_lang[self.welcomeMessage] = 'Welcome to the novel dialog-based argumentation system.<br>We hope you enjoy using this system and happy arguing!'
 		en_lang[self.youAreInterestedIn] = 'You are interested in'
 		en_lang[self.youAgreeWith] = 'You agree with'
 		en_lang[self.youDisagreeWith] = 'You disagree with'
+		en_lang[self.youSaidThat] = 'You said that'
 
 		return en_lang
 
@@ -981,7 +993,9 @@ class Translator(object):
 		de_lang[self.butIDoNotBelieveArgumentFor] = 'aber ich glaube nicht, dass es ein gutes Argument dafür ist, dass'
 		de_lang[self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass ist kein gutes Gegenargument für'
 		de_lang[self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass ist kein gutes Argument für'
+		de_lang[self.butThenYouCounteredWith] = 'Jedoch haben Sie dann das Gegenargument gebracht, dass'
 		de_lang[self.butYouCounteredWith] = 'Jedoch haben Sie das Gegenargument gebracht, dass'
+		de_lang[self.butYouAgreedWith] = 'Und Sie haben zugestimmt, weil'
 		de_lang[self.because] = 'Weil'
 		de_lang[self.butWhich] = 'aber welches'
 		de_lang[self.clickHereForRegistration] = 'Klick <a href="" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> für die Anmeldung oder eine Registrierung!'
@@ -991,6 +1005,7 @@ class Translator(object):
 		de_lang[self.confirmTranslation] = 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!'
 		de_lang[self.correctionsSet] = 'Ihre Korrektur wurde gesetzt.'
 		de_lang[self.countOfArguments] = 'Anzahl der Argumente'
+		de_lang[self.countOfPosts] = 'Anzahl der Beiträge'
 		de_lang[self.checkFirstname] = 'Bitte überprüfen Sie Ihren Vornamen, da die Eingabe leer ist!'
 		de_lang[self.checkLastname] = 'Bitte überprüfen Sie Ihren Nachnamen, da die Eingabe leer ist!'
 		de_lang[self.checkNickname] = 'Bitte überprüfen Sie Ihren Spitznamen, da die Eingabe leer ist!'
@@ -1054,7 +1069,7 @@ class Translator(object):
 		de_lang[self.edit] = 'Bearbeiten'
 		de_lang[self.error_code] = 'Fehler-Code'
 		de_lang[self.editTitle] = 'Aussagen bearbeiten'
-		de_lang[self.feelFreeToLogin] = 'Wenn Sie weiter machen möchten, <a href="" data-toggle="modal" data-target="#popup-login" title="Anmelden">melden</a> Sie sich bitte an :)'
+		de_lang[self.feelFreeToLogin] = 'Wenn Sie weiter machen möchten, <u><a href="" data-toggle="modal" data-target="#popup-login" title="Anmelden">melden</a></u> Sie sich bitte an :)'
 		de_lang[self.forText] = 'für'
 		de_lang[self.fillLine] = 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung'
 		de_lang[self.firstConclusionRadioButtonText] = 'Lass mich meine eigenen Ideen einfügen!'
@@ -1090,7 +1105,7 @@ class Translator(object):
 		de_lang[self.howeverIHaveEvenStrongerArgumentAccepting] = 'Jedoch habe ich ein stärkeres Argument zum Akzeptieren von'
 		de_lang[self.internalFailureWhileDeletingTrack] = 'Interner Fehler, bitte versuchen Sie es später erneut.'
 		de_lang[self.internalFailureWhileDeletingHistory] = 'Interner Fehler, bitte versuchen Sie es später erneut.'
-		de_lang[self.internalError] = '<strong>Interner Fehler:</strong> Wahrscheinlich ist Ihre Sitzung abgelaufen. Bitte laden Sie die Seite erneut!.'
+		de_lang[self.internalError] = '<strong>Interner Fehler:</strong> Wahrscheinlich ist der Server nicht erreichbar. Bitte laden Sie die Seite erneut!.'
 		de_lang[self.inputEmpty] = 'Ihre Eingabe ist leer!'
 		de_lang[self.informationForExperts] = 'Infos für Experten'
 		de_lang[self.issueList] = 'Themen'
@@ -1174,17 +1189,17 @@ class Translator(object):
 		de_lang[self.now] = 'Jetzt'
 		de_lang[self.no_entry] = 'Kein Eintrag'
 		de_lang[self.noRights] = 'Sie haben nicht genügend Rechte!'
-		de_lang[self.unfortunatelyOnlyOneItem] = 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte hier um sich anzumelden.'
-		de_lang[self.onlyOneItem] = 'Leider gibt es nur eine Auswahl. Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a href="" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> m sich anzumelden.'
+		de_lang[self.onlyOneItem] = 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte hier um sich anzumelden.'
+		de_lang[self.onlyOneItemWithLink] = 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a href="" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> um sich anzumelden.'
+		de_lang[self.unfortunatelyOnlyOneItem] = 'Leider gibt es nur eine Auswahl. Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a href="" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> m sich anzumelden.'
 		de_lang[self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass'
-		de_lang[self.otherParticipantsAgreeThat] = 'Andere Teilnehmer denken, dass'
+		de_lang[self.otherParticipantsAgreeThat] = 'Andere Teilnehmer stimmen zu, dass'
 		de_lang[self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
 		de_lang[self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für '
 		de_lang[self.otherParticipantsDontHaveCounterForThat] = 'Andere Teilnehmer haben kein Gegenargument dafür.'
 		de_lang[self.otherParticipantsDontHaveArgument] = 'Andere Teilnehmer haben kein Argument für '
 		de_lang[self.otherParticipantsAcceptBut] = 'Andere Teilnehmer akzeptieren Ihr Argument, aber'
-		de_lang[self.otherParticipantAgree] = 'Andere Teilnehmer stimmen zu, dass '
-		de_lang[self.otherParticipantDisagree] = 'Andere Teilnehmer widersprechen, dass '
+		de_lang[self.otherParticipantDisagreeThat] = 'Andere Teilnehmer widersprechen, dass '
 		de_lang[self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung von'
 		de_lang[self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme von'
 		de_lang[self.otherUsersHaveCounterArgument] = 'Andere Teilnehmer haben das Gegenargument, dass'
@@ -1248,13 +1263,15 @@ class Translator(object):
 		de_lang[self.theySay] = 'Sie sagen'
 		de_lang[self.theyThink] = 'Sie denken'
 		de_lang[self.veryweak] = 'sehr schwach'
+		de_lang[self.wantToStateNewPosition] = 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte hier um sich anzumelden.'
 		de_lang[self.weak] = 'schwach'
 		de_lang[self.wrong] = 'Nein'
 		de_lang[self.wouldYourShareArgument] = 'Können Sie einen Grund angeben?'
 		de_lang[self.wrongURL] = 'Ihre URL scheint falsch zu sein.'
 		de_lang[self.whatDoYouThinkAbout] = 'Was halten Sie von'
 		de_lang[self.whatDoYouThinkAboutThat] = 'Was halten Sie davon, dass'
-		de_lang[self.whatIsYourMostImportantReason] = 'Was ist Ihr wichtigster Grund für'
+		de_lang[self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für'
+		de_lang[self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund für'
 		de_lang[self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
 		de_lang[self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
 		de_lang[self.whyAreYouAgreeingWith] = 'Warum sind sie dafür, dass'
@@ -1280,6 +1297,7 @@ class Translator(object):
 		de_lang[self.youAreInterestedIn] = 'Sie interessieren Sich für'
 		de_lang[self.youAgreeWith] = 'Sie sind der Meinung, dass'
 		de_lang[self.youDisagreeWith] = 'Sie weidersprechen'
+		de_lang[self.youSaidThat] = 'Sie haben gesagt, dass'
 
 		return de_lang
 
@@ -1479,7 +1497,7 @@ class TextGenerator(object):
 		return ret_dict
 
 	def get_text_for_confrontation(self, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
-	                               reply_for_argument, user_is_attacking, current_argument, user_arg):
+	                               reply_for_argument, user_is_attacking, user_arg):
 		"""
 
 		:param premise:
@@ -1490,7 +1508,6 @@ class TextGenerator(object):
 		:param confrontation:
 		:param reply_for_argument:
 		:param user_is_attacking:
-		:param current_argument:
 		:param user_arg:
 		:return:
 		"""
@@ -1503,14 +1520,7 @@ class TextGenerator(object):
 
 		conclusion = conclusion[0:1].lower() + conclusion[1:]
 
-		user_opinion = '<strong>'
-		user_opinion += current_argument if current_argument != '' else premise
-		user_opinion += '</strong>.'
-		#  if reply_for_argument:
-		#  opinion += ' ' + _t.get('relation_' + attack) + ' ' + '<strong>' + conclusion + '</strong>'
-
 		confrontation_text = ''
-		confrontation = '<strong>' + confrontation + '</strong>'
 
 		# build some confrontation text
 		if attack == 'undermine':
@@ -1524,7 +1534,10 @@ class TextGenerator(object):
 				if not user_arg.is_supportive:
 					user_is_attacking = not user_is_attacking
 					conclusion = sys_conclusion
-				confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting) if user_is_attacking else _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
+				if user_is_attacking:
+					confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
+				else:
+					confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
 				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 			else:  # reply for premise group
 				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, '
@@ -1532,13 +1545,13 @@ class TextGenerator(object):
 				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 
 		elif attack == 'undercut':
-			confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong> ' \
+			confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, ' \
 								 + (_t.get(_t.butTheyDoNotBelieveArgument) if supportive else _t.get(_t.butTheyDoNotBelieveCounter)) \
 								 + ' <strong>' + conclusion + '</strong>,' + ' ' + _t.get(_t.because).lower() + ' '\
 								 + _t.get(_t.theyThink).lower() + ': '  + confrontation
 
 		sys_text = confrontation_text + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
-		return user_opinion, sys_text
+		return sys_text
 
 	def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
 		"""
