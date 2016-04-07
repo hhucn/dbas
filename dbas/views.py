@@ -1262,11 +1262,11 @@ class Dbas(object):
 			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler().update_last_action(transaction, nickname)
 
-			url, argument_uids, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
-			                                                                                supportive, issue, nickname, for_api,
-			                                                                                mainpage, lang, RecommenderHelper())
+			url, statement_uids, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
+			                                                                                 supportive, issue, nickname, for_api,
+			                                                                                 mainpage, lang, RecommenderHelper())
 			return_dict['error'] = error
-			return_dict['argument_uids'] = argument_uids
+			return_dict['statement_uids'] = statement_uids
 
 			if url == -1:
 				return json.dumps(return_dict, True)
