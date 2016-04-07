@@ -168,7 +168,7 @@ class DictionaryHelper(object):
 		self.__append_bubble(bubbles_array, question_bubble)
 
 		if not logged_in and count_of_items == 1:
-			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItem), True))
+			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItemWithLink), True))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 
@@ -236,7 +236,7 @@ class DictionaryHelper(object):
 		# 	self.__save_speechbubble(bubble_question, db_user, session_id, breadcrumbs[-1], transaction)
 
 		if not logged_in and count_of_items == 1:
-			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItem), True))
+			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItemWithLink), True))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid}
 

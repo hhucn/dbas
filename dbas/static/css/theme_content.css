@@ -385,6 +385,9 @@
     color: #2196f3;
     text-decoration: none;
 }
+.triangle-m a{
+	text-decoration: underline;
+}
 .triangle-r-info:hover{
     cursor: help;
 }
