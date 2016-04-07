@@ -27,13 +27,13 @@ class Validator:
 		:return:
 		"""
 		if session['user_arg_uid'] != user_arg_uid:
-			return 1
+			return -1
 		if session['sys_arg_uid'] != sys_arg_uid:
-			return 2
+			return -2
 		if session['mood'] != mood:
-			return 3
+			return -3
 		if session['reaction'] != reaction:
-			return 4
+			return -4
 		return 0
 
 	def check_reaction(attacked_arg_uid, attacking_arg_uid, reaction):
