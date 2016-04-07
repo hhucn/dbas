@@ -950,7 +950,7 @@ class QueryHelper(object):
 		Returns current ui locales code which is saved in current cookie or the registry
 		:param request: self.request
 		:param current_registry: get_current_registry()
-		:return: language abrreviation
+		:return: language abbreviation
 		"""
 		try:
 			lang = str(request.cookies['_LOCALE_'])
@@ -960,7 +960,7 @@ class QueryHelper(object):
 
 	def get_news(self):
 		"""
-		Returns all news in a dicitionary, sorted by date
+		Returns all news in a dictionary, sorted by date
 		:return: dict()
 		"""
 		logger('QueryHelper', 'get_news', 'main')
@@ -1141,6 +1141,8 @@ class QueryHelper(object):
 		if statements == -1:
 			return -1
 
+		statement_uids = [s.uid for s in statements]
+
 		# second, set the new statements as premisegroup
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
 
@@ -1148,7 +1150,7 @@ class QueryHelper(object):
 		new_argument_uid = self.__set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
 
 		transaction.commit()
-		return new_argument_uid
+		return new_argument_uid, statement_uids
 
 	def set_issue(self, info, title, nickname, transaction, ui_locales):
 		"""
@@ -1210,14 +1212,15 @@ class QueryHelper(object):
 		# insert all premisegroups into our database
 		# all new arguments are collected in a list
 		new_argument_uids = []
+		new_statement_uids = []  # all statament uids are stored in this list to create the link to a possible reference
 		for group in premisegroups:  # premisegroups is a list of lists
-			new_argument_uid = self.set_premises_as_group_for_conclusion(transaction, user, group, conclusion_id, supportive, issue)
-
+			new_argument_uid, statement_uids = self.set_premises_as_group_for_conclusion(transaction, user, group, conclusion_id, supportive, issue)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
 
 			new_argument_uids.append(new_argument_uid)
+			new_statement_uids.append(statement_uids)
 
 		# #arguments=0: empty input
 		# #arguments=1: deliver new url
@@ -1236,7 +1239,7 @@ class QueryHelper(object):
 				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first().premisesgroup_uid)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
 
-		return url, new_argument_uids, error
+		return url, new_statement_uids, error
 
 	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_id, attack_type, premisegroups,
 	                                                            issue, user, for_api, mainpage, lang, recommender_helper):
