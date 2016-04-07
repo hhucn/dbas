@@ -5,6 +5,7 @@
 
 import json
 import logging
+from functools import reduce
 
 from html import escape
 from webob import Response, exc
@@ -20,13 +21,13 @@ def logger():
 	return log
 
 
-def escape_html(input):
+def escape_html(evil):
 	"""
 	Replace html tags.
-	:param input:
+	:param evil:
 	:return: escaped string
 	"""
-	return escape(str(input))
+	return escape(str(evil))
 
 
 def json_bytes_to_dict(col):
@@ -36,6 +37,17 @@ def json_bytes_to_dict(col):
 	:return: dict
 	"""
 	return json.loads(col.decode("utf-8"))
+
+
+def flatten(l):
+	"""
+	Flattens a list.
+	:param l: list of lists
+	:return:
+	"""
+	if not l:
+		return None
+	return reduce(lambda x, y: x + y, l)
 
 
 def debug_start():
