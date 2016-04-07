@@ -213,6 +213,7 @@ class StatementReferences(DiscussionBase):
 		self.author_uid = author_uid
 		self.statement_uid = statement_uid
 		self.issue_uid = issue_uid
+		self.created = func.now()
 
 
 class TextVersion(DiscussionBase):
