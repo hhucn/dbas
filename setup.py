@@ -12,10 +12,9 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
+	'pyramid_chameleon',
 	'pyramid',
 	'pyramid_tm',
-	'pyramid_chameleon',
-	'pyramid_debugtoolbar',
 	'pyramid_mailer',
 	'waitress',
 	'SQLAlchemy',

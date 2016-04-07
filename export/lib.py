@@ -140,6 +140,16 @@ def get_dump(issue, lang):
 	return ret_dict
 
 
+grey = '#9E9E9E'
+red = '#F44336'
+green = '#8BC34A'
+blue = '#2196F3'
+dark_grey = '#616161'
+dark_red = '#D32F2F'
+dark_green = '#689F38'
+dark_blue = '#1976D2'
+
+
 def get_sigma_export(issue, lang):
 	"""
 
@@ -148,16 +158,13 @@ def get_sigma_export(issue, lang):
 	:return:
 	"""
 	logger('ExportLib', 'get_sigma_export', 'main')
-
-	grey = '#9E9E9E'
-	red = '#F44336'
-	green = '#8BC34A'
-	blue = '#2196F3'
 	x = 0
 	y = 0
-	node_size = 3
-	position_size = 4
-	issue_size = 5
+	node_size = 6
+	position_size = 6
+	issue_size = 8
+	edge_size = 2
+	edge_type = 'arrow'
 
 	nodes_array = []
 	edges_array = []
@@ -167,48 +174,48 @@ def get_sigma_export(issue, lang):
 	db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
 
 	# issue
-	node_dict = dict()
-	node_dict['id'] = 'issue'
-	node_dict['label'] = db_issue.info
-	node_dict['color'] = blue
-	node_dict['size'] = issue_size
-	node_dict['x'] = x
-	node_dict['y'] = y
+	node_dict = __get_node_dict('issue',
+	                            db_issue.info,
+	                            blue,
+	                            issue_size,
+	                            x,
+	                            y)
 	x = (x + 1) % 10
 	y = y + (1 if x == 0 else 0)
 	nodes_array.append(node_dict)
 
 	# for each statement a node will be added
 	for statement in db_statements:
-		node_dict = dict()
-		node_dict['id'] = 'statement_' + str(statement.uid)
 		text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
-		node_dict['label'] = text.content if text else 'None'
-		node_dict['color'] = blue if statement.is_startpoint else grey
-		node_dict['size'] = position_size if statement.is_startpoint else node_size
-		node_dict['x'] = x
-		node_dict['y'] = y
+		text = text.content if text else 'None'
+		node_dict = __get_node_dict('statement_' + str(statement.uid),
+		                            text,
+		                            blue if statement.is_startpoint else grey,
+		                            position_size if statement.is_startpoint else node_size,
+		                            x,
+		                            y)
 		x = (x + 1) % 10
 		y = y + (1 if x == 0 else 0)
 		nodes_array.append(node_dict)
 		if statement.is_startpoint:
-			edge_dict = dict()
-			edge_dict['id'] = 'edge_' + str(statement.uid) + '_issue'
-			edge_dict['source'] = 'statement_' + str(statement.uid)
-			edge_dict['target'] = 'issue'
-			edge_dict['color'] = grey
+			edge_dict = __get_edge_dict('edge_' + str(statement.uid) + '_issue',
+			                            'statement_' + str(statement.uid),
+			                            'issue',
+			                            grey,
+			                            edge_size,
+			                            edge_type)
 			edges_array.append(edge_dict)
 
 	# for each argument edges will be added
 	for argument in db_arguments:
 		counter = 0
 		# add invisible point in the middle of the edge (to enable pgroups and undercuts)
-		node_dict = dict()
-		node_dict['id'] = 'argument_' + str(argument.uid)
-		node_dict['label'] = ''
-		node_dict['size'] = 0
-		node_dict['x'] = x
-		node_dict['y'] = y
+		node_dict = __get_node_dict('argument_' + str(argument.uid),
+		                            '',
+		                            green if argument.is_supportive else red,
+		                            0.5,
+		                            x,
+		                            y)
 		x = (x + 1) % 10
 		y = y + (1 if x == 0 else 0)
 		nodes_array.append(node_dict)
@@ -216,24 +223,66 @@ def get_sigma_export(issue, lang):
 		# edge from premisegroup to the middle point
 		db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 		for premise in db_premises:
-			edge_dict = dict()
-			edge_dict['id'] = 'edge_' + str(argument.uid) + '_' + str(counter)
-			edge_dict['source'] = 'statement_' + str(premise.statement_uid)
-			edge_dict['target'] = 'argument_' + str(argument.uid)
-			edge_dict['color'] = green if argument.is_supportive else red
+			edge_dict = __get_edge_dict('edge_' + str(argument.uid) + '_' + str(counter),
+			                            'statement_' + str(premise.statement_uid),
+			                            'argument_' + str(argument.uid),
+			                            green if argument.is_supportive else red,
+			                            edge_size,
+			                            '')
 			edges_array.append(edge_dict)
 			counter += 1
 
 		# edge from the middle point to the conclusion/argument
-		edge_dict = dict()
-		edge_dict['id'] = 'edge_' + str(argument.uid) + '_' + str(counter)
-		edge_dict['source'] = 'argument_' + str(argument.uid)
-		if argument.conclusion_uid is not None:
-			edge_dict['target'] = 'statement_' + str(argument.conclusion_uid)
-		else:
-			edge_dict['target'] = 'argument_' + str(argument.argument_uid)
-		edge_dict['color'] = green if argument.is_supportive else red
+		target = 'statement_' + str(argument.conclusion_uid) if argument.conclusion_uid is not None else 'argument_' + str(argument.argument_uid)
+		edge_dict = __get_edge_dict('edge_' + str(argument.uid) + '_' + str(counter),
+		                            'argument_' + str(argument.uid),
+		                            target,
+		                            green if argument.is_supportive else red,
+		                            edge_size,
+		                            edge_type)
 		edges_array.append(edge_dict)
 
 	sigma_dict = {'nodes': nodes_array, 'edges': edges_array}
 	return sigma_dict
+
+
+def __get_node_dict(id, label, color, size, x, y):
+	"""
+
+	:param id:
+	:param label:
+	:param color:
+	:param size:
+	:param x:
+	:param y:
+	:return:
+	"""
+	return {'id': id,
+	        'label': label,
+	        'color': color,
+	        'hover_color': dark_grey if color == green else dark_blue,
+	        'borderColor': color,
+	        'borderSize': 0,
+	        'size': size,
+	        'x': x,
+	        'y': y}
+
+
+def __get_edge_dict(id, source, target, color, size, type):
+	"""
+
+	:param id:
+	:param source:
+	:param target:
+	:param color:
+	:param size:
+	:param type:
+	:return:
+	"""
+	return {'id': id,
+	        'source': source,
+	        'target': target,
+	        'color': color,
+	        'hover_color': dark_green if color == green else dark_red,
+	        'size': size,
+	        'type': type}

@@ -28,13 +28,12 @@ function DiscussionGraph() {
 
 	this.callbackIfDoneForDiscussionGraph = function (data) {
 		var jsonData = $.parseJSON(data);
-		$('#' + graphViewContainerId).show();
 
 		s = new sigma({
 			graph: jsonData,
 			renderer: {
 				type: 'canvas',
-				container: graphViewContainerId
+				container: graphViewContainerSpaceId
 			},
 			settings: {
 
@@ -47,16 +46,16 @@ function DiscussionGraph() {
 				defaultEdgeLabelSize: 8,
 				edgeLabelSize: 'proportional',
 				edgeLabelSizePowRatio: 1,
-				//edgeLabelThreshold:0,
+				edgeLabelThreshold:0,
 
 				// default settings for node label
 				defaultLabelHoverColor: 'node',
-				defaultHoverLabelBGColor: '#1C1C1C',
+				defaultHoverLabelBGColor: '#EBEBEB',
 				defaultLabelSize: 13,
 
 				// default settings for node border
 				defaultNodeType: 'border',
-				defaultNodeBorderColor: '#000000',
+				defaultNodeBorderColor: '#000',
 				borderSize: 3,
 
 				// default settings for edges
@@ -67,52 +66,46 @@ function DiscussionGraph() {
 				edgeHoverExtremities: true,
 
 				// other default settings
-				doubleClickEnabled: false,
-				hideEdgesOnMove: false,
-				zoomMin: 0.2, zoomMax: 1,
-				minArrowSize: 7, maxEdgeSize: 1.7,
+				doubleClickEnabled: true,
+				hideEdgesOnMove: true,
+				zoomMin: 0.2,
+				zoomMax: 1,
+				minArrowSize: 10,
+				maxEdgeSize: 2,
 				sideMargin: 1
 
 			}
+		}).startForceAtlas2({
+			worker: true,
+			strongGravityMode: true,
+			barnesHutTheta: 10,
+			scalingRatio: 20
+		}).bind('clickNode', function(e){
+			displayConfirmationDialogWithoutCancelAndFunction('Edit Node: ' + e.data.node.id, e.data.node.label);
+		}).refresh();
+
+		$('#graph-view-container-space').attr('style', 'height:95%; float: left;');
+
+
+		$('#show-content').click(function() {
+			s.settings({labelThreshold: 0, defaultLabelColor: '#2E2E2E'});
+			$('#show-content').hide();
+			$('#hide-content').show();
+		});
+		$('#hide-content').click(function() {
+			s.settings({labelThreshold: 8});
+			$('#show-content').show();
+			$('#hide-content').hide();
 		});
 
-		// start startForceAtlas2
-		s.startForceAtlas2({worker: true, strongGravityMode: true, barnesHutTheta:10, scalingRatio:20}).refresh();
-		alert('nodes: ' + jsonData.nodes.length + "\n" + 'edges: ' + jsonData.edges.length);
-
-		/*
 		// empty graphViewContainerSpaceId after closing
 		$('#' + closeGraphViewContainerId).click(function(){
+			s.stopForceAtlas2();
+			s.killForceAtlas2();
+			s.graph.clear();
+			s.graph.kill();
 			$('#'+ graphViewContainerSpaceId).empty();
 		});
-
-		// separate the groups of startpoints each other
-		$('#' + 'separateView').click(function() {
-			s.configForceAtlas2({strongGravityMode: false,linLogMode:true,outboundAttractionDistribution:false});
-		});
-
-		// optimize the positions of nodes
-		$('#' + 'strechView').click(function() {
-			s.configForceAtlas2({outboundAttractionDistribution:true});
-		});
-
-		// return to start Graph
-		$('#' + 'startView').click(function() {
-			s.configForceAtlas2({worker: true,linLogMode:false,strongGravityMode: true,
-			barnesHutTheta:10,scalingRatio:20,outboundAttractionDistribution:false});
-		});
-
-		// show all contents
-		var clicks = 0;
-			$('#' + 'showAllContents').click(function() {
-			if(clicks == 0){
-				s.settings({ labelThreshold: 0, defaultLabelColor: '#2E2E2E' });
-			} else {
-				s.settings({ labelThreshold: 8 });
-			}
-			++clicks;
-		});
-		*/
 	};
 
 	/**

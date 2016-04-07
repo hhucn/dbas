@@ -7,7 +7,6 @@ from .logger import logger
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
-
 class Translator(object):
 
 	def __init__(self, lang):
@@ -67,6 +66,11 @@ class Translator(object):
 		self.emailWasNotSent = 'emailWasNotSent'
 		self.antispamquestion = 'antispamquestion'
 		self.signs = 'signs'
+		self.defaultView = 'defaultView'
+		self.separateView = 'separateView'
+		self.stretchView = 'stretchView'
+		self.showContent = 'showContent'
+		self.hideContent = 'hideContent'
 
 		self.aand = 'and'
 		self.addedEverything = 'addedEverything'
@@ -509,6 +513,11 @@ class Translator(object):
 		en_lang['-'] = 'minus'
 		en_lang['*'] = 'times'
 		en_lang['/'] = 'divided by'
+		en_lang[self.defaultView] = 'Default View'
+		en_lang[self.separateView] = 'Seperate Nodes'
+		en_lang[self.stretchView] = 'Stretch Nodes'
+		en_lang[self.showContent] = 'Show Content'
+		en_lang[self.hideContent] = 'Hide Content'
 
 		en_lang[self.aand] = 'and'
 		en_lang[self.addedEverything] = 'Everything was added.'
@@ -941,6 +950,11 @@ class Translator(object):
 		de_lang['-'] = 'minus'
 		de_lang['*'] = 'mal'
 		de_lang['/'] = 'durch'
+		de_lang[self.defaultView] = 'Standardansicht'
+		de_lang[self.separateView] = 'Knoten trennten'
+		de_lang[self.stretchView] = 'Kanten strecken'
+		de_lang[self.showContent] = 'Inhalt einblenden'
+		de_lang[self.hideContent] = 'Inhalt ausblenden'
 
 		de_lang[self.aand] = 'und'
 		de_lang[self.addStatementRow] = 'Fügt eine neue Reihe hinzu.'
