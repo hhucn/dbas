@@ -2,6 +2,7 @@
 #
 # @author Christian Meter, Tobias Krauthoff
 # @email {meter, krauthoff}@cs.uni-duesseldorf.de
+import transaction
 
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences
@@ -32,6 +33,7 @@ def store_reference(api_data, statement_uid=None):
         db_ref = StatementReferences(escape_html(reference), origin, user_uid, statement_uid, issue_uid)
         DBDiscussionSession.add(db_ref)
         DBDiscussionSession.flush()
+        transaction.commit()
         log.debug("[API/Reference] Successfully saved reference for statement.")
     except KeyError:
         log.error("[API/Reference] KeyError: could not access field in api_data.")
