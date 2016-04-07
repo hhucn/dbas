@@ -1236,7 +1236,7 @@ class QueryHelper(object):
 				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first().premisesgroup_uid)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
 
-		return url, error
+		return url, new_argument_uids, error
 
 	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_id, attack_type, premisegroups,
 	                                                            issue, user, for_api, mainpage, lang, recommender_helper):
