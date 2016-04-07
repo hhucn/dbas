@@ -38,6 +38,22 @@ def json_bytes_to_dict(col):
 	return json.loads(col.decode("utf-8"))
 
 
+def debug_start():
+	"""
+	Prepare for debug prints
+	:return:
+	"""
+	print("\n\n\n##########")
+
+
+def debug_end():
+	"""
+	End debug prints
+	:return:
+	"""
+	print("##########\n\n\n")
+
+
 class HTTP204(exc.HTTPError):
 	"""
 	HTTP 204: Request successful, but no content was provided.
