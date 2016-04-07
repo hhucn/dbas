@@ -235,6 +235,9 @@
    -webkit-transition: opacity .45s ease-in-out;
 }
 
+#site-navigation{
+    padding-left: 0;
+}
 #site-navigation .tooltip {
 	width: 150px;
 }
@@ -244,7 +247,8 @@
 	text-align: right;
 	padding-left: 0;
 }
-#discussion-sidebar ul{
+#discussion-sidebar ul,
+#site-navigation ul{
 	list-style-type: none;
 }
 

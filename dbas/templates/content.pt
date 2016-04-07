@@ -291,14 +291,26 @@
 			<button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
+            <br>
 			<!--<h4 id="graph-view-container-header" class="center"></h4>-->
-			<!--<div id="graph-view-container-space"></div>-->
+            <div class="col-md-11" id="graph-view-container-space" style="width: auto; height:95%; float: left;"></div>
+
+			<div class="col-md-1">
+				<ul id="discussion-sidebar">
+                    <li><a id="start-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.default_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_default.png')}"/></a></li>
+                    <li><a id="separate-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.separate_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_wide.png')}"/></a></li>
+                    <li><a id="stretch-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.stretch_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_tight.png')}"/></a></li>
+                    <li><a id="show-content" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.show_content"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_text.png')}"/></a></li>
+                    <li><a id="hide-content" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.hide_content" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_notext.png')}"/></a></li>
+                </ul>
+            </div>
 		</div>
 
 		<div class="container colored-container" id="add-statement-container" style="display:none" tal:attributes="style extras.add_statement_container_style">
 			<button tal:condition="extras.close_statement_container" id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
+            <br>
 			<div class="col-md-12 text-center">
 				<h5><span i18n:translate="what_is_your_idea">What is your idea? What should we do?</span></h5>
 				<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
@@ -374,7 +386,6 @@
 				</div>
 			</div>
 		</div>
-
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-interactionhandler.js')}"></script>

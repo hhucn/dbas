@@ -133,7 +133,7 @@ class WebTests:
 		success_counter += Helper.test_wrapper('tests for language switch', self.__test_language_switch, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_functions_while_discussion, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for demo discussion with all functions', self.__test_functions_while_discussion, self.browser_style)
 		end = time.time()
 
 		diff = str(end - start)
