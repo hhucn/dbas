@@ -9,10 +9,6 @@ from sqlalchemy import and_
 class Validator:
 
 	@staticmethod
-	def do_something():
-		return 1
-
-	@staticmethod
 	def save_params_in_session(session, user_arg_uid, sys_arg_uid, mood, reaction):
 		session['user_arg_uid'] = user_arg_uid
 		session['sys_arg_uid'] = sys_arg_uid
