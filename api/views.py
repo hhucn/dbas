@@ -5,10 +5,12 @@
 
 from cornice import Service
 
-from .lib import json_bytes_to_dict, HTTP204
+from .lib import json_bytes_to_dict, HTTP204, debug_start, debug_end, flatten
 from .references import store_reference
 from api.login import valid_token, validate_credentials, validate_login
 from dbas.views import Dbas
+
+import json
 
 #
 # CORS configuration
@@ -185,8 +187,10 @@ def add_start_statement(request):
 	if api_data:
 		data = json_bytes_to_dict(request.body)
 		api_data.update(data)
-		return_dict = Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+		return_dict_json = Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+		return_dict = json.loads(return_dict_json)
 		store_reference(api_data, return_dict["statement_uid"])
+		return return_dict_json
 	else:
 		raise HTTP204()
 
@@ -202,8 +206,11 @@ def add_start_premise(request):
 	if api_data:
 		data = json_bytes_to_dict(request.body)
 		api_data.update(data)
-		store_reference(api_data)
-		return Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
+		return_dict_json = Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
+		return_dict = json.loads(return_dict_json)
+		statement_uids = flatten(return_dict["statement_uids"])
+		list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
+		return return_dict_json
 	else:
 		raise HTTP204()
 
