@@ -1262,10 +1262,11 @@ class Dbas(object):
 			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler().update_last_action(transaction, nickname)
 
-			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
-			                                                                 supportive, issue, nickname, for_api,
-			                                                                 mainpage, lang, RecommenderHelper())
+			url, argument_uids, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
+			                                                                                supportive, issue, nickname, for_api,
+			                                                                                mainpage, lang, RecommenderHelper())
 			return_dict['error'] = error
+			return_dict['argument_uids'] = argument_uids
 
 			if url == -1:
 				return json.dumps(return_dict, True)
@@ -1281,7 +1282,7 @@ class Dbas(object):
 	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json', check_csrf=True)
 	def set_new_premises_for_argument(self, for_api=False, api_data=None):
 		"""
-		Sets a new premisse for an argument
+		Sets a new premise for an argument
 		:param api_data:
 		:param for_api: boolean
 		:return: json-dict()
