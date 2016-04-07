@@ -1207,7 +1207,7 @@ class QueryHelper(object):
 		error = ''
 		url = ''
 
-		# insert all premisegroups into our databse
+		# insert all premisegroups into our database
 		# all new arguments are collected in a list
 		new_argument_uids = []
 		for group in premisegroups:  # premisegroups is a list of lists
@@ -1220,8 +1220,8 @@ class QueryHelper(object):
 			new_argument_uids.append(new_argument_uid)
 
 		# #arguments=0: empty input
-		# #arguments=1: deliever new url
-		# #arguments>1: deliever url where the user has to choose between her inputs
+		# #arguments=1: deliver new url
+		# #arguments>1: deliver url where the user has to choose between her inputs
 		if len(new_argument_uids) == 0:
 			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
