@@ -1221,6 +1221,7 @@ class Dbas(object):
 			else:
 				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
 				return_dict['url'] = url
+				return_dict['statement_uid'] = new_statement[0].uid
 
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
