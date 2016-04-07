@@ -185,8 +185,8 @@ def add_start_statement(request):
 	if api_data:
 		data = json_bytes_to_dict(request.body)
 		api_data.update(data)
-		store_reference(api_data)
-		return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+		return_dict = Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
+		store_reference(api_data, return_dict["statement_uid"])
 	else:
 		raise HTTP204()
 
