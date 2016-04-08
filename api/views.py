@@ -107,6 +107,30 @@ def prepare_user_information(request):
 	return api_data
 
 
+def prepare_data_assign_reference(request, func):
+	"""
+	Collect user informationen, prepare submitted data and store references into database.
+	:param request:
+	:param func:
+	:return:
+	"""
+	api_data = prepare_user_information(request)
+	if api_data:
+		data = json_bytes_to_dict(request.body)
+		api_data.update(data)
+		return_dict_json = func(for_api=True, api_data=api_data)
+		return_dict = json.loads(return_dict_json)
+
+		statement_uids = flatten(return_dict["statement_uids"])
+		if type(statement_uids) is int:
+			statement_uids = [statement_uids]
+
+		list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
+		return return_dict_json
+	else:
+		raise HTTP204()
+
+
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
 	"""
@@ -183,16 +207,7 @@ def add_start_statement(request):
 	:param request:
 	:return:
 	"""
-	api_data = prepare_user_information(request)
-	if api_data:
-		data = json_bytes_to_dict(request.body)
-		api_data.update(data)
-		return_dict_json = Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
-		return_dict = json.loads(return_dict_json)
-		store_reference(api_data, return_dict["statement_uid"])
-		return return_dict_json
-	else:
-		raise HTTP204()
+	return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
 
 
 @start_premise.post(validators=validate_login)
@@ -202,17 +217,7 @@ def add_start_premise(request):
 	:param request:
 	:return:
 	"""
-	api_data = prepare_user_information(request)
-	if api_data:
-		data = json_bytes_to_dict(request.body)
-		api_data.update(data)
-		return_dict_json = Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
-		return_dict = json.loads(return_dict_json)
-		statement_uids = flatten(return_dict["statement_uids"])
-		list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
-		return return_dict_json
-	else:
-		raise HTTP204()
+	return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
 
 
 @justify_premise.post(validators=validate_login)
@@ -222,14 +227,7 @@ def add_justify_premise(request):
 	:param request:
 	:return:
 	"""
-	api_data = prepare_user_information(request)
-	if api_data:
-		data = json_bytes_to_dict(request.body)
-		api_data.update(data)
-		store_reference(api_data)
-		return Dbas(request).set_new_premises_for_argument(for_api=True, api_data=api_data)
-	else:
-		raise HTTP204()
+	return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
 
 
 # =============================================================================
