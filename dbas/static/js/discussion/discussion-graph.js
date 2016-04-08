@@ -80,7 +80,8 @@ function DiscussionGraph() {
 			barnesHutTheta: 10,
 			scalingRatio: 20
 		}).bind('doubleClickNode', function(e){
-			displayConfirmationDialogWithoutCancelAndFunction('Edit Node: ' + e.data.node.id, e.data.node.label);
+			var tmp = '<br><br><ul><li>edit</li><li>supportes</li><li>author</li></ul>';
+			displayConfirmationDialogWithoutCancelAndFunction('Edit Node: ' + e.data.node.id, 'Content: ' + e.data.node.label + tmp);
 		}).refresh();
 
 		// dragging
