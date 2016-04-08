@@ -114,6 +114,7 @@ function GuiHandler() {
 		this.setImageActive($('#' + displayStyleIconExpertId));
 		$('#' + islandViewContainerId).fadeIn('slow');
 		$('#' + graphViewContainerId).hide();
+		$('#' + discussionContainerId).hide();
 	};
 
 	/**
