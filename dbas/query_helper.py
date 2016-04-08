@@ -936,6 +936,11 @@ class QueryHelper(object):
 		# return_dict.update({'overbid': overbid})
 		return_dict.update({'rebut': rebut})
 
+		# pretty pring
+		for dict in return_dict:
+			for entry in return_dict[dict]:
+				entry['text'] = entry['text'][0:1].upper() + entry['text'][1:]
+
 		logger('QueryHelper', 'get_every_attack_for_island_view', 'summary: ' +
 		       str(len(undermine)) + ' undermines, ' +
 		       str(len(support)) + ' supports, ' +

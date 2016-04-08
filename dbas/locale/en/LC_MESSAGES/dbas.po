@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-06 14:08+0200\n"
+"POT-Creation-Date: 2016-04-08 09:49+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -17,19 +17,49 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Default: 404 Error
-#: dbas/templates/404.pt:9
+#: dbas/templates/404.pt:8
 msgid "404"
 msgstr "404 Error"
 
 #. Default: The page
-#: dbas/templates/404.pt:12
+#: dbas/templates/404.pt:10
 msgid "404_text_part1"
 msgstr "The page"
 
-#. Default: for could not be found.
-#: dbas/templates/404.pt:14
+#. Default: could not be found
+#: dbas/templates/404.pt:12
 msgid "404_text_part2"
-msgstr "for could not be found."
+msgstr "for could not be found"
+
+#. Default: , because the input parameter seems to be wrong.
+#: dbas/templates/404.pt:14
+msgid "wrong_input_params"
+msgstr ", because the input parameter seems to be wrong."
+
+#. Default: Go home by
+#: dbas/templates/404.pt:17
+msgid "go-home_by"
+msgstr "Go home by"
+
+#. Default: clicking here
+#: dbas/templates/404.pt:18
+msgid "clicking_here"
+msgstr "clicking here"
+
+#. Default: or
+#: dbas/templates/404.pt:20
+msgid "or"
+msgstr "oder"
+
+#. Default: go back
+#: dbas/templates/404.pt:21
+msgid "go_back"
+msgstr "gehen Sie zurück"
+
+#. Default: to the discussion
+#: dbas/templates/404.pt:22
+msgid "to_the_discussion"
+msgstr "zur Diskussion"
 
 #. Default: Your session has expired!
 #: dbas/templates/index.pt:10
@@ -829,7 +859,7 @@ msgstr "arguments"
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:568 dbas/templates/snippet-popups.pt:599
-#: dbas/templates/content.pt:309 dbas/templates/content.pt:332
+#: dbas/templates/content.pt:283 dbas/templates/content.pt:306
 msgid "error:"
 msgstr "Error:"
 
@@ -1206,42 +1236,42 @@ msgid "island_view_for"
 msgstr "Island View for"
 
 #. Default: Add statement
-#: dbas/templates/content.pt:284
+#: dbas/templates/content.pt:246
 msgid "add_statement"
 msgstr "Add statement"
 
 #. Default: What is your idea? What should we do?
-#: dbas/templates/content.pt:303
+#: dbas/templates/content.pt:277
 msgid "what_is_your_idea"
 msgstr "What is your idea? What should we do?"
 
 #. Default: Let me enter my reason!
-#: dbas/templates/content.pt:325
+#: dbas/templates/content.pt:299
 msgid "let_me_enter_my_reason"
 msgstr "Let me enter my reason!"
 
 #. Default: Because...
-#: dbas/templates/content.pt:338
+#: dbas/templates/content.pt:312
 msgid "Because..."
 msgstr "Because..."
 
 #. Default: Change display style
-#: dbas/templates/content.pt:356
+#: dbas/templates/content.pt:330
 msgid "change_style"
 msgstr "Change display style"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:359
+#: dbas/templates/content.pt:333
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Island View
-#: dbas/templates/content.pt:365
+#: dbas/templates/content.pt:339
 msgid "island_view"
 msgstr "Island View"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:371
+#: dbas/templates/content.pt:345
 msgid "complete_view"
 msgstr "Complete View"
 
@@ -1675,9 +1705,6 @@ msgstr "Complete View"
 #~ msgid "argueAgainstPositionToggleButton"
 #~ msgstr ""
 #~ "Or do you want to argue against a position? Please toggle this button:"
-
-#~ msgid "welcome_back"
-#~ msgstr "Welcome Back!"
 
 #~ msgid "signup_free"
 #~ msgstr "Sign Up for Free"

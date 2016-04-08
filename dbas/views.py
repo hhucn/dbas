@@ -341,6 +341,10 @@ class Dbas(object):
 		if rm_last_bubble:
 			DictionaryHelper.remove_last_bubble_for_discussion_reaction(nickname, session_id, params['rm_bubble'])
 
+		# sanity check
+		if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in attack]:
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
+
 		# set votings
 		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
 
@@ -757,13 +761,12 @@ class Dbas(object):
 		logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request' +
 		       ', path: ' + self.request.path +
 		       ', view name: ' + self.request.view_name +
-		       ', params:')
-		for param in self.request.params:
-			logger('notfound', 'def', '    ' + param + ' -> ' + self.request.params[param])
-
+		       ', params: ' + str(self.request.params))
 		path = self.request.path
 		if path.startswith('/404/'):
-			path = path[5:]
+			path = path[4:]
+
+		param_error = True if 'param_error' in self.request.params and self.request.params['param_error'] == 'true' else False
 
 		self.request.response.status = 404
 		ui_locales = get_language(self.request, get_current_registry())
@@ -778,7 +781,8 @@ class Dbas(object):
 			'title': 'Error',
 			'project': project_name,
 			'page_notfound_viewname': path,
-			'extras': extras_dict
+			'extras': extras_dict,
+			'param_error': param_error
 		}
 
 

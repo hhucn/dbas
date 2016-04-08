@@ -1,23 +1,30 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container first-container colored-container">
+		<div class="container first-container center">
 			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-8 center">
-					<h1>
-						<span i18n:translate="404">404 Error</span>
-					</h1>
+				<div class="col-md-8 center colored-container" style="float: none">
+                    <img style="height: 200px;" align="right" src="${request.static_url('dbas:static/images/404_monster.png')}"/>
+					<h3 class="text-center" i18n:translate="404">404 Error</h3>
 					<p class="lead">
 						<span i18n:translate="404_text_part1">The page</span>&quot;
 						<strong>${page_notfound_viewname}</strong>&quot;
-						<span i18n:translate="404_text_part2">for could not be found.</span>
+						<span i18n:translate="404_text_part2">could not be found</span>
+                        <span tal:condition="not:param_error">.</span>
+                        <span tal:condition="param_error" i18n:translate="wrong_input_params">, because the input parameter seems to be wrong.</span>
+                        <br>
+                        <br>
+                        <span i18n:translate="go-home_by">Go home by</span>
+                        <a href="self.location.href='/'" i18n:translate="clicking_here">clicking here</a>
+                        <span tal:condition="not:param_error">
+                        <span i18n:translate="or">or</span>
+                        <span i18n:translate="go_back">go back</span>
+                        <a href="javascript:'window.history.back();'" i18n:translate="to_the_discussion">to the discussion</a>
+                        </span>
+                        !
 					</p>
-					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="self.location.href='/'" value="Let's go home!" tal:attributes="value extras.buttons.go_home" style="margin: 10px;" />
-					<input class="button button-block btn-lg btn btn-primary" type="submit" onClick="window.history.back();" value="Let's go back!" tal:attributes="value extras.buttons.go_back" style="margin: 10px;" />
 				</div>
 			</div>
-			<div class="col-md-2"></div>
 		</div>
 
 	</tal:block>
