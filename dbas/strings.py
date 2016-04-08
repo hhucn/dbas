@@ -67,8 +67,8 @@ class Translator(object):
 		self.antispamquestion = 'antispamquestion'
 		self.signs = 'signs'
 		self.defaultView = 'defaultView'
-		self.separateView = 'separateView'
-		self.stretchView = 'stretchView'
+		self.wideView = 'wideView'
+		self.tightView = 'tightView'
 		self.showContent = 'showContent'
 		self.hideContent = 'hideContent'
 
@@ -514,8 +514,8 @@ class Translator(object):
 		en_lang['*'] = 'times'
 		en_lang['/'] = 'divided by'
 		en_lang[self.defaultView] = 'Default View'
-		en_lang[self.separateView] = 'Seperate Nodes'
-		en_lang[self.stretchView] = 'Stretch Nodes'
+		en_lang[self.wideView] = 'Seperate Nodes'
+		en_lang[self.tightView] = 'Stretch Nodes'
 		en_lang[self.showContent] = 'Show Content'
 		en_lang[self.hideContent] = 'Hide Content'
 
@@ -951,8 +951,8 @@ class Translator(object):
 		de_lang['*'] = 'mal'
 		de_lang['/'] = 'durch'
 		de_lang[self.defaultView] = 'Standardansicht'
-		de_lang[self.separateView] = 'Knoten trennten'
-		de_lang[self.stretchView] = 'Kanten strecken'
+		de_lang[self.wideView] = 'Knoten trennen'
+		de_lang[self.tightView] = 'Kanten strecken'
 		de_lang[self.showContent] = 'Inhalt einblenden'
 		de_lang[self.hideContent] = 'Inhalt ausblenden'
 

@@ -828,9 +828,9 @@ class DictionaryHelper(object):
 			return_dict['is_reportable']	             = is_reportable
 			return_dict['is_admin']			             = _uh.is_user_in_group(authenticated_userid, 'admins')
 			return_dict['is_author']			         = _uh.is_user_in_group(authenticated_userid, 'authors')
-			return_dict['show_bar_icon']	             = show_bar_icon and False
-			return_dict['show_display_style']            = show_display_styles and False
-			return_dict['show_expert_icon']              = show_expert_icon and False
+			return_dict['show_bar_icon']	             = show_bar_icon #and False
+			return_dict['show_display_style']            = show_display_styles #and False
+			return_dict['show_expert_icon']              = show_expert_icon #and False
 			return_dict['close_premise_container']	     = True
 			return_dict['close_statement_container']	 = True
 			return_dict['date']	                         = datetime.strftime(datetime.now(), '%d.%m.%Y')
@@ -869,8 +869,8 @@ class DictionaryHelper(object):
 			                                                'go_home': _tn.get(_tn.letsGoHome),
 			                                                'count_of_posts': _tn.get(_tn.countOfPosts),
 			                                                'default_view': _tn.get(_tn.defaultView),
-			                                                'separate_view': _tn.get(_tn.separateView),
-			                                                'stretch_view': _tn.get(_tn.stretchView),
+			                                                'wide_node_view': _tn.get(_tn.wideView),
+			                                                'tight_node_view': _tn.get(_tn.tightView),
 			                                                'show_content': _tn.get(_tn.showContent),
 			                                                'hide_content': _tn.get(_tn.hideContent)}
 			# /return_dict['breadcrumbs']   = breadcrumbs

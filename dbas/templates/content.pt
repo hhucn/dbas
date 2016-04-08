@@ -297,11 +297,11 @@
 
 			<div class="col-md-1">
 				<ul id="discussion-sidebar">
-                    <li><a id="start-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.default_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_default.png')}"/></a></li>
-                    <li><a id="separate-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.separate_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_wide.png')}"/></a></li>
-                    <li><a id="stretch-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.stretch_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_tight.png')}"/></a></li>
+                    <li><a id="start-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.default_view"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_default.png')}"/></a></li>
                     <li><a id="show-content" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.show_content"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_text.png')}"/></a></li>
                     <li><a id="hide-content" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.hide_content" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_notext.png')}"/></a></li>
+                    <li><a id="wide-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.wide_node_view"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_wide.png')}"/></a></li>
+                    <li><a id="tight-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.tight_node_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_tight.png')}"/></a></li>
                 </ul>
             </div>
 		</div>
