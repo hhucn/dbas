@@ -260,7 +260,8 @@ class Dbas(object):
 			# is the discussion at the end?
 			if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
-				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
+				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id),
+				                            supportive=supportive)
 
 		elif 'd' in mode and relation == '':
 			# dont know
@@ -342,7 +343,7 @@ class Dbas(object):
 			DictionaryHelper.remove_last_bubble_for_discussion_reaction(nickname, session_id, params['rm_bubble'])
 
 		# sanity check
-		if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in attack]:
+		if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
 		# set votings
