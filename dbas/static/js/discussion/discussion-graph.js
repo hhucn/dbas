@@ -154,13 +154,8 @@ function DiscussionGraph() {
 				edgeHoverExtremities: true,
 
 				// other default settings
-<<<<<<< 6093309c3cb3d6184e96df4a18a40b112c6eff24
 				doubleClickEnabled: false,
 				hideEdgesOnMove: false,
-=======
-				doubleClickEnabled: true,
-				hideEdgesOnMove: true,
->>>>>>> new images, sigma export server side
 				zoomMin: 0.2,
 				zoomMax: 1,
 				minArrowSize: 10,
@@ -173,47 +168,9 @@ function DiscussionGraph() {
 			strongGravityMode: true,
 			barnesHutTheta: 10,
 			scalingRatio: 20
-<<<<<<< 6093309c3cb3d6184e96df4a18a40b112c6eff24
 		}).bind('doubleClickNode', function(e){
 			var tmp = '<br><br><ul><li>edit</li><li>supportes</li><li>author</li></ul>';
 			displayConfirmationDialogWithoutCancelAndFunction('Edit Node: ' + e.data.node.id, 'Content: ' + e.data.node.label + tmp);
 		}).refresh();
 	}
-=======
-		}).bind('clickNode', function(e){
-			displayConfirmationDialogWithoutCancelAndFunction('Edit Node: ' + e.data.node.id, e.data.node.label);
-		}).refresh();
-
-		$('#graph-view-container-space').attr('style', 'height:95%; float: left;');
-
-
-		$('#show-content').click(function() {
-			s.settings({labelThreshold: 0, defaultLabelColor: '#2E2E2E'});
-			$('#show-content').hide();
-			$('#hide-content').show();
-		});
-		$('#hide-content').click(function() {
-			s.settings({labelThreshold: 8});
-			$('#show-content').show();
-			$('#hide-content').hide();
-		});
-
-		// empty graphViewContainerSpaceId after closing
-		$('#' + closeGraphViewContainerId).click(function(){
-			s.stopForceAtlas2();
-			s.killForceAtlas2();
-			s.graph.clear();
-			s.graph.kill();
-			$('#'+ graphViewContainerSpaceId).empty();
-		});
-	};
-
-	/**
-	 * Callback for graph - if ajax request failed!
-	 */
-
-	this.callbackIfFailForDiscussionGraph = function () {
-		alert('ajax-request failed');
-	};
->>>>>>> new images, sigma export server side
 }
