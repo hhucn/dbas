@@ -252,7 +252,7 @@ class QueryHelper(object):
 		if statements == -1:
 			return -1
 
-		# set the new statements as premisegroup and get current user as well as current argument
+		# set the new statements as premise group and get current user as well as current argument
 		new_pgroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
@@ -955,7 +955,7 @@ class QueryHelper(object):
 		Returns current ui locales code which is saved in current cookie or the registry
 		:param request: self.request
 		:param current_registry: get_current_registry()
-		:return: language abrreviation
+		:return: language abbreviation
 		"""
 		try:
 			lang = str(request.cookies['_LOCALE_'])
@@ -965,7 +965,7 @@ class QueryHelper(object):
 
 	def get_news(self):
 		"""
-		Returns all news in a dicitionary, sorted by date
+		Returns all news in a dictionary, sorted by date
 		:return: dict()
 		"""
 		logger('QueryHelper', 'get_news', 'main')
@@ -1146,6 +1146,8 @@ class QueryHelper(object):
 		if statements == -1:
 			return -1
 
+		statement_uids = [s.uid for s in statements]
+
 		# second, set the new statements as premisegroup
 		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
 
@@ -1153,7 +1155,7 @@ class QueryHelper(object):
 		new_argument_uid = self.__set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
 
 		transaction.commit()
-		return new_argument_uid
+		return new_argument_uid, statement_uids
 
 	def set_issue(self, info, title, nickname, transaction, ui_locales):
 		"""
@@ -1212,21 +1214,23 @@ class QueryHelper(object):
 		error = ''
 		url = ''
 
-		# insert all premisegroups into our databse
+		# insert all premise groups into our database
 		# all new arguments are collected in a list
 		new_argument_uids = []
-		for group in premisegroups:  # premisegroups is a list of lists
-			new_argument_uid = self.set_premises_as_group_for_conclusion(transaction, user, group, conclusion_id, supportive, issue)
-
+		new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
+		for group in premisegroups:  # premise groups is a list of lists
+			new_argument_uid, statement_uids = self.set_premises_as_group_for_conclusion(transaction, user, group, conclusion_id, supportive, issue)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
 
 			new_argument_uids.append(new_argument_uid)
+			if for_api:
+				new_statement_uids.append(statement_uids)
 
 		# #arguments=0: empty input
-		# #arguments=1: deliever new url
-		# #arguments>1: deliever url where the user has to choose between her inputs
+		# #arguments=1: deliver new url
+		# #arguments>1: deliver url where the user has to choose between her inputs
 		if len(new_argument_uids) == 0:
 			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
@@ -1241,11 +1245,15 @@ class QueryHelper(object):
 				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first().premisesgroup_uid)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
 
-		return url, error
+		return url, new_statement_uids, error
 
 	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_id, attack_type, premisegroups,
 	                                                            issue, user, for_api, mainpage, lang, recommender_helper):
 		"""
+
+		.. note::
+
+			Optimize the "for_api" part
 
 		:param transaction:
 		:param arg_id:
@@ -1265,22 +1273,32 @@ class QueryHelper(object):
 		url = ''
 		supportive = attack_type == 'support' or attack_type == 'overbid'
 
-		# insert all premisegroups into our databse
+		# insert all premise groups into our database
 		# all new arguments are collected in a list
 		new_arguments = []
-		for group in premisegroups:  # premisegroups is a list of lists
-			new_argument_uid = self.handle_insert_new_premises_for_argument(group, attack_type, arg_id, issue,
-			                                                                         user, transaction)
+		for group in premisegroups:  # premise groups is a list of lists
+			new_argument_uid = self.handle_insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
 			new_arguments.append(new_argument_uid)
 
+		statement_uids = []
+		if for_api:
+			# @OPTIMIZE
+			# Query all recently stored premises (internally: statements) and collect their ids
+			# This is a bad workaround, let's just think about it in future.
+			for argument in new_arguments:
+				current_pgroup = DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid
+				current_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_pgroup).all()
+				for premise in current_premises:
+					statement_uids.append(premise.statement_uid)
+
 		# #arguments=0: empty input
-		# #arguments=1: deliever new url
-		# #arguments>1: deliever url where the user has to choose between her inputs
+		# #arguments=1: deliver new url
+		# #arguments>1: deliver url where the user has to choose between her inputs
 		if len(new_arguments) == 0:
-			error  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
 		elif len(new_arguments) == 1:
 			new_argument_uid = random.choice(new_arguments)
@@ -1295,7 +1313,7 @@ class QueryHelper(object):
 				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
 
 			current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_id).first()
-			# relation to the arguments premisegroup
+			# relation to the arguments premise group
 			if attack_type == 'undermine' or attack_type == 'support':  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
 				db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).first()
 				db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
@@ -1312,7 +1330,7 @@ class QueryHelper(object):
 				uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
 				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
 
-		return url, error
+		return url, statement_uids, error
 
 	@staticmethod
 	def sql_timestamp_pretty_print(ts, lang):

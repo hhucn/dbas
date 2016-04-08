@@ -1,5 +1,7 @@
 """
-Main entry point
+REST API for to communicate with the world. Enables remote discussion from arbitrary locations.
+
+.. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 from pyramid.config import Configurator
 from dbas.logger import logger
@@ -19,7 +21,3 @@ def main(global_config, **settings):
 
 def includeme(config):
 	init(config)
-
-
-if __name__ == "__main__":
-	logger("i", "want", "in")

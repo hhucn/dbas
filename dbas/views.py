@@ -1206,6 +1206,7 @@ class Dbas(object):
 		_tn = Translator(lang)
 		return_dict = dict()
 		return_dict['error'] = ''
+		return_dict['statement_uids'] = []
 		try:
 			if for_api and api_data:
 				nickname  = api_data["nickname"]
@@ -1226,6 +1227,7 @@ class Dbas(object):
 			else:
 				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
 				return_dict['url'] = url
+				return_dict['statement_uids'].append(new_statement[0].uid)
 
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
@@ -1266,10 +1268,11 @@ class Dbas(object):
 			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler().update_last_action(transaction, nickname)
 
-			url, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
-			                                                                 supportive, issue, nickname, for_api,
-			                                                                 mainpage, lang, RecommenderHelper())
+			url, statement_uids, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
+			                                                                                 supportive, issue, nickname, for_api,
+			                                                                                 mainpage, lang, RecommenderHelper())
 			return_dict['error'] = error
+			return_dict['statement_uids'] = statement_uids
 
 			if url == -1:
 				return json.dumps(return_dict, True)
@@ -1285,7 +1288,7 @@ class Dbas(object):
 	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json', check_csrf=True)
 	def set_new_premises_for_argument(self, for_api=False, api_data=None):
 		"""
-		Sets a new premisse for an argument
+		Sets a new premise for an argument
 		:param api_data:
 		:param for_api: boolean
 		:return: json-dict()
@@ -1313,12 +1316,13 @@ class Dbas(object):
 				attack_type = self.request.params['attack_type']
 
 			# escaping will be done in QueryHelper().set_statement(...)
-			url, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
+			url, statement_uids, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                         premisegroups, issue, nickname, for_api,
 			                                                                         mainpage, lang, RecommenderHelper())
 			UserHandler().update_last_action(transaction, nickname)
 
 			return_dict['error'] = error
+			return_dict['statement_uids'] = statement_uids
 
 			if url == -1:
 				return json.dumps(return_dict, True)

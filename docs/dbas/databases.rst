@@ -6,7 +6,7 @@ Steps for creating a new database
 =================================
 
 1. Add a console script under console_scripts in setup.py.
-2. Specify path for the databse in development.ini and production.ini.
+2. Specify path for the database in development.ini and production.ini.
 3. Load database in dbas/__init__.py.
 4. Add session, engine and methods in dbas/database/__init__.py.
 5. Define a new model <new_model>.py in dbas/database/.
