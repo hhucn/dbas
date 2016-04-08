@@ -21,7 +21,3 @@ def main(global_config, **settings):
 
 def includeme(config):
 	init(config)
-
-
-if __name__ == "__main__":
-	logger("i", "want", "in")
