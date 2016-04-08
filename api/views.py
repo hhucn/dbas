@@ -1,8 +1,12 @@
-# Introducing an API to enable external discussions
-#
-# @author Christian Meter, Tobias Krauthoff
-# @email {meter, krauthoff}@cs.uni-duesseldorf.de
+"""
+Introducing an API to enable external discussions.
 
+This is the entry point for the API. Here are views defined, which always return JSON objects
+which can then be used in external websites.
+
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 from cornice import Service
 
 from .lib import json_bytes_to_dict, HTTP204, debug_start, debug_end, flatten
