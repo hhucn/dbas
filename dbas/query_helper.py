@@ -1268,10 +1268,10 @@ class QueryHelper(object):
 		url = ''
 		supportive = attack_type == 'support' or attack_type == 'overbid'
 
-		# insert all premisegroups into our databse
+		# insert all premise groups into our database
 		# all new arguments are collected in a list
 		new_arguments = []
-		for group in premisegroups:  # premisegroups is a list of lists
+		for group in premisegroups:  # premise groups is a list of lists
 			new_argument_uid = self.handle_insert_new_premises_for_argument(group, attack_type, arg_id, issue,
 			                                                                         user, transaction)
 			if new_argument_uid == -1:  # break on error
@@ -1280,8 +1280,8 @@ class QueryHelper(object):
 			new_arguments.append(new_argument_uid)
 
 		# #arguments=0: empty input
-		# #arguments=1: deliever new url
-		# #arguments>1: deliever url where the user has to choose between her inputs
+		# #arguments=1: deliver new url
+		# #arguments>1: deliver url where the user has to choose between her inputs
 		if len(new_arguments) == 0:
 			error  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
@@ -1298,7 +1298,7 @@ class QueryHelper(object):
 				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
 
 			current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_id).first()
-			# relation to the arguments premisegroup
+			# relation to the arguments premise group
 			if attack_type == 'undermine' or attack_type == 'support':  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
 				db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).first()
 				db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
