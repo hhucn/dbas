@@ -33,7 +33,7 @@ Server Documentation
     server/index
 
 
-Compontents Documentation
+Components Documentation
 =========================
 
 .. toctree::
