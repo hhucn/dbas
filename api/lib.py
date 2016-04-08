@@ -16,7 +16,7 @@ from webob import Response, exc
 def logger():
 	"""
 	Create a logger.
-
+	
 	:return:
 	"""
 	log = logging.getLogger()
