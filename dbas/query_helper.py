@@ -252,7 +252,7 @@ class QueryHelper(object):
 		if statements == -1:
 			return -1
 
-		# set the new statements as premisegroup and get current user as well as current argument
+		# set the new statements as premise group and get current user as well as current argument
 		new_pgroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
@@ -1214,18 +1214,19 @@ class QueryHelper(object):
 		error = ''
 		url = ''
 
-		# insert all premisegroups into our database
+		# insert all premise groups into our database
 		# all new arguments are collected in a list
 		new_argument_uids = []
-		new_statement_uids = []  # all statament uids are stored in this list to create the link to a possible reference
-		for group in premisegroups:  # premisegroups is a list of lists
+		new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
+		for group in premisegroups:  # premise groups is a list of lists
 			new_argument_uid, statement_uids = self.set_premises_as_group_for_conclusion(transaction, user, group, conclusion_id, supportive, issue)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
 
 			new_argument_uids.append(new_argument_uid)
-			new_statement_uids.append(statement_uids)
+			if for_api:
+				new_statement_uids.append(statement_uids)
 
 		# #arguments=0: empty input
 		# #arguments=1: deliver new url
@@ -1250,6 +1251,10 @@ class QueryHelper(object):
 	                                                            issue, user, for_api, mainpage, lang, recommender_helper):
 		"""
 
+		.. note::
+
+			Optimize the "for_api" part
+
 		:param transaction:
 		:param arg_id:
 		:param attack_type:
@@ -1272,18 +1277,28 @@ class QueryHelper(object):
 		# all new arguments are collected in a list
 		new_arguments = []
 		for group in premisegroups:  # premise groups is a list of lists
-			new_argument_uid = self.handle_insert_new_premises_for_argument(group, attack_type, arg_id, issue,
-			                                                                         user, transaction)
+			new_argument_uid = self.handle_insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
 			new_arguments.append(new_argument_uid)
 
+		statement_uids = []
+		if for_api:
+			# @OPTIMIZE
+			# Query all recently stored premises (internally: statements) and collect their ids
+			# This is a bad workaround, let's just think about it in future.
+			for argument in new_arguments:
+				current_pgroup = DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid
+				current_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_pgroup).all()
+				for premise in current_premises:
+					statement_uids.append(premise.statement_uid)
+
 		# #arguments=0: empty input
 		# #arguments=1: deliver new url
 		# #arguments>1: deliver url where the user has to choose between her inputs
 		if len(new_arguments) == 0:
-			error  = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
 		elif len(new_arguments) == 1:
 			new_argument_uid = random.choice(new_arguments)
@@ -1315,7 +1330,7 @@ class QueryHelper(object):
 				uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
 				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
 
-		return url, error
+		return url, statement_uids, error
 
 	@staticmethod
 	def sql_timestamp_pretty_print(ts, lang):
