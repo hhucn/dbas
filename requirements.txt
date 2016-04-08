@@ -7,8 +7,11 @@ chardet==2.3.0
 colorama==0.3.7
 cornice==1.2.0
 cryptacular==1.4.1
+<<<<<<< Updated upstream
 db==0.1.1
 db-psycopg2==0.0.7
+=======
+>>>>>>> Stashed changes
 docutils==0.12
 html5lib==0.9999999
 lingua==4.8.1
