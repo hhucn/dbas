@@ -14,6 +14,7 @@ from webob import Response, exc
 def logger():
 	"""
 	Create a logger.
+	
 	:return:
 	"""
 	log = logging.getLogger()
@@ -24,6 +25,7 @@ def logger():
 def escape_html(evil):
 	"""
 	Replace html tags.
+
 	:param evil:
 	:return: escaped string
 	"""
@@ -42,6 +44,7 @@ def json_bytes_to_dict(col):
 def flatten(l):
 	"""
 	Flattens a list.
+
 	:param l: list of lists
 	:return:
 	"""
@@ -53,6 +56,7 @@ def flatten(l):
 def debug_start():
 	"""
 	Prepare for debug prints
+
 	:return:
 	"""
 	print("\n\n\n##########")
@@ -61,6 +65,7 @@ def debug_start():
 def debug_end():
 	"""
 	End debug prints
+
 	:return:
 	"""
 	print("##########\n\n\n")
@@ -69,6 +74,7 @@ def debug_end():
 class HTTP204(exc.HTTPError):
 	"""
 	HTTP 204: Request successful, but no content was provided.
+
 	:return:
 	"""
 	def __init__(self, msg='No Content'):
@@ -81,6 +87,7 @@ class HTTP204(exc.HTTPError):
 class HTTP401(exc.HTTPError):
 	"""
 	Return a 401 HTTP Error message if user is not authenticated.
+
 	:return:
 	"""
 	def __init__(self, msg='Unauthorized'):
@@ -93,6 +100,7 @@ class HTTP401(exc.HTTPError):
 class HTTP501(exc.HTTPError):
 	"""
 	HTTP 501: Not implemented.
+
 	:return:
 	"""
 	def __init__(self, msg='Not Implemented'):
