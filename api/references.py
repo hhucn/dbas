@@ -1,7 +1,10 @@
-# Handle references from other websites, prepare, store and load them into DBAS-
-#
-# @author Christian Meter, Tobias Krauthoff
-# @email {meter, krauthoff}@cs.uni-duesseldorf.de
+"""
+Handle references from other websites, prepare, store and load them into D-BAS.
+
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import transaction
 
 from dbas import DBDiscussionSession
