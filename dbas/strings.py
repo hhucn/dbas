@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .database.discussion_model import User
+from .database import DBDiscussionSession
+from .database.discussion_model import Statement, PremiseGroup, Premise, VoteStatement
 from .logger import logger
 
 # @author Tobias Krauthoff
@@ -330,6 +331,7 @@ class Translator(object):
 		self.otherParticipantsDontHaveCounter = 'otherParticipantsDontHaveCounter'
 		self.otherParticipantsDontHaveCounterForThat = 'otherParticipantsDontHaveCounterForThat'
 		self.otherParticipantsDontHaveOpinion = 'otherParticipantsDontHaveOpinion'
+		self.otherParticipantsDontHaveOpinionRegaringYourSelection = 'otherParticipantsDontHaveOpinionRegaringYourSelection'
 		self.otherParticipantsDontHaveArgument = 'otherParticipantsDontHaveArgument'
 		self.otherParticipantsAcceptBut = 'otherParticipantsAcceptBut'
 		self.otherParticipantDisagreeThat = 'otherParticipantDisagreeThat'
@@ -369,6 +371,7 @@ class Translator(object):
 		self.soYouEnteredMultipleReasons = 'soYouEnteredMultipleReasons'
 		self.soYourOpinionIsThat = 'soYourOpinionIsThat'
 		self.soYouWantToArgueAgainst = 'soYouWantToArgueAgainst'
+		self.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion = 'soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion'
 		self.shortenedBy = 'shortenedBy'
 		self.shareUrl = 'shareUrl'
 		self.showMeAnotherArgument = 'showMeAnotherArgument'
@@ -699,7 +702,7 @@ class Translator(object):
 		en_lang[self.irrelevant] = 'Irrelevant'
 		en_lang[self.itIsTrue] = 'it is true that'
 		en_lang[self.itIsFalse] = 'it is false that'
-		en_lang[self.isFalse] = 'isFalse'
+		en_lang[self.isFalse] = 'is false'
 		en_lang[self.isNotAGoodIdea] = 'is not a good idea'
 		en_lang[self.isTrue] = 'is true'
 		en_lang[self.initialPosition] = 'Initial Position'
@@ -770,7 +773,8 @@ class Translator(object):
 		en_lang[self.unfortunatelyOnlyOneItem] = 'Unfortunately you only have one option to choose. If you want to state a new reason, please click <a href="" data-toggle="modal" data-target="#popup-login" title="Login">here</a> to log in.'
 		en_lang[self.otherParticipantsThinkThat] = 'Other participants think that'
 		en_lang[self.otherParticipantsAgreeThat] = 'Other participants agree that'
-		en_lang[self.otherParticipantsDontHaveOpinion] = 'Other participants do not have any opinion regarding your selection.'
+		en_lang[self.otherParticipantsDontHaveOpinion] = 'Other participants do not have any opinion regarding'
+		en_lang[self.otherParticipantsDontHaveOpinionRegaringYourSelection] = 'Other participants do not have any opinion regarding your selection'
 		en_lang[self.otherParticipantsDontHaveCounterForThat] = 'Other participants do not have any counter-argument for that'
 		en_lang[self.otherParticipantsDontHaveCounter] = 'Other participants do not have any counter-argument for '
 		en_lang[self.otherParticipantsDontHaveArgument] = 'Other participants do not have any argument for '
@@ -816,6 +820,7 @@ class Translator(object):
 		en_lang[self.shortenedBy] = 'which was shortened with'
 		en_lang[self.shareUrl] = 'Share Link'
 		en_lang[self.showMeAnotherArgument] = 'Show me another argument'
+		en_lang[self.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion] = 'so that participants do not have any opinion regarding your selection'
 		en_lang[self.switchDiscussion] = 'Change the discussion\'s topic'
 		en_lang[self.switchDiscussionTitle] = 'Switch Discussion'
 		en_lang[self.switchDiscussionText1] = 'If you accept, you will change the topic of the discussion to'
@@ -1209,6 +1214,7 @@ class Translator(object):
 		de_lang[self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass'
 		de_lang[self.otherParticipantsAgreeThat] = 'Andere Teilnehmer stimmen zu, dass'
 		de_lang[self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
+		de_lang[self.otherParticipantsDontHaveOpinionRegaringYourSelection] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage'
 		de_lang[self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für '
 		de_lang[self.otherParticipantsDontHaveCounterForThat] = 'Andere Teilnehmer haben kein Gegenargument dafür.'
 		de_lang[self.otherParticipantsDontHaveArgument] = 'Andere Teilnehmer haben kein Argument für '
@@ -1250,6 +1256,7 @@ class Translator(object):
 		de_lang[self.soYouEnteredMultipleReasons] = 'Sie haben mehrere Gründe eingegeben'
 		de_lang[self.soYourOpinionIsThat] = 'Ihre Meinung ist, dass'
 		de_lang[self.soYouWantToArgueAgainst] = 'Sie möchten ein Gegenargument bringen für'
+		de_lang[self.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion] = 'sodass andere Teilnehmer haben keine Meinung bezüglich ihrer Eingabe'
 		de_lang[self.shortenedBy] = 'welche gekürzt wurde mit'
 		de_lang[self.shareUrl] = 'Link teilen'
 		de_lang[self.showMeAnotherArgument] = 'Zeige mir ein weiteres Argument'
@@ -1542,6 +1549,10 @@ class TextGenerator(object):
 								+ _t.get(_t.doesNotHold) + '</strong>, ' + _t.get(_t.because).lower() + ' ' + confrontation
 
 		elif attack == 'rebut':
+			#
+			db_users_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=user_arg.premisesgroup_uid).join(Statement).first()
+			db_votes = DBDiscussionSession.query(VoteStatement).filter_by(statement_uid=db_users_premise.statements.uid).all()
+
 			# distinguish between reply for argument and reply for premise group
 			if reply_for_argument:  # reply for argument
 				# changing arguments for better understanding
@@ -1554,7 +1565,8 @@ class TextGenerator(object):
 					confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
 				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 			else:  # reply for premise group
-				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, '
+				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(_t.otherParticipantsDontHaveOpinion)
+				confrontation_text += ' <strong>' + premise + '</strong>, '
 				confrontation_text += _t.get(_t.strongerStatementForAccepting) if user_is_attacking else _t.get(_t.strongerStatementForRecjecting)
 				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
 

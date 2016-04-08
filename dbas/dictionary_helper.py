@@ -913,7 +913,7 @@ class DictionaryHelper(object):
 		return return_dict
 
 	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
-								at_justify_argumentation=False, at_justify=False, current_premise=''):
+								at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False):
 		"""
 
 		:param discussion_dict: dict()
@@ -924,6 +924,7 @@ class DictionaryHelper(object):
 		:param at_justify_argumentation: Boolean
 		:param at_justify: Boolean
 		:param current_premise: id
+		:param supportive: supportive
 		:return: None
 		"""
 		logger('DictionaryHelper', 'add_discussion_end_text', 'main')
@@ -958,14 +959,17 @@ class DictionaryHelper(object):
 		elif at_dont_know:
 			discussion_dict['mode'] = 'dont_know'
 			sys_text  = _tn.get(_tn.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
-			sys_text += _tn.get(_tn.butOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
+			sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
 			mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, True, False, 'end', '', sys_text))
 			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, 'end', '', mid_text))
 
 		elif at_justify:
 			discussion_dict['mode'] = 'justify'
-			mid_text  = _tn.get(_tn.firstPremiseText1) + ' <strong>' + current_premise + '</strong>.<br>'
+			mid_text = _tn.get(_tn.firstPremiseText1) + ' <strong>' + current_premise + '</strong>'
+			if not supportive:
+				mid_text += ' ' + _tn.get(_tn.doesNotHold)
+			mid_text += '.<br>'
 			# pretty prints
 			if discussion_dict['bubbles'][-1]['is_system'] and discussion_dict['bubbles'][-2]['message'] == _tn.get(_tn.now):
 				discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
