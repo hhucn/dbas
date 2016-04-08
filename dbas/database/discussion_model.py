@@ -192,6 +192,7 @@ class StatementReferences(DiscussionBase):
 	author_uid = Column(Integer, ForeignKey('users.uid'), nullable=False)
 	statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
 	issue_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
+	created = Column(DateTime(timezone=True), default=func.now())
 
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])

@@ -1,14 +1,20 @@
-# Introducing an API to enable external discussions
-#
-# @author Christian Meter, Tobias Krauthoff
-# @email {meter, krauthoff}@cs.uni-duesseldorf.de
+"""
+Introducing an API to enable external discussions.
 
+This is the entry point for the API. Here are views defined, which always return JSON objects
+which can then be used in external websites.
+
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 from cornice import Service
 
-from .lib import json_bytes_to_dict, HTTP204
+from .lib import json_bytes_to_dict, HTTP204, debug_start, debug_end, flatten
 from .references import store_reference
 from api.login import valid_token, validate_credentials, validate_login
 from dbas.views import Dbas
+
+import json
 
 #
 # CORS configuration
@@ -105,6 +111,30 @@ def prepare_user_information(request):
 	return api_data
 
 
+def prepare_data_assign_reference(request, func):
+	"""
+	Collect user informationen, prepare submitted data and store references into database.
+	:param request:
+	:param func:
+	:return:
+	"""
+	api_data = prepare_user_information(request)
+	if api_data:
+		data = json_bytes_to_dict(request.body)
+		api_data.update(data)
+		return_dict_json = func(for_api=True, api_data=api_data)
+		return_dict = json.loads(return_dict_json)
+
+		statement_uids = flatten(return_dict["statement_uids"])
+		if type(statement_uids) is int:
+			statement_uids = [statement_uids]
+
+		list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
+		return return_dict_json
+	else:
+		raise HTTP204()
+
+
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
 	"""
@@ -181,14 +211,7 @@ def add_start_statement(request):
 	:param request:
 	:return:
 	"""
-	api_data = prepare_user_information(request)
-	if api_data:
-		data = json_bytes_to_dict(request.body)
-		api_data.update(data)
-		store_reference(api_data)
-		return Dbas(request).set_new_start_statement(for_api=True, api_data=api_data)
-	else:
-		raise HTTP204()
+	return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
 
 
 @start_premise.post(validators=validate_login)
@@ -198,14 +221,7 @@ def add_start_premise(request):
 	:param request:
 	:return:
 	"""
-	api_data = prepare_user_information(request)
-	if api_data:
-		data = json_bytes_to_dict(request.body)
-		api_data.update(data)
-		store_reference(api_data)
-		return Dbas(request).set_new_start_premise(for_api=True, api_data=api_data)
-	else:
-		raise HTTP204()
+	return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
 
 
 @justify_premise.post(validators=validate_login)
@@ -215,14 +231,7 @@ def add_justify_premise(request):
 	:param request:
 	:return:
 	"""
-	api_data = prepare_user_information(request)
-	if api_data:
-		data = json_bytes_to_dict(request.body)
-		api_data.update(data)
-		store_reference(api_data)
-		return Dbas(request).set_new_premises_for_argument(for_api=True, api_data=api_data)
-	else:
-		raise HTTP204()
+	return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
 
 
 # =============================================================================
@@ -266,7 +275,10 @@ def user_login(request):
 def get_news(request):
 	"""
 	Returns news from DBAS in JSON.
-	@DEPRECATED.
+
+	.. deprecated:: 0.5.8
+	   Unused.
+
 	:param request: request
 	:return: Dbas(request).get_news()
 	"""
