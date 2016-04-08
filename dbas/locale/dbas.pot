@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-06 14:08+0200\n"
+"POT-Creation-Date: 2016-04-08 09:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,48 @@ msgstr ""
 "Generated-By: Lingua 4.8.1\n"
 
 #. Default: 404 Error
-#: ./dbas/templates/404.pt:9
+#: ./dbas/templates/404.pt:8
 msgid "404"
 msgstr ""
 
 #. Default: The page
-#: ./dbas/templates/404.pt:12
+#: ./dbas/templates/404.pt:10
 msgid "404_text_part1"
 msgstr ""
 
-#. Default: for could not be found.
-#: ./dbas/templates/404.pt:14
+#. Default: could not be found
+#: ./dbas/templates/404.pt:12
 msgid "404_text_part2"
+msgstr ""
+
+#. Default: , because the input parameter seems to be wrong.
+#: ./dbas/templates/404.pt:14
+msgid "wrong_input_params"
+msgstr ""
+
+#. Default: Go home by
+#: ./dbas/templates/404.pt:17
+msgid "go-home_by"
+msgstr ""
+
+#. Default: clicking here
+#: ./dbas/templates/404.pt:18
+msgid "clicking_here"
+msgstr ""
+
+#. Default: or
+#: ./dbas/templates/404.pt:20
+msgid "or"
+msgstr ""
+
+#. Default: go back
+#: ./dbas/templates/404.pt:21
+msgid "go_back"
+msgstr ""
+
+#. Default: to the discussion
+#: ./dbas/templates/404.pt:22
+msgid "to_the_discussion"
 msgstr ""
 
 #. Default: Your session has expired!
@@ -754,8 +784,8 @@ msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:568
-#: ./dbas/templates/snippet-popups.pt:599 ./dbas/templates/content.pt:309
-#: ./dbas/templates/content.pt:332
+#: ./dbas/templates/snippet-popups.pt:599 ./dbas/templates/content.pt:283
+#: ./dbas/templates/content.pt:306
 msgid "error:"
 msgstr ""
 
@@ -1126,41 +1156,41 @@ msgid "island_view_for"
 msgstr ""
 
 #. Default: Add statement
-#: ./dbas/templates/content.pt:284
+#: ./dbas/templates/content.pt:246
 msgid "add_statement"
 msgstr ""
 
 #. Default: What is your idea? What should we do?
-#: ./dbas/templates/content.pt:303
+#: ./dbas/templates/content.pt:277
 msgid "what_is_your_idea"
 msgstr ""
 
 #. Default: Let me enter my reason!
-#: ./dbas/templates/content.pt:325
+#: ./dbas/templates/content.pt:299
 msgid "let_me_enter_my_reason"
 msgstr ""
 
 #. Default: Because...
-#: ./dbas/templates/content.pt:338
+#: ./dbas/templates/content.pt:312
 msgid "Because..."
 msgstr ""
 
 #. Default: Change display style
-#: ./dbas/templates/content.pt:356
+#: ./dbas/templates/content.pt:330
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ./dbas/templates/content.pt:359
+#: ./dbas/templates/content.pt:333
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/content.pt:365
+#: ./dbas/templates/content.pt:339
 msgid "island_view"
 msgstr ""
 
 #. Default: Complete View
-#: ./dbas/templates/content.pt:371
+#: ./dbas/templates/content.pt:345
 msgid "complete_view"
 msgstr ""

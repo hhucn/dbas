@@ -735,8 +735,8 @@ class Translator(object):
 		en_lang[self.login] = 'Login'
 		en_lang[self.logfile] = 'Logfile for'
 		en_lang[self.letsGo] = 'Click here to start now!'
-		en_lang[self.letsGoBack] = 'Let\'s go home!'
-		en_lang[self.letsGoHome] = 'Let\'s go back!'
+		en_lang[self.letsGoBack] = 'Let\'s go back!'
+		en_lang[self.letsGoHome] = 'Let\'s go home!'
 		en_lang[self.more] = 'More'
 		en_lang[self.medium] = 'medium'
 		en_lang[self.next] = 'Next Entry'
@@ -1505,7 +1505,7 @@ class TextGenerator(object):
 		# + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>.'
 
 		if with_no_opinion_text:
-			ret_dict['step_back_text'] = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '. (' +_t.get(_t.noOtherAttack) + ')'
+			ret_dict['step_back_text'] = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '. (' + _t.get(_t.noOtherAttack) + ')'
 			ret_dict['no_opinion_text'] = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.showMeAnotherArgument) + '.'
 
 		return ret_dict
