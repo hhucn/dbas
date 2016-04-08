@@ -1,7 +1,9 @@
-# Common library for API Component
-#
-# @author Christian Meter, Tobias Krauthoff
-# @email {meter, krauthoff}@cs.uni-duesseldorf.de
+"""
+Common, pure functions used by the API.
+
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 
 import json
 import logging
@@ -14,7 +16,7 @@ from webob import Response, exc
 def logger():
 	"""
 	Create a logger.
-	
+
 	:return:
 	"""
 	log = logging.getLogger()

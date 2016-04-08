@@ -1,6 +1,8 @@
-# Unit tests for lib.py
-# @author Christian Meter
-# @email meter@cs.uni-duesseldorf.de
+"""
+Unit tests for lib.py
+
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
+"""
 
 from .lib import flatten
 
