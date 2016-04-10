@@ -775,7 +775,7 @@ def setup_discussion_database(session, user):
 	argument108 = Argument(premisegroup=premisegroup112.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement102.uid)
 	argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement102.uid)
 	argument110 = Argument(premisegroup=premisegroup115.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement112.uid)
-	argument111 = Argument(premisegroup=premisegroup114.uid, issupportive=False, author=user.uid, issue=issue1.uid)
+	# argument111 = Argument(premisegroup=premisegroup114.uid, issupportive=False, author=user.uid, issue=issue1.uid)
 	argument112 = Argument(premisegroup=premisegroup116.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement102.uid)
 	argument113 = Argument(premisegroup=premisegroup117.uid, issupportive=False, author=user.uid, issue=issue1.uid)
 	argument114 = Argument(premisegroup=premisegroup118.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement116.uid)
@@ -791,7 +791,7 @@ def setup_discussion_database(session, user):
 	session.add_all([argument23, argument24, argument25, argument26, argument27, argument28, argument29])
 	session.add_all([argument30, argument31])
 	session.add_all([argument101, argument102, argument103, argument104, argument105, argument106, argument107])
-	session.add_all([argument108, argument109, argument110, argument111, argument112, argument113, argument114])
+	session.add_all([argument108, argument109, argument110, argument112, argument113, argument114])  # , argument111])
 	session.add_all([argument115, argument116, argument117, argument118, argument119])
 	session.flush()
 

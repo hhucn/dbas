@@ -288,7 +288,7 @@ class Dbas(object):
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
-			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
+			if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 		else:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))

@@ -136,8 +136,8 @@ class DictionaryHelper(object):
 		text                = text[0:1].upper() + text[1:]
 		if not text:
 			return None
-		question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong>' + text[0:1].lower() + text[1:] + ' '
-		question            += _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '</strong>?'
+		question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> '
+		question            += _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '?'
 		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 		add_premise_text	+= text + ' ' + (_tn.get(_tn.holds) if is_supportive else _tn.get(_tn.isNotAGoodIdea))
 
@@ -145,8 +145,10 @@ class DictionaryHelper(object):
 		intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro_rev = '' if not is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		url = UrlManager(application_url, slug).get_slug_url(False)
-		select_bubble = self.__create_speechbubble_dict(True, False, False, '', url, intro + '<strong>' + text + '</strong>', False, statement_uid=uid, nickname=nickname, is_up_vote=is_supportive)
 		question_bubble = self.__create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
+		if text[:-1] != '.':
+			text += '.'
+		select_bubble = self.__create_speechbubble_dict(True, False, False, '', url, intro + '<strong>' + text + '</strong>', False, statement_uid=uid, nickname=nickname, is_up_vote=is_supportive)
 
 		if save_crumb:
 			self.__save_speechbubble(select_bubble, db_user, session_id, breadcrumbs[-1], transaction, statement_uid=uid)
@@ -235,8 +237,8 @@ class DictionaryHelper(object):
 		# 	self.__save_speechbubble(bubble_user, db_user, session_id, breadcrumbs[-1], transaction, argument_uid=uid)
 		# 	self.__save_speechbubble(bubble_question, db_user, session_id, breadcrumbs[-1], transaction)
 
-		if not logged_in and count_of_items == 1:
-			self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItemWithLink), True))
+		# if not logged_in and count_of_items == 1:
+		# 	self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItemWithLink), True))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid}
 
@@ -944,11 +946,12 @@ class DictionaryHelper(object):
 				extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style'] = False
-			if not logged_in:
-				mid_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
-			else:
+			if logged_in:
 				mid_text = _tn.get(_tn.firstOneReason)
-			discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, 'end', '', mid_text))
+				discussion_dict['bubbles'].append(self.__create_speechbubble_dict(False, False, True, 'end', '', mid_text))
+			# else:
+			# 	mid_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
+
 
 		elif at_dont_know:
 			discussion_dict['mode'] = 'dont_know'
