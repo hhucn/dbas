@@ -76,7 +76,7 @@ def main(global_config, **settings):
 	config.add_route('main_news',               '/news')
 	config.add_route('main_imprint',            '/imprint')
 
-	# ajax for navigation logic, administraion, settigs and editing/viewing log
+	# ajax for navigation logic, administration, settings and editing/viewing log
 	config.add_route('ajax_user_login',                             '{url:.*}ajax_user_login')
 	config.add_route('ajax_user_logout',                            '{url:.*}ajax_user_logout')
 	config.add_route('ajax_set_new_start_statement',                '/{url:.*}ajax_set_new_start_statement')
