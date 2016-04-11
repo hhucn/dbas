@@ -6,17 +6,17 @@ Logic for user login, token generation and validation
 """
 
 import binascii
-import json
 import hashlib
+import json
 import os
-import transaction
-
 from datetime import datetime
 
+import transaction
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import Dbas
-from .lib import logger, HTTP401
+
+from .lib import HTTP401, logger
 
 log = logger()
 
@@ -113,7 +113,7 @@ def token_to_database(nickname, token):
 def validate_credentials(request):
 	"""
 	Parse credentials from POST request and validate it against DBA-S' database.
-	
+
 	:param request:
 	:return:
 	"""
