@@ -83,7 +83,7 @@ justify_premise = Service(name="justify_premise",
 #
 # Get data from D-BAS' database
 #
-references = Service(name="get_references",
+references = Service(name="references",
                      path="/get/references",
                      description="Query database to get stored references from site",
                      cors_policy=cors_policy)
