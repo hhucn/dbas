@@ -156,17 +156,14 @@ def parse_host_and_path(request):
 	Given the visitors referer link from *request*, parse the host and path to the article.
 
 	:param request: request
-	:return: host and path parsed from request.referer
+	:return: host and path parsed from request
 	:rtype: str
 	"""
 	try:
-		ref = request.referer222
-		parsed = urlparse(ref)
-		host = parsed.hostname + ":" + str(parsed.port) if parsed.port else parsed.hostname
-		path = parsed.path
-		return host, path
+		data = json_bytes_to_dict(request.body)
+		return data["host"], data["path"]
 	except AttributeError:
-		log.error("[API/Reference] Could not look up request.referer")
+		log.error("[API/Reference] Could not look up origin.")
 		return None, None
 
 
@@ -281,7 +278,7 @@ def add_justify_premise(request):
 #
 # Get data from D-BAS' database
 #
-@references.get()
+@references.post()
 def get_references(request):
 	"""
 	Query database to get stored references from site. Generate a list with text versions of references.
@@ -291,12 +288,12 @@ def get_references(request):
 	"""
 	host, path = parse_host_and_path(request)
 	if host and path:
+		log.debug("[API/Reference] Returning references for %s%s" % (host, path))
 		refs_obj = get_references_for_url(host, path)
 		refs = [ref.reference for ref in refs_obj]
 		return {"references": refs}
 	else:
-		return {"status": "error",
-				"message": "Could not parse your origin"}
+		return {"status": "error", "message": "Could not parse your origin"}
 
 
 # =============================================================================
