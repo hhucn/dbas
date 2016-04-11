@@ -811,7 +811,7 @@ def setup_discussion_database(session, user):
 	argument102.conclusions_argument(argument101.uid)
 	argument106.conclusions_argument(argument105.uid)
 	argument107.conclusions_argument(argument105.uid)
-	argument111.conclusions_argument(argument110.uid)
+	# argument111.conclusions_argument(argument110.uid)
 	argument113.conclusions_argument(argument112.uid)
 	argument117.conclusions_argument(argument116.uid)
 	session.flush()
