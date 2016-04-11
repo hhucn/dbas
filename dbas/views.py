@@ -28,7 +28,7 @@ from .url_manager import UrlManager
 from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
-version = '0.5.9a'
+version = '0.5.9a'  # TODO: why is this in views.py?
 project_name = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
@@ -41,7 +41,8 @@ class Dbas(object):
 
 	def __init__(self, request):
 		"""
-		Object initialization
+		Object initialization.
+
 		:param request: init http request
 		:return: json-dict()
 		"""
@@ -59,6 +60,7 @@ class Dbas(object):
 	def get_nickname_and_session(self, for_api, api_data):
 		"""
 		Given data from api, return nickname and session_id.
+
 		:param for_api:
 		:param api_data:
 		:return:
@@ -73,6 +75,7 @@ class Dbas(object):
 	def main_page(self):
 		"""
 		View configuration for the main page
+
 		:return: HTTP 200 with several information
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -100,6 +103,7 @@ class Dbas(object):
 	def discussion_init(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
+
 		:param for_api: Boolean
 		:param api_data: Dictionary, containing data of a user who logged in via API
 		:return: dictionary
@@ -162,6 +166,7 @@ class Dbas(object):
 	def discussion_attitude(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
+
 		:param for_api: Boolean
 		:param api_data:
 		:return: dictionary
@@ -212,6 +217,7 @@ class Dbas(object):
 	def discussion_justify(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
+
 		:param for_api: Boolean
 		:param api_data:
 		:return: dictionary
@@ -314,6 +320,7 @@ class Dbas(object):
 	def discussion_reaction(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
+
 		:param for_api: Boolean
 		:param api_data:
 		:return: dictionary
@@ -409,6 +416,7 @@ class Dbas(object):
 	def discussion_choose(self, for_api=False, api_data=None):
 		"""
 		View configuration for the choosing view.
+
 		:param for_api: Boolean
 		:param api_data:
 		:return: dictionary
@@ -464,6 +472,7 @@ class Dbas(object):
 	def main_contact(self):
 		"""
 		View configuration for the contact view.
+
 		:return: dictionary with title and project username as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -572,6 +581,7 @@ class Dbas(object):
 	def main_settings(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -651,6 +661,7 @@ class Dbas(object):
 	def main_notifications(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -675,6 +686,7 @@ class Dbas(object):
 	def main_news(self):
 		"""
 		View configuration for the news.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -702,6 +714,7 @@ class Dbas(object):
 	def main_imprint(self):
 		"""
 		View configuration for the imprint.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -726,6 +739,7 @@ class Dbas(object):
 	def main_admin(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -755,6 +769,7 @@ class Dbas(object):
 	def notfound(self):
 		"""
 		View configuration for the 404 page.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1120,7 +1135,7 @@ class Dbas(object):
 				pwd = PasswordGenerator().get_rnd_passwd()
 				hashedpwd = PasswordHandler().get_hashed_password(pwd)
 
-				# set the hased one
+				# set the hashed one
 				db_user.password = hashedpwd
 				DBDiscussionSession.add(db_user)
 				transaction.commit()
