@@ -4,17 +4,22 @@ Introducing an API to enable external discussions.
 This is the entry point for the API. Here are views defined, which always return JSON objects
 which can then be used in external websites.
 
+.. note:: Methods **must not** have the same name as their assigned Service.
+
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from cornice import Service
+import json
+from urllib.parse import urlparse
 
-from .lib import json_bytes_to_dict, HTTP204, debug_start, debug_end, flatten
-from .references import store_reference
 from api.login import valid_token, validate_credentials, validate_login
+from cornice import Service
 from dbas.views import Dbas
 
-import json
+from .lib import HTTP204, debug_end, debug_start, flatten, json_bytes_to_dict, logger
+from .references import get_references_for_url, store_reference
+
+log = logger()
 
 #
 # CORS configuration
@@ -78,10 +83,10 @@ justify_premise = Service(name="justify_premise",
 #
 # Get data from D-BAS' database
 #
-get_references = Service(name="get_references",
-                         path="/get/references",
-                         description="Query database to get stored references from site",
-                         cors_policy=cors_policy)
+references = Service(name="get_references",
+                     path="/get/references",
+                     description="Query database to get stored references from site",
+                     cors_policy=cors_policy)
 
 #
 # Other Services
@@ -144,6 +149,25 @@ def prepare_data_assign_reference(request, func):
 		return return_dict_json
 	else:
 		raise HTTP204()
+
+
+def parse_host_and_path(request):
+	"""
+	Given the visitors referer link from *request*, parse the host and path to the article.
+
+	:param request: request
+	:return: host and path parsed from request.referer
+	:rtype: str
+	"""
+	try:
+		ref = request.referer222
+		parsed = urlparse(ref)
+		host = parsed.hostname + ":" + str(parsed.port) if parsed.port else parsed.hostname
+		path = parsed.path
+		return host, path
+	except AttributeError:
+		log.error("[API/Reference] Could not look up request.referer")
+		return None, None
 
 
 @reaction.get(validators=validate_login)
@@ -257,15 +281,22 @@ def add_justify_premise(request):
 #
 # Get data from D-BAS' database
 #
-@get_references.post(validators=validate_login)
+@references.get()
 def get_references(request):
 	"""
-	Query database to get stored references from site.
+	Query database to get stored references from site. Generate a list with text versions of references.
 
 	:param request: request
 	:return: References assigned to the queried URL
 	"""
-	pass
+	host, path = parse_host_and_path(request)
+	if host and path:
+		refs_obj = get_references_for_url(host, path)
+		refs = [ref.reference for ref in refs_obj]
+		return {"references": refs}
+	else:
+		return {"status": "error",
+				"message": "Could not parse your origin"}
 
 
 # =============================================================================
