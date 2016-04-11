@@ -6,10 +6,10 @@ Handle references from other websites, prepare, store and load them into D-BAS.
 """
 
 import transaction
-
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences
-from .lib import escape_html, logger
+
+from .lib import debug_end, debug_start, escape_html, logger
 
 log = logger()
 
@@ -17,8 +17,9 @@ log = logger()
 def store_reference(api_data, statement_uid=None):
     """
     Validate provided reference and store it in the database.
-    :param api_data:
-    :param statement_uid:
+
+    :param api_data: user provided data
+    :param statement_uid: the statement the reference should be assigned to
     :return:
     """
     try:
@@ -30,13 +31,29 @@ def store_reference(api_data, statement_uid=None):
             return
 
         user_uid = api_data["user_uid"]
-        origin = escape_html(api_data["origin"])
+        host = escape_html(api_data["host"])
+        path = escape_html(api_data["path"])
         issue_uid = api_data["issue_id"]
 
-        db_ref = StatementReferences(escape_html(reference), origin, user_uid, statement_uid, issue_uid)
+        db_ref = StatementReferences(escape_html(reference), host, path, user_uid, statement_uid, issue_uid)
         DBDiscussionSession.add(db_ref)
         DBDiscussionSession.flush()
         transaction.commit()
         log.debug("[API/Reference] Successfully saved reference for statement.")
     except KeyError:
         log.error("[API/Reference] KeyError: could not access field in api_data.")
+
+
+def get_references_for_url(host=None, path=None):
+    """
+    Query database for given URL and return all references.
+
+    :param host: sanitized string of the reference's host
+    :type host: str
+    :param path: path to article / reference on reference's host
+    :type path: str
+    :return: list of strings representing quotes from the given site, which were stored in our database
+    :rtype: list
+    """
+    if host and path:
+        return DBDiscussionSession.query(StatementReferences).filter_by(host=host, path=path).all()
