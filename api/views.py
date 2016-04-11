@@ -30,6 +30,7 @@ cors_policy = dict(enabled=True,
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
+# Argumentation stuff
 reaction = Service(name='api_reaction',
 				   path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
 				   description="Discussion Reaction",
@@ -57,7 +58,7 @@ zinit_blank = Service(name='api_init_blank',
 					  cors_policy=cors_policy)
 
 #
-# Add new data to DBAS
+# Add new data to D-BAS
 #
 start_statement = Service(name="start_statement",
                           path="/add/start_statement",
@@ -73,6 +74,14 @@ justify_premise = Service(name="justify_premise",
                           path="/add/justify_premise",
                           description="Add new justifying premises",
                           cors_policy=cors_policy)
+
+#
+# Get data from D-BAS' database
+#
+get_references = Service(name="get_references",
+                         path="/get/references",
+                         description="Query database to get stored references from site",
+                         cors_policy=cors_policy)
 
 #
 # Other Services
@@ -113,7 +122,7 @@ def prepare_user_information(request):
 
 def prepare_data_assign_reference(request, func):
 	"""
-	Collect user informationen, prepare submitted data and store references into database.
+	Collect user information, prepare submitted data and store references into database.
 	:param request:
 	:param func:
 	:return:
@@ -232,6 +241,20 @@ def add_justify_premise(request):
 	:return:
 	"""
 	return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
+
+
+#
+# Get data from D-BAS' database
+#
+@get_references.post(validators=validate_login)
+def get_references(request):
+	"""
+	Query database to get stored references from site.
+
+	:param request: request
+	:return: References assigned to the queried URL
+	"""
+	pass
 
 
 # =============================================================================
