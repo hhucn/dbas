@@ -107,6 +107,7 @@ login = Service(name='login',
 def prepare_user_information(request):
 	"""
 	Check if user is authenticated, return prepared data for D-BAS.
+
 	:param request:
 	:return:
 	"""
@@ -123,6 +124,7 @@ def prepare_user_information(request):
 def prepare_data_assign_reference(request, func):
 	"""
 	Collect user information, prepare submitted data and store references into database.
+
 	:param request:
 	:param func:
 	:return:
@@ -147,7 +149,8 @@ def prepare_data_assign_reference(request, func):
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
 	"""
-	Return data from DBas discussion_reaction page
+	Return data from DBas discussion_reaction page.
+
 	:param request: request
 	:return: Dbas(request).discussion_reaction(True)
 	"""
@@ -158,7 +161,8 @@ def discussion_reaction(request):
 @justify.get(validators=validate_login)
 def discussion_justify(request):
 	"""
-	Return data from DBas discussion_justify page
+	Return data from DBas discussion_justify page.
+
 	:param request: request
 	:return: Dbas(request).discussion_justify(True)
 	"""
@@ -169,7 +173,8 @@ def discussion_justify(request):
 @attitude.get(validators=validate_login)
 def discussion_attitude(request):
 	"""
-	Return data from DBas discussion_attitude page
+	Return data from DBas discussion_attitude page.
+
 	:param request: request
 	:return: Dbas(request).discussion_attitude(True)
 	"""
@@ -180,7 +185,8 @@ def discussion_attitude(request):
 @issues.get(validators=validate_login)
 def issue_selector(request):
 	"""
-	Return data from DBas discussion_attitude page
+	Return data from DBas discussion_attitude page.
+
 	:param request: request
 	:return: Dbas(request).discussion_attitude(True)
 	"""
@@ -191,7 +197,8 @@ def issue_selector(request):
 @zinit.get(validators=validate_login)
 def discussion_init(request):
 	"""
-	Return data from DBas discussion_init page
+	Return data from DBas discussion_init page.
+
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
@@ -202,7 +209,8 @@ def discussion_init(request):
 @zinit_blank.get(validators=validate_login)
 def discussion_init(request):
 	"""
-	Return data from DBas discussion_init page
+	Return data from DBas discussion_init page.
+
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
@@ -217,6 +225,7 @@ def discussion_init(request):
 def add_start_statement(request):
 	"""
 	Add new start statement to issue.
+
 	:param request:
 	:return:
 	"""
@@ -227,6 +236,7 @@ def add_start_statement(request):
 def add_start_premise(request):
 	"""
 	Add new premise group.
+
 	:param request:
 	:return:
 	"""
@@ -237,6 +247,7 @@ def add_start_premise(request):
 def add_justify_premise(request):
 	"""
 	Add new justifying premise group.
+
 	:param request:
 	:return:
 	"""
@@ -265,6 +276,7 @@ def get_references(request):
 def testing(request):
 	"""
 	Test user's credentials, return success if valid token and username is provided.
+
 	:param request:
 	:return:
 	"""
@@ -277,6 +289,7 @@ def user_login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
 	The function body is only executed, if the validator added a request.validated field.
+
 	:param request:
 	:return: token
 	"""
