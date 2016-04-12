@@ -1,7 +1,7 @@
 """
 Provides helping function for dictionaries, which are used for the radio buttons.
 
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 from sqlalchemy import and_
@@ -17,7 +17,7 @@ from dbas.url_manager import UrlManager
 
 class ItemDictHelper(object):
 	"""
-
+	Provides all functions for creating the radio buttons.
 	"""
 
 	def __init__(self, lang, issue_uid, application_url, for_api=False):
@@ -37,8 +37,9 @@ class ItemDictHelper(object):
 
 	def prepare_item_dict_for_start(self, logged_in):
 		"""
+		Prepares the dict with all items for the first step in discussion, where the user chooses a position.
 
-		:param logged_in::
+		:param logged_in: Boolean or String
 		:return:
 		"""
 		db_statements = DBDiscussionSession.query(Statement)\
@@ -68,8 +69,9 @@ class ItemDictHelper(object):
 
 	def prepare_item_dict_for_attitude(self, statement_uid):
 		"""
+		Prepares the dict with all items for the second step in discussion, where the user chooses her attitude.
 
-		:param statement_uid::
+		:param statement_uid: Statement.uid
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_attitude', 'def')
@@ -95,10 +97,11 @@ class ItemDictHelper(object):
 
 	def prepare_item_dict_for_justify_statement(self, statement_uid, nickname, is_supportive):
 		"""
+		Prepares the dict with all items for the third step in discussion, where the user justifies his position.
 
-		:param statement_uid:
-		:param nickname:
-		:param is_supportive::
+		:param statement_uid: Statement.uid
+		:param nickname: User.nickname
+		:param is_supportive: Boolean
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_justify_statement', 'def')
@@ -140,10 +143,11 @@ class ItemDictHelper(object):
 
 	def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, logged_in):
 		"""
+		Prepares the dict with all items for a step in discussion, where the user justifies his attack she has done.
 
-		:param argument_uid:
-		:param attack_type::
-		:param logged_in:
+		:param argument_uid: Argument.uid
+		:param attack_type: String
+		:param logged_in: Boolean or String
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_justify_argument', 'def')
@@ -218,9 +222,10 @@ class ItemDictHelper(object):
 
 	def prepare_item_dict_for_dont_know_reaction(self, argument_uid, is_supportive):
 		"""
+		Prepares the dict with all items for the third step, where an suppotive argument will be presented.
 
-		:param argument_uid:
-		:param is_supportive::
+		:param argument_uid: Argument.uid
+		:param is_supportive: Boolean
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_dont_know_reaction', 'def')
@@ -258,11 +263,12 @@ class ItemDictHelper(object):
 
 	def prepare_item_dict_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack):
 		"""
+		Prepares the dict with all items for the argumentation window.
 
-		:param argument_uid_sys:
-		:param argument_uid_user:
-		:param is_supportive:
-		:param attack::
+		:param argument_uid_sys: Argument.uid
+		:param argument_uid_user: Argument.uid
+		:param is_supportive: Boolean
+		:param attack: String
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_reaction', 'def')
@@ -348,12 +354,13 @@ class ItemDictHelper(object):
 
 	def prepare_item_dict_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive):
 		"""
+		Prepares the dict with all items for the choosing an premise, when the user inserted more than one new premise.
 
-		:param argument_or_statement_id:
-		:param pgroup_ids:
-		:param is_argument:
-		:param is_supportive::
-		:return:
+		:param argument_or_statement_id: Argument.uid or Statement.uid
+		:param pgroup_ids: PremiseGroups.uid
+		:param is_argument: Boolean
+		:param is_supportive: Boolean
+		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'def')
 		statements_array = []
@@ -390,12 +397,13 @@ class ItemDictHelper(object):
 	@staticmethod
 	def __create_statement_dict(uid, premises, attitude, url):
 		"""
-
-		:param uid:
-		:param premises:
-		:param attitude:
-		:param url:
-		:return:
+		Return dictionary
+		
+		:param uid: Integer
+		:param premises: String
+		:param attitude: String
+		:param url: String
+		:return: dict()
 		"""
 		return {
 			'id': 'item_' + str(uid),

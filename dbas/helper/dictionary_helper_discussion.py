@@ -18,7 +18,7 @@ from dbas.url_manager import UrlManager
 
 class DiscussionDictHelper(object):
 	"""
-
+	Provides all functions for creating the discussion dictionaries with all bubbles.
 	"""
 
 	def __init__(self, lang, session_id, breadcrumbs, nickname=None):
@@ -37,8 +37,9 @@ class DiscussionDictHelper(object):
 
 	def prepare_discussion_dict_for_start(self):
 		"""
-
-		:return:
+		Prepares the discussion dict with all bubbles for the first step in discussion, where the user chooses a position.
+		
+		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_start', 'at_start')
 		_tn			        = Translator(self.lang)
@@ -54,9 +55,10 @@ class DiscussionDictHelper(object):
 
 	def prepare_discussion_dict_for_attitude(self, uid):
 		"""
-
-		:param uid:
-		:return:
+		Prepares the discussion dict with all bubbles for the second step in discussion, where the user chooses her attitude.
+		
+		:param uid: Argument.uid
+		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_attitude', 'at_attitude')
 		_tn			        = Translator(self.lang)
@@ -80,15 +82,16 @@ class DiscussionDictHelper(object):
 	def prepare_discussion_dict_for_justify_statement(self, transaction, uid, save_crumb, application_url,
 	                                                  slug, is_supportive, count_of_items):
 		"""
-
-		:param transaction:
-		:param uid:
-		:param save_crumb:
-		:param application_url:
-		:param slug:
-		:param is_supportive:
-		:param count_of_items:
-		:return:
+		Prepares the discussion dict with all bubbles for the third step in discussion, where the user justifies his position.
+		
+		:param transaction: transaction
+		:param uid: Argument.uid
+		:param save_crumb: Boolean
+		:param application_url: URL
+		:param slug: Issue.info as Slug
+		:param is_supportive: Boolean
+		:param count_of_items: Integer
+		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
 		_tn			        = Translator(self.lang)
@@ -143,11 +146,12 @@ class DiscussionDictHelper(object):
 
 	def prepare_discussion_dict_for_justify_argument(self, uid, is_supportive, attack):
 		"""
-
-		:param uid:
-		:param is_supportive:
-		:param attack:
-		:return:
+		Prepares the discussion dict with all bubbles for a step in discussion, where the user justifies his attack she has done.
+		
+		:param uid: Argument.uid
+		:param is_supportive: Boolean
+		:param attack: String (undermine, support, undercut, rebut, ...)
+		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'prepare_discussion_dict_for_justify_argument')
 		_tn			       = Translator(self.lang)
@@ -203,11 +207,12 @@ class DiscussionDictHelper(object):
 
 	def prepare_discussion_dict_for_dont_know_reaction(self, transaction, uid, save_crumb):
 		"""
+		Prepares the discussion dict with all bubbles for the third step, where an suppotive argument will be presented.
 
-		:param transaction:
-		:param uid:
-		:param save_crumb:
-		:return:
+		:param transaction: transaction
+		:param uid: Argument.uid
+		:param save_crumb: Boolean
+		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_dont_know_reaction', 'at_dont_know')
 		_tn			   = Translator(self.lang)
@@ -232,14 +237,15 @@ class DiscussionDictHelper(object):
 
 	def prepare_discussion_dict_for_argumentation(self, transaction, uid, save_crumb, is_supportive, additional_id, attack):
 		"""
-
-		:param transaction:
-		:param uid:
-		:param save_crumb:
-		:param is_supportive:
-		:param additional_id:
-		:param attack:
-		:return:
+		Prepares the discussion dict with all bubbles for the argumentation window.
+		
+		:param transaction: transaction
+		:param uid: Argument.uid
+		:param save_crumb: Boolean
+		:param is_supportive: Boolean
+		:param additional_id: Argument.uid
+		:param attack: String (undermine, support, undercut, rebut, ...)
+		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
 		_tn			        = Translator(self.lang)
@@ -322,10 +328,11 @@ class DiscussionDictHelper(object):
 
 	def prepare_discussion_dict_for_choosing(self, uid, is_uid_argument, is_supportive):
 		"""
+		Prepares the discussion dict with all bubbles for the choosing an premise, when the user inserted more than one new premise.
 
-		:param uid:
-		:param is_uid_argument:
-		:param is_supportive:
+		:param uid: Argument.uid
+		:param is_uid_argument: Boolean
+		:param is_supportive: Boolean
 		:return:
 		"""
 		_tn			   = Translator(self.lang)
@@ -348,19 +355,19 @@ class DiscussionDictHelper(object):
 	def create_speechbubble_dict(self, is_user, is_system, is_status, uid, url, message, omit_url=False, argument_uid=None,
 	                               statement_uid=None, is_up_vote=True):
 		"""
+		Creates an dictionary with every information needed for a bubble.
 
-		:param is_user:
-		:param is_system:
-		:param is_status:
-		:param uid:
-		:param url:
-		:param message:
-		:param omit_url:
-		:param argument_uid:
-		:param statement_uid:
-		:param nickname:
-		:param is_up_vote:
-		:return:
+		:param is_user: Boolean
+		:param is_system: Boolean
+		:param is_status: Boolean
+		:param uid: Argument.uid
+		:param url: URL
+		:param message: String
+		:param omit_url: Boolean
+		:param argument_uid: Argument.uid
+		:param statement_uid: Statement.uid
+		:param is_up_vote: Boolean
+		:return: dict()
 		"""
 		speech = dict()
 		speech['is_user']            = is_user
@@ -404,10 +411,11 @@ class DiscussionDictHelper(object):
 	@staticmethod
 	def __append_bubble(bubbles_array, bubble):
 		"""
-		
-		:param bubbles_array: 
-		:param bubble: 
-		:return: 
+		Reeturn current bubbles_array with bubble appended.
+
+		:param bubbles_array: Bubbles[]
+		:param bubble: Bubble
+		:return: []
 		"""
 		# sanity check
 		if len(bubbles_array) > 2:
@@ -420,15 +428,16 @@ class DiscussionDictHelper(object):
 	@staticmethod
 	def __save_speechbubble(bubble_dict, db_user, session_id, related_breadcrumb, transaction, argument_uid=None, statement_uid=None):
 		"""
+		Saves given bubble with additional information into database.
 
-		:param bubble_dict:
-		:param db_user:
-		:param session_id:
-		:param related_breadcrumb:
-		:param transaction:
-		:param argument_uid:
-		:param statement_uid:
-		:return:
+		:param bubble_dict: dict()
+		:param db_user: User
+		:param session_id: request.session_id
+		:param related_breadcrumb: Breadcrumb
+		:param transaction: transaction
+		:param argument_uid: Argument.uid
+		:param statement_uid: Statement.uid
+		:return: True if Bubble was saved
 		"""
 		if not db_user:
 			user = 'anonymous'
@@ -474,11 +483,9 @@ class DiscussionDictHelper(object):
 
 	def __create_speechbubble_history(self):
 		"""
+		Creates the history of speech bubbles.
 
-		:param breadcrumbs:
-		:param nickname:
-		:param session_id:
-		:return:
+		:return: []
 		"""
 		logger('DictionaryHelper', '__create_speechbubble_history', 'main')
 		bubble_history = []
