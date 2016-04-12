@@ -1,3 +1,9 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import random
 
 from sqlalchemy import and_
@@ -7,11 +13,11 @@ from .database.discussion_model import Argument, User, VoteArgument
 from .logger import logger
 from .query_helper import QueryHelper
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
-
 
 class RecommenderHelper(object):
+	"""
+	Todo
+	"""
 
 	def get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attacks=None, restriction_on_arg_uid=None):
 		"""

@@ -1,3 +1,9 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import random
 import re
 
@@ -14,11 +20,11 @@ from .url_manager import UrlManager
 from .user_management import UserHandler
 from .notification_helper import NotificationHelper
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
-
 
 class DictionaryHelper(object):
+	"""
+
+	"""
 
 	def __init__(self, lang=''):
 		"""
@@ -31,7 +37,8 @@ class DictionaryHelper(object):
 	def get_random_subdict_out_of_orderer_dict(self, ordered_dict, count):
 		"""
 		Creates a random subdictionary with given count out of the given ordered_dict.
-		With a count of <2 the dictionary itself will be returned.
+		With a count of <2 the dictionary itself will be returned
+		.
 		:param ordered_dict: dictionary for the function
 		:param count: count of entries for the new dictionary
 		:return: dictionary
@@ -1193,6 +1200,7 @@ class DictionaryHelper(object):
 	def remove_last_bubble_for_discussion_reaction(nickname, session_id, bubble_param):
 		"""
 		Removes the last Bubble of the user if the linked url ends with the bubble params
+
 		:param nickname:
 		:param session_id:
 		:param bubble_param:

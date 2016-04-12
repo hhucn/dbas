@@ -1,3 +1,12 @@
+"""
+Core compontent of D-BAS. The Dialog-Based Argumentation Software avoids the pitfalls of unstructured systems such as
+asynchronous threaded discussions and it is usable by any participant without training while still supporting the full
+complexity of real-world argumentation. The key idea is to let users exchange arguments with each other in the form of
+a time-shifted dialog where arguments are presented and acted upon one-at-a-time.
+
+.. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
+"""
+
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -9,9 +18,6 @@ from sqlalchemy import engine_from_config
 from .database import *
 
 import logging
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 def main(global_config, **settings):
@@ -86,7 +92,6 @@ def main(global_config, **settings):
 	config.add_route('ajax_set_new_issue',                          '/{url:.*}ajax_set_new_issue')
 	config.add_route('ajax_get_logfile_for_statement',              '/{url:.*}ajax_get_logfile_for_statement')
 	config.add_route('ajax_get_shortened_url',                      '/{url:.*}ajax_get_shortened_url')
-	config.add_route('ajax_all_users',                              '/{url:.*}ajax_all_users')
 	config.add_route('ajax_user_registration',                      '/{url:.*}ajax_user_registration')
 	config.add_route('ajax_user_password_request',                  '/{url:.*}ajax_user_password_request')
 	config.add_route('ajax_fuzzy_search',                           '/{url:.*}ajax_fuzzy_search')

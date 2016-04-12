@@ -1,11 +1,15 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
+
 from sqlalchemy import and_
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, Premise, VoteArgument, VoteStatement, User
 from .logger import logger
 from .user_management import UserHandler
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 class VotingHelper(object):

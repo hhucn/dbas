@@ -1,11 +1,15 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
+
 from slugify import slugify
 from sqlalchemy import func, Integer, Text, DateTime, Boolean, Column, ForeignKey
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.orm import relationship
 from dbas.database import DBDiscussionSession, DiscussionBase
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 class Issue(DiscussionBase):
