@@ -90,7 +90,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_user_registration',                      '/{url:.*}ajax_user_registration')
 	config.add_route('ajax_user_password_request',                  '/{url:.*}ajax_user_password_request')
 	config.add_route('ajax_fuzzy_search',                           '/{url:.*}ajax_fuzzy_search')
-	config.add_route('ajax_switch_language',                        '/{url:.*}ajax_switch_language{params:.*}')
+	config.add_route('ajax_switch_language',                        '{url:.*}ajax_switch_language{params:.*}')
 	config.add_route('ajax_get_infos_about_argument',               '/{url:.*}ajax_get_infos_about_argument')
 	config.add_route('ajax_get_user_with_same_opinion',             '/{url:.*}ajax_get_user_with_same_opinion')
 	config.add_route('ajax_get_user_history',                       'ajax_get_user_history')
