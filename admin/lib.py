@@ -1,24 +1,26 @@
-# Common library for Export Component
+# Common library for Admin Component
 #
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
+from dbas.lib import sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, VoteArgument, Issue
+from dbas.database.discussion_model import Argument, VoteArgument, Issue, User, Group, Statement, VoteStatement
 from dbas.query_helper import QueryHelper
 from dbas.user_management import UserHandler
 from sqlalchemy import and_
 
 
-def argument_overview(user, lang):
+def get_argument_overview(user, lang):
 	"""
-		Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
-		:param user: current user
-		:param issue: current issue
-		:param lang: current language
-		:return: dict()
-		"""
+	Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
+
+	:param user: current user
+	:param issue: current issue
+	:param lang: current language
+	:return: dict()
+	"""
 	_qh = QueryHelper()
 	is_admin = UserHandler().is_user_in_group(user, 'admins')
 	logger('AdminLib', 'get_argument_overview', 'is_admin ' + str(is_admin))
@@ -51,4 +53,53 @@ def argument_overview(user, lang):
 				issue_array.append(tmp_dict)
 		return_dict[issue.title] = issue_array
 
+	return return_dict
+
+
+def get_all_users(user, lang):
+	"""
+	Bla
+
+	:param user:
+	:param lang:
+	:return:
+	"""
+	is_admin = UserHandler().is_user_in_group(user, 'admins')
+	logger('AdminLib', 'get_all_users', 'is_admin ' + str(is_admin))
+	return_array = []
+	if not is_admin:
+		return return_array
+
+	_uh = UserHandler()
+	db_users = DBDiscussionSession.query(User).order_by(User.uid.asc()).all()
+	for user in db_users:
+		tmp_dict = dict()
+		tmp_dict['uid']         = str(user.uid)
+		tmp_dict['firstname']   = str(user.firstname)
+		tmp_dict['surname']     = str(user.surname)
+		tmp_dict['nickname']    = str(user.nickname)
+		tmp_dict['email']       = str(user.email)
+		tmp_dict['gender']      = str(user.gender)
+		tmp_dict['group_uid']   = DBDiscussionSession.query(Group).filter_by(uid=user.group_uid).first().name
+		tmp_dict['last_login']  = sql_timestamp_pretty_print(str(user.last_login), lang)
+		tmp_dict['registered']  = sql_timestamp_pretty_print(str(user.registered), lang)
+		tmp_dict['avatar']      = _uh.get_profile_picture(user)
+		tmp_dict['last_action'] = sql_timestamp_pretty_print(str(user.last_action), lang)
+		return_array.append(tmp_dict)
+
+	return return_array
+
+
+def get_dashboard_infos():
+	"""
+	Bla
+
+	:return:
+	"""
+	logger('AdminLib', 'get_dashboard_infos', 'main')
+	return_dict = dict()
+	return_dict['user_count'] = str(len(DBDiscussionSession.query(User).all()))
+	return_dict['vote_count'] = str(len(DBDiscussionSession.query(VoteArgument).all()) + len(DBDiscussionSession.query(VoteStatement).all()))
+	return_dict['argument_count'] = str(len(DBDiscussionSession.query(Argument).all()))
+	return_dict['statement_count'] = str(len(DBDiscussionSession.query(Statement).all()))
 	return return_dict

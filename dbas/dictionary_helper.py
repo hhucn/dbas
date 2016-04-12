@@ -758,8 +758,6 @@ class DictionaryHelper(object):
 				text = _qh.get_text_for_statement_uid(premise.statement_uid)
 				premise_array.append({'title': text, 'id': premise.statement_uid})
 
-			text, uid = _qh.get_text_for_premisesgroup_uid(group_id, self.lang)
-
 			# get attack for each premise, so the urls will be unique
 			logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'premisesgroup_uid: ' + str(group_id) +
 			       ', conclusion_uid: ' + str(conclusion) +
@@ -830,9 +828,9 @@ class DictionaryHelper(object):
 			return_dict['is_reportable']	             = is_reportable
 			return_dict['is_admin']			             = _uh.is_user_in_group(authenticated_userid, 'admins')
 			return_dict['is_author']			         = _uh.is_user_in_group(authenticated_userid, 'authors')
-			return_dict['show_bar_icon']	             = show_bar_icon  # and False
-			return_dict['show_display_style']            = show_display_styles  # and False
-			return_dict['show_expert_icon']              = show_expert_icon  # and False
+			return_dict['show_bar_icon']	             = show_bar_icon and False
+			return_dict['show_display_style']            = show_display_styles and False
+			return_dict['show_expert_icon']              = show_expert_icon and False
 			return_dict['close_premise_container']	     = True
 			return_dict['close_statement_container']	 = True
 			return_dict['date']	                         = datetime.strftime(datetime.now(), '%d.%m.%Y')
