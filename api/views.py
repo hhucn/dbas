@@ -4,17 +4,22 @@ Introducing an API to enable external discussions.
 This is the entry point for the API. Here are views defined, which always return JSON objects
 which can then be used in external websites.
 
+.. note:: Methods **must not** have the same name as their assigned Service.
+
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from cornice import Service
+import json
+from urllib.parse import urlparse
 
-from .lib import json_bytes_to_dict, HTTP204, debug_start, debug_end, flatten
-from .references import store_reference
 from api.login import valid_token, validate_credentials, validate_login
+from cornice import Service
 from dbas.views import Dbas
 
-import json
+from .lib import HTTP204, debug_end, debug_start, flatten, json_bytes_to_dict, logger
+from .references import get_references_for_url, store_reference
+
+log = logger()
 
 #
 # CORS configuration
@@ -30,6 +35,7 @@ cors_policy = dict(enabled=True,
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
+# Argumentation stuff
 reaction = Service(name='api_reaction',
 				   path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
 				   description="Discussion Reaction",
@@ -57,7 +63,7 @@ zinit_blank = Service(name='api_init_blank',
 					  cors_policy=cors_policy)
 
 #
-# Add new data to DBAS
+# Add new data to D-BAS
 #
 start_statement = Service(name="start_statement",
                           path="/add/start_statement",
@@ -73,6 +79,14 @@ justify_premise = Service(name="justify_premise",
                           path="/add/justify_premise",
                           description="Add new justifying premises",
                           cors_policy=cors_policy)
+
+#
+# Get data from D-BAS' database
+#
+references = Service(name="references",
+                     path="/get/references",
+                     description="Query database to get stored references from site",
+                     cors_policy=cors_policy)
 
 #
 # Other Services
@@ -98,6 +112,7 @@ login = Service(name='login',
 def prepare_user_information(request):
 	"""
 	Check if user is authenticated, return prepared data for D-BAS.
+
 	:param request:
 	:return:
 	"""
@@ -113,7 +128,8 @@ def prepare_user_information(request):
 
 def prepare_data_assign_reference(request, func):
 	"""
-	Collect user informationen, prepare submitted data and store references into database.
+	Collect user information, prepare submitted data and store references into database.
+
 	:param request:
 	:param func:
 	:return:
@@ -135,10 +151,27 @@ def prepare_data_assign_reference(request, func):
 		raise HTTP204()
 
 
+def parse_host_and_path(request):
+	"""
+	Given the visitors referer link from *request*, parse the host and path to the article.
+
+	:param request: request
+	:return: host and path parsed from request
+	:rtype: str
+	"""
+	try:
+		data = json_bytes_to_dict(request.body)
+		return data["host"], data["path"]
+	except AttributeError:
+		log.error("[API/Reference] Could not look up origin.")
+		return None, None
+
+
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
 	"""
-	Return data from DBas discussion_reaction page
+	Return data from DBas discussion_reaction page.
+
 	:param request: request
 	:return: Dbas(request).discussion_reaction(True)
 	"""
@@ -149,7 +182,8 @@ def discussion_reaction(request):
 @justify.get(validators=validate_login)
 def discussion_justify(request):
 	"""
-	Return data from DBas discussion_justify page
+	Return data from DBas discussion_justify page.
+
 	:param request: request
 	:return: Dbas(request).discussion_justify(True)
 	"""
@@ -160,7 +194,8 @@ def discussion_justify(request):
 @attitude.get(validators=validate_login)
 def discussion_attitude(request):
 	"""
-	Return data from DBas discussion_attitude page
+	Return data from DBas discussion_attitude page.
+
 	:param request: request
 	:return: Dbas(request).discussion_attitude(True)
 	"""
@@ -171,7 +206,8 @@ def discussion_attitude(request):
 @issues.get(validators=validate_login)
 def issue_selector(request):
 	"""
-	Return data from DBas discussion_attitude page
+	Return data from DBas discussion_attitude page.
+
 	:param request: request
 	:return: Dbas(request).discussion_attitude(True)
 	"""
@@ -182,7 +218,8 @@ def issue_selector(request):
 @zinit.get(validators=validate_login)
 def discussion_init(request):
 	"""
-	Return data from DBas discussion_init page
+	Return data from DBas discussion_init page.
+
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
@@ -193,7 +230,8 @@ def discussion_init(request):
 @zinit_blank.get(validators=validate_login)
 def discussion_init(request):
 	"""
-	Return data from DBas discussion_init page
+	Return data from DBas discussion_init page.
+
 	:param request: request
 	:return: Dbas(request).discussion_init(True)
 	"""
@@ -208,6 +246,7 @@ def discussion_init(request):
 def add_start_statement(request):
 	"""
 	Add new start statement to issue.
+
 	:param request:
 	:return:
 	"""
@@ -218,6 +257,7 @@ def add_start_statement(request):
 def add_start_premise(request):
 	"""
 	Add new premise group.
+
 	:param request:
 	:return:
 	"""
@@ -228,10 +268,32 @@ def add_start_premise(request):
 def add_justify_premise(request):
 	"""
 	Add new justifying premise group.
+
 	:param request:
 	:return:
 	"""
 	return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
+
+
+#
+# Get data from D-BAS' database
+#
+@references.post()
+def get_references(request):
+	"""
+	Query database to get stored references from site. Generate a list with text versions of references.
+
+	:param request: request
+	:return: References assigned to the queried URL
+	"""
+	host, path = parse_host_and_path(request)
+	if host and path:
+		log.debug("[API/Reference] Returning references for %s%s" % (host, path))
+		refs_obj = get_references_for_url(host, path)
+		refs = [ref.reference for ref in refs_obj]
+		return {"references": refs}
+	else:
+		return {"status": "error", "message": "Could not parse your origin"}
 
 
 # =============================================================================
@@ -242,6 +304,7 @@ def add_justify_premise(request):
 def testing(request):
 	"""
 	Test user's credentials, return success if valid token and username is provided.
+
 	:param request:
 	:return:
 	"""
@@ -254,6 +317,7 @@ def user_login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
 	The function body is only executed, if the validator added a request.validated field.
+
 	:param request:
 	:return: token
 	"""

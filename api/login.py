@@ -6,17 +6,17 @@ Logic for user login, token generation and validation
 """
 
 import binascii
-import json
 import hashlib
+import json
 import os
-import transaction
-
 from datetime import datetime
 
+import transaction
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import Dbas
-from .lib import logger, HTTP401
+
+from .lib import HTTP401, logger
 
 log = logger()
 
@@ -31,6 +31,7 @@ def _create_salt(nickname):
 def _create_token(nickname, alg='sha512'):
 	"""
 	Use the system's urandom function to generate a random token and convert it to ASCII.
+
 	:return:
 	"""
 	salt = _create_salt(nickname)
@@ -40,6 +41,7 @@ def _create_token(nickname, alg='sha512'):
 def valid_token(request):
 	"""
 	Validate the submitted token. Checks if a user is logged in and prepares a dictionary, which is then passed to DBAS.
+
 	:param request:
 	:return:
 	"""
@@ -77,6 +79,7 @@ def valid_token(request):
 def validate_login(request):
 	"""
 	Takes token from request and validates it. Return true if logged in, else false.
+
 	:param request:
 	:return:
 	"""
@@ -92,6 +95,7 @@ def validate_login(request):
 def token_to_database(nickname, token):
 	"""
 	Store the newly created token in database.
+
 	:param nickname: user's nickname
 	:param token: new token to be stored
 	:return:
@@ -108,7 +112,8 @@ def token_to_database(nickname, token):
 
 def validate_credentials(request):
 	"""
-	Parse credentials from POST request and validate it against DBA-S' database
+	Parse credentials from POST request and validate it against DBA-S' database.
+
 	:param request:
 	:return:
 	"""

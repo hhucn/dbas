@@ -187,12 +187,13 @@ class Statement(DiscussionBase):
 
 class StatementReferences(DiscussionBase):
 	"""
-
+	From API: Reference to be stored and assigned to a statement.
 	"""
 	__tablename__ = 'statement_references'
 	uid = Column(Integer, primary_key=True)
 	reference = Column(Text, nullable=False)
-	origin = Column(Text, nullable=False)
+	host = Column(Text, nullable=False)
+	path = Column(Text, nullable=False)
 	author_uid = Column(Integer, ForeignKey('users.uid'), nullable=False)
 	statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
 	issue_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
@@ -202,18 +203,21 @@ class StatementReferences(DiscussionBase):
 	users = relationship('User', foreign_keys=[author_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, reference, origin, author_uid, statement_uid, issue_uid):
+	def __init__(self, reference, host, path, author_uid, statement_uid, issue_uid):
 		"""
+		Create Reference.
 
 		:param reference:
-		:param origin:
+		:param host:
+		:param path:
 		:param author_uid:
 		:param statement_uid:
 		:param issue_uid:
 		:return:
 		"""
 		self.reference = reference
-		self.origin = origin
+		self.host = host
+		self.path = path
 		self.author_uid = author_uid
 		self.statement_uid = statement_uid
 		self.issue_uid = issue_uid
@@ -269,6 +273,7 @@ class PremiseGroup(DiscussionBase):
 	def __init__(self, author):
 		"""
 		Initializes a row in current premisesGroup-table
+
 		:param author:
 		:return:
 		"""
@@ -568,7 +573,8 @@ class Notification(DiscussionBase):
 
 	def set_read(self, was_read):
 		"""
-		Sets validity of this record
+		Sets validity of this record.
+
 		:param was_read: boolean
 		:return: None
 		"""
