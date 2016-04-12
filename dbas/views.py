@@ -295,7 +295,7 @@ class Dbas(object):
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
-			if not logged_in and len(item_dict) == 0 or logged_in and len(item_dict) == 1:
+			if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 		else:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -831,7 +831,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_posted_statements', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
+		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - getting all text edits
@@ -845,7 +845,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_edits', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_edits_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
+		return_array = UserHandler().get_edits_of_user(self.request.authenticated_userid, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for arguments

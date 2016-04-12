@@ -42,7 +42,7 @@ class Validator:
 
 	def check_reaction(attacked_arg_uid, attacking_arg_uid, reaction):
 		"""
-		
+
 		:param attacking_arg_uid:
 		:param reaction:
 		:return:

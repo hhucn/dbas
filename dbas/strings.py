@@ -1535,7 +1535,7 @@ class TextGenerator(object):
 		_t = Translator(self.lang)
 
 		#  build some confrontation text
-		confrontation = confrontation[0:1].lower() + confrontation[1:]
+		confrontation = '<strong>' + confrontation[0:1].lower() + confrontation[1:] + '</strong>'
 		premise = premise[0:1].lower() + premise[1:]
 		sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
 

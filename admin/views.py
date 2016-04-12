@@ -1,14 +1,21 @@
-# Introducing an API to enable exports
+# Introducing an API to enable admin page
 #
 # @author Tobias Krauthoff
-# @email {meter, krauthoff}@cs.uni-duesseldorf.de
+# @email {krauthoff}@cs.uni-duesseldorf.de
 
 import json
-from dbas.lib import get_language
-from admin.lib import argument_overview
+
+from admin.lib import get_argument_overview, get_all_users, get_dashboard_infos
 from cornice import Service
-from dbas.logger import logger
 from pyramid.threadlocal import get_current_registry
+import transaction
+
+from dbas.dictionary_helper import DictionaryHelper
+from dbas.lib import get_language
+from dbas.logger import logger
+from dbas.user_management import UserHandler
+from dbas.views import project_name
+from dbas.views import Dbas
 
 #
 # CORS configuration
@@ -23,56 +30,56 @@ cors_policy = dict(enabled=True,
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
-# main_page = Service(name='main_page',
-#                     path='/main',
-#                     description="Admin Page",
-#                     cors_policy=cors_policy)
+dashboard = Service(name='dashboard_page',
+                    path='/main',
+                    description="Admin Page",
+                    renderer='templates/admin.pt',
+                    permission='everybody',  # or permission='use'
+                    cors_policy=cors_policy)
 
 all_arguments = Service(name='admin',
-                            path='/argument_overview',
-                            description="Argument Overview",
-                            cors_policy=cors_policy)
+                        path='/argument_overview',
+                        description="Argument Overview",
+                        cors_policy=cors_policy)
+
+
+@dashboard.get()
+def main_admin(request):
+	"""
+	View configuration for the content view. Only logged in user can reach this page.
+	:return: dictionary with title and project name as well as a value, weather the user is logged in
+	"""
+	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+	logger('Admin', 'main_admin', 'def')
+	should_log_out = UserHandler().update_last_action(transaction, request.authenticated_userid)
+	if should_log_out:
+		return Dbas(request).user_logout(True)
+
+	ui_locales = get_language(request, get_current_registry())
+	extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid)
+	users = get_all_users(request.authenticated_userid, ui_locales)
+	dashboard = get_dashboard_infos()
+
+	return {
+		'layout': Dbas.base_layout(),
+		'language': str(ui_locales),
+		'title': 'Admin',
+		'project': project_name,
+		'extras': extras_dict,
+		'users': users,
+		'dashboard': dashboard
+ 	}
 
 
 # =============================================================================
 # EXPORT-RELATED REQUESTS
 # =============================================================================
 
-# @view_config(renderer='dbas/templates/admin.pt', permission='everybody')  # or permission='use'
-# @main_page.get()
-# def main_admin(self):
-# 	"""
-# 	View configuration for the content view. Only logged in user can reach this page.
-# 	:return: dictionary with title and project name as well as a value, weather the user is logged in
-# 	"""
-# 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-# 	logger('main_admin', 'def', 'main')
-# 	should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-# 	if should_log_out:
-# 		return self.user_logout(True)
-#
-# 	_qh = QueryHelper()
-# 	ui_locales = _qh.get_language(self.request, get_current_registry())
-# 	extras_dict = DictionaryHelper().prepare_extras_dict('', False, False, False, False, False, False, ui_locales, self.request.authenticated_userid)
-# 	users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
-# 	dashboard = _qh.get_dashboard_infos()
-#
-# 	return {
-# 		'layout': self.base_layout(),
-# 		'language': str(ui_locales),
-# 		'title': 'Admin',
-# 		'project': project_name,
-# 		'extras': extras_dict,
-# 		'users': users,
-# 		'dashboard': dashboard
-# 	}
-
-
 @all_arguments.get()
 def get_argument_overview(request):
 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 	logger('Admin', 'get_argument_overview', 'main')
 	ui_locales = get_language(request, get_current_registry())
-	return_dict = argument_overview(request.authenticated_userid, ui_locales)
+	return_dict = get_argument_overview(request.authenticated_userid, ui_locales)
 
 	return json.dumps(return_dict, True)
