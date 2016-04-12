@@ -44,3 +44,6 @@ dbas/static/minimize.sh
 # Pycharm
 .idea/
 data/
+
+# Splinter
+C:\\nppdf32Log\\debuglog.txt

@@ -26,6 +26,10 @@ Execute these tests with::
 
  Edit ...
 
+
+Code
+----
+
 .. automodule:: dbas.tests
     :members:
 
@@ -72,3 +76,10 @@ Please:
     * use the *success*-paramter
 
 4. Have fun!
+
+
+Code
+----
+
+.. automodule:: tests.splinterTests
+    :members:
