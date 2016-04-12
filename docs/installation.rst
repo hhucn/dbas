@@ -48,7 +48,7 @@ Then follow these steps:
 
 Makefile
 ========
-List of all commands of our makefile.
+List of all commands of our Makefile.
 
 * make init_postgres
     Creates a user for postgres as well as both databases (discussion and news).
