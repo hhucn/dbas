@@ -1,14 +1,19 @@
-from .logger import logger
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 from .database import DBDiscussionSession
 from .database.discussion_model import User, TextVersion, Notification, Settings
 from .strings import Translator
 from sqlalchemy import and_
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
-
 
 class NotificationHelper:
+	"""
+	Todo
+	"""
 
 	def send_edit_text_notification(self, textversion, lang):
 		"""

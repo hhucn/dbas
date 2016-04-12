@@ -1,3 +1,9 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 from datetime import datetime
 
 import collections
@@ -15,13 +21,10 @@ from .strings import Translator
 from .user_management import UserHandler
 from .url_manager import UrlManager
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
-
 
 class QueryHelper(object):
 	"""
-
+	Todo
 	"""
 
 	def __init__(self):
@@ -35,6 +38,7 @@ class QueryHelper(object):
 	def get_text_for_argument_uid(self, uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False, user_changed_opinion=False):
 		"""
 		Returns current argument as string like conclusion, because premise1 and premise2
+
 		:param uid: int
 		:param lang: str
 		:param with_strong_html_tag: Boolean
@@ -118,6 +122,7 @@ class QueryHelper(object):
 	def get_undermines_for_argument_uid(self, argument_uid, lang):
 		"""
 		Calls __get_undermines_for_premises('reason', premises_as_statements_uid)
+
 		:param argument_uid: uid of the specified argument
 		:param lang: ui_locales
 		:return: dictionary
@@ -140,6 +145,7 @@ class QueryHelper(object):
 	def get_overbids_for_argument_uid(self, argument_uid, lang):
 		"""
 		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, True)
+
 		:param argument_uid: uid of the specified argument
 		:param lang:
 		:return: dictionary
@@ -150,6 +156,7 @@ class QueryHelper(object):
 	def get_undercuts_for_argument_uid(self, argument_uid, lang):
 		"""
 		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, False)
+
 		:param argument_uid:
 		:param lang:
 
@@ -161,6 +168,7 @@ class QueryHelper(object):
 	def get_rebuts_for_argument_uid(self, argument_uid, lang):
 		"""
 		Calls self.get_rebuts_for_arguments_conclusion_uid('reason', Argument.conclusion_uid)
+
 		:param argument_uid: uid of the specified argument
 		:param lang:
 		:return: dictionary
@@ -455,6 +463,7 @@ class QueryHelper(object):
 	def get_title_for_issue_uid(self, uid):
 		"""
 		Returns the title or none for the issue uid
+
 		:param uid: Issue.uid
 		:return: String
 		"""
@@ -465,6 +474,7 @@ class QueryHelper(object):
 	def get_slug_for_issue_uid(self, uid):
 		"""
 		Returns the slug of the title or none for the issue uid
+
 		:param uid: Issue.uid
 		:return: String
 		"""
@@ -475,6 +485,7 @@ class QueryHelper(object):
 	def get_info_for_issue_uid(self, uid):
 		"""
 		Returns the slug or none for the issue uid
+
 		:param uid: Issue.uid
 		:return: String
 		"""
@@ -485,6 +496,7 @@ class QueryHelper(object):
 	def get_date_for_issue_uid(self, uid, lang):
 		"""
 		Returns the date or none for the issue uid
+
 		:param uid: Issue.uid
 		:param lang: ui_locales
 		:return: String
@@ -496,6 +508,7 @@ class QueryHelper(object):
 	def prepare_json_of_issue(self, uid, application_url, lang, for_api):
 		"""
 		Prepares slug, info, argument count and the date of the issue as dict
+
 		:param uid:
 		:param application_url:
 		:param lang:
@@ -606,6 +619,7 @@ class QueryHelper(object):
 	def set_statement(self, transaction, statement, user, is_start, issue):
 		"""
 		Saves statement for user
+
 		:param transaction: current transaction
 		:param statement: given statement
 		:param user: given user
@@ -893,6 +907,7 @@ class QueryHelper(object):
 	def get_id_of_slug(self, slug, request, save_id_in_session):
 		"""
 		Returns the uid
+
 		:param slug: slug
 		:param request: self.request for a fallback
 		:param save_id_in_session:
@@ -952,6 +967,7 @@ class QueryHelper(object):
 	def get_language(self, request, current_registry):
 		"""
 		Returns current ui locales code which is saved in current cookie or the registry
+
 		:param request: self.request
 		:param current_registry: get_current_registry()
 		:return: language abbreviation
@@ -990,6 +1006,7 @@ class QueryHelper(object):
 	def get_logfile_for_statement(self, uid, lang):
 		"""
 		Returns the logfile for the given statement uid
+
 		:param uid: requested statement uid
 		:param lang: ui_locales
 		:return: dictionary with the logfile-rows
@@ -1049,6 +1066,7 @@ class QueryHelper(object):
 	def set_news(self, transaction, title, text, user):
 		"""
 		Sets a new news into the news table
+
 		:param transaction: current transaction
 		:param title: news title
 		:param text: news text
@@ -1293,6 +1311,7 @@ class QueryHelper(object):
 	def correct_statement(self, transaction, user, uid, corrected_text, lang):
 		"""
 		Corrects a statement
+
 		:param transaction: current transaction
 		:param user: requesting user
 		:param uid: requested statement uid

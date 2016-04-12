@@ -1,17 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Statement, PremiseGroup, Premise, VoteStatement
-from .logger import logger
+from .database.discussion_model import Statement, Premise, VoteStatement
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 class Translator(object):
+	"""
+	Class for translating string
+	"""
 
 	def __init__(self, lang):
 		"""
+		Initializes keywords
 
 		:param lang: current language
 		:return:
@@ -445,6 +451,7 @@ class Translator(object):
 
 	def set_up_en_dict(self):
 		"""
+		Sets up the englisch dictionary
 
 		:return: dictionary for the english language
 		"""
@@ -885,6 +892,7 @@ class Translator(object):
 
 	def set_up_de_dict(self):
 		"""
+		Sets up the german dictionary
 
 		:return: dictionary for the german language
 		"""
@@ -1325,6 +1333,7 @@ class Translator(object):
 	def get(self, sid):
 		"""
 		Returns an localized string
+
 		:param sid: string identifier
 		:return: string
 		"""
@@ -1345,9 +1354,13 @@ class Translator(object):
 
 
 class TextGenerator(object):
+	"""
+	Generates text for D-BAS
+	"""
 
 	def __init__(self, lang):
 		"""
+		Sets current language
 
 		:param lang: current language
 		:return:
@@ -1357,6 +1370,7 @@ class TextGenerator(object):
 	def get_text_for_add_premise_container(self, confrontation, premise, attack_type, conclusion, is_supportive):
 		"""
 		Based on the users reaction, text will be build.
+
 		:param confrontation: choosen confrontation
 		:param premise: current premise
 		:param attack_type: type of the attack
@@ -1402,6 +1416,7 @@ class TextGenerator(object):
 	                                                is_supportive, is_logged_in):
 		"""
 		Based on the users reaction, text will be build.
+
 		:param premise: current premise
 		:param attack_type: type of the attack
 		:param conclusion: current conclusion
@@ -1464,13 +1479,13 @@ class TextGenerator(object):
 	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False):
 		"""
 
-		:param premises:
-		:param conclusion:
-		:param start_lower_case:
-		:param with_no_opinion_text:
-		:param is_attacking:
-		:param is_dont_know:
-		:return:
+		:param premises: String
+		:param conclusion: String
+		:param start_lower_case: Boolean
+		:param with_no_opinion_text: Boolean
+		:param is_attacking: Boolean
+		:param is_dont_know: Boolean
+		:return: dict()
 		"""
 		_t = Translator(self.lang)
 		ret_dict = dict()
@@ -1521,16 +1536,16 @@ class TextGenerator(object):
 	                               reply_for_argument, user_is_attacking, user_arg):
 		"""
 
-		:param premise:
-		:param conclusion:
-		:param sys_conclusion:
-		:param supportive:
-		:param attack:
-		:param confrontation:
-		:param reply_for_argument:
-		:param user_is_attacking:
-		:param user_arg:
-		:return:
+		:param premise: String
+		:param conclusion: String
+		:param sys_conclusion: String
+		:param supportive: String
+		:param attack: String
+		:param confrontation: String
+		:param reply_for_argument: Boolean
+		:param user_is_attacking: Boolean
+		:param user_arg: String
+		:return: String
 		"""
 		_t = Translator(self.lang)
 
@@ -1582,10 +1597,10 @@ class TextGenerator(object):
 	def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
 		"""
 
-		:param premises:
-		:param conclusion:
-		:param start_lower_case:
-		:return:
+		:param premises: String
+		:param conclusion: String
+		:param start_lower_case: Boolean
+		:return: dict()
 		"""
 		_t = Translator(self.lang)
 		ret_dict = dict()

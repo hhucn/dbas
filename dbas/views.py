@@ -1,3 +1,10 @@
+"""
+Core component of DBAS.
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
+
 import transaction
 import requests
 import json
@@ -33,15 +40,16 @@ project_name = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
-
 
 class Dbas(object):
+	"""
+	Provides every view and ajax-interface.
+	"""
 
 	def __init__(self, request):
 		"""
 		Object initialization
+
 		:param request: init http request
 		:return: json-dict()
 		"""
@@ -73,6 +81,7 @@ class Dbas(object):
 	def main_page(self):
 		"""
 		View configuration for the main page
+
 		:return: HTTP 200 with several information
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -100,6 +109,7 @@ class Dbas(object):
 	def discussion_init(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
+
 		:param for_api: Boolean
 		:param api_data: Dictionary, containing data of a user who logged in via API
 		:return: dictionary
@@ -162,6 +172,7 @@ class Dbas(object):
 	def discussion_attitude(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
+
 		:param for_api: Boolean
 		:param api_data:
 		:return: dictionary
@@ -212,6 +223,7 @@ class Dbas(object):
 	def discussion_justify(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
+
 		:param for_api: Boolean
 		:param api_data:
 		:return: dictionary
@@ -314,6 +326,7 @@ class Dbas(object):
 	def discussion_reaction(self, for_api=False, api_data=None):
 		"""
 		View configuration for the content view.
+
 		:param for_api: Boolean
 		:param api_data:
 		:return: dictionary
@@ -409,6 +422,7 @@ class Dbas(object):
 	def discussion_choose(self, for_api=False, api_data=None):
 		"""
 		View configuration for the choosing view.
+
 		:param for_api: Boolean
 		:param api_data:
 		:return: dictionary
@@ -464,6 +478,7 @@ class Dbas(object):
 	def main_contact(self):
 		"""
 		View configuration for the contact view.
+
 		:return: dictionary with title and project username as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -540,10 +555,10 @@ class Dbas(object):
 				       + _t.get(_t.mail) + ': ' + email + '\n'\
 				       + _t.get(_t.phone) + ': ' + phone + '\n'\
 				       + _t.get(_t.message) + ':\n' + content
-				EmailHelper().send_mail(self.request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
+				EmailHelper.send_mail(self.request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
 				body = '* THIS IS A COPY OF YOUR MAIL *\n\n' + body
 				subject = '[INFO] ' + subject
-				send_message, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
+				send_message, message = EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
 				if send_message:
 					spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
@@ -572,6 +587,7 @@ class Dbas(object):
 	def main_settings(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -651,6 +667,7 @@ class Dbas(object):
 	def main_notifications(self):
 		"""
 		View configuration for the content view. Only logged in user can reach this page.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -702,6 +719,7 @@ class Dbas(object):
 	def main_imprint(self):
 		"""
 		View configuration for the imprint.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -726,6 +744,7 @@ class Dbas(object):
 	def notfound(self):
 		"""
 		View configuration for the 404 page.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -766,7 +785,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_get_user_history', renderer='json', check_csrf=True)
 	def get_user_history(self):
 		"""
-		Request the complete user track
+		Request the complete user track.
+
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -836,7 +856,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_delete_user_history', renderer='json', check_csrf=True)
 	def delete_user_history(self):
 		"""
-		Request the complete user history
+		Request the complete user history.
+
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -853,7 +874,8 @@ class Dbas(object):
 	@view_config(route_name='ajax_delete_statistics', renderer='json', check_csrf=True)
 	def delete_statistics(self):
 		"""
-		Request the complete user history
+		Request the complete user history.
+
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -871,6 +893,7 @@ class Dbas(object):
 	def user_login(self, nickname=None, password=None, for_api=False, keep_login=False):
 		"""
 		Will login the user by his nickname and password
+
 		:param nickname: Manually provide nickname (e.g. from API)
 		:param password: Manually provide password (e.g. from API)
 		:param for_api: Manually provide boolean (e.g. from API)
@@ -945,6 +968,7 @@ class Dbas(object):
 	def user_logout(self, redirect_to_main=False):
 		"""
 		Will logout the user
+
 		:param redirect_to_main: Boolean
 		:return: HTTPFound with forgotten headers
 		"""
@@ -966,6 +990,7 @@ class Dbas(object):
 	def user_registration(self):
 		"""
 		Registers new user
+
 		:return: dict() with success and message
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1025,7 +1050,7 @@ class Dbas(object):
 				else:
 					# creating a new user with hashed password
 					logger('user_registration', 'main', 'Adding user')
-					hashed_password = PasswordHandler().get_hashed_password(password)
+					hashed_password = PasswordHandler.get_hashed_password(password)
 					newuser = User(firstname=firstname,
 					               surname=lastname,
 					               email=email,
@@ -1067,6 +1092,7 @@ class Dbas(object):
 	def user_password_request(self):
 		"""
 		Sends an email, when the user requests his password
+
 		:return: dict() with success and message
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1088,8 +1114,8 @@ class Dbas(object):
 			# does the user exists?
 			if db_user:
 				# get password and hashed password
-				pwd = PasswordGenerator().get_rnd_passwd()
-				hashedpwd = PasswordHandler().get_hashed_password(pwd)
+				pwd = PasswordGenerator.get_rnd_passwd()
+				hashedpwd = PasswordHandler.get_hashed_password(pwd)
 
 				# set the hased one
 				db_user.password = hashedpwd
@@ -1099,7 +1125,7 @@ class Dbas(object):
 				body = _t.get(_t.nicknameIs) + db_user.nickname + '\n'
 				body += _t.get(_t.newPwdIs) + pwd
 				subject = _t.get(_t.dbasPwdRequest)
-				reg_success, message = EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
+				reg_success, message = EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
 
 				if reg_success:
 					success = message
@@ -1124,6 +1150,7 @@ class Dbas(object):
 	def set_user_receive_information_settings(self):
 		"""
 		Will logout the user
+
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1163,6 +1190,7 @@ class Dbas(object):
 	def set_new_start_statement(self, for_api=False, api_data=None):
 		"""
 		Inserts a new statement into the database, which should be available at the beginning
+
 		:param for_api: boolean
 		:param api_data: api_data
 		:return: a status code, if everything was successful
@@ -1211,6 +1239,7 @@ class Dbas(object):
 	def set_new_start_premise(self, for_api=False, api_data=None):
 		"""
 		Sets new premise for the start
+
 		:param for_api: boolean
 		:param api_data:
 		:return: json-dict()
@@ -1260,6 +1289,7 @@ class Dbas(object):
 	def set_new_premises_for_argument(self, for_api=False, api_data=None):
 		"""
 		Sets a new premise for an argument
+
 		:param api_data:
 		:param for_api: boolean
 		:return: json-dict()
@@ -1312,6 +1342,7 @@ class Dbas(object):
 	def set_correcture_of_statement(self):
 		"""
 		Sets a new textvalue for a statement
+
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1343,6 +1374,7 @@ class Dbas(object):
 	def set_notification_read(self):
 		"""
 		Set notification as read
+
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1369,6 +1401,7 @@ class Dbas(object):
 	def set_notification_delete(self):
 		"""
 		Request the removal of a notification
+
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1430,6 +1463,7 @@ class Dbas(object):
 	def get_logfile_for_statement(self):
 		"""
 		Returns the changelog of a statement
+
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1458,6 +1492,7 @@ class Dbas(object):
 	def get_shortened_url(self):
 		"""
 		Shortens url with the help of a python lib
+
 		:return: dictionary with shortend url
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1505,6 +1540,7 @@ class Dbas(object):
 	def get_news(self):
 		"""
 		ajax interface for getting news
+
 		:return: json-set with all news
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1517,6 +1553,7 @@ class Dbas(object):
 	def get_infos_about_argument(self):
 		"""
 		ajax interface for getting a dump
+
 		:return: json-set with everything
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1533,21 +1570,6 @@ class Dbas(object):
 		except KeyError as e:
 			logger('get_infos_about_argument', 'error', repr(e))
 			return_dict['error'] = _t.get(_t.internalError)
-
-		return json.dumps(return_dict, True)
-
-	# ajax - for getting all users
-	@view_config(route_name='ajax_all_users', renderer='json')
-	def get_all_users(self):
-		"""
-		ajax interface for getting a dump
-		:return: json-set with everything
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('get_all_users', 'def', 'main')
-		ui_locales = get_language(self.request, get_current_registry())
-
-		return_dict = QueryHelper().get_all_users(self.request.authenticated_userid, ui_locales)
 
 		return json.dumps(return_dict, True)
 
@@ -1593,6 +1615,7 @@ class Dbas(object):
 	def switch_language(self):
 		"""
 		Switches the language
+
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1615,6 +1638,7 @@ class Dbas(object):
 	def send_news(self):
 		"""
 		ajax interface for settings news
+
 		:return: json-set with new news
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1638,6 +1662,7 @@ class Dbas(object):
 	def fuzzy_search(self, for_api=False):
 		"""
 		ajax interface for fuzzy string search
+
 		:param for_api: boolean
 		:return: json-set with all matched strings
 		"""
@@ -1658,7 +1683,7 @@ class Dbas(object):
 				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
 			elif mode == '1':  # edit statement popup
 				statement_uid = self.request.params['extra']
-				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid, issue)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid)
 			elif mode == '2':  # start premise
 				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
 			elif mode == '3':  # adding reasons

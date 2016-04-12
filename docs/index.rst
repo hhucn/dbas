@@ -34,29 +34,13 @@ Server Documentation
 
 
 Components Documentation
-=========================
+========================
 
 .. toctree::
     :maxdepth: 2
     :glob:
 
     components/index
-
-
-Tests
-=====
-.. toctree::
-    tests
-
-
-Export Documentation
-====================
-
-.. toctree::
-    :maxdepth: 2
-    :glob:
-
-    export/index
 
 
 Pyramid-Specific Stuff

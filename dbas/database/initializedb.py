@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 
 import os
 import sys
@@ -13,9 +19,6 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
 	Notification, Settings, VoteArgument, VoteStatement, Bubble, Breadcrumb, StatementReferences
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 def usage(argv):
@@ -335,19 +338,18 @@ def setup_up_users(session):
 	session.flush()
 
 	# adding some dummy users
-	pwhandler = PasswordHandler()
-	pwt = pwhandler.get_hashed_password('iamatestuser2016')
-	pw0 = pwhandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-	pw1 = pwhandler.get_hashed_password('admin')
-	pw2 = pwhandler.get_hashed_password('tobias')
-	pw3 = pwhandler.get_hashed_password('martin')
-	pw4 = pwhandler.get_hashed_password('kalman')
-	pw5 = pwhandler.get_hashed_password('mladen')
-	pw6 = pwhandler.get_hashed_password('drtobias')
-	pw7 = pwhandler.get_hashed_password('michael')
-	pw8 = pwhandler.get_hashed_password('gregor')
-	pw9 = pwhandler.get_hashed_password('christian')
-	pw10 = pwhandler.get_hashed_password('alexander')
+	pwt = PasswordHandler.get_hashed_password('iamatestuser2016')
+	pw0 = PasswordHandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
+	pw1 = PasswordHandler.get_hashed_password('admin')
+	pw2 = PasswordHandler.get_hashed_password('tobias')
+	pw3 = PasswordHandler.get_hashed_password('martin')
+	pw4 = PasswordHandler.get_hashed_password('kalman')
+	pw5 = PasswordHandler.get_hashed_password('mladen')
+	pw6 = PasswordHandler.get_hashed_password('drtobias')
+	pw7 = PasswordHandler.get_hashed_password('michael')
+	pw8 = PasswordHandler.get_hashed_password('gregor')
+	pw9 = PasswordHandler.get_hashed_password('christian')
+	pw10 = PasswordHandler.get_hashed_password('alexander')
 	usert = User(firstname='i am a', surname='testuser', nickname='test', email='tobias.krauthoff@hhu.de', password=pwt, group=group2.uid, gender='-')
 	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
 	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')

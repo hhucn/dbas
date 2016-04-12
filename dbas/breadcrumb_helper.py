@@ -1,3 +1,9 @@
+"""
+Class for managing breadcrumbs of each user.
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import re
 from sqlalchemy import and_
 from slugify import slugify
@@ -8,21 +14,21 @@ from .logger import logger
 from .strings import Translator
 from .query_helper import QueryHelper
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
-
 
 class BreadcrumbHelper(object):
+	"""
+	TODO
+	"""
 
 	def save_breadcrumb(self, path, user, session_id, transaction, lang):
 		"""
+		Saves curren path as breadcrumb for the user
 
-		:param path:
-		:param user:
-		:param session_id:
-		:param transaction:
-		:param lang:
-
+		:param path: request.past
+		:param user: User.nickname
+		:param session_id: request.session_id
+		:param transaction: transaction
+		:param lang: ui_locales
 		:return: all breadcrumbs, boolean (if a crumb was inserted)
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -67,11 +73,12 @@ class BreadcrumbHelper(object):
 
 	def get_breadcrumbs(self, user, session_id, lang):
 		"""
+		Returns list with breadcrumbs for the given user
 
-		:param user:
-		:param session_id:
-		:param lang:
-		:return:
+		:param user: User.nickname
+		:param session_id: request.session_id
+		:param lang: ui_locales
+		:return: Array of breadcrumb-object with the fields: index, uid, url, text
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
@@ -110,10 +117,11 @@ class BreadcrumbHelper(object):
 	@staticmethod
 	def __get_text_for_url__(url, lang):
 		"""
+		Interprets the given url and returns situation-based text.
 
-		:param url:
-		:param lang:
-		:return:
+		:param url: String
+		:param lang: ui_locales
+		:return: String
 		"""
 		_t = Translator(lang)
 		_qh = QueryHelper()
@@ -173,9 +181,10 @@ class BreadcrumbHelper(object):
 	def del_all_breadcrumbs_of_user(self, transaction, user, session_id=0):
 		"""
 		Deletes the complete breadcrumbs of given user
-		:param transaction: current transaction
-		:param user: current user
-		:param session_id: current session id
+
+		:param transaction: transaction
+		:param user: User.nickname
+		:param session_id: request.session_id
 		:return: undefined
 		"""
 
@@ -207,11 +216,12 @@ class BreadcrumbHelper(object):
 	@staticmethod
 	def __delete_breadcrumbs_from_uid(db_user, uid, session_id):
 		"""
+		Deletes all breadcrumbs with uid greater than given uid
 
-		:param db_user:
-		:param uid:
-		:param session_id:
-		:return:
+		:param db_user: User
+		:param uid: Argument.uid
+		:param session_id: request.session.id
+		:return: undefined
 		"""
 		# getting all breadcrumbs for deleting
 		logger('BreadcrumbHelper', '__delete_breadcrumbs_from_uid', 'user ' + str(db_user.uid) +

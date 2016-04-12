@@ -1,3 +1,10 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
+
 import random
 import hashlib
 from urllib import parse
@@ -11,14 +18,15 @@ from .logger import logger
 
 from .strings import Translator
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
-
-class PasswordGenerator(object):
+class PasswordGenerator:
+	"""
+	Provides method for generating password
+	"""
 
 	# http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
-	def get_rnd_passwd(self):
+	@staticmethod
+	def get_rnd_passwd():
 		"""
 		Generates a password with the length of 10 out of ([a-z][A-Z][+-*/#!*?])+
 		:return: new secure password
@@ -45,21 +53,32 @@ class PasswordGenerator(object):
 		return pwstring
 
 
-class PasswordHandler(object):
+class PasswordHandler:
+	"""
+	Handler for password
+	"""
 
-	def get_hashed_password(self, password):
+	def get_hashed_password(password):
 		"""
+		Returns encrypted password
 
 		:param password:
-		:return:
+		:return: String
 		"""
 		manager = BCRYPTPasswordManager()
 		return manager.encode(password)
 
 
 class UserHandler(object):
+	"""
+	Handler for user-accounts
+	"""
 
 	def __init__(self):
+		"""
+		Initialie default values
+		:return:
+		"""
 		self.timeout = 3600
 
 	def update_last_action(self, transaction, nick):
@@ -97,6 +116,7 @@ class UserHandler(object):
 	def is_user_in_group(self, nickname, groupname):
 		"""
 		Returns boolean if the user is in the group
+
 		:param nickname: User.nickname
 		:param groupname: Group.name
 		:return: Boolean
@@ -108,6 +128,7 @@ class UserHandler(object):
 	def is_user_admin(self, user):
 		"""
 		Check, if the given uid has admin rights or is admin
+
 		:param user: current user name
 		:return: true, if user is admin, false otherwise
 		"""
@@ -118,6 +139,7 @@ class UserHandler(object):
 	def get_profile_picture(self, user):
 		"""
 		Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
+
 		:param user: User
 		:return: String
 		"""
@@ -130,6 +152,7 @@ class UserHandler(object):
 	def is_user_author(self, user):
 		"""
 		Check, if the given uid has admin rights or is admin
+
 		:param user: current user name
 		:return: true, if user is admin, false otherwise
 		"""
@@ -146,6 +169,7 @@ class UserHandler(object):
 	def is_user_logged_in(self, user):
 		"""
 		Checks if the user is logged in
+
 		:param user: current user name
 		:return: user or None
 		"""
@@ -154,6 +178,7 @@ class UserHandler(object):
 	def get_random_anti_spam_question(self, lang):
 		"""
 		Returns a random math question
+
 		:param lang: string
 		:return: question, answer
 		"""
@@ -367,8 +392,7 @@ class UserHandler(object):
 				message = _t.get(_t.oldPwdWrong)  # 'Your old password is wrong.'
 				error = True
 			else:
-				password_handler = PasswordHandler()
-				hashed_pw = password_handler.get_hashed_password(new_pw)
+				hashed_pw = PasswordHandler.get_hashed_password(new_pw)
 
 				# set the hased one
 				user.password = hashed_pw
