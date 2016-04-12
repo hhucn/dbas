@@ -4,7 +4,6 @@ Core component of DBAS.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-
 import transaction
 import requests
 import json
