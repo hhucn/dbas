@@ -230,7 +230,7 @@ function Helper() {
 	this.getMaxSizeOfDiscussionViewContainer = function(){
 		var bar, innerHeight, list;
 		bar = $('#header-container');
-		list = $('#discussions-space-list');
+		list = $('#' + discussionSpaceListId);
 		innerHeight = this.getMaxSizeOfGraphViewContainer();
 		innerHeight -= bar.outerHeight(true);
 		innerHeight -= list.outerHeight(true);
