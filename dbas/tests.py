@@ -5,14 +5,14 @@ from webtest import TestApp
 from dbas.views import Dbas
 from dbas import main
 from dbas.user_management import PasswordHandler
-from dbas.database import DBDiscussionSession, initializedb, DiscussionBase
+from dbas.database import DBDiscussionSession, initializedb
 from dbas.database.discussion_model import Group, User
 from mock import Mock
 from paste.deploy.loadwsgi import appconfig
 from pyramid import testing
 from pyramid_mailer.mailer import DummyMailer
 from pyramid_mailer.message import Message
-from sqlalchemy import engine_from_config, create_engine
+from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 
 # @author Tobias Krauthoff
@@ -69,29 +69,31 @@ class DBASTestCase(unittest.TestCase):
 
 	def setUp(self):
 		print("DBASTestCase: setUp")
-		self.engine = engine_from_config(settings, prefix='sqlalchemy-discussion.')
-		self.Session = sessionmaker()
-		connection = self.engine.connect()
-		# begin a non-ORM transaction
-		self.trans = connection.begin()
-		# bind an individual Session to the connection
-		# Session.configure(bind=connection)
-		self.session = self.Session(bind=connection)
-		DBDiscussionSession.session = self.session
+		# self.engine = engine_from_config(settings, prefix='sqlalchemy-discussion.')
+		# self.Session = sessionmaker()
+		# connection = self.engine.connect()
+		# # begin a non-ORM transaction
+		# self.trans = connection.begin()
+		# # bind an individual Session to the connection
+		# # Session.configure(bind=connection)
+		# self.session = self.Session(bind=connection)
+		# DBDiscussionSession.session = self.session
+
+		self.config = testing.setUp()
+		DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 	def tearDown(self):
 		# rollback - everything that happened with the
 		# Session above (including calls to commit())
 		# is rolled back.
 		testing.tearDown()
-		self.trans.rollback()
-		self.session.close()
+		# self.trans.rollback()
+		# self.session.close()
 
 
 # skip the routes, templates, etc. So let’s setup our Unit Test DBDiscussionSession class
 class UnitTestDBAS(DBASTestCase):
 	def setUp(self):
-		print("UnitTestDBDiscussionSession: setUp")
 		self.config = testing.setUp(request=testing.DummyRequest())
 		super(UnitTestDBAS, self).setUp()
 		self.config = Setup().add_routes(self.config)
@@ -152,190 +154,190 @@ class ViewMainTests(IntegrationTestDBAS):
 		response = Dbas(request).main_page()
 		self.assertEqual('Main', response['title'])
 
-# class ViewContactTests(UnitTestDBAS):
-# 	def _callFUT(self, request):
-# 		print('ViewTest: _callFUT')
-# 		return Dbas.main_contact(request)
-#
-# 	def test_contact(self):
-# 		print('ViewTest: test_contact')
-# 		request = testing.DummyRequest()
-# 		response = Dbas(request).main_contact()
-# 		self.assertEqual('Contact', response['title'])
-#
-#
-# class ViewSettingsTests(UnitTestDBAS):
-# 	def _callFUT(self, request):
-# 		print('ViewTest: _callFUT')
-# 		return Dbas.main_settings(request)
-#
-# 	def test_settings(self):
-# 		print('ViewTest: test_settings')
-# 		request = testing.DummyRequest()
-# 		response = Dbas(request).main_settings()
-# 		self.assertEqual('Settings', response['title'])
-#
-#
-# class ViewMessagesTests(UnitTestDBAS):
-# 	def _callFUT(self, request):
-# 		print('ViewTest: _callFUT')
-# 		return Dbas.main_notifications(request)
-#
-# 	def test_notification(self):
-# 		print('ViewTest: test_notification')
-# 		request = testing.DummyRequest()
-# 		response = Dbas(request).main_notifications()
-# 		self.assertEqual('Messages', response['title'])
-#
-#
-# class ViewAdminTests(UnitTestDBAS):
-# 	def _callFUT(self, request):
-# 		print('ViewTest: _callFUT')
-# 		return Dbas.main_admin(request)
-#
-# 	def test_admin(self):
-# 		print('ViewTest: test_admin')
-# 		request = testing.DummyRequest()
-# 		response = Dbas(request).main_admin()
-# 		self.assertEqual('Admin', response['title'])
-#
-#
-# class ViewNewsTests(UnitTestDBAS):
-# 	def _callFUT(self, request):
-# 		print('ViewTest: _callFUT')
-# 		return Dbas.main_news(request)
-#
-# 	def test_news(self):
-# 		print('ViewTest: test_news')
-# 		request = testing.DummyRequest()
-# 		response = Dbas(request).main_news()
-# 		self.assertEqual('News', response['title'])
-#
-#
-# class ViewImprintTests(UnitTestDBAS):
-# 	def _callFUT(self, request):
-# 		print('ViewTest: _callFUT')
-# 		return Dbas.main_imprint(request)
-#
-# 	def test_imprint(self):
-# 		print('ViewTest: test_imprint')
-# 		request = testing.DummyRequest()
-# 		response = Dbas(request).main_imprint()
-# 		self.assertEqual('Imprint', response['title'])
-#
-#
-# ##########################################################################################################
-# ##########################################################################################################
-#
-#
-# # check, if every site responds with 200 except the error page
-# class FunctionalViewTests(IntegrationTestDBAS):
-# 	editor_login       = '/ajax_user_login?user=editor&password=test&keep_login=false&url=http://localhost:4284/discuss'
-# 	viewer_wrong_login = '/ajax_user_login?user=guest1&password=fooo&keep_login=false&url=http://localhost:4284/discuss'
-# 	logout             = '/ajax_user_logout'
-#
-# 	# testing main page
-# 	def test_home(self):
-# 		print("FunctionalTests: home")
-# 		res = self.testapp.get('/', status=200)
-# 		self.assertIn(b'<span>This work is part of the graduate school on</span>', res.body)
-#
-# 	# testing contact page
-# 	def test_contact(self):
-# 		print("FunctionalTests: contact")
-# 		res = self.testapp.get('/contact', status=200)
-# 		self.assertIn(b'<p class="text-center">Feel free to drop us a line a', res.body)
-#
-# 	# testing contact page
-# 	def test_imprint(self):
-# 		print("FunctionalTests: imprint")
-# 		res = self.testapp.get('/imprint', status=200)
-# 		self.assertIn(b'Imprint', res.body)
-#
-# 	# testing a unexisting page
-# 	def test_unexisting_page(self):
-# 		print("FunctionalTests: unexisting_page")
-# 		res = self.testapp.get('/SomePageYouWontFind', status=404)
-# 		self.assertIn(b'404 Error', res.body)
-# 		self.assertIn(b'SomePageYouWontFind', res.body)
-#
-# 	# testing successful log in
-# 	def test_successful_log_in(self):
-# 		print("FunctionalTests: successful_log_in")
-# 		res = self.testapp.get('http://localhost:4284' + self.editor_login, status=200)
-# 		self.assertEqual(res.location, 'http://localhost:4284/discuss')
-#
-# 	# testing failed log in
-# 	def test_failed_log_in(self):
-# 		print("FunctionalTests: failed_log_in")
-# 		res = self.testapp.get(self.viewer_wrong_login, status=200)
-# 		self.assertTrue(b'User / Password do not match' in res.body)
-#
-# 	# testing wheather the login link is there, when we are logged in
-# 	def test_logout_link_present_when_logged_in(self):
-# 		print("FunctionalTests: logout_link_present_when_logged_in")
-# 		self.testapp.get(self.editor_login, status=200)
-# 		res = self.testapp.get('/', status=200)
-# 		self.assertIn(b'Logout', res.body)
-#
-# 	# testing wheather the logout link is there, when we are logged out
-# 	def test_logout_link_not_present_after_logged_out(self):
-# 		print("FunctionalTests: logout_link_not_present_after_logged_out")
-# 		self.testapp.get(self.editor_login, status=200)
-# 		self.testapp.get('/', status=200)
-# 		res = self.testapp.get(self.logout, status=200)
-# 		self.assertTrue(b'Logout' not in res.body)
-#
-# 	# testing to get the settings page when logged out / logged in
-# 	def test_settings_only_when_logged_in(self):
-# 		print("FunctionalTests: settings_only_when_logged_in")
-# 		res = self.testapp.get('/settings', status=200)
-# 		self.assertNotIn(b'Settings', res.body)  # due to login error
-# 		self.testapp.get(self.editor_login, status=200)
-# 		res = self.testapp.get('/settings', status=200)
-# 		self.assertIn(b'Settings', res.body)
-#
-# ##########################################################################################################
-# ##########################################################################################################
-#
-#
-# # checks for the email-connection
-# class FunctionalEMailTests(IntegrationTestDBAS):
-# 	# testing the email - send
-# 	def test_email_send(self):
-# 		print("FunctionalTests: email_send")
-# 		self.testapp.get('/contact', status=200)
-# 		mailer = DummyMailer()
-# 		mailer.send(Message(subject='hello world',
-# 							sender='krauthoff@cs.uni-duesseldorf.de',
-# 							recipients=['krauthoff@cs.uni-duesseldorf.de'],
-# 							body='dummybody'))
-# 		self.assertEqual(len(mailer.outbox), 1)
-# 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
-#
-# 	# testing the email - send_immediately
-# 	def test_email_send_immediately(self):
-# 		print("FunctionalTests: email_send_immediately")
-# 		self.testapp.get('/contact', status=200)
-# 		mailer = DummyMailer()
-# 		mailer.send_immediately(Message(subject='hello world',
-# 										sender='krauthoff@cs.uni-duesseldorf.de',
-# 										recipients=['krauthoff@cs.uni-duesseldorf.de'],
-# 										body='dummybody'))
-# 		self.assertEqual(len(mailer.outbox), 1)
-# 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
-#
-# 	# testing the email - send_immediately_sendmail
-# 	def test_email_send_immediately_sendmail(self):
-# 		print("FunctionalTests: email_send_immediately_sendmail")
-# 		self.testapp.get('/contact', status=200)
-# 		mailer = DummyMailer()
-# 		mailer.send_immediately_sendmail(Message(subject='hello world',
-# 													sender='krauthoff@cs.uni-duesseldorf.de',
-# 													recipients=['krauthoff@cs.uni-duesseldorf.de'],
-# 													body='dummybody'))
-# 		self.assertEqual(len(mailer.outbox), 1)
-# 		self.assertEqual(mailer.outbox[0].subject, 'hello world')
+
+class ViewContactTest(IntegrationTestDBAS):
+	def _callFUT(self, request):
+		print('ViewTest: _callFUT')
+		return Dbas.main_page(request)
+
+	def test_contact(self):
+		print('ViewTest: test_contact')
+		request = testing.DummyRequest()
+		response = Dbas(request).main_contact()
+		self.assertEqual('Contact', response['title'])
+
+
+class ViewSettingsTests(IntegrationTestDBAS):
+	def _callFUT(self, request):
+		print('ViewTest: _callFUT')
+		return Dbas.main_settings(request)
+
+	def test_settings(self):
+		print('ViewTest: test_settings')
+		request = testing.DummyRequest()
+		response = Dbas(request).main_settings()
+		self.assertEqual('Settings', response['title'])
+
+
+class ViewMessagesTests(IntegrationTestDBAS):
+	def _callFUT(self, request):
+		print('ViewTest: _callFUT')
+		return Dbas.main_notifications(request)
+
+	def test_notification(self):
+		print('ViewTest: test_notification')
+		request = testing.DummyRequest()
+		response = Dbas(request).main_notifications()
+		self.assertEqual('Messages', response['title'])
+
+
+class ViewAdminTests(IntegrationTestDBAS):
+	def _callFUT(self, request):
+		print('ViewTest: _callFUT')
+		return Dbas.main_admin(request)
+
+	def test_admin(self):
+		print('ViewTest: test_admin')
+		request = testing.DummyRequest()
+		response = Dbas(request).main_admin()
+		self.assertEqual('Admin', response['title'])
+
+
+class ViewNewsTests(IntegrationTestDBAS):
+	def _callFUT(self, request):
+		print('ViewTest: _callFUT')
+		return Dbas.main_news(request)
+
+	def test_news(self):
+		print('ViewTest: test_news')
+		request = testing.DummyRequest()
+		response = Dbas(request).main_news()
+		self.assertEqual('News', response['title'])
+
+
+class ViewImprintTests(IntegrationTestDBAS):
+	def _callFUT(self, request):
+		print('ViewTest: _callFUT')
+		return Dbas.main_imprint(request)
+
+	def test_imprint(self):
+		print('ViewTest: test_imprint')
+		request = testing.DummyRequest()
+		response = Dbas(request).main_imprint()
+		self.assertEqual('Imprint', response['title'])
+
+##########################################################################################################
+##########################################################################################################
+
+
+# check, if every site responds with 200 except the error page
+class FunctionalViewTests(IntegrationTestDBAS):
+	editor_login       = '/ajax_user_login?user=test&password=iamatestuser2016&keep_login=false&url=http://localhost:4284/discuss'
+	viewer_wrong_login = '/ajax_user_login?user=test&password=iamabigfoool2015&keep_login=false&url=http://localhost:4284/discuss'
+	logout             = '/ajax_user_logout'
+
+	# testing main page
+	def test_home(self):
+		print("FunctionalTests: home")
+		res = self.testapp.get('/', status=200)
+		self.assertIn(b'<span>This work is part of the graduate school on</span>', res.body)
+
+	# testing contact page
+	def test_contact(self):
+		print("FunctionalTests: contact")
+		res = self.testapp.get('/contact', status=200)
+		self.assertIn(b'<p class="text-center">Feel free to drop us a line a', res.body)
+
+	# testing contact page
+	def test_imprint(self):
+		print("FunctionalTests: imprint")
+		res = self.testapp.get('/imprint', status=200)
+		self.assertIn(b'Imprint', res.body)
+
+	# testing a unexisting page
+	def test_unexisting_page(self):
+		print("FunctionalTests: unexisting_page")
+		res = self.testapp.get('/SomePageYouWontFind', status=404)
+		self.assertIn(b'404 Error', res.body)
+		self.assertIn(b'SomePageYouWontFind', res.body)
+
+	# testing successful log in
+	def test_successful_log_in(self):
+		print("FunctionalTests: successful_log_in")
+		res = self.testapp.get('http://localhost:4284' + self.editor_login, status=302)
+		self.assertEqual(res.location, 'http://localhost:4284/discuss')
+
+	# testing failed log in
+	def test_failed_log_in(self):
+		print("FunctionalTests: failed_log_in")
+		res = self.testapp.get(self.viewer_wrong_login, status=200)
+		self.assertTrue(b'User / Password do not match' in res.body)
+
+	# testing wheather the login link is there, when we are logged in
+	def test_logout_link_present_when_logged_in(self):
+		print("FunctionalTests: logout_link_present_when_logged_in")
+		self.testapp.get(self.editor_login, status=302)
+		res = self.testapp.get('/', status=200)
+		self.assertIn(b'Logout', res.body)
+
+	# testing wheather the logout link is there, when we are logged out
+	def test_logout_link_not_present_after_logged_out(self):
+		print("FunctionalTests: logout_link_not_present_after_logged_out")
+		self.testapp.get(self.editor_login, status=302)
+		self.testapp.get('/', status=200)
+		res = self.testapp.get(self.logout, status=200)
+		self.assertTrue(b'Logout' not in res.body)
+
+	# testing to get the settings page when logged out / logged in
+	def test_settings_only_when_logged_in(self):
+		print("FunctionalTests: settings_only_when_logged_in")
+		res = self.testapp.get('/settings', status=200)
+		self.assertNotIn(b'Settings', res.body)  # due to login error
+		self.testapp.get(self.editor_login, status=302)
+		res = self.testapp.get('/settings', status=200)
+		self.assertIn(b'Settings', res.body)
+
+##########################################################################################################
+##########################################################################################################
+
+
+# checks for the email-connection
+class FunctionalEMailTests(IntegrationTestDBAS):
+	# testing the email - send
+	def test_email_send(self):
+		print("FunctionalTests: email_send")
+		self.testapp.get('/contact', status=200)
+		mailer = DummyMailer()
+		mailer.send(Message(subject='hello world',
+							sender='krauthoff@cs.uni-duesseldorf.de',
+							recipients=['krauthoff@cs.uni-duesseldorf.de'],
+							body='dummybody'))
+		self.assertEqual(len(mailer.outbox), 1)
+		self.assertEqual(mailer.outbox[0].subject, 'hello world')
+
+	# testing the email - send_immediately
+	def test_email_send_immediately(self):
+		print("FunctionalTests: email_send_immediately")
+		self.testapp.get('/contact', status=200)
+		mailer = DummyMailer()
+		mailer.send_immediately(Message(subject='hello world',
+										sender='krauthoff@cs.uni-duesseldorf.de',
+										recipients=['krauthoff@cs.uni-duesseldorf.de'],
+										body='dummybody'))
+		self.assertEqual(len(mailer.outbox), 1)
+		self.assertEqual(mailer.outbox[0].subject, 'hello world')
+
+	# testing the email - send_immediately_sendmail
+	def test_email_send_immediately_sendmail(self):
+		print("FunctionalTests: email_send_immediately_sendmail")
+		self.testapp.get('/contact', status=200)
+		mailer = DummyMailer()
+		mailer.send_immediately_sendmail(Message(subject='hello world',
+													sender='krauthoff@cs.uni-duesseldorf.de',
+													recipients=['krauthoff@cs.uni-duesseldorf.de'],
+													body='dummybody'))
+		self.assertEqual(len(mailer.outbox), 1)
+		self.assertEqual(mailer.outbox[0].subject, 'hello world')
 
 ##########################################################################################################
 ##########################################################################################################
