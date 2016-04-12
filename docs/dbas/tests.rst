@@ -59,13 +59,11 @@ Please replace *XYZ* with a short description and *YOUR_TEST_METHOD* with the va
         """
         print('Starting tests for XYZ:')
         b = Browser(browser)
-        self.browser = b
         success = True
 
         # your test routine
 
         b.quit()
-        self.browser = None
         return 1 if success else 0
 
 Please:

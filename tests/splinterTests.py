@@ -38,13 +38,13 @@ class Helper:
 		:param testfunction: the function itself
 		:return: value of the testfunction on success, 0 otherwise
 		"""
+		ret_val = 0
 		try:
 			global testcounter
 			testcounter += 1
 			ret_val = testfunction(*args)
 			print('    SUCCESS' if ret_val == 1 else '    FAIL')
 			print('')
-			return ret_val
 		except AttributeError as e:
 			Helper.print_error('AttributeError', name, e)
 		except exceptions.ElementDoesNotExist as e:
@@ -62,10 +62,7 @@ class Helper:
 		except Exception as e:
 			Helper.print_error('Exception', name, e)
 		finally:
-			webtests.browser = Helper.logout(webtests.browser)
-			webtests.browser.quit()
-			webtests.browser = None
-			return 0
+			return ret_val if ret_val != 0 else ret_val
 
 	def check_for_present_text(self, browser, text, message):
 		"""
@@ -98,11 +95,10 @@ class Helper:
 			return False
 
 
-class WebTests:
-	browser = None
+class FrontendTests:
 
-	def __init__(self, browser):
-		self.browser_style = browser
+	def __init__(self, browser_style):
+		self.browser_style = browser_style
 
 	def run_all_tests(self):
 		"""
@@ -116,6 +112,8 @@ class WebTests:
 			print('Exit gracefully!')
 			return
 
+		global testcounter
+		testcounter = 0
 		success_counter = 0
 
 		start = time.time()
@@ -136,22 +134,22 @@ class WebTests:
 		print('====================================================')
 		print('Failed ' + str(testcounter - success_counter) + ' out of ' + str(testcounter) + ' in ' + str(diff) + 's')
 
-	def __check_for_server(self, browser):
+	@staticmethod
+	def __check_for_server(browser):
 		"""
 		Checks whether the server if online
 		:param browser: current browser
 		:return: true when the server is on, false otherwise
 		"""
-		print('Is server online?')
+		print('Is server online? ')
 		b = Browser(browser)
-		self.browser = b
 		b.visit(mainpage)
 		success = Helper().check_for_present_text(b, 'part of the graduate school', 'check main page')
 		b.quit()
-		self.browser = None
 		return success
 
-	def __test_pages_when_not_logged_in(self, browser):
+	@staticmethod
+	def __test_pages_when_not_logged_in(browser):
 		"""
 		Checks pages
 		:param browser: current browser
@@ -160,7 +158,6 @@ class WebTests:
 		print('Starting tests for pages_not_logged_in:')
 		success = True
 		b = Browser(browser)
-		self.browser = b
 		b = Helper.logout(b)
 
 		pages = [mainpage,
@@ -170,7 +167,7 @@ class WebTests:
 		         mainpage + 'discuss',
 		         mainpage + 'settings',
 		         mainpage + 'notifications',
-		         mainpage + 'admin']
+		         mainpage + 'admin/main']
 		tests = ['main',
 		         'contact',
 		         'news',
@@ -193,10 +190,10 @@ class WebTests:
 			success = success and Helper().check_for_present_text(b, texts[index], test)
 
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_login_logout(self, browser):
+	@staticmethod
+	def __test_login_logout(browser):
 		"""
 
 		:param browser:
@@ -205,7 +202,6 @@ class WebTests:
 		success = True
 		print('Starting tests for login_logout:')
 		b = Browser(browser)
-		self.browser = b
 
 		b = Helper.login(b, nickname, 'wrongpassword', mainpage)
 		test = 'testing wrong login'
@@ -220,10 +216,10 @@ class WebTests:
 		success = success and Helper().check_for_non_present_text(b, 'tobias', test)
 
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_pages_when_logged_in(self, browser):
+	@staticmethod
+	def __test_pages_when_logged_in(browser):
 		"""
 
 		:param browser:
@@ -232,12 +228,11 @@ class WebTests:
 		success = True
 		print('Starting tests for pages_logged_in:')
 		b = Browser(browser)
-		self.browser = b
 		b = Helper.login(b, nickname, password, mainpage)
 
 		pages = [mainpage + 'settings',
 		         mainpage + 'notifications',
-		         mainpage + 'admin']
+		         mainpage + 'admin/main']
 		tests = ['settings',
 		         'notifications',
 		         'admin']
@@ -250,10 +245,10 @@ class WebTests:
 			success = success and Helper().check_for_present_text(b, texts[index], test)
 
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_popups(self, browser):
+	@staticmethod
+	def __test_popups(browser):
 		"""
 		Checks UI popups
 		:param browser: current browser
@@ -261,7 +256,6 @@ class WebTests:
 		"""
 		print('Starting tests for popups:')
 		b = Browser(browser)
-		self.browser = b
 		b.visit(mainpage)
 
 		# open author popup
@@ -279,10 +273,10 @@ class WebTests:
 		close.click()
 
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_contact_formular(self, browser):
+	@staticmethod
+	def __test_contact_formular(browser):
 		"""
 		Checks every form on the contact page
 		:param browser: current browser
@@ -290,7 +284,6 @@ class WebTests:
 		"""
 		print('Starting tests for contact_formular:')
 		b = Browser(browser)
-		self.browser = b
 		b.visit('http://localhost:4284/contact')
 
 		form = ['', 'name', 'mail', 'content', 'spam']
@@ -310,10 +303,10 @@ class WebTests:
 			success = success and Helper().check_for_present_text(b, txt[i], msg[i])
 
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_language_switch(self, browser):
+	@staticmethod
+	def __test_language_switch(browser):
 		"""
 		Testing language switch
 		:param browser: current browser
@@ -321,7 +314,6 @@ class WebTests:
 		"""
 		print('Starting tests for language_switch:')
 		b = Browser(browser)
-		self.browser = b
 		h = Helper()
 
 		b.visit(mainpage)
@@ -336,10 +328,10 @@ class WebTests:
 		success = success and h.check_for_present_text(b, 'part of the graduate', 'check switch back to englisch language')
 
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_discussion_buttons(self, browser):
+	@staticmethod
+	def __test_discussion_buttons(browser):
 		"""
 		Checks the discussions buttons
 		:param browser: current browser
@@ -347,7 +339,6 @@ class WebTests:
 		"""
 		print('Starting tests for discussion_buttons:')
 		b = Browser(browser)
-		self.browser = b
 		success = True
 		h = Helper()
 		b = h.login(b, nickname, password, mainpage + 'discussion')
@@ -393,10 +384,10 @@ class WebTests:
 
 		b = h.logout(b)
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_demo_discussion(self, browser):
+	@staticmethod
+	def __test_demo_discussion(browser):
 		"""
 		Checks the demo of the discussion. Simple walkthrough.
 		:param browser: current browser
@@ -405,7 +396,6 @@ class WebTests:
 		print('Starting tests for demo_discussion:')
 		success = True
 		b = Browser(browser)
-		self.browser = b
 		h = Helper()
 		b = h.login(b, nickname, password, mainpage + 'discussion')
 
@@ -440,10 +430,10 @@ class WebTests:
 
 		b = h.logout(b)
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_functions_while_discussion(self, browser):
+	@staticmethod
+	def __test_functions_while_discussion(browser):
 		"""
 		Checks different functions in the discussion like adding one premise, premisegroups and so one
 		:param browser: current browser
@@ -452,7 +442,6 @@ class WebTests:
 		print('Starting tests for functions_while_discussion:')
 		success = True
 		b = Browser(browser)
-		self.browser = b
 		h = Helper()
 		b = h.login(b, nickname, password, mainpage + 'discussion')
 
@@ -510,7 +499,6 @@ class WebTests:
 
 		b = h.logout(b)
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
 
@@ -519,15 +507,15 @@ print('  [c]hrome  (experimental)')
 print('  [f]irefox (default)')
 input_var = input("Enter: ")
 
-browserStyle = 'chrome' if str(input_var) == 'c' else 'firefox'
+webdriver = 'chrome' if str(input_var) == 'c' else 'firefox'
 
 print('')
-print('-> Tests will be done with ' + browserStyle)
+print('-> Tests will be done with ' + webdriver)
 print('')
 
 try:
-	webtests = WebTests(browserStyle)
-	webtests.run_all_tests()
+	frontendtests = FrontendTests(webdriver)
+	frontendtests.run_all_tests()
 except ConnectionResetError as e1:
 	print('  Server is offline found: ' + str(e1))
 except FileNotFoundError as e2:

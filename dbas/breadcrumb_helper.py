@@ -10,9 +10,9 @@ from slugify import slugify
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, User, Breadcrumb, Issue, Bubble
+from .lib import get_text_for_argument_uid, get_text_for_statement_uid
 from .logger import logger
 from .strings import Translator
-from .query_helper import QueryHelper
 
 
 class BreadcrumbHelper(object):
@@ -124,12 +124,11 @@ class BreadcrumbHelper(object):
 		:return: String
 		"""
 		_t = Translator(lang)
-		_qh = QueryHelper()
 
 		if '/reaction/' in url:
 			splitted = url.split('/')
 			uid  = splitted[4]
-			text = _qh.get_text_for_argument_uid(uid, lang)
+			text = get_text_for_argument_uid(uid, lang)
 			text = text[0:1].lower() + text[1:]
 
 			# for index, s in enumerate(splitted):
@@ -140,7 +139,7 @@ class BreadcrumbHelper(object):
 		elif '/justify/' in url:
 			splitted = url.split('/')
 			uid  = splitted[4]
-			text = _qh.get_text_for_statement_uid(uid) if len(splitted) == 6 else _qh.get_text_for_argument_uid(uid, lang)
+			text = get_text_for_statement_uid(uid) if len(splitted) == 6 else get_text_for_argument_uid(uid, lang)
 			text = text[0:1].lower() + text[1:]
 			# 5 choose action for start statemens
 			# 6 choose justification for a relation
@@ -151,7 +150,7 @@ class BreadcrumbHelper(object):
 
 		elif '/attitude/' in url:
 			uid  = url[url.rfind('/') + 1:]
-			text = _qh.get_text_for_statement_uid(uid)
+			text = get_text_for_statement_uid(uid)
 			text = text[0:1].lower() + text[1:]
 			return _t.get(_t.whatDoYouThinkAbout) + ' ' + text + '?'
 
@@ -161,11 +160,11 @@ class BreadcrumbHelper(object):
 			if splitted[4] == 't':  # is argument
 				arg = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 				if arg.argument_uid is None:
-					text = _qh.get_text_for_statement_uid(arg.conclusion_uid)
+					text = get_text_for_statement_uid(arg.conclusion_uid)
 				else:
-					text = _qh.get_text_for_argument_uid(arg.argument_uid, lang)
+					text = get_text_for_argument_uid(arg.argument_uid, lang)
 			else:
-				text = _qh.get_text_for_statement_uid(uid)
+				text = get_text_for_statement_uid(uid)
 			return _t.get(_t.breadcrumbsChoose) + ' ' + text[0:1].lower() + text[1:]
 
 		else:
