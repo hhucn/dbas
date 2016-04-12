@@ -1,3 +1,9 @@
+"""
+Class for front end tests with Splinter and Selenium
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import time
 from splinter import Browser, exceptions
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException
@@ -10,25 +16,54 @@ password = 'iamatestuser2016'
 
 
 class Helper:
+	"""
+	Todo
+	"""
 
 	@staticmethod
 	def print_success(has_success, message=''):
+		"""
+
+		:param has_success:
+		:param message:
+		:return:
+		"""
 		print('    ' + ('✓' if has_success else '✗') + ' ' + message)
 
 	@staticmethod
 	def login(browser, user, pw, url):
+		"""
+
+		:param browser:
+		:param user:
+		:param pw:
+		:param url:
+		:return:
+		"""
 		browser.visit(mainpage + 'ajax_user_login?user=' + user + '&password=' + pw + '&keep_login=false&url=' + url)
 		return browser
 
 	@staticmethod
 	def logout(browser):
+		"""
+
+		:param browser:
+		:return:
+		"""
 		browser.visit(mainpage + 'ajax_user_logout')
 		return browser
 
 	@staticmethod
 	def print_error(errorname, testname, error):
-			print('    -> ' + errorname + ' occured in ' + testname)
-			print('       ' + str(error))
+		"""
+
+		:param errorname:
+		:param testname:
+		:param error:
+		:return:
+		"""
+		print('    -> ' + errorname + ' occured in ' + testname)
+		print('       ' + str(error))
 
 	@staticmethod
 	def test_wrapper(name, testfunction, *args):
@@ -98,8 +133,17 @@ class Helper:
 
 
 class FrontendTests:
+	"""
+
+	"""
 
 	def __init__(self, browser_style):
+		"""
+
+		:param self:
+		:param browser_style:
+		:return:
+		"""
 		self.browser_style = browser_style
 
 	def run_all_tests(self):
@@ -504,26 +548,28 @@ class FrontendTests:
 
 
 print('Please choose a webbrowser:')
+print('  [b]reak)')
 print('  [c]hrome  (experimental)')
 print('  [f]irefox (default)')
 input_var = input("Enter: ")
 
-webdriver = 'chrome' if str(input_var) == 'c' else 'firefox'
+if str(input_var) != 'b':
+	webdriver = 'chrome' if str(input_var) == 'c' else 'firefox'
 
-print('')
-print('-> Tests will be done with ' + webdriver)
-print('')
+	print('')
+	print('-> Tests will be done with ' + webdriver)
+	print('')
 
-try:
-	frontendtests = FrontendTests(webdriver)
-	frontendtests.run_all_tests()
-except ConnectionResetError as e1:
-	print('  Server is offline found: ' + str(e1))
-except FileNotFoundError as e2:
-	print('FileNotFoundError found: ' + str(e2))
-except AttributeError as e3:
-	print('AttributeError found: ' + str(e3))
-except WebDriverException as e4:
-	print('WebDriverException found: ' + str(e4))
-except KeyboardInterrupt as e5:
-	print('Exit through KeyboardInterrupt')
+	try:
+		frontendtests = FrontendTests(webdriver)
+		frontendtests.run_all_tests()
+	except ConnectionResetError as e1:
+		print('  Server is offline found: ' + str(e1))
+	except FileNotFoundError as e2:
+		print('FileNotFoundError found: ' + str(e2))
+	except AttributeError as e3:
+		print('AttributeError found: ' + str(e3))
+	except WebDriverException as e4:
+		print('WebDriverException found: ' + str(e4))
+	except KeyboardInterrupt as e5:
+		print('Exit through KeyboardInterrupt')
