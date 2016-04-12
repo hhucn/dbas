@@ -1,17 +1,11 @@
 import time
-
-# from dbas.database import DBDiscussionSession
-# from dbas.database.discussion_model import VoteArgument, VoteStatement, Bubble, Breadcrumb, Notification,\
-# 	StatementReferences, Argument, Premise, PremiseGroup, Statement, TextVersion, User
-# import transaction
-
 from splinter import Browser, exceptions
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException
 
 mainpage = 'http://localhost:4284/'
 testcounter = 0
 waittime = 0.3
-user = 'test'
+nickname = 'test'
 password = 'iamatestuser2016'
 
 
@@ -22,8 +16,8 @@ class Helper:
 		print('    ' + ('✓' if has_success else '✗') + ' ' + message)
 
 	@staticmethod
-	def login(browser, nickname, password, url):
-		browser.visit(mainpage + 'ajax_user_login?user=' + nickname + '&password=' + password + '&keep_login=false&url=' + url)
+	def login(browser, user, pw, url):
+		browser.visit(mainpage + 'ajax_user_login?user=' + user + '&password=' + pw + '&keep_login=false&url=' + url)
 		return browser
 
 	@staticmethod
@@ -213,11 +207,11 @@ class WebTests:
 		b = Browser(browser)
 		self.browser = b
 
-		b = Helper.login(b, user, 'wrongpassword', mainpage)
+		b = Helper.login(b, nickname, 'wrongpassword', mainpage)
 		test = 'testing wrong login'
 		success = success and Helper().check_for_present_text(b, 'do not match', test)
 
-		b = Helper.login(b, user, password, mainpage)
+		b = Helper.login(b, nickname, password, mainpage)
 		test = 'testing right login'
 		success = success and Helper().check_for_present_text(b, 'tobias', test)
 
@@ -239,7 +233,7 @@ class WebTests:
 		print('Starting tests for pages_logged_in:')
 		b = Browser(browser)
 		self.browser = b
-		b = Helper.login(b, user, password, mainpage)
+		b = Helper.login(b, nickname, password, mainpage)
 
 		pages = [mainpage + 'settings',
 		         mainpage + 'notifications',
@@ -356,7 +350,7 @@ class WebTests:
 		self.browser = b
 		success = True
 		h = Helper()
-		b = h.login(b, user, password, mainpage + 'discussion')
+		b = h.login(b, nickname, password, mainpage + 'discussion')
 
 		# check url popup
 		b.find_by_id('share-url').click()
@@ -413,7 +407,7 @@ class WebTests:
 		b = Browser(browser)
 		self.browser = b
 		h = Helper()
-		b = h.login(b, user, password, mainpage + 'discussion')
+		b = h.login(b, nickname, password, mainpage + 'discussion')
 
 		# position
 		success = success and h.check_for_present_text(b, 'initial ', 'check for position')
@@ -460,7 +454,7 @@ class WebTests:
 		b = Browser(browser)
 		self.browser = b
 		h = Helper()
-		b = h.login(b, user, password, mainpage + 'discussion')
+		b = h.login(b, nickname, password, mainpage + 'discussion')
 
 		# new position
 		b.find_by_css('#discussions-space-list li:last-child input').click()
@@ -513,23 +507,6 @@ class WebTests:
 		success = success and h.check_for_present_text(b, 'multiple reasons', 'check options for choosing ')
 		success = success and h.check_for_present_text(b, 'some new reason 1', 'check options for choosing answer 1')
 		success = success and h.check_for_present_text(b, 'some new reason 2', 'check options for choosing answer 2')
-
-		# Todo remove test data
-		# db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		# for tmp in DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all():
-		# 	tmp.set_statement(None)
-
-		# DBDiscussionSession.query(VoteArgument).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(VoteStatement).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(Notification).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(StatementReferences).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(Argument).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(Premise).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(Statement).filter_by(author_uid=db_user.uid).delete()
-		# DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).delete()
 
 		b = h.logout(b)
 		b.quit()
