@@ -29,8 +29,9 @@ class DictionaryHelper(object):
 
 	def __init__(self, lang=''):
 		"""
+		Initialize default values
 
-		:param lang:
+		:param lang: ui_locales
 		:return:
 		"""
 		self.lang = lang
