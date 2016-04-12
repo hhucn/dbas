@@ -721,35 +721,6 @@ class Dbas(object):
 			'extras': extras_dict
 		}
 
-	# admin page
-	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='everybody')  # or permission='use'
-	def main_admin(self):
-		"""
-		View configuration for the content view. Only logged in user can reach this page.
-		:return: dictionary with title and project name as well as a value, weather the user is logged in
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('main_admin', 'def', 'main')
-		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if should_log_out:
-			return self.user_logout(True)
-
-		_qh = QueryHelper()
-		ui_locales = get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
-		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
-		dashboard = _qh.get_dashboard_infos()
-
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': 'Admin',
-			'project': project_name,
-			'extras': extras_dict,
-			'users': users,
-			'dashboard': dashboard
-		}
-
 	# 404 page
 	@notfound_view_config(renderer='templates/404.pt')
 	def notfound(self):
@@ -816,7 +787,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_posted_statements', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
+		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - getting all text edits
@@ -830,7 +801,7 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_edits', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_edits_of_user(self.request.authenticated_userid, ui_locales, QueryHelper())
+		return_array = UserHandler().get_edits_of_user(self.request.authenticated_userid, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for arguments

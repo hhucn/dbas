@@ -1,14 +1,13 @@
 from datetime import datetime
 
-import locale
 import collections
 import random
 from sqlalchemy import and_, func
 from slugify import slugify
 
-from .lib import escape_string
+from .lib import escape_string, sql_timestamp_pretty_print
 from .database import DBDiscussionSession, DBNewsSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue, Group
+from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
 from .database.news_model import News
 from .logger import logger
 from .notification_helper import NotificationHelper
@@ -492,7 +491,7 @@ class QueryHelper(object):
 		"""
 		#  logger('QueryHelper', 'get_date_for_issue_uid', str(uid))
 		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
-		return self.sql_timestamp_pretty_print(str(db_issue.date), lang) if db_issue else 'none'
+		return sql_timestamp_pretty_print(str(db_issue.date), lang) if db_issue else 'none'
 
 	def prepare_json_of_issue(self, uid, application_url, lang, for_api):
 		"""
@@ -791,7 +790,7 @@ class QueryHelper(object):
 			users_dict = dict()
 			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
 			users_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
-			                                   'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+			                                   'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 			all_users.append(users_dict)
 			ret_dict['users'] = all_users
 
@@ -834,7 +833,7 @@ class QueryHelper(object):
 			users_dict = dict()
 			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
 			users_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
-			                                   'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+			                                   'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 			all_users.append(users_dict)
 		ret_dict['users'] = all_users
 
@@ -881,7 +880,7 @@ class QueryHelper(object):
 			for vote in db_votes:
 				db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
 				all_users[db_user.nickname] = {'avatar_url': uh.get_profile_picture(db_user),
-				                               'vote_timestamp': self.sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+				                               'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
 			vote_dict['users'] = all_users
 			votes.append(vote_dict)
 
@@ -988,47 +987,6 @@ class QueryHelper(object):
 
 		return ret_dict
 
-	def get_all_users(self, user, lang):
-		"""
-
-		:param user:
-		:param lang:
-		:return:
-		"""
-		is_admin = UserHandler().is_user_in_group(user, 'admins')
-		logger('QueryHelper', 'get_all_users', 'is_admin ' + str(is_admin))
-		return_array = []
-		if not is_admin:
-			return return_array
-
-		_uh = UserHandler()
-		db_users = DBDiscussionSession.query(User).all()
-		for index, user in enumerate(db_users):
-			tmp_dict = dict()
-			tmp_dict['uid']         = str(user.uid)
-			tmp_dict['firstname']   = str(user.firstname)
-			tmp_dict['surname']     = str(user.surname)
-			tmp_dict['nickname']    = str(user.nickname)
-			tmp_dict['email']       = str(user.email)
-			tmp_dict['gender']      = str(user.gender)
-			tmp_dict['group_uid']   = DBDiscussionSession.query(Group).filter_by(uid=user.group_uid).first().name
-			tmp_dict['last_login']  = self.sql_timestamp_pretty_print(str(user.last_login), lang)
-			tmp_dict['registered']  = self.sql_timestamp_pretty_print(str(user.registered), lang)
-			tmp_dict['avatar']      = _uh.get_profile_picture(user)
-			# tmp_dict['last_action'] = self.sql_timestamp_pretty_print(str(user.last_action), lang)
-			return_array.append(tmp_dict)
-
-		return return_array
-
-	def get_dashboard_infos(self):
-		logger('QueryHelper', 'get_dashboard_infos', 'main')
-		return_dict = dict()
-		return_dict['user_count'] = str(len(DBDiscussionSession.query(User).all()))
-		return_dict['vote_count'] = str(len(DBDiscussionSession.query(VoteArgument).all()) + len(DBDiscussionSession.query(VoteStatement).all()))
-		return_dict['argument_count'] = str(len(DBDiscussionSession.query(Argument).all()))
-		return_dict['statement_count'] = str(len(DBDiscussionSession.query(Statement).all()))
-		return return_dict
-
 	def get_logfile_for_statement(self, uid, lang):
 		"""
 		Returns the logfile for the given statement uid
@@ -1047,7 +1005,7 @@ class QueryHelper(object):
 			corr_dict = dict()
 			corr_dict['uid'] = str(versions.uid)
 			corr_dict['author'] = str(versions.users.nickname)
-			corr_dict['date'] = self.sql_timestamp_pretty_print(str(versions.timestamp), lang)
+			corr_dict['date'] = sql_timestamp_pretty_print(str(versions.timestamp), lang)
 			corr_dict['text'] = str(versions.content)
 			content_dict[str(index)] = corr_dict
 		return_dict['content'] = content_dict
@@ -1068,7 +1026,7 @@ class QueryHelper(object):
 		db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
 		return_dict['vote_count'] = str(len(db_votes))
 		return_dict['author']     = db_author.nickname
-		return_dict['timestamp']  = self.sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
+		return_dict['timestamp']  = sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
 		return_dict['text']       = '<strong>' + self.get_text_for_argument_uid(uid, lang, True, True, first_arg_by_user=True) + '</strong>'
 
 		supporters = []
@@ -1332,30 +1290,6 @@ class QueryHelper(object):
 
 		return url, statement_uids, error
 
-	@staticmethod
-	def sql_timestamp_pretty_print(ts, lang):
-		"""
-
-		:param ts: timestamp as string
-		:param lang: language
-		:return:
-		"""
-
-		formatter = '%-I:%M %p, %d. %b. %Y'
-		if lang == 'de':
-			try:
-				locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
-				formatter = '%-H:%M Uhr, %d. %b. %Y'
-			except locale.Error:
-				locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
-
-		try:  # sqlite
-			time = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
-		except ValueError:  # postgres
-			time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
-
-		return time.strftime(formatter)
-
 	def correct_statement(self, transaction, user, uid, corrected_text, lang):
 		"""
 		Corrects a statement
@@ -1441,6 +1375,6 @@ class QueryHelper(object):
 		issue_dict['url']               = UrlManager(application_url, issue.get_slug(), for_api).get_slug_url(False) if str(uid) != str(issue.uid) else ''
 		issue_dict['info']              = issue.info
 		issue_dict['arg_count']         = self.get_number_of_arguments(issue.uid)
-		issue_dict['date']              = self.sql_timestamp_pretty_print(str(issue.date), lang)
+		issue_dict['date']              = sql_timestamp_pretty_print(str(issue.date), lang)
 		issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
 		return issue_dict
