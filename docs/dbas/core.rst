@@ -9,34 +9,6 @@ Description
     :members:
 
 
-Breadcrumb Helper
-=================
-
-.. automodule:: dbas.helper.breadcrumb_helper
-    :members:
-
-
-Dictionary Helper
-=================
-
-.. automodule:: dbas.helper.dictionary_helper
-    :members:
-
-
-Dictionary Helper for Discussion
-================================
-
-.. automodule:: dbas.helper.dictionary_helper_discussion
-    :members:
-
-
-Dictionary Helper for Item
-==========================
-
-.. automodule:: dbas.helper.dictionary_helper_items
-    :members:
-
-
 E-Mail
 ======
 
@@ -58,31 +30,10 @@ Logger
     :members:
 
 
-Notification Helper
-===================
-
-.. automodule:: dbas.helper.notification_helper
-    :members:
-
-
-Query Helper
-============
-
-.. automodule:: dbas.helper.query_helper
-    :members:
-
-
 Recommender System
 ==================
 
 .. automodule:: dbas.recommender_system
-    :members:
-
-
-Relation Helper
-===============
-
-.. automodule:: dbas.helper.relation_helper
     :members:
 
 
@@ -125,6 +76,60 @@ Views
 =====
 
 .. automodule:: dbas.views
+    :members:
+
+
+======
+Helper
+======
+
+
+Breadcrumb Helper
+=================
+
+.. automodule:: dbas.helper.breadcrumb_helper
+    :members:
+
+
+Dictionary Helper
+=================
+
+.. automodule:: dbas.helper.dictionary_helper
+    :members:
+
+
+Dictionary Helper for Discussion
+================================
+
+.. automodule:: dbas.helper.dictionary_helper_discussion
+    :members:
+
+
+Dictionary Helper for Item
+==========================
+
+.. automodule:: dbas.helper.dictionary_helper_items
+    :members:
+
+
+Notification Helper
+===================
+
+.. automodule:: dbas.helper.notification_helper
+    :members:
+
+
+Query Helper
+============
+
+.. automodule:: dbas.helper.query_helper
+    :members:
+
+
+Relation Helper
+===============
+
+.. automodule:: dbas.helper.relation_helper
     :members:
 
 

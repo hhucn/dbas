@@ -1,6 +1,7 @@
 import os
 
 from setuptools import setup, find_packages
+from dbas.views import version
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -35,7 +36,7 @@ requires = [
 ]
 
 setup(name='dbas',
-	version='0.5.9',
+	version=version,
 	description='Novel prototype for a dialog-based online argumentation',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[
