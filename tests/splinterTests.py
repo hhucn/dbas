@@ -4,7 +4,7 @@ from selenium.common.exceptions import ElementNotVisibleException, WebDriverExce
 
 mainpage = 'http://localhost:4284/'
 testcounter = 0
-waittime = 0.3
+waittime = 0.15
 nickname = 'test'
 password = 'iamatestuser2016'
 
@@ -209,9 +209,11 @@ class FrontendTests:
 		test = 'testing wrong login'
 		success = success and Helper.check_for_present_text(b, 'do not match', test)
 
+		time.sleep(waittime)
 		b = Helper.login(b, nickname, password, mainpage)
 		test = 'testing right login'
-		success = success and Helper.check_for_present_text(b, 'tobias', test)
+		success = success and Helper.check_for_present_text(b, nickname, test)
+		time.sleep(waittime)
 
 		b = Helper.logout(b)
 		test = 'testing logout'
@@ -400,7 +402,7 @@ class FrontendTests:
 
 		# position
 		success = success and Helper.check_for_present_text(b, 'initial ', 'check for position')
-		b.find_by_id('item_37').click()
+		b.find_by_id('item_36').click()
 		time.sleep(waittime)
 
 		# attitude
@@ -422,6 +424,7 @@ class FrontendTests:
 		tmp1 = Helper.check_for_present_text(b, 'most important reason', 'check for justification 1')
 		tmp2 = Helper.check_for_present_text(b, 'Let me enter my reason!', 'check for justification 2')
 		success = success and (tmp1 or tmp2)
+		time.sleep(waittime)
 
 		# go back
 		b.find_by_id('discussion-restart-btn').click()
