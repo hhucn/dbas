@@ -34,7 +34,7 @@ from .url_manager import UrlManager
 from .notification_helper import NotificationHelper
 
 name = 'D-BAS'
-version = '0.5.9a'
+version = '0.5.9a'  # TODO: why is this in views.py?
 project_name = name + ' ' + version
 issue_fallback = 1
 mainpage = ''
@@ -66,6 +66,7 @@ class Dbas(object):
 	def get_nickname_and_session(self, for_api, api_data):
 		"""
 		Given data from api, return nickname and session_id.
+
 		:param for_api:
 		:param api_data:
 		:return:
@@ -691,6 +692,7 @@ class Dbas(object):
 	def main_news(self):
 		"""
 		View configuration for the news.
+
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -736,6 +738,36 @@ class Dbas(object):
 			'title': 'Imprint',
 			'project': project_name,
 			'extras': extras_dict
+		}
+
+	# admin page
+	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='everybody')  # or permission='use'
+	def main_admin(self):
+		"""
+		View configuration for the content view. Only logged in user can reach this page.
+
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('main_admin', 'def', 'main')
+		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		if should_log_out:
+			return self.user_logout(True)
+
+		_qh = QueryHelper()
+		ui_locales = get_language(self.request, get_current_registry())
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
+		dashboard = _qh.get_dashboard_infos()
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'Admin',
+			'project': project_name,
+			'extras': extras_dict,
+			'users': users,
+			'dashboard': dashboard
 		}
 
 	# 404 page
@@ -1116,7 +1148,7 @@ class Dbas(object):
 				pwd = PasswordGenerator.get_rnd_passwd()
 				hashedpwd = PasswordHandler.get_hashed_password(pwd)
 
-				# set the hased one
+				# set the hashed one
 				db_user.password = hashedpwd
 				DBDiscussionSession.add(db_user)
 				transaction.commit()

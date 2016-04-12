@@ -8,8 +8,8 @@ Common, pure functions used by the API.
 import json
 import logging
 from functools import reduce
-
 from html import escape
+
 from webob import Response, exc
 
 
@@ -61,7 +61,7 @@ def debug_start():
 
 	:return:
 	"""
-	print("\n\n\n##########")
+	print("\n\n\n##########\n")
 
 
 def debug_end():
@@ -70,7 +70,7 @@ def debug_end():
 
 	:return:
 	"""
-	print("##########\n\n\n")
+	print("\n##########\n\n\n")
 
 
 class HTTP204(exc.HTTPError):

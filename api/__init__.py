@@ -9,7 +9,6 @@ from dbas.logger import logger
 
 def init(config):
 	config.include("cornice")
-	config.add_route("whoami", "/whoami")
 	config.scan("api.views")
 
 
