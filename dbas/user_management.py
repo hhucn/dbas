@@ -62,7 +62,7 @@ class PasswordHandler:
 		"""
 		Returns encrypted password
 
-		:param password:
+		:param password: String
 		:return: String
 		"""
 		manager = BCRYPTPasswordManager()

@@ -4,7 +4,6 @@ All kind of tests
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-
 import os
 import unittest
 
