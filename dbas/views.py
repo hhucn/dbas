@@ -19,6 +19,8 @@ from validate_email import validate_email
 
 from .helper.breadcrumb_helper import BreadcrumbHelper
 from .helper.dictionary_helper import DictionaryHelper
+from .helper.dictionary_helper_discussion import DiscussionDictHelper
+from .helper.dictionary_helper_items import ItemDictHelper
 from .helper.notification_helper import NotificationHelper
 from .helper.query_helper import QueryHelper
 from .helper.voting_helper import VotingHelper
@@ -142,11 +144,11 @@ class Dbas(object):
 
 		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		item_dict       = _dh.prepare_item_dict_for_start(issue, logged_in, mainpage, for_api)
+		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_start(breadcrumbs, nickname, session_id)
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_start()
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -196,11 +198,11 @@ class Dbas(object):
 		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_attitude(statement_id, breadcrumbs, nickname, session_id)
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_attitude(statement_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
-		item_dict       = _dh.prepare_item_dict_for_attitude(statement_id, issue, mainpage, for_api)
+		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_attitude(statement_id)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -256,6 +258,7 @@ class Dbas(object):
 		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
 		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
+		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			if not get_text_for_statement_uid(statement_or_arg_id):
@@ -263,11 +266,10 @@ class Dbas(object):
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 			# justifying position
-			item_dict       = _dh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, issue,
-			                                                              supportive, mainpage, for_api)
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_statement(nickname, transaction, statement_or_arg_id,
-			                                                                    breadcrumbs, has_new_crumbs, mainpage, slug,
-			                                                                    supportive, nickname, len(item_dict), session_id)
+			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
+			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(transaction, statement_or_arg_id,
+			                                                                    has_new_crumbs, mainpage, slug,
+			                                                                    supportive, len(item_dict))
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -279,9 +281,8 @@ class Dbas(object):
 		elif 'd' in mode and relation == '':
 			# dont know
 			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
-			discussion_dict = _dh.prepare_discussion_dict_for_dont_know_reaction(nickname, transaction, argument_uid,
-			                                                                     breadcrumbs, has_new_crumbs, session_id)
-			item_dict       = _dh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive, issue, mainpage, for_api)
+			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(transaction, argument_uid, has_new_crumbs)
+			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_dont_know_reaction(argument_uid, supportive)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -292,13 +293,9 @@ class Dbas(object):
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-			item_dict       = _dh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, issue,
-			                                                             mainpage, for_api, logged_in)
+			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, logged_in)
 
-			discussion_dict = _dh.prepare_discussion_dict_for_justify_argument(nickname, statement_or_arg_id,
-			                                                                   supportive, relation, nickname, breadcrumbs,
-			                                                                   has_new_crumbs, len(item_dict), session_id,
-			                                                                   transaction)
+			discussion_dict = _ddh.prepare_discussion_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -372,10 +369,10 @@ class Dbas(object):
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id,
 		                                                                 transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_argumentation(nickname, transaction, arg_id_user, breadcrumbs,
-		                                                                has_new_crumbs, supportive, arg_id_sys, attack,
-		                                                                session_id)
-		item_dict       = _dh.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, issue, attack, mainpage, for_api)
+		_ddh = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
+		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(transaction, arg_id_user, has_new_crumbs,
+		                                                                 supportive, arg_id_sys, attack)
+		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname, argument_id=arg_id_user,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -454,8 +451,8 @@ class Dbas(object):
 			return self.user_logout(True)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = _dh.prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive, breadcrumbs, nickname, session_id)
-		item_dict       = _dh.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive, mainpage, issue, for_api)
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
+		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 

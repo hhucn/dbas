@@ -10,7 +10,7 @@ from selenium.common.exceptions import ElementNotVisibleException, WebDriverExce
 
 mainpage = 'http://localhost:4284/'
 testcounter = 0
-waittime = 0.15
+waittime = 0.4
 nickname = 'test'
 password = 'iamatestuser2016'
 
@@ -286,11 +286,12 @@ class FrontendTests:
 		         'admin']
 		texts = ['Personal Information',
 		         'Notification Board',
-		         'Dashboard']
+		         '401']
 		for index, p in enumerate(pages):
 			b.visit(p)
 			test = 'testing ' + tests[index] + ' page'
 			success = success and Helper.check_for_present_text(b, texts[index], test)
+			time.sleep(waittime*10)
 
 		b.quit()
 		return 1 if success else 0
@@ -498,8 +499,13 @@ class FrontendTests:
 		b.find_by_id('send-new-statement').click()
 		time.sleep(waittime)
 
-		# attitude
-		success = success and Helper.check_for_present_text(b, 'What do you think about some new position', 'check for attitude')
+		# dont know attitude
+		success = success and Helper.check_for_present_text(b, 'What do you think about ' + position, 'check for attitude')
+		b.find_by_css('#discussions-space-list li:last-child input').click()
+		time.sleep(waittime)
+		success = success and Helper.check_for_present_text(b, 'do not have any opinion', 'check for dont know attitude 1')
+		success = success and Helper.check_for_present_text(b, 'ends here', 'check for dont know attitude 2')
+		b.back()
 		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
 
@@ -516,9 +522,9 @@ class FrontendTests:
 		success = success and Helper.check_for_present_text(b, 'The discussion ends here', 'check for end text')
 
 		# go back to first premise
-		b.find_by_css('#dialog-speech-bubbles-space .triangle-r:first-child a span').click()
+		b.find_by_css('#dialog-speech-bubbles-space .triangle-r:first-child a').click()
 		time.sleep(waittime)
-		b.find_by_css('#discussions-space-list li:last-child input').click()
+		b.find_by_css('#item_start_premise').click()
 		time.sleep(waittime)
 		# add new premise
 		success = success and Helper.check_for_present_text(b, 'Let me enter my reason', 'check for new premise window again')
@@ -548,7 +554,7 @@ class FrontendTests:
 
 
 print('Please choose a webbrowser:')
-print('  [b]reak)')
+print('  [b]reak')
 print('  [c]hrome  (experimental)')
 print('  [f]irefox (default)')
 input_var = input("Enter: ")
