@@ -40,12 +40,12 @@ class QueryHelper(object):
 	def handle_insert_new_premises_for_argument(self, text, current_attack, arg_uid, issue, user, transaction):
 		"""
 
-		:param text:
-		:param current_attack:
-		:param arg_uid:
-		:param issue:
-		:param user:
-		:param transaction:
+		:param text: String
+		:param current_attack: String
+		:param arg_uid: Argument.uid
+		:param issue: Issue
+		:param user: User.nickname
+		:param transaction: transaction
 		:return:
 		"""
 		logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'def')
@@ -79,13 +79,13 @@ class QueryHelper(object):
 	def __set_argument(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
 		"""
 
-		:param transaction:
-		:param user:
-		:param premisegroup_uid:
-		:param conclusion_uid:
-		:param argument_uid:
-		:param is_supportive:
-		:param issue:
+		:param transaction: transaction
+		:param user: User.nickname
+		:param premisegroup_uid: PremseGroup.uid
+		:param conclusion_uid: Statement.uid
+		:param argument_uid: Argument.uid
+		:param is_supportive: Boolean
+		:param issue: Issue.uid
 		:return:
 		"""
 		logger('QueryHelper', '__set_argument', 'main with user: ' + str(user) +
@@ -166,7 +166,7 @@ class QueryHelper(object):
 		Returns the date or none for the issue uid
 
 		:param uid: Issue.uid
-		:param lang: ui_locales
+		:param lang: ui_locales ui_locales
 		:return: String
 		"""
 		#  logger('QueryHelper', 'get_date_for_issue_uid', str(uid))
@@ -177,11 +177,11 @@ class QueryHelper(object):
 		"""
 		Prepares slug, info, argument count and the date of the issue as dict
 
-		:param uid:
+		:param uid: Issue.uid
 		:param application_url:
-		:param lang:
-		:param for_api:
-		:return:
+		:param lang: ui_locales
+		:param for_api: Boolean
+		:return: Issue-dict()
 		"""
 		logger('QueryHelper', 'prepare_json_of_issue', 'main')
 		slug = self.get_slug_for_issue_uid(uid)
@@ -205,19 +205,20 @@ class QueryHelper(object):
 
 	def get_number_of_arguments(self, issue):
 		"""
+		Returns number of arguments for the issue
 
-		:param issue:
-		:return:
+		:param issue: Issue Issue.uid
+		:return: Integer
 		"""
 		return len(DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all())
 
 	def get_issue_id(self, request):
 		"""
 		Returns issue uid
+		
 		:param request: self.request
 		:return: uid
 		"""
-
 		# first matchdict, then params, then session, afterwards fallback
 		issue = request.matchdict['issue'] if 'issue' in request.matchdict \
 			else request.params['issue'] if 'issue' in request.params \
@@ -240,8 +241,8 @@ class QueryHelper(object):
 		"""
 
 		:param statements:
-		:param user:
-		:param issue:
+		:param user: User.nickname
+		:param issue: Issue
 		:return:
 		"""
 		logger('QueryHelper', '__set_statements_as_new_premisegroup', 'user: ' + str(user) +
@@ -288,11 +289,11 @@ class QueryHelper(object):
 		"""
 		Saves statement for user
 
-		:param transaction: current transaction
+		:param transaction: transaction current transaction
 		:param statement: given statement
-		:param user: given user
+		:param user: User.nickname given user
 		:param is_start: if it is a start statement
-		:param issue:
+		:param issue: Issue
 		:return: Statement, is_duplicate or -1, False on error
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -341,9 +342,9 @@ class QueryHelper(object):
 	def __get_attack_or_support_for_justification_of_argument_uid(self, argument_uid, is_supportive, lang):
 		"""
 
-		:param argument_uid:
-		:param is_supportive:
-		:param lang:
+		:param argument_uid: Argument.uid
+		:param is_supportive: Boolean
+		:param lang: ui_locales
 		:return:
 		"""
 		return_array = []
@@ -370,8 +371,8 @@ class QueryHelper(object):
 	def get_user_with_same_opinion_for_argument(self, argument_uid, lang, nickname):
 		"""
 
-		:param argument_uid: Statement.uid
-		:param lang: ui_locales
+		:param argument_uid: Argument.uid Statement.uid
+		:param lang: ui_locales ui_locales
 		:param nickname: nickname
 		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
 		"""
@@ -415,7 +416,7 @@ class QueryHelper(object):
 		"""
 
 		:param statement_uid: Statement.uid
-		:param lang: ui_locales
+		:param lang: ui_locales ui_locales
 		:param nickname: nickname
 		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
 		"""
@@ -457,7 +458,7 @@ class QueryHelper(object):
 		"""
 
 		:param issue_uid:
-		:param lang:
+		:param lang: ui_locales
 		:param nickname:
 		:return:
 		"""
@@ -517,8 +518,8 @@ class QueryHelper(object):
 	def get_every_attack_for_island_view(self, arg_uid, lang):
 		"""
 
-		:param arg_uid:
-		:param lang:
+		:param arg_uid: Argument.uid
+		:param lang: ui_locales
 		:return:
 		"""
 		logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
@@ -602,7 +603,7 @@ class QueryHelper(object):
 		Returns the logfile for the given statement uid
 
 		:param uid: requested statement uid
-		:param lang: ui_locales
+		:param lang: ui_locales ui_locales
 		:return: dictionary with the logfile-rows
 		"""
 		logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
@@ -661,10 +662,10 @@ class QueryHelper(object):
 		"""
 		Sets a new news into the news table
 
-		:param transaction: current transaction
+		:param transaction: transaction current transaction
 		:param title: news title
-		:param text: news text
-		:param user: self.request.authenticated_userid
+		:param text: String news text
+		:param user: User.nickname self.request.authenticated_userid
 		:return: dictionary {title,date,author,news}
 		"""
 		logger('QueryHelper', 'set_news', 'def')
@@ -700,12 +701,12 @@ class QueryHelper(object):
 	def set_premises_as_group_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
 		"""
 		
-		:param transaction:
-		:param user:
-		:param text:
+		:param transaction: transaction
+		:param user: User.nickname
+		:param text: String
 		:param conclusion_id:
-		:param is_supportive:
-		:param issue:
+		:param is_supportive: Boolean
+		:param issue: Issue
 		:return:
 		"""
 		logger('QueryHelper', 'set_premises_as_group_for_conclusion', 'main with text ' + str(text))
@@ -733,7 +734,7 @@ class QueryHelper(object):
 		:param info:
 		:param title:
 		:param nickname:
-		:param transaction:
+		:param transaction: transaction
 		:param ui_locales:
 		:return:
 		"""
@@ -766,15 +767,15 @@ class QueryHelper(object):
 	                                                    issue, user, for_api, mainpage, lang, recommender_helper):
 		"""
 
-		:param transaction:
+		:param transaction: transaction
 		:param premisegroups:
 		:param conclusion_id:
 		:param supportive:
-		:param issue:
-		:param user:
-		:param for_api:
+		:param issue: Issue
+		:param user: User.nickname
+		:param for_api: Boolean
 		:param mainpage:
-		:param lang:
+		:param lang: ui_locales
 		:param recommender_helper:
 		:return:
 		"""
@@ -825,15 +826,15 @@ class QueryHelper(object):
 
 			Optimize the "for_api" part
 
-		:param transaction:
+		:param transaction: transaction
 		:param arg_id:
 		:param attack_type:
 		:param premisegroups:
-		:param issue:
-		:param user:
-		:param for_api:
+		:param issue: Issue
+		:param user: User.nickname
+		:param for_api: Boolean
 		:param mainpage:
-		:param lang:
+		:param lang: ui_locales
 		:param recommender_helper:
 		:return:
 		"""
@@ -906,11 +907,11 @@ class QueryHelper(object):
 		"""
 		Corrects a statement
 
-		:param transaction: current transaction
-		:param user: requesting user
+		:param transaction: transaction current transaction
+		:param user: User.nickname requesting user
 		:param uid: requested statement uid
 		:param corrected_text: new text
-		:param lang: current ui_locales
+		:param lang: ui_locales current ui_locales
 		:return: True
 		"""
 		logger('QueryHelper', 'correct_statement', 'def ' + str(uid))
@@ -949,11 +950,11 @@ class QueryHelper(object):
 	def insert_as_statements(self, transaction, text_list, user, issue, is_start=False):
 		"""
 
-		:param transaction:
+		:param transaction: transaction
 		:param text_list:
-		:param user:
-		:param issue:
-		:param is_start:
+		:param user: User.nickname
+		:param issue: Issue
+		:param is_start: Boolean
 		:return:
 		"""
 		statements = []
@@ -975,11 +976,11 @@ class QueryHelper(object):
 	def get_issue_dict_for(self, issue, application_url, for_api, uid, lang):
 		"""
 
-		:param issue:
+		:param issue: Issue
 		:param application_url:
-		:param for_api:
+		:param for_api: Boolean
 		:param uid:
-		:param lang:
+		:param lang: ui_locales
 		:return:
 		"""
 		issue_dict = dict()

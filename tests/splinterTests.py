@@ -10,7 +10,7 @@ from selenium.common.exceptions import ElementNotVisibleException, WebDriverExce
 
 mainpage = 'http://localhost:4284/'
 testcounter = 0
-waittime = 0.4
+waittime = 0.3
 nickname = 'test'
 password = 'iamatestuser2016'
 
