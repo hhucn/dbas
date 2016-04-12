@@ -5,17 +5,17 @@
 
 import json
 
-from admin.lib import get_argument_overview, get_all_users, get_dashboard_infos
+import transaction
 from cornice import Service
 from pyramid.threadlocal import get_current_registry
-import transaction
 
-from dbas.dictionary_helper import DictionaryHelper
+from admin.lib import get_argument_overview, get_all_users, get_dashboard_infos
 from dbas.lib import get_language
 from dbas.logger import logger
 from dbas.user_management import UserHandler
-from dbas.views import project_name
 from dbas.views import Dbas
+from dbas.views import project_name
+from dbas.helper.dictionary_helper import DictionaryHelper
 
 #
 # CORS configuration

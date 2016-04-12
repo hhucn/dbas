@@ -8,11 +8,11 @@ import re
 from sqlalchemy import and_
 from slugify import slugify
 
-from .database import DBDiscussionSession
-from .database.discussion_model import Argument, User, Breadcrumb, Issue, Bubble
-from .lib import get_text_for_argument_uid, get_text_for_statement_uid
-from .logger import logger
-from .strings import Translator
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument, User, Breadcrumb, Issue, Bubble
+from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid
+from dbas.logger import logger
+from dbas.strings import Translator
 
 
 class BreadcrumbHelper(object):

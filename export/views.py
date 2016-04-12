@@ -5,12 +5,13 @@
 
 import json
 
-from export.lib import get_dump, get_sigma_export
 from cornice import Service
-from dbas.lib import get_language
-from dbas.query_helper import QueryHelper
-from dbas.logger import logger
 from pyramid.threadlocal import get_current_registry
+
+from dbas.lib import get_language
+from dbas.logger import logger
+from export.lib import get_dump, get_sigma_export
+from dbas.helper.query_helper import QueryHelper
 
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS

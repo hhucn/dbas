@@ -6,20 +6,20 @@ TODO
 
 import random
 import re
-
 from datetime import datetime
+
 from sqlalchemy import and_
 
-from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, Issue, Bubble, VoteArgument, VoteStatement, Breadcrumb
-from .lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
-from .logger import logger
-from .recommender_system import RecommenderHelper
-from .query_helper import QueryHelper
-from .strings import Translator, TextGenerator
-from .url_manager import UrlManager
-from .user_management import UserHandler
-from .notification_helper import NotificationHelper
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, Issue, Bubble, VoteArgument, VoteStatement, Breadcrumb
+from dbas.helper.notification_helper import NotificationHelper
+from dbas.helper.query_helper import QueryHelper
+from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
+from dbas.logger import logger
+from dbas.recommender_system import RecommenderHelper
+from dbas.strings import Translator, TextGenerator
+from dbas.url_manager import UrlManager
+from dbas.user_management import UserHandler
 
 
 class DictionaryHelper(object):

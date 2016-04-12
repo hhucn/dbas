@@ -8,10 +8,10 @@ import random
 
 from sqlalchemy import and_
 
+from .helper.relation_helper import RelationHelper
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, User, VoteArgument
 from .logger import logger
-from .relation_helper import RelationHelper
 
 
 class RecommenderHelper(object):
