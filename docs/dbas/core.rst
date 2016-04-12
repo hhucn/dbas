@@ -12,14 +12,28 @@ Description
 Breadcrumb Helper
 =================
 
-.. automodule:: dbas.breadcrumb_helper
+.. automodule:: dbas.helper.breadcrumb_helper
     :members:
 
 
 Dictionary Helper
 =================
 
-.. automodule:: dbas.dictionary_helper
+.. automodule:: dbas.helper.dictionary_helper
+    :members:
+
+
+Dictionary Helper for Discussion
+================================
+
+.. automodule:: dbas.helper.dictionary_helper_discussion
+    :members:
+
+
+Dictionary Helper for Item
+==========================
+
+.. automodule:: dbas.helper.dictionary_helper_items
     :members:
 
 
@@ -47,14 +61,14 @@ Logger
 Notification Helper
 ===================
 
-.. automodule:: dbas.notification_helper
+.. automodule:: dbas.helper.notification_helper
     :members:
 
 
 Query Helper
 ============
 
-.. automodule:: dbas.query_helper
+.. automodule:: dbas.helper.query_helper
     :members:
 
 
@@ -68,7 +82,7 @@ Recommender System
 Relation Helper
 ===============
 
-.. automodule:: dbas.relation_helper
+.. automodule:: dbas.helper.relation_helper
     :members:
 
 
@@ -117,5 +131,5 @@ Views
 Voting Helper
 =============
 
-.. automodule:: dbas.voting_helper
+.. automodule:: dbas.helper.voting_helper
     :members:

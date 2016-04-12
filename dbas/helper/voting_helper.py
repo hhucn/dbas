@@ -6,10 +6,10 @@ TODO
 
 
 from sqlalchemy import and_
-from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, Premise, VoteArgument, VoteStatement, User
-from .logger import logger
-from .user_management import UserHandler
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument, Statement, Premise, VoteArgument, VoteStatement, User
+from dbas.logger import logger
+from dbas.user_management import UserHandler
 
 
 class VotingHelper(object):

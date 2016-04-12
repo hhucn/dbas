@@ -4,9 +4,9 @@ TODO
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from .database import DBDiscussionSession
-from .database.discussion_model import User, TextVersion, Notification, Settings
-from .strings import Translator
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, TextVersion, Notification, Settings
+from dbas.strings import Translator
 from sqlalchemy import and_
 
 

@@ -4,34 +4,34 @@ Core component of DBAS.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import transaction
-import requests
 import json
 
-from validate_email import validate_email
+import requests
+import transaction
 from pyramid.httpexceptions import HTTPFound
-from pyramid.view import view_config, notfound_view_config, forbidden_view_config
-from pyramid.security import remember, forget
 from pyramid.renderers import get_renderer
+from pyramid.security import remember, forget
 from pyramid.threadlocal import get_current_registry
+from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyshorteners.shorteners import Shortener
 from sqlalchemy import and_
+from validate_email import validate_email
 
+from .helper.breadcrumb_helper import BreadcrumbHelper
+from .helper.dictionary_helper import DictionaryHelper
+from .helper.notification_helper import NotificationHelper
+from .helper.query_helper import QueryHelper
+from .helper.voting_helper import VotingHelper
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
-from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
-from .logger import logger
 from .lib import get_language, escape_string, get_text_for_statement_uid
-from .query_helper import QueryHelper
-from .strings import Translator
-from .string_matcher import FuzzyStringMatcher
-from .breadcrumb_helper import BreadcrumbHelper
+from .logger import logger
 from .recommender_system import RecommenderHelper
-from .user_management import PasswordGenerator, PasswordHandler, UserHandler
-from .voting_helper import VotingHelper
+from .string_matcher import FuzzyStringMatcher
+from .strings import Translator
 from .url_manager import UrlManager
-from .notification_helper import NotificationHelper
+from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
 version = '0.5.9a'  # TODO: why is this in views.py?

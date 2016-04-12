@@ -7,10 +7,10 @@ Class for handling relations of arguments
 import random
 
 from sqlalchemy import and_
-from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, PremiseGroup, User
-from .lib import get_text_for_premisesgroup_uid
-from .logger import logger
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User
+from dbas.lib import get_text_for_premisesgroup_uid
+from dbas.logger import logger
 
 
 class RelationHelper(object):

@@ -4,23 +4,23 @@ TODO
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from datetime import datetime
-
 import collections
 import random
-from sqlalchemy import and_, func
-from slugify import slugify
+from datetime import datetime
 
-from .lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid
-from .database import DBDiscussionSession, DBNewsSession
-from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
-from .database.news_model import News
-from .logger import logger
-from .notification_helper import NotificationHelper
-from .relation_helper import RelationHelper
-from .strings import Translator
-from .user_management import UserHandler
-from .url_manager import UrlManager
+from slugify import slugify
+from sqlalchemy import and_, func
+
+from dbas.database import DBDiscussionSession, DBNewsSession
+from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
+from dbas.database.news_model import News
+from dbas.helper.notification_helper import NotificationHelper
+from dbas.helper.relation_helper import RelationHelper
+from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid
+from dbas.logger import logger
+from dbas.strings import Translator
+from dbas.url_manager import UrlManager
+from dbas.user_management import UserHandler
 
 
 class QueryHelper(object):
