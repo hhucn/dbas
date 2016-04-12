@@ -81,7 +81,7 @@
 								</a>
 							</li>
 							<li tal:condition="extras.is_admin">
-								<a href="${request.application_url}/admin" data-toggle="tooltip" data-placement="right" title="Admin">
+								<a href="${request.application_url}/admin/main" data-toggle="tooltip" data-placement="right" title="Admin">
 									<img id="header_admin" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="Admin">Admin</span>
 								</a>
 							</li>

@@ -6,6 +6,7 @@ from datetime import datetime
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion
+from .lib import sql_timestamp_pretty_print
 from .logger import logger
 
 from .strings import Translator
@@ -228,7 +229,7 @@ class UserHandler(object):
 
 		return arg_votes, stat_votes
 
-	def get_statements_of_user(self, user, lang, query_helper):
+	def get_statements_of_user(self, user, lang):
 		"""
 
 		:param user:
@@ -249,17 +250,16 @@ class UserHandler(object):
 				edit_dict['uid'] = str(edit.uid)
 				edit_dict['statement_uid'] = str(edit.statement_uid)
 				edit_dict['content'] = str(edit.content)
-				edit_dict['timestamp'] = query_helper.sql_timestamp_pretty_print(str(edit.timestamp), lang)
+				edit_dict['timestamp'] = sql_timestamp_pretty_print(str(edit.timestamp), lang)
 				return_array.append(edit_dict)
 
 		return return_array
 
-	def get_edits_of_user(self, user, lang, query_helper):
+	def get_edits_of_user(self, user, lang):
 		"""
 
 		:param user:
 		:param lang:
-		:param query_helper:
 		:return:
 		"""
 		return_array = []
@@ -275,7 +275,7 @@ class UserHandler(object):
 			edit_dict['uid'] = str(edit.uid)
 			edit_dict['statement_uid'] = str(edit.statement_uid)
 			edit_dict['content'] = str(edit.content)
-			edit_dict['timestamp'] = query_helper.sql_timestamp_pretty_print(str(edit.timestamp), lang)
+			edit_dict['timestamp'] = sql_timestamp_pretty_print(str(edit.timestamp), lang)
 			return_array.append(edit_dict)
 
 		return return_array
@@ -305,7 +305,7 @@ class UserHandler(object):
 		for vote in db_votes:
 			vote_dict = dict()
 			vote_dict['uid'] = str(vote.uid)
-			vote_dict['timestamp'] = _qh.sql_timestamp_pretty_print(str(vote.timestamp), lang)
+			vote_dict['timestamp'] = sql_timestamp_pretty_print(str(vote.timestamp), lang)
 			vote_dict['is_up_vote'] = str(vote.is_up_vote)
 			vote_dict['is_valid'] = str(vote.is_valid)
 			if is_argument:
