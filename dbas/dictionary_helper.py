@@ -12,6 +12,7 @@ from sqlalchemy import and_
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, User, TextVersion, Premise, Issue, Bubble, VoteArgument, VoteStatement, Breadcrumb
+from .lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from .logger import logger
 from .recommender_system import RecommenderHelper
 from .query_helper import QueryHelper
@@ -95,11 +96,10 @@ class DictionaryHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_attitude', 'at_attitude')
 		_tn			        = Translator(self.lang)
-		_qh			        = QueryHelper()
 		bubbles_array       = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
-		statement_text      = _qh.get_text_for_statement_uid(uid)
+		statement_text      = get_text_for_statement_uid(uid)
 		if not statement_text:
 			return None
 		text                = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + statement_text[0:1].lower() + statement_text[1:] + '</strong>?'
@@ -132,14 +132,13 @@ class DictionaryHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
 		_tn			        = Translator(self.lang)
-		_qh			        = QueryHelper()
 		if not nickname:
 			nickname = 'anonymous'
 		db_user             = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		bubbles_array       = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
-		text				= _qh.get_text_for_statement_uid(uid)
+		text				= get_text_for_statement_uid(uid)
 		text                = text[0:1].upper() + text[1:]
 		if not text:
 			return None
@@ -198,7 +197,6 @@ class DictionaryHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'prepare_discussion_dict_for_justify_argument')
 		_tn			       = Translator(self.lang)
-		_qh			       = QueryHelper()
 		_tg                = TextGenerator(self.lang)
 		bubbles_array      = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text   = ''
@@ -208,9 +206,9 @@ class DictionaryHelper(object):
 		if not db_argument:
 			return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-		confr	       = _qh.get_text_for_argument_uid(uid, self.lang, True)
-		premise, tmp   = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
-		conclusion     = _qh.get_text_for_conclusion(db_argument, self.lang)
+		confr	       = get_text_for_argument_uid(uid, self.lang, True)
+		premise, tmp   = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
+		conclusion     = get_text_for_conclusion(db_argument, self.lang)
 
 		user_msg, sys_msg = _tg.get_header_for_users_confrontation_response(premise, attack, conclusion, False, is_supportive, logged_in)
 
@@ -261,14 +259,13 @@ class DictionaryHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_dont_know_reaction', 'at_dont_know')
 		_tn			   = Translator(self.lang)
-		_qh			   = QueryHelper()
 		db_user        = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		bubbles_array  = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 
 		if uid != 0:
-			text			= _qh.get_text_for_argument_uid(uid, self.lang)
+			text			= get_text_for_argument_uid(uid, self.lang)
 			text			= text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
 			sys_text    	= _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:]  + '</strong>. '
 
@@ -298,7 +295,6 @@ class DictionaryHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
 		_tn			        = Translator(self.lang)
-		_qh			        = QueryHelper()
 		db_user             = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		bubbles_array       = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text    = ''
@@ -310,19 +306,19 @@ class DictionaryHelper(object):
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		if attack == 'end':
 			#  user_text        = _tn.get(_tn.soYourOpinionIsThat) + ': '
-			text             = _qh.get_text_for_argument_uid(uid, self.lang, True)
+			text             = get_text_for_argument_uid(uid, self.lang, True)
 			user_text        = '<strong>' + text[0:1].upper() + text[1:] + '</strong>.'
 			sys_text         = _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
 			mid_text         = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 		else:
-			premise, tmp	 = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
-			conclusion       = _qh.get_text_for_conclusion(db_argument, self.lang)
+			premise, tmp	 = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
+			conclusion       = get_text_for_conclusion(db_argument, self.lang)
 			db_confrontation = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
-			confr, tmp       = _qh.get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid, self.lang)
-			sys_conclusion   = _qh.get_text_for_conclusion(db_confrontation, self.lang)
+			confr, tmp       = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid, self.lang)
+			sys_conclusion   = get_text_for_conclusion(db_confrontation, self.lang)
 			if attack == 'undermine':
-				premise = _qh.get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
-					else _qh.get_text_for_argument_uid(db_confrontation.argument_uid, self.lang, True)
+				premise = get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
+					else get_text_for_argument_uid(db_confrontation.argument_uid, self.lang, True)
 
 			# did the user changed his opinion?
 			user_changed_opinion = len(breadcrumbs) > 1 and '/undercut/' in breadcrumbs[-2]['url']
@@ -330,7 +326,7 @@ class DictionaryHelper(object):
 			# argumentation is a reply for an argument, if the arguments conclusion of the user is no position
 			db_statement		= DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
 			reply_for_argument  = not (db_statement and db_statement.is_startpoint)
-			current_argument	= _qh.get_text_for_argument_uid(uid, self.lang, with_strong_html_tag=True,
+			current_argument	= get_text_for_argument_uid(uid, self.lang, with_strong_html_tag=True,
 			                                                    start_with_intro=True, user_changed_opinion=user_changed_opinion)
 			user_is_attacking   = not db_argument.is_supportive
 
@@ -386,7 +382,6 @@ class DictionaryHelper(object):
 		:return:
 		"""
 		_tn			   = Translator(self.lang)
-		_qh			   = QueryHelper()
 		bubbles_array  = self.__create_speechbubble_history(breadcrumbs, nickname, session_id)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
@@ -395,7 +390,7 @@ class DictionaryHelper(object):
 		text = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
 		text += _tn.get(_tn.whyAreYouAgreeingWith) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWith)
 		text += ':<br><strong>'
-		text += _qh.get_text_for_argument_uid(uid, self.lang, True) if is_uid_argument else _qh.get_text_for_statement_uid(uid)
+		text += get_text_for_argument_uid(uid, self.lang, True) if is_uid_argument else get_text_for_statement_uid(uid)
 		text += '</strong>?<br>' + _tn.get(_tn.because) + '...'
 
 		self.__append_bubble(bubbles_array, self.__create_speechbubble_dict(False, False, True, 'now', '', 'Now', True))
@@ -419,12 +414,11 @@ class DictionaryHelper(object):
 
 		statements_array = []
 		_um = UrlManager(application_url, slug, for_api)
-		_qh = QueryHelper()
 
 		if db_statements:
 			for statement in db_statements:
 				statements_array.append(self.__create_statement_dict(statement.uid,
-				                                                     [{'title': _qh.get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
+				                                                     [{'title': get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
 																     'start',
 																     _um.get_url_for_statement_attitude(True, statement.uid)))
 			_tn = Translator(self.lang)
@@ -448,11 +442,10 @@ class DictionaryHelper(object):
 		:return:
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_attitude', 'def')
-		_qh = QueryHelper()
 		_tn = Translator(self.lang)
 
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
-		text = _qh.get_text_for_statement_uid(statement_uid)
+		text = get_text_for_statement_uid(statement_uid)
 		statements_array = []
 
 		_um = UrlManager(application_url, slug, for_api)
@@ -483,7 +476,6 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'prepare_item_dict_for_justify_statement', 'def')
 		statements_array = []
 		_tn = Translator(self.lang)
-		_qh = QueryHelper()
 		_rh = RecommenderHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 		db_arguments = RecommenderHelper.get_arguments_by_conclusion(statement_uid, is_supportive)
@@ -496,7 +488,7 @@ class DictionaryHelper(object):
 				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 				premise_array = []
 				for premise in db_premises:
-					text = _qh.get_text_for_statement_uid(premise.statement_uid)
+					text = get_text_for_statement_uid(premise.statement_uid)
 					text = text[0:1].upper() + text[1:]
 					premise_array.append({'title': text, 'id': premise.statement_uid})
 
@@ -532,7 +524,6 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'prepare_item_dict_for_justify_argument', 'def')
 		statements_array = []
 		_tn = Translator(self.lang)
-		_qh = QueryHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 
@@ -577,7 +568,7 @@ class DictionaryHelper(object):
 				for premise in db_premises:
 					premise_dict = dict()
 					premise_dict['id'] = premise.statement_uid
-					text = _qh.get_text_for_statement_uid(premise.statement_uid)
+					text = get_text_for_statement_uid(premise.statement_uid)
 					text = text[0:1].upper() + text[1:]
 					premise_dict['title'] = text
 					premises_array.append(premise_dict)
@@ -612,7 +603,6 @@ class DictionaryHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_dont_know_reaction', 'def')
 		_tg = TextGenerator(self.lang)
-		_qh = QueryHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 		_um = UrlManager(application_url, slug, for_api)
 		statements_array = []
@@ -621,8 +611,8 @@ class DictionaryHelper(object):
 		if not db_argument:
 			return statements_array
 
-		conclusion   = _qh.get_text_for_conclusion(db_argument, self.lang)
-		premise, tmp = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
+		conclusion   = get_text_for_conclusion(db_argument, self.lang)
+		premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
 		conclusion   = conclusion[0:1].lower() + conclusion[1:]
 		premise	     = premise[0:1].lower() + premise[1:]
 		rel_dict	 = _tg.get_relation_text_dict(premise, conclusion, False, False, False, is_dont_know=True)
@@ -658,7 +648,6 @@ class DictionaryHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_reaction', 'def')
 		_tg  = TextGenerator(self.lang)
-		_qh = QueryHelper()
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
 
 		db_sys_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_sys).first()
@@ -667,8 +656,8 @@ class DictionaryHelper(object):
 		if not db_sys_argument or not db_user_argument:
 			return statements_array
 
-		conclusion   = _qh.get_text_for_conclusion(db_sys_argument, self.lang)
-		premise, tmp = _qh.get_text_for_premisesgroup_uid(db_sys_argument.premisesgroup_uid, self.lang)
+		conclusion   = get_text_for_conclusion(db_sys_argument, self.lang)
+		premise, tmp = get_text_for_premisesgroup_uid(db_sys_argument.premisesgroup_uid, self.lang)
 		conclusion	 = conclusion[0:1].lower() + conclusion[1:]
 		premise		 = premise[0:1].lower() + premise[1:]
 
@@ -753,7 +742,6 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'def')
 		statements_array = []
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()
-		_qh = QueryHelper()
 		_um = UrlManager(application_url, slug, for_api)
 		conclusion = argument_or_statement_id if not is_argument else None
 		argument = argument_or_statement_id if is_argument else None
@@ -762,7 +750,7 @@ class DictionaryHelper(object):
 			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
 			premise_array = []
 			for premise in db_premises:
-				text = _qh.get_text_for_statement_uid(premise.statement_uid)
+				text = get_text_for_statement_uid(premise.statement_uid)
 				premise_array.append({'title': text, 'id': premise.statement_uid})
 
 			# get attack for each premise, so the urls will be unique
@@ -896,9 +884,9 @@ class DictionaryHelper(object):
 					island_dict = _qh.get_every_attack_for_island_view(argument_id, self.lang)
 
 					db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
-					premise, tmp = _qh.get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
-					conclusion = _qh.get_text_for_conclusion(db_argument, self.lang)
-					island_dict['heading'] = _qh.get_text_for_argument_uid(argument_id, self.lang, True)
+					premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
+					conclusion = get_text_for_conclusion(db_argument, self.lang)
+					island_dict['heading'] = get_text_for_argument_uid(argument_id, self.lang, True)
 
 					island_dict['premise'] = premise[0:1].lower() + premise[1:]
 					island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]

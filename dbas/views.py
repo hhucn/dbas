@@ -22,7 +22,7 @@ from .database.discussion_model import User, Group, Issue, Argument, Notificatio
 from .dictionary_helper import DictionaryHelper
 from .email import EmailHelper
 from .logger import logger
-from .lib import get_language, escape_string
+from .lib import get_language, escape_string, get_text_for_statement_uid
 from .query_helper import QueryHelper
 from .strings import Translator
 from .string_matcher import FuzzyStringMatcher
@@ -257,7 +257,7 @@ class Dbas(object):
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
-			if not QueryHelper().get_text_for_statement_uid(statement_or_arg_id):
+			if not get_text_for_statement_uid(statement_or_arg_id):
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
@@ -272,7 +272,7 @@ class Dbas(object):
 			# is the discussion at the end?
 			if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
-				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id),
+				                            current_premise=get_text_for_statement_uid(statement_or_arg_id),
 				                            supportive=supportive)
 
 		elif 'd' in mode and relation == '':
@@ -286,7 +286,7 @@ class Dbas(object):
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
-				                            current_premise=_qh.get_text_for_statement_uid(statement_or_arg_id))
+				                            current_premise=get_text_for_statement_uid(statement_or_arg_id))
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			# justifying argument
@@ -738,36 +738,6 @@ class Dbas(object):
 			'title': 'Imprint',
 			'project': project_name,
 			'extras': extras_dict
-		}
-
-	# admin page
-	@view_config(route_name='main_admin', renderer='templates/admin.pt', permission='everybody')  # or permission='use'
-	def main_admin(self):
-		"""
-		View configuration for the content view. Only logged in user can reach this page.
-
-		:return: dictionary with title and project name as well as a value, weather the user is logged in
-		"""
-		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('main_admin', 'def', 'main')
-		should_log_out = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
-		if should_log_out:
-			return self.user_logout(True)
-
-		_qh = QueryHelper()
-		ui_locales = get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
-		users = _qh.get_all_users(self.request.authenticated_userid, ui_locales)
-		dashboard = _qh.get_dashboard_infos()
-
-		return {
-			'layout': self.base_layout(),
-			'language': str(ui_locales),
-			'title': 'Admin',
-			'project': project_name,
-			'extras': extras_dict,
-			'users': users,
-			'dashboard': dashboard
 		}
 
 	# 404 page

@@ -1369,7 +1369,8 @@ class TextGenerator(object):
 
 	def get_text_for_add_premise_container(self, confrontation, premise, attack_type, conclusion, is_supportive):
 		"""
-		Based on the users reaction, text will be build.
+		Based on the users reaction, text will be build. This text can be used for the container where users can
+		add their statements
 
 		:param confrontation: choosen confrontation
 		:param premise: current premise
@@ -1415,7 +1416,8 @@ class TextGenerator(object):
 	def get_header_for_users_confrontation_response(self, premise, attack_type, conclusion, start_lower_case,
 	                                                is_supportive, is_logged_in):
 		"""
-		Based on the users reaction, text will be build.
+		Based on the users reaction, text will be build. This text can be used for the speech bubbles where users
+		justify an argument they have choosen.
 
 		:param premise: current premise
 		:param attack_type: type of the attack
@@ -1478,6 +1480,7 @@ class TextGenerator(object):
 
 	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False):
 		"""
+		Text of the different reaction types for an given argument
 
 		:param premises: String
 		:param conclusion: String
@@ -1535,6 +1538,7 @@ class TextGenerator(object):
 	def get_text_for_confrontation(self, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
 	                               reply_for_argument, user_is_attacking, user_arg):
 		"""
+		Text for the confrontation of the system
 
 		:param premise: String
 		:param conclusion: String

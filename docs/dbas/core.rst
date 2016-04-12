@@ -65,6 +65,13 @@ Recommender System
     :members:
 
 
+Relation Helper
+===============
+
+.. automodule:: dbas.relation_helper
+    :members:
+
+
 Security
 ========
 
