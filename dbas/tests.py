@@ -1,6 +1,8 @@
 import os
 import unittest
 
+from admin.views import main_admin
+
 from webtest import TestApp
 from dbas.views import Dbas
 from dbas import main
@@ -47,7 +49,7 @@ class Setup:
 		config.add_route('main_contact', '/contact')
 		config.add_route('main_settings', '/settings')
 		config.add_route('main_notification', '/notifications')
-		config.add_route('main_admin', '/admin')
+		config.add_route('main_admin', '/admin/main')
 		config.add_route('main_news', '/news')
 		config.add_route('main_imprint', '/imprint')
 		config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}')
@@ -191,18 +193,6 @@ class ViewMessagesTests(IntegrationTestDBAS):
 		self.assertEqual('Messages', response['title'])
 
 
-class ViewAdminTests(IntegrationTestDBAS):
-	def _callFUT(self, request):
-		print('ViewTest: _callFUT')
-		return Dbas.main_admin(request)
-
-	def test_admin(self):
-		print('ViewTest: test_admin')
-		request = testing.DummyRequest()
-		response = Dbas(request).main_admin()
-		self.assertEqual('Admin', response['title'])
-
-
 class ViewNewsTests(IntegrationTestDBAS):
 	def _callFUT(self, request):
 		print('ViewTest: _callFUT')
@@ -225,6 +215,21 @@ class ViewImprintTests(IntegrationTestDBAS):
 		request = testing.DummyRequest()
 		response = Dbas(request).main_imprint()
 		self.assertEqual('Imprint', response['title'])
+
+##########################################################################################################
+##########################################################################################################
+
+
+class ViewAdminTests(IntegrationTestDBAS):
+	def _callFUT(self, request):
+		print('ViewTest: _callFUT')
+		return main_admin(request)
+
+	def test_admin(self):
+		print('ViewTest: test_admin')
+		request = testing.DummyRequest()
+		response = main_admin(request)
+		self.assertEqual('Admin', response['title'])
 
 ##########################################################################################################
 ##########################################################################################################
