@@ -64,7 +64,8 @@ class Helper:
 		finally:
 			return ret_val if ret_val != 0 else ret_val
 
-	def check_for_present_text(self, browser, text, message):
+	@staticmethod
+	def check_for_present_text(browser, text, message):
 		"""
 		Checks whether given text is presented in the browser
 		:param browser: current browser
@@ -73,13 +74,14 @@ class Helper:
 		:return: true if text is present else false
 		"""
 		if browser.is_text_present(text):
-			self.print_success(True, message)
+			Helper.print_success(True, message)
 			return True
 		else:
-			self.print_success(False, message)
+			Helper.print_success(False, message)
 			return False
 
-	def check_for_non_present_text(self, browser, text, message):
+	@staticmethod
+	def check_for_non_present_text(browser, text, message):
 		"""
 		Checks whether given text is not presented in the browser
 		:param browser: current browser
@@ -88,10 +90,10 @@ class Helper:
 		:return: true if text is present else false
 		"""
 		if not browser.is_text_present(text):
-			self.print_success(True, message)
+			Helper.print_success(True, message)
 			return True
 		else:
-			self.print_success(False, message)
+			Helper.print_success(False, message)
 			return False
 
 
@@ -144,7 +146,7 @@ class FrontendTests:
 		print('Is server online? ')
 		b = Browser(browser)
 		b.visit(mainpage)
-		success = Helper().check_for_present_text(b, 'part of the graduate school', 'check main page')
+		success = Helper.check_for_present_text(b, 'part of the graduate school', 'check main page')
 		b.quit()
 		return success
 
@@ -187,7 +189,7 @@ class FrontendTests:
 		for index, p in enumerate(pages):
 			b.visit(p)
 			test = 'testing ' + tests[index] + ' page'
-			success = success and Helper().check_for_present_text(b, texts[index], test)
+			success = success and Helper.check_for_present_text(b, texts[index], test)
 
 		b.quit()
 		return 1 if success else 0
@@ -205,15 +207,15 @@ class FrontendTests:
 
 		b = Helper.login(b, nickname, 'wrongpassword', mainpage)
 		test = 'testing wrong login'
-		success = success and Helper().check_for_present_text(b, 'do not match', test)
+		success = success and Helper.check_for_present_text(b, 'do not match', test)
 
 		b = Helper.login(b, nickname, password, mainpage)
 		test = 'testing right login'
-		success = success and Helper().check_for_present_text(b, 'tobias', test)
+		success = success and Helper.check_for_present_text(b, 'tobias', test)
 
 		b = Helper.logout(b)
 		test = 'testing logout'
-		success = success and Helper().check_for_non_present_text(b, 'tobias', test)
+		success = success and Helper.check_for_non_present_text(b, 'tobias', test)
 
 		b.quit()
 		return 1 if success else 0
@@ -242,7 +244,7 @@ class FrontendTests:
 		for index, p in enumerate(pages):
 			b.visit(p)
 			test = 'testing ' + tests[index] + ' page'
-			success = success and Helper().check_for_present_text(b, texts[index], test)
+			success = success and Helper.check_for_present_text(b, texts[index], test)
 
 		b.quit()
 		return 1 if success else 0
@@ -260,7 +262,7 @@ class FrontendTests:
 
 		# open author popup
 		b.find_by_id('link_popup_author').click()
-		success = Helper().check_for_present_text(b, 'About me', 'check for author text')
+		success = Helper.check_for_present_text(b, 'About me', 'check for author text')
 		close = b.find_by_name('popup_author_icon_close')
 		close.click()
 
@@ -268,7 +270,7 @@ class FrontendTests:
 
 		# open licence popup
 		b.find_by_id('link_popup_license').click()
-		success = success and Helper().check_for_present_text(b, 'MIT', 'check for license text')
+		success = success and Helper.check_for_present_text(b, 'MIT', 'check for license text')
 		close = b.find_by_name('popup_license_icon_close')
 		close.click()
 
@@ -300,7 +302,7 @@ class FrontendTests:
 			if i == 4:
 				b.fill(form[3], content[3])
 			b.find_by_name('form.contact.submitted').click()
-			success = success and Helper().check_for_present_text(b, txt[i], msg[i])
+			success = success and Helper.check_for_present_text(b, txt[i], msg[i])
 
 		b.quit()
 		return 1 if success else 0
@@ -314,18 +316,17 @@ class FrontendTests:
 		"""
 		print('Starting tests for language_switch:')
 		b = Browser(browser)
-		h = Helper()
 
 		b.visit(mainpage)
-		success = h.check_for_present_text(b, 'part of the graduate', 'check englisch language')
+		success = Helper.check_for_present_text(b, 'part of the graduate', 'check englisch language')
 
 		b.click_link_by_partial_text('Language')
 		b.click_link_by_partial_text('Deutsch')
-		success = success and h.check_for_present_text(b, 'Teil der Graduierten-Kollegs', 'check switch to german language')
+		success = success and Helper.check_for_present_text(b, 'Teil der Graduierten-Kollegs', 'check switch to german language')
 
 		b.click_link_by_partial_text('Sprache')
 		b.click_link_by_partial_text('English')
-		success = success and h.check_for_present_text(b, 'part of the graduate', 'check switch back to englisch language')
+		success = success and Helper.check_for_present_text(b, 'part of the graduate', 'check switch back to englisch language')
 
 		b.quit()
 		return 1 if success else 0
@@ -340,95 +341,93 @@ class FrontendTests:
 		print('Starting tests for discussion_buttons:')
 		b = Browser(browser)
 		success = True
-		h = Helper()
-		b = h.login(b, nickname, password, mainpage + 'discussion')
+		b = Helper.login(b, nickname, password, mainpage + 'discussion')
 
 		# check url popup
 		b.find_by_id('share-url').click()
-		success = success and h.check_for_present_text(b, 'Share your URL', 'check for share url popup')
+		success = success and Helper.check_for_present_text(b, 'Share your URL', 'check for share url popup')
 		b.find_by_id('popup-url-sharing-long-url-button').click()
-		success = success and h.check_for_present_text(b, 'discussion', 'check for long url')
+		success = success and Helper.check_for_present_text(b, 'discussion', 'check for long url')
 		b.find_by_id('popup-url-sharing-close').click()
 		time.sleep(waittime)
 
 		# check edit statement popup
 		b.find_by_id('edit-statement').click()
-		success = success and h.check_for_present_text(b, 'Edit Statements / View Changelog', 'check for edit statements popup')
+		success = success and Helper.check_for_present_text(b, 'Edit Statements / View Changelog', 'check for edit statements popup')
 		b.find_by_id('popup-edit-statement-close').click()
 		time.sleep(waittime)
 
 		# check issue dropdown and switch issue
 		b.find_by_id('issue-dropdown').click()
-		success = success and h.check_for_present_text(b, 'Cat or Dog', 'check for issue dropdown')
+		success = success and Helper.check_for_present_text(b, 'Cat or Dog', 'check for issue dropdown')
 		b.find_by_css('.dropdown-menu li.enabled').click()
-		success = success and h.check_for_present_text(b, 'Change of discussion', 'check for topic list')
+		success = success and Helper.check_for_present_text(b, 'Change of discussion', 'check for topic list')
 		b.find_by_id('confirm-dialog-checkbox-accept-btn').click()
 		time.sleep(waittime)
-		success = success and h.check_for_present_text(b, 'Your familiy argues', 'check for switched issue')
+		success = success and Helper.check_for_present_text(b, 'Your familiy argues', 'check for switched issue')
 
 		# check finish
 		b.find_by_id('finish-button').click()
-		success = success and h.check_for_present_text(b, 'Thank you!', 'check for finish button')
+		success = success and Helper.check_for_present_text(b, 'Thank you!', 'check for finish button')
 
 		# go back
 		b.find_by_id('back-to-discuss-button').click()
 
 		# click position
-		success = success and h.check_for_present_text(b, 'What is the initial position', 'check for first step in discussion')
+		success = success and Helper.check_for_present_text(b, 'What is the initial position', 'check for first step in discussion')
 		b.find_by_css('#discussions-space-list li:first-child input').click()
-		success = success and h.check_for_present_text(b, 'What do you think', 'check for second step in discussion')
+		success = success and Helper.check_for_present_text(b, 'What do you think', 'check for second step in discussion')
 
 		# restart
 		b.find_by_id('discussion-restart-btn').click()
-		success = success and h.check_for_present_text(b, 'What is the initial position', 'check for restart')
+		success = success and Helper.check_for_present_text(b, 'What is the initial position', 'check for restart')
 
-		b = h.logout(b)
+		b = Helper.logout(b)
 		b.quit()
 		return 1 if success else 0
 
 	@staticmethod
 	def __test_demo_discussion(browser):
 		"""
-		Checks the demo of the discussion. Simple walkthrough.
+		Checks the demo of the discussion. Simple walkthrougHelper.
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
 		print('Starting tests for demo_discussion:')
 		success = True
 		b = Browser(browser)
-		h = Helper()
-		b = h.login(b, nickname, password, mainpage + 'discussion')
+		b = Helper.login(b, nickname, password, mainpage + 'discussion')
 
 		# position
-		success = success and h.check_for_present_text(b, 'initial ', 'check for position')
+		success = success and Helper.check_for_present_text(b, 'initial ', 'check for position')
 		b.find_by_id('item_37').click()
 		time.sleep(waittime)
 
 		# attitude
-		success = success and h.check_for_present_text(b, 'What do you think', 'check for attitude')
+		success = success and Helper.check_for_present_text(b, 'What do you think', 'check for attitude')
 		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
 
 		# premise
-		success = success and h.check_for_present_text(b, 'most important reason', 'check for premise')
+		success = success and Helper.check_for_present_text(b, 'most important reason', 'check for premise')
 		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
 
 		# confrontation
-		success = success and h.check_for_present_text(b, 'Other participants', 'check for confrontatation')
+		success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontatation')
 		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
 
 		# justification
-		tmp1 = h.check_for_present_text(b, 'most important reason', 'check for justification 1')
-		tmp2 = h.check_for_present_text(b, 'Let me enter my reason!', 'check for justification 2')
+		tmp1 = Helper.check_for_present_text(b, 'most important reason', 'check for justification 1')
+		tmp2 = Helper.check_for_present_text(b, 'Let me enter my reason!', 'check for justification 2')
 		success = success and (tmp1 or tmp2)
 
 		# go back
 		b.find_by_id('discussion-restart-btn').click()
-		success = success and h.check_for_present_text(b, 'initial ', 'check for position again')
+		success = success and Helper.check_for_present_text(b, 'initial ', 'check for position again')
 
-		b = h.logout(b)
+		b = Helper.logout(b)
 		b.quit()
 		return 1 if success else 0
 
@@ -442,33 +441,32 @@ class FrontendTests:
 		print('Starting tests for functions_while_discussion:')
 		success = True
 		b = Browser(browser)
-		h = Helper()
-		b = h.login(b, nickname, password, mainpage + 'discussion')
+		b = Helper.login(b, nickname, password, mainpage + 'discussion')
 
 		# new position
 		b.find_by_css('#discussions-space-list li:last-child input').click()
-		success = success and h.check_for_present_text(b, 'What is your idea? ', 'check for new position field')
+		success = success and Helper.check_for_present_text(b, 'What is your idea? ', 'check for new position field')
 		position = 'some new position ' + str(time.time())
 		b.find_by_id('add-statement-container-main-input').fill(position)
 		b.find_by_id('send-new-statement').click()
 		time.sleep(waittime)
 
 		# attitude
-		success = success and h.check_for_present_text(b, 'What do you think about some new position', 'check for attitude')
+		success = success and Helper.check_for_present_text(b, 'What do you think about some new position', 'check for attitude')
 		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
 
 		# new premise
-		success = success and h.check_for_present_text(b, 'Let me enter my reason', 'check for new window premise')
+		success = success and Helper.check_for_present_text(b, 'Let me enter my reason', 'check for new window premise')
 		reason1 = 'some new reason'
 		b.find_by_id('add-premise-container-main-input').fill(reason1)
 		b.find_by_id('send-new-premise').click()
 		time.sleep(waittime)
 
 		# confrontation
-		success = success and h.check_for_present_text(b, position[1:] + ' because some new reason', 'check for new argument')
-		success = success and h.check_for_present_text(b, 'Other participants do not have any counter', 'check that no confrontation exists')
-		success = success and h.check_for_present_text(b, 'The discussion ends here', 'check for end text')
+		success = success and Helper.check_for_present_text(b, position[1:] + ' because some new reason', 'check for new argument')
+		success = success and Helper.check_for_present_text(b, 'Other participants do not have any counter', 'check that no confrontation exists')
+		success = success and Helper.check_for_present_text(b, 'The discussion ends here', 'check for end text')
 
 		# go back to first premise
 		b.find_by_css('#dialog-speech-bubbles-space .triangle-r:first-child a span').click()
@@ -476,7 +474,7 @@ class FrontendTests:
 		b.find_by_css('#discussions-space-list li:last-child input').click()
 		time.sleep(waittime)
 		# add new premise
-		success = success and h.check_for_present_text(b, 'Let me enter my reason', 'check for new premise window again')
+		success = success and Helper.check_for_present_text(b, 'Let me enter my reason', 'check for new premise window again')
 		reason2 = 'some new reason 1 and some new reason 2'
 		b.find_by_id('add-premise-container-main-input').fill(reason2)
 		# add another input field
@@ -486,18 +484,18 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# check for pgroup poup
-		success = success and h.check_for_present_text(b, 'We need your help', 'check for pgroup popup')
+		success = success and Helper.check_for_present_text(b, 'We need your help', 'check for pgroup popup')
 		b.find_by_id('insert_more_arguments_0').click()
 		time.sleep(waittime)
 		b.find_by_id('popup-set-premisegroups-send-button').click()
 		time.sleep(waittime)
 
 		# check choosing
-		success = success and h.check_for_present_text(b, 'multiple reasons', 'check options for choosing ')
-		success = success and h.check_for_present_text(b, 'some new reason 1', 'check options for choosing answer 1')
-		success = success and h.check_for_present_text(b, 'some new reason 2', 'check options for choosing answer 2')
+		success = success and Helper.check_for_present_text(b, 'multiple reasons', 'check options for choosing ')
+		success = success and Helper.check_for_present_text(b, 'some new reason 1', 'check options for choosing answer 1')
+		success = success and Helper.check_for_present_text(b, 'some new reason 2', 'check options for choosing answer 2')
 
-		b = h.logout(b)
+		b = Helper.logout(b)
 		b.quit()
 		return 1 if success else 0
 
