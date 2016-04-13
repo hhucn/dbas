@@ -11,4 +11,4 @@ More information can be found in the docs.
 
 ## License
 
-Copyright © 2016 Christian Meter
+Copyright © 2016 Christian Meter, Tobias Krauthoff
