@@ -31,6 +31,7 @@ from .email import EmailHelper
 from .lib import get_language, escape_string, get_text_for_statement_uid
 from .logger import logger
 from .recommender_system import RecommenderHelper
+from .news_handler import NewsHandler
 from .opinion_handler import OpinionHandler
 from .string_matcher import FuzzyStringMatcher
 from .strings import Translator
@@ -1539,7 +1540,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_news', 'def', 'main')
-		return_dict = QueryHelper.get_news()
+		return_dict = NewsHandler.get_news()
 		return json.dumps(return_dict, True)
 
 	# ajax - for getting argument infos
@@ -1645,7 +1646,7 @@ class Dbas(object):
 		try:
 			title = escape_string(self.request.params['title'])
 			text = escape_string(self.request.params['text'])
-			return_dict = QueryHelper.set_news(transaction, title, text, self.request.authenticated_userid)
+			return_dict = NewsHandler.set_news(transaction, title, text, self.request.authenticated_userid)
 			return_dict['error'] = ''
 		except KeyError as e:
 			return_dict = dict()
