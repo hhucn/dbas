@@ -1,3 +1,12 @@
+"""
+Core compontent of D-BAS. The Dialog-Based Argumentation Software avoids the pitfalls of unstructured systems such as
+asynchronous threaded discussions and it is usable by any participant without training while still supporting the full
+complexity of real-world argumentation. The key idea is to let users exchange arguments with each other in the form of
+a time-shifted dialog where arguments are presented and acted upon one-at-a-time.
+
+.. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
+"""
+
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -9,9 +18,6 @@ from sqlalchemy import engine_from_config
 from .database import *
 
 import logging
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 def main(global_config, **settings):
@@ -28,12 +34,10 @@ def main(global_config, **settings):
 		log.debug('__init__() '.upper() + 'main() <' + str(k) + ' : ' + str(v) + '>')
 
 	# load database
-	discussionEngine = engine_from_config(settings, 'sqlalchemy-discussion.')
-	newsEngine       = engine_from_config(settings, 'sqlalchemy-news.')
-	apiEngine        = engine_from_config(settings, 'sqlalchemy-api.')
+	discussionEngine = engine_from_config(settings, 'sqlalchemy-discussion.')  # , connect_args={'client_encoding': 'utf8'}
+	newsEngine       = engine_from_config(settings, 'sqlalchemy-news.')  # , connect_args={'client_encoding': 'utf8'}
 	load_discussion_database(discussionEngine)
 	load_news_database(newsEngine)
-	load_api_database(apiEngine)
 
 	# session management and cache region support with pyramid_beaker
 	session_factory = session_factory_from_settings(settings)
@@ -60,6 +64,8 @@ def main(global_config, **settings):
 
 	# Include apps
 	config.include('api', route_prefix='/api')
+	config.include('export', route_prefix='/export')
+	config.include('admin', route_prefix='/admin')
 
 	# includings for the config
 	config.include('pyramid_chameleon')
@@ -72,29 +78,25 @@ def main(global_config, **settings):
 	config.add_route('main_contact',            '/contact')
 	config.add_route('main_settings',           '/settings')
 	config.add_route('main_notification',       '/notifications')
-	config.add_route('main_admin',              '/admin')
 	config.add_route('main_news',               '/news')
 	config.add_route('main_imprint',            '/imprint')
 
-	# ajax for navigation logic, administraion, settigs and editing/viewing log
+	# ajax for navigation logic, administration, settings and editing/viewing log
 	config.add_route('ajax_user_login',                             '{url:.*}ajax_user_login')
 	config.add_route('ajax_user_logout',                            '{url:.*}ajax_user_logout')
-
 	config.add_route('ajax_set_new_start_statement',                '/{url:.*}ajax_set_new_start_statement')
 	config.add_route('ajax_set_new_start_premise',                  '/{url:.*}ajax_set_new_start_premise')
 	config.add_route('ajax_set_new_premises_for_argument',          '/{url:.*}ajax_set_new_premises_for_argument')
 	config.add_route('ajax_set_correcture_of_statement',            '/{url:.*}ajax_set_correcture_of_statement')
+	config.add_route('ajax_set_new_issue',                          '/{url:.*}ajax_set_new_issue')
 	config.add_route('ajax_get_logfile_for_statement',              '/{url:.*}ajax_get_logfile_for_statement')
 	config.add_route('ajax_get_shortened_url',                      '/{url:.*}ajax_get_shortened_url')
-	config.add_route('ajax_all_users',                              '{url:.*}ajax_all_users')
-	config.add_route('ajax_get_argument_overview',                  '{url:.*}ajax_get_argument_overview')
-	config.add_route('ajax_user_registration',                      '{url:.*}ajax_user_registration')
-	config.add_route('ajax_user_password_request',                  '{url:.*}ajax_user_password_request')
-	config.add_route('ajax_fuzzy_search',                           '{url:.*}ajax_fuzzy_search')
+	config.add_route('ajax_user_registration',                      '/{url:.*}ajax_user_registration')
+	config.add_route('ajax_user_password_request',                  '/{url:.*}ajax_user_password_request')
+	config.add_route('ajax_fuzzy_search',                           '/{url:.*}ajax_fuzzy_search')
 	config.add_route('ajax_switch_language',                        '{url:.*}ajax_switch_language{params:.*}')
-	config.add_route('ajax_get_database_dump',                      '{url:.*}ajax_get_database_dump')
-	config.add_route('ajax_get_infos_about_argument',               '{url:.*}ajax_get_infos_about_argument')
-	config.add_route('ajax_get_user_with_same_opinion',             '{url:.*}ajax_get_user_with_same_opinion')
+	config.add_route('ajax_get_infos_about_argument',               '/{url:.*}ajax_get_infos_about_argument')
+	config.add_route('ajax_get_user_with_same_opinion',             '/{url:.*}ajax_get_user_with_same_opinion')
 	config.add_route('ajax_get_user_history',                       'ajax_get_user_history')
 	config.add_route('ajax_get_all_edits',                          'ajax_get_all_edits')
 	config.add_route('ajax_get_all_posted_statements',              'ajax_get_all_posted_statements')
@@ -114,6 +116,7 @@ def main(global_config, **settings):
 	config.add_route('discussion_justify',    '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
 	config.add_route('discussion_attitude',   '/discuss/{slug}/attitude/*statement_id')
 	config.add_route('discussion_choose',     '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids')
+	config.add_route('discussion_finish',     '/discuss/finish')
 	config.add_route('discussion_init',       '/discuss*slug')
 
 	# read the input and start

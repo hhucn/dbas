@@ -1,7 +1,11 @@
-from .logger import logger
+"""
+TODO
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
+
+from .logger import logger
 
 
 class UrlManager(object):
@@ -12,6 +16,7 @@ class UrlManager(object):
 	def __init__(self, application_url, slug='', for_api=False):
 		"""
 		Initialization of an URL-Manager
+
 		:param application_url: self.request.application_url
 		:param slug: slugged issue.title
 		:param for_api: Boolean
@@ -27,26 +32,30 @@ class UrlManager(object):
 	def get_url(self, path):
 		"""
 		Returns current url with self.url as prefix or the API-version
+
 		:param path: String
 		:return:
 		"""
 		return path if self.for_api else (self.url + path)
 
-	def get_404(self, params):
+	def get_404(self, params, is_param_error=False):
 		"""
 		Returns the 404 page or the API-version
+
 		:param params: self.request.params
+		:param is_param_error: boolean
 		:return: 404/params1/param2/
 		"""
 		url = self.url + '404'
 		for p in params:
 			if p != '':
 				url += '/' + p
-		return url
+		return url + '?param_error=true' if is_param_error else url
 
 	def get_slug_url(self, as_location_href):
 		"""
 		Returns url with slugified issue.title or the API-version
+
 		:param as_location_href: Boolean
 		:return: discussion_url/slug
 		"""
@@ -56,6 +65,7 @@ class UrlManager(object):
 	def get_url_for_statement_attitude(self, as_location_href, statement_uid):
 		"""
 		Returns url for getting statement attitude of the user or the API-version
+
 		:param as_location_href: Boolean
 		:param statement_uid: Statement.uid
 		:return: discussion_url/slug/a/statement_uid
@@ -66,6 +76,7 @@ class UrlManager(object):
 	def get_url_for_justifying_statement(self, as_location_href, statement_uid, mode):
 		"""
 		Returns url for getting statement justification of the user or the API-version
+
 		:param as_location_href: Boolean
 		:param statement_uid: Statement.uid
 		:param mode: String
@@ -77,6 +88,7 @@ class UrlManager(object):
 	def get_url_for_justifying_argument(self, as_location_href, argument_uid, mode, attitude, additional_id=-1):
 		"""
 		Returns url for justifyng an argument of the user or the API-version
+
 		:param as_location_href: Boolean
 		:param argument_uid: Argument.uid
 		:param mode: String
@@ -92,6 +104,7 @@ class UrlManager(object):
 	def get_url_for_reaction_on_argument(self, as_location_href, argument_uid, mode, confrontation_argument):
 		"""
 		Returns url for getting teh reaction regarding an argument of the user or the API-version
+
 		:param as_location_href: Boolean
 		:param argument_uid: Argument.uid
 		:param mode: 't' on supportive, 'f' otherwise
@@ -120,9 +133,9 @@ class UrlManager(object):
 	def __return_url(self, as_location_href, url):
 		"""
 
-		:param as_location_href:
-		:param url:
-		:return:
+		:param as_location_href: Boolean
+		:param url: String
+		:return: Valid URL
 		"""
 		if self.for_api:
 			return self.api_url + url

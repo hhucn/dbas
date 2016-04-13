@@ -79,8 +79,9 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-guihandler.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion-helper.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-guihandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-helper.js')}"></script>
+	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/gremlins.min.js')}"></script>-->
 
 	<!-- Piwik -->
 	<script type="text/javascript">
@@ -107,15 +108,16 @@
 		</p>
 	</noscript>
 	
-	<!-- Click Heat-->
+	<!-- Click Heat
 	<script type="text/javascript" src="http://dbas.cs.uni-duesseldorf.de/piwik/plugins/ClickHeat/libs/js/clickheat.js"></script>
 	<noscript><p><a href="http://www.dugwood.com/index.html">Open Source Sofware</a></p></noscript>
-	<script type="text/javascript"><!--
+	<script type="text/javascript">
 	clickHeatSite = 1;
 	clickHeatGroup = encodeURIComponent(window.location.pathname+window.location.search);
 	clickHeatServer = 'http://dbas.cs.uni-duesseldorf.de/piwik/plugins/ClickHeat/libs/click.php';
-	initClickHeat(); //-->
+	initClickHeat();
 	</script>
+    -->
 	<!-- End Piwik Code -->
 </body>
 

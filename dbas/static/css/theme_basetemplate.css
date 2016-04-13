@@ -136,12 +136,11 @@ body.loading .ajaxloader {
 	margin: 1em;
 }
 
-.container,
-.first-container {
+.container{
 	margin-bottom: 10px;
 }
 
-.colored_container{
+.colored-container{
 	background: rgba(255, 255, 255, 1.0);
 	padding: 1em;
 	box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3);
@@ -153,21 +152,9 @@ body.loading .ajaxloader {
   height: 100%;
 }
 
-.first-container {
-	margin-top: -20px;
-}
-
-/**
-.first-container:hover,
-.container:hover {
-	box-shadow: 0 4px 10px 4px rgba(0, 106, 179, 0.3);
-	transition: .5s ease;
-}
-**/
-
 .imprint-container {
-	margin-left: 30px;
-	margin-right: 30px;
+	margin-left: 20px;
+	margin-right: 20px;
 	text-align: justify;
 }
 
@@ -216,7 +203,8 @@ comment .container and wrap each container with <div class="coloured-div">
 	z-index: 9999997;
     width: 300px;
 }
-.session_expired h5 {
+.session_expired h5,
+.session_expired h6{
     color: #fff;
 }
 
@@ -287,23 +275,65 @@ comment .container and wrap each container with <div class="coloured-div">
 	margin: auto;
 }
 
-.add-button{
-	border-radius: 50%;
+.blue-button,
+.red-button,
+.green-button{
     font-size: 40px;
-    margin: auto;
     height: 48px;
     width: 48px;
+}
+.blue-button-small,
+.red-button-small,
+.green-button-small{
+    font-size: 20px;
+    height: 24px;
+    width: 24px;
+}
+.blue-button-middle,
+.red-button-middle,
+.green-button-middle{
+    font-size: 30px;
+    height: 36px;
+    width: 36px;
+}
+.blue-button,
+.blue-button-small,
+.blue-button-middle,
+.red-button,
+.red-button-small,
+.red-button-middle,
+.green-button,
+.green-button-small,
+.green-button-middle{
+    position: fixed;
+	  border-radius: 50%;
+    margin: auto;
     padding: 0;
     overflow: hidden;
     box-shadow: 0 1px 1px 0 rgba(0,0,0,.12),0 1px 1px 0 rgba(0,0,0,.24);
     line-height: normal;
     color: #fff;
-    background: #2196f3;
-    position: fixed;
-    bottom: 2em;
-    right: 0.5em;
     cursor: pointer;
     text-align:center;
+}
+.blue-button,
+.blue-button-small,
+.blue-button-middle{
+    background: #2196f3;
+}
+.red-button,
+.red-button-small,
+.red-button-middle{
+    background: #F44336;
+}
+.green-button,
+.green-button-small,
+.green-button-middle{
+    background: #8BC34A;
+}
+.bottom-right{
+    bottom: 2em;
+    right: 0.5em;
 }
 
 .inactive-image{
@@ -325,7 +355,7 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 #wrapper-content {
-	padding-top: 100px;
+	padding-top: 80px;
 	padding-bottom: 100px;
 	/* Height of the footer element */
 }
@@ -346,7 +376,8 @@ comment .container and wrap each container with <div class="coloured-div">
     cursor: pointer;
 }
 
-.share-icon:hover {
+.share-icon:hover,
+.share-icon-small:hover {
 	opacity: 1.0;
 	transition: .2s ease;
 }
@@ -379,71 +410,22 @@ comment .container and wrap each container with <div class="coloured-div">
 	background: url('../images/glyphicons_free/glyphicons/glyphicons-309-share-alt.png') no-repeat 10px 10px;
 }
 
-.share-facebook {
-	background: url('../images/glyphicons_free/glyphicons_social/social-31-facebook.png') no-repeat 10px 10px;
-}
+.share-facebook {	      background: url('../images/icon_fb.png') no-repeat 4px 4px;}
+.share-facebook-small {	background: url('../images/icon_fb_s.png') no-repeat 1px 1px;}
+.share-google {	        background: url('../images/icon_googlep.png') no-repeat 4px 4px;}
+.share-google-small {	  background: url('../images/icon_googlep_s.png') no-repeat 1px 1px;}
+.share-twitter:hover {	background: url('../images/icon_twitter.png') no-repeat 4px 4px;}
+.share-twitter-small {	background: url('../images/icon_twitter_s.png') no-repeat 1px 1px;}
+.share-mail {	          background: url('../images/icon_mail.png') no-repeat 4px 4px;}
+.share-mail-small {	    background: url('../images/icon_mail_s.png') no-repeat 1px 1px;}
 
-.share-google {
-	background: url('../images/glyphicons_free/glyphicons_social/social-3-google-plus.png') no-repeat 10px 10px;
-}
-
-.share-twitter {
-	background: url('../images/glyphicons_free/glyphicons_social/social-32-twitter.png') no-repeat 10px 10px;
-}
-
-.share-mail {
-	background: url('../images/glyphicons_free/glyphicons_social/social-40-e-mail.png') no-repeat 10px 10px;
-}
-
-.share-facebook:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/hover-social-31-facebook.png') no-repeat 10px 10px;
-}
-
-.share-google:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/hover-social-3-google-plus.png') no-repeat 10px 10px;
-}
-
-.share-twitter:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/hover-social-32-twitter.png') no-repeat 10px 10px;
-}
-
-.share-mail:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail.png') no-repeat 10px 10px;
-}
-
-.share-facebook-small {
-	background: url('../images/glyphicons_free/glyphicons_social/social-31-facebook-small.png') no-repeat 5px 5px;
-}
-
-.share-google-small {
-	background: url('../images/glyphicons_free/glyphicons_social/social-3-google-plus-small.png') no-repeat 5px 5px;
-}
-
-.share-twitter-small {
-	background: url('../images/glyphicons_free/glyphicons_social/social-32-twitter-small.png') no-repeat 5px 5px;
-}
-
-.share-mail-small {
-	background: url('../images/glyphicons_free/glyphicons_social/social-40-e-mail-small.png') no-repeat 5px 5px;
-}
-
-.share-facebook-small:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/hover-social-31-facebook-small.png') no-repeat 5px 5px;
-}
-
-.share-google-small:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/hover-social-3-google-plus-small.png') no-repeat 5px 5px;
-}
-
-.share-twitter-small:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/hover-social-32-twitter-small.png') no-repeat 5px 5px;
-}
-
-.share-mail-small:hover {
-	background: url('../images/glyphicons_free/glyphicons_social/hover-social-40-e-mail-small.png') no-repeat 5px 5px;
-}
 #popup-url-sharing-input{
 	background: url('../images/glyphicons_free/glyphicons/glyphicons-309-share-alt.png') no-repeat 5px 5px;
+}
+#add-topic-title-input,
+#add-topic-info-input{
+	padding: 12px 10px 0 50px;
+	background: url('../images/glyphicons_free/glyphicons/glyphicons-40-notes.png') no-repeat 5px 5px;
 }
 
 #popup-login-body,
@@ -630,6 +612,13 @@ comment .container and wrap each container with <div class="coloured-div">
 }
 
 @media (max-width: 768px) {
+	#wrapper-content{
+		padding-top: 50px;	
+	}
+	.container{
+		margin-left: 0.5em;
+		margin-right: 0.5em;
+	}
 	.lead {
 		font-size: 18px;
 	}
@@ -638,22 +627,24 @@ comment .container and wrap each container with <div class="coloured-div">
 		width: 0;
 		height: 0;
 	}
-	
+	.links ul li {
+		display: block;
+		margin: 0;
+	}
 }
 @media (max-width: 1118px) {
 	.blocked{
 		padding: 40px;
 	}
+	.col-md-4 .imprint-container{
+		margin-top: 20px;
+	}
+	#news-navigation{
+		margin-bottom: 35px;
+	}
 }
 @media (max-width: 992px) {
-	.first-container:not(:first-child) {
-		margin-top: 30px;
-	}
 	#breadcrumb-container{
 		margin-top: 0px;
-	}
-	.imprint-container,
-	#first-settings-container {
-		margin-top: -50px;
 	}
 }

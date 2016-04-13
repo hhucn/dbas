@@ -1,23 +1,32 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
+
 import random
 import hashlib
-import urllib
+from urllib import parse
 
 from datetime import datetime
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion
+from .lib import sql_timestamp_pretty_print
 from .logger import logger
 
 from .strings import Translator
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
-
-class PasswordGenerator(object):
+class PasswordGenerator:
+	"""
+	Provides method for generating password
+	"""
 
 	# http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
-	def get_rnd_passwd(self):
+	@staticmethod
+	def get_rnd_passwd():
 		"""
 		Generates a password with the length of 10 out of ([a-z][A-Z][+-*/#!*?])+
 		:return: new secure password
@@ -44,71 +53,107 @@ class PasswordGenerator(object):
 		return pwstring
 
 
-class PasswordHandler(object):
+class PasswordHandler:
+	"""
+	Handler for password
+	"""
 
-	def get_hashed_password(self, password):
+	def get_hashed_password(password):
 		"""
+		Returns encrypted password
 
-		:param password:
-		:return:
+		:param password: String
+		:return: String
 		"""
 		manager = BCRYPTPasswordManager()
 		return manager.encode(password)
 
 
 class UserHandler(object):
+	"""
+	Handler for user-accounts
+	"""
 
 	def __init__(self):
-		self.timeout = 1800
+		"""
+		Initialie default values
+		:return:
+		"""
+		self.timeout = 3600
 
 	def update_last_action(self, transaction, nick):
 		"""
-
-		:param nick:
-		:return:
+		Updates the last action field of the user-row in database. Returns boolean if the users session
+		is older than one hour or True, when she wants to keep the login
+		:param transaction: transaction
+		:param nick: User.nickname
+		:return: Boolean
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
-		if db_user:
+		if not db_user:
+			return False
+
+		# check difference of
+		try:  # sqlite
 			last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
-			diff = (datetime.now() - last_action_object).seconds - 3600  # TODO dirty fix
-			log_out = diff > self.timeout
-			logger('UserHandler', 'update_last_action', 'session run out: ' + str(log_out) + ', ' + str(diff) + 's')
-			db_user.update_last_action()
-			db_user.should_hold_the_login(not log_out)
-			transaction.commit()
-			return log_out
-		return False
+			last_login_object  = datetime.strptime(str(db_user.last_login), '%Y-%m-%d %H:%M:%S')
+			diff_action = (datetime.now() - last_action_object).seconds - 3600  # dirty fix for sqlite
+			diff_login = (datetime.now() - last_login_object).seconds - 3600  # dirty fix for sqlite
+		except ValueError:  # postgres
+			last_action_object = datetime.strptime(str(db_user.last_action)[:-6], '%Y-%m-%d %H:%M:%S.%f')
+			last_login_object  = datetime.strptime(str(db_user.last_login)[:-6], '%Y-%m-%d %H:%M:%S.%f')
+			diff_action = (datetime.now() - last_action_object).seconds
+			diff_login = (datetime.now() - last_login_object).seconds
+
+		diff = diff_action if diff_action < diff_login else diff_login
+		should_log_out = diff > self.timeout and not db_user.keep_logged_in
+		logger('UserHandler', 'update_last_action', 'session run out: ' + str(should_log_out) + ', ' + str(diff) + 's (keep login: ' + str(db_user.keep_logged_in) + ')')
+		db_user.update_last_action()
+
+		transaction.commit()
+		return should_log_out
+
+	def is_user_in_group(self, nickname, groupname):
+		"""
+		Returns boolean if the user is in the group
+
+		:param nickname: User.nickname
+		:param groupname: Group.name
+		:return: Boolean
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
+		logger('UserHandler', 'is user in: ' + groupname, 'main')
+		return db_user and db_user.groups.name == groupname
 
 	def is_user_admin(self, user):
 		"""
 		Check, if the given uid has admin rights or is admin
+
 		:param user: current user name
 		:return: true, if user is admin, false otherwise
 		"""
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
-		db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).join(Group).first()
 		logger('UserHandler', 'is_user_admin', 'main')
-		if db_user:
-			if db_user.group_uid == db_admin_group.uid:
-				return True
+		return db_user and db_user.groups.name == 'admins'
 
-		return False
-
-	def get_profile_picture(self, user):
+	@staticmethod
+	def get_profile_picture(user):
 		"""
 		Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
+
 		:param user: User
-		:return:
+		:return: String
 		"""
 		email = user.email.encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
-		gravatar_url += urllib.parse.urlencode({'d': 'wavatar', 's': str(80)})
+		gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(80)})
 		logger('UserHandler', 'get_profile_picture', 'url: ' + gravatar_url)
 		return gravatar_url
 
 	def is_user_author(self, user):
 		"""
 		Check, if the given uid has admin rights or is admin
+
 		:param user: current user name
 		:return: true, if user is admin, false otherwise
 		"""
@@ -125,6 +170,7 @@ class UserHandler(object):
 	def is_user_logged_in(self, user):
 		"""
 		Checks if the user is logged in
+
 		:param user: current user name
 		:return: user or None
 		"""
@@ -133,6 +179,7 @@ class UserHandler(object):
 	def get_random_anti_spam_question(self, lang):
 		"""
 		Returns a random math question
+
 		:param lang: string
 		:return: question, answer
 		"""
@@ -182,7 +229,7 @@ class UserHandler(object):
 		if not user:
 			return 0
 
-		edit_count = 0
+		edit_count      = 0
 		statement_count = 0
 		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid).all()
 
@@ -191,7 +238,7 @@ class UserHandler(object):
 			if db_root_version.uid < tv.uid:
 				edit_count += 1
 			else:
-				statement_count +=1
+				statement_count += 1
 
 		return edit_count if only_edits else statement_count
 
@@ -205,6 +252,7 @@ class UserHandler(object):
 			return 0
 		arg_votes = len(DBDiscussionSession.query(VoteArgument).filter_by(author_uid=user.uid).all())
 		stat_votes = len(DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user.uid).all())
+
 		return arg_votes, stat_votes
 
 	def get_statements_of_user(self, user, lang):
@@ -219,7 +267,6 @@ class UserHandler(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if not db_user:
 			return return_array
-
 		db_edits = DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
 
 		for edit in db_edits:
@@ -229,17 +276,16 @@ class UserHandler(object):
 				edit_dict['uid'] = str(edit.uid)
 				edit_dict['statement_uid'] = str(edit.statement_uid)
 				edit_dict['content'] = str(edit.content)
-				edit_dict['timestamp'] = str(edit.timestamp)
+				edit_dict['timestamp'] = sql_timestamp_pretty_print(str(edit.timestamp), lang)
 				return_array.append(edit_dict)
 
 		return return_array
 
-	def get_edits_of_user(self, user, lang, query_helper):
+	def get_edits_of_user(self, user, lang):
 		"""
 
 		:param user:
 		:param lang:
-		:param query_helper:
 		:return:
 		"""
 		return_array = []
@@ -255,7 +301,7 @@ class UserHandler(object):
 			edit_dict['uid'] = str(edit.uid)
 			edit_dict['statement_uid'] = str(edit.statement_uid)
 			edit_dict['content'] = str(edit.content)
-			edit_dict['timestamp'] = query_helper.sql_timestamp_pretty_print(str(edit.timestamp), lang)
+			edit_dict['timestamp'] = sql_timestamp_pretty_print(str(edit.timestamp), lang)
 			return_array.append(edit_dict)
 
 		return return_array
@@ -285,7 +331,7 @@ class UserHandler(object):
 		for vote in db_votes:
 			vote_dict = dict()
 			vote_dict['uid'] = str(vote.uid)
-			vote_dict['timestamp'] = _qh.sql_timestamp_pretty_print(str(vote.timestamp), lang)
+			vote_dict['timestamp'] = sql_timestamp_pretty_print(str(vote.timestamp), lang)
 			vote_dict['is_up_vote'] = str(vote.is_up_vote)
 			vote_dict['is_valid'] = str(vote.is_valid)
 			if is_argument:
@@ -318,37 +364,36 @@ class UserHandler(object):
 		# is the old password given?
 		if not old_pw:
 			logger('UserHandler', 'change_password', 'old pwd is empty')
-			message = _t.get(_t.oldPwdEmpty) # 'The old password field is empty.'
+			message = _t.get(_t.oldPwdEmpty)  # 'The old password field is empty.'
 			error = True
 		# is the new password given?
 		elif not new_pw:
 			logger('UserHandler', 'change_password', 'new pwd is empty')
-			message = _t.get(_t.newPwdEmtpy) # 'The new password field is empty.'
+			message = _t.get(_t.newPwdEmtpy)  # 'The new password field is empty.'
 			error = True
 		# is the confirmation password given?
 		elif not confirm_pw:
 			logger('UserHandler', 'change_password', 'confirm pwd is empty')
-			message = _t.get(_t.confPwdEmpty) # 'The password confirmation field is empty.'
+			message = _t.get(_t.confPwdEmpty)  # 'The password confirmation field is empty.'
 			error = True
 		# is new password equals the confirmation?
 		elif not new_pw == confirm_pw:
 			logger('UserHandler', 'change_password', 'new pwds not equal')
-			message = _t.get(_t.newPwdNotEqual) # 'The new passwords are not equal'
+			message = _t.get(_t.newPwdNotEqual)  # 'The new passwords are not equal'
 			error = True
 		# is new old password equals the new one?
 		elif old_pw == new_pw:
 			logger('UserHandler', 'change_password', 'pwds are the same')
-			message = _t.get(_t.pwdsSame) # 'The new and old password are the same'
+			message = _t.get(_t.pwdsSame)  # 'The new and old password are the same'
 			error = True
 		else:
 			# is the old password valid?
 			if not user.validate_password(old_pw):
 				logger('UserHandler', 'change_password', 'old password is wrong')
-				message = _t.get(_t.oldPwdWrong) # 'Your old password is wrong.'
+				message = _t.get(_t.oldPwdWrong)  # 'Your old password is wrong.'
 				error = True
 			else:
-				password_handler = PasswordHandler()
-				hashed_pw = password_handler.get_hashed_password(new_pw)
+				hashed_pw = PasswordHandler.get_hashed_password(new_pw)
 
 				# set the hased one
 				user.password = hashed_pw
@@ -360,34 +405,3 @@ class UserHandler(object):
 				success = True
 
 		return message, error, success
-
-	def get_all_users(self, user):
-		"""
-		Returns all users, if the given user is admin
-		:param user: self.request.authenticated_userid
-		:return: dictionary
-		"""
-		is_admin = UserHandler().is_user_admin(user)
-		if not is_admin:
-			return_dict = dict()
-		else:
-			logger('UserHandler', 'get_all_users', 'get all users')
-			db_users = DBDiscussionSession.query(User).join(Group).all()
-
-			return_dict = dict()
-
-			if db_users:
-				for user in db_users:
-					return_user = dict()
-					return_user['uid'] = user.uid
-					return_user['firstname'] = user.firstname
-					return_user['surname'] = user.surname
-					return_user['nickname'] = user.nickname
-					return_user['email'] = user.email
-					return_user['group_uid'] = user.groups.name
-					return_user['last_login'] = str(user.last_login)
-					return_user['last_action'] = str(user.last_action)
-					return_user['registered'] = str(user.registered)
-					return_user['gender'] = str(user.gender)
-					return_dict[user.uid] = return_user
-		return return_dict

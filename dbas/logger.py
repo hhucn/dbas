@@ -1,17 +1,21 @@
+"""
+Common python logging.
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import logging
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
+logging.getLogger('sqlalchemy.dialects.postgresql').setLevel(logging.INFO)
 
 
-def logger(who, when, what, info=True, warn=False, error=False, debug=False):
+def logger(who, when, what, warn=False, error=False, debug=False):
 	"""
 	Log for the console and logfile on disk. Logged format: [who.upper()] when <what>
+
 	:param who: which class
 	:param when: which method
 	:param what: what mesage
 	:return: None
-	:param info: Boolean, default True
 	:param warn: Boolean, default False
 	:param error: Boolean, default False
 	:param debug: Boolean, default False
@@ -28,4 +32,3 @@ def logger(who, when, what, info=True, warn=False, error=False, debug=False):
 		logger.error('[' + who.upper() + '] ' + when + ': ' + what)
 	if debug:
 		logger.debug('[' + who.upper() + '] ' + when + ': ' + what)
-

@@ -1,29 +1,24 @@
-# Logic for user login, token generation and validation
-#
-# @author Christian Meter, Tobias Krauthoff
-# @email {meter, krauthoff}@cs.uni-duesseldorf.de
+"""
+Logic for user login, token generation and validation
+
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 
 import binascii
-import json
 import hashlib
+import json
 import os
-
 from datetime import datetime
+
+import transaction
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import Dbas
-from .lib import logger, response401
+
+from .lib import HTTP401, logger
 
 log = logger()
-
-
-def _create_token(nickname, alg='sha512'):
-	"""
-	Use the system's urandom function to generate a random token and convert it to ASCII.
-	:return:
-	"""
-	salt = _create_salt(nickname)
-	return hashlib.new(alg, salt).hexdigest()
 
 
 def _create_salt(nickname):
@@ -33,9 +28,58 @@ def _create_salt(nickname):
 	return rnd + timestamp + nickname
 
 
+def _create_token(nickname, alg='sha512'):
+	"""
+	Use the system's urandom function to generate a random token and convert it to ASCII.
+
+	:return:
+	"""
+	salt = _create_salt(nickname)
+	return hashlib.new(alg, salt).hexdigest()
+
+
+def valid_token(request):
+	"""
+	Validate the submitted token. Checks if a user is logged in and prepares a dictionary, which is then passed to DBAS.
+
+	:param request:
+	:return:
+	"""
+	header = 'X-Messaging-Token'
+	htoken = request.headers.get(header)
+	if htoken is None:
+		log.error("[API] htoken is None")
+		raise HTTP401()
+	try:
+		user, token = htoken.split('-', 1)
+	except ValueError:
+		log.error("[API] ValueError")
+		raise HTTP401()
+
+	log.debug("[API] Login Attempt: %s: %s" % (user, token))
+
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+	if not db_user:
+		log.error("[API] Invalid user")
+		raise HTTP401()
+
+	if not db_user.token == token:
+		log.error("[API] Invalid Token")
+		raise HTTP401()
+
+	log.debug("[API] Valid token")
+
+	# Prepare data for DB-AS
+	request.validated['user'] = user
+	request.validated['user_uid'] = db_user.uid
+	request.validated['session_id'] = request.session.id
+
+
 def validate_login(request):
 	"""
 	Takes token from request and validates it. Return true if logged in, else false.
+
 	:param request:
 	:return:
 	"""
@@ -48,45 +92,28 @@ def validate_login(request):
 	valid_token(request)
 
 
-def valid_token(request):
+def token_to_database(nickname, token):
 	"""
-	Validate the submitted token. Checks if a user is logged in and prepares a dictionary, which is then passed to DBAS.
-	:param request:
+	Store the newly created token in database.
+
+	:param nickname: user's nickname
+	:param token: new token to be stored
 	:return:
 	"""
-	header = 'X-Messaging-Token'
-	htoken = request.headers.get(header)
-	if htoken is None:
-		log.error("[API] htoken is None")
-		raise response401()
-	try:
-		user, token = htoken.split('-', 1)
-	except ValueError:
-		log.error("[API] ValueError")
-		raise response401()
-
-	log.debug("[API] Login Attempt: %s: %s" % (user, token))
-
-	db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
 	if not db_user:
-		log.error("[API] Invalid user")
-		raise response401()
+		raise HTTP401()
 
-	if not db_user.token == token:
-		log.error("[API] Invalid Token")
-		raise response401()
-
-	log.debug("[API] Valid token")
-
-	# Prepare data for DBAS
-	request.validated['user'] = user
-	request.validated['session_id'] = request.session.id
+	db_user.set_token(token)
+	db_user.update_token_timestamp()
+	transaction.commit()
 
 
 def validate_credentials(request):
 	"""
-	Parse credentials from POST request and validate it against DBAS' database
+	Parse credentials from POST request and validate it against DBA-S' database.
+
 	:param request:
 	:return:
 	"""
@@ -96,13 +123,14 @@ def validate_credentials(request):
 	nickname = data['nickname']
 	password = data['password']
 
-	# Check in DBAS' database, if the user's credentials are valid
+	# Check in DB-AS' database, if the user's credentials are valid
 	logged_in = Dbas(request).user_login(nickname, password, for_api=True)
 
 	try:
 		if logged_in['status'] == 'success':
 			token = _create_token(nickname)
 			user = {'nickname': nickname, 'token': token}
+			token_to_database(nickname, token)
 			request.validated['user'] = user
 	except TypeError:
 		log.error('API Not logged in: %s' % logged_in)
