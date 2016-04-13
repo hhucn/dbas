@@ -31,7 +31,7 @@ class RelationHelper(object):
 
 	def get_undermines_for_argument_uid(self):
 		"""
-		Calls __get_undermines_for_premises('reason', premises_as_statements_uid)
+		Returns all uid's of undermines for the argument.
 
 		:return: array with dict() with id (of argumet) and text.
 		"""
@@ -52,7 +52,7 @@ class RelationHelper(object):
 
 	def get_overbids_for_argument_uid(self):
 		"""
-		Calls self.__get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, True)
+		Returns all uid's of overbids for the argument.
 
 		:return: array with dict() with id (of argumet) and text.
 		"""
@@ -70,7 +70,7 @@ class RelationHelper(object):
 
 	def get_rebuts_for_argument_uid(self):
 		"""
-		Calls self.get_rebuts_for_arguments_conclusion_uid('reason', Argument.conclusion_uid)
+		Returns all uid's of rebuts for the argument.
 
 		:return: array with dict() with id (of argumet) and text.
 		"""
@@ -88,7 +88,7 @@ class RelationHelper(object):
 		"""
 
 		:param db_argument:
-		:param lang:
+		:param lang: ui_locales
 		:return:
 		"""
 		return_array = []
@@ -113,6 +113,7 @@ class RelationHelper(object):
 
 	def get_supports_for_argument_uid(self):
 		"""
+		Returns all uid's of supports for the argument.
 
 		:return: array with dict() with id (of argumet) and text
 		"""
@@ -145,13 +146,14 @@ class RelationHelper(object):
 	@staticmethod
 	def set_new_undermine_or_support(transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
 		"""
+		Inserts a new undermine or support with the given parameters.
 
-		:param transaction:
-		:param premisegroup_uid:
-		:param current_argument:
-		:param current_attack:
-		:param db_user:
-		:param issue:
+		:param transaction: transaction
+		:param premisegroup_uid: premisesgroup_uid
+		:param current_argument: Argument
+		:param current_attack: String
+		:param db_user: User
+		:param issue: Issue.uid
 		:return:
 		"""
 		new_arguments = []
@@ -181,19 +183,20 @@ class RelationHelper(object):
 				for argument in new_arguments:
 					already_in.append(argument)
 
-			rnd = random.randint(0, len(already_in) - 1)
-			return already_in[rnd]
+		rnd = random.randint(0, len(already_in) - 1)
+		return already_in[rnd]
 
 	@staticmethod
 	def set_new_undercut_or_overbid(transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
 		"""
+		Inserts a new undercut or overbid with the given parameters.
 
-		:param transaction:
-		:param premisegroup_uid:
-		:param current_argument:
-		:param current_attack:
-		:param db_user:
-		:param issue:
+		:param transaction: transaction
+		:param premisegroup_uid: premisesgroup_uid
+		:param current_argument: Argument
+		:param current_attack: String
+		:param db_user: User
+		:param issue: Issue.uid
 		:return:
 		"""
 		# duplicate?
@@ -217,11 +220,12 @@ class RelationHelper(object):
 	@staticmethod
 	def set_new_rebut(transaction, premisegroup_uid, current_argument, db_user, issue):
 		"""
+		Inserts a new rebut with the given parameters.
 
-		:param transaction:
-		:param premisegroup_uid:
-		:param current_argument:
-		:param db_user:
+		:param transaction: transaction
+		:param premisegroup_uid: premisesgroup_uid
+		:param current_argument: Argument
+		:param db_user: User
 		:return:
 		"""
 		# duplicate?
@@ -245,11 +249,12 @@ class RelationHelper(object):
 	@staticmethod
 	def set_new_support(transaction, premisegroup_uid, current_argument, db_user, issue):
 		"""
+		Inserts a new support with the given parameters.
 
-		:param transaction:
-		:param premisegroup_uid:
-		:param current_argument:
-		:param db_user:
+		:param transaction: transaction
+		:param premisegroup_uid: premisesgroup_uid
+		:param current_argument: Argument
+		:param db_user: User
 		:return:
 		"""
 		# duplicate?
@@ -274,13 +279,13 @@ class RelationHelper(object):
 	def __set_argument(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
 		"""
 
-		:param transaction:
-		:param user:
-		:param premisegroup_uid:
-		:param conclusion_uid:
-		:param argument_uid:
-		:param is_supportive:
-		:param issue:
+		:param transaction: transaction
+		:param user: User.nickname
+		:param premisegroup_uid: premisesgroup_uid
+		:param conclusion_uid: Statement.uid
+		:param argument_uid: Argument.uid
+		:param is_supportive: Boolean
+		:param issue: Issue.uid
 		:return:
 		"""
 		logger('RelationHelper', '__set_argument', 'main with user: ' + str(user) +
@@ -323,9 +328,9 @@ class RelationHelper(object):
 	def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive, lang):
 		"""
 
-		:param argument_uid:
-		:param is_supportive:
-		:param lang:
+		:param argument_uid: Argument.uid
+		:param is_supportive: Boolean
+		:param lang: ui_locales
 		:return:
 		"""
 		return_array = []
