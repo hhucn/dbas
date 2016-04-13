@@ -10,6 +10,7 @@ TODO
 import os
 import sys
 import transaction
+import random
 
 from dbas.logger import logger
 from dbas.user_management import PasswordHandler
@@ -59,6 +60,22 @@ def main_discussion_reload(argv=sys.argv):
 		drop_discussion_database(DBDiscussionSession)
 		main_author = DBDiscussionSession.query(User).filter_by(nickname='tobias').first()
 		setup_discussion_database(DBDiscussionSession, main_author)
+		transaction.commit()
+
+
+def main_dummy_votes(argv=sys.argv):
+	if len(argv) != 2:
+		usage(argv)
+	config_uri = argv[1]
+	setup_logging(config_uri)
+	settings = get_appsettings(config_uri)
+
+	discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+	DBDiscussionSession.configure(bind=discussion_engine)
+	DiscussionBase.metadata.create_all(discussion_engine)
+
+	with transaction.manager:
+		setup_dummy_votes(DBDiscussionSession)
 		transaction.commit()
 
 
@@ -399,12 +416,47 @@ def setup_up_users(session):
 
 def setup_dummy_votes(session):
 	"""
+	Drops all votes and init new dummy votes
 
-	:param session:
+	:param session: DBDiscussionSession
 	:return:
 	"""
-	a = 1
-	db_users = DBDiscussionSession.query(User).all()
+	DBDiscussionSession.query(VoteStatement).delete()
+	DBDiscussionSession.query(VoteArgument).delete()
+
+	db_user = DBDiscussionSession.query(User).filter_by(nickname='test').first()
+
+	db_arguments = DBDiscussionSession.query(Argument).all()
+	db_statement = DBDiscussionSession.query(Statement).all()
+
+	new_votes = []
+	u = 0
+	v = 0
+	w = 0
+	x = 0
+	for argument in db_arguments:
+		up_votes = random.randint(0, 50)
+		down_votes = random.randint(0, 50)
+		for u in range(0, up_votes):
+			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True))
+		for v in range(0, down_votes):
+			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=False, is_valid=True))
+
+	for statement in db_statement:
+		up_votes = random.randint(0, 50)
+		down_votes = random.randint(0, 50)
+		for w in range(0, up_votes):
+			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True))
+		for x in range(0, down_votes):
+			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=False, is_valid=True))
+
+	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(u) + ' up votes for arguments')
+	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(v) + ' down votes for arguments')
+	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(w) + ' up votes for statements')
+	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(x) + ' down votes for statements')
+
+	session.add_all(new_votes)
+	session.flush()
 
 
 def setup_discussion_database(session, user):

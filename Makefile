@@ -19,6 +19,9 @@ refresh:
 	reload_discussion_sql development.ini
 	initialize_news_sql development.ini
 
+testdata_votes:
+	init_discussion_testvotes development.ini
+
 clean:
 	sudo -u postgres bash -c "psql -c \"drop database discussion;\""
 	sudo -u postgres bash -c "psql -c \"drop database news;\""
