@@ -397,6 +397,16 @@ def setup_up_users(session):
 	return user2
 
 
+def setup_dummy_votes(session):
+	"""
+
+	:param session:
+	:return:
+	"""
+	a = 1
+	db_users = DBDiscussionSession.query(User).all()
+
+
 def setup_discussion_database(session, user):
 	"""
 
