@@ -370,12 +370,15 @@ class QueryHelper(object):
 
 	def get_user_with_same_opinion_for_argument(self, argument_uid, lang, nickname):
 		"""
+		Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
+		these attacks
 
-		:param argument_uid: Argument.uid Statement.uid
+		:param argument_uid: Argument.uid
 		:param lang: ui_locales ui_locales
 		:param nickname: nickname
-		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
+		:return: { 'attack_type': { 'message': 'string', 'users': [{'nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
 		"""
+
 		logger('QueryHelper', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
@@ -389,68 +392,94 @@ class QueryHelper(object):
 			ret_dict['users'] = all_users
 			return ret_dict
 
-		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == db_argument.uid,
-		                                                               VoteArgument.is_up_vote == True,
-		                                                               VoteArgument.is_valid == True,
-		                                                               VoteArgument.author_uid != db_user_uid)).all()
-		uh = UserHandler()
-		for vote in db_votes:
-			users_dict = dict()
-			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-			users_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
-			                                   'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
-			all_users.append(users_dict)
-			ret_dict['users'] = all_users
+		_uh = UserHandler()
+		_rh = RelationHelper(argument_uid, lang)
+		undermines_uids  = _rh.get_undermines_for_argument_uid()
+		supports_uids    = _rh.get_supports_for_argument_uid()
+		undercuts_uids   = _rh.get_undercuts_for_argument_uid()
+		rebuts_uids      = _rh.get_rebuts_for_argument_uid()
 
-		l = len(db_votes)
-		if l == 0:
-			ret_dict['message'] = _t.get(_t.voteCountTextFirst) + '.'
-		elif l == 1:
-			ret_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
-		else:
-			ret_dict['message'] = str(l) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+		tmp_dict = {
+			'undermines': undermines_uids,
+			'supports': supports_uids,
+			'undercuts': undercuts_uids,
+			'rebuts': rebuts_uids
+		}
+
+		for relation in tmp_dict:
+			relation_dict = dict()
+			all_users = []
+			for uid in tmp_dict[relation]:
+				db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
+				                                                               VoteArgument.is_up_vote == True,
+				                                                               VoteArgument.is_valid == True,
+				                                                               VoteArgument.author_uid != db_user_uid)).all()
+				for vote in db_votes:
+					voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+					users_dict = {'nickname': voted_user.nickname,
+					              'avatar_url': _uh.get_profile_picture(voted_user),
+					              'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+					all_users.append(users_dict)
+				relation_dict['users'] = all_users
+
+				if len(db_votes) == 0:
+					relation_dict['message'] = _t.get(_t.voteCountTextMayBeFirst) + '.'
+				elif len(db_votes) == 1:
+					relation_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
+				else:
+					relation_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+
+			ret_dict[relation] = relation_dict
 
 		return ret_dict
 
-	def get_user_with_same_opinion_for_statement(self, statement_uid, lang, nickname):
+	def get_user_with_same_opinion_for_statements(self, statement_uids, lang, nickname):
 		"""
 
-		:param statement_uid: Statement.uid
+		:param statement_uids: Statement.uid
 		:param lang: ui_locales ui_locales
 		:param nickname: nickname
 		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
 		"""
-		logger('QueryHelper', 'get_user_with_same_opinion_for_statement', 'Statement ' + str(statement_uid))
+		logger('QueryHelper', 'get_user_with_same_opinion_for_statement', 'Statement ' + str(statement_uids))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
 		ret_dict = dict()
 		all_users = []
 		_t = Translator(lang)
-		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-		if not db_statement:
-			ret_dict['users'] = all_users
-			return ret_dict
+		statement_uids = [statement_uids]
+		for uid in statement_uids:
+			statement_dict = dict()
+			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+			if not db_statement:
+				statement_dict['uid']       = None
+				statement_dict['text']      = None
+				statement_dict['message']   = None
+				statement_dict['users']     = None
 
-		db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == db_statement.uid,
-		                                                                VoteStatement.is_up_vote == True,
-		                                                                VoteStatement.is_valid == True,
-		                                                                VoteStatement.author_uid != db_user_uid)).all()
-		uh = UserHandler()
-		for vote in db_votes:
-			users_dict = dict()
-			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-			users_dict[voted_user.nickname] = {'avatar_url': uh.get_profile_picture(voted_user),
-			                                   'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
-			all_users.append(users_dict)
-		ret_dict['users'] = all_users
+			statement_dict['uid'] = str(uid)
+			statement_dict['text'] = get_text_for_statement_uid(uid)
 
-		if len(db_votes) == 0:
-			ret_dict['message'] = _t.get(_t.voteCountTextFirst) + '.'
-		elif len(db_votes) == 1:
-			ret_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
-		else:
-			ret_dict['message'] = str(db_votes) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+			db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == uid,
+		                                                                    VoteStatement.is_up_vote == True,
+		                                                                    VoteStatement.is_valid == True,
+		                                                                    VoteStatement.author_uid != db_user_uid)).all()
+			uh = UserHandler()
+			for vote in db_votes:
+				voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+				users_dict = {'nickname': voted_user.nickname,
+				              'avatar_url': uh.get_profile_picture(voted_user),
+				              'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+				all_users.append(users_dict)
+			statement_dict['users'] = all_users
+
+			if len(db_votes) == 0:
+				statement_dict['message'] = _t.get(_t.voteCountTextMayBeFirst) + '.'
+			elif len(db_votes) == 1:
+				statement_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
+			else:
+				statement_dict['message'] = str(db_votes) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
 		return ret_dict
 
@@ -467,7 +496,6 @@ class QueryHelper(object):
 		db_user_uid = db_user.uid if db_user else 0
 
 		ret_dict = dict()
-		_t = Translator(lang)
 		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.issue_uid == issue_uid,
 		                                                                Statement.is_startpoint == True)).all()
 		if not db_statements:
@@ -525,13 +553,13 @@ class QueryHelper(object):
 		logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
 		return_dict = {}
 		_t = Translator(lang)
-		_rh = RelationHelper()
+		_rh = RelationHelper(arg_uid, lang)
 
-		undermine = _rh.get_undermines_for_argument_uid(arg_uid, lang)
-		support = _rh.get_supports_for_argument_uid(arg_uid, lang)
-		undercut = _rh.get_undercuts_for_argument_uid(arg_uid, lang)
-		# overbid = _rh.get_overbids_for_argument_uid(arg_uid, lang)
-		rebut = _rh.get_rebuts_for_argument_uid(arg_uid, lang)
+		undermine = _rh.get_undermines_for_argument_uid()
+		support = _rh.get_supports_for_argument_uid()
+		undercut = _rh.get_undercuts_for_argument_uid()
+		# overbid = _rh.get_overbids_for_argument_uid()
+		rebut = _rh.get_rebuts_for_argument_uid()
 
 		undermine = undermine if undermine else [{'id': 0, 'text': _t.get(_t.no_entry)}]
 		support = support if support else [{'id': 0, 'text': _t.get(_t.no_entry)}]
