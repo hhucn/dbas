@@ -1590,10 +1590,14 @@ class Dbas(object):
 		try:
 			uids = self.request.params['uids']
 			is_argument = self.request.params['is_argument'] == 'true'
+			is_attitude = self.request.params['is_attitude'] == 'true'
 			if is_argument:
 				return_dict = _qh.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname)
 			else:
-				return_dict = _qh.get_user_with_same_opinion_for_statements(uids, ui_locales, nickname)
+				if not is_attitude:
+					return_dict = _qh.get_user_with_same_opinion_for_statements(uids, ui_locales, nickname)
+				else:
+					return_dict = _qh.get_user_with_same_opinion_for_attitude(uids, ui_locales, nickname)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))
