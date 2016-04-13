@@ -1271,7 +1271,7 @@ class Translator(object):
 		de_lang[self.whatDoYouThinkAbout] = 'Was halten Sie von'
 		de_lang[self.whatDoYouThinkAboutThat] = 'Was halten Sie davon, dass'
 		de_lang[self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für'
-		de_lang[self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund für'
+		de_lang[self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund dafür, dass'
 		de_lang[self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
 		de_lang[self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
 		de_lang[self.whyAreYouAgreeingWith] = 'Warum sind sie dafür, dass'
