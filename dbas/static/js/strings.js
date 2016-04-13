@@ -189,6 +189,7 @@ var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
 var typeofVote                                      = 'typeofVote';
+var usersWithSameOpinion                            = 'usersWithSameOpinion';
 var veryweak 										= 'veryweak';
 var valid    										= 'valid';
 var weak 											= 'weak';
@@ -343,6 +344,7 @@ var dbas_en = {
 	'showMeAnArgumentFor': 'Show me an argument for',
 	'text': 'Text',
 	'typeofVote': 'Agree / Disagree',
+	'usersWithSameOpinion': 'Users with same opinion',
 	'valid': 'Valid',
 	'veryweak': 'very weak',
 	'weak': 'weak'
@@ -479,6 +481,7 @@ var dbas_de = {
 	'surname': 'Nachname',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
+	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'typeofVote': 'Zustimmung/Ablehnung',
 	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',

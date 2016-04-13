@@ -1583,15 +1583,19 @@ class Dbas(object):
 		return_dict = dict()
 		try:
 			uids = self.request.params['uids']
-			is_argument = self.request.params['is_argument'] == 'true'
-			is_attitude = self.request.params['is_attitude'] == 'true'
+			is_argument = self.request.params['is_argument'] == 'true' if 'is_argument' in self.request.params else False
+			is_attitude = self.request.params['is_attitude'] == 'true' if 'is_attitude' in self.request.params else False
+			is_reaction = self.request.params['is_reaction'] == 'true' if 'is_reaction' in self.request.params else False
 			if is_argument:
-				return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname)
+				if not is_reaction:
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname)
+				else:
+					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname)
 			else:
 				if not is_attitude:
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids, ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
 				else:
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_attitude(uids, ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))
