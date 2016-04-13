@@ -36,8 +36,8 @@ Then follow these steps:
 
 6. Create database::
 
-    $ make init_postgres
-    $ make postgres
+    $ make init
+    $ make database
 
 7. Start development web server::
 
