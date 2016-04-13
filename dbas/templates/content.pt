@@ -27,8 +27,8 @@
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
 							<li class="dropdown-header" i18n:translate="topics">Topics</li>
 							<li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
-								<a href="#" tal:attributes="href issue.url; value issue.title">
-                                    <span tal:replace="issue.title"></span>
+								<a href="#" tal:attributes="href issue.url; value issue.title" style="height: 2em;">
+                                    <span style="float: left;">${issue.title}</span>
                                     <span class="badge" style="float: right; margin-left: 1em" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">
                                         <span tal:replace="issue.arg_count"></span>
                                     </span>
@@ -171,9 +171,9 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h5>
-									<span class="text-danger">✗</span>
-									<span tal:replace="extras.island.undermine_text">structure:undermine_text</span>
-								</h5>
+								<span class="text-danger">✗</span>
+								<span>${structure:extras.island.undermine_text}</span>
+							</h5>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -188,9 +188,9 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h5>
-									<span class="text-success">✓</span> 
-									<span tal:replace="extras.island.support_text">structure:support_text</span>
-								</h5>
+								<span class="text-success">✓</span>
+								<span>${structure:extras.island.support_text}</span>
+							</h5>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -208,9 +208,9 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h5>
-                                    <span class="text-danger">✗</span>
-                                    <span tal:replace="extras.island.undercut_text">structure:undercut_text</span>
-							    </h5>
+                                <span class="text-danger">✗</span>
+                                <span>${structure:extras.island.undercut_text}</span>
+                            </h5>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -227,46 +227,8 @@
 						<div class="panel-heading">
 							<h5>
                                 <span class="text-danger">✗</span>
-                                <span tal:replace="extras.island.rebut_text">structure:rebut_text</span>
-								</h5>
-						</div>
-						<div class="panel-body">
-							<ul>
-								<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
-									<label tal:attributes="for rebut.id">${structure:rebut.text}</label>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-md-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h5>
-							<span class="text-success">✓</span>
-							<span tal:replace="extras.island.overbid_text">overbid_text</span>
-							</h5>
-					</div>
-					<div class="panel-body">
-						<ul>
-							<li tal:repeat="overbid extras.island.overbid" tal:attributes="id overbid.id">
-								<label tal:attributes="for overbid.id">${structure:overbid.text}</label>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h5>
-									<span class="text-danger">✗</span>
-									<span tal:replace="extras.island.rebut_text">rebut_text</span>
-								</h5>
+                                <span>${structure:extras.island.rebut_text}</span>
+                            </h5>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -287,18 +249,30 @@
 
 		</div>
 
-		<div class="colored-container" id="graph-view-container" style="display:none">
+		<div tal:condition="extras.show_expert_icon" class="colored-container" id="graph-view-container" style="display:none">
 			<button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
+            <br>
 			<!--<h4 id="graph-view-container-header" class="center"></h4>-->
-			<!--<div id="graph-view-container-space"></div>-->
+            <div class="col-md-11" id="graph-view-container-space" style="width: auto; height:95%; float: left;"></div>
+
+			<div class="col-md-1">
+				<ul id="discussion-sidebar">
+                    <li><a id="start-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.default_view"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_default.png')}"/></a></li>
+                    <li><a id="show-content" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.show_content"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_text.png')}"/></a></li>
+                    <li><a id="hide-content" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.hide_content" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_notext.png')}"/></a></li>
+                    <li><a id="wide-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.wide_node_view"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_wide.png')}"/></a></li>
+                    <li><a id="tight-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.tight_node_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_tight.png')}"/></a></li>
+                </ul>
+            </div>
 		</div>
 
 		<div class="container colored-container" id="add-statement-container" style="display:none" tal:attributes="style extras.add_statement_container_style">
 			<button tal:condition="extras.close_statement_container" id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
+            <br>
 			<div class="col-md-12 text-center">
 				<h5><span i18n:translate="what_is_your_idea">What is your idea? What should we do?</span></h5>
 				<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
@@ -374,7 +348,6 @@
 				</div>
 			</div>
 		</div>
-
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-interactionhandler.js')}"></script>

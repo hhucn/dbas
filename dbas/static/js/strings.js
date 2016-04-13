@@ -128,6 +128,7 @@ var languageCouldNotBeSwitched 						= 'languageCouldNotBeSwitched';
 var last_action 									= 'last_action';
 var last_login 										= 'last_login';
 var logfile											= 'logfile';
+var login											= 'login';
 var letsGo 											= 'letsGo';
 var listOfDoneEdits                                 = 'listOfDoneEdits';
 var listOfPostedStatements                          = 'listOfPostedStatements';
@@ -281,6 +282,7 @@ var dbas_en = {
 	'last_action': 'Last Action',
 	'last_login': 'Last Login',
 	'logfile': 'Logfile for',
+	'login': 'Log In',
 	'letsGo': 'Click here to start now!',
 	'listOfPostedStatements': 'This is a list of all posted statements:',
 	'listOfDoneEdits': 'This is a list of all edits:',
@@ -417,6 +419,7 @@ var dbas_de = {
 	'last_action': 'Letzte Aktion',
 	'last_login': 'Letze Anmeldung',
 	'logfile': 'Logdatei für',
+	'login': 'Login',
 	'letsGo': 'Wenn Sie direkt starten möchten, klicken Sie bitte hier!',
 	'listOfPostedStatements': 'Dies ist eine Liste von allen gemachten Aussagen:',
 	'listOfDoneEdits': 'Dies ist eine Liste von allen Änderungen:',
