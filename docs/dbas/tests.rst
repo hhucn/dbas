@@ -1,5 +1,3 @@
-.. _tests:
-
 ==================
 Test Documentation
 ==================
@@ -13,6 +11,27 @@ Ensure that the following tools are installed:
 * Python >= 3.4
 * `pip <https://pip.pypa.io/en/stable/installing/>`_
 * `splinter <https://splinter.readthedocs.org/en/latest/>`_
+
+
+Backend with WebTest
+====================
+Backend tests are realized by the use of *WebTest*. A quick tutorial can be found in the
+`documentation of pyramid <http://docs.pylonsproject.org/projects/pyramid/en/latest/quick_tutorial/functional_testing.html>`
+or in the `documentation of WebTest <http://docs.pylonsproject.org/projects/webtest/en/latest/>`.
+Webtests are end-to-end-full-stack tests.
+
+Execute these tests with::
+
+    nosetests dbas
+
+ Edit ...
+
+
+Code
+----
+
+.. automodule:: dbas.tests
+    :members:
 
 
 Frontend with Splinter
@@ -44,13 +63,11 @@ Please replace *XYZ* with a short description and *YOUR_TEST_METHOD* with the va
         """
         print('Starting tests for XYZ:')
         b = Browser(browser)
-        self.browser = b
         success = True
 
         # your test routine
 
         b.quit()
-        self.browser = None
         return 1 if success else 0
 
 Please:
@@ -61,15 +78,8 @@ Please:
 4. Have fun!
 
 
-Backend with WebTest
-====================
-Backend tests are realized by the use of *WebTest*. A quick tutorial can be found in the
-`documentation of pyramid <http://docs.pylonsproject.org/projects/pyramid/en/latest/quick_tutorial/functional_testing.html>`
-or in the `documentation of WebTest <http://docs.pylonsproject.org/projects/webtest/en/latest/>`.
-Webtests are end-to-end-full-stack tests.
+Code
+----
 
-Execute these tests with::
-
-    nosetestsdbas
-
- Edit ...
+.. automodule:: tests.splinterTests
+    :members:

@@ -1,13 +1,17 @@
+"""
+Common python logging.
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import logging
 logging.getLogger('sqlalchemy.dialects.postgresql').setLevel(logging.INFO)
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 def logger(who, when, what, warn=False, error=False, debug=False):
 	"""
 	Log for the console and logfile on disk. Logged format: [who.upper()] when <what>
+
 	:param who: which class
 	:param when: which method
 	:param what: what mesage

@@ -3,11 +3,10 @@
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
-from dbas.lib import sql_timestamp_pretty_print
+from dbas.lib import sql_timestamp_pretty_print, get_text_for_argument_uid
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, VoteArgument, Issue, User, Group, Statement, VoteStatement
-from dbas.query_helper import QueryHelper
 from dbas.user_management import UserHandler
 from sqlalchemy import and_
 
@@ -21,7 +20,6 @@ def get_argument_overview(user, lang):
 	:param lang: current language
 	:return: dict()
 	"""
-	_qh = QueryHelper()
 	is_admin = UserHandler().is_user_in_group(user, 'admins')
 	logger('AdminLib', 'get_argument_overview', 'is_admin ' + str(is_admin))
 	return_dict = dict()
@@ -38,8 +36,8 @@ def get_argument_overview(user, lang):
 			for argument in db_arguments:
 				tmp_dict = dict()
 				tmp_dict['uid'] = str(argument.uid)
-				tmp_dict['text'] = _qh.get_text_for_argument_uid(argument.uid, lang)
-				tmp_dict['text'] = _qh.get_text_for_argument_uid(argument.uid, lang)
+				tmp_dict['text'] = get_text_for_argument_uid(argument.uid, lang)
+				tmp_dict['text'] = get_text_for_argument_uid(argument.uid, lang)
 				db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument.uid).all()
 				db_valid_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
 				                                                                     VoteArgument.is_valid == True)).all()
