@@ -32,10 +32,6 @@ class QueryHelper(object):
 		#  self.lang = ''
 		#  TODO move lang here and init translator
 
-	# ########################################
-	# ARGUMENTS
-	# ########################################
-
 	def handle_insert_new_premises_for_argument(self, text, current_attack, arg_uid, issue, user, transaction):
 		"""
 
@@ -73,107 +69,6 @@ class QueryHelper(object):
 			new_argument, duplicate = _rh.set_new_rebut(transaction, new_pgroup_uid, current_argument, db_user, issue)
 
 		return new_argument.uid
-
-	@staticmethod
-	def __set_argument(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
-		"""
-
-		:param transaction: transaction
-		:param user: User.nickname
-		:param premisegroup_uid: PremseGroup.uid
-		:param conclusion_uid: Statement.uid
-		:param argument_uid: Argument.uid
-		:param is_supportive: Boolean
-		:param issue: Issue.uid
-		:return:
-		"""
-		logger('QueryHelper', '__set_argument', 'main with user: ' + str(user) +
-		       ', premisegroup_uid: ' + str(premisegroup_uid) +
-		       ', conclusion_uid: ' + str(conclusion_uid) +
-		       ', argument_uid: ' + str(argument_uid) +
-		       ', is_supportive: ' + str(is_supportive) +
-		       ', issue: ' + str(issue))
-
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                       Argument.is_supportive == is_supportive,
-                                                                       Argument.conclusion_uid == conclusion_uid,
-                                                                       Argument.issue_uid == issue)).first()
-		if not new_argument:
-			new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid,
-			                        conclusion=conclusion_uid, issue=issue)
-			new_argument.conclusions_argument(argument_uid)
-
-			DBDiscussionSession.add(new_argument)
-			DBDiscussionSession.flush()
-
-			new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                           Argument.is_supportive == is_supportive,
-                                                                           Argument.author_uid == db_user.uid,
-                                                                           Argument.conclusion_uid == conclusion_uid,
-                                                                           Argument.argument_uid == argument_uid,
-                                                                           Argument.issue_uid == issue)).first()
-		transaction.commit()
-		if new_argument:
-			logger('QueryHelper', '__set_argument', 'argument was inserted')
-			logger('QueryHelper', '__set_argument', 'argument was inserted')
-			return new_argument.uid
-		else:
-			logger('QueryHelper', '__set_argument', 'argument was not inserted')
-			logger('QueryHelper', '__set_argument', 'argument was not inserted')
-			return None
-
-	# ########################################
-	# STATEMENTS
-	# ########################################
-
-	def __set_statements_as_new_premisegroup(self, statements, user, issue):
-		"""
-
-		:param statements:
-		:param user: User.nickname
-		:param issue: Issue
-		:return:
-		"""
-		logger('QueryHelper', '__set_statements_as_new_premisegroup', 'user: ' + str(user) +
-		       ', statement: ' + str(statements) + ', issue: ' + str(issue))
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-
-		# check for duplicate
-		all_groups = []
-		for statement in statements:
-			# get the premise
-			db_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement.uid).first()
-			if db_premise:
-				# getting all groups, where the premise is member
-				db_premisegroup = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_premise.premisesgroup_uid).all()
-				groups = set()
-				for group in db_premisegroup:
-					groups.add(group.premisesgroup_uid)
-				all_groups.append(groups)
-		# if every set in this array has one common member, they are all in the same group
-		if len(all_groups) > 0:
-			intersec = set.intersection(*all_groups)
-			for group in intersec:
-				db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group).all()
-				if len(db_premise) == len(statements):
-					return group
-
-		premise_group = PremiseGroup(author=db_user.uid)
-		DBDiscussionSession.add(premise_group)
-		DBDiscussionSession.flush()
-
-		premise_list = []
-		for statement in statements:
-			premise = Premise(premisesgroup=premise_group.uid, statement=statement.uid, is_negated=False, author=db_user.uid, issue=issue)
-			premise_list.append(premise)
-
-		DBDiscussionSession.add_all(premise_list)
-		DBDiscussionSession.flush()
-
-		db_premisegroup = DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).order_by(PremiseGroup.uid.desc()).first()
-
-		return db_premisegroup.uid
 
 	def set_statement(self, transaction, statement, user, is_start, issue):
 		"""
@@ -225,310 +120,6 @@ class QueryHelper(object):
 
 		return new_statement, False
 
-	# ########################################
-	# OTHER - GETTER
-	# ########################################
-
-	def __get_attack_or_support_for_justification_of_argument_uid(self, argument_uid, is_supportive, lang):
-		"""
-
-		:param argument_uid: Argument.uid
-		:param is_supportive: Boolean
-		:param lang: ui_locales
-		:return:
-		"""
-		return_array = []
-		logger('QueryHelper', '__get_attack_or_support_for_justification_of_argument_uid',
-		       'db_undercut against Argument.argument_uid==' + str(argument_uid))
-		db_related_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
-		                                                                       Argument.argument_uid == argument_uid)).all()
-		given_relations = set()
-		index = 0
-
-		if not db_related_arguments:
-			return None
-
-		for relation in db_related_arguments:
-			if relation.premisesgroup_uid not in given_relations:
-				given_relations.add(relation.premisesgroup_uid)
-				tmp_dict = dict()
-				tmp_dict['id'] = relation.uid
-				tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid, lang)
-				return_array.append(tmp_dict)
-				index += 1
-		return return_array
-
-	def get_user_with_same_opinion_for_argument(self, argument_uid, lang, nickname):
-		"""
-		Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
-		these attacks.
-
-		:param argument_uid: Argument.uid
-		:param lang: ui_locales ui_locales
-		:param nickname: nickname
-		:return: { 'attack_type': { 'message': 'string', 'users': [{'nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
-		"""
-
-		logger('QueryHelper', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid))
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-		db_user_uid = db_user.uid if db_user else 0
-
-		ret_dict = dict()
-		all_users = []
-		_t = Translator(lang)
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		if not db_argument:
-			ret_dict['message'] = _t.get(_t.internalError) + '.'
-			ret_dict['users'] = all_users
-			return ret_dict
-
-		_rh = RelationHelper(argument_uid, lang)
-		undermines_uids  = _rh.get_undermines_for_argument_uid()
-		supports_uids    = _rh.get_supports_for_argument_uid()
-		undercuts_uids   = _rh.get_undercuts_for_argument_uid()
-		rebuts_uids      = _rh.get_rebuts_for_argument_uid()
-
-		tmp_dict = {
-			'undermines': undermines_uids,
-			'supports': supports_uids,
-			'undercuts': undercuts_uids,
-			'rebuts': rebuts_uids
-		}
-
-		for relation in tmp_dict:
-			relation_dict = dict()
-			all_users = []
-			for uid in tmp_dict[relation]:
-				db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
-				                                                               VoteArgument.is_up_vote == True,
-				                                                               VoteArgument.is_valid == True,
-				                                                               VoteArgument.author_uid != db_user_uid)).all()
-				for vote in db_votes:
-					voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-					users_dict = self.create_users_dict(voted_user, vote.timestamp, lang)
-					all_users.append(users_dict)
-				relation_dict['users'] = all_users
-
-				if len(db_votes) == 0:
-					relation_dict['message'] = _t.get(_t.voteCountTextMayBeFirst) + '.'
-				elif len(db_votes) == 1:
-					relation_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
-				else:
-					relation_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
-
-			ret_dict[relation] = relation_dict
-
-		return ret_dict
-
-	def get_user_with_same_opinion_for_statements(self, statement_uids, lang, nickname):
-		"""
-		Returns nested dictionary with all kinds of information about the votes of the statements.
-
-		:param statement_uids: Statement.uid
-		:param lang: ui_locales ui_locales
-		:param nickname: User.nickname
-		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
-		"""
-		logger('QueryHelper', 'get_user_with_same_opinion_for_statement', 'Statement ' + str(statement_uids))
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-		db_user_uid = db_user.uid if db_user else 0
-
-		opinions = []
-		all_users = []
-		_t = Translator(lang)
-
-		for uid in statement_uids:
-			statement_dict = dict()
-			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
-			if not db_statement:
-				statement_dict['uid']       = None
-				statement_dict['text']      = None
-				statement_dict['message']   = None
-				statement_dict['users']     = None
-
-			statement_dict['uid'] = str(uid)
-			statement_dict['text'] = get_text_for_statement_uid(uid)
-
-			db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == uid,
-		                                                                    VoteStatement.is_up_vote == True,
-		                                                                    VoteStatement.is_valid == True,
-		                                                                    VoteStatement.author_uid != db_user_uid)).all()
-
-			for vote in db_votes:
-				voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-				users_dict = self.create_users_dict(voted_user, vote.timestamp, lang)
-				all_users.append(users_dict)
-			statement_dict['users'] = all_users
-
-			if len(db_votes) == 0:
-				statement_dict['message'] = _t.get(_t.voteCountTextMayBeFirst) + '.'
-			elif len(db_votes) == 1:
-				statement_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
-			else:
-				statement_dict['message'] = str(db_votes) + ' ' + _t.get(_t.voteCountTextMore) + '.'
-
-			opinions.append(statement_dict)
-
-		return {'opinions': opinions}
-
-	def get_user_with_same_opinion_for_attitude(self, statement_uid, lang, nickname):
-		"""
-		Returns dictionary with agree- and disagree-votes
-
-		:param statement_uid: Statement.uid
-		:param lang: ui_locales ui_locales
-		:param nickname: User.nickname
-		:return:
-		"""
-		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-		ret_dict = dict()
-
-		if not db_statement:
-			ret_dict['text'] = None
-			ret_dict['agree'] = None
-			ret_dict['disagree'] = None
-
-		ret_dict['text'] = get_text_for_statement_uid(statement_uid)
-		ret_dict['agree'] = None
-		ret_dict['disagree'] = None
-
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-		db_user_uid = db_user.uid if db_user else 0
-
-		db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-		                                                                    VoteStatement.is_up_vote == True,
-		                                                                    VoteStatement.is_valid == True,
-		                                                                    VoteStatement.author_uid != db_user_uid)).all()
-
-		db_con_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-		                                                                    VoteStatement.is_up_vote == False,
-		                                                                    VoteStatement.is_valid == True,
-		                                                                    VoteStatement.author_uid != db_user_uid)).all()
-		pro_array = []
-		for vote in db_pro_votes:
-			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-			users_dict = self.create_users_dict(voted_user, vote.timestamp, lang)
-			pro_array.append(users_dict)
-		ret_dict['agree_users'] = pro_array
-
-		con_array = []
-		for vote in db_con_votes:
-			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-			users_dict = self.create_users_dict(voted_user, vote.timestamp, lang)
-			con_array.append(users_dict)
-		ret_dict['disagree_users'] = con_array
-
-		return ret_dict
-
-	def get_every_attack_for_island_view(self, arg_uid, lang):
-		"""
-
-		:param arg_uid: Argument.uid
-		:param lang: ui_locales
-		:return:
-		"""
-		logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
-		return_dict = {}
-		_t = Translator(lang)
-		_rh = RelationHelper(arg_uid, lang)
-
-		undermine = _rh.get_undermines_for_argument_uid()
-		support = _rh.get_supports_for_argument_uid()
-		undercut = _rh.get_undercuts_for_argument_uid()
-		# overbid = _rh.get_overbids_for_argument_uid()
-		rebut = _rh.get_rebuts_for_argument_uid()
-
-		undermine = undermine if undermine else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-		support = support if support else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-		undercut = undercut if undercut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-		# overbid = overbid if overbid else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-		rebut = rebut if rebut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-
-		return_dict.update({'undermine': undermine})
-		return_dict.update({'support': support})
-		return_dict.update({'undercut': undercut})
-		# return_dict.update({'overbid': overbid})
-		return_dict.update({'rebut': rebut})
-
-		# pretty pring
-		for dict in return_dict:
-			for entry in return_dict[dict]:
-				entry['text'] = entry['text'][0:1].upper() + entry['text'][1:]
-
-		logger('QueryHelper', 'get_every_attack_for_island_view', 'summary: ' +
-		       str(len(undermine)) + ' undermines, ' +
-		       str(len(support)) + ' supports, ' +
-		       str(len(undercut)) + ' undercuts, ' +
-		       # str(len(overbid)) + ' overbids, ' +
-		       str(len(rebut)) + ' rebuts')
-
-		return return_dict
-
-	def get_language(self, request, current_registry):
-		"""
-		Returns current ui locales code which is saved in current cookie or the registry
-
-		:param request: self.request
-		:param current_registry: get_current_registry()
-		:return: language abbreviation
-		"""
-		try:
-			lang = str(request.cookies['_LOCALE_'])
-		except KeyError:
-			lang = str(current_registry.settings['pyramid.default_locale_name'])
-		return lang
-
-	def get_news(self):
-		"""
-		Returns all news in a dictionary, sorted by date
-		:return: dict()
-		"""
-		logger('QueryHelper', 'get_news', 'main')
-		db_news = DBNewsSession.query(News).all()
-		ret_dict = dict()
-		for index, news in enumerate(db_news):
-			news_dict = dict()
-			news_dict['title'] = news.title
-			news_dict['author'] = news.author
-			news_dict['date'] = news.date
-			news_dict['news'] = news.news
-			news_dict['uid'] = str(news.uid)
-			# string date into date
-			date_object = datetime.strptime(str(news.date), '%d.%m.%Y')
-			# add index on the seconds for unique id's
-			sec = (date_object - datetime(1970, 1, 1)).total_seconds() + index
-			ret_dict[str(sec)] = news_dict
-
-		ret_dict = collections.OrderedDict(sorted(ret_dict.items()))
-
-		return ret_dict
-
-	def get_logfile_for_statement(self, uid, lang):
-		"""
-		Returns the logfile for the given statement uid
-
-		:param uid: requested statement uid
-		:param lang: ui_locales ui_locales
-		:return: dictionary with the logfile-rows
-		"""
-		logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
-
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).join(User).all()
-
-		return_dict = dict()
-		content_dict = dict()
-		# add all corrections
-		for index, versions in enumerate(db_textversions):
-			corr_dict = dict()
-			corr_dict['uid'] = str(versions.uid)
-			corr_dict['author'] = str(versions.users.nickname)
-			corr_dict['date'] = sql_timestamp_pretty_print(str(versions.timestamp), lang)
-			corr_dict['text'] = str(versions.content)
-			content_dict[str(index)] = corr_dict
-		return_dict['content'] = content_dict
-
-		return return_dict
-
 	def get_infos_about_argument(self, uid, lang):
 		"""
 
@@ -559,53 +150,9 @@ class QueryHelper(object):
 
 		return return_dict
 
-	# ########################################
-	# OTHER - SETTER
-	# ########################################
-
-	def set_news(self, transaction, title, text, user):
-		"""
-		Sets a new news into the news table
-
-		:param transaction: transaction current transaction
-		:param title: news title
-		:param text: String news text
-		:param user: User.nickname self.request.authenticated_userid
-		:return: dictionary {title,date,author,news}
-		"""
-		logger('QueryHelper', 'set_news', 'def')
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		author = db_user.firstname if db_user.firstname == 'admin' else db_user.firstname + ' ' + db_user.surname
-		now = datetime.now()
-		day = str(now.day) if now.day > 9 else ('0' + str(now.day))
-		month = str(now.month) if now.month > 9 else ('0' + str(now.month))
-		date = day + '.' + month + '.' + str(now.year)
-		news = News(title=title, author=author, date=date, news=text)
-
-		DBNewsSession.add(news)
-		DBNewsSession.flush()
-
-		db_news = DBNewsSession.query(News).filter_by(title=title).first()
-		return_dict = dict()
-
-		if db_news:
-			return_dict['status'] = '1'
-		else:
-
-			return_dict['status'] = '-'
-
-		transaction.commit()
-
-		return_dict['title'] = title
-		return_dict['date'] = date
-		return_dict['author'] = author
-		return_dict['news'] = text
-
-		return return_dict
-
 	def set_premises_as_group_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
 		"""
-		
+
 		:param transaction: transaction
 		:param user: User.nickname
 		:param text: String
@@ -632,41 +179,6 @@ class QueryHelper(object):
 
 		transaction.commit()
 		return new_argument_uid, statement_uids
-
-	def set_issue(self, info, title, nickname, transaction, ui_locales):
-		"""
-
-		:param info:
-		:param title:
-		:param nickname:
-		:param transaction: transaction
-		:param ui_locales:
-		:return:
-		"""
-		_tn = Translator(ui_locales)
-
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-		if not UserHandler().is_user_author(nickname):
-			return False, _tn.get(_tn.noRights)
-
-		if len(info) < 10:
-			return False, _tn.get(_tn.notInsertedErrorBecauseEmpty)
-
-		db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
-		db_duplicates2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
-		if db_duplicates1 or db_duplicates2:
-			return False, _tn.get(_tn.duplicate)
-
-		DBDiscussionSession.add(Issue(title=title, info=info, author_uid=db_user.uid))
-		DBDiscussionSession.flush()
-
-		transaction.commit()
-
-		return True, ''
-
-	# ########################################
-	# OTHER
-	# ########################################
 
 	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive,
 	                                                    issue, user, for_api, mainpage, lang, recommender_helper):
@@ -878,15 +390,274 @@ class QueryHelper(object):
 				statements.append(new_statement)
 		return statements
 
-	def create_users_dict(self, db_user, timestamp, lang):
+	def get_every_attack_for_island_view(self, arg_uid, lang):
 		"""
-		Creates dictionary with nickname, url and timestamp
 
-		:param db_user: User
-		:param timestamp: SQL Timestamp
+		:param arg_uid: Argument.uid
 		:param lang: ui_locales
+		:return:
+		"""
+		logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
+		return_dict = {}
+		_t = Translator(lang)
+		_rh = RelationHelper(arg_uid, lang)
+
+		undermine = _rh.get_undermines_for_argument_uid()
+		support = _rh.get_supports_for_argument_uid()
+		undercut = _rh.get_undercuts_for_argument_uid()
+		# overbid = _rh.get_overbids_for_argument_uid()
+		rebut = _rh.get_rebuts_for_argument_uid()
+
+		undermine = undermine if undermine else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+		support = support if support else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+		undercut = undercut if undercut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+		# overbid = overbid if overbid else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+		rebut = rebut if rebut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+
+		return_dict.update({'undermine': undermine})
+		return_dict.update({'support': support})
+		return_dict.update({'undercut': undercut})
+		# return_dict.update({'overbid': overbid})
+		return_dict.update({'rebut': rebut})
+
+		# pretty pring
+		for dict in return_dict:
+			for entry in return_dict[dict]:
+				entry['text'] = entry['text'][0:1].upper() + entry['text'][1:]
+
+		logger('QueryHelper', 'get_every_attack_for_island_view', 'summary: ' +
+		       str(len(undermine)) + ' undermines, ' +
+		       str(len(support)) + ' supports, ' +
+		       str(len(undercut)) + ' undercuts, ' +
+		       # str(len(overbid)) + ' overbids, ' +
+		       str(len(rebut)) + ' rebuts')
+
+		return return_dict
+
+	@staticmethod
+	def get_logfile_for_statement(uid, lang):
+		"""
+		Returns the logfile for the given statement uid
+
+		:param uid: requested statement uid
+		:param lang: ui_locales ui_locales
+		:return: dictionary with the logfile-rows
+		"""
+		logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
+
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).join(User).all()
+
+		return_dict = dict()
+		content_dict = dict()
+		# add all corrections
+		for index, versions in enumerate(db_textversions):
+			corr_dict = dict()
+			corr_dict['uid'] = str(versions.uid)
+			corr_dict['author'] = str(versions.users.nickname)
+			corr_dict['date'] = sql_timestamp_pretty_print(str(versions.timestamp), lang)
+			corr_dict['text'] = str(versions.content)
+			content_dict[str(index)] = corr_dict
+		return_dict['content'] = content_dict
+
+		return return_dict
+
+	def __get_attack_or_support_for_justification_of_argument_uid(self, argument_uid, is_supportive, lang):
+		"""
+
+		:param argument_uid: Argument.uid
+		:param is_supportive: Boolean
+		:param lang: ui_locales
+		:return:
+		"""
+		return_array = []
+		logger('QueryHelper', '__get_attack_or_support_for_justification_of_argument_uid',
+		       'db_undercut against Argument.argument_uid==' + str(argument_uid))
+		db_related_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
+		                                                                       Argument.argument_uid == argument_uid)).all()
+		given_relations = set()
+		index = 0
+
+		if not db_related_arguments:
+			return None
+
+		for relation in db_related_arguments:
+			if relation.premisesgroup_uid not in given_relations:
+				given_relations.add(relation.premisesgroup_uid)
+				tmp_dict = dict()
+				tmp_dict['id'] = relation.uid
+				tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid, lang)
+				return_array.append(tmp_dict)
+				index += 1
+		return return_array
+
+	@staticmethod
+	def __set_argument(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
+		"""
+
+		:param transaction: transaction
+		:param user: User.nickname
+		:param premisegroup_uid: PremseGroup.uid
+		:param conclusion_uid: Statement.uid
+		:param argument_uid: Argument.uid
+		:param is_supportive: Boolean
+		:param issue: Issue.uid
+		:return:
+		"""
+		logger('QueryHelper', '__set_argument', 'main with user: ' + str(user) +
+		       ', premisegroup_uid: ' + str(premisegroup_uid) +
+		       ', conclusion_uid: ' + str(conclusion_uid) +
+		       ', argument_uid: ' + str(argument_uid) +
+		       ', is_supportive: ' + str(is_supportive) +
+		       ', issue: ' + str(issue))
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
+                                                                       Argument.is_supportive == is_supportive,
+                                                                       Argument.conclusion_uid == conclusion_uid,
+                                                                       Argument.issue_uid == issue)).first()
+		if not new_argument:
+			new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid,
+			                        conclusion=conclusion_uid, issue=issue)
+			new_argument.conclusions_argument(argument_uid)
+
+			DBDiscussionSession.add(new_argument)
+			DBDiscussionSession.flush()
+
+			new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
+                                                                           Argument.is_supportive == is_supportive,
+                                                                           Argument.author_uid == db_user.uid,
+                                                                           Argument.conclusion_uid == conclusion_uid,
+                                                                           Argument.argument_uid == argument_uid,
+                                                                           Argument.issue_uid == issue)).first()
+		transaction.commit()
+		if new_argument:
+			logger('QueryHelper', '__set_argument', 'argument was inserted')
+			logger('QueryHelper', '__set_argument', 'argument was inserted')
+			return new_argument.uid
+		else:
+			logger('QueryHelper', '__set_argument', 'argument was not inserted')
+			logger('QueryHelper', '__set_argument', 'argument was not inserted')
+			return None
+
+	def __set_statements_as_new_premisegroup(self, statements, user, issue):
+		"""
+
+		:param statements:
+		:param user: User.nickname
+		:param issue: Issue
+		:return:
+		"""
+		logger('QueryHelper', '__set_statements_as_new_premisegroup', 'user: ' + str(user) +
+		       ', statement: ' + str(statements) + ', issue: ' + str(issue))
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+
+		# check for duplicate
+		all_groups = []
+		for statement in statements:
+			# get the premise
+			db_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement.uid).first()
+			if db_premise:
+				# getting all groups, where the premise is member
+				db_premisegroup = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_premise.premisesgroup_uid).all()
+				groups = set()
+				for group in db_premisegroup:
+					groups.add(group.premisesgroup_uid)
+				all_groups.append(groups)
+		# if every set in this array has one common member, they are all in the same group
+		if len(all_groups) > 0:
+			intersec = set.intersection(*all_groups)
+			for group in intersec:
+				db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group).all()
+				if len(db_premise) == len(statements):
+					return group
+
+		premise_group = PremiseGroup(author=db_user.uid)
+		DBDiscussionSession.add(premise_group)
+		DBDiscussionSession.flush()
+
+		premise_list = []
+		for statement in statements:
+			premise = Premise(premisesgroup=premise_group.uid, statement=statement.uid, is_negated=False, author=db_user.uid, issue=issue)
+			premise_list.append(premise)
+
+		DBDiscussionSession.add_all(premise_list)
+		DBDiscussionSession.flush()
+
+		db_premisegroup = DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).order_by(PremiseGroup.uid.desc()).first()
+
+		return db_premisegroup.uid
+
+	# ########################################
+	# STATEMENT INTERACTION
+	# ########################################
+
+	# ########################################
+	# NEWS
+	# ########################################
+
+	@staticmethod
+	def set_news(transaction, title, text, user):
+		"""
+		Sets a new news into the news table
+
+		:param transaction: transaction current transaction
+		:param title: news title
+		:param text: String news text
+		:param user: User.nickname self.request.authenticated_userid
+		:return: dictionary {title,date,author,news}
+		"""
+		logger('QueryHelper', 'set_news', 'def')
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		author = db_user.firstname if db_user.firstname == 'admin' else db_user.firstname + ' ' + db_user.surname
+		now = datetime.now()
+		day = str(now.day) if now.day > 9 else ('0' + str(now.day))
+		month = str(now.month) if now.month > 9 else ('0' + str(now.month))
+		date = day + '.' + month + '.' + str(now.year)
+		news = News(title=title, author=author, date=date, news=text)
+
+		DBNewsSession.add(news)
+		DBNewsSession.flush()
+
+		db_news = DBNewsSession.query(News).filter_by(title=title).first()
+		return_dict = dict()
+
+		if db_news:
+			return_dict['status'] = '1'
+		else:
+
+			return_dict['status'] = '-'
+
+		transaction.commit()
+
+		return_dict['title'] = title
+		return_dict['date'] = date
+		return_dict['author'] = author
+		return_dict['news'] = text
+
+		return return_dict
+
+	@staticmethod
+	def get_news():
+		"""
+		Returns all news in a dictionary, sorted by date
 		:return: dict()
 		"""
-		return {'nickname': db_user.nickname,
-		        'avatar_url': UserHandler.get_profile_picture(db_user),
-		        'vote_timestamp': sql_timestamp_pretty_print(str(timestamp), lang)}
+		logger('QueryHelper', 'get_news', 'main')
+		db_news = DBNewsSession.query(News).all()
+		ret_dict = dict()
+		for index, news in enumerate(db_news):
+			news_dict = dict()
+			news_dict['title'] = news.title
+			news_dict['author'] = news.author
+			news_dict['date'] = news.date
+			news_dict['news'] = news.news
+			news_dict['uid'] = str(news.uid)
+			# string date into date
+			date_object = datetime.strptime(str(news.date), '%d.%m.%Y')
+			# add index on the seconds for unique id's
+			sec = (date_object - datetime(1970, 1, 1)).total_seconds() + index
+			ret_dict[str(sec)] = news_dict
+
+		ret_dict = collections.OrderedDict(sorted(ret_dict.items()))
+
+		return ret_dict

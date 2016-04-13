@@ -30,6 +30,13 @@ Logger
     :members:
 
 
+Opinion Handler
+===============
+
+.. automodule:: dbas.opinion_handler
+    :members:
+
+
 Recommender System
 ==================
 
