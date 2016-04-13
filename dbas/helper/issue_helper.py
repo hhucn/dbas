@@ -15,7 +15,7 @@ from dbas.url_manager import UrlManager
 from dbas.user_management import UserHandler
 
 
-class IssueHelper(object):
+class IssueHelper:
 	"""
 	Provides helping functions for issue handling
 	"""

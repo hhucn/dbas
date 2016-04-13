@@ -31,6 +31,7 @@ from .email import EmailHelper
 from .lib import get_language, escape_string, get_text_for_statement_uid
 from .logger import logger
 from .recommender_system import RecommenderHelper
+from .opinion_handler import OpinionHandler
 from .string_matcher import FuzzyStringMatcher
 from .strings import Translator
 from .url_manager import UrlManager
@@ -1430,14 +1431,13 @@ class Dbas(object):
 
 		logger('set_new_issue', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
-		_qh = QueryHelper()
 		ui_locales = get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
 
 		try:
 			info = escape_string(self.request.params['info'])
 			title = escape_string(self.request.params['title'])
-			was_set, error = _qh.set_issue(info, title, self.request.authenticated_userid, transaction, ui_locales)
+			was_set, error = IssueHelper.set_issue(info, title, self.request.authenticated_userid, transaction, ui_locales)
 			if was_set:
 				db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
 				                                                        Issue.info == info)).first()
@@ -1466,12 +1466,11 @@ class Dbas(object):
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
 		return_dict = dict()
-		_qh = QueryHelper()
 		ui_locales = get_language(self.request, get_current_registry())
 
 		try:
 			uid = self.request.params['uid']
-			return_dict = _qh.get_logfile_for_statement(uid, ui_locales)
+			return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
@@ -1540,7 +1539,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_news', 'def', 'main')
-		return_dict = QueryHelper().get_news()
+		return_dict = QueryHelper.get_news()
 		return json.dumps(return_dict, True)
 
 	# ajax - for getting argument infos
@@ -1577,7 +1576,6 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_users_with_same_opinion', 'def', 'main: ' + str(self.request.params))
-		_qh = QueryHelper()
 		ui_locales = get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
 		nickname = self.request.authenticated_userid
@@ -1588,12 +1586,12 @@ class Dbas(object):
 			is_argument = self.request.params['is_argument'] == 'true'
 			is_attitude = self.request.params['is_attitude'] == 'true'
 			if is_argument:
-				return_dict = _qh.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname)
+				return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname)
 			else:
 				if not is_attitude:
-					return_dict = _qh.get_user_with_same_opinion_for_statements(uids, ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids, ui_locales, nickname)
 				else:
-					return_dict = _qh.get_user_with_same_opinion_for_attitude(uids, ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_attitude(uids, ui_locales, nickname)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))
@@ -1643,7 +1641,7 @@ class Dbas(object):
 		try:
 			title = escape_string(self.request.params['title'])
 			text = escape_string(self.request.params['text'])
-			return_dict = QueryHelper().set_news(transaction, title, text, self.request.authenticated_userid)
+			return_dict = QueryHelper.set_news(transaction, title, text, self.request.authenticated_userid)
 			return_dict['error'] = ''
 		except KeyError as e:
 			return_dict = dict()

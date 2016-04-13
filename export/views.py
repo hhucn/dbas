@@ -41,6 +41,7 @@ def get_database_dump(request):
 
 	return json.dumps(return_dict, True)
 
+
 @sigma.get()
 def get_sigma_dump(request):
 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
