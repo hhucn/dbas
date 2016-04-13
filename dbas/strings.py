@@ -1,17 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Statement, PremiseGroup, Premise, VoteStatement
-from .logger import logger
+from .database.discussion_model import Statement, Premise, VoteStatement
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 class Translator(object):
+	"""
+	Class for translating string
+	"""
 
 	def __init__(self, lang):
 		"""
+		Initializes keywords
 
 		:param lang: current language
 		:return:
@@ -427,6 +433,7 @@ class Translator(object):
 		self.userPasswordNotMatch = 'userPasswordNotMatch'
 		self.userOptions = 'userOptions'
 		self.voteCountTextFirst = 'voteCountTextFirst'
+		self.voteCountTextMayBeFirst = 'voteCountTextMayBeFirst'
 		self.voteCountTextOneOther = 'voteCountTextOneOther'
 		self.voteCountTextMore = 'voteCountTextMore'
 		self.welcome = 'welcome'
@@ -445,6 +452,7 @@ class Translator(object):
 
 	def set_up_en_dict(self):
 		"""
+		Sets up the englisch dictionary
 
 		:return: dictionary for the english language
 		"""
@@ -872,6 +880,7 @@ class Translator(object):
 		en_lang[self.userPasswordNotMatch] = 'User / Password do not match'
 		en_lang[self.userOptions] = 'Users Options'
 		en_lang[self.voteCountTextFirst] = 'You are the first one with this opinion'
+		en_lang[self.voteCountTextMayBeFirst] = 'You would be the first one with this opinion'
 		en_lang[self.voteCountTextOneOther] = 'One other participant with this opinion'
 		en_lang[self.voteCountTextMore] = 'more participants with this opinion'
 		en_lang[self.welcome] = 'Welcome'
@@ -885,6 +894,7 @@ class Translator(object):
 
 	def set_up_de_dict(self):
 		"""
+		Sets up the german dictionary
 
 		:return: dictionary for the german language
 		"""
@@ -1310,7 +1320,8 @@ class Translator(object):
 		de_lang[self.unfortunatelyNoMoreArgument] = 'Leider gibt es keine weiteren Argumente für'
 		de_lang[self.userPasswordNotMatch] = 'Benutzername und / oder Passwort sind falsch'
 		de_lang[self.userOptions] = 'Benutzeroptionen'
-		de_lang[self.voteCountTextFirst] = 'Erster mit dieser Meinung'
+		de_lang[self.voteCountTextFirst] = 'Sie sind der Erste mit dieser Meinung'
+		de_lang[self.voteCountTextMayBeFirst] = 'Sie wären der Erste mit dieser Meinung'
 		de_lang[self.voteCountTextOneOther] = 'Ein/e Andere/r mit dieser Meinung'
 		de_lang[self.voteCountTextMore] = 'weitere Teilnehmer/innen mit dieser Meinung'
 		de_lang[self.welcome] = 'Willkommen'
@@ -1325,6 +1336,7 @@ class Translator(object):
 	def get(self, sid):
 		"""
 		Returns an localized string
+
 		:param sid: string identifier
 		:return: string
 		"""
@@ -1345,9 +1357,13 @@ class Translator(object):
 
 
 class TextGenerator(object):
+	"""
+	Generates text for D-BAS
+	"""
 
 	def __init__(self, lang):
 		"""
+		Sets current language
 
 		:param lang: current language
 		:return:
@@ -1356,7 +1372,9 @@ class TextGenerator(object):
 
 	def get_text_for_add_premise_container(self, confrontation, premise, attack_type, conclusion, is_supportive):
 		"""
-		Based on the users reaction, text will be build.
+		Based on the users reaction, text will be build. This text can be used for the container where users can
+		add their statements
+
 		:param confrontation: choosen confrontation
 		:param premise: current premise
 		:param attack_type: type of the attack
@@ -1401,7 +1419,9 @@ class TextGenerator(object):
 	def get_header_for_users_confrontation_response(self, premise, attack_type, conclusion, start_lower_case,
 	                                                is_supportive, is_logged_in):
 		"""
-		Based on the users reaction, text will be build.
+		Based on the users reaction, text will be build. This text can be used for the speech bubbles where users
+		justify an argument they have choosen.
+
 		:param premise: current premise
 		:param attack_type: type of the attack
 		:param conclusion: current conclusion
@@ -1463,14 +1483,15 @@ class TextGenerator(object):
 
 	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False):
 		"""
+		Text of the different reaction types for an given argument
 
-		:param premises:
-		:param conclusion:
-		:param start_lower_case:
-		:param with_no_opinion_text:
-		:param is_attacking:
-		:param is_dont_know:
-		:return:
+		:param premises: String
+		:param conclusion: String
+		:param start_lower_case: Boolean
+		:param with_no_opinion_text: Boolean
+		:param is_attacking: Boolean
+		:param is_dont_know: Boolean
+		:return: dict()
 		"""
 		_t = Translator(self.lang)
 		ret_dict = dict()
@@ -1520,17 +1541,18 @@ class TextGenerator(object):
 	def get_text_for_confrontation(self, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
 	                               reply_for_argument, user_is_attacking, user_arg):
 		"""
+		Text for the confrontation of the system
 
-		:param premise:
-		:param conclusion:
-		:param sys_conclusion:
-		:param supportive:
-		:param attack:
-		:param confrontation:
-		:param reply_for_argument:
-		:param user_is_attacking:
-		:param user_arg:
-		:return:
+		:param premise: String
+		:param conclusion: String
+		:param sys_conclusion: String
+		:param supportive: String
+		:param attack: String
+		:param confrontation: String
+		:param reply_for_argument: Boolean
+		:param user_is_attacking: Boolean
+		:param user_arg: String
+		:return: String
 		"""
 		_t = Translator(self.lang)
 
@@ -1582,10 +1604,10 @@ class TextGenerator(object):
 	def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
 		"""
 
-		:param premises:
-		:param conclusion:
-		:param start_lower_case:
-		:return:
+		:param premises: String
+		:param conclusion: String
+		:param start_lower_case: Boolean
+		:return: dict()
 		"""
 		_t = Translator(self.lang)
 		ret_dict = dict()

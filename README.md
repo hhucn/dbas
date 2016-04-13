@@ -8,3 +8,7 @@ with each other in the form of a time-shifted dialog where arguments are present
 and acted upon one-at-a-time.
 
 More information can be found in the docs.
+
+## License
+
+Copyright © 2016 Christian Meter, Tobias Krauthoff

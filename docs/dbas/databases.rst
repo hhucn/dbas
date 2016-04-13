@@ -18,3 +18,30 @@ Steps for creating a new database
 
     $ python setup.py develop
     $ <console_script_name> development.ini
+
+
+Description
+===========
+
+.. automodule:: dbas.database
+    :members:
+
+
+Discussion Model
+================
+
+.. automodule:: dbas.database.discussion_model
+    :members:
+
+
+News Model
+==========
+
+.. automodule:: dbas.database.news_model
+    :members:
+
+Initialize Dummy DB
+===================
+
+.. automodule:: dbas.database.initializedb
+    :members:

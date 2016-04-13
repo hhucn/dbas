@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 
 import os
 import sys
@@ -13,9 +19,6 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
 	Notification, Settings, VoteArgument, VoteStatement, Bubble, Breadcrumb, StatementReferences
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 def usage(argv):
@@ -335,19 +338,18 @@ def setup_up_users(session):
 	session.flush()
 
 	# adding some dummy users
-	pwhandler = PasswordHandler()
-	pwt = pwhandler.get_hashed_password('iamatestuser2016')
-	pw0 = pwhandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-	pw1 = pwhandler.get_hashed_password('admin')
-	pw2 = pwhandler.get_hashed_password('tobias')
-	pw3 = pwhandler.get_hashed_password('martin')
-	pw4 = pwhandler.get_hashed_password('kalman')
-	pw5 = pwhandler.get_hashed_password('mladen')
-	pw6 = pwhandler.get_hashed_password('drtobias')
-	pw7 = pwhandler.get_hashed_password('michael')
-	pw8 = pwhandler.get_hashed_password('gregor')
-	pw9 = pwhandler.get_hashed_password('christian')
-	pw10 = pwhandler.get_hashed_password('alexander')
+	pwt = PasswordHandler.get_hashed_password('iamatestuser2016')
+	pw0 = PasswordHandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
+	pw1 = PasswordHandler.get_hashed_password('admin')
+	pw2 = PasswordHandler.get_hashed_password('tobias')
+	pw3 = PasswordHandler.get_hashed_password('martin')
+	pw4 = PasswordHandler.get_hashed_password('kalman')
+	pw5 = PasswordHandler.get_hashed_password('mladen')
+	pw6 = PasswordHandler.get_hashed_password('drtobias')
+	pw7 = PasswordHandler.get_hashed_password('michael')
+	pw8 = PasswordHandler.get_hashed_password('gregor')
+	pw9 = PasswordHandler.get_hashed_password('christian')
+	pw10 = PasswordHandler.get_hashed_password('alexander')
 	usert = User(firstname='i am a', surname='testuser', nickname='test', email='tobias.krauthoff@hhu.de', password=pwt, group=group2.uid, gender='-')
 	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
 	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
@@ -748,20 +750,21 @@ def setup_discussion_database(session, user):
 	argument13 = Argument(premisegroup=premisegroup13.uid, issupportive=False, author=user.uid, issue=issue2.uid)
 	argument14 = Argument(premisegroup=premisegroup14.uid, issupportive=True, author=user.uid, conclusion=statement4.uid, issue=issue2.uid)
 	argument15 = Argument(premisegroup=premisegroup15.uid, issupportive=False, author=user.uid, conclusion=statement4.uid, issue=issue2.uid)
-	argument16 = Argument(premisegroup=premisegroup16.uid, issupportive=True, author=user.uid, issue=issue2.uid)
+	argument16 = Argument(premisegroup=premisegroup16.uid, issupportive=True, author=user.uid, conclusion=statement4.uid, issue=issue2.uid)
 	argument17 = Argument(premisegroup=premisegroup17.uid, issupportive=False, author=user.uid, issue=issue2.uid)
 	argument18 = Argument(premisegroup=premisegroup18.uid, issupportive=True, author=user.uid, conclusion=statement5.uid, issue=issue2.uid)
 	argument19 = Argument(premisegroup=premisegroup19.uid, issupportive=False, author=user.uid, conclusion=statement5.uid, issue=issue2.uid)
-	argument20 = Argument(premisegroup=premisegroup20.uid, issupportive=True, author=user.uid, issue=issue2.uid)
+	argument20 = Argument(premisegroup=premisegroup20.uid, issupportive=False, author=user.uid, conclusion=statement5.uid, issue=issue2.uid)
 	argument21 = Argument(premisegroup=premisegroup21.uid, issupportive=False, author=user.uid, issue=issue2.uid)
 	argument22 = Argument(premisegroup=premisegroup22.uid, issupportive=False, author=user.uid, conclusion=statement13.uid, issue=issue2.uid)
 	argument23 = Argument(premisegroup=premisegroup23.uid, issupportive=True, author=user.uid, conclusion=statement13.uid, issue=issue2.uid)
 	argument24 = Argument(premisegroup=premisegroup24.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-	argument25 = Argument(premisegroup=premisegroup25.uid, issupportive=True, author=user.uid, issue=issue2.uid)
-	argument26 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid, issue=issue2.uid)
-	argument27 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
-	argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
-	argument29 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
+	argument25 = Argument(premisegroup=premisegroup25.uid, issupportive=True, author=user.uid, conclusion=statement13.uid, issue=issue2.uid)
+	argument26 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
+	argument27 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
+	argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
+	# argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
+	# argument29 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
 	argument30 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
 	argument31 = Argument(premisegroup=premisegroup29.uid, issupportive=False, author=user.uid, issue=issue2.uid)
 	####
@@ -788,7 +791,7 @@ def setup_discussion_database(session, user):
 	session.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
 	session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
 	session.add_all([argument16, argument17, argument18, argument19, argument20, argument21, argument22])
-	session.add_all([argument23, argument24, argument25, argument26, argument27, argument28, argument29])
+	session.add_all([argument23, argument24, argument25, argument26, argument27, argument28])#, argument29])
 	session.add_all([argument30, argument31])
 	session.add_all([argument101, argument102, argument103, argument104, argument105, argument106, argument107])
 	session.add_all([argument108, argument109, argument110, argument112, argument113, argument114])  # , argument111])
@@ -800,12 +803,9 @@ def setup_discussion_database(session, user):
 	argument8.conclusions_argument(argument7.uid)
 	argument12.conclusions_argument(argument11.uid)
 	argument13.conclusions_argument(argument12.uid)
-	argument16.conclusions_argument(argument1.uid)
 	argument17.conclusions_argument(argument1.uid)
-	argument20.conclusions_argument(argument2.uid)
 	argument21.conclusions_argument(argument2.uid)
 	argument24.conclusions_argument(argument10.uid)
-	argument25.conclusions_argument(argument10.uid)
 	argument26.conclusions_argument(argument11.uid)
 	argument31.conclusions_argument(argument14.uid)
 	argument102.conclusions_argument(argument101.uid)

@@ -1,9 +1,13 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 from zope.sqlalchemy import ZopeTransactionExtension as Zte
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 DBDiscussionSession = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False))

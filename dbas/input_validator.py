@@ -1,5 +1,8 @@
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
+"""
+Methods for validating input params given via url or ajax
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, Premise, PremiseGroup
@@ -7,13 +10,22 @@ from sqlalchemy import and_
 
 
 class Validator:
-
-	@staticmethod
-	def do_something():
-		return 1
+	"""
+	Methods for saving or reading data out of current session. Additionally these values can be aligned.
+	"""
 
 	@staticmethod
 	def save_params_in_session(session, user_arg_uid, sys_arg_uid, mood, reaction):
+		"""
+		Saves values in session
+
+		:param session: request.session
+		:param user_arg_uid: Argument.uid
+		:param sys_arg_uid: Argument.uid
+		:param mood: Srting
+		:param reaction: String
+		:return:
+		"""
 		session['user_arg_uid'] = user_arg_uid
 		session['sys_arg_uid'] = sys_arg_uid
 		session['mood'] = mood
@@ -22,13 +34,14 @@ class Validator:
 	@staticmethod
 	def validate_params_with_session(session, user_arg_uid, sys_arg_uid, mood, reaction):
 		"""
+		Compares given values with the values in current session
 
-		:param session:
-		:param user_arg_uid:
-		:param sys_arg_uid:
-		:param mood:
-		:param reaction:
-		:return:
+		:param session: request.session
+		:param user_arg_uid: Argument.uid
+		:param sys_arg_uid: Argument.uid
+		:param mood: String
+		:param reaction: String
+		:return: 0 if everything was fine, != 0 otherwise
 		"""
 		if session['user_arg_uid'] != user_arg_uid:
 			return 1
@@ -40,14 +53,15 @@ class Validator:
 			return 4
 		return 0
 
-	def check_reaction(attacked_arg_uid, attacking_arg_uid, reaction):
+	def check_reaction(attacked_arg_uid, attacking_arg_uid, relation):
 		"""
+		Checks whether the attacked argument uid and the attacking argument uid are connected via the given relation
 
-		:param attacking_arg_uid:
-		:param reaction:
-		:return:
+		:param attacking_arg_uid: Argument.uid
+		:param relation: String
+		:return: Boolean
 		"""
-		if reaction == 'undermine':
+		if relation == 'undermine':
 			db_attacking_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).join(Statement).first()
 			if not db_attacking_arg:
 				return False
@@ -68,11 +82,11 @@ class Validator:
 			                                                                  Argument.premisesgroup_uid == db_attacked_premise.premisesgroup_uid)).first()
 			return True if db_attacked_arg else False
 
-		elif reaction == 'undercut':
+		elif relation == 'undercut':
 			db_attacking_arg = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == attacking_arg_uid,
 			                                                                   Argument.argument_uid == attacked_arg_uid)).first()
 			return True if db_attacking_arg else False
-		elif reaction == 'rebut':
+		elif relation == 'rebut':
 			db_attacking_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).join(Statement).first()
 			if not db_attacking_arg:
 				return False

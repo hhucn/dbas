@@ -1,11 +1,11 @@
 # DBAS Makefile
 
-init_postgres:
+init:
 	sudo -u postgres bash -c "psql -c \"create user dbas with password 'SQL_2015&';\""
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
 	sudo -u postgres bash -c "psql -c \"create database news;\""
 
-postgres:
+database:
 	sudo -u postgres bash -c "psql -c \"drop database discussion;\""
 	sudo -u postgres bash -c "psql -c \"drop database news;\""
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
@@ -15,10 +15,10 @@ postgres:
 	initialize_discussion_sql development.ini
 	initialize_news_sql development.ini
 
-refresh_postgres:
+refresh:
 	reload_discussion_sql development.ini
 	initialize_news_sql development.ini
 
-clean_postgres:
+clean:
 	sudo -u postgres bash -c "psql -c \"drop database discussion;\""
 	sudo -u postgres bash -c "psql -c \"drop database news;\""

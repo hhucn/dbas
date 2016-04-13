@@ -1,17 +1,23 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import random
 
 from sqlalchemy import and_
 
+from .helper.relation_helper import RelationHelper
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, User, VoteArgument
 from .logger import logger
-from .query_helper import QueryHelper
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 class RecommenderHelper(object):
+	"""
+	Todo
+	"""
 
 	def get_attack_for_argument(self, argument_uid, issue, lang, restriction_on_attacks=None, restriction_on_arg_uid=None):
 		"""
@@ -144,7 +150,7 @@ class RecommenderHelper(object):
 		key = ''
 		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
 		attack_found = False
-		_qh = QueryHelper()
+		_rh = RelationHelper(argument_uid, lang)
 
 		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'argument_uid: ' + str(argument_uid) +
 		       ', attack_list : ' + str(attack_list)  +
@@ -160,9 +166,9 @@ class RecommenderHelper(object):
 				else ('rebut' if attack == 5
 				      else 'undercut')
 
-			return_array = _qh.get_undermines_for_argument_uid(argument_uid, lang) if attack == 1 \
-				else (_qh.get_rebuts_for_argument_uid(argument_uid, lang) if attack == 5
-				      else _qh.get_undercuts_for_argument_uid(argument_uid, lang))
+			return_array = _rh.get_undermines_for_argument_uid() if attack == 1 \
+				else (_rh.get_rebuts_for_argument_uid() if attack == 5
+				      else _rh.get_undercuts_for_argument_uid())
 
 			if return_array and len(return_array) != 0\
 					and str(restriction_on_attacks[0]) != str(key)\

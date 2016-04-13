@@ -1,16 +1,23 @@
+"""
+Common, pure functions used by the D-BAS.
+
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 
 import locale
 from datetime import datetime
 from html import escape
 
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
+from .database import DBDiscussionSession
+from .database.discussion_model import Argument, Premise, Statement, TextVersion
+from .logger import logger
+from .strings import Translator
 
 
 def escape_string(text):
 	"""
-	Escapes all html special chars
+	Escapes all html special chars.
 
 	:param text: string
 	:return: html.escape(text)
@@ -20,7 +27,7 @@ def escape_string(text):
 
 def get_language(request, current_registry):
 	"""
-	Returns current ui locales code which is saved in current cookie or the registry
+	Returns current ui locales code which is saved in current cookie or the registry.
 
 	:param request: self.request
 	:param current_registry: get_current_registry()
@@ -35,7 +42,7 @@ def get_language(request, current_registry):
 
 def sql_timestamp_pretty_print(ts, lang):
 	"""
-	Bla
+	Pretty printing for sql timestamp in dependence of the language.
 
 	:param ts: timestamp as string
 	:param lang: language
@@ -56,3 +63,147 @@ def sql_timestamp_pretty_print(ts, lang):
 		time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
 
 	return time.strftime(formatter)
+
+
+def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False, user_changed_opinion=False):
+	"""
+	Returns current argument as string like "conclusion, because premise1 and premise2"
+
+	:param uid: Integer
+	:param lang: String
+	:param with_strong_html_tag: Boolean
+	:param start_with_intro: Boolean
+	:param first_arg_by_user: Boolean
+	:param user_changed_opinion: Boolean
+	:return: String
+	"""
+	logger('RelationHelper', 'get_text_for_argument_uid', 'main with argument_uid ' + str(uid))
+	db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+	# catch error
+	if not db_argument:
+		return None
+
+	_t = Translator(lang)
+	sb = '<strong>' if with_strong_html_tag else ''
+	se = '</strong>' if with_strong_html_tag else ''
+	because = ' ' + se + _t.get(_t.because).lower() + ' ' + sb
+	doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHoldBecause).lower() + ' ' + sb
+
+	# getting all argument id
+	arg_array = [db_argument.uid]
+	while db_argument.argument_uid:
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_argument.argument_uid).first()
+		arg_array.append(db_argument.uid)
+
+	if len(arg_array) == 1:
+		# build one and only argument
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
+		premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+		conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+		conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+		ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
+		ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
+
+		return ret_value
+
+	else:
+		# get all pgroups and at last, the conclusion
+		pgroups = []
+		supportive = []
+		arg_array = arg_array[::-1]
+		for uid in arg_array:
+			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+			text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+			pgroups.append(text[0:1].lower() + text[1:])
+			supportive.append(db_argument.is_supportive)
+		conclusion = get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
+
+		if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
+			ret_value = se
+			ret_value += _t.get(_t.youSaidThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat)
+			ret_value += sb + ' '
+			users_opinion = True  # user after system
+			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+		else:  # user starts
+			ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
+			users_opinion = False  # system after user
+			conclusion = conclusion[0:1].upper() + conclusion[1:]  # pretty print
+		ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
+
+		for i in range(1, len(pgroups)):
+			ret_value += ' ' + se
+			if users_opinion:
+				if user_changed_opinion:
+					ret_value += _t.get(_t.butThenYouCounteredWith)
+				else:
+					ret_value += _t.get(_t.butYouCounteredWith)
+			else:
+				ret_value += _t.get(_t.otherUsersHaveCounterArgument)
+			ret_value += sb + ' ' + pgroups[i] + '.'
+
+			# if user_changed_opinion:
+			# ret_value += ' ' + se + _t.get(_t.butThenYouCounteredWith) + sb + ' ' + pgroups[i] + '.'
+			# else:
+			# ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
+			users_opinion = not users_opinion
+
+		ret_value = ret_value.replace('.</strong>', '</strong>.').replace('. </strong>', '</strong>. ')
+		return ret_value[:-1]  # cut off punctuation
+
+
+def get_text_for_premisesgroup_uid(uid, lang):
+	"""
+	Returns joined text of the premise group and the premise ids
+
+	:param uid: premisesgroup_uid
+	:param lang: ui_locales
+	:return: text, uids
+	"""
+	db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).join(Statement).all()
+	text = ''
+	uids = []
+	_t = Translator(lang)
+	for premise in db_premises:
+		tmp = get_text_for_statement_uid(premise.statements.uid)
+		if tmp.endswith('.'):
+			tmp = tmp[:-1]
+		uids.append(str(premise.statements.uid))
+		text += ' ' + _t.get(_t.aand) + ' ' + tmp[0:1].lower() + tmp[1:]
+
+	return text[5:], uids
+
+
+def get_text_for_statement_uid(uid):
+	"""
+	Returns text of statement with given uid
+
+	:param uid: Statement.uid
+	:return: String
+	"""
+	db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+	if not db_statement:
+		return None
+
+	db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
+		uid=db_statement.textversion_uid).first()
+	tmp = db_textversion.content
+
+	if tmp.endswith(('.', '?', '!')):
+		tmp = tmp[:-1]
+
+	return tmp
+
+
+def get_text_for_conclusion(argument, lang, start_with_intro=False):
+	"""
+	Check the arguments conclusion whether it is an statement or an argument and returns the text
+
+	:param argument: Argument
+	:param lang: ui_locales
+	:param start_with_intro: Boolean
+	:return: String
+	"""
+	if argument.argument_uid:
+		return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro)
+	else:
+		return get_text_for_statement_uid(argument.conclusion_uid)
