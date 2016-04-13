@@ -18,16 +18,25 @@ class RelationHelper(object):
 	Helper for returning all kind of relatins for an argument
 	"""
 
-	def get_undermines_for_argument_uid(self, argument_uid, lang):
+	def __init__(self, argument_uid, lang):
+		"""
+		Initialie default values.
+
+		:param argument_uid: Argument.uid
+		:param lang: ui_locales
+		:return:
+		"""
+		self.argument_uid = argument_uid
+		self.lang = lang
+
+	def get_undermines_for_argument_uid(self):
 		"""
 		Calls __get_undermines_for_premises('reason', premises_as_statements_uid)
 
-		:param argument_uid: uid of the specified argument
-		:param lang: ui_locales
-		:return: dictionary
+		:return: array with dict() with id (of argumet) and text.
 		"""
-		logger('RelationHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(argument_uid))
-		db_attacked_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		logger('RelationHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(self.argument_uid))
+		db_attacked_argument = DBDiscussionSession.query(Argument).filter_by(uid=self.argument_uid).first()
 		db_attacked_premises = DBDiscussionSession.query(Premise).filter_by(
 				premisesgroup_uid=db_attacked_argument.premisesgroup_uid).order_by(
 				Premise.premisesgroup_uid.desc()).all()
@@ -39,49 +48,43 @@ class RelationHelper(object):
 		if len(premises_as_statements_uid) == 0:
 			return None
 
-		return self.__get_undermines_for_premises(premises_as_statements_uid, lang)
+		return self.__get_undermines_for_premises(premises_as_statements_uid, self.lang)
 
-	def get_overbids_for_argument_uid(self, argument_uid, lang):
+	def get_overbids_for_argument_uid(self):
 		"""
-		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, True)
+		Calls self.__get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, True)
 
-		:param argument_uid: uid of the specified argument
-		:param lang:
-		:return: dictionary
+		:return: array with dict() with id (of argumet) and text.
 		"""
 		logger('RelationHelper', 'get_overbids_for_argument_uid', 'main')
-		return self.__get_attack_or_support_for_justification_of_argument_uid(argument_uid, True, lang)
+		return self.__get_attack_or_support_for_justification_of_argument_uid(self.argument_uid, True, self.lang)
 
-	def get_undercuts_for_argument_uid(self, argument_uid, lang):
+	def get_undercuts_for_argument_uid(self):
 		"""
-		Calls self.get_attack_for_justification_of_argument_uid(key, argument_uid, False)
+		Calls self.__get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, False)
 
-		:param argument_uid:
-		:param lang:
-
-		:return:
+		:return: array with dict() with id (of argumet) and text.
 		"""
-		logger('RelationHelper', 'get_undercuts_for_argument_uid', 'main ' + str(argument_uid))
-		return self.__get_attack_or_support_for_justification_of_argument_uid(argument_uid, False, lang)
+		logger('RelationHelper', 'get_undercuts_for_argument_uid', 'main ' + str(self.argument_uid))
+		return self.__get_attack_or_support_for_justification_of_argument_uid(self.argument_uid, False, self.lang)
 
-	def get_rebuts_for_argument_uid(self, argument_uid, lang):
+	def get_rebuts_for_argument_uid(self):
 		"""
 		Calls self.get_rebuts_for_arguments_conclusion_uid('reason', Argument.conclusion_uid)
 
-		:param argument_uid: uid of the specified argument
-		:param lang:
-		:return: dictionary
+		:return: array with dict() with id (of argumet) and text.
 		"""
-		logger('RelationHelper', 'get_rebuts_for_argument_uid', 'main ' + str(argument_uid))
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(argument_uid)).first()
+		logger('RelationHelper', 'get_rebuts_for_argument_uid', 'main ' + str(self.argument_uid))
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(self.argument_uid)).first()
 		if not db_argument:
 			return None
 		if db_argument.conclusion_uid is not None:
-			return self.get_rebuts_for_arguments_conclusion_uid(db_argument, lang)
+			return self.__get_rebuts_for_arguments_conclusion_uid(db_argument, self.lang)
 		else:
-			return self.get_undercuts_for_argument_uid(db_argument.argument_uid, lang)
+			return self.get_undercuts_for_argument_uid()
 
-	def get_rebuts_for_arguments_conclusion_uid(self, db_argument, lang):
+	@staticmethod
+	def __get_rebuts_for_arguments_conclusion_uid(db_argument, lang):
 		"""
 
 		:param db_argument:
@@ -108,18 +111,16 @@ class RelationHelper(object):
 
 		return return_array
 
-	def get_supports_for_argument_uid(self, argument_uid, lang):
+	def get_supports_for_argument_uid(self):
 		"""
 
-		:param argument_uid: uid of the specified argument
-		:param lang:
-		:return: dictionary
+		:return: array with dict() with id (of argumet) and text
 		"""
 		logger('RelationHelper', 'get_supporRects_for_argument_uid', 'main')
 
 		return_array = []
 		given_supports = set()
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).join(
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=self.argument_uid).join(
 			PremiseGroup).first()
 		db_arguments_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 		index = 0
@@ -134,7 +135,7 @@ class RelationHelper(object):
 				if support.premisesgroup_uid not in given_supports:
 					tmp_dict = dict()
 					tmp_dict['id'] = support.uid
-					tmp_dict['text'], trash = get_text_for_premisesgroup_uid(support.premisesgroup_uid, lang)
+					tmp_dict['text'], trash = get_text_for_premisesgroup_uid(support.premisesgroup_uid, self.lang)
 					return_array.append(tmp_dict)
 					index += 1
 					given_supports.add(support.premisesgroup_uid)
