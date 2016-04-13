@@ -30,7 +30,12 @@ function DiscussionGraph() {
 	this.callbackIfDoneForDiscussionGraph = function (data) {
 		var jsonData = $.parseJSON(data);
 
-		s = this.getSigmaGraph(jsonData);
+		try {
+			s = this.getSigmaGraph(jsonData);
+		} catch (err){
+			new DiscussionGraph().setDefaultViewParams(false, null);
+			new GuiHandler().showDiscussionError(_t(internalError));
+		}
 
 		// dragging
         var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
@@ -106,7 +111,12 @@ function DiscussionGraph() {
 		s.graph.kill();
 
 		if (startSigma){
-			s = this.getSigmaGraph(jsonData);
+			try {
+				s = this.getSigmaGraph(jsonData);
+			} catch (err){
+				new DiscussionGraph().setDefaultViewParams(false, null);
+				new GuiHandler().showDiscussionError(_t(internalError));
+			}
 		} else {
 			$('#'+ graphViewContainerSpaceId).empty();
 		}

@@ -150,7 +150,7 @@ dark_green = '#689F38'
 dark_blue = '#1976D2'
 
 
-def get_sigma_export(issue, lang):
+def get_sigma_export(issue):
 	"""
 
 	:param issue:
@@ -181,7 +181,7 @@ def get_sigma_export(issue, lang):
 	                            x,
 	                            y)
 	x = (x + 1) % 10
-	y = y + (1 if x == 0 else 0)
+	y += (1 if x == 0 else 0)
 	nodes_array.append(node_dict)
 
 	# for each statement a node will be added
@@ -195,7 +195,7 @@ def get_sigma_export(issue, lang):
 		                            x,
 		                            y)
 		x = (x + 1) % 10
-		y = y + (1 if x == 0 else 0)
+		y += (1 if x == 0 else 0)
 		nodes_array.append(node_dict)
 		if statement.is_startpoint:
 			edge_dict = __get_edge_dict('edge_' + str(statement.uid) + '_issue',
@@ -217,7 +217,7 @@ def get_sigma_export(issue, lang):
 		                            x,
 		                            y)
 		x = (x + 1) % 10
-		y = y + (1 if x == 0 else 0)
+		y += (1 if x == 0 else 0)
 		nodes_array.append(node_dict)
 
 		# edge from premisegroup to the middle point
@@ -246,10 +246,10 @@ def get_sigma_export(issue, lang):
 	return sigma_dict
 
 
-def __get_node_dict(id, label, color, size, x, y):
+def __get_node_dict(uid, label, color, size, x, y):
 	"""
 
-	:param id:
+	:param uid:
 	:param label:
 	:param color:
 	:param size:
@@ -257,7 +257,7 @@ def __get_node_dict(id, label, color, size, x, y):
 	:param y:
 	:return:
 	"""
-	return {'id': id,
+	return {'id': uid,
 	        'label': label,
 	        'color': color,
 	        'hover_color': dark_grey if color == green else dark_blue,
@@ -268,21 +268,21 @@ def __get_node_dict(id, label, color, size, x, y):
 	        'y': y}
 
 
-def __get_edge_dict(id, source, target, color, size, type):
+def __get_edge_dict(uid, source, target, color, size, edge_type):
 	"""
 
-	:param id:
+	:param uid:
 	:param source:
 	:param target:
 	:param color:
 	:param size:
-	:param type:
+	:param edge_type:
 	:return:
 	"""
-	return {'id': id,
+	return {'id': uid,
 	        'source': source,
 	        'target': target,
 	        'color': color,
 	        'hover_color': dark_green if color == green else dark_red,
 	        'size': size,
-	        'type': type}
+	        'type': edge_type}

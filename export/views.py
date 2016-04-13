@@ -48,7 +48,6 @@ def get_sigma_dump(request):
 	logger('Export', 'get_sigma_dump', 'main')
 	_qh = QueryHelper()
 	issue = _qh.get_issue_id(request)
-	ui_locales = get_language(request, get_current_registry())
 
-	return_dict = get_sigma_export(issue, ui_locales)
+	return_dict = get_sigma_export(issue)
 	return json.dumps(return_dict, True)
