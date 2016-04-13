@@ -136,7 +136,8 @@ class UserHandler(object):
 		logger('UserHandler', 'is_user_admin', 'main')
 		return db_user and db_user.groups.name == 'admins'
 
-	def get_profile_picture(self, user):
+	@staticmethod
+	def get_profile_picture(user):
 		"""
 		Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
 

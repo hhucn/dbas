@@ -371,7 +371,7 @@ class QueryHelper(object):
 	def get_user_with_same_opinion_for_argument(self, argument_uid, lang, nickname):
 		"""
 		Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
-		these attacks
+		these attacks.
 
 		:param argument_uid: Argument.uid
 		:param lang: ui_locales ui_locales
@@ -392,7 +392,6 @@ class QueryHelper(object):
 			ret_dict['users'] = all_users
 			return ret_dict
 
-		_uh = UserHandler()
 		_rh = RelationHelper(argument_uid, lang)
 		undermines_uids  = _rh.get_undermines_for_argument_uid()
 		supports_uids    = _rh.get_supports_for_argument_uid()
@@ -416,9 +415,7 @@ class QueryHelper(object):
 				                                                               VoteArgument.author_uid != db_user_uid)).all()
 				for vote in db_votes:
 					voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-					users_dict = {'nickname': voted_user.nickname,
-					              'avatar_url': _uh.get_profile_picture(voted_user),
-					              'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+					users_dict = self.create_users_dict(voted_user, vote.timestamp, lang)
 					all_users.append(users_dict)
 				relation_dict['users'] = all_users
 
@@ -435,20 +432,21 @@ class QueryHelper(object):
 
 	def get_user_with_same_opinion_for_statements(self, statement_uids, lang, nickname):
 		"""
+		Returns nested dictionary with all kinds of information about the votes of the statements.
 
 		:param statement_uids: Statement.uid
 		:param lang: ui_locales ui_locales
-		:param nickname: nickname
+		:param nickname: User.nickname
 		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
 		"""
 		logger('QueryHelper', 'get_user_with_same_opinion_for_statement', 'Statement ' + str(statement_uids))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
-		ret_dict = dict()
+		opinions = []
 		all_users = []
 		_t = Translator(lang)
-		statement_uids = [statement_uids]
+
 		for uid in statement_uids:
 			statement_dict = dict()
 			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
@@ -465,12 +463,10 @@ class QueryHelper(object):
 		                                                                    VoteStatement.is_up_vote == True,
 		                                                                    VoteStatement.is_valid == True,
 		                                                                    VoteStatement.author_uid != db_user_uid)).all()
-			uh = UserHandler()
+
 			for vote in db_votes:
 				voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-				users_dict = {'nickname': voted_user.nickname,
-				              'avatar_url': uh.get_profile_picture(voted_user),
-				              'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
+				users_dict = self.create_users_dict(voted_user, vote.timestamp, lang)
 				all_users.append(users_dict)
 			statement_dict['users'] = all_users
 
@@ -481,48 +477,56 @@ class QueryHelper(object):
 			else:
 				statement_dict['message'] = str(db_votes) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
-		return ret_dict
+			opinions.append(statement_dict)
 
-	def get_user_with_same_opinion_for_position(self, issue_uid, lang, nickname):
+		return {'opinions': opinions}
+
+	def get_user_with_same_opinion_for_attitude(self, statement_uid, lang, nickname):
 		"""
+		Returns dictionary with agree- and disagree-votes
 
-		:param issue_uid:
-		:param lang: ui_locales
-		:param nickname:
+		:param statement_uid: Statement.uid
+		:param lang: ui_locales ui_locales
+		:param nickname: User.nickname
 		:return:
 		"""
-		logger('QueryHelper', 'get_user_with_same_opinion_for_position', 'issue ' + str(issue_uid))
+		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+		ret_dict = dict()
+
+		if not db_statement:
+			ret_dict['text'] = None
+			ret_dict['agree'] = None
+			ret_dict['disagree'] = None
+
+		ret_dict['text'] = get_text_for_statement_uid(statement_uid)
+		ret_dict['agree'] = None
+		ret_dict['disagree'] = None
+
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
-		ret_dict = dict()
-		db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.issue_uid == issue_uid,
-		                                                                Statement.is_startpoint == True)).all()
-		if not db_statements:
-			return ret_dict
+		db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
+		                                                                    VoteStatement.is_up_vote == True,
+		                                                                    VoteStatement.is_valid == True,
+		                                                                    VoteStatement.author_uid != db_user_uid)).all()
 
-		uh = UserHandler()
-		votes = []
-		for statement in db_statements:
-			vote_dict = dict()
-			vote_dict['statement_uid'] = str(statement.uid)
-			vote_dict['text'] = get_text_for_statement_uid(statement.uid)
-			db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
-			                                                                VoteStatement.is_up_vote == True,
-			                                                                VoteStatement.is_valid == True,
-			                                                                VoteStatement.author_uid != db_user_uid)).all()
-			vote_dict['count'] = str(len(db_votes))
-			all_users = {}
-			for vote in db_votes:
-				db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-				all_users[db_user.nickname] = {'avatar_url': uh.get_profile_picture(db_user),
-				                               'vote_timestamp': sql_timestamp_pretty_print(str(vote.timestamp), lang)}
-			vote_dict['users'] = all_users
-			votes.append(vote_dict)
+		db_con_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
+		                                                                    VoteStatement.is_up_vote == False,
+		                                                                    VoteStatement.is_valid == True,
+		                                                                    VoteStatement.author_uid != db_user_uid)).all()
+		pro_array = []
+		for vote in db_pro_votes:
+			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+			users_dict = self.create_users_dict(voted_user, vote.timestamp, lang)
+			pro_array.append(users_dict)
+		ret_dict['agree_users'] = pro_array
 
-		ret_dict['votes'] = votes
-
-		ret_dict['message'] = 'TODO'
+		con_array = []
+		for vote in db_con_votes:
+			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+			users_dict = self.create_users_dict(voted_user, vote.timestamp, lang)
+			con_array.append(users_dict)
+		ret_dict['disagree_users'] = con_array
 
 		return ret_dict
 
@@ -1020,3 +1024,16 @@ class QueryHelper(object):
 		issue_dict['date']              = sql_timestamp_pretty_print(str(issue.date), lang)
 		issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
 		return issue_dict
+
+	def create_users_dict(self, db_user, timestamp, lang):
+		"""
+		Creates dictionary with nickname, url and timestamp
+
+		:param db_user: User
+		:param timestamp: SQL Timestamp
+		:param lang: ui_locales
+		:return: dict()
+		"""
+		return {'nickname': db_user.nickname,
+		        'avatar_url': UserHandler.get_profile_picture(db_user),
+		        'vote_timestamp': sql_timestamp_pretty_print(str(timestamp), lang)}
