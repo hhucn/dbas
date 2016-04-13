@@ -1,5 +1,5 @@
 """
-TODO
+Provides helping function for database querys.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -8,7 +8,6 @@ import collections
 import random
 from datetime import datetime
 
-from slugify import slugify
 from sqlalchemy import and_, func
 
 from dbas.database import DBDiscussionSession, DBNewsSession
@@ -123,115 +122,6 @@ class QueryHelper(object):
 			logger('QueryHelper', '__set_argument', 'argument was not inserted')
 			logger('QueryHelper', '__set_argument', 'argument was not inserted')
 			return None
-
-	# ########################################
-	# ISSUE
-	# ########################################
-
-	def get_title_for_issue_uid(self, uid):
-		"""
-		Returns the title or none for the issue uid
-
-		:param uid: Issue.uid
-		:return: String
-		"""
-		#  logger('QueryHelper', 'get_title_for_issue_uid', str(uid))
-		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
-		return db_issue.title if db_issue else 'none'
-
-	def get_slug_for_issue_uid(self, uid):
-		"""
-		Returns the slug of the title or none for the issue uid
-
-		:param uid: Issue.uid
-		:return: String
-		"""
-		#  logger('QueryHelper', 'get_slug_for_issue_uid', str(uid))
-		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
-		return slugify(db_issue.title) if db_issue else 'none'
-
-	def get_info_for_issue_uid(self, uid):
-		"""
-		Returns the slug or none for the issue uid
-
-		:param uid: Issue.uid
-		:return: String
-		"""
-		#  logger('QueryHelper', 'get_info_for_issue_uid', str(uid))
-		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
-		return db_issue.info if db_issue else 'none'
-
-	def get_date_for_issue_uid(self, uid, lang):
-		"""
-		Returns the date or none for the issue uid
-
-		:param uid: Issue.uid
-		:param lang: ui_locales ui_locales
-		:return: String
-		"""
-		#  logger('QueryHelper', 'get_date_for_issue_uid', str(uid))
-		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
-		return sql_timestamp_pretty_print(str(db_issue.date), lang) if db_issue else 'none'
-
-	def prepare_json_of_issue(self, uid, application_url, lang, for_api):
-		"""
-		Prepares slug, info, argument count and the date of the issue as dict
-
-		:param uid: Issue.uid
-		:param application_url:
-		:param lang: ui_locales
-		:param for_api: Boolean
-		:return: Issue-dict()
-		"""
-		logger('QueryHelper', 'prepare_json_of_issue', 'main')
-		slug = self.get_slug_for_issue_uid(uid)
-		title = self.get_title_for_issue_uid(uid)
-		info = self.get_info_for_issue_uid(uid)
-		arg_count = self.get_number_of_arguments(uid)
-		date = self.get_date_for_issue_uid(uid, lang)
-
-		db_issues = DBDiscussionSession.query(Issue).all()
-		all_array = []
-		for issue in db_issues:
-			issue_dict = self.get_issue_dict_for(issue, application_url, for_api, uid, lang)
-			all_array.append(issue_dict)
-
-		_t = Translator(lang)
-		tooltip = _t.get(_t.discussionInfoTooltip1) + ' ' + date + ' ' +\
-		          _t.get(_t.discussionInfoTooltip2) + ' ' + str(arg_count) + ' ' +\
-		          (_t.get(_t.discussionInfoTooltip3pl) if arg_count > 1 else _t.get(_t.discussionInfoTooltip3sg))
-
-		return {'slug': slug, 'info': info, 'title': title, 'uid': uid, 'arg_count': arg_count, 'date': date, 'all': all_array, 'tooltip': tooltip}
-
-	def get_number_of_arguments(self, issue):
-		"""
-		Returns number of arguments for the issue
-
-		:param issue: Issue Issue.uid
-		:return: Integer
-		"""
-		return len(DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all())
-
-	def get_issue_id(self, request):
-		"""
-		Returns issue uid
-		
-		:param request: self.request
-		:return: uid
-		"""
-		# first matchdict, then params, then session, afterwards fallback
-		issue = request.matchdict['issue'] if 'issue' in request.matchdict \
-			else request.params['issue'] if 'issue' in request.params \
-			else request.session['issue'] if 'issue' in request.session \
-			else DBDiscussionSession.query(Issue).first().uid
-
-		if str(issue) is 'undefined':
-			self.issue_fallback = 1
-
-		# save issue in session
-		request.session['issue'] = issue
-
-		return issue
 
 	# ########################################
 	# STATEMENTS
@@ -529,23 +419,6 @@ class QueryHelper(object):
 		ret_dict['disagree_users'] = con_array
 
 		return ret_dict
-
-	def get_id_of_slug(self, slug, request, save_id_in_session):
-		"""
-		Returns the uid
-
-		:param slug: slug
-		:param request: self.request for a fallback
-		:param save_id_in_session:
-		:return: uid
-		"""
-		db_issues = DBDiscussionSession.query(Issue).all()
-		for issue in db_issues:
-			if str(slugify(issue.title)) == str(slug):
-				if save_id_in_session:
-					request.session['issue'] = issue.uid
-				return issue.uid
-		return self.get_issue_id(request)
 
 	def get_every_attack_for_island_view(self, arg_uid, lang):
 		"""
@@ -1004,26 +877,6 @@ class QueryHelper(object):
 				new_statement, is_duplicate = self.set_statement(transaction, text_list, user, is_start, issue)
 				statements.append(new_statement)
 		return statements
-
-	def get_issue_dict_for(self, issue, application_url, for_api, uid, lang):
-		"""
-
-		:param issue: Issue
-		:param application_url:
-		:param for_api: Boolean
-		:param uid:
-		:param lang: ui_locales
-		:return:
-		"""
-		issue_dict = dict()
-		issue_dict['slug']              = issue.get_slug()
-		issue_dict['title']             = issue.title
-		issue_dict['url']               = UrlManager(application_url, issue.get_slug(), for_api).get_slug_url(False) if str(uid) != str(issue.uid) else ''
-		issue_dict['info']              = issue.info
-		issue_dict['arg_count']         = self.get_number_of_arguments(issue.uid)
-		issue_dict['date']              = sql_timestamp_pretty_print(str(issue.date), lang)
-		issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
-		return issue_dict
 
 	def create_users_dict(self, db_user, timestamp, lang):
 		"""

@@ -112,6 +112,13 @@ Dictionary Helper for Item
     :members:
 
 
+Helper for Issues
+=================
+
+.. automodule:: dbas.helper.issue_helper
+    :members:
+
+
 Notification Helper
 ===================
 

@@ -21,6 +21,7 @@ from .helper.breadcrumb_helper import BreadcrumbHelper
 from .helper.dictionary_helper import DictionaryHelper
 from .helper.dictionary_helper_discussion import DiscussionDictHelper
 from .helper.dictionary_helper_items import ItemDictHelper
+from .helper.issue_helper import IssueHelper
 from .helper.notification_helper import NotificationHelper
 from .helper.query_helper import QueryHelper
 from .helper.voting_helper import VotingHelper
@@ -134,7 +135,6 @@ class Dbas(object):
 		else:
 			logged_in = self.request.authenticated_userid
 
-		_qh = QueryHelper()
 		ui_locales = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
 		if for_api:
@@ -142,8 +142,8 @@ class Dbas(object):
 		else:
 			slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
 
-		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
-		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
@@ -188,14 +188,13 @@ class Dbas(object):
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		UserHandler().update_last_action(transaction, nickname)
 
-		_qh = QueryHelper()
 		ui_locales      = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
-		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
-		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
 		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_attitude(statement_id)
@@ -244,7 +243,6 @@ class Dbas(object):
 			return self.user_logout(True)
 		logged_in = _uh.is_user_logged_in(nickname)
 
-		_qh = QueryHelper()
 		ui_locales = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
 
@@ -255,8 +253,8 @@ class Dbas(object):
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 		# related_arg         = matchdict['relation'][1] if len(matchdict['relation']) > 1 else -1
 
-		issue               = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
-		issue_dict          = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
 
@@ -360,11 +358,10 @@ class Dbas(object):
 		# set votings
 		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
 
-		_qh             = QueryHelper()
 		ui_locales      = get_language(self.request, get_current_registry())
 		_dh             = DictionaryHelper(ui_locales)
-		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
-		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id,
 		                                                                 transaction, ui_locales)
@@ -440,11 +437,10 @@ class Dbas(object):
 		is_argument = True if is_argument is 't' else False
 		is_supportive = True if is_supportive is 't' else False
 
-		_qh             = QueryHelper()
 		ui_locales      = get_language(self.request, get_current_registry())
 		_dh             = DictionaryHelper(ui_locales)
-		issue           = _qh.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else _qh.get_issue_id(self.request)
-		issue_dict      = _qh.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		session_expired = UserHandler().update_last_action(transaction, nickname)
 		if session_expired:
@@ -1214,7 +1210,7 @@ class Dbas(object):
 			else:
 				nickname    = self.request.authenticated_userid
 				statement   = self.request.params['statement']
-				issue       = _qh.get_issue_id(self.request)
+				issue       = IssueHelper.get_issue_id(self.request)
 				slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
 			# escaping will be done in QueryHelper().set_statement(...)
@@ -1259,7 +1255,7 @@ class Dbas(object):
 				supportive    = api_data['supportive']
 			else:
 				nickname        = self.request.authenticated_userid
-				issue           = _qh.get_issue_id(self.request)
+				issue           = IssueHelper.get_issue_id(self.request)
 				premisegroups   = json.loads(self.request.params['premisegroups'])
 				conclusion_id   = self.request.params['conclusion_id']
 				supportive      = True if self.request.params['supportive'].lower() == 'true' else False
@@ -1311,7 +1307,7 @@ class Dbas(object):
 			else:
 				nickname = self.request.authenticated_userid
 				premisegroups = json.loads(self.request.params['premisegroups'])
-				issue = _qh.get_issue_id(self.request)
+				issue = IssueHelper.get_issue_id(self.request)
 				arg_uid = self.request.params['arg_uid']
 				attack_type = self.request.params['attack_type']
 
@@ -1445,7 +1441,7 @@ class Dbas(object):
 			if was_set:
 				db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
 				                                                        Issue.info == info)).first()
-				return_dict['issue'] = _qh.get_issue_dict_for(db_issue, mainpage, False, 0, ui_locales)
+				return_dict['issue'] = IssueHelper.get_issue_dict_for(db_issue, mainpage, False, 0, ui_locales)
 		except KeyError as e:
 			logger('set_new_issue', 'error', repr(e))
 			error = _tn.get(_tn.notInsertedErrorBecauseInternal)
@@ -1672,7 +1668,7 @@ class Dbas(object):
 		try:
 			value = self.request.params['value']
 			mode = str(self.request.params['type']) if not for_api else ''
-			issue = QueryHelper().get_issue_id(self.request) if not for_api else ''
+			issue = IssueHelper.get_issue_id(self.request) if not for_api else ''
 
 			return_dict = dict()
 			if for_api:
