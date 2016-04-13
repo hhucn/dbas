@@ -15,7 +15,6 @@ function setLinkActive(linkname) {
 		$(this).removeClass('active')
 	});
 	$(linkname).addClass('active');
-
 }
 
 /**
@@ -103,7 +102,7 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
 	$('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
 	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
-		$('#' + popupConfirmDialogId).modal('hide');
+		$('#' + popupConfirmDialogId).modal('hide').find('.modal-dialog').removeClass('modal-sm');
 	}).removeClass('btn-success');
 	$('#' + popupConfirmDialogRefuseBtn).hide();
 }
@@ -640,4 +639,15 @@ $(document).ready(function () {
 		new Helper().delay(function(){
 			$('#session_expired_container').fadeOut();
 		}, 3000);
+
+	// testring
+	//var horde = gremlins.createHorde()
+	//	.gremlin(gremlins.species.formFiller())
+	//	.gremlin(gremlins.species.clicker().clickTypes(['click']))
+	//	.gremlin(gremlins.species.typer())
+	//	.gremlin(function() {
+	//		window.$ = function() {};
+	//	});
+    //horde.unleash();
+	// gremlins will act randomly, at 10 ms interval, 1000 times
 });

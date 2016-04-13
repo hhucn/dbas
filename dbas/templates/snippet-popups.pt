@@ -79,13 +79,13 @@
     </div>
 
     <!-- COPYRIGHT POPUP IN dropdown-menu -->
-    <div class="modal fade" id="popup_licence" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup_license" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
-    				<button name="popup_licence_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				<button name="popup_license_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="mit_licencse">MIT License (MIT)</h4>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="mit_license">MIT License (MIT)</h4>
     			</div>
     			<div class="modal-body">
     				<span>
@@ -94,7 +94,7 @@
     						Tobias Krauthoff
     					</a><br><br>
 
-    				<span i18n:translate="mit_licence_part1">Permission is hereby granted, free of charge, to any person obtaining a copy
+    				<span i18n:translate="mit_license_part1">Permission is hereby granted, free of charge, to any person obtaining a copy
     				of this software and associated documentation files (the "Software"), to deal
     				in the Software without restriction, including without limitation the rights
     				to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -103,12 +103,12 @@
     				<br>
     				<br>
 
-    				<span i18n:translate="mit_licence_part2">The above copyright notice and this permission notice shall be included in
+    				<span i18n:translate="mit_license_part2">The above copyright notice and this permission notice shall be included in
     					all copies or substantial portions of the Software.</span>
     				<br>
     				<br>
 
-    				<span i18n:translate="mit_licence_part3">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    				<span i18n:translate="mit_license_part3">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     				IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     				FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
     				AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -117,7 +117,7 @@
     					THE SOFTWARE.</span></span>
     			</div>
     			<div class="modal-footer">
-    				<button id="popup_licence_btn_close" type="button" class="btn btn-primary" data-dismiss="modal" i18n:translate="close">Close</button>
+    				<button id="popup_license_btn_close" type="button" class="btn btn-primary" data-dismiss="modal" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -216,16 +216,16 @@
     				<div id="popup-url-sharing-content">
     				</div>
     				<p id="popup-url-sharing-description-p" i18n:translate="url-sharing-description">Please feel free to share this url:</p>
-    				<input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL">
+    				<input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL" data-short-url="" >
     			</div>
     			<div class="modal-footer">
 
-    				<a class="share-icon share-mail" id="share-url-mail"></a>
-    				<a class="share-icon share-twitter" id="share-url-twitter"></a>
-    				<a class="share-icon share-google" id="share-url-google"></a>
-    				<a class="share-icon share-facebook" id="share-url-facebook"></a>
+    				<a class="share-icon share-facebook-small" id="share-url-facebook" data-toggle="tooltip" data-placement="bottom" title="Mail"></a>
+    				<a class="share-icon share-google-small" id="share-url-google" data-toggle="tooltip" data-placement="bottom" title="Twitter"></a>
+    				<a class="share-icon share-twitter-small" id="share-url-twitter" data-toggle="tooltip" data-placement="bottom" title="Google+"></a>
+    				<a class="share-icon share-mail-small" id="share-url-mail" data-toggle="tooltip" data-placement="bottom" title="Facebook"></a>
 
-    				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" short_url="1">Fetch long url!</button>
+    				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" i18n:translate="fetchurl" data-is-short-url="1">Fetch long url!</button>
     				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>
@@ -331,7 +331,7 @@
     						</div>
 
     						<div class="form-group">
-    							<label class="col-md-3 control-label" i18n:translate="gender">Your Gender</label>
+    							<label class="col-md-3 control-label" i18n:translate="your_gender">Your Gender</label>
     							<div class="col-md-9">
     								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked>
     								<label for="inlineRadioGender1">
@@ -352,7 +352,7 @@
     						</div>
 
     						<div class="form-group">
-    							<label class="col-md-3 control-label" for="email-input" i18n:translate="email">Your Email Address</label>
+    							<label class="col-md-3 control-label" for="email-input" i18n:translate="your_email">Your Email Address</label>
     							<div class="col-md-9">
     								<input id="email-input" type="email" class="form-control email" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
     							</div>

@@ -57,11 +57,6 @@
 	.links {
 		float: none;
 		text-align: center;
-		margin-top: 60px;
-	}
-	.links ul li {
-		display: block;
-		margin: 0;
 	}
 	table.logo_table {
 		margin-left: auto;
@@ -72,14 +67,6 @@
 @media (max-width: 768px) {
 	div#wrapper-content{
 		padding-top: 20px;
-	}
-
-	.links {
-		margin-top: 40px;
-	}
-	.links ul li {
-		display: block;
-		margin: 0;
 	}
 	.links ul li .icon-muted {
 		display: none;

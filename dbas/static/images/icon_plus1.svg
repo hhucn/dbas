@@ -9,16 +9,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="125.74216mm"
-   height="125.74216mm"
-   viewBox="0 0 445.5431 445.5431"
+   width="112.88889mm"
+   height="112.88889mm"
+   viewBox="0 0 400.00004 400.00004"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="icon_pplus.svg"
-   inkscape:export-filename="/home/tobias/Dokumente/git/dbas/dbas/static/images/icon_pplus.png"
-   inkscape:export-xdpi="12.928042"
-   inkscape:export-ydpi="12.928042">
+   sodipodi:docname="icon_plus1.svg"
+   inkscape:export-filename="/home/tobias/Dokumente/git/dbas/dbas/static/images/icon_plus1.png"
+   inkscape:export-xdpi="28.800003"
+   inkscape:export-ydpi="28.800003">
   <defs
      id="defs4">
     <inkscape:path-effect
@@ -50,8 +50,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.93458423"
-     inkscape:cx="131.90356"
-     inkscape:cy="371.14042"
+     inkscape:cx="301.20742"
+     inkscape:cy="258.4029"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -67,8 +67,8 @@
     <inkscape:grid
        type="xygrid"
        id="grid8070"
-       originx="-2.2284496"
-       originy="-2.2284717" />
+       originx="-2.2284498"
+       originy="-2.2284448" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -78,7 +78,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -86,17 +86,17 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-2.2284496,-604.59063)">
+     transform="translate(-2.2284496,-650.13372)">
     <circle
-       style="fill:#9bca3e;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#8bc34a;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path8068"
-       cx="225"
-       cy="827.36218"
-       r="222.77155" />
+       cx="202.22845"
+       cy="850.13373"
+       r="200" />
     <path
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 178.29767,670.7054 86.31623,1.31383 1.75179,115.08831 115.08829,1.7518 1.31386,86.31623 -115.0883,-1.75183 1.7518,115.08829 -86.31622,-1.31383 -1.75178,-115.08831 -115.088286,-1.75181 -1.313879,-86.31622 115.088305,1.75182 z"
-       id="path8082"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.06761575px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0"
+       d="m 170.19997,700.66751 0,117.43772 -117.437712,0 0,53.38079 117.437712,0 0,128.11388 64.05695,0 0,-128.11388 117.43772,0 0,-53.38079 -117.43772,0 0,-117.43772 -64.05695,0 z"
+       id="rect8073"
        inkscape:connector-curvature="0" />
   </g>
 </svg>

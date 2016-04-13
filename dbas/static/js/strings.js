@@ -55,10 +55,12 @@ getLanguage = function(){
 var checkmark                                       = '&#x2713;'; // ✓
 var ballot                                          = '&#x2717;'; // ✗
 
-
 var and 						            		= 'and';
 var andAtTheSameTime                                = 'andAtTheSameTime';
 var addedEverything 								= 'addedEverything';
+var addTopic                                        = 'addTopic';
+var addTopicTitleText                               = 'addTopicTitleText';
+var addTopicShortText                               = 'addTopicShortText';
 var acceptIt 										= 'acceptIt';
 var allEditsDone                                    = 'allEditsDone';
 var allStatementsPosted                             = 'allStatementsPosted';
@@ -69,13 +71,6 @@ var acceptItTitle 									= 'acceptItTitle';
 var contactSubmit									= 'contactSubmit';
 var correctionsSet 									= 'correctionsSet';
 var because                                         = 'because';
-var bridgeInfoStatementCreatedBy                    = 'bridgeInfoStatementCreatedBy';
-var bridgeInfoAt                                    = 'bridgeInfoAt';
-var bridgeInfoCurrentlySupported                    = 'bridgeInfoCurrentlySupported';
-var bridgeInfoParticipant                           = 'bridgeInfoParticipant';
-var bridgeInfoParticipantPl                         = 'bridgeInfoParticipantPl';
-var bridgeInfoSupporterSg                           = 'bridgeInfoSupporterSg';
-var bridgeInfoSupporterPl                           = 'bridgeInfoSupporterPl';
 var checkFirstname									= 'checkFirstname';
 var checkLastname									= 'checkLastname';
 var checkNickname									= 'checkNickname';
@@ -138,6 +133,15 @@ var listOfDoneEdits                                 = 'listOfDoneEdits';
 var listOfPostedStatements                          = 'listOfPostedStatements';
 var listOfGivenVotes                                = 'listOfGivenVotes';
 var medium 											= 'medium';
+var messageInfoTitle                                = 'messageInfoTitle';
+var messageInfoStatementCreatedBy                   = 'messageInfoStatementCreatedBy';
+var messageInfoAt                                   = 'messageInfoAt';
+var messageInfoMessage                              = 'messageInfoMessage';
+var messageInfoCurrentlySupported                   = 'messageInfoCurrentlySupported';
+var messageInfoParticipant                          = 'messageInfoParticipant';
+var messageInfoParticipantPl                        = 'messageInfoParticipantPl';
+var messageInfoSupporterSg                          = 'messageInfoSupporterSg';
+var messageInfoSupporterPl                          = 'messageInfoSupporterPl';
 var nickname 										= 'nickname';
 var noCorrections 									= 'noCorrections';
 var noCorrectionsSet 								= 'noCorrectionsSet';
@@ -149,6 +153,7 @@ var notInsertedErrorBecauseInternal					= 'notInsertedErrorBecauseInternal';
 var notInsertedErrorBecauseTooShort					= 'notInsertedErrorBecauseTooShort';
 var noTrackedData 									= 'noTrackedData';
 var noEntries                                       = 'noEntries';
+var noEntriesFor                                    = 'noEntriesFor';
 var note 											= 'note';
 var number 											= 'number';
 var opinionBarometer                                = 'opinionBarometer';
@@ -163,6 +168,8 @@ var requestHistory 									= 'requestHistory';
 var refreshHistory 									= 'refreshHistory';
 var requestFailed 									= 'requestFailed';
 var restartOnError									= 'restartOnError';
+var saveMyStatement                                 = 'saveMyStatement';
+var saveMyStatements                                = 'saveMyStatements';
 var showAllUsers 									= 'showAllUsers';
 var showAllArguments 								= 'showAllArguments';
 var showMeAnArgumentFor 							= 'showMeAnArgumentFor';
@@ -207,6 +214,9 @@ var dbas_en = {
 	'and': 'and',
 	'andAtTheSameTime': 'and at the same time',
 	'addedEverything': 'Everything was added.',
+	'addTopic': 'Add a Topic',
+	'addTopicTitleText': 'Please enter your topic here:',
+	'addTopicShortText': 'Please enter a shorttext for your topic here:',
 	'acceptIt': 'Accept it...',
 	'acceptItTitle': 'Accept it...',
 	'allEditsDone': 'All edits you\'ve done',
@@ -214,13 +224,6 @@ var dbas_en = {
 	'allGivenVotes': 'All Votes',
 	'author': 'Author',
 	'because': 'because',
-	'bridgeInfoStatementCreatedBy': 'This statement was created by',
-	'bridgeInfoAt': 'at',
-	'bridgeInfoCurrentlySupported': 'Currently it is supported by',
-	'bridgeInfoParticipant': 'participant',
-	'bridgeInfoParticipantPl': 's',
-	'bridgeInfoSupporterSg': 'Supporter is',
-	'bridgeInfoSupporterPl': 'Supporters are',
 	'countOfArguments': 'Count of arguments',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
 	'correctionsSet': 'Your correction was set.',
@@ -265,7 +268,7 @@ var dbas_en = {
 	'haveALookAt': 'Hey, please have a look at ',
 	'hidePasswordRequest': 'Hide Password Request',
 	'hideGenerator': 'Hide Generator',
-	'internalError': '<strong>Internal Error:</strong> Maybe the server is offline or your session run out.',
+	'internalError': '<strong>Internal Error:</strong> Maybe the server is offline.',
 	'inputEmpty': 'Input is empty!',
 	'initialPositionInterest': 'What is the initial position you are interested in?',
 	'interestingOnDBAS': 'Interesting discussion on DBAS',
@@ -283,6 +286,15 @@ var dbas_en = {
 	'listOfDoneEdits': 'This is a list of all edits:',
 	'listOfGivenVotes': 'This is a list of all votes:',
 	'medium': 'medium',
+	'messageInfoTitle': 'Infos about message',
+	'messageInfoStatementCreatedBy': 'This was created by',
+	'messageInfoAt': 'at',
+	'messageInfoMessage': 'Message',
+	'messageInfoCurrentlySupported': 'Currently it is supported by',
+	'messageInfoParticipant': 'participant',
+	'messageInfoParticipantPl': 's',
+	'messageInfoSupporterSg': 'Supporter is',
+	'messageInfoSupporterPl': 'Supporters are',
 	'nickname': 'Nickname',
 	'noCorrections': 'No corrections for the given statement.',
 	'noCorrectionsSet': 'Correction could not be set, because your user was not fount in the database. Are you currently logged in?',
@@ -292,7 +304,7 @@ var dbas_en = {
 	'notInsertedErrorBecauseUnknown': 'Your idea was not inserted due to an unkown error.',
 	'notInsertedErrorBecauseInternal': 'Your idea was not inserted due to an internal error.',
 	'notInsertedErrorBecauseTooShort': 'Your idea was not inserted due to the shortness.',
-	'noEntries': 'No entries',
+	'noEntriesFor': 'No entries for',
 	'noTrackedData': 'No data was tracked.',
 	'number': 'No',
 	'note': 'Note',
@@ -308,6 +320,8 @@ var dbas_en = {
 	'requestHistory': 'Request history',
 	'refreshHistory': 'Refresh history',
 	'requestFailed': 'Request failed',
+	'saveMyStatement': 'Save my Statement!',
+	'saveMyStatements': 'Save my Statements!',
 	'showAllUsers': 'Show all users',
 	'showAllArguments': 'Show all arguments',
 	'showAllArgumentsTitle': 'Show all arguments, done by users',
@@ -335,6 +349,9 @@ var dbas_en = {
 var dbas_de = {
 	'avatar': 'Avatar',
 	'and': 'und',
+	'addTopic': 'Thema hinzufügen',
+	'addTopicTitleText': 'Bitte geben Sie Ihr Thema an:',
+	'addTopicShortText': 'Bitte geben Sie die Kurform Ihres Themas an:',
 	'andAtTheSameTime': 'und zur selben Zeit',
 	'addedEverything': 'Alles wurde hinzugefügt.',
 	'acceptItTitle': 'Einsenden...',
@@ -344,13 +361,6 @@ var dbas_de = {
 	'allGivenVotes': 'Alle Stimmen',
 	'author': 'Autor',
 	'because':'weil',
-	'bridgeInfoStatementCreatedBy': 'Diese Aussage wurde gemacht von',
-	'bridgeInfoAt': 'am',
-	'bridgeInfoCurrentlySupported': 'Sie wird aktuell unterstützt von',
-	'bridgeInfoParticipant': 'Teilnehmer/in',
-	'bridgeInfoParticipantPl': '/n/nen',
-	'bridgeInfoSupporterSg': 'Unterstützer/in ist',
-	'bridgeInfoSupporterPl': 'Unterstützer/innen sind',
 	'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',
@@ -394,7 +404,7 @@ var dbas_de = {
 	'haveALookAt': 'Hey, schau dir mal das an: ',
 	'hidePasswordRequest': 'Verstecke die Passwort-Anfrage',
 	'hideGenerator': 'Verstecke Generator',
-	'internalError': '<strong>Interner Fehler:</strong> Wahrscheinlich ist Ihre Sitzung abgelaufen. Bitte laden Sie die Seite erneut!.',
+	'internalError': '<strong>Interner Fehler:</strong> Wahrscheinlich ist der Server nicht erreichbar. Bitte laden Sie die Seite erneut!.',
 	'inputEmpty': 'Ihre Eingabe ist leer!',
 	'initialPositionInterest': 'An welcher Aussage sind Sie interessiert?',
 	'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
@@ -412,6 +422,15 @@ var dbas_de = {
 	'listOfDoneEdits': 'Dies ist eine Liste von allen Änderungen:',
 	'listOfGivenVotes': 'Dies ist eine Liste von allen Stimmen:',
 	'medium': 'mittel',
+	'messageInfoTitle': 'Informationen über eine Aussage',
+	'messageInfoStatementCreatedBy': 'Diese Aussage wurde gemacht von',
+	'messageInfoAt': 'am',
+	'messageInfoMessage': 'Aussage',
+	'messageInfoCurrentlySupported': 'Sie wird aktuell unterstützt von',
+	'messageInfoParticipant': 'Teilnehmer/in',
+	'messageInfoParticipantPl': '/n/nen',
+	'messageInfoSupporterSg': 'Unterstützer/in ist',
+	'messageInfoSupporterPl': 'Unterstützer/innen sind',
 	'nickname': 'Spitzname',
 	'noCorrections': 'Keinte Korreturen für die aktuelle Aussage.',
 	'noDecisionDone': 'Es liegt keine Entscheidung vor.',
@@ -422,6 +441,7 @@ var dbas_de = {
 	'notInsertedErrorBecauseInternal': 'Ihre Idee wurde aufgrund eines internen Fehlers nicht gespeichert.',
 	'notInsertedErrorBecauseTooShort': 'Ihre Idee wurde aufgrund der Kürze nicht gespeichert.',
 	'noEntries': 'Keine Einträge vorhanden',
+	'noEntriesFor': 'Keine Einträge vorhanden für',
 	'noTrackedData': 'Keine Daten wurden gespeichert.',
 	'number': 'Nr',
 	'note': 'Hinweis',
@@ -437,6 +457,8 @@ var dbas_de = {
 	'refreshHistory': 'History neuladen',
 	'requestFailed': 'Anfrage fehlgeschlagen',
 	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.',
+	'saveMyStatement': 'Aussage speichern!',
+	'saveMyStatements': 'Ausagen speichern!',
 	'showAllUsers': 'Zeig\' alle Benutzer',
 	'showAllArguments': 'Zeig\' alle Argumente',
 	'showAllArgumentsTitle': 'Zeigt alle Argumente',

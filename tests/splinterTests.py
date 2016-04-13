@@ -1,54 +1,106 @@
+"""
+Class for front end tests with Splinter and Selenium
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
+import time
 from splinter import Browser, exceptions
+from selenium.common.exceptions import ElementNotVisibleException, WebDriverException
+
+mainpage = 'http://localhost:4284/'
+testcounter = 0
+waittime = 0.3
+nickname = 'test'
+password = 'iamatestuser2016'
 
 
 class Helper:
+	"""
+	Todo
+	"""
 
-	def print_success(self, has_success, message):
-		print("    " + ("SUCCESS" if has_success else "FAILED") + ":  " + message)
+	@staticmethod
+	def print_success(has_success, message=''):
+		"""
 
-	def login(self, browser, nickname, password):
-		browser.visit('http://localhost:4284/login')
+		:param has_success:
+		:param message:
+		:return:
+		"""
+		print('    ' + ('✓' if has_success else '✗') + ' ' + message)
 
-		browser.fill('nickname', nickname)
-		browser.fill('password', password)
+	@staticmethod
+	def login(browser, user, pw, url):
+		"""
 
-		button = browser.find_by_name('form.login.submitted')
-		button.click()
-
+		:param browser:
+		:param user:
+		:param pw:
+		:param url:
+		:return:
+		"""
+		browser.visit(mainpage + 'ajax_user_login?user=' + user + '&password=' + pw + '&keep_login=false&url=' + url)
 		return browser
 
-	def logout(self, browser):
-		browser.visit('http://localhost:4284/logout')
-		button = browser.find_by_id('homebutton')
-		button.click()
+	@staticmethod
+	def logout(browser):
+		"""
+
+		:param browser:
+		:return:
+		"""
+		browser.visit(mainpage + 'ajax_user_logout')
 		return browser
 
-	def test_wrapper(self, name, testfunction):
+	@staticmethod
+	def print_error(errorname, testname, error):
+		"""
+
+		:param errorname:
+		:param testname:
+		:param error:
+		:return:
+		"""
+		print('    -> ' + errorname + ' occured in ' + testname)
+		print('       ' + str(error))
+
+	@staticmethod
+	def test_wrapper(name, testfunction, *args):
 		"""
 		Wrapper method
 		:param name: of the test
 		:param testfunction: the function itself
 		:return: value of the testfunction on success, 0 otherwise
 		"""
+		ret_val = 0
 		try:
-			returnValue = testfunction
-			print("    --> SUCCESS" if returnValue == 1 else "    --> FAILED")
-			print("")
-			return returnValue
-		except AttributeError as e1:
-			print("  Some AttributeError occured in " + name + ": " + str(e1))
-			webtests.browser.quit()
-			return 0
-		except exceptions.ElementDoesNotExist as e2:
-			print("  Some ElementDoesNotExist occured in " + name + ": " + str(e2))
-			webtests.browser.quit()
-			return 0
-		except IndexError as e3:
-			print("  Some IndexError occured in " + name + ": " + str(e3))
-			webtests.browser.quit()
-			return 0
+			global testcounter
+			testcounter += 1
+			ret_val = testfunction(*args)
+			print('    SUCCESS' if ret_val == 1 else '    FAIL')
+			print('')
+		except AttributeError as e:
+			Helper.print_error('AttributeError', name, e)
+		except exceptions.ElementDoesNotExist as e:
+			Helper.print_error('ElementDoesNotExist', name, e)
+		except IndexError as e:
+			Helper.print_error('IndexError', name, e)
+		except ElementNotVisibleException as e:
+			Helper.print_error('ElementNotVisibleException', name, e)
+		except WebDriverException as e:
+			Helper.print_error('WebDriverException', name, e)
+		except ConnectionResetError as e:
+			Helper.print_error('ConnectionResetError', name, e)
+		except ConnectionRefusedError as e:
+			Helper.print_error('ConnectionRefusedError', name, e)
+		except Exception as e:
+			Helper.print_error('Exception', name, e)
+		finally:
+			return ret_val if ret_val != 0 else ret_val
 
-	def check_for_present_text(self, browser, text, message):
+	@staticmethod
+	def check_for_present_text(browser, text, message):
 		"""
 		Checks whether given text is presented in the browser
 		:param browser: current browser
@@ -57,13 +109,14 @@ class Helper:
 		:return: true if text is present else false
 		"""
 		if browser.is_text_present(text):
-			self.print_success(True, message)
+			Helper.print_success(True, message)
 			return True
 		else:
-			self.print_success(False, message)
+			Helper.print_success(False, message)
 			return False
 
-	def check_for_non_present_text(self, browser, text, message):
+	@staticmethod
+	def check_for_non_present_text(browser, text, message):
 		"""
 		Checks whether given text is not presented in the browser
 		:param browser: current browser
@@ -72,18 +125,26 @@ class Helper:
 		:return: true if text is present else false
 		"""
 		if not browser.is_text_present(text):
-			self.print_success(True, message)
+			Helper.print_success(True, message)
 			return True
 		else:
-			self.print_success(False, message)
+			Helper.print_success(False, message)
 			return False
 
 
-class WebTests:
-	browser = None
+class FrontendTests:
+	"""
 
-	def __init__(self, browser):
-		self.browserStyle = browser
+	"""
+
+	def __init__(self, browser_style):
+		"""
+
+		:param self:
+		:param browser_style:
+		:return:
+		"""
+		self.browser_style = browser_style
 
 	def run_all_tests(self):
 		"""
@@ -91,122 +152,187 @@ class WebTests:
 		"""
 
 		# server check
-		if not self.__check_for_server():
+
+		if not Helper.test_wrapper('testing for connectivity to server', self.__check_for_server, self.browser_style):
+			print('====================================================')
+			print('Exit gracefully!')
 			return
 
-		test_count = 9
-		success = 0
-		
-		h = Helper()
-		browserStyle = self.browserStyle
-		success += h.test_wrapper('text index', self.__test_index(browserStyle))
-		success += h.test_wrapper('test popups', self.__test_popups(browserStyle))
-		success += h.test_wrapper('test contact formular', self.__test_contact_formular(browserStyle))
-		success += h.test_wrapper('test sharing news', self.__test_sharing_news(browserStyle))
-		success += h.test_wrapper('test login', self.__test_login(browserStyle))
-		success += h.test_wrapper('test logout', self.__test_logout(browserStyle))
-		success += h.test_wrapper('test logout', self.__test_sign_up(browserStyle))
-		success += h.test_wrapper('test settings', self.__test_settings(browserStyle))
-		success += h.test_wrapper('test start discussion button', self.__test_start_discussion(browserStyle))
-		success += h.test_wrapper('test admin list all users', self.__test_list_all_users(browserStyle))
-		# todo: more testscases
+		global testcounter
+		testcounter = 0
+		success_counter = 0
 
-		print("====================================================")
-		print("Failed " + str(test_count-success) + " out of " + str(test_count))
+		start = time.time()
+		success_counter += Helper.test_wrapper('tests for normal pages', self.__test_pages_when_not_logged_in, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for login logout', self.__test_login_logout, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for logged in pages', self.__test_pages_when_logged_in, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for popups', self.__test_popups, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for contact formular', self.__test_contact_formular, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for language switch', self.__test_language_switch, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for demo discussion with all functions', self.__test_functions_while_discussion, self.browser_style)
+		end = time.time()
 
-	def __check_for_server(self):
+		diff = str(end - start)
+		diff = diff[0:diff.index('.') + 3]
+
+		print('====================================================')
+		print('Failed ' + str(testcounter - success_counter) + ' out of ' + str(testcounter) + ' in ' + str(diff) + 's')
+
+	@staticmethod
+	def __check_for_server(browser):
 		"""
 		Checks whether the server if online
+		:param browser: current browser
 		:return: true when the server is on, false otherwise
 		"""
-		b = Browser(self.browserStyle)
-		self.browser = b
-		try:
-			print("Is server online?")
-			b.visit('http://localhost:4284/')
-			b.quit()
-			self.browser = None
-			print("  SUCCESS")
-			print("")
-			return True
-		except ConnectionResetError:
-			print("  FAIL")
-			print("")
-			b.quit()
-			self.browser = None
-			return False
-		except ConnectionRefusedError:
-			print("  FAIL")
-			print("")
-			b.quit()
-			self.browser = None
-			return False
+		print('Is server online? ')
+		b = Browser(browser)
+		b.visit(mainpage)
+		success = Helper.check_for_present_text(b, 'part of the graduate school', 'check main page')
+		b.quit()
+		return success
 
-	def __test_index(self, browser):
+	@staticmethod
+	def __test_pages_when_not_logged_in(browser):
 		"""
-		Checks index page
+		Checks pages
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_index:")
+		print('Starting tests for pages_not_logged_in:')
+		success = True
 		b = Browser(browser)
-		self.browser = b
-		b.visit('http://localhost:4284/')
-		txt = 'This novel discussions software will help you to discuss'
-		msg = 'testing index page'
-		success = Helper().check_for_present_text(b, txt, msg)
+		b = Helper.logout(b)
+
+		pages = [mainpage,
+		         mainpage + 'contact',
+		         mainpage + 'news',
+		         mainpage + 'imprint',
+		         mainpage + 'discuss',
+		         mainpage + 'settings',
+		         mainpage + 'notifications',
+		         mainpage + 'admin/main']
+		tests = ['main',
+		         'contact',
+		         'news',
+		         'imprint',
+		         'discuss',
+		         'settings',
+		         'notifications',
+		         'admin']
+		texts = ['part of the graduate school',
+		         'Feel free to drop us a',
+		         'Speech Bubble System',
+		         'Liability for content',
+		         'The current discussion is about:',
+		         'part of the graduate school',
+		         'part of the graduate school',
+		         '401']
+		for index, p in enumerate(pages):
+			b.visit(p)
+			test = 'testing ' + tests[index] + ' page'
+			success = success and Helper.check_for_present_text(b, texts[index], test)
+
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_popups(self, browser):
+	@staticmethod
+	def __test_login_logout(browser):
 		"""
-		Checks ???
+
+		:param browser:
+		:return:
+		"""
+		success = True
+		print('Starting tests for login_logout:')
+		b = Browser(browser)
+
+		b = Helper.login(b, nickname, 'wrongpassword', mainpage)
+		test = 'testing wrong login'
+		success = success and Helper.check_for_present_text(b, 'do not match', test)
+
+		time.sleep(waittime)
+		b = Helper.login(b, nickname, password, mainpage)
+		test = 'testing right login'
+		success = success and Helper.check_for_present_text(b, nickname, test)
+		time.sleep(waittime)
+
+		b = Helper.logout(b)
+		test = 'testing logout'
+		success = success and Helper.check_for_non_present_text(b, 'tobias', test)
+
+		b.quit()
+		return 1 if success else 0
+
+	@staticmethod
+	def __test_pages_when_logged_in(browser):
+		"""
+
+		:param browser:
+		:return:
+		"""
+		success = True
+		print('Starting tests for pages_logged_in:')
+		b = Browser(browser)
+		b = Helper.login(b, nickname, password, mainpage)
+
+		pages = [mainpage + 'settings',
+		         mainpage + 'notifications',
+		         mainpage + 'admin/main']
+		tests = ['settings',
+		         'notifications',
+		         'admin']
+		texts = ['Personal Information',
+		         'Notification Board',
+		         '401']
+		for index, p in enumerate(pages):
+			b.visit(p)
+			test = 'testing ' + tests[index] + ' page'
+			success = success and Helper.check_for_present_text(b, texts[index], test)
+			time.sleep(waittime*10)
+
+		b.quit()
+		return 1 if success else 0
+
+	@staticmethod
+	def __test_popups(browser):
+		"""
+		Checks UI popups
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_popups:")
+		print('Starting tests for popups:')
 		b = Browser(browser)
-		self.browser = b
-		b.visit('http://localhost:4284/')
+		b.visit(mainpage)
 
 		# open author popup
-		toggle = b.find_by_name('show-more-toggle').first
-		toggle.click()
-		b.click_link_by_partial_text('Author')
-		success = Helper().check_for_present_text(b, 'About me', 'check for author text')
+		b.find_by_id('link_popup_author').click()
+		success = Helper.check_for_present_text(b, 'About me', 'check for author text')
 		close = b.find_by_name('popup_author_icon_close')
 		close.click()
 
-		# open licence popup
-		toggle = b.find_by_name('show-more-toggle').first
-		toggle.click()
-		b.click_link_by_partial_text('Licence')
-		success &= success and Helper().check_for_present_text(b, 'MIT', 'check for licence text')
-		close = b.find_by_name('popup_licence_icon_close')
-		close.click()
+		time.sleep(waittime)
 
-		# open privacy policy popup
-		toggle = b.find_by_name('show-more-toggle').first
-		toggle.click()
-		b.click_link_by_partial_text('Privacy Policy')
-		success &= success and Helper().check_for_present_text(b, 'Policy', 'check for policy text')
-		close = b.find_by_name('popup_privacy_icon_close')
+		# open licence popup
+		b.find_by_id('link_popup_license').click()
+		success = success and Helper.check_for_present_text(b, 'MIT', 'check for license text')
+		close = b.find_by_name('popup_license_icon_close')
 		close.click()
 
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_contact_formular(self, browser):
+	@staticmethod
+	def __test_contact_formular(browser):
 		"""
 		Checks every form on the contact page
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_contact_formular:")
+		print('Starting tests for contact_formular:')
 		b = Browser(browser)
-		self.browser = b
 		b.visit('http://localhost:4284/contact')
 
 		form = ['', 'name', 'mail', 'content', 'spam']
@@ -223,247 +349,233 @@ class WebTests:
 			if i == 4:
 				b.fill(form[3], content[3])
 			b.find_by_name('form.contact.submitted').click()
-			success = success and Helper().check_for_present_text(b, txt[i], msg[i])
+			success = success and Helper.check_for_present_text(b, txt[i], msg[i])
 
 		b.quit()
-		self.browser = None
 		return 1 if success else 0
 
-	def __test_sharing_news(self, browser):
+	@staticmethod
+	def __test_language_switch(browser):
 		"""
-		Checks the sharing buttons on the news page
+		Testing language switch
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_sharing_news:")
+		print('Starting tests for language_switch:')
 		b = Browser(browser)
-		self.browser = b
-		b.visit('http://localhost:4284/news')
 
-		success1 = not b.find_by_css('.share-mail').visible
-		success1 = success1 and (not b.find_by_css('.share-google').visible)
-		success1 = success1 and (not b.find_by_css('.share-facebook').visible)
-		success1 = success1 and (not b.find_by_css('.share-twitter').visible)
+		b.visit(mainpage)
+		success = Helper.check_for_present_text(b, 'part of the graduate', 'check englisch language')
 
-		Helper().print_success(success1, "testing whether news sharing icons are not visible")
+		b.click_link_by_partial_text('Language')
+		b.click_link_by_partial_text('Deutsch')
+		success = success and Helper.check_for_present_text(b, 'Teil der Graduierten-Kollegs', 'check switch to german language')
 
-		b.find_by_css('.share-icon').mouse_over()
-
-		success2 = b.find_by_css('.share-mail').visible
-		success2 = success2 and b.find_by_css('.share-google').visible
-		success2 = success2 and b.find_by_css('.share-facebook').visible
-		success2 = success2 and b.find_by_css('.share-twitter').visible
-
-		Helper().print_success(success2, "testing whether news sharing icons are visible on mouseover")
+		b.click_link_by_partial_text('Sprache')
+		b.click_link_by_partial_text('English')
+		success = success and Helper.check_for_present_text(b, 'part of the graduate', 'check switch back to englisch language')
 
 		b.quit()
-		self.browser = None
-		return 1 if (success1 and success2) else 0
+		return 1 if success else 0
 
-	def __test_login(self, browser):
+	@staticmethod
+	def __test_discussion_buttons(browser):
 		"""
-		Checks login
+		Checks the discussions buttons
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print("Starting __test_login:")
+		print('Starting tests for discussion_buttons:')
 		b = Browser(browser)
-		self.browser = b
-		b = Helper().login(b, 'admin', 'admin')
-
-		txt = 'The current discussion is about'
-		msg = 'testing login function'
-		success = Helper().check_for_present_text(b, txt, msg)
-
-		Helper().logout(b)
-		b.quit()
-		self.browser = None
-		return 1 if success else 0
-
-	def __test_logout(self, browser):
-		"""
-		Checks logout after a login
-		:param browser:
-		:return:
-		"""
-		print("Starting __test_logout:")
-		b = Browser(browser)
-		self.browser = b
-
-		b = Helper().login(b, 'admin', 'admin')
-		txt = 'The current discussion is about'
-		msg = 'testing login'
-		success = Helper().check_for_present_text(b, txt, msg)
-
-		b.visit('http://localhost:4284/logout')
-		button = b.find_by_id('homebutton')
-		button.click()
-
-		txt = "Let's go"
-		msg = 'testing logout'
-		success &= Helper().check_for_non_present_text(b, txt, msg)
-
-		b.quit()
-		self.browser = None
-		return 1 if success else 0
-
-	def __test_sign_up(self, browser):
-		"""
-		Testing signup
-		:param browser: current browser
-		:return: 1 if success else 0
-		"""
-		print("Starting __test_sign_up:")
-		b = Browser(browser)
-		self.browser = b
-		b.visit('http://localhost:4284/login')
-
-		h = Helper()
-		b.click_link_by_partial_text('Sign Up')
-		success = h.check_for_present_text(b, 'Sign Up For Free', 'check for sign up form')
-
-		button = b.find_by_name('form.registration.submitted')
-		button.click()
-
-		success &= h.check_for_present_text(b, 'E-Mail is not valid', 'check for wrong email on empty form')
-
-		b.quit()
-		self.browser = None
-		return 1 if success else 0
-
-	def __test_settings(self, browser):
-		"""
-		Settings test
-		:param browser: current browser
-		:return: 1 if success else 0
-		"""
-		print("__test_settings:")
-		b = Browser(browser)
-		self.browser = b
-
-		b = Helper().login(b, 'admin', 'admin')
-		toggle = b.find_by_name('user-options-toggle').first
-		toggle.click()
-
-		b.click_link_by_partial_text('Settings')
-
-		txt = 'dbas@cs.uni-duesseldorf.de'
-		msg = 'testing information about the user'
-		h = Helper()
-		success = h.check_for_present_text(b, txt, msg)
-
-		button = b.find_by_id('request-track')
-		button.click()
-		txt1 = 'UID'
-		txt2 = 'No data was tracked'
-		msg1 = 'testing tracked decisions by UID'
-		msg2 = 'testing tracked decisions by no tracked data'
-		success &= (h.check_for_present_text(b, txt1, msg1) or h.check_for_present_text(b, txt2, msg2))
-
-		Helper().logout(b)
-		b.quit()
-		self.browser = None
-		return 1 if success else 0
-
-	def __test_start_discussion(self, browser):
-		"""
-		Checks the start discussion button after login
-		:param browser: current browser
-		:return: 1 if success else 0
-		"""
-		print("Starting __test_start_discussion_button:")
-		b = Browser(browser)
-		self.browser = b
-		b = Helper().login(b, 'admin', 'admin')
-
-		button = b.find_by_id('start-discussion')
-		button.click()
-
-		# start discussion
-		txt = 'These are the current statements'
-		msg = 'testing start discussion button function'
-		success = Helper().check_for_present_text(b, txt, msg)
-
-		# there should be no error
-		txt = 'Please select a statement!'
-		msg ='testing no error message displayed'
-		success &= Helper().check_for_non_present_text(b, txt, msg)
-
-		# add statement container should not be there
-		txt = 'Please insert a new position'
-		msg ='testing for non display statement container'
-		success &= Helper().check_for_non_present_text(b, txt, msg)
-
-		# check for error, when nothing was clicked
-		button = b.find_by_id('send-answer')
-		button.click()
-		txt = 'Please select a statement!'
-		msg ='testing error message displayed'
-		success &= Helper().check_for_present_text(b, txt, msg)
-
-		# choose last radio button
-		b.choose('radioButtonGroup', 'Adding a new position.')
-
-		# add statement container should be there
-		txt = 'Please insert a new position'
-		msg ='testing for non display statement container'
-		success &= Helper().check_for_present_text(b, txt, msg)
-
-		Helper().logout(b)
-		b.quit()
-		self.browser = None
-		return 1 if success else 0
-
-	def __test_list_all_users(self, browser):
-		"""
-		Tests the listing and hiding of all users
-		:param browser: current browser
-		:return: 1 if success else 0
-		"""
-		print("Starting __test_list_all_users:")
-		b = Browser(browser)
-		self.browser = b
-
-		b = Helper().login(b, 'admin', 'admin')
-
-		button = b.find_by_id('list-all-users')
-		button.click()
-
-		txt = 'dbas@cs.uni-duesseldorf.de'
-		msg = 'testing list all users'
-		success = Helper().check_for_present_text(b, txt, msg)
-
-		button.click()
-		msg = 'testing hiding all users'
-		success &= Helper().check_for_non_present_text(b, txt, msg)
-
-		Helper().logout(b)
-		b.quit()
-		self.browser = None
-		return 1 if success else 0
-
-	def __test_dummy(self, browser):
-		"""
-		Dummy Test
-		:param browser: current browser
-		:return: 1 if success else 0
-		"""
-		print("Starting __test_dummy:")
-		b = Browser(browser)
-		self.browser = b
-		b = Helper().login(b, 'admin', 'admin')
-
 		success = True
+		b = Helper.login(b, nickname, password, mainpage + 'discussion')
 
-		Helper().logout(b)
+		# check url popup
+		b.find_by_id('share-url').click()
+		success = success and Helper.check_for_present_text(b, 'Share your URL', 'check for share url popup')
+		b.find_by_id('popup-url-sharing-long-url-button').click()
+		success = success and Helper.check_for_present_text(b, 'discussion', 'check for long url')
+		b.find_by_id('popup-url-sharing-close').click()
+		time.sleep(waittime)
+
+		# check edit statement popup
+		b.find_by_id('edit-statement').click()
+		success = success and Helper.check_for_present_text(b, 'Edit Statements / View Changelog', 'check for edit statements popup')
+		b.find_by_id('popup-edit-statement-close').click()
+		time.sleep(waittime)
+
+		# check issue dropdown and switch issue
+		b.find_by_id('issue-dropdown').click()
+		success = success and Helper.check_for_present_text(b, 'Cat or Dog', 'check for issue dropdown')
+		b.find_by_css('.dropdown-menu li.enabled').click()
+		success = success and Helper.check_for_present_text(b, 'Change of discussion', 'check for topic list')
+		b.find_by_id('confirm-dialog-checkbox-accept-btn').click()
+		time.sleep(waittime)
+		success = success and Helper.check_for_present_text(b, 'Your familiy argues', 'check for switched issue')
+
+		# check finish
+		b.find_by_id('finish-button').click()
+		success = success and Helper.check_for_present_text(b, 'Thank you!', 'check for finish button')
+
+		# go back
+		b.find_by_id('back-to-discuss-button').click()
+
+		# click position
+		success = success and Helper.check_for_present_text(b, 'What is the initial position', 'check for first step in discussion')
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		success = success and Helper.check_for_present_text(b, 'What do you think', 'check for second step in discussion')
+
+		# restart
+		b.find_by_id('discussion-restart-btn').click()
+		success = success and Helper.check_for_present_text(b, 'What is the initial position', 'check for restart')
+
+		b = Helper.logout(b)
 		b.quit()
-		self.browser = None
+		return 1 if success else 0
+
+	@staticmethod
+	def __test_demo_discussion(browser):
+		"""
+		Checks the demo of the discussion. Simple walkthrougHelper.
+		:param browser: current browser
+		:return: 1 if success else 0
+		"""
+		print('Starting tests for demo_discussion:')
+		success = True
+		b = Browser(browser)
+		b = Helper.login(b, nickname, password, mainpage + 'discussion')
+
+		# position
+		success = success and Helper.check_for_present_text(b, 'initial ', 'check for position')
+		b.find_by_id('item_36').click()
+		time.sleep(waittime)
+
+		# attitude
+		success = success and Helper.check_for_present_text(b, 'What do you think', 'check for attitude')
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+
+		# premise
+		success = success and Helper.check_for_present_text(b, 'most important reason', 'check for premise')
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+
+		# confrontation
+		success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontatation')
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+
+		# justification
+		tmp1 = Helper.check_for_present_text(b, 'most important reason', 'check for justification 1')
+		tmp2 = Helper.check_for_present_text(b, 'Let me enter my reason!', 'check for justification 2')
+		success = success and (tmp1 or tmp2)
+		time.sleep(waittime)
+
+		# go back
+		b.find_by_id('discussion-restart-btn').click()
+		success = success and Helper.check_for_present_text(b, 'initial ', 'check for position again')
+
+		b = Helper.logout(b)
+		b.quit()
+		return 1 if success else 0
+
+	@staticmethod
+	def __test_functions_while_discussion(browser):
+		"""
+		Checks different functions in the discussion like adding one premise, premisegroups and so one
+		:param browser: current browser
+		:return: 1 if success else 0
+		"""
+		print('Starting tests for functions_while_discussion:')
+		success = True
+		b = Browser(browser)
+		b = Helper.login(b, nickname, password, mainpage + 'discussion')
+
+		# new position
+		b.find_by_css('#discussions-space-list li:last-child input').click()
+		success = success and Helper.check_for_present_text(b, 'What is your idea? ', 'check for new position field')
+		position = 'some new position ' + str(time.time())
+		b.find_by_id('add-statement-container-main-input').fill(position)
+		b.find_by_id('send-new-statement').click()
+		time.sleep(waittime)
+
+		# dont know attitude
+		success = success and Helper.check_for_present_text(b, 'What do you think about ' + position, 'check for attitude')
+		b.find_by_css('#discussions-space-list li:last-child input').click()
+		time.sleep(waittime)
+		success = success and Helper.check_for_present_text(b, 'do not have any opinion', 'check for dont know attitude 1')
+		success = success and Helper.check_for_present_text(b, 'ends here', 'check for dont know attitude 2')
+		b.back()
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+
+		# new premise
+		success = success and Helper.check_for_present_text(b, 'Let me enter my reason', 'check for new window premise')
+		reason1 = 'some new reason'
+		b.find_by_id('add-premise-container-main-input').fill(reason1)
+		b.find_by_id('send-new-premise').click()
+		time.sleep(waittime)
+
+		# confrontation
+		success = success and Helper.check_for_present_text(b, position[1:] + ' because some new reason', 'check for new argument')
+		success = success and Helper.check_for_present_text(b, 'Other participants do not have any counter', 'check that no confrontation exists')
+		success = success and Helper.check_for_present_text(b, 'The discussion ends here', 'check for end text')
+
+		# go back to first premise
+		b.find_by_css('#dialog-speech-bubbles-space .triangle-r:first-child a').click()
+		time.sleep(waittime)
+		b.find_by_css('#item_start_premise').click()
+		time.sleep(waittime)
+		# add new premise
+		success = success and Helper.check_for_present_text(b, 'Let me enter my reason', 'check for new premise window again')
+		reason2 = 'some new reason 1 and some new reason 2'
+		b.find_by_id('add-premise-container-main-input').fill(reason2)
+		# add another input field
+		b.find_by_css('.icon-add-premise').click()
+		time.sleep(waittime)
+		b.find_by_id('send-new-premise').click()
+		time.sleep(waittime)
+
+		# check for pgroup poup
+		success = success and Helper.check_for_present_text(b, 'We need your help', 'check for pgroup popup')
+		b.find_by_id('insert_more_arguments_0').click()
+		time.sleep(waittime)
+		b.find_by_id('popup-set-premisegroups-send-button').click()
+		time.sleep(waittime)
+
+		# check choosing
+		success = success and Helper.check_for_present_text(b, 'multiple reasons', 'check options for choosing ')
+		success = success and Helper.check_for_present_text(b, 'some new reason 1', 'check options for choosing answer 1')
+		success = success and Helper.check_for_present_text(b, 'some new reason 2', 'check options for choosing answer 2')
+
+		b = Helper.logout(b)
+		b.quit()
 		return 1 if success else 0
 
 
-browserStyle = 'firefox'
-webtests = WebTests(browserStyle)
-try:
-	webtests.run_all_tests()
-except ConnectionResetError as e:
-	print("  Server is offline")
+print('Please choose a webbrowser:')
+print('  [b]reak')
+print('  [c]hrome  (experimental)')
+print('  [f]irefox (default)')
+input_var = input("Enter: ")
+
+if str(input_var) != 'b':
+	webdriver = 'chrome' if str(input_var) == 'c' else 'firefox'
+
+	print('')
+	print('-> Tests will be done with ' + webdriver)
+	print('')
+
+	try:
+		frontendtests = FrontendTests(webdriver)
+		frontendtests.run_all_tests()
+	except ConnectionResetError as e1:
+		print('  Server is offline found: ' + str(e1))
+	except FileNotFoundError as e2:
+		print('FileNotFoundError found: ' + str(e2))
+	except AttributeError as e3:
+		print('AttributeError found: ' + str(e3))
+	except WebDriverException as e4:
+		print('WebDriverException found: ' + str(e4))
+	except KeyboardInterrupt as e5:
+		print('Exit through KeyboardInterrupt')

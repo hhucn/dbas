@@ -1,3 +1,9 @@
+"""
+Provides class for sending an email
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import smtplib
 
 from socket import error as socket_error
@@ -7,15 +13,17 @@ from pyramid_mailer.message import Message
 from .logger import logger
 from .strings import Translator
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
+class EmailHelper:
+	"""
+	Provides method for sending an email
+	"""
 
-class EmailHelper(object):
-
-	def send_mail(self, request, subject, body, recipient, lang):
+	@staticmethod
+	def send_mail(request, subject, body, recipient, lang):
 		"""
 		Try except block for sending an email
+
 		:param request: current request
 		:param subject: subject text of the mail
 		:param body: body text of the mail
@@ -27,7 +35,7 @@ class EmailHelper(object):
 		_t = Translator(lang)
 		send_message = False
 		mailer = get_mailer(request)
-		body = body +"\n\n---\n" + _t.get(_t.emailBodyText)
+		body = body + "\n\n---\n" + _t.get(_t.emailBodyText)
 		message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
 		# try sending an catching errors
 		try:

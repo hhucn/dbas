@@ -1,9 +1,13 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
+
 import sqlalchemy as sa
 
 from dbas.database import NewsBase
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 class News(NewsBase):

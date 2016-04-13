@@ -33,9 +33,7 @@
 			</div>
 		</div>
 
-        <div style="position: relative; bottom: 8em; right: 1em; float:right" tal:condition="is_author">
-            <span class="icon-badge add-button" id="icon-add-news">+</span>
-        </div>
+        <span tal:condition="is_author" class="icon-badge blue-button bottom-right" id="icon-add-news">+</span>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
 

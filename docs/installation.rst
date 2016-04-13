@@ -13,6 +13,7 @@ Ensure that the following tools are installed:
 * `pip <https://pip.pypa.io/en/stable/installing/>`_
 * `virtualenv <http://virtualenv.readthedocs.org/en/latest/installation.html>`_
 * `virtualenvwrapper <http://virtualenvwrapper.readthedocs.org/en/latest/install.html>`_
+* PostgreSQL and libpq-dev
 
 Then follow these steps:
 
@@ -28,18 +29,35 @@ Then follow these steps:
 
     $ python setup.py develop
 
-4. Create database::
+4. Install PostgreSQL and configure it::
 
-    $ initialize_news_sql development.ini
-    $ initialize_discussion_sql development.ini
-    $ initialize_api_sql development.ini
+    $ apt-get install libpq-dev python-dev postgresql
+    $ pip install db-psycopg2
 
-  Alternatively, you can use our Makefile from the project's root directory to initialize the database::
+6. Create database::
 
-    $ make databases
+    $ make init_postgres
+    $ make postgres
 
-5. Start development web server::
+7. Start development web server::
 
     $ pserve development.ini --reload
 
-6. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
+8. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
+
+
+Makefile
+========
+List of all commands of our Makefile.
+
+* make init_postgres
+    Creates a user for postgres as well as both databases (discussion and news).
+
+* make postgres
+    Will drop both databases, create them, assign them to the owner and fills them with data.
+
+* make refresh_postgres:
+    Just drops all data, but keeps Users, Settings and Notifications. Afterwards default data will be set.
+
+* make clean_postgres:
+    Drop it all!
