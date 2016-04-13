@@ -8,6 +8,24 @@ function DiscussionBarometer(){
 	 * Displays the barometer
 	 */
 	this.showBarometer = function(){
+		var uid = 0;
+		if (window.location.href.indexOf('/attitude/') != -1){
+			alert('attitude erfahren')
+			// localhost:4284/discuss/cat-or-dog/attitude/1
+			//									          ^
+			// 1 Parsen und per AJAX verschicken (das ist die "uid" im "data" von $.ajax
+			// var uid = 1;
+		} else if (window.location.href.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
+			alert('statement erfahren');
+		} else if (window.location.href.indexOf('/reaction/') != -1){
+			alert('argument erfahren');
+		} else {
+			alert('position erfahren');
+		}
+
+		/*
+		var a = []; $('#discussions-space-list li:not(:last-child) label').each(function(){ a.push($(this).attr('id')); console.log($(this)); }); alert(a);
+		 */
 		/**
 		 * TODO TERESA:
 		 * 1. ajax request
@@ -21,7 +39,8 @@ function DiscussionBarometer(){
 			url: "ajax_get_user_with_same_opinion",
 			type: 'GET',
 			dataType: 'json',
-			data: {uid: 0, is_argument: false},
+			data: {uid: uid, is_argument: false},
+			//          ^ hier die uid einfuegen
 			async: true
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data);
@@ -39,6 +58,7 @@ function DiscussionBarometer(){
 
         try{
 	        obj = JSON.parse(data);
+			console.log(obj);
         }catch(e){
 	        // TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
 			alert('parsing-json: ' + e);
