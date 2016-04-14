@@ -18,7 +18,7 @@ class RelationHelper(object):
 	Helper for returning all kind of relatins for an argument
 	"""
 
-	def __init__(self, argument_uid, lang):
+	def __init__(self, argument_uid=None, lang=None):
 		"""
 		Initialie default values.
 
@@ -288,7 +288,7 @@ class RelationHelper(object):
 		:param issue: Issue.uid
 		:return:
 		"""
-		logger('RelationHelper', '__set_argument', 'main with user: ' + str(user) +
+		logger('RelationHelper', '__create_argument_by_uids', 'main with user: ' + str(user) +
 		       ', premisegroup_uid: ' + str(premisegroup_uid) +
 		       ', conclusion_uid: ' + str(conclusion_uid) +
 		       ', argument_uid: ' + str(argument_uid) +
@@ -316,12 +316,12 @@ class RelationHelper(object):
                                                                            Argument.issue_uid == issue)).first()
 		transaction.commit()
 		if new_argument:
-			logger('RelationHelper', '__set_argument', 'argument was inserted')
-			logger('RelationHelper', '__set_argument', 'argument was inserted')
+			logger('RelationHelper', '__create_argument_by_uids', 'argument was inserted')
+			logger('RelationHelper', '__create_argument_by_uids', 'argument was inserted')
 			return new_argument.uid
 		else:
-			logger('RelationHelper', '__set_argument', 'argument was not inserted')
-			logger('RelationHelper', '__set_argument', 'argument was not inserted')
+			logger('RelationHelper', '__create_argument_by_uids', 'argument was not inserted')
+			logger('RelationHelper', '__create_argument_by_uids', 'argument was not inserted')
 			return None
 
 	@staticmethod

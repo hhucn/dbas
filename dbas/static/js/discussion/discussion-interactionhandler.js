@@ -181,13 +181,14 @@ function InteractionHandler() {
 	/**
 	 *
 	 * @param data
+	 * @param is_argument
 	 */
-	this.callbackIfDoneForGettingMoreInfosAboutOpinion = function(data){
-		var parsedData = $.parseJSON(data);
+	this.callbackIfDoneForGettingMoreInfosAboutOpinion = function(data, is_argument){
+		var parsedData = $.parseJSON(data), users_array, popup_table;
 
 		if (parsedData.error.length == 0) {
 			var body = $('<div>'),
-				span = $('<span>').text(parsedData.message),
+				span = is_argument? $('<span>').text(parsedData.opinions.message) : $('<span>').text(parsedData.opinions[0].message),
 				table = $('<table>')
 					.attr('class', 'table table-condensed table-hover')
 					.attr('border', '0')
@@ -200,18 +201,32 @@ function InteractionHandler() {
 
 			table.append($('<thead>').append(tr));
 
+			if (is_argument){
+				users_array = parsedData.opinions.users;
+			} else {
+				users_array = parsedData.opinions[0].users;
+			}
 
-			$.each(parsedData.users, function (i, val) {
-				$.each(val, function (k, v) {
-					td_nick = $('<td>').text(k);
-					td_avatar = $('<td>').html('<img style="height: 50%;" src="' + v.avatar_url + '"></td>');
-					tbody.append($('<tr>').append(td_avatar).append(td_nick));
-				});
+			$.each(users_array, function (i, val) {
+				td_nick = $('<td>').text(val.nickname);
+				td_avatar = $('<td>').html('<img style="height: 40%;" src="' + val.avatar_url + '"></td>');
+				tbody.append($('<tr>').append(td_avatar).append(td_nick));
 			});
 
 			body.append(span).append(table.append(tbody));
-			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), body);
+			displayConfirmationDialogWithoutCancelAndFunction(_t(usersWithSameOpinion), body);
 			$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-sm');
+			new Helper().delay(function(){
+				popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
+				if ($( window ).height() > 400 && popup_table.outerHeight(true) > 400) {
+					popup_table.slimScroll({
+						position: 'right',
+						railVisible: true,
+						alwaysVisible: true,
+						height: ($( window ).height() / 3 * 2) + 'px'
+					});
+				}
+			}, 300);
 		} else {
 			new GuiHandler().showDiscussionError(parsedData.error);
 		}

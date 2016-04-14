@@ -30,6 +30,13 @@ Logger
     :members:
 
 
+News Handler
+============
+
+.. automodule:: dbas.news_handler
+    :members:
+
+
 Opinion Handler
 ===============
 

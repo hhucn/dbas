@@ -25,15 +25,15 @@
 							<span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
-							<li class="dropdown-header" i18n:translate="topics">Topics</li>
 							<li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
 								<a href="#" tal:attributes="href issue.url; value issue.title">
-                                    <span tal:replace="issue.title"></span>
+                                    <span style="float: left;">${issue.title}</span>
                                     <span class="badge" style="float: right; margin-left: 1em" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">
                                         <span tal:replace="issue.arg_count"></span>
                                     </span>
                                 </a>
 							</li>
+                            <br tal:condition="extras.is_admin or extras.is_author">
                             <li tal:condition="extras.is_admin or extras.is_author" role="separator" class="divider"></li>
                             <li tal:condition="extras.is_admin or extras.is_author" role="separator">
 								<a id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>
