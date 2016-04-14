@@ -78,7 +78,7 @@ copyright = str(datetime.now().year) + ' by ' + author
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-version = short_v
+version = v
 # The full version, including alpha/beta/rc tags.
 release = long_v
 
