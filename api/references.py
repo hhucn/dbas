@@ -18,6 +18,9 @@ def store_reference(api_data, statement_uid=None, discussion_url=None):
     """
     Validate provided reference and store it in the database.
 
+    ..todo::
+        Remove parameter discuss_url and calculate here the correct url
+
     :param api_data: user provided data
     :param statement_uid: the statement the reference should be assigned to
     :param discussion_url:
@@ -36,6 +39,7 @@ def store_reference(api_data, statement_uid=None, discussion_url=None):
         path = escape_html(api_data["path"])
         issue_uid = api_data["issue_id"]
 
+        # TODO siehe note
         db_ref = StatementReferences(escape_html(reference), host, path, discussion_url, user_uid, statement_uid, issue_uid)
         DBDiscussionSession.add(db_ref)
         DBDiscussionSession.flush()
