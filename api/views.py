@@ -157,7 +157,7 @@ def prepare_data_assign_reference(request, func):
 
 def parse_host_and_path(request):
 	"""
-	Given the visitors referer link from *request*, parse the host and path to the article.
+	Prepare provided host and path of external article.
 
 	:param request: request
 	:return: host and path parsed from request
