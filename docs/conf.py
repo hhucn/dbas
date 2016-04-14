@@ -35,7 +35,7 @@ except ImportError:
         path_to_virtualenv = os.environ['VIRTUAL_ENV'] + '/lib/python' + sys.version[:3] + '/site-packages'
         sys.path.append(path_to_virtualenv)
         import pyramid
-        from dbas.views import version as v
+        from dbas.views import version as short_v
         from dbas.views import full_version as long_v
         import sphinx_rtd_theme
     except ImportError:
@@ -78,7 +78,7 @@ copyright = str(datetime.now().year) + ' by ' + author
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-version = v
+version = short_v
 # The full version, including alpha/beta/rc tags.
 release = long_v
 
