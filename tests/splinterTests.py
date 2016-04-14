@@ -402,15 +402,16 @@ class FrontendTests:
 		b.find_by_id('edit-statement').click()
 		success = success and Helper.check_for_present_text(b, 'Edit Statements / View Changelog', 'check for edit statements popup')
 		b.find_by_id('popup-edit-statement-close').click()
-		time.sleep(waittime)
+		time.sleep(2 * waittime)
 
 		# check issue dropdown and switch issue
 		b.find_by_id('issue-dropdown').click()
 		success = success and Helper.check_for_present_text(b, 'Cat or Dog', 'check for issue dropdown')
-		b.find_by_css('.dropdown-menu li.enabled').click()
-		success = success and Helper.check_for_present_text(b, 'Change of discussion', 'check for topic list')
-		b.find_by_id('confirm-dialog-checkbox-accept-btn').click()
-		time.sleep(waittime)
+		b.find_by_css('.dropdown-menu li.enabled a').click()
+		if b.is_text_present('Change of discussion'):
+			success = success and Helper.check_for_present_text(b, 'Change of discussion', 'check for change topic popup')
+			b.find_by_id('confirm-dialog-checkbox-accept-btn').click()
+			time.sleep(waittime)
 		success = success and Helper.check_for_present_text(b, 'Your familiy argues', 'check for switched issue')
 
 		# check finish

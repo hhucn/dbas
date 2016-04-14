@@ -107,7 +107,7 @@ class ItemDictHelper(object):
 		logger('DictionaryHelper', 'prepare_item_dict_for_justify_statement', 'def')
 		statements_array = []
 		_tn = Translator(self.lang)
-		_rh = RecommenderHelper()
+		_rh = RecommenderHelper
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 		db_arguments = RecommenderHelper.get_arguments_by_conclusion(statement_uid, is_supportive)
 
@@ -203,7 +203,7 @@ class ItemDictHelper(object):
 					premises_array.append(premise_dict)
 
 				# for each justifying premise, we need a new confrontation:
-				arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
+				arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
 
 				url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))
@@ -250,7 +250,7 @@ class ItemDictHelper(object):
 		relations = ['undermine', 'support', 'undercut', 'rebut']
 		for relation in relations:
 			if relation == 'support':
-				arg_id_sys, sys_attack = RecommenderHelper().get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
+				arg_id_sys, sys_attack = RecommenderHelper.get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
 				url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
 
 			else:
@@ -289,7 +289,7 @@ class ItemDictHelper(object):
 		rel_dict	 = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive)
 		mode		 = 't' if is_supportive else 'f'
 		_um			 = UrlManager(self.application_url, slug, self.for_api)
-		_rh          = RecommenderHelper()
+		_rh          = RecommenderHelper
 
 		# based in the relation, we will fetch different url's for the items
 		# relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO overbid
@@ -385,7 +385,7 @@ class ItemDictHelper(object):
 																		  Argument.conclusion_uid == conclusion,
 																		  Argument.argument_uid == argument,
 																		  Argument.is_supportive == is_supportive)).first()
-			arg_id_sys, attack = RecommenderHelper().get_attack_for_argument(db_argument.uid, self.issue_uid, self.lang)
+			arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(db_argument.uid, self.issue_uid, self.lang)
 			url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
 			statements_array.append(self.__create_statement_dict(str(db_argument.uid), premise_array, 'choose', url))
