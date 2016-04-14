@@ -95,8 +95,6 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'prepare_extras_dict', 'def')
 		_uh = UserHandler()
 		_tn = Translator(self.lang)
-		_qh = QueryHelper()
-		_nh = NotificationHelper()
 		is_logged_in = _uh.is_user_logged_in(authenticated_userid)
 		nickname = authenticated_userid if authenticated_userid else 'anonymous'
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -166,9 +164,9 @@ class DictionaryHelper(object):
 			                                                'hide_content': _tn.get(_tn.hideContent)}
 			# /return_dict['breadcrumbs']   = breadcrumbs
 			message_dict = dict()
-			message_dict['new_count']    = _nh.count_of_new_notifications(authenticated_userid)
+			message_dict['new_count']    = NotificationHelper.count_of_new_notifications(authenticated_userid)
 			message_dict['has_unread']   = (message_dict['new_count'] > 0)
-			message_dict['all']		     = _nh.get_notification_for(authenticated_userid)
+			message_dict['all']		     = NotificationHelper.get_notification_for(authenticated_userid)
 			message_dict['total']		 = len(message_dict['all'])
 			return_dict['notifications'] = message_dict
 
@@ -177,7 +175,7 @@ class DictionaryHelper(object):
 				# does an argumente exists?
 				db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
 				if db_argument:
-					island_dict = _qh.get_every_attack_for_island_view(argument_id, self.lang)
+					island_dict = QueryHelper.get_every_attack_for_island_view(argument_id, self.lang)
 
 					db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
 					premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
