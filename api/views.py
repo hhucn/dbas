@@ -292,9 +292,11 @@ def get_references(request):
 	"""
 	host, path = parse_host_and_path(request)
 	if host and path:
+		refs = []
 		log.debug("[API/Reference] Returning references for %s%s" % (host, path))
-		refs_obj = get_references_for_url(host, path)
-		refs = [ref.reference for ref in refs_obj]
+		refs_db = get_references_for_url(host, path)
+		for ref in refs_db:
+			refs.append({"uid": ref.uid, "text": ref.reference, "url": ref.discussion_url})
 		return {"references": refs}
 	else:
 		return {"status": "error", "message": "Could not parse your origin"}

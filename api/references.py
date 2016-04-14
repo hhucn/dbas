@@ -39,7 +39,6 @@ def store_reference(api_data, statement_uid=None, discussion_url=None):
         path = escape_html(api_data["path"])
         issue_uid = api_data["issue_id"]
 
-        # TODO siehe note
         db_ref = StatementReferences(escape_html(reference), host, path, discussion_url, user_uid, statement_uid, issue_uid)
         DBDiscussionSession.add(db_ref)
         DBDiscussionSession.flush()
