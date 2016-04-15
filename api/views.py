@@ -11,7 +11,7 @@ which can then be used in external websites.
 """
 import json
 
-from api.login import valid_token, validate_credentials, validate_login
+from api.login import validate_credentials, validate_login
 from cornice import Service
 from dbas.views import Dbas
 
@@ -139,14 +139,12 @@ def prepare_data_assign_reference(request, func):
 		api_data.update(data)
 		return_dict_json = func(for_api=True, api_data=api_data)
 		return_dict = json.loads(return_dict_json)
-		discussion_url = return_dict["url"]
-
 		statement_uids = flatten(return_dict["statement_uids"])
 		if type(statement_uids) is int:
 			statement_uids = [statement_uids]
 
 		if statement_uids:
-			list(map(lambda statement: store_reference(api_data, statement, discussion_url), statement_uids))  # need list() to execute the functions
+			list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
 		else:
 			log.error("[API/Reference] No statement_uids provided.")
 		return return_dict_json
@@ -294,9 +292,11 @@ def get_references(request):
 		refs = []
 		log.debug("[API/Reference] Returning references for %s%s" % (host, path))
 		refs_db = get_references_for_url(host, path)
-		for ref in refs_db:
-			refs.append({"uid": ref.uid, "text": ref.reference, "url": ref.discussion_url})
-		return {"references": refs}
+		if refs_db:
+			for ref in refs_db:
+				url = url_to_statement(ref.issue_uid, ref.statement_uid)
+				refs.append({"uid": ref.uid, "text": ref.reference, "url": url})
+			return {"references": refs}
 	else:
 		return {"status": "error", "message": "Could not parse your origin"}
 
