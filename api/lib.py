@@ -16,8 +16,6 @@ from webob import Response, exc
 def logger():
 	"""
 	Create a logger.
-
-	:return:
 	"""
 	log = logging.getLogger()
 	log.setLevel(logging.DEBUG)
@@ -30,6 +28,7 @@ def escape_html(evil):
 
 	:param evil:
 	:return: escaped string
+	:rtype: str
 	"""
 	return escape(str(evil))
 
@@ -37,8 +36,10 @@ def escape_html(evil):
 def json_bytes_to_dict(col):
 	"""
 	Given a json object as bytes, convert it to a Python dictionary.
-	:param col: bytes
-	:return: dict
+
+	:param col:
+	:type col: bytes
+	:rtype: dict
 	"""
 	return json.loads(col.decode("utf-8"))
 
@@ -59,7 +60,7 @@ def debug_start():
 	"""
 	Prepare for debug prints.
 
-	:return:
+	:return: Some hashes and linebreaks
 	"""
 	print("\n\n\n##########\n")
 
@@ -68,7 +69,7 @@ def debug_end():
 	"""
 	End debug prints.
 
-	:return:
+	:return: Some hashes and linebreaks
 	"""
 	print("\n##########\n\n\n")
 
@@ -77,7 +78,7 @@ class HTTP204(exc.HTTPError):
 	"""
 	HTTP 204: Request successful, but no content was provided.
 
-	:return:
+	:return: JSON response
 	"""
 	def __init__(self, msg='No Content'):
 		body = {'status': 204, 'message': msg}
@@ -90,7 +91,7 @@ class HTTP401(exc.HTTPError):
 	"""
 	Return a 401 HTTP Error message if user is not authenticated.
 
-	:return:
+	:return: JSON response
 	"""
 	def __init__(self, msg='Unauthorized'):
 		body = {'status': 401, 'message': msg}
