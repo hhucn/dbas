@@ -89,7 +89,7 @@ class HTTP204(exc.HTTPError):
 
 class HTTP401(exc.HTTPError):
 	"""
-	Return a 401 HTTP Error message if user is not authenticated.
+	HTTP 401: Not authenticated
 
 	:return: JSON response
 	"""
