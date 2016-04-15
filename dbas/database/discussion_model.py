@@ -194,7 +194,6 @@ class StatementReferences(DiscussionBase):
 	reference = Column(Text, nullable=False)
 	host = Column(Text, nullable=False)
 	path = Column(Text, nullable=False)
-	discussion_url = Column(Text, nullable=True)
 	author_uid = Column(Integer, ForeignKey('users.uid'), nullable=False)
 	statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
 	issue_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
@@ -204,7 +203,7 @@ class StatementReferences(DiscussionBase):
 	users = relationship('User', foreign_keys=[author_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, reference, host, path, discussion_url, author_uid, statement_uid, issue_uid):
+	def __init__(self, reference, host, path, author_uid, statement_uid, issue_uid):
 		"""
 		Create Reference.
 
@@ -219,7 +218,6 @@ class StatementReferences(DiscussionBase):
 		self.reference = reference
 		self.host = host
 		self.path = path
-		self.discussion_url = discussion_url
 		self.author_uid = author_uid
 		self.statement_uid = statement_uid
 		self.issue_uid = issue_uid
