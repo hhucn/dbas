@@ -291,7 +291,7 @@ class FrontendTests:
 			b.visit(p)
 			test = 'testing ' + tests[index] + ' page'
 			success = success and Helper.check_for_present_text(b, texts[index], test)
-			time.sleep(waittime*10)
+			time.sleep(waittime * 10)
 
 		b.quit()
 		return 1 if success else 0

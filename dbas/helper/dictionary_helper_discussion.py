@@ -116,7 +116,7 @@ class DiscussionDictHelper(object):
 		intro_rev = '' if not is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		url = UrlManager(application_url, slug).get_slug_url(False)
 		question_bubble = self.create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
-		if text[:-1] != '.':
+		if not text.endswith(('.', '?', '!')):
 			text += '.'
 		select_bubble = self.create_speechbubble_dict(True, False, False, '', url, intro + '<strong>' + text + '</strong>', False, statement_uid=uid, is_up_vote=is_supportive)
 
