@@ -89,7 +89,7 @@ class UrlManager(object):
 
 	def get_url_for_justifying_argument(self, as_location_href, argument_uid, mode, attitude, additional_id=-1):
 		"""
-		Returns url for justifyng an argument of the user or the API-version
+		Returns url for justifying an argument of the user or the API-version
 
 		:param as_location_href: Boolean
 		:param argument_uid: Argument.uid
