@@ -225,7 +225,7 @@ class QueryHelper:
 		if not db_user:
 			return -1
 
-		if corrected_text.endswith(('.', '?', '!')):
+		while corrected_text.endswith(('.', '?', '!')):
 			corrected_text = corrected_text[:-1]
 
 		# duplicate check
