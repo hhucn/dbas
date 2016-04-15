@@ -16,8 +16,8 @@ Ensure that the following tools are installed:
 Backend with WebTest
 ====================
 Backend tests are realized by the use of *WebTest*. A quick tutorial can be found in the
-`documentation of pyramid <http://docs.pylonsproject.org/projects/pyramid/en/latest/quick_tutorial/functional_testing.html>`
-or in the `documentation of WebTest <http://docs.pylonsproject.org/projects/webtest/en/latest/>`.
+`documentation of pyramid <http://docs.pylonsproject.org/projects/pyramid/en/latest/quick_tutorial/functional_testing.html>`_
+or in the `documentation of WebTest <http://docs.pylonsproject.org/projects/webtest/en/latest/>`_.
 Webtests are end-to-end-full-stack tests.
 
 Execute these tests with::
@@ -71,9 +71,9 @@ Please replace *XYZ* with a short description and *YOUR_TEST_METHOD* with the va
         return 1 if success else 0
 
 Please:
-    * replace the name with the choosen name out of 2.
+    * replace the name with the chosen name out of 2.
     * enter a short description
-    * use the *success*-paramter
+    * use the *success*-parameter
 
 4. Have fun!
 
