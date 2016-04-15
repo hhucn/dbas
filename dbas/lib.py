@@ -165,8 +165,6 @@ def get_text_for_premisesgroup_uid(uid, lang):
 	_t = Translator(lang)
 	for premise in db_premises:
 		tmp = get_text_for_statement_uid(premise.statements.uid)
-		while tmp.endswith('.', '?', '!'):
-			tmp = tmp[:-1]
 		uids.append(str(premise.statements.uid))
 		text += ' ' + _t.get(_t.aand) + ' ' + tmp[0:1].lower() + tmp[1:]
 

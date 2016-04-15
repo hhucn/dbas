@@ -553,30 +553,30 @@ class FrontendTests:
 		b.quit()
 		return 1 if success else 0
 
+if __name__ == "__main__":
+	print('Please choose a webbrowser:')
+	print('  [b]reak')
+	print('  [c]hrome  (experimental)')
+	print('  [f]irefox (default)')
+	input_var = input("Enter: ")
 
-print('Please choose a webbrowser:')
-print('  [b]reak')
-print('  [c]hrome  (experimental)')
-print('  [f]irefox (default)')
-input_var = input("Enter: ")
+	if str(input_var) != 'b':
+		webdriver = 'chrome' if str(input_var) == 'c' else 'firefox'
 
-if str(input_var) != 'b':
-	webdriver = 'chrome' if str(input_var) == 'c' else 'firefox'
+		print('')
+		print('-> Tests will be done with ' + webdriver)
+		print('')
 
-	print('')
-	print('-> Tests will be done with ' + webdriver)
-	print('')
-
-	try:
-		frontendtests = FrontendTests(webdriver)
-		frontendtests.run_all_tests()
-	except ConnectionResetError as e1:
-		print('  Server is offline found: ' + str(e1))
-	except FileNotFoundError as e2:
-		print('FileNotFoundError found: ' + str(e2))
-	except AttributeError as e3:
-		print('AttributeError found: ' + str(e3))
-	except WebDriverException as e4:
-		print('WebDriverException found: ' + str(e4))
-	except KeyboardInterrupt as e5:
-		print('Exit through KeyboardInterrupt')
+		try:
+			frontendtests = FrontendTests(webdriver)
+			frontendtests.run_all_tests()
+		except ConnectionResetError as e1:
+			print('  Server is offline found: ' + str(e1))
+		except FileNotFoundError as e2:
+			print('FileNotFoundError found: ' + str(e2))
+		except AttributeError as e3:
+			print('AttributeError found: ' + str(e3))
+		except WebDriverException as e4:
+			print('WebDriverException found: ' + str(e4))
+		except KeyboardInterrupt as e5:
+			print('Exit through KeyboardInterrupt')
