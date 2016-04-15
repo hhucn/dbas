@@ -57,7 +57,7 @@ def flatten(l):
 
 def debug_start():
 	"""
-	Prepare for debug prints
+	Prepare for debug prints.
 
 	:return:
 	"""
@@ -66,7 +66,7 @@ def debug_start():
 
 def debug_end():
 	"""
-	End debug prints
+	End debug prints.
 
 	:return:
 	"""
