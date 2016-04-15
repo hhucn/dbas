@@ -367,7 +367,6 @@ def setup_up_users(session):
 	pw8 = PasswordHandler.get_hashed_password('gregor')
 	pw9 = PasswordHandler.get_hashed_password('christian')
 	pw10 = PasswordHandler.get_hashed_password('alexander')
-	usert = User(firstname='i am a', surname='testuser', nickname='test', email='tobias.krauthoff@hhu.de', password=pwt, group=group2.uid, gender='-')
 	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
 	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
 	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
@@ -379,7 +378,41 @@ def setup_up_users(session):
 	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group1.uid, gender='m')
 	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group0.uid, gender='m')
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
-	session.add_all([usert, user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10])
+	usert00 = User(firstname='i am a', surname='testuser', nickname='test', email='tobias.krauthoff@hhu.de', password=pwt, group=group2.uid, gender='-')
+	usert01 = User(firstname='i am a', surname='testuser 01', nickname='test01', email='t.obias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert02 = User(firstname='i am a', surname='testuser 02', nickname='test02', email='to.bias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert03 = User(firstname='i am a', surname='testuser 03', nickname='test03', email='tob.ias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert04 = User(firstname='i am a', surname='testuser 04', nickname='test04', email='tobi.as.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert05 = User(firstname='i am a', surname='testuser 05', nickname='test05', email='tobia.s.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert06 = User(firstname='i am a', surname='testuser 06', nickname='test06', email='tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert07 = User(firstname='i am a', surname='testuser 07', nickname='test07', email='tobias..krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert08 = User(firstname='i am a', surname='testuser 08', nickname='test08', email='tobias.k.rauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert09 = User(firstname='i am a', surname='testuser 09', nickname='test09', email='tobias.kr.authoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert10 = User(firstname='i am a', surname='testuser 10', nickname='test10', email='tobias.kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert11 = User(firstname='i am a', surname='testuser 11', nickname='test11', email='tobias.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert12 = User(firstname='i am a', surname='testuser 12', nickname='test12', email='tobias.kraut.hoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert13 = User(firstname='i am a', surname='testuser 13', nickname='test13', email='tobias.krauth.off@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert14 = User(firstname='i am a', surname='testuser 14', nickname='test14', email='tobias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert15 = User(firstname='i am a', surname='testuser 15', nickname='test15', email='tobias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert16 = User(firstname='i am a', surname='testuser 16', nickname='test16', email='t.obias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert17 = User(firstname='i am a', surname='testuser 17', nickname='test17', email='to.bias.krauth.off@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert18 = User(firstname='i am a', surname='testuser 18', nickname='test18', email='tob.ias.kraut.hoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert19 = User(firstname='i am a', surname='testuser 19', nickname='test19', email='tobi.as.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert20 = User(firstname='i am a', surname='testuser 20', nickname='test20', email='tobia.s.kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert21 = User(firstname='i am a', surname='testuser 21', nickname='test21', email='tobias..kr.authoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert22 = User(firstname='i am a', surname='testuser 22', nickname='test22', email='tobias..k.rauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert23 = User(firstname='i am a', surname='testuser 23', nickname='test23', email='tobias.k..rauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert24 = User(firstname='i am a', surname='testuser 24', nickname='test24', email='tobias.kr..authoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert25 = User(firstname='i am a', surname='testuser 25', nickname='test25', email='tobias..kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert26 = User(firstname='i am a', surname='testuser 26', nickname='test26', email='tobia.s.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert27 = User(firstname='i am a', surname='testuser 27', nickname='test27', email='tobi.as.kraut.hoff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert28 = User(firstname='i am a', surname='testuser 28', nickname='test28', email='tob.ias.krauth.off@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert29 = User(firstname='i am a', surname='testuser 29', nickname='test29', email='to.bias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert30 = User(firstname='i am a', surname='testuser 30', nickname='test30', email='t.obias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='-')
+	session.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, usert00])
+	session.add_all([usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10])
+	session.add_all([usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20])
+	session.add_all([usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30])
 	session.flush()
 
 	# adding settings
@@ -424,8 +457,6 @@ def setup_dummy_votes(session):
 	DBDiscussionSession.query(VoteStatement).delete()
 	DBDiscussionSession.query(VoteArgument).delete()
 
-	db_user = DBDiscussionSession.query(User).filter_by(nickname='test').first()
-
 	db_arguments = DBDiscussionSession.query(Argument).all()
 	db_statement = DBDiscussionSession.query(Statement).all()
 
@@ -435,20 +466,24 @@ def setup_dummy_votes(session):
 	w = 0
 	x = 0
 	for argument in db_arguments:
-		up_votes = random.randint(0, 50)
-		down_votes = random.randint(0, 50)
+		up_votes = random.randint(1, 50)
+		down_votes = random.randint(1, 50)
 		for u in range(0, up_votes):
-			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True))
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
+			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
 		for v in range(0, down_votes):
-			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_user.uid, is_up_vote=False, is_valid=True))
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
+			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
 
 	for statement in db_statement:
-		up_votes = random.randint(0, 50)
-		down_votes = random.randint(0, 50)
+		up_votes = random.randint(1, 50)
+		down_votes = random.randint(1, 50)
 		for w in range(0, up_votes):
-			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=True, is_valid=True))
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
+			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
 		for x in range(0, down_votes):
-			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=False, is_valid=True))
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
+			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
 
 	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(u) + ' up votes for arguments')
 	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(v) + ' down votes for arguments')
