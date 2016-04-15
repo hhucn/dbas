@@ -10,14 +10,13 @@ which can then be used in external websites.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import json
-from urllib.parse import urlparse
 
 from api.login import valid_token, validate_credentials, validate_login
 from cornice import Service
 from dbas.views import Dbas
 
 from .lib import HTTP204, debug_end, debug_start, flatten, json_bytes_to_dict, logger
-from .references import get_references_for_url, store_reference
+from .references import get_references_for_url, store_reference, url_to_statement
 
 log = logger()
 
@@ -306,7 +305,7 @@ def get_references(request):
 # USER MANAGEMENT
 # =============================================================================
 
-@login.get(validators=valid_token)  # TODO test this permission='use'
+@login.get()  # TODO test this permission='use'
 def testing(request):
 	"""
 	Test user's credentials, return success if valid token and username is provided.

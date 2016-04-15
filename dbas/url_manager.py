@@ -77,9 +77,11 @@ class UrlManager(object):
 		"""
 		Returns url for getting statement justification of the user or the API-version
 
-		:param as_location_href: Boolean
+		:param as_location_href:
+		:type as_location_href: Boolean
 		:param statement_uid: Statement.uid
-		:param mode: String
+		:param mode:
+		:type mode: String
 		:return: discuss/{slug}/justify/{statement_or_arg_id}/{mode}
 		"""
 		url = self.slug + '/justify/' + str(statement_uid) + '/' + mode

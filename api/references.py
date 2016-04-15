@@ -8,15 +8,35 @@ Handle references from other websites, prepare, store and load them into D-BAS.
 import transaction
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences
+from dbas.url_manager import UrlManager
 
-from .lib import debug_end, debug_start, escape_html, logger
+from .lib import escape_html, logger
 
 log = logger()
+
+
+def url_to_statement(slug, statement_uid):
+    """
+    Generate URL to given statement_uid in specific issue (by slug).
+    Used to directly jump into the discussion.
+
+    :param slug: Slug to current issue
+    :type slug: str
+    :param statement_uid: Statement id to generate the link to
+    :type statement_uid: int
+    :return: Direct URL to jump to the provided statement
+    :rtype: str
+    """
+    url_manager = UrlManager(application_url="", slug=slug, for_api=True)
+    return url_manager.get_url_for_justifying_statement(as_location_href=True,
+                                                        statement_uid=statement_uid,
+                                                        mode="t")
 
 
 def store_reference(api_data, statement_uid=None, discussion_url=None):
     """
     Validate provided reference and store it in the database.
+    Has side-effects.
 
     ..todo::
         Remove parameter discuss_url and calculate here the correct url
