@@ -38,7 +38,7 @@ def store_reference(api_data, statement_uid=None, discussion_url=None):
     Validate provided reference and store it in the database.
     Has side-effects.
 
-    ..todo::
+    .. todo::
         Remove parameter discuss_url and calculate here the correct url
 
     :param api_data: user provided data
