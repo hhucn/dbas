@@ -10,7 +10,7 @@ from datetime import datetime
 from html import escape
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, Statement, TextVersion
+from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue
 from .logger import logger
 from .strings import Translator
 
@@ -205,3 +205,16 @@ def get_text_for_conclusion(argument, lang, start_with_intro=False):
 		return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro)
 	else:
 		return get_text_for_statement_uid(argument.conclusion_uid)
+
+
+def resolve_issue_uid_to_slug(uid):
+	"""
+	Given the issue uid query database and return the correct slug of the issue.
+
+	:param uid: issue_uid
+	:type uid: int
+	:return: Slug of issue
+	:rtype: str
+	"""
+	issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
+	return issue.get_slug() if issue else None
