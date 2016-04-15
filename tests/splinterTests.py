@@ -365,7 +365,7 @@ class FrontendTests:
 		b = Browser(browser)
 
 		b.visit(mainpage)
-		success = Helper.check_for_present_text(b, 'part of the graduate', 'check englisch language')
+		success = Helper.check_for_present_text(b, 'part of the graduate', 'check english language')
 
 		b.click_link_by_partial_text('Language')
 		b.click_link_by_partial_text('Deutsch')
@@ -373,7 +373,7 @@ class FrontendTests:
 
 		b.click_link_by_partial_text('Sprache')
 		b.click_link_by_partial_text('English')
-		success = success and Helper.check_for_present_text(b, 'part of the graduate', 'check switch back to englisch language')
+		success = success and Helper.check_for_present_text(b, 'part of the graduate', 'check switch back to english language')
 
 		b.quit()
 		return 1 if success else 0

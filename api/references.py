@@ -14,12 +14,16 @@ from .lib import debug_end, debug_start, escape_html, logger
 log = logger()
 
 
-def store_reference(api_data, statement_uid=None):
+def store_reference(api_data, statement_uid=None, discussion_url=None):
     """
     Validate provided reference and store it in the database.
 
+    ..todo::
+        Remove parameter discuss_url and calculate here the correct url
+
     :param api_data: user provided data
     :param statement_uid: the statement the reference should be assigned to
+    :param discussion_url:
     :return:
     """
     try:
@@ -35,7 +39,7 @@ def store_reference(api_data, statement_uid=None):
         path = escape_html(api_data["path"])
         issue_uid = api_data["issue_id"]
 
-        db_ref = StatementReferences(escape_html(reference), host, path, user_uid, statement_uid, issue_uid)
+        db_ref = StatementReferences(escape_html(reference), host, path, discussion_url, user_uid, statement_uid, issue_uid)
         DBDiscussionSession.add(db_ref)
         DBDiscussionSession.flush()
         transaction.commit()
@@ -56,4 +60,5 @@ def get_references_for_url(host=None, path=None):
     :rtype: list
     """
     if host and path:
-        return DBDiscussionSession.query(StatementReferences).filter_by(host=host, path=path).all()
+        refs = DBDiscussionSession.query(StatementReferences).filter_by(host=host, path=path).all()
+        return refs if refs else None
