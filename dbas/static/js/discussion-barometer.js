@@ -9,18 +9,22 @@ function DiscussionBarometer(){
 	 */
 	this.showBarometer = function(){
 		var uid = 0;
+		var adress = 'position';
 
 		if (window.location.href.indexOf('/attitude/') != -1){
-			alert('attitude erfahren');
+			adress = 'attitude';
 			var splitted = window.location.href.split('/');
 			uid = splitted[splitted.length-1];
-			new DiscussionBarometer().ajaxAttitudeRequest(uid);
+			new DiscussionBarometer().ajaxRequest(uid, adress);
 		} else if (window.location.href.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
-			alert('statement erfahren');
+			adress = 'argument';
+			new DiscussionBarometer().ajaxRequest(uid, adress);
 		} else if (window.location.href.indexOf('/reaction/') != -1){
-			alert('argument erfahren');
+			adress = 'statement';
+			new DiscussionBarometer().ajaxRequest(uid, adress);
 		} else {
-			alert('position erfahren');
+			adress = 'position';
+			new DiscussionBarometer().ajaxRequest(uid, adress);
 		}
 
 		/*
@@ -37,12 +41,27 @@ function DiscussionBarometer(){
 
 	};
 
-	this.ajaxAttitudeRequest = function(uid){
+	this.ajaxRequest = function(uid, adress){
+		var dataString;
+		switch(adress){
+			case 'attitude':
+				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', uids: uid};
+			break;
+			case 'argument':
+				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', uids: uid};
+			break;
+			case 'statement':
+				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: uid};
+			break;
+			default:
+				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uid: uid};
+		}
+
 		$.ajax({
-			url: "ajax_get_user_with_same_opinion",
+			url: 'ajax_get_user_with_same_opinion',
 			type: 'GET',
 			dataType: 'json',
-			data: {uid: uid, is_argument: false},
+			data: dataString,
 			async: true
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data);
