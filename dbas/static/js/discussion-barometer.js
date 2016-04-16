@@ -8,28 +8,27 @@ function DiscussionBarometer(){
 	 * Displays the barometer
 	 */
 	this.showBarometer = function(){
-		var uid = 0;
+		var uid = 0, uids = [];
+		var splitted = window.location.href.split('/');
 		var adress = 'position';
 
 		if (window.location.href.indexOf('/attitude/') != -1){
 			adress = 'attitude';
-			var splitted = window.location.href.split('/');
 			uid = splitted[splitted.length-1];
 			new DiscussionBarometer().ajaxRequest(uid, adress);
 		} else if (window.location.href.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
-			adress = 'argument';
-			new DiscussionBarometer().ajaxRequest(uid, adress);
-		} else if (window.location.href.indexOf('/reaction/') != -1){
 			adress = 'statement';
+			$('#discussions-space-list li:not(:last-child) label').each(function(){uids.push($(this).attr('id'));});
+			new DiscussionBarometer().ajaxRequest(uids, adress);
+		} else if (window.location.href.indexOf('/reaction/') != -1){
+			adress = 'argument';
+			uid = splitted[splitted.length-3];
 			new DiscussionBarometer().ajaxRequest(uid, adress);
 		} else {
 			adress = 'position';
 			new DiscussionBarometer().ajaxRequest(uid, adress);
 		}
 
-		/*
-		var a = []; $('#discussions-space-list li:not(:last-child) label').each(function(){ a.push($(this).attr('id')); console.log($(this)); }); alert(a);
-		 */
 		/**
 		 * TODO TERESA:
 		 * 1. ajax request
@@ -47,11 +46,11 @@ function DiscussionBarometer(){
 			case 'attitude':
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', uids: uid};
 			break;
-			case 'argument':
-				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', uids: uid};
-			break;
 			case 'statement':
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: uid};
+			break;
+			case 'argument':
+				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', uids: uid};
 			break;
 			default:
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uid: uid};
