@@ -9,12 +9,12 @@ function DiscussionBarometer(){
 	 */
 	this.showBarometer = function(){
 		var uid = 0;
+
 		if (window.location.href.indexOf('/attitude/') != -1){
-			alert('attitude erfahren')
-			// localhost:4284/discuss/cat-or-dog/attitude/1
-			//									          ^
-			// 1 Parsen und per AJAX verschicken (das ist die "uid" im "data" von $.ajax
-			// var uid = 1;
+			alert('attitude erfahren');
+			var splitted = window.location.href.split('/');
+			uid = splitted[splitted.length-1];
+			new DiscussionBarometer().ajaxAttitudeRequest(uid);
 		} else if (window.location.href.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
 			alert('statement erfahren');
 		} else if (window.location.href.indexOf('/reaction/') != -1){
@@ -35,19 +35,21 @@ function DiscussionBarometer(){
 		 * 5. displayConfirmationDialogWithoutCancelAndFunction with html as text and suitable header
 		 */
 
+	};
+
+	this.ajaxAttitudeRequest = function(uid){
 		$.ajax({
 			url: "ajax_get_user_with_same_opinion",
 			type: 'GET',
 			dataType: 'json',
 			data: {uid: uid, is_argument: false},
-			//          ^ hier die uid einfuegen
 			async: true
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data);
 		}).fail(function () {
 			new DiscussionBarometer().callbackIfFailForGetDictionary();
 		});
-	};
+	}
 
 	/**
 	 * Callback if the ajax request was successfull
@@ -55,7 +57,6 @@ function DiscussionBarometer(){
 	 */
 	this.callbackIfDoneForGetDictionary = function(data){
 		var obj;
-
         try{
 	        obj = JSON.parse(data);
 			console.log(obj);
