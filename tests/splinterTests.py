@@ -172,6 +172,7 @@ class FrontendTests:
 		success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for demo discussion with all functions', self.__test_functions_while_discussion, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for right negatives', self.__test_right_negatives, self.browser_style)
 		end = time.time()
 
 		diff = str(end - start)
@@ -549,6 +550,22 @@ class FrontendTests:
 		success = success and Helper.check_for_present_text(b, 'some new reason 1', 'check options for choosing answer 1')
 		success = success and Helper.check_for_present_text(b, 'some new reason 2', 'check options for choosing answer 2')
 
+		b = Helper.logout(b)
+		b.quit()
+		return 1 if success else 0
+
+	@staticmethod
+	def __test_right_negatives(browser):
+		"""
+		Checks the right negatives in D-BAS
+		:param browser: current browser
+		:return: 1 if success else 0
+		"""
+		print('Starting tests for demo_discussion:')
+		success = True
+		b = Browser(browser)
+		b = Helper.login(b, nickname, password, mainpage + 'discussion')
+		
 		b = Helper.logout(b)
 		b.quit()
 		return 1 if success else 0
