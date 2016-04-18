@@ -86,6 +86,9 @@
                              <div tal:condition="bubble.is_status" class="line-wrapper-m">
                                  <p class="triangle-m" tal:attributes="id bubble.id">${structure:bubble.message}</p>
                              </div>
+                             <div tal:condition="bubble.is_info" class="line-wrapper-m">
+                                 <p class="triangle-m-info" tal:attributes="id bubble.id">${structure:bubble.message}</p>
+                             </div>
                         </div>
                      </div>
 					<div id="discussions-space">

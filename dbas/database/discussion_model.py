@@ -402,6 +402,7 @@ class Bubble(DiscussionBase):
 	is_user = Column(Boolean, nullable=False)
 	is_system = Column(Boolean, nullable=False)
 	is_status = Column(Boolean, nullable=False)
+	is_info = Column(Boolean, nullable=False)
 	session_id = Column(Text)
 	related_argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
 	related_statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
@@ -412,7 +413,7 @@ class Bubble(DiscussionBase):
 	arguments = relationship('Argument', foreign_keys=[related_argument_uid])
 	statements = relationship('Statement', foreign_keys=[related_statement_uid])
 
-	def __init__(self, bubble_id, user, content, is_user, is_system, is_status, session_id,
+	def __init__(self, bubble_id, user, content, is_user, is_system, is_status, is_info, session_id,
 	             breadcrumb_uid, related_argument_uid=None, related_statement_uid=None):
 		"""
 
@@ -422,6 +423,7 @@ class Bubble(DiscussionBase):
 		:param is_user:
 		:param is_system:
 		:param is_status:
+		:param is_info:
 		:param session_id:
 		:param breadcrumb_uid:
 		:param related_argument_uid:
@@ -434,6 +436,7 @@ class Bubble(DiscussionBase):
 		self.is_user = is_user
 		self.is_system = is_system
 		self.is_status = is_status
+		self.is_info = is_info
 		self.session_id = session_id
 		self.breadcrumb_uid = breadcrumb_uid
 		self.related_argument_uid = related_argument_uid
