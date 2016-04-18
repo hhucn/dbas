@@ -262,10 +262,6 @@ class Dbas(object):
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
 
-		logger('--', str(mode), str(relation))
-		logger('--', str(mode), str(relation))
-		logger('--', str(mode), str(relation))
-		logger('--', str(mode), str(relation))
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			logger('discussion_justify', 'def', 'justify statement')
 			# justifying statement
