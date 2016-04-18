@@ -21,9 +21,9 @@ function DiscussionBarometer(){
 		} else if (window.location.href.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
 			adress = 'statement';
 			$('#discussions-space-list li:not(:last-child) label').each(function(){
-				uids.push($(this).attr('id'));
+				uid_array.push($(this).attr('id'));
 			});
-			new DiscussionBarometer().ajaxRequest(uids, adress);
+			new DiscussionBarometer().ajaxRequest(uid_array, adress);
 		} else if (window.location.href.indexOf('/reaction/') != -1){
 			adress = 'argument';
 			uid = splitted[splitted.length-3];
@@ -41,7 +41,6 @@ function DiscussionBarometer(){
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', uids: uid};
 			break;
 			case 'statement':
-				alert(uid);
 				var json_array = JSON.stringify(uid);
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: json_array};
 			break;
@@ -49,7 +48,7 @@ function DiscussionBarometer(){
 				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', uids: uid};
 			break;
 			default:
-				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uid: uid};
+				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: uid};
 		}
 
 		$.ajax({
@@ -59,7 +58,7 @@ function DiscussionBarometer(){
 			data: dataString,
 			async: true
 		}).done(function (data) {
-			new DiscussionBarometer().callbackIfDoneForGetDictionary(data);
+			new DiscussionBarometer().callbackIfDoneForGetDictionary(data, adress);
 		}).fail(function () {
 			new DiscussionBarometer().callbackIfFailForGetDictionary();
 		});
@@ -69,8 +68,9 @@ function DiscussionBarometer(){
 	 * Callback if the ajax request was successfull
 	 * @param data: unparsed data of the request
 	 */
-	this.callbackIfDoneForGetDictionary = function(data){
+	this.callbackIfDoneForGetDictionary = function(data, adress){
 		var obj;
+		var pieData;
         try{
 	        obj = JSON.parse(data);
 			console.log(obj);
@@ -81,11 +81,7 @@ function DiscussionBarometer(){
         }
 		// TODO: Nun hier mit chart.js die votes passend darstellen. ich denke, eine pie-chart bietet sich an
 
-		var txt = 'Hier wird bald ein Meinungsbarometer erscheinen.';
-		txt += '<br><img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Disk_usage_(Boabab).png">';
-
 		$('#' + popupConfirmDialogId).modal('show');
-		$('#' + popupConfirmDialogId + ' h4.modal-title').html('In progress');
 		$('#' + popupConfirmDialogId + ' div.modal-body')
 			.html('<canvas id="chartCanvas" width="400" height="400" style= "display: block; margin: 0 auto;"></canvas>');
 		// TODO: anstelle von txt kann der neue html code eingetragen werden
@@ -96,29 +92,26 @@ function DiscussionBarometer(){
 		// create pie-Chart
     	var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
 
-    	var pieData = [
-        	{
-            	//value: obj.votes[0].count,
-				value: 80,
-            	color: "#41AF3D",
-				highlight: "#8ADB87",
-            	label: obj.votes[0].text
-        	},
-			{
-            	//value: obj.votes[1].count,
-				value: 60,
-            	color: "#E04F5F",
-				highlight: "#EFA5AC",
-            	label: obj.votes[1].text
-			},
-			{
-            	//value: obj.votes[2].count,
-                value: 70,
-            	color: "#1281A0",
-				highlight: "#87D7EF",
-				label: obj.votes[2].text
-        	}
-    	];
+		switch(adress){
+			case 'attitude':
+				$('#' + popupConfirmDialogId + ' h4.modal-title').html(obj.text);
+
+				pieData = [
+        		{
+					value: obj.agree_users.length,
+            		color: "#41AF3D",
+					highlight: "#8ADB87",
+            		label: 'agree'
+        		},
+				{
+					value: obj.disagree_users.length,
+            		color: "#E04F5F",
+					highlight: "#EFA5AC",
+            		label: 'disagree'
+				}
+    		];
+			break;
+		}
 
     	var chart = new Chart(ctx).Pie(pieData);
 	};
