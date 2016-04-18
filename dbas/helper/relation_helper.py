@@ -35,7 +35,7 @@ class RelationHelper(object):
 
 		:return: array with dict() with id (of argumet) and text.
 		"""
-		logger('RelationHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(self.argument_uid))
+		# logger('RelationHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(self.argument_uid))
 		db_attacked_argument = DBDiscussionSession.query(Argument).filter_by(uid=self.argument_uid).first()
 		db_attacked_premises = DBDiscussionSession.query(Premise).filter_by(
 				premisesgroup_uid=db_attacked_argument.premisesgroup_uid).order_by(
@@ -56,7 +56,7 @@ class RelationHelper(object):
 
 		:return: array with dict() with id (of argumet) and text.
 		"""
-		logger('RelationHelper', 'get_overbids_for_argument_uid', 'main')
+		# logger('RelationHelper', 'get_overbids_for_argument_uid', 'main')
 		return self.__get_attack_or_support_for_justification_of_argument_uid(self.argument_uid, True, self.lang)
 
 	def get_undercuts_for_argument_uid(self):
@@ -65,7 +65,7 @@ class RelationHelper(object):
 
 		:return: array with dict() with id (of argumet) and text.
 		"""
-		logger('RelationHelper', 'get_undercuts_for_argument_uid', 'main ' + str(self.argument_uid))
+		# logger('RelationHelper', 'get_undercuts_for_argument_uid', 'main ' + str(self.argument_uid))
 		return self.__get_attack_or_support_for_justification_of_argument_uid(self.argument_uid, False, self.lang)
 
 	def get_rebuts_for_argument_uid(self):
@@ -74,7 +74,7 @@ class RelationHelper(object):
 
 		:return: array with dict() with id (of argumet) and text.
 		"""
-		logger('RelationHelper', 'get_rebuts_for_argument_uid', 'main ' + str(self.argument_uid))
+		# logger('RelationHelper', 'get_rebuts_for_argument_uid', 'main ' + str(self.argument_uid))
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(self.argument_uid)).first()
 		if not db_argument:
 			return None
@@ -94,9 +94,9 @@ class RelationHelper(object):
 		return_array = []
 		given_rebuts = set()
 		index = 0
-		logger('RelationHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' +
-		       str(db_argument.conclusion_uid) + ', is_current_argument_supportive ' + str(db_argument.is_supportive) +
-		       ' (searching for the opposite)')
+		# logger('RelationHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' +
+		#        str(db_argument.conclusion_uid) + ', is_current_argument_supportive ' + str(db_argument.is_supportive) +
+		#        ' (searching for the opposite)')
 		db_rebut = DBDiscussionSession.query(Argument).filter(Argument.is_supportive == (not db_argument.is_supportive),
                                                               Argument.conclusion_uid == db_argument.conclusion_uid).all()
 		for rebut in db_rebut:
@@ -117,7 +117,7 @@ class RelationHelper(object):
 
 		:return: array with dict() with id (of argumet) and text
 		"""
-		logger('RelationHelper', 'get_supporRects_for_argument_uid', 'main')
+		# logger('RelationHelper', 'get_supports_for_argument_uid', 'main')
 
 		return_array = []
 		given_supports = set()
@@ -288,12 +288,12 @@ class RelationHelper(object):
 		:param issue: Issue.uid
 		:return:
 		"""
-		logger('RelationHelper', '__create_argument_by_uids', 'main with user: ' + str(user) +
-		       ', premisegroup_uid: ' + str(premisegroup_uid) +
-		       ', conclusion_uid: ' + str(conclusion_uid) +
-		       ', argument_uid: ' + str(argument_uid) +
-		       ', is_supportive: ' + str(is_supportive) +
-		       ', issue: ' + str(issue))
+		# logger('RelationHelper', '__create_argument_by_uids', 'main with user: ' + str(user) +
+		#        ', premisegroup_uid: ' + str(premisegroup_uid) +
+		#        ', conclusion_uid: ' + str(conclusion_uid) +
+		#        ', argument_uid: ' + str(argument_uid) +
+		#        ', is_supportive: ' + str(is_supportive) +
+		#        ', issue: ' + str(issue))
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
@@ -316,12 +316,10 @@ class RelationHelper(object):
                                                                            Argument.issue_uid == issue)).first()
 		transaction.commit()
 		if new_argument:
-			logger('RelationHelper', '__create_argument_by_uids', 'argument was inserted')
-			logger('RelationHelper', '__create_argument_by_uids', 'argument was inserted')
+		#	logger('RelationHelper', '__create_argument_by_uids', 'argument was inserted')
 			return new_argument.uid
 		else:
-			logger('RelationHelper', '__create_argument_by_uids', 'argument was not inserted')
-			logger('RelationHelper', '__create_argument_by_uids', 'argument was not inserted')
+		#	logger('RelationHelper', '__create_argument_by_uids', 'argument was not inserted')
 			return None
 
 	@staticmethod
@@ -334,8 +332,8 @@ class RelationHelper(object):
 		:return:
 		"""
 		return_array = []
-		logger('RelationHelper', '__get_attack_or_support_for_justification_of_argument_uid',
-		       'db_undercut against Argument.argument_uid==' + str(argument_uid))
+		# logger('RelationHelper', '__get_attack_or_support_for_justification_of_argument_uid',
+		#        'db_undercut against Argument.argument_uid==' + str(argument_uid))
 		db_related_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
 		                                                                       Argument.argument_uid == argument_uid)).all()
 		given_relations = set()
@@ -362,7 +360,7 @@ class RelationHelper(object):
 		:param lang: ui_locales
 		:return:
 		"""
-		logger('RelationHelper', '__get_undermines_for_premises', 'main')
+		# logger('RelationHelper', '__get_undermines_for_premises', 'main')
 		return_array = []
 		index = 0
 		given_undermines = set()
