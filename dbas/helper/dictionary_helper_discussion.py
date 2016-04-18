@@ -125,13 +125,13 @@ class DiscussionDictHelper(object):
 
 		# check for double bubbles
 		should_append = True
-		if len(bubbles_array) > 0:
-			should_append = bubbles_array[-1]['message'] != select_bubble['message']
-			if bubbles_array[-1]['message'] == intro_rev + '<strong>' + text + '</strong>':
-				bubbles_array.remove(bubbles_array[-1])
-		if len(bubbles_array) > 1:
-			if bubbles_array[-2]['message'] == intro_rev + '<strong>' + text + '</strong>':
-				bubbles_array.remove(bubbles_array[-2])
+		#if len(bubbles_array) > 0:
+		#	should_append = bubbles_array[-1]['message'] != select_bubble['message']
+		#	if bubbles_array[-1]['message'] == intro_rev + '<strong>' + text + '</strong>':
+		#		bubbles_array.remove(bubbles_array[-1])
+		#if len(bubbles_array) > 1:
+		#	if bubbles_array[-2]['message'] == intro_rev + '<strong>' + text + '</strong>':
+		#		bubbles_array.remove(bubbles_array[-2])
 
 		if should_append:
 			self.__append_bubble(bubbles_array, select_bubble)

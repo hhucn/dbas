@@ -12,6 +12,7 @@ import sys
 import transaction
 import random
 
+from math import trunc
 from dbas.logger import logger
 from dbas.user_management import PasswordHandler
 from sqlalchemy import engine_from_config
@@ -458,37 +459,46 @@ def setup_dummy_votes(session):
 	DBDiscussionSession.query(VoteArgument).delete()
 
 	db_arguments = DBDiscussionSession.query(Argument).all()
-	db_statement = DBDiscussionSession.query(Statement).all()
+	db_statements = DBDiscussionSession.query(Statement).all()
 
 	new_votes = []
-	u = 0
-	v = 0
-	w = 0
-	x = 0
+	arg_up = 0
+	arg_down = 0
+	stat_up = 0
+	stat_down = 0
 	for argument in db_arguments:
 		up_votes = random.randint(1, 50)
 		down_votes = random.randint(1, 50)
-		for u in range(0, up_votes):
+		arg_up += up_votes
+		arg_down += down_votes
+		for i in range(0, up_votes):
 			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
 			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
-		for v in range(0, down_votes):
+		for i in range(0, down_votes):
 			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
 			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
 
-	for statement in db_statement:
+	for statement in db_statements:
 		up_votes = random.randint(1, 50)
 		down_votes = random.randint(1, 50)
-		for w in range(0, up_votes):
+		stat_up += up_votes
+		stat_down += down_votes
+		for i in range(0, up_votes):
 			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
 			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
-		for x in range(0, down_votes):
+		for i in range(0, down_votes):
 			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
 			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
 
-	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(u) + ' up votes for arguments')
-	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(v) + ' down votes for arguments')
-	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(w) + ' up votes for statements')
-	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(x) + ' down votes for statements')
+	rat_arg_up = str( trunc( arg_up/len(db_arguments) * 100) / 100)
+	rat_arg_down = str( trunc( arg_down/len(db_arguments) * 100) / 100)
+	rat_stat_up = str( trunc( stat_up/len(db_statements) * 100) / 100)
+	rat_stat_down = str( trunc( stat_down/len(db_statements) * 100) / 100)
+
+	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(arg_up) + ' up votes for ' + str(len(db_arguments)) + ' arguments (' + rat_arg_up + ' votes/argument)')
+	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(arg_down) + ' down votes for ' + str(len(db_arguments)) + ' arguments (' + rat_arg_down + ' votes/argument)')
+	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(stat_up) + ' up votes for ' + str(len(db_statements)) + ' statements (' + rat_stat_up + ' votes/statement)')
+	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(stat_down) + ' down votes for ' + str(len(db_statements)) + ' statements (' + rat_stat_down + ' votes/statement)')
 
 	session.add_all(new_votes)
 	session.flush()

@@ -11,7 +11,6 @@ from html import escape
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue
-from .logger import logger
 from .strings import Translator
 
 
@@ -77,7 +76,6 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 	:param user_changed_opinion: Boolean
 	:return: String
 	"""
-	logger('RelationHelper', 'get_text_for_argument_uid', 'main with argument_uid ' + str(uid))
 	db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 	# catch error
 	if not db_argument:
