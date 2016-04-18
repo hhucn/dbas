@@ -390,7 +390,6 @@ class DiscussionDictHelper(object):
 			db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
 			                                                                     VoteStatement.is_up_vote == is_up_vote,
 			                                                                     VoteStatement.is_valid == True)).all()
-
 		_t = Translator(self.lang)
 		diff = 0
 		tmp_nick = self.nickname
@@ -509,11 +508,16 @@ class DiscussionDictHelper(object):
 				content   = h.content
 				rel_arg   = h.related_argument_uid
 				rel_stat  = h.related_statement_uid
-				expr0     = re.search(re.compile(r"/t/"), url)
-				expr1     = re.search(re.compile(r"/t$"), url)
-				group0    = expr0.group(0) if expr0 else None
-				group1    = expr1.group(0) if expr1 else None
-				is_supp   = True if group0 or group1 else False
-				bubble_history.append(self.create_speechbubble_dict(is_user, is_system, is_status, uid, url, content, False, rel_arg, rel_stat, is_supp))
+				if h.related_argument_uid:
+					is_supp = DBDiscussionSession.query(Argument).filter_by(uid=h.related_argument_uid).first().is_supportive
+				else:
+					expr0     = re.search(re.compile(r"/t/"), url)
+					expr1     = re.search(re.compile(r"/t$"), url)
+					group0    = expr0.group(0) if expr0 else None
+					group1    = expr1.group(0) if expr1 else None
+					is_supp   = True if group0 or group1 else False
+				bubble_history.append(self.create_speechbubble_dict(is_user=is_user, is_system=is_system, is_status=is_status,
+				                                                    uid=uid, url=url, message=content, omit_url=False,
+				                                                    argument_uid=rel_arg, statement_uid=rel_stat, is_up_vote=is_supp))
 
 		return bubble_history
