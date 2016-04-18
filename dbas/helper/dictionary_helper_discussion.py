@@ -140,7 +140,7 @@ class DiscussionDictHelper(object):
 		self.__append_bubble(bubbles_array, question_bubble)
 
 		if not self.nickname and count_of_items == 1:
-			self.__append_bubble(bubbles_array, self.create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItemWithLink), True))
+			self.__append_bubble(bubbles_array, self.create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.voteCountTextFirst) + '. ' + _tn.get(_tn.onlyOneItemWithLink), True))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 

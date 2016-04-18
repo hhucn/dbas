@@ -262,9 +262,9 @@ class DictionaryHelper(object):
 				mid_text += ' ' + _tn.get(_tn.doesNotHold)
 			mid_text += '.<br>'
 			# pretty prints
-			if discussion_dict['bubbles'][-1]['is_system'] and discussion_dict['bubbles'][-2]['message'] == _tn.get(_tn.now):
-				discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
-				discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
+			#if discussion_dict['bubbles'][-1]['is_system'] and discussion_dict['bubbles'][-2]['message'] == _tn.get(_tn.now):
+			#	discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
+			#	discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
 			if logged_in:
 				extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 				mid_text += _tn.get(_tn.firstPremiseText2)
