@@ -32,7 +32,6 @@ Then follow these steps:
 4. Install PostgreSQL and configure it::
 
     $ apt-get install libpq-dev python-dev postgresql
-    $ pip install db-psycopg2
 
 6. Create database::
 

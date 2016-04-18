@@ -10,7 +10,7 @@ from datetime import datetime
 from html import escape
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, Statement, TextVersion
+from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue
 from .logger import logger
 from .strings import Translator
 
@@ -165,8 +165,6 @@ def get_text_for_premisesgroup_uid(uid, lang):
 	_t = Translator(lang)
 	for premise in db_premises:
 		tmp = get_text_for_statement_uid(premise.statements.uid)
-		if tmp.endswith('.'):
-			tmp = tmp[:-1]
 		uids.append(str(premise.statements.uid))
 		text += ' ' + _t.get(_t.aand) + ' ' + tmp[0:1].lower() + tmp[1:]
 
@@ -188,7 +186,7 @@ def get_text_for_statement_uid(uid):
 		uid=db_statement.textversion_uid).first()
 	tmp = db_textversion.content
 
-	if tmp.endswith(('.', '?', '!')):
+	while tmp.endswith(('.', '?', '!')):
 		tmp = tmp[:-1]
 
 	return tmp
@@ -207,3 +205,16 @@ def get_text_for_conclusion(argument, lang, start_with_intro=False):
 		return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro)
 	else:
 		return get_text_for_statement_uid(argument.conclusion_uid)
+
+
+def resolve_issue_uid_to_slug(uid):
+	"""
+	Given the issue uid query database and return the correct slug of the issue.
+
+	:param uid: issue_uid
+	:type uid: int
+	:return: Slug of issue
+	:rtype: str
+	"""
+	issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
+	return issue.get_slug() if issue else None

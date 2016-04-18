@@ -252,14 +252,14 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_user_with_same_opinion',
 			method: 'GET',
 			data: {
-				is_argument: is_argument, uid: uid
+				is_argument: is_argument, uids: uid
 			},
 			dataType: 'json',
 			headers: {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
-			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data);
+			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
 			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');

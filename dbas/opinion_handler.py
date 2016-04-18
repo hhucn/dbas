@@ -9,7 +9,7 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement
 from dbas.helper.relation_helper import RelationHelper
-from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid
+from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid
 from dbas.logger import logger
 from dbas.strings import Translator
 from dbas.user_management import UserHandler
@@ -21,7 +21,7 @@ class OpinionHandler:
 	"""
 
 	@staticmethod
-	def get_user_with_same_opinion_for_argument(argument_uid, lang, nickname):
+	def get_user_with_opinions_for_argument(argument_uid, lang, nickname):
 		"""
 		Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
 		these attacks.
@@ -129,14 +129,62 @@ class OpinionHandler:
 			elif len(db_votes) == 1:
 				statement_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
 			else:
-				statement_dict['message'] = str(db_votes) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+				statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
 			opinions.append(statement_dict)
 
 		return {'opinions': opinions}
 
 	@staticmethod
-	def get_user_with_same_opinion_for_attitude(statement_uid, lang, nickname):
+	def get_user_with_same_opinion_for_argument(argument_uid, lang, nickname):
+		"""
+		Returns nested dictionary with all kinds of information about the votes of the argument.
+
+		:param argument_uid: Argument.uid
+		:param lang: ui_locales ui_locales
+		:param nickname: User.nickname
+		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
+		"""
+		logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid))
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		db_user_uid = db_user.uid if db_user else 0
+
+		opinions = dict()
+		all_users = []
+		_t = Translator(lang)
+
+		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		if not db_argument:
+			opinions['uid']       = None
+			opinions['text']      = None
+			opinions['message']   = None
+			opinions['users']     = None
+
+		opinions['uid'] = str(argument_uid)
+		opinions['text'] = get_text_for_argument_uid(argument_uid, lang)
+
+		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
+		                                                               VoteArgument.is_up_vote == True,
+		                                                               VoteArgument.is_valid == True,
+		                                                               VoteArgument.author_uid != db_user_uid)).all()
+
+		for vote in db_votes:
+			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+			users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang)
+			all_users.append(users_dict)
+		opinions['users'] = all_users
+
+		if len(db_votes) == 0:
+			opinions['message'] = _t.get(_t.voteCountTextMayBeFirst) + '.'
+		elif len(db_votes) == 1:
+			opinions['message'] = _t.get(_t.voteCountTextOneOther) + '.'
+		else:
+			opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+
+		return {'opinions': opinions}
+
+	@staticmethod
+	def get_user_with_opinions_for_attitude(statement_uid, lang, nickname):
 		"""
 		Returns dictionary with agree- and disagree-votes
 

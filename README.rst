@@ -6,7 +6,7 @@ components.
 
 
 This project (i.e. all files in this repository if not declared otherwise) is licensed under the MIT License, see
-LICENSE.txt.
+LICENSE.
 
 
 Further reading :doc:`installation`

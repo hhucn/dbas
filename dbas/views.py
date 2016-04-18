@@ -31,6 +31,7 @@ from .email import EmailHelper
 from .lib import get_language, escape_string, get_text_for_statement_uid
 from .logger import logger
 from .recommender_system import RecommenderHelper
+from .news_handler import NewsHandler
 from .opinion_handler import OpinionHandler
 from .string_matcher import FuzzyStringMatcher
 from .strings import Translator
@@ -121,7 +122,8 @@ class Dbas(object):
 		"""
 		# '/a*slug'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		matchdict = self.request.matchdict
+		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(matchdict))
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired = UserHandler().update_last_action(transaction, nickname)
@@ -139,9 +141,9 @@ class Dbas(object):
 		ui_locales = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
 		if for_api:
-			slug = self.request.matchdict['slug'] if 'slug' in self.request.matchdict else ''
+			slug = matchdict['slug'] if 'slug' in matchdict else ''
 		else:
-			slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
+			slug = matchdict['slug'][0] if 'slug' in matchdict and len(matchdict['slug']) > 0 else ''
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
@@ -279,7 +281,7 @@ class Dbas(object):
 
 		elif 'd' in mode and relation == '':
 			# dont know
-			argument_uid    = RecommenderHelper().get_argument_by_conclusion(statement_or_arg_id, supportive)
+			argument_uid    = RecommenderHelper.get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(transaction, argument_uid, has_new_crumbs)
 			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_dont_know_reaction(argument_uid, supportive)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
@@ -1067,7 +1069,7 @@ class Dbas(object):
 						subject = 'D-BAS Account Registration'
 						body = _t.get(_t.accountWasRegistered)
 						EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
-						NotificationHelper().send_welcome_message(transaction, checknewuser.uid)
+						NotificationHelper.send_welcome_message(transaction, checknewuser.uid)
 
 					else:
 						logger('user_registration', 'main', 'New data was not added')
@@ -1196,7 +1198,6 @@ class Dbas(object):
 
 		logger('set_new_start_statement', 'def', 'main')
 
-		_qh = QueryHelper()
 		lang = get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 		return_dict = dict()
@@ -1216,14 +1217,13 @@ class Dbas(object):
 
 			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler().update_last_action(transaction, nickname)
-			new_statement = _qh.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
+			new_statement = QueryHelper.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 			else:
 				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
 				return_dict['url'] = url
 				return_dict['statement_uids'].append(new_statement[0].uid)
-
 		except KeyError as e:
 			logger('set_new_start_statement', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
@@ -1244,7 +1244,6 @@ class Dbas(object):
 		logger('set_new_start_premise', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		return_dict = dict()
-		_qh = QueryHelper()
 		lang = get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 		try:
@@ -1264,9 +1263,9 @@ class Dbas(object):
 			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler().update_last_action(transaction, nickname)
 
-			url, statement_uids, error = _qh.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
-			                                                                                 supportive, issue, nickname, for_api,
-			                                                                                 mainpage, lang, RecommenderHelper())
+			url, statement_uids, error = QueryHelper.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
+			                                                                                         supportive, issue, nickname, for_api,
+			                                                                                         mainpage, lang)
 			return_dict['error'] = error
 			return_dict['statement_uids'] = statement_uids
 
@@ -1294,7 +1293,6 @@ class Dbas(object):
 		logger('set_new_premises_for_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		return_dict = dict()
-		_qh = QueryHelper()
 		lang = get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 
@@ -1313,9 +1311,9 @@ class Dbas(object):
 				attack_type = self.request.params['attack_type']
 
 			# escaping will be done in QueryHelper().set_statement(...)
-			url, statement_uids, error = _qh.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
-			                                                                         premisegroups, issue, nickname, for_api,
-			                                                                         mainpage, lang, RecommenderHelper())
+			url, statement_uids, error = QueryHelper.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
+			                                                                                                 premisegroups, issue, nickname, for_api,
+			                                                                                                 mainpage, lang)
 			UserHandler().update_last_action(transaction, nickname)
 
 			return_dict['error'] = error
@@ -1345,14 +1343,13 @@ class Dbas(object):
 		logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
 		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
 
-		_qh = QueryHelper()
 		_tn = Translator(get_language(self.request, get_current_registry()))
 
 		try:
 			uid = self.request.params['uid']
 			corrected_text = escape_string(self.request.params['text'])
 			ui_locales = get_language(self.request, get_current_registry())
-			return_dict = _qh.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
+			return_dict = QueryHelper.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
 			if return_dict == -1:
 				return_dict = dict()
 				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)
@@ -1384,7 +1381,7 @@ class Dbas(object):
 		try:
 			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).first().set_read(True)
 			transaction.commit()
-			return_dict['unread_messages'] = NotificationHelper().count_of_new_notifications(self.request.authenticated_userid)
+			return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('set_message_read', 'error', repr(e))
@@ -1411,9 +1408,8 @@ class Dbas(object):
 		try:
 			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).delete()
 			transaction.commit()
-			_nh = NotificationHelper()
-			return_dict['unread_messages'] = _nh.count_of_new_notifications(self.request.authenticated_userid)
-			return_dict['total_messages'] = str(len(_nh.get_notification_for(self.request.authenticated_userid)))
+			return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
+			return_dict['total_messages'] = str(len(NotificationHelper.get_notification_for(self.request.authenticated_userid)))
 			return_dict['error'] = ''
 			return_dict['success'] = _t.get(_t.messageDeleted)
 		except KeyError as e:
@@ -1539,7 +1535,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_news', 'def', 'main')
-		return_dict = QueryHelper.get_news()
+		return_dict = NewsHandler.get_news()
 		return json.dumps(return_dict, True)
 
 	# ajax - for getting argument infos
@@ -1552,14 +1548,13 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_infos_about_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
-		_qh = QueryHelper()
 		ui_locales = get_language(self.request, get_current_registry())
 		_t = Translator(ui_locales)
 		return_dict = dict()
 
 		try:
 			uid = self.request.params['uid']
-			return_dict = _qh.get_infos_about_argument(uid, ui_locales)
+			return_dict = QueryHelper.get_infos_about_argument(uid, ui_locales)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_infos_about_argument', 'error', repr(e))
@@ -1583,15 +1578,19 @@ class Dbas(object):
 		return_dict = dict()
 		try:
 			uids = self.request.params['uids']
-			is_argument = self.request.params['is_argument'] == 'true'
-			is_attitude = self.request.params['is_attitude'] == 'true'
+			is_argument = self.request.params['is_argument'] == 'true' if 'is_argument' in self.request.params else False
+			is_attitude = self.request.params['is_attitude'] == 'true' if 'is_attitude' in self.request.params else False
+			is_reaction = self.request.params['is_reaction'] == 'true' if 'is_reaction' in self.request.params else False
 			if is_argument:
-				return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname)
+				if not is_reaction:
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname)
+				else:
+					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname)
 			else:
 				if not is_attitude:
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids, ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
 				else:
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_attitude(uids, ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))
@@ -1641,7 +1640,7 @@ class Dbas(object):
 		try:
 			title = escape_string(self.request.params['title'])
 			text = escape_string(self.request.params['text'])
-			return_dict = QueryHelper.set_news(transaction, title, text, self.request.authenticated_userid)
+			return_dict = NewsHandler.set_news(transaction, title, text, self.request.authenticated_userid)
 			return_dict['error'] = ''
 		except KeyError as e:
 			return_dict = dict()
