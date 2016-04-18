@@ -1588,6 +1588,7 @@ class Dbas(object):
 					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname)
 			else:
 				if not is_attitude:
+					uids = json.loads(uids)
 					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
 				else:
 					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname)

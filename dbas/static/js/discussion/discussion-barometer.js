@@ -4,13 +4,15 @@
  */
 
 function DiscussionBarometer(){
+	'use strict'
+
 	/**
 	 * Displays the barometer
 	 */
 	this.showBarometer = function(){
-		var uid = 0, uids = [];
-		var splitted = window.location.href.split('/');
-		var adress = 'position';
+		var uid = 0, uid_array = [],
+			splitted = window.location.href.split('/'),
+			adress = 'position';
 
 		if (window.location.href.indexOf('/attitude/') != -1){
 			adress = 'attitude';
@@ -30,16 +32,6 @@ function DiscussionBarometer(){
 			adress = 'position';
 			new DiscussionBarometer().ajaxRequest(uid, adress);
 		}
-
-		/**
-		 * TODO TERESA:
-		 * 1. ajax request
-		 * 2. structure like the ajaxhandler
-		 * 3. callback in this class
-		 * 4. using chartjs.org with doghnut
-		 * 5. displayConfirmationDialogWithoutCancelAndFunction with html as text and suitable header
-		 */
-
 	};
 
 	this.ajaxRequest = function(uid, adress){
@@ -50,7 +42,8 @@ function DiscussionBarometer(){
 			break;
 			case 'statement':
 				alert(uid);
-				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: JSON.stringify(uid)};
+				var json_array = JSON.stringify(uid);
+				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: json_array};
 			break;
 			case 'argument':
 				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', uids: uid};
@@ -139,4 +132,3 @@ function DiscussionBarometer(){
 		// TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
 	};
 }
-
