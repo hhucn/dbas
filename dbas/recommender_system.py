@@ -14,7 +14,7 @@ from .database.discussion_model import Argument, User, VoteArgument
 from .logger import logger
 
 
-class RecommenderHelper:
+class RecommenderSystem:
 	"""
 	Todo
 	"""
@@ -32,7 +32,7 @@ class RecommenderHelper:
 		:return: Argument.uid, String
 		"""
 		# getting undermines or undercuts or rebuts
-		logger('RecommenderHelper', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
+		logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
 		       str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uid) + ')')
 
 		# TODO COMMA16 Special Case (forbid: undercuts of undercuts)
@@ -42,17 +42,17 @@ class RecommenderHelper:
 		restriction_on_attacks = []
 		restriction_on_attacks.append(tmp)
 		restriction_on_attacks.append('undercut' if is_current_arg_undercut else '')
-		logger('RecommenderHelper', 'get_attack_for_argument', 'restriction  1: ' + restriction_on_attacks[0])
-		logger('RecommenderHelper', 'get_attack_for_argument', 'restriction  2: ' + restriction_on_attacks[1])
+		logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  1: ' + restriction_on_attacks[0])
+		logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  2: ' + restriction_on_attacks[1])
 
-		attacks_array, key = RecommenderHelper.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks, restriction_on_arg_uid)
+		attacks_array, key = RecommenderSystem.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks, restriction_on_arg_uid)
 		if not attacks_array or len(attacks_array) == 0:
 			return 0, 'end'
 		else:
 			attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 			attack_uid = attacks_array[attack_no]['id']
 
-			logger('RecommenderHelper', 'get_attack_for_argument', 'main return ' + key + ' by ' + str(attack_uid))
+			logger('RecommenderSystem', 'get_attack_for_argument', 'main return ' + key + ' by ' + str(attack_uid))
 
 			return attack_uid, key
 
@@ -67,7 +67,7 @@ class RecommenderHelper:
 		"""
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
 		                                                               Argument.conclusion_uid == statement_uid)).all()
-		logger('RecommenderHelper', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' +
+		logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' +
 		       str(is_supportive) + ', found ' + str(len(db_arguments)) + ' arguments')
 		if db_arguments:
 			arguments = []
@@ -92,7 +92,7 @@ class RecommenderHelper:
 		"""
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
                                                                        Argument.conclusion_uid == statement_uid)).all()
-		logger('RecommenderHelper', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' +
+		logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' +
 		       str(is_supportive) + ', found ' + str(len(db_arguments)) + ' arguments')
 
 		if not db_arguments:
@@ -121,13 +121,13 @@ class RecommenderHelper:
 		complete_list_of_attacks = [1, 3, 5]
 		attacks = [1, 3, 5]
 
-		logger('RecommenderHelper', '__get_attack_for_argument', 'attack_list : ' + str(attacks))
+		logger('RecommenderSystem', '__get_attack_for_argument', 'attack_list : ' + str(attacks))
 		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
-		return_array, key = RecommenderHelper.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
+		return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
 
 		# sanity check if we could not found an attack for a left attack in out set
 		if not return_array and len(attacks) > 0:
-			return_array, key = RecommenderHelper.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
+			return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
 
 		return return_array, key
 
@@ -150,7 +150,7 @@ class RecommenderHelper:
 		attack_found = False
 		_rh = RelationHelper(argument_uid, lang)
 
-		logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'argument_uid: Argument.uid ' + str(argument_uid) +
+		logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'argument_uid: Argument.uid ' + str(argument_uid) +
 		       ', attack_list : ' + str(attack_list)  +
 		       ', complete_list_of_attacks : ' + str(complete_list_of_attacks) +
 		       ', left_attacks : ' + str(left_attacks))
@@ -172,20 +172,20 @@ class RecommenderHelper:
 					and str(restriction_on_attacks[0]) != str(key)\
 					and str(restriction_on_attacks[1]) != str(key)\
 					and restriction_on_argument_uid != return_array[0]['id']:
-				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack found for key: ' + key)
+				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack found for key: ' + key)
 				attack_found = True
 				break
 			else:
-				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attack found for key: ' + key)
+				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'no attack found for key: ' + key)
 
 		if len(left_attacks) > 0 and not attack_found:
-			logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
-			return_array, key = RecommenderHelper.__get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
+			logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
+			return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
 		else:
 			if len(left_attacks) == 0:
-				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
+				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
 			if attack_found:
-				logger('RecommenderHelper', '__get_attack_for_argument_by_random_in_range', 'attack found')
+				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack found')
 
 		return return_array, key
 
@@ -196,10 +196,10 @@ class RecommenderHelper:
 		:param argument_list: Argument[]
 		:return: Argument
 		"""
-		logger('RecommenderHelper', '__get_best_argument', 'main')
+		logger('RecommenderSystem', '__get_best_argument', 'main')
 		evaluations = []
 		for argument in argument_list:
-			evaluations.append(RecommenderHelper.__evaluate_argument(argument.uid))
+			evaluations.append(RecommenderSystem.__evaluate_argument(argument.uid))
 
 		best = max(evaluations)
 		index = [i for i, j in enumerate(evaluations) if j == best]
@@ -212,7 +212,7 @@ class RecommenderHelper:
 		:param argument_uid: Argument.uid Argument.uid
 		:return:
 		"""
-		logger('RecommenderHelper', '__evaluate_argument', 'argument ' + str(argument_uid))
+		logger('RecommenderSystem', '__evaluate_argument', 'argument ' + str(argument_uid))
 
 		db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument_uid).all()
 		db_valid_votes   = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
