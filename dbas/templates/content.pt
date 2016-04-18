@@ -12,11 +12,6 @@
 					<span class="lead" id="issue_info">${structure:issues.info}</span>
 				</div>
 				<div class="col-md-1 center text-center">
-					<!--
-                    <span class="icon-badge green-button-middle" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip">
-                        <strong>i</strong>
-                    </span>
-                    -->
                     <img style="width: 30px; margin-bottom: 0.5em;" class="icon-badge" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"/>
 				</div>
 				<div class="col-md-2 center text-center">
