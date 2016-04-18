@@ -122,7 +122,8 @@ class Dbas(object):
 		"""
 		# '/a*slug'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		matchdict = self.request.matchdict
+		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(matchdict))
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired = UserHandler().update_last_action(transaction, nickname)
@@ -140,9 +141,9 @@ class Dbas(object):
 		ui_locales = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
 		if for_api:
-			slug = self.request.matchdict['slug'] if 'slug' in self.request.matchdict else ''
+			slug = matchdict['slug'] if 'slug' in matchdict else ''
 		else:
-			slug = self.request.matchdict['slug'][0] if 'slug' in self.request.matchdict and len(self.request.matchdict['slug']) > 0 else ''
+			slug = matchdict['slug'][0] if 'slug' in matchdict and len(matchdict['slug']) > 0 else ''
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
