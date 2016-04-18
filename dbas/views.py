@@ -236,7 +236,9 @@ class Dbas(object):
 		# '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
+		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.params))
 		matchdict = self.request.matchdict
+		params = self.request.params
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
@@ -254,19 +256,25 @@ class Dbas(object):
 		mode                = matchdict['mode'] if 'mode' in matchdict else ''
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
-		# related_arg         = matchdict['relation'][1] if len(matchdict['relation']) > 1 else -1
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
 
+		logger('--', str(mode), str(relation))
+		logger('--', str(mode), str(relation))
+		logger('--', str(mode), str(relation))
+		logger('--', str(mode), str(relation))
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
+			logger('discussion_justify', 'def', 'justify statement')
+			# justifying statement
 			if not get_text_for_statement_uid(statement_or_arg_id):
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
-			# justifying position
+			relation = params['last_relation'] if 'last_relation' in params else None
+
 			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
 			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(transaction, statement_or_arg_id,
 			                                                                    has_new_crumbs, mainpage, slug,
@@ -280,6 +288,7 @@ class Dbas(object):
 				                            supportive=supportive)
 
 		elif 'd' in mode and relation == '':
+			logger('discussion_justify', 'def', 'dont know statement')
 			# dont know
 			argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(transaction, argument_uid, has_new_crumbs)
@@ -292,6 +301,7 @@ class Dbas(object):
 				                            current_premise=get_text_for_statement_uid(statement_or_arg_id))
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
+			logger('discussion_justify', 'def', 'justify argument')
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, logged_in)
@@ -303,6 +313,7 @@ class Dbas(object):
 			if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 		else:
+			logger('discussion_justify', 'def', '404')
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
 
 		return_dict = dict()
@@ -1588,6 +1599,7 @@ class Dbas(object):
 					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname)
 			else:
 				if not is_attitude:
+					uids = json.loads(uids)
 					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
 				else:
 					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname)

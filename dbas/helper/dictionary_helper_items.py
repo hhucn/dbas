@@ -337,6 +337,9 @@ class ItemDictHelper(object):
 			else:
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
+			# add the last relation of the user as keyword
+			url = url[:-1] + '?last_relation=' + attack + '"'
+
 			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the change attack button or step back, if we have bno other attack

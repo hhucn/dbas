@@ -54,18 +54,18 @@ class BreadcrumbHelper(object):
 			if group1 and path.endswith(group1):
 				self.del_all_breadcrumbs_of_user(transaction, user, session_id)
 
-		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == path,
-		                                                                  Breadcrumb.author_uid == db_user.uid)).first()
-		db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
-		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
-		is_new_crumb = False
+		# remove replicates (removed due to #25)
+		#db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == path,
+		#                                                                  Breadcrumb.author_uid == db_user.uid)).first()
+		#db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
+		#already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
+		#is_new_crumb = False
 
-		if db_already_in:
-			self.__delete_breadcrumbs_from_uid(db_user, db_already_in.uid, session_id)
-
-		elif not already_last:
-			DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=path, session_id=session_id))
-			is_new_crumb = True
+		#if db_already_in:
+		#	self.__delete_breadcrumbs_from_uid(db_user, db_already_in.uid, session_id)
+		#elif not already_last:
+		DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=path, session_id=session_id))
+		is_new_crumb = True
 
 		transaction.commit()
 
