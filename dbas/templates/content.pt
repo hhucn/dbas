@@ -366,5 +366,7 @@
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
 
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
+
 	</tal:block>
 </tal:block>
