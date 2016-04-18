@@ -70,7 +70,6 @@ function DiscussionBarometer(){
 	 */
 	this.callbackIfDoneForGetDictionary = function(data, adress){
 		var obj;
-		var pieData;
         try{
 	        obj = JSON.parse(data);
 			console.log(obj);
@@ -90,32 +89,49 @@ function DiscussionBarometer(){
 		}).removeClass('btn-success');
 
 		// create pie-Chart
-    	var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
-
 		switch(adress){
-			case 'attitude':
-				$('#' + popupConfirmDialogId + ' h4.modal-title').html(obj.text);
-
-				pieData = [
-        		{
-					value: obj.agree_users.length,
-            		color: "#41AF3D",
-					highlight: "#8ADB87",
-            		label: 'agree'
-        		},
-				{
-					value: obj.disagree_users.length,
-            		color: "#E04F5F",
-					highlight: "#EFA5AC",
-            		label: 'disagree'
-				}
-    		];
-			break;
+			case 'attitude': new DiscussionBarometer().createAttituteBarometer(obj); break;
+			case 'statement': new DiscussionBarometer().createStatementBarometer(obj); break;
 		}
 
-    	var chart = new Chart(ctx).Pie(pieData);
 	};
 
+	this.createAttituteBarometer = function(obj) {
+		$('#' + popupConfirmDialogId + ' h4.modal-title').html(obj.text);
+    	var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
+
+		var pieData = [
+        {
+			value: obj.agree_users.length,
+        	color: "#41AF3D",
+			highlight: "#8ADB87",
+            label: 'agree'
+        },
+		{
+			value: obj.disagree_users.length,
+        	color: "#E04F5F",
+			highlight: "#EFA5AC",
+			label: 'disagree'
+		}
+		];
+
+		var chart = new Chart(ctx).Pie(pieData);
+	};
+
+	this.createStatementBarometer = function(obj) {
+		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
+		var chart = new Chart(ctx).Pie();
+		for(var i = 0; i < obj.opinions.length; i++){
+			if(obj.opinions[i].text != null){
+				var randomColor = '#' + (Math.random().toString(16) + '0000000').slice(2,8);
+				chart.addData({
+					value: obj.opinions[i].users.length,
+					color: randomColor,
+					label: obj.opinions[i].text
+				});
+			}
+		}
+	};
 
 	/**
 	 * Callback if the ajax request failed
