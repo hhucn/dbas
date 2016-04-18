@@ -18,7 +18,9 @@ function DiscussionBarometer(){
 			new DiscussionBarometer().ajaxRequest(uid, adress);
 		} else if (window.location.href.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
 			adress = 'statement';
-			$('#discussions-space-list li:not(:last-child) label').each(function(){uids.push($(this).attr('id'));});
+			$('#discussions-space-list li:not(:last-child) label').each(function(){
+				uids.push($(this).attr('id'));
+			});
 			new DiscussionBarometer().ajaxRequest(uids, adress);
 		} else if (window.location.href.indexOf('/reaction/') != -1){
 			adress = 'argument';
@@ -48,7 +50,7 @@ function DiscussionBarometer(){
 			break;
 			case 'statement':
 				alert(uid);
-				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: uid};
+				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: JSON.stringify(uid)};
 			break;
 			case 'argument':
 				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', uids: uid};
