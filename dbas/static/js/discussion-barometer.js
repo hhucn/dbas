@@ -47,6 +47,7 @@ function DiscussionBarometer(){
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', uids: uid};
 			break;
 			case 'statement':
+				alert(uid);
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: uid};
 			break;
 			case 'argument':
