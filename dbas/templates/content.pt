@@ -33,7 +33,6 @@
                                     </span>
                                 </a>
 							</li>
-                            <br tal:condition="extras.is_admin or extras.is_author">
                             <li tal:condition="extras.is_admin or extras.is_author" role="separator" class="divider"></li>
                             <li tal:condition="extras.is_admin or extras.is_author" role="separator">
 								<a id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>

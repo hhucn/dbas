@@ -565,7 +565,9 @@ class FrontendTests:
 		success = True
 		b = Browser(browser)
 		b = Helper.login(b, nickname, password, mainpage + 'discussion')
-		
+
+		# Todo
+
 		b = Helper.logout(b)
 		b.quit()
 		return 1 if success else 0
