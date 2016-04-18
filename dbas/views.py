@@ -30,7 +30,7 @@ from .database.discussion_model import User, Group, Issue, Argument, Notificatio
 from .email import EmailHelper
 from .lib import get_language, escape_string, get_text_for_statement_uid
 from .logger import logger
-from .recommender_system import RecommenderHelper
+from .recommender_system import RecommenderSystem
 from .news_handler import NewsHandler
 from .opinion_handler import OpinionHandler
 from .string_matcher import FuzzyStringMatcher
@@ -281,7 +281,7 @@ class Dbas(object):
 
 		elif 'd' in mode and relation == '':
 			# dont know
-			argument_uid    = RecommenderHelper.get_argument_by_conclusion(statement_or_arg_id, supportive)
+			argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(transaction, argument_uid, has_new_crumbs)
 			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_dont_know_reaction(argument_uid, supportive)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,

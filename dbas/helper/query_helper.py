@@ -14,7 +14,7 @@ from dbas.helper.notification_helper import NotificationHelper
 from dbas.helper.relation_helper import RelationHelper
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid
 from dbas.logger import logger
-from dbas.recommender_system import RecommenderHelper
+from dbas.recommender_system import RecommenderSystem
 from dbas.strings import Translator
 from dbas.url_manager import UrlManager
 from dbas.user_management import UserHandler
@@ -107,7 +107,7 @@ class QueryHelper:
 
 		elif len(new_argument_uids) == 1:
 			new_argument_uid = random.choice(new_argument_uids)
-			arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(new_argument_uid, issue, lang)
+			arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, issue, lang)
 			if arg_id_sys == 0:
 				attack = 'end'
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
@@ -177,7 +177,7 @@ class QueryHelper:
 
 		elif len(new_argument_uids) == 1:
 			new_argument_uid = random.choice(new_argument_uids)
-			arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(new_argument_uid, issue, lang)
+			arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, issue, lang)
 			if arg_id_sys == 0:
 				attack = 'end'
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
