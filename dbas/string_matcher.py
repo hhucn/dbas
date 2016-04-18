@@ -1,3 +1,9 @@
+"""
+Provides methods for comparing strings.
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 import difflib
 
 from collections import OrderedDict
@@ -8,13 +14,17 @@ from .database import DBDiscussionSession
 from .database.discussion_model import Statement, User, TextVersion, Issue
 from .logger import logger
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
-
 
 class FuzzyStringMatcher(object):
+	"""
+	Compares given string with values in the database and returns set of similar string.
+	"""
 
 	def __init__(self):
+		"""
+		Initialize class with default values.
+		:return:
+		"""
 		self.max_count_zeros = 5
 		self.index_zeros = 3
 		self.return_count = 10  # same number as in googles suggest list (16.12.2015)
@@ -23,7 +33,8 @@ class FuzzyStringMatcher(object):
 
 	def get_fuzzy_string_for_start(self, value, issue, is_startpoint):
 		"""
-		Levenshtein FTW: checks different start-position-strings for a match with given value
+		Checks different position-strings for a match with given value
+
 		:param value: string
 		:param issue: int
 		:param is_startpoint: boolean
@@ -45,12 +56,12 @@ class FuzzyStringMatcher(object):
 
 		return self.mechanism, return_dict
 
-	def get_fuzzy_string_for_edits(self, value, statement_uid, issue):
+	def get_fuzzy_string_for_edits(self, value, statement_uid):
 		"""
-		Levenshtein FTW: checks different textversion-strings for a match with given value
+		Checks different textversion-strings for a match with given value
+
 		:param value: string
 		:param statement_uid:
-		:param issue: int
 		:return: dict()
 		"""
 
@@ -76,7 +87,8 @@ class FuzzyStringMatcher(object):
 
 	def get_fuzzy_string_for_reasons(self, value, issue):
 		"""
-		Levenshtein FTW: checks different textversion-string for a match with given value
+		Checks different textversion-strings for a match with given value
+
 		:param value: string
 		:param issue: int
 		:return: dict()
@@ -101,6 +113,7 @@ class FuzzyStringMatcher(object):
 
 	def get_fuzzy_string_for_issues(self, value):
 		"""
+		Checks different issue-strings for a match with given value
 
 		:param value:
 		:return:

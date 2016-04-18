@@ -1,10 +1,13 @@
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 from pyramid.security import Allow, Everyone
 from dbas.views import logger
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 class RootFactory(object):

@@ -8,6 +8,27 @@ function DiscussionBarometer(){
 	 * Displays the barometer
 	 */
 	this.showBarometer = function(){
+		var uid = 0, uids = [];
+		var splitted = window.location.href.split('/');
+		var adress = 'position';
+
+		if (window.location.href.indexOf('/attitude/') != -1){
+			adress = 'attitude';
+			uid = splitted[splitted.length-1];
+			new DiscussionBarometer().ajaxRequest(uid, adress);
+		} else if (window.location.href.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
+			adress = 'statement';
+			$('#discussions-space-list li:not(:last-child) label').each(function(){uids.push($(this).attr('id'));});
+			new DiscussionBarometer().ajaxRequest(uids, adress);
+		} else if (window.location.href.indexOf('/reaction/') != -1){
+			adress = 'argument';
+			uid = splitted[splitted.length-3];
+			new DiscussionBarometer().ajaxRequest(uid, adress);
+		} else {
+			adress = 'position';
+			new DiscussionBarometer().ajaxRequest(uid, adress);
+		}
+
 		/**
 		 * TODO TERESA:
 		 * 1. ajax request
@@ -17,18 +38,37 @@ function DiscussionBarometer(){
 		 * 5. displayConfirmationDialogWithoutCancelAndFunction with html as text and suitable header
 		 */
 
+	};
+
+	this.ajaxRequest = function(uid, adress){
+		var dataString;
+		switch(adress){
+			case 'attitude':
+				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', uids: uid};
+			break;
+			case 'statement':
+				alert(uid);
+				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: uid};
+			break;
+			case 'argument':
+				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', uids: uid};
+			break;
+			default:
+				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uid: uid};
+		}
+
 		$.ajax({
-			url: "ajax_get_user_with_same_opinion",
+			url: 'ajax_get_user_with_same_opinion',
 			type: 'GET',
 			dataType: 'json',
-			data: {uid: 0, is_argument: false},
+			data: dataString,
 			async: true
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data);
 		}).fail(function () {
 			new DiscussionBarometer().callbackIfFailForGetDictionary();
 		});
-	};
+	}
 
 	/**
 	 * Callback if the ajax request was successfull
@@ -36,9 +76,9 @@ function DiscussionBarometer(){
 	 */
 	this.callbackIfDoneForGetDictionary = function(data){
 		var obj;
-
         try{
 	        obj = JSON.parse(data);
+			console.log(obj);
         }catch(e){
 	        // TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
 			alert('parsing-json: ' + e);
@@ -97,4 +137,3 @@ function DiscussionBarometer(){
 		// TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
 	};
 }
-

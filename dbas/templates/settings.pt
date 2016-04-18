@@ -7,8 +7,8 @@
 
 		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
-		<div class="container colored_container" id="first-settings-container">
-			<div class="content row">
+		<div class="container colored-container" id="first-settings-container">
+			<div class="row" style="margin: 1em;">
 				<div class="col-md-7">
 					<h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="personal_information">Personal Information</span></h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
@@ -50,10 +50,15 @@
 							</td>
 						</tr>
 					</table>
-					<div class="center text-center well well-sm">
-						<img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
-						<br>
-						<span class="lead" i18n:translate="profile_picture">Profile Picture</span>
+					<div>
+                        <div class="center text-center" style="float:left; margin: 2em;">
+						    <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
+						    <br>
+						    <span i18n:translate="profile_picture">Profile Picture</span>
+                        </div>
+                        <span i18n:translate="change_gravatar">Change your profile picture on the</span>
+                        <a style="color: #2196f3;" href="https://en.gravatar.com/site/login">Gravatar-Website</a>.
+                        <span i18n:translate="what_is_gravatar">A Gravatar is a Globally Recognized Avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there.</span>
 					</div>
 				</div>
                 </div>
@@ -73,7 +78,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container">
+		<div class="container colored-container">
 			<div class="content row">
 				<div class="col-md-7">
 					<h4><span class="glyphicon glyphicon-asterisk" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="change_password">Change your password</span></h4>
@@ -181,7 +186,7 @@
 			</div>
 		</div>
 
-		<div class="container colored_container">
+		<div class="container colored-container">
 			<div class="content row">
 				<div class="col-md-12">
 					<h4><span class="glyphicon glyphicon-time" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="history">Your last history</span></h4>

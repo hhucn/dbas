@@ -4,7 +4,7 @@
 	<div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="bottom" title="Home"></a>
+				<a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right" title="Home"></a>
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
 					<span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>
 					<span class="icon-bar"></span>
@@ -40,13 +40,13 @@
 				<ul id="navbar-right" class="nav navbar-nav navbar-right">
 
 					<li id="content-link">
-						<a href="${request.application_url}/discuss" data-toggle="tooltip" data-placement="bottom" title="Get the party started" tal:attributes="title extras.buttons.lets_go">
+						<a href="${request.application_url}/discuss" data-toggle="tooltip" data-placement="left" title="Get the party started" tal:attributes="title extras.buttons.lets_go">
 							<img id="header_letsgo" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="lets_go">Let's go</span>
 						</a>
 					</li>
 
 					<li id="news-link">
-						<a href="${request.application_url}/news" data-toggle="tooltip" data-placement="bottom" title="News about D-BAS" tal:attributes="title extras.buttons.news_about_dbas">
+						<a href="${request.application_url}/news" data-toggle="tooltip" data-placement="left" title="News about D-BAS" tal:attributes="title extras.buttons.news_about_dbas">
 							<img id="header_news" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="news">News</span>
 						</a>
 					</li>
@@ -81,7 +81,7 @@
 								</a>
 							</li>
 							<li tal:condition="extras.is_admin">
-								<a href="${request.application_url}/admin" data-toggle="tooltip" data-placement="right" title="Admin">
+								<a href="${request.application_url}/admin/main" data-toggle="tooltip" data-placement="right" title="Admin">
 									<img id="header_admin" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;<span i18n:translate="Admin">Admin</span>
 								</a>
 							</li>
@@ -98,8 +98,8 @@
 							<img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" tal:condition="extras.lang_is_en">
 							<img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" tal:condition="extras.lang_is_de">
 							<!--
-							<img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
-							<img id="switch-lang-indicator-sp" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
+							<img id="switch-lang-indicator-es" src="${request.static_url('dbas:static/images/flag-es-24.png')}">
+							<img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-sw-24.png')}">
 							-->
 							<span i18n:translate="language">Language</span>
 							<span class="caret"></span>
@@ -108,12 +108,8 @@
 							<li tal:attributes="class extras.link_de_class"><a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">Deutsch</a></li>
 							<li tal:attributes="class extras.link_en_class"><a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">English</a></li>
 							<!--
-							<li>
-								<a class="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">Espa&ntilde;ol</a>
-							</li>
-							<li>
-								<a class="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-32.png')}" alt="flag_sw">Svensk</a>
-							</li>
+							<li tal:attributes="class extras.link_es_class"><a id="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">Espa&ntilde;ol</a></li>
+							<li tal:attributes="class extras.link_sw_class"><a id="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-32.png')}" alt="flag_sw">Svensk</a></li>
 							-->
 						</ul>
 					</li>

@@ -1,7 +1,7 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="form container first-container colored_container">
+		<div class="form container first-container colored-container">
 			<h3 i18n:translate="contact_header_1" class="text-center">Get In Touch With Us</h3>
 			<p i18n:translate="contact_header_2" class="text-center">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</p>
 			<br>
@@ -72,5 +72,6 @@
 <script type="text/javascript" src="${request.static_url('dbas:static/js/contact.js')}"></script>
 -->
 		</div>
+		
 	</tal:block>
-	</tal:block>
+</tal:block>

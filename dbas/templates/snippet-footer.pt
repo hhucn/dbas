@@ -20,9 +20,9 @@
 					</a>
 				</li>
 				<li>
-					<a id="link_popup_licence" href="" data-toggle="modal" data-target="#popup_licence">
-						<img id="footer_licence" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
-						<span i18n:translate="licence">Licence</span>
+					<a id="link_popup_license" href="" data-toggle="modal" data-target="#popup_license">
+						<img id="footer_license" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}">&thinsp;
+						<span i18n:translate="license">license</span>
 					</a>
 				</li>
 

@@ -1,3 +1,4 @@
+antiorm==1.2.0
 Babel==2.2.0
 Beaker==1.8.0
 beautifulsoup4==4.4.1
@@ -6,17 +7,21 @@ chardet==2.3.0
 colorama==0.3.7
 cornice==1.2.0
 cryptacular==1.4.1
--e git+gitolite@gitcn.cs.uni-duesseldorf.de:project/dbas@d7ac4879fd7d7e7f368e463416ad440e99b4c5c0#egg=dbas
+db==0.1.1
+db-psycopg2==0.0.7
 docutils==0.12
 html5lib==0.9999999
 lingua==4.8.1
 Mako==1.0.4
 MarkupSafe==0.23
 mock==1.3.0
+oauthlib==1.0.3
 PasteDeploy==1.5.2
 pbkdf2==1.3
 pbr==1.8.1
 polib==1.0.7
+psycopg2==2.6.1
+py==1.4.31
 py3dns==3.1.0
 Pygments==2.1.3
 pyramid==1.6.1
@@ -28,7 +33,8 @@ pyramid-mailer==0.14.1
 pyramid-mako==1.0.2
 pyramid-redis-sessions==1.0.1
 pyramid-tm==0.12.1
-pyshorteners==0.5.3
+pyshorteners==0.5.8
+pytest==2.9.1
 python-Levenshtein==0.12.0
 python-slugify==1.2.0
 pytz==2016.1
@@ -39,11 +45,13 @@ requests==2.9.1
 selenium==2.52.0
 simplejson==3.8.2
 six==1.10.0
+slugify==0.0.1
 splinter==0.7.3
 SQLAlchemy==1.0.12
 stevedore==1.12.0
 transaction==1.4.4
 translationstring==1.3
+unicode-slugify==0.1.3
 Unidecode==0.4.19
 urllib3==1.14
 uWSGI==2.0.12
