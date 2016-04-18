@@ -61,6 +61,7 @@ setup(name='dbas',
 	[console_scripts]
 	initialize_discussion_sql = dbas.database.initializedb:main_discussion
 	reload_discussion_sql = dbas.database.initializedb:main_discussion_reload
+	init_discussion_testvotes = dbas.database.initializedb:main_dummy_votes
 	initialize_news_sql = dbas.database.initializedb:main_news
 	""",
 	)

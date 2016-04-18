@@ -1,5 +1,5 @@
 """
-TODO
+Provides functions for te internal messaging system
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -12,12 +12,14 @@ from sqlalchemy import and_
 
 class NotificationHelper:
 	"""
-	Todo
+	Provides functions for sending several notifications.
 	"""
 
-	def send_edit_text_notification(self, textversion, lang):
+	@staticmethod
+	def send_edit_text_notification(textversion, lang):
 		"""
 		Sends an notification to the root-author and last author, when their text was edited.
+
 		:param textversion: new Textversion
 		:param lang: ui_locales
 		:return: None
@@ -51,9 +53,11 @@ class NotificationHelper:
 
 		DBDiscussionSession.flush()
 
-	def send_welcome_message(self, transaction, user, lang='en'):
+	@staticmethod
+	def send_welcome_message(transaction, user, lang='en'):
 		"""
-		Creates and send the welcome message to a new user
+		Creates and send the welcome message to a new user.
+
 		:param transaction: transaction
 		:param user: User.uid
 		:param lang: ui_locales
@@ -67,9 +71,11 @@ class NotificationHelper:
 		DBDiscussionSession.flush()
 		transaction.commit()
 
-	def count_of_new_notifications(self, user):
+	@staticmethod
+	def count_of_new_notifications(user):
 		"""
 		Returns the count of unread messages of the given user
+
 		:param user: User.nickname
 		:return: integer
 		"""
@@ -80,9 +86,11 @@ class NotificationHelper:
 		else:
 			return 0
 
-	def get_notification_for(self, user):
+	@staticmethod
+	def get_notification_for(user):
 		"""
 		Returns all notifications for the user
+
 		:param user: User.nickname
 		:return: [Notification]
 		"""

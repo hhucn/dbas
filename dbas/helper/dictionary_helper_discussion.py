@@ -116,7 +116,7 @@ class DiscussionDictHelper(object):
 		intro_rev = '' if not is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		url = UrlManager(application_url, slug).get_slug_url(False)
 		question_bubble = self.create_speechbubble_dict(False, True, False, '', '', question + ' <br>' + because, True)
-		if text[:-1] != '.':
+		if not text.endswith(('.', '?', '!')):
 			text += '.'
 		select_bubble = self.create_speechbubble_dict(True, False, False, '', url, intro + '<strong>' + text + '</strong>', False, statement_uid=uid, is_up_vote=is_supportive)
 
@@ -140,7 +140,7 @@ class DiscussionDictHelper(object):
 		self.__append_bubble(bubbles_array, question_bubble)
 
 		if not self.nickname and count_of_items == 1:
-			self.__append_bubble(bubbles_array, self.create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.onlyOneItemWithLink), True))
+			self.__append_bubble(bubbles_array, self.create_speechbubble_dict(False, False, True, 'now', '', _tn.get(_tn.voteCountTextFirst) + '. ' + _tn.get(_tn.onlyOneItemWithLink), True))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 
@@ -390,7 +390,6 @@ class DiscussionDictHelper(object):
 			db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
 			                                                                     VoteStatement.is_up_vote == is_up_vote,
 			                                                                     VoteStatement.is_valid == True)).all()
-
 		_t = Translator(self.lang)
 		diff = 0
 		tmp_nick = self.nickname
@@ -509,11 +508,16 @@ class DiscussionDictHelper(object):
 				content   = h.content
 				rel_arg   = h.related_argument_uid
 				rel_stat  = h.related_statement_uid
-				expr0     = re.search(re.compile(r"/t/"), url)
-				expr1     = re.search(re.compile(r"/t$"), url)
-				group0    = expr0.group(0) if expr0 else None
-				group1    = expr1.group(0) if expr1 else None
-				is_supp   = True if group0 or group1 else False
-				bubble_history.append(self.create_speechbubble_dict(is_user, is_system, is_status, uid, url, content, False, rel_arg, rel_stat, is_supp))
+				if h.related_argument_uid:
+					is_supp = DBDiscussionSession.query(Argument).filter_by(uid=h.related_argument_uid).first().is_supportive
+				else:
+					expr0     = re.search(re.compile(r"/t/"), url)
+					expr1     = re.search(re.compile(r"/t$"), url)
+					group0    = expr0.group(0) if expr0 else None
+					group1    = expr1.group(0) if expr1 else None
+					is_supp   = True if group0 or group1 else False
+				bubble_history.append(self.create_speechbubble_dict(is_user=is_user, is_system=is_system, is_status=is_status,
+				                                                    uid=uid, url=url, message=content, omit_url=False,
+				                                                    argument_uid=rel_arg, statement_uid=rel_stat, is_up_vote=is_supp))
 
 		return bubble_history

@@ -4,133 +4,45 @@ Provides helping function for database querys.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import collections
 import random
-from datetime import datetime
 
 from sqlalchemy import and_, func
 
-from dbas.database import DBDiscussionSession, DBNewsSession
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
-from dbas.database.news_model import News
 from dbas.helper.notification_helper import NotificationHelper
 from dbas.helper.relation_helper import RelationHelper
-from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid
+from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid
 from dbas.logger import logger
+from dbas.recommender_system import RecommenderHelper
 from dbas.strings import Translator
 from dbas.url_manager import UrlManager
 from dbas.user_management import UserHandler
 
+statement_min_length = 10
 
-class QueryHelper(object):
+
+class QueryHelper:
 	"""
-	Todo
+	Provides several functions for setting new statements or arguments, as well as gettinhg logfiles or many information.
 	"""
 
-	def __init__(self):
-		self.__statement_min_length = 5
-		#  self.lang = ''
-		#  TODO move lang here and init translator
-
-	def handle_insert_new_premises_for_argument(self, text, current_attack, arg_uid, issue, user, transaction):
+	@staticmethod
+	def get_infos_about_argument(uid, lang):
 		"""
+		Returns several infos about the argument.
 
-		:param text: String
-		:param current_attack: String
-		:param arg_uid: Argument.uid
-		:param issue: Issue
-		:param user: User.nickname
-		:param transaction: transaction
-		:return:
-		"""
-		logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'def')
-		_rh = RelationHelper()
-
-		statements = self.insert_as_statements(transaction, text, user, issue)
-		if statements == -1:
-			return -1
-
-		# set the new statements as premise group and get current user as well as current argument
-		new_pgroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-
-		new_argument = None
-		if current_attack == 'undermine':
-			new_argument = _rh.set_new_undermine_or_support(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
-
-		elif current_attack == 'support':
-			new_argument, duplicate = _rh.set_new_support(transaction, new_pgroup_uid, current_argument, db_user, issue)
-
-		elif current_attack == 'undercut' or current_attack == 'overbid':
-			new_argument, duplicate = _rh.set_new_undercut_or_overbid(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
-
-		elif current_attack == 'rebut':
-			new_argument, duplicate = _rh.set_new_rebut(transaction, new_pgroup_uid, current_argument, db_user, issue)
-
-		return new_argument.uid
-
-	def set_statement(self, transaction, statement, user, is_start, issue):
-		"""
-		Saves statement for user
-
-		:param transaction: transaction current transaction
-		:param statement: given statement
-		:param user: User.nickname given user
-		:param is_start: if it is a start statement
-		:param issue: Issue
-		:return: Statement, is_duplicate or -1, False on error
-		"""
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) +
-		       ', statement: ' + str(statement) + ', issue: ' + str(issue))
-
-		# escaping
-		statement = escape_string(statement)
-
-		# check for dot at the end
-		if not statement.endswith(('.', '?', '!')):
-			statement += '.'
-		if statement.lower().startswith('because '):
-			statement = statement[8:]
-
-		# check, if the statement already exists
-		db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == func.lower(statement)).first()
-		if db_duplicate:
-			db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == db_duplicate.uid,
-			                                                                Statement.issue_uid == issue)).first()
-			return db_statement, True
-
-		# add the version
-		textversion = TextVersion(content=statement, author=db_user.uid)
-		DBDiscussionSession.add(textversion)
-		DBDiscussionSession.flush()
-
-		# add the statement
-		statement = Statement(textversion=textversion.uid, is_startpoint=is_start, issue=issue)
-		DBDiscussionSession.add(statement)
-		DBDiscussionSession.flush()
-
-		# get the new statement
-		new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == textversion.uid,
-		                                                                 Statement.issue_uid == issue)).order_by(Statement.uid.desc()).first()
-		textversion.set_statement(new_statement.uid)
-
-		transaction.commit()
-
-		return new_statement, False
-
-	def get_infos_about_argument(self, uid, lang):
-		"""
-
-		:param uid:
-		:return:
+		:param uid: Argument.uid
+		:return: dict()
 		"""
 		return_dict = dict()
 		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
 		                                                               VoteArgument.is_valid == True,
 		                                                               VoteStatement.is_up_vote == True)).all()
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+		if not db_argument:
+			return return_dict
+
 		db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
 		return_dict['vote_count'] = str(len(db_votes))
 		return_dict['author']     = db_author.nickname
@@ -150,51 +62,22 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def set_premises_as_group_for_conclusion(self, transaction, user, text, conclusion_id, is_supportive, issue):
+	@staticmethod
+	def process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id, supportive,
+	                                                    issue, user, for_api, mainpage, lang):
 		"""
+		Inserts the given text in premisegroups as new arguments in dependence of the input paramters and returns a URL for forwarding.
 
-		:param transaction: transaction
-		:param user: User.nickname
-		:param text: String
-		:param conclusion_id:
-		:param is_supportive: Boolean
-		:param issue: Issue
-		:return:
-		"""
-		logger('QueryHelper', 'set_premises_as_group_for_conclusion', 'main with text ' + str(text))
-		# current conclusion
-		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
-                                                                         Statement.issue_uid == issue)).first()
-		statements = self.insert_as_statements(transaction, text, user, issue)
-		if statements == -1:
-			return -1
-
-		statement_uids = [s.uid for s in statements]
-
-		# second, set the new statements as premisegroup
-		new_premisegroup_uid = self.__set_statements_as_new_premisegroup(statements, user, issue)
-
-		# third, insert the argument
-		new_argument_uid = self.__set_argument(transaction, user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
-
-		transaction.commit()
-		return new_argument_uid, statement_uids
-
-	def process_input_of_start_premises_and_receive_url(self, transaction, premisegroups, conclusion_id, supportive,
-	                                                    issue, user, for_api, mainpage, lang, recommender_helper):
-		"""
-
-		:param transaction: transaction
-		:param premisegroups:
-		:param conclusion_id:
-		:param supportive:
-		:param issue: Issue
+		:param transaction: Transaction
+		:param premisegroups: [String]
+		:param conclusion_id: Statement.uid
+		:param supportive: Boolean
+		:param issue: Issue.uid
 		:param user: User.nickname
 		:param for_api: Boolean
-		:param mainpage:
+		:param mainpage: URL
 		:param lang: ui_locales
-		:param recommender_helper:
-		:return:
+		:return: URL, [Statement.uids], String
 		"""
 		logger('QueryHelper', 'process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
 		_tn = Translator(lang)
@@ -207,7 +90,7 @@ class QueryHelper(object):
 		new_argument_uids = []
 		new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
 		for group in premisegroups:  # premise groups is a list of lists
-			new_argument_uid, statement_uids = self.set_premises_as_group_for_conclusion(transaction, user, group, conclusion_id, supportive, issue)
+			new_argument_uid, statement_uids = QueryHelper.__create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
@@ -223,8 +106,10 @@ class QueryHelper(object):
 			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
 		elif len(new_argument_uids) == 1:
-			new_argument_uid    = random.choice(new_argument_uids)
-			arg_id_sys, attack  = recommender_helper.get_attack_for_argument(new_argument_uid, issue, lang)
+			new_argument_uid = random.choice(new_argument_uids)
+			arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(new_argument_uid, issue, lang)
+			if arg_id_sys == 0:
+				attack = 'end'
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 
 		else:
@@ -235,26 +120,28 @@ class QueryHelper(object):
 
 		return url, new_statement_uids, error
 
-	def process_input_of_premises_for_arguments_and_receive_url(self, transaction, arg_id, attack_type, premisegroups,
-	                                                            issue, user, for_api, mainpage, lang, recommender_helper):
+	@staticmethod
+	def process_input_of_premises_for_arguments_and_receive_url(transaction, arg_id, attack_type, premisegroups,
+	                                                            issue, user, for_api, mainpage, lang):
 		"""
+		Inserts the given text in premisegroups as new arguments in dependence of the input paramters and returns a URL for forwarding.
 
 		.. note::
 
 			Optimize the "for_api" part
 
 		:param transaction: transaction
-		:param arg_id:
-		:param attack_type:
-		:param premisegroups:
-		:param issue: Issue
+		:param arg_id: Argument.uid
+		:param attack_type: String
+		:param premisegroups: [Strings]
+		:param issue: Issue.uid
 		:param user: User.nickname
 		:param for_api: Boolean
-		:param mainpage:
+		:param mainpage: URL
 		:param lang: ui_locales
-		:param recommender_helper:
-		:return:
+		:return: URL, [Statement.uids], String
 		"""
+		logger('QueryHelper', 'process_input_of_premises_for_arguments_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
 		_tn = Translator(lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 		error = ''
@@ -263,21 +150,21 @@ class QueryHelper(object):
 
 		# insert all premise groups into our database
 		# all new arguments are collected in a list
-		new_arguments = []
+		new_argument_uids = []
 		for group in premisegroups:  # premise groups is a list of lists
-			new_argument_uid = self.handle_insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
+			new_argument_uid = QueryHelper.__insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 				return -1, error
-			new_arguments.append(new_argument_uid)
+			new_argument_uids.append(new_argument_uid)
 
 		statement_uids = []
 		if for_api:
 			# @OPTIMIZE
 			# Query all recently stored premises (internally: statements) and collect their ids
 			# This is a bad workaround, let's just think about it in future.
-			for argument in new_arguments:
-				current_pgroup = DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid
+			for uid in new_argument_uids:
+				current_pgroup = DBDiscussionSession.query(Argument).filter_by(uid=uid).first().premisesgroup_uid
 				current_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_pgroup).all()
 				for premise in current_premises:
 					statement_uids.append(premise.statement_uid)
@@ -285,20 +172,19 @@ class QueryHelper(object):
 		# #arguments=0: empty input
 		# #arguments=1: deliver new url
 		# #arguments>1: deliver url where the user has to choose between her inputs
-		if len(new_arguments) == 0:
+		if len(new_argument_uids) == 0:
 			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
 
-		elif len(new_arguments) == 1:
-			new_argument_uid = random.choice(new_arguments)
-			arg_id_sys, attack = recommender_helper.get_attack_for_argument(new_argument_uid, issue, lang)
+		elif len(new_argument_uids) == 1:
+			new_argument_uid = random.choice(new_argument_uids)
+			arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(new_argument_uid, issue, lang)
 			if arg_id_sys == 0:
 				attack = 'end'
-
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
 		else:
 			pgroups = []
-			for argument in new_arguments:
-				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=argument).first().premisesgroup_uid)
+			for uid in new_argument_uids:
+				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=uid).first().premisesgroup_uid)
 
 			current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_id).first()
 			# relation to the arguments premise group
@@ -320,7 +206,8 @@ class QueryHelper(object):
 
 		return url, statement_uids, error
 
-	def correct_statement(self, transaction, user, uid, corrected_text, lang):
+	@staticmethod
+	def correct_statement(transaction, user, uid, corrected_text, lang):
 		"""
 		Corrects a statement
 
@@ -338,7 +225,7 @@ class QueryHelper(object):
 		if not db_user:
 			return -1
 
-		if corrected_text.endswith(('.', '?', '!')):
+		while corrected_text.endswith(('.', '?', '!')):
 			corrected_text = corrected_text[:-1]
 
 		# duplicate check
@@ -355,7 +242,7 @@ class QueryHelper(object):
 			DBDiscussionSession.add(textversion)
 			DBDiscussionSession.flush()
 
-			NotificationHelper().send_edit_text_notification(textversion, lang)
+			NotificationHelper.send_edit_text_notification(textversion, lang)
 
 		db_statement.set_textversion(textversion.uid)
 		transaction.commit()
@@ -364,38 +251,42 @@ class QueryHelper(object):
 		return_dict['text'] = corrected_text
 		return return_dict
 
-	def insert_as_statements(self, transaction, text_list, user, issue, is_start=False):
+	@staticmethod
+	def insert_as_statements(transaction, text_list, user, issue, is_start=False):
 		"""
+		Inserts the given texts as statements and returns the uids
 
 		:param transaction: transaction
-		:param text_list:
+		:param text_list: [String]
 		:param user: User.nickname
 		:param issue: Issue
 		:param is_start: Boolean
-		:return:
+		:return: [Statement]
 		"""
 		statements = []
 		if isinstance(text_list, list):
 			for text in text_list:
-				if len(text) < self.__statement_min_length:
+				if len(text) < statement_min_length:
 					return -1
 				else:
-					new_statement, is_duplicate = self.set_statement(transaction, text, user, is_start, issue)
+					new_statement, is_duplicate = QueryHelper.__set_statement(transaction, text, user, is_start, issue)
 					statements.append(new_statement)
 		else:
-			if len(text_list) < self.__statement_min_length:
+			if len(text_list) < statement_min_length:
 				return -1
 			else:
-				new_statement, is_duplicate = self.set_statement(transaction, text_list, user, is_start, issue)
+				new_statement, is_duplicate = QueryHelper.__set_statement(transaction, text_list, user, is_start, issue)
 				statements.append(new_statement)
 		return statements
 
-	def get_every_attack_for_island_view(self, arg_uid, lang):
+	@staticmethod
+	def get_every_attack_for_island_view(arg_uid, lang):
 		"""
+		Select and returns every argument with an relation to the given Argument.uid
 
 		:param arg_uid: Argument.uid
 		:param lang: ui_locales
-		:return:
+		:return: dict()
 		"""
 		logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
 		return_dict = {}
@@ -461,7 +352,98 @@ class QueryHelper(object):
 
 		return return_dict
 
-	def __get_attack_or_support_for_justification_of_argument_uid(self, argument_uid, is_supportive, lang):
+	@staticmethod
+	def __insert_new_premises_for_argument(text, current_attack, arg_uid, issue, user, transaction):
+		"""
+
+		:param text: String
+		:param current_attack: String
+		:param arg_uid: Argument.uid
+		:param issue: Issue
+		:param user: User.nickname
+		:param transaction: transaction
+		:return:
+		"""
+		logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'def')
+		_rh = RelationHelper()
+
+		statements = QueryHelper.insert_as_statements(transaction, text, user, issue)
+		if statements == -1:
+			return -1
+
+		# set the new statements as premise group and get current user as well as current argument
+		new_pgroup_uid = QueryHelper.__set_statements_as_new_premisegroup(statements, user, issue)
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
+
+		new_argument = None
+		if current_attack == 'undermine':
+			new_argument = _rh.set_new_undermine_or_support(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
+
+		elif current_attack == 'support':
+			new_argument, duplicate = _rh.set_new_support(transaction, new_pgroup_uid, current_argument, db_user, issue)
+
+		elif current_attack == 'undercut' or current_attack == 'overbid':
+			new_argument, duplicate = _rh.set_new_undercut_or_overbid(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
+
+		elif current_attack == 'rebut':
+			new_argument, duplicate = _rh.set_new_rebut(transaction, new_pgroup_uid, current_argument, db_user, issue)
+
+		return new_argument.uid
+
+	@staticmethod
+	def __set_statement(transaction, statement, user, is_start, issue):
+		"""
+		Saves statement for user
+
+		:param transaction: transaction current transaction
+		:param statement: given statement
+		:param user: User.nickname given user
+		:param is_start: if it is a start statement
+		:param issue: Issue
+		:return: Statement, is_duplicate or -1, False on error
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) +
+		       ', statement: ' + str(statement) + ', issue: ' + str(issue))
+
+		# escaping
+		statement = escape_string(statement)
+
+		# check for dot at the end
+		if not statement.endswith(('.', '?', '!')):
+			statement += '.'
+		if statement.lower().startswith('because '):
+			statement = statement[8:]
+
+		# check, if the statement already exists
+		db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == func.lower(statement)).first()
+		if db_duplicate:
+			db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == db_duplicate.uid,
+			                                                                Statement.issue_uid == issue)).first()
+			return db_statement, True
+
+		# add textversion
+		textversion = TextVersion(content=statement, author=db_user.uid)
+		DBDiscussionSession.add(textversion)
+		DBDiscussionSession.flush()
+
+		# add statement
+		statement = Statement(textversion=textversion.uid, is_startpoint=is_start, issue=issue)
+		DBDiscussionSession.add(statement)
+		DBDiscussionSession.flush()
+
+		# get new statement
+		new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == textversion.uid,
+		                                                                 Statement.issue_uid == issue)).order_by(Statement.uid.desc()).first()
+		textversion.set_statement(new_statement.uid)
+
+		transaction.commit()
+
+		return new_statement, False
+
+	@staticmethod
+	def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive, lang):
 		"""
 
 		:param argument_uid: Argument.uid
@@ -491,7 +473,38 @@ class QueryHelper(object):
 		return return_array
 
 	@staticmethod
-	def __set_argument(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
+	def __create_argument_by_raw_input(transaction, user, text, conclusion_id, is_supportive, issue):
+		"""
+
+		:param transaction: transaction
+		:param user: User.nickname
+		:param text: String
+		:param conclusion_id:
+		:param is_supportive: Boolean
+		:param issue: Issue
+		:return:
+		"""
+		logger('QueryHelper', 'set_premises_as_group_for_conclusion', 'main with text ' + str(text))
+		# current conclusion
+		db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
+                                                                         Statement.issue_uid == issue)).first()
+		statements = QueryHelper.insert_as_statements(transaction, text, user, issue)
+		if statements == -1:
+			return -1
+
+		statement_uids = [s.uid for s in statements]
+
+		# second, set the new statements as premisegroup
+		new_premisegroup_uid = QueryHelper.__set_statements_as_new_premisegroup(statements, user, issue)
+
+		# third, insert the argument
+		new_argument_uid = QueryHelper.__create_argument_by_uids(transaction, user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
+
+		transaction.commit()
+		return new_argument_uid, statement_uids
+
+	@staticmethod
+	def __create_argument_by_uids(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
 		"""
 
 		:param transaction: transaction
@@ -503,7 +516,7 @@ class QueryHelper(object):
 		:param issue: Issue.uid
 		:return:
 		"""
-		logger('QueryHelper', '__set_argument', 'main with user: ' + str(user) +
+		logger('QueryHelper', '__create_argument_by_uids', 'main with user: ' + str(user) +
 		       ', premisegroup_uid: ' + str(premisegroup_uid) +
 		       ', conclusion_uid: ' + str(conclusion_uid) +
 		       ', argument_uid: ' + str(argument_uid) +
@@ -531,15 +544,14 @@ class QueryHelper(object):
                                                                            Argument.issue_uid == issue)).first()
 		transaction.commit()
 		if new_argument:
-			logger('QueryHelper', '__set_argument', 'argument was inserted')
-			logger('QueryHelper', '__set_argument', 'argument was inserted')
+			logger('QueryHelper', '__create_argument_by_uids', 'argument was inserted')
 			return new_argument.uid
 		else:
-			logger('QueryHelper', '__set_argument', 'argument was not inserted')
-			logger('QueryHelper', '__set_argument', 'argument was not inserted')
+			logger('QueryHelper', '__create_argument_by_uids', 'argument was not inserted')
 			return None
 
-	def __set_statements_as_new_premisegroup(self, statements, user, issue):
+	@staticmethod
+	def __set_statements_as_new_premisegroup(statements, user, issue):
 		"""
 
 		:param statements:
@@ -586,78 +598,3 @@ class QueryHelper(object):
 		db_premisegroup = DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).order_by(PremiseGroup.uid.desc()).first()
 
 		return db_premisegroup.uid
-
-	# ########################################
-	# STATEMENT INTERACTION
-	# ########################################
-
-	# ########################################
-	# NEWS
-	# ########################################
-
-	@staticmethod
-	def set_news(transaction, title, text, user):
-		"""
-		Sets a new news into the news table
-
-		:param transaction: transaction current transaction
-		:param title: news title
-		:param text: String news text
-		:param user: User.nickname self.request.authenticated_userid
-		:return: dictionary {title,date,author,news}
-		"""
-		logger('QueryHelper', 'set_news', 'def')
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		author = db_user.firstname if db_user.firstname == 'admin' else db_user.firstname + ' ' + db_user.surname
-		now = datetime.now()
-		day = str(now.day) if now.day > 9 else ('0' + str(now.day))
-		month = str(now.month) if now.month > 9 else ('0' + str(now.month))
-		date = day + '.' + month + '.' + str(now.year)
-		news = News(title=title, author=author, date=date, news=text)
-
-		DBNewsSession.add(news)
-		DBNewsSession.flush()
-
-		db_news = DBNewsSession.query(News).filter_by(title=title).first()
-		return_dict = dict()
-
-		if db_news:
-			return_dict['status'] = '1'
-		else:
-
-			return_dict['status'] = '-'
-
-		transaction.commit()
-
-		return_dict['title'] = title
-		return_dict['date'] = date
-		return_dict['author'] = author
-		return_dict['news'] = text
-
-		return return_dict
-
-	@staticmethod
-	def get_news():
-		"""
-		Returns all news in a dictionary, sorted by date
-		:return: dict()
-		"""
-		logger('QueryHelper', 'get_news', 'main')
-		db_news = DBNewsSession.query(News).all()
-		ret_dict = dict()
-		for index, news in enumerate(db_news):
-			news_dict = dict()
-			news_dict['title'] = news.title
-			news_dict['author'] = news.author
-			news_dict['date'] = news.date
-			news_dict['news'] = news.news
-			news_dict['uid'] = str(news.uid)
-			# string date into date
-			date_object = datetime.strptime(str(news.date), '%d.%m.%Y')
-			# add index on the seconds for unique id's
-			sec = (date_object - datetime(1970, 1, 1)).total_seconds() + index
-			ret_dict[str(sec)] = news_dict
-
-		ret_dict = collections.OrderedDict(sorted(ret_dict.items()))
-
-		return ret_dict

@@ -10,14 +10,13 @@ which can then be used in external websites.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import json
-from urllib.parse import urlparse
 
-from api.login import valid_token, validate_credentials, validate_login
+from api.login import validate_credentials, validate_login
 from cornice import Service
 from dbas.views import Dbas
 
 from .lib import HTTP204, debug_end, debug_start, flatten, json_bytes_to_dict, logger
-from .references import get_references_for_url, store_reference
+from .references import get_references_for_url, store_reference, url_to_statement
 
 log = logger()
 
@@ -140,12 +139,14 @@ def prepare_data_assign_reference(request, func):
 		api_data.update(data)
 		return_dict_json = func(for_api=True, api_data=api_data)
 		return_dict = json.loads(return_dict_json)
-
 		statement_uids = flatten(return_dict["statement_uids"])
 		if type(statement_uids) is int:
 			statement_uids = [statement_uids]
 
-		list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
+		if statement_uids:
+			list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
+		else:
+			log.error("[API/Reference] No statement_uids provided.")
 		return return_dict_json
 	else:
 		raise HTTP204()
@@ -153,7 +154,7 @@ def prepare_data_assign_reference(request, func):
 
 def parse_host_and_path(request):
 	"""
-	Given the visitors referer link from *request*, parse the host and path to the article.
+	Prepare provided host and path of external article.
 
 	:param request: request
 	:return: host and path parsed from request
@@ -288,10 +289,14 @@ def get_references(request):
 	"""
 	host, path = parse_host_and_path(request)
 	if host and path:
+		refs = []
 		log.debug("[API/Reference] Returning references for %s%s" % (host, path))
-		refs_obj = get_references_for_url(host, path)
-		refs = [ref.reference for ref in refs_obj]
-		return {"references": refs}
+		refs_db = get_references_for_url(host, path)
+		if refs_db:
+			for ref in refs_db:
+				url = url_to_statement(ref.issue_uid, ref.statement_uid)
+				refs.append({"uid": ref.uid, "text": ref.reference, "url": url})
+			return {"references": refs}
 	else:
 		return {"status": "error", "message": "Could not parse your origin"}
 
@@ -300,7 +305,7 @@ def get_references(request):
 # USER MANAGEMENT
 # =============================================================================
 
-@login.get(validators=valid_token)  # TODO test this permission='use'
+@login.get()  # TODO test this permission='use'
 def testing(request):
 	"""
 	Test user's credentials, return success if valid token and username is provided.

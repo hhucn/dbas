@@ -172,6 +172,7 @@ class FrontendTests:
 		success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for demo discussion with all functions', self.__test_functions_while_discussion, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for right negatives', self.__test_right_negatives, self.browser_style)
 		end = time.time()
 
 		diff = str(end - start)
@@ -291,7 +292,7 @@ class FrontendTests:
 			b.visit(p)
 			test = 'testing ' + tests[index] + ' page'
 			success = success and Helper.check_for_present_text(b, texts[index], test)
-			time.sleep(waittime*10)
+			time.sleep(waittime * 10)
 
 		b.quit()
 		return 1 if success else 0
@@ -365,7 +366,7 @@ class FrontendTests:
 		b = Browser(browser)
 
 		b.visit(mainpage)
-		success = Helper.check_for_present_text(b, 'part of the graduate', 'check englisch language')
+		success = Helper.check_for_present_text(b, 'part of the graduate', 'check english language')
 
 		b.click_link_by_partial_text('Language')
 		b.click_link_by_partial_text('Deutsch')
@@ -373,7 +374,7 @@ class FrontendTests:
 
 		b.click_link_by_partial_text('Sprache')
 		b.click_link_by_partial_text('English')
-		success = success and Helper.check_for_present_text(b, 'part of the graduate', 'check switch back to englisch language')
+		success = success and Helper.check_for_present_text(b, 'part of the graduate', 'check switch back to english language')
 
 		b.quit()
 		return 1 if success else 0
@@ -402,15 +403,16 @@ class FrontendTests:
 		b.find_by_id('edit-statement').click()
 		success = success and Helper.check_for_present_text(b, 'Edit Statements / View Changelog', 'check for edit statements popup')
 		b.find_by_id('popup-edit-statement-close').click()
-		time.sleep(waittime)
+		time.sleep(2 * waittime)
 
 		# check issue dropdown and switch issue
 		b.find_by_id('issue-dropdown').click()
 		success = success and Helper.check_for_present_text(b, 'Cat or Dog', 'check for issue dropdown')
-		b.find_by_css('.dropdown-menu li.enabled').click()
-		success = success and Helper.check_for_present_text(b, 'Change of discussion', 'check for topic list')
-		b.find_by_id('confirm-dialog-checkbox-accept-btn').click()
-		time.sleep(waittime)
+		b.find_by_css('.dropdown-menu li.enabled a').click()
+		if b.is_text_present('Change of discussion'):
+			success = success and Helper.check_for_present_text(b, 'Change of discussion', 'check for change topic popup')
+			b.find_by_id('confirm-dialog-checkbox-accept-btn').click()
+			time.sleep(waittime)
 		success = success and Helper.check_for_present_text(b, 'Your familiy argues', 'check for switched issue')
 
 		# check finish
@@ -552,30 +554,48 @@ class FrontendTests:
 		b.quit()
 		return 1 if success else 0
 
+	@staticmethod
+	def __test_right_negatives(browser):
+		"""
+		Checks the right negatives in D-BAS
+		:param browser: current browser
+		:return: 1 if success else 0
+		"""
+		print('Starting tests for demo_discussion:')
+		success = True
+		b = Browser(browser)
+		b = Helper.login(b, nickname, password, mainpage + 'discussion')
 
-print('Please choose a webbrowser:')
-print('  [b]reak')
-print('  [c]hrome  (experimental)')
-print('  [f]irefox (default)')
-input_var = input("Enter: ")
+		# Todo
 
-if str(input_var) != 'b':
-	webdriver = 'chrome' if str(input_var) == 'c' else 'firefox'
+		b = Helper.logout(b)
+		b.quit()
+		return 1 if success else 0
 
-	print('')
-	print('-> Tests will be done with ' + webdriver)
-	print('')
+if __name__ == "__main__":
+	print('Please choose a webbrowser:')
+	print('  [b]reak')
+	print('  [c]hrome  (experimental)')
+	print('  [f]irefox (default)')
+	input_var = input("Enter: ")
 
-	try:
-		frontendtests = FrontendTests(webdriver)
-		frontendtests.run_all_tests()
-	except ConnectionResetError as e1:
-		print('  Server is offline found: ' + str(e1))
-	except FileNotFoundError as e2:
-		print('FileNotFoundError found: ' + str(e2))
-	except AttributeError as e3:
-		print('AttributeError found: ' + str(e3))
-	except WebDriverException as e4:
-		print('WebDriverException found: ' + str(e4))
-	except KeyboardInterrupt as e5:
-		print('Exit through KeyboardInterrupt')
+	if str(input_var) != 'b':
+		webdriver = 'chrome' if str(input_var) == 'c' else 'firefox'
+
+		print('')
+		print('-> Tests will be done with ' + webdriver)
+		print('')
+
+		try:
+			frontendtests = FrontendTests(webdriver)
+			frontendtests.run_all_tests()
+		except ConnectionResetError as e1:
+			print('  Server is offline found: ' + str(e1))
+		except FileNotFoundError as e2:
+			print('FileNotFoundError found: ' + str(e2))
+		except AttributeError as e3:
+			print('AttributeError found: ' + str(e3))
+		except WebDriverException as e4:
+			print('WebDriverException found: ' + str(e4))
+		except KeyboardInterrupt as e5:
+			print('Exit through KeyboardInterrupt')

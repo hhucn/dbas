@@ -128,6 +128,7 @@ var languageCouldNotBeSwitched 						= 'languageCouldNotBeSwitched';
 var last_action 									= 'last_action';
 var last_login 										= 'last_login';
 var logfile											= 'logfile';
+var login											= 'login';
 var letsGo 											= 'letsGo';
 var listOfDoneEdits                                 = 'listOfDoneEdits';
 var listOfPostedStatements                          = 'listOfPostedStatements';
@@ -188,6 +189,7 @@ var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
 var typeofVote                                      = 'typeofVote';
+var usersWithSameOpinion                            = 'usersWithSameOpinion';
 var veryweak 										= 'veryweak';
 var valid    										= 'valid';
 var weak 											= 'weak';
@@ -281,6 +283,7 @@ var dbas_en = {
 	'last_action': 'Last Action',
 	'last_login': 'Last Login',
 	'logfile': 'Logfile for',
+	'login': 'Log In',
 	'letsGo': 'Click here to start now!',
 	'listOfPostedStatements': 'This is a list of all posted statements:',
 	'listOfDoneEdits': 'This is a list of all edits:',
@@ -341,6 +344,7 @@ var dbas_en = {
 	'showMeAnArgumentFor': 'Show me an argument for',
 	'text': 'Text',
 	'typeofVote': 'Agree / Disagree',
+	'usersWithSameOpinion': 'Users with same opinion',
 	'valid': 'Valid',
 	'veryweak': 'very weak',
 	'weak': 'weak'
@@ -417,6 +421,7 @@ var dbas_de = {
 	'last_action': 'Letzte Aktion',
 	'last_login': 'Letze Anmeldung',
 	'logfile': 'Logdatei für',
+	'Login': 'Login',
 	'letsGo': 'Wenn Sie direkt starten möchten, klicken Sie bitte hier!',
 	'listOfPostedStatements': 'Dies ist eine Liste von allen gemachten Aussagen:',
 	'listOfDoneEdits': 'Dies ist eine Liste von allen Änderungen:',
@@ -476,6 +481,7 @@ var dbas_de = {
 	'surname': 'Nachname',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
+	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'typeofVote': 'Zustimmung/Ablehnung',
 	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',
