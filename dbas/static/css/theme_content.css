@@ -12,6 +12,10 @@
 	text-align: center;
 }
 
+#header-container .tooltip{
+    width: 150px;
+}
+
 #discussions-space{
 	margin-top: 25px;
 }
@@ -188,6 +192,16 @@
 	float: left;
 }
 
+
+.icon-rem-premise{
+	height: 30px;
+	display:none;
+	padding-right: 0.5em;
+}
+.icon-add-premise{
+	height: 30px;
+}
+
 #opinion-barometer-img{
 	width: 80px;
 }
@@ -197,9 +211,6 @@
 	visibility: hidden;
 }
 
-#report-statement{	background:url(../images/glyphicons_free/glyphicons/glyphicons-197-circle-exclamation-mark.png) no-repeat;
-	background-repeat: no-repeat;
-}
 
 .display-style-menu-icon {
 	opacity: 0;
@@ -224,6 +235,9 @@
    -webkit-transition: opacity .45s ease-in-out;
 }
 
+#site-navigation{
+    padding-left: 0;
+}
 #site-navigation .tooltip {
 	width: 150px;
 }
@@ -233,7 +247,8 @@
 	text-align: right;
 	padding-left: 0;
 }
-#discussion-sidebar ul{
+#discussion-sidebar ul,
+#site-navigation ul{
 	list-style-type: none;
 }
 
@@ -270,7 +285,6 @@
 .line-wrapper-r>a,
 .line-wrapper-l>p,
 .line-wrapper-r>p{
-    min-width: 40%;
     max-width: 55%;
 }
 .triangle-gravatar-l,
@@ -280,6 +294,12 @@
 .triangle-gravatar-r,
 .line-wrapper-r>a{
 	float: right;
+}
+
+.triangle-l a,
+.triangle-r a,
+.triangle-m a{
+    color: black;
 }
 
 .triangle-l,
@@ -342,12 +362,38 @@
     /*box-shadow: -1px 1px 1px 0 rgba(0, 0, 0, 0.4);*/
 }
 
+.triangle-r-info,
+.triangle-r-info-nohover{
+    color: grey;
+    float:right;
+    font-size: 12px;
+}
+
 .triangle-gravatar-r,
 .triangle-gravatar-l{
     width: 2em;
     margin: 0.5em;
     border-radius: 5px;
     border: 1px solid rgba(0, 0, 0, 0.7);
+}
+
+#question-bubble{
+	cursor: help;
+}
+
+.triangle-l a:hover,
+.triangle-r a:hover,
+.triangle-m a:hover,
+.triangle-r-info:hover,
+#question-bubble:hover{
+    color: #2196f3;
+    text-decoration: none;
+}
+.triangle-m a{
+	text-decoration: underline;
+}
+.triangle-r-info:hover{
+    cursor: help;
 }
 
 @media (max-width: 767px) {

@@ -1,14 +1,15 @@
-import sqlalchemy as sa
+"""
+TODO
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
+
 
 from slugify import slugify
-
-from sqlalchemy import func
+from sqlalchemy import func, Integer, Text, DateTime, Boolean, Column, ForeignKey
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.orm import relationship
 from dbas.database import DBDiscussionSession, DiscussionBase
-
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
 
 
 class Issue(DiscussionBase):
@@ -17,17 +18,21 @@ class Issue(DiscussionBase):
 	Each issue has text and a creation date
 	"""
 	__tablename__ = 'issues'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	title = sa.Column(sa.Text, nullable=False)
-	info = sa.Column(sa.Text, nullable=False)
-	date = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	uid = Column(Integer, primary_key=True)
+	title = Column(Text, nullable=False)
+	info = Column(Text, nullable=False)
+	date = Column(DateTime(timezone=True), default=func.now())
+	author_uid = Column(Integer, ForeignKey('users.uid'))
 
-	def __init__(self, title, info):
+	users = relationship('User', foreign_keys=[author_uid])
+
+	def __init__(self, title, info, author_uid):
 		"""
 		Initializes a row in current position-table
 		"""
 		self.title = title
 		self.info = info
+		self.author_uid = author_uid
 
 	@classmethod
 	def by_text(cls):
@@ -44,8 +49,8 @@ class Group(DiscussionBase):
 	Each group has a name
 	"""
 	__tablename__ = 'groups'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	name = sa.Column(sa.Text, nullable=False, unique=True)
+	uid = Column(Integer, primary_key=True)
+	name = Column(Text, nullable=False, unique=True)
 
 	def __init__(self, name):
 		"""
@@ -62,27 +67,27 @@ class Group(DiscussionBase):
 class User(DiscussionBase):
 	"""
 	User-table with several columns.
-	Each user has a firsstname, lastname, email, password, belongs to a group and has a last loggin date
+	Each user has a firstname, lastname, email, password, belongs to a group and has a last login date
 	"""
 	__tablename__ = 'users'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	firstname = sa.Column(sa.Text, nullable=False)
-	surname = sa.Column(sa.Text, nullable=False)
-	nickname = sa.Column(sa.Text, nullable=False)
-	email = sa.Column(sa.Text, nullable=False, unique=True)
-	gender = sa.Column(sa.Text, nullable=False)
-	password = sa.Column(sa.Text, nullable=False)
-	group_uid = sa.Column(sa.Integer, sa.ForeignKey('groups.uid'))
-	last_action = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	last_login = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	registered = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	token = sa.Column(sa.Text, nullable=True)
-	token_timestamp = sa.Column(sa.DateTime(timezone=True), nullable=True)
-	keep_logged_in = sa.Column(sa.Boolean, nullable=False)
+	uid = Column(Integer, primary_key=True)
+	firstname = Column(Text, nullable=False)
+	surname = Column(Text, nullable=False)
+	nickname = Column(Text, nullable=False)
+	email = Column(Text, nullable=False, unique=True)
+	gender = Column(Text, nullable=False)
+	password = Column(Text, nullable=False)
+	group_uid = Column(Integer, ForeignKey('groups.uid'))
+	last_action = Column(DateTime(timezone=True), default=func.now())
+	last_login = Column(DateTime(timezone=True), default=func.now())
+	registered = Column(DateTime(timezone=True), default=func.now())
+	token = Column(Text, nullable=True)
+	token_timestamp = Column(DateTime(timezone=True), nullable=True)
+	keep_logged_in = Column(Boolean, nullable=False)
 
 	groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
-	def __init__(self, firstname, surname, nickname, email, password, gender, group=0, token='', token_timestamp=None, keep_logged_in=False):
+	def __init__(self, firstname, surname, nickname, email, password, gender, group, token='', token_timestamp=None, keep_logged_in=False):
 		"""
 		Initializes a row in current user-table
 		"""
@@ -130,9 +135,9 @@ class Settings(DiscussionBase):
 	Settings-table with several columns.
 	"""
 	__tablename__ = 'settings'
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'), nullable=True, primary_key=True)
-	should_send_mails = sa.Column(sa.Boolean, nullable=False)
-	should_send_notifications = sa.Column(sa.Boolean, nullable=False)
+	author_uid = Column(Integer, ForeignKey('users.uid'), nullable=True, primary_key=True)
+	should_send_mails = Column(Boolean, nullable=False)
+	should_send_notifications = Column(Boolean, nullable=False)
 
 	def __init__(self, author_uid, send_mails, send_notifications):
 		"""
@@ -155,15 +160,15 @@ class Statement(DiscussionBase):
 	Each statement has link to its text
 	"""
 	__tablename__ = 'statements'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	textversion_uid = sa.Column(sa.Integer, sa.ForeignKey('textversions.uid'))
-	is_startpoint = sa.Column(sa.Boolean, nullable=False)
-	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
+	uid = Column(Integer, primary_key=True)
+	textversion_uid = Column(Integer, ForeignKey('textversions.uid'))
+	is_startpoint = Column(Boolean, nullable=False)
+	issue_uid = Column(Integer, ForeignKey('issues.uid'))
 
 	textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, textversion, is_startpoint, issue=0):
+	def __init__(self, textversion, is_startpoint, issue):
 		"""
 
 		:param textversion:
@@ -180,22 +185,60 @@ class Statement(DiscussionBase):
 		self.textversion_uid = uid
 
 
+class StatementReferences(DiscussionBase):
+	"""
+	From API: Reference to be stored and assigned to a statement.
+	"""
+	__tablename__ = 'statement_references'
+	uid = Column(Integer, primary_key=True)
+	reference = Column(Text, nullable=False)
+	host = Column(Text, nullable=False)
+	path = Column(Text, nullable=False)
+	author_uid = Column(Integer, ForeignKey('users.uid'), nullable=False)
+	statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
+	issue_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
+	created = Column(DateTime(timezone=True), default=func.now())
+
+	statements = relationship('Statement', foreign_keys=[statement_uid])
+	users = relationship('User', foreign_keys=[author_uid])
+	issues = relationship('Issue', foreign_keys=[issue_uid])
+
+	def __init__(self, reference, host, path, author_uid, statement_uid, issue_uid):
+		"""
+		Create Reference.
+
+		:param reference:
+		:param host:
+		:param path:
+		:param author_uid:
+		:param statement_uid:
+		:param issue_uid:
+		:return:
+		"""
+		self.reference = reference
+		self.host = host
+		self.path = path
+		self.author_uid = author_uid
+		self.statement_uid = statement_uid
+		self.issue_uid = issue_uid
+
+
 class TextVersion(DiscussionBase):
 	"""
 	TextVersions-table with several columns.
 	Each text versions has link to the recent link and fields for content, author, timestamp and weight
 	"""
 	__tablename__ = 'textversions'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'), nullable=True)
-	content = sa.Column(sa.Text, nullable=False)
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
+	uid = Column(Integer, primary_key=True)
+	statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
+	content = Column(Text, nullable=False)
+	author_uid = Column(Integer, ForeignKey('users.uid'))
+	timestamp = Column(DateTime(timezone=True), default=func.now())
 
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, content, author):
+	def __init__(self, content, author, statement_uid=None):
 		"""
 		Initializes a row in current text versions-table
 		:param content:
@@ -205,14 +248,15 @@ class TextVersion(DiscussionBase):
 		self.content = content
 		self.author_uid = author
 		self.timestamp = func.now()
+		self.statement_uid = statement_uid
 
-	def set_statement(self, value):
-		self.statement_uid = value
+	def set_statement(self, statement_uid):
+		"""
 
-	@classmethod
-	def by_timestamp(cls):
-		"""Return a query of text versions sorted by timestamp."""
-		return DBDiscussionSession.query(TextVersion).order_by(TextVersion.timestamp)
+		:param statement_uid:
+		:return:
+		"""
+		self.statement_uid = statement_uid
 
 
 class PremiseGroup(DiscussionBase):
@@ -221,14 +265,15 @@ class PremiseGroup(DiscussionBase):
 	Each premisesGroup has a id and an author
 	"""
 	__tablename__ = 'premisegroups'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
+	uid = Column(Integer, primary_key=True)
+	author_uid = Column(Integer, ForeignKey('users.uid'))
 
 	users = relationship('User', foreign_keys=[author_uid])
 
 	def __init__(self, author):
 		"""
 		Initializes a row in current premisesGroup-table
+
 		:param author:
 		:return:
 		"""
@@ -241,12 +286,12 @@ class Premise(DiscussionBase):
 	Each premises has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
 	"""
 	__tablename__ = 'premises'
-	premisesgroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'), primary_key=True)
-	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'), primary_key=True)
-	is_negated = sa.Column(sa.Boolean, nullable=False)
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
+	premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'), primary_key=True)
+	statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
+	is_negated = Column(Boolean, nullable=False)
+	author_uid = Column(Integer, ForeignKey('users.uid'))
+	timestamp = Column(DateTime(timezone=True), default=func.now())
+	issue_uid = Column(Integer, ForeignKey('issues.uid'))
 
 	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
 	statements = relationship('Statement', foreign_keys=[statement_uid])
@@ -278,14 +323,14 @@ class Argument(DiscussionBase):
 	Additionally there is a relation, timestamp, author, weight, ...
 	"""
 	__tablename__ = 'arguments'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	premisesgroup_uid = sa.Column(sa.Integer, sa.ForeignKey('premisegroups.uid'))
-	conclusion_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
-	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
-	is_supportive = sa.Column(sa.Boolean, nullable=False)
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	issue_uid = sa.Column(sa.Integer, sa.ForeignKey('issues.uid'))
+	uid = Column(Integer, primary_key=True)
+	premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+	conclusion_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
+	argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
+	is_supportive = Column(Boolean, nullable=False)
+	author_uid = Column(Integer, ForeignKey('users.uid'))
+	timestamp = Column(DateTime(timezone=True), default=func.now())
+	issue_uid = Column(Integer, ForeignKey('issues.uid'))
 
 	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
 	statements = relationship('Statement', foreign_keys=[conclusion_uid])
@@ -293,26 +338,27 @@ class Argument(DiscussionBase):
 	arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, premisegroup, issupportive, author, issue, conclusion=0, argument=0):
+	def __init__(self, premisegroup, issupportive, author, issue, conclusion=None, argument=None):
 		"""
 		Initializes a row in current argument-table
 		:param premisegroup:
 		:param issupportive:
 		:param author:
 		:param issue:
-		:param conclusion:
+		:param conclusion: Default 0, which will be None
+		:param argument: Default 0, which will be None
 		:return:
 		"""
 		self.premisesgroup_uid = premisegroup
-		self.conclusion_uid = conclusion
-		self.argument_uid = None
+		self.conclusion_uid = None if conclusion == 0 else conclusion
+		self.argument_uid = None if argument == 0 else argument
 		self.is_supportive = issupportive
 		self.author_uid = author
 		self.argument_uid = argument
 		self.issue_uid = issue
 
 	def conclusions_argument(self, argument):
-		self.argument_uid = argument
+		self.argument_uid = None if argument == 0 else argument
 
 
 class Breadcrumb(DiscussionBase):
@@ -321,15 +367,15 @@ class Breadcrumb(DiscussionBase):
 	Each user will be tracked
 	"""
 	__tablename__ = 'breadcrumbs'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	url = sa.Column(sa.Text, nullable=False)
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	session_id = sa.Column(sa.Integer)
+	uid = Column(Integer, primary_key=True)
+	author_uid = Column(Integer, ForeignKey('users.uid'))
+	url = Column(Text, nullable=False)
+	timestamp = Column(DateTime(timezone=True), default=func.now())
+	session_id = Column(Text)
 
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, user, url, session_id=0):
+	def __init__(self, user, url, session_id=''):
 		"""
 		Initializes a row in current history-table
 		:param user:
@@ -349,20 +395,25 @@ class Bubble(DiscussionBase):
 	Each user will be tracked
 	"""
 	__tablename__ = 'bubbles'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	bubble_id = sa.Column(sa.Integer, nullable=False)
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	content = sa.Column(sa.Text, nullable=False)
-	is_user = sa.Column(sa.Boolean, nullable=False)
-	is_system = sa.Column(sa.Boolean, nullable=False)
-	is_status = sa.Column(sa.Boolean, nullable=False)
-	session_id = sa.Column(sa.Integer)
-	breadcrumb_uid = sa.Column(sa.Integer, sa.ForeignKey('breadcrumbs.uid'))
+	uid = Column(Integer, primary_key=True)
+	bubble_id = Column(Text, nullable=False)
+	author_uid = Column(Integer, ForeignKey('users.uid'))
+	content = Column(Text, nullable=False)
+	is_user = Column(Boolean, nullable=False)
+	is_system = Column(Boolean, nullable=False)
+	is_status = Column(Boolean, nullable=False)
+	session_id = Column(Text)
+	related_argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
+	related_statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
+	breadcrumb_uid = Column(Integer, ForeignKey('breadcrumbs.uid'))
 
 	breadcrumbs = relationship('Breadcrumb', foreign_keys=[breadcrumb_uid])
 	users = relationship('User', foreign_keys=[author_uid])
+	arguments = relationship('Argument', foreign_keys=[related_argument_uid])
+	statements = relationship('Statement', foreign_keys=[related_statement_uid])
 
-	def __init__(self, bubble_id='', user=0, content='', is_user=False, is_system=False, is_status=False, session_id=0, breadcrumb_uid=0):
+	def __init__(self, bubble_id, user, content, is_user, is_system, is_status, session_id,
+	             breadcrumb_uid, related_argument_uid=None, related_statement_uid=None):
 		"""
 
 		:param bubble_id:
@@ -371,7 +422,10 @@ class Bubble(DiscussionBase):
 		:param is_user:
 		:param is_system:
 		:param is_status:
+		:param session_id:
 		:param breadcrumb_uid:
+		:param related_argument_uid:
+		:param related_statement_uid:
 		:return:
 		"""
 		self.bubble_id = bubble_id
@@ -382,6 +436,8 @@ class Bubble(DiscussionBase):
 		self.is_status = is_status
 		self.session_id = session_id
 		self.breadcrumb_uid = breadcrumb_uid
+		self.related_argument_uid = related_argument_uid
+		self.related_statement_uid = related_statement_uid
 
 
 class VoteArgument(DiscussionBase):
@@ -389,18 +445,18 @@ class VoteArgument(DiscussionBase):
 	Vote-table with several columns for arguments.
 	The combination of the both FK is a PK
 	"""
-	__tablename__ = 'votes_argument'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	argument_uid = sa.Column(sa.Integer, sa.ForeignKey('arguments.uid'))
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	is_up_vote = sa.Column(sa.Boolean, nullable=False)
-	is_valid = sa.Column(sa.Boolean, nullable=False)
+	__tablename__ = 'vote_arguments'
+	uid = Column(Integer, primary_key=True)
+	argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+	author_uid = Column(Integer, ForeignKey('users.uid'))
+	timestamp = Column(DateTime(timezone=True), default=func.now())
+	is_up_vote = Column(Boolean, nullable=False)
+	is_valid = Column(Boolean, nullable=False)
 
 	arguments = relationship('Argument', foreign_keys=[argument_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, argument_uid=0, author_uid=0, is_up_vote=True, is_valid=True):
+	def __init__(self, argument_uid, author_uid, is_up_vote=True, is_valid=True):
 		"""
 
 		:param argument_uid:
@@ -444,18 +500,18 @@ class VoteStatement(DiscussionBase):
 	Vote-table with several columns for statements.
 	The combination of the both FK is a PK
 	"""
-	__tablename__ = 'votes_statement'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	statement_uid = sa.Column(sa.Integer, sa.ForeignKey('statements.uid'))
-	author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	is_up_vote = sa.Column(sa.Boolean, nullable=False)
-	is_valid = sa.Column(sa.Boolean, nullable=False)
+	__tablename__ = 'vote_statements'
+	uid = Column(Integer, primary_key=True)
+	statement_uid = Column(Integer, ForeignKey('statements.uid'))
+	author_uid = Column(Integer, ForeignKey('users.uid'))
+	timestamp = Column(DateTime(timezone=True), default=func.now())
+	is_up_vote = Column(Boolean, nullable=False)
+	is_valid = Column(Boolean, nullable=False)
 
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
 
-	def __init__(self, statement_uid=0, author_uid=0, is_up_vote=True, is_valid=True):
+	def __init__(self, statement_uid, author_uid, is_up_vote=True, is_valid=True):
 		"""
 
 		:param statement_uid:
@@ -499,13 +555,13 @@ class Notification(DiscussionBase):
 
 	"""
 	__tablename__ = 'messages'
-	uid = sa.Column(sa.Integer, primary_key=True)
-	from_author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	to_author_uid = sa.Column(sa.Integer, sa.ForeignKey('users.uid'))
-	topic = sa.Column(sa.Text, nullable=False)
-	content = sa.Column(sa.Text, nullable=False)
-	timestamp = sa.Column(sa.DateTime(timezone=True), default=func.now())
-	read = sa.Column(sa.Boolean, nullable=False)
+	uid = Column(Integer, primary_key=True)
+	from_author_uid = Column(Integer, ForeignKey('users.uid'))
+	to_author_uid = Column(Integer, ForeignKey('users.uid'))
+	topic = Column(Text, nullable=False)
+	content = Column(Text, nullable=False)
+	timestamp = Column(DateTime(timezone=True), default=func.now())
+	read = Column(Boolean, nullable=False)
 
 	def __init__(self, from_author_uid, to_author_uid, topic, content):
 		self.from_author_uid = from_author_uid
@@ -517,7 +573,8 @@ class Notification(DiscussionBase):
 
 	def set_read(self, was_read):
 		"""
-		Sets validity of this record
+		Sets validity of this record.
+
 		:param was_read: boolean
 		:return: None
 		"""

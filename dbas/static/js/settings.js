@@ -446,7 +446,7 @@ function StatisticsHandler(){
 		$('#' + popupConfirmDialogAcceptBtn).hide();
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			$(".scrollarea"); sa.slimScroll({destroy:true});
+			$(".scrollarea").slimScroll({destroy:true});
 		}).removeClass('btn-danger').text('Okay');
 
 		new Helper().delay(function() {

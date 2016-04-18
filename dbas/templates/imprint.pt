@@ -1,10 +1,10 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 		<div class="row">
-			<div class="col-md-7 first-container colored_container imprint-container">
+			<div class="col-md-7 first-container colored-container imprint-container">
 				<h3><span i18n:translate="imprint">Impressum</span> ${project}</h3>
 				<p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
-				<p><a href="http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html">Tobias Krauthoff</a>
+				<p><a target="_blank" href="http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html">Tobias Krauthoff</a>
 					<br><span i18n:translate="department">Institut für Informatik</span>
 					<br>Universitätstraße 1
 					<br>40225 Düsseldorf
@@ -14,7 +14,7 @@
 					<h5 i18n:translate="contact">Kontakt:</h5>
 					<br>
 					<span i18n:translate="phone">Telefon:</span> 0211-8113461
-					<br>E-Mail: <a href='mailto:krauthoff@cs.uni-duesseldorf.de'>krauthoff@cs.uni-duesseldorf.de</a>
+					<br>E-Mail: <a target="_blank" href='mailto:krauthoff@cs.uni-duesseldorf.de'>krauthoff@cs.uni-duesseldorf.de</a>
 				</p>
 				<br>
 				<br>
@@ -59,76 +59,59 @@
 			</div>
 
 			<div class="col-md-4">
-				<div class="first-container colored_container imprint-container">
+				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
 					<ul>
-						<li>
-							<a href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">
-								EU Cookie Popup
-							</a>
-						</li>
-						<li>
-							Some fonts are from <a href="http://www.fontsquirrel.com/">Font Squirrel</a>
-						</li>
-						<li>
-							<a href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a>
-						</li>
+						<li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
+						<li>Some fonts are from <a target="_blank" href="http://www.fontsquirrel.com/">Font Squirrel</a></li>
+						<li><a target="_blank" href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a></li>
 						<li>
 							<span i18n:translate="icons_by">Icons by</span>
-							<a href="http://glyphicons.com/">glyphicons</a>,&thinsp;
-							<a href="https://www.iconfinder.com/iconsets/ballicons-free">ballicons</a>,&thinsp;
-							<a href="https://www.iconfinder.com/iconsets/ballicons-2-free">ballicons-2</a>,&thinsp;
-							<a href="https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons">keynote-and-powerpoint-icons</a>,&thinsp;,&thinsp;
-							<a href="https://www.iconfinder.com/iconsets/10con">10con</a>,&thinsp;
-							<a href="https://www.iconfinder.com/iconsets/forall">forall</a>
+							<a target="_blank" href="http://glyphicons.com/">glyphicons</a>,&thinsp;
+							<a target="_blank" href="https://www.iconfinder.com/iconsets/ballicons-free">iconfinder</a>
 						</li>
-						<li>Tracking with <a href="http://piwik.org/">Piwik</a></li>
-						<li>
-							Avatare by <a href="http://www.gravatar.com/">Gravatar</a>
-						</li>
-						<li>
-							Charts by <a href="https://github.com/nnnick/Chart.js">Chart.js</a>
-						</li>
-						<li>
-							Graphs by <a href="https://github.com/jacomyal/sigma.js">Sigma.js</a>
-						</li>
+						<li>Tracking by <a target="_blank" href="http://piwik.org/">Piwik</a></li>
+						<li>Avatare by <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
+						<li>Charts by <a target="_blank" href="https://github.com/nnnick/Chart.js">Chart.js</a></li>
+						<li>Graphs by <a target="_blank" href="https://github.com/jacomyal/sigma.js">Sigma.js</a></li>
 					</ul>
 				</div>
-				<br>
-				<br>
 
-				<div class="first-container colored_container imprint-container row links">
+				<div class="colored-container imprint-container row links">
 					<h4><span >Pylons Pyramid</span></h4>
 					<span class="current-version project">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework 1.5.4</span>
 					<br>
 					<ul>
 						<li>
-							<a href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
+							<a target="_blank" href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
 								<i class="glyphicon glyphicon-bookmark icon-muted">&thinsp;</i>Docs</a>
 						</li>
 						<li>
-							<a href="https://github.com/Pylons/pyramid">
+							<a target="_blank" href="https://github.com/Pylons/pyramid">
 								<i class="glyphicon glyphicon-cog icon-muted">&thinsp;</i>Github Project</a>
 						</li>
 						<li>
-							<a href="irc://irc.freenode.net#pyramid">
+							<a target="_blank" href="irc://irc.freenode.net#pyramid">
 								<i class="glyphicon glyphicon-globe icon-muted">&thinsp;</i>IRC Channel</a>
 						</li>
 						<li>
-							<a href="http://pylonsproject.org">
+							<a target="_blank" href="http://pylonsproject.org">
 								<i class="glyphicon glyphicon-home icon-muted">&thinsp;</i>Pylons Project</a>
 						</li>
 					</ul>
 				</div>
 
-				<br>
-				<br>
-				<div class="first-container colored_container imprint-container">
+				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
-					<span class="project lead">0.6.0 (unreleased)</span>
+					<span class="project lead">0.5.9 (2016-03-05)</span>
 					<ul>
-						<li>Improved recommendation of the next argument/statement</li>
+						<li>Lot of fixes for <a href="http://www.ling.uni-potsdam.de/comma2016/" target="_blank">COMMA16</a></li>
+					</ul>
+
+					<span class="project lead">0.5.8 (2016-03-08)</span>
+					<ul>
+						<li>Switched to PostgreSQL
 					</ul>
 
 					<span class="project lead">0.5.7 (2016-03-16)</span>

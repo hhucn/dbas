@@ -1,6 +1,7 @@
 import os
 
 from setuptools import setup, find_packages
+from dbas.views import version
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
@@ -12,10 +13,9 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
+	'pyramid_chameleon',
 	'pyramid',
 	'pyramid_tm',
-	'pyramid_chameleon',
-	'pyramid_debugtoolbar',
 	'pyramid_mailer',
 	'waitress',
 	'SQLAlchemy',
@@ -31,11 +31,12 @@ requires = [
 	'requests',
 	'pyshorteners',
 	'python-slugify',
-	'validate_email'
+	'validate_email',
+	'db-psycopg2'
 ]
 
 setup(name='dbas',
-	version='0.5.6',
+	version=version,
 	description='Novel prototype for a dialog-based online argumentation',
 	long_description=README + '\n\n' + CHANGES,
 	classifiers=[
@@ -59,7 +60,8 @@ setup(name='dbas',
 	main = dbas:main
 	[console_scripts]
 	initialize_discussion_sql = dbas.database.initializedb:main_discussion
+	reload_discussion_sql = dbas.database.initializedb:main_discussion_reload
+	init_discussion_testvotes = dbas.database.initializedb:main_dummy_votes
 	initialize_news_sql = dbas.database.initializedb:main_news
-	initialize_api_sql = dbas.database.initializedb:main_api
 	""",
 	)

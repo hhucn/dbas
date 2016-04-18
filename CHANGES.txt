@@ -138,5 +138,11 @@
 - Bunch of fixes
 - Improved log in and log out
 
+0.5.8 (2016-03-22)
+- Switched to PostgreSQL
+
+0.5.9 (2016-04-05)
+- Lot of fixes for COMMA16
+
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation
