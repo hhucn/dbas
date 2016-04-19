@@ -118,7 +118,7 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 
 		if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
 			ret_value = se
-			ret_value += _t.get(_t.youSaidThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat)
+			ret_value += _t.get(_t.earlierYouArguedThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat)
 			ret_value += sb + ' '
 			users_opinion = True  # user after system
 			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
@@ -132,7 +132,7 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 			ret_value += ' ' + se
 			if users_opinion:
 				if user_changed_opinion:
-					ret_value += _t.get(_t.butThenYouCounteredWith)
+					ret_value += _t.get(_t.otherParticipantsConvincedYouThat)
 				else:
 					ret_value += _t.get(_t.butYouCounteredWith)
 			else:

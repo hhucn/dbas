@@ -80,7 +80,7 @@ class DiscussionDictHelper(object):
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
 	def prepare_discussion_dict_for_justify_statement(self, transaction, uid, save_crumb, application_url,
-	                                                  slug, is_supportive, count_of_items, last_relation):
+	                                                  slug, is_supportive, count_of_items):
 		"""
 		Prepares the discussion dict with all bubbles for the third step in discussion, where the user justifies his position.
 		
@@ -91,7 +91,6 @@ class DiscussionDictHelper(object):
 		:param slug: Issue.info as Slug
 		:param is_supportive: Boolean
 		:param count_of_items: Integer
-		:param last_relation: String
 		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
@@ -118,16 +117,6 @@ class DiscussionDictHelper(object):
 		question_bubble = self.create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True)
 		if not text.endswith(('.', '?', '!')):
 			text += '.'
-		connector = ''
-		if last_relation == 'undermine':
-			connector = 'previous attack was an undermine: '
-		elif last_relation == 'support':
-			connector = 'previous attack was an support: '
-		elif last_relation == 'undercut':
-			connector = 'previous attack was an undercut: '
-		elif last_relation == 'rebut':
-			connector = 'previous attack was an rebut: '
-		intro = connector + intro
 		select_bubble = self.create_speechbubble_dict(is_user=True, url=url, message=intro + '<strong>' + text + '</strong>', omit_url=False, statement_uid=uid, is_up_vote=is_supportive)
 
 		if save_crumb:
@@ -248,7 +237,7 @@ class DiscussionDictHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_argumentation(self, transaction, uid, save_crumb, is_supportive, additional_id, attack):
+	def prepare_discussion_dict_for_argumentation(self, transaction, uid, save_crumb, is_supportive, additional_id, attack, last_relation):
 		"""
 		Prepares the discussion dict with all bubbles for the argumentation window.
 		
@@ -258,6 +247,7 @@ class DiscussionDictHelper(object):
 		:param is_supportive: Boolean
 		:param additional_id: Argument.uid
 		:param attack: String (undermine, support, undercut, rebut, ...)
+		:param last_relation: String (undermine, support, undercut, rebut, ...)
 		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
@@ -273,7 +263,7 @@ class DiscussionDictHelper(object):
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		if attack == 'end':
 			#  user_text        = _tn.get(_tn.soYourOpinionIsThat) + ': '
-			text             = get_text_for_argument_uid(uid, self.lang, True)
+			text             = get_text_for_argument_uid(uid, self.lang, True, user_changed_opinion=last_relation == 'support')
 			user_text        = '<strong>' + text[0:1].upper() + text[1:] + '</strong>.'
 			sys_text         = _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
 			mid_text         = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
@@ -308,18 +298,19 @@ class DiscussionDictHelper(object):
 			current_argument = current_argument[0:1].upper() + current_argument[1:]
 			premise = premise[0:1].lower() + premise[1:]
 
-			user_text = '<strong>'
+			user_text = (_tn.get(tn.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
+			user_text += '<strong>'
 			user_text += current_argument if current_argument != '' else premise
 			user_text += '</strong>.'
 
 			sys_text = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive, attack, confr,
 			                                          reply_for_argument, user_is_attacking, db_argument)
+
+		bubble_user = self.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid, is_up_vote=is_supportive)
 		if attack == 'end':
-			bubble_user = self.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid, is_up_vote=is_supportive)
 			bubble_sys  = self.create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True)
 			bubble_mid  = self.create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True)
 		else:
-			bubble_user = self.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid, is_up_vote=is_supportive)
 			bubble_sys  = self.create_speechbubble_dict(is_system=True, uid='question-bubble', message=sys_text, omit_url=True)
 
 		# dirty fixes
