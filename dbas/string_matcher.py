@@ -11,7 +11,7 @@ from sqlalchemy import and_
 from Levenshtein import distance
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Statement, User, TextVersion, Issue
+from .database.discussion_model import Statement, User, TextVersion, Issue, Premise
 from .logger import logger
 
 
@@ -131,6 +131,35 @@ class FuzzyStringMatcher(object):
 		       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
 
 		return self.mechanism, return_dict
+
+	def get_fuzzy_string_for_search(self, value):
+		"""
+		Returns something
+
+		:param value: String
+		:return: dict() with Statments.uid as key and 'text', 'distance' as well as 'arguments' as values
+		"""
+		ret_dict = dict()
+		db_statements = DBDiscussionSession.query(Statement).join(TextVersion).all()
+		for statement in db_statements:
+			arg_set = []
+			if value.lower() in statement.textversions.content.lower():
+				# get distance between input value and saved value
+				dist = self.__get_distance__(statement.textversions.content.lower())
+				# get all premise groups with this statement
+				group_set = []
+				db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement.uid).all()
+				for premise in db_premises:
+					if premise.premisesgroup_uid not in group_set:
+						group_set.append(premise.premisesgroup_uid)
+						# get all arguments with this premisegroup
+						db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
+						for argument in db_arguments:
+							arg_set.append(argument.uid)
+			ret_dict[str(statement.uid)] = {text: statement.textversions.content,
+			                                distance: dist,
+			                                arguments: arg_set}
+		return ret_dict
 
 	def __sort_dict(self, dictionary):
 		"""
