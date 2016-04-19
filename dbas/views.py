@@ -285,12 +285,11 @@ class Dbas(object):
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
-			last_relation = params['last_relation'] if 'last_relation' in params else None
 
 			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
 			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(transaction, statement_or_arg_id,
 			                                                                    has_new_crumbs, mainpage, slug,
-			                                                                    supportive, len(item_dict), last_relation)
+			                                                                    supportive, len(item_dict))
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -364,9 +363,12 @@ class Dbas(object):
 		arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
 		attack          = matchdict['mode'] if 'mode' in matchdict else ''
 		arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
+		last_relation   = params['last_relation'] if 'last_relation' in params else ''
 		tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
+
 		if not tmp_argument:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+
 		supportive      = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired  = UserHandler.update_last_action(transaction, nickname)
@@ -397,7 +399,7 @@ class Dbas(object):
 
 		_ddh = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
 		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(transaction, arg_id_user, has_new_crumbs,
-		                                                                 supportive, arg_id_sys, attack)
+		                                                                 supportive, arg_id_sys, attack, last_relation)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname, argument_id=arg_id_user,
 		                                          application_url=mainpage, for_api=for_api)
