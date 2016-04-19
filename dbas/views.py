@@ -1704,7 +1704,7 @@ class Dbas(object):
 			issue = IssueHelper.get_issue_id(self.request) if not for_api else ''
 
 			return_dict = dict()
-			if for_api:
+			if for_api and not mode == '4':
 				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_issues(value)
 				return json.dumps(return_dict, True)
 
@@ -1717,6 +1717,8 @@ class Dbas(object):
 				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
 			elif mode == '3':  # adding reasons
 				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_reasons(value, issue)
+			elif mode == '4':  # getting text
+				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_search(value)
 			else:
 				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
 		except KeyError as e:
