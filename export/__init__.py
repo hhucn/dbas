@@ -1,5 +1,7 @@
 """
-Main entry point
+REST API for exporting different data from D-BAS into the world.
+
+.. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 from pyramid.config import Configurator
 from dbas.logger import logger

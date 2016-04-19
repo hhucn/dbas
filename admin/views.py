@@ -1,7 +1,8 @@
-# Introducing an API to enable admin page
-#
-# @author Tobias Krauthoff
-# @email {krauthoff}@cs.uni-duesseldorf.de
+"""
+Introducing an admin interface to enable easy database mangement.
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 
 import json
 

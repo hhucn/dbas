@@ -1,7 +1,8 @@
-# Introducing an API to enable exports
-#
-# @author Tobias Krauthoff
-# @email {meter, krauthoff}@cs.uni-duesseldorf.de
+"""
+Introducing an export manager.
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 
 import json
 
