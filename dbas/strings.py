@@ -1487,7 +1487,7 @@ class TextGenerator(object):
 
 		return user_msg, system_msg
 
-	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False):
+	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False, first_conclusion=None):
 		"""
 		Text of the different reaction types for an given argument
 
@@ -1497,6 +1497,7 @@ class TextGenerator(object):
 		:param with_no_opinion_text: Boolean
 		:param is_attacking: Boolean
 		:param is_dont_know: Boolean
+		:param first_conclusion: String
 		:return: dict()
 		"""
 		_t = Translator(self.lang)
@@ -1504,6 +1505,9 @@ class TextGenerator(object):
 
 		if conclusion[-1] == '.':
 			conclusion = conclusion[:-1]
+		if first_conclusion:
+			if first_conclusion[-1] == '.':
+				first_conclusion = first_conclusion[:-1]
 
 		premise = ''
 		if type(premises) is dict:
@@ -1535,7 +1539,7 @@ class TextGenerator(object):
 								 + (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument)) \
 								 + ' <strong>' + conclusion + '</strong>. '\
 								 + (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))\
-								 + ' <strong>' + conclusion + '</strong>.'
+								 + ' <strong>' + (first_conclusion if first_conclusion else conclusion) + '</strong>.'
 		# + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>.'
 
 		if with_no_opinion_text:

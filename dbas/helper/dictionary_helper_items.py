@@ -283,13 +283,20 @@ class ItemDictHelper(object):
 
 		conclusion   = get_text_for_conclusion(db_sys_argument, self.lang)
 		premise, tmp = get_text_for_premisesgroup_uid(db_sys_argument.premisesgroup_uid, self.lang)
-		conclusion	 = conclusion[0:1].lower() + conclusion[1:]
-		premise		 = premise[0:1].lower() + premise[1:]
+		# getting the real conclusion: if the arguments conclusion is an argument, we will get the conclusion of the last argument
+		db_tmp_argument = db_sys_argument
+		while db_tmp_argument.argument_uid and not db_tmp_argument.conclusion_uid:
+			db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
+		first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
 
-		rel_dict	 = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive)
-		mode		 = 't' if is_supportive else 'f'
-		_um			 = UrlManager(self.application_url, slug, self.for_api)
-		_rh          = RecommenderSystem
+		first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
+		conclusion	     = conclusion[0:1].lower() + conclusion[1:]
+		premise		     = premise[0:1].lower() + premise[1:]
+
+		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive, first_conclusion=first_conclusion)
+		mode		     = 't' if is_supportive else 'f'
+		_um			     = UrlManager(self.application_url, slug, self.for_api)
+		_rh              = RecommenderSystem
 
 		# based in the relation, we will fetch different url's for the items
 		# relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO overbid
@@ -329,7 +336,8 @@ class ItemDictHelper(object):
 					url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
 				# rebutting an undercut will be a overbid for the initial argument
 				elif attack == 'undercut':
-					url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
+					# url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
+					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
 				# rebutting an rebut will be a justify for the initial argument
 				elif attack == 'rebut':
 					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)

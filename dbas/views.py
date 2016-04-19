@@ -277,6 +277,7 @@ class Dbas(object):
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
+		_idh                = ItemDictHelper(ui_locales, issue, mainpage, for_api)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			logger('discussion_justify', 'def', 'justify statement')
@@ -286,7 +287,7 @@ class Dbas(object):
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 
-			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
+			item_dict       = _idh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
 			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(transaction, statement_or_arg_id,
 			                                                                    has_new_crumbs, mainpage, slug,
 			                                                                    supportive, len(item_dict))
@@ -303,7 +304,7 @@ class Dbas(object):
 			# dont know
 			argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
 			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(transaction, argument_uid, has_new_crumbs)
-			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_dont_know_reaction(argument_uid, supportive)
+			item_dict       = _idh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -315,9 +316,8 @@ class Dbas(object):
 			logger('discussion_justify', 'def', 'justify argument')
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, logged_in)
-
-			discussion_dict = _ddh.prepare_discussion_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
+			item_dict       = _idh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, logged_in)
+			discussion_dict = _ddh.prepare_discussion_dict_for_justify_argument(statement_or_arg_id, supportive, relation) # Todo
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -390,7 +390,6 @@ class Dbas(object):
 		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
 
 		ui_locales      = get_language(self.request, get_current_registry())
-		_dh             = DictionaryHelper(ui_locales)
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
@@ -401,8 +400,9 @@ class Dbas(object):
 		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(transaction, arg_id_user, has_new_crumbs,
 		                                                                 supportive, arg_id_sys, attack, last_relation)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname, argument_id=arg_id_user,
-		                                          application_url=mainpage, for_api=for_api)
+		extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict(slug, False, False, True, True, True, nickname,
+		                                                                   argument_id=arg_id_user, application_url=mainpage,
+		                                                                   for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
