@@ -51,7 +51,7 @@ def main_admin(request):
 	"""
 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 	logger('Admin', 'main_admin', 'def')
-	should_log_out = UserHandler().update_last_action(transaction, request.authenticated_userid)
+	should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
 	if should_log_out:
 		return Dbas(request).user_logout(True)
 

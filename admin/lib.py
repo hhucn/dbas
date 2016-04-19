@@ -20,7 +20,7 @@ def get_argument_overview(user, lang):
 	:param lang: current language
 	:return: dict()
 	"""
-	is_admin = UserHandler().is_user_in_group(user, 'admins')
+	is_admin = UserHandler.is_user_in_group(user, 'admins')
 	logger('AdminLib', 'get_argument_overview', 'is_admin ' + str(is_admin))
 	return_dict = dict()
 	if not is_admin:
@@ -62,13 +62,13 @@ def get_all_users(user, lang):
 	:param lang:
 	:return:
 	"""
-	is_admin = UserHandler().is_user_in_group(user, 'admins')
+	is_admin = UserHandler.is_user_in_group(user, 'admins')
 	logger('AdminLib', 'get_all_users', 'is_admin ' + str(is_admin))
 	return_array = []
 	if not is_admin:
 		return return_array
 
-	_uh = UserHandler()
+	_uh = UserHandler
 	db_users = DBDiscussionSession.query(User).order_by(User.uid.asc()).all()
 	for user in db_users:
 		tmp_dict = dict()
