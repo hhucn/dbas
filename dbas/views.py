@@ -92,7 +92,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_page', 'def', 'main, self.request.params: ' + str(self.request.params))
-		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -123,12 +123,17 @@ class Dbas(object):
 		# '/a*slug'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		matchdict = self.request.matchdict
+		params = self.request.params
 		logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+		logger('discussion_init', 'def', 'main, self.request.params: ' + str(params))
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-		session_expired = UserHandler().update_last_action(transaction, nickname)
+		session_expired = UserHandler.update_last_action(transaction, nickname)
 		if session_expired:
 			return self.user_logout(True)
+
+		if 'del_history' in params and params['del_history'] == 'true':
+			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
 
 		if for_api and api_data:
 			try:
@@ -149,7 +154,7 @@ class Dbas(object):
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
 		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_start()
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname,
@@ -185,11 +190,18 @@ class Dbas(object):
 		"""
 		# '/discuss/{slug}/attitude/{statement_id}'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
+		params = self.request.params
+		logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+		logger('discussion_attitude', 'def', 'main, self.request.params: ' + str(params))
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-		UserHandler().update_last_action(transaction, nickname)
+		session_expired = UserHandler.update_last_action(transaction, nickname)
+		if session_expired:
+			return self.user_logout(True)
+
+		if 'del_history' in params and params['del_history'] is 'true':
+			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
 
 		ui_locales      = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
@@ -198,7 +210,7 @@ class Dbas(object):
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
 		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_attitude(statement_id)
 		if not discussion_dict:
@@ -235,17 +247,21 @@ class Dbas(object):
 		"""
 		# '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
-		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(self.request.params))
 		matchdict = self.request.matchdict
 		params = self.request.params
+		logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+		logger('discussion_justify', 'def', 'main, self.request.params: ' + str(params))
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 
-		_uh = UserHandler()
+		_uh = UserHandler
 		session_expired = _uh.update_last_action(transaction, nickname)
 		if session_expired:
 			return self.user_logout(True)
+
+		if 'del_history' in params and params['del_history'] is 'true':
+			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
+			
 		logged_in = _uh.is_user_logged_in(nickname)
 
 		ui_locales = get_language(self.request, get_current_registry())
@@ -259,7 +275,7 @@ class Dbas(object):
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
@@ -269,12 +285,12 @@ class Dbas(object):
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
 			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
-			relation = params['last_relation'] if 'last_relation' in params else None
+			last_relation = params['last_relation'] if 'last_relation' in params else None
 
 			item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
 			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(transaction, statement_or_arg_id,
 			                                                                    has_new_crumbs, mainpage, slug,
-			                                                                    supportive, len(item_dict))
+			                                                                    supportive, len(item_dict), last_relation)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -339,10 +355,10 @@ class Dbas(object):
 		"""
 		# '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
-		logger('discussion_reaction', 'def', 'main, self.request.params: ' + str(self.request.params))
 		matchdict = self.request.matchdict
-		params    = self.request.params
+		params = self.request.params
+		logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+		logger('discussion_reaction', 'def', 'main, self.request.params: ' + str(params))
 
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
@@ -353,9 +369,12 @@ class Dbas(object):
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 		supportive      = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-		session_expired  = UserHandler().update_last_action(transaction, nickname)
+		session_expired  = UserHandler.update_last_action(transaction, nickname)
 		if session_expired:
 			return self.user_logout(True)
+
+		if 'del_history' in params and params['del_history'] == 'true':
+			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
 
 		rm_last_bubble  = True if 'rm_bubble' in params else False
 		if rm_last_bubble:
@@ -373,7 +392,7 @@ class Dbas(object):
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id,
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id,
 		                                                                 transaction, ui_locales)
 
 		_ddh = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
@@ -408,9 +427,12 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('discussion_finish', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
+
+		if 'del_history' in params and params['del_history'] is 'true':
+			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
@@ -434,8 +456,10 @@ class Dbas(object):
 		"""
 		# '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_choose', 'def', 'main, self.request.matchdict: ' + str(self.request.matchdict))
 		matchdict = self.request.matchdict
+		params = self.request.params
+		logger('discussion_choose', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+		logger('discussion_choose', 'def', 'main, self.request.params: ' + str(params))
 
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		is_argument     = matchdict['is_argument'] if 'is_argument' in matchdict else ''
@@ -452,10 +476,14 @@ class Dbas(object):
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		session_expired = UserHandler().update_last_action(transaction, nickname)
+		session_expired = UserHandler.update_last_action(transaction, nickname)
 		if session_expired:
 			return self.user_logout(True)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper().save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
+
+		if 'del_history' in params and params['del_history'] is 'true':
+			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
+			
+		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
 		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
@@ -487,7 +515,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
-		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -510,7 +538,7 @@ class Dbas(object):
 
 		if 'form.contact.submitted' not in self.request.params:
 			# get anti-spam-question
-			spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
+			spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
 			# save answer in session
 			self.request.session['antispamanswer'] = answer
 			token = self.request.session.new_csrf_token()
@@ -565,7 +593,7 @@ class Dbas(object):
 				send_message, message = EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
 				if send_message:
-					spamquestion, answer = UserHandler().get_random_anti_spam_question(ui_locales)
+					spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 		return {
@@ -596,7 +624,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
-		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -612,7 +640,7 @@ class Dbas(object):
 
 		db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
 		db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
-		_uh         = UserHandler()
+		_uh         = UserHandler
 		if db_user:
 			edits       = _uh.get_count_of_statements_of_user(db_user, True)
 			statements  = _uh.get_count_of_statements_of_user(db_user, False)
@@ -677,7 +705,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_notifications', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -701,12 +729,12 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_news', 'def', 'main')
-		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
 
 		ui_locales = get_language(self.request, get_current_registry())
-		is_author = UserHandler().is_user_author(self.request.authenticated_userid)
+		is_author = UserHandler.is_user_author(self.request.authenticated_userid)
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
@@ -730,7 +758,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_imprint', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		session_expired = UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -753,7 +781,7 @@ class Dbas(object):
 		:return: dictionary with title and project name as well as a value, weather the user is logged in
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request' +
 		       ', path: ' + self.request.path +
 		       ', view name: ' + self.request.view_name +
@@ -795,10 +823,10 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_user_history', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_dict = BreadcrumbHelper().get_breadcrumbs(self.request.authenticated_userid, self.request.session.id, ui_locales)
+		return_dict = BreadcrumbHelper.get_breadcrumbs(self.request.authenticated_userid, self.request.session.id, ui_locales)
 		return json.dumps(return_dict, True)
 
 	# ajax - getting all text edits
@@ -809,10 +837,10 @@ class Dbas(object):
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_posted_statements', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_statements_of_user(self.request.authenticated_userid, ui_locales)
+		return_array = UserHandler.get_statements_of_user(self.request.authenticated_userid, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - getting all text edits
@@ -823,10 +851,10 @@ class Dbas(object):
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_edits', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_edits_of_user(self.request.authenticated_userid, ui_locales)
+		return_array = UserHandler.get_edits_of_user(self.request.authenticated_userid, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for arguments
@@ -837,10 +865,10 @@ class Dbas(object):
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_argument_votes', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, True, ui_locales, QueryHelper())
+		return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, True, ui_locales, QueryHelper())
 		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for statements
@@ -851,10 +879,10 @@ class Dbas(object):
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_statement_votes', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler().get_votes_of_user(self.request.authenticated_userid, False, ui_locales, QueryHelper())
+		return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, False, ui_locales, QueryHelper())
 		return json.dumps(return_array, True)
 
 	# ajax - deleting complete history of the user
@@ -866,10 +894,10 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('delete_user_history', 'def', 'main')
-		BreadcrumbHelper().del_all_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
+		BreadcrumbHelper.del_all_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
 
@@ -884,7 +912,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('delete_statistics', 'def', 'main')
 
@@ -1223,7 +1251,7 @@ class Dbas(object):
 				slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
 			# escaping will be done in QueryHelper().set_statement(...)
-			UserHandler().update_last_action(transaction, nickname)
+			UserHandler.update_last_action(transaction, nickname)
 			new_statement = QueryHelper.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
 			if new_statement == -1:
 				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
@@ -1268,7 +1296,7 @@ class Dbas(object):
 				supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 
 			# escaping will be done in QueryHelper().set_statement(...)
-			UserHandler().update_last_action(transaction, nickname)
+			UserHandler.update_last_action(transaction, nickname)
 
 			url, statement_uids, error = QueryHelper.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
 			                                                                                         supportive, issue, nickname, for_api,
@@ -1321,7 +1349,7 @@ class Dbas(object):
 			url, statement_uids, error = QueryHelper.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
 			                                                                                                 premisegroups, issue, nickname, for_api,
 			                                                                                                 mainpage, lang)
-			UserHandler().update_last_action(transaction, nickname)
+			UserHandler.update_last_action(transaction, nickname)
 
 			return_dict['error'] = error
 			return_dict['statement_uids'] = statement_uids
@@ -1348,7 +1376,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		_tn = Translator(get_language(self.request, get_current_registry()))
 
@@ -1378,7 +1406,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('set_notification_read', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
@@ -1405,7 +1433,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('set_notification_delete', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
@@ -1430,7 +1458,7 @@ class Dbas(object):
 	@view_config(route_name='ajax_set_new_issue', renderer='json')
 	def set_new_issue(self):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('set_new_issue', 'def', 'main ' + str(self.request.params))
 		return_dict = dict()
@@ -1466,7 +1494,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_logfile_for_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		return_dict = dict()
 		ui_locales = get_language(self.request, get_current_registry())
@@ -1493,7 +1521,7 @@ class Dbas(object):
 		:return: dictionary with shortend url
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('get_shortened_url', 'def', 'main')
 
@@ -1620,7 +1648,7 @@ class Dbas(object):
 		:return: json-dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		UserHandler().update_last_action(transaction, self.request.authenticated_userid)
+		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('switch_language', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		return_dict = dict()

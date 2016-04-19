@@ -69,19 +69,12 @@ class PasswordHandler:
 		return manager.encode(password)
 
 
-class UserHandler(object):
+class UserHandler:
 	"""
 	Handler for user-accounts
 	"""
 
-	def __init__(self):
-		"""
-		Initialie default values
-		:return:
-		"""
-		self.timeout = 3600
-
-	def update_last_action(self, transaction, nick):
+	def update_last_action(transaction, nick):
 		"""
 		Updates the last action field of the user-row in database. Returns boolean if the users session
 		is older than one hour or True, when she wants to keep the login
@@ -92,6 +85,8 @@ class UserHandler(object):
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
 		if not db_user:
 			return False
+
+		timeout = 3600
 
 		# check difference of
 		try:  # sqlite
@@ -106,14 +101,14 @@ class UserHandler(object):
 			diff_login = (datetime.now() - last_login_object).seconds
 
 		diff = diff_action if diff_action < diff_login else diff_login
-		should_log_out = diff > self.timeout and not db_user.keep_logged_in
+		should_log_out = diff > timeout and not db_user.keep_logged_in
 		logger('UserHandler', 'update_last_action', 'session run out: ' + str(should_log_out) + ', ' + str(diff) + 's (keep login: ' + str(db_user.keep_logged_in) + ')')
 		db_user.update_last_action()
 
 		transaction.commit()
 		return should_log_out
 
-	def is_user_in_group(self, nickname, groupname):
+	def is_user_in_group(nickname, groupname):
 		"""
 		Returns boolean if the user is in the group
 
@@ -125,7 +120,7 @@ class UserHandler(object):
 		logger('UserHandler', 'is user in: ' + groupname, 'main')
 		return db_user and db_user.groups.name == groupname
 
-	def is_user_admin(self, user):
+	def is_user_admin(user):
 		"""
 		Check, if the given uid has admin rights or is admin
 
@@ -150,7 +145,7 @@ class UserHandler(object):
 		# logger('UserHandler', 'get_profile_picture', 'url: ' + gravatar_url)
 		return gravatar_url
 
-	def is_user_author(self, user):
+	def is_user_author(user):
 		"""
 		Check, if the given uid has admin rights or is admin
 
@@ -167,7 +162,7 @@ class UserHandler(object):
 
 		return False
 
-	def is_user_logged_in(self, user):
+	def is_user_logged_in(user):
 		"""
 		Checks if the user is logged in
 
@@ -176,7 +171,7 @@ class UserHandler(object):
 		"""
 		return True if DBDiscussionSession.query(User).filter_by(nickname=str(user)).first() else False
 
-	def get_random_anti_spam_question(self, lang):
+	def get_random_anti_spam_question(lang):
 		"""
 		Returns a random math question
 
@@ -219,7 +214,7 @@ class UserHandler(object):
 
 		return question, str(answer)
 
-	def get_count_of_statements_of_user(self, user, only_edits):
+	def get_count_of_statements_of_user(user, only_edits):
 		"""
 
 		:param user:
@@ -242,7 +237,7 @@ class UserHandler(object):
 
 		return edit_count if only_edits else statement_count
 
-	def get_count_of_votes_of_user(self, user):
+	def get_count_of_votes_of_user(user):
 		"""
 
 		:param user:
@@ -255,7 +250,7 @@ class UserHandler(object):
 
 		return arg_votes, stat_votes
 
-	def get_statements_of_user(self, user, lang):
+	def get_statements_of_user(user, lang):
 		"""
 
 		:param user:
@@ -281,7 +276,7 @@ class UserHandler(object):
 
 		return return_array
 
-	def get_edits_of_user(self, user, lang):
+	def get_edits_of_user(user, lang):
 		"""
 
 		:param user:
@@ -306,7 +301,7 @@ class UserHandler(object):
 
 		return return_array
 
-	def get_votes_of_user(self, user, is_argument, lang, query_helper):
+	def get_votes_of_user(user, is_argument, lang, query_helper):
 		"""
 
 		:param user:
@@ -344,7 +339,7 @@ class UserHandler(object):
 
 		return return_array
 
-	def change_password(self, transaction, user, old_pw, new_pw, confirm_pw, lang):
+	def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
 		"""
 
 		:param transaction: current database transaction

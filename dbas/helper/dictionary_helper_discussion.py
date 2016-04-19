@@ -80,7 +80,7 @@ class DiscussionDictHelper(object):
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
 	def prepare_discussion_dict_for_justify_statement(self, transaction, uid, save_crumb, application_url,
-	                                                  slug, is_supportive, count_of_items):
+	                                                  slug, is_supportive, count_of_items, last_relation):
 		"""
 		Prepares the discussion dict with all bubbles for the third step in discussion, where the user justifies his position.
 		
@@ -91,6 +91,7 @@ class DiscussionDictHelper(object):
 		:param slug: Issue.info as Slug
 		:param is_supportive: Boolean
 		:param count_of_items: Integer
+		:param last_relation: String
 		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
@@ -113,11 +114,20 @@ class DiscussionDictHelper(object):
 
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
-		intro_rev = '' if not is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		url = UrlManager(application_url, slug).get_slug_url(False)
 		question_bubble = self.create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True)
 		if not text.endswith(('.', '?', '!')):
 			text += '.'
+		connector = ''
+		if last_relation == 'undermine':
+			connector = 'previous attack was an undermine: '
+		elif last_relation == 'support':
+			connector = 'previous attack was an support: '
+		elif last_relation == 'undercut':
+			connector = 'previous attack was an undercut: '
+		elif last_relation == 'rebut':
+			connector = 'previous attack was an rebut: '
+		intro = connector + intro
 		select_bubble = self.create_speechbubble_dict(is_user=True, url=url, message=intro + '<strong>' + text + '</strong>', omit_url=False, statement_uid=uid, is_up_vote=is_supportive)
 
 		if save_crumb:
@@ -125,13 +135,16 @@ class DiscussionDictHelper(object):
 
 		# check for double bubbles
 		should_append = True
-		#if len(bubbles_array) > 0:
-		#	should_append = bubbles_array[-1]['message'] != select_bubble['message']
-		#	if bubbles_array[-1]['message'] == intro_rev + '<strong>' + text + '</strong>':
-		#		bubbles_array.remove(bubbles_array[-1])
-		#if len(bubbles_array) > 1:
-		#	if bubbles_array[-2]['message'] == intro_rev + '<strong>' + text + '</strong>':
-		#		bubbles_array.remove(bubbles_array[-2])
+
+		if not last_relation:
+			intro_rev = '' if not is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
+			if len(bubbles_array) > 0:
+				should_append = bubbles_array[-1]['message'] != select_bubble['message']
+				if bubbles_array[-1]['message'] == intro_rev + '<strong>' + text + '</strong>':
+					bubbles_array.remove(bubbles_array[-1])
+			if len(bubbles_array) > 1:
+				if bubbles_array[-2]['message'] == intro_rev + '<strong>' + text + '</strong>':
+					bubbles_array.remove(bubbles_array[-2])
 
 		if should_append:
 			self.__append_bubble(bubbles_array, select_bubble)
@@ -140,7 +153,7 @@ class DiscussionDictHelper(object):
 		self.__append_bubble(bubbles_array, question_bubble)
 
 		if not self.nickname and count_of_items == 1:
-			self.__append_bubble(bubbles_array, self.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.voteCountTextFirst) + '. ' + _tn.get(_tn.onlyOneItemWithLink), omit_url=True))
+			self.__append_bubble(bubbles_array, self.create_speechbubble_dict(is_info=True, uid='now', message=_tn.get(_tn.voteCountTextFirst) + '. ' + _tn.get(_tn.onlyOneItemWithLink), omit_url=True))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 
@@ -304,7 +317,7 @@ class DiscussionDictHelper(object):
 		if attack == 'end':
 			bubble_user = self.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid, is_up_vote=is_supportive)
 			bubble_sys  = self.create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True)
-			bubble_mid  = self.create_speechbubble_dict(is_status=True, message=mid_text, omit_url=True)
+			bubble_mid  = self.create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True)
 		else:
 			bubble_user = self.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid, is_up_vote=is_supportive)
 			bubble_sys  = self.create_speechbubble_dict(is_system=True, uid='question-bubble', message=sys_text, omit_url=True)
@@ -352,9 +365,9 @@ class DiscussionDictHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 	
-	def create_speechbubble_dict(self, is_user=False, is_system=False, is_status=False, is_info=False,
-	                             uid='', url='', message='', omit_url=False,
-	                             argument_uid=None, statement_uid=None, is_up_vote=True):
+	def create_speechbubble_dict(self, is_user=False, is_system=False, is_status=False, is_info=False, uid='', url='',
+	                             message='', omit_url=False, argument_uid=None, statement_uid=None, is_up_vote=True,
+	                             add_del_history=False):
 		"""
 		Creates an dictionary with every information needed for a bubble.
 
@@ -378,6 +391,7 @@ class DiscussionDictHelper(object):
 		speech['is_info']            = is_info
 		speech['id']                 = uid if len(str(uid)) > 0 else 'None'
 		speech['url']                = url if len(str(url)) > 0 else 'None'
+		speech['url']                = (url + ('&' if '?' in url else '?') + 'del_history=true') if len(str(url)) > 0 else 'None'
 		speech['message']            = message
 		speech['omit_url']           = omit_url
 		speech['data_type']          = 'argument' if argument_uid else 'statement' if statement_uid else 'None'

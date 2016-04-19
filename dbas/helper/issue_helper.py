@@ -35,7 +35,7 @@ class IssueHelper:
 		_tn = Translator(ui_locales)
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-		if not UserHandler().is_user_author(nickname):
+		if not UserHandler.is_user_author(nickname):
 			return False, _tn.get(_tn.noRights)
 
 		if len(info) < 10:

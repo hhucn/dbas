@@ -93,7 +93,7 @@ class DictionaryHelper(object):
 		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_extras_dict', 'def')
-		_uh = UserHandler()
+		_uh = UserHandler
 		_tn = Translator(self.lang)
 		is_logged_in = _uh.is_user_logged_in(authenticated_userid)
 		nickname = authenticated_userid if authenticated_userid else 'anonymous'
@@ -243,7 +243,7 @@ class DictionaryHelper(object):
 			extras_dict['show_display_style'] = False
 			if logged_in:
 				mid_text = _tn.get(_tn.firstOneReason)
-				discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_status=True, uid='end', message=mid_text))
+				discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
 			# else:
 			# 	mid_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
 
@@ -253,7 +253,7 @@ class DictionaryHelper(object):
 			sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
 			mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_system=True, uid='end', message=sys_text))
-			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_status=True, uid='end', message=mid_text))
+			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
 
 		elif at_justify:
 			discussion_dict['mode'] = 'justify'
@@ -271,7 +271,7 @@ class DictionaryHelper(object):
 			else:
 				mid_text += _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 
-			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_status=True, uid='end', message=mid_text))
+			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
 			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style']	   = False
 			extras_dict['show_bar_icon']		   = False
@@ -280,7 +280,7 @@ class DictionaryHelper(object):
 
 		else:
 			mid_text = _tn.get(_tn.discussionEnd) + ' ' + (_tn.get(_tn.discussionEndLinkText) if logged_in else _tn.get(_tn.feelFreeToLogin))
-			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_system=True, message=mid_text))
+			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_info=True, message=mid_text))
 
 	def add_language_options_for_extra_dict(self, extras_dict):
 		"""

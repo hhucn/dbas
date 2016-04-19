@@ -51,7 +51,7 @@ class QueryHelper:
 
 		supporters = []
 		gravatars = dict()
-		_um = UserHandler()
+		_um = UserHandler
 		for vote in db_votes:
 			db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
 			supporters.append(db_user.nickname)
