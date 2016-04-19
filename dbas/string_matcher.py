@@ -11,27 +11,22 @@ from sqlalchemy import and_
 from Levenshtein import distance
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Statement, User, TextVersion, Issue, Premise
+from .database.discussion_model import Statement, User, TextVersion, Issue, Premise, Argument
 from .logger import logger
 
+max_count_zeros = 5
+index_zeros = 3
+return_count = 10  # same number as in googles suggest list (16.12.2015)
+mechanism = 'Levensthein'
+# mechanism = 'SequenceMatcher'
 
-class FuzzyStringMatcher(object):
+
+class FuzzyStringMatcher:
 	"""
 	Compares given string with values in the database and returns set of similar string.
 	"""
 
-	def __init__(self):
-		"""
-		Initialize class with default values.
-		:return:
-		"""
-		self.max_count_zeros = 5
-		self.index_zeros = 3
-		self.return_count = 10  # same number as in googles suggest list (16.12.2015)
-		self.mechanism = 'Levensthein'
-		# self.mechanism = 'SequenceMatcher'
-
-	def get_fuzzy_string_for_start(self, value, issue, is_startpoint):
+	def get_strings_for_start(value, issue, is_startpoint):
 		"""
 		Checks different position-strings for a match with given value
 
@@ -46,17 +41,17 @@ class FuzzyStringMatcher(object):
 		for statement in db_statements:
 			db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
 			if value.lower() in db_textversion.content.lower():
-				dist = self.__get_distance__(value, db_textversion.content)
-				tmp_dict[str(dist) + '_' + str(index).zfill(self.index_zeros)] = db_textversion.content
+				dist = FuzzyStringMatcher.__get_distance__(value, db_textversion.content)
+				tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = db_textversion.content
 				index += 1
 
-		return_dict = self.__sort_dict(tmp_dict)
+		return_dict = FuzzyStringMatcher.__sort_dict(tmp_dict)
 
-		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_start', 'dictionary length: ' + str(len(return_dict.keys())), debug=True)
+		logger('FuzzyStringMatcher', 'get_strings_for_start', 'dictionary length: ' + str(len(return_dict.keys())), debug=True)
 
-		return self.mechanism, return_dict
+		return mechanism, return_dict
 
-	def get_fuzzy_string_for_edits(self, value, statement_uid):
+	def get_strings_for_edits(value, statement_uid):
 		"""
 		Checks different textversion-strings for a match with given value
 
@@ -74,18 +69,18 @@ class FuzzyStringMatcher(object):
 		index = 1
 		for textversion in db_textversions:
 			if value.lower() in textversion.content.lower():
-				dist = self.__get_distance__(value, textversion.content)
-				tmp_dict[str(dist) + '_' + str(index).zfill(self.index_zeros)] = textversion.content
+				dist = FuzzyStringMatcher.__get_distance__(value, textversion.content)
+				tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = textversion.content
 				index += 1
 
-		return_dict = self.__sort_dict(tmp_dict)
+		return_dict = FuzzyStringMatcher.__sort_dict(tmp_dict)
 
-		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_edits', 'string: ' + value + ', string: ' + value +
+		logger('FuzzyStringMatcher', 'get_strings_for_edits', 'string: ' + value + ', string: ' + value +
 		       ', statement uid: ' + str(statement_uid) + ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
 
-		return self.mechanism, return_dict
+		return mechanism, return_dict
 
-	def get_fuzzy_string_for_reasons(self, value, issue):
+	def get_strings_for_reasons(value, issue):
 		"""
 		Checks different textversion-strings for a match with given value
 
@@ -100,18 +95,18 @@ class FuzzyStringMatcher(object):
 		for statement in db_statements:
 			db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
 			if value.lower() in db_textversion.content.lower():
-				dist = self.__get_distance__(value, db_textversion.content)
-				tmp_dict[str(dist) + '_' + str(index).zfill(self.index_zeros)] = db_textversion.content
+				dist = FuzzyStringMatcher.__get_distance__(value, db_textversion.content)
+				tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = db_textversion.content
 				index += 1
 
-		return_dict = self.__sort_dict(tmp_dict)
+		return_dict = FuzzyStringMatcher.__sort_dict(tmp_dict)
 
-		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
+		logger('FuzzyStringMatcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
 		       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
 
-		return self.mechanism, return_dict
+		return mechanism, return_dict
 
-	def get_fuzzy_string_for_issues(self, value):
+	def get_strings_for_issues(value):
 		"""
 		Checks different issue-strings for a match with given value
 
@@ -122,30 +117,31 @@ class FuzzyStringMatcher(object):
 		tmp_dict = dict()
 
 		for index, issue in enumerate(db_issues):
-			dist = self.__get_distance__(value, issue.title)
-			tmp_dict[str(dist) + '_' + str(index).zfill(self.index_zeros)] = issue.title
+			dist = FuzzyStringMatcher.__get_distance__(value, issue.title)
+			tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = issue.title
 
-		return_dict = self.__sort_dict(tmp_dict)
+		return_dict = FuzzyStringMatcher.__sort_dict(tmp_dict)
 
-		logger('FuzzyStringMatcher', 'get_fuzzy_string_for_issues', 'string: ' + value +
+		logger('FuzzyStringMatcher', 'get_strings_for_issues', 'string: ' + value +
 		       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
 
-		return self.mechanism, return_dict
+		return mechanism, return_dict
 
-	def get_fuzzy_string_for_search(self, value):
+	def get_strings_for_search(value):
 		"""
-		Returns something
+		Returns all statemens which have a substring o the given value as well as the arguments, where the statements are used
 
 		:param value: String
 		:return: dict() with Statments.uid as key and 'text', 'distance' as well as 'arguments' as values
 		"""
-		ret_dict = dict()
-		db_statements = DBDiscussionSession.query(Statement).join(TextVersion).all()
+		tmp_dict = dict()
+		db_statements = DBDiscussionSession.query(Statement).join(TextVersion, Statement.textversion_uid==TextVersion.uid).all()
 		for statement in db_statements:
 			arg_set = []
+			dist = -1
 			if value.lower() in statement.textversions.content.lower():
 				# get distance between input value and saved value
-				dist = self.__get_distance__(statement.textversions.content.lower())
+				dist = FuzzyStringMatcher.__get_distance__(value, statement.textversions.content.lower())
 				# get all premise groups with this statement
 				group_set = []
 				db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement.uid).all()
@@ -156,12 +152,17 @@ class FuzzyStringMatcher(object):
 						db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
 						for argument in db_arguments:
 							arg_set.append(argument.uid)
-			ret_dict[str(statement.uid)] = {text: statement.textversions.content,
-			                                distance: dist,
-			                                arguments: arg_set}
-		return ret_dict
+			tmp_dict[str(statement.uid)] = {'text': statement.textversions.content,
+			                                'distance': dist,
+			                                'arguments': arg_set}
 
-	def __sort_dict(self, dictionary):
+		return_dict = FuzzyStringMatcher.__sort_dict(tmp_dict)
+
+		logger('FuzzyStringMatcher', 'get_strings_for_search', 'string: ' + value +
+		       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
+		return return_dict
+
+	def __sort_dict(dictionary):
 		"""
 
 		:return:
@@ -169,26 +170,27 @@ class FuzzyStringMatcher(object):
 		dictionary = OrderedDict(sorted(dictionary.items()))
 
 		return_dict = OrderedDict()
-		for i in list(dictionary.keys())[0:self.return_count]:
+		for i in list(dictionary.keys())[0:return_count]:
 			return_dict[i] = dictionary[i]
 
-		if self.mechanism == 'SequenceMatcher':  # sort descending
+		if mechanism == 'SequenceMatcher':  # sort descending
 			return_dict = OrderedDict(sorted(dictionary.items(), key=lambda kv: kv[0], reverse=True))
 		else:  # sort ascending
 			return_dict = OrderedDict()
-			for i in list(dictionary.keys())[0:self.return_count]:
+			for i in list(dictionary.keys())[0:return_count]:
 				return_dict[i] = dictionary[i]
 
 		return return_dict
 
-	def __get_distance__(self, string_a, string_b):
+	def __get_distance__(string_a, string_b):
 		"""
 
 		:param string_a:
 		:param string_b:
 		:return:
 		"""
-		if self.mechanism == 'Levensthein':
+		logger('FuzzyStringMatcher', '__get_distance__', string_a + ' - ' + string_b)
+		if mechanism == 'Levensthein':
 			dist = distance(string_a.lower(), string_b.lower())
 			#  logger('FuzzyStringMatcher', '__get_distance__', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' + string_b.lower())
 		else:
@@ -196,4 +198,4 @@ class FuzzyStringMatcher(object):
 			dist = str(round(matcher.ratio() * 100, 1))[:-2]
 			# logger('FuzzyStringMatcher', '__get_distance__', 'SequenceMatcher: ' + str(matcher.ratio()) + ', value: ' + string_a.lower() + ' in: ' +  string_b.lower())
 
-		return str(dist).zfill(self.max_count_zeros)
+		return str(dist).zfill(max_count_zeros)

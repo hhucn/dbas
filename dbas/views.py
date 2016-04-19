@@ -1698,6 +1698,8 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('fuzzy_search', 'def', 'main, for_api: ' + str(for_api) + ', self.request.params: ' + str(self.request.params))
 
+		_tn = Translator(get_language(self.request, get_current_registry()))
+
 		try:
 			value = self.request.params['value']
 			mode = str(self.request.params['type']) if not for_api else ''
@@ -1705,24 +1707,26 @@ class Dbas(object):
 
 			return_dict = dict()
 			if for_api and not mode == '4':
-				return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_issues(value)
+				return_dict['values'] = FuzzyStringMatcher.get_strings_for_issues(value)
 				return json.dumps(return_dict, True)
 
 			if mode == '0':  # start statement
-				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, True)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_start(value, issue, True)
 			elif mode == '1':  # edit statement popup
 				statement_uid = self.request.params['extra']
-				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_edits(value, statement_uid)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_edits(value, statement_uid)
 			elif mode == '2':  # start premise
-				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_start(value, issue, False)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_start(value, issue, False)
 			elif mode == '3':  # adding reasons
-				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher().get_fuzzy_string_for_reasons(value, issue)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_reasons(value, issue)
 			elif mode == '4':  # getting text
-				return_dict = FuzzyStringMatcher().get_fuzzy_string_for_search(value)
+				return_dict = FuzzyStringMatcher.get_strings_for_search(value)
 			else:
 				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
+				return_dict = {'error': _tn.get(_tn.internalError)}
+
 		except KeyError as e:
-			return_dict = dict()
+			return_dict = {'error': _tn.get(_tn.internalError)}
 			logger('fuzzy_search', 'error', repr(e))
 
 		return json.dumps(return_dict, True)
