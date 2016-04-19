@@ -93,7 +93,7 @@ class QueryHelper:
 			new_argument_uid, statement_uids = QueryHelper.__create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-				return -1, error
+				return -1, None, error
 
 			new_argument_uids.append(new_argument_uid)
 			if for_api:
@@ -490,7 +490,7 @@ class QueryHelper:
                                                                          Statement.issue_uid == issue)).first()
 		statements = QueryHelper.insert_as_statements(transaction, text, user, issue)
 		if statements == -1:
-			return -1
+			return -1, None
 
 		statement_uids = [s.uid for s in statements]
 
