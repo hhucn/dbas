@@ -52,7 +52,7 @@ class UrlManager(object):
 		for p in params:
 			if p != '':
 				url += '/' + p
-		return url + '?param_error=true' if is_param_error else url
+		return url + ('&' if '?' in url else '?') + 'param_error=true' if is_param_error else url
 
 	def get_slug_url(self, as_location_href):
 		"""
@@ -146,7 +146,7 @@ class UrlManager(object):
 		else:
 			prefix = 'location.href="' if as_location_href else ''
 			suffix = '"' if as_location_href else ''
-			if len(self.history) > 0:
+			if len(self.history) > 1:
 				return prefix + self.discussion_url + url + '?history=' + self.history + suffix
 			else:
 				return prefix + self.discussion_url + url + suffix
