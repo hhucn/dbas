@@ -69,7 +69,7 @@ class Dbas(object):
 		layout = renderer.implementation().macros['layout']
 		return layout
 
-	def get_nickname_and_session(self, for_api, api_data):
+	def get_nickname_and_session(self, for_api=None, api_data=None):
 		"""
 		Given data from api, return nickname and session_id.
 
@@ -317,7 +317,7 @@ class Dbas(object):
 			# justifying argument
 			# is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
 			item_dict       = _idh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, logged_in)
-			discussion_dict = _ddh.prepare_discussion_dict_for_justify_argument(statement_or_arg_id, supportive, relation) # Todo
+			discussion_dict = _ddh.prepare_discussion_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, nickname,
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -427,13 +427,17 @@ class Dbas(object):
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('discussion_finish', 'def', 'main')
+		matchdict = self.request.matchdict
+		params = self.request.params
+		logger('discussion_finish', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+		logger('discussion_finish', 'def', 'main, self.request.params: ' + str(params))
 		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		if session_expired:
 			return self.user_logout(True)
 
 		if 'del_history' in params and params['del_history'] is 'true':
+			nickname, session_id = self.get_nickname_and_session()
 			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
