@@ -9,9 +9,13 @@ function AdminInterface(){
 	 * Requests all attacks
 	 */
 	this.getArgumentOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url, _this = this;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(),
+			settings_data,
+			url,
+			_this = this;
+
 		$.ajax({
-			url: 'admin/argument_overview',
+			url: 'argument_overview',
 			method: 'GET',
 			dataType: 'json',
 			data: { issue: new Helper().getCurrentIssueId() },
@@ -21,18 +25,19 @@ function AdminInterface(){
 				settings_data = settings.data;
 				url = this.url;
 			}
-		}).done(function getArgumentOverviewDone(data) {
-			// display fetched data
+
+		}).done(function getArgumentOverviewDone(data) { // display fetched data
 			_this.setArgumentOverviewDataContent($.parseJSON(data));
 			$('#' + listAllArgumentId).val(_t(hideAllArguments));
-				$('#' + adminsSpaceForArgumentsId).fadeIn();
+			$('#' + adminsSpaceForArgumentsId).fadeIn();
 			new GuiHandler().hideErrorDescription();
-		}).fail(function getArgumentOverviewFail() {
-			// display error message
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+
+		}).fail(function getArgumentOverviewFail() { // display error message
+			var message = _t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
+				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.';
+			new GuiHandler().showDiscussionError(message);
 			$('#' + listAllArgumentId).val(_t(showAllArguments));
-				$('#' + adminsSpaceForArgumentsId).fadeOut();
+			$('#' + adminsSpaceForArgumentsId).fadeOut();
 		});
 	};
 
@@ -43,6 +48,7 @@ function AdminInterface(){
 	this.setArgumentOverviewDataContent = function (jsonData) {
 		var space = $('#' + adminsSpaceForArgumentsId),
 			list = $('#dropdown-issue-list');
+
 		space.empty();
 		list.find('li:not(:first-child)').remove();
 		$('#issue-switch-col').show();
@@ -146,7 +152,10 @@ function AdminInterface(){
 	};
 }
 
-
+/**
+ * Class for the click events in the navigation bar on the left side
+ * @constructor
+ */
 function NavBarInterface(){
 	var _this = this;
 	this.setUpLinks = function(){
@@ -159,6 +168,9 @@ function NavBarInterface(){
 		$('#dashboard-statement-count-detail').click(function(){	_this.showStatements();	});
 	};
 
+	/**
+	 * Set everything to the default view
+	 */
 	this.hideEverything = function(){
 		$('#navbar-wrapper').find('.active').removeClass('active');
 		$('#content-wrapper').find('>div').each(function(){
@@ -166,36 +178,54 @@ function NavBarInterface(){
 		});
 	};
 
+	/**
+	 * Shows the dashboard alias overview
+	 */
 	this.showDashboard = function(){
 		this.hideEverything();
 		$('#admin-dashboards').parent().addClass('active');
 		$('#admins-space-dashboard').show();
 	};
 
+	/**
+	 * Shows the user space
+	 */
 	this.showUsers = function(){
 		this.hideEverything();
 		$('#admin-users').parent().addClass('active');
 		$('#admins-space-users').show().prev();
 	};
 
+	/**
+	 * Shows the voting space
+	 */
 	this.showVotes = function(){
 		this.hideEverything();
+		// TODO
 	};
 
+	/**
+	 * Shows the argument space
+	 */
 	this.showArguments = function(){
 		this.hideEverything();
 		$('#admin-arguments').parent().addClass('active');
 		$('#admins-space-argument').prev().show();
 	};
 
+	/**
+	 *
+	 */
 	this.showStatements = function(){
 		this.hideEverything();
+		// TODO
 	};
 }
 
 // main function
 $(function () {
 	var ai = new AdminInterface(), nbi = new NavBarInterface();
+
 	// hide or show all users
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 		if ($(this).val() === _t(showAllUsers)) {
