@@ -58,6 +58,7 @@ class PasswordHandler:
 	Handler for password
 	"""
 
+	@staticmethod
 	def get_hashed_password(password):
 		"""
 		Returns encrypted password
@@ -74,10 +75,12 @@ class UserHandler:
 	Handler for user-accounts
 	"""
 
+	@staticmethod
 	def update_last_action(transaction, nick):
 		"""
 		Updates the last action field of the user-row in database. Returns boolean if the users session
 		is older than one hour or True, when she wants to keep the login
+
 		:param transaction: transaction
 		:param nick: User.nickname
 		:return: Boolean
@@ -108,6 +111,7 @@ class UserHandler:
 		transaction.commit()
 		return should_log_out
 
+	@staticmethod
 	def is_user_in_group(nickname, groupname):
 		"""
 		Returns boolean if the user is in the group
@@ -120,6 +124,7 @@ class UserHandler:
 		logger('UserHandler', 'is user in: ' + groupname, 'main')
 		return db_user and db_user.groups.name == groupname
 
+	@staticmethod
 	def is_user_admin(user):
 		"""
 		Check, if the given uid has admin rights or is admin
@@ -162,6 +167,7 @@ class UserHandler:
 
 		return False
 
+	@staticmethod
 	def is_user_logged_in(user):
 		"""
 		Checks if the user is logged in
@@ -171,6 +177,7 @@ class UserHandler:
 		"""
 		return True if DBDiscussionSession.query(User).filter_by(nickname=str(user)).first() else False
 
+	@staticmethod
 	def get_random_anti_spam_question(lang):
 		"""
 		Returns a random math question
@@ -214,6 +221,7 @@ class UserHandler:
 
 		return question, str(answer)
 
+	@staticmethod
 	def get_count_of_statements_of_user(user, only_edits):
 		"""
 
@@ -237,6 +245,7 @@ class UserHandler:
 
 		return edit_count if only_edits else statement_count
 
+	@staticmethod
 	def get_count_of_votes_of_user(user):
 		"""
 
@@ -250,6 +259,7 @@ class UserHandler:
 
 		return arg_votes, stat_votes
 
+	@staticmethod
 	def get_statements_of_user(user, lang):
 		"""
 
@@ -276,6 +286,7 @@ class UserHandler:
 
 		return return_array
 
+	@staticmethod
 	def get_edits_of_user(user, lang):
 		"""
 
@@ -301,6 +312,7 @@ class UserHandler:
 
 		return return_array
 
+	@staticmethod
 	def get_votes_of_user(user, is_argument, lang, query_helper):
 		"""
 
@@ -339,6 +351,7 @@ class UserHandler:
 
 		return return_array
 
+	@staticmethod
 	def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
 		"""
 

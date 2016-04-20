@@ -20,6 +20,7 @@ class BreadcrumbHelper:
 	Managing breadcrumbs
 	"""
 
+	@staticmethod
 	def save_breadcrumb(path, user, session_id, transaction, lang):
 		"""
 		Saves curren path as breadcrumb for the user
@@ -71,6 +72,7 @@ class BreadcrumbHelper:
 
 		return BreadcrumbHelper.get_breadcrumbs(user, session_id, lang), is_new_crumb
 
+	@staticmethod
 	def get_breadcrumbs(user, session_id, lang):
 		"""
 		Returns list with breadcrumbs for the given user.
@@ -114,6 +116,7 @@ class BreadcrumbHelper:
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'return crumbs #' + str(len(breadcrumbs)))
 		return breadcrumbs
 
+	@staticmethod
 	def del_duplicated_breacrumbs_of_user(url, user, session_id=0):
 		"""
 		Deletes duplicated breadcrumbs of given user
@@ -136,12 +139,11 @@ class BreadcrumbHelper:
 		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == url,
 		                                                                  Breadcrumb.author_uid == db_user.uid)).first()
 		db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
-		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
-		is_new_crumb = False
 
 		if db_already_in:
 			BreadcrumbHelper.__delete_breadcrumbs_from_uid(db_user, db_already_in.uid, session_id)
 
+	@staticmethod
 	def del_all_breadcrumbs_of_user(transaction, user, session_id=0):
 		"""
 		Deletes the complete breadcrumbs of given user
