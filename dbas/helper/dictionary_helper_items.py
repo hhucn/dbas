@@ -20,7 +20,7 @@ class ItemDictHelper(object):
 	Provides all functions for creating the radio buttons.
 	"""
 
-	def __init__(self, lang, issue_uid, application_url, for_api=False):
+	def __init__(self, lang, issue_uid, application_url, for_api=False, path=''):
 		"""
 		Initialize default values
 
@@ -28,12 +28,14 @@ class ItemDictHelper(object):
 		:param issue_uid: Issue.uid
 		:param application_url: application_url
 		:param for_api: boolean
+		:param path: String
 		:return:
 		"""
 		self.lang = lang
 		self.issue_uid = issue_uid
 		self.application_url = application_url
 		self.for_api = for_api
+		self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
 
 	def prepare_item_dict_for_start(self, logged_in):
 		"""
@@ -48,7 +50,7 @@ class ItemDictHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
 		statements_array = []
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
 		if db_statements:
 			for statement in db_statements:
@@ -81,7 +83,7 @@ class ItemDictHelper(object):
 		text = get_text_for_statement_uid(statement_uid)
 		statements_array = []
 
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
 		statements_array.append(self.__create_statement_dict('agree',
 		                                                     [{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
@@ -111,7 +113,7 @@ class ItemDictHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 		db_arguments = RecommenderSystem.get_arguments_by_conclusion(statement_uid, is_supportive)
 
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -187,7 +189,7 @@ class ItemDictHelper(object):
 																		   Argument.is_supportive == db_argument.is_supportive,
 				                                                           Argument.issue_uid == self.issue_uid)).all()
 
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -231,7 +233,7 @@ class ItemDictHelper(object):
 		logger('DictionaryHelper', 'prepare_item_dict_for_dont_know_reaction', 'def')
 		_tg = TextGenerator(self.lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 		statements_array = []
 
 		db_argument  = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
@@ -295,7 +297,7 @@ class ItemDictHelper(object):
 
 		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive, first_conclusion=first_conclusion)
 		mode		     = 't' if is_supportive else 'f'
-		_um			     = UrlManager(self.application_url, slug, self.for_api)
+		_um			     = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 		_rh              = RecommenderSystem
 
 		# based in the relation, we will fetch different url's for the items
@@ -376,7 +378,7 @@ class ItemDictHelper(object):
 		logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'def')
 		statements_array = []
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 		conclusion = argument_or_statement_id if not is_argument else None
 		argument = argument_or_statement_id if is_argument else None
 

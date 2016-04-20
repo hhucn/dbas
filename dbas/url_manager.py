@@ -13,13 +13,14 @@ class UrlManager(object):
 	URL-Manager for building all URLs. This includes DBAS-URLs as well as the API-URLs
 	"""
 
-	def __init__(self, application_url, slug='', for_api=False):
+	def __init__(self, application_url, slug='', for_api=False, history=''):
 		"""
 		Initialization of an URL-Manager
 
 		:param application_url: self.request.application_url
 		:param slug: slugged issue.title
 		:param for_api: Boolean
+		:param history: String
 		:return: None
 		"""
 		logger('UrlManager', '__init__', 'application_url: ' + application_url + ', slug: ' + slug + ', for_api: ' + str(for_api))
@@ -28,6 +29,7 @@ class UrlManager(object):
 		self.api_url = 'api/'
 		self.slug = slug
 		self.for_api = for_api
+		self.history = history
 
 	def get_url(self, path):
 		"""
@@ -54,7 +56,7 @@ class UrlManager(object):
 
 	def get_slug_url(self, as_location_href):
 		"""
-		Returns url with slugified issue.title or the API-version
+		Returns url for starting a discussions
 
 		:param as_location_href: Boolean
 		:return: discussion_url/slug
@@ -144,4 +146,7 @@ class UrlManager(object):
 		else:
 			prefix = 'location.href="' if as_location_href else ''
 			suffix = '"' if as_location_href else ''
-			return prefix + self.discussion_url + url + suffix
+			if len(self.history) > 0:
+				return prefix + self.discussion_url + url + '?history=' + self.history + suffix
+			else:
+				return prefix + self.discussion_url + url + suffix
