@@ -213,7 +213,7 @@ class Dbas(object):
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_attitude(statement_id)
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname, history).prepare_discussion_dict_for_attitude(statement_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
@@ -279,7 +279,7 @@ class Dbas(object):
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
-		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
+		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname, history)
 		_idh                = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
@@ -400,7 +400,7 @@ class Dbas(object):
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id,
 		                                                                 transaction, ui_locales)
 
-		_ddh = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
+		_ddh = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname, history)
 		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(transaction, arg_id_user, has_new_crumbs,
 		                                                                 supportive, arg_id_sys, attack, last_relation)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
@@ -497,7 +497,7 @@ class Dbas(object):
 			
 		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname, history).prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,

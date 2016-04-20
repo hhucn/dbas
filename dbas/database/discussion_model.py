@@ -1,5 +1,5 @@
 """
-TODO
+D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
