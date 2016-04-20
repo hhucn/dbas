@@ -15,11 +15,10 @@ def logger(who, when, what, warn=False, error=False, debug=False):
 	:param who: which class
 	:param when: which method
 	:param what: what mesage
-	:return: None
 	:param warn: Boolean, default False
 	:param error: Boolean, default False
 	:param debug: Boolean, default False
-	:return:
+	:return: None
 	"""
 	info = not(warn or error or debug)
 
