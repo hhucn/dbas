@@ -11,17 +11,16 @@ from dbas.user_management import UserHandler
 from sqlalchemy import and_
 
 
-def get_argument_overview(user, lang):
+def get_overview_of_arguments(user='', lang=''):
 	"""
 	Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
 
 	:param user: current user
-	:param issue: current issue
 	:param lang: current language
 	:return: dict()
 	"""
 	is_admin = UserHandler.is_user_in_group(user, 'admins')
-	logger('AdminLib', 'get_argument_overview', 'is_admin ' + str(is_admin))
+	logger('AdminLib', 'get_overview_of_arguments', 'is_admin ' + str(is_admin))
 	return_dict = dict()
 	if not is_admin:
 		return return_dict
@@ -30,7 +29,7 @@ def get_argument_overview(user, lang):
 	for issue in db_issues:
 		issue_array = []
 		db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).order_by(Argument.uid.asc()).all()
-		logger('AdminLib', 'get_argument_overview', 'count: ' + str(len(db_arguments)))
+		logger('AdminLib', 'get_overview_of_arguments', 'count: ' + str(len(db_arguments)))
 
 		if len(db_arguments) > 0:
 			for argument in db_arguments:
