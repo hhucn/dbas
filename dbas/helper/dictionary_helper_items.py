@@ -37,7 +37,8 @@ class ItemDictHelper(object):
 		self.application_url = application_url
 		self.for_api = for_api
 		self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
-		self.path = self.path + '-' + history
+		if len(history) > 0:
+			self.path += '-' + history
 
 	def prepare_item_dict_for_start(self, logged_in):
 		"""

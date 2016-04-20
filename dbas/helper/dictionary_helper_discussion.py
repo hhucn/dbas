@@ -12,6 +12,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, Bubble, VoteArgument, VoteStatement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
+from dbas.helper.history_helper import HistoryHelper
 from dbas.strings import Translator, TextGenerator
 from dbas.url_manager import UrlManager
 
@@ -21,19 +22,22 @@ class DiscussionDictHelper(object):
 	Provides all functions for creating the discussion dictionaries with all bubbles.
 	"""
 
-	def __init__(self, lang, session_id, breadcrumbs, nickname=None):
+	def __init__(self, lang, session_id, breadcrumbs, nickname=None, history=''):
 		"""
 		Initialize default values
 
 		:param lang: ui_locales
 		:param session_id: request.session_id
 		:param breadcrumbs: breadcrumbs-dict()
+		:param nickname: self.request.authenticated_userid
+		:param history: history
 		:return:
 		"""
 		self.lang = lang
 		self.session_id = session_id
 		self.breadcrumbs = breadcrumbs
 		self.nickname = nickname
+		self.history = history
 
 	def prepare_discussion_dict_for_start(self):
 		"""
@@ -43,13 +47,12 @@ class DiscussionDictHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_start', 'at_start')
 		_tn			        = Translator(self.lang)
-		bubbles_array       = self.__create_speechbubble_history()
 		add_premise_text    = ''
 		intro               = _tn.get(_tn.initialPositionInterest)
 		save_statement_url  = 'ajax_set_new_start_premise'
 
 		start_bubble = self.create_speechbubble_dict(is_system=True, uid='start', message=intro, omit_url=True)
-		self.__append_bubble(bubbles_array, start_bubble)
+		bubbles_array = [start_bubble]
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
@@ -62,7 +65,6 @@ class DiscussionDictHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_attitude', 'at_attitude')
 		_tn			        = Translator(self.lang)
-		bubbles_array       = self.__create_speechbubble_history()
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
 		statement_text      = get_text_for_statement_uid(uid)
@@ -75,7 +77,7 @@ class DiscussionDictHelper(object):
 		# if save_crumb:
 		# 	self.__append_bubble(bubbles_array, select_bubble)
 		# 	self.__save_speechbubble(select_bubble, db_user, self.session_id, self.breadcrumbs[-1], transaction, statement_uid=uid)
-		self.__append_bubble(bubbles_array, bubble)
+		bubbles_array = [bubble]
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
@@ -100,6 +102,7 @@ class DiscussionDictHelper(object):
 			tmp_nick = 'anonymous'
 		db_user             = DBDiscussionSession.query(User).filter_by(nickname=tmp_nick).first()
 		bubbles_array       = self.__create_speechbubble_history()
+		bubbles_array_tmp = HistoryHelper.create_bubbles_from_history(self.history, self.nickname,self. lang)
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
 		text				= get_text_for_statement_uid(uid)
@@ -158,6 +161,7 @@ class DiscussionDictHelper(object):
 		_tn			       = Translator(self.lang)
 		_tg                = TextGenerator(self.lang)
 		bubbles_array      = self.__create_speechbubble_history()
+		bubbles_array_tmp = HistoryHelper.create_bubbles_from_history(self.history, self.nickname,self. lang)
 		add_premise_text   = ''
 		save_statement_url = 'ajax_set_new_premises_for_argument'
 
@@ -219,6 +223,7 @@ class DiscussionDictHelper(object):
 		_tn			   = Translator(self.lang)
 		db_user        = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		bubbles_array  = self.__create_speechbubble_history()
+		bubbles_array_tmp = HistoryHelper.create_bubbles_from_history(self.history, self.nickname,self. lang)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 
@@ -253,6 +258,7 @@ class DiscussionDictHelper(object):
 		_tn			        = Translator(self.lang)
 		db_user             = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		bubbles_array       = self.__create_speechbubble_history()
+		bubbles_array_tmp = HistoryHelper.create_bubbles_from_history(self.history, self.nickname,self. lang)
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
 		mid_text            = ''
@@ -297,7 +303,7 @@ class DiscussionDictHelper(object):
 			current_argument = current_argument[0:1].upper() + current_argument[1:]
 			premise = premise[0:1].lower() + premise[1:]
 
-			user_text = (_tn.get(tn.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
+			user_text = (_tn.get(_tn.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
 			user_text += '<strong>'
 			user_text += current_argument if current_argument != '' else premise
 			user_text += '</strong>.'
@@ -340,6 +346,7 @@ class DiscussionDictHelper(object):
 		"""
 		_tn			   = Translator(self.lang)
 		bubbles_array  = self.__create_speechbubble_history()
+		bubbles_array_tmp = HistoryHelper.create_bubbles_from_history(self.history, self.nickname,self. lang)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 

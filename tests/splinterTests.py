@@ -566,7 +566,7 @@ class FrontendTests:
 		b = Browser(browser)
 		b = Helper.login(b, nickname, password, mainpage + 'discussion')
 
-		# Todo
+		# Todo __test_right_negatives
 
 		b = Helper.logout(b)
 		b.quit()
