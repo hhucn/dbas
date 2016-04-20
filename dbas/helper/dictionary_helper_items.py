@@ -20,7 +20,7 @@ class ItemDictHelper(object):
 	Provides all functions for creating the radio buttons.
 	"""
 
-	def __init__(self, lang, issue_uid, application_url, for_api=False, path=''):
+	def __init__(self, lang, issue_uid, application_url, for_api=False, path='', history=''):
 		"""
 		Initialize default values
 
@@ -29,6 +29,7 @@ class ItemDictHelper(object):
 		:param application_url: application_url
 		:param for_api: boolean
 		:param path: String
+		:param history: String
 		:return:
 		"""
 		self.lang = lang
@@ -36,6 +37,7 @@ class ItemDictHelper(object):
 		self.application_url = application_url
 		self.for_api = for_api
 		self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
+		self.path = self.path + '-' + history
 
 	def prepare_item_dict_for_start(self, logged_in):
 		"""
@@ -348,7 +350,7 @@ class ItemDictHelper(object):
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
 			# add the last relation of the user as keyword
-			url = url[:-1] + '?last_relation=' + relation + '"'
+			url = url[:-1] + ('&' if '?' in url else '?') + 'last_relation=' + relation + '"'
 
 			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
@@ -360,7 +362,7 @@ class ItemDictHelper(object):
 		else:
 			relation = 'no_opinion'
 			url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
-			url = url[0:len(url) - 1] + '?rm_bubble=' + str(argument_uid_user) + '/' + attack + '/' + str(argument_uid_sys) + '"'
+			url = url[0:len(url) - 1] + ('&' if '?' in url else '?') + 'rm_bubble=' + str(argument_uid_user) + '/' + attack + '/' + str(argument_uid_sys) + '"'
 		statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
