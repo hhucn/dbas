@@ -38,7 +38,7 @@ class ItemDictHelper(object):
 		self.for_api = for_api
 		self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
 		if len(history) > 0:
-			self.path += '-' + history
+			self.path = history + '-' + self.path
 
 	def prepare_item_dict_for_start(self, logged_in):
 		"""
@@ -350,9 +350,6 @@ class ItemDictHelper(object):
 			else:
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
-			# add the last relation of the user as keyword
-			url = url[:-1] + ('&' if '?' in url else '?') + 'last_relation=' + relation + '"'
-
 			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the change attack button or step back, if we have bno other attack
@@ -363,7 +360,6 @@ class ItemDictHelper(object):
 		else:
 			relation = 'no_opinion'
 			url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
-			url = url[0:len(url) - 1] + ('&' if '?' in url else '?') + 'rm_bubble=' + str(argument_uid_user) + '/' + attack + '/' + str(argument_uid_sys) + '"'
 		statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array

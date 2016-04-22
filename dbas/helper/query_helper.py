@@ -63,11 +63,12 @@ class QueryHelper:
 		return return_dict
 
 	@staticmethod
-	def process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id, supportive,
+	def process_input_of_start_premises_and_receive_url(request, transaction, premisegroups, conclusion_id, supportive,
 	                                                    issue, user, for_api, mainpage, lang):
 		"""
 		Inserts the given text in premisegroups as new arguments in dependence of the input paramters and returns a URL for forwarding.
 
+		:param request: request
 		:param transaction: Transaction
 		:param premisegroups: [String]
 		:param conclusion_id: Statement.uid
@@ -84,6 +85,7 @@ class QueryHelper:
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 		error = ''
 		url = ''
+		history = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
 
 		# insert all premise groups into our database
 		# all new arguments are collected in a list
@@ -111,17 +113,21 @@ class QueryHelper:
 			if arg_id_sys == 0:
 				attack = 'end'
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+			if history:
+				url += '?history=' + history
 
 		else:
 			pgroups = []
 			for arg_uid in new_argument_uids:
 				pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first().premisesgroup_uid)
 			url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
+			if history:
+				url += '?history=' + history
 
 		return url, new_statement_uids, error
 
 	@staticmethod
-	def process_input_of_premises_for_arguments_and_receive_url(transaction, arg_id, attack_type, premisegroups,
+	def process_input_of_premises_for_arguments_and_receive_url(request, transaction, arg_id, attack_type, premisegroups,
 	                                                            issue, user, for_api, mainpage, lang):
 		"""
 		Inserts the given text in premisegroups as new arguments in dependence of the input paramters and returns a URL for forwarding.
@@ -130,6 +136,7 @@ class QueryHelper:
 
 			Optimize the "for_api" part
 
+		:param request: request
 		:param transaction: transaction
 		:param arg_id: Argument.uid
 		:param attack_type: String
@@ -146,6 +153,7 @@ class QueryHelper:
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 		error = ''
 		url = ''
+		history = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
 		supportive = attack_type == 'support' or attack_type == 'overbid'
 
 		# insert all premise groups into our database
@@ -181,6 +189,8 @@ class QueryHelper:
 			if arg_id_sys == 0:
 				attack = 'end'
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+			if history:
+				url += '?history=' + history
 		else:
 			pgroups = []
 			for uid in new_argument_uids:
@@ -192,10 +202,14 @@ class QueryHelper:
 				db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).first()
 				db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
 				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
+				if history:
+					url += '?history=' + history
 
 			# relation to the arguments relation
 			elif attack_type == 'undercut' or attack_type == 'overbid':
 				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, True, supportive, arg_id, pgroups)
+				if history:
+					url += '?history=' + history
 
 			# relation to the arguments conclusion
 			elif attack_type == 'rebut':
@@ -203,6 +217,8 @@ class QueryHelper:
 				is_argument = current_argument.conclusion_uid is not None
 				uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
 				url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
+				if history:
+					url += '?history=' + history
 
 		return url, statement_uids, error
 
@@ -364,7 +380,7 @@ class QueryHelper:
 		:param transaction: transaction
 		:return:
 		"""
-		logger('QueryHelper', 'handle_insert_new_premise_for_argument', 'def')
+		logger('QueryHelper', '__insert_new_premises_for_argument', 'def')
 		_rh = RelationHelper()
 
 		statements = QueryHelper.insert_as_statements(transaction, text, user, issue)

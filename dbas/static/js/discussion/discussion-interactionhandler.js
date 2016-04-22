@@ -127,9 +127,20 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForGettingInfosAboutArgument = function(data){
-		var parsedData = $.parseJSON(data), supporters = '', text, element;
+		var parsedData = $.parseJSON(data), text, element;
 		// status is the length of the content
 		if (parsedData.error.length == 0) {
+			var body = $('<div>'),
+				table = $('<table>')
+					.attr('class', 'table table-condensed table-hover')
+					.attr('border', '0')
+					.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;'),
+				tr = $('<tr>')
+					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
+				tbody = $('<tbody>'),
+				td_nick, td_avatar, stored_td_nick, stored_td_avatar, i=0;
+
 			// supporters = parsedData.supporter.join(', ');
 			text = parsedData.text + '<br><br>';
 			text += _t(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ' ';
@@ -138,17 +149,37 @@ function InteractionHandler() {
 			text +=_t(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t(messageInfoParticipantPl)) + '.';
 			if (parsedData.vote_count>0) {
 				$.each(parsedData.supporter, function(index, nick){
-					supporters += '<img style="width:35px;" src="' + parsedData.gravatars[nick] + '"/>' + ' ' + nick;
-					if (index < parsedData.supporter.length-1)
-						supporters += ', ';
+					td_nick = $('<td>').text(nick);
+					td_avatar = $('<td>').html('<img style="height: 40%;" src="' + parsedData.gravatars[nick] + '"></td>');
+					if (i==1){
+						i=0;
+						tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));
+					} else {
+						i=1;
+						stored_td_nick = td_nick;
+						stored_td_avatar = td_avatar;
+					}
 				});
-				text += '<br>' + (parsedData.vote_count == 1 ? _t(messageInfoSupporterSg) : _t(messageInfoSupporterPl)) + ': ' + supporters;
 			}
+			body.append(text).append(table.append(tbody));
+			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), body);
+			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
+			new Helper().delay(function(){
+				var popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
+				if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
+					popup_table.slimScroll({
+						position: 'right',
+						railVisible: true,
+						alwaysVisible: true,
+						height: ($( window ).height() / 3 * 2) + 'px'
+					});
+				}
+			}, 300);
 		} else {
 			text = parsedData.error;
+			element = $('<p>').html(text);
+			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), element);
 		}
-		element = $('<p>').html(text);
-		displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), element);
 	};
 
 	/**
@@ -197,7 +228,7 @@ function InteractionHandler() {
 					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
 					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
 				tbody = $('<tbody>'),
-				td_nick, td_avatar;
+				td_nick, td_avatar, stored_td_nick, stored_td_avatar, j=0;
 
 			table.append($('<thead>').append(tr));
 
@@ -210,15 +241,22 @@ function InteractionHandler() {
 			$.each(users_array, function (i, val) {
 				td_nick = $('<td>').text(val.nickname);
 				td_avatar = $('<td>').html('<img style="height: 40%;" src="' + val.avatar_url + '"></td>');
-				tbody.append($('<tr>').append(td_avatar).append(td_nick));
+				if (j==1){
+					j=0;
+					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));
+				} else {
+					j=1;
+					stored_td_nick = td_nick;
+					stored_td_avatar = td_avatar;
+				}
 			});
 
 			body.append(span).append(table.append(tbody));
 			displayConfirmationDialogWithoutCancelAndFunction(_t(usersWithSameOpinion), body);
-			$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-sm');
+			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
 			new Helper().delay(function(){
 				popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
-				if ($( window ).height() > 400 && popup_table.outerHeight(true) > 400) {
+				if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
 					popup_table.slimScroll({
 						position: 'right',
 						railVisible: true,
