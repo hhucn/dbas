@@ -163,16 +163,17 @@ class FrontendTests:
 		success_counter = 0
 
 		start = time.time()
-		success_counter += Helper.test_wrapper('tests for normal pages', self.__test_pages_when_not_logged_in, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for login logout', self.__test_login_logout, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for logged in pages', self.__test_pages_when_logged_in, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for popups', self.__test_popups, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for contact formular', self.__test_contact_formular, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for language switch', self.__test_language_switch, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for normal pages', self.__test_pages_when_not_logged_in, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for login logout', self.__test_login_logout, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for logged in pages', self.__test_pages_when_logged_in, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for popups', self.__test_popups, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for contact formular', self.__test_contact_formular, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for language switch', self.__test_language_switch, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for demo discussion with all functions', self.__test_functions_while_discussion, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for right negatives', self.__test_right_negatives, self.browser_style)
+		success_counter += Helper.test_wrapper('tests for content', self.__test_content, self.browser_style)
 		end = time.time()
 
 		diff = str(end - start)
@@ -529,7 +530,7 @@ class FrontendTests:
 		b.find_by_css('#item_start_premise').click()
 		time.sleep(waittime)
 		# add new premise
-		success = success and Helper.check_for_present_text(b, 'Let me enter my reason', 'check for new premise window again')
+		success = success and Helper.check_for_present_text(b, 'me enter my reason', 'check for new premise window again')
 		reason2 = 'some new reason 1 and some new reason 2'
 		b.find_by_id('add-premise-container-main-input').fill(reason2)
 		# add another input field
@@ -567,6 +568,24 @@ class FrontendTests:
 		b = Helper.login(b, nickname, password, mainpage + 'discussion')
 
 		# Todo __test_right_negatives
+
+		b = Helper.logout(b)
+		b.quit()
+		return 1 if success else 0
+
+	@staticmethod
+	def __test_content(browser):
+		"""
+		Checks the forumlation of arguments
+		:param browser: current browser
+		:return: 1 if success else 0
+		"""
+		print('Starting tests for __test_content:')
+		success = True
+		b = Browser(browser)
+		b = Helper.login(b, nickname, password, mainpage + 'discussion')
+
+		# Todo __test_content
 
 		b = Helper.logout(b)
 		b.quit()

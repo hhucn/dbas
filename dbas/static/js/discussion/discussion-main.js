@@ -167,9 +167,11 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 
 	// get infos about the author
 	$('#' + questionBubbleId).click(function(){
-		var splits = window.location.href.split('/'),
-			uid = splits[splits.length - 1],
-			qmark = uid.indexOf('?');
+		var splits, uid, qmark;
+		splits = window.location.href.split('?');
+		splits = splits[0].split('/');
+		uid = splits[splits.length - 1];
+		qmark = uid.indexOf('?');
 		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
 	});
 
@@ -413,7 +415,9 @@ setGuiOptions = function(){
  */
 setInputExtraOptions = function(guiHandler, interactionHandler){
 	var input = $('#' + discussionSpaceListId).find('li:last-child input'),
-		text = [], splits = window.location.href.split('/'), conclusion, supportive, arg, relation,
+		text = [], splits, conclusion, supportive, arg, relation;
+		splits = window.location.href.split('?');
+		splits = splits[0].split('/');
 		sendStartStatement = function(){
 			text = $('#' + addStatementContainerMainInputId).val();
 			interactionHandler.sendStatement(text, '', '', '', '', fuzzy_start_statement);
