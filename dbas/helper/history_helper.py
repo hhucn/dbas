@@ -7,7 +7,7 @@ Provides helping function for creating the history as bubbles.
 from sqlalchemy import and_
 
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
-	get_text_for_conclusion
+	get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement, User, History
@@ -273,18 +273,24 @@ class HistoryHelper:
 		transaction.commit()
 
 	@staticmethod
-	def get_history_from_database(nickname):
+	def get_history_from_database(nickname, lang):
 		"""
 		Returns history from database
 
 		:param nickname: User.nickname
+		:param lang: ui_locales
 		:return: [String]
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else '').first()
 		if not nickname or not db_user:
 			return []
 
-		return DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
+		db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
+		return_array = []
+		for history in db_history:
+			return_array.append({'path': history.path, 'timestamp': sql_timestamp_pretty_print(str(history.timestamp), lang)})
+
+		return return_array
 
 	@staticmethod
 	def delete_history_in_database(nickname, transaction):
