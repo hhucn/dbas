@@ -855,7 +855,8 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_user_history', 'def', 'main')
-		return_list = HistoryHelper.get_history_from_database(self.request.authenticated_userid)
+		ui_locales = get_language(self.request, get_current_registry())
+		return_list = HistoryHelper.get_history_from_database(self.request.authenticated_userid, ui_locales)
 		return json.dumps(return_list, True)
 
 	# ajax - getting all text edits
