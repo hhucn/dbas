@@ -7,10 +7,8 @@ Provides helping function for dictionaries.
 import random
 from datetime import datetime
 
-from sqlalchemy import and_
-
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Bubble, Breadcrumb
+from dbas.database.discussion_model import Argument, User
 from dbas.helper.dictionary_helper_discussion import DiscussionDictHelper
 from dbas.helper.notification_helper import NotificationHelper
 from dbas.helper.query_helper import QueryHelper
@@ -298,30 +296,3 @@ class DictionaryHelper(object):
 			'link_de_class': ('active' if lang_is_de else ''),
 			'link_en_class': ('active' if lang_is_en else '')
 		})
-
-	@staticmethod
-	def remove_last_bubble_for_discussion_reaction(nickname, session_id, bubble_param):
-		"""
-		Removes the last Bubble of the user if the linked url ends with the bubble params
-
-		:param nickname: User.nickname
-		:param session_id: request.session_uid
-		:param bubble_param: String
-		:return: True, when a Bubble was deleted
-		"""
-		logger('DictionaryHelper', 'remove_last_bubble_for_discussion_reaction', 'nickname: ' + str(nickname) + ', session: ' + str(session_id))
-		if not nickname:
-			nickname = 'anonymous'
-
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-
-		if nickname == 'anonymous':
-			bubble = DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
-			                                                       Bubble.session_id == session_id)).order_by(Bubble.uid.desc()).first()
-		else:
-			bubble = DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid).order_by(Bubble.uid.desc()).first()
-
-		if bubble and DBDiscussionSession.query(Breadcrumb).filter_by(uid=bubble.breadcrumb_uid).first().url.endswith(bubble_param):
-			DBDiscussionSession.query(Bubble).filter_by(uid=bubble.uid).delete()
-			return True
-		return False

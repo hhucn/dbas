@@ -361,86 +361,28 @@ class Argument(DiscussionBase):
 		self.argument_uid = None if argument == 0 else argument
 
 
-class Breadcrumb(DiscussionBase):
+class History(DiscussionBase):
 	"""
-	Breadcrumb-table with several columns.
-	Each user will be tracked
-	"""
-	__tablename__ = 'breadcrumbs'
-	uid = Column(Integer, primary_key=True)
-	author_uid = Column(Integer, ForeignKey('users.uid'))
-	url = Column(Text, nullable=False)
-	timestamp = Column(DateTime(timezone=True), default=func.now())
-	session_id = Column(Text)
-
-	users = relationship('User', foreign_keys=[author_uid])
-
-	def __init__(self, user, url, session_id=''):
-		"""
-		Initializes a row in current history-table
-		:param user:
-		:param url:
-		:param session_id:
-		:return:
-		"""
-		self.author_uid = user
-		self.url = url
-		self.timestamp = func.now()
-		self.session_id = session_id
-
-
-class Bubble(DiscussionBase):
-	"""
-	Bubbles-table with several columns.
+	History-table with several columns.
 	Each user will be tracked
 	"""
 	__tablename__ = 'bubbles'
 	uid = Column(Integer, primary_key=True)
-	bubble_id = Column(Text, nullable=False)
 	author_uid = Column(Integer, ForeignKey('users.uid'))
-	content = Column(Text, nullable=False)
-	is_user = Column(Boolean, nullable=False)
-	is_system = Column(Boolean, nullable=False)
-	is_status = Column(Boolean, nullable=False)
-	is_info = Column(Boolean, nullable=False)
-	session_id = Column(Text)
-	related_argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
-	related_statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
-	breadcrumb_uid = Column(Integer, ForeignKey('breadcrumbs.uid'))
+	path = Column(Text, nullable=False)
+	timestamp = Column(DateTime(timezone=True), default=func.now())
 
-	breadcrumbs = relationship('Breadcrumb', foreign_keys=[breadcrumb_uid])
 	users = relationship('User', foreign_keys=[author_uid])
-	arguments = relationship('Argument', foreign_keys=[related_argument_uid])
-	statements = relationship('Statement', foreign_keys=[related_statement_uid])
 
-	def __init__(self, bubble_id, user, content, is_user, is_system, is_status, is_info, session_id,
-	             breadcrumb_uid, related_argument_uid=None, related_statement_uid=None):
+	def __init__(self, author_uid, path):
 		"""
 
-		:param bubble_id:
-		:param user:
-		:param content:
-		:param is_user:
-		:param is_system:
-		:param is_status:
-		:param is_info:
-		:param session_id:
-		:param breadcrumb_uid:
-		:param related_argument_uid:
-		:param related_statement_uid:
+		:param author_uid:
+		:param path:
 		:return:
 		"""
-		self.bubble_id = bubble_id
-		self.author_uid = user
-		self.content = content
-		self.is_user = is_user
-		self.is_system = is_system
-		self.is_status = is_status
-		self.is_info = is_info
-		self.session_id = session_id
-		self.breadcrumb_uid = breadcrumb_uid
-		self.related_argument_uid = related_argument_uid
-		self.related_statement_uid = related_statement_uid
+		self.author_uid = author_uid
+		self.path = path
 
 
 class VoteArgument(DiscussionBase):

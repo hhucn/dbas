@@ -17,11 +17,11 @@ from pyshorteners.shorteners import Shortener
 from sqlalchemy import and_
 from validate_email import validate_email
 
-from .helper.breadcrumb_helper import BreadcrumbHelper
 from .helper.dictionary_helper import DictionaryHelper
 from .helper.dictionary_helper_discussion import DiscussionDictHelper
 from .helper.dictionary_helper_items import ItemDictHelper
 from .helper.issue_helper import IssueHelper
+from .helper.history_helper import HistoryHelper
 from .helper.notification_helper import NotificationHelper
 from .helper.query_helper import QueryHelper
 from .helper.voting_helper import VotingHelper
@@ -133,7 +133,9 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		if 'del_history' in params and params['del_history'] == 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
 
 		if for_api and api_data:
 			try:
@@ -154,9 +156,7 @@ class Dbas(object):
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
-
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_start()
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname).prepare_discussion_dict_for_start()
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -201,7 +201,9 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		if 'del_history' in params and params['del_history'] is 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
 
 		ui_locales      = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
@@ -211,9 +213,9 @@ class Dbas(object):
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname, history).prepare_discussion_dict_for_attitude(statement_id)
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history)\
+			.prepare_discussion_dict_for_attitude(statement_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
@@ -262,8 +264,10 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		if 'del_history' in params and params['del_history'] is 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
-			
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
+
 		logged_in = _uh.is_user_logged_in(nickname)
 
 		ui_locales = get_language(self.request, get_current_registry())
@@ -278,8 +282,7 @@ class Dbas(object):
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
-		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname, history)
+		_ddh                = DiscussionDictHelper(ui_locales, session_id, nickname, history)
 		_idh                = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
@@ -288,12 +291,10 @@ class Dbas(object):
 			if not get_text_for_statement_uid(statement_or_arg_id):
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
-			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
+			VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 
 			item_dict       = _idh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
-			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(transaction, statement_or_arg_id,
-			                                                                    has_new_crumbs, mainpage, slug,
-			                                                                    supportive, len(item_dict))
+			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict))
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -306,7 +307,7 @@ class Dbas(object):
 			logger('discussion_justify', 'def', 'dont know statement')
 			# dont know
 			argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
-			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(transaction, argument_uid, has_new_crumbs)
+			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(argument_uid)
 			item_dict       = _idh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
@@ -380,29 +381,30 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		if 'del_history' in params and params['del_history'] == 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
 
 		rm_last_bubble  = True if 'rm_bubble' in params else False
 		if rm_last_bubble:
-			DictionaryHelper.remove_last_bubble_for_discussion_reaction(nickname, session_id, params['rm_bubble'])
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
 
 		# sanity check
 		if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
 		# set votings
-		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
+		VotingHelper.add_vote_for_argument(arg_id_user, nickname, transaction)
 
 		ui_locales      = get_language(self.request, get_current_registry())
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id,
-		                                                                 transaction, ui_locales)
-
-		_ddh = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname, history)
-		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(transaction, arg_id_user, has_new_crumbs,
-		                                                                 supportive, arg_id_sys, attack, last_relation)
+		_ddh = DiscussionDictHelper(ui_locales, session_id, nickname, history)
+		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, last_relation, history)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
 		extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict(slug, False, False, True, True, True, nickname,
@@ -442,8 +444,9 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		if 'del_history' in params and params['del_history'] is 'true':
-			nickname, session_id = self.get_nickname_and_session()
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
@@ -493,11 +496,11 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		if 'del_history' in params and params['del_history'] is 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
-			
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
+			logger('--', '--', 'BAD KEYWORD')
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname, history).prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history).prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
@@ -838,9 +841,8 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_user_history', 'def', 'main')
-		ui_locales = get_language(self.request, get_current_registry())
-		return_dict = BreadcrumbHelper.get_breadcrumbs(self.request.authenticated_userid, self.request.session.id, ui_locales)
-		return json.dumps(return_dict, True)
+		return_list = HistoryHelper.get_history_from_database(self.request.authenticated_userid)
+		return json.dumps(return_list, True)
 
 	# ajax - getting all text edits
 	@view_config(route_name='ajax_get_all_posted_statements', renderer='json', check_csrf=True)
@@ -910,7 +912,7 @@ class Dbas(object):
 		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('delete_user_history', 'def', 'main')
-		BreadcrumbHelper.del_all_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
+		HistoryHelper.delete_history_in_database(self.request.authenticated_userid, transaction)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
 
@@ -930,7 +932,7 @@ class Dbas(object):
 		logger('delete_statistics', 'def', 'main')
 
 		return_dict = dict()
-		return_dict['removed_data'] = 'true' if VotingHelper().clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
+		return_dict['removed_data'] = 'true' if VotingHelper.clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
 
 		return json.dumps(return_dict, True)
 
