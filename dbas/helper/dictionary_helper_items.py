@@ -130,10 +130,14 @@ class ItemDictHelper(object):
 
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.issue_uid, self.lang)
+				already_used = 'reaction/' + str(argument.uid) in self.path
+				additional_text = '(' + _tn.get(_tn.youUsedThisEarlier) + ')'
 				statements_array.append(self.__create_statement_dict(str(argument.uid),
 				                                                     premise_array,
 				                                                     'justify',
-																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
+																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
+				                                                     already_used=already_used,
+				                                                     already_used_text=additional_text))
 
 		if nickname:
 			statements_array.append(self.__create_statement_dict('start_premise',
@@ -407,7 +411,7 @@ class ItemDictHelper(object):
 		return statements_array
 
 	@staticmethod
-	def __create_statement_dict(uid, premises, attitude, url):
+	def __create_statement_dict(uid, premises, attitude, url, already_used=False, already_used_text=''):
 		"""
 		Return dictionary
 		
@@ -415,10 +419,14 @@ class ItemDictHelper(object):
 		:param premises: String
 		:param attitude: String
 		:param url: String
+		:param already_used: Boolean
+		:param already_used_text: String
 		:return: dict()
 		"""
 		return {
 			'id': 'item_' + str(uid),
 			'premises': premises,
 			'attitude': attitude,
-			'url': url}
+			'url': url,
+			'already_used': already_used,
+			'already_used_text': already_used_text}

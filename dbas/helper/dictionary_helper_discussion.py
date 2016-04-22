@@ -76,7 +76,7 @@ class DiscussionDictHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_justify_statement(self, uid, application_url, slug, is_supportive, count_of_items):
+	def prepare_discussion_dict_for_justify_statement(self, uid, application_url, slug, is_supportive, count_of_items, nickname):
 		"""
 		Prepares the discussion dict with all bubbles for the third step in discussion, where the user justifies his position.
 
@@ -85,6 +85,7 @@ class DiscussionDictHelper(object):
 		:param slug: Issue.info as Slug
 		:param is_supportive: Boolean
 		:param count_of_items: Integer
+		:param nickname: User.nickname
 		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
@@ -108,7 +109,9 @@ class DiscussionDictHelper(object):
 		question_bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True)
 		if not text.endswith(('.', '?', '!')):
 			text += '.'
-		select_bubble = HistoryHelper.create_speechbubble_dict(is_user=True, url=url, message=intro + '<strong>' + text + '</strong>', omit_url=False, statement_uid=uid, is_up_vote=is_supportive)
+		select_bubble = HistoryHelper.create_speechbubble_dict(is_user=True, url=url, message=intro + '<strong>' + text + '</strong>',
+		                                                       omit_url=False, statement_uid=uid, is_up_vote=is_supportive,
+		                                                       nickname=nickname)
 
 		# check for double bubbles
 		should_append = True
@@ -125,11 +128,13 @@ class DiscussionDictHelper(object):
 		if should_append:
 			self.__append_bubble(bubbles_array, select_bubble)
 
-		self.__append_bubble(bubbles_array, HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now), omit_url=True))
+		self.__append_bubble(bubbles_array, HistoryHelper.create_speechbubble_dict(is_status=True, uid='now',
+		                                                                           message=_tn.get(_tn.now), omit_url=True))
 		self.__append_bubble(bubbles_array, question_bubble)
 
 		if not self.nickname and count_of_items == 1:
-			self.__append_bubble(bubbles_array, HistoryHelper.create_speechbubble_dict(is_info=True, uid='now', message=_tn.get(_tn.voteCountTextFirst) + '. ' + _tn.get(_tn.onlyOneItemWithLink), omit_url=True))
+			self.__append_bubble(bubbles_array, HistoryHelper.create_speechbubble_dict(is_info=True, uid='now',
+			                                                                           message=_tn.get(_tn.voteCountTextFirst) + '. ' + _tn.get(_tn.onlyOneItemWithLink), omit_url=True))
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 

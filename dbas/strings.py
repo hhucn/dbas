@@ -444,6 +444,8 @@ class Translator(object):
 		self.youAgreeWith = 'youAgreeWith'
 		self.youDisagreeWith = 'youDisagreeWith'
 		self.youSaidThat = 'youSaidThat'
+		self.youUsedThisEarlier = 'youUsedThisEarlier'
+		self.youRejectedThisEarlier = 'youRejectedThisEarlier'
 
 		self.sentencesOpenersArguingWithAgreeing = [self.agreeBecause, self.therefore]
 		self.sentencesOpenersArguingWithDisagreeing = [self.disagreeBecause, self.alternatively]
@@ -893,6 +895,8 @@ class Translator(object):
 		en_lang[self.youAgreeWith] = 'You agree with'
 		en_lang[self.youDisagreeWith] = 'You disagree with'
 		en_lang[self.youSaidThat] = 'You said that'
+		en_lang[self.youUsedThisEarlier] = 'You used this earlier.'
+		en_lang[self.youRejectedThisEarlier] = 'You rejected this earlier.'
 
 		return en_lang
 
@@ -1336,6 +1340,8 @@ class Translator(object):
 		de_lang[self.youAgreeWith] = 'Sie sind der Meinung, dass'
 		de_lang[self.youDisagreeWith] = 'Sie weidersprechen'
 		de_lang[self.youSaidThat] = 'Sie haben gesagt, dass'
+		de_lang[self.youUsedThisEarlier] = 'Sie haben diese Aussage schon benutzt.'
+		de_lang[self.youRejectedThisEarlier] = 'Sie haben diese Aussage schon abgelehnt.'
 
 		return de_lang
 
