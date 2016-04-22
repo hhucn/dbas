@@ -222,7 +222,7 @@ class DiscussionDictHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_argumentation(self, uid, is_supportive, additional_id, attack, last_relation, history):
+	def prepare_discussion_dict_for_argumentation(self, uid, is_supportive, additional_id, attack, history):
 		"""
 		Prepares the discussion dict with all bubbles for the argumentation window.
 
@@ -230,7 +230,6 @@ class DiscussionDictHelper(object):
 		:param is_supportive: Boolean
 		:param additional_id: Argument.uid
 		:param attack: String (undermine, support, undercut, rebut, ...)
-		:param last_relation: String (undermine, support, undercut, rebut, ...)
 		:param history: History
 		:return: dict()
 		"""
@@ -241,12 +240,15 @@ class DiscussionDictHelper(object):
 		save_statement_url  = 'ajax_set_new_start_statement'
 		mid_text            = ''
 		bubble_mid          = ''
+		splitted_history    = HistoryHelper.get_splitted_history(self.history)
+		user_changed_opinion = splitted_history[-1].endswith(str(uid))
 
 		_tg					 = TextGenerator(self.lang)
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+
 		if attack == 'end':
 			#  user_text        = _tn.get(_tn.soYourOpinionIsThat) + ': '
-			text             = get_text_for_argument_uid(uid, self.lang, True, user_changed_opinion=last_relation == 'support')
+			text             = get_text_for_argument_uid(uid, self.lang, True, user_changed_opinion=user_changed_opinion)
 			user_text        = '<strong>' + text[0:1].upper() + text[1:] + '</strong>.'
 			sys_text         = _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
 			mid_text         = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
@@ -282,7 +284,8 @@ class DiscussionDictHelper(object):
 			current_argument = current_argument[0:1].upper() + current_argument[1:]
 			premise = premise[0:1].lower() + premise[1:]
 
-			user_text = (_tn.get(_tn.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
+			# check for support and build text
+			user_text = (_tn.get(_tn.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
 			user_text += '<strong>'
 			user_text += current_argument if current_argument != '' else premise
 			user_text += '</strong>.'
