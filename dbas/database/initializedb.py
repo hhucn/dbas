@@ -18,7 +18,7 @@ from dbas.user_management import PasswordHandler
 from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue,\
-	Notification, Settings, VoteArgument, VoteStatement, Bubble, Breadcrumb, StatementReferences
+	Notification, Settings, VoteArgument, VoteStatement, StatementReferences
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 
@@ -308,7 +308,7 @@ def setup_news_db(session):
 	news45 = News(title='COMMA16',
 				  date='05.04.2016',
 				  author='Tobias Krauthoff',
-				  news='After a few works of testing an debugging, we now have verison of D-BAS, whhich will be submitted '
+				  news='After a few works of testing an debugging, we now have verison of D-BAS, which will be submitted '
 				       ' to <a href="http://www.ling.uni-potsdam.de/comma2016" target="_blank">COMMA 2016</a>.')
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
@@ -330,8 +330,6 @@ def drop_discussion_database(session):
 
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(VoteArgument).delete()) + ' in VoteArgument')
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(VoteStatement).delete()) + ' in VoteStatement')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Bubble).delete()) + ' in Bubble')
-	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Breadcrumb).delete()) + ' in Breadcrumb')
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Notification).delete()) + ' in Notification')
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(StatementReferences).delete()) + ' in StatementReferences')
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Argument).delete()) + ' in Argument')
@@ -345,9 +343,12 @@ def drop_discussion_database(session):
 
 def setup_up_users(session):
 	"""
+	Creates all users
 
-	:return:
+	:param session: database session
+	:return: User
 	"""
+
 	# adding groups
 	group0 = Group(name='admins')
 	group1 = Group(name='authors')
@@ -490,10 +491,10 @@ def setup_dummy_votes(session):
 			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
 			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
 
-	rat_arg_up = str( trunc( arg_up/len(db_arguments) * 100) / 100)
-	rat_arg_down = str( trunc( arg_down/len(db_arguments) * 100) / 100)
-	rat_stat_up = str( trunc( stat_up/len(db_statements) * 100) / 100)
-	rat_stat_down = str( trunc( stat_down/len(db_statements) * 100) / 100)
+	rat_arg_up = str(trunc(arg_up / len(db_arguments) * 100) / 100)
+	rat_arg_down = str(trunc(arg_down / len(db_arguments) * 100) / 100)
+	rat_stat_up = str(trunc(stat_up / len(db_statements) * 100) / 100)
+	rat_stat_down = str(trunc(stat_down / len(db_statements) * 100) / 100)
 
 	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(arg_up) + ' up votes for ' + str(len(db_arguments)) + ' arguments (' + rat_arg_up + ' votes/argument)')
 	logger('INIT_DB', 'Dummy Votes', 'Created ' + str(arg_down) + ' down votes for ' + str(len(db_arguments)) + ' arguments (' + rat_arg_down + ' votes/argument)')
@@ -506,15 +507,17 @@ def setup_dummy_votes(session):
 
 def setup_discussion_database(session, user):
 	"""
+	Fills the database with dummy date, created by given user
 
+	:param session: database session
 	:param user: main author
 	:return:
 	"""
 	# adding our main issue
 	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid)
 	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid)
-	issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid)
-	issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user.uid)
+	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid)
+	#  issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user.uid)
 	session.add_all([issue1, issue2])
 	session.flush()
 
@@ -898,7 +901,7 @@ def setup_discussion_database(session, user):
 	session.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
 	session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
 	session.add_all([argument16, argument17, argument18, argument19, argument20, argument21, argument22])
-	session.add_all([argument23, argument24, argument25, argument26, argument27, argument28])#, argument29])
+	session.add_all([argument23, argument24, argument25, argument26, argument27, argument28])  # , argument29])
 	session.add_all([argument30, argument31])
 	session.add_all([argument101, argument102, argument103, argument104, argument105, argument106, argument107])
 	session.add_all([argument108, argument109, argument110, argument112, argument113, argument114])  # , argument111])

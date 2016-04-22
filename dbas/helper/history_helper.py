@@ -6,10 +6,11 @@ Provides helping function for creating the history as bubbles.
 
 from sqlalchemy import and_
 
-from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
+from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
+	get_text_for_conclusion
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement
+from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement, User, History
 from dbas.strings import Translator, TextGenerator
 from dbas.url_manager import UrlManager
 
@@ -18,6 +19,21 @@ class HistoryHelper:
 	"""
 	Helper class for parsing and consuming the history
 	"""
+	
+	@staticmethod
+	def get_splitted_history(history):
+		"""
+		Splits history by specific keyword and removes leading '/'
+		
+		:param history: String
+		:return: [String]
+		"""
+		history = history.split('-')
+		tmp = []
+		for h in history:
+			tmp.append(h[1:] if h[0:1] == '/' else h)
+
+		return tmp
 
 	@staticmethod
 	def create_bubbles_from_history(history, nickname='', lang='', application_url=''):
@@ -34,7 +50,7 @@ class HistoryHelper:
 			return
 
 		logger('HistoryHelper', 'create_bubbles_from_history', 'history: ' + history)
-		splitted_history = history.split('-')
+		splitted_history = HistoryHelper.get_splitted_history(history)
 
 		logger('HistoryHelper', 'create_bubbles_from_history', 'steps: ' + str(len(splitted_history)))
 		bubble_array = []
@@ -42,40 +58,39 @@ class HistoryHelper:
 		nickname = nickname if nickname else 'anonymous'
 
 		for index, step in enumerate(splitted_history):
-			logger('HistoryHelper', 'create_bubbles_from_history', 'step: ' + step[1:])
+			logger('HistoryHelper', 'create_bubbles_from_history', 'step: justify case -> ' + step)
 
 			if '/justify/' in step:
-				logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': ' + step[1:])
+				logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': ' + step)
 				steps    = step.split('/')
-				mode     = steps[2]  # Todo: mode in 'justify' branch of create_bubbles_from_history
-				relation = steps[3]  # Todo: relaton in 'justify' branch of create_bubbles_from_history
+				mode     = steps[2]
+				relation = steps[3] if len(steps) > 3 else ''
 
 				if [c for c in ('t', 'f') if c in mode] and relation == '':
-					bubble_array.append(HistoryHelper.__justify_statement_step(step[1:], nickname, lang))
+					bubble = HistoryHelper.__justify_statement_step(step, nickname, lang)
+					bubble_array.append(bubble)
 
-				#  elif 'd' in mode and relation == '':
+				# elif 'd' in mode and relation == '':
 
-				elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
-					bubble_array.append(HistoryHelper.__dont_know_step(step[1:], nickname, lang))
+				# elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 
 			elif '/reaction/' in step:
-				logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': ' + step[1:])
-				bubble_user, bubble_syst = HistoryHelper.__reaction_step(step[1:], nickname, lang, splitted_history)
+				logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
+				bubble_user, bubble_syst = HistoryHelper.__reaction_step(step, nickname, lang, splitted_history)
 				bubble_array.append(bubble_user)
 				bubble_array.append(bubble_syst)
 
 			#  elif '/choose/' in step:
-			#  logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': ' + step[1:])
+			#  logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': ' + step)
 
 			else:
-				logger('HistoryHelper', 'create_bubbles_from_history', 'UNUSED ' + str(index) + ': ' + step[1:])
-				logger('HistoryHelper', 'create_bubbles_from_history', 'UNUSED ' + str(index) + ': ' + step[1:])
-				logger('HistoryHelper', 'create_bubbles_from_history', 'UNUSED ' + str(index) + ': ' + step[1:])
+				logger('-----', '-', 'UNUSED ' + str(index) + ': ' + step)
 
-		logger('HistoryHelper', '- - - - - - - - - -', ' - - - - - BUBBLE HISTORY BELOW')
+		logger('-----', '-----', 'BUBBLE HISTORY BELOW - NEW ' + str(len(bubble_array)))
 		for index, bubble in enumerate(bubble_array):
-			logger('HistoryHelper', 'create_bubbles_from_history', 'bubble ' + str(index) + ': ' + str(bubble))
-		logger('HistoryHelper', '- - - - - - - - - -', ' - - - - - BUBBLE HISTORY ABOVE')
+			typ = 'is_user' if bubble['is_user'] else 'is_syst' if bubble['is_system'] else 'is_stat'
+			logger('-----', '-----', 'bubble ' + str(index) + ': ' + typ + ' - ' + bubble['message'][0:30])
+		logger('-----', '-----', 'BUBBLE HISTORY ABOVE - NEW ' + str(len(bubble_array)))
 
 		return bubble_array
 
@@ -89,6 +104,7 @@ class HistoryHelper:
 		:param lang: ui_locales
 		:return: dict()
 		"""
+		logger('HistoryHelper', '__justify_statement_step', 'def')
 		steps   = step.split('/')
 		uid     = int(steps[1])
 		#  slug    = ''
@@ -99,9 +115,9 @@ class HistoryHelper:
 		intro   = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		text	= get_text_for_statement_uid(uid)
 		text    = text[0:1].upper() + text[1:]
-		return HistoryHelper.__create_speechbubble_dict(is_user=True, message=intro + '<strong>' + text + '</strong>',
-		                                                omit_url=False, statement_uid=uid, is_up_vote=is_supportive,
-		                                                nickname=nickname, lang=lang)
+		return HistoryHelper.create_speechbubble_dict(is_user=True, message=intro + '<strong>' + text + '</strong>',
+		                                              omit_url=False, statement_uid=uid, is_up_vote=is_supportive,
+		                                              nickname=nickname, lang=lang)
 
 	@staticmethod
 	def __dont_know_step(step, nickname, lang):
@@ -120,7 +136,7 @@ class HistoryHelper:
 		text	 = get_text_for_argument_uid(uid, lang)
 		text	 = text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
 		sys_text = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:]  + '</strong>. '
-		return HistoryHelper.__create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang)
+		return HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang)
 
 	@staticmethod
 	def __reaction_step(step, nickname, lang, splitted_history):
@@ -133,16 +149,18 @@ class HistoryHelper:
 		:param splitted_history: [String].uid
 		:return: dict(), dict()
 		"""
+		logger('HistoryHelper', '__reaction_step', 'def')
 		steps           = step.split('/')
 		uid             = int(steps[1])
 		additional_uid  = int(steps[3])
 		attack          = steps[2]
 
 		is_supportive   = DBDiscussionSession.query(Argument).filter_by(uid=uid).first().is_supportive
-		last_relation   = splitted_history[-1].split('/')[2]  # Todo: last_relation in __reaction_step
+		last_relation   = splitted_history[-1].split('/')[2]
 
 		user_changed_opinion = len(splitted_history) > 1 and '/undercut/' in splitted_history[-2]
-		current_argument     = get_text_for_argument_uid(uid, lang, with_strong_html_tag=True, start_with_intro=True, user_changed_opinion=user_changed_opinion)
+		current_argument     = get_text_for_argument_uid(uid, lang, with_strong_html_tag=True, start_with_intro=True,
+		                                                 user_changed_opinion=user_changed_opinion)
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 		db_confrontation     = DBDiscussionSession.query(Argument).filter_by(uid=additional_uid).first()
 		db_statement		 = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
@@ -163,17 +181,22 @@ class HistoryHelper:
 		                                                          attack, confr, reply_for_argument, user_is_attacking,
 		                                                          db_argument)
 
-		bubble_user = HistoryHelper.__create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid, is_up_vote=is_supportive, nickname=nickname, lang=lang)
+		bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True,
+		                                                     argument_uid=uid, is_up_vote=is_supportive,
+		                                                     nickname=nickname, lang=lang)
 		if attack == 'end':
-			bubble_syst  = HistoryHelper.__create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, nickname=nickname, lang=lang)
+			bubble_syst  = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True,
+			                                                      nickname=nickname, lang=lang)
 		else:
-			bubble_syst  = HistoryHelper.__create_speechbubble_dict(is_system=True, uid='question-bubble', message=sys_text, omit_url=True, nickname=nickname, lang=lang)
+			bubble_syst  = HistoryHelper.create_speechbubble_dict(is_system=True, uid='question-bubble',
+			                                                      message=sys_text, omit_url=True, nickname=nickname,
+			                                                      lang=lang)
 		return bubble_user, bubble_syst
 
 	@staticmethod
-	def __create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, uid='', url='',
-	                               message='', omit_url=False, argument_uid=None, statement_uid=None, is_up_vote=True,
-	                               nickname='anonymous', lang='en'):
+	def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, uid='', url='',
+	                             message='', omit_url=False, argument_uid=None, statement_uid=None, is_up_vote=True,
+	                             nickname='anonymous', lang='en'):
 		"""
 		Creates an dictionary which includes every information needed for a bubble.
 
@@ -192,6 +215,8 @@ class HistoryHelper:
 		:param lang: String
 		:return: dict()
 		"""
+		logger('HistoryHelper', 'create_speechbubble_dict', 'def')
+
 		speech = dict()
 		speech['is_user']            = is_user
 		speech['is_system']          = is_system
@@ -199,7 +224,7 @@ class HistoryHelper:
 		speech['is_info']            = is_info
 		speech['id']                 = uid if len(str(uid)) > 0 else 'None'
 		# speech['url']                = url if len(str(url)) > 0 else 'None'
-		speech['url']                = (url + ('&' if '?' in url else '?') + 'del_history=true') if len(str(url)) > 0 else 'None'
+		speech['url']                = url if len(str(url)) > 0 else 'None'
 		speech['message']            = message
 		speech['omit_url']           = omit_url
 		speech['data_type']          = 'argument' if argument_uid else 'statement' if statement_uid else 'None'
@@ -228,3 +253,50 @@ class HistoryHelper:
 		speech['votecounts'] = votecounts
 
 		return speech
+
+	@staticmethod
+	def save_path_in_database(nickname, path, transaction):
+		"""
+		Saves a path into the database
+
+		:param nickname: User.nickname
+		:param path: String
+		:param transaction: Transaction
+		:return: Boolean
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else '').first()
+		if not nickname or not db_user:
+			return []
+
+		DBDiscussionSession.add(History(author_uid=db_user.uid, path=path))
+		DBDiscussionSession.flush()
+		transaction.commit()
+
+	@staticmethod
+	def get_history_from_database(nickname):
+		"""
+		Returns history from database
+
+		:param nickname: User.nickname
+		:return: [String]
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else '').first()
+		if not nickname or not db_user:
+			return []
+
+		return DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
+
+	@staticmethod
+	def delete_history_in_database(nickname, transaction):
+		"""
+		Deletes history from database
+
+		:param nickname: User.nickname
+		:return: [String]
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else '').first()
+		if not nickname or not db_user:
+			return []
+		DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
+		DBDiscussionSession.flush()
+		transaction.commit()
