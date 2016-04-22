@@ -160,7 +160,7 @@ function InteractionHandler() {
 						stored_td_avatar = td_avatar;
 					}
 				});
-				if (j==1)
+				if (i==1)
 					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick));
 			}
 			body.append(text).append(table.append(tbody));

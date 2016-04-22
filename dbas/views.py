@@ -93,7 +93,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_page', 'def', 'main, self.request.params: ' + str(self.request.params))
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-		HistoryHelper.save_path_in_database(self.request, self.request.authenticated_userid, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -130,7 +130,8 @@ class Dbas(object):
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired = UserHandler.update_last_action(transaction, nickname)
-		HistoryHelper.save_path_in_database(self.request, nickname, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, '')
 		if session_expired:
 			return self.user_logout(True)
 
@@ -195,7 +196,9 @@ class Dbas(object):
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired = UserHandler.update_last_action(transaction, nickname)
-		HistoryHelper.save_path_in_database(self.request, nickname, self.request.path, transaction)
+		history         = params['history'] if 'history' in params else ''
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -203,7 +206,6 @@ class Dbas(object):
 		_dh = DictionaryHelper(ui_locales)
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
-		history         = params['history'] if 'history' in params else ''
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
@@ -251,7 +253,9 @@ class Dbas(object):
 		logger('discussion_justify', 'def', 'main, self.request.params: ' + str(params))
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-		HistoryHelper.save_path_in_database(self.request, nickname, self.request.path, transaction)
+		history              = params['history'] if 'history' in params else ''
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
 
 		_uh = UserHandler
 		session_expired = _uh.update_last_action(transaction, nickname)
@@ -268,7 +272,6 @@ class Dbas(object):
 		mode                = matchdict['mode'] if 'mode' in matchdict else ''
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
-		history             = params['history'] if 'history' in params else ''
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
@@ -366,7 +369,8 @@ class Dbas(object):
 		supportive      = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired  = UserHandler.update_last_action(transaction, nickname)
-		HistoryHelper.save_path_in_database(self.request, nickname, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -418,7 +422,7 @@ class Dbas(object):
 		logger('discussion_finish', 'def', 'main, self.request.params: ' + str(params))
 		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-		HistoryHelper.save_path_in_database(self.request, self.request.authenticated_userid, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -466,7 +470,8 @@ class Dbas(object):
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		session_expired = UserHandler.update_last_action(transaction, nickname)
-		HistoryHelper.save_path_in_database(self.request, nickname, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -503,7 +508,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-		HistoryHelper.save_path_in_database(self.request, self.request.authenticated_userid, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -610,7 +615,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-		HistoryHelper.save_path_in_database(self.request, self.request.authenticated_userid, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -692,7 +697,7 @@ class Dbas(object):
 		logger('main_notifications', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-		HistoryHelper.save_path_in_database(self.request, self.request.authenticated_userid, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -717,7 +722,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_news', 'def', 'main')
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-		HistoryHelper.save_path_in_database(self.request, self.request.authenticated_userid, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -747,7 +752,7 @@ class Dbas(object):
 		logger('main_imprint', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-		HistoryHelper.save_path_in_database(self.request, self.request.authenticated_userid, self.request.path, transaction)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
