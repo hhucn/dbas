@@ -134,11 +134,6 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		if 'del_history' in params and params['del_history'] == 'true':
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-
 		if for_api and api_data:
 			try:
 				logged_in = api_data["nickname"]
@@ -204,11 +199,6 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		if 'del_history' in params and params['del_history'] is 'true':
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-
 		ui_locales      = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
@@ -268,11 +258,6 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		if 'del_history' in params and params['del_history'] is 'true':
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-
 		logged_in = _uh.is_user_logged_in(nickname)
 
 		ui_locales = get_language(self.request, get_current_registry())
@@ -299,7 +284,7 @@ class Dbas(object):
 			VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 
 			item_dict       = _idh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
-			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict))
+			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict), nickname)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -386,17 +371,6 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		if 'del_history' in params and params['del_history'] == 'true':
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-
-		rm_last_bubble  = True if 'rm_bubble' in params else False
-		if rm_last_bubble:
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-
 		# sanity check
 		if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
@@ -449,11 +423,6 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		if 'del_history' in params and params['del_history'] is 'true':
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
 		return {
@@ -501,11 +470,6 @@ class Dbas(object):
 		HistoryHelper.save_path_in_database(self.request, nickname, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
-
-		if 'del_history' in params and params['del_history'] is 'true':
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
-			logger('--', '--', 'BAD KEYWORD')
 
 		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage)\
 			.prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)

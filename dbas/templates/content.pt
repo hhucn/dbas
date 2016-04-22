@@ -99,6 +99,7 @@
 								<span tal:repeat="premise item.premises" tal:omit-tag="">
                                     <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
                                     <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em i18n:translate="and">and</em></label>
+                                    <label tal:condition="item.already_used"><em>${item.already_used_text}</em></label>
                                 </span>
 							</li>
 						</ul>

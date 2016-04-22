@@ -238,7 +238,7 @@ class HistoryHelper:
 			                                                                     VoteStatement.is_up_vote == is_up_vote,
 			                                                                     VoteStatement.is_valid == True)).all()
 		_t = Translator(lang)
-		diff = 1 if nickname != 'anonymous' else 0  # Todo: Check difference of vote count
+		diff = 1 if nickname != 'anonymous' else 0
 		votecounts = len(db_votecounts) - diff if db_votecounts else 0
 
 		if votecounts == 0:
@@ -263,7 +263,6 @@ class HistoryHelper:
 		:return: Boolean
 		"""
 
-		logger('--', '--', path)
 		if path.startswith('/discuss/'):
 			request.response.set_cookie('_HISTORY_', path)
 

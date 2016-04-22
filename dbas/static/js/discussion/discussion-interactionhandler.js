@@ -139,7 +139,7 @@ function InteractionHandler() {
 					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
 					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
 				tbody = $('<tbody>'),
-				td_nick, td_avatar, stored_td_nick, stored_td_avatar, i=0;
+				td_nick, td_avatar, stored_td_nick='', stored_td_avatar='', i=0;
 
 			// supporters = parsedData.supporter.join(', ');
 			text = parsedData.text + '<br><br>';
@@ -160,6 +160,8 @@ function InteractionHandler() {
 						stored_td_avatar = td_avatar;
 					}
 				});
+				if (j==1)
+					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick));
 			}
 			body.append(text).append(table.append(tbody));
 			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), body);
@@ -228,7 +230,7 @@ function InteractionHandler() {
 					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
 					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
 				tbody = $('<tbody>'),
-				td_nick, td_avatar, stored_td_nick, stored_td_avatar, j=0;
+				td_nick, td_avatar, stored_td_nick='', stored_td_avatar='', j=0;
 
 			table.append($('<thead>').append(tr));
 
@@ -250,6 +252,8 @@ function InteractionHandler() {
 					stored_td_avatar = td_avatar;
 				}
 			});
+			if (j==1)
+				tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick));
 
 			body.append(span).append(table.append(tbody));
 			displayConfirmationDialogWithoutCancelAndFunction(_t(usersWithSameOpinion), body);
