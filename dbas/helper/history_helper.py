@@ -85,6 +85,9 @@ class HistoryHelper:
 			else:
 				logger('HistoryHelper', 'create_bubbles_from_history', 'UNUSED ' + str(index) + ': ' + step)
 
+			for bubble in bubble_array:
+				logger('HistoryHelper', 'create_bubbles_from_history', 'Created: ' + str(bubble['message']) + '; URL: ' + str(bubble['url']))
+
 		return bubble_array
 
 	@staticmethod
@@ -180,7 +183,7 @@ class HistoryHelper:
 		                                                          attack, confr, reply_for_argument, user_is_attacking,
 		                                                          db_argument)
 
-		bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True,
+		bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_text, omit_url=False,
 		                                                     argument_uid=uid, is_up_vote=is_supportive,
 		                                                     nickname=nickname, lang=lang, url=url)
 		if attack == 'end':
@@ -252,7 +255,22 @@ class HistoryHelper:
 		return speech
 
 	@staticmethod
-	def save_path_in_database(request, nickname, path, transaction):
+	def save_history_in_cookie(request, path, history):
+		"""
+		Saves history + new path in cookie
+
+		:param request: request
+		:param path: String
+		:param history: String
+		:return: none
+		"""
+		if path.startswith('/discuss/'):
+			path = path[len('/discuss/'):]
+			path = path[path.index('/'):]
+			request.response.set_cookie('_HISTORY_', history + '-' + path)
+
+	@staticmethod
+	def save_path_in_database(nickname, path, transaction):
 		"""
 		Saves a path into the database
 
@@ -264,7 +282,8 @@ class HistoryHelper:
 		"""
 
 		if path.startswith('/discuss/'):
-			request.response.set_cookie('_HISTORY_', path)
+			path = path[len('/discuss/'):]
+			path = path[path.index('/'):]
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else '').first()
 		if not nickname or not db_user:
