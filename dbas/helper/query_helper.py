@@ -47,7 +47,8 @@ class QueryHelper:
 		return_dict['vote_count'] = str(len(db_votes))
 		return_dict['author']     = db_author.nickname
 		return_dict['timestamp']  = sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
-		return_dict['text']       = '<strong>' + get_text_for_argument_uid(uid, lang, True, True, first_arg_by_user=True) + '</strong>'
+		text                      = get_text_for_argument_uid(uid, lang)
+		return_dict['text']       = '<strong>' + text[0:1].upper() + text[1:] + '.</strong>'
 
 		supporters = []
 		gravatars = dict()
