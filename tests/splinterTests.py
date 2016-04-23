@@ -591,7 +591,7 @@ class FrontendTests:
 		b = Helper.login(b, nickname, password, mainpage + 'discussion')
 
 		# start
-		b.visit(mainpage + '/discuss/town-has-to-cut-spending')
+		b.visit(mainpage + 'discuss/town-has-to-cut-spending')
 		success = success and Helper.check_for_present_text(b, 'initial position you are interested', 'check for question of inital position')
 		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
@@ -607,9 +607,10 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# confrontation - give feedback
-		success = success and Helper.check_for_present_text(b, 'what do you think about', 'check for confrontative question')
+		success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontative question')
 		success = success and Helper.check_for_present_text(b, 'stronger argument for accepting', 'check for acceptive formulation of rebut')
-		b.find_by_css('#item_support').click()
+		#b.find_by_css('#item_support label').click()
+		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
 		time.sleep(waittime)
 
 		# support of confrontation
@@ -619,12 +620,13 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# confrontation - give feedback again
-		success = success and Helper.check_for_present_text(b, 'what do you think about', 'check for confrontative question again')
-		b.find_by_css('#item_rebut').click()
+		success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontative question again')
+		#b.find_by_css('#item_rebut label').click()
+		b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
 		time.sleep(waittime)
 
 		# rebut of confrontation
-		success = success and Helper.check_for_present_text(b, 'You have much strong argument for accepting', 'check for formulation on \'rebut\'')
+		success = success and Helper.check_for_present_text(b, 'You have a much strong argument for accepting', 'check for formulation on \'rebut\'')
 		b.find_by_css('#discussion-restart-btn').click()
 		time.sleep(waittime)
 
@@ -644,7 +646,8 @@ class FrontendTests:
 		# confrontation - give feedback
 		success = success and Helper.check_for_present_text(b, 'does not hold', 'check for rejective opinion')
 		success = success and Helper.check_for_present_text(b, 'stronger argument for rejecting', 'check for rejective formulation of rebut')
-		b.find_by_css('#item_rebut').click()
+		#b.find_by_css('#item_rebut label').click()
+		b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
 		time.sleep(waittime)
 
 		# rebut of confrontation
