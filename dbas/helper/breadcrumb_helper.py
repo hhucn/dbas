@@ -15,12 +15,13 @@ from dbas.logger import logger
 from dbas.strings import Translator
 
 
-class BreadcrumbHelper(object):
+class BreadcrumbHelper:
 	"""
-	TODO
+	Managing breadcrumbs
 	"""
 
-	def save_breadcrumb(self, path, user, session_id, transaction, lang):
+	@staticmethod
+	def save_breadcrumb(path, user, session_id, transaction, lang):
 		"""
 		Saves curren path as breadcrumb for the user
 
@@ -45,35 +46,36 @@ class BreadcrumbHelper(object):
 		if expr_dbas:
 			group0 = expr_dbas.group(0)
 			if group0 and path.endswith(group0):
-				self.del_all_breadcrumbs_of_user(transaction, user, session_id)
+				BreadcrumbHelper.del_all_breadcrumbs_of_user(transaction, user, session_id)
 
 		# delete by slugs (api version)
 		expr_api = re.search(re.compile(r"/?api/[a-zA-Z0-9,-]*"), path)
 		if expr_api:
 			group1 = expr_api.group(0)
 			if group1 and path.endswith(group1):
-				self.del_all_breadcrumbs_of_user(transaction, user, session_id)
+				BreadcrumbHelper.del_all_breadcrumbs_of_user(transaction, user, session_id)
 
-		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == path,
-		                                                                  Breadcrumb.author_uid == db_user.uid)).first()
-		db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
-		already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
-		is_new_crumb = False
+		# remove replicates (removed due to #25)
+		#db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == path,
+		#                                                                  Breadcrumb.author_uid == db_user.uid)).first()
+		#db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
+		#already_last = db_last.url == db_already_in.url if db_already_in and db_last else False
+		#is_new_crumb = False
 
-		if db_already_in:
-			self.__delete_breadcrumbs_from_uid(db_user, db_already_in.uid, session_id)
-
-		elif not already_last:
-			DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=path, session_id=session_id))
-			is_new_crumb = True
+		#if db_already_in:
+		#	BreadcrumbHelper.__delete_breadcrumbs_from_uid(db_user, db_already_in.uid, session_id)
+		#elif not already_last:
+		DBDiscussionSession.add(Breadcrumb(user=db_user.uid, url=path, session_id=session_id))
+		is_new_crumb = True
 
 		transaction.commit()
 
-		return self.get_breadcrumbs(user, session_id, lang), is_new_crumb
+		return BreadcrumbHelper.get_breadcrumbs(user, session_id, lang), is_new_crumb
 
-	def get_breadcrumbs(self, user, session_id, lang):
+	@staticmethod
+	def get_breadcrumbs(user, session_id, lang):
 		"""
-		Returns list with breadcrumbs for the given user
+		Returns list with breadcrumbs for the given user.
 
 		:param user: User.nickname
 		:param session_id: request.session_id
@@ -99,7 +101,7 @@ class BreadcrumbHelper(object):
 		breadcrumbs = []
 		for index, crumb in enumerate(db_breadcrumbs):
 			try:
-				url_text = self.__get_text_for_url__(crumb.url, lang)
+				url_text = BreadcrumbHelper.__get_text_for_url__(crumb.url, lang)
 			except:
 				logger('BreadcrumbHelper', 'get_breadcrumbs', 'error on getting text for ' + crumb.url, error=True)
 				return dict()
@@ -113,6 +115,69 @@ class BreadcrumbHelper(object):
 
 		logger('BreadcrumbHelper', 'get_breadcrumbs', 'return crumbs #' + str(len(breadcrumbs)))
 		return breadcrumbs
+
+	@staticmethod
+	def del_duplicated_breacrumbs_of_user(url, user, session_id=0):
+		"""
+		Deletes duplicated breadcrumbs of given user
+
+		:param url: Breadcrumb.url
+		:param user: User.nickname
+		:param session_id: request.session_id
+		:return: undefined
+		"""
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		logger('BreadcrumbHelper', 'del_duplicated_breacrumbs_of_user', '1')
+		if not db_user:
+			logger('BreadcrumbHelper', 'del_duplicated_breacrumbs_of_user', '2')
+			user = 'anonymous'
+			db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+			if not db_user:
+				logger('BreadcrumbHelper', 'del_duplicated_breacrumbs_of_user', '3')
+				return
+
+		db_already_in = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.url == url,
+		                                                                  Breadcrumb.author_uid == db_user.uid)).first()
+		db_last = DBDiscussionSession.query(Breadcrumb).order_by(Breadcrumb.uid.desc()).first()
+
+		if db_already_in:
+			BreadcrumbHelper.__delete_breadcrumbs_from_uid(db_user, db_already_in.uid, session_id)
+
+	@staticmethod
+	def del_all_breadcrumbs_of_user(transaction, user, session_id=0):
+		"""
+		Deletes the complete breadcrumbs of given user
+
+		:param transaction: transaction
+		:param user: User.nickname
+		:param session_id: request.session_id
+		:return: undefined
+		"""
+
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		# BreadcrumbHelper.__delete_breadcrumbs_from_uid(db_user, 0, session_id)  # TODO
+		if user == 'anonymous':
+			logger('BreadcrumbHelper', 'del_all_breadcrumbs_of_user', 'user ' + str(db_user.uid) + ' with session_id ' + str(session_id))
+
+			bubbles = DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
+			                                                        Bubble.session_id == session_id))
+			if bubbles.all():
+				bubbles.delete()
+
+			crumbs = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
+			                                                           Breadcrumb.session_id == session_id))
+			if crumbs.all():
+				crumbs.delete()
+		else:
+			logger('BreadcrumbHelper', 'del_all_breadcrumbs_of_user', 'user ' + str(db_user.uid))
+			bubbles = DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid)
+			crumbs = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid)
+			if bubbles.all():
+				bubbles.delete()
+			if crumbs.all():
+				crumbs.delete()
+
+		transaction.commit()
 
 	@staticmethod
 	def __get_text_for_url__(url, lang):
@@ -177,41 +242,6 @@ class BreadcrumbHelper(object):
 						break
 			return slug if slug else _t.get(_t.breadcrumbsStart)
 
-	def del_all_breadcrumbs_of_user(self, transaction, user, session_id=0):
-		"""
-		Deletes the complete breadcrumbs of given user
-
-		:param transaction: transaction
-		:param user: User.nickname
-		:param session_id: request.session_id
-		:return: undefined
-		"""
-
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		# self.__delete_breadcrumbs_from_uid(db_user, 0, session_id)  # TODO
-		if user == 'anonymous':
-			logger('BreadcrumbHelper', 'del_all_breadcrumbs_of_user', 'user ' + str(db_user.uid) + ' with session_id ' + str(session_id))
-
-			bubbles = DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
-			                                                        Bubble.session_id == session_id))
-			if bubbles.all():
-				bubbles.delete()
-
-			crumbs = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
-			                                                           Breadcrumb.session_id == session_id))
-			if crumbs.all():
-				crumbs.delete()
-		else:
-			logger('BreadcrumbHelper', 'del_all_breadcrumbs_of_user', 'user ' + str(db_user.uid))
-			bubbles = DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid)
-			crumbs = DBDiscussionSession.query(Breadcrumb).filter_by(author_uid=db_user.uid)
-			if bubbles.all():
-				bubbles.delete()
-			if crumbs.all():
-				crumbs.delete()
-
-		transaction.commit()
-
 	@staticmethod
 	def __delete_breadcrumbs_from_uid(db_user, uid, session_id):
 		"""
@@ -225,7 +255,7 @@ class BreadcrumbHelper(object):
 		# getting all breadcrumbs for deleting
 		logger('BreadcrumbHelper', '__delete_breadcrumbs_from_uid', 'user ' + str(db_user.uid) +
 		       ' with session_id ' + str(session_id) +
-		       ' and arguments from ' + str(uid))
+		       ' and breadcrumbs from ' + str(uid))
 		if db_user.nickname == 'anonymous':
 			crumbs_for_del = DBDiscussionSession.query(Breadcrumb).filter(and_(Breadcrumb.author_uid == db_user.uid,
 			                                                                   Breadcrumb.uid > uid,

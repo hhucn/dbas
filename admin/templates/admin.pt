@@ -163,9 +163,6 @@
                             </div>
                             <div class="col-md-6" id="issue-switch-col" style="display: none;">
                                 <div class="dropdown">
-                                    <button class="btn btn-primary dropdown-toggle btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        <span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
-                                    </button>
                                     <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 250px;">
                                         <li class="dropdown-header" i18n:translate="topics">Topics</li>
                                     </ul>

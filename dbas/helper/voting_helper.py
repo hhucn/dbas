@@ -26,7 +26,7 @@ class VotingHelper(object):
 		:return: increased votes of the argument
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		if not UserHandler().is_user_logged_in(user) or not db_user:
+		if not UserHandler.is_user_logged_in(user) or not db_user:
 			return None
 
 		logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')

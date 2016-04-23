@@ -10,7 +10,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
 from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
-from dbas.recommender_system import RecommenderHelper
+from dbas.recommender_system import RecommenderSystem
 from dbas.strings import Translator, TextGenerator
 from dbas.url_manager import UrlManager
 
@@ -107,9 +107,9 @@ class ItemDictHelper(object):
 		logger('DictionaryHelper', 'prepare_item_dict_for_justify_statement', 'def')
 		statements_array = []
 		_tn = Translator(self.lang)
-		_rh = RecommenderHelper
+		_rh = RecommenderSystem
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-		db_arguments = RecommenderHelper.get_arguments_by_conclusion(statement_uid, is_supportive)
+		db_arguments = RecommenderSystem.get_arguments_by_conclusion(statement_uid, is_supportive)
 
 		_um = UrlManager(self.application_url, slug, self.for_api)
 
@@ -203,7 +203,7 @@ class ItemDictHelper(object):
 					premises_array.append(premise_dict)
 
 				# for each justifying premise, we need a new confrontation:
-				arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
+				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
 
 				url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))
@@ -250,7 +250,7 @@ class ItemDictHelper(object):
 		relations = ['undermine', 'support', 'undercut', 'rebut']
 		for relation in relations:
 			if relation == 'support':
-				arg_id_sys, sys_attack = RecommenderHelper.get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
+				arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
 				url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
 
 			else:
@@ -283,13 +283,20 @@ class ItemDictHelper(object):
 
 		conclusion   = get_text_for_conclusion(db_sys_argument, self.lang)
 		premise, tmp = get_text_for_premisesgroup_uid(db_sys_argument.premisesgroup_uid, self.lang)
-		conclusion	 = conclusion[0:1].lower() + conclusion[1:]
-		premise		 = premise[0:1].lower() + premise[1:]
+		# getting the real conclusion: if the arguments conclusion is an argument, we will get the conclusion of the last argument
+		db_tmp_argument = db_sys_argument
+		while db_tmp_argument.argument_uid and not db_tmp_argument.conclusion_uid:
+			db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
+		first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
 
-		rel_dict	 = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive)
-		mode		 = 't' if is_supportive else 'f'
-		_um			 = UrlManager(self.application_url, slug, self.for_api)
-		_rh          = RecommenderHelper
+		first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
+		conclusion	     = conclusion[0:1].lower() + conclusion[1:]
+		premise		     = premise[0:1].lower() + premise[1:]
+
+		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive, first_conclusion=first_conclusion)
+		mode		     = 't' if is_supportive else 'f'
+		_um			     = UrlManager(self.application_url, slug, self.for_api)
+		_rh              = RecommenderSystem
 
 		# based in the relation, we will fetch different url's for the items
 		# relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO overbid
@@ -329,13 +336,17 @@ class ItemDictHelper(object):
 					url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
 				# rebutting an undercut will be a overbid for the initial argument
 				elif attack == 'undercut':
-					url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
+					# url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
+					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
 				# rebutting an rebut will be a justify for the initial argument
 				elif attack == 'rebut':
 					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
 
 			else:
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+
+			# add the last relation of the user as keyword
+			url = url[:-1] + '?last_relation=' + relation + '"'
 
 			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
@@ -385,7 +396,7 @@ class ItemDictHelper(object):
 																		  Argument.conclusion_uid == conclusion,
 																		  Argument.argument_uid == argument,
 																		  Argument.is_supportive == is_supportive)).first()
-			arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(db_argument.uid, self.issue_uid, self.lang)
+			arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.issue_uid, self.lang)
 			url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
 			statements_array.append(self.__create_statement_dict(str(db_argument.uid), premise_array, 'choose', url))
