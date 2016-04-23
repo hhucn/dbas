@@ -590,7 +590,66 @@ class FrontendTests:
 		b = Browser(browser)
 		b = Helper.login(b, nickname, password, mainpage + 'discussion')
 
-		# Todo __test_content
+		# start
+		b.visit(mainpage + '/discuss/town-has-to-cut-spending')
+		success = success and Helper.check_for_present_text(b, 'initial position you are interested', 'check for question of inital position')
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+
+		# attitude
+		success = success and Helper.check_for_present_text(b, 'think about', 'check for question of attitude')
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+
+		# justify position
+		success = success and Helper.check_for_present_text(b, 'most important', 'check for question of reason')
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+
+		# confrontation - give feedback
+		success = success and Helper.check_for_present_text(b, 'what do you think about', 'check for confrontative question')
+		success = success and Helper.check_for_present_text(b, 'stronger argument for accepting', 'check for acceptive formulation of rebut')
+		b.find_by_css('#item_support').click()
+		time.sleep(waittime)
+
+		# support of confrontation
+		success = success and Helper.check_for_present_text(b, 'Earlier you argued', 'check for formulation on \'supports\' 1')
+		success = success and Helper.check_for_present_text(b, 'convinced you that', 'check for formulation on \'supports\' 2')
+		b.find_by_css('.line-wrapper-r:nth-child(2)').click()
+		time.sleep(waittime)
+
+		# confrontation - give feedback again
+		success = success and Helper.check_for_present_text(b, 'what do you think about', 'check for confrontative question again')
+		b.find_by_css('#item_rebut').click()
+		time.sleep(waittime)
+
+		# rebut of confrontation
+		success = success and Helper.check_for_present_text(b, 'You have much strong argument for accepting', 'check for formulation on \'rebut\'')
+		b.find_by_css('#discussion-restart-btn').click()
+		time.sleep(waittime)
+
+		# restart
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+
+		# attitude
+		b.find_by_css('.line-wrapper-r:nth-child(2)').click()
+		time.sleep(waittime)
+
+		# confrontation - give feedback again
+		success = success and Helper.check_for_present_text(b, 'disagree with', 'check for question of rejection')
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+
+		# confrontation - give feedback
+		success = success and Helper.check_for_present_text(b, 'does not hold', 'check for rejective opinion')
+		success = success and Helper.check_for_present_text(b, 'stronger argument for rejecting', 'check for rejective formulation of rebut')
+		b.find_by_css('#item_rebut').click()
+		time.sleep(waittime)
+
+		# rebut of confrontation
+		success = success and Helper.check_for_present_text(b, 'You have much strong argument for rejecting', 'check for formulation on \'rebut\'')
+		success = success and Helper.check_for_present_text(b, 'is not a good idea', 'check for question again')
 
 		b = Helper.logout(b)
 		b.quit()

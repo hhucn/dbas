@@ -17,7 +17,7 @@ class DiscussionDictHelper(object):
 	Provides all functions for creating the discussion dictionaries with all bubbles.
 	"""
 
-	def __init__(self, lang, session_id, nickname=None, history='', mainpage=''):
+	def __init__(self, lang, session_id, nickname=None, history='', mainpage='', slug=''):
 		"""
 		Initialize default values
 
@@ -26,6 +26,7 @@ class DiscussionDictHelper(object):
 		:param nickname: self.request.authenticated_userid
 		:param history: history
 		:param mainpage: String
+		:param slug: String
 		:return:
 		"""
 		self.lang = lang
@@ -33,6 +34,7 @@ class DiscussionDictHelper(object):
 		self.nickname = nickname
 		self.history = history
 		self.mainpage = mainpage
+		self.slug = slug
 
 	def prepare_discussion_dict_for_start(self):
 		"""
@@ -91,7 +93,7 @@ class DiscussionDictHelper(object):
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
 		_tn			        = Translator(self.lang)
 
-		bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage)
+		bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
 		text				= get_text_for_statement_uid(uid)
@@ -104,7 +106,14 @@ class DiscussionDictHelper(object):
 		add_premise_text	+= text + ' ' + (_tn.get(_tn.holds) if is_supportive else _tn.get(_tn.isNotAGoodIdea))
 
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
-		intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
+		intro = ''
+		if not is_supportive:
+			intro = _tn.get(_tn.youDisagreeWith) + ': '
+		splitted_history = self.history.split('-')
+		if len(splitted_history) > 0 and '/undercut' in splitted_history[-1]:
+			intro = _tn.get(_tn.youHaveMuchStrongerArgumentForAccepting) if is_supportive else _tn.get(_tn.youHaveMuchStrongerArgumentForRejecting)
+			intro += ': '
+
 		url = UrlManager(application_url, slug).get_slug_url(False)
 		question_bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True)
 		if not text.endswith(('.', '?', '!')):
@@ -113,21 +122,7 @@ class DiscussionDictHelper(object):
 		                                                       omit_url=False, statement_uid=uid, is_up_vote=is_supportive,
 		                                                       nickname=nickname)
 
-		# check for double bubbles
-		should_append = True
-
-		intro_rev = '' if not is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
-		if len(bubbles_array) > 0:
-			should_append = bubbles_array[-1]['message'] != select_bubble['message']
-			if bubbles_array[-1]['message'] == intro_rev + '<strong>' + text + '</strong>':
-				bubbles_array.remove(bubbles_array[-1])
-		if len(bubbles_array) > 1:
-			if bubbles_array[-2]['message'] == intro_rev + '<strong>' + text + '</strong>':
-				bubbles_array.remove(bubbles_array[-2])
-
-		if should_append:
-			self.__append_bubble(bubbles_array, select_bubble)
-
+		self.__append_bubble(bubbles_array, select_bubble)
 		self.__append_bubble(bubbles_array, HistoryHelper.create_speechbubble_dict(is_status=True, uid='now',
 		                                                                           message=_tn.get(_tn.now), omit_url=True))
 		self.__append_bubble(bubbles_array, question_bubble)
@@ -150,7 +145,7 @@ class DiscussionDictHelper(object):
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'prepare_discussion_dict_for_justify_argument')
 		_tn			       = Translator(self.lang)
 		_tg                = TextGenerator(self.lang)
-		bubbles_array      = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage)
+		bubbles_array      = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
 		add_premise_text   = ''
 		save_statement_url = 'ajax_set_new_premises_for_argument'
 
@@ -208,7 +203,7 @@ class DiscussionDictHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_dont_know_reaction', 'at_dont_know')
 		_tn			   = Translator(self.lang)
-		bubbles_array  = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage)
+		bubbles_array  = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 
@@ -235,7 +230,7 @@ class DiscussionDictHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
 		_tn			        = Translator(self.lang)
-		bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage)
+		bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
 		add_premise_text    = ''
 		save_statement_url  = 'ajax_set_new_start_statement'
 		mid_text            = ''
@@ -323,7 +318,7 @@ class DiscussionDictHelper(object):
 		:return:
 		"""
 		_tn			   = Translator(self.lang)
-		bubbles_array  = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage)
+		bubbles_array  = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
 		add_premise_text = ''
 		save_statement_url = 'ajax_set_new_start_statement'
 
