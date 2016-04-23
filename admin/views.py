@@ -11,6 +11,7 @@ from cornice import Service
 from pyramid.threadlocal import get_current_registry
 
 from admin.lib import get_overview_of_arguments, get_all_users, get_dashboard_infos
+from dbas.helper.history_helper import HistoryHelper
 from dbas.lib import get_language
 from dbas.logger import logger
 from dbas.user_management import UserHandler
@@ -52,6 +53,7 @@ def main_admin(request):
 	"""
 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 	logger('Admin', 'main_admin', 'def')
+	HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
 	should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
 	if should_log_out:
 		return Dbas(request).user_logout(True)
