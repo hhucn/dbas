@@ -302,7 +302,7 @@ class ItemDictHelper(object):
 		conclusion	     = conclusion[0:1].lower() + conclusion[1:]
 		premise		     = premise[0:1].lower() + premise[1:]
 
-		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive, first_conclusion=first_conclusion)
+		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
 		mode		     = 't' if is_supportive else 'f'
 		_um			     = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 		_rh              = RecommenderSystem

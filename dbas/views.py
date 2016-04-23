@@ -154,7 +154,7 @@ class Dbas(object):
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, mainpage=mainpage)\
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_start()
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
@@ -210,7 +210,7 @@ class Dbas(object):
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage)\
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_attitude(statement_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
@@ -275,7 +275,7 @@ class Dbas(object):
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		_ddh                = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage)
+		_ddh                = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
 		_idh                = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
@@ -385,7 +385,7 @@ class Dbas(object):
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		_ddh = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage)
+		_ddh = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
 		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
@@ -475,7 +475,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage)\
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)

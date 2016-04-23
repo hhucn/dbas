@@ -36,7 +36,7 @@ class HistoryHelper:
 		return tmp
 
 	@staticmethod
-	def create_bubbles_from_history(history, nickname='', lang='', application_url=''):
+	def create_bubbles_from_history(history, nickname='', lang='', application_url='', slug=''):
 		"""
 		Creates the bubbles for every history step
 		
@@ -44,6 +44,7 @@ class HistoryHelper:
 		:param nickname: User.nickname
 		:param lang: ui_locales
 		:param application_url: String
+		:param slug: String
 		:return: Array
 		"""
 		if len(history) == 0:
@@ -53,12 +54,16 @@ class HistoryHelper:
 		splitted_history = HistoryHelper.get_splitted_history(history)
 
 		bubble_array = []
+		consumed_history = ''
 
 		nickname = nickname if nickname else 'anonymous'
 
 		for index, step in enumerate(splitted_history):
 			logger('HistoryHelper', 'create_bubbles_from_history', 'step: ' + step)
-			url = application_url + '/discuss/' + step
+			url = application_url + '/discuss/' + slug + '/' + step
+			if len(consumed_history) != 0:
+				url += '?history=' + consumed_history
+			consumed_history += step if len(consumed_history) == 0 else '-' + step
 
 			if 'justify/' in step:
 				logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': justify case -> ' + step)
@@ -266,7 +271,7 @@ class HistoryHelper:
 		"""
 		if path.startswith('/discuss/'):
 			path = path[len('/discuss/'):]
-			path = path[path.index('/'):]
+			path = path[path.index('/') if '/' in path else 0:]
 			request.response.set_cookie('_HISTORY_', history + '-' + path)
 
 	@staticmethod
@@ -283,7 +288,7 @@ class HistoryHelper:
 
 		if path.startswith('/discuss/'):
 			path = path[len('/discuss/'):]
-			path = path[path.index('/'):]
+			path = path[path.index('/') if '/' in path else 0:]
 
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else '').first()
 		if not nickname or not db_user:

@@ -446,6 +446,8 @@ class Translator(object):
 		self.youSaidThat = 'youSaidThat'
 		self.youUsedThisEarlier = 'youUsedThisEarlier'
 		self.youRejectedThisEarlier = 'youRejectedThisEarlier'
+		self.youHaveMuchStrongerArgumentForAccepting = 'youHaveMuchStrongerArgumentForAccepting'
+		self.youHaveMuchStrongerArgumentForRejecting = 'youHaveMuchStrongerArgumentForRejecting'
 
 		self.sentencesOpenersArguingWithAgreeing = [self.agreeBecause, self.therefore]
 		self.sentencesOpenersArguingWithDisagreeing = [self.disagreeBecause, self.alternatively]
@@ -897,6 +899,8 @@ class Translator(object):
 		en_lang[self.youSaidThat] = 'You said that'
 		en_lang[self.youUsedThisEarlier] = 'You used this earlier.'
 		en_lang[self.youRejectedThisEarlier] = 'You rejected this earlier.'
+		en_lang[self.youHaveMuchStrongerArgumentForAccepting] = 'You have a much stronger argument for accepting'
+		en_lang[self.youHaveMuchStrongerArgumentForRejecting] = 'You have a much stronger argument for rejecting'
 
 		return en_lang
 
@@ -1342,6 +1346,8 @@ class Translator(object):
 		de_lang[self.youSaidThat] = 'Sie haben gesagt, dass'
 		de_lang[self.youUsedThisEarlier] = 'Sie haben diese Aussage schon benutzt.'
 		de_lang[self.youRejectedThisEarlier] = 'Sie haben diese Aussage schon abgelehnt.'
+		de_lang[self.youHaveMuchStrongerArgumentForAccepting] = 'Sie haben eine viel stärker Begründung für'
+		de_lang[self.youHaveMuchStrongerArgumentForRejecting] = 'Sie haben eine viel stärker Ablehnung für'
 
 		return de_lang
 
