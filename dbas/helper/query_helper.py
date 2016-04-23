@@ -14,7 +14,7 @@ from dbas.helper.notification_helper import NotificationHelper
 from dbas.helper.relation_helper import RelationHelper
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid
 from dbas.logger import logger
-from dbas.recommender_system import RecommenderHelper
+from dbas.recommender_system import RecommenderSystem
 from dbas.strings import Translator
 from dbas.url_manager import UrlManager
 from dbas.user_management import UserHandler
@@ -51,7 +51,7 @@ class QueryHelper:
 
 		supporters = []
 		gravatars = dict()
-		_um = UserHandler()
+		_um = UserHandler
 		for vote in db_votes:
 			db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
 			supporters.append(db_user.nickname)
@@ -66,7 +66,7 @@ class QueryHelper:
 	def process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id, supportive,
 	                                                    issue, user, for_api, mainpage, lang):
 		"""
-		Inserts the given text in premisegroups as new arguments in dependence of the input paramters and returns a URL for forwarding.
+		Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
 		:param transaction: Transaction
 		:param premisegroups: [String]
@@ -93,7 +93,7 @@ class QueryHelper:
 			new_argument_uid, statement_uids = QueryHelper.__create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-				return -1, error
+				return -1, None, error
 
 			new_argument_uids.append(new_argument_uid)
 			if for_api:
@@ -107,7 +107,7 @@ class QueryHelper:
 
 		elif len(new_argument_uids) == 1:
 			new_argument_uid = random.choice(new_argument_uids)
-			arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(new_argument_uid, issue, lang)
+			arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, issue, lang)
 			if arg_id_sys == 0:
 				attack = 'end'
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
@@ -155,7 +155,7 @@ class QueryHelper:
 			new_argument_uid = QueryHelper.__insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-				return -1, error
+				return -1, None, error
 			new_argument_uids.append(new_argument_uid)
 
 		statement_uids = []
@@ -177,7 +177,7 @@ class QueryHelper:
 
 		elif len(new_argument_uids) == 1:
 			new_argument_uid = random.choice(new_argument_uids)
-			arg_id_sys, attack = RecommenderHelper.get_attack_for_argument(new_argument_uid, issue, lang)
+			arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, issue, lang)
 			if arg_id_sys == 0:
 				attack = 'end'
 			url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
@@ -490,7 +490,7 @@ class QueryHelper:
                                                                          Statement.issue_uid == issue)).first()
 		statements = QueryHelper.insert_as_statements(transaction, text, user, issue)
 		if statements == -1:
-			return -1
+			return -1, None
 
 		statement_uids = [s.uid for s in statements]
 

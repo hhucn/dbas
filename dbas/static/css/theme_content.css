@@ -298,13 +298,15 @@
 
 .triangle-l a,
 .triangle-r a,
-.triangle-m a{
+.triangle-m a,
+.triangle-m-info a{
     color: black;
 }
 
 .triangle-l,
 .triangle-r,
-.triangle-m{
+.triangle-m,
+.triangle-m-info{
     position: relative;
     padding: 0.5em;
     box-sizing: border-box;
@@ -323,12 +325,20 @@
     background: #C5E1A5;
     margin: 0 2em 1em auto;
 }
-.triangle-m{
+.triangle-m,
+.triangle-m-info{
     padding: 1px;
     max-width: 35%;
-    background: #BBDEFB;
     text-align: center;
     margin: 0 auto 1em auto;
+}
+.triangle-m{
+    background: #BBDEFB;
+	color: #424242;
+}
+.triangle-m-info{
+    background: #FFF9C4;
+	color: #616161;
 }
 
 .triangle-l::after,
@@ -384,11 +394,13 @@
 .triangle-l a:hover,
 .triangle-r a:hover,
 .triangle-m a:hover,
+.triangle-m-info a:hover,
 .triangle-r-info:hover,
 #question-bubble:hover{
     color: #2196f3;
     text-decoration: none;
 }
+.triangle-m-info a,
 .triangle-m a{
 	text-decoration: underline;
 }

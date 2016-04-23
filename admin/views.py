@@ -1,7 +1,8 @@
-# Introducing an API to enable admin page
-#
-# @author Tobias Krauthoff
-# @email {krauthoff}@cs.uni-duesseldorf.de
+"""
+Introducing an admin interface to enable easy database mangement.
+
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+"""
 
 import json
 
@@ -9,7 +10,7 @@ import transaction
 from cornice import Service
 from pyramid.threadlocal import get_current_registry
 
-from admin.lib import get_argument_overview, get_all_users, get_dashboard_infos
+from admin.lib import get_overview_of_arguments, get_all_users, get_dashboard_infos
 from dbas.lib import get_language
 from dbas.logger import logger
 from dbas.user_management import UserHandler
@@ -51,7 +52,7 @@ def main_admin(request):
 	"""
 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 	logger('Admin', 'main_admin', 'def')
-	should_log_out = UserHandler().update_last_action(transaction, request.authenticated_userid)
+	should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
 	if should_log_out:
 		return Dbas(request).user_logout(True)
 
@@ -80,6 +81,6 @@ def get_argument_overview(request):
 	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 	logger('Admin', 'get_argument_overview', 'main')
 	ui_locales = get_language(request, get_current_registry())
-	return_dict = get_argument_overview(request.authenticated_userid, ui_locales)
+	return_dict = get_overview_of_arguments(request.authenticated_userid, ui_locales)
 
 	return json.dumps(return_dict, True)

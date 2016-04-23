@@ -32,7 +32,7 @@ class Validator:
 		session['reaction'] = reaction
 
 	@staticmethod
-	def validate_params_with_session(session, user_arg_uid, sys_arg_uid, mood, reaction):
+	def validate_params_with_session(session=None, user_arg_uid=None, sys_arg_uid=None, mood=None, reaction=None):
 		"""
 		Compares given values with the values in current session
 
@@ -41,18 +41,24 @@ class Validator:
 		:param sys_arg_uid: Argument.uid
 		:param mood: String
 		:param reaction: String
-		:return: 0 if everything was fine, != 0 otherwise
-		"""
-		if session['user_arg_uid'] != user_arg_uid:
-			return 1
-		if session['sys_arg_uid'] != sys_arg_uid:
-			return 2
-		if session['mood'] != mood:
-			return 3
-		if session['reaction'] != reaction:
-			return 4
-		return 0
+		:return: True, 0, 0 if everything is fine or False, !=0 and the stored value.
+		:return: False, -1, stored value if user_arg_uid is wrong
+		:return: False, -2, stored value if sys_arg_uid is wrong
+		:return: False, -3, stored value if mood is wrong
+		:return: False, -4, stored value if reaction is wrong
 
+		"""
+		if user_arg_uid and session['user_arg_uid'] != user_arg_uid:
+			return False, -1, session['user_arg_uid']
+		if sys_arg_uid and session['sys_arg_uid'] != sys_arg_uid:
+			return False, -2, session['sys_arg_uid']
+		if mood and session['mood'] != mood:
+			return False, -3, session['mood']
+		if reaction and session['reaction'] != reaction:
+			return False, -4, session['reaction']
+		return True, 0, 0
+
+	@staticmethod
 	def check_reaction(attacked_arg_uid, attacking_arg_uid, relation):
 		"""
 		Checks whether the attacked argument uid and the attacking argument uid are connected via the given relation

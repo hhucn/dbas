@@ -194,6 +194,7 @@ class Translator(object):
 		self.deleteHistory = 'deleteHistory'
 		self.doYouWantToEnterYourStatements = 'doYouWantToEnterYourStatements'
 		self.doNotHesitateToContact = 'doNotHesitateToContact'
+		self.earlierYouArguedThat = 'earlierYouArguedThat'
 		self.euCookiePopupTitle = 'euCookiePopupTitle'
 		self.euCookiePopupText = 'euCookiePopupText'
 		self.euCookiePopoupButton1 = 'euCookiePopoupButton1'
@@ -332,6 +333,7 @@ class Translator(object):
 		self.unfortunatelyOnlyOneItem = 'unfortunatelyOnlyOneItem'
 		self.onlyOneItem = 'onlyOneItem'
 		self.onlyOneItemWithLink = 'onlyOneItemWithLink'
+		self.otherParticipantsConvincedYouThat = 'otherParticipantsConvincedYouThat'
 		self.otherParticipantsThinkThat = 'otherParticipantsThinkThat'
 		self.otherParticipantsAgreeThat = 'otherParticipantsAgreeThat'
 		self.otherParticipantsDontHaveCounter = 'otherParticipantsDontHaveCounter'
@@ -645,6 +647,7 @@ class Translator(object):
 		en_lang[self.doesJustify] = 'does justify that'
 		en_lang[self.doesNotJustify] = 'does not justify that'
 		en_lang[self.doYouWantToEnterYourStatements] = 'Do you want to enter your statement(s)?'
+		en_lang[self.earlierYouArguedThat] = 'Earlier you argued that'
 		en_lang[self.euCookiePopupTitle] = 'This website is using cookies and Piwik.'
 		en_lang[self.euCookiePopupText] = 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose. All tracked data are saved anonymously with reduced masked IP-adresses.'
 		en_lang[self.euCookiePopoupButton1] = 'Continue'
@@ -779,6 +782,7 @@ class Translator(object):
 		en_lang[self.onlyOneItem] = 'If you want to state a new reason, please click here to log in.'
 		en_lang[self.onlyOneItemWithLink] = 'If you want to state a new reason, please click <a href="" data-toggle="modal" data-target="#popup-login" title="Login">here</a> to log in.'
 		en_lang[self.unfortunatelyOnlyOneItem] = 'Unfortunately you only have one option to choose. If you want to state a new reason, please click <a href="" data-toggle="modal" data-target="#popup-login" title="Login">here</a> to log in.'
+		en_lang[self.otherParticipantsConvincedYouThat] = 'Other participants convinced you that'
 		en_lang[self.otherParticipantsThinkThat] = 'Other participants think that'
 		en_lang[self.otherParticipantsAgreeThat] = 'Other participants agree that'
 		en_lang[self.otherParticipantsDontHaveOpinion] = 'Other participants do not have any opinion regarding'
@@ -1086,6 +1090,7 @@ class Translator(object):
 		de_lang[self.deleteHistory] = 'History löschen'
 		de_lang[self.doYouWantToEnterYourStatements] = 'Möchten Sie Ihre eigenen Gründe angeben?'
 		de_lang[self.doNotHesitateToContact] = 'Zögern Sie nicht, uns zu <span style="cursor: pointer;" id="contact-on-error"><strong>kontaktieren (hier klicken)</strong></span>'
+		de_lang[self.earlierYouArguedThat] = 'Zuerst haben Sie argumentiert, dass'
 		de_lang[self.euCookiePopupTitle] = 'Diese Seite nutzt Cookies und Piwik.'
 		de_lang[self.euCookiePopupText] = 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.'
 		de_lang[self.euCookiePopoupButton1] = 'Weiter'
@@ -1221,6 +1226,7 @@ class Translator(object):
 		de_lang[self.onlyOneItem] = 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte hier um sich anzumelden.'
 		de_lang[self.onlyOneItemWithLink] = 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a href="" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> um sich anzumelden.'
 		de_lang[self.unfortunatelyOnlyOneItem] = 'Leider gibt es nur eine Auswahl. Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a href="" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> m sich anzumelden.'
+		de_lang[self.otherParticipantsConvincedYouThat] = 'Andere Teilnehmer haben Sie überzeuge, dass'
 		de_lang[self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass'
 		de_lang[self.otherParticipantsAgreeThat] = 'Andere Teilnehmer stimmen zu, dass'
 		de_lang[self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
@@ -1481,7 +1487,7 @@ class TextGenerator(object):
 
 		return user_msg, system_msg
 
-	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False):
+	def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False, first_conclusion=None):
 		"""
 		Text of the different reaction types for an given argument
 
@@ -1491,6 +1497,7 @@ class TextGenerator(object):
 		:param with_no_opinion_text: Boolean
 		:param is_attacking: Boolean
 		:param is_dont_know: Boolean
+		:param first_conclusion: String
 		:return: dict()
 		"""
 		_t = Translator(self.lang)
@@ -1498,6 +1505,9 @@ class TextGenerator(object):
 
 		if conclusion[-1] == '.':
 			conclusion = conclusion[:-1]
+		if first_conclusion:
+			if first_conclusion[-1] == '.':
+				first_conclusion = first_conclusion[:-1]
 
 		premise = ''
 		if type(premises) is dict:
@@ -1529,7 +1539,7 @@ class TextGenerator(object):
 								 + (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument)) \
 								 + ' <strong>' + conclusion + '</strong>. '\
 								 + (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))\
-								 + ' <strong>' + conclusion + '</strong>.'
+								 + ' <strong>' + (first_conclusion if first_conclusion else conclusion) + '</strong>.'
 		# + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>.'
 
 		if with_no_opinion_text:

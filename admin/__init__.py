@@ -1,5 +1,7 @@
 """
-Main entry point
+REST API for the admin interface of D-BAS.
+
+.. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 from pyramid.config import Configurator
 from dbas.logger import logger
