@@ -91,7 +91,8 @@ function DiscussionBarometer(){
 		// create pie-Chart
 		switch(adress){
 			case 'attitude': new DiscussionBarometer().createAttituteBarometer(obj); break;
-			case 'statement': new DiscussionBarometer().createStatementBarometer(obj); break;
+			case ('statement' || 'position'): new DiscussionBarometer().createStatementBarometer(obj); break;
+			case 'argument': new DiscussionBarometer().createArgumentBarometer(obj); break;
 		}
 
 	};
@@ -131,6 +132,11 @@ function DiscussionBarometer(){
 				});
 			}
 		}
+	};
+
+	this.createArgumentBarometer = function(obj) {
+		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
+		var chart = new Chart(ctx).Pie();
 	};
 
 	/**
