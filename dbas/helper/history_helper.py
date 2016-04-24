@@ -186,7 +186,7 @@ class HistoryHelper:
 		user_text += '</strong>.'
 		sys_text = TextGenerator(lang).get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive,
 		                                                          attack, confr, reply_for_argument, user_is_attacking,
-		                                                          db_argument)
+		                                                          db_argument, db_confrontation)
 
 		bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_text, omit_url=False,
 		                                                     argument_uid=uid, is_up_vote=is_supportive,

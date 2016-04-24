@@ -20,7 +20,7 @@ class RecommenderSystem:
 	"""
 
 	@staticmethod
-	def get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks=None, restriction_on_arg_uid=None):
+	def get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks=None, restriction_on_arg_uid=None, special_case=None):
 		"""
 		Selects an attack out of the web of reasons.
 
@@ -29,6 +29,7 @@ class RecommenderSystem:
 		:param lang: ui_locales
 		:param restriction_on_attacks: String
 		:param restriction_on_arg_uid: Argument.uid
+		:param special_case: String
 		:return: Argument.uid, String
 		"""
 		# getting undermines or undercuts or rebuts
@@ -45,7 +46,8 @@ class RecommenderSystem:
 		logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  1: ' + restriction_on_attacks[0])
 		logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  2: ' + restriction_on_attacks[1])
 
-		attacks_array, key = RecommenderSystem.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks, restriction_on_arg_uid)
+		attacks_array, key = RecommenderSystem.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks,
+		                                                                 restriction_on_arg_uid, special_case)
 		if not attacks_array or len(attacks_array) == 0:
 			return 0, 'end'
 		else:
@@ -67,21 +69,15 @@ class RecommenderSystem:
 		:param is_supportive: Boolean
 		:return: Argument
 		"""
-		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
-		                                                               Argument.conclusion_uid == statement_uid)).all()
+		db_arguments = RecommenderSystem.get_arguments_by_conclusion(statement_uid, is_supportive)
+		DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive, Argument.conclusion_uid == statement_uid)).all()
 		logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' +
 		       str(is_supportive) + ', found ' + str(len(db_arguments)) + ' arguments')
-		if db_arguments:
-			arguments = []
-			for argument in db_arguments:
-				arguments.append(argument.uid)
 
-			# get one random premise todo fix random
-			rnd = random.randint(0, len(arguments) - 1)
-			return arguments[0 if len(arguments) == 1 else rnd]
-
-		else:
+		if not db_arguments:
 			return 0
+		rnd = random.randint(0, len(db_arguments) - 1)  # TODO fix random
+		return db_arguments[0 if len(db_arguments) == 1 else rnd].uid
 
 	@staticmethod
 	def get_arguments_by_conclusion(statement_uid, is_supportive):
@@ -105,7 +101,7 @@ class RecommenderSystem:
 		return db_arguments
 
 	@staticmethod
-	def __get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks, restriction_on_argument_uid):
+	def __get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks, restriction_on_argument_uid, special_case):
 		"""
 		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
 		Additionally returns id's of premises groups with [key + str(index) + 'id']
@@ -115,6 +111,7 @@ class RecommenderSystem:
 		:param lang: ui_locales
 		:param restriction_on_attacks: String
 		:param restriction_on_argument_uid: Argument.uid
+		:param special_case: String
 		:return: [Argument.uid], String
 		"""
 
@@ -128,20 +125,22 @@ class RecommenderSystem:
 		return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list,
 		                                                                                   issue, complete_list_of_attacks,
 		                                                                                   lang, restriction_on_attacks,
-		                                                                                   restriction_on_argument_uid)
+		                                                                                   restriction_on_argument_uid,
+		                                                                                   special_case)
 
 		# sanity check if we could not found an attack for a left attack in out set
 		if not return_array and len(attacks) > 0:
 			return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue,
 			                                                                                   complete_list_of_attacks,
 			                                                                                   lang, restriction_on_attacks,
-			                                                                                   restriction_on_argument_uid)
+			                                                                                   restriction_on_argument_uid,
+			                                                                                   special_case)
 
 		return return_array, key
 
 	@staticmethod
 	def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang,
-	                                                 restriction_on_attacks, restriction_on_argument_uid):
+	                                                 restriction_on_attacks, restriction_on_argument_uid, special_case):
 		"""
 
 		:param argument_uid: Argument.uid
@@ -151,12 +150,14 @@ class RecommenderSystem:
 		:param lang: ui_locales
 		:param restriction_on_attacks: String
 		:param restriction_on_argument_uid: Argument.uid
+		:param special_case: String
 		:return: [Argument.uid], String
 		"""
 		return_array = None
 		key = ''
 		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
 		attack_found = False
+		is_supportive = False
 		_rh = RelationHelper(argument_uid, lang)
 
 		logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'argument_uid: Argument.uid ' + str(argument_uid) +
@@ -173,7 +174,11 @@ class RecommenderSystem:
 				else ('rebut' if attack == 5
 				      else 'undercut')
 
-			return_array = _rh.get_undermines_for_argument_uid() if attack == 1 \
+			# special case when undermining an undermine
+			if attack == 1 and special_case == 'undermine':
+				is_supportive = True
+
+			return_array = _rh.get_undermines_for_argument_uid(is_supportive) if attack == 1 \
 				else (_rh.get_rebuts_for_argument_uid() if attack == 5
 				      else _rh.get_undercuts_for_argument_uid())
 
