@@ -122,16 +122,18 @@ function DiscussionBarometer(){
 	this.createStatementBarometer = function(obj) {
 		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
 		var chart = new Chart(ctx).Pie();
-		for(var i = 0; i < obj.opinions.length; i++){
-			if(obj.opinions[i].text != null){
-				var randomColor = '#' + (Math.random().toString(16) + '0000000').slice(2,8);
-				chart.addData({
-					value: obj.opinions[i].users.length,
-					color: randomColor,
-					label: obj.opinions[i].text
-				});
-			}
-		}
+		$.each(obj, function(i, e) {
+			$.each(e, function(key,value){
+				if (value.text != null) {
+					var randomColor = '#' + (Math.random().toString(16) + '0000000').slice(2, 8);
+					chart.addData({
+						value: value.users.length,
+						color: randomColor,
+						label: value.text
+					});
+				}
+			});
+		});
 	};
 
 	this.createArgumentBarometer = function(obj) {
