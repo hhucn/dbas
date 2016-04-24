@@ -159,7 +159,7 @@ class ItemDictHelper(object):
 		:param logged_in: Boolean or String
 		:return:
 		"""
-		logger('DictionaryHelper', 'prepare_item_dict_for_justify_argument', 'def')
+		logger('DictionaryHelper', 'prepare_item_dict_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
 		statements_array = []
 		_tn = Translator(self.lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
@@ -211,8 +211,9 @@ class ItemDictHelper(object):
 					premise_dict['title'] = text
 					premises_array.append(premise_dict)
 
-				# for each justifying premise, we need a new confrontation:
-				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
+				# for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
+				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang,
+				                                                               restriction_on_attacks='undermine' if attack_type == 'undermine' else None)
 
 				url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))

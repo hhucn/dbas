@@ -90,8 +90,8 @@ class HistoryHelper:
 			else:
 				logger('HistoryHelper', 'create_bubbles_from_history', 'UNUSED ' + str(index) + ': ' + step)
 
-			for bubble in bubble_array:
-				logger('HistoryHelper', 'create_bubbles_from_history', 'Created: ' + str(bubble['message']) + '; URL: ' + str(bubble['url']))
+			# for bubble in bubble_array:
+			# 	logger('HistoryHelper', 'create_bubbles_from_history', 'Created: ' + str(bubble['message']) + '; URL: ' + str(bubble['url']))
 
 		return bubble_array
 

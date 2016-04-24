@@ -53,6 +53,8 @@ class RecommenderSystem:
 			attack_uid = attacks_array[attack_no]['id']
 
 			logger('RecommenderSystem', 'get_attack_for_argument', 'main return ' + key + ' by ' + str(attack_uid))
+			logger('RecommenderSystem', 'get_attack_for_argument', 'main return ' + key + ' by ' + str(attack_uid))
+			logger('RecommenderSystem', 'get_attack_for_argument', 'main return ' + key + ' by ' + str(attack_uid))
 
 			return attack_uid, key
 
@@ -123,16 +125,23 @@ class RecommenderSystem:
 
 		logger('RecommenderSystem', '__get_attack_for_argument', 'attack_list : ' + str(attacks))
 		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
-		return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
+		return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list,
+		                                                                                   issue, complete_list_of_attacks,
+		                                                                                   lang, restriction_on_attacks,
+		                                                                                   restriction_on_argument_uid)
 
 		# sanity check if we could not found an attack for a left attack in out set
 		if not return_array and len(attacks) > 0:
-			return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
+			return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue,
+			                                                                                   complete_list_of_attacks,
+			                                                                                   lang, restriction_on_attacks,
+			                                                                                   restriction_on_argument_uid)
 
 		return return_array, key
 
 	@staticmethod
-	def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang, restriction_on_attacks, restriction_on_argument_uid):
+	def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang,
+	                                                 restriction_on_attacks, restriction_on_argument_uid):
 		"""
 
 		:param argument_uid: Argument.uid
