@@ -139,14 +139,12 @@ def prepare_data_assign_reference(request, func):
 		api_data.update(data)
 		return_dict_json = func(for_api=True, api_data=api_data)
 		return_dict = json.loads(return_dict_json)
-		statement_uids = flatten(return_dict["statement_uids"])
-		if type(statement_uids) is int:
-			statement_uids = [statement_uids]
-
+		statement_uids = return_dict["statement_uids"]
 		if statement_uids:
+			statement_uids = flatten(statement_uids)
+			if type(statement_uids) is int:
+				statement_uids = [statement_uids]
 			list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
-		else:
-			log.error("[API/Reference] No statement_uids provided.")
 		return return_dict_json
 	else:
 		raise HTTP204()

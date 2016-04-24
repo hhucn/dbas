@@ -67,7 +67,7 @@ class QueryHelper:
 	def process_input_of_start_premises_and_receive_url(request, transaction, premisegroups, conclusion_id, supportive,
 	                                                    issue, user, for_api, mainpage, lang):
 		"""
-		Inserts the given text in premisegroups as new arguments in dependence of the input paramters and returns a URL for forwarding.
+		Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
 		:param request: request
 		:param transaction: Transaction
@@ -164,7 +164,7 @@ class QueryHelper:
 			new_argument_uid = QueryHelper.__insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
 			if new_argument_uid == -1:  # break on error
 				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
-				return -1, error
+				return -1, None, error
 			new_argument_uids.append(new_argument_uid)
 
 		statement_uids = []
