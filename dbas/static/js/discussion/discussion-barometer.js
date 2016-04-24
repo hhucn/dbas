@@ -139,6 +139,16 @@ function DiscussionBarometer(){
 	this.createArgumentBarometer = function(obj) {
 		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
 		var chart = new Chart(ctx).Pie();
+		$.each(obj, function(key, value) {
+			console.log(value);
+			if(key != 'error') {
+				var randomColor = '#' + (Math.random().toString(16) + '0000000').slice(2, 8);
+				chart.addData({
+					value: value.users.length,
+					color: randomColor
+				});
+			}
+		});
 	};
 
 	/**
