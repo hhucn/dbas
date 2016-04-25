@@ -14,6 +14,7 @@ function DiscussionBarometer(){
 			splitted = window.location.href.split('/'),
 			adress = 'position';
 
+		// parse url
 		if (window.location.href.indexOf('/attitude/') != -1){
 			adress = 'attitude';
 			uid = splitted[splitted.length-1];
@@ -34,6 +35,11 @@ function DiscussionBarometer(){
 		}
 	};
 
+	/**
+	 * Requests JSON-Object
+	 * @param uid: current id in url
+	 * @param adress: keyword in url
+	 */
 	this.ajaxRequest = function(uid, adress){
 		var dataString;
 		switch(adress){
@@ -67,6 +73,7 @@ function DiscussionBarometer(){
 	/**
 	 * Callback if the ajax request was successfull
 	 * @param data: unparsed data of the request
+	 * @param adress: keyword in url
 	 */
 	this.callbackIfDoneForGetDictionary = function(data, adress){
 		var obj;
@@ -78,26 +85,26 @@ function DiscussionBarometer(){
 			alert('parsing-json: ' + e);
 	        return;
         }
-		// TODO: Nun hier mit chart.js die votes passend darstellen. ich denke, eine pie-chart bietet sich an
-
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' div.modal-body')
 			.html('<canvas id="chartCanvas" width="400" height="400" style= "display: block; margin: 0 auto;"></canvas>');
-		// TODO: anstelle von txt kann der neue html code eingetragen werden
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 		}).removeClass('btn-success');
 
-		// create pie-Chart
 		switch(adress){
-			case 'attitude': new DiscussionBarometer().createAttituteBarometer(obj); break;
+			case 'attitude': new DiscussionBarometer().createAttitudeBarometer(obj); break;
 			case ('statement' || 'position'): new DiscussionBarometer().createStatementBarometer(obj); break;
 			case 'argument': new DiscussionBarometer().createArgumentBarometer(obj); break;
 		}
 
 	};
 
-	this.createAttituteBarometer = function(obj) {
+	/**
+	 * Creates chart for attitude
+	 * @param obj: parsed JSON-object
+	 */
+	this.createAttitudeBarometer = function(obj) {
 		$('#' + popupConfirmDialogId + ' h4.modal-title').html(obj.text);
     	var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
 
@@ -119,6 +126,10 @@ function DiscussionBarometer(){
 		var chart = new Chart(ctx).Pie(pieData);
 	};
 
+	/**
+	 * Creates chart for statement
+	 * @param obj: parsed JSON-object
+	 */
 	this.createStatementBarometer = function(obj) {
 		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
 		var chart = new Chart(ctx).Pie();
@@ -136,6 +147,10 @@ function DiscussionBarometer(){
 		});
 	};
 
+	/**
+	 * Creates chart for argument
+	 * @param obj: parsed JSON-object
+	 */
 	this.createArgumentBarometer = function(obj) {
 		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
 		var chart = new Chart(ctx).Pie();
