@@ -148,12 +148,10 @@ class UrlManager(object):
 		:param url: String
 		:return: Valid URL
 		"""
+		history = ('?history=' + self.history) if len(self.history) > 1 else ''
 		if self.for_api:
-			return self.api_url + url
+			return self.api_url + url + history
 		else:
 			prefix = 'location.href="' if as_location_href else ''
 			suffix = '"' if as_location_href else ''
-			if len(self.history) > 1:
-				return prefix + self.discussion_url + url + '?history=' + self.history + suffix
-			else:
-				return prefix + self.discussion_url + url + suffix
+			return prefix + self.discussion_url + url + history + suffix
