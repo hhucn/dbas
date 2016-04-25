@@ -215,7 +215,8 @@ class OpinionHandler:
 		opinions = dict()
 		all_users = []
 		_t = Translator(lang)
-		title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uid, lang)
+		text = get_text_for_argument_uid(argument_uid, lang)
+		title = _t.get(_t.reactionFor) + ': ' + text[0:1].upper() + text[1:]
 
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		if not db_argument:
@@ -259,7 +260,8 @@ class OpinionHandler:
 		"""
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
 		_t = Translator(lang)
-		title = _t.get(_t.attitudeFor) + ': ' + get_text_for_statement_uid(statement_uid)
+		text = get_text_for_statement_uid(statement_uid)
+		title = _t.get(_t.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
 		ret_dict = dict()
 
 		if not db_statement:
