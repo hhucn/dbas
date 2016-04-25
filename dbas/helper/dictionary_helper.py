@@ -7,11 +7,9 @@ Provides helping function for dictionaries.
 import random
 from datetime import datetime
 
-from sqlalchemy import and_
-
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Bubble, Breadcrumb
-from dbas.helper.dictionary_helper_discussion import DiscussionDictHelper
+from dbas.database.discussion_model import Argument, User
+from dbas.helper.history_helper import HistoryHelper
 from dbas.helper.notification_helper import NotificationHelper
 from dbas.helper.query_helper import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
@@ -220,13 +218,13 @@ class DictionaryHelper(object):
 		logger('DictionaryHelper', 'add_discussion_end_text', 'main')
 		_tn = Translator(self.lang)
 		current_premise = current_premise[0:1].lower() + current_premise[1:]
-		_ddh = DiscussionDictHelper(self.lang, '', '', None)
+		_hh = HistoryHelper
 
 		if at_start:
 			discussion_dict['mode'] = 'start'
 			user_text = _tn.get(_tn.firstPositionText) + '<br>'
 			user_text += _tn.get(_tn.pleaseAddYourSuggestion) if logged_in else (_tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin))
-			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_status=True, uid='end', message=user_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_status=True, uid='end', message=user_text))
 			if logged_in:
 				extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
 				extras_dict['close_statement_container'] = False
@@ -243,7 +241,7 @@ class DictionaryHelper(object):
 			extras_dict['show_display_style'] = False
 			if logged_in:
 				mid_text = _tn.get(_tn.firstOneReason)
-				discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
+				discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
 			# else:
 			# 	mid_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
 
@@ -252,8 +250,8 @@ class DictionaryHelper(object):
 			sys_text  = _tn.get(_tn.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
 			sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
 			mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
-			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_system=True, uid='end', message=sys_text))
-			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_system=True, uid='end', message=sys_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
 
 		elif at_justify:
 			discussion_dict['mode'] = 'justify'
@@ -261,17 +259,13 @@ class DictionaryHelper(object):
 			if not supportive:
 				mid_text += ' ' + _tn.get(_tn.doesNotHold)
 			mid_text += '.<br>'
-			# pretty prints
-			#if discussion_dict['bubbles'][-1]['is_system'] and discussion_dict['bubbles'][-2]['message'] == _tn.get(_tn.now):
-			#	discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
-			#	discussion_dict['bubbles'].remove(discussion_dict['bubbles'][-1])
 			if logged_in:
 				extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 				mid_text += _tn.get(_tn.firstPremiseText2)
 			else:
 				mid_text += _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 
-			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
 			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style']	   = False
 			extras_dict['show_bar_icon']		   = False
@@ -280,7 +274,7 @@ class DictionaryHelper(object):
 
 		else:
 			mid_text = _tn.get(_tn.discussionEnd) + ' ' + (_tn.get(_tn.discussionEndLinkText) if logged_in else _tn.get(_tn.feelFreeToLogin))
-			discussion_dict['bubbles'].append(_ddh.create_speechbubble_dict(is_info=True, message=mid_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, message=mid_text))
 
 	def add_language_options_for_extra_dict(self, extras_dict):
 		"""
@@ -298,30 +292,3 @@ class DictionaryHelper(object):
 			'link_de_class': ('active' if lang_is_de else ''),
 			'link_en_class': ('active' if lang_is_en else '')
 		})
-
-	@staticmethod
-	def remove_last_bubble_for_discussion_reaction(nickname, session_id, bubble_param):
-		"""
-		Removes the last Bubble of the user if the linked url ends with the bubble params
-
-		:param nickname: User.nickname
-		:param session_id: request.session_uid
-		:param bubble_param: String
-		:return: True, when a Bubble was deleted
-		"""
-		logger('DictionaryHelper', 'remove_last_bubble_for_discussion_reaction', 'nickname: ' + str(nickname) + ', session: ' + str(session_id))
-		if not nickname:
-			nickname = 'anonymous'
-
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-
-		if nickname == 'anonymous':
-			bubble = DBDiscussionSession.query(Bubble).filter(and_(Bubble.author_uid == db_user.uid,
-			                                                       Bubble.session_id == session_id)).order_by(Bubble.uid.desc()).first()
-		else:
-			bubble = DBDiscussionSession.query(Bubble).filter_by(author_uid=db_user.uid).order_by(Bubble.uid.desc()).first()
-
-		if bubble and DBDiscussionSession.query(Breadcrumb).filter_by(uid=bubble.breadcrumb_uid).first().url.endswith(bubble_param):
-			DBDiscussionSession.query(Bubble).filter_by(uid=bubble.uid).delete()
-			return True
-		return False

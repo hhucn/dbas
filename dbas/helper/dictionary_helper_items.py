@@ -20,7 +20,7 @@ class ItemDictHelper(object):
 	Provides all functions for creating the radio buttons.
 	"""
 
-	def __init__(self, lang, issue_uid, application_url, for_api=False):
+	def __init__(self, lang, issue_uid, application_url, for_api=False, path='', history=''):
 		"""
 		Initialize default values
 
@@ -28,12 +28,17 @@ class ItemDictHelper(object):
 		:param issue_uid: Issue.uid
 		:param application_url: application_url
 		:param for_api: boolean
+		:param path: String
+		:param history: String
 		:return:
 		"""
 		self.lang = lang
 		self.issue_uid = issue_uid
 		self.application_url = application_url
 		self.for_api = for_api
+		self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
+		if len(history) > 0:
+			self.path = history + '-' + self.path
 
 	def prepare_item_dict_for_start(self, logged_in):
 		"""
@@ -48,7 +53,7 @@ class ItemDictHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
 		statements_array = []
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
 		if db_statements:
 			for statement in db_statements:
@@ -81,7 +86,7 @@ class ItemDictHelper(object):
 		text = get_text_for_statement_uid(statement_uid)
 		statements_array = []
 
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
 		statements_array.append(self.__create_statement_dict('agree',
 		                                                     [{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
@@ -111,7 +116,7 @@ class ItemDictHelper(object):
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 		db_arguments = RecommenderSystem.get_arguments_by_conclusion(statement_uid, is_supportive)
 
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -125,10 +130,14 @@ class ItemDictHelper(object):
 
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.issue_uid, self.lang)
+				already_used = 'reaction/' + str(argument.uid) in self.path
+				additional_text = '(' + _tn.get(_tn.youUsedThisEarlier) + ')'
 				statements_array.append(self.__create_statement_dict(str(argument.uid),
 				                                                     premise_array,
 				                                                     'justify',
-																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)))
+																     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
+				                                                     already_used=already_used,
+				                                                     already_used_text=additional_text))
 
 		if nickname:
 			statements_array.append(self.__create_statement_dict('start_premise',
@@ -150,7 +159,7 @@ class ItemDictHelper(object):
 		:param logged_in: Boolean or String
 		:return:
 		"""
-		logger('DictionaryHelper', 'prepare_item_dict_for_justify_argument', 'def')
+		logger('DictionaryHelper', 'prepare_item_dict_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
 		statements_array = []
 		_tn = Translator(self.lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
@@ -187,7 +196,7 @@ class ItemDictHelper(object):
 																		   Argument.is_supportive == db_argument.is_supportive,
 				                                                           Argument.issue_uid == self.issue_uid)).all()
 
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
 		if db_arguments:
 			for argument in db_arguments:
@@ -202,8 +211,9 @@ class ItemDictHelper(object):
 					premise_dict['title'] = text
 					premises_array.append(premise_dict)
 
-				# for each justifying premise, we need a new confrontation:
-				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
+				# for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
+				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang,
+				                                                               special_case='undermine' if attack_type == 'undermine' else None)
 
 				url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))
@@ -231,7 +241,7 @@ class ItemDictHelper(object):
 		logger('DictionaryHelper', 'prepare_item_dict_for_dont_know_reaction', 'def')
 		_tg = TextGenerator(self.lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 		statements_array = []
 
 		db_argument  = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
@@ -293,9 +303,9 @@ class ItemDictHelper(object):
 		conclusion	     = conclusion[0:1].lower() + conclusion[1:]
 		premise		     = premise[0:1].lower() + premise[1:]
 
-		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, not db_sys_argument.is_supportive, first_conclusion=first_conclusion)
+		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
 		mode		     = 't' if is_supportive else 'f'
-		_um			     = UrlManager(self.application_url, slug, self.for_api)
+		_um			     = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 		_rh              = RecommenderSystem
 
 		# based in the relation, we will fetch different url's for the items
@@ -345,9 +355,6 @@ class ItemDictHelper(object):
 			else:
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
-			# add the last relation of the user as keyword
-			url = url[:-1] + '?last_relation=' + relation + '"'
-
 			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the change attack button or step back, if we have bno other attack
@@ -358,7 +365,6 @@ class ItemDictHelper(object):
 		else:
 			relation = 'no_opinion'
 			url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
-			url = url[0:len(url) - 1] + '?rm_bubble=' + str(argument_uid_user) + '/' + attack + '/' + str(argument_uid_sys) + '"'
 		statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		return statements_array
@@ -376,7 +382,7 @@ class ItemDictHelper(object):
 		logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'def')
 		statements_array = []
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-		_um = UrlManager(self.application_url, slug, self.for_api)
+		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 		conclusion = argument_or_statement_id if not is_argument else None
 		argument = argument_or_statement_id if is_argument else None
 
@@ -406,7 +412,7 @@ class ItemDictHelper(object):
 		return statements_array
 
 	@staticmethod
-	def __create_statement_dict(uid, premises, attitude, url):
+	def __create_statement_dict(uid, premises, attitude, url, already_used=False, already_used_text=''):
 		"""
 		Return dictionary
 		
@@ -414,10 +420,14 @@ class ItemDictHelper(object):
 		:param premises: String
 		:param attitude: String
 		:param url: String
+		:param already_used: Boolean
+		:param already_used_text: String
 		:return: dict()
 		"""
 		return {
 			'id': 'item_' + str(uid),
 			'premises': premises,
 			'attitude': attitude,
-			'url': url}
+			'url': url,
+			'already_used': already_used,
+			'already_used_text': already_used_text}

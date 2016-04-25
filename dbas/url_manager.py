@@ -1,5 +1,12 @@
 """
-TODO
+Managing URLS can be done with a very hardcoded scheme. We are differntiating between several steps in the discussion:
+* Staring discussion
+* Getting attitude for the first position
+* Justifing the first position with an premisegroup
+* Getting confrontated because the user clicked his first statement
+* Justify the reaction due to the confronfrontation
+* Choose an point for the discussion, when two or more statements we entered
+Next to this we have a 404 page.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -13,13 +20,14 @@ class UrlManager(object):
 	URL-Manager for building all URLs. This includes DBAS-URLs as well as the API-URLs
 	"""
 
-	def __init__(self, application_url, slug='', for_api=False):
+	def __init__(self, application_url, slug='', for_api=False, history=''):
 		"""
 		Initialization of an URL-Manager
 
 		:param application_url: self.request.application_url
 		:param slug: slugged issue.title
 		:param for_api: Boolean
+		:param history: String
 		:return: None
 		"""
 		logger('UrlManager', '__init__', 'application_url: ' + application_url + ', slug: ' + slug + ', for_api: ' + str(for_api))
@@ -28,6 +36,7 @@ class UrlManager(object):
 		self.api_url = 'api/'
 		self.slug = slug
 		self.for_api = for_api
+		self.history = history
 
 	def get_url(self, path):
 		"""
@@ -50,11 +59,11 @@ class UrlManager(object):
 		for p in params:
 			if p != '':
 				url += '/' + p
-		return url + '?param_error=true' if is_param_error else url
+		return url + ('&' if '?' in url else '?') + 'param_error=true' if is_param_error else url
 
 	def get_slug_url(self, as_location_href):
 		"""
-		Returns url with slugified issue.title or the API-version
+		Returns url for starting a discussions
 
 		:param as_location_href: Boolean
 		:return: discussion_url/slug
@@ -144,4 +153,7 @@ class UrlManager(object):
 		else:
 			prefix = 'location.href="' if as_location_href else ''
 			suffix = '"' if as_location_href else ''
-			return prefix + self.discussion_url + url + suffix
+			if len(self.history) > 1:
+				return prefix + self.discussion_url + url + '?history=' + self.history + suffix
+			else:
+				return prefix + self.discussion_url + url + suffix

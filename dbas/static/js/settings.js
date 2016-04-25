@@ -99,6 +99,7 @@ function HistoryHandler(){
 		// add header row
 		tElement[0] = $('<th>').text('#');
 		tElement[1] = $('<th>').text('URL');
+		tElement[2] = $('<th>').text(_t(timestamp));
 
 		for (i = 0; i < tElement.length; i += 1) {
 			trElement.append(tElement[i]);
@@ -109,11 +110,12 @@ function HistoryHandler(){
 		// adding the historys
 		var has_data = false;
 		parsedData = $.parseJSON(jsonData);
-		$.each(parsedData, function setDataInHistoryTableEach(index, breadcrumb) {
+		$.each(parsedData, function setDataInHistoryTableEach(index, history) {
 			has_data = true;
-			breaked_url = helper.cutTextOnChar(breadcrumb.url, 120, '/');
+			breaked_url = helper.cutTextOnChar(history.path, 120, '/');
 			tElement[0] = $('<td>').text(index);
-			tElement[1] = $('<td>').html('<a href="' + breadcrumb.url + '">' + breadcrumb.text + '</a>');
+			tElement[1] = $('<td>').html('<a href="' + history.path + '">' + history.path + '</a>');
+			tElement[2] = $('<td>').text(history.timestamp);
 
 			trElement = $('<tr>');
 			for (i = 0; i < tElement.length; i += 1) {

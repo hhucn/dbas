@@ -36,7 +36,7 @@ Then follow these steps:
 6. Create database::
 
     $ make init
-    $ make database
+    $ make all
 
 7. Start development web server::
 

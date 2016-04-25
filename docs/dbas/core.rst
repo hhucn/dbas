@@ -133,6 +133,13 @@ Helper for Issues
     :members:
 
 
+Helper for History
+==================
+
+.. automodule:: dbas.helper.history_helper
+    :members:
+
+
 Notification Helper
 ===================
 
