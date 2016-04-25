@@ -14,7 +14,6 @@ class Translator(object):
 	"""
 	Class for translating string
 	"""
-
 	def __init__(self, lang):
 		"""
 		Initializes keywords
@@ -106,6 +105,7 @@ class Translator(object):
 		self.attackedBy = 'attackedBy'
 		self.attackedWith = 'attackedWith'
 		self.attackPosition = 'attackPosition'
+		self.attitudeFor = 'attitudeFor'
 		self.agreeBecause = 'agreeBecause'
 		self.andIDoBelieveCounterFor = 'andIDoBelieveCounterFor'
 		self.andIDoBelieveArgument = 'andIDoBelieveArgument'
@@ -276,6 +276,7 @@ class Translator(object):
 		self.iNoOpinion = 'iNoOpinion'
 		self.isNotAGoodIdea = 'isNotAGoodIdea'
 		self.interestingOnDBAS = 'interestingOnDBAS'
+		self.informationForStatements = 'informationForStatements'
 		self.keyword = 'keyword'
 		self.keywordStart = 'keywordStart'
 		self.keywordChooseActionForStatement = 'keywordChooseActionForStatement'
@@ -365,6 +366,7 @@ class Translator(object):
 		self.restartDiscussion = 'restartDiscussion'
 		self.restartDiscussionTitle = 'restartDiscussionTitle'
 		self.restartOnError = 'restartOnError'
+		self.reactionFor = 'reactionFor'
 		self.questionTitle = 'questionTitle'
 		self.selectStatement = 'selectStatement'
 		self.showAllUsers = 'showAllUsers'
@@ -571,6 +573,7 @@ class Translator(object):
 		en_lang[self.agreeBecause] = 'I agree because '
 		en_lang[self.andIDoBelieveCounterFor] = 'and I do believe that this is a counter-argument for'
 		en_lang[self.andIDoBelieveArgument] = 'and I do believe that this is a argument for'
+		en_lang[self.attitudeFor] = 'Attitudes for'
 		en_lang[self.breadcrumbsStart] = 'Start'
 		en_lang[self.breadcrumbsChoose] = 'Multiple reasons for'
 		en_lang[self.breadcrumbsJustifyStatement] = 'Why do you think that'
@@ -733,6 +736,7 @@ class Translator(object):
 		en_lang[self.iNoOpinion] = 'I have no opinion regarding'
 		en_lang[self.interestingOnDBAS] = 'Interesting discussion on DBAS'
 		en_lang[self.inputEmpty] = 'Input is empty!'
+		en_lang[self.informationForStatements] = 'Information for the statements'
 		en_lang[self.keyword] = 'Keyword'
 		en_lang[self.keywordStart] = 'Start'
 		en_lang[self.keywordChooseActionForStatement] = 'Choosing attitude'
@@ -818,6 +822,7 @@ class Translator(object):
 		en_lang[self.refreshHistory] = 'Refresh history'
 		en_lang[self.requestFailed] = 'Request failed'
 		en_lang[self.remStatementRow] = 'Removes this row.'
+		en_lang[self.reactionFor] = 'Reactions for'
 		en_lang[self.questionTitle] = 'Get more information about the statement!'
 		en_lang[self.saveMyStatement] = 'Save my Statement!'
 		en_lang[self.selectStatement] = 'Please select a statement!'
@@ -1018,6 +1023,7 @@ class Translator(object):
 		de_lang[self.addArgumentsTitle] = 'Fügt neue Argumente hinzu'
 		de_lang[self.acceptItTitle] = 'Einsenden...'
 		de_lang[self.acceptIt] = 'Eintragen...'
+		de_lang[self.attitudeFor] = 'Einstellungen zu'
 		de_lang[self.breadcrumbsStart] = 'Start'
 		de_lang[self.breadcrumbsChoose] = 'Mehrere Gründe für'
 		de_lang[self.breadcrumbsJustifyStatement] = 'Wieso denken Sie das'
@@ -1181,6 +1187,7 @@ class Translator(object):
 		de_lang[self.iHaveEvenStrongerArgumentAccepting] = 'Ich habe ein stärkeres Argument zum Akzeptieren von'
 		de_lang[self.iNoOpinion] = 'Ich habe keine Meinung bezüglich'
 		de_lang[self.interestingOnDBAS] = 'Interessante Diskussion in D-BAS'
+		de_lang[self.informationForStatements] = 'Informationen zu den Aussagen'
 		de_lang[self.keyword] = 'Schlüsselwort'
 		de_lang[self.keywordStart] = 'Start'
 		de_lang[self.keywordChooseActionForStatement] = 'Einstellung zu'
@@ -1266,6 +1273,7 @@ class Translator(object):
 		de_lang[self.restartDiscussion] = 'Diskussion neustarten'
 		de_lang[self.restartDiscussionTitle] = 'Diskussion neustarten'
 		de_lang[self.restartOnError] = 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.'
+		de_lang[self.reactionFor] = 'Reaktionen zu'
 		de_lang[self.questionTitle] = 'Erhalten Sie mehr Informationen über die Aussage!'
 		de_lang[self.saveMyStatement] = 'Aussage speichern!'
 		de_lang[self.selectStatement] = 'Bitte Wählen Sie eine Aussage!'

@@ -40,10 +40,12 @@ class OpinionHandler:
 		all_users = []
 		_t = Translator(lang)
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+		title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uid, lang)
+
 		if not db_argument:
 			ret_dict['message'] = _t.get(_t.internalError) + '.'
 			ret_dict['users'] = all_users
-			return ret_dict
+			return {'opinions': ret_dict, 'title': title}
 
 		_rh = RelationHelper(argument_uid, lang)
 		undermines_uids  = _rh.get_undermines_for_argument_uid()
@@ -84,12 +86,9 @@ class OpinionHandler:
 				else:
 					message = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
-			logger('--', str(uid['id']), str(len(all_users)))
-			logger('--', str(uid['id']), message)
-			logger('--', str(uid['id']), text)
 			ret_dict[relation] = {'users': all_users, 'message': message, 'text': text}
 
-		return ret_dict
+		return {'opinions': ret_dict, 'title': title[0:1].upper() + title[1:]}
 
 	@staticmethod
 	def get_user_with_same_opinion_for_statements(statement_uids, lang, nickname):
@@ -107,6 +106,7 @@ class OpinionHandler:
 
 		opinions = []
 		_t = Translator(lang)
+		title = _t.get(_t.informationForStatements)
 
 		for uid in statement_uids:
 			statement_dict = dict()
@@ -141,7 +141,7 @@ class OpinionHandler:
 
 			opinions.append(statement_dict)
 
-		return {'opinions': opinions}
+		return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
 	@staticmethod
 	def get_user_with_same_opinion_for_argument(argument_uid, lang, nickname):
@@ -160,6 +160,7 @@ class OpinionHandler:
 		opinions = dict()
 		all_users = []
 		_t = Translator(lang)
+		title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uid, lang)
 
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 		if not db_argument:
@@ -189,7 +190,7 @@ class OpinionHandler:
 		else:
 			opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
-		return {'opinions': opinions}
+		return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
 	@staticmethod
 	def get_user_with_opinions_for_attitude(statement_uid, lang, nickname):
@@ -202,6 +203,8 @@ class OpinionHandler:
 		:return:
 		"""
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+		_t = Translator(lang)
+		title = _t.get(_t.attitudeFor) + ': ' + get_text_for_statement_uid(statement_uid)
 		ret_dict = dict()
 
 		if not db_statement:
@@ -238,6 +241,8 @@ class OpinionHandler:
 			users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang)
 			con_array.append(users_dict)
 		ret_dict['disagree_users'] = con_array
+
+		ret_dict['title'] = title[0:1].upper() + title[1:]
 
 		return ret_dict
 
