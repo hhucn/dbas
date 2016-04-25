@@ -61,7 +61,11 @@ class OpinionHandler:
 		for relation in tmp_dict:
 			relation_dict = dict()
 			all_users = []
+			text = ''
+			message = ''
+			logger('--', '--', str(relation) + ' # ' + str(tmp_dict[relation]))
 			for uid in tmp_dict[relation]:
+				logger('--', '--', '-->' + str(uid['id']))
 				db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
 				                                                               VoteArgument.is_up_vote == True,
 				                                                               VoteArgument.is_valid == True,
@@ -71,15 +75,19 @@ class OpinionHandler:
 					users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang)
 					all_users.append(users_dict)
 				relation_dict['users'] = all_users
+				text = get_text_for_argument_uid(uid['id'], lang)
 
 				if len(db_votes) == 0:
-					relation_dict['message'] = _t.get(_t.voteCountTextMayBeFirst) + '.'
+					message = _t.get(_t.voteCountTextMayBeFirst) + '.'
 				elif len(db_votes) == 1:
-					relation_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
+					message = _t.get(_t.voteCountTextOneOther) + '.'
 				else:
-					relation_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+					message = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
-			ret_dict[relation] = relation_dict
+			logger('--', str(uid['id']), str(len(all_users)))
+			logger('--', str(uid['id']), message)
+			logger('--', str(uid['id']), text)
+			ret_dict[relation] = {'users': all_users, 'message': message, 'text': text}
 
 		return ret_dict
 
