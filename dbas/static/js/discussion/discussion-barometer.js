@@ -36,9 +36,9 @@ function DiscussionBarometer(){
 	 */
 	this.showBarometer = function(){
 		var uid = 0, uid_array = [],
-			splitted = window.location.href.split('/'),
-			adress = 'position',
-			url = window.location.href.split('?')[0];
+			url = window.location.href.split('?')[0],
+			splitted = url.split('/'),
+			adress = 'position';
 
 		if (url.indexOf('/attitude/') != -1){
 			adress = 'attitude';
@@ -186,12 +186,14 @@ function DiscussionBarometer(){
 		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d"),
 			chart = new Chart(ctx).Pie(),
 			index = 0;
-		$.each(obj, function(key, value) {
-			console.log(value);
+		$.each(obj, function(key, entry) {
+			console.log(index);
+			console.log(entry);
 			if(key != 'error') {
 				chart.addData({
-					value: value.users.length,
-					color: colors[index]
+					value: entry.users.length,
+					color: colors[index],
+					label: entry.text
 				});
 				index += 1;
 			}
