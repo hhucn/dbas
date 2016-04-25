@@ -51,6 +51,7 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 		$('#' + discussionSpaceId + ' li:last-child input').attr('checked', false).prop('checked', false).enable = true;
 	});
 
+	// hides container
 	$('#' + closePremiseContainerId).click(function closeStatementContainerId() {
 		$('#' + addPremiseContainerId).hide();
 		$('#' + addPremiseErrorContainer).hide();
@@ -334,7 +335,7 @@ setWindowOptions = function(){
 setGuiOptions = function(){
 	// set do not hide on hover popup
 	var originalLeave = $.fn.popover.Constructor.prototype.leave,
-		body = $('body'), baseFontSize;
+		body = $('body');
 	// http://jsfiddle.net/WojtekKruszewski/Zf3m7/22/
 	$.fn.popover.Constructor.prototype.leave = function(obj){
 		var self = obj instanceof this.constructor ?
@@ -366,16 +367,7 @@ setGuiOptions = function(){
 	});
 
 	// slimscroll for breadcrumbs
-	baseFontSize = parseInt(body.css('font-size').replace('px',''));
-	if ($('#' + breadcrumbContainerId).height() > 6*baseFontSize){
-		$('#' + breadcrumbContainerId + ' .col-md-12').slimScroll({
-			position: 'right',
-			height: 5 * baseFontSize + 'px',
-			railVisible: true,
-			alwaysVisible: false,
-			start: 'bottom'
-		});
-	}
+	setDiscussionWindowHeights();
 
 	// relation buttons
 	if (false && window.location.href.indexOf('/reaction/') != -1){
@@ -408,7 +400,20 @@ setGuiOptions = function(){
 		if (login_item.length > 0)
 			login_item.attr('checked', false).prop('checked', false)
 	});
+};
 
+setDiscussionWindowHeights = function(){
+	var body = $('body'),
+		baseFontSize = parseInt(body.css('font-size').replace('px',''));
+	if ($('#' + breadcrumbContainerId).height() > 6*baseFontSize){
+		$('#' + breadcrumbContainerId + ' .col-md-12').slimScroll({
+			position: 'right',
+			height: 5 * baseFontSize + 'px',
+			railVisible: true,
+			alwaysVisible: false,
+			start: 'bottom'
+		});
+	}
 };
 
 /**
@@ -484,10 +489,11 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 	// TODO CLEAR DESIGN
 	// options for the extra buttons, where the user can add input!
 	if (input.attr('id') && (
-		input.attr('id').indexOf('start_statement') != -1 ||
-		input.attr('id').indexOf('start_premise') != -1 ||
-		input.attr('id').indexOf('justify_premise') != -1 ||
-		input.attr('id').indexOf('login') != -1)) {
+			input.attr('id').indexOf('start_statement') != -1 ||
+			input.attr('id').indexOf('start_premise') != -1 ||
+			input.attr('id').indexOf('justify_premise') != -1 ||
+			input.attr('id').indexOf('login') != -1)
+	) {
 		input.attr('onclick', '');
 		input.change(function () {
 			if (input.prop('checked')) {
@@ -551,4 +557,6 @@ $(document).ready(function () {
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
 	tmp = tmp.substr(1, tmp.length-2);
 	$('#' + discussionEndRestart).attr('href', tmp);
+
+	// window.addEventListener('resize', setDiscussionWindowHeights());
 });

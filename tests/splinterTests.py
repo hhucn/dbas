@@ -521,16 +521,16 @@ class FrontendTests:
 
 		# confrontation
 		success = success and Helper.check_for_present_text(b, position[1:] + ' because some new reason', 'check for new argument')
-		success = success and Helper.check_for_present_text(b, 'Other participants do not have any counter', 'check that no confrontation exists')
-		success = success and Helper.check_for_present_text(b, 'The discussion ends here', 'check for end text')
+		success = success and Helper.check_for_present_text(b, 'Other participants do not have any counter-argument for that.', 'check that no confrontation exists')
+		success = success and Helper.check_for_present_text(b, 'The discussion ends here.', 'check for end text')
 
 		# go back to first premise
-		b.find_by_css('#dialog-speech-bubbles-space .triangle-r:first-child a').click()
-		time.sleep(waittime)
+		#b.find_by_css('div.line-wrapper-r:first-child a').click()
+		b.find_by_css('#discussion-restart-btn').click()
+		b.find_by_text(position)[0].click()
 		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
-		b.find_by_css('#discussions-space-list li:first-child input').click()
-		time.sleep(waittime)
+
 		b.find_by_css('#item_start_premise').click()
 		time.sleep(waittime)
 		# add new premise
@@ -591,13 +591,21 @@ class FrontendTests:
 		success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontative question')
 		success = success and Helper.check_for_present_text(b, 'stronger argument for accepting', 'check for acceptive formulation of rebut')
 		# b.find_by_css('#item_support label').click()
+		# b.find_by_css('label#support').click()
+		#b.find_by_text('Right, it is true that')[0].click()
 		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
 		time.sleep(waittime)
 
 		# support of confrontation
 		success = success and Helper.check_for_present_text(b, 'Earlier you argued', 'check for formulation on \'supports\' 1')
 		success = success and Helper.check_for_present_text(b, 'convinced you that', 'check for formulation on \'supports\' 2')
-		b.find_by_css('.line-wrapper-r:nth-child(2)').click()
+		b.find_by_css('#discussion-restart-btn').click()
+		time.sleep(waittime)
+		b.find_by_text('The city should reduce the number of street festivals').click()
+		time.sleep(waittime)
+		b.find_by_css('#discussions-space-list li:first-child input').click()
+		time.sleep(waittime)
+		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
 
 		# confrontation - give feedback again
@@ -607,16 +615,16 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# rebut of confrontation
-		success = success and Helper.check_for_present_text(b, 'You have a much strong argument for accepting', 'check for formulation on \'rebut\'')
+		success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for accepting', 'check for formulation on \'rebut\'')
 		b.find_by_css('#discussion-restart-btn').click()
 		time.sleep(waittime)
 
 		# restart
-		b.find_by_css('#discussions-space-list li:first-child input').click()
+		b.find_by_text('The city should reduce the number of street festivals').click()
 		time.sleep(waittime)
 
 		# attitude
-		b.find_by_css('.line-wrapper-r:nth-child(2)').click()
+		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
 		time.sleep(waittime)
 
 		# confrontation - give feedback again
@@ -632,7 +640,7 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# rebut of confrontation
-		success = success and Helper.check_for_present_text(b, 'You have much strong argument for rejecting', 'check for formulation on \'rebut\'')
+		success = success and Helper.check_for_present_text(b, 'You have much stronger argument for rejecting', 'check for formulation on \'rebut\'')
 		success = success and Helper.check_for_present_text(b, 'is not a good idea', 'check for question again')
 
 		b = Helper.logout(b)
