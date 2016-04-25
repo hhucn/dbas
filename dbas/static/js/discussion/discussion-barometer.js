@@ -15,7 +15,7 @@ var colors = [
 	'#E91E63', //  7 pink
 	'#3F51B5', //  8 indigo
 	'#00BCD4', //  9 cyan
-	'#8BC34A', // 11 light green
+	'#8BC34A', // 10 light green
 	'#FFC107', // 11 amber
 	'#795548', // 12 brown
 	'#000000', // 13 black
@@ -112,11 +112,11 @@ function DiscussionBarometer(){
 	 * @param adress: step of the discussion
 	 */
 	this.callbackIfDoneForGetDictionary = function(data, adress){
-		var obj;
+		var obj, _db = new DiscussionBarometer();
         try{
 	        obj = JSON.parse(data);
 			console.log(obj);
-        }catch(e){
+        } catch(e) {
 	        // TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
 			alert('parsing-json: ' + e);
 	        return;
@@ -129,13 +129,14 @@ function DiscussionBarometer(){
 		}).removeClass('btn-success');
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 
-		switch(adress){
-			case 'attitude': new DiscussionBarometer().createAttitudeBarometer(obj); break;
-			case 'position': new DiscussionBarometer().createStatementBarometer(obj); break;
-			case 'statement': new DiscussionBarometer().createStatementBarometer(obj); break;
-			case 'argument': new DiscussionBarometer().createArgumentBarometer(obj); break;
-		}
 
+		switch(adress){
+			case 'attitude':  _db.createAttitudeBarometer(obj); break;
+			case 'position':  _db.createStatementBarometer(obj); break;
+			case 'statement': _db.createStatementBarometer(obj); break;
+			case 'argument':  _db.createArgumentBarometer(obj); break;
+		}
+		$('#' + popupConfirmDialogId).find('.modal-title').text(obj.title);
 	};
 
 	/**
@@ -150,7 +151,7 @@ function DiscussionBarometer(){
         {
 			value: obj.agree_users.length,
         	color: colors[3],
-			highlight: colors[11],
+			highlight: colors[10],
             label: 'agree'
         },
 		{
@@ -192,9 +193,7 @@ function DiscussionBarometer(){
 		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d"),
 			chart = new Chart(ctx).Pie(),
 			index = 0;
-		$.each(obj, function(key, entry) {
-			console.log(index);
-			console.log(entry);
+		$.each(obj.opinions, function(key, entry) {
 			if(key != 'error') {
 				chart.addData({
 					value: entry.users.length,
