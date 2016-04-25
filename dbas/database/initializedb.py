@@ -575,7 +575,7 @@ def setup_discussion_database(session, user):
 	textversion117 = TextVersion(content="There are many parks in neighbouring towns.", author=user.uid)
 	textversion118 = TextVersion(content="The city is planing a new park in the upcoming month.", author=user.uid)
 	textversion119 = TextVersion(content="Parks are highly important for our climate.", author=user.uid)
-	textversion120 = TextVersion(content="Our swimming pool are very old and would need many resaurations, so this is too expensive.", author=user.uid)
+	textversion120 = TextVersion(content="Our swimming pools are very old and it would take a major investment to repair them.", author=user.uid)
 	textversion121 = TextVersion(content="Schools need the swimming pools for their sports lessons.", author=user.uid)
 	textversion122 = TextVersion(content="The rate of non-swimmers is too high.", author=user.uid)
 	textversion123 = TextVersion(content="The police cannot patrol in the park for 24/7.", author=user.uid)

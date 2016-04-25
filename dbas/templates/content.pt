@@ -306,9 +306,6 @@
 				</div>
 				<div id="add-premise-container-body">
 					<div class="container-three-divs" style="padding-bottom: 2em;">
-						<div>
-							<h5 style="float: left; line-height: 20px; text-align: center;" i18n:translate="Because...">Because...</h5>
-						</div>
 						<div class="flex-div">
 							<input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="Your statement" value="">
 						</div>
