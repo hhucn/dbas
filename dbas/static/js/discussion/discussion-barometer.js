@@ -12,19 +12,20 @@ function DiscussionBarometer(){
 	this.showBarometer = function(){
 		var uid = 0, uid_array = [],
 			splitted = window.location.href.split('/'),
-			adress = 'position';
+			adress = 'position',
+			url = window.location.href.split('?')[0];
 
-		if (window.location.href.indexOf('/attitude/') != -1){
+		if (url.indexOf('/attitude/') != -1){
 			adress = 'attitude';
 			uid = splitted[splitted.length-1];
 			new DiscussionBarometer().ajaxRequest(uid, adress);
-		} else if (window.location.href.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
+		} else if (url.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
 			adress = 'statement';
 			$('#discussions-space-list li:not(:last-child) label').each(function(){
 				uid_array.push($(this).attr('id'));
 			});
 			new DiscussionBarometer().ajaxRequest(uid_array, adress);
-		} else if (window.location.href.indexOf('/reaction/') != -1){
+		} else if (url.indexOf('/reaction/') != -1){
 			adress = 'argument';
 			uid = splitted[splitted.length-3];
 			new DiscussionBarometer().ajaxRequest(uid, adress);
@@ -39,14 +40,14 @@ function DiscussionBarometer(){
 		switch(adress){
 			case 'attitude':
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', uids: uid};
-			break;
+				break;
 			case 'statement':
 				var json_array = JSON.stringify(uid);
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: json_array};
-			break;
+				break;
 			case 'argument':
 				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', uids: uid};
-			break;
+				break;
 			default:
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: uid};
 		}
@@ -62,11 +63,12 @@ function DiscussionBarometer(){
 		}).fail(function () {
 			new DiscussionBarometer().callbackIfFailForGetDictionary();
 		});
-	}
+	};
 
 	/**
 	 * Callback if the ajax request was successfull
 	 * @param data: unparsed data of the request
+	 * @param adress: step of the discussion
 	 */
 	this.callbackIfDoneForGetDictionary = function(data, adress){
 		var obj;
