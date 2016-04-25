@@ -98,11 +98,11 @@ class OpinionHandler:
 		db_user_uid = db_user.uid if db_user else 0
 
 		opinions = []
-		all_users = []
 		_t = Translator(lang)
 
 		for uid in statement_uids:
 			statement_dict = dict()
+			all_users = []
 			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
 			if not db_statement:
 				statement_dict['uid']       = None
