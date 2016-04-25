@@ -1416,23 +1416,23 @@ class TextGenerator(object):
 		# different cases
 		ret_text = ''
 		if attack_type == 'undermine':
-			ret_text = _t.get(_t.itIsFalse) + ' ' + premise + '.'
+			ret_text = _t.get(_t.itIsFalse) + ' ' + premise
 		if attack_type == 'support':
 			ret_text = _t.get(_t.itIsTrue) if is_supportive else _t.get(_t.itIsFalse)
 			ret_text += ' <strong>' + conclusion + ' '
 			ret_text += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
-			ret_text += '</strong>.'
+			ret_text += '</strong>'
 		if attack_type == 'undercut':
-			ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounterFor) + ' ' + conclusion + '.'
+			ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounterFor) + ' ' + conclusion
 		if attack_type == 'overbid':
-			ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieveCounterFor) + ' ' + conclusion + '.'
+			ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieveCounterFor) + ' ' + conclusion
 		#  + '.' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
 		if attack_type == 'rebut':
 			ret_text = confrontation + ' ' \
 					   + (_t.get(_t.iAcceptCounter) if is_supportive else _t.get(_t.iAcceptArgument)) \
 					   + ' ' + conclusion
 
-		return ret_text
+		return ret_text + ', '  + _t.get(_t.because).lower() + '...'
 
 	def get_header_for_users_confrontation_response(self, premise, attack_type, conclusion, start_lower_case,
 	                                                is_supportive, is_logged_in):
