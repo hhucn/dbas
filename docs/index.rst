@@ -14,6 +14,11 @@ Installation
 .. toctree::
     installation
 
+Makefile
+========
+.. toctree::
+    makefile
+
 Core Documentation
 ==================
 
