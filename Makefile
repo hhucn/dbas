@@ -21,7 +21,7 @@ refresh:
 	reload_discussion_sql development.ini
 	initialize_news_sql development.ini
 
-testdata_votes:
+votes:
 	init_discussion_testvotes development.ini
 
 all:

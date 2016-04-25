@@ -98,13 +98,6 @@ Helper
 ======
 
 
-Breadcrumb Helper
-=================
-
-.. automodule:: dbas.helper.breadcrumb_helper
-    :members:
-
-
 Dictionary Helper
 =================
 
