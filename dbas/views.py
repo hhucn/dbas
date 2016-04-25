@@ -1616,15 +1616,19 @@ class Dbas(object):
 			is_argument = self.request.params['is_argument'] == 'true' if 'is_argument' in self.request.params else False
 			is_attitude = self.request.params['is_attitude'] == 'true' if 'is_attitude' in self.request.params else False
 			is_reaction = self.request.params['is_reaction'] == 'true' if 'is_reaction' in self.request.params else False
+			is_position = self.request.params['is_position'] == 'true' if 'is_position' in self.request.params else False
 			if is_argument:
 				if not is_reaction:
 					return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname)
 				else:
 					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname)
+			elif is_position:
+				uids = json.loads(uids)
+				return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
 			else:
 				if not is_attitude:
 					uids = json.loads(uids)
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_premisegroups(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
 				else:
 					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname)
 			return_dict['error'] = ''
