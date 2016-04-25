@@ -188,6 +188,7 @@ var surname 										= 'surname';
 var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
+var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
 var veryweak 										= 'veryweak';
@@ -343,6 +344,7 @@ var dbas_en = {
 	'switchDiscussionText2': 'and the discussion will be restarted.',
 	'showMeAnArgumentFor': 'Show me an argument for',
 	'text': 'Text',
+	'timestamp': 'Timestamp',
 	'typeofVote': 'Agree / Disagree',
 	'usersWithSameOpinion': 'Users with same opinion',
 	'valid': 'Valid',
@@ -481,6 +483,7 @@ var dbas_de = {
 	'surname': 'Nachname',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
+	'timestamp': 'Zeit',
 	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'typeofVote': 'Zustimmung/Ablehnung',
 	'valid': 'Gültigkeit',

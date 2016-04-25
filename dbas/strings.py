@@ -444,6 +444,10 @@ class Translator(object):
 		self.youAgreeWith = 'youAgreeWith'
 		self.youDisagreeWith = 'youDisagreeWith'
 		self.youSaidThat = 'youSaidThat'
+		self.youUsedThisEarlier = 'youUsedThisEarlier'
+		self.youRejectedThisEarlier = 'youRejectedThisEarlier'
+		self.youHaveMuchStrongerArgumentForAccepting = 'youHaveMuchStrongerArgumentForAccepting'
+		self.youHaveMuchStrongerArgumentForRejecting = 'youHaveMuchStrongerArgumentForRejecting'
 
 		self.sentencesOpenersArguingWithAgreeing = [self.agreeBecause, self.therefore]
 		self.sentencesOpenersArguingWithDisagreeing = [self.disagreeBecause, self.alternatively]
@@ -893,6 +897,10 @@ class Translator(object):
 		en_lang[self.youAgreeWith] = 'You agree with'
 		en_lang[self.youDisagreeWith] = 'You disagree with'
 		en_lang[self.youSaidThat] = 'You said that'
+		en_lang[self.youUsedThisEarlier] = 'You used this earlier.'
+		en_lang[self.youRejectedThisEarlier] = 'You rejected this earlier.'
+		en_lang[self.youHaveMuchStrongerArgumentForAccepting] = 'You have a much stronger argument for accepting'
+		en_lang[self.youHaveMuchStrongerArgumentForRejecting] = 'You have a much stronger argument for rejecting'
 
 		return en_lang
 
@@ -1336,6 +1344,10 @@ class Translator(object):
 		de_lang[self.youAgreeWith] = 'Sie sind der Meinung, dass'
 		de_lang[self.youDisagreeWith] = 'Sie weidersprechen'
 		de_lang[self.youSaidThat] = 'Sie haben gesagt, dass'
+		de_lang[self.youUsedThisEarlier] = 'Sie haben diese Aussage schon benutzt.'
+		de_lang[self.youRejectedThisEarlier] = 'Sie haben diese Aussage schon abgelehnt.'
+		de_lang[self.youHaveMuchStrongerArgumentForAccepting] = 'Sie haben eine viel stärker Begründung für'
+		de_lang[self.youHaveMuchStrongerArgumentForRejecting] = 'Sie haben eine viel stärker Ablehnung für'
 
 		return de_lang
 
@@ -1549,7 +1561,7 @@ class TextGenerator(object):
 		return ret_dict
 
 	def get_text_for_confrontation(self, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
-	                               reply_for_argument, user_is_attacking, user_arg):
+	                               reply_for_argument, user_is_attacking, user_arg, sys_arg):
 		"""
 		Text for the confrontation of the system
 
@@ -1561,7 +1573,8 @@ class TextGenerator(object):
 		:param confrontation: String
 		:param reply_for_argument: Boolean
 		:param user_is_attacking: Boolean
-		:param user_arg: String
+		:param user_arg: Argument
+		:param sys_arg: Argument
 		:return: String
 		"""
 		_t = Translator(self.lang)
@@ -1577,8 +1590,9 @@ class TextGenerator(object):
 
 		# build some confrontation text
 		if attack == 'undermine':
-			confrontation_text = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + premise + ' ' \
-								+ _t.get(_t.doesNotHold) + '</strong>, ' + _t.get(_t.because).lower() + ' ' + confrontation
+			confrontation_text = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + premise + ' '
+			confrontation_text += _t.get(_t.hold) if sys_arg.is_supportive else _t.get(_t.doesNotHold)
+			confrontation_text += '</strong>, ' + _t.get(_t.because).lower() + ' ' + confrontation
 
 		elif attack == 'rebut':
 			#
