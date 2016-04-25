@@ -69,10 +69,9 @@ class RecommenderSystem:
 		:param is_supportive: Boolean
 		:return: Argument
 		"""
+		logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
 		db_arguments = RecommenderSystem.get_arguments_by_conclusion(statement_uid, is_supportive)
 		DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive, Argument.conclusion_uid == statement_uid)).all()
-		logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' +
-		       str(is_supportive) + ', found ' + str(len(db_arguments)) + ' arguments')
 
 		if not db_arguments:
 			return 0
@@ -88,14 +87,14 @@ class RecommenderSystem:
 		:param is_supportive: Boolean
 		:return: [Argument]
 		"""
+		logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
 		db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
                                                                        Argument.conclusion_uid == statement_uid)).all()
-		logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' +
-		       str(is_supportive) + ', found ' + str(len(db_arguments)) + ' arguments')
 
 		if not db_arguments:
 			return None
 
+		logger('RecommenderSystem', 'get_argument_by_conclusion', 'found ' + str(len(db_arguments)) + ' arguments')
 		# TODO sort arguments and return a subset
 
 		return db_arguments
