@@ -48,7 +48,7 @@ class HistoryHelper:
 		:return: Array
 		"""
 		if len(history) == 0:
-			return
+			return []
 
 		logger('HistoryHelper', 'create_bubbles_from_history', 'history: ' + history)
 		splitted_history = HistoryHelper.get_splitted_history(history)
