@@ -29,10 +29,11 @@ class RelationHelper(object):
 		self.argument_uid = argument_uid
 		self.lang = lang
 
-	def get_undermines_for_argument_uid(self):
+	def get_undermines_for_argument_uid(self, is_supportive=False):
 		"""
 		Returns all uid's of undermines for the argument.
 
+		:return is_supportive: Boolean
 		:return: array with dict() with id (of argumet) and text.
 		"""
 		# logger('RelationHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(self.argument_uid))
@@ -48,7 +49,7 @@ class RelationHelper(object):
 		if len(premises_as_statements_uid) == 0:
 			return None
 
-		return self.__get_undermines_for_premises(premises_as_statements_uid, self.lang)
+		return self.__get_undermines_for_premises(premises_as_statements_uid, self.lang, is_supportive)
 
 	def get_overbids_for_argument_uid(self):
 		"""
@@ -353,11 +354,12 @@ class RelationHelper(object):
 		return return_array
 
 	@staticmethod
-	def __get_undermines_for_premises(premises_as_statements_uid, lang):
+	def __get_undermines_for_premises(premises_as_statements_uid, lang, is_supportive=False):
 		"""
 
 		:param premises_as_statements_uid:
 		:param lang: ui_locales
+		:param is_supportive
 		:return:
 		"""
 		# logger('RelationHelper', '__get_undermines_for_premises', 'main')
@@ -365,7 +367,7 @@ class RelationHelper(object):
 		index = 0
 		given_undermines = set()
 		for s_uid in premises_as_statements_uid:
-			db_undermine = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == False, Argument.conclusion_uid == s_uid)).all()
+			db_undermine = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive, Argument.conclusion_uid == s_uid)).all()
 			for undermine in db_undermine:
 				if undermine.premisesgroup_uid not in given_undermines:
 					given_undermines.add(undermine.premisesgroup_uid)
