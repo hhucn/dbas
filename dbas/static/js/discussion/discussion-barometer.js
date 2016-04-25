@@ -46,8 +46,10 @@ function DiscussionBarometer(){
 			uid = splitted[splitted.length-1];
 			new DiscussionBarometer().ajaxRequest(uid, adress);
 		} else if (url.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
-			adress = 'statement';
-			uid_array = new DiscussionBarometer().getUidsFromDiscussionList();
+			adress = 'justify';
+			$('#discussions-space-list li:not(:last-child) input').each(function(){
+				uid_array.push($(this).attr('id').substr(5));
+			});
 			new DiscussionBarometer().ajaxRequest(uid_array, adress);
 		} else if (url.indexOf('/reaction/') != -1){
 			adress = 'argument';
@@ -55,21 +57,11 @@ function DiscussionBarometer(){
 			new DiscussionBarometer().ajaxRequest(uid, adress);
 		} else {
 			adress = 'position';
-			uid_array = new DiscussionBarometer().getUidsFromDiscussionList();
+			$('#discussions-space-list li:not(:last-child) label').each(function(){
+				uid_array.push($(this).attr('id'));
+			});
 			new DiscussionBarometer().ajaxRequest(uid_array, adress);
 		}
-	};
-
-	/**
-	 * Returns array with all uids in discussion radio button list
-	 * @returns {Array}
-	 */
-	this.getUidsFromDiscussionList = function (){
-		var uid_array = [];
-		$('#discussions-space-list li:not(:last-child) label').each(function(){
-			uid_array.push($(this).attr('id'));
-		});
-		return uid_array;
 	};
 
 	/**
@@ -81,16 +73,16 @@ function DiscussionBarometer(){
 		var dataString;
 		switch(adress){
 			case 'attitude':
-				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', uids: uid};
+				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', is_position: 'false', uids: uid};
 				break;
-			case 'statement':
-				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: JSON.stringify(uid)};
+			case 'justify':
+				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'false', uids: JSON.stringify(uid)};
 				break;
 			case 'argument':
-				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', uids: uid};
+				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', is_position: 'false', uids: uid};
 				break;
-			default:
-				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', uids: JSON.stringify(uid)};
+			case 'position':
+				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'true', uids: JSON.stringify(uid)};
 		}
 
 		$.ajax({
@@ -131,10 +123,10 @@ function DiscussionBarometer(){
 
 
 		switch(adress){
-			case 'attitude':  _db.createAttitudeBarometer(obj); break;
-			case 'position':  _db.createStatementBarometer(obj); break;
-			case 'statement': _db.createStatementBarometer(obj); break;
-			case 'argument':  _db.createArgumentBarometer(obj); break;
+			case 'attitude': _db.createAttitudeBarometer(obj); break;
+			case 'position': _db.createStatementBarometer(obj); break;
+			case 'justify':  _db.createStatementBarometer(obj); break;
+			case 'argument': _db.createArgumentBarometer(obj); break;
 		}
 		$('#' + popupConfirmDialogId).find('.modal-title').text(obj.title);
 	};
